@@ -131,7 +131,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     ms.setExpressionContext( frameContext );
 
     QString fileName( settings.fileNameTemplate );
-    const QString frameNoPaddedLeft( QStringLiteral( "%1" ).arg( currentFrame, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
+    const QString frameNoPaddedLeft( u"%1"_s.arg( currentFrame, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( settings.outputDirectory ).filePath( fileName );
 

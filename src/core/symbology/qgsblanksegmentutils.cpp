@@ -66,20 +66,20 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
     const double number = currentNumber.toDouble( &ok );
     if ( !ok )
     {
-      throw std::runtime_error( QStringLiteral( "bad formatted number '%1'" ).arg( currentNumber ).toStdString() );
+      throw std::runtime_error( u"bad formatted number '%1'"_s.arg( currentNumber ).toStdString() );
     }
 
     BlankSegments &segments = blankSegments.back().back();
     if ( segments.back().first == -1 )
     {
       if ( segments.count() > 1 && segments.at( segments.count() - 2 ).second > number )
-        throw std::runtime_error( QStringLiteral( "Wrong blank segments distances, start (%1) < previous end (%2)" ).arg( number ).arg( segments.at( segments.count() - 2 ).second ).toStdString() );
+        throw std::runtime_error( u"Wrong blank segments distances, start (%1) < previous end (%2)"_s.arg( number ).arg( segments.at( segments.count() - 2 ).second ).toStdString() );
 
       blankSegments.back().back().back().first = number;
     }
     else if ( blankSegments.back().back().back().first > number )
     {
-      throw std::runtime_error( QStringLiteral( "Wrong blank segments distances, start (%1) > end (%2)" ).arg( blankSegments.back().back().back().first ).arg( number ).toStdString() );
+      throw std::runtime_error( u"Wrong blank segments distances, start (%1) > end (%2)"_s.arg( blankSegments.back().back().back().first ).arg( number ).toStdString() );
     }
     else
     {
@@ -134,7 +134,7 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
       }
       else if ( !c.isSpace() )
       {
-        throw std::runtime_error( QStringLiteral( "Invalid character '%1'" ).arg( c ).toStdString() );
+        throw std::runtime_error( u"Invalid character '%1'"_s.arg( c ).toStdString() );
       }
       iChar++;
     }
@@ -146,7 +146,7 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
   catch ( const std::exception &e )
   {
     blankSegments.clear();
-    error = QStringLiteral( "%1 (column: %2)" ).arg( e.what() ).arg( iChar );
+    error = u"%1 (column: %2)"_s.arg( e.what() ).arg( iChar );
   }
 
   // convert in pixels

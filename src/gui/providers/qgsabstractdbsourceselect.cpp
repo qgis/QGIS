@@ -26,11 +26,11 @@
 
 #include "moc_qgsabstractdbsourceselect.cpp"
 
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( QStringLiteral( "%1/searchColumnAll" ), QgsSettingsTree::sTreeWindowState );
-const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%1/searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%1/searchRegex" ), QgsSettingsTree::sTreeWindowState );
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%1/holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
-const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingColumnWidths = new QgsSettingsEntryInteger( QStringLiteral( "%1/columnWidths/%2" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( u"%1/searchColumnAll"_s, QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( u"%1/searchColumn"_s, QgsSettingsTree::sTreeWindowState, -1 );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( u"%1/searchRegex"_s, QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( u"%1/holdDialogOpen"_s, QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingColumnWidths = new QgsSettingsEntryInteger( u"%1/columnWidths/%2"_s, QgsSettingsTree::sTreeWindowState );
 
 QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

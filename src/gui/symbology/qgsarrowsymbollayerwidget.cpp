@@ -53,7 +53,7 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidge
 
 void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "ArrowLine" ) )
+  if ( !layer || layer->layerType() != "ArrowLine"_L1 )
   {
     return;
   }

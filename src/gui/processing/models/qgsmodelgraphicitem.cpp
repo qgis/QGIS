@@ -147,12 +147,12 @@ QgsModelDesignerFoldButtonGraphicItem::QgsModelDesignerFoldButtonGraphicItem( QG
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
   , mFolded( folded )
 {
-  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelerExpand.svg" ) ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mIconModelerExpand.svg"_s ) );
   QPainter painter( &mPlusPicture );
   svg.render( &painter );
   painter.end();
 
-  QSvgRenderer svg2( QgsApplication::iconPath( QStringLiteral( "mIconModelerCollapse.svg" ) ) );
+  QSvgRenderer svg2( QgsApplication::iconPath( u"mIconModelerCollapse.svg"_s ) );
   painter.begin( &mMinusPicture );
   svg2.render( &painter );
   painter.end();

@@ -48,7 +48,7 @@ QString QgsMssqlDatabase::connectionName( const QString &service, const QString 
 
     if ( database.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "QgsMssqlProvider database name not specified" ) );
+      QgsDebugError( u"QgsMssqlProvider database name not specified"_s );
       return QString();
     }
 
@@ -58,7 +58,7 @@ QString QgsMssqlDatabase::connectionName( const QString &service, const QString 
     connName = service;
 
   if ( !transaction )
-    connName += QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    connName += u":0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
   else
     connName += ":transaction";
   return connName;
@@ -83,7 +83,7 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QgsDataSour
   if ( existingConnectionIt != sConnections.constEnd() && !existingConnectionIt->expired() )
     return existingConnectionIt->lock();
 
-  QSqlDatabase db = getDatabase( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), transaction, uri.hasParam( QStringLiteral( "timeout" ) ) ? uri.param( QStringLiteral( "timeout" ) ).toInt() : 0 );
+  QSqlDatabase db = getDatabase( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), transaction, uri.hasParam( u"timeout"_s ) ? uri.param( u"timeout"_s ).toInt() : 0 );
 
   std::shared_ptr<QgsMssqlDatabase> c( new QgsMssqlDatabase( db, uri, transaction ) );
 
@@ -118,7 +118,7 @@ QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, const QgsDataSourceU
 
 bool QgsMssqlDatabase::execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin ) const
 {
-  QgsDatabaseQueryLogWrapper logWrapper { sql, mUri.uri(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), queryOrigin };
+  QgsDatabaseQueryLogWrapper logWrapper { sql, mUri.uri(), u"mssql"_s, u"QgsMssqlProvider"_s, queryOrigin };
   const bool res { qry.exec( sql ) };
   if ( !res )
   {
@@ -171,7 +171,7 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  const QString sql { QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( schema, tableName ) };
+  const QString sql { u"SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')"_s.arg( schema, tableName ) };
 
   // Get computed columns which need to be ignored on insert or update.
   if ( !LoggedExec( query, sql ) )
@@ -200,11 +200,11 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
 
     while ( query.next() )
     {
-      setColumnUnique.insert( query.value( QStringLiteral( "COLUMN_NAME" ) ).toString() );
+      setColumnUnique.insert( query.value( u"COLUMN_NAME"_s ).toString() );
     }
   }
 
-  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = %1, @table_owner = %2" ).arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
+  const QString sql3 { u"exec sp_columns @table_name = %1, @table_owner = %2"_s.arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
   if ( !LoggedExec( query, sql3 ) )
   {
     error = query.lastError().text();
@@ -215,37 +215,37 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
   QStringList pkCandidates;
   while ( query.next() )
   {
-    const QString colName = query.value( QStringLiteral( "COLUMN_NAME" ) ).toString();
-    const QString sqlTypeName = query.value( QStringLiteral( "TYPE_NAME" ) ).toString();
+    const QString colName = query.value( u"COLUMN_NAME"_s ).toString();
+    const QString sqlTypeName = query.value( u"TYPE_NAME"_s ).toString();
     bool columnIsIdentity = false;
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-    if ( ( details.geometryColumnName.isEmpty() && ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) ) )
+    if ( ( details.geometryColumnName.isEmpty() && ( sqlTypeName == "geometry"_L1 || sqlTypeName == "geography"_L1 ) )
          || colName == details.geometryColumnName )
     {
       details.geometryColumnName = colName;
       details.geometryColumnType = sqlTypeName;
-      details.isGeography = sqlTypeName == QLatin1String( "geography" );
+      details.isGeography = sqlTypeName == "geography"_L1;
     }
     else
     {
-      if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
+      if ( sqlTypeName == "int identity"_L1 || sqlTypeName == "bigint identity"_L1 )
       {
         details.primaryKeyType = PrimaryKeyType::Int;
         details.primaryKeyAttrs << details.attributeFields.size();
         columnIsIdentity = true;
         isIdentity = true;
       }
-      else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
+      else if ( sqlTypeName == "int"_L1 || sqlTypeName == "bigint"_L1 )
       {
         pkCandidates << colName;
       }
 
       const int precision = query.value( 6 ).toInt();
       const int length = query.value( 7 ).toInt();
-      const int scale = query.value( QStringLiteral( "SCALE" ) ).toInt();
-      const bool nullable = query.value( QStringLiteral( "NULLABLE" ) ).toBool();
+      const int scale = query.value( u"SCALE"_s ).toInt();
+      const bool nullable = query.value( u"NULLABLE"_s ).toBool();
       const bool unique = setColumnUnique.contains( colName );
       const bool readOnly = columnIsIdentity;
 
@@ -254,15 +254,15 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
       details.attributeFields.append( field );
 
       // Default value
-      if ( !QgsVariantUtils::isNull( query.value( QStringLiteral( "COLUMN_DEF" ) ) ) )
+      if ( !QgsVariantUtils::isNull( query.value( u"COLUMN_DEF"_s ) ) )
       {
-        details.defaultValues.insert( i, query.value( QStringLiteral( "COLUMN_DEF" ) ).toString() );
+        details.defaultValues.insert( i, query.value( u"COLUMN_DEF"_s ).toString() );
       }
       else if ( columnIsIdentity )
       {
         // identity column types don't report a default value clause in the COLUMN_DEF attribute. So we need to fake
         // one, so that we can correctly indicate that the database is responsible for populating this column.
-        details.defaultValues.insert( i, QStringLiteral( "Autogenerate" ) );
+        details.defaultValues.insert( i, u"Autogenerate"_s );
       }
 
       ++i;
@@ -274,10 +274,10 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
   {
     query.clear();
     query.setForwardOnly( true );
-    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = %1, @table_owner = %2 " ).arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
+    const QString sql4 { u"exec sp_pkeys @table_name = %1, @table_owner = %2 "_s.arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
     if ( !LoggedExec( query, sql4 ) )
     {
-      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+      QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
     }
 
     if ( query.isActive() )
@@ -310,11 +310,11 @@ bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema,
     {
       query.clear();
       query.setForwardOnly( true );
-      const QString sql5 { QStringLiteral( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
+      const QString sql5 { u"select count(distinct [%1]), count([%1]) from [%2].[%3]"_s
                              .arg( pk, schema, tableName ) };
       if ( !LoggedExec( query, sql5 ) )
       {
-        QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+        QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
       }
 
       if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
@@ -372,7 +372,7 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
     const int columnOrdinal = dbQuery.value( 1 ).toInt();
     if ( columnOrdinal != fieldIndex )
     {
-      QgsDebugError( QStringLiteral( "sp_describe_first_result_set returned out of order results!" ) );
+      QgsDebugError( u"sp_describe_first_result_set returned out of order results!"_s );
     }
 
     const bool isHidden = dbQuery.value( 0 ).toInt();
@@ -381,7 +381,7 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
 
     QString name = dbQuery.value( 2 ).toString();
     if ( name.isEmpty() )
-      name = QStringLiteral( "__unnamed__%1" ).arg( fieldIndex );
+      name = u"__unnamed__%1"_s.arg( fieldIndex );
     const bool isNullable = dbQuery.value( 3 ).toInt();
     const QString systemTypeName = dbQuery.value( 5 ).toString();
     const int maxLength = dbQuery.value( 6 ).toInt();
@@ -390,7 +390,7 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-    if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == QLatin1String( "geometry" ) || systemTypeName == QLatin1String( "geography" ) ) )
+    if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == "geometry"_L1 || systemTypeName == "geography"_L1 ) )
          || ( !name.isEmpty() && name == details.geometryColumnName ) )
     {
       details.geometryColumnName = name;
@@ -398,12 +398,12 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
 
       // some versions/setups of SQL Server incorrectly report geometry columns as 'image' types in sp_describe_first_result_set results!
       // let's just fix that up here...
-      if ( details.geometryColumnType == QLatin1String( "image" ) )
+      if ( details.geometryColumnType == "image"_L1 )
       {
-        details.geometryColumnType = QStringLiteral( "geometry" );
+        details.geometryColumnType = u"geometry"_s;
       }
 
-      details.isGeography = systemTypeName == QLatin1String( "geography" );
+      details.isGeography = systemTypeName == "geography"_L1;
     }
     else
     {
@@ -431,17 +431,17 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
 
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
-    db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), threadSafeConnectionName );
-    QString connectOptions = QStringLiteral( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" );
+    db = QSqlDatabase::addDatabase( u"QODBC"_s, threadSafeConnectionName );
+    QString connectOptions = u"SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV"_s;
     if ( timeout != 0 )
-      connectOptions += QStringLiteral( ";SQL_ATTR_LOGIN_TIMEOUT=%1;SQL_ATTR_CONNECTION_TIMEOUT=%1" ).arg( timeout );
+      connectOptions += u";SQL_ATTR_LOGIN_TIMEOUT=%1;SQL_ATTR_CONNECTION_TIMEOUT=%1"_s.arg( timeout );
 
     db.setConnectOptions( connectOptions );
 
     // for background threads, remove database when current thread finishes
     if ( QThread::currentThread() != QCoreApplication::instance()->thread() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
+      QgsDebugMsgLevel( u"Scheduled auth db remove on thread close"_s, 2 );
 
       // IMPORTANT - we use a direct connection here, because the database removal must happen immediately
       // when the thread finishes, and we cannot let this get queued on the main thread's event loop.
@@ -475,11 +475,11 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
     QString freeTDSDriver( QCoreApplication::applicationDirPath().append( "/lib/libtdsodbc.so" ) );
     if ( QFile::exists( freeTDSDriver ) )
     {
-      connectionString = QStringLiteral( "driver=%1;port=1433;TDS_Version=auto" ).arg( freeTDSDriver );
+      connectionString = u"driver=%1;port=1433;TDS_Version=auto"_s.arg( freeTDSDriver );
     }
     else
     {
-      connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
+      connectionString = u"driver={FreeTDS};port=1433;TDS_Version=auto"_s;
     }
 #else
     // It seems that FreeTDS driver by default uses an ancient TDS protocol version (4.2) to communicate with MS SQL
@@ -487,7 +487,7 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
     // - truncating data from varchar columns to 255 chars - failing to read WKT for CRS
     // - truncating binary data to 4096 bytes (see @@TEXTSIZE) - failing to parse larger geometries
     // The added "TDS_Version=auto" should negotiate more recent version (manually setting e.g. 7.2 worked fine too)
-    connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
+    connectionString = u"driver={FreeTDS};port=1433;TDS_Version=auto"_s;
 #endif
   }
 
@@ -498,7 +498,7 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
     connectionString += ";database=" + database;
 
   if ( password.isEmpty() )
-    connectionString += QLatin1String( ";trusted_connection=yes" );
+    connectionString += ";trusted_connection=yes"_L1;
   else
     connectionString += ";uid=" + username + ";pwd=" + password;
 

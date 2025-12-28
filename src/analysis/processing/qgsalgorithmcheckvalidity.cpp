@@ -24,7 +24,7 @@
 
 QString QgsCheckValidityAlgorithm::name() const
 {
-  return QStringLiteral( "checkvalidity" );
+  return u"checkvalidity"_s;
 }
 
 QString QgsCheckValidityAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsCheckValidityAlgorithm::group() const
 
 QString QgsCheckValidityAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsCheckValidityAlgorithm::shortHelpString() const
@@ -74,37 +74,37 @@ QgsCheckValidityAlgorithm *QgsCheckValidityAlgorithm::createInstance() const
 
 void QgsCheckValidityAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_LAYER" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_LAYER"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   const QStringList options = QStringList()
                               << QObject::tr( "The one selected in digitizing settings" )
-                              << QStringLiteral( "QGIS" )
-                              << QStringLiteral( "GEOS" );
-  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), options, false, 2 );
+                              << u"QGIS"_s
+                              << u"GEOS"_s;
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Method" ), options, false, 2 );
   QVariantMap methodParamMetadata;
   QVariantMap widgetMetadata;
-  widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
-  widgetMetadata.insert( QStringLiteral( "columns" ), 3 );
-  methodParamMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
+  widgetMetadata.insert( u"useCheckBoxes"_s, true );
+  widgetMetadata.insert( u"columns"_s, 3 );
+  methodParamMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   methodParam->setMetadata( methodParamMetadata );
   addParameter( methodParam.release() );
 
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_RING_SELF_INTERSECTION" ), QObject::tr( "Ignore ring self intersections" ), false ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "VALID_OUTPUT" ), QObject::tr( "Valid output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "INVALID_OUTPUT" ), QObject::tr( "Invalid output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERROR_OUTPUT" ), QObject::tr( "Error output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "VALID_COUNT" ), QObject::tr( "Count of valid features" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "INVALID_COUNT" ), QObject::tr( "Count of invalid features" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "ERROR_COUNT" ), QObject::tr( "Count of errors" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"IGNORE_RING_SELF_INTERSECTION"_s, QObject::tr( "Ignore ring self intersections" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"VALID_OUTPUT"_s, QObject::tr( "Valid output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"INVALID_OUTPUT"_s, QObject::tr( "Invalid output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"ERROR_OUTPUT"_s, QObject::tr( "Error output" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
+  addOutput( new QgsProcessingOutputNumber( u"VALID_COUNT"_s, QObject::tr( "Count of valid features" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"INVALID_COUNT"_s, QObject::tr( "Count of invalid features" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"ERROR_COUNT"_s, QObject::tr( "Count of errors" ) ) );
 }
 
 QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT_LAYER" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT_LAYER"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_LAYER" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_LAYER"_s ) );
 
-  int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  int method = parameterAsEnum( parameters, u"METHOD"_s, context );
   if ( method == 0 )
   {
     const int methodFromSettings = QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() - 1;
@@ -115,22 +115,22 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
     method--;
   }
 
-  const bool ignoreRingSelfIntersection = parameterAsBool( parameters, QStringLiteral( "IGNORE_RING_SELF_INTERSECTION" ), context );
+  const bool ignoreRingSelfIntersection = parameterAsBool( parameters, u"IGNORE_RING_SELF_INTERSECTION"_s, context );
 
   const Qgis::GeometryValidityFlags flags = ignoreRingSelfIntersection ? Qgis::GeometryValidityFlag::AllowSelfTouchingHoles : Qgis::GeometryValidityFlags();
 
   QString validSinkId;
-  std::unique_ptr<QgsFeatureSink> validSink( parameterAsSink( parameters, QStringLiteral( "VALID_OUTPUT" ), context, validSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> validSink( parameterAsSink( parameters, u"VALID_OUTPUT"_s, context, validSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
 
   QgsFields invalidFields = source->fields();
-  invalidFields.append( QgsField( QStringLiteral( "_errors" ), QMetaType::Type::QString, QStringLiteral( "string" ), 255 ) );
+  invalidFields.append( QgsField( u"_errors"_s, QMetaType::Type::QString, u"string"_s, 255 ) );
   QString invalidSinkId;
-  std::unique_ptr<QgsFeatureSink> invalidSink( parameterAsSink( parameters, QStringLiteral( "INVALID_OUTPUT" ), context, invalidSinkId, invalidFields, source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> invalidSink( parameterAsSink( parameters, u"INVALID_OUTPUT"_s, context, invalidSinkId, invalidFields, source->wkbType(), source->sourceCrs() ) );
 
   QgsFields errorFields;
-  errorFields.append( QgsField( QStringLiteral( "message" ), QMetaType::Type::QString, QStringLiteral( "string" ), 255 ) );
+  errorFields.append( QgsField( u"message"_s, QMetaType::Type::QString, u"string"_s, 255 ) );
   QString errorSinkId;
-  std::unique_ptr<QgsFeatureSink> errorSink( parameterAsSink( parameters, QStringLiteral( "ERROR_OUTPUT" ), context, errorSinkId, errorFields, Qgis::WkbType::Point, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> errorSink( parameterAsSink( parameters, u"ERROR_OUTPUT"_s, context, errorSinkId, errorFields, Qgis::WkbType::Point, source->sourceCrs() ) );
 
   int validCount = 0;
   int invalidCount = 0;
@@ -172,7 +172,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
             f.setAttributes( QVector< QVariant >() << error.what() );
             if ( !errorSink->addFeature( f, QgsFeatureSink::FastInsert ) )
             {
-              throw QgsProcessingException( writeFeatureError( errorSink.get(), parameters, QStringLiteral( "ERROR_OUTPUT" ) ) );
+              throw QgsProcessingException( writeFeatureError( errorSink.get(), parameters, u"ERROR_OUTPUT"_s ) );
             }
           }
           errorCount++;
@@ -181,7 +181,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
         QString reason = reasons.join( '\n' );
         if ( reason.size() > 255 )
         {
-          reason = reason.left( 252 ) + QStringLiteral( "…" );
+          reason = reason.left( 252 ) + u"…"_s;
         }
         attrs.append( reason );
       }
@@ -195,7 +195,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
     {
       if ( validSink && !validSink->addFeature( f, QgsFeatureSink::FastInsert ) )
       {
-        throw QgsProcessingException( writeFeatureError( validSink.get(), parameters, QStringLiteral( "VALID_OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( validSink.get(), parameters, u"VALID_OUTPUT"_s ) );
       }
       validCount++;
     }
@@ -203,7 +203,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
     {
       if ( invalidSink && !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
       {
-        throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, QStringLiteral( "INVALID_OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, u"INVALID_OUTPUT"_s ) );
       }
       invalidCount++;
     }
@@ -226,21 +226,21 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "VALID_COUNT" ), validCount );
-  outputs.insert( QStringLiteral( "INVALID_COUNT" ), invalidCount );
-  outputs.insert( QStringLiteral( "ERROR_COUNT" ), errorCount );
+  outputs.insert( u"VALID_COUNT"_s, validCount );
+  outputs.insert( u"INVALID_COUNT"_s, invalidCount );
+  outputs.insert( u"ERROR_COUNT"_s, errorCount );
 
   if ( validSink )
   {
-    outputs.insert( QStringLiteral( "VALID_OUTPUT" ), validSinkId );
+    outputs.insert( u"VALID_OUTPUT"_s, validSinkId );
   }
   if ( invalidSink )
   {
-    outputs.insert( QStringLiteral( "INVALID_OUTPUT" ), invalidSinkId );
+    outputs.insert( u"INVALID_OUTPUT"_s, invalidSinkId );
   }
   if ( errorSink )
   {
-    outputs.insert( QStringLiteral( "ERROR_OUTPUT" ), errorSinkId );
+    outputs.insert( u"ERROR_OUTPUT"_s, errorSinkId );
   }
 
   return outputs;

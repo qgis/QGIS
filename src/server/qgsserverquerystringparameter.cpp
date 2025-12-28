@@ -37,7 +37,7 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
   // 1: check required
   if ( mRequired && !QUrlQuery( context.request()->url() ).hasQueryItem( mName ) )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "Missing required argument: '%1'" ).arg( mName ) );
+    throw QgsServerApiBadRequestException( u"Missing required argument: '%1'"_s.arg( mName ) );
   }
 
   // 2: get value from query string or set it to the default
@@ -88,14 +88,14 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 
       if ( !ok )
       {
-        throw QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' could not be converted to %2" ).arg( mName, typeName( mType ) ) );
+        throw QgsServerApiBadRequestException( u"Argument '%1' could not be converted to %2"_s.arg( mName, typeName( mType ) ) );
       }
     }
 
     // 4: check custom validation
     if ( mCustomValidator && !mCustomValidator( context, value ) )
     {
-      throw QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' is not valid. %2" ).arg( name(), description() ) );
+      throw QgsServerApiBadRequestException( u"Argument '%1' is not valid. %2"_s.arg( name(), description() ) );
     }
   }
   return value;

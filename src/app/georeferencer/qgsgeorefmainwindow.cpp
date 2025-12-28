@@ -72,33 +72,33 @@
 
 #include "moc_qgsgeorefmainwindow.cpp"
 
-const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QStringLiteral( "Last used georeferencer resampling method" ) );
+const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( u"resampling-method"_s, sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, u"Last used georeferencer resampling method"_s );
 
-const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( QStringLiteral( "creation-options" ), sTreeGeoreferencer, QStringList(), QStringLiteral( "Last used georeferencer raster creation options" ) );
+const QgsSettingsEntryStringList *QgsGeoreferencerMainWindow::settingCreationOptions = new QgsSettingsEntryStringList( u"creation-options"_s, sTreeGeoreferencer, QStringList(), u"Last used georeferencer raster creation options"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( QStringLiteral( "use-zero-for-transparent" ), sTreeGeoreferencer, false, QStringLiteral( "Last used georeferencer use-zero-as-transparent option" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingUseZeroForTransparent = new QgsSettingsEntryBool( u"use-zero-for-transparent"_s, sTreeGeoreferencer, false, u"Last used georeferencer use-zero-as-transparent option"_s );
 
-const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( QStringLiteral( "transform-method" ), sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, QStringLiteral( "Last used georeferencer transform method" ) );
+const QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod> *QgsGeoreferencerMainWindow::settingTransformMethod = new QgsSettingsEntryEnumFlag<QgsGcpTransformerInterface::TransformMethod>( u"transform-method"_s, sTreeGeoreferencer, QgsGcpTransformerInterface::TransformMethod::Linear, u"Last used georeferencer transform method"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( QStringLiteral( "save-gcp-points" ), sTreeGeoreferencer, false, QStringLiteral( "Whether georeferencer should automatically save .points files" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSaveGcps = new QgsSettingsEntryBool( u"save-gcp-points"_s, sTreeGeoreferencer, false, u"Whether georeferencer should automatically save .points files"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( QStringLiteral( "load-result-in-project" ), sTreeGeoreferencer, true, QStringLiteral( "Whether georeferencer should automatically load results into the current project" ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingLoadInProject = new QgsSettingsEntryBool( u"load-result-in-project"_s, sTreeGeoreferencer, true, u"Whether georeferencer should automatically load results into the current project"_s );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used folder for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreeGeoreferencer, QString(), u"Last used folder for georeferencer source files"_s );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( QStringLiteral( "last-raster-file-filter" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used raster file filter for georeferencer source files" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastRasterFileFilter = new QgsSettingsEntryString( u"last-raster-file-filter"_s, sTreeGeoreferencer, QString(), u"Last used raster file filter for georeferencer source files"_s );
 
-const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( QStringLiteral( "last-target-crs" ), sTreeGeoreferencer, QString(), QStringLiteral( "Last used georeferencer target CRS" ) );
+const QgsSettingsEntryString *QgsGeoreferencerMainWindow::settingLastTargetCrs = new QgsSettingsEntryString( u"last-target-crs"_s, sTreeGeoreferencer, QString(), u"Last used georeferencer target CRS"_s );
 
-const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( QStringLiteral( "snapping-enabled" ), sTreeGeoreferencer, false, QStringLiteral( "Snapping enabled." ) );
+const QgsSettingsEntryBool *QgsGeoreferencerMainWindow::settingSnappingEnabled = new QgsSettingsEntryBool( u"snapping-enabled"_s, sTreeGeoreferencer, false, u"Snapping enabled."_s );
 
-const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( QStringLiteral( "snapping-types" ), sTreeGeoreferencer, Qgis::SnappingType::Vertex, QStringLiteral( "Snapping types." ) );
+const QgsSettingsEntryEnumFlag<Qgis::SnappingTypes> *QgsGeoreferencerMainWindow::settingSnappingTypes = new QgsSettingsEntryEnumFlag<Qgis::SnappingTypes>( u"snapping-types"_s, sTreeGeoreferencer, Qgis::SnappingType::Vertex, u"Snapping types."_s );
 
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
 {
-  setObjectName( QStringLiteral( "GeorefDockWidget" ) ); // set object name so the position can be saved
+  setObjectName( u"GeorefDockWidget"_s ); // set object name so the position can be saved
 }
 
 QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::WindowFlags fl )
@@ -138,7 +138,7 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
 
-  if ( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() )
+  if ( settings.value( u"/Plugin-GeoReferencer/Config/ShowDocked"_s ).toBool() )
   {
     dockThisWindow( true );
   }
@@ -266,13 +266,13 @@ void QgsGeoreferencerMainWindow::openLayer( Qgis::LayerType layerType, const QSt
           lastUsedFilter = otherFiles;
 
         QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
-        filters.prepend( otherFiles + QStringLiteral( ";;" ) );
+        filters.prepend( otherFiles + u";;"_s );
         filters.chop( otherFiles.size() + 2 );
         mFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
         if ( mFileName.isEmpty() )
           return;
 
-        provider = QStringLiteral( "gdal" );
+        provider = u"gdal"_s;
         uri = mFileName;
         settingLastRasterFileFilter->setValue( lastUsedFilter );
         break;
@@ -289,7 +289,7 @@ void QgsGeoreferencerMainWindow::openLayer( Qgis::LayerType layerType, const QSt
         provider = dlg.uri().providerKey;
 
         const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, uri );
-        mFileName = parts.value( QStringLiteral( "path" ) ).toString().isEmpty() ? uri : parts.value( QStringLiteral( "path" ) ).toString();
+        mFileName = parts.value( u"path"_s ).toString().isEmpty() ? uri : parts.value( u"path"_s ).toString();
 
         break;
       }
@@ -311,10 +311,10 @@ void QgsGeoreferencerMainWindow::openLayer( Qgis::LayerType layerType, const QSt
     switch ( layerType )
     {
       case Qgis::LayerType::Raster:
-        provider = QStringLiteral( "gdal" );
+        provider = u"gdal"_s;
         break;
       case Qgis::LayerType::Vector:
-        provider = QStringLiteral( "ogr" );
+        provider = u"ogr"_s;
         break;
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Mesh:
@@ -335,7 +335,7 @@ void QgsGeoreferencerMainWindow::openLayer( Qgis::LayerType layerType, const QSt
     case Qgis::LayerType::Raster:
       if ( !QgsRasterLayer::isValidRasterFileName( mFileName, errMsg ) )
       {
-        mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mFileName, !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::MessageLevel::Critical );
+        mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mFileName, !errMsg.isEmpty() ? u" (%1)"_s.arg( errMsg ) : QString() ), Qgis::MessageLevel::Critical );
         return;
       }
       break;
@@ -920,8 +920,8 @@ void QgsGeoreferencerMainWindow::saveGCPsDialog()
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
-  if ( mGCPpointsFileName.right( 7 ) != QLatin1String( ".points" ) )
-    mGCPpointsFileName += QLatin1String( ".points" );
+  if ( mGCPpointsFileName.right( 7 ) != ".points"_L1 )
+    mGCPpointsFileName += ".points"_L1;
 
   saveGCPs();
 }
@@ -947,7 +947,7 @@ void QgsGeoreferencerMainWindow::showGeorefConfigDialog()
     QgisApp::instance()->mapCanvas()->refresh();
     QgsSettings s;
     //update dock state
-    bool dock = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool();
+    bool dock = s.value( u"/Plugin-GeoReferencer/Config/ShowDocked"_s ).toBool();
     if ( dock && !mDock )
     {
       dockThisWindow( true );
@@ -1073,7 +1073,7 @@ void QgsGeoreferencerMainWindow::updateMouseCoordinatePrecision()
   // function needs to be called every time one of the above happens.
 
   // Get the display precision from the project s
-  bool automatic = QgsProject::instance()->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
+  bool automatic = QgsProject::instance()->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
   int dp = 0;
 
   if ( automatic )
@@ -1086,7 +1086,7 @@ void QgsGeoreferencerMainWindow::updateMouseCoordinatePrecision()
       dp = static_cast<int>( std::ceil( -1.0 * std::log10( mCanvas->mapUnitsPerPixel() ) ) );
   }
   else
-    dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
+    dp = QgsProject::instance()->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s );
 
   // Keep dp sensible
   if ( dp < 0 )
@@ -1100,77 +1100,77 @@ void QgsGeoreferencerMainWindow::createActions()
   // File actions
   connect( mActionReset, &QAction::triggered, this, &QgsGeoreferencerMainWindow::reset );
 
-  mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
+  mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( u"/mActionAddRasterLayer.svg"_s ) );
   connect( mActionOpenRaster, &QAction::triggered, this, [this] { openLayer( Qgis::LayerType::Raster ); } );
 
   connect( mActionOpenVector, &QAction::triggered, this, [this] { openLayer( Qgis::LayerType::Vector ); } );
 
-  mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionStart.svg" ) ) );
+  mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( u"/mActionStart.svg"_s ) );
   connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::georeference );
 
-  mActionGDALScript->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionGDALScript.svg" ) ) );
+  mActionGDALScript->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionGDALScript.svg"_s ) );
   connect( mActionGDALScript, &QAction::triggered, this, &QgsGeoreferencerMainWindow::generateGDALScript );
 
-  mActionLoadGCPpoints->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionLoadGCPpoints.svg" ) ) );
+  mActionLoadGCPpoints->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionLoadGCPpoints.svg"_s ) );
   connect( mActionLoadGCPpoints, &QAction::triggered, this, &QgsGeoreferencerMainWindow::loadGCPsDialog );
 
-  mActionSaveGCPpoints->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionSaveGCPpointsAs.svg" ) ) );
+  mActionSaveGCPpoints->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionSaveGCPpointsAs.svg"_s ) );
   connect( mActionSaveGCPpoints, &QAction::triggered, this, &QgsGeoreferencerMainWindow::saveGCPsDialog );
 
-  mActionTransformSettings->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+  mActionTransformSettings->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
   connect( mActionTransformSettings, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showTransformSettingsDialog );
 
   // Edit actions
-  mActionAddPoint->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionAddGCPPoint.svg" ) ) );
+  mActionAddPoint->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionAddGCPPoint.svg"_s ) );
   connect( mActionAddPoint, &QAction::triggered, this, &QgsGeoreferencerMainWindow::setAddPointTool );
 
-  mActionDeletePoint->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionDeleteGCPPoint.svg" ) ) );
+  mActionDeletePoint->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionDeleteGCPPoint.svg"_s ) );
   connect( mActionDeletePoint, &QAction::triggered, this, &QgsGeoreferencerMainWindow::setDeletePointTool );
 
-  mActionMoveGCPPoint->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionMoveGCPPoint.svg" ) ) );
+  mActionMoveGCPPoint->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionMoveGCPPoint.svg"_s ) );
   connect( mActionMoveGCPPoint, &QAction::triggered, this, &QgsGeoreferencerMainWindow::setMovePointTool );
 
   // View actions
-  mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
+  mActionPan->setIcon( QgsApplication::getThemeIcon( u"/mActionPan.svg"_s ) );
   connect( mActionPan, &QAction::triggered, this, &QgsGeoreferencerMainWindow::setPanTool );
 
-  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomIn.svg"_s ) );
   connect( mActionZoomIn, &QAction::triggered, this, &QgsGeoreferencerMainWindow::setZoomInTool );
 
-  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
+  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomOut.svg"_s ) );
   connect( mActionZoomOut, &QAction::triggered, this, &QgsGeoreferencerMainWindow::setZoomOutTool );
 
-  mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
+  mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomToLayer.svg"_s ) );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgsGeoreferencerMainWindow::zoomToLayerTool );
 
-  mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
+  mActionZoomLast->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomLast.svg"_s ) );
   connect( mActionZoomLast, &QAction::triggered, this, &QgsGeoreferencerMainWindow::zoomToLast );
 
-  mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
+  mActionZoomNext->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomNext.svg"_s ) );
   connect( mActionZoomNext, &QAction::triggered, this, &QgsGeoreferencerMainWindow::zoomToNext );
 
-  mActionLinkGeorefToQgis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionLinkGeorefToQgis.svg" ) ) );
+  mActionLinkGeorefToQgis->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionLinkGeorefToQgis.svg"_s ) );
   connect( mActionLinkGeorefToQgis, &QAction::toggled, this, &QgsGeoreferencerMainWindow::linkGeorefToQgis );
 
-  mActionLinkQGisToGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionLinkQGisToGeoref.svg" ) ) );
+  mActionLinkQGisToGeoref->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mActionLinkQGisToGeoref.svg"_s ) );
   connect( mActionLinkQGisToGeoref, &QAction::toggled, this, &QgsGeoreferencerMainWindow::linkQGisToGeoref );
 
   // Settings actions
   connect( mActionSourceProperties, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showLayerPropertiesDialog );
 
-  mActionGeorefConfig->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mGeorefRun.svg" ) ) );
+  mActionGeorefConfig->setIcon( QgsApplication::getThemeIcon( u"/georeferencer/mGeorefRun.svg"_s ) );
   connect( mActionGeorefConfig, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showGeorefConfigDialog );
 
   // Histogram stretch
-  mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLocalHistogramStretch.svg" ) ) );
+  mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( u"/mActionLocalHistogramStretch.svg"_s ) );
   connect( mActionLocalHistogramStretch, &QAction::triggered, this, &QgsGeoreferencerMainWindow::localHistogramStretch );
   mActionLocalHistogramStretch->setEnabled( false );
 
-  mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFullHistogramStretch.svg" ) ) );
+  mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( u"/mActionFullHistogramStretch.svg"_s ) );
   connect( mActionFullHistogramStretch, &QAction::triggered, this, &QgsGeoreferencerMainWindow::fullHistogramStretch );
   mActionFullHistogramStretch->setEnabled( false );
 
-  mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( QStringLiteral( "CTRL+Q" ) ) );
+  mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( u"CTRL+Q"_s ) );
   connect( mActionQuit, &QAction::triggered, this, &QWidget::close );
 }
 
@@ -1196,7 +1196,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 {
   // set up the canvas
   mCanvas = new QgsMapCanvas( this->centralWidget() );
-  mCanvas->setObjectName( QStringLiteral( "georefCanvas" ) );
+  mCanvas->setObjectName( u"georefCanvas"_s );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mCanvas->setCanvasColor( Qt::white );
   mCanvas->setMinimumWidth( 400 );
@@ -1227,7 +1227,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mSnappingTypeButton = new QToolButton( this );
   mSnappingTypeButton->setCheckable( true );
   mSnappingTypeButton->setChecked( snappingConfig.enabled() );
-  mSnappingTypeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
+  mSnappingTypeButton->setIcon( QgsApplication::getThemeIcon( u"/mIconSnapping.svg"_s ) );
   mSnappingTypeButton->setToolTip( tr( "Snapping Type" ) );
   mSnappingTypeButton->setPopupMode( QToolButton::MenuButtonPopup );
   SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
@@ -1245,7 +1245,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   }
 
   mSnappingTypeButton->setMenu( typeMenu );
-  mSnappingTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
+  mSnappingTypeButton->setObjectName( u"SnappingTypeButton"_s );
   connect( mSnappingTypeButton, &QToolButton::triggered, this, [this]( QAction *action ) {
     QgsSnappingConfig snappingConfig = mSnappingUtils->config();
     unsigned int type = static_cast<int>( snappingConfig.typeFlag() );
@@ -1324,7 +1324,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   } );
 
   QgsSettings s;
-  double zoomFactor = s.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
+  double zoomFactor = s.value( u"/qgis/zoom_factor"_s, 2 ).toDouble();
   mCanvas->setWheelFactor( zoomFactor );
 
   mExtentsChangedRecursionGuard = false;
@@ -1344,11 +1344,11 @@ void QgsGeoreferencerMainWindow::createMenus()
   QDialogButtonBox::ButtonLayout layout = QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, nullptr, this ) );
 
   mPanelMenu = new QMenu( tr( "Panels" ) );
-  mPanelMenu->setObjectName( QStringLiteral( "mPanelMenu" ) );
+  mPanelMenu->setObjectName( u"mPanelMenu"_s );
   mPanelMenu->addAction( dockWidgetGCPpoints->toggleViewAction() );
 
   mToolbarMenu = new QMenu( tr( "Toolbars" ) );
-  mToolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
+  mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
   mToolbarMenu->addAction( toolBarFile->toggleViewAction() );
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );
@@ -1416,13 +1416,13 @@ void QgsGeoreferencerMainWindow::createStatusBar()
 
   // add a widget to show/set current rotation
   mRotationLabel = createBaseLabelStatus();
-  mRotationLabel->setObjectName( QStringLiteral( "mRotationLabel" ) );
+  mRotationLabel->setObjectName( u"mRotationLabel"_s );
   mRotationLabel->setText( tr( "Rotation" ) );
   mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationLabel, 0 );
 
   mRotationEdit = new QgsDoubleSpinBox( statusBar() );
-  mRotationEdit->setObjectName( QStringLiteral( "mRotationEdit" ) );
+  mRotationEdit->setObjectName( u"mRotationEdit"_s );
   mRotationEdit->setClearValue( 0.0 );
   mRotationEdit->setKeyboardTracking( false );
   mRotationEdit->setMaximumWidth( 120 );
@@ -1446,7 +1446,7 @@ void QgsGeoreferencerMainWindow::createStatusBar()
   statusBar()->addPermanentWidget( mCoordsLabel, 0 );
 
   mEPSG = createBaseLabelStatus();
-  mEPSG->setText( QStringLiteral( "EPSG:" ) );
+  mEPSG->setText( u"EPSG:"_s );
   statusBar()->addPermanentWidget( mEPSG, 0 );
 }
 
@@ -1483,7 +1483,7 @@ void QgsGeoreferencerMainWindow::loadSource( Qgis::LayerType layerType, const QS
       QgsVectorLayer::LayerOptions options( QgsProject::instance()->transformContext() );
       // never prompt for a crs selection for the input layer!
       options.skipCrsValidation = true;
-      mLayer = std::make_unique<QgsVectorLayer>( uri, QStringLiteral( "Vector" ), provider, options );
+      mLayer = std::make_unique<QgsVectorLayer>( uri, u"Vector"_s, provider, options );
       break;
     }
 
@@ -1492,7 +1492,7 @@ void QgsGeoreferencerMainWindow::loadSource( Qgis::LayerType layerType, const QS
       QgsRasterLayer::LayerOptions options( true, QgsProject::instance()->transformContext() );
       // never prompt for a crs selection for the input raster!
       options.skipCrsValidation = true;
-      mLayer = std::make_unique<QgsRasterLayer>( uri, QStringLiteral( "Raster" ), provider, options );
+      mLayer = std::make_unique<QgsRasterLayer>( uri, u"Raster"_s, provider, options );
       break;
     }
 
@@ -1560,7 +1560,7 @@ void QgsGeoreferencerMainWindow::loadSource( Qgis::LayerType layerType, const QS
 void QgsGeoreferencerMainWindow::readSettings()
 {
   QgsSettings s;
-  restoreState( s.value( QStringLiteral( "/Plugin-GeoReferencer/uistate" ) ).toByteArray() );
+  restoreState( s.value( u"/Plugin-GeoReferencer/uistate"_s ).toByteArray() );
 
   // warp options
   mResamplingMethod = settingResamplingMethod->value();
@@ -1575,7 +1575,7 @@ void QgsGeoreferencerMainWindow::readSettings()
 void QgsGeoreferencerMainWindow::writeSettings()
 {
   QgsSettings s;
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
+  s.setValue( u"/Plugin-GeoReferencer/uistate"_s, saveState() );
 
   settingTransformMethod->setValue( mTransformMethod );
   settingResamplingMethod->setValue( mResamplingMethod );
@@ -1686,7 +1686,7 @@ bool QgsGeoreferencerMainWindow::georeference()
       return false;
     }
 
-    postProcessGeoreferencedLayer( mFileName, Qgis::LayerType::Raster, QStringLiteral( "gdal" ) );
+    postProcessGeoreferencedLayer( mFileName, Qgis::LayerType::Raster, u"gdal"_s );
 
     return true;
   }
@@ -1742,7 +1742,7 @@ bool QgsGeoreferencerMainWindow::georeferenceRaster()
   QEventLoop loop;
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this] {
-    postProcessGeoreferencedLayer( mCreateWorldFileOnly ? mFileName : mModifiedFileName, Qgis::LayerType::Raster, QStringLiteral( "gdal" ) );
+    postProcessGeoreferencedLayer( mCreateWorldFileOnly ? mFileName : mModifiedFileName, Qgis::LayerType::Raster, u"gdal"_s );
 
     loop.quit();
   } );
@@ -1802,7 +1802,7 @@ bool QgsGeoreferencerMainWindow::georeferenceVector()
   QEventLoop loop;
   bool result = true;
   connect( task, &QgsTask::taskCompleted, &loop, [&loop, this] {
-    postProcessGeoreferencedLayer( mModifiedFileName, Qgis::LayerType::Vector, QStringLiteral( "ogr" ) );
+    postProcessGeoreferencedLayer( mModifiedFileName, Qgis::LayerType::Vector, u"ogr"_s );
     loop.quit();
   } );
 
@@ -1833,7 +1833,7 @@ void QgsGeoreferencerMainWindow::postProcessGeoreferencedLayer( const QString &l
 
   if ( mSaveGcp )
   {
-    mGCPpointsFileName = mFileName + QLatin1String( ".points" );
+    mGCPpointsFileName = mFileName + ".points"_L1;
     saveGCPs();
   }
 
@@ -1958,8 +1958,8 @@ bool QgsGeoreferencerMainWindow::writePDFMapFile( const QString &fileName, const
   double mapRatio = rlayer->extent().width() / rlayer->extent().height();
 
   QgsSettings s;
-  double paperWidth = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), "297" ).toDouble();
-  double paperHeight = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), "420" ).toDouble();
+  double paperWidth = s.value( u"/Plugin-GeoReferencer/Config/WidthPDFMap"_s, "297" ).toDouble();
+  double paperHeight = s.value( u"/Plugin-GeoReferencer/Config/HeightPDFMap"_s, "420" ).toDouble();
 
   //create layout
   QgsLayout layout( QgsProject::instance() );
@@ -1995,7 +1995,7 @@ bool QgsGeoreferencerMainWindow::writePDFMapFile( const QString &fileName, const
   layout.addLayoutItem( layoutMap );
 
   QString residualUnits;
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
+  if ( s.value( u"/Plugin-GeoReferencer/Config/ResidualUnits"_s ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
   {
     residualUnits = tr( "map units" );
   }
@@ -2053,8 +2053,8 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QgsTextFormat tableContentFormat = QgsTextFormat::fromQFont( tableContentFont );
 
   QgsSettings s;
-  double leftMargin = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/LeftMarginPDF" ), "2.0" ).toDouble();
-  double rightMargin = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/RightMarginPDF" ), "2.0" ).toDouble();
+  double leftMargin = s.value( u"/Plugin-GeoReferencer/Config/LeftMarginPDF"_s, "2.0" ).toDouble();
+  double rightMargin = s.value( u"/Plugin-GeoReferencer/Config/RightMarginPDF"_s, "2.0" ).toDouble();
   double contentWidth = 210 - ( leftMargin + rightMargin );
 
   //title
@@ -2105,7 +2105,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
 
   QString residualUnits;
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
+  if ( s.value( u"/Plugin-GeoReferencer/Config/ResidualUnits"_s ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
   {
     residualUnits = tr( "map units" );
   }
@@ -2124,7 +2124,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   {
     parameterTitle = tr( "Transformation parameter" );
   }
-  parameterTitle += QStringLiteral( " (" ) + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
+  parameterTitle += u" ("_s + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + u")"_s;
   parameterLabel = new QgsLayoutItemLabel( &layout );
   parameterLabel->setTextFormat( titleFormat );
   parameterLabel->setText( parameterTitle );
@@ -2295,7 +2295,7 @@ void QgsGeoreferencerMainWindow::showGDALScript( const QStringList &commands )
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  QPushButton *pbnCopyInClipBoard = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ), tr( "Copy to Clipboard" ), bbxGdalScript );
+  QPushButton *pbnCopyInClipBoard = new QPushButton( QgsApplication::getThemeIcon( u"/mActionEditPaste.svg"_s ), tr( "Copy to Clipboard" ), bbxGdalScript );
   bbxGdalScript->addButton( pbnCopyInClipBoard, QDialogButtonBox::AcceptRole );
 
   QPlainTextEdit *pteScript = new QPlainTextEdit();
@@ -2323,11 +2323,11 @@ void QgsGeoreferencerMainWindow::showGDALScript( const QStringList &commands )
 QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateTFW )
 {
   QStringList gdalCommand;
-  gdalCommand << QStringLiteral( "gdal_translate" ) << QStringLiteral( "-of GTiff" );
+  gdalCommand << u"gdal_translate"_s << u"-of GTiff"_s;
   if ( generateTFW )
   {
     // say gdal generate associated ESRI world file
-    gdalCommand << QStringLiteral( "-co TFW=YES" );
+    gdalCommand << u"-co TFW=YES"_s;
   }
 
   const int precision = QgsCoordinateUtils::calculateCoordinatePrecision( mTargetCrs );
@@ -2335,12 +2335,12 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   {
     const QgsPointXY pixel = mGeorefTransform.toSourcePixel( pt->sourcePoint() );
     const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( qgsDoubleToString( pixel.x(), 3 ), qgsDoubleToString( -pixel.y(), 3 ), qgsDoubleToString( transformedDestinationPoint.x(), precision ), qgsDoubleToString( transformedDestinationPoint.y(), precision ) );
+    gdalCommand << u"-gcp %1 %2 %3 %4"_s.arg( qgsDoubleToString( pixel.x(), 3 ), qgsDoubleToString( -pixel.y(), 3 ), qgsDoubleToString( transformedDestinationPoint.x(), precision ), qgsDoubleToString( transformedDestinationPoint.y(), precision ) );
   }
 
   QFileInfo rasterFileInfo( mFileName );
   mTranslatedFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
-  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mFileName ) << QStringLiteral( "\"%1\"" ).arg( mTranslatedFileName );
+  gdalCommand << u"\"%1\""_s.arg( mFileName ) << u"\"%1\""_s.arg( mTranslatedFileName );
 
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
@@ -2348,7 +2348,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
 QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
 {
   QStringList gdalCommand;
-  gdalCommand << QStringLiteral( "ogr2ogr" );
+  gdalCommand << u"ogr2ogr"_s;
 
   const int sourcePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLayer->crs() );
   const int destPrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mTargetCrs );
@@ -2356,37 +2356,37 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
   for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     const QgsPointXY dest = pt->transformedDestinationPoint( mTargetCrs, QgsProject::instance()->transformContext() );
-    gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( qgsDoubleToString( pt->sourcePoint().x(), sourcePrecision ), qgsDoubleToString( pt->sourcePoint().y(), sourcePrecision ), qgsDoubleToString( dest.x(), destPrecision ), qgsDoubleToString( dest.y(), destPrecision ) );
+    gdalCommand << u"-gcp %1 %2 %3 %4"_s.arg( qgsDoubleToString( pt->sourcePoint().x(), sourcePrecision ), qgsDoubleToString( pt->sourcePoint().y(), sourcePrecision ), qgsDoubleToString( dest.x(), destPrecision ), qgsDoubleToString( dest.y(), destPrecision ) );
   }
 
   switch ( mTransformMethod )
   {
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
-      gdalCommand << QStringLiteral( "-order 1" );
+      gdalCommand << u"-order 1"_s;
       break;
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
-      gdalCommand << QStringLiteral( "-order 2" );
+      gdalCommand << u"-order 2"_s;
       break;
     case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
-      gdalCommand << QStringLiteral( "-order 3" );
+      gdalCommand << u"-order 3"_s;
       break;
     default:
-      gdalCommand << QStringLiteral( "-tps" );
+      gdalCommand << u"-tps"_s;
   }
 
-  if ( mTargetCrs.authid().startsWith( QStringLiteral( "EPSG:" ), Qt::CaseInsensitive ) )
+  if ( mTargetCrs.authid().startsWith( u"EPSG:"_s, Qt::CaseInsensitive ) )
   {
-    gdalCommand << QStringLiteral( "-t_srs %1" ).arg( mTargetCrs.authid() );
+    gdalCommand << u"-t_srs %1"_s.arg( mTargetCrs.authid() );
   }
   else
   {
-    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mTargetCrs.toProj().simplified() );
+    gdalCommand << u"-t_srs \"%1\""_s.arg( mTargetCrs.toProj().simplified() );
   }
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mLayer->providerType(), mLayer->source() );
-  const QString sourcePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QString sourcePath = parts.value( u"path"_s ).toString();
 
-  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mModifiedFileName ) << QStringLiteral( "\"%1\"" ).arg( sourcePath );
+  gdalCommand << u"\"%1\""_s.arg( mModifiedFileName ) << u"\"%1\""_s.arg( sourcePath );
 
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
@@ -2394,40 +2394,40 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
 QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
   QStringList gdalCommand;
-  gdalCommand << QStringLiteral( "gdalwarp" ) << QStringLiteral( "-r" ) << resampling;
+  gdalCommand << u"gdalwarp"_s << u"-r"_s << resampling;
 
   if ( order > 0 && order <= 3 )
   {
     // Let gdalwarp use polynomial warp with the given degree
-    gdalCommand << QStringLiteral( "-order" ) << QString::number( order );
+    gdalCommand << u"-order"_s << QString::number( order );
   }
   else
   {
     // Otherwise, use thin plate spline interpolation
-    gdalCommand << QStringLiteral( "-tps" );
+    gdalCommand << u"-tps"_s;
   }
 
   for ( const QString &option : options )
   {
-    gdalCommand << QStringLiteral( "-co %1" ).arg( option );
+    gdalCommand << u"-co %1"_s.arg( option );
   }
   gdalCommand << ( useZeroForTrans ? "-dstalpha" : "" );
 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {
-    gdalCommand << QStringLiteral( "-tr" ) << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
+    gdalCommand << u"-tr"_s << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
   }
 
-  if ( mTargetCrs.authid().startsWith( QStringLiteral( "EPSG:" ), Qt::CaseInsensitive ) )
+  if ( mTargetCrs.authid().startsWith( u"EPSG:"_s, Qt::CaseInsensitive ) )
   {
-    gdalCommand << QStringLiteral( "-t_srs %1" ).arg( mTargetCrs.authid() );
+    gdalCommand << u"-t_srs %1"_s.arg( mTargetCrs.authid() );
   }
   else
   {
-    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mTargetCrs.toProj().simplified() );
+    gdalCommand << u"-t_srs \"%1\""_s.arg( mTargetCrs.toProj().simplified() );
   }
 
-  gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedFileName );
+  gdalCommand << u"\"%1\""_s.arg( mTranslatedFileName ) << u"\"%1\""_s.arg( mModifiedFileName );
 
   return gdalCommand.join( QLatin1Char( ' ' ) );
 }
@@ -2540,15 +2540,15 @@ QString QgsGeoreferencerMainWindow::convertResamplingEnumToString( QgsImageWarpe
   switch ( resampling )
   {
     case QgsImageWarper::ResamplingMethod::NearestNeighbour:
-      return QStringLiteral( "near" );
+      return u"near"_s;
     case QgsImageWarper::ResamplingMethod::Bilinear:
-      return QStringLiteral( "bilinear" );
+      return u"bilinear"_s;
     case QgsImageWarper::ResamplingMethod::Cubic:
-      return QStringLiteral( "cubic" );
+      return u"cubic"_s;
     case QgsImageWarper::ResamplingMethod::CubicSpline:
-      return QStringLiteral( "cubicspline" );
+      return u"cubicspline"_s;
     case QgsImageWarper::ResamplingMethod::Lanczos:
-      return QStringLiteral( "lanczos" );
+      return u"lanczos"_s;
   }
   BUILTIN_UNREACHABLE
 }

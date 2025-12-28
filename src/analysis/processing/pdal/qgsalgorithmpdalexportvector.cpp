@@ -24,7 +24,7 @@
 
 QString QgsPdalExportVectorAlgorithm::name() const
 {
-  return QStringLiteral( "exportvector" );
+  return u"exportvector"_s;
 }
 
 QString QgsPdalExportVectorAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalExportVectorAlgorithm::group() const
 
 QString QgsPdalExportVectorAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointcloudconversion" );
+  return u"pointcloudconversion"_s;
 }
 
 QStringList QgsPdalExportVectorAlgorithm::tags() const
@@ -64,35 +64,35 @@ QgsPdalExportVectorAlgorithm *QgsPdalExportVectorAlgorithm::createInstance() con
 
 void QgsPdalExportVectorAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterPointCloudAttribute( QStringLiteral( "ATTRIBUTE" ), QObject::tr( "Attribute" ), QVariant(), QStringLiteral( "INPUT" ), true, true ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudAttribute( u"ATTRIBUTE"_s, QObject::tr( "Attribute" ), QVariant(), u"INPUT"_s, true, true ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Exported" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterVectorDestination( u"OUTPUT"_s, QObject::tr( "Exported" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QStringList QgsPdalExportVectorAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
   QStringList args = {
-    QStringLiteral( "to_vector" ),
-    QStringLiteral( "--input=%1" ).arg( layer->source() ),
-    QStringLiteral( "--output=%1" ).arg( outputFile ),
+    u"to_vector"_s,
+    u"--input=%1"_s.arg( layer->source() ),
+    u"--output=%1"_s.arg( outputFile ),
   };
 
-  if ( parameters.value( QStringLiteral( "ATTRIBUTE" ) ).isValid() )
+  if ( parameters.value( u"ATTRIBUTE"_s ).isValid() )
   {
-    const QStringList attributes = parameterAsStrings( parameters, QStringLiteral( "ATTRIBUTE" ), context );
+    const QStringList attributes = parameterAsStrings( parameters, u"ATTRIBUTE"_s, context );
     for ( const QString &attr : attributes )
     {
-      args << QStringLiteral( "--attribute=%1" ).arg( attr );
+      args << u"--attribute=%1"_s.arg( attr );
     }
   }
 

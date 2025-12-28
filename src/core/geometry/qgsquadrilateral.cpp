@@ -423,9 +423,9 @@ QString QgsQuadrilateral::toString( int pointPrecision ) const
 {
   QString rep;
   if ( !isValid() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Quadrilateral (Point 1: %1, Point 2: %2, Point 3: %3, Point 4: %4)" )
+    rep = u"Quadrilateral (Point 1: %1, Point 2: %2, Point 3: %3, Point 4: %4)"_s
           .arg( mPoint1.asWkt( pointPrecision ), 0, 's' )
           .arg( mPoint2.asWkt( pointPrecision ), 0, 's' )
           .arg( mPoint3.asWkt( pointPrecision ), 0, 's' )

@@ -74,7 +74,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     mFormatComboBox->addItem( getTranslatedNameForFormat( format ), static_cast<int>( format ) );
 
   QgsSettings settings;
-  const int defaultFormat = settings.value( QStringLiteral( "UI/lastPointCloudFormat" ), 0 ).toInt();
+  const int defaultFormat = settings.value( u"UI/lastPointCloudFormat"_s, 0 ).toInt();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( defaultFormat ) );
   mFormatComboBox->blockSignals( false );
   mFormatComboBox_currentIndexChanged( 0 );
@@ -93,7 +93,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     for ( int i = 0; i < attributes.count(); ++i )
     {
       const QString attribute = attributes.at( i ).name();
-      if ( attribute.compare( QLatin1String( "X" ), Qt::CaseInsensitive ) && attribute.compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) && attribute.compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) )
+      if ( attribute.compare( 'X'_L1, Qt::CaseInsensitive ) && attribute.compare( 'Y'_L1, Qt::CaseInsensitive ) && attribute.compare( 'Z'_L1, Qt::CaseInsensitive ) )
       {
         availableAttributes.append( attribute );
       }
@@ -130,9 +130,9 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mMaximumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
   if ( mLayer )
   {
-    mMinimumZSpinBox->setValue( mLayer->statistics().minimum( QStringLiteral( "Z" ) ) );
+    mMinimumZSpinBox->setValue( mLayer->statistics().minimum( u"Z"_s ) );
     mMinimumZSpinBox->setClearValue( mMinimumZSpinBox->value() );
-    mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
+    mMaximumZSpinBox->setValue( mLayer->statistics().maximum( u"Z"_s ) );
     mMaximumZSpinBox->setClearValue( mMaximumZSpinBox->value() );
   }
 
@@ -144,7 +144,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
-  mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QDir::homePath() ).toString() );
+  mFilename->setDefaultRoot( settings.value( u"UI/lastPointCloudFileFilterDir"_s, QDir::homePath() ).toString() );
   mFilename->setConfirmOverwrite( false );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
@@ -152,7 +152,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
       mLastUsedFilename = filePath;
 
     const QFileInfo fileInfo( filePath );
-    settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), fileInfo.absolutePath() );
+    settings.setValue( u"UI/lastPointCloudFileFilterDir"_s, fileInfo.absolutePath() );
     const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
     if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
     {
@@ -290,8 +290,8 @@ void QgsPointCloudLayerSaveAsDialog::accept()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
-  settings.setValue( QStringLiteral( "UI/lastPointCloudFormat" ), static_cast<int>( exportFormat() ) );
+  settings.setValue( u"UI/lastPointCloudFileFilterDir"_s, QFileInfo( filename() ).absolutePath() );
+  settings.setValue( u"UI/lastPointCloudFormat"_s, static_cast<int>( exportFormat() ) );
   QDialog::accept();
 }
 
@@ -369,7 +369,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
       if ( !ext.isEmpty() )
       {
         QFileInfo fi( mLastUsedFilename );
-        mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path(), fi.baseName(), ext ) );
+        mFilename->setFilePath( u"%1/%2.%3"_s.arg( fi.path(), fi.baseName(), ext ) );
       }
     }
   }
@@ -554,7 +554,7 @@ void QgsPointCloudLayerSaveAsDialog::mDeselectAllAttributes_clicked()
 
 void QgsPointCloudLayerSaveAsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer"_s );
 }
 
 QString QgsPointCloudLayerSaveAsDialog::getFilterForFormat( QgsPointCloudLayerExporter::ExportFormat format )
@@ -562,15 +562,15 @@ QString QgsPointCloudLayerSaveAsDialog::getFilterForFormat( QgsPointCloudLayerEx
   switch ( format )
   {
     case QgsPointCloudLayerExporter::ExportFormat::Las:
-      return QStringLiteral( "LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)" );
+      return u"LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
-      return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
+      return u"GeoPackage (*.gpkg *.GPKG)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Dxf:
-      return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
+      return u"AutoCAD DXF (*.dxf *.dxf)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
-      return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
+      return u"ESRI Shapefile (*.shp *.SHP)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Csv:
-      return QStringLiteral( "Comma separated values (*.csv *.CSV)" );
+      return u"Comma separated values (*.csv *.CSV)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Memory:
       break;
   }

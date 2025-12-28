@@ -63,7 +63,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   QgsVectorLayer::LayerOptions layerOptions;
   layerOptions.skipCrsValidation = true;
   layerOptions.loadDefaultStyle = false;
-  mExtraSnapLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=" ), QStringLiteral( "extra snap" ), QStringLiteral( "memory" ), layerOptions );
+  mExtraSnapLayer = new QgsVectorLayer( u"LineString?crs="_s, u"extra snap"_s, u"memory"_s, layerOptions );
   mExtraSnapLayer->startEditing();
   QgsFeature f;
   mExtraSnapLayer->addFeature( f );
@@ -595,7 +595,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
+      QgsDebugError( u"transformation to layer coordinate failed"_s );
       return 2;
     }
   }
@@ -686,7 +686,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 {
   if ( mode() == CaptureNone )
   {
-    QgsDebugError( QStringLiteral( "invalid capture mode" ) );
+    QgsDebugError( u"invalid capture mode"_s );
     return 2;
   }
 
@@ -1095,7 +1095,7 @@ void QgsMapToolCapture::validateGeometry()
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   mValidator->start();
-  QgsDebugMsgLevel( QStringLiteral( "Validation started" ), 4 );
+  QgsDebugMsgLevel( u"Validation started"_s, 4 );
 }
 
 void QgsMapToolCapture::addError( const QgsGeometry::Error &e )

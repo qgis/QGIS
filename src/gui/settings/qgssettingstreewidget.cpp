@@ -29,7 +29,7 @@ QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QWidget( parent )
   , QgsOptionsDialogHighlightWidget( this )
 {
-  setObjectName( QStringLiteral( "mSettingsTreeWidget" ) );
+  setObjectName( u"mSettingsTreeWidget"_s );
 
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
   mainLayout->setContentsMargins( 0, 0, 0, 0 );

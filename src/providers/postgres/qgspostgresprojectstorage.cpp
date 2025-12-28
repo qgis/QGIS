@@ -59,7 +59,7 @@ QStringList QgsPostgresProjectStorage::listProjects( const QString &uri )
 
   if ( QgsPostgresUtils::projectsTableExists( conn, projectUri.schemaName ) )
   {
-    QString sql( QStringLiteral( "SELECT name FROM %1.qgis_projects" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ) ) );
+    QString sql( u"SELECT name FROM %1.qgis_projects"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ) ) );
     QgsPostgresResult result( conn->PQexec( sql ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
@@ -102,7 +102,7 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
   }
 
   bool ok = false;
-  QString sql( QStringLiteral( "SELECT content FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
+  QString sql( u"SELECT content FROM %1.qgis_projects WHERE name = %2"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {
@@ -157,7 +157,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  QString metadataExpr = QStringLiteral( "(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb" ).arg( QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsPostgresConn::quotedValue( "\" }" ) );
+  QString metadataExpr = u"(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb"_s.arg( QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsPostgresConn::quotedValue( "\" }" ) );
 
   // TODO: would be useful to have QByteArray version of PQexec() to avoid bytearray -> string -> bytearray conversion
   // insert explicitly into name, metadata, content so adding a 'comment' column doesn't break older INSERTs
@@ -195,7 +195,7 @@ bool QgsPostgresProjectStorage::removeProject( const QString &uri )
   bool removed = false;
   if ( QgsPostgresUtils::projectsTableExists( conn, projectUri.schemaName ) )
   {
-    QString sql( QStringLiteral( "DELETE FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
+    QString sql( u"DELETE FROM %1.qgis_projects WHERE name = %2"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
     QgsPostgresResult res( conn->PQexec( sql ) );
     removed = res.PQresultStatus() == PGRES_COMMAND_OK;
   }
@@ -217,7 +217,7 @@ bool QgsPostgresProjectStorage::readProjectStorageMetadata( const QString &uri, 
     return false;
 
   bool ok = false;
-  QString sql( QStringLiteral( "SELECT metadata FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
+  QString sql( u"SELECT metadata FROM %1.qgis_projects WHERE name = %2"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {

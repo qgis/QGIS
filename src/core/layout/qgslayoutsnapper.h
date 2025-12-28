@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      */
     QgsLayoutSnapper( QgsLayout *layout );
 
-    QString stringType() const override { return QStringLiteral( "LayoutSnapper" ); }
+    QString stringType() const override { return u"LayoutSnapper"_s; }
     QgsLayout *layout() override;
 
     /**

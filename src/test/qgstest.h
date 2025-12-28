@@ -121,10 +121,10 @@
   ( void ) ( 0 )
 
 //sometimes GML attributes are in a different order - but that's ok
-#define QGSCOMPAREGML( result, expected )                                                                               \
-  {                                                                                                                     \
-    QCOMPARE( result.replace( QLatin1String( "ts=\" \" cs=\",\"" ), QLatin1String( "cs=\",\" ts=\" \"" ) ), expected ); \
-  }                                                                                                                     \
+#define QGSCOMPAREGML( result, expected )                                                   \
+  {                                                                                         \
+    QCOMPARE( result.replace( "ts=\" \" cs=\",\""_L1, "cs=\",\" ts=\" \""_L1 ), expected ); \
+  }                                                                                         \
   ( void ) ( 0 )
 
 // Start your PostgreSQL-backend connection requiring test with this macro
@@ -165,12 +165,12 @@ class TEST_EXPORT QgsTest : public QObject
     //! Returns TRUE if test is running on a CI infrastructure
     static bool isCIRun()
     {
-      return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" );
+      return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s;
     }
 
     static bool runFlakyTests()
     {
-      return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
+      return qgetenv( "RUN_FLAKY_TESTS" ) == u"true"_s;
     }
 
     QgsTest( const QString &name, const QString &controlPathPrefix = QString() )
@@ -211,7 +211,7 @@ class TEST_EXPORT QgsTest : public QObject
       // we put all copies into a subdirectory of the temporary dir, so that we isolate clean copies
       // of the same source file used by different test functions
       mTemporaryCopyCount++;
-      const QString temporarySubdirectory = QStringLiteral( "test_%1" ).arg( mTemporaryCopyCount );
+      const QString temporarySubdirectory = u"test_%1"_s.arg( mTemporaryCopyCount );
       QDir().mkdir( mTemporaryDir->filePath( temporarySubdirectory ) );
 
       const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
@@ -267,7 +267,7 @@ class TEST_EXPORT QgsTest : public QObject
       // we put all copies into a subdirectory of the temporary dir, so that we isolate clean copies
       // of the same source file used by different test functions
       mTemporaryCopyCount++;
-      const QString temporarySubdirectory = QStringLiteral( "test_%1" ).arg( mTemporaryCopyCount );
+      const QString temporarySubdirectory = u"test_%1"_s.arg( mTemporaryCopyCount );
       QDir().mkdir( mTemporaryDir->filePath( temporarySubdirectory ) );
 
       const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
@@ -445,21 +445,21 @@ class TEST_EXPORT QgsTest : public QObject
     {
       QString testIdentifier;
       if ( QTest::currentDataTag() )
-        testIdentifier = QStringLiteral( "%1 (%2: %3)" ).arg( testName, QTest::currentTestFunction(), QTest::currentDataTag() );
+        testIdentifier = u"%1 (%2: %3)"_s.arg( testName, QTest::currentTestFunction(), QTest::currentDataTag() );
       else
-        testIdentifier = QStringLiteral( "%1 (%2)" ).arg( testName, QTest::currentTestFunction() );
+        testIdentifier = u"%1 (%2)"_s.arg( testName, QTest::currentTestFunction() );
 
       if ( !html.isEmpty() )
       {
-        mReport += QStringLiteral( "<h2>%1</h2>\n" ).arg( testIdentifier );
+        mReport += u"<h2>%1</h2>\n"_s.arg( testIdentifier );
         mReport += html;
       }
 
       const QString markdownContent = markdown.isEmpty() ? html : markdown;
       if ( !markdownContent.isEmpty() )
       {
-        mMarkdownReport += QStringLiteral( "## %1\n\n" ).arg( testIdentifier );
-        mMarkdownReport += markdownContent + QStringLiteral( "\n\n" );
+        mMarkdownReport += u"## %1\n\n"_s.arg( testIdentifier );
+        mMarkdownReport += markdownContent + u"\n\n"_s;
       }
     }
 
@@ -481,8 +481,8 @@ class TEST_EXPORT QgsTest : public QObject
 
       QFile::OpenMode mode = QIODevice::WriteOnly;
       bool fileIsEmpty = true;
-      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" )
-           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == QStringLiteral( "true" ) )
+      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s
+           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == u"true"_s )
       {
         mode |= QIODevice::Append;
         if ( file.open( QIODevice::ReadOnly ) )
@@ -508,21 +508,21 @@ class TEST_EXPORT QgsTest : public QObject
           }
 
           // embed render checker script so that we can run the HTML report from anywhere
-          stream << QStringLiteral( "<script>" );
+          stream << u"<script>"_s;
           QFile renderCheckerScript( QStringLiteral( TEST_DATA_DIR ) + "/../renderchecker.js" );
           if ( renderCheckerScript.open( QIODevice::ReadOnly ) )
           {
             stream << renderCheckerScript.readAll();
           }
-          stream << QStringLiteral( "</script>" );
+          stream << u"</script>"_s;
         }
 
-        stream << QStringLiteral( "<h1>%1</h1>\n" ).arg( mName );
+        stream << u"<h1>%1</h1>\n"_s.arg( mName );
         stream << report;
         file.close();
 
         if ( !isCIRun() )
-          QDesktopServices::openUrl( QStringLiteral( "file:///%1" ).arg( reportFile ) );
+          QDesktopServices::openUrl( u"file:///%1"_s.arg( reportFile ) );
       }
     }
 
@@ -539,8 +539,8 @@ class TEST_EXPORT QgsTest : public QObject
       QFile file( reportFile );
 
       QFile::OpenMode mode = QIODevice::WriteOnly;
-      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" )
-           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == QStringLiteral( "true" ) )
+      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s
+           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == u"true"_s )
         mode |= QIODevice::Append;
       else
         mode |= QIODevice::Truncate;
@@ -664,12 +664,12 @@ char *toString( const QgsCircle &geom )
 
 char *toString( const QgsDateTimeRange &range )
 {
-  return QTest::toString( QStringLiteral( "<QgsDateTimeRange: %1%2, %3%4>" ).arg( range.includeBeginning() ? QStringLiteral( "[" ) : QStringLiteral( "(" ), range.begin().toString( Qt::ISODateWithMs ), range.end().toString( Qt::ISODateWithMs ), range.includeEnd() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) ) );
+  return QTest::toString( u"<QgsDateTimeRange: %1%2, %3%4>"_s.arg( range.includeBeginning() ? u"["_s : u"("_s, range.begin().toString( Qt::ISODateWithMs ), range.end().toString( Qt::ISODateWithMs ), range.includeEnd() ? u"]"_s : u")"_s ) );
 }
 
 char *toString( const QgsInterval &interval )
 {
-  return QTest::toString( QStringLiteral( "<QgsInterval: %1 %2>" ).arg( interval.originalDuration() ).arg( QgsUnitTypes::toString( interval.originalUnit() ) ) );
+  return QTest::toString( u"<QgsInterval: %1 %2>"_s.arg( interval.originalDuration() ).arg( QgsUnitTypes::toString( interval.originalUnit() ) ) );
 }
 
 

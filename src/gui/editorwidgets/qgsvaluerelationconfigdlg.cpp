@@ -84,27 +84,27 @@ QVariantMap QgsValueRelationConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "Layer" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
-  cfg.insert( QStringLiteral( "LayerName" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->name() : QString() );
-  cfg.insert( QStringLiteral( "LayerSource" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->publicSource() : QString() );
-  cfg.insert( QStringLiteral( "LayerProviderName" ), ( mLayerName->currentLayer() && mLayerName->currentLayer()->dataProvider() ) ? mLayerName->currentLayer()->providerType() : QString() );
-  cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
-  cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
-  cfg.insert( QStringLiteral( "Group" ), mGroupColumn->currentField() );
-  cfg.insert( QStringLiteral( "DisplayGroupName" ), mDisplayGroupName->isChecked() );
-  cfg.insert( QStringLiteral( "Description" ), mDescriptionExpression->expression() );
-  cfg.insert( QStringLiteral( "AllowMulti" ), mAllowMulti->isChecked() );
-  cfg.insert( QStringLiteral( "NofColumns" ), mNofColumns->value() );
-  cfg.insert( QStringLiteral( "AllowNull" ), mAllowNull->isChecked() );
-  cfg.insert( QStringLiteral( "OrderByValue" ), mOrderByValue->isChecked() );
-  cfg.insert( QStringLiteral( "OrderByKey" ), mOrderByKey->isChecked() );
-  cfg.insert( QStringLiteral( "OrderByField" ), mOrderByField->isChecked() );
-  cfg.insert( QStringLiteral( "OrderByFieldName" ), mOrderByFieldName->currentField() );
-  cfg.insert( QStringLiteral( "OrderByDescending" ), mOrderByDescending->isChecked() );
-  cfg.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
-  cfg.insert( QStringLiteral( "UseCompleter" ), mUseCompleter->isChecked() );
+  cfg.insert( u"Layer"_s, mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
+  cfg.insert( u"LayerName"_s, mLayerName->currentLayer() ? mLayerName->currentLayer()->name() : QString() );
+  cfg.insert( u"LayerSource"_s, mLayerName->currentLayer() ? mLayerName->currentLayer()->publicSource() : QString() );
+  cfg.insert( u"LayerProviderName"_s, ( mLayerName->currentLayer() && mLayerName->currentLayer()->dataProvider() ) ? mLayerName->currentLayer()->providerType() : QString() );
+  cfg.insert( u"Key"_s, mKeyColumn->currentField() );
+  cfg.insert( u"Value"_s, mValueColumn->currentField() );
+  cfg.insert( u"Group"_s, mGroupColumn->currentField() );
+  cfg.insert( u"DisplayGroupName"_s, mDisplayGroupName->isChecked() );
+  cfg.insert( u"Description"_s, mDescriptionExpression->expression() );
+  cfg.insert( u"AllowMulti"_s, mAllowMulti->isChecked() );
+  cfg.insert( u"NofColumns"_s, mNofColumns->value() );
+  cfg.insert( u"AllowNull"_s, mAllowNull->isChecked() );
+  cfg.insert( u"OrderByValue"_s, mOrderByValue->isChecked() );
+  cfg.insert( u"OrderByKey"_s, mOrderByKey->isChecked() );
+  cfg.insert( u"OrderByField"_s, mOrderByField->isChecked() );
+  cfg.insert( u"OrderByFieldName"_s, mOrderByFieldName->currentField() );
+  cfg.insert( u"OrderByDescending"_s, mOrderByDescending->isChecked() );
+  cfg.insert( u"FilterExpression"_s, mFilterExpression->toPlainText() );
+  cfg.insert( u"UseCompleter"_s, mUseCompleter->isChecked() );
   const Qt::MatchFlags completerMatchFlags { mCompleterMatchFromStart->isChecked() ? Qt::MatchFlag::MatchStartsWith : Qt::MatchFlag::MatchContains };
-  cfg.insert( QStringLiteral( "CompleterMatchFlags" ), static_cast<int>( completerMatchFlags ) );
+  cfg.insert( u"CompleterMatchFlags"_s, static_cast<int>( completerMatchFlags ) );
 
   return cfg;
 }
@@ -114,24 +114,24 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   QgsVectorLayer *lyr = QgsValueRelationFieldFormatter::resolveLayer( config, QgsProject::instance() );
   mLayerName->setLayer( lyr );
   mOrderByFieldName->setLayer( lyr );
-  mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
-  mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
-  mGroupColumn->setField( config.value( QStringLiteral( "Group" ) ).toString() );
-  mDisplayGroupName->setChecked( config.value( QStringLiteral( "DisplayGroupName" ) ).toBool() );
-  mDescriptionExpression->setField( config.value( QStringLiteral( "Description" ) ).toString() );
-  mAllowMulti->setChecked( config.value( QStringLiteral( "AllowMulti" ) ).toBool() );
-  mNofColumns->setValue( config.value( QStringLiteral( "NofColumns" ), 1 ).toInt() );
+  mKeyColumn->setField( config.value( u"Key"_s ).toString() );
+  mValueColumn->setField( config.value( u"Value"_s ).toString() );
+  mGroupColumn->setField( config.value( u"Group"_s ).toString() );
+  mDisplayGroupName->setChecked( config.value( u"DisplayGroupName"_s ).toBool() );
+  mDescriptionExpression->setField( config.value( u"Description"_s ).toString() );
+  mAllowMulti->setChecked( config.value( u"AllowMulti"_s ).toBool() );
+  mNofColumns->setValue( config.value( u"NofColumns"_s, 1 ).toInt() );
   if ( !mAllowMulti->isChecked() )
   {
     label_nofColumns->setEnabled( false );
     mNofColumns->setEnabled( false );
   }
-  mAllowNull->setChecked( config.value( QStringLiteral( "AllowNull" ) ).toBool() );
-  mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
-  mOrderByField->setChecked( config.value( QStringLiteral( "OrderByField" ) ).toBool() );
-  mOrderByKey->setChecked( config.value( QStringLiteral( "OrderByKey" ) ).toBool() );
-  mOrderByFieldName->setField( config.value( QStringLiteral( "OrderByFieldName" ) ).toString() );
-  mOrderByDescending->setChecked( config.value( QStringLiteral( "OrderByDescending" ) ).toBool() );
+  mAllowNull->setChecked( config.value( u"AllowNull"_s ).toBool() );
+  mOrderByValue->setChecked( config.value( u"OrderByValue"_s ).toBool() );
+  mOrderByField->setChecked( config.value( u"OrderByField"_s ).toBool() );
+  mOrderByKey->setChecked( config.value( u"OrderByKey"_s ).toBool() );
+  mOrderByFieldName->setField( config.value( u"OrderByFieldName"_s ).toString() );
+  mOrderByDescending->setChecked( config.value( u"OrderByDescending"_s ).toBool() );
 
   if ( !mOrderByField->isChecked() && !mOrderByValue->isChecked() && !mOrderByKey->isChecked() )
   {
@@ -144,10 +144,10 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
     mOrderByGroupBox->setCollapsed( false );
   }
 
-  mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
-  mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
+  mFilterExpression->setPlainText( config.value( u"FilterExpression"_s ).toString() );
+  mUseCompleter->setChecked( config.value( u"UseCompleter"_s ).toBool() );
   // Default is MatchStartsWith for backwards compatibility
-  const Qt::MatchFlags completerMatchFlags { config.contains( QStringLiteral( "CompleterMatchFlags" ) ) ? static_cast<Qt::MatchFlags>( config.value( QStringLiteral( "CompleterMatchFlags" ), Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith };
+  const Qt::MatchFlags completerMatchFlags { config.contains( u"CompleterMatchFlags"_s ) ? static_cast<Qt::MatchFlags>( config.value( u"CompleterMatchFlags"_s, Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith };
   mCompleterMatchFromStart->setChecked( completerMatchFlags.testFlag( Qt::MatchFlag::MatchStartsWith ) );
 }
 
@@ -168,10 +168,10 @@ void QgsValueRelationConfigDlg::editExpression()
   context << QgsExpressionContextUtils::formScope();
   context << QgsExpressionContextUtils::parentFormScope();
 
-  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) << QStringLiteral( "current_parent_value" ) );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" ) << QStringLiteral( "current_feature" ) << QStringLiteral( "form_mode" ) << QStringLiteral( "current_parent_geometry" ) << QStringLiteral( "current_parent_feature" ) );
+  context.setHighlightedFunctions( QStringList() << u"current_value"_s << u"current_parent_value"_s );
+  context.setHighlightedVariables( QStringList() << u"current_geometry"_s << u"current_feature"_s << u"form_mode"_s << u"current_parent_geometry"_s << u"current_parent_feature"_s );
 
-  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, u"generic"_s, context );
   dlg.setWindowTitle( tr( "Edit Filter Expression" ) );
 
   if ( dlg.exec() == QDialog::Accepted )

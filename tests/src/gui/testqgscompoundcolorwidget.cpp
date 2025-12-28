@@ -31,7 +31,7 @@ class TestQgsCompoundColorWidget : public QgsTest
 
   public:
     TestQgsCompoundColorWidget()
-      : QgsTest( QStringLiteral( "Compound color widget Tests" ) ) {}
+      : QgsTest( u"Compound color widget Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -52,9 +52,9 @@ class TestQgsCompoundColorWidget : public QgsTest
 void TestQgsCompoundColorWidget::initTestCase()
 {
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsCompoundColorWidget::cleanupTestCase()
@@ -134,7 +134,7 @@ void TestQgsCompoundColorWidget::testComponentSettings()
   QFETCH( QgsColorWidget::ColorComponent, newComponent );
   QFETCH( int, newSettingsComponent );
 
-  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), settingsComponent );
+  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? u"Windows/ColorDialog/activeCmykComponent"_s : u"Windows/ColorDialog/activeComponent"_s, settingsComponent );
 
   QgsCompoundColorWidget w( nullptr, QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QColor::fromCmyk( 1, 2, 3, 4 ) : QColor( 10, 20, 30, 50 ) );
   w.setVisible( true );
@@ -147,13 +147,13 @@ void TestQgsCompoundColorWidget::testComponentSettings()
   QCOMPARE( w.mVerticalRamp->component(), newComponent );
 
   w.saveSettings();
-  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), -1 ).toInt();
+  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? u"Windows/ColorDialog/activeCmykComponent"_s : u"Windows/ColorDialog/activeComponent"_s, -1 ).toInt();
   QCOMPARE( newValue, newSettingsComponent );
 }
 
 void TestQgsCompoundColorWidget::testComponentChange()
 {
-  QgsSettings().setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 3 );
+  QgsSettings().setValue( u"Windows/ColorDialog/activeComponent"_s, 3 );
 
   QgsCompoundColorWidget w( nullptr, QColor( 10, 20, 30, 50 ) );
   w.setVisible( true );

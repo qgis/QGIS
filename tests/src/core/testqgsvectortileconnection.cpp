@@ -59,17 +59,17 @@ void TestQgsVectorTileConnection::cleanupTestCase()
 void TestQgsVectorTileConnection::test_encodedUri()
 {
   QgsVectorTileProviderConnection::Data conn;
-  conn.url = QStringLiteral( "https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=abcdef12345" );
+  conn.url = u"https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=abcdef12345"_s;
   conn.zMin = 0;
   conn.zMax = 18;
   QString uri = QgsVectorTileProviderConnection::encodedUri( conn );
-  QCOMPARE( uri, QStringLiteral( "type=xyz&url=https%3A%2F%2Fapi.maptiler.com%2Ftiles%2Fv3%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf%3Fkey%3Dabcdef12345&zmax=18&zmin=0" ) );
+  QCOMPARE( uri, u"type=xyz&url=https%3A%2F%2Fapi.maptiler.com%2Ftiles%2Fv3%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf%3Fkey%3Dabcdef12345&zmax=18&zmin=0"_s );
 
-  conn.url = QStringLiteral( "file:///home/user/tiles.mbtiles" );
+  conn.url = u"file:///home/user/tiles.mbtiles"_s;
   conn.zMin = 0;
   conn.zMax = 18;
   uri = QgsVectorTileProviderConnection::encodedUri( conn );
-  QCOMPARE( uri, QStringLiteral( "type=mbtiles&url=file%3A%2F%2F%2Fhome%2Fuser%2Ftiles.mbtiles&zmax=18&zmin=0" ) );
+  QCOMPARE( uri, u"type=mbtiles&url=file%3A%2F%2F%2Fhome%2Fuser%2Ftiles.mbtiles&zmax=18&zmin=0"_s );
 }
 
 

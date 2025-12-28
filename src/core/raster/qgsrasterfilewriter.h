@@ -432,8 +432,8 @@ class CORE_EXPORT QgsRasterFileWriter
 
     Qgis::RasterExportType mMode = Qgis::RasterExportType::Raw;
     QString mOutputUrl;
-    QString mOutputProviderKey = QStringLiteral( "gdal" );
-    QString mOutputFormat = QStringLiteral( "GTiff" );
+    QString mOutputProviderKey = u"gdal"_s;
+    QString mOutputFormat = u"GTiff"_s;
     QStringList mCreationOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsRasterFileWriter
     int mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
-    QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
+    QString mPyramidsResampling = u"AVERAGE"_s;
     Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     QStringList mPyramidsConfigOptions;

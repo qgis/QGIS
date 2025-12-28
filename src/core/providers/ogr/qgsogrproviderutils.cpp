@@ -87,43 +87,43 @@ QString QgsOgrProviderUtils::analyzeURI( QString const &uri,
 
   QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
 
-  if ( parts.contains( QStringLiteral( "layerName" ) ) )
+  if ( parts.contains( u"layerName"_s ) )
   {
-    layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+    layerName = parts.value( u"layerName"_s ).toString();
     isSubLayer = !layerName.isEmpty();
   }
 
-  if ( parts.contains( QStringLiteral( "layerId" ) ) &&
-       parts.value( QStringLiteral( "layerId" ) ) != QVariant() )
+  if ( parts.contains( u"layerId"_s ) &&
+       parts.value( u"layerId"_s ) != QVariant() )
   {
     bool ok;
-    layerIndex = parts.value( QStringLiteral( "layerId" ) ).toInt( &ok );
+    layerIndex = parts.value( u"layerId"_s ).toInt( &ok );
     if ( ok && layerIndex >= 0 )
       isSubLayer = true;
     else
       layerIndex = -1;
   }
 
-  if ( parts.contains( QStringLiteral( "subset" ) ) )
+  if ( parts.contains( u"subset"_s ) )
   {
-    subsetString = parts.value( QStringLiteral( "subset" ) ).toString();
+    subsetString = parts.value( u"subset"_s ).toString();
   }
 
-  if ( parts.contains( QStringLiteral( "geometryType" ) ) )
+  if ( parts.contains( u"geometryType"_s ) )
   {
-    ogrGeometryTypeFilter = ogrWkbGeometryTypeFromName( parts.value( QStringLiteral( "geometryType" ) ).toString() );
+    ogrGeometryTypeFilter = ogrWkbGeometryTypeFromName( parts.value( u"geometryType"_s ).toString() );
   }
 
-  if ( parts.contains( QStringLiteral( "openOptions" ) ) )
+  if ( parts.contains( u"openOptions"_s ) )
   {
-    openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+    openOptions = parts.value( u"openOptions"_s ).toStringList();
   }
 
-  credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  credentialOptions = parts.value( u"credentialOptions"_s ).toMap();
 
-  const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
-                           + parts.value( QStringLiteral( "path" ) ).toString()
-                           + parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+  const QString fullPath = parts.value( u"vsiPrefix"_s ).toString()
+                           + parts.value( u"path"_s ).toString()
+                           + parts.value( u"vsiSuffix"_s ).toString();
   return fullPath;
 }
 
@@ -223,7 +223,7 @@ QString createFilters( const QString &type )
     // theoretically we can open those files because there exists a
     // driver for them, the user will have to use the "All Files" to
     // open datasets with no explicitly defined file name extension.
-    QgsDebugMsgLevel( QStringLiteral( "Driver count: %1" ).arg( OGRGetDriverCount() ), 3 );
+    QgsDebugMsgLevel( u"Driver count: %1"_s.arg( OGRGetDriverCount() ), 3 );
 
     bool kmlFound = false;
     bool dwgFound = false;
@@ -243,46 +243,46 @@ QString createFilters( const QString &type )
 
       driverName = GDALGetDriverShortName( driver );
 
-      if ( driverName.startsWith( QLatin1String( "AVCBin" ) ) )
+      if ( driverName.startsWith( "AVCBin"_L1 ) )
       {
         sDirectoryDrivers += QObject::tr( "Arc/Info Binary Coverage" ) + ",AVCBin;";
       }
-      else if ( driverName.startsWith( QLatin1String( "AVCE00" ) ) )
+      else if ( driverName.startsWith( "AVCE00"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Arc/Info ASCII Coverage" ), QStringLiteral( "*.e00" ) );
-        sExtensions << QStringLiteral( "e00" );
+        sFileFilters += createFileFilter_( QObject::tr( "Arc/Info ASCII Coverage" ), u"*.e00"_s );
+        sExtensions << u"e00"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "BNA" ) ) )
+      else if ( driverName.startsWith( "BNA"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Atlas BNA" ), QStringLiteral( "*.bna" ) );
-        sExtensions << QStringLiteral( "bna" );
+        sFileFilters += createFileFilter_( QObject::tr( "Atlas BNA" ), u"*.bna"_s );
+        sExtensions << u"bna"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "CSV" ) ) )
+      else if ( driverName.startsWith( "CSV"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Comma Separated Value" ), QStringLiteral( "*.csv" ) );
-        sExtensions << QStringLiteral( "csv" );
+        sFileFilters += createFileFilter_( QObject::tr( "Comma Separated Value" ), u"*.csv"_s );
+        sExtensions << u"csv"_s;
       }
       else if ( driverName.startsWith( QObject::tr( "DODS" ) ) )
       {
-        sProtocolDrivers += QLatin1String( "DODS/OPeNDAP,DODS;" );
+        sProtocolDrivers += "DODS/OPeNDAP,DODS;"_L1;
       }
       else if ( driverName.startsWith( QObject::tr( "CouchDB" ) ) )
       {
-        sProtocolDrivers += QLatin1String( "CouchDB;" );
+        sProtocolDrivers += "CouchDB;"_L1;
       }
-      else if ( driverName.startsWith( QLatin1String( "FileGDB" ) ) )
+      else if ( driverName.startsWith( "FileGDB"_L1 ) )
       {
         sDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
-        if ( !sDirectoryExtensions.contains( QStringLiteral( "gdb" ) ) )
-          sDirectoryExtensions << QStringLiteral( "gdb" );
+        if ( !sDirectoryExtensions.contains( u"gdb"_s ) )
+          sDirectoryExtensions << u"gdb"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "FlatGeobuf" ) ) )
+      else if ( driverName.startsWith( "FlatGeobuf"_L1 ) )
       {
-        sProtocolDrivers += QLatin1String( "FlatGeobuf;" );
-        sFileFilters += createFileFilter_( QObject::tr( "FlatGeobuf" ), QStringLiteral( "*.fgb" ) );
-        sExtensions << QStringLiteral( "fgb" );
+        sProtocolDrivers += "FlatGeobuf;"_L1;
+        sFileFilters += createFileFilter_( QObject::tr( "FlatGeobuf" ), u"*.fgb"_s );
+        sExtensions << u"fgb"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "PGeo" ) ) )
+      else if ( driverName.startsWith( "PGeo"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
 #ifdef Q_OS_WIN
@@ -290,298 +290,298 @@ QString createFilters( const QString &type )
         sExtensions << "mdb";
 #endif
       }
-      else if ( driverName.startsWith( QLatin1String( "SDE" ) ) )
+      else if ( driverName.startsWith( "SDE"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "ESRI ArcSDE" ) + ",SDE;";
       }
-      else if ( driverName.startsWith( QLatin1String( "ESRI Shapefile" ) ) )
+      else if ( driverName.startsWith( "ESRI Shapefile"_L1 ) )
       {
         QString exts = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
-        sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), exts.contains( "shz" ) ? QStringLiteral( "*.shp *.shz *.shp.zip" ) : QStringLiteral( "*.shp" ) );
-        sExtensions << QStringLiteral( "shp" ) << QStringLiteral( "dbf" );
+        sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), exts.contains( "shz" ) ? u"*.shp *.shz *.shp.zip"_s : u"*.shp"_s );
+        sExtensions << u"shp"_s << u"dbf"_s;
         if ( exts.contains( "shz" ) )
-          sExtensions << QStringLiteral( "shz" ) << QStringLiteral( "shp.zip" );
+          sExtensions << u"shz"_s << u"shp.zip"_s;
       }
       else if ( driverName.startsWith( QObject::tr( "FMEObjects Gateway" ) ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), QStringLiteral( "*.fdd" ) );
-        sExtensions << QStringLiteral( "fdd" );
+        sFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), u"*.fdd"_s );
+        sExtensions << u"fdd"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "GeoJSONSeq" ) ) )
+      else if ( driverName.startsWith( "GeoJSONSeq"_L1 ) )
       {
-        sProtocolDrivers += QLatin1String( "GeoJSON - Newline Delimited;" );
-        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON Newline Delimited JSON" ), QStringLiteral( "*.geojsonl *.geojsons *.nlgeojson *.json" ) );
-        sExtensions << QStringLiteral( "geojsonl" ) << QStringLiteral( "geojsons" ) << QStringLiteral( "nlgeojson" ) << QStringLiteral( "json" );
+        sProtocolDrivers += "GeoJSON - Newline Delimited;"_L1;
+        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON Newline Delimited JSON" ), u"*.geojsonl *.geojsons *.nlgeojson *.json"_s );
+        sExtensions << u"geojsonl"_s << u"geojsons"_s << u"nlgeojson"_s << u"json"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "GeoJSON" ) ) )
+      else if ( driverName.startsWith( "GeoJSON"_L1 ) )
       {
-        sProtocolDrivers += QLatin1String( "GeoJSON;" );
-        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), QStringLiteral( "*.geojson" ) );
-        sExtensions << QStringLiteral( "geojson" );
+        sProtocolDrivers += "GeoJSON;"_L1;
+        sFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), u"*.geojson"_s );
+        sExtensions << u"geojson"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "GeoRSS" ) ) )
+      else if ( driverName.startsWith( "GeoRSS"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), QStringLiteral( "*.xml" ) );
-        sExtensions << QStringLiteral( "xml" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), u"*.xml"_s );
+        sExtensions << u"xml"_s;
       }
-      else if ( driverName == QLatin1String( "GML" ) )
+      else if ( driverName == "GML"_L1 )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), QStringLiteral( "*.gml" ) );
-        sExtensions << QStringLiteral( "gml" );
+        sFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), u"*.gml"_s );
+        sExtensions << u"gml"_s;
       }
-      else if ( driverName == QLatin1String( "GMLAS" ) )
+      else if ( driverName == "GMLAS"_L1 )
       {
         continue;
       }
-      else if ( driverName.startsWith( QLatin1String( "GMT" ) ) )
+      else if ( driverName.startsWith( "GMT"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Generic Mapping Tools [GMT]" ), QStringLiteral( "*.gmt" ) );
-        sExtensions << QStringLiteral( "gmt" );
+        sFileFilters += createFileFilter_( QObject::tr( "Generic Mapping Tools [GMT]" ), u"*.gmt"_s );
+        sExtensions << u"gmt"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "GPX" ) ) )
+      else if ( driverName.startsWith( "GPX"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), QStringLiteral( "*.gpx" ) );
-        sExtensions << QStringLiteral( "gpx" );
+        sFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), u"*.gpx"_s );
+        sExtensions << u"gpx"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "GPKG" ) ) )
+      else if ( driverName.startsWith( "GPKG"_L1 ) )
       {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg *.gpkg.zip" ) );
-        sExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "gpkg.zip" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), u"*.gpkg *.gpkg.zip"_s );
+        sExtensions << u"gpkg"_s << u"gpkg.zip"_s;
 #else
-        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), QStringLiteral( "*.gpkg" ) );
-        sExtensions << QStringLiteral( "gpkg" );
+        sFileFilters += createFileFilter_( QObject::tr( "GeoPackage" ), u"*.gpkg"_s );
+        sExtensions << u"gpkg"_s;
 #endif
       }
-      else if ( driverName.startsWith( QLatin1String( "GRASS" ) ) )
+      else if ( driverName.startsWith( "GRASS"_L1 ) )
       {
         sDirectoryDrivers += QObject::tr( "Grass Vector" ) + ",GRASS;";
       }
-      else if ( driverName.startsWith( QLatin1String( "IDB" ) ) )
+      else if ( driverName.startsWith( "IDB"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "Informix DataBlade" ) + ",IDB;";
       }
-      else if ( driverName.startsWith( QLatin1String( "Interlis 1" ) ) )
+      else if ( driverName.startsWith( "Interlis 1"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 1" ), QStringLiteral( "*.itf *.xml *.ili" ) );
-        sExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 1" ), u"*.itf *.xml *.ili"_s );
+        sExtensions << u"itf"_s << u"xml"_s << u"ili"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "Interlis 2" ) ) )
+      else if ( driverName.startsWith( "Interlis 2"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.xtf *.xml *.ili" ) );
-        sExtensions << QStringLiteral( "xtf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), u"*.xtf *.xml *.ili"_s );
+        sExtensions << u"xtf"_s << u"xml"_s << u"ili"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "Ingres" ) ) )
+      else if ( driverName.startsWith( "Ingres"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "Ingres" ) + ",Ingres;";
       }
-      else if ( driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "LIBKML" ) )
+      else if ( driverName == "KML"_L1 || driverName == "LIBKML"_L1 )
       {
         if ( kmlFound )
           continue;
         kmlFound = true;
-        sFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), QStringLiteral( "*.kml *.kmz" ) );
-        sExtensions << QStringLiteral( "kml" ) << QStringLiteral( "kmz" );
+        sFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), u"*.kml *.kmz"_s );
+        sExtensions << u"kml"_s << u"kmz"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "MapInfo File" ) ) )
+      else if ( driverName.startsWith( "MapInfo File"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), QStringLiteral( "*.mif *.tab" ) );
-        sExtensions << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
+        sFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), u"*.mif *.tab"_s );
+        sExtensions << u"mif"_s << u"tab"_s;
       }
-      else if ( driverName == QLatin1String( "DGN" ) || driverName == QLatin1String( "DGNV8" ) )
+      else if ( driverName == "DGN"_L1 || driverName == "DGNV8"_L1 )
       {
         if ( dgnFound )
           continue;
         dgnFound = true;
-        sFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), QStringLiteral( "*.dgn" ) );
-        sExtensions << QStringLiteral( "dgn" );
+        sFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), u"*.dgn"_s );
+        sExtensions << u"dgn"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "MySQL" ) ) )
+      else if ( driverName.startsWith( "MySQL"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "MySQL" ) + ",MySQL;";
       }
-      else if ( driverName.startsWith( QLatin1String( "MSSQL" ) ) )
+      else if ( driverName.startsWith( "MSSQL"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "MS SQL Server" ) + ",MSSQL;";
       }
-      else if ( driverName.startsWith( QLatin1String( "OCI" ) ) )
+      else if ( driverName.startsWith( "OCI"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "Oracle Spatial" ) + ",OCI;";
       }
-      else if ( driverName.startsWith( QLatin1String( "ODBC" ) ) )
+      else if ( driverName.startsWith( "ODBC"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "ODBC" ) + ",ODBC;";
       }
-      else if ( driverName.startsWith( QLatin1String( "OGDI" ) ) )
+      else if ( driverName.startsWith( "OGDI"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "OGDI Vectors" ) + ",OGDI;";
       }
-      else if ( driverName.startsWith( QLatin1String( "OpenFileGDB" ) ) )
+      else if ( driverName.startsWith( "OpenFileGDB"_L1 ) )
       {
         sDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
-        if ( !sDirectoryExtensions.contains( QStringLiteral( "gdb" ) ) )
-          sDirectoryExtensions << QStringLiteral( "gdb" );
+        if ( !sDirectoryExtensions.contains( u"gdb"_s ) )
+          sDirectoryExtensions << u"gdb"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "PostgreSQL" ) ) )
+      else if ( driverName.startsWith( "PostgreSQL"_L1 ) )
       {
         sDatabaseDrivers += QObject::tr( "PostgreSQL" ) + ",PostgreSQL;";
       }
-      else if ( driverName.startsWith( QLatin1String( "S57" ) ) )
+      else if ( driverName.startsWith( "S57"_L1 ) )
       {
         sFileFilters += createFileFilter_( QObject::tr( "S-57 Base file" ),
-                                           QStringLiteral( "*.000" ) );
-        sExtensions << QStringLiteral( "000" );
+                                           u"*.000"_s );
+        sExtensions << u"000"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SDTS" ) ) )
+      else if ( driverName.startsWith( "SDTS"_L1 ) )
       {
         sFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
-                                           QStringLiteral( "*catd.ddf" ) );
-        sWildcards << QStringLiteral( "*catd.ddf" );
+                                           u"*catd.ddf"_s );
+        sWildcards << u"*catd.ddf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SOSI" ) ) )
+      else if ( driverName.startsWith( "SOSI"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Systematic Organization of Spatial Information [SOSI]" ), QStringLiteral( "*.sos" ) );
-        sExtensions << QStringLiteral( "sos" );
+        sFileFilters += createFileFilter_( QObject::tr( "Systematic Organization of Spatial Information [SOSI]" ), u"*.sos"_s );
+        sExtensions << u"sos"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SQLite" ) ) )
+      else if ( driverName.startsWith( "SQLite"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), QStringLiteral( "*.sqlite *.db *.sqlite3 *.db3 *.s3db *.sl3" ) );
-        sExtensions << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "sqlite3" ) << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) << QStringLiteral( "sl3" );
+        sFileFilters += createFileFilter_( QObject::tr( "SQLite/SpatiaLite" ), u"*.sqlite *.db *.sqlite3 *.db3 *.s3db *.sl3"_s );
+        sExtensions << u"sqlite"_s << u"db"_s << u"sqlite3"_s << u"db3"_s << u"s3db"_s << u"sl3"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SXF" ) ) )
+      else if ( driverName.startsWith( "SXF"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), QStringLiteral( "*.sxf" ) );
-        sExtensions << QStringLiteral( "sxf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Storage and eXchange Format" ), u"*.sxf"_s );
+        sExtensions << u"sxf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "UK .NTF" ) ) )
+      else if ( driverName.startsWith( "UK .NTF"_L1 ) )
       {
         sDirectoryDrivers += QObject::tr( "UK. NTF2" ) + ",UK. NTF;";
       }
-      else if ( driverName.startsWith( QLatin1String( "TIGER" ) ) )
+      else if ( driverName.startsWith( "TIGER"_L1 ) )
       {
         sDirectoryDrivers += QObject::tr( "U.S. Census TIGER/Line" ) + ",TIGER;";
       }
-      else if ( driverName.startsWith( QLatin1String( "OGR_VRT" ) ) )
+      else if ( driverName.startsWith( "OGR_VRT"_L1 ) )
       {
         sFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
-                                           QStringLiteral( "*.vrt *.ovf" ) );
-        sExtensions << QStringLiteral( "vrt" ) << QStringLiteral( "ovf" );
+                                           u"*.vrt *.ovf"_s );
+        sExtensions << u"vrt"_s << u"ovf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "XPlane" ) ) )
+      else if ( driverName.startsWith( "XPlane"_L1 ) )
       {
         sFileFilters += createFileFilter_( QObject::tr( "X-Plane/Flightgear" ),
-                                           QStringLiteral( "apt.dat nav.dat fix.dat awy.dat" ) );
-        sWildcards << QStringLiteral( "apt.dat" ) << QStringLiteral( "nav.dat" ) << QStringLiteral( "fix.dat" ) << QStringLiteral( "awy.dat" );
+                                           u"apt.dat nav.dat fix.dat awy.dat"_s );
+        sWildcards << u"apt.dat"_s << u"nav.dat"_s << u"fix.dat"_s << u"awy.dat"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "Geoconcept" ) ) )
+      else if ( driverName.startsWith( "Geoconcept"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Geoconcept" ), QStringLiteral( "*.gxt *.txt" ) );
-        sExtensions << QStringLiteral( "gxt" ) << QStringLiteral( "txt" );
+        sFileFilters += createFileFilter_( QObject::tr( "Geoconcept" ), u"*.gxt *.txt"_s );
+        sExtensions << u"gxt"_s << u"txt"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "DXF" ) ) )
+      else if ( driverName.startsWith( "DXF"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), QStringLiteral( "*.dxf" ) );
-        sExtensions << QStringLiteral( "dxf" );
+        sFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), u"*.dxf"_s );
+        sExtensions << u"dxf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "ODS" ) ) )
+      else if ( driverName.startsWith( "ODS"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Open Document Spreadsheet" ), QStringLiteral( "*.ods" ) );
-        sExtensions << QStringLiteral( "ods" );
+        sFileFilters += createFileFilter_( QObject::tr( "Open Document Spreadsheet" ), u"*.ods"_s );
+        sExtensions << u"ods"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "XLSX" ) ) )
+      else if ( driverName.startsWith( "XLSX"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "MS Office Open XML spreadsheet" ), QStringLiteral( "*.xlsx" ) );
-        sExtensions << QStringLiteral( "xlsx" );
+        sFileFilters += createFileFilter_( QObject::tr( "MS Office Open XML spreadsheet" ), u"*.xlsx"_s );
+        sExtensions << u"xlsx"_s;
       }
-      else if ( driverName.endsWith( QLatin1String( "XLS" ) ) )
+      else if ( driverName.endsWith( "XLS"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "MS Excel format" ), QStringLiteral( "*.xls" ) );
-        sExtensions << QStringLiteral( "xls" );
+        sFileFilters += createFileFilter_( QObject::tr( "MS Excel format" ), u"*.xls"_s );
+        sExtensions << u"xls"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "EDIGEO" ) ) )
+      else if ( driverName.startsWith( "EDIGEO"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "EDIGEO" ), QStringLiteral( "*.thf" ) );
-        sExtensions << QStringLiteral( "thf" );
+        sFileFilters += createFileFilter_( QObject::tr( "EDIGEO" ), u"*.thf"_s );
+        sExtensions << u"thf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "NAS" ) ) )
+      else if ( driverName.startsWith( "NAS"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "NAS - ALKIS" ), QStringLiteral( "*.xml" ) );
-        sExtensions << QStringLiteral( "xml" );
+        sFileFilters += createFileFilter_( QObject::tr( "NAS - ALKIS" ), u"*.xml"_s );
+        sExtensions << u"xml"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "WAsP" ) ) )
+      else if ( driverName.startsWith( "WAsP"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "WAsP" ), QStringLiteral( "*.map" ) );
-        sExtensions << QStringLiteral( "map" );
+        sFileFilters += createFileFilter_( QObject::tr( "WAsP" ), u"*.map"_s );
+        sExtensions << u"map"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "PCIDSK" ) ) )
+      else if ( driverName.startsWith( "PCIDSK"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "PCI Geomatics Database File" ), QStringLiteral( "*.pix" ) );
-        sExtensions << QStringLiteral( "pix" );
+        sFileFilters += createFileFilter_( QObject::tr( "PCI Geomatics Database File" ), u"*.pix"_s );
+        sExtensions << u"pix"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "GPSTrackMaker" ) ) )
+      else if ( driverName.startsWith( "GPSTrackMaker"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "GPSTrackMaker" ), QStringLiteral( "*.gtm *.gtz" ) );
-        sExtensions << QStringLiteral( "gtm" ) << QStringLiteral( "gtz" );
+        sFileFilters += createFileFilter_( QObject::tr( "GPSTrackMaker" ), u"*.gtm *.gtz"_s );
+        sExtensions << u"gtm"_s << u"gtz"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "VFK" ) ) )
+      else if ( driverName.startsWith( "VFK"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Czech Cadastral Exchange Data Format" ), QStringLiteral( "*.vfk" ) );
-        sExtensions << QStringLiteral( "vfk" );
+        sFileFilters += createFileFilter_( QObject::tr( "Czech Cadastral Exchange Data Format" ), u"*.vfk"_s );
+        sExtensions << u"vfk"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "OSM" ) ) )
+      else if ( driverName.startsWith( "OSM"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "OpenStreetMap" ), QStringLiteral( "*.osm *.pbf" ) );
-        sExtensions << QStringLiteral( "osm" ) << QStringLiteral( "pbf" );
+        sFileFilters += createFileFilter_( QObject::tr( "OpenStreetMap" ), u"*.osm *.pbf"_s );
+        sExtensions << u"osm"_s << u"pbf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SUA" ) ) )
+      else if ( driverName.startsWith( "SUA"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Special Use Airspace Format" ), QStringLiteral( "*.sua" ) );
-        sExtensions << QStringLiteral( "sua" );
+        sFileFilters += createFileFilter_( QObject::tr( "Special Use Airspace Format" ), u"*.sua"_s );
+        sExtensions << u"sua"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "OpenAir" ) ) )
+      else if ( driverName.startsWith( "OpenAir"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "OpenAir Special Use Airspace Format" ), QStringLiteral( "*.txt" ) );
-        sExtensions << QStringLiteral( "txt" );
+        sFileFilters += createFileFilter_( QObject::tr( "OpenAir Special Use Airspace Format" ), u"*.txt"_s );
+        sExtensions << u"txt"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "PDS" ) ) )
+      else if ( driverName.startsWith( "PDS"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Planetary Data Systems TABLE" ), QStringLiteral( "*.xml" ) );
-        sExtensions << QStringLiteral( "xml" );
+        sFileFilters += createFileFilter_( QObject::tr( "Planetary Data Systems TABLE" ), u"*.xml"_s );
+        sExtensions << u"xml"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "HTF" ) ) )
+      else if ( driverName.startsWith( "HTF"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Hydrographic Transfer Format" ), QStringLiteral( "*.htf" ) );
-        sExtensions << QStringLiteral( "htf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Hydrographic Transfer Format" ), u"*.htf"_s );
+        sExtensions << u"htf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SVG" ) ) )
+      else if ( driverName.startsWith( "SVG"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Scalable Vector Graphics" ), QStringLiteral( "*.svg" ) );
-        sExtensions << QStringLiteral( "svg" );
+        sFileFilters += createFileFilter_( QObject::tr( "Scalable Vector Graphics" ), u"*.svg"_s );
+        sExtensions << u"svg"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "ARCGEN" ) ) )
+      else if ( driverName.startsWith( "ARCGEN"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Arc/Info Generate" ), QStringLiteral( "*.gen" ) );
-        sExtensions << QStringLiteral( "gen" );
+        sFileFilters += createFileFilter_( QObject::tr( "Arc/Info Generate" ), u"*.gen"_s );
+        sExtensions << u"gen"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "PDF" ) ) )
+      else if ( driverName.startsWith( "PDF"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "Geospatial PDF" ), QStringLiteral( "*.pdf" ) );
-        sExtensions << QStringLiteral( "pdf" );
+        sFileFilters += createFileFilter_( QObject::tr( "Geospatial PDF" ), u"*.pdf"_s );
+        sExtensions << u"pdf"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SEGY" ) ) )
+      else if ( driverName.startsWith( "SEGY"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "SEG-Y" ), QStringLiteral( "*.sgy *.segy" ) );
-        sExtensions << QStringLiteral( "sgy" ) << QStringLiteral( "segy" );
+        sFileFilters += createFileFilter_( QObject::tr( "SEG-Y" ), u"*.sgy *.segy"_s );
+        sExtensions << u"sgy"_s << u"segy"_s;
       }
-      else if ( driverName.startsWith( QLatin1String( "SEGUKOOA" ) ) )
+      else if ( driverName.startsWith( "SEGUKOOA"_L1 ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), QStringLiteral( "*.seg *.seg1 *.sp1" ) );
-        sFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), QStringLiteral( "*.uko *.ukooa" ) );
-        sExtensions << QStringLiteral( "seg" ) << QStringLiteral( "seg1" ) << QStringLiteral( "sp1" ) << QStringLiteral( "uko" ) << QStringLiteral( "ukooa" );
+        sFileFilters += createFileFilter_( QObject::tr( "SEG-P1" ), u"*.seg *.seg1 *.sp1"_s );
+        sFileFilters += createFileFilter_( QObject::tr( "UKOOA P1/90" ), u"*.uko *.ukooa"_s );
+        sExtensions << u"seg"_s << u"seg1"_s << u"sp1"_s << u"uko"_s << u"ukooa"_s;
       }
       else
       {
-        if ( driverName == QLatin1String( "CAD" ) || driverName == QLatin1String( "DWG" ) )
+        if ( driverName == "CAD"_L1 || driverName == "DWG"_L1 )
         {
           if ( dwgFound )
             continue;
@@ -603,8 +603,8 @@ QString createFilters( const QString &type )
             glob += "*." + ext;
           }
 
-          if ( driverName == QLatin1String( "JPEG2000" ) ||
-               driverName.startsWith( QLatin1String( "JP2" ) ) )
+          if ( driverName == "JPEG2000"_L1 ||
+               driverName.startsWith( "JP2"_L1 ) )
           {
             // Skip over JPEG2000 drivers, as their vector capabilities are just
             // a marginal use case
@@ -618,7 +618,7 @@ QString createFilters( const QString &type )
         {
           // NOP, we don't know anything about the current driver
           // with regards to a proper file filter string
-          QgsDebugMsgLevel( QStringLiteral( "Unknown driver %1 for file filters." ).arg( driverName ), 2 );
+          QgsDebugMsgLevel( u"Unknown driver %1 for file filters."_s.arg( driverName ), 2 );
         }
       }
 
@@ -626,9 +626,9 @@ QString createFilters( const QString &type )
 
     // sort file filters alphabetically
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
-    QStringList filters = sFileFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+    QStringList filters = sFileFilters.split( u";;"_s, Qt::SkipEmptyParts );
     filters.sort();
-    sFileFilters = filters.join( QLatin1String( ";;" ) ) + ";;";
+    sFileFilters = filters.join( ";;"_L1 ) + ";;";
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
 
     // VSIFileHandler (.zip and .gz files) - second
@@ -636,53 +636,53 @@ QString createFilters( const QString &type )
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
+    if ( settings.value( u"qgis/scanZipInBrowser2"_s, "basic" ).toString() != "no"_L1 )
     {
-      sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
-      sExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
+      sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), u"*.zip *.gz *.tar *.tar.gz *.tgz"_s ) );
+      sExtensions << u"zip"_s << u"gz"_s << u"tar"_s << u"tar.gz"_s << u"tgz"_s;
     }
 
     // can't forget the all supported case
     QStringList exts;
     for ( const QString &ext : std::as_const( sExtensions ) )
-      exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
-    sFileFilters.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
+      exts << u"*.%1 *.%2"_s.arg( ext, ext.toUpper() );
+    sFileFilters.prepend( QObject::tr( "All supported files" ) + u" (%1);;"_s.arg( exts.join( QLatin1Char( ' ' ) ) ) );
 
     // can't forget the default case - first
     sFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
 
 
     // cleanup
-    if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) ) sFileFilters.chop( 2 );
+    if ( sFileFilters.endsWith( ";;"_L1 ) ) sFileFilters.chop( 2 );
 
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
   }
 
-  if ( type == QLatin1String( "file" ) )
+  if ( type == "file"_L1 )
   {
     return sFileFilters;
   }
-  if ( type == QLatin1String( "database" ) )
+  if ( type == "database"_L1 )
   {
     return sDatabaseDrivers;
   }
-  if ( type == QLatin1String( "protocol" ) )
+  if ( type == "protocol"_L1 )
   {
     return sProtocolDrivers;
   }
-  if ( type == QLatin1String( "directory" ) )
+  if ( type == "directory"_L1 )
   {
     return sDirectoryDrivers;
   }
-  if ( type == QLatin1String( "extensions" ) )
+  if ( type == "extensions"_L1 )
   {
     return sExtensions.join( QLatin1Char( '|' ) );
   }
-  if ( type == QLatin1String( "directory_extensions" ) )
+  if ( type == "directory_extensions"_L1 )
   {
     return sDirectoryExtensions.join( QLatin1Char( '|' ) );
   }
-  if ( type == QLatin1String( "wildcards" ) )
+  if ( type == "wildcards"_L1 )
   {
     return sWildcards.join( QLatin1Char( '|' ) );
   }
@@ -694,38 +694,38 @@ QString createFilters( const QString &type )
 
 QString QgsOgrProviderUtils::fileVectorFilters()
 {
-  return createFilters( QStringLiteral( "file" ) );
+  return createFilters( u"file"_s );
 }
 
 QString QgsOgrProviderUtils::databaseDrivers()
 {
-  return createFilters( QStringLiteral( "database" ) );
+  return createFilters( u"database"_s );
 }
 
 QString QgsOgrProviderUtils::protocolDrivers()
 {
-  return createFilters( QStringLiteral( "protocol" ) );
+  return createFilters( u"protocol"_s );
 }
 
 
 QString QgsOgrProviderUtils::directoryDrivers()
 {
-  return createFilters( QStringLiteral( "directory" ) );
+  return createFilters( u"directory"_s );
 }
 
 QStringList QgsOgrProviderUtils::fileExtensions()
 {
-  return createFilters( QStringLiteral( "extensions" ) ).split( '|' );
+  return createFilters( u"extensions"_s ).split( '|' );
 }
 
 QStringList QgsOgrProviderUtils::directoryExtensions()
 {
-  return createFilters( QStringLiteral( "directory_extensions" ) ).split( '|' );
+  return createFilters( u"directory_extensions"_s ).split( '|' );
 }
 
 QStringList QgsOgrProviderUtils::wildcards()
 {
-  return createFilters( QStringLiteral( "wildcards" ) ).split( '|' );
+  return createFilters( u"wildcards"_s ).split( '|' );
 }
 
 QStringList QgsOgrProviderUtils::tableNamesFromSelectSQL( const QString &sql )
@@ -753,7 +753,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     const QgsCoordinateReferenceSystem &srs,
     QString &errorMessage )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Creating empty vector layer with format: %1" ).arg( format ), 2 );
+  QgsDebugMsgLevel( u"Creating empty vector layer with format: %1"_s.arg( format ), 2 );
   errorMessage.clear();
 
   QgsApplication::registerOgrDrivers();
@@ -765,11 +765,11 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
 
   QString driverName = GDALGetDriverShortName( driver );
 
-  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+  if ( driverName == "ESRI Shapefile"_L1 )
   {
-    if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) &&
-         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) &&
-         !uri.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
+    if ( !uri.endsWith( ".shp"_L1, Qt::CaseInsensitive ) &&
+         !uri.endsWith( ".shz"_L1, Qt::CaseInsensitive ) &&
+         !uri.endsWith( ".dbf"_L1, Qt::CaseInsensitive ) )
     {
       errorMessage = QObject::tr( "URI %1 doesn't end with .shp or .dbf" ).arg( uri );
       QgsDebugError( errorMessage );
@@ -841,7 +841,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   }
 
   char **papszOptions = nullptr;
-  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+  if ( driverName == "ESRI Shapefile"_L1 )
   {
     papszOptions = CSLSetNameValue( papszOptions, "ENCODING", QgsVectorFileWriter::convertCodecNameForEncodingOption( encoding ).toLocal8Bit().data() );
     // OGR Shapefile fails to create fields if given encoding is not supported by its side
@@ -883,7 +883,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       width += 1;
 
     OGRFieldDefnH field;
-    if ( fields[0] == QLatin1String( "Real" ) )
+    if ( fields[0] == "Real"_L1 )
     {
       if ( width < 0 )
         width = 32;
@@ -894,7 +894,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       OGR_Fld_SetWidth( field, width );
       OGR_Fld_SetPrecision( field, precision );
     }
-    else if ( fields[0] == QLatin1String( "Integer" ) )
+    else if ( fields[0] == "Integer"_L1 )
     {
       if ( width < 0 || width > 10 )
         width = 10;
@@ -903,7 +903,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       // limit to 10.  otherwise OGR sets it to 11 and recognizes as OFTDouble later
       OGR_Fld_SetWidth( field, width );
     }
-    else if ( fields[0] == QLatin1String( "String" ) )
+    else if ( fields[0] == "String"_L1 )
     {
       if ( width < 0 || width > 255 )
         width = 255;
@@ -911,19 +911,19 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTString );
       OGR_Fld_SetWidth( field, width );
     }
-    else if ( fields[0] == QLatin1String( "Date" ) )
+    else if ( fields[0] == "Date"_L1 )
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDate );
     }
-    else if ( fields[0] == QLatin1String( "Time" ) )
+    else if ( fields[0] == "Time"_L1 )
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTTime );
     }
-    else if ( fields[0] == QLatin1String( "DateTime" ) )
+    else if ( fields[0] == "DateTime"_L1 )
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDateTime );
     }
-    else if ( fields[0] == QLatin1String( "bool" ) )
+    else if ( fields[0] == "bool"_L1 )
     {
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTInteger );
       OGR_Fld_SetSubType( field, OFSTBoolean );
@@ -942,9 +942,9 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
 
   dataSource.reset();
 
-  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+  if ( driverName == "ESRI Shapefile"_L1 )
   {
-    int index = uri.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive );
+    int index = uri.indexOf( ".shp"_L1, Qt::CaseInsensitive );
     if ( index > 0 )
     {
       QString layerName = uri.left( index );
@@ -954,7 +954,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "GDAL Version number %1" ).arg( GDAL_VERSION_NUM ), 2 );
+  QgsDebugMsgLevel( u"GDAL Version number %1"_s.arg( GDAL_VERSION_NUM ), 2 );
   if ( reference )
   {
     OSRRelease( reference );
@@ -978,7 +978,7 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     {
       // Preserve open options so pooled connections always carry those on
       QString openOptions;
-      const thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      const thread_local QRegularExpression openOptionsRegex( u"((?:\\|option:(?:[^|]*))+)"_s );
       QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
       if ( match.hasMatch() )
       {
@@ -1015,12 +1015,12 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
 
   QString filePath( QString::fromUtf8( pszPath ) );
 
-  bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+  bool bIsGpkg = QFileInfo( filePath ).suffix().compare( "gpkg"_L1, Qt::CaseInsensitive ) == 0;
   const bool bIsLocalGpkg = bIsGpkg &&
                             IsLocalFile( filePath ) &&
                             !filePath.startsWith( "/vsizip/" ) &&
                             !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
-                            QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool();
+                            QgsSettings().value( u"qgis/walForSqlite3"_s, true ).toBool();
 
   if ( bIsGpkg )
   {
@@ -1051,7 +1051,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
       // But only do that on a local file since WAL is advertised not to work
       // on network shares
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-      QgsDebugMsgLevel( QStringLiteral( "Enabling WAL" ), 3 );
+      QgsDebugMsgLevel( u"Enabling WAL"_s, 3 );
 #endif
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     }
@@ -1131,8 +1131,8 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
           nullptr, nullptr );
         GDALDatasetExecuteSQL(
           hDS,
-          triggerSql.replace( QLatin1String( "column_nameIS" ),
-                              QLatin1String( "column_name IS" ) ).toUtf8().toStdString().c_str(),
+          triggerSql.replace( "column_nameIS"_L1,
+                              "column_name IS"_L1 ).toUtf8().toStdString().c_str(),
           nullptr, nullptr );
       }
     }
@@ -1178,9 +1178,9 @@ bool QgsOgrProviderUtils::IsLocalFile( const QString &path )
 #else
   QStorageInfo info( dirName );
   const QString fileSystem( info.fileSystemType() );
-  bool isLocal = fileSystem != QLatin1String( "nfs" ) && fileSystem != QLatin1String( "smbfs" );
+  bool isLocal = fileSystem != "nfs"_L1 && fileSystem != "smbfs"_L1;
   if ( !isLocal )
-    QgsDebugMsgLevel( QStringLiteral( "Filesystem for %1 is %2" ).arg( path, fileSystem ), 2 );
+    QgsDebugMsgLevel( u"Filesystem for %1 is %2"_s.arg( path, fileSystem ), 2 );
   return isLocal;
 #endif
 }
@@ -1192,7 +1192,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
   GDALDriverH mGDALDriver = GDALGetDatasetDriver( hDS );
   QString mGDALDriverName = GDALGetDriverShortName( mGDALDriver );
   QString datasetName( QString::fromUtf8( GDALGetDescription( hDS ) ) );
-  if ( mGDALDriverName == QLatin1String( "GPKG" ) &&
+  if ( mGDALDriverName == "GPKG"_L1 &&
        IsLocalFile( datasetName ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) )
   {
@@ -1225,7 +1225,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
           {
             const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
             bSuccess = EQUAL( pszRet, "delete" );
-            QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
+            QgsDebugMsgLevel( u"Return: %1"_s.arg( pszRet ), 2 );
           }
           GDALDatasetReleaseResultSet( hDS, hSqlLyr );
         }
@@ -1244,7 +1244,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
         if ( !bSuccess )
         {
           CPLPushErrorHandler( CPLQuietErrorHandler );
-          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying to return to delete mode" ), 2 );
+          QgsDebugMsgLevel( u"GPKG: Trying to return to delete mode"_s, 2 );
           OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
                               "PRAGMA journal_mode = delete",
                               nullptr, nullptr );
@@ -1255,12 +1255,12 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
               bSuccess = EQUAL( pszRet, "delete" );
-              QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
+              QgsDebugMsgLevel( u"Return: %1"_s.arg( pszRet ), 2 );
             }
           }
           else if ( CPLGetLastErrorType() != CE_None )
           {
-            QgsDebugError( QStringLiteral( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+            QgsDebugError( u"Return: %1"_s.arg( CPLGetLastErrorMsg() ) );
           }
           GDALDatasetReleaseResultSet( hDS, hSqlLyr );
           CPLPopErrorHandler();
@@ -1274,11 +1274,11 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       {
         if ( openedAsUpdate )
         {
-          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying again" ), 2 );
+          QgsDebugMsgLevel( u"GPKG: Trying again"_s, 2 );
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying to return to delete mode" ), 2 );
+          QgsDebugMsgLevel( u"GPKG: Trying to return to delete mode"_s, 2 );
         }
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
         hDS = GDALOpenEx( datasetName.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
@@ -1297,7 +1297,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
             if ( hFeat )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
-              QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
+              QgsDebugMsgLevel( u"Return: %1"_s.arg( pszRet ), 2 );
             }
             GDALDatasetReleaseResultSet( hDS, hSqlLyr );
           }
@@ -1319,13 +1319,13 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
 
 QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QString &driverName )
 {
-  if ( driverName == QLatin1String( "MySQL" ) )
+  if ( driverName == "MySQL"_L1 )
   {
     field.replace( '\\', "\\\\" );
     field.replace( '`', "``" );
     return field.prepend( '`' ).append( '`' );
   }
-  else if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
+  else if ( driverName == "GPKG"_L1 || driverName == "SQLite"_L1 )
   {
     field.replace( '"', "\"\"" );
     return field.prepend( '\"' ).append( '\"' );
@@ -1342,7 +1342,7 @@ QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QStrin
 QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 {
   if ( QgsVariantUtils::isNull( value ) )
-    return QStringLiteral( "NULL" );
+    return u"NULL"_s;
 
   switch ( value.userType() )
   {
@@ -1358,9 +1358,9 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
     default:
     case QMetaType::Type::QString:
       QString v = value.toString();
-      v.replace( '\'', QLatin1String( "''" ) );
+      v.replace( '\'', "''"_L1 );
       if ( v.contains( '\\' ) )
-        return v.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "E'" ).append( '\'' );
+        return v.replace( '\\', "\\\\"_L1 ).prepend( "E'" ).append( '\'' );
       else
         return v.prepend( '\'' ).append( '\'' );
   }
@@ -1373,7 +1373,7 @@ QString QgsOgrProviderUtils::cleanSubsetString( const QString &subsetString )
 
   lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
   {
-    return line.startsWith( QLatin1String( "--" ) );
+    return line.startsWith( "--"_L1 );
   } ), lines.end() );
 
   for ( auto &line : lines )
@@ -1392,7 +1392,7 @@ QString QgsOgrProviderUtils::cleanSubsetString( const QString &subsetString )
         inLiteral = false;
         literalChar = QChar( ' ' );
       }
-      if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
+      if ( !inLiteral && line.mid( i ).startsWith( "--"_L1 ) )
       {
         line = line.left( i );
         break;
@@ -1411,7 +1411,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   GDALDriverH driver = GDALGetDatasetDriver( ds );
   QString driverName = GDALGetDriverShortName( driver );
 
-  if ( driverName == QLatin1String( "ODBC" ) ) //the odbc driver does not like schema names for subset
+  if ( driverName == "ODBC"_L1 ) //the odbc driver does not like schema names for subset
   {
     QString layerNameString = encoding->toUnicode( layerName );
     int dotIndex = layerNameString.indexOf( '.' );
@@ -1422,12 +1422,12 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
   OGRLayerH subsetLayer = nullptr;
-  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) ||
-       cleanedSubsetString.startsWith( QLatin1String( "WITH " ), Qt::CaseInsensitive ) )
+  if ( cleanedSubsetString.startsWith( "SELECT "_L1, Qt::CaseInsensitive ) ||
+       cleanedSubsetString.startsWith( "WITH "_L1, Qt::CaseInsensitive ) )
   {
     QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
 
-    QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ), 2 );
+    QgsDebugMsgLevel( u"SQL: %1"_s.arg( encoding->toUnicode( sql ) ), 2 );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
@@ -1446,7 +1446,7 @@ QString QgsOgrProviderUtils::DatasetIdentification::toString() const
 {
   return dsName +
          ( updateMode ?
-           QStringLiteral( "update" ) : QStringLiteral( "read-only" ) ) +
+           u"update"_s : u"read-only"_s ) +
          options.join( ',' );
 }
 
@@ -1718,7 +1718,7 @@ void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsNam
   auto iter = sMapDSNameToLastModifiedDate()->find( dsName );
   if ( iter != sMapDSNameToLastModifiedDate()->end() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalidating last modified date for %1" ).arg( dsName ), 2 );
+    QgsDebugMsgLevel( u"invalidating last modified date for %1"_s.arg( dsName ), 2 );
     iter.value() = iter.value().addSecs( -10 );
   }
 }
@@ -2031,58 +2031,58 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
 
 OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QString &typeName )
 {
-  if ( typeName == QLatin1String( "Point" ) )
+  if ( typeName == "Point"_L1 )
     return wkbPoint;
-  else if ( typeName == QLatin1String( "LineString" ) )
+  else if ( typeName == "LineString"_L1 )
     return wkbLineString;
-  else if ( typeName == QLatin1String( "Polygon" ) )
+  else if ( typeName == "Polygon"_L1 )
     return wkbPolygon;
-  else if ( typeName == QLatin1String( "MultiPoint" ) )
+  else if ( typeName == "MultiPoint"_L1 )
     return wkbMultiPoint;
-  else if ( typeName == QLatin1String( "MultiLineString" ) )
+  else if ( typeName == "MultiLineString"_L1 )
     return wkbMultiLineString;
-  else if ( typeName == QLatin1String( "MultiPolygon" ) )
+  else if ( typeName == "MultiPolygon"_L1 )
     return wkbMultiPolygon;
-  else if ( typeName == QLatin1String( "GeometryCollection" ) )
+  else if ( typeName == "GeometryCollection"_L1 )
     return wkbGeometryCollection;
-  else if ( typeName == QLatin1String( "CircularString" ) )
+  else if ( typeName == "CircularString"_L1 )
     return wkbCircularString;
-  else if ( typeName == QLatin1String( "CompoundCurve" ) )
+  else if ( typeName == "CompoundCurve"_L1 )
     return wkbCompoundCurve;
-  else if ( typeName == QLatin1String( "CurvePolygon" ) )
+  else if ( typeName == "CurvePolygon"_L1 )
     return wkbCurvePolygon;
-  else if ( typeName == QLatin1String( "MultiCurve" ) )
+  else if ( typeName == "MultiCurve"_L1 )
     return wkbMultiCurve;
-  else if ( typeName == QLatin1String( "MultiSurface" ) )
+  else if ( typeName == "MultiSurface"_L1 )
     return wkbMultiSurface;
-  else if ( typeName == QLatin1String( "None" ) )
+  else if ( typeName == "None"_L1 )
     return wkbNone;
-  else if ( typeName == QLatin1String( "Point25D" ) )
+  else if ( typeName == "Point25D"_L1 )
     return wkbPoint25D;
-  else if ( typeName == QLatin1String( "LineString25D" ) )
+  else if ( typeName == "LineString25D"_L1 )
     return wkbLineString25D;
-  else if ( typeName == QLatin1String( "Polygon25D" ) )
+  else if ( typeName == "Polygon25D"_L1 )
     return wkbPolygon25D;
-  else if ( typeName == QLatin1String( "MultiPoint25D" ) )
+  else if ( typeName == "MultiPoint25D"_L1 )
     return wkbMultiPoint25D;
-  else if ( typeName == QLatin1String( "MultiLineString25D" ) )
+  else if ( typeName == "MultiLineString25D"_L1 )
     return wkbMultiLineString25D;
-  else if ( typeName == QLatin1String( "MultiPolygon25D" ) )
+  else if ( typeName == "MultiPolygon25D"_L1 )
     return wkbMultiPolygon25D;
-  else if ( typeName == QLatin1String( "GeometryCollection25D" ) )
+  else if ( typeName == "GeometryCollection25D"_L1 )
     return wkbGeometryCollection25D;
-  else if ( typeName == QLatin1String( "CircularStringZ" ) )
+  else if ( typeName == "CircularStringZ"_L1 )
     return wkbCircularStringZ;
-  else if ( typeName == QLatin1String( "CompoundCurveZ" ) )
+  else if ( typeName == "CompoundCurveZ"_L1 )
     return wkbCompoundCurveZ;
-  else if ( typeName == QLatin1String( "CurvePolygonZ" ) )
+  else if ( typeName == "CurvePolygonZ"_L1 )
     return wkbCurvePolygonZ;
-  else if ( typeName == QLatin1String( "MultiCurveZ" ) )
+  else if ( typeName == "MultiCurveZ"_L1 )
     return wkbMultiCurveZ;
-  else if ( typeName == QLatin1String( "MultiSurfaceZ" ) )
+  else if ( typeName == "MultiSurfaceZ"_L1 )
     return wkbMultiSurfaceZ;
 
-  QgsDebugError( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
+  QgsDebugError( u"unknown geometry type: %1"_s.arg( typeName ) );
   return wkbUnknown;
 }
 
@@ -2139,98 +2139,98 @@ QString QgsOgrProviderUtils::ogrWkbGeometryTypeName( OGRwkbGeometryType type )
   switch ( static_cast<unsigned>( type ) )
   {
     case wkbUnknown:
-      geom = QStringLiteral( "Unknown" );
+      geom = u"Unknown"_s;
       break;
     case wkbPoint:
-      geom = QStringLiteral( "Point" );
+      geom = u"Point"_s;
       break;
     case wkbLineString:
-      geom = QStringLiteral( "LineString" );
+      geom = u"LineString"_s;
       break;
     case wkbPolygon:
-      geom = QStringLiteral( "Polygon" );
+      geom = u"Polygon"_s;
       break;
     case wkbMultiPoint:
-      geom = QStringLiteral( "MultiPoint" );
+      geom = u"MultiPoint"_s;
       break;
     case wkbMultiLineString:
-      geom = QStringLiteral( "MultiLineString" );
+      geom = u"MultiLineString"_s;
       break;
     case wkbMultiPolygon:
-      geom = QStringLiteral( "MultiPolygon" );
+      geom = u"MultiPolygon"_s;
       break;
     case wkbGeometryCollection:
-      geom = QStringLiteral( "GeometryCollection" );
+      geom = u"GeometryCollection"_s;
       break;
     case wkbCircularString:
-      geom = QStringLiteral( "CircularString" );
+      geom = u"CircularString"_s;
       break;
     case wkbCompoundCurve:
-      geom = QStringLiteral( "CompoundCurve" );
+      geom = u"CompoundCurve"_s;
       break;
     case wkbCurvePolygon:
-      geom = QStringLiteral( "CurvePolygon" );
+      geom = u"CurvePolygon"_s;
       break;
     case wkbMultiCurve:
-      geom = QStringLiteral( "MultiCurve" );
+      geom = u"MultiCurve"_s;
       break;
     case wkbMultiSurface:
-      geom = QStringLiteral( "MultiSurface" );
+      geom = u"MultiSurface"_s;
       break;
     case wkbCircularStringZ:
-      geom = QStringLiteral( "CircularStringZ" );
+      geom = u"CircularStringZ"_s;
       break;
     case wkbCompoundCurveZ:
-      geom = QStringLiteral( "CompoundCurveZ" );
+      geom = u"CompoundCurveZ"_s;
       break;
     case wkbCurvePolygonZ:
-      geom = QStringLiteral( "CurvePolygonZ" );
+      geom = u"CurvePolygonZ"_s;
       break;
     case wkbMultiCurveZ:
-      geom = QStringLiteral( "MultiCurveZ" );
+      geom = u"MultiCurveZ"_s;
       break;
     case wkbMultiSurfaceZ:
-      geom = QStringLiteral( "MultiSurfaceZ" );
+      geom = u"MultiSurfaceZ"_s;
       break;
     case wkbNone:
-      geom = QStringLiteral( "None" );
+      geom = u"None"_s;
       break;
     case static_cast<unsigned>( wkbUnknown ) | static_cast<unsigned>( wkb25DBit ):
-      geom = QStringLiteral( "Unknown25D" );
+      geom = u"Unknown25D"_s;
       break;
     case static_cast<unsigned>( wkbPoint25D ):
-      geom = QStringLiteral( "Point25D" );
+      geom = u"Point25D"_s;
       break;
     case static_cast<unsigned>( wkbLineString25D ):
-      geom = QStringLiteral( "LineString25D" );
+      geom = u"LineString25D"_s;
       break;
     case static_cast<unsigned>( wkbPolygon25D ):
-      geom = QStringLiteral( "Polygon25D" );
+      geom = u"Polygon25D"_s;
       break;
     case static_cast<unsigned>( wkbMultiPoint25D ):
-      geom = QStringLiteral( "MultiPoint25D" );
+      geom = u"MultiPoint25D"_s;
       break;
     case static_cast<unsigned>( wkbMultiLineString25D ):
-      geom = QStringLiteral( "MultiLineString25D" );
+      geom = u"MultiLineString25D"_s;
       break;
     case static_cast<unsigned>( wkbMultiPolygon25D ):
-      geom = QStringLiteral( "MultiPolygon25D" );
+      geom = u"MultiPolygon25D"_s;
       break;
     case static_cast<unsigned>( wkbGeometryCollection25D ):
-      geom = QStringLiteral( "GeometryCollection25D" );
+      geom = u"GeometryCollection25D"_s;
       break;
     default:
       // Do not use ':', as it will mess with the separator used by QgsSublayersDialog::populateLayers()
-      geom = QStringLiteral( "Unknown WKB (%1)" ).arg( type );
+      geom = u"Unknown WKB (%1)"_s.arg( type );
   }
   return geom;
 }
 
 static bool isMultiPatchAsGeomCollectionZOfTinZ( const QString &driverName )
 {
-  return driverName == QLatin1String( "ESRI Shapefile" ) ||
-         driverName == QLatin1String( "OpenFileGDB" ) ||
-         driverName == QLatin1String( "FileGDB" );
+  return driverName == "ESRI Shapefile"_L1 ||
+         driverName == "OpenFileGDB"_L1 ||
+         driverName == "FileGDB"_L1;
 }
 
 OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatureH feature, const QString &driverName )
@@ -2267,7 +2267,7 @@ QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
     QString configId( match.captured( 1 ) );
     QStringList connectionItems;
     connectionItems << uri;
-    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, u"ogr"_s ) )
     {
       uri = connectionItems.first( );
     }
@@ -2335,7 +2335,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Cannot reuse existing opened dataset(s) %1 on %2 since it has been modified" ).arg( layerName, dsName ), 2 );
+    QgsDebugMsgLevel( u"Cannot reuse existing opened dataset(s) %1 on %2 since it has been modified"_s.arg( layerName, dsName ), 2 );
     invalidateCachedDatasets( dsName );
   }
 
@@ -2542,7 +2542,7 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *ds )
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName )
 {
-  return driverName != QLatin1String( "OSM" );
+  return driverName != "OSM"_L1;
 }
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName,
@@ -2556,23 +2556,23 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
   // an outdated version of the .shp.zip. This works only if editing operations are
   // done separately on layers (which is how it works from the GUI)
   return canDriverShareSameDatasetAmongLayers( driverName ) &&
-         !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
+         !( updateMode && dsName.endsWith( ".shp.zip"_L1, Qt::CaseInsensitive ) );
 }
 
 QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
   const QString layerName = QString::fromUtf8( layer->name() );
 
-  QStringList privateLayerNames { QStringLiteral( "layer_styles" ),
-                                  QStringLiteral( "qgis_projects" )};
-  if ( driverName == QLatin1String( "SQLite" ) )
+  QStringList privateLayerNames { u"layer_styles"_s,
+                                  u"qgis_projects"_s};
+  if ( driverName == "SQLite"_L1 )
   {
     privateLayerNames.append( QgsSqliteUtils::systemTables() );
   }
 
   Qgis::SublayerFlags layerFlags;
-  const thread_local QRegularExpression sqliteSystemTableRegEx( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
-  if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( sqliteSystemTableRegEx ) )
+  const thread_local QRegularExpression sqliteSystemTableRegEx( u"idx_.*_geom(etry)?($|_.*)"_s, QRegularExpression::PatternOption::CaseInsensitiveOption );
+  if ( ( driverName == "SQLite"_L1 && layerName.contains( sqliteSystemTableRegEx ) )
        || privateLayerNames.contains( layerName ) )
   {
     layerFlags |= Qgis::SublayerFlag::SystemTable;
@@ -2598,7 +2598,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   // TODO: add support for multiple
   QString geometryColumnName;
   OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) ;
+  const bool slowGeomTypeRetrieval = driverName == "OAPIF"_L1 || driverName == "WFS3"_L1 ;
   if ( !slowGeomTypeRetrieval )
   {
     QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
@@ -2611,19 +2611,19 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   }
 
   QString longDescription;
-  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
+  if ( driverName == "OAPIF"_L1 || driverName == "WFS3"_L1 )
   {
-    longDescription = layer->GetMetadataItem( QStringLiteral( "TITLE" ) );
+    longDescription = layer->GetMetadataItem( u"TITLE"_s );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "id = %1 name = %2 layerGeomType = %3 longDescription = %4" ).arg( i ).arg( layerName ).arg( layerGeomType ). arg( longDescription ), 2 );
+  QgsDebugMsgLevel( u"id = %1 name = %2 layerGeomType = %3 longDescription = %4"_s.arg( i ).arg( layerName ).arg( layerGeomType ). arg( longDescription ), 2 );
 
 
   QVariantMap parts = QgsOgrProviderMetadata().decodeUri( baseUri );
   if ( !hasSingleLayerOnly )
-    parts.insert( QStringLiteral( "layerName" ), layerName );
+    parts.insert( u"layerName"_s, layerName );
   else
-    parts.remove( QStringLiteral( "layerName" ) );
+    parts.remove( u"layerName"_s );
 
   if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown || !( flags & Qgis::SublayerQueryFlag::ResolveGeometryType ) )
   {
@@ -2633,15 +2633,15 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
     QgsProviderSublayerDetails details;
     details.setLayerNumber( i );
-    if ( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+    if ( parts.value( u"vsiSuffix"_s ).toString().isEmpty() )
       details.setName( layerName );
     else
     {
-      if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
-        parts.insert( QStringLiteral( "layerName" ), layerName );
+      if ( parts.value( u"layerName"_s ).toString().isEmpty() )
+        parts.insert( u"layerName"_s, layerName );
       if ( hasSingleLayerOnly )
       {
-        details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+        details.setName( parts.value( u"vsiSuffix"_s ).toString().mid( 1 ) );
       }
       else
       {
@@ -2652,7 +2652,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( layerGeomType ) );
     details.setGeometryColumnName( geometryColumnName );
     details.setDescription( longDescription );
-    details.setProviderKey( QStringLiteral( "ogr" ) );
+    details.setProviderKey( u"ogr"_s );
     details.setDriverName( driverName );
     details.setFlags( layerFlags );
 
@@ -2663,7 +2663,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unknown geometry type, count features for each geometry type" ), 2 );
+    QgsDebugMsgLevel( u"Unknown geometry type, count features for each geometry type"_s, 2 );
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
     QMap<OGRwkbGeometryType, size_t> fCount;
@@ -2671,7 +2671,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
     long long layerFeatureCount = 0;
-    const bool limitScanToOneFeature = driverName == QLatin1String( "OGCAPI" );
+    const bool limitScanToOneFeature = driverName == "OGCAPI"_L1;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
     if ( !limitScanToOneFeature )
@@ -2878,15 +2878,15 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
       QgsProviderSublayerDetails details;
       details.setLayerNumber( i );
-      if ( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+      if ( parts.value( u"vsiSuffix"_s ).toString().isEmpty() )
         details.setName( layerName );
       else
       {
-        if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
-          parts.insert( QStringLiteral( "layerName" ), layerName );
+        if ( parts.value( u"layerName"_s ).toString().isEmpty() )
+          parts.insert( u"layerName"_s, layerName );
         if ( hasSingleLayerOnly )
         {
-          details.setName( parts.value( QStringLiteral( "vsiSuffix" ) ).toString().mid( 1 ) );
+          details.setName( parts.value( u"vsiSuffix"_s ).toString().mid( 1 ) );
         }
         else
         {
@@ -2901,7 +2901,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( eOGRGeomType ) );
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
-      details.setProviderKey( QStringLiteral( "ogr" ) );
+      details.setProviderKey( u"ogr"_s );
       details.setDriverName( driverName );
       details.setFlags( layerFlags );
 
@@ -2910,17 +2910,17 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       // the uri from the sublayer is used to construct an actual vector layer)
       if ( details.wkbType() != Qgis::WkbType::Unknown )
       {
-        parts.insert( QStringLiteral( "geometryType" ),
+        parts.insert( u"geometryType"_s,
                       ogrWkbGeometryTypeName( eOGRGeomType ) );
         if ( fCount.size() == 1 )
         {
           if ( !limitScanToOneFeature )
             details.setFeatureCount( layerFeatureCount );
-          parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
+          parts.insert( u"uniqueGeometryType"_s, u"yes"_s );
         }
       }
       else
-        parts.remove( QStringLiteral( "geometryType" ) );
+        parts.remove( u"geometryType"_s );
 
       details.setUri( QgsOgrProviderMetadata().encodeUri( parts ) );
 
@@ -2952,7 +2952,7 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     }
     if ( ok && ! connName.isEmpty() )
     {
-      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s );
       std::unique_ptr< QgsGeoPackageProviderConnection > providerConnection( qgis::down_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) ) );
       providerConnection->setUri( path );
       providerMetadata->saveConnection( providerConnection.get(), connName );
@@ -3121,7 +3121,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   // OGR_L_GetFeatureCount() can be super slow on huge geopackage files
   // so implement some approximation strategy that has reasonable runtime.
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
-  if ( driverName == QLatin1String( "GPKG" ) )
+  if ( driverName == "GPKG"_L1 )
   {
     // use feature count from meta data
     GIntBig totalFeatureCount = GetTotalFeatureCountFromMetaData();
@@ -3216,7 +3216,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
     else    // use feature count from meta data for large layers > 100000 features
       return totalFeatureCount;
   }
-  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
+  if ( driverName == "OAPIF"_L1 || driverName == "WFS3"_L1 )
   {
     return -1;
   }
@@ -3234,7 +3234,7 @@ GIntBig QgsOgrLayer::GetTotalFeatureCountFromMetaData() const
   QByteArray layerName = OGR_L_GetName( hLayer );
 
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
-  if ( driverName == QLatin1String( "GPKG" ) )
+  if ( driverName == "GPKG"_L1 )
   {
     QByteArray sql( "SELECT feature_count FROM gpkg_ogr_contents WHERE " );
     sql += "lower(table_name) = lower(" + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName ) + ") LIMIT 2";
@@ -3263,7 +3263,7 @@ OGRErr QgsOgrLayer::isSpatialiteEnabled()
   OGRErr err = OGRERR_NONE;
   // if sqlite, check if we support spatialite
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
-  if ( driverName == QLatin1String( "SQLite" ) )
+  if ( driverName == "SQLite"_L1 )
   {
     CPLPushErrorHandler( CPLQuietErrorHandler );
     QgsOgrLayerUniquePtr l = ExecuteSQL( "select * from sqlite_master where type='table' and name='spatialite_history'" );
@@ -3273,17 +3273,17 @@ OGRErr QgsOgrLayer::isSpatialiteEnabled()
       gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
       if ( f )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Sqlite layer has spatialite extension!" ), 3 );
+        QgsDebugMsgLevel( u"Sqlite layer has spatialite extension!"_s, 3 );
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Sqlite layer does NOT have spatialite extension!" ), 3 );
+        QgsDebugMsgLevel( u"Sqlite layer does NOT have spatialite extension!"_s, 3 );
         err = OGRERR_UNSUPPORTED_OPERATION;
       }
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Unable to read sqlite_master from Sqlite layer!" ), 3 );
+      QgsDebugMsgLevel( u"Unable to read sqlite_master from Sqlite layer!"_s, 3 );
       err = OGRERR_UNSUPPORTED_OPERATION;
     }
   }
@@ -3313,7 +3313,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
   const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
   if ( geomCol && strlen( geomCol ) > 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "WITH geomCol: %1" ).arg( geomCol ), 3 );
+    QgsDebugMsgLevel( u"WITH geomCol: %1"_s.arg( geomCol ), 3 );
 
     psExtent3D->MinZ = std::numeric_limits<double>::quiet_NaN();
     psExtent3D->MaxZ = std::numeric_limits<double>::quiet_NaN();
@@ -3341,7 +3341,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
                        + geomColQuoted
                        + ")) FROM "
                        + QgsOgrProviderUtils::quotedIdentifier( name(), driverName );
-      QgsDebugMsgLevel( QStringLiteral( "sql: %1" ).arg( sql.toStdString().c_str() ), 3 );
+      QgsDebugMsgLevel( u"sql: %1"_s.arg( sql.toStdString().c_str() ), 3 );
 
       CPLPushErrorHandler( CPLQuietErrorHandler );
       QgsOgrLayerUniquePtr l = ExecuteSQL( sql );
@@ -3353,7 +3353,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
         {
           psExtent3D->MinZ = OGR_F_GetFieldAsDouble( f.get(), 0 );
           psExtent3D->MaxZ = OGR_F_GetFieldAsDouble( f.get(), 1 );
-          QgsDebugMsgLevel( QStringLiteral( "done with Z! %1/%2" ).arg( psExtent3D->MinZ ).arg( psExtent3D->MaxZ ), 3 );
+          QgsDebugMsgLevel( u"done with Z! %1/%2"_s.arg( psExtent3D->MinZ ).arg( psExtent3D->MaxZ ), 3 );
           err = OGRERR_NONE;
         }
         ResetReading();
@@ -3364,7 +3364,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
   if ( err != OGRERR_NONE )
   {
     // previous attempts failed, try slow version
-    QgsDebugMsgLevel( QStringLiteral( "Will computeExtent3DSlowly!" ), 3 );
+    QgsDebugMsgLevel( u"Will computeExtent3DSlowly!"_s, 3 );
     err = computeExtent3DSlowly( psExtent3D );
   }
 

@@ -92,7 +92,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mImageFormatGroup = new QButtonGroup( this );
-  mImageFormatGroup->setObjectName( QStringLiteral( "mImageFormatGroup" ) );
+  mImageFormatGroup->setObjectName( u"mImageFormatGroup"_s );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
@@ -185,7 +185,7 @@ void QgsWMSSourceSelect::updateFormatButtons( const QStringList &availableFormat
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsgLevel( QStringLiteral( "Refreshing WMS connections ..." ), 2 );
+  QgsDebugMsgLevel( u"Refreshing WMS connections ..."_s, 2 );
   populateConnectionList();
 }
 
@@ -322,16 +322,16 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
   mLayerProperties = layers;
 
   // The default encoding set in the connections has the priority as a default value
-  QString defaultEncoding { QgsOwsConnection::settingsDefaultImageFormat->value( { QStringLiteral( "wms" ), mConnName } ) };
+  QString defaultEncoding { QgsOwsConnection::settingsDefaultImageFormat->value( { u"wms"_s, mConnName } ) };
   if ( defaultEncoding.isEmpty() )
   {
-    defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
+    defaultEncoding = QgsSettings().value( u"qgis/lastWmsImageEncoding"_s, "image/png" ).toString();
   }
 
   updateFormatButtons( capabilities.supportedImageEncodings(), defaultEncoding );
 
   // Update the connection list of available formats
-  QgsOwsConnection::settingsAvailableImageFormats->setValue( capabilities.supportedImageEncodings(), { QStringLiteral( "wms" ), mConnName } );
+  QgsOwsConnection::settingsAvailableImageFormats->setValue( capabilities.supportedImageEncodings(), { u"wms"_s, mConnName } );
 
   btnGrpImageEncoding->setEnabled( true );
 
@@ -357,7 +357,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     // Layer Styles
     for ( const QgsWmsStyleProperty &property : layer.style )
     {
-      QgsDebugMsgLevel( QStringLiteral( "got style name %1 and title '%2'." ).arg( property.name, property.title ), 2 );
+      QgsDebugMsgLevel( u"got style name %1 and title '%2'."_s.arg( property.name, property.title ), 2 );
 
       QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
@@ -410,7 +410,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
           for ( const QString &format : l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
-            item->setIcon( QgsApplication::getThemeIcon( l.timeDimensionIdentifier.isEmpty() ? QStringLiteral( "/mIconRaster.svg" ) : QStringLiteral( "/mIconTemporalRaster.svg" ) ) );
+            item->setIcon( QgsApplication::getThemeIcon( l.timeDimensionIdentifier.isEmpty() ? u"/mIconRaster.svg"_s : u"/mIconTemporalRaster.svg"_s ) );
             item->setData( Qt::UserRole + 0, l.identifier );
             item->setData( Qt::UserRole + 1, format );
             item->setData( Qt::UserRole + 2, style.identifier );
@@ -480,17 +480,17 @@ void QgsWMSSourceSelect::btnConnect_clicked()
   mUri = connection.uri();
 
   bool featureCountSet {};
-  if ( connection.uri().hasParam( QStringLiteral( "featureCount" ) ) )
+  if ( connection.uri().hasParam( u"featureCount"_s ) )
   {
-    connection.uri().param( QStringLiteral( "featureCount" ) ).toInt( &featureCountSet );
+    connection.uri().param( u"featureCount"_s ).toInt( &featureCountSet );
     if ( featureCountSet )
-      mFeatureCount->setText( connection.uri().param( QStringLiteral( "featureCount" ) ) );
+      mFeatureCount->setText( connection.uri().param( u"featureCount"_s ) );
   }
 
   // Original default for old connections with no default feature count set
   if ( !featureCountSet )
   {
-    mFeatureCount->setText( QStringLiteral( "10" ) );
+    mFeatureCount->setText( u"10"_s );
   }
 
   QgsWmsSettings wmsSettings;
@@ -523,7 +523,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     }
     else // just log for testing
     {
-      QgsDebugMsgLevel( QStringLiteral( "WMS capabilities download failed: %1" ).arg( capDownload.lastError() ), 2 );
+      QgsDebugMsgLevel( u"WMS capabilities download failed: %1"_s.arg( capDownload.lastError() ), 2 );
     }
     return;
   }
@@ -539,7 +539,7 @@ void QgsWMSSourceSelect::btnConnect_clicked()
     }
     else // just log for testing
     {
-      QgsDebugMsgLevel( QStringLiteral( "WMS capabilities parsing failed: %1" ).arg( caps.lastError() ), 2 );
+      QgsDebugMsgLevel( u"WMS capabilities parsing failed: %1"_s.arg( caps.lastError() ), 2 );
     }
     return;
   }
@@ -561,14 +561,14 @@ void QgsWMSSourceSelect::addButtonClicked()
 
   if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
   {
-    uri.setParam( QStringLiteral( "maxWidth" ), mTileWidth->text() );
-    uri.setParam( QStringLiteral( "maxHeight" ), mTileHeight->text() );
+    uri.setParam( u"maxWidth"_s, mTileWidth->text() );
+    uri.setParam( u"maxHeight"_s, mTileHeight->text() );
   }
 
   if ( mStepWidth->text().toInt() > 0 && mStepHeight->text().toInt() > 0 )
   {
-    uri.setParam( QStringLiteral( "stepWidth" ), mStepWidth->text() );
-    uri.setParam( QStringLiteral( "stepHeight" ), mStepHeight->text() );
+    uri.setParam( u"stepWidth"_s, mStepWidth->text() );
+    uri.setParam( u"stepHeight"_s, mStepHeight->text() );
   }
 
   if ( lstTilesets->selectedItems().isEmpty() )
@@ -588,7 +588,7 @@ void QgsWMSSourceSelect::addButtonClicked()
     crs = item->data( Qt::UserRole + 4 ).toString();
     titles = QStringList( item->data( Qt::UserRole + 5 ).toString() );
 
-    uri.setParam( QStringLiteral( "tileMatrixSet" ), item->data( Qt::UserRole + 3 ).toStringList() );
+    uri.setParam( u"tileMatrixSet"_s, item->data( Qt::UserRole + 3 ).toStringList() );
 
     const QgsWmtsTileLayer *layer = nullptr;
 
@@ -628,51 +628,51 @@ void QgsWMSSourceSelect::addButtonClicked()
 
       delete dlg;
 
-      uri.setParam( QStringLiteral( "tileDimensions" ), dimString );
+      uri.setParam( u"tileDimensions"_s, dimString );
     }
   }
-  uri.setParam( QStringLiteral( "format" ), format );
-  uri.setParam( QStringLiteral( "crs" ), crs );
-  QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
+  uri.setParam( u"format"_s, format );
+  uri.setParam( u"crs"_s, crs );
+  QgsDebugMsgLevel( u"crs=%2 "_s.arg( crs ), 2 );
 
-  QgsSettings().setValue( QStringLiteral( "/qgis/lastWmsImageEncoding" ), format );
+  QgsSettings().setValue( u"/qgis/lastWmsImageEncoding"_s, format );
 
   // Remove in case the default value from the connection settings
   // is being overridden here
-  uri.removeParam( QStringLiteral( "featureCount" ) );
+  uri.removeParam( u"featureCount"_s );
   if ( mFeatureCount->text().toInt() > 0 )
   {
-    uri.setParam( QStringLiteral( "featureCount" ), mFeatureCount->text() );
+    uri.setParam( u"featureCount"_s, mFeatureCount->text() );
   }
 
   if ( tabTilesets->isEnabled() && !mInterpretationCombo->interpretation().isEmpty() )
-    uri.setParam( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
+    uri.setParam( u"interpretation"_s, mInterpretationCombo->interpretation() );
 
-  uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
+  uri.setParam( u"contextualWMSLegend"_s, mContextualLegendCheckbox->isChecked() ? "1" : "0" );
   if ( mLoadLayersIndividuallyCheckBox->isChecked() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "layers=%1 " ).arg( layers.join( ", " ) ), 2 );
+    QgsDebugMsgLevel( u"layers=%1 "_s.arg( layers.join( ", " ) ), 2 );
     for ( int i = 0; i < layers.count(); i++ )
     {
       QgsDataSourceUri individualUri( uri );
-      individualUri.setParam( QStringLiteral( "layers" ), layers.at( i ) );
-      individualUri.setParam( QStringLiteral( "styles" ), styles.at( i ) );
+      individualUri.setParam( u"layers"_s, layers.at( i ) );
+      individualUri.setParam( u"styles"_s, styles.at( i ) );
 
       Q_NOWARN_DEPRECATED_PUSH
-      emit addRasterLayer( individualUri.encodedUri(), titles.at( i ), QStringLiteral( "wms" ) );
+      emit addRasterLayer( individualUri.encodedUri(), titles.at( i ), u"wms"_s );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::Raster, individualUri.encodedUri(), titles.at( i ), QStringLiteral( "wms" ) );
+      emit addLayer( Qgis::LayerType::Raster, individualUri.encodedUri(), titles.at( i ), u"wms"_s );
     }
   }
   else
   {
-    uri.setParam( QStringLiteral( "layers" ), layers );
-    uri.setParam( QStringLiteral( "styles" ), styles );
+    uri.setParam( u"layers"_s, layers );
+    uri.setParam( u"styles"_s, styles );
 
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), QStringLiteral( "wms" ) );
+    emit addRasterLayer( uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), u"wms"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), QStringLiteral( "wms" ) );
+    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), u"wms"_s );
   }
 }
 
@@ -971,7 +971,7 @@ void QgsWMSSourceSelect::lstTilesets_itemClicked( QTableWidgetItem *item )
   lstTilesets->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsgLevel( QStringLiteral( "selecting current row %1" ).arg( lstTilesets->currentRow() ), 2 );
+    QgsDebugMsgLevel( u"selecting current row %1"_s.arg( lstTilesets->currentRow() ), 2 );
     lstTilesets->selectRow( lstTilesets->currentRow() );
     mCurrentTileset = rowItem;
   }
@@ -1098,21 +1098,21 @@ void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUr
       for ( const QgsWmsDimensionProperty &dimension : std::as_const( layerProperty.dimensions ) )
       {
         // add temporal dimensions only
-        if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
+        if ( dimension.name == "time"_L1 || dimension.name == "reference_time"_L1 )
         {
-          QString name = dimension.name == QLatin1String( "time" ) ? QStringLiteral( "timeDimensionExtent" ) : QStringLiteral( "referenceTimeDimensionExtent" );
+          QString name = dimension.name == "time"_L1 ? u"timeDimensionExtent"_s : u"referenceTimeDimensionExtent"_s;
 
-          if ( !( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
-            uri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
+          if ( !( uri.param( "type"_L1 ) == "wmst"_L1 ) )
+            uri.setParam( "type"_L1, "wmst"_L1 );
           uri.setParam( name, dimension.extent );
         }
       }
 
       // WMS-T defaults settings
-      if ( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
+      if ( uri.param( "type"_L1 ) == "wmst"_L1 )
       {
-        uri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
-        uri.setParam( QLatin1String( "allowTemporalUpdates" ), QLatin1String( "true" ) );
+        uri.setParam( "temporalSource"_L1, "provider"_L1 );
+        uri.setParam( "allowTemporalUpdates"_L1, "true"_L1 );
       }
     }
   }
@@ -1162,7 +1162,7 @@ void QgsWMSSourceSelect::showError( QgsWmsProvider *wms )
   QgsMessageViewer *mv = new QgsMessageViewer( this );
   mv->setWindowTitle( wms->lastErrorTitle() );
 
-  if ( wms->lastErrorFormat() == QLatin1String( "text/html" ) )
+  if ( wms->lastErrorFormat() == "text/html"_L1 )
   {
     mv->setMessageAsHtml( wms->lastError() );
   }
@@ -1369,7 +1369,7 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList &newLayerList, c
 
 void QgsWMSSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/ogc_client_support.html"_s );
 }
 
 QgsWmsInterpretationComboBox::QgsWmsInterpretationComboBox( QWidget *parent )

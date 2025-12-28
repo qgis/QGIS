@@ -32,7 +32,7 @@ class TestQgsNetworkAnalysis : public QgsTest
 
   public:
     TestQgsNetworkAnalysis()
-      : QgsTest( QStringLiteral( "Network Analysis Tests" ) )
+      : QgsTest( u"Network Analysis Tests"_s )
     {}
 
   private slots:
@@ -133,10 +133,10 @@ void TestQgsNetworkAnalysis::testGraph()
 
 std::unique_ptr<QgsVectorLayer> TestQgsNetworkAnalysis::buildNetwork()
 {
-  auto l = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  auto l = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s );
 
   QgsFeature ff( 0 );
-  const QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10)" ) );
+  const QgsGeometry refGeom = QgsGeometry::fromWkt( u"LineString(0 0, 10 0, 10 10)"_s );
   ff.setGeometry( refGeom );
   ff.setAttributes( QgsAttributes() << 1 );
   QgsFeatureList flist;
@@ -202,7 +202,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
 
   QgsFeature ff( 0 );
   // 0.1 distance gap
-  const QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(10.1 10, 20 10 )" ) );
+  const QgsGeometry refGeom = QgsGeometry::fromWkt( u"LineString(10.1 10, 20 10 )"_s );
   ff.setGeometry( refGeom );
   QgsFeatureList flist;
   flist << ff;
@@ -287,13 +287,13 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   QgsFeature ff( 0 );
   QgsFeatureList flist;
 
-  ff.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 20 10 )" ) ) );
+  ff.setGeometry( QgsGeometry::fromWkt( u"LineString(10 10, 20 10 )"_s ) );
   ff.setAttributes( QgsAttributes() << 2 );
   flist << ff;
-  ff.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 20, 10 10 )" ) ) );
+  ff.setGeometry( QgsGeometry::fromWkt( u"LineString(10 20, 10 10 )"_s ) );
   ff.setAttributes( QgsAttributes() << 3 );
   flist << ff;
-  ff.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(20 -10, 20 10 )" ) ) );
+  ff.setGeometry( QgsGeometry::fromWkt( u"LineString(20 -10, 20 10 )"_s ) );
   ff.setAttributes( QgsAttributes() << 4 );
   flist << ff;
   network->dataProvider()->addFeatures( flist );
@@ -460,11 +460,11 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
 
 void TestQgsNetworkAnalysis::testRouteFail()
 {
-  auto network = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:28355&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  auto network = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:28355&field=cost:int"_s, u"x"_s, u"memory"_s );
 
-  const QStringList lines = QStringList() << QStringLiteral( "LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)" )
-                                          << QStringLiteral( "LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)" )
-                                          << QStringLiteral( "LineString (302181.69117977644782513 5753576.27856593858450651, 302081.71834095334634185 5753475.14562766999006271)" );
+  const QStringList lines = QStringList() << u"LineString (302081.71116495534079149 5753475.15082756895571947, 302140.54234686412382871 5753417.70564490929245949, 302143.24717211339157075 5753412.57312887348234653, 302143.17789465241366997 5753406.77192200440913439, 302140.35127420048229396 5753401.70546196680516005, 302078.46200818457873538 5753338.31098813004791737, 302038.17299743194598705 5753309.50200006738305092)"_s
+                                          << u"LineString (302081.70763194985920563 5753475.1403581602498889, 301978.24500802176771685 5753368.03299263771623373)"_s
+                                          << u"LineString (302181.69117977644782513 5753576.27856593858450651, 302081.71834095334634185 5753475.14562766999006271)"_s;
   QgsFeatureList flist;
   for ( const QString &line : lines )
   {
@@ -513,12 +513,12 @@ void TestQgsNetworkAnalysis::testRouteFail()
 
 void TestQgsNetworkAnalysis::testRouteFail2()
 {
-  auto network = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=cost:double" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  auto network = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=cost:double"_s, u"x"_s, u"memory"_s );
 
-  const QStringList lines = QStringList() << QStringLiteral( "LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)" )
-                                          << QStringLiteral( "LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)" )
-                                          << QStringLiteral( "LineString (11.2504146475968092 48.42573849773970096, 11.25048389759681022 48.42572031773969599, 11.25051325759680942 48.42570672773970131)" )
-                                          << QStringLiteral( "LineString (11.25038716759680923 48.42569834773969717, 11.25055288759680927 48.42564748773969541, 11.25052296759680992 48.42560921773969795)" );
+  const QStringList lines = QStringList() << u"LineString (11.25044997999680874 48.42605439713970128, 11.25044693759680925 48.42603339773970106, 11.25044760759680962 48.42591690773969759, 11.25052289759680946 48.42589190773969676)"_s
+                                          << u"LineString (11.25052289759680946 48.42589190773969676, 11.25050350759680917 48.42586202773969717, 11.25047190759680937 48.42581754773969749, 11.2504146475968092 48.42573849773970096, 11.25038716759680923 48.42569834773969717, 11.2502920175968093 48.42557470773969897, 11.25019984759680902 48.42560406773969817, 11.25020393759680992 48.42571203773970012, 11.2502482875968095 48.42577478773969801, 11.25021922759680848 48.42578442773969982)"_s
+                                          << u"LineString (11.2504146475968092 48.42573849773970096, 11.25048389759681022 48.42572031773969599, 11.25051325759680942 48.42570672773970131)"_s
+                                          << u"LineString (11.25038716759680923 48.42569834773969717, 11.25055288759680927 48.42564748773969541, 11.25052296759680992 48.42560921773969795)"_s;
   QgsFeatureList flist;
   int i = 0;
   for ( const QString &line : lines )

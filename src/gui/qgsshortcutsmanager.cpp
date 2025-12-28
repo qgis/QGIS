@@ -42,10 +42,10 @@ QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settin
     registerAction( action, sequence, section );
     mCommonActions.insert( static_cast< int >( commonAction ), action );
   };
-  registerCommonAction( CommonAction::CodeToggleComment, QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ), tr( "Toggle Comment" ), tr( "Toggle comment" ), QStringLiteral( "Ctrl+/" ), QStringLiteral( "mEditorToggleComment" ), QStringLiteral( "Editor" ) );
-  registerCommonAction( CommonAction::CodeReformat, QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ), tr( "Reformat Code" ), tr( "Reformat code" ), QStringLiteral( "Ctrl+Alt+F" ), QStringLiteral( "mEditorReformatCode" ), QStringLiteral( "Editor" ) );
-  registerCommonAction( CommonAction::CodeRunScript, QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ), tr( "Run Script" ), tr( "Run entire script" ), QStringLiteral( "Ctrl+Shift+E" ), QStringLiteral( "mEditorRunScript" ), QStringLiteral( "Editor" ) );
-  registerCommonAction( CommonAction::CodeRunSelection, QgsApplication::getThemeIcon( QStringLiteral( "mActionRunSelected.svg" ) ), tr( "Run Selection" ), tr( "Run selected part of script" ), QStringLiteral( "Ctrl+E" ), QStringLiteral( "mEditorRunSelection" ), QStringLiteral( "Editor" ) );
+  registerCommonAction( CommonAction::CodeToggleComment, QgsApplication::getThemeIcon( u"console/iconCommentEditorConsole.svg"_s, QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ), tr( "Toggle Comment" ), tr( "Toggle comment" ), u"Ctrl+/"_s, u"mEditorToggleComment"_s, u"Editor"_s );
+  registerCommonAction( CommonAction::CodeReformat, QgsApplication::getThemeIcon( u"console/iconFormatCode.svg"_s ), tr( "Reformat Code" ), tr( "Reformat code" ), u"Ctrl+Alt+F"_s, u"mEditorReformatCode"_s, u"Editor"_s );
+  registerCommonAction( CommonAction::CodeRunScript, QgsApplication::getThemeIcon( u"mActionStart.svg"_s ), tr( "Run Script" ), tr( "Run entire script" ), u"Ctrl+Shift+E"_s, u"mEditorRunScript"_s, u"Editor"_s );
+  registerCommonAction( CommonAction::CodeRunSelection, QgsApplication::getThemeIcon( u"mActionRunSelected.svg"_s ), tr( "Run Selection" ), tr( "Run selected part of script" ), u"Ctrl+E"_s, u"mEditorRunSelection"_s, u"Editor"_s );
 }
 
 QgsShortcutsManager::~QgsShortcutsManager()
@@ -111,7 +111,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   if ( action->text().isEmpty() && action->objectName().isEmpty() )
   {
 #ifdef QGISDEBUG
-    QgsLogger::warning( QStringLiteral( "Action has no text set: %1" ).arg( action->objectName() ) );
+    QgsLogger::warning( u"Action has no text set: %1"_s.arg( action->objectName() ) );
 #endif
     return false;
   }
@@ -121,10 +121,10 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
 
 #ifdef QGISDEBUG
   if ( actionByName( key ) || shortcutByName( key ) )
-    QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( key ) );
+    QgsLogger::warning( u"Duplicate shortcut registered: %1"_s.arg( key ) );
 #endif
 
-  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + QStringLiteral( "/" ) ) + key;
+  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + u"/"_s ) + key;
 
   mActions.insert( action, { defaultSequence, settingKey } );
   connect( action, &QObject::destroyed, this, [action, this]() { actionDestroyed( action ); } );
@@ -163,12 +163,12 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate or non-compliant actions
   if ( shortcut->objectName().isEmpty() )
-    QgsLogger::warning( QStringLiteral( "Shortcut has no object name set: %1" ).arg( shortcut->key().toString() ) );
+    QgsLogger::warning( u"Shortcut has no object name set: %1"_s.arg( shortcut->key().toString() ) );
   else if ( actionByName( shortcut->objectName() ) || shortcutByName( shortcut->objectName() ) )
-    QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( shortcut->objectName() ) );
+    QgsLogger::warning( u"Duplicate shortcut registered: %1"_s.arg( shortcut->objectName() ) );
 #endif
 
-  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + QStringLiteral( "/" ) ) + shortcut->objectName();
+  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + u"/"_s ) + shortcut->objectName();
 
   mShortcuts.insert( shortcut, { defaultSequence, settingKey } );
   connect( shortcut, &QObject::destroyed, this, [shortcut, this]() { shortcutDestroyed( shortcut ); } );
@@ -435,11 +435,11 @@ QString QgsShortcutsManager::formatActionToolTip( const QString &toolTip )
     return QString();
 
   const QStringList parts = toolTip.split( '\n' );
-  QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
+  QString formatted = u"<b>%1</b>"_s.arg( parts.at( 0 ) );
   if ( parts.count() > 1 )
   {
     for ( int i = 1; i < parts.count(); ++i )
-      formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
+      formatted += u"<p>%1</p>"_s.arg( parts.at( i ) );
   }
 
   return formatted;
@@ -448,7 +448,7 @@ QString QgsShortcutsManager::formatActionToolTip( const QString &toolTip )
 void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &sequence )
 {
   QString current = action->toolTip();
-  const thread_local QRegularExpression rx( QStringLiteral( "\\s*\\((.*)\\)" ) );
+  const thread_local QRegularExpression rx( u"\\s*\\((.*)\\)"_s );
   // Look for the last occurrence of text inside parentheses
   QRegularExpressionMatch match;
   if ( current.lastIndexOf( rx, -1, &match ) != -1 )

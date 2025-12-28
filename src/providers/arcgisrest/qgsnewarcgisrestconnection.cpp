@@ -44,7 +44,7 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
 
   setWindowTitle( tr( "Create a New arcgisfeatureserver Connection" ) );
 
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]+"_s ), txtName ) );
 
   if ( !connectionName.isEmpty() )
   {
@@ -182,5 +182,5 @@ void QgsNewArcGisRestConnectionDialog::accept()
 
 void QgsNewArcGisRestConnectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/index.html"_s );
 }

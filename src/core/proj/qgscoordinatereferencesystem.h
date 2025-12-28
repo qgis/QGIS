@@ -1114,9 +1114,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),
-                        std::isfinite( sipCpp->coordinateEpoch() ) ? QStringLiteral( " @ %1" ).arg( sipCpp->coordinateEpoch() ) : QString() )
-                        : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
+    const QString str = sipCpp->isValid() ? u"<QgsCoordinateReferenceSystem: %1%2>"_s.arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),
+                        std::isfinite( sipCpp->coordinateEpoch() ) ? u" @ %1"_s.arg( sipCpp->coordinateEpoch() ) : QString() )
+                        : u"<QgsCoordinateReferenceSystem: invalid>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -1345,44 +1345,44 @@ Q_DECLARE_METATYPE( QgsCoordinateReferenceSystem )
 #ifndef SIP_RUN
 inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenceSystem &r )
 {
-  QString mySummary( QStringLiteral( "\n\tSpatial Reference System:" ) );
-  mySummary += QLatin1String( "\n\t\tDescription : " );
+  QString mySummary( u"\n\tSpatial Reference System:"_s );
+  mySummary += "\n\t\tDescription : "_L1;
   if ( !r.description().isNull() )
   {
     mySummary += r.description();
   }
   else
   {
-    mySummary += QLatin1String( "Undefined" );
+    mySummary += "Undefined"_L1;
   }
-  mySummary += QLatin1String( "\n\t\tProjection  : " );
+  mySummary += "\n\t\tProjection  : "_L1;
   if ( !r.projectionAcronym().isNull() )
   {
     mySummary += r.projectionAcronym();
   }
   else
   {
-    mySummary += QLatin1String( "Undefined" );
+    mySummary += "Undefined"_L1;
   }
 
-  mySummary += QLatin1String( "\n\t\tEllipsoid   : " );
+  mySummary += "\n\t\tEllipsoid   : "_L1;
   if ( !r.ellipsoidAcronym().isNull() )
   {
     mySummary += r.ellipsoidAcronym();
   }
   else
   {
-    mySummary += QLatin1String( "Undefined" );
+    mySummary += "Undefined"_L1;
   }
 
-  mySummary += QLatin1String( "\n\t\tProjString  : " );
+  mySummary += "\n\t\tProjString  : "_L1;
   if ( !r.toProj().isNull() )
   {
     mySummary += r.toProj();
   }
   else
   {
-    mySummary += QLatin1String( "Undefined" );
+    mySummary += "Undefined"_L1;
   }
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;

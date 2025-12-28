@@ -65,7 +65,7 @@ class CORE_EXPORT QgsProcessingParameterAlignRasterLayers : public QgsProcessing
     QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "alignrasterlayers" ); }
+    static QString typeName() { return u"alignrasterlayers"_s; }
     //! Converts a QVariant value (a QVariantList) to a list of input layers
     static QList<QgsAlignRasterData::RasterItem> parameterAsItems( const QVariant &layersVariant, QgsProcessingContext &context );
     //! Converts a QVariant value (a QVariantMap) to a single input layer
@@ -109,12 +109,12 @@ class CORE_EXPORT QgsProcessingParameterTypeAlignRasterLayers : public QgsProces
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterAlignRasterLayers" );
+      return u"from qgis.core import QgsProcessingParameterAlignRasterLayers"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterAlignRasterLayers" );
+      return u"QgsProcessingParameterAlignRasterLayers"_s;
     }
 
     QStringList acceptedPythonTypes() const override
@@ -126,8 +126,8 @@ class CORE_EXPORT QgsProcessingParameterTypeAlignRasterLayers : public QgsProces
              << QObject::tr( "str: layer ID" )
              << QObject::tr( "str: layer name" )
              << QObject::tr( "str: layer source" )
-             << QStringLiteral( "list[QgsMapLayer]" )
-             << QStringLiteral( "QgsRasterLayer" );
+             << u"list[QgsMapLayer]"_s
+             << u"QgsRasterLayer"_s;
     }
 
     QStringList acceptedParameterTypes() const override

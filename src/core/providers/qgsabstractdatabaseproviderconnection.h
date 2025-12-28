@@ -284,7 +284,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
+        QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>"_s.arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
           SIP_PYOBJECT __repr__();
           % MethodCode
-          QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>" ).arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
+          QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>"_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
           sipRes = PyUnicode_FromString( str.toUtf8().constData() );
           % End
 #endif

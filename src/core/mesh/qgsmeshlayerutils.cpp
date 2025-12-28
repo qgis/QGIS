@@ -591,7 +591,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
     format = format.trimmed();
     const int totalHours = static_cast<int>( hours );
 
-    if ( format == QLatin1String( "hh:mm:ss.zzz" ) )
+    if ( format == "hh:mm:ss.zzz"_L1 )
     {
       const int ms = static_cast<int>( hours * 3600.0 * 1000 );
       const int seconds = ms / 1000;
@@ -600,26 +600,26 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
       const int s = seconds % 60;
       const int h = m / 60;
       m = m % 60;
-      ret = QStringLiteral( "%1:%2:%3.%4" ).
+      ret = u"%1:%2:%3.%4"_s.
             arg( h, 2, 10, QLatin1Char( '0' ) ).
             arg( m, 2, 10, QLatin1Char( '0' ) ).
             arg( s, 2, 10, QLatin1Char( '0' ) ).
             arg( z, 3, 10, QLatin1Char( '0' ) );
     }
-    else if ( format == QLatin1String( "hh:mm:ss" ) )
+    else if ( format == "hh:mm:ss"_L1 )
     {
       const int seconds = static_cast<int>( hours * 3600.0 );
       int m = seconds / 60;
       const int s = seconds % 60;
       const int h = m / 60;
       m = m % 60;
-      ret = QStringLiteral( "%1:%2:%3" ).
+      ret = u"%1:%2:%3"_s.
             arg( h, 2, 10, QLatin1Char( '0' ) ).
             arg( m, 2, 10, QLatin1Char( '0' ) ).
             arg( s, 2, 10, QLatin1Char( '0' ) );
 
     }
-    else if ( format == QLatin1String( "d hh:mm:ss" ) )
+    else if ( format == "d hh:mm:ss"_L1 )
     {
       const int seconds = static_cast<int>( hours * 3600.0 );
       int m = seconds / 60;
@@ -628,26 +628,26 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
       m = m % 60;
       const int d = totalHours / 24;
       h = totalHours % 24;
-      ret = QStringLiteral( "%1 d %2:%3:%4" ).
+      ret = u"%1 d %2:%3:%4"_s.
             arg( d ).
             arg( h, 2, 10, QLatin1Char( '0' ) ).
             arg( m, 2, 10, QLatin1Char( '0' ) ).
             arg( s, 2, 10, QLatin1Char( '0' ) );
     }
-    else if ( format == QLatin1String( "d hh" ) )
+    else if ( format == "d hh"_L1 )
     {
       const int d = totalHours / 24;
       const int h = totalHours % 24;
-      ret = QStringLiteral( "%1 d %2" ).
+      ret = u"%1 d %2"_s.
             arg( d ).
             arg( h );
     }
-    else if ( format == QLatin1String( "d" ) )
+    else if ( format == "d"_L1 )
     {
       const int d = totalHours / 24;
       ret = QString::number( d );
     }
-    else if ( format == QLatin1String( "ss" ) )
+    else if ( format == "ss"_L1 )
     {
       const int seconds = static_cast<int>( hours * 3600.0 );
       ret = QString::number( seconds );

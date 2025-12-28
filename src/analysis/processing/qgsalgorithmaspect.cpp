@@ -24,7 +24,7 @@
 
 QString QgsAspectAlgorithm::name() const
 {
-  return QStringLiteral( "aspect" );
+  return u"aspect"_s;
 }
 
 QString QgsAspectAlgorithm::displayName() const
@@ -44,13 +44,13 @@ QString QgsAspectAlgorithm::group() const
 
 QString QgsAspectAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasterterrainanalysis" );
+  return u"rasterterrainanalysis"_s;
 }
 
 QString QgsAspectAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates the aspect of the Digital Terrain Model in input." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The final aspect raster layer contains values from 0 to 360 that express "
                         "the slope direction: starting from North (0°) and continuing clockwise." );
 }
@@ -67,27 +67,27 @@ QgsAspectAlgorithm *QgsAspectAlgorithm::createInstance() const
 
 void QgsAspectAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Elevation layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "Z_FACTOR" ), QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Elevation layer" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 ) );
 
-  auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NODATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
+  auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
   outputNodataParam->setFlags( outputNodataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( outputNodataParam.release() );
 
-  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( creationOptsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Aspect" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Aspect" ) ) );
 }
 
 bool QgsAspectAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
   if ( !layer )
   {
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
   }
 
   mLayerSource = layer->source();
@@ -96,12 +96,12 @@ bool QgsAspectAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPro
 
 QVariantMap QgsAspectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
-  const QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
-  const double outputNodata = parameterAsDouble( parameters, QStringLiteral( "NODATA" ), context );
+  const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
+  const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  const double outputNodata = parameterAsDouble( parameters, u"NODATA"_s, context );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
 
   QgsAspectFilter aspect( mLayerSource, outputFile, outputFormat );
   aspect.setZFactor( zFactor );
@@ -113,7 +113,7 @@ QVariantMap QgsAspectAlgorithm::processAlgorithm( const QVariantMap &parameters,
   aspect.processRaster( feedback );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

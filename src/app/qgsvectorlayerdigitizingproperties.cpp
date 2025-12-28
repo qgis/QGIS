@@ -35,7 +35,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Digitizing" ) );
+  setObjectName( u"mOptsPage_Digitizing"_s );
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
@@ -70,7 +70,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
       }
     } );
 
-    mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( vlayer->crs().mapUnits() ) ) );
+    mPrecisionUnitsLabel->setText( u"[%1]"_s.arg( QgsUnitTypes::toAbbreviatedString( vlayer->crs().mapUnits() ) ) );
 
     QLayout *geometryCheckLayout = new QVBoxLayout();
     const QList<QgsGeometryCheckFactory *> geometryCheckFactories = QgsAnalysis::geometryCheckRegistry()->geometryCheckFactories( vlayer, QgsGeometryCheck::FeatureNodeCheck, QgsGeometryCheck::Flag::AvailableInValidation );
@@ -94,26 +94,26 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
       topologyCheckLayout->addWidget( cb );
-      if ( factory->id() == QLatin1String( "QgsGeometryGapCheck" ) )
+      if ( factory->id() == "QgsGeometryGapCheck"_L1 )
       {
-        const QVariantMap gapCheckConfig = vlayer->geometryOptions()->checkConfiguration( QStringLiteral( "QgsGeometryGapCheck" ) );
+        const QVariantMap gapCheckConfig = vlayer->geometryOptions()->checkConfiguration( u"QgsGeometryGapCheck"_s );
 
         mGapCheckAllowExceptionsActivatedCheckBox = new QgsCollapsibleGroupBox( tr( "Allowed Gaps" ) );
         mGapCheckAllowExceptionsActivatedCheckBox->setCheckable( true );
-        mGapCheckAllowExceptionsActivatedCheckBox->setChecked( gapCheckConfig.value( QStringLiteral( "allowedGapsEnabled" ), false ).toBool() );
+        mGapCheckAllowExceptionsActivatedCheckBox->setChecked( gapCheckConfig.value( u"allowedGapsEnabled"_s, false ).toBool() );
         QGridLayout *layout = new QGridLayout();
         mGapCheckAllowExceptionsActivatedCheckBox->setLayout( layout );
         topologyCheckLayout->addWidget( mGapCheckAllowExceptionsActivatedCheckBox );
         mGapCheckAllowExceptionsLayerComboBox = new QgsMapLayerComboBox();
         mGapCheckAllowExceptionsLayerComboBox->setFilters( Qgis::LayerFilter::PolygonLayer );
         mGapCheckAllowExceptionsLayerComboBox->setExceptedLayerList( QList<QgsMapLayer *> { vlayer } );
-        mGapCheckAllowExceptionsLayerComboBox->setLayer( QgsProject::instance()->mapLayer( gapCheckConfig.value( QStringLiteral( "allowedGapsLayer" ) ).toString() ) );
+        mGapCheckAllowExceptionsLayerComboBox->setLayer( QgsProject::instance()->mapLayer( gapCheckConfig.value( u"allowedGapsLayer"_s ).toString() ) );
         layout->addWidget( new QLabel( tr( "Layer" ) ), 0, 0 );
         layout->addWidget( mGapCheckAllowExceptionsLayerComboBox, 0, 1 );
         mGapCheckAllowExceptionsBufferSpinBox = new QgsDoubleSpinBox();
         mGapCheckAllowExceptionsBufferSpinBox->setInputMethodHints( Qt::ImhFormattedNumbersOnly );
         mGapCheckAllowExceptionsBufferSpinBox->setSuffix( QgsUnitTypes::toAbbreviatedString( vlayer->crs().mapUnits() ) );
-        mGapCheckAllowExceptionsBufferSpinBox->setValue( gapCheckConfig.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble() );
+        mGapCheckAllowExceptionsBufferSpinBox->setValue( gapCheckConfig.value( u"allowedGapsBuffer"_s ).toDouble() );
         layout->addWidget( new QLabel( tr( "Buffer" ) ), 0, 2 );
         layout->addWidget( mGapCheckAllowExceptionsBufferSpinBox, 0, 3 );
       }
@@ -128,7 +128,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
     mGeometryAutoFixesGroupBox->setEnabled( false );
   }
 
-  setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#digitizing-properties" ) );
+  setProperty( "helpPage", u"working_with_vector/vector_properties.html#digitizing-properties"_s );
 }
 
 void QgsVectorLayerDigitizingPropertiesPage::apply()
@@ -158,12 +158,12 @@ void QgsVectorLayerDigitizingPropertiesPage::apply()
   if ( mGapCheckAllowExceptionsActivatedCheckBox )
   {
     QVariantMap gapCheckConfig;
-    gapCheckConfig.insert( QStringLiteral( "allowedGapsEnabled" ), mGapCheckAllowExceptionsActivatedCheckBox->isChecked() );
+    gapCheckConfig.insert( u"allowedGapsEnabled"_s, mGapCheckAllowExceptionsActivatedCheckBox->isChecked() );
     QgsMapLayer *currentLayer = mGapCheckAllowExceptionsLayerComboBox->currentLayer();
-    gapCheckConfig.insert( QStringLiteral( "allowedGapsLayer" ), currentLayer ? currentLayer->id() : QString() );
-    gapCheckConfig.insert( QStringLiteral( "allowedGapsBuffer" ), mGapCheckAllowExceptionsBufferSpinBox->value() );
+    gapCheckConfig.insert( u"allowedGapsLayer"_s, currentLayer ? currentLayer->id() : QString() );
+    gapCheckConfig.insert( u"allowedGapsBuffer"_s, mGapCheckAllowExceptionsBufferSpinBox->value() );
 
-    vlayer->geometryOptions()->setCheckConfiguration( QStringLiteral( "QgsGeometryGapCheck" ), gapCheckConfig );
+    vlayer->geometryOptions()->setCheckConfiguration( u"QgsGeometryGapCheck"_s, gapCheckConfig );
   }
 }
 

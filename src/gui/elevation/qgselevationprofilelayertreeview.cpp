@@ -39,7 +39,7 @@
 
 #include "moc_qgselevationprofilelayertreeview.cpp"
 
-const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE = QStringLiteral( "elevationProfileRegistry" );
+const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE = u"elevationProfileRegistry"_s;
 
 QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
@@ -236,7 +236,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
           if ( !elevationPropertiesSummary.isEmpty() )
             parts << elevationPropertiesSummary;
 
-          return parts.join( QLatin1String( "<br/>" ) );
+          return parts.join( "<br/>"_L1 );
         }
       }
       break;
@@ -260,7 +260,7 @@ bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const
       const bool checked = static_cast<Qt::CheckState>( value.toInt() ) == Qt::Checked;
       if ( QgsMapLayer *layer = layerNode->layer() )
       {
-        layer->setCustomProperty( QStringLiteral( "_include_in_elevation_profiles" ), checked );
+        layer->setCustomProperty( u"_include_in_elevation_profiles"_s, checked );
       }
     }
   }
@@ -290,14 +290,14 @@ bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, 
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+  if ( !data->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     return false;
 
   // don't accept moves from other layer trees -- only allow internal drag
   if ( action == Qt::MoveAction )
   {
-    const QString source = data->data( QStringLiteral( "application/qgis.layertree.source" ) );
-    if ( source.isEmpty() || source != QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+    const QString source = data->data( u"application/qgis.layertree.source"_s );
+    if ( source.isEmpty() || source != u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
     {
       return false;
     }
@@ -314,23 +314,23 @@ bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt:
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+  if ( !data->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     return false;
 
   // don't accept moves from other layer trees -- only allow internal drag
-  const QString source = data->data( QStringLiteral( "application/qgis.layertree.source" ) );
-  if ( source.isEmpty() || source != QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+  const QString source = data->data( u"application/qgis.layertree.source"_s );
+  if ( source.isEmpty() || source != u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
   {
     if ( action == Qt::CopyAction )
     {
-      QByteArray encodedLayerTreeData = data->data( QStringLiteral( "application/qgis.layertreemodeldata" ) );
+      QByteArray encodedLayerTreeData = data->data( u"application/qgis.layertreemodeldata"_s );
 
       QDomDocument layerTreeDoc;
       if ( !layerTreeDoc.setContent( QString::fromUtf8( encodedLayerTreeData ) ) )
         return false;
 
       QDomElement rootLayerTreeElem = layerTreeDoc.documentElement();
-      if ( rootLayerTreeElem.tagName() != QLatin1String( "layer_tree_model_data" ) )
+      if ( rootLayerTreeElem.tagName() != "layer_tree_model_data"_L1 )
         return false;
 
       QList<QgsMapLayer *> layersToAdd;
@@ -371,7 +371,7 @@ QMimeData *QgsElevationProfileLayerTreeModel::mimeData( const QModelIndexList &i
   QMimeData *mimeData = QgsLayerTreeModel::mimeData( indexes );
   if ( mimeData )
   {
-    mimeData->setData( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ), "QgsElevationProfileLayerTreeModel" );
+    mimeData->setData( u"application/qgis.restrictlayertreemodelsubclass"_s, "QgsElevationProfileLayerTreeModel" );
   }
   return mimeData;
 }
@@ -496,9 +496,9 @@ void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *projec
 
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
 
-    if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
+    if ( layer->customProperty( u"_include_in_elevation_profiles"_s ).isValid() )
     {
-      node->setItemVisibilityChecked( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).toBool() );
+      node->setItemVisibilityChecked( layer->customProperty( u"_include_in_elevation_profiles"_s ).toBool() );
     }
     else
     {
@@ -523,7 +523,7 @@ void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString
   auto customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
   customNode->setItemVisibilityChecked( true );
   // Mark the node so that we know which custom nodes correspond to elevation profile sources
-  customNode->setCustomProperty( QStringLiteral( "source" ), QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );
+  customNode->setCustomProperty( u"source"_s, QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );
 
   QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
   if ( !node )

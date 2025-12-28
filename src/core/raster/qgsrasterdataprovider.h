@@ -272,7 +272,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( format )
       Q_UNUSED( configOptions )
       Q_UNUSED( feedback )
-      return QStringLiteral( "FAILED_NOT_SUPPORTED" );
+      return u"FAILED_NOT_SUPPORTED"_s;
     }
 
     /**

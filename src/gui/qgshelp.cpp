@@ -45,7 +45,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
   const QgsSettings settings;
-  const QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  const QStringList paths = settings.value( u"help/helpSearchPath"_s ).toStringList();
   if ( paths.isEmpty() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Help location is not configured!" ), QObject::tr( "QGIS Help" ) );
@@ -61,7 +61,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   const auto constPaths = paths;
   for ( const QString &path : constPaths )
   {
-    if ( path.endsWith( QLatin1String( "\\" ) ) || path.endsWith( QLatin1Char( '/' ) ) )
+    if ( path.endsWith( "\\"_L1 ) || path.endsWith( QLatin1Char( '/' ) ) )
     {
       fullPath = path.left( path.size() - 1 );
     }
@@ -73,17 +73,17 @@ QUrl QgsHelp::helpUrl( const QString &key )
     const auto constVariableNames = scope->variableNames();
     for ( const QString &var : constVariableNames )
     {
-      const QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
+      const QRegularExpression rx( u"(<!\\$\\$)*(\\$%1)"_s.arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
     }
-    const thread_local QRegularExpression pathRx( QStringLiteral( "(\\$\\$)" ) );
-    fullPath.replace( pathRx, QStringLiteral( "$" ) );
+    const thread_local QRegularExpression pathRx( u"(\\$\\$)"_s );
+    fullPath.replace( pathRx, u"$"_s );
 
-    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
+    helpPath = u"%1/%2"_s.arg( fullPath, key );
 
     QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::MessageLevel::Info );
 
-    if ( helpPath.startsWith( QLatin1String( "http" ) ) )
+    if ( helpPath.startsWith( "http"_L1 ) )
     {
       if ( !QgsHelp::urlExists( helpPath ) )
       {
@@ -119,7 +119,7 @@ bool QgsHelp::urlExists( const QString &url )
 
   QgsBlockingNetworkRequest request;
   QNetworkRequest req( helpUrl );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHelp" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsHelp"_s );
 
   QgsBlockingNetworkRequest::ErrorCode errCode = request.head( req );
   return errCode == QgsBlockingNetworkRequest::NoError;

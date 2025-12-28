@@ -64,7 +64,7 @@ class QgsHistoryEntryDateGroupNode : public QgsHistoryEntryGroup
           return mTitle;
 
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) );
+          return QgsApplication::getThemeIcon( u"mIconFolder.svg"_s );
 
         default:
           break;
@@ -317,7 +317,7 @@ QString QgsHistoryEntryRootNode::dateGroup( const QDateTime &timestamp, QString 
   if ( timestamp.date() == QDateTime::currentDateTime().date() )
   {
     groupString = QObject::tr( "Today" );
-    sortKey = QStringLiteral( "0" );
+    sortKey = u"0"_s;
   }
   else
   {
@@ -325,18 +325,18 @@ QString QgsHistoryEntryRootNode::dateGroup( const QDateTime &timestamp, QString 
     if ( intervalDays == 1 )
     {
       groupString = QObject::tr( "Yesterday" );
-      sortKey = QStringLiteral( "1" );
+      sortKey = u"1"_s;
     }
     else if ( intervalDays < 8 )
     {
       groupString = QObject::tr( "Last 7 days" );
-      sortKey = QStringLiteral( "2" );
+      sortKey = u"2"_s;
     }
     else
     {
       // a bit of trickiness here, we need dates ordered descending
-      sortKey = QStringLiteral( "3: %1 %2" ).arg( QDate::currentDate().year() - timestamp.date().year(), 5, 10, QLatin1Char( '0' ) ).arg( 12 - timestamp.date().month(), 2, 10, QLatin1Char( '0' ) );
-      groupString = timestamp.toString( QStringLiteral( "MMMM yyyy" ) );
+      sortKey = u"3: %1 %2"_s.arg( QDate::currentDate().year() - timestamp.date().year(), 5, 10, QLatin1Char( '0' ) ).arg( 12 - timestamp.date().month(), 2, 10, QLatin1Char( '0' ) );
+      groupString = timestamp.toString( u"MMMM yyyy"_s );
     }
   }
   return groupString;

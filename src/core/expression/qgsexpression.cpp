@@ -77,16 +77,16 @@ QString QgsExpression::expression() const
 
 QString QgsExpression::quotedColumnRef( QString name )
 {
-  return QStringLiteral( "\"%1\"" ).arg( name.replace( '\"', QLatin1String( "\"\"" ) ) );
+  return u"\"%1\""_s.arg( name.replace( '\"', "\"\""_L1 ) );
 }
 
 QString QgsExpression::quotedString( QString text )
 {
-  text.replace( '\'', QLatin1String( "''" ) );
-  text.replace( '\\', QLatin1String( "\\\\" ) );
-  text.replace( '\n', QLatin1String( "\\n" ) );
-  text.replace( '\t', QLatin1String( "\\t" ) );
-  return QStringLiteral( "'%1'" ).arg( text );
+  text.replace( '\'', "''"_L1 );
+  text.replace( '\\', "\\\\"_L1 );
+  text.replace( '\n', "\\n"_L1 );
+  text.replace( '\t', "\\t"_L1 );
+  return u"'%1'"_s.arg( text );
 }
 
 QString QgsExpression::quotedValue( const QVariant &value )
@@ -97,7 +97,7 @@ QString QgsExpression::quotedValue( const QVariant &value )
 QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type )
 {
   if ( QgsVariantUtils::isNull( value ) )
-    return QStringLiteral( "NULL" );
+    return u"NULL"_s;
 
   switch ( type )
   {
@@ -107,7 +107,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type 
       return value.toString();
 
     case QMetaType::Type::Bool:
-      return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
+      return value.toBool() ? u"TRUE"_s : u"FALSE"_s;
 
     case QMetaType::Type::QVariantList:
     case QMetaType::Type::QStringList:
@@ -119,7 +119,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type 
       {
         quotedValues += quotedValue( v );
       }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QLatin1String( ", " ) ) );
+      return u"array( %1 )"_s.arg( quotedValues.join( ", "_L1 ) );
     }
 
     default:
@@ -312,15 +312,15 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   {
     // actually don't do it right away, cos it's expensive to create and only a very small number of expression
     // functions actually require it. Let's lazily construct it when needed
-    d->mDaEllipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
-    d->mDaCrs = std::make_unique<QgsCoordinateReferenceSystem>( context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>() );
-    d->mDaTransformContext = std::make_unique<QgsCoordinateTransformContext>( context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>() );
+    d->mDaEllipsoid = context->variable( u"project_ellipsoid"_s ).toString();
+    d->mDaCrs = std::make_unique<QgsCoordinateReferenceSystem>( context->variable( u"_layer_crs"_s ).value<QgsCoordinateReferenceSystem>() );
+    d->mDaTransformContext = std::make_unique<QgsCoordinateTransformContext>( context->variable( u"_project_transform_context"_s ).value<QgsCoordinateTransformContext>() );
   }
 
   // Set the distance units from the context if it has not been set by setDistanceUnits()
   if ( context && distanceUnits() == Qgis::DistanceUnit::Unknown )
   {
-    QString distanceUnitsStr = context->variable( QStringLiteral( "project_distance_units" ) ).toString();
+    QString distanceUnitsStr = context->variable( u"project_distance_units"_s ).toString();
     if ( ! distanceUnitsStr.isEmpty() )
       setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
   }
@@ -328,7 +328,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   // Set the area units from the context if it has not been set by setAreaUnits()
   if ( context && areaUnits() == Qgis::AreaUnit::Unknown )
   {
-    QString areaUnitsStr = context->variable( QStringLiteral( "project_area_units" ) ).toString();
+    QString areaUnitsStr = context->variable( u"project_area_units"_s ).toString();
     if ( ! areaUnitsStr.isEmpty() )
       setAreaUnits( QgsUnitTypes::stringToAreaUnit( areaUnitsStr ) );
   }
@@ -475,7 +475,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+    static const QRegularExpression sRegEx{ u"\\[%(.*?)%\\]"_s,  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
     const QRegularExpressionMatch match = sRegEx.match( action, index );
     if ( !match.hasMatch() )
@@ -590,7 +590,7 @@ QString QgsExpression::helpText( QString name )
 
   name = name.toHtmlEscaped();
 
-  QString helpContents( QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+  QString helpContents( u"<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>"_s
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
@@ -598,28 +598,28 @@ QString QgsExpression::helpText( QString name )
   {
     if ( f.mVariants.size() > 1 )
     {
-      helpContents += QStringLiteral( "<h3>%1</h3>\n<div class=\"description\">%2</p></div>" ).arg( v.mName, v.mDescription );
+      helpContents += u"<h3>%1</h3>\n<div class=\"description\">%2</p></div>"_s.arg( v.mName, v.mDescription );
     }
 
     if ( f.mType != tr( "group" ) && f.mType != tr( "expression" ) )
-      helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"syntax\">\n" ).arg( tr( "Syntax" ) );
+      helpContents += u"<h4>%1</h4>\n<div class=\"syntax\">\n"_s.arg( tr( "Syntax" ) );
 
     if ( f.mType == tr( "operator" ) )
     {
       if ( v.mArguments.size() == 1 )
       {
-        helpContents += QStringLiteral( "<code><span class=\"functionname\">%1</span> <span class=\"argument\">%2</span></code>" )
+        helpContents += u"<code><span class=\"functionname\">%1</span> <span class=\"argument\">%2</span></code>"_s
                         .arg( name, v.mArguments[0].mArg );
       }
       else if ( v.mArguments.size() == 2 )
       {
-        helpContents += QStringLiteral( "<code><span class=\"argument\">%1</span> <span class=\"functionname\">%2</span> <span class=\"argument\">%3</span></code>" )
+        helpContents += u"<code><span class=\"argument\">%1</span> <span class=\"functionname\">%2</span> <span class=\"argument\">%3</span></code>"_s
                         .arg( v.mArguments[0].mArg, name, v.mArguments[1].mArg );
       }
     }
     else if ( f.mType != tr( "group" ) && f.mType != tr( "expression" ) )
     {
-      helpContents += QStringLiteral( "<code><span class=\"functionname\">%1</span>" ).arg( name );
+      helpContents += u"<code><span class=\"functionname\">%1</span>"_s.arg( name );
 
       bool hasOptionalArgs = false;
 
@@ -639,7 +639,7 @@ QString QgsExpression::helpText( QString name )
             }
 
             helpContents += delim;
-            helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
+            helpContents += u"<span class=\"argument\">%2%3</span>"_s.arg(
                               a.mArg,
                               a.mDefaultVal.isEmpty() ? QString() : ":=" + a.mDefaultVal
                             );
@@ -647,7 +647,7 @@ QString QgsExpression::helpText( QString name )
             if ( a.mOptional )
               helpContents += QLatin1Char( ']' );
           }
-          delim = QStringLiteral( "," );
+          delim = u","_s;
         }
 
         if ( v.mVariableLenArguments )
@@ -658,49 +658,49 @@ QString QgsExpression::helpText( QString name )
         helpContents += ')';
       }
 
-      helpContents += QLatin1String( "</code>" );
+      helpContents += "</code>"_L1;
 
       if ( hasOptionalArgs )
       {
-        helpContents += QLatin1String( "<br/><br/>" ) + tr( "[ ] marks optional components" );
+        helpContents += "<br/><br/>"_L1 + tr( "[ ] marks optional components" );
       }
     }
 
     if ( !v.mArguments.isEmpty() )
     {
-      helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
+      helpContents += u"<h4>%1</h4>\n<div class=\"arguments\">\n<table>"_s.arg( tr( "Arguments" ) );
 
       for ( const HelpArg &a : std::as_const( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
 
-        helpContents += QStringLiteral( "<tr><td class=\"argument\">%1</td><td>%2</td></tr>" ).arg( a.mArg, a.mDescription );
+        helpContents += u"<tr><td class=\"argument\">%1</td><td>%2</td></tr>"_s.arg( a.mArg, a.mDescription );
       }
 
-      helpContents += QLatin1String( "</table>\n</div>\n" );
+      helpContents += "</table>\n</div>\n"_L1;
     }
 
     if ( !v.mExamples.isEmpty() )
     {
-      helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
+      helpContents += u"<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n"_s.arg( tr( "Examples" ) );
 
       for ( const HelpExample &e : std::as_const( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 
         if ( !e.mNote.isEmpty() )
-          helpContents += QStringLiteral( " (%1)" ).arg( e.mNote );
+          helpContents += u" (%1)"_s.arg( e.mNote );
 
-        helpContents += QLatin1String( "</li>\n" );
+        helpContents += "</li>\n"_L1;
       }
 
-      helpContents += QLatin1String( "</ul>\n</div>\n" );
+      helpContents += "</ul>\n</div>\n"_L1;
     }
 
     if ( !v.mNotes.isEmpty() )
     {
-      helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"notes\"><p>%2</p></div>\n" ).arg( tr( "Notes" ), v.mNotes );
+      helpContents += u"<h4>%1</h4>\n<div class=\"notes\"><p>%2</p></div>\n"_s.arg( tr( "Notes" ), v.mNotes );
     }
   }
 
@@ -735,158 +735,158 @@ void QgsExpression::initVariableHelp()
 void QgsExpression::buildVariableHelp()
 {
   //global variables
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_version" ), QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_version_no" ), QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_release_name" ), QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_short_version" ), QCoreApplication::translate( "variable_help", "Short QGIS version string." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_os_name" ), QCoreApplication::translate( "variable_help", "Operating system name, e.g., 'windows', 'linux' or 'osx'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_platform" ), QCoreApplication::translate( "variable_help", "QGIS platform, e.g., 'desktop' or 'server'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "qgis_locale" ), QCoreApplication::translate( "variable_help", "Two letter identifier for current QGIS locale." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "user_account_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system account name." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "user_full_name" ), QCoreApplication::translate( "variable_help", "Current user's operating system user name (if available)." ) );
+  sVariableHelpTexts()->insert( u"qgis_version"_s, QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
+  sVariableHelpTexts()->insert( u"qgis_version_no"_s, QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
+  sVariableHelpTexts()->insert( u"qgis_release_name"_s, QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
+  sVariableHelpTexts()->insert( u"qgis_short_version"_s, QCoreApplication::translate( "variable_help", "Short QGIS version string." ) );
+  sVariableHelpTexts()->insert( u"qgis_os_name"_s, QCoreApplication::translate( "variable_help", "Operating system name, e.g., 'windows', 'linux' or 'osx'." ) );
+  sVariableHelpTexts()->insert( u"qgis_platform"_s, QCoreApplication::translate( "variable_help", "QGIS platform, e.g., 'desktop' or 'server'." ) );
+  sVariableHelpTexts()->insert( u"qgis_locale"_s, QCoreApplication::translate( "variable_help", "Two letter identifier for current QGIS locale." ) );
+  sVariableHelpTexts()->insert( u"user_account_name"_s, QCoreApplication::translate( "variable_help", "Current user's operating system account name." ) );
+  sVariableHelpTexts()->insert( u"user_full_name"_s, QCoreApplication::translate( "variable_help", "Current user's operating system user name (if available)." ) );
 
   //project variables
-  sVariableHelpTexts()->insert( QStringLiteral( "project_title" ), QCoreApplication::translate( "variable_help", "Title of current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_folder" ), QCoreApplication::translate( "variable_help", "Folder for current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_basename" ), QCoreApplication::translate( "variable_help", "Base name of current project's filename (without path and extension)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_home" ), QCoreApplication::translate( "variable_help", "Home path of current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the coordinate reference system of project (e.g., 'EPSG:4326')." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_units" ), QCoreApplication::translate( "variable_help", "Unit of the project's CRS." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_title"_s, QCoreApplication::translate( "variable_help", "Title of current project." ) );
+  sVariableHelpTexts()->insert( u"project_path"_s, QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
+  sVariableHelpTexts()->insert( u"project_folder"_s, QCoreApplication::translate( "variable_help", "Folder for current project." ) );
+  sVariableHelpTexts()->insert( u"project_filename"_s, QCoreApplication::translate( "variable_help", "Filename of current project." ) );
+  sVariableHelpTexts()->insert( u"project_basename"_s, QCoreApplication::translate( "variable_help", "Base name of current project's filename (without path and extension)." ) );
+  sVariableHelpTexts()->insert( u"project_home"_s, QCoreApplication::translate( "variable_help", "Home path of current project." ) );
+  sVariableHelpTexts()->insert( u"project_crs"_s, QCoreApplication::translate( "variable_help", "Identifier for the coordinate reference system of project (e.g., 'EPSG:4326')." ) );
+  sVariableHelpTexts()->insert( u"project_crs_definition"_s, QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts()->insert( u"project_units"_s, QCoreApplication::translate( "variable_help", "Unit of the project's CRS." ) );
+  sVariableHelpTexts()->insert( u"project_crs_description"_s, QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_crs_acronym"_s, QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_crs_ellipsoid"_s, QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_crs_proj4"_s, QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_crs_wkt"_s, QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the project." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the project (e.g., 'EPSG:5703')." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs_definition" ), QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of project (full definition)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_vertical_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_vertical_crs"_s, QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the project (e.g., 'EPSG:5703')." ) );
+  sVariableHelpTexts()->insert( u"project_vertical_crs_definition"_s, QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts()->insert( u"project_vertical_crs_description"_s, QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( u"project_vertical_crs_wkt"_s, QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the project." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "project_author" ), QCoreApplication::translate( "variable_help", "Project author, taken from project metadata." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_abstract" ), QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_identifier" ), QCoreApplication::translate( "variable_help", "Project identifier, taken from project metadata." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_last_saved" ), QCoreApplication::translate( "variable_help", "Date/time when project was last saved." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_keywords" ), QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_area_units" ), QCoreApplication::translate( "variable_help", "Area unit for current project, used when calculating areas of geometries." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_distance_units" ), QCoreApplication::translate( "variable_help", "Distance unit for current project, used when calculating lengths of geometries." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "project_ellipsoid" ), QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_ids" ), QCoreApplication::translate( "variable_help", "List of all map layer IDs from the current project." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layers" ), QCoreApplication::translate( "variable_help", "List of all map layers from the current project." ) );
+  sVariableHelpTexts()->insert( u"project_author"_s, QCoreApplication::translate( "variable_help", "Project author, taken from project metadata." ) );
+  sVariableHelpTexts()->insert( u"project_abstract"_s, QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
+  sVariableHelpTexts()->insert( u"project_creation_date"_s, QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
+  sVariableHelpTexts()->insert( u"project_identifier"_s, QCoreApplication::translate( "variable_help", "Project identifier, taken from project metadata." ) );
+  sVariableHelpTexts()->insert( u"project_last_saved"_s, QCoreApplication::translate( "variable_help", "Date/time when project was last saved." ) );
+  sVariableHelpTexts()->insert( u"project_keywords"_s, QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
+  sVariableHelpTexts()->insert( u"project_area_units"_s, QCoreApplication::translate( "variable_help", "Area unit for current project, used when calculating areas of geometries." ) );
+  sVariableHelpTexts()->insert( u"project_distance_units"_s, QCoreApplication::translate( "variable_help", "Distance unit for current project, used when calculating lengths of geometries." ) );
+  sVariableHelpTexts()->insert( u"project_ellipsoid"_s, QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
+  sVariableHelpTexts()->insert( u"layer_ids"_s, QCoreApplication::translate( "variable_help", "List of all map layer IDs from the current project." ) );
+  sVariableHelpTexts()->insert( u"layers"_s, QCoreApplication::translate( "variable_help", "List of all map layers from the current project." ) );
 
   //layer variables
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
+  sVariableHelpTexts()->insert( u"layer_name"_s, QCoreApplication::translate( "variable_help", "Name of current layer." ) );
+  sVariableHelpTexts()->insert( u"layer_id"_s, QCoreApplication::translate( "variable_help", "ID of current layer." ) );
+  sVariableHelpTexts()->insert( u"layer_crs"_s, QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
+  sVariableHelpTexts()->insert( u"layer"_s, QCoreApplication::translate( "variable_help", "The current layer." ) );
+  sVariableHelpTexts()->insert( u"layer_crs_ellipsoid"_s, QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs" ), QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the layer (e.g., 'EPSG:5703')." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_definition" ), QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of layer (full definition)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the layer." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_vertical_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the layer." ) );
+  sVariableHelpTexts()->insert( u"layer_vertical_crs"_s, QCoreApplication::translate( "variable_help", "Identifier for the vertical coordinate reference system of the layer (e.g., 'EPSG:5703')." ) );
+  sVariableHelpTexts()->insert( u"layer_vertical_crs_definition"_s, QCoreApplication::translate( "variable_help", "Vertical coordinate reference system of layer (full definition)." ) );
+  sVariableHelpTexts()->insert( u"layer_vertical_crs_description"_s, QCoreApplication::translate( "variable_help", "Name of the vertical coordinate reference system of the layer." ) );
+  sVariableHelpTexts()->insert( u"layer_vertical_crs_wkt"_s, QCoreApplication::translate( "variable_help", "WKT definition of the vertical coordinate reference system of the layer." ) );
 
   //feature variables
-  sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "id" ), QCoreApplication::translate( "variable_help", "The ID of the current feature being evaluated." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "geometry" ), QCoreApplication::translate( "variable_help", "The geometry of the current feature being evaluated." ) );
+  sVariableHelpTexts()->insert( u"feature"_s, QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );
+  sVariableHelpTexts()->insert( u"id"_s, QCoreApplication::translate( "variable_help", "The ID of the current feature being evaluated." ) );
+  sVariableHelpTexts()->insert( u"geometry"_s, QCoreApplication::translate( "variable_help", "The geometry of the current feature being evaluated." ) );
 
   //composition variables
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_name" ), QCoreApplication::translate( "variable_help", "Name of composition." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_page" ), QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_pageheight" ), QCoreApplication::translate( "variable_help", "Composition page height in mm (or specified custom units)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_pagewidth" ), QCoreApplication::translate( "variable_help", "Composition page width in mm (or specified custom units)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_pageoffsets" ), QCoreApplication::translate( "variable_help", "Array of Y coordinate of the top of each page." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layout_dpi" ), QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
+  sVariableHelpTexts()->insert( u"layout_name"_s, QCoreApplication::translate( "variable_help", "Name of composition." ) );
+  sVariableHelpTexts()->insert( u"layout_numpages"_s, QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
+  sVariableHelpTexts()->insert( u"layout_page"_s, QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
+  sVariableHelpTexts()->insert( u"layout_pageheight"_s, QCoreApplication::translate( "variable_help", "Composition page height in mm (or specified custom units)." ) );
+  sVariableHelpTexts()->insert( u"layout_pagewidth"_s, QCoreApplication::translate( "variable_help", "Composition page width in mm (or specified custom units)." ) );
+  sVariableHelpTexts()->insert( u"layout_pageoffsets"_s, QCoreApplication::translate( "variable_help", "Array of Y coordinate of the top of each page." ) );
+  sVariableHelpTexts()->insert( u"layout_dpi"_s, QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
 
   //atlas variables
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_layerid" ), QCoreApplication::translate( "variable_help", "Current atlas coverage layer ID." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_layername" ), QCoreApplication::translate( "variable_help", "Current atlas coverage layer name." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_totalfeatures" ), QCoreApplication::translate( "variable_help", "Total number of features in atlas." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_featurenumber" ), QCoreApplication::translate( "variable_help", "Current atlas feature number." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_filename" ), QCoreApplication::translate( "variable_help", "Current atlas file name." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_pagename" ), QCoreApplication::translate( "variable_help", "Current atlas page name." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_feature" ), QCoreApplication::translate( "variable_help", "Current atlas feature (as feature object)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_featureid" ), QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
+  sVariableHelpTexts()->insert( u"atlas_layerid"_s, QCoreApplication::translate( "variable_help", "Current atlas coverage layer ID." ) );
+  sVariableHelpTexts()->insert( u"atlas_layername"_s, QCoreApplication::translate( "variable_help", "Current atlas coverage layer name." ) );
+  sVariableHelpTexts()->insert( u"atlas_totalfeatures"_s, QCoreApplication::translate( "variable_help", "Total number of features in atlas." ) );
+  sVariableHelpTexts()->insert( u"atlas_featurenumber"_s, QCoreApplication::translate( "variable_help", "Current atlas feature number." ) );
+  sVariableHelpTexts()->insert( u"atlas_filename"_s, QCoreApplication::translate( "variable_help", "Current atlas file name." ) );
+  sVariableHelpTexts()->insert( u"atlas_pagename"_s, QCoreApplication::translate( "variable_help", "Current atlas page name." ) );
+  sVariableHelpTexts()->insert( u"atlas_feature"_s, QCoreApplication::translate( "variable_help", "Current atlas feature (as feature object)." ) );
+  sVariableHelpTexts()->insert( u"atlas_featureid"_s, QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
+  sVariableHelpTexts()->insert( u"atlas_geometry"_s, QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
   //layout item variables
-  sVariableHelpTexts()->insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user-assigned ID (not necessarily unique)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "layout item unique ID." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of layout item (in mm)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of layout item (in mm)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( u"item_id"_s, QCoreApplication::translate( "variable_help", "Layout item user-assigned ID (not necessarily unique)." ) );
+  sVariableHelpTexts()->insert( u"item_uuid"_s, QCoreApplication::translate( "variable_help", "layout item unique ID." ) );
+  sVariableHelpTexts()->insert( u"item_left"_s, QCoreApplication::translate( "variable_help", "Left position of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( u"item_top"_s, QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( u"item_width"_s, QCoreApplication::translate( "variable_help", "Width of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( u"item_height"_s, QCoreApplication::translate( "variable_help", "Height of layout item (in mm)." ) );
 
   //map settings item variables
-  sVariableHelpTexts()->insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_rotation" ), QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_scale" ), QCoreApplication::translate( "variable_help", "Current scale of map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_extent" ), QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_extent_center" ), QCoreApplication::translate( "variable_help", "Center of map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_extent_width" ), QCoreApplication::translate( "variable_help", "Width of map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_extent_height" ), QCoreApplication::translate( "variable_help", "Height of map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of the map (full definition)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_projection" ), QCoreApplication::translate( "variable_help", "Projection method used by the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_layer_ids" ), QCoreApplication::translate( "variable_help", "List of map layer IDs visible in the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_layers" ), QCoreApplication::translate( "variable_help", "List of map layers visible in the map." ) );
+  sVariableHelpTexts()->insert( u"map_id"_s, QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
+  sVariableHelpTexts()->insert( u"map_rotation"_s, QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
+  sVariableHelpTexts()->insert( u"map_scale"_s, QCoreApplication::translate( "variable_help", "Current scale of map." ) );
+  sVariableHelpTexts()->insert( u"map_extent"_s, QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
+  sVariableHelpTexts()->insert( u"map_extent_center"_s, QCoreApplication::translate( "variable_help", "Center of map." ) );
+  sVariableHelpTexts()->insert( u"map_extent_width"_s, QCoreApplication::translate( "variable_help", "Width of map." ) );
+  sVariableHelpTexts()->insert( u"map_extent_height"_s, QCoreApplication::translate( "variable_help", "Height of map." ) );
+  sVariableHelpTexts()->insert( u"map_crs"_s, QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
+  sVariableHelpTexts()->insert( u"map_crs_description"_s, QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( u"map_units"_s, QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
+  sVariableHelpTexts()->insert( u"map_crs_definition"_s, QCoreApplication::translate( "variable_help", "Coordinate reference system of the map (full definition)." ) );
+  sVariableHelpTexts()->insert( u"map_crs_acronym"_s, QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( u"map_crs_projection"_s, QCoreApplication::translate( "variable_help", "Projection method used by the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( u"map_crs_ellipsoid"_s, QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( u"map_crs_proj4"_s, QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( u"map_crs_wkt"_s, QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( u"map_layer_ids"_s, QCoreApplication::translate( "variable_help", "List of map layer IDs visible in the map." ) );
+  sVariableHelpTexts()->insert( u"map_layers"_s, QCoreApplication::translate( "variable_help", "List of map layers visible in the map." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "map_start_time" ), QCoreApplication::translate( "variable_help", "Start of the map's temporal time range (as a datetime value)" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_end_time" ), QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_interval" ), QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_z_range_lower" ), QCoreApplication::translate( "variable_help", "Lower elevation of the map's elevation range" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_z_range_upper" ), QCoreApplication::translate( "variable_help", "Upper elevation of the map's elevation range" ) );
+  sVariableHelpTexts()->insert( u"map_start_time"_s, QCoreApplication::translate( "variable_help", "Start of the map's temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( u"map_end_time"_s, QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( u"map_interval"_s, QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
+  sVariableHelpTexts()->insert( u"map_z_range_lower"_s, QCoreApplication::translate( "variable_help", "Lower elevation of the map's elevation range" ) );
+  sVariableHelpTexts()->insert( u"map_z_range_upper"_s, QCoreApplication::translate( "variable_help", "Upper elevation of the map's elevation range" ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_rate" ), QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_duration" ), QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep" ), QCoreApplication::translate( "variable_help", "Frame time step during animation playback" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep_unit" ), QCoreApplication::translate( "variable_help", "Unit value of the frame time step during animation playback" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep_units" ), QCoreApplication::translate( "variable_help", "String representation of the frame time step unit during animation playback" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "animation_start_time" ), QCoreApplication::translate( "variable_help", "Start of the animation's overall temporal time range (as a datetime value)" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "animation_end_time" ), QCoreApplication::translate( "variable_help", "End of the animation's overall temporal time range (as a datetime value)" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "animation_interval" ), QCoreApplication::translate( "variable_help", "Duration of the animation's overall temporal time range (as an interval value)" ) );
+  sVariableHelpTexts()->insert( u"frame_rate"_s, QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
+  sVariableHelpTexts()->insert( u"frame_number"_s, QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
+  sVariableHelpTexts()->insert( u"frame_duration"_s, QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
+  sVariableHelpTexts()->insert( u"frame_timestep"_s, QCoreApplication::translate( "variable_help", "Frame time step during animation playback" ) );
+  sVariableHelpTexts()->insert( u"frame_timestep_unit"_s, QCoreApplication::translate( "variable_help", "Unit value of the frame time step during animation playback" ) );
+  sVariableHelpTexts()->insert( u"frame_timestep_units"_s, QCoreApplication::translate( "variable_help", "String representation of the frame time step unit during animation playback" ) );
+  sVariableHelpTexts()->insert( u"animation_start_time"_s, QCoreApplication::translate( "variable_help", "Start of the animation's overall temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( u"animation_end_time"_s, QCoreApplication::translate( "variable_help", "End of the animation's overall temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( u"animation_interval"_s, QCoreApplication::translate( "variable_help", "Duration of the animation's overall temporal time range (as an interval value)" ) );
 
   // vector tile layer variables
-  sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolate values between two integer zoom levels." ) );
+  sVariableHelpTexts()->insert( u"zoom_level"_s, QCoreApplication::translate( "variable_help", "Vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
+  sVariableHelpTexts()->insert( u"vector_tile_zoom"_s, QCoreApplication::translate( "variable_help", "Exact vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolate values between two integer zoom levels." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used for calculations within the attribute table the row number will respect the original order of features from the underlying data source." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used from the field calculator the row numbering starts at 1, otherwise (e.g. from Processing tools) the row numbering starts from 0." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "grid_count" ), QCoreApplication::translate( "variable_help", "Total number of visible grid lines for the current grid axis." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "grid_index" ), QCoreApplication::translate( "variable_help", "The index of the grid line currently being drawn (starting at 1 for the first grid line). The index is specific to the current grid axis." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
+  sVariableHelpTexts()->insert( u"row_number"_s, QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) + u"\n\n"_s + QCoreApplication::translate( "variable_help", "When used for calculations within the attribute table the row number will respect the original order of features from the underlying data source." ) + u"\n\n"_s + QCoreApplication::translate( "variable_help", "When used from the field calculator the row numbering starts at 1, otherwise (e.g. from Processing tools) the row numbering starts from 0." ) );
+  sVariableHelpTexts()->insert( u"grid_number"_s, QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
+  sVariableHelpTexts()->insert( u"grid_axis"_s, QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+  sVariableHelpTexts()->insert( u"grid_count"_s, QCoreApplication::translate( "variable_help", "Total number of visible grid lines for the current grid axis." ) );
+  sVariableHelpTexts()->insert( u"grid_index"_s, QCoreApplication::translate( "variable_help", "The index of the grid line currently being drawn (starting at 1 for the first grid line). The index is specific to the current grid axis." ) );
+  sVariableHelpTexts()->insert( u"column_number"_s, QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
 
   // map canvas item variables
-  sVariableHelpTexts()->insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "layer_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the current layers's geographical coordinates. QGIS Server: When used in a maptip expression for a raster layer, this variable holds the GetFeatureInfo position." ) );
+  sVariableHelpTexts()->insert( u"canvas_cursor_point"_s, QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
+  sVariableHelpTexts()->insert( u"layer_cursor_point"_s, QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the current layers's geographical coordinates. QGIS Server: When used in a maptip expression for a raster layer, this variable holds the GetFeatureInfo position." ) );
 
   // legend canvas item variables
-  sVariableHelpTexts()->insert( QStringLiteral( "legend_title" ), QCoreApplication::translate( "variable_help", "Title of the legend." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "legend_column_count" ), QCoreApplication::translate( "variable_help", "Number of column in the legend." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "legend_split_layers" ), QCoreApplication::translate( "variable_help", "Boolean indicating if layers can be split in the legend." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "legend_wrap_string" ), QCoreApplication::translate( "variable_help", "Characters used to wrap the legend text." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "legend_filter_by_map" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the content of the legend is filtered by the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "legend_filter_out_atlas" ), QCoreApplication::translate( "variable_help", "Boolean indicating if the Atlas is filtered out of the legend." ) );
+  sVariableHelpTexts()->insert( u"legend_title"_s, QCoreApplication::translate( "variable_help", "Title of the legend." ) );
+  sVariableHelpTexts()->insert( u"legend_column_count"_s, QCoreApplication::translate( "variable_help", "Number of column in the legend." ) );
+  sVariableHelpTexts()->insert( u"legend_split_layers"_s, QCoreApplication::translate( "variable_help", "Boolean indicating if layers can be split in the legend." ) );
+  sVariableHelpTexts()->insert( u"legend_wrap_string"_s, QCoreApplication::translate( "variable_help", "Characters used to wrap the legend text." ) );
+  sVariableHelpTexts()->insert( u"legend_filter_by_map"_s, QCoreApplication::translate( "variable_help", "Boolean indicating if the content of the legend is filtered by the map." ) );
+  sVariableHelpTexts()->insert( u"legend_filter_out_atlas"_s, QCoreApplication::translate( "variable_help", "Boolean indicating if the Atlas is filtered out of the legend." ) );
 
   // scalebar rendering
-  sVariableHelpTexts()->insert( QStringLiteral( "scale_value" ), QCoreApplication::translate( "variable_help", "Current scale bar distance value." ) );
+  sVariableHelpTexts()->insert( u"scale_value"_s, QCoreApplication::translate( "variable_help", "Current scale bar distance value." ) );
 
   // map tool capture variables
-  sVariableHelpTexts()->insert( QStringLiteral( "snapping_results" ), QCoreApplication::translate( "variable_help",
+  sVariableHelpTexts()->insert( u"snapping_results"_s, QCoreApplication::translate( "variable_help",
                                 "<p>An array with an item for each snapped point.</p>"
                                 "<p>Each item is a map with the following keys:</p>"
                                 "<dl>"
@@ -899,55 +899,55 @@ void QgsExpression::buildVariableHelp()
 
 
   //symbol variables
-  sVariableHelpTexts()->insert( QStringLiteral( "geometry_part_count" ), QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "geometry_part_num" ), QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "geometry_ring_num" ), QCoreApplication::translate( "variable_help", "Current geometry ring number for feature being rendered (for polygon features only). The exterior ring has a value of 0." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "geometry_point_count" ), QCoreApplication::translate( "variable_help", "Number of points in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "geometry_point_num" ), QCoreApplication::translate( "variable_help", "Current point number in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
+  sVariableHelpTexts()->insert( u"geometry_part_count"_s, QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
+  sVariableHelpTexts()->insert( u"geometry_part_num"_s, QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
+  sVariableHelpTexts()->insert( u"geometry_ring_num"_s, QCoreApplication::translate( "variable_help", "Current geometry ring number for feature being rendered (for polygon features only). The exterior ring has a value of 0." ) );
+  sVariableHelpTexts()->insert( u"geometry_point_count"_s, QCoreApplication::translate( "variable_help", "Number of points in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
+  sVariableHelpTexts()->insert( u"geometry_point_num"_s, QCoreApplication::translate( "variable_help", "Current point number in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_color" ), QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_angle" ), QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_layer_count" ), QCoreApplication::translate( "symbol_layer_count", "Total number of symbol layers in the symbol." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_layer_index" ), QCoreApplication::translate( "symbol_layer_index", "Current symbol layer index." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_marker_row" ), QCoreApplication::translate( "symbol_marker_row", "Row number for marker (valid for point pattern fills only)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_marker_column" ), QCoreApplication::translate( "symbol_marker_column", "Column number for marker (valid for point pattern fills only)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_frame" ), QCoreApplication::translate( "symbol_frame", "Frame number (for animated symbols only)." ) );
+  sVariableHelpTexts()->insert( u"symbol_color"_s, QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
+  sVariableHelpTexts()->insert( u"symbol_angle"_s, QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
+  sVariableHelpTexts()->insert( u"symbol_layer_count"_s, QCoreApplication::translate( "symbol_layer_count", "Total number of symbol layers in the symbol." ) );
+  sVariableHelpTexts()->insert( u"symbol_layer_index"_s, QCoreApplication::translate( "symbol_layer_index", "Current symbol layer index." ) );
+  sVariableHelpTexts()->insert( u"symbol_marker_row"_s, QCoreApplication::translate( "symbol_marker_row", "Row number for marker (valid for point pattern fills only)." ) );
+  sVariableHelpTexts()->insert( u"symbol_marker_column"_s, QCoreApplication::translate( "symbol_marker_column", "Column number for marker (valid for point pattern fills only)." ) );
+  sVariableHelpTexts()->insert( u"symbol_frame"_s, QCoreApplication::translate( "symbol_frame", "Frame number (for animated symbols only)." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_label" ), QCoreApplication::translate( "symbol_label", "Label for the symbol (either a user defined label or the default autogenerated label)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_id" ), QCoreApplication::translate( "symbol_id", "Internal ID of the symbol." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "symbol_count" ), QCoreApplication::translate( "symbol_count", "Total number of features represented by the symbol." ) );
+  sVariableHelpTexts()->insert( u"symbol_label"_s, QCoreApplication::translate( "symbol_label", "Label for the symbol (either a user defined label or the default autogenerated label)." ) );
+  sVariableHelpTexts()->insert( u"symbol_id"_s, QCoreApplication::translate( "symbol_id", "Internal ID of the symbol." ) );
+  sVariableHelpTexts()->insert( u"symbol_count"_s, QCoreApplication::translate( "symbol_count", "Total number of features represented by the symbol." ) );
 
   //cluster variables
-  sVariableHelpTexts()->insert( QStringLiteral( "cluster_color" ), QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "cluster_size" ), QCoreApplication::translate( "cluster_size", "Number of symbols contained within a cluster." ) );
+  sVariableHelpTexts()->insert( u"cluster_color"_s, QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );
+  sVariableHelpTexts()->insert( u"cluster_size"_s, QCoreApplication::translate( "cluster_size", "Number of symbols contained within a cluster." ) );
 
   //processing variables
-  sVariableHelpTexts()->insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "model_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current model (or project path if model is embedded in a project)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "model_folder" ), QCoreApplication::translate( "variable_help", "Folder containing current model (or project folder if model is embedded in a project)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "model_name" ), QCoreApplication::translate( "variable_help", "Name of current model." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "model_group" ), QCoreApplication::translate( "variable_help", "Group for current model." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "fullextent_minx" ), QCoreApplication::translate( "fullextent_minx", "Minimum x-value from full canvas extent (including all layers)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "fullextent_miny" ), QCoreApplication::translate( "fullextent_miny", "Minimum y-value from full canvas extent (including all layers)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "fullextent_maxx" ), QCoreApplication::translate( "fullextent_maxx", "Maximum x-value from full canvas extent (including all layers)." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "fullextent_maxy" ), QCoreApplication::translate( "fullextent_maxy", "Maximum y-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts()->insert( u"algorithm_id"_s, QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
+  sVariableHelpTexts()->insert( u"model_path"_s, QCoreApplication::translate( "variable_help", "Full path (including file name) of current model (or project path if model is embedded in a project)." ) );
+  sVariableHelpTexts()->insert( u"model_folder"_s, QCoreApplication::translate( "variable_help", "Folder containing current model (or project folder if model is embedded in a project)." ) );
+  sVariableHelpTexts()->insert( u"model_name"_s, QCoreApplication::translate( "variable_help", "Name of current model." ) );
+  sVariableHelpTexts()->insert( u"model_group"_s, QCoreApplication::translate( "variable_help", "Group for current model." ) );
+  sVariableHelpTexts()->insert( u"fullextent_minx"_s, QCoreApplication::translate( "fullextent_minx", "Minimum x-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts()->insert( u"fullextent_miny"_s, QCoreApplication::translate( "fullextent_miny", "Minimum y-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts()->insert( u"fullextent_maxx"_s, QCoreApplication::translate( "fullextent_maxx", "Maximum x-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts()->insert( u"fullextent_maxy"_s, QCoreApplication::translate( "fullextent_maxy", "Maximum y-value from full canvas extent (including all layers)." ) );
 
   //provider notification
-  sVariableHelpTexts()->insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
+  sVariableHelpTexts()->insert( u"notification_message"_s, QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 
   //form context variable
-  sVariableHelpTexts()->insert( QStringLiteral( "current_geometry" ), QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "current_feature" ), QCoreApplication::translate( "current_feature", "Represents the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
+  sVariableHelpTexts()->insert( u"current_geometry"_s, QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
+  sVariableHelpTexts()->insert( u"current_feature"_s, QCoreApplication::translate( "current_feature", "Represents the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
 
   //parent form context variable
-  sVariableHelpTexts()->insert( QStringLiteral( "current_parent_geometry" ), QCoreApplication::translate( "current_parent_geometry",
+  sVariableHelpTexts()->insert( u"current_parent_geometry"_s, QCoreApplication::translate( "current_parent_geometry",
                                 "Only usable in an embedded form context, "
                                 "represents the geometry of the feature currently being edited in the parent form.\n"
                                 "Can be used in a form/row context to filter the related features using a value "
                                 "from the feature currently edited in the parent form, to make sure that the filter "
                                 "still works with standalone forms it is recommended to wrap this variable in a "
                                 "'coalesce()'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "current_parent_feature" ), QCoreApplication::translate( "current_parent_feature",
+  sVariableHelpTexts()->insert( u"current_parent_feature"_s, QCoreApplication::translate( "current_parent_feature",
                                 "Only usable in an embedded form context, "
                                 "represents the feature currently being edited in the parent form.\n"
                                 "Can be used in a form/row context to filter the related features using a value "
@@ -956,13 +956,13 @@ void QgsExpression::buildVariableHelp()
                                 "'coalesce()'." ) );
 
   //form variable
-  sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
+  sVariableHelpTexts()->insert( u"form_mode"_s, QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
 
   // plots and charts
-  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis" ), QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis grid line." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "chart_category" ), QCoreApplication::translate( "plot_axis", "The chart item category, e.g. 'fruit' or 'june'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "chart_value" ), QCoreApplication::translate( "plot_axis_value", "The chart item value." ) );
+  sVariableHelpTexts()->insert( u"plot_axis"_s, QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
+  sVariableHelpTexts()->insert( u"plot_axis_value"_s, QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis grid line." ) );
+  sVariableHelpTexts()->insert( u"chart_category"_s, QCoreApplication::translate( "plot_axis", "The chart item category, e.g. 'fruit' or 'june'." ) );
+  sVariableHelpTexts()->insert( u"chart_value"_s, QCoreApplication::translate( "plot_axis_value", "The chart item value." ) );
 }
 
 bool QgsExpression::addVariableHelpText( const QString name, const QString &description )
@@ -984,7 +984,7 @@ QString QgsExpression::variableHelpText( const QString &variableName )
 
 QString QgsExpression::formatVariableHelp( const QString &description, bool showValue, const QVariant &value )
 {
-  QString text = !description.isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( description ) : QString();
+  QString text = !description.isEmpty() ? u"<p>%1</p>"_s.arg( description ) : QString();
   if ( showValue )
   {
     QString valueString;
@@ -994,7 +994,7 @@ QString QgsExpression::formatVariableHelp( const QString &description, bool show
     }
     else
     {
-      valueString = QStringLiteral( "<b>%1</b>" ).arg( formatPreviewString( value ) );
+      valueString = u"<b>%1</b>"_s.arg( formatPreviewString( value ) );
     }
     text.append( QCoreApplication::translate( "variable_help", "<p>Current value: %1</p>" ).arg( valueString ) );
   }
@@ -1005,27 +1005,27 @@ QString QgsExpression::group( const QString &name )
 {
   if ( sGroups()->isEmpty() )
   {
-    sGroups()->insert( QStringLiteral( "Aggregates" ), tr( "Aggregates" ) );
-    sGroups()->insert( QStringLiteral( "Arrays" ), tr( "Arrays" ) );
-    sGroups()->insert( QStringLiteral( "Color" ), tr( "Color" ) );
-    sGroups()->insert( QStringLiteral( "Conditionals" ), tr( "Conditionals" ) );
-    sGroups()->insert( QStringLiteral( "Conversions" ), tr( "Conversions" ) );
-    sGroups()->insert( QStringLiteral( "Date and Time" ), tr( "Date and Time" ) );
-    sGroups()->insert( QStringLiteral( "Fields and Values" ), tr( "Fields and Values" ) );
-    sGroups()->insert( QStringLiteral( "Files and Paths" ), tr( "Files and Paths" ) );
-    sGroups()->insert( QStringLiteral( "Fuzzy Matching" ), tr( "Fuzzy Matching" ) );
-    sGroups()->insert( QStringLiteral( "General" ), tr( "General" ) );
-    sGroups()->insert( QStringLiteral( "GeometryGroup" ), tr( "Geometry" ) );
-    sGroups()->insert( QStringLiteral( "Map Layers" ), tr( "Map Layers" ) );
-    sGroups()->insert( QStringLiteral( "Maps" ), tr( "Maps" ) );
-    sGroups()->insert( QStringLiteral( "Math" ), tr( "Math" ) );
-    sGroups()->insert( QStringLiteral( "Operators" ), tr( "Operators" ) );
-    sGroups()->insert( QStringLiteral( "Rasters" ), tr( "Rasters" ) );
-    sGroups()->insert( QStringLiteral( "Record and Attributes" ), tr( "Record and Attributes" ) );
-    sGroups()->insert( QStringLiteral( "String" ), tr( "String" ) );
-    sGroups()->insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
-    sGroups()->insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
-    sGroups()->insert( QStringLiteral( "UserGroup" ), tr( "User expressions" ) );
+    sGroups()->insert( u"Aggregates"_s, tr( "Aggregates" ) );
+    sGroups()->insert( u"Arrays"_s, tr( "Arrays" ) );
+    sGroups()->insert( u"Color"_s, tr( "Color" ) );
+    sGroups()->insert( u"Conditionals"_s, tr( "Conditionals" ) );
+    sGroups()->insert( u"Conversions"_s, tr( "Conversions" ) );
+    sGroups()->insert( u"Date and Time"_s, tr( "Date and Time" ) );
+    sGroups()->insert( u"Fields and Values"_s, tr( "Fields and Values" ) );
+    sGroups()->insert( u"Files and Paths"_s, tr( "Files and Paths" ) );
+    sGroups()->insert( u"Fuzzy Matching"_s, tr( "Fuzzy Matching" ) );
+    sGroups()->insert( u"General"_s, tr( "General" ) );
+    sGroups()->insert( u"GeometryGroup"_s, tr( "Geometry" ) );
+    sGroups()->insert( u"Map Layers"_s, tr( "Map Layers" ) );
+    sGroups()->insert( u"Maps"_s, tr( "Maps" ) );
+    sGroups()->insert( u"Math"_s, tr( "Math" ) );
+    sGroups()->insert( u"Operators"_s, tr( "Operators" ) );
+    sGroups()->insert( u"Rasters"_s, tr( "Rasters" ) );
+    sGroups()->insert( u"Record and Attributes"_s, tr( "Record and Attributes" ) );
+    sGroups()->insert( u"String"_s, tr( "String" ) );
+    sGroups()->insert( u"Variables"_s, tr( "Variables" ) );
+    sGroups()->insert( u"Recent (%1)"_s, tr( "Recent (%1)" ) );
+    sGroups()->insert( u"UserGroup"_s, tr( "User expressions" ) );
   }
 
   //return the translated name for this group. If group does not
@@ -1036,8 +1036,8 @@ QString QgsExpression::group( const QString &name )
 
 QString QgsExpression::formatPreviewString( const QVariant &value, const bool htmlOutput, int maximumPreviewLength )
 {
-  const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
-  const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
+  const QString startToken = htmlOutput ? u"<i>&lt;"_s : u"<"_s;
+  const QString endToken = htmlOutput ? u"&gt;</i>"_s : u">"_s;
 
   QgsGeometry geom = QgsExpressionUtils::getGeometry( value, nullptr );
   if ( !geom.isNull() )
@@ -1074,7 +1074,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
 #if QT_FEATURE_timezone > 0
     return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
 #else
-    QgsDebugError( QStringLiteral( "Qt is built without Qt timezone support, timezone preview not available" ) );
+    QgsDebugError( u"Qt is built without Qt timezone support, timezone preview not available"_s );
 #endif
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
@@ -1104,17 +1104,17 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.userType() == QMetaType::Type::QDate )
   {
     const QDate dt = value.toDate();
-    return startToken + tr( "date: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) ) + endToken;
+    return startToken + tr( "date: %1" ).arg( dt.toString( u"yyyy-MM-dd"_s ) ) + endToken;
   }
   else if ( value.userType() == QMetaType::Type::QTime )
   {
     const QTime tm = value.toTime();
-    return startToken + tr( "time: %1" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) ) + endToken;
+    return startToken + tr( "time: %1" ).arg( tm.toString( u"hh:mm:ss"_s ) ) + endToken;
   }
   else if ( value.userType() == QMetaType::Type::QDateTime )
   {
     const QDateTime dt = value.toDateTime();
-    return startToken + tr( "datetime: %1 (%2)" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ), dt.timeZoneAbbreviation() ) + endToken;
+    return startToken + tr( "datetime: %1 (%2)" ).arg( dt.toString( u"yyyy-MM-dd hh:mm:ss"_s ), dt.timeZoneAbbreviation() ) + endToken;
   }
   else if ( value.userType() == QMetaType::Type::QString )
   {
@@ -1130,16 +1130,16 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.userType() == QMetaType::Type::QVariantMap )
   {
-    QString mapStr = QStringLiteral( "{" );
+    QString mapStr = u"{"_s;
     const QVariantMap map = value.toMap();
     QString separator;
     for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
     {
       mapStr.append( separator );
       if ( separator.isEmpty() )
-        separator = QStringLiteral( "," );
+        separator = u","_s;
 
-      mapStr.append( QStringLiteral( " '%1': %2" ).arg( it.key(), formatPreviewString( it.value(), htmlOutput ) ) );
+      mapStr.append( u" '%1': %2"_s.arg( it.key(), formatPreviewString( it.value(), htmlOutput ) ) );
       if ( mapStr.length() > maximumPreviewLength - 3 )
       {
         mapStr = tr( "%1…" ).arg( mapStr.left( maximumPreviewLength - 2 ) );
@@ -1153,14 +1153,14 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
   {
-    QString listStr = QStringLiteral( "[" );
+    QString listStr = u"["_s;
     const QVariantList list = value.toList();
     QString separator;
     for ( const QVariant &arrayValue : list )
     {
       listStr.append( separator );
       if ( separator.isEmpty() )
-        separator = QStringLiteral( "," );
+        separator = u","_s;
 
       listStr.append( " " );
       listStr.append( formatPreviewString( arrayValue, htmlOutput ) );
@@ -1187,31 +1187,31 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     switch ( color.spec() )
     {
       case QColor::Spec::Cmyk:
-        return QStringLiteral( "CMYKA: %1,%2,%3,%4,%5" )
+        return u"CMYKA: %1,%2,%3,%4,%5"_s
                .arg( color.cyanF(), 0, 'f', 2 ).arg( color.magentaF(), 0, 'f', 2 )
                .arg( color.yellowF(), 0, 'f', 2 ).arg( color.blackF(), 0, 'f', 2 )
                .arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Hsv:
-        return QStringLiteral( "HSVA: %1,%2,%3,%4" )
+        return u"HSVA: %1,%2,%3,%4"_s
                .arg( color.hsvHueF(), 0, 'f', 2 ).arg( color.hsvSaturationF(), 0, 'f', 2 )
                .arg( color.valueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Hsl:
-        return QStringLiteral( "HSLA: %1,%2,%3,%4" )
+        return u"HSLA: %1,%2,%3,%4"_s
                .arg( color.hslHueF(), 0, 'f', 2 ).arg( color.hslSaturationF(), 0, 'f', 2 )
                .arg( color.lightnessF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Rgb:
       case QColor::Spec::ExtendedRgb:
-        return QStringLiteral( "RGBA: %1,%2,%3,%4" )
+        return u"RGBA: %1,%2,%3,%4"_s
                .arg( color.redF(), 0, 'f', 2 ).arg( color.greenF(), 0, 'f', 2 )
                .arg( color.blueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Invalid:
         return tr( "<i>Invalid</i>" );
     }
-    QgsDebugError( QStringLiteral( "Unknown color format: %1" ).arg( color.spec() ) );
+    QgsDebugError( u"Unknown color format: %1"_s.arg( color.spec() ) );
     return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
   }
   else if ( value.userType() == QMetaType::Type::Int ||
@@ -1240,11 +1240,11 @@ QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, 
   QString expr;
 
   if ( QgsVariantUtils::isNull( value ) )
-    expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
+    expr = u"%1 IS NULL"_s.arg( quotedColumnRef( fieldName ) );
   else if ( fieldType == QMetaType::Type::UnknownType )
-    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+    expr = u"%1 = %2"_s.arg( quotedColumnRef( fieldName ), quotedValue( value ) );
   else
-    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value, fieldType ) );
+    expr = u"%1 = %2"_s.arg( quotedColumnRef( fieldName ), quotedValue( value, fieldType ) );
 
   return expr;
 }
@@ -1465,7 +1465,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
       }
     }
   }
-  result = QStringLiteral( "%1 IN (%2)" ).arg( quotedColumnRef( inField ), values.join( ',' ) );
+  result = u"%1 IN (%2)"_s.arg( quotedColumnRef( inField ), values.join( ',' ) );
   return true;
 }
 

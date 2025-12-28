@@ -23,7 +23,7 @@
 QString QgsMssqlUtils::quotedValue( const QVariant &value )
 {
   if ( QgsVariantUtils::isNull( value ) )
-    return QStringLiteral( "NULL" );
+    return u"NULL"_s;
 
   switch ( value.userType() )
   {
@@ -38,9 +38,9 @@ QString QgsMssqlUtils::quotedValue( const QVariant &value )
     default:
     case QMetaType::Type::QString:
       QString v = value.toString();
-      v.replace( '\'', QLatin1String( "''" ) );
+      v.replace( '\'', "''"_L1 );
       if ( v.contains( '\\' ) )
-        return v.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "N'" ).append( '\'' );
+        return v.replace( '\\', "\\\\"_L1 ).prepend( "N'" ).append( '\'' );
       else
         return v.prepend( "N'" ).append( '\'' );
   }
@@ -48,7 +48,7 @@ QString QgsMssqlUtils::quotedValue( const QVariant &value )
 
 QString QgsMssqlUtils::quotedIdentifier( const QString &value )
 {
-  return QStringLiteral( "[%1]" ).arg( value );
+  return u"[%1]"_s.arg( value );
 }
 
 QMetaType::Type QgsMssqlUtils::convertSqlFieldType( const QString &systemTypeName )
@@ -56,45 +56,45 @@ QMetaType::Type QgsMssqlUtils::convertSqlFieldType( const QString &systemTypeNam
   QMetaType::Type type = QMetaType::Type::UnknownType;
   // cloned branches are intentional here for improved readability
   // NOLINTBEGIN(bugprone-branch-clone)
-  if ( systemTypeName.startsWith( QLatin1String( "decimal" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "numeric" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "real" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "float" ), Qt::CaseInsensitive ) )
+  if ( systemTypeName.startsWith( "decimal"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "numeric"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "real"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "float"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::Double;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "char" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "nchar" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "varchar" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "nvarchar" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "text" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "ntext" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "char"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "nchar"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "varchar"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "nvarchar"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "text"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "ntext"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "uniqueidentifier"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QString;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "smallint" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "int" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "bit" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "tinyint" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "smallint"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "int"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "bit"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "tinyint"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::Int;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "bigint" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "bigint"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::LongLong;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "binary" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "varbinary" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "image" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "binary"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "varbinary"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "image"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QByteArray;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "datetime" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "smalldatetime" ), Qt::CaseInsensitive ) || systemTypeName.startsWith( QLatin1String( "datetime2" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "datetime"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "smalldatetime"_L1, Qt::CaseInsensitive ) || systemTypeName.startsWith( "datetime2"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QDateTime;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "date" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "date"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QDate;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "timestamp"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QString;
   }
-  else if ( systemTypeName.startsWith( QLatin1String( "time" ), Qt::CaseInsensitive ) )
+  else if ( systemTypeName.startsWith( "time"_L1, Qt::CaseInsensitive ) )
   {
     type = QMetaType::Type::QTime;
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Unknown field type: %1" ).arg( systemTypeName ) );
+    QgsDebugError( u"Unknown field type: %1"_s.arg( systemTypeName ) );
     // Everything else just dumped as a string.
     type = QMetaType::Type::QString;
   }
@@ -113,7 +113,7 @@ QgsField QgsMssqlUtils::createField( const QString &name, const QString &systemT
     {
       // Field length in chars is "Length" of the sp_columns output,
       // except for uniqueidentifiers which must use "Precision".
-      int stringLength = systemTypeName.startsWith( QStringLiteral( "uniqueidentifier" ), Qt::CaseInsensitive ) ? precision : length;
+      int stringLength = systemTypeName.startsWith( u"uniqueidentifier"_s, Qt::CaseInsensitive ) ? precision : length;
       if ( systemTypeName.startsWith( QLatin1Char( 'n' ) ) )
       {
         stringLength = stringLength / 2;
@@ -124,7 +124,7 @@ QgsField QgsMssqlUtils::createField( const QString &name, const QString &systemT
 
     case QMetaType::Type::Double:
     {
-      field = QgsField( name, sqlType, systemTypeName, precision, systemTypeName == QLatin1String( "decimal" ) || systemTypeName == QLatin1String( "numeric" ) ? scale : -1 );
+      field = QgsField( name, sqlType, systemTypeName, precision, systemTypeName == "decimal"_L1 || systemTypeName == "numeric"_L1 ? scale : -1 );
       break;
     }
 

@@ -55,7 +55,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QgsBlurEffect() = default;
 
     Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "blur" ); }
+    QString type() const override { return u"blur"_s; }
     QVariantMap properties() const override;
 
     using QgsPaintEffect::readProperties;

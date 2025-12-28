@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSymbolLayerId
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    QString str = u"<QgsSymbolLayerId: %1 (%2)>"_s.arg( sipCpp->symbolKey(), pathString.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
+    QString str = u"<QgsSymbolLayerReference: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

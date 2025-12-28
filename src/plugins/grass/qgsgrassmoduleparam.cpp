@@ -56,13 +56,13 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key, Q
   Q_UNUSED( gdesc )
   //mAnswer = qdesc.attribute("answer", "");
 
-  if ( !qdesc.attribute( QStringLiteral( "answer" ) ).isNull() )
+  if ( !qdesc.attribute( u"answer"_s ).isNull() )
   {
-    mAnswer = qdesc.attribute( QStringLiteral( "answer" ) ).trimmed();
+    mAnswer = qdesc.attribute( u"answer"_s ).trimmed();
   }
   else
   {
-    QDomNode n = gnode.namedItem( QStringLiteral( "default" ) );
+    QDomNode n = gnode.namedItem( u"default"_s );
     if ( !n.isNull() )
     {
       QDomElement e = n.toElement();
@@ -70,26 +70,26 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key, Q
     }
   }
 
-  if ( qdesc.attribute( QStringLiteral( "hidden" ) ) == QLatin1String( "yes" ) )
+  if ( qdesc.attribute( u"hidden"_s ) == "yes"_L1 )
   {
     mHidden = true;
   }
 
   QString label, description;
-  if ( !qdesc.attribute( QStringLiteral( "label" ) ).isEmpty() )
+  if ( !qdesc.attribute( u"label"_s ).isEmpty() )
   {
-    label = QApplication::translate( "grasslabel", qdesc.attribute( QStringLiteral( "label" ) ).trimmed().toUtf8() );
+    label = QApplication::translate( "grasslabel", qdesc.attribute( u"label"_s ).trimmed().toUtf8() );
   }
   if ( label.isEmpty() )
   {
-    QDomNode n = gnode.namedItem( QStringLiteral( "label" ) );
+    QDomNode n = gnode.namedItem( u"label"_s );
     if ( !n.isNull() )
     {
       QDomElement e = n.toElement();
       label = module->translate( e.text() );
     }
   }
-  QDomNode n = gnode.namedItem( QStringLiteral( "description" ) );
+  QDomNode n = gnode.namedItem( u"description"_s );
   if ( !n.isNull() )
   {
     QDomElement e = n.toElement();
@@ -106,11 +106,11 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key, Q
     mTitle = description;
   }
 
-  mRequired = gnode.toElement().attribute( QStringLiteral( "required" ) ) == QLatin1String( "yes" );
+  mRequired = gnode.toElement().attribute( u"required"_s ) == "yes"_L1;
 
-  mMultiple = gnode.toElement().attribute( QStringLiteral( "multiple" ) ) == QLatin1String( "yes" );
+  mMultiple = gnode.toElement().attribute( u"multiple"_s ) == "yes"_L1;
 
-  mId = qdesc.attribute( QStringLiteral( "id" ) );
+  mId = qdesc.attribute( u"id"_s );
 }
 
 bool QgsGrassModuleParam::hidden() const
@@ -125,7 +125,7 @@ QStringList QgsGrassModuleParam::options()
 
 QString QgsGrassModuleParam::getDescPrompt( QDomElement descDomElement, const QString &name )
 {
-  QDomNode gispromptNode = descDomElement.namedItem( QStringLiteral( "gisprompt" ) );
+  QDomNode gispromptNode = descDomElement.namedItem( u"gisprompt"_s );
 
   if ( !gispromptNode.isNull() )
   {
@@ -149,9 +149,9 @@ QDomNode QgsGrassModuleParam::nodeByKey( QDomElement descDomElement, QString key
 
     if ( !e.isNull() )
     {
-      if ( e.tagName() == QLatin1String( "parameter" ) || e.tagName() == QLatin1String( "flag" ) )
+      if ( e.tagName() == "parameter"_L1 || e.tagName() == "flag"_L1 )
       {
-        if ( e.attribute( QStringLiteral( "name" ) ) == key )
+        if ( e.attribute( u"name"_s ) == key )
         {
           return n;
         }
@@ -170,20 +170,20 @@ QList<QDomNode> QgsGrassModuleParam::nodesByType( QDomElement descDomElement, ST
 
   // Not all options have prompt set, for example G_OPT_V_TYPE and G_OPT_V_FIELD, which would be useful, don't have prompt
   QMap<QString, STD_OPT> typeMap;
-  typeMap.insert( QStringLiteral( "dbtable" ), G_OPT_DB_TABLE );
-  typeMap.insert( QStringLiteral( "dbdriver" ), G_OPT_DB_DRIVER );
-  typeMap.insert( QStringLiteral( "dbname" ), G_OPT_DB_DATABASE );
-  typeMap.insert( QStringLiteral( "dbcolumn" ), G_OPT_DB_COLUMN );
-  typeMap.insert( QStringLiteral( "vector" ), G_OPT_V_INPUT );
+  typeMap.insert( u"dbtable"_s, G_OPT_DB_TABLE );
+  typeMap.insert( u"dbdriver"_s, G_OPT_DB_DRIVER );
+  typeMap.insert( u"dbname"_s, G_OPT_DB_DATABASE );
+  typeMap.insert( u"dbcolumn"_s, G_OPT_DB_COLUMN );
+  typeMap.insert( u"vector"_s, G_OPT_V_INPUT );
 
   QDomNode n = descDomElement.firstChild();
 
   while ( !n.isNull() )
   {
-    QString prompt = getDescPrompt( n.toElement(), QStringLiteral( "prompt" ) );
+    QString prompt = getDescPrompt( n.toElement(), u"prompt"_s );
     if ( typeMap.value( prompt ) == optionType )
     {
-      if ( age.isEmpty() || getDescPrompt( n.toElement(), QStringLiteral( "age" ) ) == age )
+      if ( age.isEmpty() || getDescPrompt( n.toElement(), u"age"_s ) == age )
       {
         nodes << n;
       }
@@ -241,11 +241,11 @@ void QgsGrassModuleMultiParam::showAddRemoveButtons()
   mLayout->insertLayout( -1, mButtonsLayout );
 
   // TODO: how to keep both buttons on the top?
-  QPushButton *addButton = new QPushButton( QStringLiteral( "+" ), this );
+  QPushButton *addButton = new QPushButton( u"+"_s, this );
   connect( addButton, &QAbstractButton::clicked, this, &QgsGrassModuleMultiParam::addRow );
   mButtonsLayout->addWidget( addButton, 0, Qt::AlignTop );
 
-  QPushButton *removeButton = new QPushButton( QStringLiteral( "-" ), this );
+  QPushButton *removeButton = new QPushButton( u"-"_s, this );
   connect( removeButton, &QAbstractButton::clicked, this, &QgsGrassModuleMultiParam::removeRow );
   mButtonsLayout->addWidget( removeButton, 0, Qt::AlignTop );
 
@@ -268,23 +268,23 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   }
 
   // Is it output?
-  QDomNode promptNode = gnode.namedItem( QStringLiteral( "gisprompt" ) );
+  QDomNode promptNode = gnode.namedItem( u"gisprompt"_s );
   if ( !promptNode.isNull() )
   {
     QDomElement promptElem = promptNode.toElement();
-    QString element = promptElem.attribute( QStringLiteral( "element" ) );
-    QString age = promptElem.attribute( QStringLiteral( "age" ) );
+    QString element = promptElem.attribute( u"element"_s );
+    QString age = promptElem.attribute( u"age"_s );
 
-    if ( age == QLatin1String( "new" ) )
+    if ( age == "new"_L1 )
     {
       mOutputElement = element;
       mIsOutput = true;
 
-      if ( element == QLatin1String( "vector" ) )
+      if ( element == "vector"_L1 )
       {
         mOutputType = Vector;
       }
-      else if ( element == QLatin1String( "cell" ) )
+      else if ( element == "cell"_L1 )
       {
         mOutputType = Raster;
       }
@@ -300,7 +300,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     // outputType qgm attribute allows forcing an output type
 
     // Predefined values ?
-    QDomNode valuesNode = gnode.namedItem( QStringLiteral( "values" ) );
+    QDomNode valuesNode = gnode.namedItem( u"values"_s );
     QDomElement valuesElem = valuesNode.toElement(); // null if valuesNode is null
 
     if ( !valuesNode.isNull() && valuesNode.childNodes().count() > 1 )
@@ -310,7 +310,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       // TODO: add add/removeRow support for ComboBox?
 
       // one or many?
-      if ( gelem.attribute( QStringLiteral( "multiple" ) ) == QLatin1String( "yes" ) )
+      if ( gelem.attribute( u"multiple"_s ) == "yes"_L1 )
       {
         mControlType = CheckBoxes;
       }
@@ -322,7 +322,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       }
 
       // List of values to be excluded
-      QStringList exclude = qdesc.attribute( QStringLiteral( "exclude" ) ).split( ',', Qt::SkipEmptyParts );
+      QStringList exclude = qdesc.attribute( u"exclude"_s ).split( ',', Qt::SkipEmptyParts );
 
       QDomNode valueNode = valuesElem.firstChild();
 
@@ -330,9 +330,9 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       {
         QDomElement valueElem = valueNode.toElement();
 
-        if ( !valueElem.isNull() && valueElem.tagName() == QLatin1String( "value" ) )
+        if ( !valueElem.isNull() && valueElem.tagName() == "value"_L1 )
         {
-          QDomNode n = valueNode.namedItem( QStringLiteral( "name" ) );
+          QDomNode n = valueNode.namedItem( u"name"_s );
           if ( !n.isNull() )
           {
             QDomElement e = n.toElement();
@@ -340,7 +340,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
 
             if ( exclude.contains( val ) == 0 )
             {
-              n = valueNode.namedItem( QStringLiteral( "description" ) );
+              n = valueNode.namedItem( u"description"_s );
               QString desc;
               if ( !n.isNull() )
               {
@@ -384,18 +384,18 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       // Output option may have missing gisprompt if output may be both vector and raster according to other options (e.g. v.kernel)
       // outputType qgm attribute allow forcing an output type
       QgsDebugMsgLevel( "outputType = " + qdesc.attribute( "outputType" ), 3 );
-      if ( qdesc.hasAttribute( QStringLiteral( "outputType" ) ) )
+      if ( qdesc.hasAttribute( u"outputType"_s ) )
       {
-        QString outputType = qdesc.attribute( QStringLiteral( "outputType" ) );
+        QString outputType = qdesc.attribute( u"outputType"_s );
         mIsOutput = true;
-        if ( outputType == QLatin1String( "vector" ) )
+        if ( outputType == "vector"_L1 )
         {
-          mOutputElement = QStringLiteral( "vector" );
+          mOutputElement = u"vector"_s;
           mOutputType = Vector;
         }
-        else if ( outputType == QLatin1String( "raster" ) )
+        else if ( outputType == "raster"_L1 )
         {
-          mOutputElement = QStringLiteral( "cell" );
+          mOutputElement = u"cell"_s;
           mOutputType = Raster;
         }
         else
@@ -404,11 +404,11 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         }
       }
 
-      if ( gelem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "integer" ) )
+      if ( gelem.attribute( u"type"_s ) == "integer"_L1 )
       {
         mValueType = Integer;
       }
-      else if ( gelem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "float" ) )
+      else if ( gelem.attribute( u"type"_s ) == "float"_L1 )
       {
         mValueType = Double;
       }
@@ -418,7 +418,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       {
         QDomNode valueNode = valuesElem.firstChild();
 
-        QDomNode n = valueNode.namedItem( QStringLiteral( "name" ) );
+        QDomNode n = valueNode.namedItem( u"name"_s );
         if ( !n.isNull() )
         {
           QDomElement e = n.toElement();
@@ -433,7 +433,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         }
       }
 
-      QDomNode keydescNode = gnode.namedItem( QStringLiteral( "keydesc" ) );
+      QDomNode keydescNode = gnode.namedItem( u"keydesc"_s );
       if ( !keydescNode.isNull() )
       {
         // fixed number of line edits
@@ -457,7 +457,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       else
       {
         addRow();
-        if ( gelem.attribute( QStringLiteral( "multiple" ) ) == QLatin1String( "yes" ) )
+        if ( gelem.attribute( u"multiple"_s ) == "yes"_L1 )
         {
           showAddRemoveButtons();
         }
@@ -466,10 +466,10 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   }
 
   mUsesRegion = false;
-  QString region = qdesc.attribute( QStringLiteral( "region" ) );
+  QString region = qdesc.attribute( u"region"_s );
   if ( region.length() > 0 )
   {
-    if ( region == QLatin1String( "yes" ) )
+    if ( region == "yes"_L1 )
       mUsesRegion = true;
   }
   else
@@ -519,11 +519,11 @@ void QgsGrassModuleOption::addRow()
     QRegularExpression rx;
     if ( mOutputType == Vector )
     {
-      rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
+      rx.setPattern( u"[A-Za-z_][A-Za-z0-9_]+"_s );
     }
     else
     {
-      rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
+      rx.setPattern( u"[A-Za-z0-9_.]+"_s );
     }
     mValidator = new QRegularExpressionValidator( rx, this );
 
@@ -561,16 +561,16 @@ void QgsGrassModuleOption::browse( bool checked )
   Q_UNUSED( checked )
 
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), QString() ).toString();
+  QString lastDir = settings.value( u"GRASS/lastDirectOutputDir"_s, QString() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Output file" ), lastDir, tr( "GeoTIFF" ) + " (*.tif)" );
   if ( !fileName.isEmpty() )
   {
-    if ( !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
+    if ( !fileName.endsWith( ".tif"_L1, Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff"_L1, Qt::CaseInsensitive ) )
     {
       fileName = fileName + ".tif";
     }
     mLineEdits.at( 0 )->setText( fileName );
-    settings.setValue( QStringLiteral( "GRASS/lastDirectOutputDir" ), QFileInfo( fileName ).absolutePath() );
+    settings.setValue( u"GRASS/lastDirectOutputDir"_s, QFileInfo( fileName ).absolutePath() );
   }
 }
 
@@ -743,7 +743,7 @@ QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key, QDo
   if ( mHidden )
     hide();
 
-  if ( mAnswer == QLatin1String( "on" ) )
+  if ( mAnswer == "on"_L1 )
     setChecked( true );
   else
     setChecked( false );
@@ -778,7 +778,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   adjustTitle();
 
   // Read "layeroption" is defined
-  QString opt = qdesc.attribute( QStringLiteral( "layeroption" ) );
+  QString opt = qdesc.attribute( u"layeroption"_s );
   if ( !opt.isNull() )
   {
     QDomNode optNode = nodeByKey( gdesc, opt );
@@ -794,7 +794,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
 
   // Read "whereoption" if defined
-  opt = qdesc.attribute( QStringLiteral( "whereoption" ) );
+  opt = qdesc.attribute( u"whereoption"_s );
   if ( !opt.isNull() )
   {
     QDomNode optNode = nodeByKey( gdesc, opt );
@@ -855,7 +855,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     if ( mType == Ogr && layer->type() == Qgis::LayerType::Vector )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vector || ( vector->providerType() != QLatin1String( "ogr" ) && vector->providerType() != QLatin1String( "postgres" ) ) )
+      if ( !vector || ( vector->providerType() != "ogr"_L1 && vector->providerType() != "postgres"_L1 ) )
         continue;
 
       QgsDataProvider *provider = vector->dataProvider();
@@ -863,7 +863,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       QString uri;
       QString ogrLayer;
       QString ogrWhere;
-      if ( vector->providerType() == QLatin1String( "postgres" ) )
+      if ( vector->providerType() == "postgres"_L1 )
       {
         // Construct OGR DSN
         QgsDataSourceUri dsUri( provider->dataSourceUri() );
@@ -879,7 +879,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         ogrLayer += dsUri.table();
         ogrWhere = dsUri.sql();
       }
-      else if ( vector->providerType() == QLatin1String( "ogr" ) )
+      else if ( vector->providerType() == "ogr"_L1 )
       {
         QStringList items = provider->dataSourceUri().split( '|' );
 
@@ -897,17 +897,17 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
             if ( args.size() != 2 )
               continue;
 
-            if ( args[0] == QLatin1String( "layername" ) && args[0] == QLatin1String( "layerid" ) )
+            if ( args[0] == "layername"_L1 && args[0] == "layerid"_L1 )
             {
               ogrLayer = args[1];
             }
-            else if ( args[0] == QLatin1String( "subset" ) )
+            else if ( args[0] == "subset"_L1 )
             {
               ogrWhere = args[1];
             }
           }
 
-          if ( uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+          if ( uri.endsWith( ".shp"_L1, Qt::CaseInsensitive ) )
           {
             ogrLayer.clear();
           }
@@ -958,7 +958,7 @@ QStringList QgsGrassModuleGdalInput::options()
   {
     QString uri = mUri[current];
 
-    if ( uri.startsWith( QLatin1String( "PG:" ) ) && uri.contains( QLatin1String( "password=" ) ) && !mLayerPassword->text().isEmpty() )
+    if ( uri.startsWith( "PG:"_L1 ) && uri.contains( "password="_L1 ) && !mLayerPassword->text().isEmpty() )
     {
       uri += " password=" + mLayerPassword->text();
     }
@@ -997,7 +997,7 @@ QString QgsGrassModuleGdalInput::ready()
 
 void QgsGrassModuleGdalInput::changed( int i )
 {
-  mLayerPassword->setEnabled( i < mUri.size() && mUri.value( i ).startsWith( QLatin1String( "PG:" ) ) && !mUri.value( i ).contains( QLatin1String( "password=" ) ) );
+  mLayerPassword->setEnabled( i < mUri.size() && mUri.value( i ).startsWith( "PG:"_L1 ) && !mUri.value( i ).contains( "password="_L1 ) );
 }
 
 /***************** QgsGrassModuleField *********************/
@@ -1030,12 +1030,12 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   }
   adjustTitle();
 
-  QDomNode promptNode = gnode.namedItem( QStringLiteral( "gisprompt" ) );
+  QDomNode promptNode = gnode.namedItem( u"gisprompt"_s );
   QDomElement gelem = gnode.toElement();
 
-  mType = qdesc.attribute( QStringLiteral( "type" ) );
+  mType = qdesc.attribute( u"type"_s );
 
-  mLayerKey = qdesc.attribute( QStringLiteral( "layer" ) );
+  mLayerKey = qdesc.attribute( u"layer"_s );
   if ( mLayerKey.isNull() || mLayerKey.length() == 0 )
   {
     mErrors << tr( "'layer' attribute in field tag with key= %1 is missing." ).arg( mKey );
@@ -1052,7 +1052,7 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   }
 
   addRow();
-  if ( gelem.attribute( QStringLiteral( "multiple" ) ) == QLatin1String( "yes" ) )
+  if ( gelem.attribute( u"multiple"_s ) == "yes"_L1 )
   {
     showAddRemoveButtons();
   }
@@ -1147,12 +1147,12 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   }
   adjustTitle();
 
-  QDomNode promptNode = gnode.namedItem( QStringLiteral( "gisprompt" ) );
+  QDomNode promptNode = gnode.namedItem( u"gisprompt"_s );
   QDomElement promptElem = promptNode.toElement();
 
-  mLayerId = qdesc.attribute( QStringLiteral( "layerid" ) );
+  mLayerId = qdesc.attribute( u"layerid"_s );
 
-  mType = qdesc.attribute( QStringLiteral( "type" ) );
+  mType = qdesc.attribute( u"type"_s );
 
   QgsGrassModuleParam *item = mModuleStandardOptions->item( mLayerId );
   // TODO check type
@@ -1191,7 +1191,7 @@ void QgsGrassModuleSelection::onLayerChanged()
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
+    if ( vectorLayer && vectorLayer->providerType() == "grass"_L1 )
     {
       QString uri = vectorLayer->dataProvider()->dataSourceUri();
       QgsDebugMsgLevel( "uri = " + uri, 3 );
@@ -1284,7 +1284,7 @@ void QgsGrassModuleSelection::onModeChanged()
     QString name = mModeComboBox->itemData( index, Qt::UserRole + 2 ).toString();
     QgsDebugMsgLevel( "uri = " + uri, 3 );
 
-    QgsVectorLayer *layer = new QgsVectorLayer( uri, name, QStringLiteral( "grass" ) );
+    QgsVectorLayer *layer = new QgsVectorLayer( uri, name, u"grass"_s );
     QgsProject::instance()->addMapLayer( layer );
     onLayerChanged(); // update with added layer
   }
@@ -1333,7 +1333,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
     }
     else if ( range ) // close range and next  cat
     {
-      list += QStringLiteral( "-%1,%2" ).arg( last ).arg( cat );
+      list += u"-%1,%2"_s.arg( last ).arg( cat );
       range = false;
     }
     else // next cat
@@ -1348,7 +1348,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
   }
   if ( range )
   {
-    list += QStringLiteral( "-%1" ).arg( last );
+    list += u"-%1"_s.arg( last );
   }
 
   mLineEdit->setText( list );
@@ -1382,27 +1382,27 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   }
   adjustTitle();
 
-  if ( qdesc.attribute( QStringLiteral( "type" ) ).toLower() == QLatin1String( "new" ) )
+  if ( qdesc.attribute( u"type"_s ).toLower() == "new"_L1 )
   {
     mType = New;
   }
-  if ( qdesc.attribute( QStringLiteral( "type" ) ).toLower() == QLatin1String( "multiple" ) )
+  if ( qdesc.attribute( u"type"_s ).toLower() == "multiple"_L1 )
   {
     mType = Multiple;
   }
 
-  if ( qdesc.attribute( QStringLiteral( "type" ) ).toLower() == QLatin1String( "directory" ) )
+  if ( qdesc.attribute( u"type"_s ).toLower() == "directory"_L1 )
   {
     mType = Directory;
   }
 
-  mFilters = qdesc.attribute( QStringLiteral( "filters" ) );
+  mFilters = qdesc.attribute( u"filters"_s );
 
-  mFileOption = qdesc.attribute( QStringLiteral( "fileoption" ) );
+  mFileOption = qdesc.attribute( u"fileoption"_s );
 
   QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit();
-  mBrowseButton = new QPushButton( QStringLiteral( "…" ) );
+  mBrowseButton = new QPushButton( u"…"_s );
   l->addWidget( mLineEdit );
   l->addWidget( mBrowseButton );
 

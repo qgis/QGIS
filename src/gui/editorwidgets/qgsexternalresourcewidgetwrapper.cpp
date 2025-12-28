@@ -97,23 +97,23 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
     }
     if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::Property::DocumentViewerContent ) )
     {
-      const QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::Property::DocumentViewerContent, expressionContext, QStringLiteral( "NoContent" ), &ok );
+      const QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::Property::DocumentViewerContent, expressionContext, u"NoContent"_s, &ok );
       if ( ok )
       {
         QgsExternalResourceWidget::DocumentViewerContent dvc;
-        if ( dvcString.compare( QLatin1String( "image" ), Qt::CaseInsensitive ) == 0 )
+        if ( dvcString.compare( "image"_L1, Qt::CaseInsensitive ) == 0 )
         {
           dvc = QgsExternalResourceWidget::Image;
         }
-        else if ( dvcString.compare( QLatin1String( "audio" ), Qt::CaseInsensitive ) == 0 )
+        else if ( dvcString.compare( "audio"_L1, Qt::CaseInsensitive ) == 0 )
         {
           dvc = QgsExternalResourceWidget::Audio;
         }
-        else if ( dvcString.compare( QLatin1String( "video" ), Qt::CaseInsensitive ) == 0 )
+        else if ( dvcString.compare( "video"_L1, Qt::CaseInsensitive ) == 0 )
         {
           dvc = QgsExternalResourceWidget::Video;
         }
-        else if ( dvcString.compare( QLatin1String( "web" ), Qt::CaseInsensitive ) == 0 )
+        else if ( dvcString.compare( "web"_L1, Qt::CaseInsensitive ) == 0 )
         {
           dvc = QgsExternalResourceWidget::Web;
         }
@@ -172,59 +172,59 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
 
     const QVariantMap cfg = config();
-    mPropertyCollection.loadVariant( cfg.value( QStringLiteral( "PropertyCollection" ) ), propertyDefinitions() );
+    mPropertyCollection.loadVariant( cfg.value( u"PropertyCollection"_s ), propertyDefinitions() );
 
-    mQgsWidget->setStorageType( cfg.value( QStringLiteral( "StorageType" ) ).toString() );
-    mQgsWidget->setStorageAuthConfigId( cfg.value( QStringLiteral( "StorageAuthConfigId" ) ).toString() );
+    mQgsWidget->setStorageType( cfg.value( u"StorageType"_s ).toString() );
+    mQgsWidget->setStorageAuthConfigId( cfg.value( u"StorageAuthConfigId"_s ).toString() );
 
-    mQgsWidget->fileWidget()->setStorageUrlExpression( mPropertyCollection.isActive( QgsWidgetWrapper::Property::StorageUrl ) ? mPropertyCollection.property( QgsWidgetWrapper::Property::StorageUrl ).asExpression() : QgsExpression::quotedValue( cfg.value( QStringLiteral( "StorageUrl" ) ).toString() ) );
+    mQgsWidget->fileWidget()->setStorageUrlExpression( mPropertyCollection.isActive( QgsWidgetWrapper::Property::StorageUrl ) ? mPropertyCollection.property( QgsWidgetWrapper::Property::StorageUrl ).asExpression() : QgsExpression::quotedValue( cfg.value( u"StorageUrl"_s ).toString() ) );
 
     updateFileWidgetExpressionContext();
 
-    if ( cfg.contains( QStringLiteral( "UseLink" ) ) )
+    if ( cfg.contains( u"UseLink"_s ) )
     {
-      mQgsWidget->fileWidget()->setUseLink( cfg.value( QStringLiteral( "UseLink" ) ).toBool() );
+      mQgsWidget->fileWidget()->setUseLink( cfg.value( u"UseLink"_s ).toBool() );
     }
-    if ( cfg.contains( QStringLiteral( "FullUrl" ) ) )
+    if ( cfg.contains( u"FullUrl"_s ) )
     {
-      mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
+      mQgsWidget->fileWidget()->setFullUrl( cfg.value( u"FullUrl"_s ).toBool() );
     }
 
     if ( !mPropertyCollection.isActive( QgsWidgetWrapper::Property::RootPath ) )
     {
-      mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
+      mQgsWidget->setDefaultRoot( cfg.value( u"DefaultRoot"_s ).toString() );
     }
-    if ( cfg.contains( QStringLiteral( "StorageMode" ) ) )
+    if ( cfg.contains( u"StorageMode"_s ) )
     {
-      mQgsWidget->fileWidget()->setStorageMode( ( QgsFileWidget::StorageMode ) cfg.value( QStringLiteral( "StorageMode" ) ).toInt() );
+      mQgsWidget->fileWidget()->setStorageMode( ( QgsFileWidget::StorageMode ) cfg.value( u"StorageMode"_s ).toInt() );
     }
-    if ( cfg.contains( QStringLiteral( "RelativeStorage" ) ) )
+    if ( cfg.contains( u"RelativeStorage"_s ) )
     {
-      mQgsWidget->setRelativeStorage( ( QgsFileWidget::RelativeStorage ) cfg.value( QStringLiteral( "RelativeStorage" ) ).toInt() );
+      mQgsWidget->setRelativeStorage( ( QgsFileWidget::RelativeStorage ) cfg.value( u"RelativeStorage"_s ).toInt() );
     }
-    if ( cfg.contains( QStringLiteral( "FileWidget" ) ) )
+    if ( cfg.contains( u"FileWidget"_s ) )
     {
-      mQgsWidget->setFileWidgetVisible( cfg.value( QStringLiteral( "FileWidget" ) ).toBool() );
+      mQgsWidget->setFileWidgetVisible( cfg.value( u"FileWidget"_s ).toBool() );
     }
-    if ( cfg.contains( QStringLiteral( "FileWidgetButton" ) ) )
+    if ( cfg.contains( u"FileWidgetButton"_s ) )
     {
-      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( QStringLiteral( "FileWidgetButton" ) ).toBool() );
+      mQgsWidget->fileWidget()->setFileWidgetButtonVisible( cfg.value( u"FileWidgetButton"_s ).toBool() );
     }
-    if ( cfg.contains( QStringLiteral( "DocumentViewer" ) ) )
+    if ( cfg.contains( u"DocumentViewer"_s ) )
     {
-      mQgsWidget->setDocumentViewerContent( ( QgsExternalResourceWidget::DocumentViewerContent ) cfg.value( QStringLiteral( "DocumentViewer" ) ).toInt() );
+      mQgsWidget->setDocumentViewerContent( ( QgsExternalResourceWidget::DocumentViewerContent ) cfg.value( u"DocumentViewer"_s ).toInt() );
     }
-    if ( cfg.contains( QStringLiteral( "FileWidgetFilter" ) ) )
+    if ( cfg.contains( u"FileWidgetFilter"_s ) )
     {
-      mQgsWidget->fileWidget()->setFilter( cfg.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
+      mQgsWidget->fileWidget()->setFilter( cfg.value( u"FileWidgetFilter"_s ).toString() );
     }
-    if ( cfg.contains( QStringLiteral( "DocumentViewerHeight" ) ) )
+    if ( cfg.contains( u"DocumentViewerHeight"_s ) )
     {
-      mQgsWidget->setDocumentViewerHeight( cfg.value( QStringLiteral( "DocumentViewerHeight" ) ).toInt() );
+      mQgsWidget->setDocumentViewerHeight( cfg.value( u"DocumentViewerHeight"_s ).toInt() );
     }
-    if ( cfg.contains( QStringLiteral( "DocumentViewerWidth" ) ) )
+    if ( cfg.contains( u"DocumentViewerWidth"_s ) )
     {
-      mQgsWidget->setDocumentViewerWidth( cfg.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt() );
+      mQgsWidget->setDocumentViewerWidth( cfg.value( u"DocumentViewerWidth"_s ).toInt() );
     }
   }
 
@@ -315,11 +315,11 @@ void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()
           break;
 
         case ConstraintResultFailHard:
-          mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+          mLineEdit->setStyleSheet( u"QgsFilterLineEdit { background-color: #dd7777; }"_s );
           break;
 
         case ConstraintResultFailSoft:
-          mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
+          mLineEdit->setStyleSheet( u"QgsFilterLineEdit { background-color: #ffd85d; }"_s );
           break;
       }
     }

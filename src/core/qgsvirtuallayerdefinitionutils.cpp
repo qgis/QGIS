@@ -44,7 +44,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     else
     {
       // find an uid name
-      QString uid = QStringLiteral( "uid" );
+      QString uid = u"uid"_s;
       while ( fields.lookupField( uid ) != -1 )
         uid += QLatin1Char( '_' ); // add "_" each time this name already exists
 
@@ -63,13 +63,13 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   const auto constVectorJoins = layer->vectorJoins();
   for ( const QgsVectorLayerJoinInfo &join : constVectorJoins )
   {
-    const QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
+    const QString joinName = u"j%1"_s.arg( ++joinIdx );
     QgsVectorLayer *joinedLayer = join.joinLayer();
     if ( !joinedLayer )
       continue;
     const QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
 
-    leftJoins << QStringLiteral( "LEFT JOIN \"%1\" AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
+    leftJoins << u"LEFT JOIN \"%1\" AS %2 ON t.\"%5\"=%2.\"%3\""_s.arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
     if ( auto *lJoinFieldNamesSubset = join.joinFieldNamesSubset() )
     {
       const QStringList joinFieldNamesSubset { *lJoinFieldNamesSubset };
@@ -90,7 +90,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
   }
 
-  const QString query = "SELECT " + columns.join( QLatin1String( ", " ) ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QLatin1Char( ' ' ) );
+  const QString query = "SELECT " + columns.join( ", "_L1 ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QLatin1Char( ' ' ) );
   def.setQuery( query );
 
   return def;

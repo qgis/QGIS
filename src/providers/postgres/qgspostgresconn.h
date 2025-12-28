@@ -151,7 +151,7 @@ struct QgsPostgresLayerProperty
         sridString += QString::number( srid );
       }
 
-      return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
+      return u"%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8"_s
         .arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( QLatin1Char( '|' ) ), sql )
         .arg( nSpCols );
     }

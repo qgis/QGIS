@@ -54,9 +54,9 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
                compileNode( op->opRight(), opR ) != Complete )
             return Fail;
 
-          result = QStringLiteral( "lower(%1) %2 lower(%3) ESCAPE '\\'" )
+          result = u"lower(%1) %2 lower(%3) ESCAPE '\\'"_s
                    .arg( opL )
-                   .arg( op->op() == QgsExpressionNodeBinaryOperator::boILike ? QStringLiteral( "LIKE" ) : QStringLiteral( "NOT LIKE" ) )
+                   .arg( op->op() == QgsExpressionNodeBinaryOperator::boILike ? u"LIKE"_s : u"NOT LIKE"_s )
                    .arg( opR );
 
           return Complete;
@@ -73,7 +73,7 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
-      if ( fd->name() == QLatin1String( "make_datetime" ) || fd->name() == QLatin1String( "make_date" ) || fd->name() == QLatin1String( "make_time" ) )
+      if ( fd->name() == "make_datetime"_L1 || fd->name() == "make_date"_L1 || fd->name() == "make_time"_L1 )
       {
         const auto constList = n->args()->list();
         for ( const QgsExpressionNode *ln : constList )
@@ -126,24 +126,24 @@ QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString 
 QStringList QgsSQLiteExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == QLatin1String( "make_datetime" ) )
+  if ( fnName == "make_datetime"_L1 )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) )
+    args = QStringList( u"'%1-%2-%3T%4:%5:%6Z'"_s.arg( args[0].rightJustified( 4, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) )
                         .arg( args[3].rightJustified( 2, '0' ) )
                         .arg( args[4].rightJustified( 2, '0' ) )
                         .arg( args[5].rightJustified( 2, '0' ) ) );
   }
-  else if ( fnName == QLatin1String( "make_date" ) )
+  else if ( fnName == "make_date"_L1 )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) )
+    args = QStringList( u"'%1-%2-%3'"_s.arg( args[0].rightJustified( 4, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) ) );
   }
-  else if ( fnName == QLatin1String( "make_time" ) )
+  else if ( fnName == "make_time"_L1 )
   {
-    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) )
+    args = QStringList( u"'%1:%2:%3'"_s.arg( args[0].rightJustified( 2, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) ) );
   }
@@ -152,17 +152,17 @@ QStringList QgsSQLiteExpressionCompiler::sqlArgumentsFromFunctionName( const QSt
 
 QString QgsSQLiteExpressionCompiler::castToReal( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
+  return u"CAST((%1) AS REAL)"_s.arg( value );
 }
 
 QString QgsSQLiteExpressionCompiler::castToInt( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
+  return u"CAST((%1) AS INTEGER)"_s.arg( value );
 }
 
 QString QgsSQLiteExpressionCompiler::castToText( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS TEXT)" ).arg( value );
+  return u"CAST((%1) AS TEXT)"_s.arg( value );
 }
 
 ///@endcond

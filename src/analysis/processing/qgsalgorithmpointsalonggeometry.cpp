@@ -25,7 +25,7 @@
 
 QString QgsPointsAlongGeometryAlgorithm::name() const
 {
-  return QStringLiteral( "pointsalonglines" );
+  return u"pointsalonglines"_s;
 }
 
 QString QgsPointsAlongGeometryAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsPointsAlongGeometryAlgorithm::group() const
 
 QString QgsPointsAlongGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsPointsAlongGeometryAlgorithm::outputName() const
@@ -95,8 +95,8 @@ Qgis::WkbType QgsPointsAlongGeometryAlgorithm::outputWkbType( Qgis::WkbType inpu
 QgsFields QgsPointsAlongGeometryAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
-  newFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"distance"_s, QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"angle"_s, QMetaType::Type::Double ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
@@ -107,33 +107,33 @@ QgsPointsAlongGeometryAlgorithm *QgsPointsAlongGeometryAlgorithm::createInstance
 
 void QgsPointsAlongGeometryAlgorithm::initParameters( const QVariantMap & )
 {
-  auto distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto distance = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Distance" ), 1.0, u"INPUT"_s, false, 0 );
   distance->setIsDynamic( true );
-  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
-  distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
+  distance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( distance.release() );
 
-  auto startOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto startOffset = std::make_unique<QgsProcessingParameterDistance>( u"START_OFFSET"_s, QObject::tr( "Start offset" ), 0.0, u"INPUT"_s, false, 0 );
   startOffset->setIsDynamic( true );
-  startOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "START_OFFSET" ), QObject::tr( "Start offset" ), QgsPropertyDefinition::DoublePositive ) );
-  startOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  startOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"START_OFFSET"_s, QObject::tr( "Start offset" ), QgsPropertyDefinition::DoublePositive ) );
+  startOffset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( startOffset.release() );
 
-  auto endOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto endOffset = std::make_unique<QgsProcessingParameterDistance>( u"END_OFFSET"_s, QObject::tr( "End offset" ), 0.0, u"INPUT"_s, false, 0 );
   endOffset->setIsDynamic( true );
-  endOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "END_OFFSET" ), QObject::tr( "End offset" ), QgsPropertyDefinition::DoublePositive ) );
-  endOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  endOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"END_OFFSET"_s, QObject::tr( "End offset" ), QgsPropertyDefinition::DoublePositive ) );
+  endOffset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( endOffset.release() );
 }
 
 QIcon QgsPointsAlongGeometryAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) );
+  return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmExtractVertices.svg"_s );
 }
 
 QString QgsPointsAlongGeometryAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) );
+  return QgsApplication::iconPath( u"/algorithms/mAlgorithmExtractVertices.svg"_s );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsPointsAlongGeometryAlgorithm::sourceFlags() const
@@ -149,20 +149,20 @@ QgsFeatureSink::SinkFlags QgsPointsAlongGeometryAlgorithm::sinkFlags() const
 
 bool QgsPointsAlongGeometryAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  mDistance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    mDistanceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
 
-  mStartOffset = parameterAsDouble( parameters, QStringLiteral( "START_OFFSET" ), context );
-  mDynamicStartOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "START_OFFSET" ) );
+  mStartOffset = parameterAsDouble( parameters, u"START_OFFSET"_s, context );
+  mDynamicStartOffset = QgsProcessingParameters::isDynamic( parameters, u"START_OFFSET"_s );
   if ( mDynamicStartOffset )
-    mStartOffsetProperty = parameters.value( QStringLiteral( "START_OFFSET" ) ).value<QgsProperty>();
+    mStartOffsetProperty = parameters.value( u"START_OFFSET"_s ).value<QgsProperty>();
 
-  mEndOffset = parameterAsDouble( parameters, QStringLiteral( "END_OFFSET" ), context );
-  mDynamicEndOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "END_OFFSET" ) );
+  mEndOffset = parameterAsDouble( parameters, u"END_OFFSET"_s, context );
+  mDynamicEndOffset = QgsProcessingParameters::isDynamic( parameters, u"END_OFFSET"_s );
   if ( mDynamicEndOffset )
-    mEndOffsetProperty = parameters.value( QStringLiteral( "END_OFFSET" ) ).value<QgsProperty>();
+    mEndOffsetProperty = parameters.value( u"END_OFFSET"_s ).value<QgsProperty>();
 
   return true;
 }

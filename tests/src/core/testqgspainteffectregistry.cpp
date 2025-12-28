@@ -28,7 +28,7 @@ class DummyPaintEffect : public QgsPaintEffect
 {
   public:
     DummyPaintEffect() = default;
-    QString type() const override { return QStringLiteral( "Dummy" ); }
+    QString type() const override { return u"Dummy"_s; }
     QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
     static QgsPaintEffect *create( const QVariantMap & ) { return new DummyPaintEffect(); }
     QVariantMap properties() const override { return QVariantMap(); }
@@ -80,7 +80,7 @@ void TestQgsPaintEffectRegistry::cleanup()
 
 void TestQgsPaintEffectRegistry::metadata()
 {
-  QgsPaintEffectMetadata metadata = QgsPaintEffectMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ), DummyPaintEffect::create );
+  QgsPaintEffectMetadata metadata = QgsPaintEffectMetadata( u"name"_s, u"display name"_s, DummyPaintEffect::create );
   QCOMPARE( metadata.name(), QString( "name" ) );
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
@@ -113,10 +113,10 @@ void TestQgsPaintEffectRegistry::addEffect()
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   const int previousCount = registry->effects().length();
 
-  registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
+  registry->addEffectType( new QgsPaintEffectMetadata( u"Dummy"_s, u"Dummy effect"_s, DummyPaintEffect::create ) );
   QCOMPARE( registry->effects().length(), previousCount + 1 );
   //try adding again, should have no effect
-  QgsPaintEffectMetadata *dupe = new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create );
+  QgsPaintEffectMetadata *dupe = new QgsPaintEffectMetadata( u"Dummy"_s, u"Dummy effect"_s, DummyPaintEffect::create );
   QVERIFY( !registry->addEffectType( dupe ) );
   QCOMPARE( registry->effects().length(), previousCount + 1 );
   delete dupe;
@@ -133,18 +133,18 @@ void TestQgsPaintEffectRegistry::fetchEffects()
 
   QVERIFY( effects.contains( "Dummy" ) );
 
-  QgsPaintEffectAbstractMetadata *metadata = registry->effectMetadata( QStringLiteral( "Dummy" ) );
+  QgsPaintEffectAbstractMetadata *metadata = registry->effectMetadata( u"Dummy"_s );
   QCOMPARE( metadata->name(), QString( "Dummy" ) );
 
   //metadata for bad effect
-  metadata = registry->effectMetadata( QStringLiteral( "bad effect" ) );
+  metadata = registry->effectMetadata( u"bad effect"_s );
   QVERIFY( !metadata );
 }
 
 void TestQgsPaintEffectRegistry::createEffect()
 {
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
-  QgsPaintEffect *effect = registry->createEffect( QStringLiteral( "Dummy" ) );
+  QgsPaintEffect *effect = registry->createEffect( u"Dummy"_s );
 
   QVERIFY( effect );
   DummyPaintEffect *dummyEffect = dynamic_cast<DummyPaintEffect *>( effect );
@@ -152,7 +152,7 @@ void TestQgsPaintEffectRegistry::createEffect()
   delete effect;
 
   //try creating a bad effect
-  effect = registry->createEffect( QStringLiteral( "bad effect" ) );
+  effect = registry->createEffect( u"bad effect"_s );
   QVERIFY( !effect );
 }
 

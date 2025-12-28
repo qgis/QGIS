@@ -26,8 +26,8 @@
 
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "vectortile" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "Vector tile provider" )
+#define PROVIDER_KEY u"vectortile"_s
+#define PROVIDER_DESCRIPTION u"Vector tile provider"_s
 
 QgsVectorTileProviderMetadata::QgsVectorTileProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
@@ -36,7 +36,7 @@ QgsVectorTileProviderMetadata::QgsVectorTileProviderMetadata()
 
 QIcon QgsVectorTileProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
 }
 
 QList<QgsDataItemProvider *> QgsVectorTileProviderMetadata::dataItemProviders() const
@@ -77,34 +77,34 @@ QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), dsUri.param( QStringLiteral( "type" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
-    uriComponents.insert( QStringLiteral( "serviceType" ), dsUri.param( QStringLiteral( "serviceType" ) ) );
+  uriComponents.insert( u"type"_s, dsUri.param( u"type"_s ) );
+  if ( dsUri.hasParam( u"serviceType"_s ) )
+    uriComponents.insert( u"serviceType"_s, dsUri.param( u"serviceType"_s ) );
 
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
+  if ( uriComponents[ u"type"_s ] == "mbtiles"_L1 ||
+       ( uriComponents[ u"type"_s ] == "xyz"_L1 &&
+         !dsUri.param( u"url"_s ).startsWith( "http"_L1 ) ) )
   {
-    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+    uriComponents.insert( u"path"_s, dsUri.param( u"url"_s ) );
   }
   else
   {
-    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+    uriComponents.insert( u"url"_s, dsUri.param( u"url"_s ) );
   }
 
-  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-    uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-    uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
+  if ( dsUri.hasParam( u"zmin"_s ) )
+    uriComponents.insert( u"zmin"_s, dsUri.param( u"zmin"_s ) );
+  if ( dsUri.hasParam( u"zmax"_s ) )
+    uriComponents.insert( u"zmax"_s, dsUri.param( u"zmax"_s ) );
 
   dsUri.httpHeaders().updateMap( uriComponents );
 
-  if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
-    uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
+  if ( dsUri.hasParam( u"styleUrl"_s ) )
+    uriComponents.insert( u"styleUrl"_s, dsUri.param( u"styleUrl"_s ) );
 
   const QString authcfg = dsUri.authConfigId();
   if ( !authcfg.isEmpty() )
-    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+    uriComponents.insert( u"authcfg"_s, authcfg );
 
   return uriComponents;
 }
@@ -112,23 +112,23 @@ QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
 QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), parts.value( QStringLiteral( "type" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "serviceType" ) ) )
-    dsUri.setParam( QStringLiteral( "serviceType" ), parts[ QStringLiteral( "serviceType" ) ].toString() );
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  dsUri.setParam( u"type"_s, parts.value( u"type"_s ).toString() );
+  if ( parts.contains( u"serviceType"_s ) )
+    dsUri.setParam( u"serviceType"_s, parts[ u"serviceType"_s ].toString() );
+  dsUri.setParam( u"url"_s, parts.value( parts.contains( u"path"_s ) ? u"path"_s : u"url"_s ).toString() );
 
-  if ( parts.contains( QStringLiteral( "zmin" ) ) )
-    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
-  if ( parts.contains( QStringLiteral( "zmax" ) ) )
-    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+  if ( parts.contains( u"zmin"_s ) )
+    dsUri.setParam( u"zmin"_s, parts[ u"zmin"_s ].toString() );
+  if ( parts.contains( u"zmax"_s ) )
+    dsUri.setParam( u"zmax"_s, parts[ u"zmax"_s ].toString() );
 
   dsUri.httpHeaders().setFromMap( parts );
 
-  if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
-    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+  if ( parts.contains( u"styleUrl"_s ) )
+    dsUri.setParam( u"styleUrl"_s, parts[ u"styleUrl"_s ].toString() );
 
-  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+  if ( parts.contains( u"authcfg"_s ) )
+    dsUri.setAuthConfigId( parts[ u"authcfg"_s ].toString() );
 
   return dsUri.encodedUri();
 }
@@ -138,25 +138,25 @@ QString QgsVectorTileProviderMetadata::absoluteToRelativeUri( const QString &uri
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
+  const QString sourceType = dsUri.param( u"type"_s );
+  QString sourcePath = dsUri.param( u"url"_s );
+  if ( sourceType == "xyz"_L1 )
   {
     const QUrl sourceUrl( sourcePath );
     if ( sourceUrl.isLocalFile() )
     {
       // relative path will become "file:./x.txt"
       const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
+      dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( u"url"_s, QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
       return dsUri.encodedUri();
     }
   }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
+  else if ( sourceType == "mbtiles"_L1 )
   {
     sourcePath = context.pathResolver().writePath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( u"url"_s, sourcePath );
     return dsUri.encodedUri();
   }
 
@@ -168,24 +168,24 @@ QString QgsVectorTileProviderMetadata::relativeToAbsoluteUri( const QString &uri
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
-  const QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
+  const QString sourceType = dsUri.param( u"type"_s );
+  QString sourcePath = dsUri.param( u"url"_s );
+  if ( sourceType == "xyz"_L1 )
   {
     const QUrl sourceUrl( sourcePath );
     if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
     {
       const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
+      dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( u"url"_s, QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
       return dsUri.encodedUri();
     }
   }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
+  else if ( sourceType == "mbtiles"_L1 )
   {
     sourcePath = context.pathResolver().readPath( sourcePath );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( u"url"_s, sourcePath );
     return dsUri.encodedUri();
   }
 

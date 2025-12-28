@@ -120,7 +120,7 @@ int QgsLayoutItem::type() const
 
 QIcon QgsLayoutItem::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s );
 }
 
 QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const
@@ -624,76 +624,76 @@ double QgsLayoutItem::itemRotation() const
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
-  element.setAttribute( QStringLiteral( "type" ), QString::number( type() ) );
+  QDomElement element = doc.createElement( u"LayoutItem"_s );
+  element.setAttribute( u"type"_s, QString::number( type() ) );
 
-  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "templateUuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "id" ), mId );
-  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
-  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
-  element.setAttribute( QStringLiteral( "positionOnPage" ), pagePositionWithUnits().encodePoint() );
-  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
-  element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
-  element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
+  element.setAttribute( u"uuid"_s, mUuid );
+  element.setAttribute( u"templateUuid"_s, mUuid );
+  element.setAttribute( u"id"_s, mId );
+  element.setAttribute( u"referencePoint"_s, QString::number( static_cast< int >( mReferencePoint ) ) );
+  element.setAttribute( u"position"_s, mItemPosition.encodePoint() );
+  element.setAttribute( u"positionOnPage"_s, pagePositionWithUnits().encodePoint() );
+  element.setAttribute( u"size"_s, mItemSize.encodeSize() );
+  element.setAttribute( u"itemRotation"_s, QString::number( mItemRotation ) );
+  element.setAttribute( u"groupUuid"_s, mParentGroupUuid );
 
-  element.setAttribute( QStringLiteral( "zValue" ), QString::number( zValue() ) );
-  element.setAttribute( QStringLiteral( "visibility" ), isVisible() );
+  element.setAttribute( u"zValue"_s, QString::number( zValue() ) );
+  element.setAttribute( u"visibility"_s, isVisible() );
   //position lock for mouse moves/resizes
   if ( mIsLocked )
   {
-    element.setAttribute( QStringLiteral( "positionLock" ), QStringLiteral( "true" ) );
+    element.setAttribute( u"positionLock"_s, u"true"_s );
   }
   else
   {
-    element.setAttribute( QStringLiteral( "positionLock" ), QStringLiteral( "false" ) );
+    element.setAttribute( u"positionLock"_s, u"false"_s );
   }
 
   //frame
   if ( mFrame )
   {
-    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "true" ) );
+    element.setAttribute( u"frame"_s, u"true"_s );
   }
   else
   {
-    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "false" ) );
+    element.setAttribute( u"frame"_s, u"false"_s );
   }
 
   //background
   if ( mBackground )
   {
-    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "true" ) );
+    element.setAttribute( u"background"_s, u"true"_s );
   }
   else
   {
-    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "false" ) );
+    element.setAttribute( u"background"_s, u"false"_s );
   }
 
   //frame color
-  QDomElement frameColorElem = doc.createElement( QStringLiteral( "FrameColor" ) );
-  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
-  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
-  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
-  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
+  QDomElement frameColorElem = doc.createElement( u"FrameColor"_s );
+  frameColorElem.setAttribute( u"red"_s, QString::number( mFrameColor.red() ) );
+  frameColorElem.setAttribute( u"green"_s, QString::number( mFrameColor.green() ) );
+  frameColorElem.setAttribute( u"blue"_s, QString::number( mFrameColor.blue() ) );
+  frameColorElem.setAttribute( u"alpha"_s, QString::number( mFrameColor.alpha() ) );
   element.appendChild( frameColorElem );
-  element.setAttribute( QStringLiteral( "outlineWidthM" ), mFrameWidth.encodeMeasurement() );
-  element.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
+  element.setAttribute( u"outlineWidthM"_s, mFrameWidth.encodeMeasurement() );
+  element.setAttribute( u"frameJoinStyle"_s, QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
 
   //background color
-  QDomElement bgColorElem = doc.createElement( QStringLiteral( "BackgroundColor" ) );
-  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
-  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
-  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
-  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
+  QDomElement bgColorElem = doc.createElement( u"BackgroundColor"_s );
+  bgColorElem.setAttribute( u"red"_s, QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( u"green"_s, QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( u"blue"_s, QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( u"alpha"_s, QString::number( mBackgroundColor.alpha() ) );
   element.appendChild( bgColorElem );
 
   //blend mode
-  element.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
+  element.setAttribute( u"blendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
 
   //opacity
-  element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
+  element.setAttribute( u"opacity"_s, QString::number( mOpacity ) );
 
-  element.setAttribute( QStringLiteral( "excludeFromExports" ), mExcludeFromExports );
+  element.setAttribute( u"excludeFromExports"_s, mExcludeFromExports );
 
   writeObjectPropertiesToElement( element, doc, context );
 
@@ -705,7 +705,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QLatin1String( "LayoutItem" ) )
+  if ( element.nodeName() != "LayoutItem"_L1 )
   {
     return false;
   }
@@ -713,14 +713,14 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   readObjectPropertiesFromElement( element, doc, context );
 
   mBlockUndoCommands = true;
-  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
-  setId( element.attribute( QStringLiteral( "id" ) ) );
-  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
-  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
-  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
-  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
+  mUuid = element.attribute( u"uuid"_s, QUuid::createUuid().toString() );
+  setId( element.attribute( u"id"_s ) );
+  mReferencePoint = static_cast< ReferencePoint >( element.attribute( u"referencePoint"_s ).toInt() );
+  setItemRotation( element.attribute( u"itemRotation"_s, u"0"_s ).toDouble() );
+  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( u"position"_s ) ) );
+  attemptResize( QgsLayoutSize::decodeSize( element.attribute( u"size"_s ) ) );
 
-  mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
+  mParentGroupUuid = element.attribute( u"groupUuid"_s );
   if ( !mParentGroupUuid.isEmpty() )
   {
     if ( QgsLayoutItemGroup *group = parentGroup() )
@@ -728,11 +728,11 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
       group->addItem( this );
     }
   }
-  mTemplateUuid = element.attribute( QStringLiteral( "templateUuid" ) );
+  mTemplateUuid = element.attribute( u"templateUuid"_s );
 
   //position lock for mouse moves/resizes
-  const QString positionLock = element.attribute( QStringLiteral( "positionLock" ) );
-  if ( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  const QString positionLock = element.attribute( u"positionLock"_s );
+  if ( positionLock.compare( "true"_L1, Qt::CaseInsensitive ) == 0 )
   {
     setLocked( true );
   }
@@ -741,12 +741,12 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
     setLocked( false );
   }
   //visibility
-  setVisibility( element.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
-  setZValue( element.attribute( QStringLiteral( "zValue" ) ).toDouble() );
+  setVisibility( element.attribute( u"visibility"_s, u"1"_s ) != "0"_L1 );
+  setZValue( element.attribute( u"zValue"_s ).toDouble() );
 
   //frame
-  const QString frame = element.attribute( QStringLiteral( "frame" ) );
-  if ( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  const QString frame = element.attribute( u"frame"_s );
+  if ( frame.compare( "true"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mFrame = true;
   }
@@ -756,8 +756,8 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   }
 
   //frame
-  const QString background = element.attribute( QStringLiteral( "background" ) );
-  if ( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  const QString background = element.attribute( u"background"_s );
+  if ( background.compare( "true"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mBackground = true;
   }
@@ -767,9 +767,9 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   }
 
   //pen
-  mFrameWidth = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "outlineWidthM" ) ) );
-  mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( element.attribute( QStringLiteral( "frameJoinStyle" ), QStringLiteral( "miter" ) ) );
-  const QDomNodeList frameColorList = element.elementsByTagName( QStringLiteral( "FrameColor" ) );
+  mFrameWidth = QgsLayoutMeasurement::decodeMeasurement( element.attribute( u"outlineWidthM"_s ) );
+  mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( element.attribute( u"frameJoinStyle"_s, u"miter"_s ) );
+  const QDomNodeList frameColorList = element.elementsByTagName( u"FrameColor"_s );
   if ( !frameColorList.isEmpty() )
   {
     const QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
@@ -779,10 +779,10 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
     bool alphaOk = false;
     int penRed, penGreen, penBlue, penAlpha;
 
-    penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-    penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-    penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-    penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+    penRed = frameColorElem.attribute( u"red"_s ).toDouble( &redOk );
+    penGreen = frameColorElem.attribute( u"green"_s ).toDouble( &greenOk );
+    penBlue = frameColorElem.attribute( u"blue"_s ).toDouble( &blueOk );
+    penAlpha = frameColorElem.attribute( u"alpha"_s ).toDouble( &alphaOk );
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
@@ -792,16 +792,16 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   refreshFrame( false );
 
   //brush
-  const QDomNodeList bgColorList = element.elementsByTagName( QStringLiteral( "BackgroundColor" ) );
+  const QDomNodeList bgColorList = element.elementsByTagName( u"BackgroundColor"_s );
   if ( !bgColorList.isEmpty() )
   {
     const QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int bgRed, bgGreen, bgBlue, bgAlpha;
-    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+    bgRed = bgColorElem.attribute( u"red"_s ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( u"green"_s ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( u"blue"_s ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( u"alpha"_s ).toDouble( &alphaOk );
     if ( redOk && greenOk && blueOk && alphaOk )
     {
       mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
@@ -812,19 +812,19 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   }
 
   //blend mode
-  setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( element.attribute( u"blendMode"_s, u"0"_s ).toUInt() ) ) );
 
   //opacity
-  if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
+  if ( element.hasAttribute( u"opacity"_s ) )
   {
-    setItemOpacity( element.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) ).toDouble() );
+    setItemOpacity( element.attribute( u"opacity"_s, u"1"_s ).toDouble() );
   }
   else
   {
-    setItemOpacity( 1.0 - element.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 100.0 );
+    setItemOpacity( 1.0 - element.attribute( u"transparency"_s, u"0"_s ).toInt() / 100.0 );
   }
 
-  mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
+  mExcludeFromExports = element.attribute( u"excludeFromExports"_s, u"0"_s ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
 
   const bool result = readPropertiesFromElement( element, doc, context );
@@ -1286,7 +1286,7 @@ void QgsLayoutItem::drawRefreshingOverlay( QPainter *painter, const QStyleOption
   const QgsScopedQPainterState painterState( painter );
   bool fitsInCache = false;
   const int xSize = std::floor( static_cast<double>( QFontMetrics( QFont() ).horizontalAdvance( 'X' ) ) * painter->device()->devicePixelRatioF() );
-  const QImage refreshingImage = QgsApplication::svgCache()->svgAsImage( QStringLiteral( ":/images/composer/refreshing_item.svg" ), xSize * 3, QColor(), QColor(), 1, 1, fitsInCache );
+  const QImage refreshingImage = QgsApplication::svgCache()->svgAsImage( u":/images/composer/refreshing_item.svg"_s, xSize * 3, QColor(), QColor(), 1, 1, fitsInCache );
 
   const double previewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
   painter->scale( 1.0 / previewScaleFactor / painter->device()->devicePixelRatioF(), 1.0 / previewScaleFactor / painter->device()->devicePixelRatioF() );

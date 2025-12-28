@@ -25,7 +25,7 @@
 
 QString QgsPdalTileAlgorithm::name() const
 {
-  return QStringLiteral( "tile" );
+  return u"tile"_s;
 }
 
 QString QgsPdalTileAlgorithm::displayName() const
@@ -40,7 +40,7 @@ QString QgsPdalTileAlgorithm::group() const
 
 QString QgsPdalTileAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalTileAlgorithm::tags() const
@@ -65,53 +65,53 @@ QgsPdalTileAlgorithm *QgsPdalTileAlgorithm::createInstance() const
 
 void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "LENGTH" ), QObject::tr( "Tile length" ), Qgis::ProcessingNumberParameterType::Double, 1000.0, false, 1 ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterNumber( u"LENGTH"_s, QObject::tr( "Tile length" ), Qgis::ProcessingNumberParameterType::Double, 1000.0, false, 1 ) );
 
-  auto paramCrs = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Assign CRS" ), QVariant(), true );
+  auto paramCrs = std::make_unique<QgsProcessingParameterCrs>( u"CRS"_s, QObject::tr( "Assign CRS" ), QVariant(), true );
   paramCrs->setFlags( paramCrs->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramCrs.release() );
 
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ) ) );
+  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT"_s, QObject::tr( "Output directory" ) ) );
 }
 
 QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputDir );
+  const QString outputDir = parameterAsString( parameters, u"OUTPUT"_s, context );
+  setOutputValue( u"OUTPUT"_s, outputDir );
 
   if ( !QDir().mkpath( outputDir ) )
     throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
-  int length = parameterAsInt( parameters, QStringLiteral( "LENGTH" ), context );
+  int length = parameterAsInt( parameters, u"LENGTH"_s, context );
 
   QStringList args;
   args.reserve( layers.count() + 4 );
 
   const QString tempDir = context.temporaryFolder().isEmpty() ? QgsProcessingUtils::tempFolder( &context ) : context.temporaryFolder();
 
-  args << QStringLiteral( "tile" )
-       << QStringLiteral( "--length=%1" ).arg( length )
-       << QStringLiteral( "--output=%1" ).arg( outputDir )
-       << QStringLiteral( "--temp_dir=%1" ).arg( tempDir );
+  args << u"tile"_s
+       << u"--length=%1"_s.arg( length )
+       << u"--output=%1"_s.arg( outputDir )
+       << u"--temp_dir=%1"_s.arg( tempDir );
 
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
-    args << QStringLiteral( "--a_srs=%1" ).arg( crs.authid() );
+    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
+    args << u"--a_srs=%1"_s.arg( crs.authid() );
   }
 
   applyThreadsParameter( args, context );
 
-  const QString fileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "inputFiles.txt" ), &context );
+  const QString fileName = QgsProcessingUtils::generateTempFilename( u"inputFiles.txt"_s, &context );
   QFile listFile( fileName );
   if ( !listFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
@@ -124,7 +124,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     out << layer->source() << "\n";
   }
 
-  args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+  args << u"--input-file-list=%1"_s.arg( fileName );
 
   return args;
 }

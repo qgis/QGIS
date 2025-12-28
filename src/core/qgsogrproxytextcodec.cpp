@@ -91,10 +91,10 @@ QStringList QgsOgrProxyTextCodec::supportedCodecs()
     // windows Qt builds (due to removal of ICU support in windows Qt builds)
     // see https://github.com/qgis/QGIS/issues/36871
     for ( int i = 437; i <= 950; ++i )
-      codecs << QStringLiteral( "CP%1" ).arg( i );
+      codecs << u"CP%1"_s.arg( i );
     for ( int i = 1250; i <= 1258; ++i )
-      codecs << QStringLiteral( "CP%1" ).arg( i );
-    codecs << QStringLiteral( "CP1251" );
+      codecs << u"CP%1"_s.arg( i );
+    codecs << u"CP1251"_s;
   } );
   return codecs;
 }

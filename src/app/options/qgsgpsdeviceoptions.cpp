@@ -53,12 +53,12 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
     if ( !it.value() )
       continue;
 
-    const QString waypointDownloadCommand = it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString waypointUploadCommand = it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString routeDownloadCommand = it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString routeUploadCommand = it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString trackDownloadCommand = it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString trackUploadCommand = it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString waypointDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Waypoint, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
+    const QString waypointUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Waypoint, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
+    const QString routeDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Route, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
+    const QString routeUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Route, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
+    const QString trackDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Track, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
+    const QString trackUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Track, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
 
     mDevices.insert( it.key(), { waypointDownloadCommand, waypointUploadCommand, routeDownloadCommand, routeUploadCommand, trackDownloadCommand, trackUploadCommand } );
   }
@@ -80,7 +80,7 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
 
 QString QgsGpsDeviceOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#defining-new-device" );
+  return u"introduction/qgis_configuration.html#defining-new-device"_s;
 }
 
 void QgsGpsDeviceOptionsWidget::apply()
@@ -209,13 +209,13 @@ void QgsGpsDeviceOptionsWidget::renameCurrentDevice()
 // QgsGpsDeviceOptionsFactory
 //
 QgsGpsDeviceOptionsFactory::QgsGpsDeviceOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "GPSBabel" ), QIcon(), QStringLiteral( "gpsbabel" ) )
+  : QgsOptionsWidgetFactory( tr( "GPSBabel" ), QIcon(), u"gpsbabel"_s )
 {
 }
 
 QIcon QgsGpsDeviceOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGps.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsGpsDeviceOptionsFactory::createWidget( QWidget *parent ) const
@@ -225,5 +225,5 @@ QgsOptionsPageWidget *QgsGpsDeviceOptionsFactory::createWidget( QWidget *parent 
 
 QStringList QgsGpsDeviceOptionsFactory::path() const
 {
-  return { QStringLiteral( "gps" ) };
+  return { u"gps"_s };
 }

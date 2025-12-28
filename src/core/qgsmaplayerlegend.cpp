@@ -44,15 +44,15 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mFlags = Qgis::MapLayerLegendFlags();
-  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "0" ) ).toInt() == 1 );
+  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( u"excludeByDefault"_s, u"0"_s ).toInt() == 1 );
 }
 
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
+  QDomElement elem = doc.createElement( u"legend"_s );
   if ( mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
   {
-    elem.setAttribute( QStringLiteral( "excludeByDefault" ),  QStringLiteral( "1" ) );
+    elem.setAttribute( u"excludeByDefault"_s,  u"1"_s );
   }
   return elem;
 }
@@ -86,9 +86,9 @@ void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, c
   const auto constOrder = order;
   for ( const int id : constOrder )
     orderStr << QString::number( id );
-  const QString str = orderStr.isEmpty() ? QStringLiteral( "empty" ) : orderStr.join( QLatin1Char( ',' ) );
+  const QString str = orderStr.isEmpty() ? u"empty"_s : orderStr.join( QLatin1Char( ',' ) );
 
-  nodeLayer->setCustomProperty( QStringLiteral( "legend/node-order" ), str );
+  nodeLayer->setCustomProperty( u"legend/node-order"_s, str );
 }
 
 static int _originalLegendNodeCount( QgsLayerTreeLayer *nodeLayer )
@@ -104,7 +104,7 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer *nodeLayer )
 {
   if ( !nodeLayer->layer() || !nodeLayer->layer()->legend() )
   {
-    QgsDebugError( QStringLiteral( "Legend node order manipulation is invalid without existing legend" ) );
+    QgsDebugError( u"Legend node order manipulation is invalid without existing legend"_s );
     return QList<int>();
   }
 
@@ -119,12 +119,12 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer *nodeLayer )
 
 QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer *nodeLayer )
 {
-  const QString orderStr = nodeLayer->customProperty( QStringLiteral( "legend/node-order" ) ).toString();
+  const QString orderStr = nodeLayer->customProperty( u"legend/node-order"_s ).toString();
 
   if ( orderStr.isEmpty() )
     return _makeNodeOrder( nodeLayer );
 
-  if ( orderStr == QLatin1String( "empty" ) )
+  if ( orderStr == "empty"_L1 )
     return QList<int>();
 
   const int numNodes = _originalLegendNodeCount( nodeLayer );
@@ -146,7 +146,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer *nodeLayer
 
 bool QgsMapLayerLegendUtils::hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer )
 {
-  return nodeLayer->customProperties().contains( QStringLiteral( "legend/node-order" ) );
+  return nodeLayer->customProperties().contains( u"legend/node-order"_s );
 }
 
 void QgsMapLayerLegendUtils::setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel )
@@ -167,7 +167,7 @@ bool QgsMapLayerLegendUtils::hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLaye
 void QgsMapLayerLegendUtils::setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape )
 {
   QDomDocument patchDoc;
-  QDomElement patchElem = patchDoc.createElement( QStringLiteral( "patch" ) );
+  QDomElement patchElem = patchDoc.createElement( u"patch"_s );
   shape.writeXml( patchElem, patchDoc, QgsReadWriteContext() );
   patchDoc.appendChild( patchElem );
   nodeLayer->setCustomProperty( "legend/patch-shape-" + QString::number( originalIndex ), patchDoc.toString() );
@@ -179,7 +179,7 @@ QgsLegendPatchShape QgsMapLayerLegendUtils::legendNodePatchShape( QgsLayerTreeLa
   if ( patchDef.isEmpty() )
     return QgsLegendPatchShape();
 
-  QDomDocument doc( QStringLiteral( "patch" ) );
+  QDomDocument doc( u"patch"_s );
   doc.setContent( patchDef );
   QgsLegendPatchShape shape;
   shape.readXml( doc.documentElement(), QgsReadWriteContext() );
@@ -210,7 +210,7 @@ void QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeL
     QDomDocument doc;
     QgsReadWriteContext rwContext;
     rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
-    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "custom symbol" ), symbol, doc, rwContext );
+    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( u"custom symbol"_s, symbol, doc, rwContext );
     doc.appendChild( elem );
     nodeLayer->setCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ), doc.toString() );
   }
@@ -241,7 +241,7 @@ void QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( QgsLayerTreeLayer *
     QDomDocument doc;
     QgsReadWriteContext rwContext;
     rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
-    QDomElement elem = doc.createElement( QStringLiteral( "rampSettings" ) );
+    QDomElement elem = doc.createElement( u"rampSettings"_s );
     settings->writeXml( doc, elem, rwContext );
     doc.appendChild( elem );
     nodeLayer->setCustomProperty( "legend/custom-ramp-settings-" + QString::number( originalIndex ), doc.toString() );
@@ -271,7 +271,7 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
 void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )
 {
   if ( columnBreakBeforeNode )
-    nodeLayer->setCustomProperty( "legend/column-break-" + QString::number( originalIndex ), QStringLiteral( "1" ) );
+    nodeLayer->setCustomProperty( "legend/column-break-" + QString::number( originalIndex ), u"1"_s );
   else
     nodeLayer->removeCustomProperty( "legend/column-break-" + QString::number( originalIndex ) );
 }
@@ -332,7 +332,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
     {
       if ( usedIndices.contains( idx ) )
       {
-        QgsDebugError( QStringLiteral( "invalid node order. ignoring." ) );
+        QgsDebugError( u"invalid node order. ignoring."_s );
         return;
       }
 
@@ -381,11 +381,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
   if ( !r )
     return nodes;
 
-  if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool() )
+  if ( nodeLayer->customProperty( u"showFeatureCount"_s, 0 ).toBool() )
     mLayer->countSymbolFeatures();
 
   const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/showLegendClassifiers" ), false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
+  if ( settings.value( u"qgis/showLegendClassifiers"_s, false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
   {
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
@@ -454,20 +454,20 @@ void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsRea
   mTextOnSymbolTextFormat = QgsTextFormat();
   mTextOnSymbolContent.clear();
 
-  mShowLabelLegend = elem.attribute( QStringLiteral( "showLabelLegend" ), QStringLiteral( "0" ) ).compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0;
+  mShowLabelLegend = elem.attribute( u"showLabelLegend"_s, u"0"_s ).compare( u"1"_s, Qt::CaseInsensitive ) == 0;
 
-  const QDomElement tosElem = elem.firstChildElement( QStringLiteral( "text-on-symbol" ) );
+  const QDomElement tosElem = elem.firstChildElement( u"text-on-symbol"_s );
   if ( !tosElem.isNull() )
   {
     mTextOnSymbolEnabled = true;
-    const QDomElement tosFormatElem = tosElem.firstChildElement( QStringLiteral( "text-style" ) );
+    const QDomElement tosFormatElem = tosElem.firstChildElement( u"text-style"_s );
     mTextOnSymbolTextFormat.readXml( tosFormatElem, context );
-    const QDomElement tosContentElem = tosElem.firstChildElement( QStringLiteral( "content" ) );
-    QDomElement tosContentItemElem = tosContentElem.firstChildElement( QStringLiteral( "item" ) );
+    const QDomElement tosContentElem = tosElem.firstChildElement( u"content"_s );
+    QDomElement tosContentItemElem = tosContentElem.firstChildElement( u"item"_s );
     while ( !tosContentItemElem.isNull() )
     {
-      mTextOnSymbolContent.insert( tosContentItemElem.attribute( QStringLiteral( "key" ) ), tosContentItemElem.attribute( QStringLiteral( "value" ) ) );
-      tosContentItemElem = tosContentItemElem.nextSiblingElement( QStringLiteral( "item" ) );
+      mTextOnSymbolContent.insert( tosContentItemElem.attribute( u"key"_s ), tosContentItemElem.attribute( u"value"_s ) );
+      tosContentItemElem = tosContentItemElem.nextSiblingElement( u"item"_s );
     }
   }
 }
@@ -475,20 +475,20 @@ void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsRea
 QDomElement QgsDefaultVectorLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement elem = QgsMapLayerLegend::writeXml( doc, context );
-  elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "default-vector" ) );
-  elem.setAttribute( QStringLiteral( "showLabelLegend" ), mShowLabelLegend );
+  elem.setAttribute( u"type"_s, u"default-vector"_s );
+  elem.setAttribute( u"showLabelLegend"_s, mShowLabelLegend );
 
   if ( mTextOnSymbolEnabled )
   {
-    QDomElement tosElem = doc.createElement( QStringLiteral( "text-on-symbol" ) );
+    QDomElement tosElem = doc.createElement( u"text-on-symbol"_s );
     const QDomElement tosFormatElem = mTextOnSymbolTextFormat.writeXml( doc, context );
     tosElem.appendChild( tosFormatElem );
-    QDomElement tosContentElem = doc.createElement( QStringLiteral( "content" ) );
+    QDomElement tosContentElem = doc.createElement( u"content"_s );
     for ( auto it = mTextOnSymbolContent.constBegin(); it != mTextOnSymbolContent.constEnd(); ++it )
     {
-      QDomElement tosContentItemElem = doc.createElement( QStringLiteral( "item" ) );
-      tosContentItemElem.setAttribute( QStringLiteral( "key" ), it.key() );
-      tosContentItemElem.setAttribute( QStringLiteral( "value" ), it.value() );
+      QDomElement tosContentItemElem = doc.createElement( u"item"_s );
+      tosContentItemElem.setAttribute( u"key"_s, it.key() );
+      tosContentItemElem.setAttribute( u"value"_s, it.value() );
       tosContentElem.appendChild( tosContentItemElem );
     }
     tosElem.appendChild( tosContentElem );
@@ -562,7 +562,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   if ( indexScalar > -1 )
   {
-    const QString scalarNameKey = QStringLiteral( "scalarName" );
+    const QString scalarNameKey = u"scalarName"_s;
     nodes << new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexScalar ).name(),
                                       QIcon(), nullptr, scalarNameKey );
     const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar );
@@ -580,7 +580,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
                                                  shader.minimumValue(),
                                                  shader.maximumValue(),
                                                  nullptr,
-                                                 QStringLiteral( "scalarLegend" ),
+                                                 u"scalarLegend"_s,
                                                  scalarNameKey );
           }
           break;
@@ -595,7 +595,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
         for ( const QPair< QString, QColor > &item : items )
         {
           nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first, nullptr, false,
-                                                  QStringLiteral( "scalarLegend" ) + QUuid::createUuid().toString(),
+                                                  u"scalarLegend"_s + QUuid::createUuid().toString(),
                                                   scalarNameKey
                                                 );
         }
@@ -607,20 +607,20 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   if ( indexVector > -1 )
   {
     const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( indexVector );
-    const QString vectorNameKey = QStringLiteral( "vectorName" );
+    const QString vectorNameKey = u"vectorName"_s;
     switch ( settings.coloringMethod() )
     {
       case QgsInterpolatedLineColor::ColoringMethod::SingleColor:
       {
         const QColor arrowColor = settings.color();
-        const QIcon vectorIcon = QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/meshvectors.svg" ), arrowColor, arrowColor );
+        const QIcon vectorIcon = QgsApplication::getThemeIcon( u"/propertyicons/meshvectors.svg"_s, arrowColor, arrowColor );
         nodes << new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexVector ).name(),
                                           vectorIcon, nullptr, vectorNameKey );
         break;
       }
       case QgsInterpolatedLineColor::ColoringMethod::ColorRamp:
       {
-        const QIcon vectorIcon = QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/meshvectors.svg" ) );
+        const QIcon vectorIcon = QgsApplication::getThemeIcon( u"/propertyicons/meshvectors.svg"_s );
         nodes << new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexVector ).name(),
                                           vectorIcon, nullptr, vectorNameKey );
         const QgsColorRampShader shader = settings.colorRampShader();
@@ -637,7 +637,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
                                                      shader.minimumValue(),
                                                      shader.maximumValue(),
                                                      nullptr,
-                                                     QStringLiteral( "vectorLegend" ),
+                                                     u"vectorLegend"_s,
                                                      vectorNameKey );
               }
               break;
@@ -652,7 +652,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
             for ( const QPair< QString, QColor > &item : items )
             {
               nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first, nullptr, false,
-                                                      QStringLiteral( "vectorLegend" ) + QUuid::createUuid().toString(),
+                                                      u"vectorLegend"_s + QUuid::createUuid().toString(),
                                                       vectorNameKey
                                                     );
             }

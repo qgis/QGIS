@@ -35,8 +35,8 @@
 
 QMap<QString, QStringList> QgsRasterFormatSaveOptionsWidget::sBuiltinProfiles;
 
-static const QString PYRAMID_JPEG_YCBCR_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" ) );
-static const QString PYRAMID_JPEG_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG INTERLEAVE_OVERVIEW=PIXEL" ) );
+static const QString PYRAMID_JPEG_YCBCR_COMPRESSION( u"JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL"_s );
+static const QString PYRAMID_JPEG_COMPRESSION( u"JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG INTERLEAVE_OVERVIEW=PIXEL"_s );
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *parent, const QString &format, QgsRasterFormatSaveOptionsWidget::Type type, const QString &provider )
   : QWidget( parent )
@@ -60,23 +60,23 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   if ( sBuiltinProfiles.isEmpty() )
   {
     // key=profileKey values=format,profileName,options
-    sBuiltinProfiles[QStringLiteral( "z_adefault" )] = ( QStringList() << QString() << tr( "Default" ) << QString() );
+    sBuiltinProfiles[u"z_adefault"_s] = ( QStringList() << QString() << tr( "Default" ) << QString() );
 
     // these GTiff profiles are based on Tim's benchmarks at
     // http://linfiniti.com/2011/05/gdal-efficiency-of-various-compression-algorithms/
     // big: no compression | medium: reasonable size/speed tradeoff | small: smallest size
-    sBuiltinProfiles[QStringLiteral( "z_gtiff_1big" )] = ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No Compression" ) << QStringLiteral( "COMPRESS=NONE BIGTIFF=IF_NEEDED" ) );
-    sBuiltinProfiles[QStringLiteral( "z_gtiff_2medium" )] = ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low Compression" ) << QStringLiteral( "COMPRESS=PACKBITS" ) );
-    sBuiltinProfiles[QStringLiteral( "z_gtiff_3small" )] = ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High Compression" ) << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
-    sBuiltinProfiles[QStringLiteral( "z_gtiff_4jpeg" )] = ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG Compression" ) << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
+    sBuiltinProfiles[u"z_gtiff_1big"_s] = ( QStringList() << u"GTiff"_s << tr( "No Compression" ) << u"COMPRESS=NONE BIGTIFF=IF_NEEDED"_s );
+    sBuiltinProfiles[u"z_gtiff_2medium"_s] = ( QStringList() << u"GTiff"_s << tr( "Low Compression" ) << u"COMPRESS=PACKBITS"_s );
+    sBuiltinProfiles[u"z_gtiff_3small"_s] = ( QStringList() << u"GTiff"_s << tr( "High Compression" ) << u"COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9"_s );
+    sBuiltinProfiles[u"z_gtiff_4jpeg"_s] = ( QStringList() << u"GTiff"_s << tr( "JPEG Compression" ) << u"COMPRESS=JPEG JPEG_QUALITY=75"_s );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
     // TODO - should we offer GDAL_TIFF_OVR_BLOCKSIZE option here or in QgsRasterPyramidsOptionsWidget ?
-    sBuiltinProfiles[QStringLiteral( "z__pyramids_gtiff_1big" )] = ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No Compression" ) << QStringLiteral( "COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED" ) );
-    sBuiltinProfiles[QStringLiteral( "z__pyramids_gtiff_2medium" )] = ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low Compression" ) << QStringLiteral( "COMPRESS_OVERVIEW=PACKBITS" ) );
-    sBuiltinProfiles[QStringLiteral( "z__pyramids_gtiff_3small" )] = ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High Compression" ) << QStringLiteral( "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ) ); // how to set zlevel?
-    sBuiltinProfiles[QStringLiteral( "z__pyramids_gtiff_4jpeg" )] = ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG Compression" ) << PYRAMID_JPEG_YCBCR_COMPRESSION );
+    sBuiltinProfiles[u"z__pyramids_gtiff_1big"_s] = ( QStringList() << u"_pyramids"_s << tr( "No Compression" ) << u"COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED"_s );
+    sBuiltinProfiles[u"z__pyramids_gtiff_2medium"_s] = ( QStringList() << u"_pyramids"_s << tr( "Low Compression" ) << u"COMPRESS_OVERVIEW=PACKBITS"_s );
+    sBuiltinProfiles[u"z__pyramids_gtiff_3small"_s] = ( QStringList() << u"_pyramids"_s << tr( "High Compression" ) << u"COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9"_s ); // how to set zlevel?
+    sBuiltinProfiles[u"z__pyramids_gtiff_4jpeg"_s] = ( QStringList() << u"_pyramids"_s << tr( "JPEG Compression" ) << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
   connect( mProfileComboBox, &QComboBox::currentTextChanged, this, &QgsRasterFormatSaveOptionsWidget::updateOptions );
@@ -105,7 +105,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   updateControls();
   updateProfiles();
 
-  QgsDebugMsgLevel( QStringLiteral( "done" ), 3 );
+  QgsDebugMsgLevel( u"done"_s, 3 );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setFormat( const QString &format )
@@ -158,7 +158,7 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
 
 QString QgsRasterFormatSaveOptionsWidget::pseudoFormat() const
 {
-  return mPyramids ? QStringLiteral( "_pyramids" ) : mFormat;
+  return mPyramids ? u"_pyramids"_s : mFormat;
 }
 
 void QgsRasterFormatSaveOptionsWidget::updateProfiles()
@@ -262,16 +262,16 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {
   QString message;
 
-  if ( mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty() && !mPyramids )
+  if ( mProvider == "gdal"_L1 && !mFormat.isEmpty() && !mPyramids )
   {
     message = QgsGdalUtils::helpCreationOptionsFormat( mFormat );
     if ( message.isEmpty() )
       message = tr( "Cannot get create options for driver %1" ).arg( mFormat );
   }
-  else if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
+  else if ( mProvider == "gdal"_L1 && mPyramids )
   {
     message = tr( "For details on pyramids options please see the following pages" );
-    message += QLatin1String( "\n\nhttps://gdal.org/programs/gdaladdo.html\n\nhttps://gdal.org/drivers/raster/gtiff.html" );
+    message += "\n\nhttps://gdal.org/programs/gdaladdo.html\n\nhttps://gdal.org/drivers/raster/gtiff.html"_L1;
   }
   else
     message = tr( "No help available" );
@@ -297,7 +297,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   const QStringList creationOptions = options();
   QString message;
 
-  QgsDebugMsgLevel( QStringLiteral( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ), 2 );
+  QgsDebugMsgLevel( u"layer: [%1] file: [%2] format: [%3]"_s.arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ), 2 );
   // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
   // ideally we should keep it for future access, but this is trickier
   QgsRasterLayer *rasterLayer = mRasterLayer;
@@ -307,14 +307,14 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     tmpLayer = true;
     QgsRasterLayer::LayerOptions options;
     options.skipCrsValidation = true;
-    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ), options );
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), u"gdal"_s, options );
   }
 
-  if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
+  if ( mProvider == "gdal"_L1 && mPyramids )
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "calling validate pyramids on layer's data provider" ), 2 );
+      QgsDebugMsgLevel( u"calling validate pyramids on layer's data provider"_s, 2 );
       message = rasterLayer->dataProvider()->validatePyramidsConfigOptions( mPyramidsFormat, creationOptions, mFormat );
     }
     else
@@ -322,11 +322,11 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
       message = tr( "cannot validate pyramid options" );
     }
   }
-  else if ( !creationOptions.isEmpty() && mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty() )
+  else if ( !creationOptions.isEmpty() && mProvider == "gdal"_L1 && !mFormat.isEmpty() )
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "calling validate on layer's data provider" ), 2 );
+      QgsDebugMsgLevel( u"calling validate on layer's data provider"_s, 2 );
       message = rasterLayer->dataProvider()->validateCreationOptions( creationOptions, mFormat );
     }
     else
@@ -532,7 +532,7 @@ void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
 
 void QgsRasterFormatSaveOptionsWidget::updateControls()
 {
-  const bool valid = mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty();
+  const bool valid = mProvider == "gdal"_L1 && !mFormat.isEmpty();
   mOptionsValidateButton->setEnabled( valid );
   mOptionsHelpButton->setEnabled( valid );
 }
@@ -562,7 +562,7 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
   Q_UNUSED( event )
   updateOptions();
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
-  QgsDebugMsgLevel( QStringLiteral( "done" ), 3 );
+  QgsDebugMsgLevel( u"done"_s, 3 );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )

@@ -304,7 +304,7 @@ const QPixmap &QgsColorWidget::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -1441,7 +1441,7 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mSpinBox = new QgsDoubleSpinBox();
   mSpinBox->setShowClearButton( false );
   //set spinbox to a reasonable width
-  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( QStringLiteral( "888%" ) );
+  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( u"888%"_s );
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( 1.f ) );
@@ -1566,15 +1566,15 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   hLayout->addWidget( mLineEdit );
 
   mMenuButton = new QToolButton( mLineEdit );
-  mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconDropDownMenu.svg" ) ) );
+  mMenuButton->setIcon( QgsApplication::getThemeIcon( u"/mIconDropDownMenu.svg"_s ) );
   mMenuButton->setCursor( Qt::ArrowCursor );
   mMenuButton->setFocusPolicy( Qt::NoFocus );
-  mMenuButton->setStyleSheet( QStringLiteral( "QToolButton { border: none; padding: 0px; }" ) );
+  mMenuButton->setStyleSheet( u"QToolButton { border: none; padding: 0px; }"_s );
 
   setLayout( hLayout );
 
   const int frameWidth = mLineEdit->style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { padding-right: %1px; } " )
+  mLineEdit->setStyleSheet( u"QLineEdit { padding-right: %1px; } "_s
                               .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
   connect( mLineEdit, &QLineEdit::editingFinished, this, &QgsColorTextWidget::textChanged );
@@ -1582,7 +1582,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = settings.enumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), HexRgb );
+  mFormat = settings.enumValue( u"ColorWidgets/textWidgetFormat"_s, HexRgb );
 
   updateText();
 }
@@ -1609,7 +1609,7 @@ void QgsColorTextWidget::updateText()
       mLineEdit->setText( mCurrentColor.name() );
       break;
     case HexRgbA:
-      mLineEdit->setText( mCurrentColor.name() + QStringLiteral( "%1" ).arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
+      mLineEdit->setText( mCurrentColor.name() + u"%1"_s.arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
       break;
     case Rgb:
       mLineEdit->setText( tr( "rgb( %1, %2, %3 )" ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ) );
@@ -1688,7 +1688,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setEnumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), mFormat );
+  settings.setEnumValue( u"ColorWidgets/textWidgetFormat"_s, mFormat );
 
   updateText();
 }

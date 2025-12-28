@@ -73,7 +73,7 @@ int QgsGml::getFeatures( const QString &uri, Qgis::WkbType *wkbType, QgsRectangl
   mExtent.setNull();
 
   QNetworkRequest request( uri );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGml" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsGml"_s );
 
   if ( !authcfg.isEmpty() )
   {
@@ -89,7 +89,7 @@ int QgsGml::getFeatures( const QString &uri, Qgis::WkbType *wkbType, QgsRectangl
   }
   else if ( !userName.isNull() || !password.isNull() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( userName, password ).toLatin1().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + u"%1:%2"_s.arg( userName, password ).toLatin1().toBase64() );
   }
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
 
@@ -116,7 +116,7 @@ int QgsGml::getFeatures( const QString &uri, Qgis::WkbType *wkbType, QgsRectangl
   const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
   for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
   {
-    if ( ( *it )->objectName() == QLatin1String( "QgisApp" ) )
+    if ( ( *it )->objectName() == "QgisApp"_L1 )
     {
       mainWindow = *it;
       break;
@@ -391,7 +391,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     {
       if ( alreadyFoundGeometry )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Will ignore geometry field %1 from typename %2" ).
+        QgsDebugMsgLevel( u"Will ignore geometry field %1 from typename %2"_s.
                           arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ), 2 );
         mLayerProperties[i].mGeometryAttribute.clear();
       }
@@ -479,7 +479,7 @@ bool QgsGmlStreamingParser::processData( const QByteArray &pdata, bool atEnd, QS
     {
       // Specified encoding is unknown, Expat only accepts UTF-8, UTF-16, ISO-8859-1
       // Try to get encoding string and convert data to utf-8
-      const thread_local QRegularExpression reEncoding( QStringLiteral( "<?xml.*encoding=['\"]([^'\"]*)['\"].*?>" ),
+      const thread_local QRegularExpression reEncoding( u"<?xml.*encoding=['\"]([^'\"]*)['\"].*?>"_s,
           QRegularExpression::CaseInsensitiveOption );
       QRegularExpressionMatch match = reEncoding.match( pdata );
       const QString encoding = match.hasMatch() ? match.captured( 1 ) : QString();
@@ -617,12 +617,12 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mParseModeStack.push( Coordinate );
     mCoorMode = QgsGmlStreamingParser::Coordinate;
     mStringCash.clear();
-    mCoordinateSeparator = readAttribute( QStringLiteral( "cs" ), attr );
+    mCoordinateSeparator = readAttribute( u"cs"_s, attr );
     if ( mCoordinateSeparator.isEmpty() )
     {
       mCoordinateSeparator = ',';
     }
-    mTupleSeparator = readAttribute( QStringLiteral( "ts" ), attr );
+    mTupleSeparator = readAttribute( u"ts"_s, attr );
     if ( mTupleSeparator.isEmpty() )
     {
       mTupleSeparator = ' ';
@@ -753,7 +753,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mCurrentFeature->setAttributes( attributes );
     mParseModeStack.push( QgsGmlStreamingParser::Feature );
     mCurrentXPathWithinFeature.clear();
-    mCurrentFeatureId = readAttribute( QStringLiteral( "fid" ), attr );
+    mCurrentFeatureId = readAttribute( u"fid"_s, attr );
     if ( mCurrentFeatureId.isEmpty() )
     {
       // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
@@ -872,12 +872,12 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     {
       // QGIS server (2.2) is using:
       // <Attribute value="My description" name="desc"/>
-      if ( localName.compare( QLatin1String( "attribute" ), Qt::CaseInsensitive ) == 0 )
+      if ( localName.compare( "attribute"_L1, Qt::CaseInsensitive ) == 0 )
       {
-        const QString name = readAttribute( QStringLiteral( "name" ), attr );
+        const QString name = readAttribute( u"name"_s, attr );
         if ( mThematicAttributes.contains( name ) )
         {
-          const QString value = readAttribute( QStringLiteral( "value" ), attr );
+          const QString value = readAttribute( u"value"_s, attr );
           setAttribute( name, value );
         }
       }
@@ -918,15 +918,15 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   }
   else if ( mParseDepth == 0 && LOCALNAME_EQUALS( "FeatureCollection" ) )
   {
-    QString numberReturned = readAttribute( QStringLiteral( "numberReturned" ), attr ); // WFS 2.0
+    QString numberReturned = readAttribute( u"numberReturned"_s, attr ); // WFS 2.0
     if ( numberReturned.isEmpty() )
-      numberReturned = readAttribute( QStringLiteral( "numberOfFeatures" ), attr ); // WFS 1.1
+      numberReturned = readAttribute( u"numberOfFeatures"_s, attr ); // WFS 1.1
     bool conversionOk;
     mNumberReturned = numberReturned.toInt( &conversionOk );
     if ( !conversionOk )
       mNumberReturned = -1;
 
-    const QString numberMatched = readAttribute( QStringLiteral( "numberMatched" ), attr ); // WFS 2.0
+    const QString numberMatched = readAttribute( u"numberMatched"_s, attr ); // WFS 2.0
     mNumberMatched = numberMatched.toInt( &conversionOk );
     if ( !conversionOk ) // likely since numberMatched="unknown" is legal
       mNumberMatched = -1;
@@ -1139,7 +1139,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     if ( mFoundUnhandledGeometryElement )
     {
       const gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
-      //QgsDebugMsgLevel( QStringLiteral("for OGR: %1 -> %2").arg(mGeometryString.c_str()).arg(hGeom != nullptr), 2);
+      //QgsDebugMsgLevel( u"for OGR: %1 -> %2"_s.arg(mGeometryString.c_str()).arg(hGeom != nullptr), 2);
       if ( hGeom )
       {
         const int wkbSize = OGR_G_WkbSize( hGeom.get() );
@@ -1164,7 +1164,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
          !mBoundedByNullFound &&
          !createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) )
     {
-      QgsDebugError( QStringLiteral( "creation of bounding box failed" ) );
+      QgsDebugError( u"creation of bounding box failed"_s );
     }
     if ( !mCurrentExtent.isNull() && mLayerExtent.isNull() &&
          !mCurrentFeature && mFeatureCount == 0 )
@@ -1288,7 +1288,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
       else
       {
-        QgsDebugError( QStringLiteral( "No wkb fragments" ) );
+        QgsDebugError( u"No wkb fragments"_s );
       }
     }
   }
@@ -1337,7 +1337,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
       else
       {
-        QgsDebugError( QStringLiteral( "no wkb fragments" ) );
+        QgsDebugError( u"no wkb fragments"_s );
       }
     }
   }
@@ -1365,7 +1365,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     }
     else
     {
-      QgsDebugError( QStringLiteral( "no wkb fragments" ) );
+      QgsDebugError( u"no wkb fragments"_s );
     }
   }
   else if ( ( parseMode == Geometry || parseMode == MultiPolygon ) && isGMLNS &&
@@ -1656,7 +1656,7 @@ int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPoint> &points, con
 
   if ( coordinates.size() % dimension != 0 )
   {
-    QgsDebugError( QStringLiteral( "Wrong number of coordinates" ) );
+    QgsDebugError( u"Wrong number of coordinates"_s );
   }
 
   const int ncoor = coordinates.size() / dimension;

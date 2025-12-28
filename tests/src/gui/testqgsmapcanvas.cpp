@@ -132,11 +132,11 @@ void TestQgsMapCanvas::testPanByKeyboard()
 
 void TestQgsMapCanvas::testSetExtent()
 {
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
-  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 0, 0, 10, 10 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) ) );
-  QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "-3,-3 : 13,13" ) );
-  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 16259461, -2477192, 16391255, -2372535 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) ) );
-  QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 0, 0, 10, 10 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) ) ) );
+  QCOMPARE( mCanvas->extent().toString( 0 ), u"-3,-3 : 13,13"_s );
+  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 16259461, -2477192, 16391255, -2372535 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) ) ) );
+  QCOMPARE( mCanvas->extent().toString( 0 ), u"146,-22 : 147,-21"_s );
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem() );
 }
 
@@ -148,7 +148,7 @@ void TestQgsMapCanvas::testMagnification()
 
   // prepare spy and unit testing stuff
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "mapcanvas" ) );
+  checker.setControlPathPrefix( u"mapcanvas"_s );
   checker.setColorTolerance( 5 );
 
   QSignalSpy spy( mCanvas, SIGNAL( mapCanvasRefreshed() ) );
@@ -168,7 +168,7 @@ void TestQgsMapCanvas::testMagnification()
   // build vector layer
   const QString myPointsFileName = testDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
 
   // prepare map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
@@ -186,7 +186,7 @@ void TestQgsMapCanvas::testMagnification()
   // control image with magnification factor 1.0
   mCanvas->saveAsImage( tmpName );
 
-  checker.setControlName( QStringLiteral( "expected_map_magnification" ) );
+  checker.setControlName( u"expected_map_magnification"_s );
   checker.setRenderedImage( tmpName );
   checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
@@ -205,7 +205,7 @@ void TestQgsMapCanvas::testMagnification()
   mCanvas->saveAsImage( tmpName );
 
   checker.setRenderedImage( tmpName );
-  checker.setControlName( QStringLiteral( "expected_map_magnification_6_5" ) );
+  checker.setControlName( u"expected_map_magnification_6_5"_s );
   controlImageDir = testDataDir + "control_images/";
   checker.setSizeTolerance( 10, 10 );
   QCOMPARE( checker.compareImages( "map_magnification_6_5", 100 ), true );
@@ -223,10 +223,10 @@ void TestQgsMapCanvas::testMagnification()
   // control image with magnification factor 1.0
   mCanvas->saveAsImage( tmpName );
 
-  checker.setControlName( QStringLiteral( "expected_map_magnification" ) );
+  checker.setControlName( u"expected_map_magnification"_s );
   checker.setRenderedImage( tmpName );
   checker.setSizeTolerance( 10, 10 );
-  QCOMPARE( checker.compareImages( QStringLiteral( "map_magnification" ), 100 ), true );
+  QCOMPARE( checker.compareImages( u"map_magnification"_s, 100 ), true );
 }
 
 void compareExtent( const QgsRectangle &initialExtent, const QgsRectangle &extent )
@@ -243,7 +243,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
   const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   const QString myPointsFileName = testDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
 
   // prepare map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
@@ -457,7 +457,7 @@ class TestNoDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    QString customUriProviderKey() const override { return u"test"_s; }
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return false; }
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return false; }
 };
@@ -467,7 +467,7 @@ class TestYesDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    QString customUriProviderKey() const override { return u"test"_s; }
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return true; }
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return true; }
 };
@@ -483,8 +483,8 @@ void TestQgsMapCanvas::testDragDrop()
   // with mime data
   QgsMimeDataUtils::UriList list;
   QgsMimeDataUtils::Uri uri;
-  uri.name = QStringLiteral( "name" );
-  uri.providerKey = QStringLiteral( "test" );
+  uri.name = u"name"_s;
+  uri.providerKey = u"test"_s;
   list << uri;
   data.reset( QgsMimeDataUtils::encodeUriList( list ) );
   event = std::make_unique<QDragEnterEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
@@ -592,11 +592,11 @@ void TestQgsMapCanvas::testMapLayers()
 {
   QgsProject::instance()->clear();
   //set up canvas with a mix of project and non-project layers
-  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?crs=epsg:3946&field=halig:string&field=valig:string"_s, u"vl1"_s, u"memory"_s );
   QVERIFY( vl1->isValid() );
   QgsProject::instance()->addMapLayer( vl1 );
 
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=halig:string&field=valig:string"_s, u"vl2"_s, u"memory"_s );
   QVERIFY( vl2->isValid() );
 
   auto canvas = std::make_unique<QgsMapCanvas>();
@@ -606,7 +606,7 @@ void TestQgsMapCanvas::testMapLayers()
   // retrieving layer by id should work for both layers from the project AND for freestanding layers
   QCOMPARE( canvas->layer( vl1->id() ), vl1 );
   QCOMPARE( canvas->layer( vl2->id() ), vl2.get() );
-  QCOMPARE( canvas->layer( QStringLiteral( "xxx" ) ), nullptr );
+  QCOMPARE( canvas->layer( u"xxx"_s ), nullptr );
 }
 
 void TestQgsMapCanvas::testExtentHistory()

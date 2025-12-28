@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsAspectFilter : public QgsDerivativeFilter
   private:
     const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "aspect" );
+      return u"aspect"_s;
     }
 #endif
 };

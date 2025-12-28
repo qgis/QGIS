@@ -45,7 +45,7 @@ void QgsLayerTreeViewLowAccuracyIndicatorProvider::onIndicatorClicked( const QMo
 
 QString QgsLayerTreeViewLowAccuracyIndicatorProvider::iconName( QgsMapLayer * )
 {
-  return QStringLiteral( "/mIndicatorLowAccuracy.svg" );
+  return u"/mIndicatorLowAccuracy.svg"_s;
 }
 
 QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *layer )
@@ -71,9 +71,9 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
     {
       QString id;
       if ( !ensemble.code().isEmpty() )
-        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        id = u"<i>%1</i> (%2:%3)"_s.arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
+        id = u"<i>%1</i>”"_s.arg( ensemble.name() );
 
       if ( ensemble.accuracy() > 0 )
       {
@@ -95,7 +95,7 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
 bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
   const QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "/projections/crsAccuracyIndicator" ), false, QgsSettings::App ).toBool() )
+  if ( !settings.value( u"/projections/crsAccuracyIndicator"_s, false, QgsSettings::App ).toBool() )
     return false;
 
   if ( !layer->isValid() )
@@ -119,7 +119,7 @@ bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *lay
     {
       if ( ensemble.accuracy() > 0 )
       {
-        if ( ensemble.accuracy() >= settings.value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble() )
+        if ( ensemble.accuracy() >= settings.value( u"/projections/crsAccuracyWarningThreshold"_s, 0.0, QgsSettings::App ).toDouble() )
           return true;
       }
       else

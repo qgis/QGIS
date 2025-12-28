@@ -25,10 +25,10 @@
 class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
+    QString providerKey() const override { return u"delimitedtext"_s; }
     QString text() const override { return QObject::tr( "Delimited Text" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddDelimitedTextLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );

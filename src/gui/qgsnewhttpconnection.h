@@ -40,7 +40,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   public:
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNode *sTreeHttpConnectionDialog = QgsSettingsTree::sTreeConnections->createChildNode( QStringLiteral( "http-connection-dialog" ) );
+    static inline QgsSettingsTreeNode *sTreeHttpConnectionDialog = QgsSettingsTree::sTreeConnections->createChildNode( u"http-connection-dialog"_s );
 
     static const QgsSettingsEntryBool *settingsIgnoreReportedLayerExtentsDefault;
 #endif

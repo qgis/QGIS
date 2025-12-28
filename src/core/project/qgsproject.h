@@ -1826,8 +1826,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
+    QString str = u"<QgsProject: '%1'%2>"_s.arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? u" (singleton instance)"_s : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -58,8 +58,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   mSelectButton->setPopupMode( QToolButton::InstantPopup );
 
   QgsSettings settings;
-  mEncoding = QgsProcessingUtils::resolveDefaultEncoding( settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString() );
-  settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
+  mEncoding = QgsProcessingUtils::resolveDefaultEncoding( settings.value( u"/Processing/encoding"_s, u"System"_s ).toString() );
+  settings.setValue( u"/Processing/encoding"_s, mEncoding );
 
   if ( !mParameter->defaultValueForGui().isValid() )
   {
@@ -98,14 +98,14 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
   }
   else
   {
-    if ( value.toString() == QLatin1String( "memory:" ) || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
+    if ( value.toString() == "memory:"_L1 || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
     {
       saveToTemporary();
     }
     else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
       const QgsProcessingOutputLayerDefinition def = value.value<QgsProcessingOutputLayerDefinition>();
-      if ( def.sink.staticValue().toString() == QLatin1String( "memory:" ) || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
+      if ( def.sink.staticValue().toString() == "memory:"_L1 || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
       {
         saveToTemporary();
       }
@@ -121,7 +121,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
       }
       mUseRemapping = def.useRemapping();
       mRemapDefinition = def.remappingDefinition();
-      mEncoding = def.createOptions.value( QStringLiteral( "fileEncoding" ) ).toString();
+      mEncoding = def.createOptions.value( u"fileEncoding"_s ).toString();
     }
     else
     {
@@ -168,10 +168,10 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
   QString provider;
   QString uri;
   if ( !key.isEmpty() && key != QgsProcessing::TEMPORARY_OUTPUT
-       && !key.startsWith( QLatin1String( "memory:" ) )
-       && !key.startsWith( QLatin1String( "ogr:" ) )
-       && !key.startsWith( QLatin1String( "postgres:" ) )
-       && !key.startsWith( QLatin1String( "postgis:" ) )
+       && !key.startsWith( "memory:"_L1 )
+       && !key.startsWith( "ogr:"_L1 )
+       && !key.startsWith( "postgres:"_L1 )
+       && !key.startsWith( "postgis:"_L1 )
        && !QgsProcessingUtils::decodeProviderKeyAndUri( key, provider, uri ) )
   {
     // output should be a file path
@@ -179,11 +179,11 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     if ( folder == '.' )
     {
       // output name does not include a folder - use default
-      QString defaultFolder = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QStringLiteral( "%1/processing" ).arg( QDir::homePath() ) ).toString();
+      QString defaultFolder = settings.value( u"/Processing/Configuration/OUTPUTS_FOLDER"_s, u"%1/processing"_s.arg( QDir::homePath() ) ).toString();
       QDir destDir( defaultFolder );
       if ( !destDir.exists() && !QDir().mkpath( defaultFolder ) )
       {
-        QgsDebugError( QStringLiteral( "Can't create output folder '%1'" ).arg( defaultFolder ) );
+        QgsDebugError( u"Can't create output folder '%1'"_s.arg( defaultFolder ) );
       }
       key = destDir.filePath( key );
     }
@@ -195,7 +195,7 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     return key;
 
   QgsProcessingOutputLayerDefinition value( key );
-  value.createOptions.insert( QStringLiteral( "fileEncoding" ), mEncoding );
+  value.createOptions.insert( u"fileEncoding"_s, mEncoding );
   if ( mUseRemapping )
     value.setRemappingDefinition( mRemapDefinition );
   if ( !mFormat.isEmpty() )
@@ -363,13 +363,13 @@ void QgsProcessingLayerOutputDestinationWidget::selectDirectory()
   QString lastDir = leText->text();
   QgsSettings settings;
   if ( lastDir.isEmpty() )
-    lastDir = settings.value( QStringLiteral( "/Processing/LastOutputPath" ), QDir::homePath() ).toString();
+    lastDir = settings.value( u"/Processing/LastOutputPath"_s, QDir::homePath() ).toString();
 
   const QString dirName = QFileDialog::getExistingDirectory( this, tr( "Select Directory" ), lastDir, QFileDialog::Options() );
   if ( !dirName.isEmpty() )
   {
     leText->setText( QDir::toNativeSeparators( dirName ) );
-    settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), dirName );
+    settings.setValue( u"/Processing/LastOutputPath"_s, dirName );
     mUseTemporary = false;
     mUseRemapping = false;
     emit skipOutputChanged( false );
@@ -389,29 +389,29 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   QString lastFormat;
   if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() || mParameter->type() == QgsProcessingParameterVectorDestination::typeName() )
   {
-    lastExtPath = QStringLiteral( "/Processing/LastVectorOutputExt" );
-    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+    lastExtPath = u"/Processing/LastVectorOutputExt"_s;
+    lastExt = settings.value( lastExtPath, u".%1"_s.arg( mParameter->defaultFileExtension() ) ).toString();
   }
   else if ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
     const QgsProcessingParameterRasterDestination *dest = dynamic_cast<const QgsProcessingParameterRasterDestination *>( mParameter );
     Q_ASSERT( dest );
-    lastFormatPath = QStringLiteral( "/Processing/LastRasterOutputFormat" );
+    lastFormatPath = u"/Processing/LastRasterOutputFormat"_s;
     lastFormat = settings.value( lastFormatPath, dest->defaultFileFormat() ).toString();
   }
   else if ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName() )
   {
-    lastExtPath = QStringLiteral( "/Processing/LastPointCloudOutputExt" );
-    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+    lastExtPath = u"/Processing/LastPointCloudOutputExt"_s;
+    lastExt = settings.value( lastExtPath, u".%1"_s.arg( mParameter->defaultFileExtension() ) ).toString();
   }
   else if ( mParameter->type() == QgsProcessingParameterVectorTileDestination::typeName() )
   {
-    lastExtPath = QStringLiteral( "/Processing/LastVectorTileOutputExt" );
-    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+    lastExtPath = u"/Processing/LastVectorTileOutputExt"_s;
+    lastExt = settings.value( lastExtPath, u".%1"_s.arg( mParameter->defaultFileExtension() ) ).toString();
   }
 
   // get default filter
-  const QStringList filters = fileFilter.split( QStringLiteral( ";;" ) );
+  const QStringList filters = fileFilter.split( u";;"_s );
   QString lastFilter;
   for ( const QString &f : filters )
   {
@@ -420,7 +420,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
       lastFilter = f;
       break;
     }
-    else if ( !lastExt.isEmpty() && f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
+    else if ( !lastExt.isEmpty() && f.contains( u"*.%1"_s.arg( lastExt ), Qt::CaseInsensitive ) )
     {
       lastFilter = f;
       break;
@@ -428,12 +428,12 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   }
 
   QString path;
-  if ( settings.contains( QStringLiteral( "/Processing/LastOutputPath" ) ) )
-    path = settings.value( QStringLiteral( "/Processing/LastOutputPath" ) ).toString();
+  if ( settings.contains( u"/Processing/LastOutputPath"_s ) )
+    path = settings.value( u"/Processing/LastOutputPath"_s ).toString();
   else
-    path = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ) ).toString();
+    path = settings.value( u"/Processing/Configuration/OUTPUTS_FOLDER"_s ).toString();
 
-  const bool dontConfirmOverwrite = mParameter->metadata().value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "dontconfirmoverwrite" ), false ).toBool();
+  const bool dontConfirmOverwrite = mParameter->metadata().value( u"widget_wrapper"_s ).toMap().value( u"dontconfirmoverwrite"_s, false ).toBool();
 
   QString filename = QFileDialog::getSaveFileName( this, tr( "Save file" ), path, fileFilter, &lastFilter, dontConfirmOverwrite ? QFileDialog::Options( QFileDialog::DontConfirmOverwrite ) : QFileDialog::Options() );
   if ( !filename.isEmpty() )
@@ -451,7 +451,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
-    settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
+    settings.setValue( u"/Processing/LastOutputPath"_s, QFileInfo( filename ).path() );
     if ( !lastFormatPath.isEmpty() && !mFormat.isEmpty() )
       settings.setValue( lastFormatPath, mFormat );
     else if ( !lastExtPath.isEmpty() )
@@ -468,9 +468,9 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
 void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
 {
   QgsSettings settings;
-  QString lastPath = settings.value( QStringLiteral( "/Processing/LastOutputPath" ), QString() ).toString();
+  QString lastPath = settings.value( u"/Processing/LastOutputPath"_s, QString() ).toString();
   if ( lastPath.isEmpty() )
-    lastPath = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QString() ).toString();
+    lastPath = settings.value( u"/Processing/Configuration/OUTPUTS_FOLDER"_s, QString() ).toString();
 
   QString filename = QFileDialog::getSaveFileName( this, tr( "Save to GeoPackage" ), lastPath, tr( "GeoPackage files (*.gpkg);;All files (*.*)" ), nullptr, QFileDialog::DontConfirmOverwrite );
   // return dialog focus on Mac
@@ -487,9 +487,9 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   mUseTemporary = false;
   mUseRemapping = false;
 
-  filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "gpkg" ) );
+  filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << u"gpkg"_s );
 
-  settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
+  settings.setValue( u"/Processing/LastOutputPath"_s, QFileInfo( filename ).path() );
 
   QgsDataSourceUri uri;
   uri.setTable( layerName );
@@ -499,11 +499,11 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast<const QgsProcessingParameterFeatureSink *>( mParameter ) )
   {
     if ( sink->hasGeometry() )
-      geomColumn = QStringLiteral( "geom" );
+      geomColumn = u"geom"_s;
   }
   uri.setGeometryColumn( geomColumn );
 
-  leText->setText( QStringLiteral( "ogr:%1" ).arg( uri.uri() ) );
+  leText->setText( u"ogr:%1"_s.arg( uri.uri() ) );
 
   emit skipOutputChanged( false );
   emit destinationChanged();
@@ -513,7 +513,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" ) << QStringLiteral( "mssql" ) << QStringLiteral( "ogr" ) << QStringLiteral( "hana" ) << QStringLiteral( "spatialite" ) << QStringLiteral( "oracle" ), this );
+    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << u"postgres"_s << u"mssql"_s << u"ogr"_s << u"hana"_s << u"spatialite"_s << u"oracle"_s, this );
     widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
     widget->setAcceptButtonVisible( true );
 
@@ -527,16 +527,16 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
       if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast<const QgsProcessingParameterFeatureSink *>( mParameter ) )
       {
         if ( sink->hasGeometry() )
-          geomColumn = widget->dataProviderKey() == QLatin1String( "oracle" ) ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );
+          geomColumn = widget->dataProviderKey() == "oracle"_L1 ? u"GEOM"_s : u"geom"_s;
       }
 
-      if ( widget->dataProviderKey() == QLatin1String( "ogr" ) )
+      if ( widget->dataProviderKey() == "ogr"_L1 )
       {
         QgsDataSourceUri uri;
         uri.setTable( widget->table() );
         uri.setDatabase( widget->schema() );
         uri.setGeometryColumn( geomColumn );
-        leText->setText( QStringLiteral( "ogr:%1" ).arg( uri.uri() ) );
+        leText->setText( u"ogr:%1"_s.arg( uri.uri() ) );
       }
       else
       {
@@ -579,7 +579,7 @@ void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
       {
         // get fields for destination
         auto dest = std::make_unique<QgsVectorLayer>( widget->uri().uri, QString(), widget->uri().providerKey );
-        if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+        if ( widget->uri().providerKey == "ogr"_L1 )
           setAppendDestination( widget->uri().uri, dest->fields() );
         else
           setAppendDestination( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), dest->fields() );
@@ -631,7 +631,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
     mEncoding = QgsProcessingUtils::resolveDefaultEncoding( dialog.encoding() );
 
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
+    settings.setValue( u"/Processing/encoding"_s, mEncoding );
 
     emit destinationChanged();
   }
@@ -653,31 +653,31 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()
            || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
            || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-         && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+         && u.layerType == "vector"_L1 && u.providerKey == "ogr"_L1 )
     {
       return u.uri;
     }
     else if ( ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
                 || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+              && u.layerType == "raster"_L1 && u.providerKey == "gdal"_L1 )
     {
       return u.uri;
     }
     else if ( ( mParameter->type() == QgsProcessingParameterPointCloudDestination::typeName()
                 || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-              && u.layerType == QLatin1String( "pointcloud" ) && ( u.providerKey == QLatin1String( "ept" ) || u.providerKey == QLatin1String( "pdal" ) ) )
+              && u.layerType == "pointcloud"_L1 && ( u.providerKey == "ept"_L1 || u.providerKey == "pdal"_L1 ) )
     {
       return u.uri;
     }
 #if 0
     else if ( ( mParameter->type() == QgsProcessingParameterMeshDestination::typeName()
                 || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+              && u.layerType == "mesh"_L1 && u.providerKey == "mdal"_L1 )
       return u.uri;
 
 #endif
     else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName()
-              && u.layerType == QLatin1String( "directory" ) )
+              && u.layerType == "directory"_L1 )
     {
       return u.uri;
     }

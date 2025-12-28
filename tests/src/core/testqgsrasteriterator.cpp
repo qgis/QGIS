@@ -60,7 +60,7 @@ void TestQgsRasterIterator::initTestCase()
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString band1byteRaster = mTestDataDir + "/big_raster.tif";
 
-  mpRasterLayer = new QgsRasterLayer( band1byteRaster, QStringLiteral( "big_raster" ) );
+  mpRasterLayer = new QgsRasterLayer( band1byteRaster, u"big_raster"_s );
 
   QVERIFY( mpRasterLayer && mpRasterLayer->isValid() );
 }

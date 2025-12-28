@@ -113,27 +113,27 @@ class CORE_EXPORT QgsFeatureRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "singleSymbol" ) )
+    if ( type == "singleSymbol"_L1 )
       sipType = sipType_QgsSingleSymbolRenderer;
-    else if ( type == QLatin1String( "categorizedSymbol" ) )
+    else if ( type == "categorizedSymbol"_L1 )
       sipType = sipType_QgsCategorizedSymbolRenderer;
-    else if ( type == QLatin1String( "graduatedSymbol" ) )
+    else if ( type == "graduatedSymbol"_L1 )
       sipType = sipType_QgsGraduatedSymbolRenderer;
-    else if ( type == QLatin1String( "RuleRenderer" ) )
+    else if ( type == "RuleRenderer"_L1 )
       sipType = sipType_QgsRuleBasedRenderer;
-    else if ( type == QLatin1String( "heatmapRenderer" ) )
+    else if ( type == "heatmapRenderer"_L1 )
       sipType = sipType_QgsHeatmapRenderer;
-    else if ( type == QLatin1String( "invertedPolygonRenderer" ) )
+    else if ( type == "invertedPolygonRenderer"_L1 )
       sipType = sipType_QgsInvertedPolygonRenderer;
-    else if ( type == QLatin1String( "pointCluster" ) )
+    else if ( type == "pointCluster"_L1 )
       sipType = sipType_QgsPointClusterRenderer;
-    else if ( type == QLatin1String( "pointDisplacement" ) )
+    else if ( type == "pointDisplacement"_L1 )
       sipType = sipType_QgsPointDisplacementRenderer;
-    else if ( type == QLatin1String( "25dRenderer" ) )
+    else if ( type == "25dRenderer"_L1 )
       sipType = sipType_Qgs25DRenderer;
-    else if ( type == QLatin1String( "nullSymbol" ) )
+    else if ( type == "nullSymbol"_L1 )
       sipType = sipType_QgsNullSymbolRenderer;
-    else if ( type == QLatin1String( "embeddedSymbol" ) )
+    else if ( type == "embeddedSymbol"_L1 )
       sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;

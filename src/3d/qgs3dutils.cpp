@@ -265,7 +265,7 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     scene->cameraController()->setLookingAtMapPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 
     QString fileName( fileNameTemplate );
-    const QString frameNoPaddedLeft( QStringLiteral( "%1" ).arg( frameNo, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
+    const QString frameNoPaddedLeft( u"%1"_s.arg( frameNo, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( outputDirectory ).filePath( fileName );
 
@@ -298,11 +298,11 @@ QString Qgs3DUtils::altClampingToString( Qgis::AltitudeClamping altClamp )
   switch ( altClamp )
   {
     case Qgis::AltitudeClamping::Absolute:
-      return QStringLiteral( "absolute" );
+      return u"absolute"_s;
     case Qgis::AltitudeClamping::Relative:
-      return QStringLiteral( "relative" );
+      return u"relative"_s;
     case Qgis::AltitudeClamping::Terrain:
-      return QStringLiteral( "terrain" );
+      return u"terrain"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -310,9 +310,9 @@ QString Qgs3DUtils::altClampingToString( Qgis::AltitudeClamping altClamp )
 
 Qgis::AltitudeClamping Qgs3DUtils::altClampingFromString( const QString &str )
 {
-  if ( str == QLatin1String( "absolute" ) )
+  if ( str == "absolute"_L1 )
     return Qgis::AltitudeClamping::Absolute;
-  else if ( str == QLatin1String( "terrain" ) )
+  else if ( str == "terrain"_L1 )
     return Qgis::AltitudeClamping::Terrain;
   else // "relative"  (default)
     return Qgis::AltitudeClamping::Relative;
@@ -324,9 +324,9 @@ QString Qgs3DUtils::altBindingToString( Qgis::AltitudeBinding altBind )
   switch ( altBind )
   {
     case Qgis::AltitudeBinding::Vertex:
-      return QStringLiteral( "vertex" );
+      return u"vertex"_s;
     case Qgis::AltitudeBinding::Centroid:
-      return QStringLiteral( "centroid" );
+      return u"centroid"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -334,7 +334,7 @@ QString Qgs3DUtils::altBindingToString( Qgis::AltitudeBinding altBind )
 
 Qgis::AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
 {
-  if ( str == QLatin1String( "vertex" ) )
+  if ( str == "vertex"_L1 )
     return Qgis::AltitudeBinding::Vertex;
   else // "centroid"  (default)
     return Qgis::AltitudeBinding::Centroid;
@@ -345,24 +345,24 @@ QString Qgs3DUtils::cullingModeToString( Qgs3DTypes::CullingMode mode )
   switch ( mode )
   {
     case Qgs3DTypes::NoCulling:
-      return QStringLiteral( "no-culling" );
+      return u"no-culling"_s;
     case Qgs3DTypes::Front:
-      return QStringLiteral( "front" );
+      return u"front"_s;
     case Qgs3DTypes::Back:
-      return QStringLiteral( "back" );
+      return u"back"_s;
     case Qgs3DTypes::FrontAndBack:
-      return QStringLiteral( "front-and-back" );
+      return u"front-and-back"_s;
   }
   BUILTIN_UNREACHABLE
 }
 
 Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
 {
-  if ( str == QLatin1String( "front" ) )
+  if ( str == "front"_L1 )
     return Qgs3DTypes::Front;
-  else if ( str == QLatin1String( "back" ) )
+  else if ( str == "back"_L1 )
     return Qgs3DTypes::Back;
-  else if ( str == QLatin1String( "front-and-back" ) )
+  else if ( str == "front-and-back"_L1 )
     return Qgs3DTypes::FrontAndBack;
   else
     return Qgs3DTypes::NoCulling;
@@ -540,7 +540,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
       static_cast<float>( pt.y() - chunkOrigin.y() ),
       h
     ) );
-    QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
+    QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
 
@@ -626,7 +626,7 @@ QgsRectangle Qgs3DUtils::tryReprojectExtent2D( const QgsRectangle &extent, const
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason
-      QgsDebugError( QStringLiteral( "3D utils: transformation of extent failed: " ) + extentMapCrs.toString( -1 ) );
+      QgsDebugError( u"3D utils: transformation of extent failed: "_s + extentMapCrs.toString( -1 ) );
     }
   }
   return extentMapCrs;
@@ -803,7 +803,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
     return nullptr;
 
   std::unique_ptr<QgsPointCloud3DSymbol> symbol3D;
-  if ( renderer->type() == QLatin1String( "ramp" ) )
+  if ( renderer->type() == "ramp"_L1 )
   {
     const QgsPointCloudAttributeByRampRenderer *renderer2D = qgis::down_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
     symbol3D = std::make_unique<QgsColorRampPointCloud3DSymbol>();
@@ -812,7 +812,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
     symbol->setColorRampShaderMinMax( renderer2D->minimum(), renderer2D->maximum() );
     symbol->setColorRampShader( renderer2D->colorRampShader() );
   }
-  else if ( renderer->type() == QLatin1String( "rgb" ) )
+  else if ( renderer->type() == "rgb"_L1 )
   {
     const QgsPointCloudRgbRenderer *renderer2D = qgis::down_cast<const QgsPointCloudRgbRenderer *>( renderer );
     symbol3D = std::make_unique<QgsRgbPointCloud3DSymbol>();
@@ -825,7 +825,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
     symbol->setGreenContrastEnhancement( renderer2D->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->greenContrastEnhancement() ) : nullptr );
     symbol->setBlueContrastEnhancement( renderer2D->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->blueContrastEnhancement() ) : nullptr );
   }
-  else if ( renderer->type() == QLatin1String( "classified" ) )
+  else if ( renderer->type() == "classified"_L1 )
   {
     const QgsPointCloudClassifiedRenderer *renderer2D = qgis::down_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
     symbol3D = std::make_unique<QgsClassificationPointCloud3DSymbol>();

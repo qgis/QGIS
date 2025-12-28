@@ -35,7 +35,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
   QDomElement colorElement = document.createElement( identifier );
   if ( !color.isValid() )
   {
-    colorElement.setAttribute( QStringLiteral( "invalid" ), QStringLiteral( "1" ) );
+    colorElement.setAttribute( u"invalid"_s, u"1"_s );
   }
   else
   {
@@ -49,51 +49,51 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       case QColor::ExtendedRgb:
       {
         // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-        spec = QStringLiteral( "rgb" );
+        spec = u"rgb"_s;
         float red = 1;
         float green = 1;
         float blue = 1;
 
         color.getRgbF( &red, &green, &blue );
-        colorElement.setAttribute( QStringLiteral( "red" ), qgsDoubleToString( red ) );
-        colorElement.setAttribute( QStringLiteral( "green" ), qgsDoubleToString( green ) );
-        colorElement.setAttribute( QStringLiteral( "blue" ), qgsDoubleToString( blue ) );
+        colorElement.setAttribute( u"red"_s, qgsDoubleToString( red ) );
+        colorElement.setAttribute( u"green"_s, qgsDoubleToString( green ) );
+        colorElement.setAttribute( u"blue"_s, qgsDoubleToString( blue ) );
         break;
       }
 
       case QColor::Hsv:
       {
-        spec = QStringLiteral( "hsv" );
+        spec = u"hsv"_s;
 
         float h = 1;
         float s = 1;
         float v = 1;
 
         color.getHsvF( &h, &s, &v );
-        colorElement.setAttribute( QStringLiteral( "hue" ), qgsDoubleToString( h ) );
-        colorElement.setAttribute( QStringLiteral( "saturation" ), qgsDoubleToString( s ) );
-        colorElement.setAttribute( QStringLiteral( "value" ), qgsDoubleToString( v ) );
+        colorElement.setAttribute( u"hue"_s, qgsDoubleToString( h ) );
+        colorElement.setAttribute( u"saturation"_s, qgsDoubleToString( s ) );
+        colorElement.setAttribute( u"value"_s, qgsDoubleToString( v ) );
         break;
       }
 
       case QColor::Hsl:
       {
-        spec = QStringLiteral( "hsl" );
+        spec = u"hsl"_s;
 
         float h = 1;
         float s = 1;
         float l = 1;
 
         color.getHslF( &h, &s, &l );
-        colorElement.setAttribute( QStringLiteral( "hue" ), qgsDoubleToString( h ) );
-        colorElement.setAttribute( QStringLiteral( "saturation" ), qgsDoubleToString( s ) );
-        colorElement.setAttribute( QStringLiteral( "lightness" ), qgsDoubleToString( l ) );
+        colorElement.setAttribute( u"hue"_s, qgsDoubleToString( h ) );
+        colorElement.setAttribute( u"saturation"_s, qgsDoubleToString( s ) );
+        colorElement.setAttribute( u"lightness"_s, qgsDoubleToString( l ) );
         break;
       }
 
       case QColor::Cmyk:
       {
-        spec = QStringLiteral( "cmyk" );
+        spec = u"cmyk"_s;
 
         float c = 1;
         float m = 1;
@@ -101,17 +101,17 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
         float k = 1;
 
         color.getCmykF( &c, &y, &m, &k );
-        colorElement.setAttribute( QStringLiteral( "c" ), qgsDoubleToString( c ) );
-        colorElement.setAttribute( QStringLiteral( "m" ), qgsDoubleToString( m ) );
-        colorElement.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( y ) );
-        colorElement.setAttribute( QStringLiteral( "k" ), qgsDoubleToString( k ) );
+        colorElement.setAttribute( u"c"_s, qgsDoubleToString( c ) );
+        colorElement.setAttribute( u"m"_s, qgsDoubleToString( m ) );
+        colorElement.setAttribute( u"y"_s, qgsDoubleToString( y ) );
+        colorElement.setAttribute( u"k"_s, qgsDoubleToString( k ) );
         break;
       }
     }
-    colorElement.setAttribute( QStringLiteral( "spec" ), spec );
+    colorElement.setAttribute( u"spec"_s, spec );
     if ( color.alphaF() < 1.0 )
     {
-      colorElement.setAttribute( QStringLiteral( "alpha" ), qgsDoubleToString( color.alphaF() ) );
+      colorElement.setAttribute( u"alpha"_s, qgsDoubleToString( color.alphaF() ) );
     }
   }
   element.appendChild( colorElement );
@@ -123,45 +123,45 @@ QColor QgsColorUtils::readXml( const QDomElement &element, const QString &identi
   if ( colorElement.isNull() )
     return QColor();
 
-  const bool invalid = colorElement.attribute( QStringLiteral( "invalid" ), QStringLiteral( "0" ) ).toInt();
+  const bool invalid = colorElement.attribute( u"invalid"_s, u"0"_s ).toInt();
   if ( invalid )
     return QColor();
 
   QColor res;
-  const QString spec = colorElement.attribute( QStringLiteral( "spec" ) );
-  if ( spec == QLatin1String( "rgb" ) )
+  const QString spec = colorElement.attribute( u"spec"_s );
+  if ( spec == "rgb"_L1 )
   {
     // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-    const double red = colorElement.attribute( QStringLiteral( "red" ) ).toDouble();
-    const double green = colorElement.attribute( QStringLiteral( "green" ) ).toDouble();
-    const double blue = colorElement.attribute( QStringLiteral( "blue" ) ).toDouble();
+    const double red = colorElement.attribute( u"red"_s ).toDouble();
+    const double green = colorElement.attribute( u"green"_s ).toDouble();
+    const double blue = colorElement.attribute( u"blue"_s ).toDouble();
     res = QColor::fromRgbF( red, green, blue );
   }
-  else if ( spec == QLatin1String( "hsv" ) )
+  else if ( spec == "hsv"_L1 )
   {
-    const double hue = colorElement.attribute( QStringLiteral( "hue" ) ).toDouble();
-    const double saturation = colorElement.attribute( QStringLiteral( "saturation" ) ).toDouble();
-    const double value = colorElement.attribute( QStringLiteral( "value" ) ).toDouble();
+    const double hue = colorElement.attribute( u"hue"_s ).toDouble();
+    const double saturation = colorElement.attribute( u"saturation"_s ).toDouble();
+    const double value = colorElement.attribute( u"value"_s ).toDouble();
     res = QColor::fromHsvF( hue, saturation, value );
   }
-  else if ( spec == QLatin1String( "hsl" ) )
+  else if ( spec == "hsl"_L1 )
   {
-    const double hue = colorElement.attribute( QStringLiteral( "hue" ) ).toDouble();
-    const double saturation = colorElement.attribute( QStringLiteral( "saturation" ) ).toDouble();
-    const double value = colorElement.attribute( QStringLiteral( "lightness" ) ).toDouble();
+    const double hue = colorElement.attribute( u"hue"_s ).toDouble();
+    const double saturation = colorElement.attribute( u"saturation"_s ).toDouble();
+    const double value = colorElement.attribute( u"lightness"_s ).toDouble();
     res = QColor::fromHslF( hue, saturation, value );
   }
-  else if ( spec == QLatin1String( "cmyk" ) )
+  else if ( spec == "cmyk"_L1 )
   {
-    const double cyan = colorElement.attribute( QStringLiteral( "c" ) ).toDouble();
-    const double magenta = colorElement.attribute( QStringLiteral( "m" ) ).toDouble();
-    const double yellow = colorElement.attribute( QStringLiteral( "y" ) ).toDouble();
-    const double black = colorElement.attribute( QStringLiteral( "k" ) ).toDouble();
+    const double cyan = colorElement.attribute( u"c"_s ).toDouble();
+    const double magenta = colorElement.attribute( u"m"_s ).toDouble();
+    const double yellow = colorElement.attribute( u"y"_s ).toDouble();
+    const double black = colorElement.attribute( u"k"_s ).toDouble();
     res = QColor::fromCmykF( cyan, magenta, yellow, black );
   }
 
   {
-    const double alpha = colorElement.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1" ) ).toDouble();
+    const double alpha = colorElement.attribute( u"alpha"_s, u"1"_s ).toDouble();
     res.setAlphaF( alpha );
   }
 
@@ -175,7 +175,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
 
   // this is the pre 3.28 deprecated string format -- we prefix the lossless encoded color with this so that older QGIS versions
   // can still recover the lossy color via QgsSymbolLayerUtils::decodeColor
-  const QString compatString = QStringLiteral( "%1,%2,%3,%4," ).arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
+  const QString compatString = u"%1,%2,%3,%4,"_s.arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
 
   switch ( color.spec() )
   {
@@ -193,7 +193,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getRgbF( &red, &green, &blue, &alpha );
-      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red, 7 ),
+      return compatString + u"rgb:%1,%2,%3,%4"_s.arg( qgsDoubleToString( red, 7 ),
              qgsDoubleToString( green, 7 ),
              qgsDoubleToString( blue, 7 ),
              qgsDoubleToString( alpha, 7 ) );
@@ -207,7 +207,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getHsvF( &h, &s, &v, &alpha );
-      return compatString + QStringLiteral( "hsv:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
+      return compatString + u"hsv:%1,%2,%3,%4"_s.arg( qgsDoubleToString( h ),
              qgsDoubleToString( s ),
              qgsDoubleToString( v ),
              qgsDoubleToString( alpha ) );
@@ -221,7 +221,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getHslF( &h, &s, &l, &alpha );
-      return compatString + QStringLiteral( "hsl:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
+      return compatString + u"hsl:%1,%2,%3,%4"_s.arg( qgsDoubleToString( h ),
              qgsDoubleToString( s ),
              qgsDoubleToString( l ),
              qgsDoubleToString( alpha ) );
@@ -236,7 +236,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       float alpha = 1;
 
       color.getCmykF( &c, &m, &y, &k, &alpha );
-      return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
+      return compatString + u"cmyk:%1,%2,%3,%4,%5"_s.arg( qgsDoubleToString( c ),
              qgsDoubleToString( m ),
              qgsDoubleToString( y ),
              qgsDoubleToString( k ),
@@ -251,7 +251,7 @@ QColor QgsColorUtils::colorFromString( const QString &string )
   if ( string.isEmpty() )
     return QColor();
 
-  const thread_local QRegularExpression rx( QStringLiteral( "^(.*),([a-z]+):([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),?([\\d\\.\\-]*)$" ) );
+  const thread_local QRegularExpression rx( u"^(.*),([a-z]+):([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),?([\\d\\.\\-]*)$"_s );
   const QRegularExpressionMatch match = rx.match( string );
   if ( !match.hasMatch() )
   {
@@ -271,7 +271,7 @@ QColor QgsColorUtils::colorFromString( const QString &string )
 
   const QString spec = match.captured( 2 );
 
-  if ( spec == QLatin1String( "rgb" ) )
+  if ( spec == "rgb"_L1 )
   {
     // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
     const double red = match.captured( 3 ).toDouble();
@@ -280,7 +280,7 @@ QColor QgsColorUtils::colorFromString( const QString &string )
     const double alpha = match.captured( 6 ).toDouble();
     return QColor::fromRgbF( red, green, blue, alpha );
   }
-  else if ( spec == QLatin1String( "hsv" ) )
+  else if ( spec == "hsv"_L1 )
   {
     const double hue = match.captured( 3 ).toDouble();
     const double saturation = match.captured( 4 ).toDouble();
@@ -288,7 +288,7 @@ QColor QgsColorUtils::colorFromString( const QString &string )
     const double alpha = match.captured( 6 ).toDouble();
     return QColor::fromHsvF( hue, saturation, value, alpha );
   }
-  else if ( spec == QLatin1String( "hsl" ) )
+  else if ( spec == "hsl"_L1 )
   {
     const double hue = match.captured( 3 ).toDouble();
     const double saturation = match.captured( 4 ).toDouble();
@@ -296,7 +296,7 @@ QColor QgsColorUtils::colorFromString( const QString &string )
     const double alpha = match.captured( 6 ).toDouble();
     return QColor::fromHslF( hue, saturation, lightness, alpha );
   }
-  else if ( spec == QLatin1String( "cmyk" ) )
+  else if ( spec == "cmyk"_L1 )
   {
     const double cyan = match.captured( 3 ).toDouble();
     const double magenta = match.captured( 4 ).toDouble();

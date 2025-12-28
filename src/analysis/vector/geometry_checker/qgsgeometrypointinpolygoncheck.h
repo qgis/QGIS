@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Point not in polygon" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }
+    static QString factoryId() { return u"QgsGeometryPointInPolygonCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;

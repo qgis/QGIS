@@ -94,7 +94,7 @@ QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
 QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
-  const thread_local QRegularExpression re( QStringLiteral( "-?\\d*(\\.\\d+)?" ) );
+  const thread_local QRegularExpression re( u"-?\\d*(\\.\\d+)?"_s );
   QRegularExpressionValidator *validator = new QRegularExpressionValidator( re, editor );
   editor->setValidator( validator );
 

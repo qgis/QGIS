@@ -76,63 +76,63 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
 {
   const QString trimmed = text.trimmed();
   std::unique_ptr< QgsAbstractGeometry> geom;
-  if ( trimmed.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
+  if ( trimmed.startsWith( "Point"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsPoint >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "LineString" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "LineString"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsLineString >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "CircularString" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "CircularString"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsCircularString >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "CompoundCurve" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "CompoundCurve"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsCompoundCurve>();
   }
-  else if ( trimmed.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "Polygon"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsPolygon >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "Triangle" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "Triangle"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsTriangle >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "CurvePolygon"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsCurvePolygon >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "MultiPoint"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsMultiPoint >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "MultiCurve" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "MultiCurve"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsMultiCurve >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "MultiLineString" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "MultiLineString"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsMultiLineString >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "MultiSurface" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "MultiSurface"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsMultiSurface >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "MultiPolygon"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsMultiPolygon >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "GeometryCollection"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsGeometryCollection >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "PolyhedralSurface" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "PolyhedralSurface"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsPolyhedralSurface >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "TIN" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( "TIN"_L1, Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsTriangulatedSurface >();
   }

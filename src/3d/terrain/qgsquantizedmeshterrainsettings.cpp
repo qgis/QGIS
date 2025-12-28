@@ -31,20 +31,20 @@ QgsQuantizedMeshTerrainSettings *QgsQuantizedMeshTerrainSettings::clone() const
 
 QString QgsQuantizedMeshTerrainSettings::type() const
 {
-  return QStringLiteral( "quantizedmesh" );
+  return u"quantizedmesh"_s;
 }
 
 void QgsQuantizedMeshTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  if ( element.hasAttribute( QStringLiteral( "layer" ) ) )
+  if ( element.hasAttribute( u"layer"_s ) )
   {
-    mLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "layer" ) ) );
+    mLayer = QgsMapLayerRef( element.attribute( u"layer"_s ) );
   }
   else
   {
     // restore old project
-    const QDomElement elemTerrainGenerator = element.firstChildElement( QStringLiteral( "generator" ) );
-    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( QStringLiteral( "layer" ) ) );
+    const QDomElement elemTerrainGenerator = element.firstChildElement( u"generator"_s );
+    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( u"layer"_s ) );
   }
 
   readCommonProperties( element, context );
@@ -52,7 +52,7 @@ void QgsQuantizedMeshTerrainSettings::readXml( const QDomElement &element, const
 
 void QgsQuantizedMeshTerrainSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+  element.setAttribute( u"layer"_s, mLayer.layerId );
   writeCommonProperties( element, context );
 }
 

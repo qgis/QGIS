@@ -19,7 +19,9 @@
 
 #include <QRegularExpression>
 
-const QString OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+using namespace Qt::StringLiterals;
+
+const QString OAPIF_PROVIDER_DEFAULT_CRS = u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s;
 
 std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
 {
@@ -142,24 +144,24 @@ QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHea
             {
               value = value.mid( 1, value.size() - 2 );
             }
-            if ( key == QLatin1String( "rel" ) )
+            if ( key == "rel"_L1 )
             {
               rel = value;
             }
-            else if ( key == QLatin1String( "type" ) )
+            else if ( key == "type"_L1 )
             {
               type = value;
             }
           }
         }
-        if ( rel == QLatin1String( "next" ) )
+        if ( rel == "next"_L1 )
         {
           if ( type == formatType )
           {
             nextUrl = href;
             break;
           }
-          else if ( nextUrlCandidate.isEmpty() && !href.contains( QLatin1String( "f=" ) ) )
+          else if ( nextUrlCandidate.isEmpty() && !href.contains( "f="_L1 ) )
           {
             // Some servers return a "next" link but advertizing only application/geojson
             // whereas they actually support paging for other types

@@ -182,13 +182,13 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
         }
         else
         {
-          QgsDebugError( QStringLiteral( "Invalid RTC_CENTER value" ) );
+          QgsDebugError( u"Invalid RTC_CENTER value"_s );
         }
       }
     }
     catch ( json::parse_error &ex )
     {
-      QgsDebugError( QStringLiteral( "Error parsing feature table JSON: %1" ).arg( ex.what() ) );
+      QgsDebugError( u"Error parsing feature table JSON: %1"_s.arg( ex.what() ) );
     }
   }
 

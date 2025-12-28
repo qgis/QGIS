@@ -98,7 +98,7 @@ void QgsHighlight::updateTransformedGeometry()
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
+      QgsDebugError( u"Could not transform highlight geometry to canvas CRS"_s );
     }
   }
   updateRect();
@@ -303,10 +303,10 @@ void QgsHighlight::updatePosition()
 void QgsHighlight::applyDefaultStyle()
 {
   const QgsSettings settings;
-  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  const int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  const double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  const double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+  QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  const int alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  const double buffer = settings.value( u"Map/highlight/buffer"_s, Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  const double minWidth = settings.value( u"Map/highlight/minWidth"_s, Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
 
   setColor( color ); // sets also fill with default alpha
   color.setAlpha( alpha );
@@ -337,7 +337,7 @@ void QgsHighlight::paint( QPainter *p )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Error transforming canvas extent to layer CRS" ) );
+        QgsDebugError( u"Error transforming canvas extent to layer CRS"_s );
       }
     }
     if ( !mapExtentInLayerCrs.isFinite() )

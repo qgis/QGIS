@@ -38,7 +38,7 @@ QgsAnnotationPictureItem::~QgsAnnotationPictureItem() = default;
 
 QString QgsAnnotationPictureItem::type() const
 {
-  return QStringLiteral( "picture" );
+  return u"picture"_s;
 }
 
 void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback * )
@@ -110,9 +110,9 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
 
 bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "lockAspect" ), mLockAspectRatio ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "path" ), mPath );
-  element.setAttribute( QStringLiteral( "format" ), qgsEnumValueToKey( mFormat ) );
+  element.setAttribute( u"lockAspect"_s, mLockAspectRatio ? u"1"_s : u"0"_s );
+  element.setAttribute( u"path"_s, mPath );
+  element.setAttribute( u"format"_s, qgsEnumValueToKey( mFormat ) );
   writeCommonProperties( element, document, context );
   return true;
 }
@@ -124,10 +124,10 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::create()
 
 bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mLockAspectRatio = element.attribute( QStringLiteral( "lockAspect" ), QStringLiteral( "1" ) ).toInt();
+  mLockAspectRatio = element.attribute( u"lockAspect"_s, u"1"_s ).toInt();
 
-  const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( QStringLiteral( "format" ) ), Qgis::PictureFormat::Unknown );
-  setPath( format, element.attribute( QStringLiteral( "path" ) ) );
+  const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( u"format"_s ), Qgis::PictureFormat::Unknown );
+  setPath( format, element.attribute( u"path"_s ) );
 
   readCommonProperties( element, context );
   return true;

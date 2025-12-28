@@ -35,7 +35,7 @@ QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const Q
 
 bool QgsOapifApiRequest::request( bool synchronous, bool forceRefresh )
 {
-  if ( !sendGET( QUrl( mUrl ), QStringLiteral( "application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl( mUrl ), u"application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json"_s, synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;
@@ -84,7 +84,7 @@ void QgsOapifApiRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing API response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing API response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );

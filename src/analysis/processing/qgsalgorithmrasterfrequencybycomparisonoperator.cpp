@@ -34,54 +34,54 @@ QString QgsRasterFrequencyByComparisonOperatorBase::group() const
 
 QString QgsRasterFrequencyByComparisonOperatorBase::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Input value raster" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), QObject::tr( "Value raster band" ), 1, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT_RASTERS" ), QObject::tr( "Input raster layers" ), Qgis::ProcessingSourceType::Raster ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), false ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_VALUE_RASTER"_s, QObject::tr( "Input value raster" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"INPUT_VALUE_RASTER_BAND"_s, QObject::tr( "Value raster band" ), 1, u"INPUT_VALUE_RASTER"_s ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"INPUT_RASTERS"_s, QObject::tr( "Input raster layers" ), Qgis::ProcessingSourceType::Raster ) );
+  addParameter( new QgsProcessingParameterBoolean( u"IGNORE_NODATA"_s, QObject::tr( "Ignore NoData values" ), false ) );
 
-  auto output_nodata_parameter = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999, true );
+  auto output_nodata_parameter = std::make_unique<QgsProcessingParameterNumber>( u"OUTPUT_NODATA_VALUE"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999, true );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( output_nodata_parameter.release() );
 
   // backwards compatibility parameter
   // TODO QGIS 5: remove parameter and related logic
-  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATE_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
 
-  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( creationOptsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURRENCE_COUNT" ), QObject::tr( "Count of value occurrences" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr( "Count of cells with equal value occurrences" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), QObject::tr( "Mean frequency at valid cell locations" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"OCCURRENCE_COUNT"_s, QObject::tr( "Count of value occurrences" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"FOUND_LOCATIONS_COUNT"_s, QObject::tr( "Count of cells with equal value occurrences" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MEAN_FREQUENCY_PER_LOCATION"_s, QObject::tr( "Mean frequency at valid cell locations" ) ) );
+  addOutput( new QgsProcessingOutputString( u"EXTENT"_s, QObject::tr( "Extent" ) ) );
+  addOutput( new QgsProcessingOutputString( u"CRS_AUTHID"_s, QObject::tr( "CRS authority identifier" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"WIDTH_IN_PIXELS"_s, QObject::tr( "Width in pixels" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"HEIGHT_IN_PIXELS"_s, QObject::tr( "Height in pixels" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"TOTAL_PIXEL_COUNT"_s, QObject::tr( "Total pixel count" ) ) );
 }
 
 bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *inputValueRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_VALUE_RASTER" ), context );
+  QgsRasterLayer *inputValueRaster = parameterAsRasterLayer( parameters, u"INPUT_VALUE_RASTER"_s, context );
   if ( !inputValueRaster )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_VALUE_RASTER"_s ) );
 
-  mInputValueRasterBand = parameterAsInt( parameters, QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), context );
-  mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context );
+  mInputValueRasterBand = parameterAsInt( parameters, u"INPUT_VALUE_RASTER_BAND"_s, context );
+  mIgnoreNoData = parameterAsBool( parameters, u"IGNORE_NODATA"_s, context );
 
   mInputValueRasterInterface.reset( inputValueRaster->dataProvider()->clone() );
-  mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "OUTPUT_NODATA_VALUE" ), context );
+  mNoDataValue = parameterAsDouble( parameters, u"OUTPUT_NODATA_VALUE"_s, context );
   mCrs = inputValueRaster->crs();
   mRasterUnitsPerPixelX = inputValueRaster->rasterUnitsPerPixelX();
   mRasterUnitsPerPixelY = inputValueRaster->rasterUnitsPerPixelY();
@@ -89,7 +89,7 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
   mLayerHeight = inputValueRaster->height();
   mExtent = inputValueRaster->extent();
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "INPUT_RASTERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"INPUT_RASTERS"_s, context );
   QList<QgsRasterLayer *> rasterLayers;
   rasterLayers.reserve( layers.count() );
   for ( QgsMapLayer *l : layers )
@@ -122,17 +122,17 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
 
 QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   // handle backwards compatibility parameter CREATE_OPTIONS
-  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
   if ( !optionsString.isEmpty() )
     creationOptions = optionsString;
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
+  writer->setOutputProviderKey( u"gdal"_s );
   if ( !creationOptions.isEmpty() )
   {
     writer->setCreationOptions( creationOptions.split( '|' ) );
@@ -230,15 +230,15 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
   const double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OCCURRENCE_COUNT" ), occurrenceCount );
-  outputs.insert( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), foundLocationsCount );
-  outputs.insert( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), meanEqualCountPerValidLocation );
-  outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
-  outputs.insert( QStringLiteral( "CRS_AUTHID" ), mCrs.authid() );
-  outputs.insert( QStringLiteral( "WIDTH_IN_PIXELS" ), mLayerWidth );
-  outputs.insert( QStringLiteral( "HEIGHT_IN_PIXELS" ), mLayerHeight );
-  outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OCCURRENCE_COUNT"_s, occurrenceCount );
+  outputs.insert( u"FOUND_LOCATIONS_COUNT"_s, foundLocationsCount );
+  outputs.insert( u"MEAN_FREQUENCY_PER_LOCATION"_s, meanEqualCountPerValidLocation );
+  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"CRS_AUTHID"_s, mCrs.authid() );
+  outputs.insert( u"WIDTH_IN_PIXELS"_s, mLayerWidth );
+  outputs.insert( u"HEIGHT_IN_PIXELS"_s, mLayerHeight );
+  outputs.insert( u"TOTAL_PIXEL_COUNT"_s, layerSize );
+  outputs.insert( u"OUTPUT"_s, outputFile );
 
   return outputs;
 }
@@ -254,7 +254,7 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByEqualOperatorAlgorithm::name() const
 {
-  return QStringLiteral( "equaltofrequency" );
+  return u"equaltofrequency"_s;
 }
 
 QStringList QgsRasterFrequencyByEqualOperatorAlgorithm::tags() const
@@ -303,7 +303,7 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::name() const
 {
-  return QStringLiteral( "greaterthanfrequency" );
+  return u"greaterthanfrequency"_s;
 }
 
 QStringList QgsRasterFrequencyByGreaterThanOperatorAlgorithm::tags() const
@@ -352,7 +352,7 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByLessThanOperatorAlgorithm::name() const
 {
-  return QStringLiteral( "lessthanfrequency" );
+  return u"lessthanfrequency"_s;
 }
 
 QStringList QgsRasterFrequencyByLessThanOperatorAlgorithm::tags() const

@@ -190,7 +190,7 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
   setLayout( vLayout );
   setWindowTitle( definition ? tr( "%1 Parameter Definition" ).arg( definition->description() ) : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
                                                                                                                                                               : tr( "Parameter Definition" ) );
-  setObjectName( QStringLiteral( "QgsProcessingParameterDefinitionDialog" ) );
+  setObjectName( u"QgsProcessingParameterDefinitionDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 

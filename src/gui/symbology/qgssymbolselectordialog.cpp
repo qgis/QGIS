@@ -269,16 +269,16 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   QIcon iconLock;
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( u"locked.svg"_s ), QSize(), QIcon::Normal, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( u"locked.svg"_s ), QSize(), QIcon::Active, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( u"unlocked.svg"_s ), QSize(), QIcon::Normal, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( u"unlocked.svg"_s ), QSize(), QIcon::Active, QIcon::Off );
 
   QIcon iconColorLock;
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorLocked.svg"_s ), QSize(), QIcon::Normal, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorLocked.svg"_s ), QSize(), QIcon::Active, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorUnlocked.svg"_s ), QSize(), QIcon::Normal, QIcon::Off );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorUnlocked.svg"_s ), QSize(), QIcon::Active, QIcon::Off );
 
   mLockColorAction = new QAction( tr( "Lock Color" ), this );
   mLockColorAction->setToolTip( tr( "Avoid changing the color of the layer when the symbol color is changed" ) );
@@ -286,10 +286,10 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   mLockColorAction->setIcon( iconColorLock );
 
   QIcon iconSelectLock;
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectLocked.svg"_s ), QSize(), QIcon::Normal, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectLocked.svg"_s ), QSize(), QIcon::Active, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectUnlocked.svg"_s ), QSize(), QIcon::Normal, QIcon::Off );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectUnlocked.svg"_s ), QSize(), QIcon::Active, QIcon::Off );
 
   mLockSelectionColorAction = new QAction( tr( "Lock Color When Selected" ), this );
   mLockSelectionColorAction->setToolTip( tr( "Avoid changing the color of the layer when a feature is selected" ) );
@@ -649,13 +649,13 @@ void QgsSymbolSelectorWidget::updateLockButton()
 void QgsSymbolSelectorWidget::updateLockButtonIcon()
 {
   if ( mLockColorAction->isChecked() && mLockSelectionColorAction->isChecked() )
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "locked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"locked.svg"_s ) );
   else if ( mLockColorAction->isChecked() )
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconColorLocked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"mIconColorLocked.svg"_s ) );
   else if ( mLockSelectionColorAction->isChecked() )
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSelectLocked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"mIconSelectLocked.svg"_s ) );
   else
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "unlocked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"unlocked.svg"_s ) );
 }
 
 void QgsSymbolSelectorWidget::addLayer()
@@ -861,7 +861,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   connect( mSelectorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
   mSelectorWidget->setMinimumSize( 460, 560 );
-  setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
+  setObjectName( u"SymbolSelectorDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
   // Can be embedded in renderer properties dialog
@@ -1012,7 +1012,7 @@ QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
 
 void QgsSymbolSelectorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
+  QgsHelp::openHelp( u"style_library/symbol_selector.html"_s );
 }
 
 void QgsSymbolSelectorWidget::projectDataChanged()

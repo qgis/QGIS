@@ -53,7 +53,7 @@ QgsServerRequest::QgsServerRequest( const QgsServerRequest &other )
 QString QgsServerRequest::methodToString( const QgsServerRequest::Method &method )
 {
   static const QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerRequest::Method>();
-  return QString( metaEnum.valueToKey( method ) ).remove( QStringLiteral( "Method" ) ).toUpper();
+  return QString( metaEnum.valueToKey( method ) ).remove( u"Method"_s ).toUpper();
 }
 
 QString QgsServerRequest::header( const QString &name ) const

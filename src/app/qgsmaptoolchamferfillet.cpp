@@ -41,12 +41,12 @@
 
 #include "moc_qgsmaptoolchamferfillet.cpp"
 
-const QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType> *QgsMapToolChamferFillet::settingsOperation = new QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType>( QStringLiteral( "chamferfillet-operation" ), QgsSettingsTree::sTreeDigitizing, QgsGeometry::ChamferFilletOperationType::Chamfer );
-const QgsSettingsEntryInteger *QgsMapToolChamferFillet::settingsFilletSegment = new QgsSettingsEntryInteger( QStringLiteral( "chamferfillet-fillet-segment" ), QgsSettingsTree::sTreeDigitizing, 8, QStringLiteral( "For fillet operation, number of segment used to create the arc." ), Qgis::SettingsOption(), 1, 64 );
-const QgsSettingsEntryDouble *QgsMapToolChamferFillet::settingsValue1 = new QgsSettingsEntryDouble( QStringLiteral( "chamferfillet-fillet-value1" ), QgsSettingsTree::sTreeDigitizing, 0.0, QStringLiteral( "For fillet/chamfer operations, radius or distance1." ) );
-const QgsSettingsEntryDouble *QgsMapToolChamferFillet::settingsValue2 = new QgsSettingsEntryDouble( QStringLiteral( "chamferfillet-fillet-value2" ), QgsSettingsTree::sTreeDigitizing, 0.0, QStringLiteral( "For chamfer operation, distance2." ) );
-const QgsSettingsEntryBool *QgsMapToolChamferFillet::settingsLock1 = new QgsSettingsEntryBool( QStringLiteral( "chamferfillet-fillet-lock1" ), QgsSettingsTree::sTreeDigitizing, false, QStringLiteral( "For fillet/chamfer operations, locks distance1." ) );
-const QgsSettingsEntryBool *QgsMapToolChamferFillet::settingsLock2 = new QgsSettingsEntryBool( QStringLiteral( "chamferfillet-fillet-lock2" ), QgsSettingsTree::sTreeDigitizing, false, QStringLiteral( "For fillet/chamfer operations, locks distance2." ) );
+const QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType> *QgsMapToolChamferFillet::settingsOperation = new QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType>( u"chamferfillet-operation"_s, QgsSettingsTree::sTreeDigitizing, QgsGeometry::ChamferFilletOperationType::Chamfer );
+const QgsSettingsEntryInteger *QgsMapToolChamferFillet::settingsFilletSegment = new QgsSettingsEntryInteger( u"chamferfillet-fillet-segment"_s, QgsSettingsTree::sTreeDigitizing, 8, u"For fillet operation, number of segment used to create the arc."_s, Qgis::SettingsOption(), 1, 64 );
+const QgsSettingsEntryDouble *QgsMapToolChamferFillet::settingsValue1 = new QgsSettingsEntryDouble( u"chamferfillet-fillet-value1"_s, QgsSettingsTree::sTreeDigitizing, 0.0, u"For fillet/chamfer operations, radius or distance1."_s );
+const QgsSettingsEntryDouble *QgsMapToolChamferFillet::settingsValue2 = new QgsSettingsEntryDouble( u"chamferfillet-fillet-value2"_s, QgsSettingsTree::sTreeDigitizing, 0.0, u"For chamfer operation, distance2."_s );
+const QgsSettingsEntryBool *QgsMapToolChamferFillet::settingsLock1 = new QgsSettingsEntryBool( u"chamferfillet-fillet-lock1"_s, QgsSettingsTree::sTreeDigitizing, false, u"For fillet/chamfer operations, locks distance1."_s );
+const QgsSettingsEntryBool *QgsMapToolChamferFillet::settingsLock2 = new QgsSettingsEntryBool( u"chamferfillet-fillet-lock2"_s, QgsSettingsTree::sTreeDigitizing, false, u"For fillet/chamfer operations, locks distance2."_s );
 
 QgsMapToolChamferFillet::QgsMapToolChamferFillet( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -103,7 +103,7 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2 )
     {
       if ( !( *ite )->isValid( lastError ) )
       {
-        message += QStringLiteral( "Invalid part %1: '%2'" ).arg( i ).arg( lastError );
+        message += u"Invalid part %1: '%2'"_s.arg( i ).arg( lastError );
         break;
       }
       i++;
@@ -131,7 +131,7 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2 )
   else
   {
     destLayer->destroyEditCommand();
-    emit messageEmitted( QStringLiteral( "Could not apply chamfer/fillet" ), Qgis::MessageLevel::Warning );
+    emit messageEmitted( u"Could not apply chamfer/fillet"_s, Qgis::MessageLevel::Warning );
   }
 
   cancel();
@@ -373,7 +373,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
           const bool hasM = QgsWkbTypes::hasM( mSourceLayer->wkbType() );
           if ( hasZ || hasM )
           {
-            emit messageEmitted( QStringLiteral( "Layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
+            emit messageEmitted( u"Layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool."_s.arg( mSourceLayer->name(), hasZ ? u"Z"_s : QString(), hasZ && hasM ? u"/"_s : QString(), hasM ? u"M"_s : QString() ), Qgis::MessageLevel::Warning );
           }
         }
       }
@@ -531,12 +531,12 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
 
   if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
   {
-    QgsDebugMsgLevel( QStringLiteral( "will chamfer %1 / %2" ).arg( value1 ).arg( value2 ), 3 );
+    QgsDebugMsgLevel( u"will chamfer %1 / %2"_s.arg( value1 ).arg( value2 ), 3 );
     newGeom = mManipulatedGeometryInSourceLayerCrs.chamfer( mVertexIndex, value1, value2 );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "will fillet %1 / %2" ).arg( value1 ).arg( segments ), 3 );
+    QgsDebugMsgLevel( u"will fillet %1 / %2"_s.arg( value1 ).arg( segments ), 3 );
     newGeom = mManipulatedGeometryInSourceLayerCrs.fillet( mVertexIndex, value1, segments );
   }
 

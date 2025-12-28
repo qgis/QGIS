@@ -37,59 +37,59 @@ Qgis::StacObjectType QgsStacItem::type() const
 
 QString QgsStacItem::toHtml() const
 {
-  QString html = QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Item" ) );
-  html += QLatin1String( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), id() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "stac_version" ), stacVersion() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "collection" ), collection() );
-  html += QLatin1String( "</table>\n" );
+  QString html = u"<h1>%1</h1>\n<hr>\n"_s.arg( "Item"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"id"_s, id() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"stac_version"_s, stacVersion() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"collection"_s, collection() );
+  html += "</table>\n"_L1;
 
   if ( !mStacExtensions.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Extensions" ) );
-    html += QLatin1String( "<ul>\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Extensions"_L1 );
+    html += "<ul>\n"_L1;
     for ( const QString &extension : mStacExtensions )
     {
-      html += QStringLiteral( "<li>%1</li>\n" ).arg( extension );
+      html += u"<li>%1</li>\n"_s.arg( extension );
     }
-    html += QLatin1String( "</ul>\n" );
+    html += "</ul>\n"_L1;
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Geometry" ) );
-  html += QLatin1String( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "WKT" ), mGeometry.asWkt() );
-  html += QLatin1String( "</table>\n" );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Geometry"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"WKT"_s, mGeometry.asWkt() );
+  html += "</table>\n"_L1;
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Bounding Box" ) );
-  html += QLatin1String( "<ul>\n" );
-  html += QStringLiteral( "<li>%1</li>\n" ).arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
-  html += QLatin1String( "</ul>\n" );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Bounding Box"_L1 );
+  html += "<ul>\n"_L1;
+  html += u"<li>%1</li>\n"_s.arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
+  html += "</ul>\n"_L1;
 
   if ( ! mProperties.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Properties" ) );
-    html += QLatin1String( "<table class=\"list-view\">\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Properties"_L1 );
+    html += "<table class=\"list-view\">\n"_L1;
     for ( auto it = mProperties.constBegin(); it != mProperties.constEnd(); ++it )
     {
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( it.key(), it.value().toString() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( it.key(), it.value().toString() );
     }
-    html += QLatin1String( "</table><br/>\n" );
+    html += "</table><br/>\n"_L1;
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Links" ) );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Links"_L1 );
   for ( const QgsStacLink &link : mLinks )
   {
-    html += QLatin1String( "<table class=\"list-view\">\n" );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "relation" ), link.relation() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), link.title() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), link.href() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), link.mediaType() );
-    html += QLatin1String( "</table><br/>\n" );
+    html += "<table class=\"list-view\">\n"_L1;
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"relation"_s, link.relation() );
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, link.title() );
+    html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, link.href() );
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"type"_s, link.mediaType() );
+    html += "</table><br/>\n"_L1;
   }
 
   if ( ! mAssets.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Assets" ) );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Assets"_L1 );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
     {
       html += it->toHtml( it.key() );
@@ -150,30 +150,30 @@ void QgsStacItem::setCollection( const QString &collection )
 
 QDateTime QgsStacItem::dateTime() const
 {
-  return QDateTime::fromString( mProperties.value( QStringLiteral( "datetime" ), QStringLiteral( "null" ) ).toString() );
+  return QDateTime::fromString( mProperties.value( u"datetime"_s, u"null"_s ).toString() );
 }
 
 bool QgsStacItem::hasDateTimeRange() const
 {
-  return mProperties.contains( QStringLiteral( "start_datetime" ) ) &&
-         mProperties.contains( QStringLiteral( "end_datetime" ) );
+  return mProperties.contains( u"start_datetime"_s ) &&
+         mProperties.contains( u"end_datetime"_s );
 }
 
 QgsDateTimeRange QgsStacItem::dateTimeRange() const
 {
-  const QDateTime start = QDateTime::fromString( mProperties.value( QStringLiteral( "start_datetime" ), QStringLiteral( "null" ) ).toString() );
-  const QDateTime end = QDateTime::fromString( mProperties.value( QStringLiteral( "end_datetime" ), QStringLiteral( "null" ) ).toString() );
+  const QDateTime start = QDateTime::fromString( mProperties.value( u"start_datetime"_s, u"null"_s ).toString() );
+  const QDateTime end = QDateTime::fromString( mProperties.value( u"end_datetime"_s, u"null"_s ).toString() );
   return QgsDateTimeRange( start, end );
 }
 
 QString QgsStacItem::title() const
 {
-  return mProperties.value( QStringLiteral( "title" ) ).toString();
+  return mProperties.value( u"title"_s ).toString();
 }
 
 QString QgsStacItem::description() const
 {
-  return mProperties.value( QStringLiteral( "description" ) ).toString();
+  return mProperties.value( u"description"_s ).toString();
 }
 
 QgsMimeDataUtils::UriList QgsStacItem::uris() const

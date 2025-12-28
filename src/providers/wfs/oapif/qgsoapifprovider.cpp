@@ -44,8 +44,8 @@
 
 #include "moc_qgsoapifprovider.cpp"
 
-const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
-const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
+const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = u"OAPIF"_s;
+const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = u"OGC API - Features data provider"_s;
 
 QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags ), mShared( new QgsOapifSharedData( uri ) )
@@ -154,7 +154,7 @@ bool QgsOapifProvider::init()
       mShared->mPageSize = 100; // fallback to arbitrary page size
   }
 
-  mShared->mCollectionUrl = landingPageRequest.collectionsUrl() + QStringLiteral( "/" ) + mShared->mURI.typeName();
+  mShared->mCollectionUrl = landingPageRequest.collectionsUrl() + u"/"_s + mShared->mURI.typeName();
   auto collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
   if ( !collectionRequest->request( synchronous, forceRefresh ) || collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
   {
@@ -176,16 +176,16 @@ bool QgsOapifProvider::init()
   {
     QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
     const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
-    implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+    implementsPart2 = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"_L1 );
 
-    const bool implementsCql2Text = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text" ) ) );
-    mShared->mServerSupportsFilterCql2Text = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2" ) ) ) && ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter" ) ) ) && ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter" ) ) ) && implementsCql2Text;
-    mShared->mServerSupportsLikeBetweenIn = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators" ) ) );
-    mShared->mServerSupportsCaseI = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison" ) ) );
-    mShared->mServerSupportsBasicSpatialFunctions = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions" ) ) ||
+    const bool implementsCql2Text = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text"_L1 ) );
+    mShared->mServerSupportsFilterCql2Text = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2"_L1 ) ) && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter"_L1 ) ) && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter"_L1 ) ) && implementsCql2Text;
+    mShared->mServerSupportsLikeBetweenIn = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators"_L1 ) );
+    mShared->mServerSupportsCaseI = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison"_L1 ) );
+    mShared->mServerSupportsBasicSpatialFunctions = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions"_L1 ) ||
                                                       // Two below names are deprecated
-                                                      conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
-    implementsSchemas = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas" ) );
+                                                      conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators"_L1 ) );
+    implementsSchemas = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas"_L1 );
   }
 
   const QgsOapifCollection &collectionDesc = collectionRequest->collection();
@@ -246,12 +246,12 @@ bool QgsOapifProvider::init()
 
   if ( mShared->mServerSupportsFilterCql2Text )
   {
-    const QString queryablesUrl = mShared->mCollectionUrl + QStringLiteral( "/queryables" );
+    const QString queryablesUrl = mShared->mCollectionUrl + u"/queryables"_s;
     QgsOapifQueryablesRequest queryablesRequest( mShared->mURI.uri() );
     mShared->mQueryables = queryablesRequest.queryables( queryablesUrl );
   }
 
-  mShared->mItemsUrl = mShared->mCollectionUrl + QStringLiteral( "/items" );
+  mShared->mItemsUrl = mShared->mCollectionUrl + u"/items"_s;
 
   mShared->mFeatureFormat = mShared->mURI.outputFormat();
   if ( !mShared->mFeatureFormat.isEmpty() )
@@ -261,7 +261,7 @@ bool QgsOapifProvider::init()
     {
       mShared->mItemsUrl = *it;
 
-      if ( mShared->mFeatureFormat.startsWith( QLatin1String( "application/gml+xml" ) ) )
+      if ( mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
       {
         auto it2 = collectionDesc.mMapFeatureFormatToBulkDownloadUrl.find( mShared->mFeatureFormat );
         if ( it2 != collectionDesc.mMapFeatureFormatToBulkDownloadUrl.end() )
@@ -281,10 +281,10 @@ bool QgsOapifProvider::init()
     tenFeaturesRequestUrl += QLatin1Char( '?' );
   else
     tenFeaturesRequestUrl += QLatin1Char( '&' );
-  tenFeaturesRequestUrl += QLatin1String( "limit=10" );
+  tenFeaturesRequestUrl += "limit=10"_L1;
   if ( mShared->mSourceCrs
        != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
-    tenFeaturesRequestUrl += QStringLiteral( "&crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
+    tenFeaturesRequestUrl += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
 
   QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
   if ( mShared->mCapabilityExtent.isNull() )
@@ -344,7 +344,7 @@ bool QgsOapifProvider::init()
 
   // If we got a link to an XML schema and that the feature format is GML,
   // try to analyze this XML schema to get the fields
-  if ( !collectionDesc.mXmlSchemaUrl.isEmpty() && mShared->mFeatureFormat.startsWith( QLatin1String( "application/gml+xml" ) ) )
+  if ( !collectionDesc.mXmlSchemaUrl.isEmpty() && mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
   {
     QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
     if ( !describeFeatureType.sendGET( collectionDesc.mXmlSchemaUrl, QString(), true, false ) )
@@ -393,7 +393,7 @@ bool QgsOapifProvider::init()
     // Also accept "application/json" as lower priority
     for ( const QgsAbstractMetadataBase::Link &link : mLayerMetadata.links() )
     {
-      if ( link.name == QLatin1String( "http://www.opengis.net/def/rel/ogc/1.0/schema" ) || link.name == QLatin1String( "[ogc-rel:schema]" ) )
+      if ( link.name == "http://www.opengis.net/def/rel/ogc/1.0/schema"_L1 || link.name == "[ogc-rel:schema]"_L1 )
       {
         if ( link.mimeType == "application/schema+json" )
         {
@@ -451,7 +451,7 @@ long long QgsOapifProvider::featureCount() const
       url += QLatin1Char( '?' );
     else
       url += QLatin1Char( '&' );
-    url += QLatin1String( "limit=1" );
+    url += "limit=1"_L1;
     url = mShared->appendExtraQueryParameters( url );
 
     if ( !mShared->mServerFilter.isEmpty() )
@@ -539,7 +539,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QgsOapifOptionsRequest optionsItemsRequest( uri );
   QStringList supportedOptions = optionsItemsRequest.sendOPTIONS( mShared->mItemsUrl );
-  if ( supportedOptions.contains( QLatin1String( "POST" ) ) )
+  if ( supportedOptions.contains( "POST"_L1 ) )
   {
     mCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
 
@@ -554,23 +554,23 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
       // If there is no existing feature, it is not obvious to know if the
       // server supports PUT and DELETE on items. Attempt to request OPTIONS
       // on a fake object...
-      testId = QStringLiteral( "unknown_id" );
+      testId = u"unknown_id"_s;
     }
     QgsOapifOptionsRequest optionsOneItemRequest( uri );
     QString url( mShared->mItemsUrl );
     url += QLatin1Char( '/' );
     url += testId;
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
-    if ( supportedOptions.contains( QLatin1String( "PUT" ) ) )
+    if ( supportedOptions.contains( "PUT"_L1 ) )
     {
       mCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
       mCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
     }
-    if ( supportedOptions.contains( QLatin1String( "DELETE" ) ) )
+    if ( supportedOptions.contains( "DELETE"_L1 ) )
     {
       mCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures;
     }
-    if ( supportedOptions.contains( QLatin1String( "PATCH" ) ) )
+    if ( supportedOptions.contains( "PATCH"_L1 ) )
     {
       mSupportsPatch = true;
     }
@@ -608,7 +608,7 @@ QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometry
 
 bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
-  QgsDebugMsgLevel( QStringLiteral( "filter = '%1'" ).arg( filter ), 4 );
+  QgsDebugMsgLevel( u"filter = '%1'"_s.arg( filter ), 4 );
 
   if ( filter == mSubsetString )
     return true;
@@ -663,7 +663,7 @@ QString QgsOapifProvider::subsetStringDialect() const
 
 QString QgsOapifProvider::subsetStringHelpUrl() const
 {
-  return QStringLiteral( "https://portal.ogc.org/files/96288#cql-core" );
+  return u"https://portal.ogc.org/files/96288#cql-core"_s;
 }
 
 bool QgsOapifProvider::supportsSubsetString() const
@@ -734,7 +734,7 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // /items/{id} request.
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      QgsOapifSingleItemRequest itemRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QString( QStringLiteral( "/" ) + id ) ) );
+      QgsOapifSingleItemRequest itemRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QString( u"/"_s + id ) ) );
       if ( itemRequest.request( /*synchronous=*/true, /*forceRefresh=*/true ) && itemRequest.errorCode() == QgsBaseNetworkRequest::NoError )
       {
         const QgsFeature &updatedFeature = itemRequest.feature();
@@ -802,7 +802,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     QString jsonId = mShared->findUniqueId( qgisFid );
     if ( jsonId.isEmpty() )
     {
-      pushError( QStringLiteral( "Cannot identify feature of id %1" ).arg( qgisFid ) );
+      pushError( u"Cannot identify feature of id %1"_s.arg( qgisFid ) );
       return false;
     }
 
@@ -812,7 +812,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsOapifPatchFeatureRequest req( uri );
       if ( !req.patchFeature( mShared.get(), jsonId, geomIt.value(), contentCrs, hasAxisInverted ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -825,7 +825,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsFeature f;
       if ( !featureIterator.nextFeature( f ) )
       {
-        pushError( QStringLiteral( "Cannot retrieve feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot retrieve feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
 
@@ -836,7 +836,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsOapifPutFeatureRequest req( uri );
       if ( !req.putFeature( mShared.get(), jsonId, f, contentCrs, hasAxisInverted ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -864,7 +864,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     QString jsonId = mShared->findUniqueId( qgisFid );
     if ( jsonId.isEmpty() )
     {
-      pushError( QStringLiteral( "Cannot identify feature of id %1" ).arg( qgisFid ) );
+      pushError( u"Cannot identify feature of id %1"_s.arg( qgisFid ) );
       return false;
     }
 
@@ -874,7 +874,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsOapifPatchFeatureRequest req( uri );
       if ( !req.patchFeature( mShared.get(), jsonId, attIt.value() ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -887,7 +887,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsFeature f;
       if ( !featureIterator.nextFeature( f ) )
       {
-        pushError( QStringLiteral( "Cannot retrieve feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot retrieve feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
 
@@ -902,7 +902,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsOapifPutFeatureRequest req( uri );
       if ( !req.putFeature( mShared.get(), jsonId, f, contentCrs, hasAxisInverted ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -926,12 +926,12 @@ bool QgsOapifProvider::deleteFeatures( const QgsFeatureIds &ids )
     QString jsonId = mShared->findUniqueId( id );
     if ( jsonId.isEmpty() )
     {
-      pushError( QStringLiteral( "Cannot identify feature of id %1" ).arg( id ) );
+      pushError( u"Cannot identify feature of id %1"_s.arg( id ) );
       return false;
     }
 
     QgsOapifDeleteFeatureRequest req( uri );
-    QUrl url( mShared->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
+    QUrl url( mShared->mItemsUrl + QString( u"/"_s + jsonId ) );
     if ( !req.sendDELETE( url ) )
     {
       pushError( tr( "Feature deletion failed: %1" ).arg( req.errorMessage() ) );
@@ -975,5 +975,5 @@ QgsOapifProviderMetadata::QgsOapifProviderMetadata()
 
 QIcon QgsOapifProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconWfs.svg"_s );
 }

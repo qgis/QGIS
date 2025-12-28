@@ -854,7 +854,7 @@ bool QgsLineString::fromWkt( const QString &wkt )
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
   parts.second = parts.second.remove( '(' ).remove( ')' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
@@ -899,7 +899,7 @@ QString QgsLineString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += QLatin1String( "EMPTY" );
+    wkt += "EMPTY"_L1;
   else
   {
     QgsPointSequence pts;
@@ -914,7 +914,7 @@ QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QStri
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+  QDomElement elemLineString = doc.createElementNS( ns, u"LineString"_s );
 
   if ( isEmpty() )
     return elemLineString;
@@ -929,7 +929,7 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+  QDomElement elemLineString = doc.createElementNS( ns, u"LineString"_s );
 
   if ( isEmpty() )
     return elemLineString;
@@ -954,53 +954,53 @@ QString QgsLineString::asKml( int precision ) const
   QString kml;
   if ( isRing() )
   {
-    kml.append( QLatin1String( "<LinearRing>" ) );
+    kml.append( "<LinearRing>"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "<LineString>" ) );
+    kml.append( "<LineString>"_L1 );
   }
   bool z = is3D();
-  kml.append( QLatin1String( "<altitudeMode>" ) );
+  kml.append( "<altitudeMode>"_L1 );
   if ( z )
   {
-    kml.append( QLatin1String( "absolute" ) );
+    kml.append( "absolute"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "clampToGround" ) );
+    kml.append( "clampToGround"_L1 );
   }
-  kml.append( QLatin1String( "</altitudeMode>" ) );
-  kml.append( QLatin1String( "<coordinates>" ) );
+  kml.append( "</altitudeMode>"_L1 );
+  kml.append( "<coordinates>"_L1 );
 
   int nPoints = mX.size();
   for ( int i = 0; i < nPoints; ++i )
   {
     if ( i > 0 )
     {
-      kml.append( QLatin1String( " " ) );
+      kml.append( " "_L1 );
     }
     kml.append( qgsDoubleToString( mX[i], precision ) );
-    kml.append( QLatin1String( "," ) );
+    kml.append( ","_L1 );
     kml.append( qgsDoubleToString( mY[i], precision ) );
     if ( z )
     {
-      kml.append( QLatin1String( "," ) );
+      kml.append( ","_L1 );
       kml.append( qgsDoubleToString( mZ[i], precision ) );
     }
     else
     {
-      kml.append( QLatin1String( ",0" ) );
+      kml.append( ",0"_L1 );
     }
   }
-  kml.append( QLatin1String( "</coordinates>" ) );
+  kml.append( "</coordinates>"_L1 );
   if ( isRing() )
   {
-    kml.append( QLatin1String( "</LinearRing>" ) );
+    kml.append( "</LinearRing>"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "</LineString>" ) );
+    kml.append( "</LineString>"_L1 );
   }
   return kml;
 }
@@ -1954,7 +1954,7 @@ int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
 
 QString QgsLineString::geometryType() const
 {
-  return QStringLiteral( "LineString" );
+  return u"LineString"_s;
 }
 
 int QgsLineString::dimension() const

@@ -42,7 +42,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 {
   setupUi( this );
 
-  mProblemDescriptionLabel->setStyleSheet( QStringLiteral( "font: bold" ) );
+  mProblemDescriptionLabel->setStyleSheet( u"font: bold"_s );
   mErrorListView->setAlternatingRowColors( true );
   mErrorListView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mErrorListView, &QWidget::customContextMenuRequested, this, &QgsGeometryValidationDock::showErrorContextMenu );
@@ -74,7 +74,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mProblemDetailWidget->setVisible( false );
 
   // Some problem resolutions are unstable, show all of them only if the user opted in
-  const bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  const bool showUnreliableResolutionMethods = QgsSettings().value( u"geometry_validation/enable_problem_resolution"_s ).toString().compare( "true"_L1, Qt::CaseInsensitive ) == 0;
   mResolutionWidget->setVisible( showUnreliableResolutionMethods );
 }
 
@@ -165,7 +165,7 @@ void QgsGeometryValidationDock::onRowsInserted()
 
 void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
 {
-  const bool showUnreliableResolutionMethods = QgsSettings().value( QStringLiteral( "geometry_validation/enable_problem_resolution" ) ).toString().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  const bool showUnreliableResolutionMethods = QgsSettings().value( u"geometry_validation/enable_problem_resolution"_s ).toString().compare( "true"_L1, Qt::CaseInsensitive ) == 0;
 
   const QModelIndex index = mErrorListView->indexAt( pos );
   QgsGeometryCheckError *error = index.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
@@ -256,7 +256,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
       for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
       {
         QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
-        resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );
+        resolveBtn->setIcon( QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s ) );
         resolveBtn->setToolTip( resolutionMethod.description() );
         layout->addWidget( resolveBtn, resolutionIndex, 0 );
         QLabel *resolveLabel = new QLabel( resolutionMethod.name(), mResolutionWidget );

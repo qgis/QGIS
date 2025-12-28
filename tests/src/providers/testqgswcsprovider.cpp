@@ -41,7 +41,7 @@ class TestQgsWcsProvider : public QgsTest
 
   public:
     TestQgsWcsProvider()
-      : QgsTest( QStringLiteral( "WCS provider tests" ) ) {}
+      : QgsTest( u"WCS provider tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -98,20 +98,20 @@ void TestQgsWcsProvider::read()
   // 1x1 pixel response if GRIDORIGIN coordinate has a negative value, but it has to be
   // verified if the problem is really on Mapserver side
   //versions << "1.0" << "1.1";
-  versions << QStringLiteral( "1.0" );
+  versions << u"1.0"_s;
 
   QStringList identifiers;
 
   // identifiers in mapfile have the same name as files without .tif extension
-  identifiers << QStringLiteral( "band1_byte_noct_epsg4326" );
-  identifiers << QStringLiteral( "band1_int16_noct_epsg4326" );
-  identifiers << QStringLiteral( "band1_float32_noct_epsg4326" );
-  identifiers << QStringLiteral( "band3_byte_noct_epsg4326" );
-  identifiers << QStringLiteral( "band3_int16_noct_epsg4326" );
-  identifiers << QStringLiteral( "band3_float32_noct_epsg4326" );
+  identifiers << u"band1_byte_noct_epsg4326"_s;
+  identifiers << u"band1_int16_noct_epsg4326"_s;
+  identifiers << u"band1_float32_noct_epsg4326"_s;
+  identifiers << u"band3_byte_noct_epsg4326"_s;
+  identifiers << u"band3_int16_noct_epsg4326"_s;
+  identifiers << u"band3_float32_noct_epsg4326"_s;
 
   // How to reasonably log multiple fails within this loop?
-  QTemporaryFile tmpFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
+  QTemporaryFile tmpFile( u"qgis-wcs-test-XXXXXX.tif"_s );
   QVERIFY( tmpFile.open() );
   const QString tmpFilePath = tmpFile.fileName();
   tmpFile.close(); // removes the file
@@ -124,17 +124,17 @@ void TestQgsWcsProvider::read()
       qDebug() << "copy " << testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
-        mReport += QStringLiteral( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
+        mReport += u"Cannot copy %1 to %2"_s.arg( testFilePath, tmpFilePath );
         ok = false;
         continue;
       }
 
       QgsDataSourceUri uri;
-      uri.setParam( QStringLiteral( "url" ), mUrl );
-      uri.setParam( QStringLiteral( "identifier" ), identifier );
-      uri.setParam( QStringLiteral( "crs" ), QStringLiteral( "epsg:4326" ) );
-      uri.setParam( QStringLiteral( "version" ), version );
-      uri.setParam( QStringLiteral( "cache" ), QStringLiteral( "AlwaysNetwork" ) );
+      uri.setParam( u"url"_s, mUrl );
+      uri.setParam( u"identifier"_s, identifier );
+      uri.setParam( u"crs"_s, u"epsg:4326"_s );
+      uri.setParam( u"version"_s, version );
+      uri.setParam( u"cache"_s, u"AlwaysNetwork"_s );
 
       if ( !read( identifier, uri.encodedUri(), tmpFilePath, mReport ) )
       {
@@ -148,10 +148,10 @@ void TestQgsWcsProvider::read()
 
 bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report )
 {
-  report += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( identifier );
+  report += u"<h2>Identifier (coverage): %1</h2>"_s.arg( identifier );
 
   QgsRasterChecker checker;
-  const bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
+  const bool ok = checker.runTest( u"wcs"_s, wcsUri, u"gdal"_s, filePath );
 
   report += checker.report();
   return ok;

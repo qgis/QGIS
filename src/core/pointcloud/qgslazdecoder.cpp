@@ -197,91 +197,91 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttribut
 
   for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
   {
-    if ( requestedAttribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
+    if ( requestedAttribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::X, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Y, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Z, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Classification"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Classification, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Intensity"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Intensity, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "ReturnNumber"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ReturnNumber, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "NumberOfReturns"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::NumberOfReturns, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "ScanDirectionFlag"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ScanDirectionFlag, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "EdgeOfFlightLine"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::EdgeOfFlightLine, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "ScanAngleRank"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ScanAngleRank, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "UserData" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "UserData"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::UserData, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "PointSourceId"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::PointSourceId, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "GpsTime"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::GpsTime, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Red" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Red"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Red, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Green" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Green"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Green, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Blue" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Blue"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Blue, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "ScannerChannel"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::ScannerChannel, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Synthetic" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Synthetic"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Synthetic, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "KeyPoint" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "KeyPoint"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::KeyPoint, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Withheld" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Withheld"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Withheld, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Overlap" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Overlap"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::Overlap, requestedAttribute.type(), requestedAttribute.size() ) );
     }
-    else if ( requestedAttribute.name().compare( QLatin1String( "Infrared" ), Qt::CaseInsensitive ) == 0 )
+    else if ( requestedAttribute.name().compare( "Infrared"_L1, Qt::CaseInsensitive ) == 0 )
     {
       requestedAttributeDetails.emplace_back( QgsLazDecoder::RequestedAttributeDetails( QgsLazDecoder::LazAttribute::NIR, requestedAttribute.type(), requestedAttribute.size() ) );
     }
@@ -539,7 +539,7 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
     if ( lasPointFormat != 0 && lasPointFormat != 1 && lasPointFormat != 2 && lasPointFormat != 3 &&
          lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
     {
-      QgsDebugError( QStringLiteral( "Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
+      QgsDebugError( u"Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported"_s.arg( lasPointFormat ) );
       return nullptr;
     }
 
@@ -578,8 +578,8 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
     const bool hasFilterRect = !filterRect.isEmpty();
     if ( hasFilterRect )
     {
-      attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
-      attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
+      attributeX = requestedAttributes.find( "X"_L1, xAttributeOffset );
+      attributeY = requestedAttributes.find( "Y"_L1, yAttributeOffset );
       filterRect.setXMinimum( ( filterRect.xMinimum() - offset.x() ) / scale.x() );
       filterRect.setXMaximum( ( filterRect.xMaximum() - offset.x() ) / scale.x() );
       filterRect.setYMinimum( ( filterRect.yMinimum() - offset.y() ) / scale.y() );
@@ -620,7 +620,7 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
     }
 
 #ifdef QGISDEBUG
-    QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t.elapsed() / 1000. ), 2 );
+    QgsDebugMsgLevel( u"LAZ-PERF Read through the points in %1 seconds."_s.arg( t.elapsed() / 1000. ), 2 );
 #endif
     block->setPointCount( count - skippedPoints );
     return block;
@@ -655,7 +655,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteAr
   int lasPointFormat = lazInfo.pointFormat();
   if ( lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
   {
-    QgsDebugError( QStringLiteral( "Unexpected point format record (%1) - only 6, 7, 8 are supported for COPC format" ).arg( lasPointFormat ) );
+    QgsDebugError( u"Unexpected point format record (%1) - only 6, 7, 8 are supported for COPC format"_s.arg( lasPointFormat ) );
     return nullptr;
   }
 
@@ -692,8 +692,8 @@ std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteAr
   const bool hasFilterRect = !filterRect.isEmpty();
   if ( hasFilterRect )
   {
-    attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
-    attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
+    attributeX = requestedAttributes.find( "X"_L1, xAttributeOffset );
+    attributeY = requestedAttributes.find( "Y"_L1, yAttributeOffset );
     filterRect.setXMinimum( ( filterRect.xMinimum() - lazInfo.offset().x() ) / lazInfo.scale().x() );
     filterRect.setXMaximum( ( filterRect.xMaximum() - lazInfo.offset().x() ) / lazInfo.scale().x() );
     filterRect.setYMinimum( ( filterRect.yMinimum() - lazInfo.offset().y() ) / lazInfo.scale().y() );

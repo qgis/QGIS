@@ -1162,13 +1162,13 @@ class CORE_EXPORT QgsGeometry
         else
         {
           sipIsErr = 1;
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Could not convert first argument to a list of QgsPoint or QgsPointXY." ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Could not convert first argument to a list of QgsPoint or QgsPointXY."_s.toUtf8().constData() );
         }
       }
       else
       {
         sipIsErr = 1;
-        PyErr_SetString( PyExc_TypeError, QStringLiteral( "First argument is not a list of points or is empty." ).toUtf8().constData() );
+        PyErr_SetString( PyExc_TypeError, u"First argument is not a list of points or is empty."_s.toUtf8().constData() );
       }
     }
     % End
@@ -2154,12 +2154,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Cannot generate points inside a null geometry."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( type != Qgis::GeometryType::Polygon )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Cannot generate points inside a %1 geometry. Only Polygon types are permitted."_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2202,13 +2202,13 @@ class CORE_EXPORT QgsGeometry
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsGeometry: null>" );
+      str = u"<QgsGeometry: null>"_s;
     else
     {
       QString wkt = sipCpp->asWkt();
       if ( wkt.length() > 1000 )
-        wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-      str = QStringLiteral( "<QgsGeometry: %1>" ).arg( wkt );
+        wkt = wkt.left( 1000 ) + u"..."_s;
+      str = u"<QgsGeometry: %1>"_s.arg( wkt );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
@@ -2300,7 +2300,7 @@ class CORE_EXPORT QgsGeometry
     % MethodCode
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a point."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2308,7 +2308,7 @@ class CORE_EXPORT QgsGeometry
       const QgsAbstractGeometry *geom = sipCpp->constGet();
       if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != Qgis::WkbType::Point )
       {
-        PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
+        PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a point. Only Point types are permitted."_s.arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
         sipIsErr = 1;
       }
       else
@@ -2348,12 +2348,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polyline." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polyline."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2393,12 +2393,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polygon." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polygon."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2436,12 +2436,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipoint." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipoint."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Point || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2481,12 +2481,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multilinestring." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multilinestring."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2526,12 +2526,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipolygon." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipolygon."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2768,7 +2768,7 @@ class CORE_EXPORT QgsGeometry
     {
       public:
         Error()
-          : mMessage( QStringLiteral( "none" ) )
+          : mMessage( u"none"_s )
         {}
 
         explicit Error( const QString &m )
@@ -2798,7 +2798,7 @@ class CORE_EXPORT QgsGeometry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        QString str = u"<QgsGeometry.Error: %1>"_s.arg( sipCpp->what() );
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
         % End
 #endif

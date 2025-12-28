@@ -23,7 +23,7 @@
 
 QString QgsRasterGaussianBlurAlgorithm::name() const
 {
-  return QStringLiteral( "rastergaussianblur" );
+  return u"rastergaussianblur"_s;
 }
 
 QString QgsRasterGaussianBlurAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsRasterGaussianBlurAlgorithm::group() const
 
 QString QgsRasterGaussianBlurAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsRasterGaussianBlurAlgorithm::shortHelpString() const
@@ -60,19 +60,19 @@ QString QgsRasterGaussianBlurAlgorithm::shortDescription() const
 
 void QgsRasterGaussianBlurAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
-  auto sigmaParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "RADIUS" ), QObject::tr( "Blur radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 2.0, false, 1, 512 );
+  auto sigmaParam = std::make_unique<QgsProcessingParameterNumber>( u"RADIUS"_s, QObject::tr( "Blur radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 2.0, false, 1, 512 );
   addParameter( sigmaParam.release() );
 
-  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( creationOptsParam.release() );
 
-  auto outputLayerParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) );
+  auto outputLayerParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT"_s, QObject::tr( "Output layer" ) );
   addParameter( outputLayerParam.release() );
 }
 
@@ -83,13 +83,13 @@ QgsRasterGaussianBlurAlgorithm *QgsRasterGaussianBlurAlgorithm::createInstance()
 
 bool QgsRasterGaussianBlurAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  const int band = parameterAsInt( parameters, u"BAND"_s, context );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
@@ -108,15 +108,15 @@ bool QgsRasterGaussianBlurAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const int radius = parameterAsInt( parameters, QStringLiteral( "RADIUS" ), context );
+  const int radius = parameterAsInt( parameters, u"RADIUS"_s, context );
 
-  const QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
 
   auto outputWriter = std::make_unique<QgsRasterFileWriter>( outputFile );
-  outputWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
+  outputWriter->setOutputProviderKey( u"gdal"_s );
   if ( !creationOptions.isEmpty() )
   {
     outputWriter->setCreationOptions( creationOptions.split( '|' ) );
@@ -306,7 +306,7 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
   destProvider->setEditable( false );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

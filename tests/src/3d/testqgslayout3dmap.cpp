@@ -34,7 +34,7 @@ class TestQgsLayout3DMap : public QgsTest
 
   public:
     TestQgsLayout3DMap()
-      : QgsTest( QStringLiteral( "Layout 3D Map Tests" ), QStringLiteral( "composer_3d" ) ) {}
+      : QgsTest( u"Layout 3D Map Tests"_s, u"composer_3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -104,7 +104,7 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->setMapSettings( map );
   l.addLayoutItem( map3dItem );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
+  QGSVERIFYLAYOUTCHECK( u"composer3d_basic_qt6"_s, &l, 0, 100 );
 
   QVERIFY( !map->isTemporal() );
 
@@ -114,7 +114,7 @@ void TestQgsLayout3DMap::testBasic()
 
   map3dItem->refresh();
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
+  QGSVERIFYLAYOUTCHECK( u"composer3d_basic_qt6"_s, &l, 0, 100 );
 
   QVERIFY( map->isTemporal() );
   QCOMPARE( map->temporalRange(), QgsDateTimeRange( begin, end ) );

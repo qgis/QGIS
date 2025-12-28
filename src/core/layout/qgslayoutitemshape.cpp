@@ -35,12 +35,12 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   setBackgroundEnabled( false );
   setFrameEnabled( false );
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, u"white"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"solid"_s );
+  properties.insert( u"color_border"_s, u"black"_s );
+  properties.insert( u"width_border"_s, u"0.3"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   refreshSymbol( false );
 
@@ -69,11 +69,11 @@ QIcon QgsLayoutItemShape::icon() const
   switch ( mShape )
   {
     case Ellipse:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeEllipse.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mLayoutItemShapeEllipse.svg"_s );
     case Rectangle:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeRectangle.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mLayoutItemShapeRectangle.svg"_s );
     case Triangle:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeTriangle.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mLayoutItemShapeTriangle.svg"_s );
   }
 
   return QIcon();
@@ -269,8 +269,8 @@ QPolygonF QgsLayoutItemShape::calculatePolygon( double scale ) const
 
 bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "shapeType" ), mShape );
-  element.setAttribute( QStringLiteral( "cornerRadiusMeasure" ), mCornerRadius.encodeMeasurement() );
+  element.setAttribute( u"shapeType"_s, mShape );
+  element.setAttribute( u"cornerRadiusMeasure"_s, mCornerRadius.encodeMeasurement() );
 
   const QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol.get(), document, context );
   element.appendChild( shapeStyleElem );
@@ -280,13 +280,13 @@ bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDoc
 
 bool QgsLayoutItemShape::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  mShape = static_cast< Shape >( element.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
-  if ( element.hasAttribute( QStringLiteral( "cornerRadiusMeasure" ) ) )
-    mCornerRadius = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "cornerRadiusMeasure" ), QStringLiteral( "0" ) ) );
+  mShape = static_cast< Shape >( element.attribute( u"shapeType"_s, u"0"_s ).toInt() );
+  if ( element.hasAttribute( u"cornerRadiusMeasure"_s ) )
+    mCornerRadius = QgsLayoutMeasurement::decodeMeasurement( element.attribute( u"cornerRadiusMeasure"_s, u"0"_s ) );
   else
-    mCornerRadius = QgsLayoutMeasurement( element.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble() );
+    mCornerRadius = QgsLayoutMeasurement( element.attribute( u"cornerRadius"_s, u"0"_s ).toDouble() );
 
-  const QDomElement shapeStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement shapeStyleSymbolElem = element.firstChildElement( u"symbol"_s );
   if ( !shapeStyleSymbolElem.isNull() )
   {
     mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context );

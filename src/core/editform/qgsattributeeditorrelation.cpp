@@ -43,14 +43,14 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
 
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  elem.setAttribute( QStringLiteral( "relation" ), mRelationId );
-  elem.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), mForceSuppressFormPopup );
-  elem.setAttribute( QStringLiteral( "nmRelationId" ), mNmRelationId.toString() );
-  elem.setAttribute( QStringLiteral( "label" ), mLabel );
-  elem.setAttribute( QStringLiteral( "relationWidgetTypeId" ), mRelationWidgetTypeId );
+  elem.setAttribute( u"relation"_s, mRelationId );
+  elem.setAttribute( u"forceSuppressFormPopup"_s, mForceSuppressFormPopup );
+  elem.setAttribute( u"nmRelationId"_s, mNmRelationId.toString() );
+  elem.setAttribute( u"label"_s, mLabel );
+  elem.setAttribute( u"relationWidgetTypeId"_s, mRelationWidgetTypeId );
 
   QDomElement elemConfig = QgsXmlUtils::writeVariant( mRelationEditorConfig, doc );
-  elemConfig.setTagName( QStringLiteral( "editor_configuration" ) );
+  elemConfig.setTagName( u"editor_configuration"_s );
   elem.appendChild( elemConfig );
 }
 
@@ -67,7 +67,7 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
     config = relationEditorConfiguration();
 
   // pre QGIS 3.18 compatibility
-  if ( ! config.contains( QStringLiteral( "buttons" ) ) )
+  if ( ! config.contains( u"buttons"_s ) )
   {
     if ( element.hasAttribute( "buttons" ) )
     {
@@ -76,7 +76,7 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
       // we cannot use it here since the new flags are in gui, while the current code is in core
       // TODO: remove this compatibility code in QGIS 5
       //       or make the enum private if we really want to keep the backward compatibility (but not worth it!)
-      const QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
+      const QString buttonString = element.attribute( u"buttons"_s, qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
       config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
       Q_NOWARN_DEPRECATED_POP
     }
@@ -85,9 +85,9 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
       // pre QGIS 3.16 compatibility
       Q_NOWARN_DEPRECATED_PUSH
       QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
-      buttons.setFlag( QgsAttributeEditorRelation::Button::Link, element.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, element.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
-      buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, element.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::Link, element.attribute( u"showLinkButton"_s, u"1"_s ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, element.attribute( u"showUnlinkButton"_s, u"1"_s ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, element.attribute( u"showSaveChildEditsButton"_s, u"1"_s ).toInt() );
       Q_NOWARN_DEPRECATED_POP
       config.insert( "buttons", qgsFlagValueToKeys( buttons ) );
     }
@@ -95,28 +95,28 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
 
   setRelationEditorConfiguration( config );
 
-  setForceSuppressFormPopup( element.attribute( QStringLiteral( "forceSuppressFormPopup" ), 0 ).toInt() );
+  setForceSuppressFormPopup( element.attribute( u"forceSuppressFormPopup"_s, 0 ).toInt() );
 
-  if ( element.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
+  if ( element.hasAttribute( u"nmRelationId"_s ) )
   {
-    setNmRelationId( element.attribute( QStringLiteral( "nmRelationId" ) ) );
+    setNmRelationId( element.attribute( u"nmRelationId"_s ) );
   }
 
   if ( element.hasAttribute( "label" ) )
   {
-    const QString label = element.attribute( QStringLiteral( "label" ) );
+    const QString label = element.attribute( u"label"_s );
     setLabel( label );
   }
   if ( element.hasAttribute( "relationWidgetTypeId" ) )
   {
-    const QString relationWidgetTypeId = element.attribute( QStringLiteral( "relationWidgetTypeId" ) );
+    const QString relationWidgetTypeId = element.attribute( u"relationWidgetTypeId"_s );
     setRelationWidgetTypeId( relationWidgetTypeId );
   }
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
 {
-  return QStringLiteral( "attributeEditorRelation" );
+  return u"attributeEditorRelation"_s;
 }
 
 void QgsAttributeEditorRelation::setForceSuppressFormPopup( bool forceSuppressFormPopup )

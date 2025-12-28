@@ -28,7 +28,7 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mVerticalCrsStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
@@ -86,7 +86,7 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
 
   connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions );
 
-  setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#elevation-properties" ) );
+  setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#elevation-properties"_s );
 }
 
 void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -206,7 +206,7 @@ void QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions()
 QgsPointCloudElevationPropertiesWidgetFactory::QgsPointCloudElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
@@ -232,5 +232,5 @@ bool QgsPointCloudElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *
 
 QString QgsPointCloudElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }

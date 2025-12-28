@@ -51,13 +51,13 @@ void QgsMdalSourceSelect::addButtonClicked()
   for ( const QString &path : QgsFileWidget::splitFilePaths( mMeshPath ) )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addMeshLayer( path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
+    emit addMeshLayer( path, QFileInfo( path ).completeBaseName(), u"mdal"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Mesh, path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
+    emit addLayer( Qgis::LayerType::Mesh, path, QFileInfo( path ).completeBaseName(), u"mdal"_s );
   }
 }
 
 void QgsMdalSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-mesh-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-mesh-layer"_s );
 }

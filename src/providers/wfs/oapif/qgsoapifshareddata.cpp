@@ -35,7 +35,7 @@ QgsOapifSharedData::QgsOapifSharedData( const QString &uri )
 
 QgsOapifSharedData::~QgsOapifSharedData()
 {
-  QgsDebugMsgLevel( QStringLiteral( "~QgsOapifSharedData()" ), 4 );
+  QgsDebugMsgLevel( u"~QgsOapifSharedData()"_s, 4 );
 
   cleanup();
 }
@@ -199,24 +199,24 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
           const auto iter = mSimpleQueryables.find( left->name() );
           if ( iter != mSimpleQueryables.end() )
           {
-            if ( iter->mType == QLatin1String( "string" ) && right->value().userType() == QMetaType::Type::QString )
+            if ( iter->mType == "string"_L1 && right->value().userType() == QMetaType::Type::QString )
             {
               equalityComparisons << getEncodedQueryParam( left->name(), right->value().toString() );
               removeMe = true;
             }
-            else if ( ( iter->mType == QLatin1String( "integer" ) || iter->mType == QLatin1String( "number" ) ) && right->value().userType() == QMetaType::Type::Int )
+            else if ( ( iter->mType == "integer"_L1 || iter->mType == "number"_L1 ) && right->value().userType() == QMetaType::Type::Int )
             {
               equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toInt() ) );
               removeMe = true;
             }
-            else if ( iter->mType == QLatin1String( "number" ) && right->value().userType() == QMetaType::Type::Double )
+            else if ( iter->mType == "number"_L1 && right->value().userType() == QMetaType::Type::Double )
             {
               equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toDouble() ) );
               removeMe = true;
             }
-            else if ( iter->mType == QLatin1String( "boolean" ) && right->value().userType() == QMetaType::Type::Bool )
+            else if ( iter->mType == "boolean"_L1 && right->value().userType() == QMetaType::Type::Bool )
             {
-              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toBool() ? QLatin1String( "true" ) : QLatin1String( "false" ) );
+              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toBool() ? "true"_L1 : "false"_L1 );
               removeMe = true;
             }
           }
@@ -237,22 +237,22 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
   {
     if ( minDate == maxDate )
     {
-      ret = QStringLiteral( "datetime=" ) + minDateStr;
+      ret = u"datetime="_s + minDateStr;
     }
     else
     {
-      ret = QStringLiteral( "datetime=" ) + minDateStr + QStringLiteral( "%2F" ) + maxDateStr;
+      ret = u"datetime="_s + minDateStr + u"%2F"_s + maxDateStr;
     }
   }
   else if ( minDate.isValid() )
   {
     // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
-    ret = QStringLiteral( "datetime=" ) + minDateStr + QStringLiteral( "%2F9999-12-31T00:00:00Z" );
+    ret = u"datetime="_s + minDateStr + u"%2F9999-12-31T00:00:00Z"_s;
   }
   else if ( maxDate.isValid() )
   {
     // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
-    ret = QStringLiteral( "datetime=0000-01-01T00:00:00Z%2F" ) + maxDateStr;
+    ret = u"datetime=0000-01-01T00:00:00Z%2F"_s + maxDateStr;
   }
 
   for ( const QString &equalityComparison : equalityComparisons )
@@ -286,9 +286,9 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
       for ( size_t i = 0; i < topAndNodes.size(); ++i )
       {
         if ( i == 0 )
-          untranslatedPart = QStringLiteral( "(" );
+          untranslatedPart = u"("_s;
         else
-          untranslatedPart += QLatin1String( " AND (" );
+          untranslatedPart += " AND ("_L1;
         untranslatedPart += topAndNodes[i]->dump();
         untranslatedPart += QLatin1Char( ')' );
       }
@@ -318,14 +318,14 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifFilte
       translationState = QgsOapifFilterTranslationState::FULLY_CLIENT;
       return true;
     }
-    serverSideParameters = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
-    serverSideParameters += QLatin1String( "&filter-lang=cql2-text" );
+    serverSideParameters = getEncodedQueryParam( u"filter"_s, compiler.result() );
+    serverSideParameters += "&filter-lang=cql2-text"_L1;
     if ( compiler.geometryLiteralUsed() )
     {
       if ( mSourceCrs
            != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
       {
-        serverSideParameters += QStringLiteral( "&filter-crs=%1" ).arg( mSourceCrs.toOgcUri() );
+        serverSideParameters += u"&filter-crs=%1"_s.arg( mSourceCrs.toOgcUri() );
       }
     }
 
@@ -362,11 +362,11 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   {
     if ( mFilterTranslationState == QgsOapifFilterTranslationState::PARTIAL )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ), 2 );
+      QgsDebugMsgLevel( u"Part of the filter will be evaluated on client-side: %1"_s.arg( mClientSideFilterExpression ), 2 );
     }
     else if ( mFilterTranslationState == QgsOapifFilterTranslationState::FULLY_CLIENT )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Whole filter will be evaluated on client-side" ), 2 );
+      QgsDebugMsgLevel( u"Whole filter will be evaluated on client-side"_s, 2 );
     }
   }
   return ret;

@@ -182,11 +182,11 @@ bool QgsPoint::fromWkt( const QString &wkt )
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
   parts.second = parts.second.remove( '(' ).remove( ')' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const thread_local QRegularExpression rx( u"\\s"_s );
   QStringList coordinates = parts.second.split( rx, Qt::SkipEmptyParts );
 
   // So far the parser hasn't looked at the coordinates. We'll avoid having anything but numbers and return NULL instead of 0 as a coordinate.
@@ -200,7 +200,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
   // True
   // p.asWkt()
   // 'Point (0 -1.43209999999999993)'
-  const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const thread_local QRegularExpression rxIsNumber( u"^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$"_s );
   if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
     return false;
 
@@ -271,10 +271,10 @@ QString QgsPoint::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
     if ( is3D() )
       wkt += ' ' + qgsDoubleToString( mZ, precision );
@@ -287,16 +287,16 @@ QString QgsPoint::asWkt( int precision ) const
 
 QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
-  QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
+  QDomElement elemPoint = doc.createElementNS( ns, u"Point"_s );
+  QDomElement elemCoordinates = doc.createElementNS( ns, u"coordinates"_s );
 
   // coordinate separator
-  const QString cs = QStringLiteral( "," );
+  const QString cs = u","_s;
   // tuple separator
-  const QString ts = QStringLiteral( " " );
+  const QString ts = u" "_s;
 
-  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
-  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
+  elemCoordinates.setAttribute( u"cs"_s, cs );
+  elemCoordinates.setAttribute( u"ts"_s, ts );
 
   QString strCoordinates;
   if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
@@ -310,9 +310,9 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
 
 QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
-  QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );
-  elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D() ? 3 : 2 );
+  QDomElement elemPoint = doc.createElementNS( ns, u"Point"_s );
+  QDomElement elemPosList = doc.createElementNS( ns, u"pos"_s );
+  elemPosList.setAttribute( u"srsDimension"_s, is3D() ? 3 : 2 );
   QString strCoordinates;
   if ( axisOrder == QgsAbstractGeometry::AxisOrder::XY )
     strCoordinates = qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
@@ -348,7 +348,7 @@ json QgsPoint::asJsonObject( int precision ) const
 
 QString QgsPoint::asKml( int precision ) const
 {
-  return QStringLiteral( "<Point><coordinates>%1,%2</coordinates></Point>" ).arg( qgsDoubleToString( mX, precision ), qgsDoubleToString( mY, precision ) );
+  return u"<Point><coordinates>%1,%2</coordinates></Point>"_s.arg( qgsDoubleToString( mX, precision ), qgsDoubleToString( mY, precision ) );
 }
 
 void QgsPoint::draw( QPainter &p ) const
@@ -748,7 +748,7 @@ QgsBox3D QgsPoint::boundingBox3D() const
 
 QString QgsPoint::geometryType() const
 {
-  return QStringLiteral( "Point" );
+  return u"Point"_s;
 }
 
 int QgsPoint::dimension() const

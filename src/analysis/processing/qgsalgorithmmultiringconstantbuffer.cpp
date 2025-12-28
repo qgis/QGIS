@@ -23,7 +23,7 @@
 
 QString QgsMultiRingConstantBufferAlgorithm::name() const
 {
-  return QStringLiteral( "multiringconstantbuffer" );
+  return u"multiringconstantbuffer"_s;
 }
 
 QString QgsMultiRingConstantBufferAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsMultiRingConstantBufferAlgorithm::group() const
 
 QString QgsMultiRingConstantBufferAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMultiRingConstantBufferAlgorithm::outputName() const
@@ -73,16 +73,16 @@ QgsMultiRingConstantBufferAlgorithm *QgsMultiRingConstantBufferAlgorithm::create
 
 void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
 {
-  auto rings = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 0 );
+  auto rings = std::make_unique<QgsProcessingParameterNumber>( u"RINGS"_s, QObject::tr( "Number of rings" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 0 );
   rings->setIsDynamic( true );
-  rings->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
-  rings->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  rings->setDynamicPropertyDefinition( QgsPropertyDefinition( u"RINGS"_s, QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
+  rings->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( rings.release() );
 
-  auto distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), 1, QStringLiteral( "INPUT" ), false );
+  auto distance = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Distance between rings" ), 1, u"INPUT"_s, false );
   distance->setIsDynamic( true );
-  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
-  distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
+  distance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( distance.release() );
 }
 
@@ -100,15 +100,15 @@ bool QgsMultiRingConstantBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer 
 
 bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mRingsNumber = parameterAsInt( parameters, QStringLiteral( "RINGS" ), context );
-  mDynamicRingsNumber = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "RINGS" ) );
+  mRingsNumber = parameterAsInt( parameters, u"RINGS"_s, context );
+  mDynamicRingsNumber = QgsProcessingParameters::isDynamic( parameters, u"RINGS"_s );
   if ( mDynamicRingsNumber )
-    mRingsNumberProperty = parameters.value( QStringLiteral( "RINGS" ) ).value<QgsProperty>();
+    mRingsNumberProperty = parameters.value( u"RINGS"_s ).value<QgsProperty>();
 
-  mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  mDistance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    mDistanceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -116,8 +116,8 @@ bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &p
 QgsFields QgsMultiRingConstantBufferAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "ringId" ), QMetaType::Type::Int, QString(), 10, 0 ) );
-  newFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"ringId"_s, QMetaType::Type::Int, QString(), 10, 0 ) );
+  newFields.append( QgsField( u"distance"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 

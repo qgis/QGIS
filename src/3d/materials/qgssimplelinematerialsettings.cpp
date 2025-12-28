@@ -28,7 +28,7 @@
 
 QString QgsSimpleLineMaterialSettings::type() const
 {
-  return QStringLiteral( "simpleline" );
+  return u"simpleline"_s;
 }
 
 bool QgsSimpleLineMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )
@@ -70,14 +70,14 @@ bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *o
 
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
 void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
+  elem.setAttribute( u"ambient"_s, QgsColorUtils::colorToString( mAmbient ) );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
@@ -117,14 +117,14 @@ QgsMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRende
 QMap<QString, QString> QgsSimpleLineMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[QStringLiteral( "Ka" )] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[u"Ka"_s] = u"%1 %2 %3"_s.arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
   return parameters;
 }
 
 void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const
 {
   const QColor ambient = materialContext.isSelected() ? materialContext.selectionColor().darker() : mAmbient;
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), ambient );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, ambient );
   effect->addParameter( ambientParameter );
 }
 
@@ -147,7 +147,7 @@ void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeome
   Qt3DCore::QBuffer *dataBuffer = new Qt3DCore::QBuffer( geometry );
 
   Qt3DCore::QAttribute *colorAttribute = new Qt3DCore::QAttribute( geometry );
-  colorAttribute->setName( QStringLiteral( "dataDefinedColor" ) );
+  colorAttribute->setName( u"dataDefinedColor"_s );
   colorAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedByte );
   colorAttribute->setVertexSize( 3 );
   colorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );

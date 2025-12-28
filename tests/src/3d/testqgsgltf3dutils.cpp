@@ -33,7 +33,7 @@ class TestQgsGltf3DUtils : public QgsTest
     Q_OBJECT
   public:
     TestQgsGltf3DUtils()
-      : QgsTest( QStringLiteral( "GLTF 3D Utils" ) ) {}
+      : QgsTest( u"GLTF 3D Utils"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

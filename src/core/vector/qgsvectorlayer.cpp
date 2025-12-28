@@ -117,11 +117,11 @@
 
 #include "moc_qgsvectorlayer.cpp"
 
-const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( QStringLiteral( "simplifyDrawingTol" ), QgsSettingsTree::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
-const QgsSettingsEntryBool *QgsVectorLayer::settingsSimplifyLocal = new QgsSettingsEntryBool( QStringLiteral( "simplifyLocal" ), QgsSettingsTree::sTreeQgis, true );
-const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyMaxScale = new QgsSettingsEntryDouble( QStringLiteral( "simplifyMaxScale" ), QgsSettingsTree::sTreeQgis, 1.0 );
-const QgsSettingsEntryEnumFlag<Qgis::VectorRenderingSimplificationFlags> *QgsVectorLayer::settingsSimplifyDrawingHints = new QgsSettingsEntryEnumFlag<Qgis::VectorRenderingSimplificationFlags>( QStringLiteral( "simplifyDrawingHints" ), QgsSettingsTree::sTreeQgis, Qgis::VectorRenderingSimplificationFlag::NoSimplification );
-const QgsSettingsEntryEnumFlag<Qgis::VectorSimplificationAlgorithm> *QgsVectorLayer::settingsSimplifyAlgorithm = new QgsSettingsEntryEnumFlag<Qgis::VectorSimplificationAlgorithm>( QStringLiteral( "simplifyAlgorithm" ), QgsSettingsTree::sTreeQgis, Qgis::VectorSimplificationAlgorithm::Distance );
+const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( u"simplifyDrawingTol"_s, QgsSettingsTree::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
+const QgsSettingsEntryBool *QgsVectorLayer::settingsSimplifyLocal = new QgsSettingsEntryBool( u"simplifyLocal"_s, QgsSettingsTree::sTreeQgis, true );
+const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyMaxScale = new QgsSettingsEntryDouble( u"simplifyMaxScale"_s, QgsSettingsTree::sTreeQgis, 1.0 );
+const QgsSettingsEntryEnumFlag<Qgis::VectorRenderingSimplificationFlags> *QgsVectorLayer::settingsSimplifyDrawingHints = new QgsSettingsEntryEnumFlag<Qgis::VectorRenderingSimplificationFlags>( u"simplifyDrawingHints"_s, QgsSettingsTree::sTreeQgis, Qgis::VectorRenderingSimplificationFlag::NoSimplification );
+const QgsSettingsEntryEnumFlag<Qgis::VectorSimplificationAlgorithm> *QgsVectorLayer::settingsSimplifyAlgorithm = new QgsSettingsEntryEnumFlag<Qgis::VectorSimplificationAlgorithm>( u"simplifyAlgorithm"_s, QgsSettingsTree::sTreeQgis, Qgis::VectorSimplificationAlgorithm::Distance );
 
 
 #ifdef TESTPROVIDERLIB
@@ -677,7 +677,7 @@ void QgsVectorLayer::modifySelection( const QgsFeatureIds &selectIds, const QgsF
   QgsFeatureIds intersectingIds = selectIds & deselectIds;
   if ( !intersectingIds.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Trying to select and deselect the same item at the same time. Unsure what to do. Selecting dubious items." ), 3 );
+    QgsDebugMsgLevel( u"Trying to select and deselect the same item at the same time. Unsure what to do. Selecting dubious items."_s, 3 );
   }
 
   mSelectedFeatureIds -= deselectIds;
@@ -962,17 +962,17 @@ QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures( bool storeSym
 
   if ( !isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer" ), 3 );
+    QgsDebugMsgLevel( u"invoked with invalid layer"_s, 3 );
     return mFeatureCounter;
   }
   if ( !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with null mDataProvider" ), 3 );
+    QgsDebugMsgLevel( u"invoked with null mDataProvider"_s, 3 );
     return mFeatureCounter;
   }
   if ( !mRenderer )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with null mRenderer" ), 3 );
+    QgsDebugMsgLevel( u"invoked with null mRenderer"_s, 3 );
     return mFeatureCounter;
   }
 
@@ -1075,7 +1075,7 @@ QgsRectangle QgsVectorLayer::extent() const
       mLazyExtent2D = false;
 
       // show the extent
-      QgsDebugMsgLevel( QStringLiteral( "2D Extent of layer: %1" ).arg( mExtent2D.toString() ), 3 );
+      QgsDebugMsgLevel( u"2D Extent of layer: %1"_s.arg( mExtent2D.toString() ), 3 );
     }
   }
 
@@ -1084,7 +1084,7 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !isValid() || !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    QgsDebugMsgLevel( u"invoked with invalid layer or null mDataProvider"_s, 3 );
     return rect;
   }
 
@@ -1188,7 +1188,7 @@ QgsBox3D QgsVectorLayer:: extent3D() const
       mLazyExtent3D = false;
 
       // show the extent
-      QgsDebugMsgLevel( QStringLiteral( "3D Extent of layer: %1" ).arg( mExtent3D.toString() ), 3 );
+      QgsDebugMsgLevel( u"3D Extent of layer: %1"_s.arg( mExtent3D.toString() ), 3 );
     }
   }
 
@@ -1197,7 +1197,7 @@ QgsBox3D QgsVectorLayer:: extent3D() const
 
   if ( !isValid() || !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    QgsDebugMsgLevel( u"invoked with invalid layer or null mDataProvider"_s, 3 );
     return extent;
   }
 
@@ -1279,8 +1279,8 @@ QString QgsVectorLayer::subsetString() const
 
   if ( !isValid() || !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
-    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
+    QgsDebugMsgLevel( u"invoked with invalid layer or null mDataProvider"_s, 3 );
+    return customProperty( u"storedSubsetString"_s ).toString();
   }
   return mDataProvider->subsetString();
 }
@@ -1291,13 +1291,13 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
 
   if ( !isValid() || !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
-    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    QgsDebugMsgLevel( u"invoked with invalid layer or null mDataProvider or while editing"_s, 3 );
+    setCustomProperty( u"storedSubsetString"_s, subset );
     return false;
   }
   else if ( mEditBuffer )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked while editing" ), 3 );
+    QgsDebugMsgLevel( u"invoked while editing"_s, 3 );
     return false;
   }
 
@@ -1415,7 +1415,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefault
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "geometry of feature %1 could not be changed." ).arg( updatedFeature.id() ), 3 );
+        QgsDebugMsgLevel( u"geometry of feature %1 could not be changed."_s.arg( updatedFeature.id() ), 3 );
       }
     }
 
@@ -1432,7 +1432,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefault
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "attribute %1 of feature %2 could not be changed." ).arg( attr ).arg( updatedFeature.id() ), 3 );
+          QgsDebugMsgLevel( u"attribute %1 of feature %2 could not be changed."_s.arg( attr ).arg( updatedFeature.id() ), 3 );
           hasError = true;
         }
       }
@@ -1444,7 +1444,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefault
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    QgsDebugMsgLevel( u"feature %1 could not be retrieved"_s.arg( updatedFeature.id() ), 3 );
     return false;
   }
 }
@@ -1668,12 +1668,12 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( const QgsPointSequence &p
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Number of selected features <1" ), 3 );
+    QgsDebugMsgLevel( u"Number of selected features <1"_s, 3 );
     return Qgis::GeometryOperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Number of selected features >1" ), 3 );
+    QgsDebugMsgLevel( u"Number of selected features >1"_s, 3 );
     return Qgis::GeometryOperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1696,12 +1696,12 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Number of selected features <1" ), 3 );
+    QgsDebugMsgLevel( u"Number of selected features <1"_s, 3 );
     return Qgis::GeometryOperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Number of selected features >1" ), 3 );
+    QgsDebugMsgLevel( u"Number of selected features >1"_s, 3 );
     return Qgis::GeometryOperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1938,7 +1938,7 @@ bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor, const Qgs
   {
     case Qgis::AttributeFormPythonInitCodeSource::Dialog:
     {
-      initCode = QStringLiteral( "# Calling function ’%1’\n\n%2" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initCode() );
+      initCode = u"# Calling function ’%1’\n\n%2"_s.arg( mEditFormConfig.initFunction(), mEditFormConfig.initCode() );
       break;
     }
 
@@ -1951,14 +1951,14 @@ bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor, const Qgs
         QTextStream inf( inputFile );
         initCode = inf.readAll();
         inputFile->close();
-        initCode = QStringLiteral( "# Calling function ’%1’\n# From file %2\n\n" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initFilePath() ) + initCode;
+        initCode = u"# Calling function ’%1’\n# From file %2\n\n"_s.arg( mEditFormConfig.initFunction(), mEditFormConfig.initFilePath() ) + initCode;
       }
       break;
     }
 
     case Qgis::AttributeFormPythonInitCodeSource::Environment:
     {
-      initCode = QStringLiteral( "# Calling function ’%1’\n# From environment\n\n" ).arg( mEditFormConfig.initFunction() );
+      initCode = u"# Calling function ’%1’\n# From environment\n\n"_s.arg( mEditFormConfig.initFunction() );
       break;
     }
 
@@ -1984,10 +1984,10 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsVectorLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
+  QgsDebugMsgLevel( u"Datasource in QgsVectorLayer::readXml: %1"_s.arg( mDataSource.toLocal8Bit().data() ), 3 );
 
   //process provider key
-  QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );
+  QDomNode pkeyNode = layer_node.namedItem( u"provider"_s );
 
   if ( pkeyNode.isNull() )
   {
@@ -2005,13 +2005,13 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // if the provider string isn't empty, then we successfully
     // got the stored provider
   }
-  else if ( mDataSource.contains( QLatin1String( "dbname=" ) ) )
+  else if ( mDataSource.contains( "dbname="_L1 ) )
   {
-    mProviderKey = QStringLiteral( "postgres" );
+    mProviderKey = u"postgres"_s;
   }
   else
   {
-    mProviderKey = QStringLiteral( "ogr" );
+    mProviderKey = u"ogr"_s;
   }
 
   const QDomElement elem = layer_node.toElement();
@@ -2024,18 +2024,18 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
-      QgsDebugError( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
+      QgsDebugError( u"Could not set data provider for layer %1"_s.arg( publicSource() ) );
     }
 
     // for invalid layer sources, we fallback to stored wkbType if available
-    if ( elem.hasAttribute( QStringLiteral( "wkbType" ) ) )
-      mWkbType = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "wkbType" ) ), mWkbType );
+    if ( elem.hasAttribute( u"wkbType"_s ) )
+      mWkbType = qgsEnumKeyToValue( elem.attribute( u"wkbType"_s ), mWkbType );
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
   if ( !pkeyElem.isNull() )
   {
-    QString encodingString = pkeyElem.attribute( QStringLiteral( "encoding" ) );
+    QString encodingString = pkeyElem.attribute( u"encoding"_s );
     if ( mDataProvider && !encodingString.isEmpty() )
     {
       mDataProvider->setEncoding( encodingString );
@@ -2058,12 +2058,12 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   readStyleManager( layer_node );
 
-  QDomNode depsNode = layer_node.namedItem( QStringLiteral( "dataDependencies" ) );
+  QDomNode depsNode = layer_node.namedItem( u"dataDependencies"_s );
   QDomNodeList depsNodes = depsNode.childNodes();
   QSet<QgsMapLayerDependency> sources;
   for ( int i = 0; i < depsNodes.count(); i++ )
   {
-    QString source = depsNodes.at( i ).toElement().attribute( QStringLiteral( "id" ) );
+    QString source = depsNodes.at( i ).toElement().attribute( u"id"_s );
     sources << QgsMapLayerDependency( source );
   }
   setDependencies( sources );
@@ -2078,12 +2078,12 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
   if ( mReadExtentFromXml )
   {
-    const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    const QDomNode extentNode = layer_node.namedItem( u"extent"_s );
     if ( !extentNode.isNull() )
     {
       mXmlExtent2D = QgsXmlUtils::readRectangle( extentNode.toElement() );
     }
-    const QDomNode extent3DNode = layer_node.namedItem( QStringLiteral( "extent3D" ) );
+    const QDomNode extent3DNode = layer_node.namedItem( u"extent3D"_s );
     if ( !extent3DNode.isNull() )
     {
       mXmlExtent3D = QgsXmlUtils::readBox3D( extent3DNode.toElement() );
@@ -2091,11 +2091,11 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
 
   // auxiliary layer
-  const QDomNode asNode = layer_node.namedItem( QStringLiteral( "auxiliaryLayer" ) );
+  const QDomNode asNode = layer_node.namedItem( u"auxiliaryLayer"_s );
   const QDomElement asElem = asNode.toElement();
   if ( !asElem.isNull() )
   {
-    mAuxiliaryLayerKey = asElem.attribute( QStringLiteral( "key" ) );
+    mAuxiliaryLayerKey = asElem.attribute( u"key"_s );
   }
 
   // QGIS Server WMS Dimensions
@@ -2135,8 +2135,8 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
   if ( !renderer() || !legend() || ( isValid() && geomType != geometryType() ) || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
-    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+    if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), u"projectload"_s );
 
     bool defaultLoadedFlag = false;
 
@@ -2224,7 +2224,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "Error retrieving style %1 from DB: %2" ).arg( ids.at( i ), errorMessage ), 2 );
+          QgsDebugMsgLevel( u"Error retrieving style %1 from DB: %2"_s.arg( ids.at( i ), errorMessage ), 2 );
         }
       }
     }
@@ -2258,9 +2258,9 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   // this manipulation is necessary to preserve default behavior when
   // "trust layer metadata" project level option is set and checkPrimaryKeyUnicity
   // was not explicitly passed in the uri
-  if ( provider.compare( QLatin1String( "postgres" ) ) == 0 )
+  if ( provider.compare( "postgres"_L1 ) == 0 )
   {
-    const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
+    const QString checkUnicityKey { u"checkPrimaryKeyUnicity"_s };
     QgsDataSourceUri uri( mDataSource );
     if ( ! uri.hasParam( checkUnicityKey ) )
     {
@@ -2270,8 +2270,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
-  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+  if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), u"projectload"_s );
 
   if ( mPreloadedProvider )
     mDataProvider = qobject_cast< QgsVectorDataProvider * >( mPreloadedProvider.release() );
@@ -2281,19 +2281,19 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( !mDataProvider )
   {
     setValid( false );
-    QgsDebugMsgLevel( QStringLiteral( "Unable to get data provider" ), 2 );
+    QgsDebugMsgLevel( u"Unable to get data provider"_s, 2 );
     return false;
   }
 
   mDataProvider->setParent( this );
   connect( mDataProvider, &QgsVectorDataProvider::raiseError, this, &QgsVectorLayer::raiseError );
 
-  QgsDebugMsgLevel( QStringLiteral( "Instantiated the data provider plugin" ), 2 );
+  QgsDebugMsgLevel( u"Instantiated the data provider plugin"_s, 2 );
 
   setValid( mDataProvider->isValid() );
   if ( !isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Invalid provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
+    QgsDebugMsgLevel( u"Invalid provider plugin %1"_s.arg( QString( mDataSource.toUtf8() ) ), 2 );
     return false;
   }
 
@@ -2308,7 +2308,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     newMetadata.combine( &mMetadata );
 
     setMetadata( newMetadata );
-    QgsDebugMsgLevel( QStringLiteral( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+    QgsDebugMsgLevel( u"Set Data provider QgsLayerMetadata identifier[%1]"_s.arg( metadata().identifier() ), 4 );
   }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
@@ -2349,12 +2349,12 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     profile->switchTask( tr( "Read layer fields" ) );
   updateFields();
 
-  if ( mProviderKey == QLatin1String( "postgres" ) )
+  if ( mProviderKey == "postgres"_L1 )
   {
     // update datasource from data provider computed one
     mDataSource = mDataProvider->dataSourceUri( false );
 
-    QgsDebugMsgLevel( QStringLiteral( "Beautifying layer name %1" ).arg( name() ), 3 );
+    QgsDebugMsgLevel( u"Beautifying layer name %1"_s.arg( name() ), 3 );
 
     // adjust the display name for postgres layers
     const thread_local QRegularExpression reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
@@ -2378,26 +2378,26 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       if ( !lName.isEmpty() )
         setName( lName );
     }
-    QgsDebugMsgLevel( QStringLiteral( "Beautified layer name %1" ).arg( name() ), 3 );
+    QgsDebugMsgLevel( u"Beautified layer name %1"_s.arg( name() ), 3 );
   }
-  else if ( mProviderKey == QLatin1String( "osm" ) )
+  else if ( mProviderKey == "osm"_L1 )
   {
     // make sure that the "observer" has been removed from URI to avoid crashes
     mDataSource = mDataProvider->dataSourceUri();
   }
-  else if ( provider == QLatin1String( "ogr" ) )
+  else if ( provider == "ogr"_L1 )
   {
     // make sure that the /vsigzip or /vsizip is added to uri, if applicable
     mDataSource = mDataProvider->dataSourceUri();
-    if ( mDataSource.right( 10 ) == QLatin1String( "|layerid=0" ) )
+    if ( mDataSource.right( 10 ) == "|layerid=0"_L1 )
       mDataSource.chop( 10 );
   }
-  else if ( provider == QLatin1String( "memory" ) )
+  else if ( provider == "memory"_L1 )
   {
     // required so that source differs between memory layers
-    mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
+    mDataSource = mDataSource + u"&uid=%1"_s.arg( QUuid::createUuid().toString() );
   }
-  else if ( provider == QLatin1String( "hana" ) )
+  else if ( provider == "hana"_L1 )
   {
     // update datasource from data provider computed one
     mDataSource = mDataProvider->dataSourceUri( false );
@@ -2425,21 +2425,21 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   if ( mapLayerNode.isNull() || ( "maplayer" != mapLayerNode.nodeName() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
+    QgsDebugMsgLevel( u"can't find <maplayer>"_s, 2 );
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Vector ) );
+  mapLayerNode.setAttribute( u"type"_s, QgsMapLayerFactory::typeToString( Qgis::LayerType::Vector ) );
 
   // set the geometry type
-  mapLayerNode.setAttribute( QStringLiteral( "geometry" ), QgsWkbTypes::geometryDisplayString( geometryType() ) );
-  mapLayerNode.setAttribute( QStringLiteral( "wkbType" ), qgsEnumValueToKey( wkbType() ) );
+  mapLayerNode.setAttribute( u"geometry"_s, QgsWkbTypes::geometryDisplayString( geometryType() ) );
+  mapLayerNode.setAttribute( u"wkbType"_s, qgsEnumValueToKey( wkbType() ) );
 
   // add provider node
   if ( mDataProvider )
   {
-    QDomElement provider  = document.createElement( QStringLiteral( "provider" ) );
-    provider.setAttribute( QStringLiteral( "encoding" ), mDataProvider->encoding() );
+    QDomElement provider  = document.createElement( u"provider"_s );
+    provider.setAttribute( u"encoding"_s, mDataProvider->encoding() );
     QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
@@ -2449,26 +2449,26 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   mJoinBuffer->writeXml( layer_node, document );
 
   // dependencies
-  QDomElement dependenciesElement = document.createElement( QStringLiteral( "layerDependencies" ) );
+  QDomElement dependenciesElement = document.createElement( u"layerDependencies"_s );
   const auto constDependencies = dependencies();
   for ( const QgsMapLayerDependency &dep : constDependencies )
   {
     if ( dep.type() != QgsMapLayerDependency::PresenceDependency )
       continue;
-    QDomElement depElem = document.createElement( QStringLiteral( "layer" ) );
-    depElem.setAttribute( QStringLiteral( "id" ), dep.layerId() );
+    QDomElement depElem = document.createElement( u"layer"_s );
+    depElem.setAttribute( u"id"_s, dep.layerId() );
     dependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dependenciesElement );
 
   // change dependencies
-  QDomElement dataDependenciesElement = document.createElement( QStringLiteral( "dataDependencies" ) );
+  QDomElement dataDependenciesElement = document.createElement( u"dataDependencies"_s );
   for ( const QgsMapLayerDependency &dep : constDependencies )
   {
     if ( dep.type() != QgsMapLayerDependency::DataDependency )
       continue;
-    QDomElement depElem = document.createElement( QStringLiteral( "layer" ) );
-    depElem.setAttribute( QStringLiteral( "id" ), dep.layerId() );
+    QDomElement depElem = document.createElement( u"layer"_s );
+    depElem.setAttribute( u"id"_s, dep.layerId() );
     dataDependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dataDependenciesElement );
@@ -2479,11 +2479,11 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   writeStyleManager( layer_node, document );
 
   // auxiliary layer
-  QDomElement asElem = document.createElement( QStringLiteral( "auxiliaryLayer" ) );
+  QDomElement asElem = document.createElement( u"auxiliaryLayer"_s );
   if ( mAuxiliaryLayer )
   {
     const QString pkField = mAuxiliaryLayer->joinInfo().targetFieldName();
-    asElem.setAttribute( QStringLiteral( "key" ), pkField );
+    asElem.setAttribute( u"key"_s, pkField );
   }
   layer_node.appendChild( asElem );
 
@@ -2496,7 +2496,7 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( providerType() == QLatin1String( "memory" ) )
+  if ( providerType() == "memory"_L1 )
   {
     // Refetch the source from the provider, because adding fields actually changes the source for this provider.
     return dataProvider()->dataSourceUri();
@@ -2542,7 +2542,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Relations" ) );
 
     // Restore referenced layers: relations where "this" is the child layer (the referencing part, that holds the FK)
-    QDomNodeList referencedLayersNodeList = layerNode.toElement().elementsByTagName( QStringLiteral( "referencedLayers" ) );
+    QDomNodeList referencedLayersNodeList = layerNode.toElement().elementsByTagName( u"referencedLayers"_s );
     if ( referencedLayersNodeList.size() > 0 )
     {
       const QDomNodeList relationNodes { referencedLayersNodeList.at( 0 ).childNodes() };
@@ -2555,7 +2555,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     }
 
     // Restore referencing layers: relations where "this" is the parent layer (the referenced part where the FK points to)
-    QDomNodeList referencingLayersNodeList = layerNode.toElement().elementsByTagName( QStringLiteral( "referencingLayers" ) );
+    QDomNodeList referencingLayersNodeList = layerNode.toElement().elementsByTagName( u"referencingLayers"_s );
     if ( referencingLayersNodeList.size() > 0 )
     {
       const QDomNodeList relationNodes { referencingLayersNodeList.at( 0 ).childNodes() };
@@ -2575,16 +2575,16 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( MapTips ) )
   {
-    QDomElement mapTipElem = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement();
+    QDomElement mapTipElem = layerNode.namedItem( u"mapTip"_s ).toElement();
     setMapTipTemplate( mapTipElem.text() );
-    setMapTipsEnabled( mapTipElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt() == 1 );
+    setMapTipsEnabled( mapTipElem.attribute( u"enabled"_s, u"1"_s ).toInt() == 1 );
   }
 
   if ( categories.testFlag( LayerConfiguration ) )
-    mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
+    mDisplayExpression = layerNode.namedItem( u"previewExpression"_s ).toElement().text();
 
   // Try to migrate pre QGIS 3.0 display field property
-  QString displayField = layerNode.namedItem( QStringLiteral( "displayfield" ) ).toElement().text();
+  QString displayField = layerNode.namedItem( u"displayfield"_s ).toElement().text();
   if ( mFields.lookupField( displayField ) < 0 )
   {
     // if it's not a field, it's a maptip
@@ -2606,24 +2606,24 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     // IMPORTANT - we don't clear mAttributeAliasMap here, as it may contain aliases which are coming direct
     // from the data provider. Instead we leave any existing aliases and only overwrite them if the style
     // has a specific value for that field's alias
-    QDomNode aliasesNode = layerNode.namedItem( QStringLiteral( "aliases" ) );
+    QDomNode aliasesNode = layerNode.namedItem( u"aliases"_s );
     if ( !aliasesNode.isNull() )
     {
       QDomElement aliasElem;
 
-      QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( QStringLiteral( "alias" ) );
+      QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName( u"alias"_s );
       for ( int i = 0; i < aliasNodeList.size(); ++i )
       {
         aliasElem = aliasNodeList.at( i ).toElement();
 
         QString field;
-        if ( aliasElem.hasAttribute( QStringLiteral( "field" ) ) )
+        if ( aliasElem.hasAttribute( u"field"_s ) )
         {
-          field = aliasElem.attribute( QStringLiteral( "field" ) );
+          field = aliasElem.attribute( u"field"_s );
         }
         else
         {
-          int index = aliasElem.attribute( QStringLiteral( "index" ) ).toInt();
+          int index = aliasElem.attribute( u"index"_s ).toInt();
 
           if ( index >= 0 && index < fields().count() )
             field = fields().at( index ).name();
@@ -2631,23 +2631,23 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
         QString alias;
 
-        if ( !aliasElem.attribute( QStringLiteral( "name" ) ).isEmpty() )
+        if ( !aliasElem.attribute( u"name"_s ).isEmpty() )
         {
           //if it has alias
-          alias = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), aliasElem.attribute( QStringLiteral( "name" ) ) );
-          QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + aliasElem.attribute( QStringLiteral( "name" ) ), 3 );
+          alias = context.projectTranslator()->translate( u"project:layers:%1:fieldaliases"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), aliasElem.attribute( u"name"_s ) );
+          QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldaliases"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + aliasElem.attribute( u"name"_s ), 3 );
         }
         else
         {
           //if it has no alias, it should be the fields translation
-          alias = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), field );
-          QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + field, 3 );
+          alias = context.projectTranslator()->translate( u"project:layers:%1:fieldaliases"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), field );
+          QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldaliases"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + field, 3 );
           //if it gets the exact field value, there has been no translation (or not even translation loaded) - so no alias should be generated;
-          if ( alias == aliasElem.attribute( QStringLiteral( "field" ) ) )
+          if ( alias == aliasElem.attribute( u"field"_s ) )
             alias.clear();
         }
 
-        QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( QStringLiteral( "name" ) ) + " trans " + alias, 3 );
+        QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( u"name"_s ) + " trans " + alias, 3 );
         mAttributeAliasMap.insert( field, alias );
       }
     }
@@ -2655,60 +2655,60 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     // IMPORTANT - we don't clear mAttributeSplitPolicy here, as it may contain policies which are coming direct
     // from the data provider. Instead we leave any existing policies and only overwrite them if the style
     // has a specific value for that field's policy
-    const QDomNode splitPoliciesNode = layerNode.namedItem( QStringLiteral( "splitPolicies" ) );
+    const QDomNode splitPoliciesNode = layerNode.namedItem( u"splitPolicies"_s );
     if ( !splitPoliciesNode.isNull() )
     {
-      const QDomNodeList splitPolicyNodeList = splitPoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      const QDomNodeList splitPolicyNodeList = splitPoliciesNode.toElement().elementsByTagName( u"policy"_s );
       for ( int i = 0; i < splitPolicyNodeList.size(); ++i )
       {
         const QDomElement splitPolicyElem = splitPolicyNodeList.at( i ).toElement();
-        const QString field = splitPolicyElem.attribute( QStringLiteral( "field" ) );
-        const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainSplitPolicy::Duplicate );
+        const QString field = splitPolicyElem.attribute( u"field"_s );
+        const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElem.attribute( u"policy"_s ), Qgis::FieldDomainSplitPolicy::Duplicate );
         mAttributeSplitPolicy.insert( field, policy );
       }
     }
 
     // The duplicate policy is - unlike alias and split policy - never defined by the data provider, so we clear the map
     mAttributeDuplicatePolicy.clear();
-    const QDomNode duplicatePoliciesNode = layerNode.namedItem( QStringLiteral( "duplicatePolicies" ) );
+    const QDomNode duplicatePoliciesNode = layerNode.namedItem( u"duplicatePolicies"_s );
     if ( !duplicatePoliciesNode.isNull() )
     {
-      const QDomNodeList duplicatePolicyNodeList = duplicatePoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      const QDomNodeList duplicatePolicyNodeList = duplicatePoliciesNode.toElement().elementsByTagName( u"policy"_s );
       for ( int i = 0; i < duplicatePolicyNodeList.size(); ++i )
       {
         const QDomElement duplicatePolicyElem = duplicatePolicyNodeList.at( i ).toElement();
-        const QString field = duplicatePolicyElem.attribute( QStringLiteral( "field" ) );
-        const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDuplicatePolicy::Duplicate );
+        const QString field = duplicatePolicyElem.attribute( u"field"_s );
+        const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElem.attribute( u"policy"_s ), Qgis::FieldDuplicatePolicy::Duplicate );
         mAttributeDuplicatePolicy.insert( field, policy );
       }
     }
 
-    const QDomNode mergePoliciesNode = layerNode.namedItem( QStringLiteral( "mergePolicies" ) );
+    const QDomNode mergePoliciesNode = layerNode.namedItem( u"mergePolicies"_s );
     if ( !mergePoliciesNode.isNull() )
     {
-      const QDomNodeList mergePolicyNodeList = mergePoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      const QDomNodeList mergePolicyNodeList = mergePoliciesNode.toElement().elementsByTagName( u"policy"_s );
       for ( int i = 0; i < mergePolicyNodeList.size(); ++i )
       {
         const QDomElement mergePolicyElem = mergePolicyNodeList.at( i ).toElement();
-        const QString field = mergePolicyElem.attribute( QStringLiteral( "field" ) );
-        const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainMergePolicy::UnsetField );
+        const QString field = mergePolicyElem.attribute( u"field"_s );
+        const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElem.attribute( u"policy"_s ), Qgis::FieldDomainMergePolicy::UnsetField );
         mAttributeMergePolicy.insert( field, policy );
       }
     }
 
     // default expressions
     mDefaultExpressionMap.clear();
-    QDomNode defaultsNode = layerNode.namedItem( QStringLiteral( "defaults" ) );
+    QDomNode defaultsNode = layerNode.namedItem( u"defaults"_s );
     if ( !defaultsNode.isNull() )
     {
-      QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( QStringLiteral( "default" ) );
+      QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( u"default"_s );
       for ( int i = 0; i < defaultNodeList.size(); ++i )
       {
         QDomElement defaultElem = defaultNodeList.at( i ).toElement();
 
-        QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
-        QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
-        bool applyOnUpdate = defaultElem.attribute( QStringLiteral( "applyOnUpdate" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
+        QString field = defaultElem.attribute( u"field"_s, QString() );
+        QString expression = defaultElem.attribute( u"expression"_s, QString() );
+        bool applyOnUpdate = defaultElem.attribute( u"applyOnUpdate"_s, u"0"_s ) == "1"_L1;
         if ( field.isEmpty() || expression.isEmpty() )
           continue;
 
@@ -2719,24 +2719,24 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     // constraints
     mFieldConstraints.clear();
     mFieldConstraintStrength.clear();
-    QDomNode constraintsNode = layerNode.namedItem( QStringLiteral( "constraints" ) );
+    QDomNode constraintsNode = layerNode.namedItem( u"constraints"_s );
     if ( !constraintsNode.isNull() )
     {
-      QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( QStringLiteral( "constraint" ) );
+      QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( u"constraint"_s );
       for ( int i = 0; i < constraintNodeList.size(); ++i )
       {
         QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
-        QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
-        int constraints = constraintElem.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
+        QString field = constraintElem.attribute( u"field"_s, QString() );
+        int constraints = constraintElem.attribute( u"constraints"_s, u"0"_s ).toInt();
         if ( field.isEmpty() || constraints == 0 )
           continue;
 
         mFieldConstraints.insert( field, static_cast< QgsFieldConstraints::Constraints >( constraints ) );
 
-        int uniqueStrength = constraintElem.attribute( QStringLiteral( "unique_strength" ), QStringLiteral( "1" ) ).toInt();
-        int notNullStrength = constraintElem.attribute( QStringLiteral( "notnull_strength" ), QStringLiteral( "1" ) ).toInt();
-        int expStrength = constraintElem.attribute( QStringLiteral( "exp_strength" ), QStringLiteral( "1" ) ).toInt();
+        int uniqueStrength = constraintElem.attribute( u"unique_strength"_s, u"1"_s ).toInt();
+        int notNullStrength = constraintElem.attribute( u"notnull_strength"_s, u"1"_s ).toInt();
+        int expStrength = constraintElem.attribute( u"exp_strength"_s, u"1"_s ).toInt();
 
         mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintUnique ), static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
         mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintNotNull ), static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
@@ -2744,17 +2744,17 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
     }
     mFieldConstraintExpressions.clear();
-    QDomNode constraintExpressionsNode = layerNode.namedItem( QStringLiteral( "constraintExpressions" ) );
+    QDomNode constraintExpressionsNode = layerNode.namedItem( u"constraintExpressions"_s );
     if ( !constraintExpressionsNode.isNull() )
     {
-      QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( QStringLiteral( "constraint" ) );
+      QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( u"constraint"_s );
       for ( int i = 0; i < constraintNodeList.size(); ++i )
       {
         QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
-        QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
-        QString exp = constraintElem.attribute( QStringLiteral( "exp" ), QString() );
-        QString desc = constraintElem.attribute( QStringLiteral( "desc" ), QString() );
+        QString field = constraintElem.attribute( u"field"_s, QString() );
+        QString exp = constraintElem.attribute( u"exp"_s, QString() );
+        QString desc = constraintElem.attribute( u"desc"_s, QString() );
         if ( field.isEmpty() || exp.isEmpty() )
           continue;
 
@@ -2770,44 +2770,44 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   {
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Forms" ) );
 
-    QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
-    QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
+    QDomElement widgetsElem = layerNode.namedItem( u"fieldConfiguration"_s ).toElement();
+    QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( u"field"_s );
     for ( int i = 0; i < fieldConfigurationElementList.size(); ++i )
     {
       const QDomElement fieldConfigElement = fieldConfigurationElementList.at( i ).toElement();
-      const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
+      const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( u"editWidget"_s ).at( 0 ).toElement();
 
-      QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
+      QString fieldName = fieldConfigElement.attribute( u"name"_s );
 
       if ( categories.testFlag( Fields ) )
-        mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), Qgis::FieldConfigurationFlag::NoFlag );
+        mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( u"configurationFlags"_s ), Qgis::FieldConfigurationFlag::NoFlag );
 
       // load editor widget configuration
       if ( categories.testFlag( Forms ) )
       {
-        const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
-        const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
+        const QString widgetType = fieldWidgetElement.attribute( u"type"_s );
+        const QDomElement cfgElem = fieldConfigElement.elementsByTagName( u"config"_s ).at( 0 ).toElement();
         const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
         QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
         // translate widget configuration strings
-        if ( widgetType == QLatin1String( "ValueRelation" ) )
+        if ( widgetType == "ValueRelation"_L1 )
         {
-          optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
+          optionsMap[ u"Value"_s ] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ), optionsMap[ u"Value"_s ].toString() );
         }
-        if ( widgetType == QLatin1String( "ValueMap" ) )
+        if ( widgetType == "ValueMap"_L1 )
         {
-          if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QList<QVariant>>() )
+          if ( optionsMap[ u"map"_s ].canConvert<QList<QVariant>>() )
           {
             QList<QVariant> translatedValueList;
-            const QList<QVariant> valueList = optionsMap[ QStringLiteral( "map" )].toList();
+            const QList<QVariant> valueList = optionsMap[ u"map"_s].toList();
             for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
             {
               QMap<QString, QVariant> translatedValueMap;
-              QString translatedKey = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), valueList[i].toMap().constBegin().key() );
+              QString translatedKey = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuemapdescriptions"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ), valueList[i].toMap().constBegin().key() );
               translatedValueMap.insert( translatedKey, valueList[i].toMap().constBegin().value() );
               translatedValueList.append( translatedValueMap );
             }
-            optionsMap.insert( QStringLiteral( "map" ), translatedValueList );
+            optionsMap.insert( u"map"_s, translatedValueList );
           }
         }
         QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
@@ -2822,15 +2822,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   {
     const QList<QPair<QString, Qgis::FieldConfigurationFlag>> legacyConfig
     {
-      qMakePair( QStringLiteral( "excludeAttributesWMS" ), Qgis::FieldConfigurationFlag::HideFromWms ),
-      qMakePair( QStringLiteral( "excludeAttributesWFS" ), Qgis::FieldConfigurationFlag::HideFromWfs )
+      qMakePair( u"excludeAttributesWMS"_s, Qgis::FieldConfigurationFlag::HideFromWms ),
+      qMakePair( u"excludeAttributesWFS"_s, Qgis::FieldConfigurationFlag::HideFromWfs )
     };
     for ( const auto &config : legacyConfig )
     {
       QDomNode excludeNode = layerNode.namedItem( config.first );
       if ( !excludeNode.isNull() )
       {
-        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
+        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( u"attribute"_s );
         for ( int i = 0; i < attributeNodeList.size(); ++i )
         {
           QString fieldName = attributeNodeList.at( i ).toElement().text();
@@ -2844,7 +2844,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   }
 
   if ( categories.testFlag( GeometryOptions ) )
-    mGeometryOptions->readXml( layerNode.namedItem( QStringLiteral( "geometryOptions" ) ) );
+    mGeometryOptions->readXml( layerNode.namedItem( u"geometryOptions"_s ) );
 
   if ( categories.testFlag( Forms ) )
     mEditFormConfig.readXml( layerNode, context );
@@ -2857,11 +2857,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   }
 
   if ( categories.testFlag( CustomProperties ) )
-    readCustomProperties( layerNode, QStringLiteral( "variable" ) );
+    readCustomProperties( layerNode, u"variable"_s );
 
   QDomElement mapLayerNode = layerNode.toElement();
   if ( categories.testFlag( LayerConfiguration )
-       && mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
+       && mapLayerNode.attribute( u"readOnly"_s, u"0"_s ).toInt() == 1 )
     mReadOnly = true;
 
   updateFields();
@@ -2870,7 +2870,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   {
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
-    const QDomElement legendElem = layerNode.firstChildElement( QStringLiteral( "legend" ) );
+    const QDomElement legendElem = layerNode.firstChildElement( u"legend"_s );
     if ( !legendElem.isNull() )
     {
       std::unique_ptr< QgsMapLayerLegend > legend( QgsMapLayerLegend::defaultVectorLegend( this ) );
@@ -2933,15 +2933,15 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     {
       QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
 
-      QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
+      QDomElement labelingElement = node.firstChildElement( u"labeling"_s );
       QgsAbstractVectorLayerLabeling *labeling = nullptr;
       if ( labelingElement.isNull() ||
-           ( labelingElement.attribute( QStringLiteral( "type" ) ) == QLatin1String( "simple" ) && labelingElement.firstChildElement( QStringLiteral( "settings" ) ).isNull() ) )
+           ( labelingElement.attribute( u"type"_s ) == "simple"_L1 && labelingElement.firstChildElement( u"settings"_s ).isNull() ) )
       {
         // make sure we have custom properties for labeling for 2.x projects
         // (custom properties should be already loaded when reading the whole layer from XML,
         // but when reading style, custom properties are not read)
-        readCustomProperties( node, QStringLiteral( "labeling" ) );
+        readCustomProperties( node, u"labeling"_s );
 
         // support for pre-QGIS 3 labeling configurations written in custom properties
         labeling = readLabelingFromCustomProperties();
@@ -2952,8 +2952,8 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       }
       setLabeling( labeling );
 
-      if ( node.toElement().hasAttribute( QStringLiteral( "labelsEnabled" ) ) )
-        mLabelsEnabled = node.toElement().attribute( QStringLiteral( "labelsEnabled" ) ).toInt();
+      if ( node.toElement().hasAttribute( u"labelsEnabled"_s ) )
+        mLabelsEnabled = node.toElement().attribute( u"labelsEnabled"_s ).toInt();
       else
         mLabelsEnabled = true;
     }
@@ -2961,7 +2961,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     if ( categories.testFlag( Symbology ) )
     {
       // get and set the blend mode if it exists
-      QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+      QDomNode blendModeNode = node.namedItem( u"blendMode"_s );
       if ( !blendModeNode.isNull() )
       {
         QDomElement e = blendModeNode.toElement();
@@ -2969,7 +2969,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       }
 
       // get and set the feature blend mode if it exists
-      QDomNode featureBlendModeNode = node.namedItem( QStringLiteral( "featureBlendMode" ) );
+      QDomNode featureBlendModeNode = node.namedItem( u"featureBlendMode"_s );
       if ( !featureBlendModeNode.isNull() )
       {
         QDomElement e = featureBlendModeNode.toElement();
@@ -2980,28 +2980,28 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     // get and set the layer transparency and scale visibility if they exists
     if ( categories.testFlag( Rendering ) )
     {
-      QDomNode layerTransparencyNode = node.namedItem( QStringLiteral( "layerTransparency" ) );
+      QDomNode layerTransparencyNode = node.namedItem( u"layerTransparency"_s );
       if ( !layerTransparencyNode.isNull() )
       {
         QDomElement e = layerTransparencyNode.toElement();
         setOpacity( 1.0 - e.text().toInt() / 100.0 );
       }
-      QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+      QDomNode layerOpacityNode = node.namedItem( u"layerOpacity"_s );
       if ( !layerOpacityNode.isNull() )
       {
         QDomElement e = layerOpacityNode.toElement();
         setOpacity( e.text().toDouble() );
       }
 
-      const bool hasScaleBasedVisibiliy { node.attributes().namedItem( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).nodeValue() == '1' };
+      const bool hasScaleBasedVisibiliy { node.attributes().namedItem( u"hasScaleBasedVisibilityFlag"_s ).nodeValue() == '1' };
       setScaleBasedVisibility( hasScaleBasedVisibiliy );
       bool ok;
-      const double maxScale { node.attributes().namedItem( QStringLiteral( "maxScale" ) ).nodeValue().toDouble( &ok ) };
+      const double maxScale { node.attributes().namedItem( u"maxScale"_s ).nodeValue().toDouble( &ok ) };
       if ( ok )
       {
         setMaximumScale( maxScale );
       }
-      const double minScale { node.attributes().namedItem( QStringLiteral( "minScale" ) ).nodeValue().toDouble( &ok ) };
+      const double minScale { node.attributes().namedItem( u"minScale"_s ).nodeValue().toDouble( &ok ) };
       if ( ok )
       {
         setMinimumScale( minScale );
@@ -3010,14 +3010,14 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       QDomElement e = node.toElement();
 
       // get the simplification drawing settings
-      mSimplifyMethod.setSimplifyHints( static_cast< Qgis::VectorRenderingSimplificationFlags >( e.attribute( QStringLiteral( "simplifyDrawingHints" ), QStringLiteral( "1" ) ).toInt() ) );
-      mSimplifyMethod.setSimplifyAlgorithm( static_cast< Qgis::VectorSimplificationAlgorithm >( e.attribute( QStringLiteral( "simplifyAlgorithm" ), QStringLiteral( "0" ) ).toInt() ) );
-      mSimplifyMethod.setThreshold( e.attribute( QStringLiteral( "simplifyDrawingTol" ), QStringLiteral( "1" ) ).toFloat() );
-      mSimplifyMethod.setForceLocalOptimization( e.attribute( QStringLiteral( "simplifyLocal" ), QStringLiteral( "1" ) ).toInt() );
-      mSimplifyMethod.setMaximumScale( e.attribute( QStringLiteral( "simplifyMaxScale" ), QStringLiteral( "1" ) ).toFloat() );
+      mSimplifyMethod.setSimplifyHints( static_cast< Qgis::VectorRenderingSimplificationFlags >( e.attribute( u"simplifyDrawingHints"_s, u"1"_s ).toInt() ) );
+      mSimplifyMethod.setSimplifyAlgorithm( static_cast< Qgis::VectorSimplificationAlgorithm >( e.attribute( u"simplifyAlgorithm"_s, u"0"_s ).toInt() ) );
+      mSimplifyMethod.setThreshold( e.attribute( u"simplifyDrawingTol"_s, u"1"_s ).toFloat() );
+      mSimplifyMethod.setForceLocalOptimization( e.attribute( u"simplifyLocal"_s, u"1"_s ).toInt() );
+      mSimplifyMethod.setMaximumScale( e.attribute( u"simplifyMaxScale"_s, u"1"_s ).toFloat() );
 
       if ( mRenderer )
-        mRenderer->setReferenceScale( e.attribute( QStringLiteral( "symbologyReferenceScale" ), QStringLiteral( "-1" ) ).toDouble() );
+        mRenderer->setReferenceScale( e.attribute( u"symbologyReferenceScale"_s, u"-1"_s ).toDouble() );
     }
 
     //diagram renderer and diagram layer settings
@@ -3027,27 +3027,27 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
 
       delete mDiagramRenderer;
       mDiagramRenderer = nullptr;
-      QDomElement singleCatDiagramElem = node.firstChildElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
+      QDomElement singleCatDiagramElem = node.firstChildElement( u"SingleCategoryDiagramRenderer"_s );
       if ( !singleCatDiagramElem.isNull() )
       {
         mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
         mDiagramRenderer->readXml( singleCatDiagramElem, context );
       }
-      QDomElement linearDiagramElem = node.firstChildElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
+      QDomElement linearDiagramElem = node.firstChildElement( u"LinearlyInterpolatedDiagramRenderer"_s );
       if ( !linearDiagramElem.isNull() )
       {
-        if ( linearDiagramElem.hasAttribute( QStringLiteral( "classificationAttribute" ) ) )
+        if ( linearDiagramElem.hasAttribute( u"classificationAttribute"_s ) )
         {
           // fix project from before QGIS 3.0
-          int idx = linearDiagramElem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
+          int idx = linearDiagramElem.attribute( u"classificationAttribute"_s ).toInt();
           if ( idx >= 0 && idx < mFields.count() )
-            linearDiagramElem.setAttribute( QStringLiteral( "classificationField" ), mFields.at( idx ).name() );
+            linearDiagramElem.setAttribute( u"classificationField"_s, mFields.at( idx ).name() );
         }
 
         mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
         mDiagramRenderer->readXml( linearDiagramElem, context );
       }
-      QDomElement stackedDiagramElem = node.firstChildElement( QStringLiteral( "StackedDiagramRenderer" ) );
+      QDomElement stackedDiagramElem = node.firstChildElement( u"StackedDiagramRenderer"_s );
       if ( !stackedDiagramElem.isNull() )
       {
         mDiagramRenderer = new QgsStackedDiagramRenderer();
@@ -3056,35 +3056,35 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
 
       if ( mDiagramRenderer )
       {
-        QDomElement diagramSettingsElem = node.firstChildElement( QStringLiteral( "DiagramLayerSettings" ) );
+        QDomElement diagramSettingsElem = node.firstChildElement( u"DiagramLayerSettings"_s );
         if ( !diagramSettingsElem.isNull() )
         {
-          bool oldXPos = diagramSettingsElem.hasAttribute( QStringLiteral( "xPosColumn" ) );
-          bool oldYPos = diagramSettingsElem.hasAttribute( QStringLiteral( "yPosColumn" ) );
-          bool oldShow = diagramSettingsElem.hasAttribute( QStringLiteral( "showColumn" ) );
+          bool oldXPos = diagramSettingsElem.hasAttribute( u"xPosColumn"_s );
+          bool oldYPos = diagramSettingsElem.hasAttribute( u"yPosColumn"_s );
+          bool oldShow = diagramSettingsElem.hasAttribute( u"showColumn"_s );
           if ( oldXPos || oldYPos || oldShow )
           {
             // fix project from before QGIS 3.0
             QgsPropertyCollection ddp;
             if ( oldXPos )
             {
-              int xPosColumn = diagramSettingsElem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
+              int xPosColumn = diagramSettingsElem.attribute( u"xPosColumn"_s ).toInt();
               if ( xPosColumn >= 0 && xPosColumn < mFields.count() )
                 ddp.setProperty( QgsDiagramLayerSettings::Property::PositionX, QgsProperty::fromField( mFields.at( xPosColumn ).name(), true ) );
             }
             if ( oldYPos )
             {
-              int yPosColumn = diagramSettingsElem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
+              int yPosColumn = diagramSettingsElem.attribute( u"yPosColumn"_s ).toInt();
               if ( yPosColumn >= 0 && yPosColumn < mFields.count() )
                 ddp.setProperty( QgsDiagramLayerSettings::Property::PositionY, QgsProperty::fromField( mFields.at( yPosColumn ).name(), true ) );
             }
             if ( oldShow )
             {
-              int showColumn = diagramSettingsElem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+              int showColumn = diagramSettingsElem.attribute( u"showColumn"_s ).toInt();
               if ( showColumn >= 0 && showColumn < mFields.count() )
                 ddp.setProperty( QgsDiagramLayerSettings::Property::Show, QgsProperty::fromField( mFields.at( showColumn ).name(), true ) );
             }
-            QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( QStringLiteral( "properties" ) );
+            QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( u"properties"_s );
             QgsPropertiesDefinition defs = QgsPropertiesDefinition
             {
               { static_cast< int >( QgsDiagramLayerSettings::Property::PositionX ), QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
@@ -3136,7 +3136,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     if ( QgsProject *p = project() )
     {
       // Store referenced layers: relations where "this" is the child layer (the referencing part, that holds the FK)
-      QDomElement referencedLayersElement = doc.createElement( QStringLiteral( "referencedLayers" ) );
+      QDomElement referencedLayersElement = doc.createElement( u"referencedLayers"_s );
       node.appendChild( referencedLayersElement );
 
       const QList<QgsRelation> referencingRelations { p->relationManager()->referencingRelations( this ) };
@@ -3153,7 +3153,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       }
 
       // Store referencing layers: relations where "this" is the parent layer (the referenced part, that holds the FK)
-      QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
+      QDomElement referencingLayersElement = doc.createElement( u"referencingLayers"_s );
       node.appendChild( referencingLayersElement );
 
       const QList<QgsRelation> referencedRelations { p->relationManager()->referencedRelations( this ) };
@@ -3176,18 +3176,18 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   {
     QDomElement fieldConfigurationElement;
     // field configuration flag
-    fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
+    fieldConfigurationElement = doc.createElement( u"fieldConfiguration"_s );
     node.appendChild( fieldConfigurationElement );
 
     for ( const QgsField &field : std::as_const( mFields ) )
     {
-      QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
-      fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
+      QDomElement fieldElement = doc.createElement( u"field"_s );
+      fieldElement.setAttribute( u"name"_s, field.name() );
       fieldConfigurationElement.appendChild( fieldElement );
 
       if ( categories.testFlag( Fields ) )
       {
-        fieldElement.setAttribute( QStringLiteral( "configurationFlags" ), qgsFlagValueToKeys( field.configurationFlags() ) );
+        fieldElement.setAttribute( u"configurationFlags"_s, qgsFlagValueToKeys( field.configurationFlags() ) );
       }
 
       if ( categories.testFlag( Forms ) )
@@ -3195,10 +3195,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
         QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
 
         // TODO : wrap this part in an if to only save if it was user-modified
-        QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
+        QDomElement editWidgetElement = doc.createElement( u"editWidget"_s );
         fieldElement.appendChild( editWidgetElement );
-        editWidgetElement.setAttribute( QStringLiteral( "type" ), field.editorWidgetSetup().type() );
-        QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
+        editWidgetElement.setAttribute( u"type"_s, field.editorWidgetSetup().type() );
+        QDomElement editWidgetConfigElement = doc.createElement( u"config"_s );
 
         editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
         editWidgetElement.appendChild( editWidgetConfigElement );
@@ -3210,28 +3210,28 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Fields ) )
   {
     //attribute aliases
-    QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
+    QDomElement aliasElem = doc.createElement( u"aliases"_s );
     for ( const QgsField &field : std::as_const( mFields ) )
     {
-      QDomElement aliasEntryElem = doc.createElement( QStringLiteral( "alias" ) );
-      aliasEntryElem.setAttribute( QStringLiteral( "field" ), field.name() );
-      aliasEntryElem.setAttribute( QStringLiteral( "index" ), mFields.indexFromName( field.name() ) );
-      aliasEntryElem.setAttribute( QStringLiteral( "name" ), field.alias() );
+      QDomElement aliasEntryElem = doc.createElement( u"alias"_s );
+      aliasEntryElem.setAttribute( u"field"_s, field.name() );
+      aliasEntryElem.setAttribute( u"index"_s, mFields.indexFromName( field.name() ) );
+      aliasEntryElem.setAttribute( u"name"_s, field.alias() );
       aliasElem.appendChild( aliasEntryElem );
     }
     node.appendChild( aliasElem );
 
     //split policies
     {
-      QDomElement splitPoliciesElement = doc.createElement( QStringLiteral( "splitPolicies" ) );
+      QDomElement splitPoliciesElement = doc.createElement( u"splitPolicies"_s );
       bool hasNonDefaultSplitPolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
         if ( field.splitPolicy() != Qgis::FieldDomainSplitPolicy::Duplicate )
         {
-          QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-          splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-          splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+          QDomElement splitPolicyElem = doc.createElement( u"policy"_s );
+          splitPolicyElem.setAttribute( u"field"_s, field.name() );
+          splitPolicyElem.setAttribute( u"policy"_s, qgsEnumValueToKey( field.splitPolicy() ) );
           splitPoliciesElement.appendChild( splitPolicyElem );
           hasNonDefaultSplitPolicies = true;
         }
@@ -3242,15 +3242,15 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //duplicate policies
     {
-      QDomElement duplicatePoliciesElement = doc.createElement( QStringLiteral( "duplicatePolicies" ) );
+      QDomElement duplicatePoliciesElement = doc.createElement( u"duplicatePolicies"_s );
       bool hasNonDefaultDuplicatePolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
         if ( field.duplicatePolicy() != Qgis::FieldDuplicatePolicy::Duplicate )
         {
-          QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-          duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-          duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+          QDomElement duplicatePolicyElem = doc.createElement( u"policy"_s );
+          duplicatePolicyElem.setAttribute( u"field"_s, field.name() );
+          duplicatePolicyElem.setAttribute( u"policy"_s, qgsEnumValueToKey( field.duplicatePolicy() ) );
           duplicatePoliciesElement.appendChild( duplicatePolicyElem );
           hasNonDefaultDuplicatePolicies = true;
         }
@@ -3261,15 +3261,15 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //merge policies
     {
-      QDomElement mergePoliciesElement = doc.createElement( QStringLiteral( "mergePolicies" ) );
+      QDomElement mergePoliciesElement = doc.createElement( u"mergePolicies"_s );
       bool hasNonDefaultMergePolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
         if ( field.mergePolicy() != Qgis::FieldDomainMergePolicy::UnsetField )
         {
-          QDomElement mergePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-          mergePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-          mergePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
+          QDomElement mergePolicyElem = doc.createElement( u"policy"_s );
+          mergePolicyElem.setAttribute( u"field"_s, field.name() );
+          mergePolicyElem.setAttribute( u"policy"_s, qgsEnumValueToKey( field.mergePolicy() ) );
           mergePoliciesElement.appendChild( mergePolicyElem );
           hasNonDefaultMergePolicies = true;
         }
@@ -3279,40 +3279,40 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     }
 
     //default expressions
-    QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
+    QDomElement defaultsElem = doc.createElement( u"defaults"_s );
     for ( const QgsField &field : std::as_const( mFields ) )
     {
-      QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
-      defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
-      defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
-      defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+      QDomElement defaultElem = doc.createElement( u"default"_s );
+      defaultElem.setAttribute( u"field"_s, field.name() );
+      defaultElem.setAttribute( u"expression"_s, field.defaultValueDefinition().expression() );
+      defaultElem.setAttribute( u"applyOnUpdate"_s, field.defaultValueDefinition().applyOnUpdate() ? u"1"_s : u"0"_s );
       defaultsElem.appendChild( defaultElem );
     }
     node.appendChild( defaultsElem );
 
     // constraints
-    QDomElement constraintsElem = doc.createElement( QStringLiteral( "constraints" ) );
+    QDomElement constraintsElem = doc.createElement( u"constraints"_s );
     for ( const QgsField &field : std::as_const( mFields ) )
     {
-      QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
-      constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
-      constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
-      constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-      constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-      constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+      QDomElement constraintElem = doc.createElement( u"constraint"_s );
+      constraintElem.setAttribute( u"field"_s, field.name() );
+      constraintElem.setAttribute( u"constraints"_s, field.constraints().constraints() );
+      constraintElem.setAttribute( u"unique_strength"_s, field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+      constraintElem.setAttribute( u"notnull_strength"_s, field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+      constraintElem.setAttribute( u"exp_strength"_s, field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
 
       constraintsElem.appendChild( constraintElem );
     }
     node.appendChild( constraintsElem );
 
     // constraint expressions
-    QDomElement constraintExpressionsElem = doc.createElement( QStringLiteral( "constraintExpressions" ) );
+    QDomElement constraintExpressionsElem = doc.createElement( u"constraintExpressions"_s );
     for ( const QgsField &field : std::as_const( mFields ) )
     {
-      QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraint" ) );
-      constraintExpressionElem.setAttribute( QStringLiteral( "field" ), field.name() );
-      constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), field.constraints().constraintExpression() );
-      constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), field.constraints().constraintDescription() );
+      QDomElement constraintExpressionElem = doc.createElement( u"constraint"_s );
+      constraintExpressionElem.setAttribute( u"field"_s, field.name() );
+      constraintExpressionElem.setAttribute( u"exp"_s, field.constraints().constraintExpression() );
+      constraintExpressionElem.setAttribute( u"desc"_s, field.constraints().constraintDescription() );
       constraintExpressionsElem.appendChild( constraintExpressionElem );
     }
     node.appendChild( constraintExpressionsElem );
@@ -3346,12 +3346,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   // save readonly state
   if ( categories.testFlag( LayerConfiguration ) )
-    node.toElement().setAttribute( QStringLiteral( "readOnly" ), mReadOnly );
+    node.toElement().setAttribute( u"readOnly"_s, mReadOnly );
 
   // save preview expression
   if ( categories.testFlag( LayerConfiguration ) )
   {
-    QDomElement prevExpElem = doc.createElement( QStringLiteral( "previewExpression" ) );
+    QDomElement prevExpElem = doc.createElement( u"previewExpression"_s );
     QDomText prevExpText = doc.createTextNode( mDisplayExpression );
     prevExpElem.appendChild( prevExpText );
     node.appendChild( prevExpElem );
@@ -3360,8 +3360,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   // save map tip
   if ( categories.testFlag( MapTips ) )
   {
-    QDomElement mapTipElem = doc.createElement( QStringLiteral( "mapTip" ) );
-    mapTipElem.setAttribute( QStringLiteral( "enabled" ), mapTipsEnabled() );
+    QDomElement mapTipElem = doc.createElement( u"mapTip"_s );
+    mapTipElem.setAttribute( u"enabled"_s, mapTipsEnabled() );
     QDomText mapTipText = doc.createTextNode( mMapTipTemplate );
     mapTipElem.appendChild( mapTipText );
     node.toElement().appendChild( mapTipElem );
@@ -3404,17 +3404,17 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
         QDomElement labelingElement = mLabeling->save( doc, context );
         node.appendChild( labelingElement );
       }
-      mapLayerNode.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+      mapLayerNode.setAttribute( u"labelsEnabled"_s, mLabelsEnabled ? u"1"_s : u"0"_s );
     }
 
     // save the simplification drawing settings
     if ( categories.testFlag( Rendering ) )
     {
-      mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingHints" ), QString::number( static_cast< int >( mSimplifyMethod.simplifyHints() ) ) );
-      mapLayerNode.setAttribute( QStringLiteral( "simplifyAlgorithm" ), QString::number( static_cast< int >( mSimplifyMethod.simplifyAlgorithm() ) ) );
-      mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingTol" ), QString::number( mSimplifyMethod.threshold() ) );
-      mapLayerNode.setAttribute( QStringLiteral( "simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
-      mapLayerNode.setAttribute( QStringLiteral( "simplifyMaxScale" ), QString::number( mSimplifyMethod.maximumScale() ) );
+      mapLayerNode.setAttribute( u"simplifyDrawingHints"_s, QString::number( static_cast< int >( mSimplifyMethod.simplifyHints() ) ) );
+      mapLayerNode.setAttribute( u"simplifyAlgorithm"_s, QString::number( static_cast< int >( mSimplifyMethod.simplifyAlgorithm() ) ) );
+      mapLayerNode.setAttribute( u"simplifyDrawingTol"_s, QString::number( mSimplifyMethod.threshold() ) );
+      mapLayerNode.setAttribute( u"simplifyLocal"_s, mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
+      mapLayerNode.setAttribute( u"simplifyMaxScale"_s, QString::number( mSimplifyMethod.maximumScale() ) );
     }
 
     //save customproperties
@@ -3426,13 +3426,13 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     if ( categories.testFlag( Symbology ) )
     {
       // add the blend mode field
-      QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+      QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
       QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
       blendModeElem.appendChild( blendModeText );
       node.appendChild( blendModeElem );
 
       // add the feature blend mode field
-      QDomElement featureBlendModeElem  = doc.createElement( QStringLiteral( "featureBlendMode" ) );
+      QDomElement featureBlendModeElem  = doc.createElement( u"featureBlendMode"_s );
       QDomText featureBlendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( featureBlendMode() ) ) ) );
       featureBlendModeElem.appendChild( featureBlendModeText );
       node.appendChild( featureBlendModeElem );
@@ -3441,15 +3441,15 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     // add the layer opacity and scale visibility
     if ( categories.testFlag( Rendering ) )
     {
-      QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+      QDomElement layerOpacityElem  = doc.createElement( u"layerOpacity"_s );
       QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
       layerOpacityElem.appendChild( layerOpacityText );
       node.appendChild( layerOpacityElem );
-      mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-      mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
-      mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
+      mapLayerNode.setAttribute( u"hasScaleBasedVisibilityFlag"_s, hasScaleBasedVisibility() ? 1 : 0 );
+      mapLayerNode.setAttribute( u"maxScale"_s, maximumScale() );
+      mapLayerNode.setAttribute( u"minScale"_s, minimumScale() );
 
-      mapLayerNode.setAttribute( QStringLiteral( "symbologyReferenceScale" ), mRenderer ? mRenderer->referenceScale() : -1 );
+      mapLayerNode.setAttribute( u"symbologyReferenceScale"_s, mRenderer ? mRenderer->referenceScale() : -1 );
     }
 
     if ( categories.testFlag( Diagrams ) && mDiagramRenderer )
@@ -3467,10 +3467,10 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // get the Name element
-  QDomElement nameElem = node.firstChildElement( QStringLiteral( "Name" ) );
+  QDomElement nameElem = node.firstChildElement( u"Name"_s );
   if ( nameElem.isNull() )
   {
-    errorMessage = QStringLiteral( "Warning: Name element not found within NamedLayer while it's required." );
+    errorMessage = u"Warning: Name element not found within NamedLayer while it's required."_s;
   }
 
   if ( isSpatial() )
@@ -3517,19 +3517,19 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportCo
   if ( isSpatial() )
   {
     // store the Name element
-    QDomElement nameNode = doc.createElement( QStringLiteral( "se:Name" ) );
+    QDomElement nameNode = doc.createElement( u"se:Name"_s );
     nameNode.appendChild( doc.createTextNode( name() ) );
     node.appendChild( nameNode );
 
-    QDomElement userStyleElem = doc.createElement( QStringLiteral( "UserStyle" ) );
+    QDomElement userStyleElem = doc.createElement( u"UserStyle"_s );
     node.appendChild( userStyleElem );
 
-    QDomElement nameElem = doc.createElement( QStringLiteral( "se:Name" ) );
+    QDomElement nameElem = doc.createElement( u"se:Name"_s );
     nameElem.appendChild( doc.createTextNode( name() ) );
 
     userStyleElem.appendChild( nameElem );
 
-    QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
+    QDomElement featureTypeStyleElem = doc.createElement( u"se:FeatureTypeStyle"_s );
     userStyleElem.appendChild( featureTypeStyleElem );
 
     mRenderer->toSld( doc, featureTypeStyleElem, context );
@@ -4136,7 +4136,7 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QLatin1String( "\n  " ) ) ) );
+    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  "_L1 ) ) );
   }
 
   updateFields();
@@ -5069,7 +5069,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
       request.setSubsetOfAttributes( attList );
       request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
       QString fieldName = mFields.at( index ).name();
-      request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
+      request.setFilterExpression( u"\"%1\" ILIKE '%%2%'"_s.arg( fieldName, substring ) );
       QgsFeatureIterator fit = getFeatures( request );
 
       QgsFeature f;
@@ -5365,17 +5365,17 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   if ( element.isNull() )
     return;
 
-  QDomElement userStyleElem = element.firstChildElement( QStringLiteral( "UserStyle" ) );
+  QDomElement userStyleElem = element.firstChildElement( u"UserStyle"_s );
   if ( userStyleElem.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: UserStyle element not found." ), 4 );
+    QgsDebugMsgLevel( u"Info: UserStyle element not found."_s, 4 );
     return;
   }
 
-  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( QStringLiteral( "FeatureTypeStyle" ) );
+  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( u"FeatureTypeStyle"_s );
   if ( featTypeStyleElem.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: FeatureTypeStyle element not found." ), 4 );
+    QgsDebugMsgLevel( u"Info: FeatureTypeStyle element not found."_s, 4 );
     return;
   }
 
@@ -5390,7 +5390,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 
   while ( !featTypeStyleElem.isNull() )
   {
-    QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
+    QDomElement ruleElem = featTypeStyleElem.firstChildElement( u"Rule"_s );
     while ( !ruleElem.isNull() )
     {
       // test rule children element to check if we need to create RuleRenderer
@@ -5401,16 +5401,16 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
       while ( !ruleChildElem.isNull() )
       {
         // rule has filter or min/max scale denominator, use the RuleRenderer
-        if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
-             ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
-             ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        if ( ruleChildElem.localName() == "Filter"_L1 ||
+             ruleChildElem.localName() == "MinScaleDenominator"_L1 ||
+             ruleChildElem.localName() == "MaxScaleDenominator"_L1 )
         {
           hasRuleBased = true;
         }
         // rule has a renderer symbolizer, not a text symbolizer
-        else if ( ruleChildElem.localName() == QLatin1String( "TextSymbolizer" ) )
+        else if ( ruleChildElem.localName() == "TextSymbolizer"_L1 )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Info: TextSymbolizer element found" ), 4 );
+          QgsDebugMsgLevel( u"Info: TextSymbolizer element found"_s, 4 );
           hasTextSymbolizer = true;
         }
 
@@ -5426,7 +5426,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 
         if ( hasRuleBased )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Info: Filter or Min/MaxScaleDenominator element found: need a RuleBasedLabeling" ), 4 );
+          QgsDebugMsgLevel( u"Info: Filter or Min/MaxScaleDenominator element found: need a RuleBasedLabeling"_s, 4 );
           needRuleBasedLabeling = true;
         }
       }
@@ -5434,7 +5434,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
       // more rules present, use the RuleRenderer
       if ( ruleCount > 1 )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Info: More Rule elements found: need a RuleBasedLabeling" ), 4 );
+        QgsDebugMsgLevel( u"Info: More Rule elements found: need a RuleBasedLabeling"_s, 4 );
         needRuleBasedLabeling = true;
       }
 
@@ -5444,22 +5444,22 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         needRuleBasedLabeling = false;
       }
 
-      ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
+      ruleElem = ruleElem.nextSiblingElement( u"Rule"_s );
     }
-    featTypeStyleElem = featTypeStyleElem.nextSiblingElement( QStringLiteral( "FeatureTypeStyle" ) );
+    featTypeStyleElem = featTypeStyleElem.nextSiblingElement( u"FeatureTypeStyle"_s );
   }
 
   if ( ruleCount == 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: No TextSymbolizer element." ), 4 );
+    QgsDebugMsgLevel( u"Info: No TextSymbolizer element."_s, 4 );
     return;
   }
 
-  QDomElement ruleElem = mergedFeatTypeStyle.firstChildElement( QStringLiteral( "Rule" ) );
+  QDomElement ruleElem = mergedFeatTypeStyle.firstChildElement( u"Rule"_s );
 
   if ( needRuleBasedLabeling )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: rule based labeling" ), 4 );
+    QgsDebugMsgLevel( u"Info: rule based labeling"_s, 4 );
     QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr );
     while ( !ruleElem.isNull() )
     {
@@ -5472,46 +5472,46 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
       QDomElement childElem = ruleElem.firstChildElement();
       while ( !childElem.isNull() )
       {
-        if ( childElem.localName() == QLatin1String( "Name" ) )
+        if ( childElem.localName() == "Name"_L1 )
         {
           // <se:Name> tag contains the rule identifier,
           // so prefer title tag for the label property value
           if ( label.isEmpty() )
             label = childElem.firstChild().nodeValue();
         }
-        else if ( childElem.localName() == QLatin1String( "Description" ) )
+        else if ( childElem.localName() == "Description"_L1 )
         {
           // <se:Description> can contains a title and an abstract
-          QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
+          QDomElement titleElem = childElem.firstChildElement( u"Title"_s );
           if ( !titleElem.isNull() )
           {
             label = titleElem.firstChild().nodeValue();
           }
 
-          QDomElement abstractElem = childElem.firstChildElement( QStringLiteral( "Abstract" ) );
+          QDomElement abstractElem = childElem.firstChildElement( u"Abstract"_s );
           if ( !abstractElem.isNull() )
           {
             description = abstractElem.firstChild().nodeValue();
           }
         }
-        else if ( childElem.localName() == QLatin1String( "Abstract" ) )
+        else if ( childElem.localName() == "Abstract"_L1 )
         {
           // <sld:Abstract> (v1.0)
           description = childElem.firstChild().nodeValue();
         }
-        else if ( childElem.localName() == QLatin1String( "Title" ) )
+        else if ( childElem.localName() == "Title"_L1 )
         {
           // <sld:Title> (v1.0)
           label = childElem.firstChild().nodeValue();
         }
-        else if ( childElem.localName() == QLatin1String( "Filter" ) )
+        else if ( childElem.localName() == "Filter"_L1 )
         {
           QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
           if ( filter )
           {
             if ( filter->hasParserError() )
             {
-              QgsDebugMsgLevel( QStringLiteral( "SLD Filter parsing error: %1" ).arg( filter->parserErrorString() ), 3 );
+              QgsDebugMsgLevel( u"SLD Filter parsing error: %1"_s.arg( filter->parserErrorString() ), 3 );
             }
             else
             {
@@ -5520,21 +5520,21 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
             delete filter;
           }
         }
-        else if ( childElem.localName() == QLatin1String( "MinScaleDenominator" ) )
+        else if ( childElem.localName() == "MinScaleDenominator"_L1 )
         {
           bool ok;
           int v = childElem.firstChild().nodeValue().toInt( &ok );
           if ( ok )
             scaleMinDenom = v;
         }
-        else if ( childElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        else if ( childElem.localName() == "MaxScaleDenominator"_L1 )
         {
           bool ok;
           int v = childElem.firstChild().nodeValue().toInt( &ok );
           if ( ok )
             scaleMaxDenom = v;
         }
-        else if ( childElem.localName() == QLatin1String( "TextSymbolizer" ) )
+        else if ( childElem.localName() == "TextSymbolizer"_L1 )
         {
           readSldTextSymbolizer( childElem, settings );
         }
@@ -5553,9 +5553,9 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: simple labeling" ), 4 );
+    QgsDebugMsgLevel( u"Info: simple labeling"_s, 4 );
     // retrieve the TextSymbolizer element child node
-    QDomElement textSymbolizerElem = ruleElem.firstChildElement( QStringLiteral( "TextSymbolizer" ) );
+    QDomElement textSymbolizerElem = ruleElem.firstChildElement( u"TextSymbolizer"_s );
     QgsPalLayerSettings s;
     if ( readSldTextSymbolizer( textSymbolizerElem, s ) )
     {
@@ -5569,17 +5569,17 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( node.localName() != QLatin1String( "TextSymbolizer" ) )
+  if ( node.localName() != "TextSymbolizer"_L1 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Not a TextSymbolizer element: %1" ).arg( node.localName() ), 3 );
+    QgsDebugMsgLevel( u"Not a TextSymbolizer element: %1"_s.arg( node.localName() ), 3 );
     return false;
   }
   QDomElement textSymbolizerElem = node.toElement();
   // Label
-  QDomElement labelElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Label" ) );
+  QDomElement labelElem = textSymbolizerElem.firstChildElement( u"Label"_s );
   if ( !labelElem.isNull() )
   {
-    QDomElement propertyNameElem = labelElem.firstChildElement( QStringLiteral( "PropertyName" ) );
+    QDomElement propertyNameElem = labelElem.firstChildElement( u"PropertyName"_s );
     if ( !propertyNameElem.isNull() )
     {
       // set labeling defaults
@@ -5600,29 +5600,29 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "SLD label attribute error: %1" ).arg( exp.evalErrorString() ), 3 );
+          QgsDebugMsgLevel( u"SLD label attribute error: %1"_s.arg( exp.evalErrorString() ), 3 );
         }
       }
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Info: PropertyName element not found." ), 4 );
+      QgsDebugMsgLevel( u"Info: PropertyName element not found."_s, 4 );
       return false;
     }
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: Label element not found." ), 4 );
+    QgsDebugMsgLevel( u"Info: Label element not found."_s, 4 );
     return false;
   }
 
   Qgis::RenderUnit sldUnitSize = Qgis::RenderUnit::Pixels;
-  if ( textSymbolizerElem.hasAttribute( QStringLiteral( "uom" ) ) )
+  if ( textSymbolizerElem.hasAttribute( u"uom"_s ) )
   {
-    sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( textSymbolizerElem.attribute( QStringLiteral( "uom" ) ) );
+    sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( textSymbolizerElem.attribute( u"uom"_s ) );
   }
 
-  QString fontFamily = QStringLiteral( "Sans-Serif" );
+  QString fontFamily = u"Sans-Serif"_s;
   int fontPointSize = 10;
   Qgis::RenderUnit fontUnitSize = Qgis::RenderUnit::Points;
   int fontWeight = -1;
@@ -5630,23 +5630,23 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   bool fontUnderline = false;
 
   // Font
-  QDomElement fontElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Font" ) );
+  QDomElement fontElem = textSymbolizerElem.firstChildElement( u"Font"_s );
   if ( !fontElem.isNull() )
   {
     QgsStringMap fontSvgParams = QgsSymbolLayerUtils::getSvgParameterList( fontElem );
     for ( QgsStringMap::iterator it = fontSvgParams.begin(); it != fontSvgParams.end(); ++it )
     {
-      QgsDebugMsgLevel( QStringLiteral( "found fontSvgParams %1: %2" ).arg( it.key(), it.value() ), 4 );
+      QgsDebugMsgLevel( u"found fontSvgParams %1: %2"_s.arg( it.key(), it.value() ), 4 );
 
-      if ( it.key() == QLatin1String( "font-family" ) )
+      if ( it.key() == "font-family"_L1 )
       {
         fontFamily = it.value();
       }
-      else if ( it.key() == QLatin1String( "font-style" ) )
+      else if ( it.key() == "font-style"_L1 )
       {
-        fontItalic = ( it.value() == QLatin1String( "italic" ) ) || ( it.value() == QLatin1String( "Italic" ) );
+        fontItalic = ( it.value() == "italic"_L1 ) || ( it.value() == "Italic"_L1 );
       }
-      else if ( it.key() == QLatin1String( "font-size" ) )
+      else if ( it.key() == "font-size"_L1 )
       {
         bool ok;
         int fontSize = it.value().toInt( &ok );
@@ -5656,14 +5656,14 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           fontUnitSize = sldUnitSize;
         }
       }
-      else if ( it.key() == QLatin1String( "font-weight" ) )
+      else if ( it.key() == "font-weight"_L1 )
       {
-        if ( ( it.value() == QLatin1String( "bold" ) ) || ( it.value() == QLatin1String( "Bold" ) ) )
+        if ( ( it.value() == "bold"_L1 ) || ( it.value() == "Bold"_L1 ) )
           fontWeight = QFont::Bold;
       }
-      else if ( it.key() == QLatin1String( "font-underline" ) )
+      else if ( it.key() == "font-underline"_L1 )
       {
-        fontUnderline = ( it.value() == QLatin1String( "underline" ) ) || ( it.value() == QLatin1String( "Underline" ) );
+        fontUnderline = ( it.value() == "underline"_L1 ) || ( it.value() == "Underline"_L1 );
       }
     }
   }
@@ -5676,26 +5676,26 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   format.setSizeUnit( fontUnitSize );
 
   // Fill
-  QDomElement fillElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Fill" ) );
+  QDomElement fillElem = textSymbolizerElem.firstChildElement( u"Fill"_s );
   QColor textColor;
   Qt::BrushStyle textBrush = Qt::SolidPattern;
   QgsSymbolLayerUtils::fillFromSld( fillElem, textBrush, textColor );
   if ( textColor.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Info: textColor %1." ).arg( QVariant( textColor ).toString() ), 4 );
+    QgsDebugMsgLevel( u"Info: textColor %1."_s.arg( QVariant( textColor ).toString() ), 4 );
     format.setColor( textColor );
   }
 
   QgsTextBufferSettings bufferSettings;
 
   // Halo
-  QDomElement haloElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Halo" ) );
+  QDomElement haloElem = textSymbolizerElem.firstChildElement( u"Halo"_s );
   if ( !haloElem.isNull() )
   {
     bufferSettings.setEnabled( true );
     bufferSettings.setSize( 1 );
 
-    QDomElement radiusElem = haloElem.firstChildElement( QStringLiteral( "Radius" ) );
+    QDomElement radiusElem = haloElem.firstChildElement( u"Radius"_s );
     if ( !radiusElem.isNull() )
     {
       bool ok;
@@ -5707,23 +5707,23 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
     }
 
-    QDomElement haloFillElem = haloElem.firstChildElement( QStringLiteral( "Fill" ) );
+    QDomElement haloFillElem = haloElem.firstChildElement( u"Fill"_s );
     QColor bufferColor;
     Qt::BrushStyle bufferBrush = Qt::SolidPattern;
     QgsSymbolLayerUtils::fillFromSld( haloFillElem, bufferBrush, bufferColor );
     if ( bufferColor.isValid() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Info: bufferColor %1." ).arg( QVariant( bufferColor ).toString() ), 4 );
+      QgsDebugMsgLevel( u"Info: bufferColor %1."_s.arg( QVariant( bufferColor ).toString() ), 4 );
       bufferSettings.setColor( bufferColor );
     }
   }
 
   // LabelPlacement
-  QDomElement labelPlacementElem = textSymbolizerElem.firstChildElement( QStringLiteral( "LabelPlacement" ) );
+  QDomElement labelPlacementElem = textSymbolizerElem.firstChildElement( u"LabelPlacement"_s );
   if ( !labelPlacementElem.isNull() )
   {
     // PointPlacement
-    QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "PointPlacement" ) );
+    QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( u"PointPlacement"_s );
     if ( !pointPlacementElem.isNull() )
     {
       settings.placement = Qgis::LabelPlacement::OverPoint;
@@ -5732,10 +5732,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         settings.placement = Qgis::LabelPlacement::Horizontal;
       }
 
-      QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
+      QDomElement displacementElem = pointPlacementElem.firstChildElement( u"Displacement"_s );
       if ( !displacementElem.isNull() )
       {
-        QDomElement displacementXElem = displacementElem.firstChildElement( QStringLiteral( "DisplacementX" ) );
+        QDomElement displacementXElem = displacementElem.firstChildElement( u"DisplacementX"_s );
         if ( !displacementXElem.isNull() )
         {
           bool ok;
@@ -5746,7 +5746,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
             settings.offsetUnits = sldUnitSize;
           }
         }
-        QDomElement displacementYElem = displacementElem.firstChildElement( QStringLiteral( "DisplacementY" ) );
+        QDomElement displacementYElem = displacementElem.firstChildElement( u"DisplacementY"_s );
         if ( !displacementYElem.isNull() )
         {
           bool ok;
@@ -5758,10 +5758,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           }
         }
       }
-      QDomElement anchorPointElem = pointPlacementElem.firstChildElement( QStringLiteral( "AnchorPoint" ) );
+      QDomElement anchorPointElem = pointPlacementElem.firstChildElement( u"AnchorPoint"_s );
       if ( !anchorPointElem.isNull() )
       {
-        QDomElement anchorPointXElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointX" ) );
+        QDomElement anchorPointXElem = anchorPointElem.firstChildElement( u"AnchorPointX"_s );
         if ( !anchorPointXElem.isNull() )
         {
           bool ok;
@@ -5772,7 +5772,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
             settings.offsetUnits = sldUnitSize;
           }
         }
-        QDomElement anchorPointYElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointY" ) );
+        QDomElement anchorPointYElem = anchorPointElem.firstChildElement( u"AnchorPointY"_s );
         if ( !anchorPointYElem.isNull() )
         {
           bool ok;
@@ -5785,7 +5785,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         }
       }
 
-      QDomElement rotationElem = pointPlacementElem.firstChildElement( QStringLiteral( "Rotation" ) );
+      QDomElement rotationElem = pointPlacementElem.firstChildElement( u"Rotation"_s );
       if ( !rotationElem.isNull() )
       {
         bool ok;
@@ -5799,7 +5799,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     else
     {
       // PointPlacement
-      QDomElement linePlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "LinePlacement" ) );
+      QDomElement linePlacementElem = labelPlacementElem.firstChildElement( u"LinePlacement"_s );
       if ( !linePlacementElem.isNull() )
       {
         settings.placement = Qgis::LabelPlacement::Line;
@@ -5809,10 +5809,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
 
   // read vendor options
   QgsStringMap vendorOptions;
-  QDomElement vendorOptionElem = textSymbolizerElem.firstChildElement( QStringLiteral( "VendorOption" ) );
-  while ( !vendorOptionElem.isNull() && vendorOptionElem.localName() == QLatin1String( "VendorOption" ) )
+  QDomElement vendorOptionElem = textSymbolizerElem.firstChildElement( u"VendorOption"_s );
+  while ( !vendorOptionElem.isNull() && vendorOptionElem.localName() == "VendorOption"_L1 )
   {
-    QString optionName = vendorOptionElem.attribute( QStringLiteral( "name" ) );
+    QString optionName = vendorOptionElem.attribute( u"name"_s );
     QString optionValue;
     if ( vendorOptionElem.firstChild().nodeType() == QDomNode::TextNode )
     {
@@ -5821,14 +5821,14 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     else
     {
       if ( vendorOptionElem.firstChild().nodeType() == QDomNode::ElementNode &&
-           vendorOptionElem.firstChild().localName() == QLatin1String( "Literal" ) )
+           vendorOptionElem.firstChild().localName() == "Literal"_L1 )
       {
         QgsDebugMsgLevel( vendorOptionElem.firstChild().localName(), 2 );
         optionValue = vendorOptionElem.firstChild().firstChild().nodeValue();
       }
       else
       {
-        QgsDebugError( QStringLiteral( "unexpected child of %1 named %2" ).arg( vendorOptionElem.localName(), optionName ) );
+        QgsDebugError( u"unexpected child of %1 named %2"_s.arg( vendorOptionElem.localName(), optionName ) );
       }
     }
 
@@ -5843,21 +5843,21 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   {
     for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
     {
-      if ( it.key() == QLatin1String( "underlineText" ) && it.value() == QLatin1String( "true" ) )
+      if ( it.key() == "underlineText"_L1 && it.value() == "true"_L1 )
       {
         font.setUnderline( true );
         format.setFont( font );
       }
-      else if ( it.key() == QLatin1String( "strikethroughText" ) && it.value() == QLatin1String( "true" ) )
+      else if ( it.key() == "strikethroughText"_L1 && it.value() == "true"_L1 )
       {
         font.setStrikeOut( true );
         format.setFont( font );
       }
-      else if ( it.key() == QLatin1String( "maxDisplacement" ) )
+      else if ( it.key() == "maxDisplacement"_L1 )
       {
         settings.placement = Qgis::LabelPlacement::AroundPoint;
       }
-      else if ( it.key() == QLatin1String( "followLine" ) && it.value() == QLatin1String( "true" ) )
+      else if ( it.key() == "followLine"_L1 && it.value() == "true"_L1 )
       {
         if ( geometryType() == Qgis::GeometryType::Polygon )
         {
@@ -5868,7 +5868,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           settings.placement = Qgis::LabelPlacement::Curved;
         }
       }
-      else if ( it.key() == QLatin1String( "maxAngleDelta" ) )
+      else if ( it.key() == "maxAngleDelta"_L1 )
       {
         bool ok;
         double angle = it.value().toDouble( &ok );
@@ -5879,19 +5879,19 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         }
       }
       // miscellaneous options
-      else if ( it.key() == QLatin1String( "conflictResolution" ) && it.value() == QLatin1String( "false" ) )
+      else if ( it.key() == "conflictResolution"_L1 && it.value() == "false"_L1 )
       {
         settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
       }
-      else if ( it.key() == QLatin1String( "forceLeftToRight" ) && it.value() == QLatin1String( "false" ) )
+      else if ( it.key() == "forceLeftToRight"_L1 && it.value() == "false"_L1 )
       {
         settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
       }
-      else if ( it.key() == QLatin1String( "group" ) && it.value() == QLatin1String( "yes" ) )
+      else if ( it.key() == "group"_L1 && it.value() == "yes"_L1 )
       {
         settings.lineSettings().setMergeLines( true );
       }
-      else if ( it.key() == QLatin1String( "labelAllGroup" ) && it.value() == QLatin1String( "true" ) )
+      else if ( it.key() == "labelAllGroup"_L1 && it.value() == "true"_L1 )
       {
         settings.lineSettings().setMergeLines( true );
       }
@@ -5974,30 +5974,30 @@ QString QgsVectorLayer::htmlMetadata() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
-  QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
+  QString myMetadata = u"<html><head></head>\n<body>\n"_s;
 
   myMetadata += generalHtmlMetadata();
 
   // Begin Provider section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
+  myMetadata += u"<h1>"_s + tr( "Information from provider" ) + u"</h1>\n<hr>\n"_s;
+  myMetadata += "<table class=\"list-view\">\n"_L1;
 
   // storage type
   if ( !storageType().isEmpty() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Storage" ) + u"</td><td>"_s + storageType() + u"</td></tr>\n"_s;
   }
 
   // comment
   if ( !dataComment().isEmpty() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Comment" ) + u"</td><td>"_s + dataComment() + u"</td></tr>\n"_s;
   }
 
   // encoding
   if ( const QgsVectorDataProvider *provider = dataProvider() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + provider->encoding() + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Encoding" ) + u"</td><td>"_s + provider->encoding() + u"</td></tr>\n"_s;
     myMetadata += provider->htmlMetadata();
   }
 
@@ -6007,38 +6007,38 @@ QString QgsVectorLayer::htmlMetadata() const
     Qgis::GeometryType type = geometryType();
     if ( static_cast<int>( type ) < 0 || static_cast< int >( type ) > static_cast< int >( Qgis::GeometryType::Null ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Invalid vector type" ), 2 );
+      QgsDebugMsgLevel( u"Invalid vector type"_s, 2 );
     }
     else
     {
-      QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
-                          QgsWkbTypes::displayString( wkbType() ) ) );
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry type" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
+      QString typeString( u"%1 (%2)"_s.arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
+                                            QgsWkbTypes::displayString( wkbType() ) ) );
+      myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Geometry type" ) + u"</td><td>"_s + typeString + u"</td></tr>\n"_s;
     }
 
     // geom column name
     if ( const QgsVectorDataProvider *provider = dataProvider(); !provider->geometryColumnName().isEmpty() )
     {
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry column" ) + QStringLiteral( "</td><td>" ) + provider->geometryColumnName() + QStringLiteral( "</td></tr>\n" );
+      myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Geometry column" ) + u"</td><td>"_s + provider->geometryColumnName() + u"</td></tr>\n"_s;
     }
 
     // Extent
     // Try to display extent 3D by default. If empty (probably because the data is 2D), fallback to the 2D version
     const QgsBox3D extentBox3D = extent3D();
     const QString extentAsStr = !extentBox3D.isEmpty() ? extentBox3D.toString() : extent().toString();
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extentAsStr + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Extent" ) + u"</td><td>"_s + extentAsStr + u"</td></tr>\n"_s;
   }
 
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Feature count" ) + QStringLiteral( "</td><td>" )
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Feature count" ) + u"</td><td>"_s
                 + ( featureCount() == -1 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( featureCount() ) ) )
-                + QStringLiteral( "</td></tr>\n" );
+                + u"</td></tr>\n"_s;
 
   // End Provider section
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata += "</table>\n<br><br>"_L1;
 
   if ( isSpatial() )
   {
@@ -6047,74 +6047,74 @@ QString QgsVectorLayer::htmlMetadata() const
   }
 
   // identification section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Identification" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.identificationSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // extent section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Extent" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.extentSectionHtml( isSpatial() );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the Access section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Access" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.accessSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Fields section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Fields" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+  myMetadata += u"<h1>"_s + tr( "Fields" ) + u"</h1>\n<hr>\n<table class=\"list-view\">\n"_s;
 
   // primary key
   QgsAttributeList pkAttrList = primaryKeyAttributes();
   if ( !pkAttrList.isEmpty() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Primary key attributes" ) + QStringLiteral( "</td><td>" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Primary key attributes" ) + u"</td><td>"_s;
     const auto constPkAttrList = pkAttrList;
     for ( int idx : constPkAttrList )
     {
       myMetadata += fields().at( idx ).name() + ' ';
     }
-    myMetadata += QLatin1String( "</td></tr>\n" );
+    myMetadata += "</td></tr>\n"_L1;
   }
 
   const QgsFields myFields = fields();
 
   // count fields
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( myFields.size() ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Count" ) + u"</td><td>"_s + QString::number( myFields.size() ) + u"</td></tr>\n"_s;
 
-  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
-  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Field" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th><th>" ) + tr( "Length" ) + QLatin1String( "</th><th>" ) + tr( "Precision" ) + QLatin1String( "</th><th>" ) + tr( "Comment" ) + QLatin1String( "</th></tr>\n" );
+  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n"_L1;
+  myMetadata += "<tr><th>"_L1 + tr( "Field" ) + "</th><th>"_L1 + tr( "Type" ) + "</th><th>"_L1 + tr( "Length" ) + "</th><th>"_L1 + tr( "Precision" ) + "</th><th>"_L1 + tr( "Comment" ) + "</th></tr>\n"_L1;
 
   for ( int i = 0; i < myFields.size(); ++i )
   {
     QgsField myField = myFields.at( i );
     QString rowClass;
     if ( i % 2 )
-      rowClass = QStringLiteral( "class=\"odd-row\"" );
-    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + myField.displayNameWithAlias() + QLatin1String( "</td><td>" ) + myField.typeName() + QLatin1String( "</td><td>" ) + QString::number( myField.length() ) + QLatin1String( "</td><td>" ) + QString::number( myField.precision() ) + QLatin1String( "</td><td>" ) + myField.comment() + QLatin1String( "</td></tr>\n" );
+      rowClass = u"class=\"odd-row\""_s;
+    myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + myField.displayNameWithAlias() + "</td><td>"_L1 + myField.typeName() + "</td><td>"_L1 + QString::number( myField.length() ) + "</td><td>"_L1 + QString::number( myField.precision() ) + "</td><td>"_L1 + myField.comment() + "</td></tr>\n"_L1;
   }
 
   //close field list
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata += "</table>\n<br><br>"_L1;
 
   // Start the contacts section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Contacts" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.contactsSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the links section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Links" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.linksSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the history section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "History" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.historySectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   myMetadata += customPropertyHtmlMetadata();
 
-  myMetadata += QLatin1String( "\n</body>\n</html>\n" );
+  myMetadata += "\n</body>\n</html>\n"_L1;
   return myMetadata;
 }
 
@@ -6561,9 +6561,9 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsAbstractVectorLayerLabeling *labeling = nullptr;
-  if ( customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) )
+  if ( customProperty( u"labeling"_s ).toString() == "pal"_L1 )
   {
-    if ( customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool() )
+    if ( customProperty( u"labeling/enabled"_s, QVariant( false ) ).toBool() )
     {
       // try to load from custom properties
       QgsPalLayerSettings settings;
@@ -6572,11 +6572,11 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
     }
 
     // also clear old-style labeling config
-    removeCustomProperty( QStringLiteral( "labeling" ) );
+    removeCustomProperty( u"labeling"_s );
     const auto constCustomPropertyKeys = customPropertyKeys();
     for ( const QString &key : constCustomPropertyKeys )
     {
-      if ( key.startsWith( QLatin1String( "labeling/" ) ) )
+      if ( key.startsWith( "labeling/"_L1 ) )
         removeCustomProperty( key );
     }
   }

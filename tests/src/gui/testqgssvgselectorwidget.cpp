@@ -25,7 +25,7 @@ class TestQgsSvgSelectorWidget : public QgsTest
 
   public:
     TestQgsSvgSelectorWidget()
-      : QgsTest( QStringLiteral( "SVG Selector Widget Tests" ) ) {}
+      : QgsTest( u"SVG Selector Widget Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -60,8 +60,8 @@ void TestQgsSvgSelectorWidget::testPixmapCache()
   // So we force a cache image different from the one we set to the model to check that this is
   // the cache image returned, not the model svg one
 
-  const QPixmap cachePixmap( QStringLiteral( "%1/rgb256x256.png" ).arg( TEST_DATA_DIR ) );
-  const QString sampleSvg = QStringLiteral( "%1/sample_svg.svg" ).arg( TEST_DATA_DIR );
+  const QPixmap cachePixmap( u"%1/rgb256x256.png"_s.arg( TEST_DATA_DIR ) );
+  const QString sampleSvg = u"%1/sample_svg.svg"_s.arg( TEST_DATA_DIR );
   QPixmapCache::insert( sampleSvg, cachePixmap );
 
   QgsSvgSelectorListModel model( nullptr );

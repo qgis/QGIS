@@ -45,7 +45,7 @@ QgsTriangulatedSurface *QgsTriangulatedSurface::createEmptyWithSameType() const
 
 QString QgsTriangulatedSurface::geometryType() const
 {
-  return QStringLiteral( "TIN" );
+  return u"TIN"_s;
 }
 
 QgsTriangulatedSurface::QgsTriangulatedSurface( const QgsTriangulatedSurface &p )
@@ -131,11 +131,11 @@ bool QgsTriangulatedSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  QString defaultChildWkbType = QStringLiteral( "Triangle%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  QString defaultChildWkbType = u"Triangle%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -164,18 +164,18 @@ bool QgsTriangulatedSurface::fromWkt( const QString &wkt )
 
 QDomElement QgsTriangulatedSurface::asGml2( QDomDocument &, int, const QString &, const AxisOrder ) const
 {
-  QgsDebugError( QStringLiteral( "gml version 2 does not support TIN geometry" ) );
+  QgsDebugError( u"gml version 2 does not support TIN geometry"_s );
   return QDomElement();
 }
 
 QDomElement QgsTriangulatedSurface::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemTriangulatedSurface = doc.createElementNS( ns, QStringLiteral( "TriangulatedSurface" ) );
+  QDomElement elemTriangulatedSurface = doc.createElementNS( ns, u"TriangulatedSurface"_s );
 
   if ( isEmpty() )
     return elemTriangulatedSurface;
 
-  QDomElement elemPatches = doc.createElementNS( ns, QStringLiteral( "patches" ) );
+  QDomElement elemPatches = doc.createElementNS( ns, u"patches"_s );
   for ( QgsPolygon *patch : mPatches )
   {
     QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( patch );
@@ -192,7 +192,7 @@ QDomElement QgsTriangulatedSurface::asGml3( QDomDocument &doc, int precision, co
 
 QString QgsTriangulatedSurface::asKml( int ) const
 {
-  QgsDebugError( QStringLiteral( "kml format does not support TIN geometry" ) );
+  QgsDebugError( u"kml format does not support TIN geometry"_s );
   return QString( "" );
 }
 

@@ -119,7 +119,7 @@ QVariantMap QgsVtpkTiles::metadata() const
     QgsMessageLog::logMessage( QObject::tr( "Error reading metadata: '%1'" ).arg( zip_strerror( mZip ) ) );
   }
 
-  mTileMapPath = mMetadata.value( QStringLiteral( "tileMap" ) ).toString();
+  mTileMapPath = mMetadata.value( u"tileMap"_s ).toString();
 
   return mMetadata;
 }
@@ -165,7 +165,7 @@ QVariantMap QgsVtpkTiles::spriteDefinition() const
 
   for ( int resolution = 2; resolution > 0; resolution-- )
   {
-    const QString spriteFileCandidate = QStringLiteral( "p12/resources/sprites/sprite%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() );
+    const QString spriteFileCandidate = u"p12/resources/sprites/sprite%1.json"_s.arg( resolution > 1 ? u"@%1x"_s.arg( resolution ) : QString() );
     const QByteArray spriteFileCandidateBa = spriteFileCandidate.toLocal8Bit();
     const char *name = spriteFileCandidateBa.constData();
     struct zip_stat stat;
@@ -209,7 +209,7 @@ QImage QgsVtpkTiles::spriteImage() const
 
   for ( int resolution = 2; resolution > 0; resolution-- )
   {
-    const QString spriteFileCandidate = QStringLiteral( "p12/resources/sprites/sprite%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() );
+    const QString spriteFileCandidate = u"p12/resources/sprites/sprite%1.png"_s.arg( resolution > 1 ? u"@%1x"_s.arg( resolution ) : QString() );
     const QByteArray spriteFileCandidateBa = spriteFileCandidate.toLocal8Bit();
     const char *name = spriteFileCandidateBa.constData();
     struct zip_stat stat;
@@ -278,41 +278,41 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
     }
     else
     {
-      metadata.setType( QStringLiteral( "dataset" ) );
+      metadata.setType( u"dataset"_s );
 
-      const QDomElement infoElement = doc.firstChildElement( QStringLiteral( "ESRI_ItemInformation" ) );
+      const QDomElement infoElement = doc.firstChildElement( u"ESRI_ItemInformation"_s );
 
-      metadata.setLanguage( infoElement.attribute( QStringLiteral( "Culture" ) ) );
+      metadata.setLanguage( infoElement.attribute( u"Culture"_s ) );
 
-      const QDomElement guidElement = infoElement.firstChildElement( QStringLiteral( "guid" ) );
+      const QDomElement guidElement = infoElement.firstChildElement( u"guid"_s );
       metadata.setIdentifier( guidElement.text() );
 
-      const QDomElement nameElement = infoElement.firstChildElement( QStringLiteral( "name" ) );
+      const QDomElement nameElement = infoElement.firstChildElement( u"name"_s );
       metadata.setTitle( nameElement.text() );
 
-      const QDomElement descriptionElement = infoElement.firstChildElement( QStringLiteral( "description" ) );
+      const QDomElement descriptionElement = infoElement.firstChildElement( u"description"_s );
       metadata.setAbstract( QTextDocumentFragment::fromHtml( descriptionElement.text() ).toPlainText() );
 
-      const QDomElement tagsElement = infoElement.firstChildElement( QStringLiteral( "tags" ) );
+      const QDomElement tagsElement = infoElement.firstChildElement( u"tags"_s );
 
       const QStringList rawTags = tagsElement.text().split( ',' );
       QStringList tags;
       tags.reserve( rawTags.size() );
       for ( const QString &tag : rawTags )
         tags.append( tag.trimmed() );
-      metadata.addKeywords( QStringLiteral( "keywords" ), tags );
+      metadata.addKeywords( u"keywords"_s, tags );
 
-      const QDomElement accessInformationElement = infoElement.firstChildElement( QStringLiteral( "accessinformation" ) );
+      const QDomElement accessInformationElement = infoElement.firstChildElement( u"accessinformation"_s );
       metadata.setRights( { accessInformationElement.text() } );
 
-      const QDomElement licenseInfoElement = infoElement.firstChildElement( QStringLiteral( "licenseinfo" ) );
+      const QDomElement licenseInfoElement = infoElement.firstChildElement( u"licenseinfo"_s );
       metadata.setLicenses( { QTextDocumentFragment::fromHtml( licenseInfoElement.text() ).toPlainText() } );
 
-      const QDomElement extentElement = infoElement.firstChildElement( QStringLiteral( "extent" ) );
-      const double xMin = extentElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble();
-      const double xMax = extentElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble();
-      const double yMin = extentElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble();
-      const double yMax = extentElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble();
+      const QDomElement extentElement = infoElement.firstChildElement( u"extent"_s );
+      const double xMin = extentElement.firstChildElement( u"xmin"_s ).text().toDouble();
+      const double xMax = extentElement.firstChildElement( u"xmax"_s ).text().toDouble();
+      const double yMin = extentElement.firstChildElement( u"ymin"_s ).text().toDouble();
+      const double yMax = extentElement.firstChildElement( u"ymax"_s ).text().toDouble();
 
       QgsCoordinateReferenceSystem crs = matrixSet().crs();
 
@@ -348,7 +348,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
   if ( !mZip )
     return QVariantMap();
 
-  const QString tileMapPath = QStringLiteral( "p12/%1/root.json" ).arg( mTileMapPath );
+  const QString tileMapPath = u"p12/%1/root.json"_s.arg( mTileMapPath );
   struct zip_stat stat;
   zip_stat_init( &stat );
   zip_stat( mZip, tileMapPath.toLocal8Bit().constData(), 0, &stat );
@@ -360,7 +360,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
   zip_file *file = zip_fopen( mZip, tileMapPath.toLocal8Bit().constData(), 0 );
   if ( !file )
   {
-    QgsDebugError( QStringLiteral( "Tilemap %1 was not found in vtpk archive" ).arg( tileMapPath ) );
+    QgsDebugError( u"Tilemap %1 was not found in vtpk archive"_s.arg( tileMapPath ) );
     mTileMapPath.clear();
     return mRootTileMap;
   }
@@ -378,7 +378,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
     if ( file )
       zip_fclose( file );
     file = nullptr;
-    QgsDebugError( QStringLiteral( "Tilemap %1 could not be read from vtpk archive" ).arg( tileMapPath ) );
+    QgsDebugError( u"Tilemap %1 could not be read from vtpk archive"_s.arg( tileMapPath ) );
     mTileMapPath.clear();
   }
   mHasReadTileMap = true;
@@ -403,17 +403,17 @@ QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context 
 {
   const QVariantMap md = metadata();
 
-  const QVariantMap fullExtent = md.value( QStringLiteral( "fullExtent" ) ).toMap();
+  const QVariantMap fullExtent = md.value( u"fullExtent"_s ).toMap();
   if ( !fullExtent.isEmpty() )
   {
     QgsRectangle fullExtentRect(
-      fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
+      fullExtent.value( u"xmin"_s ).toDouble(),
+      fullExtent.value( u"ymin"_s ).toDouble(),
+      fullExtent.value( u"xmax"_s ).toDouble(),
+      fullExtent.value( u"ymax"_s ).toDouble()
     );
 
-    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
+    const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( u"spatialReference"_s ).toMap() );
     const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), context );
     try
     {
@@ -421,7 +421,7 @@ QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context 
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+      QgsDebugError( u"Could not transform layer fullExtent to layer CRS"_s );
     }
   }
 
@@ -432,20 +432,20 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
 {
   if ( !mZip )
   {
-    QgsDebugError( QStringLiteral( "VTPK tile package not open: " ) + mFilename );
+    QgsDebugError( u"VTPK tile package not open: "_s + mFilename );
     return QByteArray();
   }
   if ( mPacketSize < 0 )
-    mPacketSize = metadata().value( QStringLiteral( "resourceInfo" ) ).toMap().value( QStringLiteral( "cacheInfo" ) ).toMap().value( QStringLiteral( "storageInfo" ) ).toMap().value( QStringLiteral( "packetSize" ) ).toInt();
+    mPacketSize = metadata().value( u"resourceInfo"_s ).toMap().value( u"cacheInfo"_s ).toMap().value( u"storageInfo"_s ).toMap().value( u"packetSize"_s ).toInt();
 
   const int fileRow = mPacketSize * static_cast< int >( std::floor( y / static_cast< double>( mPacketSize ) ) );
   const int fileCol = mPacketSize * static_cast< int >( std::floor( x / static_cast< double>( mPacketSize ) ) );
 
-  const QString tileName = QStringLiteral( "R%1C%2" )
+  const QString tileName = u"R%1C%2"_s
                            .arg( fileRow, 4, 16, QLatin1Char( '0' ) )
                            .arg( fileCol, 4, 16, QLatin1Char( '0' ) );
 
-  const QString fileName = QStringLiteral( "p12/tile/L%1/%2.bundle" )
+  const QString fileName = u"p12/tile/L%1/%2.bundle"_s
                            .arg( z, 2, 10, QLatin1Char( '0' ) ).arg( tileName );
   struct zip_stat stat;
   zip_stat_init( &stat );

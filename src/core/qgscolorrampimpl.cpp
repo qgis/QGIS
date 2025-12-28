@@ -249,17 +249,17 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
   // color1 and color2
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
   QColor color2 = DEFAULT_GRADIENT_COLOR2;
-  if ( props.contains( QStringLiteral( "color1" ) ) )
-    color1 = QgsColorUtils::colorFromString( props[QStringLiteral( "color1" )].toString() );
-  if ( props.contains( QStringLiteral( "color2" ) ) )
-    color2 = QgsColorUtils::colorFromString( props[QStringLiteral( "color2" )].toString() );
+  if ( props.contains( u"color1"_s ) )
+    color1 = QgsColorUtils::colorFromString( props[u"color1"_s].toString() );
+  if ( props.contains( u"color2"_s ) )
+    color2 = QgsColorUtils::colorFromString( props[u"color2"_s].toString() );
 
   //stops
   QgsGradientStopsList stops;
-  if ( props.contains( QStringLiteral( "stops" ) ) )
+  if ( props.contains( u"stops"_s ) )
   {
-    const thread_local QRegularExpression rx( QStringLiteral( "(?<!,rgb)(?<!,cmyk)(?<!,hsl)(?<!,hsv):" ) );
-    const auto constSplit = props[QStringLiteral( "stops" )].toString().split( rx );
+    const thread_local QRegularExpression rx( u"(?<!,rgb)(?<!,cmyk)(?<!,hsl)(?<!,hsv):"_s );
+    const auto constSplit = props[u"stops"_s].toString().split( rx );
     for ( const QString &stop : constSplit )
     {
       const QStringList parts = stop.split( ';' );
@@ -271,16 +271,16 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 
       if ( parts.size() == 4 )
       {
-        if ( parts.at( 2 ).compare( QLatin1String( "rgb" ) ) == 0 )
+        if ( parts.at( 2 ).compare( "rgb"_L1 ) == 0 )
           stops.last().setColorSpec( QColor::Spec::Rgb );
-        else if ( parts.at( 2 ).compare( QLatin1String( "hsv" ) ) == 0 )
+        else if ( parts.at( 2 ).compare( "hsv"_L1 ) == 0 )
           stops.last().setColorSpec( QColor::Spec::Hsv );
-        else if ( parts.at( 2 ).compare( QLatin1String( "hsl" ) ) == 0 )
+        else if ( parts.at( 2 ).compare( "hsl"_L1 ) == 0 )
           stops.last().setColorSpec( QColor::Spec::Hsl );
 
-        if ( parts.at( 3 ).compare( QLatin1String( "cw" ) ) == 0 )
+        if ( parts.at( 3 ).compare( "cw"_L1 ) == 0 )
           stops.last().setDirection( Qgis::AngularDirection::Clockwise );
-        else if ( parts.at( 3 ).compare( QLatin1String( "ccw" ) ) == 0 )
+        else if ( parts.at( 3 ).compare( "ccw"_L1 ) == 0 )
           stops.last().setDirection( Qgis::AngularDirection::CounterClockwise );
       }
     }
@@ -288,9 +288,9 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 
   // discrete vs. continuous
   bool discrete = false;
-  if ( props.contains( QStringLiteral( "discrete" ) ) )
+  if ( props.contains( u"discrete"_s ) )
   {
-    if ( props[QStringLiteral( "discrete" )] == QLatin1String( "1" ) )
+    if ( props[u"discrete"_s] == "1"_L1 )
       discrete = true;
   }
 
@@ -299,30 +299,30 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
   for ( QVariantMap::const_iterator it = props.constBegin();
         it != props.constEnd(); ++it )
   {
-    if ( it.key().startsWith( QLatin1String( "info_" ) ) )
+    if ( it.key().startsWith( "info_"_L1 ) )
       info[ it.key().mid( 5 )] = it.value().toString();
   }
 
   QgsGradientColorRamp *r = new QgsGradientColorRamp( color1, color2, discrete, stops );
   r->setInfo( info );
 
-  if ( props.contains( QStringLiteral( "spec" ) ) )
+  if ( props.contains( u"spec"_s ) )
   {
-    const QString spec = props.value( QStringLiteral( "spec" ) ).toString().trimmed();
-    if ( spec.compare( QLatin1String( "rgb" ) ) == 0 )
+    const QString spec = props.value( u"spec"_s ).toString().trimmed();
+    if ( spec.compare( "rgb"_L1 ) == 0 )
       r->setColorSpec( QColor::Spec::Rgb );
-    else if ( spec.compare( QLatin1String( "hsv" ) ) == 0 )
+    else if ( spec.compare( "hsv"_L1 ) == 0 )
       r->setColorSpec( QColor::Spec::Hsv );
-    else if ( spec.compare( QLatin1String( "hsl" ) ) == 0 )
+    else if ( spec.compare( "hsl"_L1 ) == 0 )
       r->setColorSpec( QColor::Spec::Hsl );
   }
 
-  if ( props.contains( QStringLiteral( "direction" ) ) )
+  if ( props.contains( u"direction"_s ) )
   {
-    const QString direction = props.value( QStringLiteral( "direction" ) ).toString().trimmed();
-    if ( direction.compare( QLatin1String( "ccw" ) ) == 0 )
+    const QString direction = props.value( u"direction"_s ).toString().trimmed();
+    if ( direction.compare( "ccw"_L1 ) == 0 )
       r->setDirection( Qgis::AngularDirection::CounterClockwise );
-    else if ( direction.compare( QLatin1String( "cw" ) ) == 0 )
+    else if ( direction.compare( "cw"_L1 ) == 0 )
       r->setDirection( Qgis::AngularDirection::Clockwise );
   }
 
@@ -457,24 +457,24 @@ QgsGradientColorRamp *QgsGradientColorRamp::clone() const
 QVariantMap QgsGradientColorRamp::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "color1" )] = QgsColorUtils::colorToString( mColor1 );
-  map[QStringLiteral( "color2" )] = QgsColorUtils::colorToString( mColor2 );
+  map[u"color1"_s] = QgsColorUtils::colorToString( mColor1 );
+  map[u"color2"_s] = QgsColorUtils::colorToString( mColor2 );
   if ( !mStops.isEmpty() )
   {
     QStringList lst;
     lst.reserve( mStops.size() );
     for ( const QgsGradientStop &stop : mStops )
     {
-      lst.append( QStringLiteral( "%1;%2;%3;%4" ).arg( stop.offset ).arg( QgsColorUtils::colorToString( stop.color ),
-                  stop.colorSpec() == QColor::Rgb ? QStringLiteral( "rgb" )
-                  : stop.colorSpec() == QColor::Hsv ? QStringLiteral( "hsv" )
-                  : stop.colorSpec() == QColor::Hsl ? QStringLiteral( "hsl" ) : QString(),
-                  stop.direction() == Qgis::AngularDirection::CounterClockwise ? QStringLiteral( "ccw" ) : QStringLiteral( "cw" ) ) );
+      lst.append( u"%1;%2;%3;%4"_s.arg( stop.offset ).arg( QgsColorUtils::colorToString( stop.color ),
+                  stop.colorSpec() == QColor::Rgb ? u"rgb"_s
+                  : stop.colorSpec() == QColor::Hsv ? u"hsv"_s
+                  : stop.colorSpec() == QColor::Hsl ? u"hsl"_s : QString(),
+                  stop.direction() == Qgis::AngularDirection::CounterClockwise ? u"ccw"_s : u"cw"_s ) );
     }
-    map[QStringLiteral( "stops" )] = lst.join( QLatin1Char( ':' ) );
+    map[u"stops"_s] = lst.join( QLatin1Char( ':' ) );
   }
 
-  map[QStringLiteral( "discrete" )] = mDiscrete ? "1" : "0";
+  map[u"discrete"_s] = mDiscrete ? "1" : "0";
 
   for ( QgsStringMap::const_iterator it = mInfo.constBegin();
         it != mInfo.constEnd(); ++it )
@@ -485,13 +485,13 @@ QVariantMap QgsGradientColorRamp::properties() const
   switch ( mColorSpec )
   {
     case QColor::Rgb:
-      map[QStringLiteral( "spec" ) ] = QStringLiteral( "rgb" );
+      map[u"spec"_s ] = u"rgb"_s;
       break;
     case QColor::Hsv:
-      map[QStringLiteral( "spec" ) ] = QStringLiteral( "hsv" );
+      map[u"spec"_s ] = u"hsv"_s;
       break;
     case QColor::Hsl:
-      map[QStringLiteral( "spec" ) ] = QStringLiteral( "hsl" );
+      map[u"spec"_s ] = u"hsl"_s;
       break;
     case QColor::Cmyk:
     case QColor::Invalid:
@@ -502,16 +502,16 @@ QVariantMap QgsGradientColorRamp::properties() const
   switch ( mDirection )
   {
     case Qgis::AngularDirection::Clockwise:
-      map[QStringLiteral( "direction" ) ] = QStringLiteral( "cw" );
+      map[u"direction"_s ] = u"cw"_s;
       break;
     case Qgis::AngularDirection::CounterClockwise:
-      map[QStringLiteral( "direction" ) ] = QStringLiteral( "ccw" );
+      map[u"direction"_s ] = u"ccw"_s;
       break;
     case Qgis::AngularDirection::NoOrientation:
       break;
   }
 
-  map[QStringLiteral( "rampType" )] = type();
+  map[u"rampType"_s] = type();
   return map;
 }
 void QgsGradientColorRamp::convertToDiscrete( bool discrete )
@@ -667,13 +667,13 @@ QgsColorRamp *QgsLimitedRandomColorRamp::create( const QVariantMap &props )
   int satMin = DEFAULT_RANDOM_SAT_MIN, satMax = DEFAULT_RANDOM_SAT_MAX;
   int valMin = DEFAULT_RANDOM_VAL_MIN, valMax = DEFAULT_RANDOM_VAL_MAX;
 
-  if ( props.contains( QStringLiteral( "count" ) ) ) count = props[QStringLiteral( "count" )].toInt();
-  if ( props.contains( QStringLiteral( "hueMin" ) ) ) hueMin = props[QStringLiteral( "hueMin" )].toInt();
-  if ( props.contains( QStringLiteral( "hueMax" ) ) ) hueMax = props[QStringLiteral( "hueMax" )].toInt();
-  if ( props.contains( QStringLiteral( "satMin" ) ) ) satMin = props[QStringLiteral( "satMin" )].toInt();
-  if ( props.contains( QStringLiteral( "satMax" ) ) ) satMax = props[QStringLiteral( "satMax" )].toInt();
-  if ( props.contains( QStringLiteral( "valMin" ) ) ) valMin = props[QStringLiteral( "valMin" )].toInt();
-  if ( props.contains( QStringLiteral( "valMax" ) ) ) valMax = props[QStringLiteral( "valMax" )].toInt();
+  if ( props.contains( u"count"_s ) ) count = props[u"count"_s].toInt();
+  if ( props.contains( u"hueMin"_s ) ) hueMin = props[u"hueMin"_s].toInt();
+  if ( props.contains( u"hueMax"_s ) ) hueMax = props[u"hueMax"_s].toInt();
+  if ( props.contains( u"satMin"_s ) ) satMin = props[u"satMin"_s].toInt();
+  if ( props.contains( u"satMax"_s ) ) satMax = props[u"satMax"_s].toInt();
+  if ( props.contains( u"valMin"_s ) ) valMin = props[u"valMin"_s].toInt();
+  if ( props.contains( u"valMax"_s ) ) valMax = props[u"valMax"_s].toInt();
 
   return new QgsLimitedRandomColorRamp( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
 }
@@ -712,14 +712,14 @@ QgsLimitedRandomColorRamp *QgsLimitedRandomColorRamp::clone() const
 QVariantMap QgsLimitedRandomColorRamp::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "count" )] = QString::number( mCount );
-  map[QStringLiteral( "hueMin" )] = QString::number( mHueMin );
-  map[QStringLiteral( "hueMax" )] = QString::number( mHueMax );
-  map[QStringLiteral( "satMin" )] = QString::number( mSatMin );
-  map[QStringLiteral( "satMax" )] = QString::number( mSatMax );
-  map[QStringLiteral( "valMin" )] = QString::number( mValMin );
-  map[QStringLiteral( "valMax" )] = QString::number( mValMax );
-  map[QStringLiteral( "rampType" )] = type();
+  map[u"count"_s] = QString::number( mCount );
+  map[u"hueMin"_s] = QString::number( mHueMin );
+  map[u"hueMax"_s] = QString::number( mHueMax );
+  map[u"satMin"_s] = QString::number( mSatMin );
+  map[u"satMax"_s] = QString::number( mSatMax );
+  map[u"valMin"_s] = QString::number( mValMin );
+  map[u"valMax"_s] = QString::number( mValMax );
+  map[u"rampType"_s] = type();
   return map;
 }
 
@@ -865,12 +865,12 @@ QgsColorRamp *QgsColorBrewerColorRamp::create( const QVariantMap &props )
   int colors = DEFAULT_COLORBREWER_COLORS;
   bool inverted = false;
 
-  if ( props.contains( QStringLiteral( "schemeName" ) ) )
-    schemeName = props[QStringLiteral( "schemeName" )].toString();
-  if ( props.contains( QStringLiteral( "colors" ) ) )
-    colors = props[QStringLiteral( "colors" )].toInt();
-  if ( props.contains( QStringLiteral( "inverted" ) ) )
-    inverted = props[QStringLiteral( "inverted" )].toInt();
+  if ( props.contains( u"schemeName"_s ) )
+    schemeName = props[u"schemeName"_s].toString();
+  if ( props.contains( u"colors"_s ) )
+    colors = props[u"colors"_s].toInt();
+  if ( props.contains( u"inverted"_s ) )
+    inverted = props[u"inverted"_s].toInt();
 
   return new QgsColorBrewerColorRamp( schemeName, colors, inverted );
 }
@@ -933,10 +933,10 @@ QgsColorBrewerColorRamp *QgsColorBrewerColorRamp::clone() const
 QVariantMap QgsColorBrewerColorRamp::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "schemeName" )] = mSchemeName;
-  map[QStringLiteral( "colors" )] = QString::number( mColors );
-  map[QStringLiteral( "inverted" )] = QString::number( mInverted );
-  map[QStringLiteral( "rampType" )] = type();
+  map[u"schemeName"_s] = mSchemeName;
+  map[u"colors"_s] = QString::number( mColors );
+  map[u"inverted"_s] = QString::number( mInverted );
+  map[u"rampType"_s] = type();
   return map;
 }
 
@@ -979,12 +979,12 @@ QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props ) // cppchec
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;
   bool inverted = false;
 
-  if ( props.contains( QStringLiteral( "schemeName" ) ) )
-    schemeName = props[QStringLiteral( "schemeName" )].toString();
-  if ( props.contains( QStringLiteral( "variantName" ) ) )
-    variantName = props[QStringLiteral( "variantName" )].toString();
-  if ( props.contains( QStringLiteral( "inverted" ) ) )
-    inverted = props[QStringLiteral( "inverted" )].toInt();
+  if ( props.contains( u"schemeName"_s ) )
+    schemeName = props[u"schemeName"_s].toString();
+  if ( props.contains( u"variantName"_s ) )
+    variantName = props[u"variantName"_s].toString();
+  if ( props.contains( u"inverted"_s ) )
+    inverted = props[u"inverted"_s].toInt();
 
   return new QgsCptCityColorRamp( schemeName, variantName, inverted );
 }
@@ -1029,10 +1029,10 @@ QgsGradientColorRamp *QgsCptCityColorRamp::cloneGradientRamp() const
   // add author and copyright information
   // TODO also add COPYING.xml file/link?
   QgsStringMap info = copyingInfo();
-  info[QStringLiteral( "cpt-city-gradient" )] = "<cpt-city>/" + mSchemeName + mVariantName + ".svg";
+  info[u"cpt-city-gradient"_s] = "<cpt-city>/" + mSchemeName + mVariantName + ".svg";
   QString copyingFilename = copyingFileName();
   copyingFilename.remove( QgsCptCityArchive::defaultBaseDir() );
-  info[QStringLiteral( "cpt-city-license" )] = "<cpt-city>" + copyingFilename;
+  info[u"cpt-city-license"_s] = "<cpt-city>" + copyingFilename;
   ramp->setInfo( info );
   return ramp;
 }
@@ -1041,10 +1041,10 @@ QgsGradientColorRamp *QgsCptCityColorRamp::cloneGradientRamp() const
 QVariantMap QgsCptCityColorRamp::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "schemeName" )] = mSchemeName;
-  map[QStringLiteral( "variantName" )] = mVariantName;
-  map[QStringLiteral( "inverted" )] = QString::number( mInverted );
-  map[QStringLiteral( "rampType" )] = type();
+  map[u"schemeName"_s] = mSchemeName;
+  map[u"variantName"_s] = mVariantName;
+  map[u"inverted"_s] = QString::number( mInverted );
+  map[u"rampType"_s] = type();
   return map;
 }
 
@@ -1065,13 +1065,13 @@ QString QgsCptCityColorRamp::fileName() const
 
 QString QgsCptCityColorRamp::copyingFileName() const
 {
-  return QgsCptCityArchive::findFileName( QStringLiteral( "COPYING.xml" ), QFileInfo( fileName() ).dir().path(),
+  return QgsCptCityArchive::findFileName( u"COPYING.xml"_s, QFileInfo( fileName() ).dir().path(),
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
 QString QgsCptCityColorRamp::descFileName() const
 {
-  return QgsCptCityArchive::findFileName( QStringLiteral( "DESC.xml" ), QFileInfo( fileName() ).dir().path(),
+  return QgsCptCityArchive::findFileName( u"DESC.xml"_s, QFileInfo( fileName() ).dir().path(),
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
@@ -1095,7 +1095,7 @@ bool QgsCptCityColorRamp::loadFile()
     return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ), 2 );
+  QgsDebugMsgLevel( u"filename= %1 loaded=%2"_s.arg( filename ).arg( mFileLoaded ), 2 );
 
   // get color ramp from svg file
   QMap< double, QPair<QColor, QColor> > colorMap =
@@ -1183,7 +1183,7 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor> &colors 
   }
   // need at least one color
   if ( mColors.isEmpty() )
-    mColors << qMakePair( QColor( 250, 75, 60 ), QStringLiteral( "#fa4b3c" ) );
+    mColors << qMakePair( QColor( 250, 75, 60 ), u"#fa4b3c"_s );
 }
 
 QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList &colors )
@@ -1191,7 +1191,7 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList &col
 {
   // need at least one color
   if ( mColors.isEmpty() )
-    mColors << qMakePair( QColor( 250, 75, 60 ), QStringLiteral( "#fa4b3c" ) );
+    mColors << qMakePair( QColor( 250, 75, 60 ), u"#fa4b3c"_s );
 }
 
 QgsColorRamp *QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
@@ -1199,14 +1199,14 @@ QgsColorRamp *QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
   QgsNamedColorList colors;
 
   int i = 0;
-  QString colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() ).toString();
-  QString colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() ).toString();
+  QString colorString = properties.value( u"preset_color_%1"_s.arg( i ), QString() ).toString();
+  QString colorName = properties.value( u"preset_color_name_%1"_s.arg( i ), QString() ).toString();
   while ( !colorString.isEmpty() )
   {
     colors << qMakePair( QgsColorUtils::colorFromString( colorString ), colorName );
     i++;
-    colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() ).toString();
-    colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() ).toString();
+    colorString = properties.value( u"preset_color_%1"_s.arg( i ), QString() ).toString();
+    colorName = properties.value( u"preset_color_name_%1"_s.arg( i ), QString() ).toString();
   }
 
   return new QgsPresetSchemeColorRamp( colors );
@@ -1270,10 +1270,10 @@ QVariantMap QgsPresetSchemeColorRamp::properties() const
   QVariantMap props;
   for ( int i = 0; i < mColors.count(); ++i )
   {
-    props.insert( QStringLiteral( "preset_color_%1" ).arg( i ), QgsColorUtils::colorToString( mColors.at( i ).first ) );
-    props.insert( QStringLiteral( "preset_color_name_%1" ).arg( i ), mColors.at( i ).second );
+    props.insert( u"preset_color_%1"_s.arg( i ), QgsColorUtils::colorToString( mColors.at( i ).first ) );
+    props.insert( u"preset_color_name_%1"_s.arg( i ), mColors.at( i ).second );
   }
-  props[QStringLiteral( "rampType" )] = type();
+  props[u"rampType"_s] = type();
   return props;
 }
 

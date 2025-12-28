@@ -28,7 +28,7 @@
 
 QString QgsGeometryCheckAngleAlgorithm::name() const
 {
-  return QStringLiteral( "checkgeometryangle" );
+  return u"checkgeometryangle"_s;
 }
 
 QString QgsGeometryCheckAngleAlgorithm::displayName() const
@@ -53,7 +53,7 @@ QString QgsGeometryCheckAngleAlgorithm::group() const
 
 QString QgsGeometryCheckAngleAlgorithm::groupId() const
 {
-  return QStringLiteral( "checkgeometry" );
+  return u"checkgeometry"_s;
 }
 
 QString QgsGeometryCheckAngleAlgorithm::shortHelpString() const
@@ -78,23 +78,23 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
 
   addParameter(
     new QgsProcessingParameterFeatureSource(
-      QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+      u"INPUT"_s, QObject::tr( "Input layer" ),
       QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
     )
   );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
   ) );
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MIN_ANGLE" ), QObject::tr( "Minimum angle (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
+    u"MIN_ANGLE"_s, QObject::tr( "Minimum angle (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
   ) );
 
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Small angle errors" ), Qgis::ProcessingSourceType::VectorPoint
+    u"ERRORS"_s, QObject::tr( "Small angle errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
@@ -104,7 +104,7 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
 
 bool QgsGeometryCheckAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
 
   return true;
 }
@@ -112,25 +112,25 @@ bool QgsGeometryCheckAngleAlgorithm::prepareAlgorithm( const QVariantMap &parame
 QgsFields QgsGeometryCheckAngleAlgorithm::outputFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_layername" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_partidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_ringidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_vertidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_errorx" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_errory" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layerid"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layername"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_partidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_ringidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_vertidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_errorx"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_errory"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_error"_s, QMetaType::QString ) );
   return fields;
 }
 
 QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_errors;
-  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const QString uniqueIdFieldName( parameterAsString( parameters, u"UNIQUE_ID"_s, context ) );
   const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
@@ -141,10 +141,10 @@ QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap 
   fields.append( uniqueIdField );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
+    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
   ) );
   if ( !sink_errors )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
@@ -154,7 +154,7 @@ QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap 
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  const double minAngle = parameterAsDouble( parameters, QStringLiteral( "MIN_ANGLE" ), context );
+  const double minAngle = parameterAsDouble( parameters, u"MIN_ANGLE"_s, context );
 
   QVariantMap configurationCheck;
   configurationCheck.insert( "minAngle", minAngle );
@@ -212,7 +212,7 @@ QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap 
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -225,7 +225,7 @@ QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap 
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
+  outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;
 }

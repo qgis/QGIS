@@ -26,7 +26,7 @@
 QgsTiledSceneRendererWidgetFactory::QgsTiledSceneRendererWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 
@@ -52,5 +52,5 @@ bool QgsTiledSceneRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) con
 
 QString QgsTiledSceneRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

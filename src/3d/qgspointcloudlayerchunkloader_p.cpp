@@ -64,17 +64,17 @@ void QgsPointCloudLayerChunkLoader::start()
 
   Q_ASSERT( pc.hasNode( pcNode ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
+  QgsDebugMsgLevel( u"loading entity %1"_s.arg( node->tileId().text() ), 2 );
 
   // suppress false positive clang tidy warning
   // NOLINTBEGIN(bugprone-branch-clone)
-  if ( mContext.symbol()->symbolType() == QLatin1String( "single-color" ) )
+  if ( mContext.symbol()->symbolType() == "single-color"_L1 )
     mHandler = std::make_unique<QgsSingleColorPointCloud3DSymbolHandler>();
-  else if ( mContext.symbol()->symbolType() == QLatin1String( "color-ramp" ) )
+  else if ( mContext.symbol()->symbolType() == "color-ramp"_L1 )
     mHandler = std::make_unique<QgsColorRampPointCloud3DSymbolHandler>();
-  else if ( mContext.symbol()->symbolType() == QLatin1String( "rgb" ) )
+  else if ( mContext.symbol()->symbolType() == "rgb"_L1 )
     mHandler = std::make_unique<QgsRGBPointCloud3DSymbolHandler>();
-  else if ( mContext.symbol()->symbolType() == QLatin1String( "classification" ) )
+  else if ( mContext.symbol()->symbolType() == "classification"_L1 )
   {
     mHandler = std::make_unique<QgsClassificationPointCloud3DSymbolHandler>();
     const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( mContext.symbol() );
@@ -90,11 +90,11 @@ void QgsPointCloudLayerChunkLoader::start()
 
   const QgsBox3D box3D = node->box3D();
   const QFuture<void> future = QtConcurrent::run( [pc = std::move( pc ), pcNode, box3D, this] {
-    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"PC chunk load"_s );
 
     if ( mContext.isCanceled() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
+      QgsDebugMsgLevel( u"canceled"_s, 2 );
       return;
     }
 
@@ -103,7 +103,7 @@ void QgsPointCloudLayerChunkLoader::start()
 
     if ( mContext.isCanceled() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
+      QgsDebugMsgLevel( u"canceled"_s, 2 );
       return;
     }
 
@@ -164,7 +164,7 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason
-      QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
+      QgsDebugError( u"Transformation of extent failed."_s );
     }
   }
 }
@@ -200,7 +200,7 @@ static QgsBox3D nodeBoundsToBox3D( QgsBox3D nodeBounds, const QgsCoordinateTrans
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
+    QgsDebugError( u"Error transforming node bounds coordinate"_s );
   }
   return QgsBox3D( extentMin3D.x(), extentMin3D.y(), extentMin3D.z(), extentMax3D.x(), extentMax3D.y(), extentMax3D.z() );
 }
@@ -377,9 +377,9 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
     const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
     int xOffset = 0, yOffset = 0, zOffset = 0;
-    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( u"X"_s, xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( u"Y"_s, yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( u"Z"_s, zOffset )->type();
     for ( int i = 0; i < block->pointCount(); ++i )
     {
       double x, y, z;
@@ -417,9 +417,9 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
 
       // Note : applying elevation properties is done in fromPointCloudIdentificationToIdentifyResults
       QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
-      pointAttr[QStringLiteral( "X" )] = x;
-      pointAttr[QStringLiteral( "Y" )] = y;
-      pointAttr[QStringLiteral( "Z" )] = z;
+      pointAttr[u"X"_s] = x;
+      pointAttr[u"Y"_s] = y;
+      pointAttr[u"Z"_s] = z;
 
       QgsRayCastHit hit;
       hit.setDistance( dist );

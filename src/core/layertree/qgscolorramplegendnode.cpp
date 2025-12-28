@@ -122,7 +122,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
       const int minLabelWidth = minBoundingRect.width();
       const int maxLabelWidth = maxBoundingRect.width();
       const int maxTextWidth = std::max( minLabelWidth, maxLabelWidth );
-      const int labelGapFromRamp = fm.boundingRect( QStringLiteral( "x" ) ).width();
+      const int labelGapFromRamp = fm.boundingRect( u"x"_s ).width();
       const int extraAllowance = labelGapFromRamp * 0.4; // extra allowance to avoid text clipping on right
       QRect labelRect;
       QSize rampSize;
@@ -504,11 +504,11 @@ QJsonObject QgsColorRampLegendNode::exportSymbolToJson( const QgsLegendSettings 
     QBuffer buffer( &byteArray );
     image.save( &buffer, "PNG" );
     const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
-    json[ QStringLiteral( "icon" ) ] = base64;
+    json[ u"icon"_s ] = base64;
   }
 
-  json [ QStringLiteral( "min" ) ] = mMinimumValue;
-  json [ QStringLiteral( "max" ) ] = mMaximumValue;
+  json [ u"min"_s ] = mMinimumValue;
+  json [ u"max"_s ] = mMaximumValue;
 
   return json;
 }

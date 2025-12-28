@@ -60,34 +60,34 @@ namespace
 
   QString buildQuery( const QString &source, const QString &columns, const QString &where, const QString &orderBy, int limit )
   {
-    if ( sourceIsQuery( source ) && columns == QLatin1String( "*" ) && where.isEmpty() && limit <= 0 )
+    if ( sourceIsQuery( source ) && columns == "*"_L1 && where.isEmpty() && limit <= 0 )
       return source;
 
-    QString sql = QStringLiteral( "SELECT %1 FROM %2" ).arg( columns, source );
+    QString sql = u"SELECT %1 FROM %2"_s.arg( columns, source );
     if ( !where.isEmpty() )
-      sql += QStringLiteral( " WHERE " ) + where;
+      sql += u" WHERE "_s + where;
     if ( !orderBy.isEmpty() )
-      sql += QStringLiteral( " ORDER BY " ) + orderBy;
+      sql += u" ORDER BY "_s + orderBy;
     if ( limit >= 0 )
-      sql += QStringLiteral( " LIMIT " ) + QString::number( limit );
+      sql += u" LIMIT "_s + QString::number( limit );
     return sql;
   }
 
   void checkAndCreateUnitOfMeasure( QgsHanaConnection &conn, const QString &name, const QString &type, double conversionFactor )
   {
-    QString sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_UNITS_OF_MEASURE WHERE UNIT_NAME = ? AND UNIT_TYPE = ?" );
+    QString sql = u"SELECT COUNT(*) FROM SYS.ST_UNITS_OF_MEASURE WHERE UNIT_NAME = ? AND UNIT_TYPE = ?"_s;
     size_t numUnits = conn.executeCountQuery( sql, { name, type } );
     if ( numUnits > 0 )
       return;
 
-    sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_UNITS_OF_MEASURE WHERE UNIT_NAME = ?" );
+    sql = u"SELECT COUNT(*) FROM SYS.ST_UNITS_OF_MEASURE WHERE UNIT_NAME = ?"_s;
     numUnits = conn.executeCountQuery( sql, { name } );
     if ( numUnits > 0 )
       throw QgsHanaException( QObject::tr( "Unable to create a new unit of measure. "
                                            "Unit of measure with name '%1' and different type already exist." )
                                 .arg( name ) );
 
-    sql = QStringLiteral( "CREATE SPATIAL UNIT OF MEASURE %1 TYPE %2 CONVERT USING %3" ).arg( QgsHanaUtils::quotedIdentifier( name ), type, QString::number( conversionFactor ) );
+    sql = u"CREATE SPATIAL UNIT OF MEASURE %1 TYPE %2 CONVERT USING %3"_s.arg( QgsHanaUtils::quotedIdentifier( name ), type, QString::number( conversionFactor ) );
     conn.execute( sql );
   }
 
@@ -102,21 +102,21 @@ namespace
     }
 
     QString units = QgsHanaUtils::toString( srs.mapUnits() );
-    checkAndCreateUnitOfMeasure( conn, units, srs.isGeographic() ? QStringLiteral( "ANGULAR" ) : QStringLiteral( "LINEAR" ), QgsHanaCrsUtils::getAngularUnits( srs ) );
+    checkAndCreateUnitOfMeasure( conn, units, srs.isGeographic() ? u"ANGULAR"_s : u"LINEAR"_s, QgsHanaCrsUtils::getAngularUnits( srs ) );
 
     QgsCoordinateReferenceSystem srsWGS84;
-    srsWGS84.createFromString( QStringLiteral( "EPSG:4326" ) );
+    srsWGS84.createFromString( u"EPSG:4326"_s );
     QgsCoordinateTransformContext coordTransCntx;
     QgsCoordinateTransform ct( srsWGS84, srs, coordTransCntx );
     QgsRectangle bounds = ct.transformBoundingBox( srs.bounds() );
 
-    QString linearUnits = srs.isGeographic() ? QStringLiteral( "NULL" ) : QgsHanaUtils::quotedIdentifier( units );
-    QString angularUnits = srs.isGeographic() ? QgsHanaUtils::quotedIdentifier( units ) : QStringLiteral( "NULL" );
+    QString linearUnits = srs.isGeographic() ? u"NULL"_s : QgsHanaUtils::quotedIdentifier( units );
+    QString angularUnits = srs.isGeographic() ? QgsHanaUtils::quotedIdentifier( units ) : u"NULL"_s;
 
-    QString xRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
-                       .arg( ( srs.isGeographic() ? QStringLiteral( "LONGITUDE" ) : QStringLiteral( "X" ) ), QString::number( bounds.xMinimum() ), QString::number( bounds.xMaximum() ) );
-    QString yRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
-                       .arg( ( srs.isGeographic() ? QStringLiteral( "LATITUDE" ) : QStringLiteral( "Y" ) ), QString::number( bounds.yMinimum() ), QString::number( bounds.yMaximum() ) );
+    QString xRange = u"%1 BETWEEN %2 AND %3"_s
+                       .arg( ( srs.isGeographic() ? u"LONGITUDE"_s : u"X"_s ), QString::number( bounds.xMinimum() ), QString::number( bounds.xMaximum() ) );
+    QString yRange = u"%1 BETWEEN %2 AND %3"_s
+                       .arg( ( srs.isGeographic() ? u"LATITUDE"_s : u"Y"_s ), QString::number( bounds.yMinimum() ), QString::number( bounds.yMaximum() ) );
 
     // create new spatial reference system
     QString sql = QStringLiteral( "CREATE SPATIAL REFERENCE SYSTEM %1 "
@@ -129,7 +129,7 @@ namespace
                                   "ORGANIZATION %8 IDENTIFIED BY %9 "
                                   "DEFINITION %10 "
                                   "TRANSFORM DEFINITION %11" )
-                    .arg( QgsHanaUtils::quotedIdentifier( srs.description() ), QString::number( srid ), linearUnits, angularUnits, srs.isGeographic() ? QStringLiteral( "ROUND EARTH" ) : QStringLiteral( "PLANAR" ), xRange, yRange, QgsHanaUtils::quotedIdentifier( authName ), QString::number( srid ) )
+                    .arg( QgsHanaUtils::quotedIdentifier( srs.description() ), QString::number( srid ), linearUnits, angularUnits, srs.isGeographic() ? u"ROUND EARTH"_s : u"PLANAR"_s, xRange, yRange, QgsHanaUtils::quotedIdentifier( authName ), QString::number( srid ) )
                     .arg( QgsHanaUtils::quotedString( srs.toWkt() ), QgsHanaUtils::quotedString( srs.toProj() ) );
 
     QString errorMessage;
@@ -157,17 +157,17 @@ namespace
     index = 0;
     while ( fields.indexFromName( primaryKey ) >= 0 )
     {
-      primaryKey = QStringLiteral( "%1_%2" ).arg( keyColumn ).arg( index++ );
+      primaryKey = u"%1_%2"_s.arg( keyColumn ).arg( index++ );
     }
 
-    return qMakePair( primaryKey, QStringLiteral( "BIGINT" ) );
+    return qMakePair( primaryKey, u"BIGINT"_s );
   }
 
   bool isSrsRoundEarth( QgsHanaConnection &conn, int srsId )
   {
-    QString sql = QStringLiteral( "SELECT ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?" );
+    QString sql = u"SELECT ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?"_s;
     QVariant roundEarth = conn.executeScalar( sql, { srsId } );
-    return roundEarth.toString() == QLatin1String( "TRUE" );
+    return roundEarth.toString() == "TRUE"_L1;
   }
 
   void setStatementValue(
@@ -295,7 +295,7 @@ namespace
         }
         break;
       default:
-        QgsDebugError( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
+        QgsDebugError( u"Unknown value type ('%1') for parameter %2"_s
                          .arg( QString::number( static_cast<int>( field.type ) ), QString::number( paramIndex ) ) );
         break;
     }
@@ -320,7 +320,7 @@ namespace
       {
         QVariantList pkValues = pkContext.lookupKey( featureId );
         if ( pkValues.empty() )
-          throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( featureId ) );
+          throw QgsHanaException( u"Key values for feature %1 not found."_s.arg( featureId ) );
         setStatementValue( stmt, paramIndex, fields.at( pkAttrs[0] ), pkValues[0] );
       }
       break;
@@ -329,7 +329,7 @@ namespace
         QVariantList pkValues = pkContext.lookupKey( featureId );
         Q_ASSERT( pkValues.size() == pkAttrs.size() );
         if ( pkValues.empty() )
-          throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( featureId ) );
+          throw QgsHanaException( u"Key values for feature %1 not found."_s.arg( featureId ) );
 
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
@@ -348,8 +348,8 @@ namespace
 
 static const size_t MAXIMUM_BATCH_DATA_SIZE = 4 * 1024 * 1024;
 
-const QString QgsHanaProvider::HANA_KEY = QStringLiteral( "hana" );
-const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "SAP HANA spatial data provider" );
+const QString QgsHanaProvider::HANA_KEY = u"hana"_s;
+const QString QgsHanaProvider::HANA_DESCRIPTION = u"SAP HANA spatial data provider"_s;
 
 QgsHanaProvider::QgsHanaProvider(
   const QString &uri,
@@ -371,7 +371,7 @@ QgsHanaProvider::QgsHanaProvider(
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
   auto appendError = [this]( const QString &message ) {
-    this->appendError( QgsErrorMessage( message, QStringLiteral( "SAP HANA" ) ) );
+    this->appendError( QgsErrorMessage( message, u"SAP HANA"_s ) );
   };
 
   QgsHanaConnectionRef conn( mUri );
@@ -396,7 +396,7 @@ QgsHanaProvider::QgsHanaProvider(
     }
 
     mIsQuery = false;
-    mQuerySource = QStringLiteral( "%1.%2" ).arg(
+    mQuerySource = u"%1.%2"_s.arg(
       QgsHanaUtils::quotedIdentifier( mSchemaName ),
       QgsHanaUtils::quotedIdentifier( mTableName )
     );
@@ -426,11 +426,11 @@ QgsHanaProvider::QgsHanaProvider(
 
   mValid = true;
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( QgsHanaUtils::connectionInfo( mUri ) ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "Query source is: %1" ).arg( mQuerySource ), 4 );
+  QgsDebugMsgLevel( u"Connection info is %1"_s.arg( QgsHanaUtils::connectionInfo( mUri ) ), 4 );
+  QgsDebugMsgLevel( u"Schema is: %1"_s.arg( mSchemaName ), 4 );
+  QgsDebugMsgLevel( u"Table name is: %1"_s.arg( mTableName ), 4 );
+  QgsDebugMsgLevel( u"Geometry column is: %1"_s.arg( mGeometryColumn ), 4 );
+  QgsDebugMsgLevel( u"Query source is: %1"_s.arg( mQuerySource ), 4 );
 }
 
 QgsAbstractFeatureSource *QgsHanaProvider::featureSource() const
@@ -518,7 +518,7 @@ QVariant QgsHanaProvider::minimumValue( int index ) const
   QgsHanaConnectionRef conn = createConnection();
   if ( !conn.isNull() )
   {
-    QString sql = buildQuery( QStringLiteral( "MIN(%1)" ).arg( QgsHanaUtils::quotedIdentifier( mAttributeFields[index].name ) ) );
+    QString sql = buildQuery( u"MIN(%1)"_s.arg( QgsHanaUtils::quotedIdentifier( mAttributeFields[index].name ) ) );
 
     try
     {
@@ -541,7 +541,7 @@ QVariant QgsHanaProvider::maximumValue( int index ) const
   QgsHanaConnectionRef conn = createConnection();
   if ( !conn.isNull() )
   {
-    QString sql = buildQuery( QStringLiteral( "MAX(%1)" ).arg( QgsHanaUtils::quotedIdentifier( mAttributeFields[index].name ) ) );
+    QString sql = buildQuery( u"MAX(%1)"_s.arg( QgsHanaUtils::quotedIdentifier( mAttributeFields[index].name ) ) );
     try
     {
       return conn->executeScalar( sql );
@@ -565,7 +565,7 @@ QSet<QVariant> QgsHanaProvider::uniqueValues( int index, int limit ) const
   if ( !conn.isNull() )
   {
     QString fieldName = mAttributeFields[index].name;
-    QString sql = buildQuery( QStringLiteral( "DISTINCT %1" ).arg( QgsHanaUtils::quotedIdentifier( fieldName ) ), mQueryWhereClause, QgsHanaUtils::quotedIdentifier( fieldName ), limit );
+    QString sql = buildQuery( u"DISTINCT %1"_s.arg( QgsHanaUtils::quotedIdentifier( fieldName ) ), mQueryWhereClause, QgsHanaUtils::quotedIdentifier( fieldName ), limit );
 
     try
     {
@@ -630,7 +630,7 @@ QString QgsHanaProvider::subsetStringDialect() const
 
 QString QgsHanaProvider::subsetStringHelpUrl() const
 {
-  return QStringLiteral( "https://help.sap.com/docs/SAP_HANA_PLATFORM/4fe29514fd584807ac9f2a04f6754767/20ff532c751910148657c32fe3431a9f.html" );
+  return u"https://help.sap.com/docs/SAP_HANA_PLATFORM/4fe29514fd584807ac9f2a04f6754767/20ff532c751910148657c32fe3431a9f.html"_s;
 }
 
 bool QgsHanaProvider::isValid() const
@@ -663,10 +663,10 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( !mGeometryColumn.isEmpty() )
   {
     QString geometryDataType = conn->getColumnDataType( mSchemaName, mTableName, mGeometryColumn );
-    isPointDataType = QString::compare( geometryDataType, QStringLiteral( "ST_POINT" ), Qt::CaseInsensitive ) == 0;
+    isPointDataType = QString::compare( geometryDataType, u"ST_POINT"_s, Qt::CaseInsensitive ) == 0;
 
     columnNames << QgsHanaUtils::quotedIdentifier( mGeometryColumn );
-    values << QStringLiteral( "ST_GeomFromWKB(?, %1)" ).arg( QString::number( mSrid ) );
+    values << u"ST_GeomFromWKB(?, %1)"_s.arg( QString::number( mSrid ) );
   }
 
   const QgsAttributes attrs = flist[0].attributes();
@@ -693,16 +693,16 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     columnNames << QgsHanaUtils::quotedIdentifier( field.name );
     auto qType = mFields.at( idx ).type();
     if ( field.type == QgsHanaDataType::Geometry && qType == QMetaType::Type::QString )
-      values << QStringLiteral( "ST_GeomFromWKT(?, %1)" ).arg( QString::number( field.srid ) );
+      values << u"ST_GeomFromWKT(?, %1)"_s.arg( QString::number( field.srid ) );
     else if ( field.type == QgsHanaDataType::RealVector && qType == QMetaType::Type::QString )
-      values << QStringLiteral( "TO_REAL_VECTOR(?)" );
+      values << u"TO_REAL_VECTOR(?)"_s;
     else
-      values << QStringLiteral( "?" );
+      values << u"?"_s;
     fieldIds << idx;
   }
 
   const bool allowBatchInserts = ( flags & QgsFeatureSink::FastInsert );
-  const QString sql = QStringLiteral( "INSERT INTO %1.%2(%3) VALUES (%4)" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnNames.join( QLatin1Char( ',' ) ), values.join( QLatin1Char( ',' ) ) );
+  const QString sql = u"INSERT INTO %1.%2(%3) VALUES (%4)"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnNames.join( QLatin1Char( ',' ) ), values.join( QLatin1Char( ',' ) ) );
 
   try
   {
@@ -710,7 +710,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     PreparedStatementRef stmtIdentityValue;
     if ( !allowBatchInserts )
     {
-      QString sqlIdentity = QStringLiteral( "SELECT CURRENT_IDENTITY_VALUE() \"current identity value\" FROM %1.%2" )
+      QString sqlIdentity = u"SELECT CURRENT_IDENTITY_VALUE() \"current identity value\" FROM %1.%2"_s
                               .arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
       stmtIdentityValue = conn->prepareStatement( sqlIdentity );
     }
@@ -837,7 +837,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
 
   if ( mIsQuery )
   {
-    QgsDebugError( QStringLiteral( "Cannot delete features (is a query)" ) );
+    QgsDebugError( u"Cannot delete features (is a query)"_s );
     return false;
   }
 
@@ -855,7 +855,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &ids )
     return false;
   }
 
-  const QString sql = QStringLiteral( "DELETE FROM %1.%2 WHERE %3" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), featureIdsWhereClause );
+  const QString sql = u"DELETE FROM %1.%2 WHERE %3"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), featureIdsWhereClause );
 
   try
   {
@@ -878,7 +878,7 @@ bool QgsHanaProvider::truncate()
 {
   if ( mIsQuery )
   {
-    QgsDebugError( QStringLiteral( "Cannot truncate (is a query)" ) );
+    QgsDebugError( u"Cannot truncate (is a query)"_s );
     return false;
   }
 
@@ -886,7 +886,7 @@ bool QgsHanaProvider::truncate()
   if ( conn.isNull() )
     return false;
 
-  QString sql = QStringLiteral( "TRUNCATE TABLE %1.%2" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
+  QString sql = u"TRUNCATE TABLE %1.%2"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
 
   try
   {
@@ -918,13 +918,13 @@ bool QgsHanaProvider::addAttributes( const QList<QgsField> &attributes )
     if ( !columnDefs.isEmpty() )
       columnDefs += QLatin1Char( ',' );
 
-    columnDefs += QgsHanaUtils::quotedIdentifier( field.name() ) + QStringLiteral( " " ) + field.typeName();
+    columnDefs += QgsHanaUtils::quotedIdentifier( field.name() ) + u" "_s + field.typeName();
 
     if ( !field.comment().isEmpty() )
-      columnDefs += QStringLiteral( " COMMENT " ) + QgsHanaUtils::quotedString( field.comment() );
+      columnDefs += u" COMMENT "_s + QgsHanaUtils::quotedString( field.comment() );
   }
 
-  QString sql = QStringLiteral( "ALTER TABLE %1.%2 ADD (%3)" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnDefs );
+  QString sql = u"ALTER TABLE %1.%2 ADD (%3)"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnDefs );
 
   try
   {
@@ -969,7 +969,7 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
     columnNames += QgsHanaUtils::quotedIdentifier( field.name );
   }
 
-  QString sql = QStringLiteral( "ALTER TABLE %1.%2 DROP (%3)" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnNames );
+  QString sql = u"ALTER TABLE %1.%2 DROP (%3)"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnNames );
 
   try
   {
@@ -1062,7 +1062,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
   {
     for ( const QPair<QString, QString> &kv : std::as_const( fieldsToRename ) )
     {
-      QString sql = QStringLiteral( "RENAME COLUMN %1.%2.%3 TO %4" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), QgsHanaUtils::quotedIdentifier( kv.first ), QgsHanaUtils::quotedIdentifier( kv.second ) );
+      QString sql = u"RENAME COLUMN %1.%2.%3 TO %4"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), QgsHanaUtils::quotedIdentifier( kv.first ), QgsHanaUtils::quotedIdentifier( kv.second ) );
       conn->execute( sql );
     }
 
@@ -1100,7 +1100,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
     return false;
 
   QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mFields, mPrimaryKeyType, mPrimaryKeyAttrs );
-  QString sql = QStringLiteral( "UPDATE %1.%2 SET %3 = ST_GeomFromWKB(?, %4) WHERE %5" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( mSrid ), fidWhereClause );
+  QString sql = u"UPDATE %1.%2 SET %3 = ST_GeomFromWKB(?, %4) WHERE %5"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( mSrid ), fidWhereClause );
 
   try
   {
@@ -1188,18 +1188,18 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
         auto qType = mFields.at( fieldIndex ).type();
         if ( field.type == QgsHanaDataType::Geometry && qType == QMetaType::Type::QString )
-          attrs << QStringLiteral( "%1=ST_GeomFromWKT(?, %2)" ).arg( QgsHanaUtils::quotedIdentifier( field.name ), QString::number( field.srid ) );
+          attrs << u"%1=ST_GeomFromWKT(?, %2)"_s.arg( QgsHanaUtils::quotedIdentifier( field.name ), QString::number( field.srid ) );
         else if ( field.type == QgsHanaDataType::RealVector && qType == QMetaType::Type::QString )
-          attrs << QStringLiteral( "%1=TO_REAL_VECTOR(?)" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
+          attrs << u"%1=TO_REAL_VECTOR(?)"_s.arg( QgsHanaUtils::quotedIdentifier( field.name ) );
         else
-          attrs << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( field.name ) );
+          attrs << u"%1=?"_s.arg( QgsHanaUtils::quotedIdentifier( field.name ) );
       }
 
       if ( attrs.empty() )
         return true;
 
       const QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mFields, mPrimaryKeyType, mPrimaryKeyAttrs );
-      const QString sql = QStringLiteral( "UPDATE %1.%2 SET %3 WHERE %4" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), attrs.join( QLatin1Char( ',' ) ), fidWhereClause );
+      const QString sql = u"UPDATE %1.%2 SET %3 WHERE %4"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), attrs.join( QLatin1Char( ',' ) ), fidWhereClause );
 
       PreparedStatementRef stmtUpdate = conn->prepareStatement( sql );
 
@@ -1299,7 +1299,7 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
 
       QString privType = rsPrivileges->getString( 3 );
 
-      if ( privType == QLatin1String( "ALL PRIVILEGES" ) || privType == QLatin1String( "CREATE ANY" ) )
+      if ( privType == "ALL PRIVILEGES"_L1 || privType == "CREATE ANY"_L1 )
       {
         mCapabilities |= Qgis::VectorProviderCapability::AddAttributes
                          | Qgis::VectorProviderCapability::RenameAttributes
@@ -1313,16 +1313,16 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities( QgsHanaConnection &con
       }
       else
       {
-        if ( privType == QLatin1String( "ALTER" ) )
+        if ( privType == "ALTER"_L1 )
           mCapabilities |= Qgis::VectorProviderCapability::DeleteAttributes
                            | Qgis::VectorProviderCapability::RenameAttributes;
-        else if ( privType == QLatin1String( "DELETE" ) )
+        else if ( privType == "DELETE"_L1 )
           mCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures
                            | Qgis::VectorProviderCapability::FastTruncate;
-        else if ( privType == QLatin1String( "INSERT" ) )
+        else if ( privType == "INSERT"_L1 )
           mCapabilities |= Qgis::VectorProviderCapability::AddAttributes
                            | Qgis::VectorProviderCapability::AddFeatures;
-        else if ( privType == QLatin1String( "UPDATE" ) )
+        else if ( privType == "UPDATE"_L1 )
           mCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues
                            | Qgis::VectorProviderCapability::ChangeFeatures
                            | Qgis::VectorProviderCapability::ChangeGeometries;
@@ -1387,7 +1387,7 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
     sql = ::buildQuery(
       "SYS.M_ST_GEOMETRY_COLUMNS",
       "MIN_X,MIN_Y,MAX_X,MAX_Y",
-      QStringLiteral( "SCHEMA_NAME=%1 AND TABLE_NAME=%2 AND COLUMN_NAME=%3" )
+      u"SCHEMA_NAME=%1 AND TABLE_NAME=%2 AND COLUMN_NAME=%3"_s
         .arg(
           QgsHanaUtils::quotedString( mSchemaName ),
           QgsHanaUtils::quotedString( mTableName ),
@@ -1400,13 +1400,13 @@ QgsRectangle QgsHanaProvider::estimateExtent( bool useEstimatedMetadata ) const
   {
     if ( isSrsRoundEarth( *conn, mSrid ) )
     {
-      QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) : QStringLiteral( "%1.ST_SRID(%2)" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
-      sql = buildQuery( QStringLiteral( "MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax())" ).arg( geomColumn ) );
+      QString geomColumn = !mHasSrsPlanarEquivalent ? QgsHanaUtils::quotedIdentifier( mGeometryColumn ) : u"%1.ST_SRID(%2)"_s.arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( QgsHanaUtils::toPlanarSRID( mSrid ) ) );
+      sql = buildQuery( u"MIN(%1.ST_XMin()), MIN(%1.ST_YMin()), MAX(%1.ST_XMax()), MAX(%1.ST_YMax())"_s.arg( geomColumn ) );
     }
     else
     {
-      QString subQuery = buildQuery( QStringLiteral( "ST_EnvelopeAggr(%1) AS ext" ).arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ) ) );
-      sql = QStringLiteral( "SELECT ext.ST_XMin(),ext.ST_YMin(),ext.ST_XMax(),ext.ST_YMax() FROM (%1)" ).arg( subQuery );
+      QString subQuery = buildQuery( u"ST_EnvelopeAggr(%1) AS ext"_s.arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ) ) );
+      sql = u"SELECT ext.ST_XMin(),ext.ST_YMin(),ext.ST_XMax(),ext.ST_YMax() FROM (%1)"_s.arg( subQuery );
     }
   }
 
@@ -1452,11 +1452,11 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
     if ( schemaName.isEmpty() || tableName.isEmpty() )
       return QVariant();
 
-    const QString key = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+    const QString key = u"%1.%2"_s.arg( schemaName, tableName );
     if ( defaultValues.contains( key ) )
       return defaultValues[key].value( columnName );
 
-    QgsHanaResultSetRef rsColumns = conn.getColumns( schemaName, tableName, QStringLiteral( "%" ) );
+    QgsHanaResultSetRef rsColumns = conn.getColumns( schemaName, tableName, u"%"_s );
     while ( rsColumns->next() )
     {
       QString name = rsColumns->getString( 4 /*COLUMN_NAME*/ );
@@ -1480,7 +1480,7 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
   };
 
   if ( mIsQuery )
-    conn.readQueryFields( mSchemaName, buildQuery( QStringLiteral( "*" ) ), processField );
+    conn.readQueryFields( mSchemaName, buildQuery( u"*"_s ), processField );
   else
     conn.readTableFields( mSchemaName, mTableName, processField );
 
@@ -1497,7 +1497,7 @@ void QgsHanaProvider::readGeometryType( QgsHanaConnection &conn )
 
   if ( mIsQuery )
   {
-    QString query = buildQuery( QStringLiteral( "*" ) );
+    QString query = buildQuery( u"*"_s );
     if ( !sourceIsQuery( query ) )
       query = "(" + query + ")";
     mDetectedGeometryType = conn.getColumnGeometryType( query, mGeometryColumn );
@@ -1509,11 +1509,11 @@ void QgsHanaProvider::readGeometryType( QgsHanaConnection &conn )
 void QgsHanaProvider::readMetadata( QgsHanaConnection &conn )
 {
   mLayerMetadata.setCrs( crs() );
-  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setType( u"dataset"_s );
 
   if ( !mIsQuery )
   {
-    QString sql = QStringLiteral( "SELECT COMMENTS FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
+    QString sql = u"SELECT COMMENTS FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?"_s;
     QVariant comment = conn.executeScalar( sql, { mSchemaName, mTableName } );
     if ( !comment.isNull() )
       mLayerMetadata.setAbstract( comment.toString() );
@@ -1541,12 +1541,12 @@ void QgsHanaProvider::readSrsInformation( QgsHanaConnection &conn )
                                 "WHERE SRS_ID = ?" );
   QgsHanaResultSetRef rs = conn.executeQuery( sql, { mSrid } );
   if ( rs->next() )
-    isRoundEarth = ( rs->getString( 1 ) == QLatin1String( "TRUE" ) );
+    isRoundEarth = ( rs->getString( 1 ) == "TRUE"_L1 );
   rs->close();
 
   if ( isRoundEarth )
   {
-    sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?" );
+    sql = u"SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?"_s;
     mHasSrsPlanarEquivalent = conn.executeCountQuery( sql, { QgsHanaUtils::toPlanarSRID( mSrid ) } ) > 0;
   }
 }
@@ -1587,7 +1587,7 @@ long long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
   QgsHanaConnectionRef conn = createConnection();
   if ( conn.isNull() )
     return -1;
-  QString sql = buildQuery( QStringLiteral( "COUNT(*)" ), whereClause );
+  QString sql = buildQuery( u"COUNT(*)"_s, whereClause );
   size_t count = conn->executeCountQuery( sql );
   return static_cast<long long>( count );
 }
@@ -1692,9 +1692,9 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, 
   }
 
   if ( wkbType != Qgis::WkbType::NoGeometry && geometryColumn.isEmpty() )
-    geometryColumn = fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );
+    geometryColumn = fieldsInUpperCase ? u"GEOM"_s : u"geom"_s;
 
-  QString keyColumn = !dsUri.keyColumn().isEmpty() ? dsUri.keyColumn() : ( fieldsInUpperCase ? QStringLiteral( "ID" ) : QStringLiteral( "id" ) );
+  QString keyColumn = !dsUri.keyColumn().isEmpty() ? dsUri.keyColumn() : ( fieldsInUpperCase ? u"ID"_s : u"id"_s );
   auto pk = determinePrimaryKeyColumn( fields, keyColumn );
   QString primaryKey = pk.first;
   QString primaryKeyType = pk.second;
@@ -1725,7 +1725,7 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, 
     }
   }
 
-  sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?" );
+  sql = u"SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME = ? AND TABLE_NAME = ?"_s;
   size_t numTables = 0;
   try
   {
@@ -1742,7 +1742,7 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, 
   {
     if ( overwrite )
     {
-      QString sql = QStringLiteral( "DROP TABLE %1.%2" )
+      QString sql = u"DROP TABLE %1.%2"_s
                       .arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
       if ( !conn->execute( sql, errorMessage ) )
         return Qgis::VectorExportResult::ErrorCreatingLayer;
@@ -1758,12 +1758,12 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer( const QString &uri, 
 
   if ( geometryColumn.isEmpty() )
   {
-    sql = QStringLiteral( "CREATE COLUMN TABLE %1 (%2 %3 GENERATED BY DEFAULT AS IDENTITY, PRIMARY KEY (%2))" )
+    sql = u"CREATE COLUMN TABLE %1 (%2 %3 GENERATED BY DEFAULT AS IDENTITY, PRIMARY KEY (%2))"_s
             .arg( schemaTableName, QgsHanaUtils::quotedIdentifier( primaryKey ), primaryKeyType );
   }
   else
   {
-    sql = QStringLiteral( "CREATE COLUMN TABLE %1 (%2 %3 GENERATED BY DEFAULT AS IDENTITY, %4 ST_GEOMETRY(%5), PRIMARY KEY (%2))" )
+    sql = u"CREATE COLUMN TABLE %1 (%2 %3 GENERATED BY DEFAULT AS IDENTITY, %4 ST_GEOMETRY(%5), PRIMARY KEY (%2))"_s
             .arg( schemaTableName, QgsHanaUtils::quotedIdentifier( primaryKey ), primaryKeyType, QgsHanaUtils::quotedIdentifier( geometryColumn ), QString::number( srid ) );
   }
 
@@ -1914,54 +1914,54 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri ) const
       uriParts[key] = value;
   };
 
-  setUriPart( QStringLiteral( "connectionType" ) );
-  setUriPart( QStringLiteral( "dsn" ) );
+  setUriPart( u"connectionType"_s );
+  setUriPart( u"dsn"_s );
   if ( !dsUri.driver().isEmpty() )
-    uriParts[QStringLiteral( "driver" )] = dsUri.driver();
+    uriParts[u"driver"_s] = dsUri.driver();
   if ( !dsUri.database().isEmpty() )
-    uriParts[QStringLiteral( "dbname" )] = dsUri.database();
+    uriParts[u"dbname"_s] = dsUri.database();
   if ( !dsUri.host().isEmpty() )
-    uriParts[QStringLiteral( "host" )] = dsUri.host();
+    uriParts[u"host"_s] = dsUri.host();
   if ( !dsUri.port().isEmpty() )
-    uriParts[QStringLiteral( "port" )] = dsUri.port();
+    uriParts[u"port"_s] = dsUri.port();
   if ( !dsUri.username().isEmpty() )
-    uriParts[QStringLiteral( "username" )] = dsUri.username();
+    uriParts[u"username"_s] = dsUri.username();
   if ( !dsUri.password().isEmpty() )
-    uriParts[QStringLiteral( "password" )] = dsUri.password();
+    uriParts[u"password"_s] = dsUri.password();
   if ( !dsUri.authConfigId().isEmpty() )
-    uriParts[QStringLiteral( "authcfg" )] = dsUri.authConfigId();
+    uriParts[u"authcfg"_s] = dsUri.authConfigId();
   if ( dsUri.wkbType() != Qgis::WkbType::Unknown )
-    uriParts[QStringLiteral( "type" )] = static_cast<quint32>( dsUri.wkbType() );
+    uriParts[u"type"_s] = static_cast<quint32>( dsUri.wkbType() );
   if ( !dsUri.schema().isEmpty() )
-    uriParts[QStringLiteral( "schema" )] = dsUri.schema();
+    uriParts[u"schema"_s] = dsUri.schema();
   if ( !dsUri.table().isEmpty() )
-    uriParts[QStringLiteral( "table" )] = dsUri.table();
+    uriParts[u"table"_s] = dsUri.table();
   if ( !dsUri.keyColumn().isEmpty() )
-    uriParts[QStringLiteral( "key" )] = dsUri.keyColumn();
+    uriParts[u"key"_s] = dsUri.keyColumn();
   if ( !dsUri.srid().isEmpty() )
-    uriParts[QStringLiteral( "srid" )] = dsUri.srid();
-  uriParts[QStringLiteral( "selectatid" )] = dsUri.selectAtIdDisabled();
+    uriParts[u"srid"_s] = dsUri.srid();
+  uriParts[u"selectatid"_s] = dsUri.selectAtIdDisabled();
 
   // SSL parameters
-  setUriPart( QStringLiteral( "sslEnabled" ) );
-  setUriPart( QStringLiteral( "sslCryptoProvider" ) );
-  setUriPart( QStringLiteral( "sslValidateCertificate" ) );
-  setUriPart( QStringLiteral( "sslHostNameInCertificate" ) );
-  setUriPart( QStringLiteral( "sslKeyStore" ) );
-  setUriPart( QStringLiteral( "sslTrustStore" ) );
+  setUriPart( u"sslEnabled"_s );
+  setUriPart( u"sslCryptoProvider"_s );
+  setUriPart( u"sslValidateCertificate"_s );
+  setUriPart( u"sslHostNameInCertificate"_s );
+  setUriPart( u"sslKeyStore"_s );
+  setUriPart( u"sslTrustStore"_s );
 
   // Proxy parameters
-  setUriPart( QStringLiteral( "proxyEnabled" ) );
-  setUriPart( QStringLiteral( "proxyHttp" ) );
-  setUriPart( QStringLiteral( "proxyHost" ) );
-  setUriPart( QStringLiteral( "proxyPort" ) );
-  setUriPart( QStringLiteral( "proxyUsername" ) );
-  setUriPart( QStringLiteral( "proxyPassword" ) );
+  setUriPart( u"proxyEnabled"_s );
+  setUriPart( u"proxyHttp"_s );
+  setUriPart( u"proxyHost"_s );
+  setUriPart( u"proxyPort"_s );
+  setUriPart( u"proxyUsername"_s );
+  setUriPart( u"proxyPassword"_s );
 
   if ( !dsUri.sql().isEmpty() )
-    uriParts[QStringLiteral( "sql" )] = dsUri.sql();
+    uriParts[u"sql"_s] = dsUri.sql();
   if ( !dsUri.geometryColumn().isEmpty() )
-    uriParts[QStringLiteral( "geometrycolumn" )] = dsUri.geometryColumn();
+    uriParts[u"geometrycolumn"_s] = dsUri.geometryColumn();
 
   return uriParts;
 }
@@ -1975,52 +1975,52 @@ QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts ) const
       dsUri.setParam( key, parts.value( key ).toString() );
   };
 
-  setUriParam( QStringLiteral( "connectionType" ) );
-  setUriParam( QStringLiteral( "dsn" ) );
-  if ( parts.contains( QStringLiteral( "driver" ) ) )
-    dsUri.setDriver( parts.value( QStringLiteral( "driver" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "dbname" ) ) )
-    dsUri.setDatabase( parts.value( QStringLiteral( "dbname" ) ).toString() );
-  setUriParam( QStringLiteral( "host" ) );
-  setUriParam( QStringLiteral( "port" ) );
-  if ( parts.contains( QStringLiteral( "username" ) ) )
-    dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "password" ) ) )
-    dsUri.setPassword( parts.value( QStringLiteral( "password" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "type" ) ) )
-    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
-  if ( parts.contains( QStringLiteral( "schema" ) ) )
-    dsUri.setSchema( parts.value( QStringLiteral( "schema" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "table" ) ) )
-    dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "key" ) ) )
-    dsUri.setKeyColumn( parts.value( QStringLiteral( "key" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "srid" ) ) )
-    dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
-  setUriParam( QStringLiteral( "selectatid" ) );
+  setUriParam( u"connectionType"_s );
+  setUriParam( u"dsn"_s );
+  if ( parts.contains( u"driver"_s ) )
+    dsUri.setDriver( parts.value( u"driver"_s ).toString() );
+  if ( parts.contains( u"dbname"_s ) )
+    dsUri.setDatabase( parts.value( u"dbname"_s ).toString() );
+  setUriParam( u"host"_s );
+  setUriParam( u"port"_s );
+  if ( parts.contains( u"username"_s ) )
+    dsUri.setUsername( parts.value( u"username"_s ).toString() );
+  if ( parts.contains( u"password"_s ) )
+    dsUri.setPassword( parts.value( u"password"_s ).toString() );
+  if ( parts.contains( u"authcfg"_s ) )
+    dsUri.setAuthConfigId( parts.value( u"authcfg"_s ).toString() );
+  if ( parts.contains( u"type"_s ) )
+    dsUri.setParam( u"type"_s, QgsWkbTypes::displayString( static_cast<Qgis::WkbType>( parts.value( u"type"_s ).toInt() ) ) );
+  if ( parts.contains( u"schema"_s ) )
+    dsUri.setSchema( parts.value( u"schema"_s ).toString() );
+  if ( parts.contains( u"table"_s ) )
+    dsUri.setTable( parts.value( u"table"_s ).toString() );
+  if ( parts.contains( u"key"_s ) )
+    dsUri.setKeyColumn( parts.value( u"key"_s ).toString() );
+  if ( parts.contains( u"srid"_s ) )
+    dsUri.setSrid( parts.value( u"srid"_s ).toString() );
+  setUriParam( u"selectatid"_s );
 
   // SSL parameters
-  setUriParam( QStringLiteral( "sslEnabled" ) );
-  setUriParam( QStringLiteral( "sslCryptoProvider" ) );
-  setUriParam( QStringLiteral( "sslValidateCertificate" ) );
-  setUriParam( QStringLiteral( "sslHostNameInCertificate" ) );
-  setUriParam( QStringLiteral( "sslKeyStore" ) );
-  setUriParam( QStringLiteral( "sslTrustStore" ) );
+  setUriParam( u"sslEnabled"_s );
+  setUriParam( u"sslCryptoProvider"_s );
+  setUriParam( u"sslValidateCertificate"_s );
+  setUriParam( u"sslHostNameInCertificate"_s );
+  setUriParam( u"sslKeyStore"_s );
+  setUriParam( u"sslTrustStore"_s );
 
   // Proxy parameters
-  setUriParam( QStringLiteral( "proxyEnabled" ) );
-  setUriParam( QStringLiteral( "proxyHttp" ) );
-  setUriParam( QStringLiteral( "proxyHost" ) );
-  setUriParam( QStringLiteral( "proxyPort" ) );
-  setUriParam( QStringLiteral( "proxyUsername" ) );
-  setUriParam( QStringLiteral( "proxyPassword" ) );
+  setUriParam( u"proxyEnabled"_s );
+  setUriParam( u"proxyHttp"_s );
+  setUriParam( u"proxyHost"_s );
+  setUriParam( u"proxyPort"_s );
+  setUriParam( u"proxyUsername"_s );
+  setUriParam( u"proxyPassword"_s );
 
-  if ( parts.contains( QStringLiteral( "sql" ) ) )
-    dsUri.setSql( parts.value( QStringLiteral( "sql" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
-    dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
+  if ( parts.contains( u"sql"_s ) )
+    dsUri.setSql( parts.value( u"sql"_s ).toString() );
+  if ( parts.contains( u"geometrycolumn"_s ) )
+    dsUri.setGeometryColumn( parts.value( u"geometrycolumn"_s ).toString() );
   return dsUri.uri();
 }
 
@@ -2036,5 +2036,5 @@ QList<Qgis::LayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
 
 QIcon QgsHanaProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconHana.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconHana.svg"_s );
 }

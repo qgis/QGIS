@@ -102,7 +102,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
+    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( u"code-editor"_s );
     static const QgsSettingsEntryBool *settingContextHelpHover;
 #endif
 

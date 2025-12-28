@@ -46,7 +46,7 @@ QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
 
 QgsBackgroundCachedSharedData::~QgsBackgroundCachedSharedData()
 {
-  QgsDebugMsgLevel( QStringLiteral( "~QgsBackgroundCachedSharedData()" ), 4 );
+  QgsDebugMsgLevel( u"~QgsBackgroundCachedSharedData()"_s, 4 );
 
   // Check that cleanup() has been called by implementations !
   Q_ASSERT( mCacheIdDb == nullptr );
@@ -162,7 +162,7 @@ bool QgsBackgroundCachedSharedData::getUserVisibleIdFromSpatialiteId( QgsFeature
 
 static QString quotedIdentifier( QString id )
 {
-  id.replace( '\"', QLatin1String( "\"\"" ) );
+  id.replace( '\"', "\"\""_L1 );
   return id.prepend( '\"' ).append( '\"' );
 }
 
@@ -173,7 +173,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   static QAtomicInt sTmpCounter = 0;
   int tmpCounter = ++sTmpCounter;
   QString cacheDirectory( acquireCacheDirectory() );
-  mCacheDbname = QDir( cacheDirectory ).filePath( QStringLiteral( "cache_%1.sqlite" ).arg( tmpCounter ) );
+  mCacheDbname = QDir( cacheDirectory ).filePath( u"cache_%1.sqlite"_s.arg( tmpCounter ) );
   Q_ASSERT( !QFile::exists( mCacheDbname ) );
 
   QgsFields cacheFields;
@@ -207,14 +207,14 @@ bool QgsBackgroundCachedSharedData::createCache()
     cacheFields.append( QgsField( sqliteFieldName, type, field.typeName() ) );
   }
   // Add some field for our internal use
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER, QMetaType::Type::Int, QStringLiteral( "int" ) ) );
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_HEXWKB_GEOM, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER, QMetaType::Type::Int, u"int"_s ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID, QMetaType::Type::QString, u"string"_s ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_HEXWKB_GEOM, QMetaType::Type::QString, u"string"_s ) );
   if ( mDistinctSelect )
-    cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+    cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5, QMetaType::Type::QString, u"string"_s ) );
 
   const auto logMessageWithReason = [this]( const QString &reason ) {
-    QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( QObject::tr( "Cannot create temporary SpatiaLite cache." ) ).arg( reason ), mComponentTranslated );
+    QgsMessageLog::logMessage( u"%1: %2"_s.arg( QObject::tr( "Cannot create temporary SpatiaLite cache." ) ).arg( reason ), mComponentTranslated );
   };
 
   // Creating a SpatiaLite database can be quite slow on some file systems
@@ -223,17 +223,17 @@ bool QgsBackgroundCachedSharedData::createCache()
   GDALDriverH hDrv = GDALGetDriverByName( "SQLite" );
   if ( !hDrv )
   {
-    logMessageWithReason( QStringLiteral( "GDAL SQLite driver not available" ) );
+    logMessageWithReason( u"GDAL SQLite driver not available"_s );
     return false;
   }
-  const QString vsimemFilename = QStringLiteral( "/vsimem/qgis_cache_template_%1/features.sqlite" ).arg( reinterpret_cast<quintptr>( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  const QString vsimemFilename = u"/vsimem/qgis_cache_template_%1/features.sqlite"_s.arg( reinterpret_cast<quintptr>( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   mCacheTablename = CPLGetBasename( vsimemFilename.toUtf8().constData() );
   VSIUnlink( vsimemFilename.toUtf8().constData() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
   GDALDatasetH hDS = GDALCreate( hDrv, vsimemFilename.toUtf8().constData(), 0, 0, 0, GDT_Unknown, const_cast<char **>( apszOptions ) );
   if ( !hDS )
   {
-    logMessageWithReason( QStringLiteral( "GDALCreate() failed: %1" ).arg( CPLGetLastErrorMsg() ) );
+    logMessageWithReason( u"GDALCreate() failed: %1"_s.arg( CPLGetLastErrorMsg() ) );
     return false;
   }
   GDALClose( hDS );
@@ -252,13 +252,13 @@ bool QgsBackgroundCachedSharedData::createCache()
   else
   {
     CPLFree( pabyData );
-    logMessageWithReason( QStringLiteral( "Cannot copy file to %1: %2" ).arg( mCacheDbname ).arg( CPLGetLastErrorMsg() ) );
+    logMessageWithReason( u"Cannot copy file to %1: %2"_s.arg( mCacheDbname ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
 
 
-  QString fidName( QStringLiteral( "__ogc_fid" ) );
-  QString geometryFieldname( QStringLiteral( "__spatialite_geometry" ) );
+  QString fidName( u"__ogc_fid"_s );
+  QString geometryFieldname( u"__spatialite_geometry"_s );
 
   spatialite_database_unique_ptr database;
   bool ret = true;
@@ -274,48 +274,48 @@ bool QgsBackgroundCachedSharedData::createCache()
 
     ( void ) sqlite3_exec( database.get(), "BEGIN", nullptr, nullptr, nullptr );
 
-    mCacheTablename = QStringLiteral( "features" );
-    sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
+    mCacheTablename = u"features"_s;
+    sql = u"CREATE TABLE %1 (%2 INTEGER PRIMARY KEY"_s.arg( mCacheTablename, fidName );
 
     for ( const QgsField &field : std::as_const( cacheFields ) )
     {
-      QString type( QStringLiteral( "VARCHAR" ) );
+      QString type( u"VARCHAR"_s );
       if ( field.type() == QMetaType::Type::Int )
-        type = QStringLiteral( "INTEGER" );
+        type = u"INTEGER"_s;
       else if ( field.type() == QMetaType::Type::LongLong )
-        type = QStringLiteral( "BIGINT" );
+        type = u"BIGINT"_s;
       else if ( field.type() == QMetaType::Type::Double )
-        type = QStringLiteral( "REAL" );
+        type = u"REAL"_s;
       else if ( field.type() == QMetaType::Type::QStringList )
-        type = QStringLiteral( "JSONSTRINGLIST" );
+        type = u"JSONSTRINGLIST"_s;
 
-      sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
+      sql += u", %1 %2"_s.arg( quotedIdentifier( field.name() ), type );
     }
     sql += QLatin1Char( ')' );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( u"%1 failed"_s.arg( sql ) );
       if ( failedSql.isEmpty() )
         failedSql = sql;
       ret = false;
     }
 
-    sql = QStringLiteral( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
+    sql = u"SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)"_s.arg( mCacheTablename, geometryFieldname );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( u"%1 failed"_s.arg( sql ) );
       if ( failedSql.isEmpty() )
         failedSql = sql;
       ret = false;
     }
 
-    sql = QStringLiteral( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
+    sql = u"SELECT CreateSpatialIndex('%1','%2')"_s.arg( mCacheTablename, geometryFieldname );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( u"%1 failed"_s.arg( sql ) );
       if ( failedSql.isEmpty() )
         failedSql = sql;
       ret = false;
@@ -324,11 +324,11 @@ bool QgsBackgroundCachedSharedData::createCache()
 
     // We need an index on the uniqueId, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
-    sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID );
+    sql = u"CREATE INDEX idx_%2 ON %1(%2)"_s.arg( mCacheTablename, QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( u"%1 failed"_s.arg( sql ) );
       if ( failedSql.isEmpty() )
         failedSql = sql;
       ret = false;
@@ -336,11 +336,11 @@ bool QgsBackgroundCachedSharedData::createCache()
 
     if ( mDistinctSelect )
     {
-      sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 );
+      sql = u"CREATE INDEX idx_%2 ON %1(%2)"_s.arg( mCacheTablename, QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 );
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
-        QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
+        QgsDebugError( u"%1 failed"_s.arg( sql ) );
         if ( failedSql.isEmpty() )
           failedSql = sql;
         ret = false;
@@ -355,7 +355,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   }
   if ( !ret )
   {
-    logMessageWithReason( QStringLiteral( "SQL request %1 failed" ).arg( failedSql ) );
+    logMessageWithReason( u"SQL request %1 failed"_s.arg( failedSql ) );
     return false;
   }
 
@@ -365,13 +365,13 @@ bool QgsBackgroundCachedSharedData::createCache()
   dsURI.setDatabase( mCacheDbname );
   dsURI.setDataSource( QString(), mCacheTablename, geometryFieldname, QString(), fidName );
   QStringList pragmas;
-  pragmas << QStringLiteral( "synchronous=OFF" );
-  pragmas << QStringLiteral( "journal_mode=WAL" ); // WAL is needed to avoid reader to block writers
-  dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
+  pragmas << u"synchronous=OFF"_s;
+  pragmas << u"journal_mode=WAL"_s; // WAL is needed to avoid reader to block writers
+  dsURI.setParam( u"pragma"_s, pragmas );
 
   QgsDataProvider::ProviderOptions providerOptions;
   mCacheDataProvider.reset( dynamic_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider(
-    QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions
+    u"spatialite"_s, dsURI.uri(), providerOptions
   ) ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
@@ -387,7 +387,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   // to ensure consistency of the ids returned to the user.
   if ( mCacheIdDbname.isEmpty() )
   {
-    mCacheIdDbname = QDir( cacheDirectory ).filePath( QStringLiteral( "id_cache_%1.sqlite" ).arg( tmpCounter ) );
+    mCacheIdDbname = QDir( cacheDirectory ).filePath( u"id_cache_%1.sqlite"_s.arg( tmpCounter ) );
     Q_ASSERT( !QFile::exists( mCacheIdDbname ) );
     if ( mCacheIdDb.open( mCacheIdDbname ) != SQLITE_OK )
     {
@@ -395,16 +395,16 @@ bool QgsBackgroundCachedSharedData::createCache()
       return false;
     }
     QString errorMsg;
-    bool ok = mCacheIdDb.exec( QStringLiteral( "PRAGMA synchronous=OFF" ), errorMsg ) == SQLITE_OK;
+    bool ok = mCacheIdDb.exec( u"PRAGMA synchronous=OFF"_s, errorMsg ) == SQLITE_OK;
     // WAL is needed to avoid reader to block writers
-    ok &= mCacheIdDb.exec( QStringLiteral( "PRAGMA journal_mode=WAL" ), errorMsg ) == SQLITE_OK;
+    ok &= mCacheIdDb.exec( u"PRAGMA journal_mode=WAL"_s, errorMsg ) == SQLITE_OK;
     // uniqueId is the uniqueId or fid attribute coming from the GML GetFeature response
     // qgisId is the feature id of the features returned to QGIS. That one should remain the same for a given uniqueId even after a layer reload
     // dbId is the feature id of the Spatialite feature in mCacheDataProvider. It might change for a given uniqueId after a layer reload
-    ok &= mCacheIdDb.exec( QStringLiteral( "CREATE TABLE id_cache(uniqueId TEXT, dbId INTEGER, qgisId INTEGER)" ), errorMsg ) == SQLITE_OK;
-    ok &= mCacheIdDb.exec( QStringLiteral( "CREATE INDEX idx_uniqueId ON id_cache(uniqueId)" ), errorMsg ) == SQLITE_OK;
-    ok &= mCacheIdDb.exec( QStringLiteral( "CREATE INDEX idx_dbId ON id_cache(dbId)" ), errorMsg ) == SQLITE_OK;
-    ok &= mCacheIdDb.exec( QStringLiteral( "CREATE INDEX idx_qgisId ON id_cache(qgisId)" ), errorMsg ) == SQLITE_OK;
+    ok &= mCacheIdDb.exec( u"CREATE TABLE id_cache(uniqueId TEXT, dbId INTEGER, qgisId INTEGER)"_s, errorMsg ) == SQLITE_OK;
+    ok &= mCacheIdDb.exec( u"CREATE INDEX idx_uniqueId ON id_cache(uniqueId)"_s, errorMsg ) == SQLITE_OK;
+    ok &= mCacheIdDb.exec( u"CREATE INDEX idx_dbId ON id_cache(dbId)"_s, errorMsg ) == SQLITE_OK;
+    ok &= mCacheIdDb.exec( u"CREATE INDEX idx_qgisId ON id_cache(qgisId)"_s, errorMsg ) == SQLITE_OK;
     if ( !ok )
     {
       QgsDebugError( errorMsg );
@@ -456,7 +456,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
       // issuing a new request.
       if ( mRegions[id].geometry().boundingBox().contains( rect ) && !mRegions[id].attributes().value( 0 ).toBool() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Cached features already cover this area of interest" ), 4 );
+        QgsDebugMsgLevel( u"Cached features already cover this area of interest"_s, 4 );
         newDownloadNeeded = false;
         break;
       }
@@ -466,7 +466,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
       // to re-issue a new request either.
       if ( rect.contains( mRegions[id].geometry().boundingBox() ) && mRegions[id].attributes().value( 0 ).toBool() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Current request is larger than a smaller request that hit the download limit, so no server download needed." ), 4 );
+        QgsDebugMsgLevel( u"Current request is larger than a smaller request that hit the download limit, so no server download needed."_s, 4 );
         newDownloadNeeded = false;
         break;
       }
@@ -522,7 +522,7 @@ int QgsBackgroundCachedSharedData::getUpdatedCounter()
 
 void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueIdPair> &featureList )
 {
-  QgsDebugMsgLevel( QStringLiteral( "begin %1" ).arg( featureList.size() ), 4 );
+  QgsDebugMsgLevel( u"begin %1"_s.arg( featureList.size() ), 4 );
 
   int genCounter;
   {
@@ -611,7 +611,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       {
         if ( mRect.isEmpty() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "duplicate uniqueId %1" ).arg( uniqueId ), 4 );
+          QgsDebugMsgLevel( u"duplicate uniqueId %1"_s.arg( uniqueId ), 4 );
         }
         continue;
       }
@@ -758,7 +758,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
 
   emitExtentUpdated();
 
-  QgsDebugMsgLevel( QStringLiteral( "end %1" ).arg( featureList.size() ), 4 );
+  QgsDebugMsgLevel( u"end %1"_s.arg( featureList.size() ), 4 );
 }
 
 const QgsRectangle &QgsBackgroundCachedSharedData::computedExtent() const
@@ -789,7 +789,7 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
     // which the user will be able to zoom out. This is far from being ideal...
     if ( featureCount == 0 && mRect.contains( mCapabilityExtent ) && !hasServerSideFilter() && supportsFastFeatureCount() && hasGeometry() && !mTryFetchingOneFeature )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" ), 2 );
+      QgsDebugMsgLevel( u"Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature"_s, 2 );
       mTryFetchingOneFeature = true;
       mComputedExtent = getExtentFromSingleFeatureRequest();
       if ( !mComputedExtent.isNull() && !detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() )
@@ -845,7 +845,7 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
       // contains duplicates. Actually happens with
       // http://demo.opengeo.org/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=osm:landcover_line
       // with gml.id=landcover_line.119246130 in particular
-      QgsDebugMsgLevel( QStringLiteral( "raw features=%1, unique features=%2" ).arg( featureCount ).arg( mFeatureCount ), 2 );
+      QgsDebugMsgLevel( u"raw features=%1, unique features=%2"_s.arg( featureCount ).arg( mFeatureCount ), 2 );
     }
   }
 
@@ -882,7 +882,7 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedUniqueIds( const Q
       expr += ',';
     else
     {
-      expr = QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID + QStringLiteral( " IN (" );
+      expr = QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID + u" IN ("_s;
       first = false;
     }
     expr += '\'';
@@ -998,7 +998,7 @@ QgsFeatureIds QgsBackgroundCachedSharedData::dbIdsFromQgisIds( const QgsFeatureI
       expr += ',';
     else
     {
-      expr = QStringLiteral( "SELECT dbId FROM id_cache WHERE qgisId IN (" );
+      expr = u"SELECT dbId FROM id_cache WHERE qgisId IN ("_s;
       first = false;
     }
     expr += FID_TO_STRING( qgisId );
@@ -1060,7 +1060,7 @@ bool QgsBackgroundCachedSharedData::changeGeometryValues( const QgsGeometryMap &
     if ( stmt.step() != SQLITE_ROW )
     {
       // shouldn't happen normally
-      QgsDebugError( QStringLiteral( "cannot find dbId corresponding to qgisId = %1" ).arg( iter.key() ) );
+      QgsDebugError( u"cannot find dbId corresponding to qgisId = %1"_s.arg( iter.key() ) );
       continue;
     }
     QgsFeatureId dbId = stmt.columnAsInt64( 0 );
@@ -1104,7 +1104,7 @@ bool QgsBackgroundCachedSharedData::changeAttributeValues( const QgsChangedAttri
     if ( stmt.step() != SQLITE_ROW )
     {
       // shouldn't happen normally
-      QgsDebugError( QStringLiteral( "cannot find dbId corresponding to qgisId = %1" ).arg( iter.key() ) );
+      QgsDebugError( u"cannot find dbId corresponding to qgisId = %1"_s.arg( iter.key() ) );
       continue;
     }
     QgsFeatureId dbId = stmt.columnAsInt64( 0 );
@@ -1224,8 +1224,8 @@ QgsRectangle QgsBackgroundCachedSharedData::consolidatedExtent() const
   // Some servers return completely buggy extent in their capabilities response
   // so mix it with the extent actually got from the downloaded features
   QgsRectangle l_computedExtent( mComputedExtent );
-  QgsDebugMsgLevel( QStringLiteral( "mComputedExtent: " ) + mComputedExtent.toString(), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "mCapabilityExtent: " ) + mCapabilityExtent.toString(), 4 );
+  QgsDebugMsgLevel( u"mComputedExtent: "_s + mComputedExtent.toString(), 4 );
+  QgsDebugMsgLevel( u"mCapabilityExtent: "_s + mCapabilityExtent.toString(), 4 );
 
   // If we didn't get any feature, then return capabilities extent.
   if ( l_computedExtent.isNull() )

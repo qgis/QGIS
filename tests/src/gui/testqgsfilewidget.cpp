@@ -58,7 +58,7 @@ void TestQgsFileWidget::cleanup()
 void TestQgsFileWidget::relativePath()
 {
   QgsFileWidget *w = new QgsFileWidget();
-  w->setDefaultRoot( QStringLiteral( "/home/test" ) );
+  w->setDefaultRoot( u"/home/test"_s );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   QCOMPARE( w->relativePath( "/home/test2/file1.ext", true ), QString( "/home/test2/file1.ext" ) );
   QCOMPARE( w->relativePath( "/home/test2/file2.ext", false ), QString( "/home/test2/file2.ext" ) );
@@ -72,7 +72,7 @@ void TestQgsFileWidget::relativePath()
 void TestQgsFileWidget::toUrl()
 {
   QgsFileWidget *w = new QgsFileWidget();
-  w->setDefaultRoot( QStringLiteral( "/home/test" ) );
+  w->setDefaultRoot( u"/home/test"_s );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   w->setFullUrl( true );
   QCOMPARE( w->toUrl( "/home/test2/file1.ext" ), QString( "<a href=\"file:///home/test2/file1.ext\">/home/test2/file1.ext</a>" ) );
@@ -104,72 +104,72 @@ void TestQgsFileWidget::testDroppedFiles()
   QVERIFY( w->lineEdit()->text().isEmpty() );
 
   // but dropped files should be fine
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/bug5598.shp"_s ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + u"/bug5598.shp"_s ) );
 
   // also should support files dragged from browser
   mime->setUrls( QList<QUrl>() );
   QgsMimeDataUtils::Uri uri;
-  uri.uri = TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" );
+  uri.uri = TEST_DATA_DIR + u"/mesh/quad_and_triangle.2dm"_s;
   QgsMimeDataUtils::UriList uriList;
   uriList << uri;
   mime.reset( QgsMimeDataUtils::encodeUriList( uriList ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + u"/mesh/quad_and_triangle.2dm"_s ) );
 
   QgsBrowserModel m;
   m.initialize();
-  QgsLayerItem *layerItem = new QgsLayerItem( nullptr, QStringLiteral( "Test" ), QString(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.txt" ), Qgis::BrowserLayerType::Mesh, "mdal" );
+  QgsLayerItem *layerItem = new QgsLayerItem( nullptr, u"Test"_s, QString(), TEST_DATA_DIR + u"/mesh/quad_and_triangle.txt"_s, Qgis::BrowserLayerType::Mesh, "mdal" );
   m.driveItems().first()->addChild( layerItem );
   mime.reset( m.mimeData( QModelIndexList() << m.findItem( layerItem ) ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.txt" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + u"/mesh/quad_and_triangle.txt"_s ) );
 
   // plain text should also be permitted
   mime = std::make_unique<QMimeData>();
-  mime->setText( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
+  mime->setText( TEST_DATA_DIR + u"/mesh/quad_and_triangle.2dm"_s );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + u"/mesh/quad_and_triangle.2dm"_s ) );
 
   mime = std::make_unique<QMimeData>();
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/bug5598.shp"_s ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   // with file filter
-  w->setFilter( QStringLiteral( "Data (*.shp)" ) );
+  w->setFilter( u"Data (*.shp)"_s );
   w->setFilePath( QString() );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + u"/bug5598.shp"_s ) );
   w->setFilePath( QString() );
   // should be rejected, not compatible with filter
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/encoded_html.html"_s ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QVERIFY( w->lineEdit()->text().isEmpty() );
   // new filter, should be allowed now
-  w->setFilter( QStringLiteral( "Data (*.shp);;HTML (*.HTML)" ) );
+  w->setFilter( u"Data (*.shp);;HTML (*.HTML)"_s );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + u"/encoded_html.html"_s ) );
 
   //try with wildcard filter
-  w->setFilter( QStringLiteral( "All files (*.*);;Data (*.shp);;HTML (*.HTML)" ) );
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) ) );
+  w->setFilter( u"All files (*.*);;Data (*.shp);;HTML (*.HTML)"_s );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/bug5598.prj"_s ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + u"/bug5598.prj"_s ) );
 
   // try with folders
   w->setStorageMode( QgsFileWidget::GetDirectory );
   w->setFilePath( QString() );
   // dropping a file should accept only the folder containing that file
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/mesh/quad_and_triangle.2dm"_s ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + u"/mesh"_s ) );
 
   // but dropping a folder should work
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
@@ -178,12 +178,12 @@ void TestQgsFileWidget::testDroppedFiles()
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) );
 
   // integration test - dropping a directory item's mime data
-  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR + QStringLiteral( "/mesh" ) );
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, TEST_DATA_DIR + u"/mesh"_s );
   m.driveItems().first()->addChild( dirItem );
   mime.reset( m.mimeData( QModelIndexList() << m.findItem( dirItem ) ) );
   event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh" ) ) );
+  QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + u"/mesh"_s ) );
 }
 
 void TestQgsFileWidget::testMultipleFiles()
@@ -192,43 +192,43 @@ void TestQgsFileWidget::testMultipleFiles()
   w->setStorageMode( QgsFileWidget::GetMultipleFiles );
 
   auto mime = std::make_unique<QMimeData>();
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/elev.gpx" ) ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/bug5598.shp"_s ) << QUrl::fromLocalFile( TEST_DATA_DIR + u"/elev.gpx"_s ) );
   const std::unique_ptr<QDropEvent> event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
 
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
-  QCOMPARE( w->lineEdit()->text(), QStringLiteral( "\"%1\" \"%2\"" ).arg( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ).arg( TEST_DATA_DIR + QStringLiteral( "/elev.gpx" ) ) );
+  QCOMPARE( w->lineEdit()->text(), u"\"%1\" \"%2\""_s.arg( TEST_DATA_DIR + u"/bug5598.shp"_s ).arg( TEST_DATA_DIR + u"/elev.gpx"_s ) );
 }
 
 
 void TestQgsFileWidget::testSplitFilePaths()
 {
-  const QString path = QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%1\"" ).arg( path ) ), QStringList() << path << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\"" ).arg( path ) ), QStringList() << path << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\"" ).arg( path ) ), QStringList() << path << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
+  const QString path = QString( TEST_DATA_DIR + u"/bug5598.shp"_s );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\" \"%1\""_s.arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%1\""_s.arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%1\""_s.arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%1\" "_s.arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%1\" "_s.arg( path ) ), QStringList() << path << path );
   QCOMPARE( QgsFileWidget::splitFilePaths( path ), QStringList() << path );
 
-  const QString pathPrefixed = QString( TEST_DATA_DIR + QStringLiteral( "ZARR:\"/path/to/store.zarr\"" ) );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%1\"" ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\"" ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\"" ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\" " ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  const QString pathPrefixed = QString( TEST_DATA_DIR + u"ZARR:\"/path/to/store.zarr\""_s );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\" \"%1\""_s.arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%1\""_s.arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%1\""_s.arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%1\" "_s.arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%1\" "_s.arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
   QCOMPARE( QgsFileWidget::splitFilePaths( pathPrefixed ), QStringList() << pathPrefixed );
 
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%2\"" ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\"" ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\"" ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\" " ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\" " ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\" \"%2\""_s.arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%2\""_s.arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%2\""_s.arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%2\" "_s.arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%2\" "_s.arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
 
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%2\"" ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\"" ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\"" ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\" " ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
-  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\" " ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\" \"%2\""_s.arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%2\""_s.arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%2\""_s.arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u" \"%1\"   \"%2\" "_s.arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( u"\"%1\"   \"%2\" "_s.arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
 }
 
 QGSTEST_MAIN( TestQgsFileWidget )

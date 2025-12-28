@@ -177,11 +177,11 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   auto getVertexIndex = [&]( unsigned int i ) -> QString {
     const int negativeIndex = static_cast<int>( i - verticesCount );
     if ( hasNormals && !hasTextures )
-      return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1//%2"_s.arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
-      return QStringLiteral( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1/%2"_s.arg( negativeIndex ).arg( negativeIndex );
     if ( hasNormals && hasTextures )
-      return QStringLiteral( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1/%2/%3"_s.arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
     return QString::number( negativeIndex );
   };
 

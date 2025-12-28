@@ -30,25 +30,25 @@
 
 QgsRasterChecker::QgsRasterChecker()
 {
-  mTabStyle = QStringLiteral( "border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid;" );
-  mCellStyle = QStringLiteral( "border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center;" );
-  mOkStyle = QStringLiteral( "background: #00ff00;" );
-  mErrStyle = QStringLiteral( "background: #ff0000;" );
-  mErrMsgStyle = QStringLiteral( "color: #ff0000;" );
+  mTabStyle = u"border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid;"_s;
+  mCellStyle = u"border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center;"_s;
+  mOkStyle = u"background: #00ff00;"_s;
+  mErrStyle = u"background: #ff0000;"_s;
+  mErrMsgStyle = u"color: #ff0000;"_s;
 }
 
 bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
                                 const QString &expectedKey, QString expectedUri )
 {
   bool ok = true;
-  mReport += QLatin1String( "\n\n" );
+  mReport += "\n\n"_L1;
 
   //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( verifiedKey, verifiedUri );
   const QgsDataProvider::ProviderOptions options;
   QgsRasterDataProvider *verifiedProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( verifiedKey, verifiedUri, options ) );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
-    error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( verifiedKey, verifiedUri ), mReport );
+    error( u"Cannot load provider %1 with URI: %2"_s.arg( verifiedKey, verifiedUri ), mReport );
     return false;
   }
 
@@ -56,49 +56,49 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   QgsRasterDataProvider *expectedProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( expectedKey, expectedUri, options ) );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
-    error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( expectedKey, expectedUri ), mReport );
+    error( u"Cannot load provider %1 with URI: %2"_s.arg( expectedKey, expectedUri ), mReport );
     return false;
   }
 
-  mReport += QStringLiteral( "Verified URI: %1<br>" ).arg( verifiedUri.replace( '&', QLatin1String( "&amp;" ) ) );
-  mReport += QStringLiteral( "Expected URI: %1<br>" ).arg( expectedUri.replace( '&', QLatin1String( "&amp;" ) ) );
+  mReport += u"Verified URI: %1<br>"_s.arg( verifiedUri.replace( '&', "&amp;"_L1 ) );
+  mReport += u"Expected URI: %1<br>"_s.arg( expectedUri.replace( '&', "&amp;"_L1 ) );
 
-  mReport += QLatin1String( "<br>" );
-  mReport += QStringLiteral( "<table style='%1'>\n" ).arg( mTabStyle );
+  mReport += "<br>"_L1;
+  mReport += u"<table style='%1'>\n"_s.arg( mTabStyle );
   mReport += compareHead();
 
-  compare( QStringLiteral( "Band count" ), verifiedProvider->bandCount(), expectedProvider->bandCount(), mReport, ok );
+  compare( u"Band count"_s, verifiedProvider->bandCount(), expectedProvider->bandCount(), mReport, ok );
 
-  compare( QStringLiteral( "Width" ), verifiedProvider->xSize(), expectedProvider->xSize(), mReport, ok );
-  compare( QStringLiteral( "Height" ), verifiedProvider->ySize(), expectedProvider->ySize(), mReport, ok );
+  compare( u"Width"_s, verifiedProvider->xSize(), expectedProvider->xSize(), mReport, ok );
+  compare( u"Height"_s, verifiedProvider->ySize(), expectedProvider->ySize(), mReport, ok );
 
-  compareRow( QStringLiteral( "Extent" ), verifiedProvider->extent().toString(), expectedProvider->extent().toString(), mReport, verifiedProvider->extent() == expectedProvider->extent() );
+  compareRow( u"Extent"_s, verifiedProvider->extent().toString(), expectedProvider->extent().toString(), mReport, verifiedProvider->extent() == expectedProvider->extent() );
 
   if ( verifiedProvider->extent() != expectedProvider->extent() ) ok = false;
 
 
-  mReport += QLatin1String( "</table>\n" );
+  mReport += "</table>\n"_L1;
 
   if ( !ok ) return false;
 
   bool allOk = true;
   for ( int band = 1; band <= expectedProvider->bandCount(); band++ )
   {
-    mReport += QStringLiteral( "<h3>Band %1</h3>\n" ).arg( band );
-    mReport += QStringLiteral( "<table style='%1'>\n" ).arg( mTabStyle );
+    mReport += u"<h3>Band %1</h3>\n"_s.arg( band );
+    mReport += u"<table style='%1'>\n"_s.arg( mTabStyle );
     mReport += compareHead();
 
     // Data types may differ (?)
     bool typesOk = true;
-    compare( QStringLiteral( "Source data type" ), verifiedProvider->sourceDataType( band ), expectedProvider->sourceDataType( band ), mReport, typesOk );
-    compare( QStringLiteral( "Data type" ), verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk );
+    compare( u"Source data type"_s, verifiedProvider->sourceDataType( band ), expectedProvider->sourceDataType( band ), mReport, typesOk );
+    compare( u"Data type"_s, verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk );
 
     // Check nodata
     bool noDataOk = true;
-    compare( QStringLiteral( "No data (NULL) value existence flag" ), verifiedProvider->sourceHasNoDataValue( band ), expectedProvider->sourceHasNoDataValue( band ), mReport, noDataOk );
+    compare( u"No data (NULL) value existence flag"_s, verifiedProvider->sourceHasNoDataValue( band ), expectedProvider->sourceHasNoDataValue( band ), mReport, noDataOk );
     if ( verifiedProvider->sourceHasNoDataValue( band ) && expectedProvider->sourceHasNoDataValue( band ) )
     {
-      compare( QStringLiteral( "No data (NULL) value" ), verifiedProvider->sourceNoDataValue( band ), expectedProvider->sourceNoDataValue( band ), mReport, noDataOk );
+      compare( u"No data (NULL) value"_s, verifiedProvider->sourceNoDataValue( band ), expectedProvider->sourceNoDataValue( band ), mReport, noDataOk );
     }
 
     bool statsOk = true;
@@ -108,22 +108,22 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
     // Min/max may 'slightly' differ, for big numbers however, the difference may
     // be quite big, for example for Float32 with max -3.332e+38, the difference is 1.47338e+24
     double tol = tolerance( expectedStats.minimumValue );
-    compare( QStringLiteral( "Minimum value" ), verifiedStats.minimumValue, expectedStats.minimumValue, mReport, statsOk, tol );
+    compare( u"Minimum value"_s, verifiedStats.minimumValue, expectedStats.minimumValue, mReport, statsOk, tol );
     tol = tolerance( expectedStats.maximumValue );
-    compare( QStringLiteral( "Maximum value" ), verifiedStats.maximumValue, expectedStats.maximumValue, mReport, statsOk, tol );
+    compare( u"Maximum value"_s, verifiedStats.maximumValue, expectedStats.maximumValue, mReport, statsOk, tol );
 
     // TODO: enable once fixed (WCS excludes nulls but GDAL does not)
     //compare( "Cells count", verifiedStats.elementCount, expectedStats.elementCount, mReport, statsOk );
 
     tol = tolerance( expectedStats.mean );
-    compare( QStringLiteral( "Mean" ), verifiedStats.mean, expectedStats.mean, mReport, statsOk, tol );
+    compare( u"Mean"_s, verifiedStats.mean, expectedStats.mean, mReport, statsOk, tol );
 
     // stdDev usually differ significantly
     tol = tolerance( expectedStats.stdDev, 1 );
-    compare( QStringLiteral( "Standard deviation" ), verifiedStats.stdDev, expectedStats.stdDev, mReport, statsOk, tol );
+    compare( u"Standard deviation"_s, verifiedStats.stdDev, expectedStats.stdDev, mReport, statsOk, tol );
 
-    mReport += QLatin1String( "</table>" );
-    mReport += QLatin1String( "<br>" );
+    mReport += "</table>"_L1;
+    mReport += "<br>"_L1;
 
     if ( !statsOk || !typesOk || !noDataOk )
     {
@@ -131,13 +131,13 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
       // create values table anyway so that values are available
     }
 
-    mReport += QLatin1String( "<table><tr>" );
-    mReport += QLatin1String( "<td>Data comparison</td>" );
-    mReport += QStringLiteral( "<td style='%1 %2 border: 1px solid'>correct&nbsp;value</td>" ).arg( mCellStyle, mOkStyle );
-    mReport += QLatin1String( "<td></td>" );
-    mReport += QStringLiteral( "<td style='%1 %2 border: 1px solid'>wrong&nbsp;value<br>expected value</td></tr>" ).arg( mCellStyle, mErrStyle );
-    mReport += QLatin1String( "</tr></table>" );
-    mReport += QLatin1String( "<br>" );
+    mReport += "<table><tr>"_L1;
+    mReport += "<td>Data comparison</td>"_L1;
+    mReport += u"<td style='%1 %2 border: 1px solid'>correct&nbsp;value</td>"_s.arg( mCellStyle, mOkStyle );
+    mReport += "<td></td>"_L1;
+    mReport += u"<td style='%1 %2 border: 1px solid'>wrong&nbsp;value<br>expected value</td></tr>"_s.arg( mCellStyle, mErrStyle );
+    mReport += "</tr></table>"_L1;
+    mReport += "<br>"_L1;
 
     const int width = expectedProvider->xSize();
     const int height = expectedProvider->ySize();
@@ -148,15 +148,15 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
          !verifiedBlock || !verifiedBlock->isValid() )
     {
       allOk = false;
-      mReport += QLatin1String( "cannot read raster block" );
+      mReport += "cannot read raster block"_L1;
       continue;
     }
 
     // compare data values
-    QString htmlTable = QStringLiteral( "<table style='%1'>" ).arg( mTabStyle );
+    QString htmlTable = u"<table style='%1'>"_s.arg( mTabStyle );
     for ( int row = 0; row < height; row ++ )
     {
-      htmlTable += QLatin1String( "<tr>" );
+      htmlTable += "<tr>"_L1;
       for ( int col = 0; col < width; col ++ )
       {
         bool cellOk = true;
@@ -172,13 +172,13 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
         {
           cellOk = false;
           allOk = false;
-          valStr = QStringLiteral( "%1<br>%2" ).arg( verifiedVal ).arg( expectedVal );
+          valStr = u"%1<br>%2"_s.arg( verifiedVal ).arg( expectedVal );
         }
-        htmlTable += QStringLiteral( "<td style='%1 %2'>%3</td>" ).arg( mCellStyle, cellOk ? mOkStyle : mErrStyle, valStr );
+        htmlTable += u"<td style='%1 %2'>%3</td>"_s.arg( mCellStyle, cellOk ? mOkStyle : mErrStyle, valStr );
       }
-      htmlTable += QLatin1String( "</tr>" );
+      htmlTable += "</tr>"_L1;
     }
-    htmlTable += QLatin1String( "</table>" );
+    htmlTable += "</table>"_L1;
 
     mReport += htmlTable;
   }
@@ -189,9 +189,9 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
 void QgsRasterChecker::error( const QString &message, QString &report )
 {
-  report += QStringLiteral( "<font style='%1'>Error: " ).arg( mErrMsgStyle );
+  report += u"<font style='%1'>Error: "_s.arg( mErrMsgStyle );
   report += message;
-  report += QLatin1String( "</font>" );
+  report += "</font>"_L1;
 }
 
 double QgsRasterChecker::tolerance( double val, int places )
@@ -204,7 +204,7 @@ double QgsRasterChecker::tolerance( double val, int places )
 QString QgsRasterChecker::compareHead()
 {
   QString html;
-  html += QStringLiteral( "<tr><th style='%1'>Param name</th><th style='%1'>Verified value</th><th style='%1'>Expected value</th><th style='%1'>Difference</th><th style='%1'>Tolerance</th></tr>" ).arg( mCellStyle );
+  html += u"<tr><th style='%1'>Param name</th><th style='%1'>Verified value</th><th style='%1'>Expected value</th><th style='%1'>Difference</th><th style='%1'>Tolerance</th></tr>"_s.arg( mCellStyle );
   return html;
 }
 
@@ -240,9 +240,9 @@ void QgsRasterChecker::compare( const QString &paramName, double verifiedVal, do
 
 void QgsRasterChecker::compareRow( const QString &paramName, const QString &verifiedVal, const QString &expectedVal, QString &report, bool ok, const QString &difference, const QString &tolerance )
 {
-  report += QLatin1String( "<tr>\n" );
-  report += QStringLiteral( "<td style='%1'>%2</td><td style='%1 %3'>%4</td><td style='%1'>%5</td>\n" ).arg( mCellStyle, paramName, ok ? mOkStyle : mErrStyle, verifiedVal, expectedVal );
-  report += QStringLiteral( "<td style='%1'>%2</td>\n" ).arg( mCellStyle, difference );
-  report += QStringLiteral( "<td style='%1'>%2</td>\n" ).arg( mCellStyle, tolerance );
-  report += QLatin1String( "</tr>" );
+  report += "<tr>\n"_L1;
+  report += u"<td style='%1'>%2</td><td style='%1 %3'>%4</td><td style='%1'>%5</td>\n"_s.arg( mCellStyle, paramName, ok ? mOkStyle : mErrStyle, verifiedVal, expectedVal );
+  report += u"<td style='%1'>%2</td>\n"_s.arg( mCellStyle, difference );
+  report += u"<td style='%1'>%2</td>\n"_s.arg( mCellStyle, tolerance );
+  report += "</tr>"_L1;
 }

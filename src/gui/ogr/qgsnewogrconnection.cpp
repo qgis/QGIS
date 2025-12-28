@@ -78,12 +78,12 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
     const QString port = settings.value( key + "/port" ).toString();
     txtPort->setText( port );
-    if ( settings.value( key + "/store_username" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/store_username" ).toString() == "true"_L1 )
     {
       mAuthSettingsDatabase->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettingsDatabase->setStoreUsernameChecked( true );
     }
-    if ( settings.value( key + "/store_password" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/store_password" ).toString() == "true"_L1 )
     {
       mAuthSettingsDatabase->setPassword( settings.value( key + "/password" ).toString() );
       mAuthSettingsDatabase->setStorePasswordChecked( true );
@@ -94,7 +94,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
     cmbDatabaseTypes->setEnabled( false );
   }
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
-  mAuthSettingsDatabase->setDataprovider( QStringLiteral( "ogr" ) );
+  mAuthSettingsDatabase->setDataprovider( u"ogr"_s );
   mAuthSettingsDatabase->showStoreCheckboxes( true );
 }
 
@@ -120,7 +120,7 @@ void QgsNewOgrConnection::testConnection()
 
 void QgsNewOgrConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#creating-a-stored-connection"_s );
 }
 
 void QgsNewOgrConnection::updateOkButtonState()

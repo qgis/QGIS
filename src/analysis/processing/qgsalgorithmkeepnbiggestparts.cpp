@@ -27,7 +27,7 @@
 
 QString QgsKeepNBiggestPartsAlgorithm::name() const
 {
-  return QStringLiteral( "keepnbiggestparts" );
+  return u"keepnbiggestparts"_s;
 }
 
 QString QgsKeepNBiggestPartsAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QString QgsKeepNBiggestPartsAlgorithm::group() const
 
 QString QgsKeepNBiggestPartsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsKeepNBiggestPartsAlgorithm::outputName() const
@@ -90,24 +90,24 @@ Qgis::ProcessingFeatureSourceFlags QgsKeepNBiggestPartsAlgorithm::sourceFlags() 
 
 void QgsKeepNBiggestPartsAlgorithm::initParameters( const QVariantMap & )
 {
-  auto partsToKeep = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "PARTS" ), QObject::tr( "Parts to keep" ), Qgis::ProcessingNumberParameterType::Integer, 1.0, false, 1.0 );
+  auto partsToKeep = std::make_unique<QgsProcessingParameterNumber>( u"PARTS"_s, QObject::tr( "Parts to keep" ), Qgis::ProcessingNumberParameterType::Integer, 1.0, false, 1.0 );
   partsToKeep->setIsDynamic( true );
-  partsToKeep->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "PARTS" ), QObject::tr( "Parts to keep" ), QgsPropertyDefinition::IntegerPositive ) );
-  partsToKeep->setDynamicLayerParameterName( QStringLiteral( "POLYGONS" ) );
+  partsToKeep->setDynamicPropertyDefinition( QgsPropertyDefinition( u"PARTS"_s, QObject::tr( "Parts to keep" ), QgsPropertyDefinition::IntegerPositive ) );
+  partsToKeep->setDynamicLayerParameterName( u"POLYGONS"_s );
   addParameter( partsToKeep.release() );
 }
 
 QString QgsKeepNBiggestPartsAlgorithm::inputParameterName() const
 {
-  return QStringLiteral( "POLYGONS" );
+  return u"POLYGONS"_s;
 }
 
 bool QgsKeepNBiggestPartsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mPartsToKeep = parameterAsInt( parameters, QStringLiteral( "PARTS" ), context );
-  mDynamicPartsToKeep = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "PARTS" ) );
+  mPartsToKeep = parameterAsInt( parameters, u"PARTS"_s, context );
+  mDynamicPartsToKeep = QgsProcessingParameters::isDynamic( parameters, u"PARTS"_s );
   if ( mDynamicPartsToKeep )
-    mPartsToKeepProperty = parameters.value( QStringLiteral( "PARTS" ) ).value<QgsProperty>();
+    mPartsToKeepProperty = parameters.value( u"PARTS"_s ).value<QgsProperty>();
 
   return true;
 }

@@ -463,7 +463,7 @@ void QgsWmsRenderContext::searchLayersToRender()
         {
           if ( !addLayerToRender( lyr ) )
           {
-            throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( lyr->name() ) );
+            throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
           }
         }
       }
@@ -482,7 +482,7 @@ void QgsWmsRenderContext::searchLayersToRender()
         {
           if ( !addLayerToRender( lyr ) )
           {
-            throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( lyr->name() ) );
+            throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
           }
         }
       }
@@ -525,7 +525,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
         {
           if ( !addLayerToRender( layer ) )
           {
-            throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( layer->name() ) );
+            throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( layer->name() ) );
           }
         }
       }
@@ -578,7 +578,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
     if ( !param.mExternalUri.isEmpty() && ( mFlags & AddExternalLayers ) )
     {
-      std::unique_ptr<QgsMapLayer> layer = std::make_unique<QgsRasterLayer>( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
+      std::unique_ptr<QgsMapLayer> layer = std::make_unique<QgsRasterLayer>( param.mExternalUri, param.mNickname, u"wms"_s );
 
       if ( layer->isValid() )
       {
@@ -587,7 +587,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         auto lyr = mExternalLayers.last();
         if ( !addLayerToRender( lyr ) )
         {
-          throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( lyr->name() ) );
+          throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( lyr->name() ) );
         }
       }
     }
@@ -602,7 +602,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
       {
         if ( !addLayerToRender( layer ) )
         {
-          throw QgsSecurityException( QStringLiteral( "Your are not allowed to access the layer %1" ).arg( layer->name() ) );
+          throw QgsSecurityException( u"Your are not allowed to access the layer %1"_s.arg( layer->name() ) );
         }
       }
     }
@@ -920,7 +920,7 @@ bool QgsWmsRenderContext::checkLayerReadPermissions( QgsMapLayer *layer ) const
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( !accessControl()->layerReadPermission( layer ) )
   {
-    QString msg = QStringLiteral( "Checking forbidden access for layer: %1" ).arg( layer->name() );
+    QString msg = u"Checking forbidden access for layer: %1"_s.arg( layer->name() );
     QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
     return false;
   }

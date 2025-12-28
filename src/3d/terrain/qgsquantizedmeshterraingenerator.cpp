@@ -106,7 +106,7 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
 
     QgsTiledSceneTile tile = mIndex.getTile( mTileId );
 
-    QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
+    QString uri = tile.resources().value( u"content"_s ).toString();
     Q_ASSERT( !uri.isEmpty() );
 
     uri = tile.baseUrl().resolved( uri ).toString();
@@ -116,7 +116,7 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &mTileCrsToMapCrs;
-    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     try
     {
@@ -159,7 +159,7 @@ void QgsQuantizedMeshTerrainChunkLoader::start()
     }
     catch ( QgsQuantizedMeshParsingException &ex )
     {
-      QgsDebugError( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
+      QgsDebugError( u"Failed to parse tile from '%1'"_s.arg( uri ) );
       emit finished();
       return;
     }
@@ -282,13 +282,13 @@ float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3
   {
     // This doesn't deal with a possible dataset where the whole extent doesn't
     // have full coverage at maxZoom, but has coverage at a lower zoom level.
-    QgsDebugError( QStringLiteral( "Quantized Mesh layer doesn't contain max-zoom tile for %1, %2" ).arg( x ).arg( y ) );
+    QgsDebugError( u"Quantized Mesh layer doesn't contain max-zoom tile for %1, %2"_s.arg( x ).arg( y ) );
     return 0;
   }
   // TODO: Make heightAt asynchronous?
   QgsTiledSceneIndex index = mIndex; // Copy to get rid of const
   QgsTiledSceneTile sceneTile = index.getTile( QgsQuantizedMeshIndex::encodeTileId( tileXyz ) );
-  QString uri = sceneTile.resources().value( QStringLiteral( "content" ) ).toString();
+  QString uri = sceneTile.resources().value( u"content"_s ).toString();
   Q_ASSERT( !uri.isEmpty() );
 
   uri = sceneTile.baseUrl().resolved( uri ).toString();
@@ -389,7 +389,7 @@ QgsTileXYZ QgsQuantizedMeshTerrainGenerator::nodeIdToTile( QgsChunkNodeId nodeId
     return { 0, 0, -1 };
   return {
     nodeId.x,
-    mMetadata->mTileScheme == QStringLiteral( "tms" )
+    mMetadata->mTileScheme == u"tms"_s
       ? ( 1 << ( nodeId.d - 1 ) ) - nodeId.y - 1
       : nodeId.y,
     nodeId.d - 1

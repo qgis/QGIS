@@ -26,6 +26,8 @@
 #include <QTextStream>
 #include <QUuid>
 
+using namespace Qt::StringLiterals;
+
 QgsCrashReport::QgsCrashReport()
   : mPythonFault( PythonFault() )
 {
@@ -42,7 +44,7 @@ const QString QgsCrashReport::toHtml() const
   QStringList reportData;
   const QString thisCrashID = crashID();
   if ( !thisCrashID.isEmpty() )
-    reportData.append( QStringLiteral( "<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a><br>" ).arg( thisCrashID ) );
+    reportData.append( u"<b>Crash ID</b>: <a href='https://github.com/qgis/QGIS/search?q=%1&type=Issues'>%1</a><br>"_s.arg( thisCrashID ) );
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
@@ -63,11 +65,11 @@ const QString QgsCrashReport::toHtml() const
 
     if ( !pythonStack.isEmpty() )
     {
-      QString pythonStackString = QStringLiteral( "<b>Python Stack Trace</b><pre>" );
+      QString pythonStackString = u"<b>Python Stack Trace</b><pre>"_s;
 
       for ( const QString &line : pythonStack )
       {
-        const thread_local QRegularExpression pythonTraceRx( QStringLiteral( "\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)" ) );
+        const thread_local QRegularExpression pythonTraceRx( u"\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)"_s );
 
         const QRegularExpressionMatch fileLineMatch = pythonTraceRx.match( line );
         if ( fileLineMatch.hasMatch() )
@@ -89,7 +91,7 @@ const QString QgsCrashReport::toHtml() const
             pythonStackString.append( line + '\n' );
             if ( currentLineNumber == lineNumber )
             {
-              pythonStackString.append( QStringLiteral( "    " ) + pythonLine.trimmed() + '\n' );
+              pythonStackString.append( u"    "_s + pythonLine.trimmed() + '\n' );
             }
           }
         }
@@ -98,29 +100,29 @@ const QString QgsCrashReport::toHtml() const
           pythonStackString.append( line + '\n' );
         }
       }
-      pythonStackString.append( QStringLiteral( "</pre>" ) );
+      pythonStackString.append( u"</pre>"_s );
       reportData.append( pythonStackString );
     }
 
-    reportData.append( QStringLiteral( "<br><b>Stack Trace</b>" ) );
+    reportData.append( u"<br><b>Stack Trace</b>"_s );
     if ( !mStackTrace || mStackTrace->lines.isEmpty() )
     {
-      reportData.append( QStringLiteral( "No stack trace is available." ) );
+      reportData.append( u"No stack trace is available."_s );
     }
     else if ( !mStackTrace->symbolsLoaded )
     {
-      reportData.append( QStringLiteral( "Stack trace could not be generated due to missing symbols." ) );
+      reportData.append( u"Stack trace could not be generated due to missing symbols."_s );
     }
     else
     {
-      reportData.append( QStringLiteral( "<pre>" ) );
+      reportData.append( u"<pre>"_s );
       for ( const QgsStackTrace::StackLine &line : mStackTrace->lines )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
-        reportData.append( QStringLiteral( "%2 %3:%4" ).arg( line.symbolName, filename, line.lineNumber ) );
+        reportData.append( u"%2 %3:%4"_s.arg( line.symbolName, filename, line.lineNumber ) );
       }
-      reportData.append( QStringLiteral( "</pre>" ) );
+      reportData.append( u"</pre>"_s );
     }
   }
 
@@ -142,18 +144,18 @@ const QString QgsCrashReport::toHtml() const
 
   if ( flags().testFlag( QgsCrashReport::QgisInfo ) )
   {
-    reportData.append( QStringLiteral( "<br>" ) );
-    reportData.append( QStringLiteral( "<b>QGIS Info</b>" ) );
+    reportData.append( u"<br>"_s );
+    reportData.append( u"<b>QGIS Info</b>"_s );
     reportData.append( mVersionInfo );
   }
 
   if ( flags().testFlag( QgsCrashReport::SystemInfo ) )
   {
-    reportData.append( QStringLiteral( "<br>" ) );
-    reportData.append( QStringLiteral( "<b>System Info</b>" ) );
-    reportData.append( QStringLiteral( "CPU Type: %1" ).arg( QSysInfo::currentCpuArchitecture() ) );
-    reportData.append( QStringLiteral( "Kernel Type: %1" ).arg( QSysInfo::kernelType() ) );
-    reportData.append( QStringLiteral( "Kernel Version: %1" ).arg( QSysInfo::kernelVersion() ) );
+    reportData.append( u"<br>"_s );
+    reportData.append( u"<b>System Info</b>"_s );
+    reportData.append( u"CPU Type: %1"_s.arg( QSysInfo::currentCpuArchitecture() ) );
+    reportData.append( u"Kernel Type: %1"_s.arg( QSysInfo::kernelType() ) );
+    reportData.append( u"Kernel Version: %1"_s.arg( QSysInfo::kernelVersion() ) );
   }
 
   QString report;
@@ -170,7 +172,7 @@ const QString QgsCrashReport::crashID() const
     return QString(); // don't report crash IDs for python crashes -- they won't be representative of the cause of the crash
 
   if ( !mStackTrace )
-    return QStringLiteral( "Not available" );
+    return u"Not available"_s;
 
   if ( !mStackTrace->symbolsLoaded || mStackTrace->lines.isEmpty() )
     return QStringLiteral( "ID not generated due to missing information.<br><br> "
@@ -190,7 +192,7 @@ const QString QgsCrashReport::crashID() const
   }
 
   if ( data.isNull() )
-    return QStringLiteral( "ID not generated due to missing information" );
+    return u"ID not generated due to missing information"_s;
 
   QString hash = QString( QCryptographicHash::hash( data.toLatin1(), QCryptographicHash::Sha1 ).toHex() );
   return hash;
@@ -277,28 +279,28 @@ void QgsCrashReport::setPythonCrashLogFilePath( const QString &path )
       if ( !line.trimmed().isEmpty() && mPythonFault.cause == LikelyPythonFaultCause::NotPython )
         mPythonFault.cause = LikelyPythonFaultCause::Unknown;
 
-      const thread_local QRegularExpression pythonTraceRx( QStringLiteral( "\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)" ) );
+      const thread_local QRegularExpression pythonTraceRx( u"\\s*File\\s+\"(.*)\",\\s+line\\s+(\\d+)"_s );
 
       const QRegularExpressionMatch fileLineMatch = pythonTraceRx.match( line );
       if ( fileLineMatch.hasMatch() )
       {
         const QString pythonFilePath = fileLineMatch.captured( 1 );
-        if ( pythonFilePath.contains( QLatin1String( "profiles" ), Qt::CaseInsensitive )
-             && pythonFilePath.contains( QLatin1String( "processing" ), Qt::CaseInsensitive )
-             && pythonFilePath.contains( QLatin1String( "scripts" ), Qt::CaseInsensitive ) )
+        if ( pythonFilePath.contains( "profiles"_L1, Qt::CaseInsensitive )
+             && pythonFilePath.contains( "processing"_L1, Qt::CaseInsensitive )
+             && pythonFilePath.contains( "scripts"_L1, Qt::CaseInsensitive ) )
         {
           mPythonFault.cause = LikelyPythonFaultCause::ProcessingScript;
           const QFileInfo fi( pythonFilePath );
           mPythonFault.title = fi.fileName();
           mPythonFault.filePath = pythonFilePath;
         }
-        else if ( mPythonFault.cause == LikelyPythonFaultCause::Unknown && pythonFilePath.contains( QLatin1String( "console.py" ), Qt::CaseInsensitive ) )
+        else if ( mPythonFault.cause == LikelyPythonFaultCause::Unknown && pythonFilePath.contains( "console.py"_L1, Qt::CaseInsensitive ) )
         {
           mPythonFault.cause = LikelyPythonFaultCause::ConsoleCommand;
         }
         else if ( mPythonFault.cause == LikelyPythonFaultCause::Unknown )
         {
-          const thread_local QRegularExpression pluginRx( QStringLiteral( "python[/\\\\]plugins[/\\\\](.*?)[/\\\\]" ) );
+          const thread_local QRegularExpression pluginRx( u"python[/\\\\]plugins[/\\\\](.*?)[/\\\\]"_s );
           const QRegularExpressionMatch pluginNameMatch = pluginRx.match( pythonFilePath );
           if ( pluginNameMatch.hasMatch() )
           {
@@ -316,22 +318,22 @@ QString QgsCrashReport::htmlToMarkdown( const QString &html )
 {
   // Any changes in this function must be copied to qgsstringutils.cpp too
   QString converted = html;
-  converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-  converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
-  converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
-  converted.replace( QLatin1String( "<pre>" ), QLatin1String( "\n```\n" ) );
-  converted.replace( QLatin1String( "</pre>" ), QLatin1String( "```\n" ) );
+  converted.replace( "<br>"_L1, "\n"_L1 );
+  converted.replace( "<b>"_L1, "**"_L1 );
+  converted.replace( "</b>"_L1, "**"_L1 );
+  converted.replace( "<pre>"_L1, "\n```\n"_L1 );
+  converted.replace( "</pre>"_L1, "```\n"_L1 );
 
-  const thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
+  const thread_local QRegularExpression hrefRegEx( u"<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>"_s );
 
   int offset = 0;
   QRegularExpressionMatch match = hrefRegEx.match( converted );
   while ( match.hasMatch() )
   {
-    QString url = match.captured( 1 ).replace( QLatin1String( "\"" ), QString() );
+    QString url = match.captured( 1 ).replace( "\""_L1, QString() );
     url.replace( '\'', QString() );
     QString name = match.captured( 2 );
-    QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
+    QString anchor = u"[%1](%2)"_s.arg( name, url );
     converted.replace( match.capturedStart(), match.capturedLength(), anchor );
     offset = match.capturedStart() + anchor.length();
     match = hrefRegEx.match( converted, offset );

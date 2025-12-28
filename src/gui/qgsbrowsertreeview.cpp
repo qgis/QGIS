@@ -34,7 +34,7 @@
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
-  , mSettingsSection( QStringLiteral( "browser" ) )
+  , mSettingsSection( u"browser"_s )
 {
   setEditTriggers( QAbstractItemView::EditKeyPressed );
   setIndentation( QgsGuiUtils::scaleIconSize( 16 ) );
@@ -132,7 +132,7 @@ void QgsBrowserTreeView::restoreState()
   }
 
   // expand root favorites item
-  const QModelIndex index = QgsBrowserGuiModel::findPath( model(), QStringLiteral( "favorites:" ) );
+  const QModelIndex index = QgsBrowserGuiModel::findPath( model(), u"favorites:"_s );
   expand( index );
 }
 
@@ -211,7 +211,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
   QString currentCandidatePath;
   for ( const QString &thisPart : pathParts )
   {
-    currentCandidatePath += ( currentCandidatePath.isEmpty() || currentCandidatePath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + thisPart;
+    currentCandidatePath += ( currentCandidatePath.isEmpty() || currentCandidatePath.endsWith( '/' ) ? QString() : u"/"_s ) + thisPart;
 
     auto it = initialDirectoryItemCandidates.begin();
     while ( it != initialDirectoryItemCandidates.end() )
@@ -365,7 +365,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
     if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegularExpression( "^" + escapedChildPath + "/.*" ) ) != -1 )
     {
-      QgsDebugMsgLevel( QStringLiteral( "-> expand" ), 2 );
+      QgsDebugMsgLevel( u"-> expand"_s, 2 );
       const QModelIndex modelIndex = browserModel()->findPath( childPath, Qt::MatchExactly );
       if ( modelIndex.isValid() )
       {

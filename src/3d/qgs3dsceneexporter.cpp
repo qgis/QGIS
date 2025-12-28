@@ -189,7 +189,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       Qt3DCore::QEntity *parentEntity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
       if ( !parentEntity )
         continue;
-      Qgs3DExportObject *object = processGeometryRenderer( renderer, layer->name() + QStringLiteral( "_" ) );
+      Qgs3DExportObject *object = processGeometryRenderer( renderer, layer->name() + u"_"_s );
       if ( !object )
         continue;
       if ( mExportTextures )
@@ -205,7 +205,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
     if ( vectorLayerRenderer )
     {
       const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
-      return symbol->exportGeometries( this, entity, layer->name() + QStringLiteral( "_" ) );
+      return symbol->exportGeometries( this, entity, layer->name() + u"_"_s );
     }
     else
       return false;
@@ -214,7 +214,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
   else
   {
     // TODO: handle pointcloud/mesh/etc. layers
-    QgsDebugMsgLevel( QStringLiteral( "Type '%1' of layer '%2' is not exportable." ).arg( layer->name(), rendererType ), 2 );
+    QgsDebugMsgLevel( u"Type '%1' of layer '%2' is not exportable."_s.arg( layer->name(), rendererType ), 2 );
     return false;
   }
 
@@ -271,15 +271,15 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
   {
     case QgsTerrainGenerator::Dem:
       terrainTile = getDemTerrainEntity( terrain, node, settings->origin() );
-      parseDemTile( terrainTile, layerName + QStringLiteral( "_" ) );
+      parseDemTile( terrainTile, layerName + u"_"_s );
       break;
     case QgsTerrainGenerator::Flat:
       terrainTile = getFlatTerrainEntity( terrain, node, settings->origin() );
-      parseFlatTile( terrainTile, layerName + QStringLiteral( "_" ) );
+      parseFlatTile( terrainTile, layerName + u"_"_s );
       break;
     case QgsTerrainGenerator::Mesh:
       terrainTile = getMeshTerrainEntity( terrain, node, settings->origin() );
-      parseMeshTile( terrainTile, layerName + QStringLiteral( "_" ) );
+      parseMeshTile( terrainTile, layerName + u"_"_s );
       break;
     // TODO: implement other terrain types
     case QgsTerrainGenerator::Online:
@@ -396,7 +396,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   if ( objectNamePrefix != QString() )
     objectNamePrefix += QString();
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "Flat_tile" ) ) );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"Flat_tile"_s ) );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -445,7 +445,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   const QByteArray indexBytes = indexAttribute->buffer()->data();
   const QVector<unsigned int> indexBuffer = getIndexData( indexAttribute, indexBytes );
 
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( layerName + QStringLiteral( "DEM_tile" ) ) );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( layerName + u"DEM_tile"_s ) );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
@@ -513,7 +513,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, QStringLiteral( "pos" ), Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *instanceDataAttribute = findAttribute( geometry, u"pos"_s, Qt3DCore::QAttribute::VertexAttribute );
     if ( !instanceDataAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
@@ -529,7 +529,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
 
     for ( int i = 0; i < instancePosition.size(); i += 3 )
     {
-      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "instance_point" ) ) );
+      Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"instance_point"_s ) );
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
@@ -724,7 +724,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   }
 
   // === Create Qgs3DExportObject
-  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
+  Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"mesh_geometry"_s ) );
   object->setupTriangle( positionData, indexData, transformMatrix );
 
   Qt3DCore::QAttribute *normalsAttribute = findAttribute( geometry, Qt3DCore::QAttribute::defaultNormalAttributeName(), Qt3DCore::QAttribute::VertexAttribute );
@@ -772,7 +772,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
     }
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
 
-    Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ) );
+    Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"line"_s ) );
     exportObject->setupLine( positionData );
 
     objs.push_back( exportObject );
@@ -804,7 +804,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     const QVector<float> positions = getAttributeData<float>( positionAttribute, positionBytes );
     points << positions;
   }
-  Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "points" ) ) );
+  Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"points"_s ) );
   obj->setupPoint( points );
   return obj;
 }
@@ -816,19 +816,19 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     return false;
   }
 
-  const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
-  const QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".mtl" ) );
+  const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + u".obj"_s );
+  const QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + u".mtl"_s );
 
   QFile file( objFilePath );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    QgsDebugError( QStringLiteral( "Scene can not be exported to '%1'. File access error." ).arg( objFilePath ) );
+    QgsDebugError( u"Scene can not be exported to '%1'. File access error."_s.arg( objFilePath ) );
     return false;
   }
   QFile mtlFile( mtlFilePath );
   if ( !mtlFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    QgsDebugError( QStringLiteral( "Scene can not be exported to '%1'. File access error." ).arg( mtlFilePath ) );
+    QgsDebugError( u"Scene can not be exported to '%1'. File access error."_s.arg( mtlFilePath ) );
     return false;
   }
 
@@ -868,7 +868,7 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ), precision );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
+  QgsDebugMsgLevel( u"Scene exported to '%1'"_s.arg( objFilePath ), 2 );
   return true;
 }
 
@@ -877,7 +877,7 @@ QString Qgs3DSceneExporter::getObjectName( const QString &name )
   QString ret = name;
   if ( mUsedObjectNamesCounter.contains( name ) )
   {
-    ret = QStringLiteral( "%1%2" ).arg( name ).arg( mUsedObjectNamesCounter[name] );
+    ret = u"%1%2"_s.arg( name ).arg( mUsedObjectNamesCounter[name] );
     mUsedObjectNamesCounter[name]++;
   }
   else

@@ -125,17 +125,17 @@ bool QgsProcessingModelChildAlgorithm::removeModelOutput( const QString &name )
 QVariant QgsProcessingModelChildAlgorithm::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "id" ), mId );
-  map.insert( QStringLiteral( "alg_id" ), mAlgorithmId );
-  map.insert( QStringLiteral( "alg_config" ), mConfiguration );
-  map.insert( QStringLiteral( "active" ), mActive );
+  map.insert( u"id"_s, mId );
+  map.insert( u"alg_id"_s, mAlgorithmId );
+  map.insert( u"alg_config"_s, mConfiguration );
+  map.insert( u"active"_s, mActive );
 
   QVariantList dependencies;
   for ( const QgsProcessingModelChildDependency &dependency : mDependencies )
   {
     dependencies << dependency.toVariant();
   }
-  map.insert( QStringLiteral( "dependencies" ), dependencies );
+  map.insert( u"dependencies"_s, dependencies );
 
   saveCommonProperties( map );
 
@@ -151,7 +151,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
     }
     paramMap.insert( paramIt.key(), sources );
   }
-  map.insert( QStringLiteral( "params" ), paramMap );
+  map.insert( u"params"_s, paramMap );
 
   QVariantMap outputMap;
   QMap< QString, QgsProcessingModelOutput >::const_iterator outputIt = mModelOutputs.constBegin();
@@ -159,7 +159,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   {
     outputMap.insert( outputIt.key(), outputIt.value().toVariant() );
   }
-  map.insert( QStringLiteral( "outputs" ), outputMap );
+  map.insert( u"outputs"_s, outputMap );
 
   return map;
 }
@@ -168,20 +168,20 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
 {
   QVariantMap map = child.toMap();
 
-  mId = map.value( QStringLiteral( "id" ) ).toString();
+  mId = map.value( u"id"_s ).toString();
   if ( mId.isEmpty() )
     return false;
 
-  mConfiguration = map.value( QStringLiteral( "alg_config" ) ).toMap();
-  setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
+  mConfiguration = map.value( u"alg_config"_s ).toMap();
+  setAlgorithmId( map.value( u"alg_id"_s ).toString() );
   if ( algorithmId().isEmpty() )
     return false;
-  mActive = map.value( QStringLiteral( "active" ) ).toBool();
+  mActive = map.value( u"active"_s ).toBool();
 
   mDependencies.clear();
-  if ( map.value( QStringLiteral( "dependencies" ) ).userType() == QMetaType::Type::QStringList )
+  if ( map.value( u"dependencies"_s ).userType() == QMetaType::Type::QStringList )
   {
-    const QStringList dependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
+    const QStringList dependencies = map.value( u"dependencies"_s ).toStringList();
     mDependencies.reserve( dependencies.size() );
     for ( const QString &dependency : dependencies )
     {
@@ -192,7 +192,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   }
   else
   {
-    const QVariantList dependencies = map.value( QStringLiteral( "dependencies" ) ).toList();
+    const QVariantList dependencies = map.value( u"dependencies"_s ).toList();
     mDependencies.reserve( dependencies.size() );
     for ( const QVariant &dependency : dependencies )
     {
@@ -205,7 +205,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   restoreCommonProperties( map );
 
   mParams.clear();
-  QVariantMap paramMap = map.value( QStringLiteral( "params" ) ).toMap();
+  QVariantMap paramMap = map.value( u"params"_s ).toMap();
   QVariantMap::const_iterator paramIt = paramMap.constBegin();
   for ( ; paramIt != paramMap.constEnd(); ++paramIt )
   {
@@ -223,7 +223,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   }
 
   mModelOutputs.clear();
-  QVariantMap outputMap = map.value( QStringLiteral( "outputs" ) ).toMap();
+  QVariantMap outputMap = map.value( u"outputs"_s ).toMap();
   QVariantMap::const_iterator outputIt = outputMap.constBegin();
   for ( ; outputIt != outputMap.constEnd(); ++outputIt )
   {
@@ -248,13 +248,13 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
     return QStringList();
 
   if ( !description().isEmpty() )
-    lines << baseIndent + QStringLiteral( "# %1" ).arg( description() );
+    lines << baseIndent + u"# %1"_s.arg( description() );
   if ( !mComment.description().isEmpty() )
   {
-    const QStringList parts = mComment.description().split( QStringLiteral( "\n" ) );
+    const QStringList parts = mComment.description().split( u"\n"_s );
     for ( const QString &part : parts )
     {
-      lines << baseIndent + QStringLiteral( "# %1" ).arg( part );
+      lines << baseIndent + u"# %1"_s.arg( part );
     }
   }
 
@@ -279,17 +279,17 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
     }
     if ( sourceParts.count() == 1 )
     {
-      paramParts << QStringLiteral( "'%1': %2" ).arg( paramIt.key(), sourceParts.at( 0 ) );
+      paramParts << u"'%1': %2"_s.arg( paramIt.key(), sourceParts.at( 0 ) );
       paramComments << sourceComments.at( 0 );
     }
     else
     {
-      paramParts << QStringLiteral( "'%1': [%2]" ).arg( paramIt.key(), sourceParts.join( ',' ) );
+      paramParts << u"'%1': [%2]"_s.arg( paramIt.key(), sourceParts.join( ',' ) );
       paramComments << QString();
     }
   }
 
-  lines << baseIndent + QStringLiteral( "alg_params = {" );
+  lines << baseIndent + u"alg_params = {"_s;
   lines.reserve( lines.size() + paramParts.size() );
   int i = 0;
   for ( const QString &p : std::as_const( paramParts ) )
@@ -297,28 +297,28 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
     QString line = baseIndent + lineIndent + p + ',';
     if ( !paramComments.value( i ).isEmpty() )
     {
-      line += QStringLiteral( "  # %1" ).arg( paramComments.value( i ) );
+      line += u"  # %1"_s.arg( paramComments.value( i ) );
     }
     lines << line;
     i++;
   }
   for ( auto it = extraParameters.constBegin(); it != extraParameters.constEnd(); ++it )
   {
-    lines << baseIndent + lineIndent + QStringLiteral( "%1: %2," ).arg( QgsProcessingUtils::stringToPythonLiteral( it.key() ), it.value() );
+    lines << baseIndent + lineIndent + u"%1: %2,"_s.arg( QgsProcessingUtils::stringToPythonLiteral( it.key() ), it.value() );
   }
   if ( lines.constLast().endsWith( ',' ) )
   {
     lines[ lines.count() - 1 ].truncate( lines.constLast().length() - 1 );
   }
-  lines << baseIndent + QStringLiteral( "}" );
+  lines << baseIndent + u"}"_s;
 
-  lines << baseIndent + QStringLiteral( "outputs['%1'] = processing.run('%2', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ).arg( friendlyChildNames.value( mId, mId ), mAlgorithmId );
+  lines << baseIndent + u"outputs['%1'] = processing.run('%2', alg_params, context=context, feedback=feedback, is_child_algorithm=True)"_s.arg( friendlyChildNames.value( mId, mId ), mAlgorithmId );
 
   for ( auto outputIt = mModelOutputs.constBegin(); outputIt != mModelOutputs.constEnd(); ++outputIt )
   {
-    QString outputName = QStringLiteral( "%1:%2" ).arg( mId, outputIt.key() );
+    QString outputName = u"%1:%2"_s.arg( mId, outputIt.key() );
     outputName = friendlyOutputNames.value( outputName, outputName );
-    lines << baseIndent + QStringLiteral( "results['%1'] = outputs['%2']['%3']" ).arg( outputName, friendlyChildNames.value( mId, mId ), outputIt.value().childOutputName() );
+    lines << baseIndent + u"results['%1'] = outputs['%2']['%3']"_s.arg( outputName, friendlyChildNames.value( mId, mId ), outputIt.value().childOutputName() );
   }
 
   return lines;
@@ -341,7 +341,7 @@ void QgsProcessingModelChildAlgorithm::generateChildId( const QgsProcessingModel
   QString id;
   while ( true )
   {
-    id = QStringLiteral( "%1_%2" ).arg( mAlgorithmId ).arg( i );
+    id = u"%1_%2"_s.arg( mAlgorithmId ).arg( i );
     if ( !model.childAlgorithms().contains( id ) )
       break;
     i++;

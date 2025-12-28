@@ -27,7 +27,10 @@
 #include "qgis_sip.h"
 
 #include <QMetaEnum>
+#include <QString>
 #include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -6542,7 +6545,7 @@ class CORE_EXPORT Qgis
      */
     static QString geoNone()
     {
-      return QStringLiteral( "NONE" );
+      return u"NONE"_s;
     }
 
     /**
@@ -6552,7 +6555,7 @@ class CORE_EXPORT Qgis
      */
     static QString geographicCrsAuthId()
     {
-      return QStringLiteral( "EPSG:4326" );
+      return u"EPSG:4326"_s;
     }
 
     /**
@@ -6572,7 +6575,7 @@ class CORE_EXPORT Qgis
      */
     Q_DECL_DEPRECATED static QString geoProj4()
     {
-      return QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
+      return u"+proj=longlat +datum=WGS84 +no_defs"_s;
     }
 
 };
@@ -6774,9 +6777,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
   }
   // avoid printing -0
   // see https://bugreports.qt.io/browse/QTBUG-71439
-  if ( str == QLatin1String( "-0" ) )
+  if ( str == "-0"_L1 )
   {
-    return QLatin1String( "0" );
+    return "0"_L1;
   }
   return str;
 }

@@ -61,7 +61,7 @@ namespace QgsWms
         , mServerIface( serverIface )
       {}
 
-      QString name() const override { return QStringLiteral( "WMS" ); }
+      QString name() const override { return u"WMS"_s; }
       QString version() const override { return mVersion; }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
@@ -72,7 +72,7 @@ namespace QgsWms
 
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Please add or check the value of the REQUEST parameter"_s, 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -127,15 +127,15 @@ namespace QgsWms
           if ( mServerIface->serverSettings() && mServerIface->serverSettings()->getPrintDisabled() )
           {
             // GetPrint has been disabled
-            QgsDebugError( QStringLiteral( "WMS GetPrint request called, but it has been disabled." ) );
-            throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+            QgsDebugError( u"WMS GetPrint request called, but it has been disabled."_s );
+            throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Request %1 is not supported"_s.arg( req ), 501 );
           }
           writeGetPrint( mServerIface, project, request, response );
         }
         else
         {
           // Operation not supported
-          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Request %1 is not supported"_s.arg( req ), 501 );
         }
       }
 
@@ -156,9 +156,9 @@ class QgsWmsModule : public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsgLevel( QStringLiteral( "WMSModule::registerSelf called" ), 2 );
+      QgsDebugMsgLevel( u"WMSModule::registerSelf called"_s, 2 );
       registry.registerService( new QgsWms::Service( QgsWms::implementationVersion(), serverIface ) ); // 1.3.0 default version
-      registry.registerService( new QgsWms::Service( QStringLiteral( "1.1.1" ), serverIface ) );       // second supported version
+      registry.registerService( new QgsWms::Service( u"1.1.1"_s, serverIface ) );                      // second supported version
     }
 };
 

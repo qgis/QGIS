@@ -104,10 +104,10 @@ void TestQgsProperty::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mDefinitions.insert( static_cast<int>( PropertyKeys::Property1 ), QgsPropertyDefinition( QStringLiteral( "p1" ), QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
-  mDefinitions.insert( static_cast<int>( PropertyKeys::Property2 ), QgsPropertyDefinition( QStringLiteral( "p2" ), QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
-  mDefinitions.insert( static_cast<int>( PropertyKeys::Property3 ), QgsPropertyDefinition( QStringLiteral( "p3" ), QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
-  mDefinitions.insert( static_cast<int>( PropertyKeys::Property4 ), QgsPropertyDefinition( QStringLiteral( "p4" ), QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( static_cast<int>( PropertyKeys::Property1 ), QgsPropertyDefinition( u"p1"_s, QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( static_cast<int>( PropertyKeys::Property2 ), QgsPropertyDefinition( u"p2"_s, QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( static_cast<int>( PropertyKeys::Property3 ), QgsPropertyDefinition( u"p3"_s, QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
+  mDefinitions.insert( static_cast<int>( PropertyKeys::Property4 ), QgsPropertyDefinition( u"p4"_s, QgsPropertyDefinition::DataTypeString, QString(), QString() ) );
 }
 
 void TestQgsProperty::cleanupTestCase()
@@ -282,21 +282,21 @@ void TestQgsProperty::conversions()
   // test string conversions
   QgsProperty s1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 4, s1 );
-  QCOMPARE( s1.valueAsString( context, "n", &ok ), QStringLiteral( "n" ) );
+  QCOMPARE( s1.valueAsString( context, "n", &ok ), u"n"_s );
   QVERIFY( !ok );
-  QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), QStringLiteral( "y" ) );
+  QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), u"y"_s );
   QVERIFY( !ok );
   s1.setStaticValue( "s" );
   collection.property( 4 ).setStaticValue( "s" );
-  QCOMPARE( s1.valueAsString( context, "n", &ok ), QStringLiteral( "s" ) );
+  QCOMPARE( s1.valueAsString( context, "n", &ok ), u"s"_s );
   QVERIFY( ok );
-  QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), QStringLiteral( "s" ) );
+  QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), u"s"_s );
   QVERIFY( ok );
   s1.setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
   collection.property( 4 ).setStaticValue( QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) );
-  QCOMPARE( s1.valueAsString( context, "n", &ok ), QStringLiteral( "n" ) );
+  QCOMPARE( s1.valueAsString( context, "n", &ok ), u"n"_s );
   QVERIFY( !ok );
-  QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), QStringLiteral( "y" ) );
+  QCOMPARE( collection.valueAsString( 4, context, "y", &ok ), u"y"_s );
   QVERIFY( !ok );
 
   // test datetime conversions
@@ -344,15 +344,15 @@ void TestQgsProperty::invalid()
 void TestQgsProperty::staticProperty()
 {
   const QgsExpressionContext context;
-  QgsProperty property = QgsProperty::fromValue( QStringLiteral( "test" ), true );
+  QgsProperty property = QgsProperty::fromValue( u"test"_s, true );
   QCOMPARE( property.propertyType(), Qgis::PropertyType::Static );
   QVERIFY( property.isActive() );
   QVERIFY( property.referencedFields( context ).isEmpty() );
-  QCOMPARE( property.value( context, QStringLiteral( "default" ) ).toString(), QStringLiteral( "test" ) );
+  QCOMPARE( property.value( context, u"default"_s ).toString(), u"test"_s );
   property.setActive( false );
   QVERIFY( property.referencedFields( context ).isEmpty() );
   QVERIFY( !property.isActive() );
-  QCOMPARE( property.value( context, QStringLiteral( "default" ) ).toString(), QStringLiteral( "default" ) );
+  QCOMPARE( property.value( context, u"default"_s ).toString(), u"default"_s );
   property.setStaticValue( 5 );
   property.setActive( true );
   QCOMPARE( property.value( context ).toInt(), 5 );
@@ -362,7 +362,7 @@ void TestQgsProperty::staticProperty()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
@@ -411,7 +411,7 @@ void TestQgsProperty::staticProperty()
   QgsProperty p3;
   p3 = p2;
   QVERIFY( p3.isActive() );
-  QCOMPARE( p3.staticValue().toString(), QStringLiteral( "test" ) );
+  QCOMPARE( p3.staticValue().toString(), u"test"_s );
   QVERIFY( p3.transformer() );
   p2.setActive( false );
   p2.setStaticValue( 5.9 );
@@ -431,8 +431,8 @@ void TestQgsProperty::fieldBasedProperty()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field1"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field2"_s, QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -444,7 +444,7 @@ void TestQgsProperty::fieldBasedProperty()
   context.setFeature( ft );
   context.setFields( fields );
 
-  QgsProperty property = QgsProperty::fromField( QStringLiteral( "field1" ), true );
+  QgsProperty property = QgsProperty::fromField( u"field1"_s, true );
   QCOMPARE( property.propertyType(), Qgis::PropertyType::Field );
   QVERIFY( property.isActive() );
   QCOMPARE( property.value( context, -1 ).toInt(), 5 );
@@ -453,12 +453,12 @@ void TestQgsProperty::fieldBasedProperty()
   QVERIFY( !property.isActive() );
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   QVERIFY( property.referencedFields( context ).isEmpty() );
-  property.setField( QStringLiteral( "field2" ) );
+  property.setField( u"field2"_s );
   property.setActive( true );
   QCOMPARE( property.value( context, -1 ).toInt(), 7 );
   QCOMPARE( property.referencedFields( context ), QSet<QString>() << "field2" );
   //bad field reference
-  property.setField( QStringLiteral( "bad_field" ) );
+  property.setField( u"bad_field"_s );
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   // unset field name
   QgsProperty defaultProperty = QgsProperty::fromField( QString() );
@@ -469,7 +469,7 @@ void TestQgsProperty::fieldBasedProperty()
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
 
   //test preparation
-  const QgsProperty property3 = QgsProperty::fromField( QStringLiteral( "field1" ), true );
+  const QgsProperty property3 = QgsProperty::fromField( u"field1"_s, true );
   QVERIFY( property3.prepare( context ) );
   QCOMPARE( property3.value( context, -1 ).toInt(), 5 );
 
@@ -478,13 +478,13 @@ void TestQgsProperty::fieldBasedProperty()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
   QgsProperty p1;
   p1.setActive( true );
-  p1.setField( QStringLiteral( "test_field" ) );
+  p1.setField( u"test_field"_s );
 
   QVariant element;
   QgsProperty r1;
@@ -497,7 +497,7 @@ void TestQgsProperty::fieldBasedProperty()
   element = p1.toVariant();
   r1.loadVariant( element );
   QVERIFY( r1.isActive() );
-  QCOMPARE( r1.field(), QStringLiteral( "test_field" ) );
+  QCOMPARE( r1.field(), u"test_field"_s );
 
   p1.setActive( false );
   element = p1.toVariant();
@@ -507,13 +507,13 @@ void TestQgsProperty::fieldBasedProperty()
   // test copying a field based property
   QgsProperty p2;
   p2.setActive( true );
-  p2.setField( QStringLiteral( "test" ) );
+  p2.setField( u"test"_s );
   p2.setTransformer( new TestTransformer( 10, 20 ) );
 
   // copy constructor
   const QgsProperty p3( p2 );
   QVERIFY( p3.isActive() );
-  QCOMPARE( p3.field(), QStringLiteral( "test" ) );
+  QCOMPARE( p3.field(), u"test"_s );
   QVERIFY( p3.transformer() );
   p2.setActive( false );
 
@@ -521,7 +521,7 @@ void TestQgsProperty::fieldBasedProperty()
   QgsProperty p4;
   p4 = p2;
   QVERIFY( !p4.isActive() );
-  QCOMPARE( p4.field(), QStringLiteral( "test" ) );
+  QCOMPARE( p4.field(), u"test"_s );
   QVERIFY( p4.transformer() );
 }
 
@@ -530,8 +530,8 @@ void TestQgsProperty::expressionBasedProperty()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field1"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field2"_s, QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -543,26 +543,26 @@ void TestQgsProperty::expressionBasedProperty()
   context.setFeature( ft );
   context.setFields( fields );
 
-  QgsProperty property = QgsProperty::fromExpression( QStringLiteral( "\"field1\" + \"field2\"" ), true );
+  QgsProperty property = QgsProperty::fromExpression( u"\"field1\" + \"field2\""_s, true );
   QCOMPARE( property.propertyType(), Qgis::PropertyType::Expression );
   QVERIFY( property.isActive() );
   QCOMPARE( property.value( context, -1 ).toInt(), 12 );
   QCOMPARE( property.referencedFields( context ).count(), 2 );
   QVERIFY( property.referencedFields( context ).contains( "field1" ) );
   QVERIFY( property.referencedFields( context ).contains( "field2" ) );
-  property.setExpressionString( QStringLiteral( "\"field2\"*2" ) );
+  property.setExpressionString( u"\"field2\"*2"_s );
   QCOMPARE( property.value( context, -1 ).toInt(), 14 );
   QCOMPARE( property.referencedFields( context ), QSet<QString>() << "field2" );
   property.setActive( false );
   QVERIFY( !property.isActive() );
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   QVERIFY( property.referencedFields( context ).isEmpty() );
-  property.setExpressionString( QStringLiteral( "'a'||'b'" ) );
+  property.setExpressionString( u"'a'||'b'"_s );
   property.setActive( true );
   QVERIFY( property.referencedFields( context ).isEmpty() );
-  QCOMPARE( property.value( context, "bb" ).toString(), QStringLiteral( "ab" ) );
+  QCOMPARE( property.value( context, "bb" ).toString(), u"ab"_s );
   //bad expression
-  property.setExpressionString( QStringLiteral( "bad_ 5" ) );
+  property.setExpressionString( u"bad_ 5"_s );
   QCOMPARE( property.value( context, -1 ).toInt(), -1 );
   QVERIFY( property.referencedFields( context ).isEmpty() );
   // unset expression
@@ -576,10 +576,10 @@ void TestQgsProperty::expressionBasedProperty()
   QVERIFY( defaultProperty.referencedFields( context ).isEmpty() );
 
   //preparation
-  const QgsProperty property3 = QgsProperty::fromExpression( QStringLiteral( "\"field1\" + \"field2\"" ), true );
+  const QgsProperty property3 = QgsProperty::fromExpression( u"\"field1\" + \"field2\""_s, true );
   QVERIFY( property3.prepare( context ) );
   QCOMPARE( property3.value( context, -1 ).toInt(), 12 );
-  const QgsProperty property4 = QgsProperty::fromExpression( QStringLiteral( "\"field1\" + " ), true );
+  const QgsProperty property4 = QgsProperty::fromExpression( u"\"field1\" + "_s, true );
   QVERIFY( !property4.prepare( context ) );
 
   //saving and restoring
@@ -587,13 +587,13 @@ void TestQgsProperty::expressionBasedProperty()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
   QgsProperty p1;
   p1.setActive( true );
-  p1.setExpressionString( QStringLiteral( "4+5" ) );
+  p1.setExpressionString( u"4+5"_s );
 
   QVariant element;
   QgsProperty r1;
@@ -607,7 +607,7 @@ void TestQgsProperty::expressionBasedProperty()
   element = p1.toVariant();
   r1.loadVariant( element );
   QVERIFY( r1.isActive() );
-  QCOMPARE( r1.expressionString(), QStringLiteral( "4+5" ) );
+  QCOMPARE( r1.expressionString(), u"4+5"_s );
   QCOMPARE( r1.value( context, -1 ).toInt(), 9 );
 
   p1.setActive( false );
@@ -619,12 +619,12 @@ void TestQgsProperty::expressionBasedProperty()
   // test copying an expression based property
   QgsProperty p2;
   p2.setActive( true );
-  p2.setExpressionString( QStringLiteral( "1+6" ) );
+  p2.setExpressionString( u"1+6"_s );
 
   // copy constructor
   const QgsProperty p3( p2 );
   QVERIFY( p3.isActive() );
-  QCOMPARE( p3.expressionString(), QStringLiteral( "1+6" ) );
+  QCOMPARE( p3.expressionString(), u"1+6"_s );
   QCOMPARE( p3.value( context, -1 ).toInt(), 7 );
 
   // assignment operator
@@ -642,15 +642,15 @@ void TestQgsProperty::equality()
 {
   QgsProperty dd1;
   dd1.setActive( true );
-  dd1.setField( QStringLiteral( "field" ) );
+  dd1.setField( u"field"_s );
   QgsProperty dd2;
   dd2.setActive( true );
-  dd2.setField( QStringLiteral( "field" ) );
+  dd2.setField( u"field"_s );
   QVERIFY( dd1 == dd2 );
   QVERIFY( !( dd1 != dd2 ) );
 
-  dd1.setExpressionString( QStringLiteral( "expression" ) );
-  dd2.setExpressionString( QStringLiteral( "expression" ) );
+  dd1.setExpressionString( u"expression"_s );
+  dd2.setExpressionString( u"expression"_s );
   QVERIFY( dd1 == dd2 );
   QVERIFY( !( dd1 != dd2 ) );
 
@@ -659,16 +659,16 @@ void TestQgsProperty::equality()
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
   dd2.setActive( true );
-  dd2.setExpressionString( QStringLiteral( "a" ) );
+  dd2.setExpressionString( u"a"_s );
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
-  dd2.setField( QStringLiteral( "field" ) );
+  dd2.setField( u"field"_s );
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
-  dd1.setField( QStringLiteral( "fieldb" ) );
+  dd1.setField( u"fieldb"_s );
   QVERIFY( !( dd1 == dd2 ) );
   QVERIFY( dd1 != dd2 );
-  dd1.setField( QStringLiteral( "field" ) );
+  dd1.setField( u"field"_s );
   QVERIFY( dd1 == dd2 );
   QVERIFY( !( dd1 != dd2 ) );
 
@@ -698,20 +698,20 @@ void TestQgsProperty::isStaticValueInContext()
   QCOMPARE( v.toInt(), 55 );
 
   // a field based property is NOT static
-  p = QgsProperty::fromField( QStringLiteral( "xxx" ) );
+  p = QgsProperty::fromField( u"xxx"_s );
   QVERIFY( !p.isStaticValueInContext( context, v ) );
   QVERIFY( !v.isValid() );
 
   // an expression based property may or may not be static
   // start with a non-static expression
-  p = QgsProperty::fromExpression( QStringLiteral( "\"xxx\"" ) );
+  p = QgsProperty::fromExpression( u"\"xxx\""_s );
   v = 5;
   QVERIFY( !p.isStaticValueInContext( context, v ) );
   QVERIFY( !v.isValid() );
 
   // should still be non-static, even with valid fields
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "xxx" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"xxx"_s, QMetaType::Type::Int ) );
   context.setFields( fields );
   v = 5;
   QVERIFY( !p.isStaticValueInContext( context, v ) );
@@ -719,9 +719,9 @@ void TestQgsProperty::isStaticValueInContext()
 
   // an expression which IS static
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "my_var" ), 123, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"my_var"_s, 123, true, true ) );
   context.appendScope( scope );
-  p = QgsProperty::fromExpression( QStringLiteral( "@my_var * 2" ) );
+  p = QgsProperty::fromExpression( u"@my_var * 2"_s );
   v = 5;
   QVERIFY( p.isStaticValueInContext( context, v ) );
   QCOMPARE( v.toInt(), 246 );
@@ -743,7 +743,7 @@ void TestQgsProperty::propertyTransformer()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
@@ -795,22 +795,22 @@ void TestQgsProperty::propertyTransformerFromExpression()
   QString baseExpression;
   QString fieldName;
   // not convertible to a transformer
-  std::unique_ptr<QgsPropertyTransformer> exp( QgsPropertyTransformer::fromExpression( QStringLiteral( "1 * 2" ), baseExpression, fieldName ) );
+  std::unique_ptr<QgsPropertyTransformer> exp( QgsPropertyTransformer::fromExpression( u"1 * 2"_s, baseExpression, fieldName ) );
   QVERIFY( !exp.get() );
   QVERIFY( baseExpression.isEmpty() );
   QVERIFY( fieldName.isEmpty() );
 
   // convertible to a size scale transformer
-  exp.reset( QgsPropertyTransformer::fromExpression( QStringLiteral( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" ), baseExpression, fieldName ) );
+  exp.reset( QgsPropertyTransformer::fromExpression( u"coalesce(scale_linear(column, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->transformerType(), QgsPropertyTransformer::SizeScaleTransformer );
-  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
 
-  exp.reset( QgsPropertyTransformer::fromExpression( QStringLiteral( "coalesce(scale_linear(column * 2, 1, 7, 2, 10), 0)" ), baseExpression, fieldName ) );
+  exp.reset( QgsPropertyTransformer::fromExpression( u"coalesce(scale_linear(column * 2, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->transformerType(), QgsPropertyTransformer::SizeScaleTransformer );
-  QCOMPARE( baseExpression, QStringLiteral( "column * 2" ) );
+  QCOMPARE( baseExpression, u"column * 2"_s );
   QVERIFY( fieldName.isEmpty() );
 }
 
@@ -859,7 +859,7 @@ void TestQgsProperty::genericNumericTransformer()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
@@ -934,9 +934,9 @@ void TestQgsProperty::genericNumericTransformer()
 
   //as expression
   QgsGenericNumericTransformer t3( 15, 25, 150, 250, -10, 1.0 );
-  QCOMPARE( t3.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_linear(5+6, 15, 25, 150, 250), -10)" ) );
+  QCOMPARE( t3.toExpression( "5+6" ), u"coalesce(scale_linear(5+6, 15, 25, 150, 250), -10)"_s );
   t3.setExponent( 1.6 );
-  QCOMPARE( t3.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_polynomial(5+6, 15, 25, 150, 250, 1.6), -10)" ) );
+  QCOMPARE( t3.toExpression( "5+6" ), u"coalesce(scale_polynomial(5+6, 15, 25, 150, 250, 1.6), -10)"_s );
 
   // test size scale transformer inside property
   QgsProperty p;
@@ -945,10 +945,10 @@ void TestQgsProperty::genericNumericTransformer()
   bool ok = false;
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
-  p.setExpressionString( QStringLiteral( "NULL" ) );
+  p.setExpressionString( u"NULL"_s );
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
-  p.setExpressionString( QStringLiteral( "no field" ) );
+  p.setExpressionString( u"no field"_s );
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
 }
@@ -957,9 +957,9 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
 {
   QString baseExpression;
   QString fieldName;
-  std::unique_ptr<QgsGenericNumericTransformer> exp( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" ), baseExpression, fieldName ) );
+  std::unique_ptr<QgsGenericNumericTransformer> exp( QgsGenericNumericTransformer::fromExpression( u"coalesce(scale_linear(column, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
-  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
@@ -967,25 +967,25 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
   QCOMPARE( exp->maxOutputValue(), 10. );
   QCOMPARE( exp->nullOutputValue(), 0.0 );
 
-  exp.reset( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "scale_linear(column, 1, 7, 2, 10)" ), baseExpression, fieldName ) );
+  exp.reset( QgsGenericNumericTransformer::fromExpression( u"scale_linear(column, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
-  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
   QCOMPARE( exp->minOutputValue(), 2. );
   QCOMPARE( exp->maxOutputValue(), 10. );
 
-  exp.reset( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "scale_linear(column * 2, 1, 7, 2, 10)" ), baseExpression, fieldName ) );
+  exp.reset( QgsGenericNumericTransformer::fromExpression( u"scale_linear(column * 2, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
-  QCOMPARE( baseExpression, QStringLiteral( "column * 2" ) );
+  QCOMPARE( baseExpression, u"column * 2"_s );
   QVERIFY( fieldName.isEmpty() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
   QCOMPARE( exp->minOutputValue(), 2. );
   QCOMPARE( exp->maxOutputValue(), 10. );
 
-  exp.reset( QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 1)" ), baseExpression, fieldName ) );
+  exp.reset( QgsGenericNumericTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 1)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
@@ -994,9 +994,9 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
   QCOMPARE( exp->exponent(), 0.51 );
   QCOMPARE( exp->nullOutputValue(), 1.0 );
 
-  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7, a, 10, 0.5), 0)" ), baseExpression, fieldName ) );
-  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7), 0)" ), baseExpression, fieldName ) );
-  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "1+2" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, a, 10, 0.5), 0)"_s, baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7), 0)"_s, baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( u"1+2"_s, baseExpression, fieldName ) );
   QVERIFY( !QgsGenericNumericTransformer::fromExpression( QString(), baseExpression, fieldName ) );
 }
 
@@ -1045,7 +1045,7 @@ void TestQgsProperty::sizeScaleTransformer()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
@@ -1129,10 +1129,10 @@ void TestQgsProperty::sizeScaleTransformer()
 
   //as expression
   QgsSizeScaleTransformer t2( QgsSizeScaleTransformer::Linear, 15, 25, 150, 250, -10, 1.6 );
-  QCOMPARE( t2.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_linear(5+6, 15, 25, 150, 250), -10)" ) );
+  QCOMPARE( t2.toExpression( "5+6" ), u"coalesce(scale_linear(5+6, 15, 25, 150, 250), -10)"_s );
   t2.setType( QgsSizeScaleTransformer::Exponential );
   t2.setExponent( 1.6 );
-  QCOMPARE( t2.toExpression( "5+6" ), QStringLiteral( "coalesce(scale_polynomial(5+6, 15, 25, 150, 250, 1.6), -10)" ) );
+  QCOMPARE( t2.toExpression( "5+6" ), u"coalesce(scale_polynomial(5+6, 15, 25, 150, 250, 1.6), -10)"_s );
 
   // test size scale transformer inside property
   QgsProperty p;
@@ -1141,10 +1141,10 @@ void TestQgsProperty::sizeScaleTransformer()
   bool ok = false;
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
-  p.setExpressionString( QStringLiteral( "NULL" ) );
+  p.setExpressionString( u"NULL"_s );
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
-  p.setExpressionString( QStringLiteral( "no field" ) );
+  p.setExpressionString( u"no field"_s );
   QCOMPARE( p.valueAsDouble( context, 100, &ok ), -10.0 );
   QVERIFY( ok );
 
@@ -1167,10 +1167,10 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
 {
   QString baseExpression;
   QString fieldName;
-  std::unique_ptr<QgsSizeScaleTransformer> exp( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" ), baseExpression, fieldName ) );
+  std::unique_ptr<QgsSizeScaleTransformer> exp( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_linear(column, 1, 7, 2, 10), 0)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Linear );
-  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
@@ -1178,50 +1178,50 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QCOMPARE( exp->maxSize(), 10. );
   QCOMPARE( exp->nullSize(), 0.0 );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.5), 0)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.5), 0)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Area );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.57), 0)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.57), 0)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Flannery );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "scale_linear(column, 1, 7, 2, 10)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_linear(column, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Linear );
-  QCOMPARE( fieldName, QStringLiteral( "column" ) );
+  QCOMPARE( fieldName, u"column"_s );
   QVERIFY( baseExpression.isEmpty() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
   QCOMPARE( exp->minSize(), 2. );
   QCOMPARE( exp->maxSize(), 10. );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "scale_linear(column * 2, 1, 7, 2, 10)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_linear(column * 2, 1, 7, 2, 10)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Linear );
-  QCOMPARE( baseExpression, QStringLiteral( "column * 2" ) );
+  QCOMPARE( baseExpression, u"column * 2"_s );
   QVERIFY( fieldName.isEmpty() );
   QCOMPARE( exp->minValue(), 1. );
   QCOMPARE( exp->maxValue(), 7. );
   QCOMPARE( exp->minSize(), 2. );
   QCOMPARE( exp->maxSize(), 10. );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "scale_polynomial(column, 1, 7, 2, 10, 0.5)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_polynomial(column, 1, 7, 2, 10, 0.5)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Area );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "scale_polynomial(column, 1, 7, 2, 10, 0.57)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"scale_polynomial(column, 1, 7, 2, 10, 0.57)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Flannery );
 
-  exp.reset( QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 22)" ), baseExpression, fieldName ) );
+  exp.reset( QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, 2, 10, 0.51), 22)"_s, baseExpression, fieldName ) );
   QVERIFY( exp.get() );
   QCOMPARE( exp->type(), QgsSizeScaleTransformer::Exponential );
   QCOMPARE( exp->nullSize(), 22.0 );
 
-  QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7, a, 10, 0.5), 0)" ), baseExpression, fieldName ) );
-  QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_polynomial(column, 1, 7), 0)" ), baseExpression, fieldName ) );
-  QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "1+2" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7, a, 10, 0.5), 0)"_s, baseExpression, fieldName ) );
+  QVERIFY( !QgsSizeScaleTransformer::fromExpression( u"coalesce(scale_polynomial(column, 1, 7), 0)"_s, baseExpression, fieldName ) );
+  QVERIFY( !QgsSizeScaleTransformer::fromExpression( u"1+2"_s, baseExpression, fieldName ) );
   QVERIFY( !QgsSizeScaleTransformer::fromExpression( QString(), baseExpression, fieldName ) );
 }
 
@@ -1282,12 +1282,12 @@ void TestQgsProperty::colorRampTransformer()
   //create a test dom element
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
 
   QgsColorRampTransformer t1( 15, 25, new QgsGradientColorRamp( QColor( 10, 20, 30 ), QColor( 200, 190, 180 ) ), QColor( 100, 150, 200 ) );
-  t1.setRampName( QStringLiteral( "rampname " ) );
+  t1.setRampName( u"rampname "_s );
   t1.setCurveTransform( new QgsCurveTransform( QList<QgsPointXY>() << QgsPointXY( 0, 0.8 ) << QgsPointXY( 1, 0.2 ) ) );
 
   QVariant element;
@@ -1297,7 +1297,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r1.minValue(), 15.0 );
   QCOMPARE( r1.maxValue(), 25.0 );
   QCOMPARE( r1.nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( r1.rampName(), QStringLiteral( "rampname " ) );
+  QCOMPARE( r1.rampName(), u"rampname "_s );
   QVERIFY( dynamic_cast<QgsGradientColorRamp *>( r1.colorRamp() ) );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r1.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r1.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
@@ -1309,7 +1309,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r2->minValue(), 15.0 );
   QCOMPARE( r2->maxValue(), 25.0 );
   QCOMPARE( r2->nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( r2->rampName(), QStringLiteral( "rampname " ) );
+  QCOMPARE( r2->rampName(), u"rampname "_s );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r2->colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r2->colorRamp() )->color2(), QColor( 200, 190, 180 ) );
   QVERIFY( r2->curveTransform() );
@@ -1320,7 +1320,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r3.minValue(), 15.0 );
   QCOMPARE( r3.maxValue(), 25.0 );
   QCOMPARE( r3.nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( r3.rampName(), QStringLiteral( "rampname " ) );
+  QCOMPARE( r3.rampName(), u"rampname "_s );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r3.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r3.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
   QVERIFY( r3.curveTransform() );
@@ -1332,7 +1332,7 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( r4.minValue(), 15.0 );
   QCOMPARE( r4.maxValue(), 25.0 );
   QCOMPARE( r4.nullColor(), QColor( 100, 150, 200 ) );
-  QCOMPARE( r4.rampName(), QStringLiteral( "rampname " ) );
+  QCOMPARE( r4.rampName(), u"rampname "_s );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r4.colorRamp() )->color1(), QColor( 10, 20, 30 ) );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( r4.colorRamp() )->color2(), QColor( 200, 190, 180 ) );
   QVERIFY( r4.curveTransform() );
@@ -1350,8 +1350,8 @@ void TestQgsProperty::colorRampTransformer()
   QCOMPARE( t.nullColor(), QColor( 1, 10, 11, 21 ) );
   t.setColorRamp( new QgsGradientColorRamp( QColor( 10, 20, 100 ), QColor( 100, 200, 200 ) ) );
   QCOMPARE( static_cast<QgsGradientColorRamp *>( t.colorRamp() )->color1(), QColor( 10, 20, 100 ) );
-  t.setRampName( QStringLiteral( "colorramp" ) );
-  QCOMPARE( t.rampName(), QStringLiteral( "colorramp" ) );
+  t.setRampName( u"colorramp"_s );
+  QCOMPARE( t.rampName(), u"colorramp"_s );
 
   //test colors
   QCOMPARE( t.color( 50 ), QColor( 10, 20, 100 ) ); //out of range
@@ -1362,9 +1362,9 @@ void TestQgsProperty::colorRampTransformer()
 
   //toExpression
   QgsColorRampTransformer t5( 15, 25, new QgsGradientColorRamp( QColor( 10, 20, 30 ), QColor( 200, 190, 180 ) ), QColor( 100, 150, 200 ) );
-  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('custom ramp',scale_linear(5+6, 15, 25, 0, 1)), '#6496c8')" ) );
-  t5.setRampName( QStringLiteral( "my ramp" ) );
-  QCOMPARE( t5.toExpression( "5+6" ), QStringLiteral( "coalesce(ramp_color('my ramp',scale_linear(5+6, 15, 25, 0, 1)), '#6496c8')" ) );
+  QCOMPARE( t5.toExpression( "5+6" ), u"coalesce(ramp_color('custom ramp',scale_linear(5+6, 15, 25, 0, 1)), '#6496c8')"_s );
+  t5.setRampName( u"my ramp"_s );
+  QCOMPARE( t5.toExpression( "5+6" ), u"coalesce(ramp_color('my ramp',scale_linear(5+6, 15, 25, 0, 1)), '#6496c8')"_s );
 }
 
 void TestQgsProperty::propertyToTransformer()
@@ -1372,10 +1372,10 @@ void TestQgsProperty::propertyToTransformer()
   // not convertible to a transformer:
 
   // fields cannot be converted
-  QgsProperty p = QgsProperty::fromField( QStringLiteral( "a field" ) );
+  QgsProperty p = QgsProperty::fromField( u"a field"_s );
   QVERIFY( !p.convertToTransformer() );
   QVERIFY( !p.transformer() );
-  QCOMPARE( p.field(), QStringLiteral( "a field" ) );
+  QCOMPARE( p.field(), u"a field"_s );
 
   // static values cannot be converted
   p = QgsProperty::fromValue( 5 );
@@ -1384,43 +1384,43 @@ void TestQgsProperty::propertyToTransformer()
   QCOMPARE( p.staticValue(), QVariant( 5 ) );
 
   // bad expression which cannot be converted
-  p = QgsProperty::fromExpression( QStringLiteral( "5*5" ) );
+  p = QgsProperty::fromExpression( u"5*5"_s );
   QVERIFY( !p.convertToTransformer() );
   QVERIFY( !p.transformer() );
-  QCOMPARE( p.expressionString(), QStringLiteral( "5*5" ) );
+  QCOMPARE( p.expressionString(), u"5*5"_s );
 
   // expression which can be converted to size scale transformer with base expression
-  p = QgsProperty::fromExpression( QStringLiteral( "coalesce(scale_linear(column * 2, 1, 7, 2, 10), 0)" ) );
+  p = QgsProperty::fromExpression( u"coalesce(scale_linear(column * 2, 1, 7, 2, 10), 0)"_s );
   QVERIFY( p.convertToTransformer() );
   QVERIFY( p.transformer() );
-  QCOMPARE( p.expressionString(), QStringLiteral( "column * 2" ) );
+  QCOMPARE( p.expressionString(), u"column * 2"_s );
 
   // expression which can be converted to a size scale transformer with base column ref
-  p = QgsProperty::fromExpression( QStringLiteral( "coalesce(scale_linear(column, 1, 7, 2, 10), 0)" ) );
+  p = QgsProperty::fromExpression( u"coalesce(scale_linear(column, 1, 7, 2, 10), 0)"_s );
   QVERIFY( p.convertToTransformer() );
   QVERIFY( p.transformer() );
-  QCOMPARE( p.field(), QStringLiteral( "column" ) );
+  QCOMPARE( p.field(), u"column"_s );
 }
 
 void TestQgsProperty::asExpression()
 {
   // static property
   QgsProperty p = QgsProperty::fromValue( 5 );
-  QCOMPARE( p.asExpression(), QStringLiteral( "5" ) );
+  QCOMPARE( p.asExpression(), u"5"_s );
   p = QgsProperty::fromValue( "value" );
-  QCOMPARE( p.asExpression(), QStringLiteral( "'value'" ) );
+  QCOMPARE( p.asExpression(), u"'value'"_s );
 
   // field based property
-  p = QgsProperty::fromField( QStringLiteral( "a field" ) );
-  QCOMPARE( p.asExpression(), QStringLiteral( "\"a field\"" ) );
+  p = QgsProperty::fromField( u"a field"_s );
+  QCOMPARE( p.asExpression(), u"\"a field\""_s );
 
   // expression based property
-  p = QgsProperty::fromExpression( QStringLiteral( "5 + 6" ) );
-  QCOMPARE( p.asExpression(), QStringLiteral( "5 + 6" ) );
+  p = QgsProperty::fromExpression( u"5 + 6"_s );
+  QCOMPARE( p.asExpression(), u"5 + 6"_s );
 
   // with transformer
   p.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 15, 25, 150, 250, -10, 1 ) );
-  QCOMPARE( p.asExpression(), QStringLiteral( "coalesce(scale_linear(5 + 6, 15, 25, 150, 250), -10)" ) );
+  QCOMPARE( p.asExpression(), u"coalesce(scale_linear(5 + 6, 15, 25, 150, 250), -10)"_s );
 }
 
 void TestQgsProperty::propertyCollection()
@@ -1428,8 +1428,8 @@ void TestQgsProperty::propertyCollection()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field1"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field2"_s, QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -1441,8 +1441,8 @@ void TestQgsProperty::propertyCollection()
   context.setFeature( ft );
   context.setFields( fields );
 
-  QgsPropertyCollection collection( QStringLiteral( "collection" ) );
-  QCOMPARE( collection.name(), QStringLiteral( "collection" ) );
+  QgsPropertyCollection collection( u"collection"_s );
+  QCOMPARE( collection.name(), u"collection"_s );
   QVERIFY( !collection.hasProperty( PropertyKeys::Property1 ) );
   QVERIFY( collection.referencedFields( context ).isEmpty() );
   QCOMPARE( collection.count(), 0 );
@@ -1477,7 +1477,7 @@ void TestQgsProperty::propertyCollection()
   //test bad property
   QVERIFY( !const_cast<const QgsPropertyCollection *>( &collection )->property( PropertyKeys::Property2 ) );
   QVERIFY( !collection.value( PropertyKeys::Property2, context ).isValid() );
-  QCOMPARE( collection.value( PropertyKeys::Property2, context, QStringLiteral( "default" ) ).toString(), QStringLiteral( "default" ) );
+  QCOMPARE( collection.value( PropertyKeys::Property2, context, u"default"_s ).toString(), u"default"_s );
   QVERIFY( !collection.isActive( PropertyKeys::Property2 ) );
 
   //test replacing property
@@ -1515,8 +1515,8 @@ void TestQgsProperty::propertyCollection()
 
   collection.setProperty( PropertyKeys::Property1, QgsProperty::fromValue( "v1", true ) );
   collection.setProperty( PropertyKeys::Property2, QgsProperty::fromValue( "v2", false ) );
-  collection.setProperty( PropertyKeys::Property3, QgsProperty::fromField( QStringLiteral( "field1" ), true ) );
-  collection.setProperty( PropertyKeys::Property4, QgsProperty::fromExpression( QStringLiteral( "\"field1\" + \"field2\"" ), true ) );
+  collection.setProperty( PropertyKeys::Property3, QgsProperty::fromField( u"field1"_s, true ) );
+  collection.setProperty( PropertyKeys::Property4, QgsProperty::fromExpression( u"\"field1\" + \"field2\""_s, true ) );
   QCOMPARE( collection.count(), 4 );
 
   collection2 = collection;
@@ -1535,14 +1535,14 @@ void TestQgsProperty::propertyCollection()
 
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   const QDomDocument doc( documentType );
   const QVariant collectionElement = collection.toVariant( mDefinitions );
 
   QgsPropertyCollection restoredCollection;
   restoredCollection.loadVariant( collectionElement, mDefinitions );
-  QCOMPARE( restoredCollection.name(), QStringLiteral( "collection" ) );
+  QCOMPARE( restoredCollection.name(), u"collection"_s );
   QCOMPARE( restoredCollection.count(), 4 );
   QCOMPARE( restoredCollection.property( PropertyKeys::Property1 ).propertyType(), Qgis::PropertyType::Static );
   QVERIFY( restoredCollection.property( PropertyKeys::Property1 ).isActive() );
@@ -1552,16 +1552,16 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( restoredCollection.property( PropertyKeys::Property2 ).staticValue(), QVariant( "v2" ) );
   QCOMPARE( restoredCollection.property( PropertyKeys::Property3 ).propertyType(), Qgis::PropertyType::Field );
   QVERIFY( restoredCollection.property( PropertyKeys::Property3 ).isActive() );
-  QCOMPARE( restoredCollection.property( PropertyKeys::Property3 ).field(), QStringLiteral( "field1" ) );
+  QCOMPARE( restoredCollection.property( PropertyKeys::Property3 ).field(), u"field1"_s );
   QCOMPARE( restoredCollection.property( PropertyKeys::Property4 ).propertyType(), Qgis::PropertyType::Expression );
   QVERIFY( restoredCollection.property( PropertyKeys::Property4 ).isActive() );
-  QCOMPARE( restoredCollection.property( PropertyKeys::Property4 ).expressionString(), QStringLiteral( "\"field1\" + \"field2\"" ) );
+  QCOMPARE( restoredCollection.property( PropertyKeys::Property4 ).expressionString(), u"\"field1\" + \"field2\""_s );
   QVERIFY( restoredCollection.hasActiveProperties() );
   QVERIFY( restoredCollection.hasDynamicProperties() );
 
   // copy constructor
   collection2 = QgsPropertyCollection( collection );
-  QCOMPARE( collection2.name(), QStringLiteral( "collection" ) );
+  QCOMPARE( collection2.name(), u"collection"_s );
   QCOMPARE( collection2.count(), 4 );
   QCOMPARE( collection2.property( PropertyKeys::Property1 ).propertyType(), Qgis::PropertyType::Static );
   QVERIFY( collection2.property( PropertyKeys::Property1 ).isActive() );
@@ -1571,10 +1571,10 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection2.property( PropertyKeys::Property2 ).staticValue(), QVariant( "v2" ) );
   QCOMPARE( collection2.property( PropertyKeys::Property3 ).propertyType(), Qgis::PropertyType::Field );
   QVERIFY( collection2.property( PropertyKeys::Property3 ).isActive() );
-  QCOMPARE( collection2.property( PropertyKeys::Property3 ).field(), QStringLiteral( "field1" ) );
+  QCOMPARE( collection2.property( PropertyKeys::Property3 ).field(), u"field1"_s );
   QCOMPARE( collection2.property( PropertyKeys::Property4 ).propertyType(), Qgis::PropertyType::Expression );
   QVERIFY( collection2.property( PropertyKeys::Property4 ).isActive() );
-  QCOMPARE( collection2.property( PropertyKeys::Property4 ).expressionString(), QStringLiteral( "\"field1\" + \"field2\"" ) );
+  QCOMPARE( collection2.property( PropertyKeys::Property4 ).expressionString(), u"\"field1\" + \"field2\""_s );
   QVERIFY( collection2.hasActiveProperties() );
   QVERIFY( collection2.hasDynamicProperties() );
 
@@ -1582,7 +1582,7 @@ void TestQgsProperty::propertyCollection()
   QgsPropertyCollection collection3;
   collection3.setProperty( PropertyKeys::Property1, QgsProperty::fromValue( "aaaa", false ) );
   collection3 = collection;
-  QCOMPARE( collection3.name(), QStringLiteral( "collection" ) );
+  QCOMPARE( collection3.name(), u"collection"_s );
   QCOMPARE( collection3.count(), 4 );
   QCOMPARE( collection3.property( PropertyKeys::Property1 ).propertyType(), Qgis::PropertyType::Static );
   QVERIFY( collection3.property( PropertyKeys::Property1 ).isActive() );
@@ -1592,10 +1592,10 @@ void TestQgsProperty::propertyCollection()
   QCOMPARE( collection3.property( PropertyKeys::Property2 ).staticValue(), QVariant( "v2" ) );
   QCOMPARE( collection3.property( PropertyKeys::Property3 ).propertyType(), Qgis::PropertyType::Field );
   QVERIFY( collection3.property( PropertyKeys::Property3 ).isActive() );
-  QCOMPARE( collection3.property( PropertyKeys::Property3 ).field(), QStringLiteral( "field1" ) );
+  QCOMPARE( collection3.property( PropertyKeys::Property3 ).field(), u"field1"_s );
   QCOMPARE( collection3.property( PropertyKeys::Property4 ).propertyType(), Qgis::PropertyType::Expression );
   QVERIFY( collection3.property( PropertyKeys::Property4 ).isActive() );
-  QCOMPARE( collection3.property( PropertyKeys::Property4 ).expressionString(), QStringLiteral( "\"field1\" + \"field2\"" ) );
+  QCOMPARE( collection3.property( PropertyKeys::Property4 ).expressionString(), u"\"field1\" + \"field2\""_s );
   QVERIFY( collection3.hasActiveProperties() );
   QVERIFY( collection3.hasDynamicProperties() );
 
@@ -1630,8 +1630,8 @@ void TestQgsProperty::collectionStack()
   //make a feature
   QgsFeature ft;
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "field1" ), QMetaType::Type::Int ) );
-  fields.append( QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field1"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"field2"_s, QMetaType::Type::Int ) );
   ft.setFields( fields );
   QgsAttributes attr;
   attr << QVariant( 5 ) << QVariant( 7 );
@@ -1650,7 +1650,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !const_cast<const QgsPropertyCollectionStack *>( &stack )->at( 0 ) );
   QVERIFY( !stack.collection( "nothing" ) );
   QVERIFY( !stack.value( static_cast<int>( PropertyKeys::Property1 ), context ).isValid() );
-  QCOMPARE( stack.value( static_cast<int>( PropertyKeys::Property1 ), context, "default" ).toString(), QStringLiteral( "default" ) );
+  QCOMPARE( stack.value( static_cast<int>( PropertyKeys::Property1 ), context, "default" ).toString(), u"default"_s );
   QVERIFY( !stack.isActive( static_cast<int>( PropertyKeys::Property1 ) ) );
   QVERIFY( stack.referencedFields( context ).isEmpty() );
   QCOMPARE( stack.count(), 0 );
@@ -1658,7 +1658,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !stack.hasActiveProperties() );
 
   //add a collection to the stack
-  QgsPropertyCollection *collection = new QgsPropertyCollection( QStringLiteral( "collection" ) );
+  QgsPropertyCollection *collection = new QgsPropertyCollection( u"collection"_s );
   stack.appendCollection( collection );
   QCOMPARE( stack.count(), 1 );
   QCOMPARE( stack.at( 0 ), collection );
@@ -1667,7 +1667,7 @@ void TestQgsProperty::collectionStack()
   QCOMPARE( stack.collection( "collection" ), collection );
   QVERIFY( !stack.property( static_cast<int>( PropertyKeys::Property1 ) ) );
   QVERIFY( !stack.value( static_cast<int>( PropertyKeys::Property1 ), context ).isValid() );
-  QCOMPARE( stack.value( static_cast<int>( PropertyKeys::Property1 ), context, "default" ).toString(), QStringLiteral( "default" ) );
+  QCOMPARE( stack.value( static_cast<int>( PropertyKeys::Property1 ), context, "default" ).toString(), u"default"_s );
   QVERIFY( !stack.isActive( static_cast<int>( PropertyKeys::Property1 ) ) );
   QVERIFY( !stack.hasDynamicProperties() );
   QVERIFY( !stack.hasActiveProperties() );
@@ -1688,7 +1688,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack.hasActiveProperties() );
 
   //add a second collection
-  QgsPropertyCollection *collection2 = new QgsPropertyCollection( QStringLiteral( "collection2" ) );
+  QgsPropertyCollection *collection2 = new QgsPropertyCollection( u"collection2"_s );
   stack.appendCollection( collection2 );
   QCOMPARE( stack.count(), 2 );
   QCOMPARE( stack.at( 1 ), collection2 );
@@ -1734,16 +1734,16 @@ void TestQgsProperty::collectionStack()
 
   // test copying a stack
   QgsPropertyCollectionStack stack2;
-  stack2.appendCollection( new QgsPropertyCollection( QStringLiteral( "collection1" ) ) );
+  stack2.appendCollection( new QgsPropertyCollection( u"collection1"_s ) );
   stack2.at( 0 )->setProperty( PropertyKeys::Property1, "val1" );
   stack2.at( 0 )->setProperty( PropertyKeys::Property2, "val2" );
-  stack2.appendCollection( new QgsPropertyCollection( QStringLiteral( "collection2" ) ) );
+  stack2.appendCollection( new QgsPropertyCollection( u"collection2"_s ) );
   stack2.at( 1 )->setProperty( PropertyKeys::Property3, "val3" );
   //copy constructor
   QgsPropertyCollectionStack stack3( stack2 );
   QCOMPARE( stack3.count(), 2 );
-  QCOMPARE( stack3.at( 0 )->name(), QStringLiteral( "collection1" ) );
-  QCOMPARE( stack3.at( 1 )->name(), QStringLiteral( "collection2" ) );
+  QCOMPARE( stack3.at( 0 )->name(), u"collection1"_s );
+  QCOMPARE( stack3.at( 1 )->name(), u"collection2"_s );
   QCOMPARE( stack3.at( 0 )->property( PropertyKeys::Property1 ).staticValue(), QVariant( "val1" ) );
   QCOMPARE( stack3.at( 0 )->property( PropertyKeys::Property2 ).staticValue(), QVariant( "val2" ) );
   QCOMPARE( stack3.at( 1 )->property( PropertyKeys::Property3 ).staticValue(), QVariant( "val3" ) );
@@ -1751,11 +1751,11 @@ void TestQgsProperty::collectionStack()
   QVERIFY( stack3.hasActiveProperties() );
   //assignment operator
   stack3.clear();
-  stack3.appendCollection( new QgsPropertyCollection( QStringLiteral( "temp" ) ) );
+  stack3.appendCollection( new QgsPropertyCollection( u"temp"_s ) );
   stack3 = stack2;
   QCOMPARE( stack3.count(), 2 );
-  QCOMPARE( stack3.at( 0 )->name(), QStringLiteral( "collection1" ) );
-  QCOMPARE( stack3.at( 1 )->name(), QStringLiteral( "collection2" ) );
+  QCOMPARE( stack3.at( 0 )->name(), u"collection1"_s );
+  QCOMPARE( stack3.at( 1 )->name(), u"collection2"_s );
   QCOMPARE( stack3.at( 0 )->property( PropertyKeys::Property1 ).staticValue(), QVariant( "val1" ) );
   QCOMPARE( stack3.at( 0 )->property( PropertyKeys::Property2 ).staticValue(), QVariant( "val2" ) );
   QCOMPARE( stack3.at( 1 )->property( PropertyKeys::Property3 ).staticValue(), QVariant( "val3" ) );
@@ -1764,7 +1764,7 @@ void TestQgsProperty::collectionStack()
 
   //check hasDynamicProperties() and hasActiveProperties()
   QgsPropertyCollectionStack stack4;
-  stack4.appendCollection( new QgsPropertyCollection( QStringLiteral( "collection1" ) ) );
+  stack4.appendCollection( new QgsPropertyCollection( u"collection1"_s ) );
   stack4.at( 0 )->setProperty( PropertyKeys::Property1, "val1" );
   QVERIFY( !stack4.hasDynamicProperties() );
   QVERIFY( stack4.hasActiveProperties() );
@@ -1772,7 +1772,7 @@ void TestQgsProperty::collectionStack()
   QVERIFY( !stack4.hasActiveProperties() );
   stack4.at( 0 )->setProperty( PropertyKeys::Property1, "6" );
   QVERIFY( stack4.hasActiveProperties() );
-  stack4.at( 0 )->setProperty( PropertyKeys::Property2, QgsProperty::fromExpression( QStringLiteral( "\"field1\" + \"field2\"" ), true ) );
+  stack4.at( 0 )->setProperty( PropertyKeys::Property2, QgsProperty::fromExpression( u"\"field1\" + \"field2\""_s, true ) );
   QVERIFY( stack4.hasActiveProperties() );
   QVERIFY( stack4.hasDynamicProperties() );
   QCOMPARE( stack4.referencedFields( context ), QSet<QString>() << "field1" << "field2" );
@@ -1863,11 +1863,11 @@ void TestQgsProperty::curveTransform()
   // writing and reading from xml
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   QDomDocument doc( documentType );
 
-  QDomElement element = doc.createElement( QStringLiteral( "xform" ) );
+  QDomElement element = doc.createElement( u"xform"_s );
   QVERIFY( src.writeXml( element, doc ) );
 
   QgsCurveTransform r1;
@@ -1878,7 +1878,7 @@ void TestQgsProperty::curveTransform()
 
 void TestQgsProperty::asVariant()
 {
-  const QgsProperty original = QgsProperty::fromField( QStringLiteral( "field1" ), true );
+  const QgsProperty original = QgsProperty::fromField( u"field1"_s, true );
 
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( original );
@@ -1887,24 +1887,24 @@ void TestQgsProperty::asVariant()
   const QgsProperty fromVar = qvariant_cast<QgsProperty>( var );
   QCOMPARE( fromVar.propertyType(), Qgis::PropertyType::Field );
   QVERIFY( fromVar.isActive() );
-  QCOMPARE( fromVar.field(), QStringLiteral( "field1" ) );
+  QCOMPARE( fromVar.field(), u"field1"_s );
 }
 
 void TestQgsProperty::isProjectColor()
 {
   QgsProperty p = QgsProperty::fromValue( 3, true );
   QVERIFY( !p.isProjectColor() );
-  p = QgsProperty::fromField( QStringLiteral( "blah" ), true );
+  p = QgsProperty::fromField( u"blah"_s, true );
   QVERIFY( !p.isProjectColor() );
-  p = QgsProperty::fromExpression( QStringLiteral( "1+2" ), true );
+  p = QgsProperty::fromExpression( u"1+2"_s, true );
   QVERIFY( !p.isProjectColor() );
-  p = QgsProperty::fromExpression( QStringLiteral( "project_color('mine')" ), true );
+  p = QgsProperty::fromExpression( u"project_color('mine')"_s, true );
   QVERIFY( p.isProjectColor() );
-  p = QgsProperty::fromExpression( QStringLiteral( "project_color('burnt pineapple Skin 76')" ), true );
+  p = QgsProperty::fromExpression( u"project_color('burnt pineapple Skin 76')"_s, true );
   QVERIFY( p.isProjectColor() );
-  p = QgsProperty::fromExpression( QStringLiteral( "project_color_object('mine')" ), true );
+  p = QgsProperty::fromExpression( u"project_color_object('mine')"_s, true );
   QVERIFY( p.isProjectColor() );
-  p = QgsProperty::fromExpression( QStringLiteral( "project_color_object('burnt pineapple Skin 76')" ), true );
+  p = QgsProperty::fromExpression( u"project_color_object('burnt pineapple Skin 76')"_s, true );
   QVERIFY( p.isProjectColor() );
   p.setActive( false );
   QVERIFY( p.isProjectColor() );
@@ -1916,21 +1916,21 @@ void TestQgsProperty::referencedFieldsIgnoreContext()
   // only if those field names are present in the context's fields. The ignoreContext
   // argument is a workaround for the case when we don't have fields yet.
 
-  const QgsProperty p = QgsProperty::fromExpression( QStringLiteral( "foo + bar" ) );
+  const QgsProperty p = QgsProperty::fromExpression( u"foo + bar"_s );
   QCOMPARE( p.referencedFields( QgsExpressionContext() ), QSet<QString>() );
-  QCOMPARE( p.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) );
+  QCOMPARE( p.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << u"foo"_s << u"bar"_s );
 
   // if the property is from a field, the ignoreContext does not make a difference
-  const QgsProperty p2 = QgsProperty::fromField( QStringLiteral( "boo" ) );
-  QCOMPARE( p2.referencedFields( QgsExpressionContext() ), QSet<QString>() << QStringLiteral( "boo" ) );
-  QCOMPARE( p2.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "boo" ) );
+  const QgsProperty p2 = QgsProperty::fromField( u"boo"_s );
+  QCOMPARE( p2.referencedFields( QgsExpressionContext() ), QSet<QString>() << u"boo"_s );
+  QCOMPARE( p2.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << u"boo"_s );
 
   QgsPropertyCollection collection;
   collection.setProperty( 0, p );
   collection.setProperty( 1, p2 );
 
-  QCOMPARE( collection.referencedFields( QgsExpressionContext() ), QSet<QString>() << QStringLiteral( "boo" ) );
-  QCOMPARE( collection.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "boo" ) << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) );
+  QCOMPARE( collection.referencedFields( QgsExpressionContext() ), QSet<QString>() << u"boo"_s );
+  QCOMPARE( collection.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << u"boo"_s << u"foo"_s << u"bar"_s );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, const QVector<double> &x, const QVector<double> &y )

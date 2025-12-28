@@ -173,14 +173,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->name();
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-      if ( vlayer && nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
+      if ( vlayer && nodeLayer->customProperty( u"showFeatureCount"_s, 0 ).toInt() && role == Qt::DisplayRole )
       {
         const bool estimatedCount = vlayer->dataProvider() ? QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata() : false;
         const qlonglong count = vlayer->featureCount();
 
         // if you modify this line, please update QgsSymbolLegendNode::updateLabel
-        name += QStringLiteral( " [%1%2]" ).arg(
-                  estimatedCount ? QStringLiteral( "≈" ) : QString(),
+        name += u" [%1%2]"_s.arg(
+                  estimatedCount ? u"≈"_s : QString(),
                   count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
       }
       return name;
@@ -219,7 +219,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
         QPainter painter( &pixmap );
-        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( layer->isModified() ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( layer->isModified() ? u"/mIconEditableEdits.svg"_s : u"/mActionToggleEditing.svg"_s ) );
         painter.end();
 
         icon = QIcon( pixmap );
@@ -300,7 +300,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           QString layerCrs = layer->crs().authid();
           if ( !std::isnan( layer->crs().coordinateEpoch() ) )
           {
-            layerCrs += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
+            layerCrs += u" @ %1"_s.arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
           }
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layerCrs ).toHtmlEscaped();
@@ -332,14 +332,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         parts << "<i>" + source.toHtmlEscaped() + "</i>";
 
         QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-        const bool showFeatureCount = nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+        const bool showFeatureCount = nodeLayer->customProperty( u"showFeatureCount"_s, 0 ).toBool();
         const bool estimatedCount = layer->dataProvider() ? QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata() : false;
         if ( showFeatureCount && estimatedCount )
         {
           parts << tr( "<b>Feature count is estimated</b> : the feature count is determined by the database statistics" );
         }
 
-        return parts.join( QLatin1String( "<br/>" ) );
+        return parts.join( "<br/>"_L1 );
       }
     }
   }
@@ -367,12 +367,12 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex &index ) const
     f |= Qt::ItemIsEditable;
 
   QgsLayerTreeNode *node = index2node( index );
-  bool isEmbedded = node->customProperty( QStringLiteral( "embedded" ) ).toInt();
+  bool isEmbedded = node->customProperty( u"embedded"_s ).toInt();
 
   if ( testFlag( AllowNodeReorder ) )
   {
     // only root embedded nodes can be reordered
-    if ( !isEmbedded || ( isEmbedded && node->parent() && !node->parent()->customProperty( QStringLiteral( "embedded" ) ).toInt() ) )
+    if ( !isEmbedded || ( isEmbedded && node->parent() && !node->parent()->customProperty( u"embedded"_s ).toInt() ) )
       f |= Qt::ItemIsDragEnabled;
   }
 
@@ -591,7 +591,7 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont &font )
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalid node type" ), 4 );
+    QgsDebugMsgLevel( u"invalid node type"_s, 4 );
   }
 }
 
@@ -604,7 +604,7 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
     return mFontLayer;
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalid node type" ), 4 );
+    QgsDebugMsgLevel( u"invalid node type"_s, 4 );
     return QFont();
   }
 }
@@ -855,7 +855,7 @@ void QgsLayerTreeModel::nodeNameChanged( QgsLayerTreeNode *node, const QString &
 
 void QgsLayerTreeModel::nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
-  if ( QgsLayerTree::isLayer( node ) && key == QLatin1String( "showFeatureCount" ) )
+  if ( QgsLayerTree::isLayer( node ) && key == "showFeatureCount"_L1 )
     refreshLayerLegend( QgsLayerTree::toLayer( node ) );
 }
 
@@ -931,7 +931,7 @@ void QgsLayerTreeModel::layerNeedsUpdate()
   QModelIndex index = node2index( nodeLayer );
   emit dataChanged( index, index );
 
-  if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ) ).toInt() )
+  if ( nodeLayer->customProperty( u"showFeatureCount"_s ).toInt() )
     refreshLayerLegend( nodeLayer );
 }
 
@@ -986,7 +986,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
     addLegendToLayer( nodeLayer );
 
     // if we aren't loading a layer from a project, setup some nice default settings
-    if ( !mRootNode->customProperty( QStringLiteral( "loading" ) ).toBool() )
+    if ( !mRootNode->customProperty( u"loading"_s ).toBool() )
     {
       // automatic collapse of legend nodes - useful if a layer has many legend nodes
       if ( mAutoCollapseLegendNodesCount != -1 && rowCount( node2index( nodeLayer ) )  >= mAutoCollapseLegendNodesCount )
@@ -994,7 +994,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 
       if ( nodeLayer->layer()->type() == Qgis::LayerType::Vector && QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() )
       {
-        nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
+        nodeLayer->setCustomProperty( u"showFeatureCount"_s, true );
       }
     }
   }
@@ -1147,7 +1147,7 @@ Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
 QStringList QgsLayerTreeModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/qgis.layertreemodeldata" );
+  types << u"application/qgis.layertreemodeldata"_s;
   return types;
 }
 
@@ -1166,7 +1166,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
   QMimeData *mimeData = new QMimeData();
 
   QDomDocument layerTreeDoc;
-  QDomElement rootLayerTreeElem = layerTreeDoc.createElement( QStringLiteral( "layer_tree_model_data" ) );
+  QDomElement rootLayerTreeElem = layerTreeDoc.createElement( u"layer_tree_model_data"_s );
 
   for ( QgsLayerTreeNode *node : std::as_const( nodesFinal ) )
   {
@@ -1176,16 +1176,16 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   QString errorMessage;
   QgsReadWriteContext readWriteContext;
-  QDomDocument layerDefinitionsDoc( QStringLiteral( "qgis-layer-definition" ) );
+  QDomDocument layerDefinitionsDoc( u"qgis-layer-definition"_s );
   QgsLayerDefinition::exportLayerDefinition( layerDefinitionsDoc, nodesFinal, errorMessage, QgsReadWriteContext() );
 
   QString txt = layerDefinitionsDoc.toString();
 
-  mimeData->setData( QStringLiteral( "application/qgis.layertreemodeldata" ), layerTreeDoc.toString().toUtf8() );
-  mimeData->setData( QStringLiteral( "application/qgis.application.pid" ), QString::number( QCoreApplication::applicationPid() ).toUtf8() );
-  mimeData->setData( QStringLiteral( "application/qgis.layertree.source" ), QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ).toUtf8() );
-  mimeData->setData( QStringLiteral( "application/qgis.layertree.layerdefinitions" ), txt.toUtf8() );
-  mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ), QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
+  mimeData->setData( u"application/qgis.layertreemodeldata"_s, layerTreeDoc.toString().toUtf8() );
+  mimeData->setData( u"application/qgis.application.pid"_s, QString::number( QCoreApplication::applicationPid() ).toUtf8() );
+  mimeData->setData( u"application/qgis.layertree.source"_s, u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ).toUtf8() );
+  mimeData->setData( u"application/qgis.layertree.layerdefinitions"_s, txt.toUtf8() );
+  mimeData->setData( u"application/x-vnd.qgis.qgis.uri"_s, QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
 
   return mimeData;
 }
@@ -1195,14 +1195,14 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+  if ( !data->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     return false;
 
   if ( column >= columnCount( parent ) )
     return false;
 
   // don't accept drops from some layer tree subclasses to non-matching subclasses
-  const QString restrictTypes( data->data( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ) ) );
+  const QString restrictTypes( data->data( u"application/qgis.restrictlayertreemodelsubclass"_s ) );
   if ( !restrictTypes.isEmpty() && restrictTypes != QString( metaObject()->className() ) )
     return false;
 
@@ -1216,11 +1216,11 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
   // if we are coming from another QGIS instance, we need to add the layers too
   bool ok = false;
   // the application pid is only provided from QGIS 3.14, so do not check to OK before defaulting to moving in the legend
-  qint64 qgisPid = data->data( QStringLiteral( "application/qgis.application.pid" ) ).toInt( &ok );
+  qint64 qgisPid = data->data( u"application/qgis.application.pid"_s ).toInt( &ok );
 
   if ( ok && qgisPid != QCoreApplication::applicationPid() )
   {
-    QByteArray encodedLayerDefinitionData = data->data( QStringLiteral( "application/qgis.layertree.layerdefinitions" ) );
+    QByteArray encodedLayerDefinitionData = data->data( u"application/qgis.layertree.layerdefinitions"_s );
     QDomDocument layerDefinitionDoc;
     if ( !layerDefinitionDoc.setContent( QString::fromUtf8( encodedLayerDefinitionData ) ) )
       return false;
@@ -1231,14 +1231,14 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
   }
   else
   {
-    QByteArray encodedLayerTreeData = data->data( QStringLiteral( "application/qgis.layertreemodeldata" ) );
+    QByteArray encodedLayerTreeData = data->data( u"application/qgis.layertreemodeldata"_s );
 
     QDomDocument layerTreeDoc;
     if ( !layerTreeDoc.setContent( QString::fromUtf8( encodedLayerTreeData ) ) )
       return false;
 
     QDomElement rootLayerTreeElem = layerTreeDoc.documentElement();
-    if ( rootLayerTreeElem.tagName() != QLatin1String( "layer_tree_model_data" ) )
+    if ( rootLayerTreeElem.tagName() != "layer_tree_model_data"_L1 )
       return false;
 
     QList<QgsLayerTreeNode *> nodes;
@@ -1297,7 +1297,7 @@ bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
 
 QIcon QgsLayerTreeModel::iconGroup()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionFolder.svg"_s );
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::filterLegendNodes( const QList<QgsLayerTreeModelLegendNode *> &nodes )
@@ -1431,7 +1431,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   if ( testFlag( UseEmbeddedWidgets ) )
   {
     // generate placeholder legend nodes that will be replaced by widgets in QgsLayerTreeView
-    int widgetsCount = ml->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
+    int widgetsCount = ml->customProperty( u"embeddedWidgets/count"_s, 0 ).toInt();
     while ( widgetsCount > 0 )
     {
       lstNew.insert( 0, new EmbeddedWidgetLegendNode( nodeL ) );

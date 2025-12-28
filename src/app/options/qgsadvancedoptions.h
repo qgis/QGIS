@@ -36,7 +36,7 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeSettings = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "settings" ) );
+    static inline QgsSettingsTreeNode *sTreeSettings = QgsSettingsTree::sTreeApp->createChildNode( u"settings"_s );
     static const QgsSettingsEntryBool *settingsUseNewTreeWidget;
     static const QgsSettingsEntryBool *settingsShowWarning;
 

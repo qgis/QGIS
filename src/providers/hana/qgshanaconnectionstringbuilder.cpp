@@ -29,29 +29,29 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   , mUserName( uri.username() )
   , mPassword( uri.password() )
 {
-  if ( uri.hasParam( QStringLiteral( "dsn" ) ) )
-    mDsn = uri.param( QStringLiteral( "dsn" ) );
+  if ( uri.hasParam( u"dsn"_s ) )
+    mDsn = uri.param( u"dsn"_s );
 
   // SSL parameters
-  mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QLatin1String( "true" ) );
+  mSslEnabled = ( uri.param( u"sslEnabled"_s ) == "true"_L1 );
   if ( mSslEnabled )
   {
-    mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
-    mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QLatin1String( "true" );
+    mSslCryptoProvider = uri.param( u"sslCryptoProvider"_s );
+    mSslValidateCertificate = uri.param( u"sslValidateCertificate"_s ) == "true"_L1;
     if ( mSslValidateCertificate )
-      mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
-    mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );
-    mSslTrustStore = uri.param( QStringLiteral( "sslTrustStore" ) );
+      mSslHostNameInCertificate = uri.param( u"sslHostNameInCertificate"_s );
+    mSslKeyStore = uri.param( u"sslKeyStore"_s );
+    mSslTrustStore = uri.param( u"sslTrustStore"_s );
   }
   // Proxy parameters
-  mProxyEnabled = ( uri.param( QStringLiteral( "proxyEnabled" ) ) == QLatin1String( "true" ) );
+  mProxyEnabled = ( uri.param( u"proxyEnabled"_s ) == "true"_L1 );
   if ( mProxyEnabled )
   {
-    mProxyHttp = ( uri.param( QStringLiteral( "proxyHttp" ) ) == QLatin1String( "true" ) );
-    mProxyHost = uri.param( QStringLiteral( "proxyHost" ) );
-    mProxyPort = QVariant( uri.param( QStringLiteral( "proxyPort" ) ) ).toUInt();
-    mProxyUsername = uri.param( QStringLiteral( "proxyUsername" ) );
-    mProxyPassword = uri.param( QStringLiteral( "proxyPassword" ) );
+    mProxyHttp = ( uri.param( u"proxyHttp"_s ) == "true"_L1 );
+    mProxyHost = uri.param( u"proxyHost"_s );
+    mProxyPort = QVariant( uri.param( u"proxyPort"_s ) ).toUInt();
+    mProxyUsername = uri.param( u"proxyUsername"_s );
+    mProxyPassword = uri.param( u"proxyPassword"_s );
   }
 }
 
@@ -69,7 +69,7 @@ QString QgsHanaConnectionStringBuilder::toString() const
     QRegularExpressionMatch match = rxSpecialChars.match( value );
     if ( match.hasMatch() )
     {
-      QString newValue = QString( value ).replace( '}', QLatin1String( "}}" ) );
+      QString newValue = QString( value ).replace( '}', "}}"_L1 );
       props.append( name + "={" + newValue + "}" );
     }
     else
@@ -80,44 +80,44 @@ QString QgsHanaConnectionStringBuilder::toString() const
 
   if ( !mDsn.isEmpty() )
   {
-    addProperty( QStringLiteral( "DSN" ), mDsn );
+    addProperty( u"DSN"_s, mDsn );
   }
   else
   {
-    addProperty( QStringLiteral( "DRIVER" ), mDriver );
-    addProperty( QStringLiteral( "SERVERNODE" ), QStringLiteral( "%1:%2" ).arg( mHost, mPort ) );
-    addProperty( QStringLiteral( "DATABASENAME" ), mDatabase );
+    addProperty( u"DRIVER"_s, mDriver );
+    addProperty( u"SERVERNODE"_s, u"%1:%2"_s.arg( mHost, mPort ) );
+    addProperty( u"DATABASENAME"_s, mDatabase );
   }
 
-  addProperty( QStringLiteral( "UID" ), mUserName );
-  addProperty( QStringLiteral( "PWD" ), mPassword );
-  addProperty( QStringLiteral( "CURRENTSCHEMA" ), mSchema );
+  addProperty( u"UID"_s, mUserName );
+  addProperty( u"PWD"_s, mPassword );
+  addProperty( u"CURRENTSCHEMA"_s, mSchema );
 
   if ( mSslEnabled )
   {
-    addProperty( QStringLiteral( "encrypt" ), QStringLiteral( "true" ) );
-    addProperty( QStringLiteral( "sslCryptoProvider" ), mSslCryptoProvider );
-    addProperty( QStringLiteral( "sslValidateCertificate" ), mSslValidateCertificate ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-    addProperty( QStringLiteral( "sslHostNameInCertificate" ), mSslHostNameInCertificate );
-    addProperty( QStringLiteral( "sslKeyStore" ), mSslKeyStore );
-    addProperty( QStringLiteral( "sslTrustStore" ), mSslTrustStore );
+    addProperty( u"encrypt"_s, u"true"_s );
+    addProperty( u"sslCryptoProvider"_s, mSslCryptoProvider );
+    addProperty( u"sslValidateCertificate"_s, mSslValidateCertificate ? u"true"_s : u"false"_s );
+    addProperty( u"sslHostNameInCertificate"_s, mSslHostNameInCertificate );
+    addProperty( u"sslKeyStore"_s, mSslKeyStore );
+    addProperty( u"sslTrustStore"_s, mSslTrustStore );
   }
 
   if ( mProxyEnabled )
   {
     if ( mProxyHttp )
-      addProperty( QStringLiteral( "proxyHttp" ), QStringLiteral( "TRUE" ) );
-    addProperty( QStringLiteral( "proxyHostname" ), mProxyHost );
-    addProperty( QStringLiteral( "proxyPort" ), QString::number( mProxyPort ) );
+      addProperty( u"proxyHttp"_s, u"TRUE"_s );
+    addProperty( u"proxyHostname"_s, mProxyHost );
+    addProperty( u"proxyPort"_s, QString::number( mProxyPort ) );
     if ( !mProxyUsername.isEmpty() )
     {
-      addProperty( QStringLiteral( "proxyUserName" ), mProxyUsername );
-      addProperty( QStringLiteral( "proxyPassword" ), mProxyPassword );
+      addProperty( u"proxyUserName"_s, mProxyUsername );
+      addProperty( u"proxyPassword"_s, mProxyPassword );
     }
   }
 
-  addProperty( QStringLiteral( "CHAR_AS_UTF8" ), QStringLiteral( "1" ) );
-  addProperty( QStringLiteral( "sessionVariable:APPLICATION" ), QStringLiteral( "QGIS %1" ).arg( Qgis::version() ) );
+  addProperty( u"CHAR_AS_UTF8"_s, u"1"_s );
+  addProperty( u"sessionVariable:APPLICATION"_s, u"QGIS %1"_s.arg( Qgis::version() ) );
 
   return props.join( QLatin1Char( ';' ) );
 }

@@ -38,7 +38,7 @@ QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &ba
 
 bool QgsOapifSingleItemRequest::request( bool synchronous, bool forceRefresh )
 {
-  QgsDebugMsgLevel( QStringLiteral( " QgsOapifSingleItemRequest::request() start time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u" QgsOapifSingleItemRequest::request() start time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "application/geo+json, application/json" ), synchronous, forceRefresh ) )
   {
     emit gotResponse();
@@ -54,7 +54,7 @@ QString QgsOapifSingleItemRequest::errorMessageWithReason( const QString &reason
 
 void QgsOapifSingleItemRequest::processReply()
 {
-  QgsDebugMsgLevel( QStringLiteral( "processReply start time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"processReply start time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( mErrorCode != QgsBaseNetworkRequest::NoError )
   {
     emit gotResponse();
@@ -71,14 +71,14 @@ void QgsOapifSingleItemRequest::processReply()
 
   if ( buffer.size() <= 200 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "parsing item response: " ) + buffer, 4 );
+    QgsDebugMsgLevel( u"parsing item response: "_s + buffer, 4 );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "parsing item response: " ) + buffer.left( 100 ) + QStringLiteral( "[... snip ...]" ) + buffer.right( 100 ), 4 );
+    QgsDebugMsgLevel( u"parsing item response: "_s + buffer.left( 100 ) + u"[... snip ...]"_s + buffer.right( 100 ), 4 );
   }
 
-  const QString vsimemFilename = QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  const QString vsimemFilename = u"/vsimem/oaipf_%1.json"_s.arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
@@ -101,6 +101,6 @@ void QgsOapifSingleItemRequest::processReply()
   vectorProvider.reset();
   VSIUnlink( vsimemFilename.toUtf8().constData() );
 
-  QgsDebugMsgLevel( QStringLiteral( "processReply end time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"processReply end time: %1"_s.arg( time( nullptr ) ), 5 );
   emit gotResponse();
 }

@@ -27,7 +27,7 @@ email                : hugo dot mercier at oslandia dot com
 
 static QString quotedColumn( QString name )
 {
-  return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
+  return "\"" + name.replace( "\""_L1, "\"\""_L1 ) + "\"";
 }
 
 QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
@@ -93,7 +93,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         const bool do_exact = request.flags() & Qgis::FeatureRequestFlag::ExactIntersect;
         wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";
-        wheres << QStringLiteral( "%1Intersects(%2,BuildMbr(?,?,?,?))" )
+        wheres << u"%1Intersects(%2,BuildMbr(?,?,?,?))"_s
                     .arg( do_exact ? "" : "Mbr", quotedColumn( mSource->mDefinition.geometryField() ) );
 
         binded << mFilterRect.xMinimum() << mFilterRect.yMinimum()
@@ -101,7 +101,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
       else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
       {
-        wheres << QStringLiteral( "%1=%2" )
+        wheres << u"%1=%2"_s
                     .arg( quotedColumn( mSource->mDefinition.uid() ) )
                     .arg( request.filterFid() );
       }
@@ -128,9 +128,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
       {
         if ( request.filterFid() >= 0 )
-          offset = QStringLiteral( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
+          offset = u" LIMIT 1 OFFSET %1"_s.arg( request.filterFid() );
         else // never return a feature if the id is negative
-          offset = QStringLiteral( " LIMIT 0" );
+          offset = u" LIMIT 0"_s;
       }
       if ( !mFilterRect.isNull() && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox
            && mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
@@ -193,7 +193,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         }
         else
         {
-          columns = QStringLiteral( "0" );
+          columns = u"0"_s;
         }
       }
       const auto constMAttributes = mAttributes;
@@ -207,7 +207,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     // the last column is the geometry, if any
     if ( ( !( request.flags() & Qgis::FeatureRequestFlag::NoGeometry )
            || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() ) )
-         && !mSource->mDefinition.geometryField().isNull() && mSource->mDefinition.geometryField() != QLatin1String( "*no*" ) )
+         && !mSource->mDefinition.geometryField().isNull() && mSource->mDefinition.geometryField() != "*no*"_L1 )
     {
       columns += "," + quotedColumn( mSource->mDefinition.geometryField() );
     }
@@ -215,7 +215,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     mSqlQuery = "SELECT " + columns + " FROM " + tableName;
     if ( !wheres.isEmpty() )
     {
-      mSqlQuery += " WHERE " + wheres.join( QLatin1String( " AND " ) );
+      mSqlQuery += " WHERE " + wheres.join( " AND "_L1 );
     }
 
     if ( !offset.isEmpty() )

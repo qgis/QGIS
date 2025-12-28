@@ -51,21 +51,21 @@
 QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   : QItemDelegate( parent )
 {
-  mBoolExp.setPattern( QStringLiteral( "true|false" ) );
+  mBoolExp.setPattern( u"true|false"_s );
   mBoolExp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
 
-  mByteArrayExp.setPattern( QStringLiteral( "[\\x00-\\xff]*" ) );
-  mCharExp.setPattern( QStringLiteral( "." ) );
-  mColorExp.setPattern( QRegularExpression::anchoredPattern( QStringLiteral( "\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)" ) ) );
+  mByteArrayExp.setPattern( u"[\\x00-\\xff]*"_s );
+  mCharExp.setPattern( u"."_s );
+  mColorExp.setPattern( QRegularExpression::anchoredPattern( u"\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)"_s ) );
   mDoubleExp.setPattern( QString() );
-  mPointExp.setPattern( QRegularExpression::anchoredPattern( QStringLiteral( "\\((-?[0-9]*),(-?[0-9]*)\\)" ) ) );
-  mRectExp.setPattern( QRegularExpression::anchoredPattern( QStringLiteral( "\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)" ) ) );
-  mSignedIntegerExp.setPattern( QStringLiteral( "-?[0-9]*" ) );
+  mPointExp.setPattern( QRegularExpression::anchoredPattern( u"\\((-?[0-9]*),(-?[0-9]*)\\)"_s ) );
+  mRectExp.setPattern( QRegularExpression::anchoredPattern( u"\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)"_s ) );
+  mSignedIntegerExp.setPattern( u"-?[0-9]*"_s );
   mSizeExp = mPointExp;
-  mUnsignedIntegerExp.setPattern( QStringLiteral( "[0-9]*" ) );
+  mUnsignedIntegerExp.setPattern( u"[0-9]*"_s );
 
-  mDateExp.setPattern( QStringLiteral( "([0-9]{,4})-([0-9]{,2})-([0-9]{,2})" ) );
-  mTimeExp.setPattern( QStringLiteral( "([0-9]{,2}):([0-9]{,2}):([0-9]{,2})" ) );
+  mDateExp.setPattern( u"([0-9]{,4})-([0-9]{,2})-([0-9]{,2})"_s );
+  mTimeExp.setPattern( u"([0-9]{,2}):([0-9]{,2}):([0-9]{,2})"_s );
   mDateTimeExp.setPattern( mDateExp.pattern() + 'T' + mTimeExp.pattern() );
 }
 
@@ -143,8 +143,8 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent, const QStyleOptionVi
   if ( QgsVariantDelegate::type( originalValue ) == QMetaType::Type::Bool )
   {
     QComboBox *comboBox = new QComboBox( parent );
-    comboBox->addItem( QStringLiteral( "false" ) );
-    comboBox->addItem( QStringLiteral( "true" ) );
+    comboBox->addItem( u"false"_s );
+    comboBox->addItem( u"true"_s );
     return comboBox;
   }
   else
@@ -307,7 +307,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     case QMetaType::Type::QColor:
     {
       const QColor color = qvariant_cast<QColor>( value );
-      return QStringLiteral( "(%1,%2,%3,%4)" )
+      return u"(%1,%2,%3,%4)"_s
         .arg( color.red() )
         .arg( color.green() )
         .arg( color.blue() )
@@ -318,16 +318,16 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     case QMetaType::Type::QDateTime:
       return value.toDateTime().toString( Qt::ISODate );
     case QMetaType::Type::UnknownType:
-      return QStringLiteral( "<Invalid>" );
+      return u"<Invalid>"_s;
     case QMetaType::Type::QPoint:
     {
       const QPoint point = value.toPoint();
-      return QStringLiteral( "(%1,%2)" ).arg( point.x() ).arg( point.y() );
+      return u"(%1,%2)"_s.arg( point.x() ).arg( point.y() );
     }
     case QMetaType::Type::QRect:
     {
       const QRect rect = value.toRect();
-      return QStringLiteral( "(%1,%2,%3,%4)" )
+      return u"(%1,%2,%3,%4)"_s
         .arg( rect.x() )
         .arg( rect.y() )
         .arg( rect.width() )
@@ -336,7 +336,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     case QMetaType::Type::QSize:
     {
       const QSize size = value.toSize();
-      return QStringLiteral( "(%1,%2)" ).arg( size.width() ).arg( size.height() );
+      return u"(%1,%2)"_s.arg( size.width() ).arg( size.height() );
     }
     case QMetaType::Type::QStringList:
       return value.toStringList().join( QLatin1Char( ',' ) );
@@ -345,7 +345,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     default:
       break;
   }
-  return QStringLiteral( "<%1>" ).arg( value.toString() );
+  return u"<%1>"_s.arg( value.toString() );
 }
 
 /* hack to get "real" type of a variant, because QVariant::type() almost always returns QString */
@@ -354,7 +354,7 @@ QMetaType::Type QgsVariantDelegate::type( const QVariant &value )
   if ( value.userType() == QMetaType::Type::QString )
   {
     const QString str = value.toString();
-    const thread_local QRegularExpression sBoolRegExp( QStringLiteral( "true|false" ), QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression sBoolRegExp( u"true|false"_s, QRegularExpression::CaseInsensitiveOption );
     bool ok = false;
 
     // is this a bool (true,false)

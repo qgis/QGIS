@@ -617,8 +617,8 @@ class CORE_EXPORT QgsCoordinateTransform
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
-                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+    QString str = u"<QgsCoordinateTransform: %1 to %2>"_s.arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : u"NULL"_s,
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : u"NULL"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -772,8 +772,8 @@ class CORE_EXPORT QgsCoordinateTransform
 #ifndef SIP_RUN
 inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransform &r )
 {
-  QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
-  mySummary += QLatin1String( "\n\tInitialized? : " );
+  QString mySummary( u"\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:"_s );
+  mySummary += "\n\tInitialized? : "_L1;
   //prevent warnings
   if ( r.isValid() )
   {
@@ -820,7 +820,7 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransfor
   }
 #endif
 
-  mySummary += QLatin1String( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
+  mySummary += "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n"_L1;
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
 #endif

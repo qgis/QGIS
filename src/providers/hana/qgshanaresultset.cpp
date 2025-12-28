@@ -42,9 +42,9 @@ namespace
     const float *elements = reinterpret_cast<const float *>( ptr );
 
     QString res;
-    res += QStringLiteral( "[" ) + QString::number( elements[0], 'g', 7 );
+    res += u"["_s + QString::number( elements[0], 'g', 7 );
     for ( uint32_t i = 1; i < numElements; ++i )
-      res += QStringLiteral( "," ) + QString::number( elements[i], 'g', 7 );
+      res += u","_s + QString::number( elements[i], 'g', 7 );
     res += QLatin1Char( ']' );
 
     return res;
@@ -130,7 +130,7 @@ QString QgsHanaResultSet::getString( unsigned short columnIndex )
 QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 {
   QgsHanaDataType type = QgsHanaDataTypeUtils::fromInt( mMetadata->getColumnType( columnIndex ) );
-  if ( type == QgsHanaDataType::VarBinary && mMetadata->getColumnTypeName( columnIndex ) == QLatin1String( "REAL_VECTOR" ) )
+  if ( type == QgsHanaDataType::VarBinary && mMetadata->getColumnTypeName( columnIndex ) == "REAL_VECTOR"_L1 )
     type = QgsHanaDataType::RealVector;
 
   switch ( type )
@@ -233,7 +233,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       return QVariant();
     }
     default:
-      QgsDebugError( QStringLiteral( "Unhandled HANA data type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
+      QgsDebugError( u"Unhandled HANA data type %1"_s.arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
       return QVariant();
   }
 }

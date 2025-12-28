@@ -144,7 +144,7 @@ void TestQgsFileDownloader::cleanup()
 void TestQgsFileDownloader::testValidDownload()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), mTempFile->fileName() );
+  makeCall( QUrl( u"http://www.qgis.org"_s ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( mCompleted );
   QVERIFY( mProgress );
@@ -156,7 +156,7 @@ void TestQgsFileDownloader::testValidDownload()
 void TestQgsFileDownloader::testInValidDownload()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QStringLiteral( "http://www.doesnotexistofthatimsure.qgis" ) ), mTempFile->fileName() );
+  makeCall( QUrl( u"http://www.doesnotexistofthatimsure.qgis"_s ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
@@ -168,7 +168,7 @@ void TestQgsFileDownloader::testInValidDownload()
 void TestQgsFileDownloader::testCanceledDownload()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QStringLiteral( "https://github.com/qgis/QGIS/archive/master.zip" ) ), mTempFile->fileName(), true );
+  makeCall( QUrl( u"https://github.com/qgis/QGIS/archive/master.zip"_s ), mTempFile->fileName(), true );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( !mError );
@@ -179,7 +179,7 @@ void TestQgsFileDownloader::testCanceledDownload()
 
 void TestQgsFileDownloader::testInvalidFile()
 {
-  makeCall( QUrl( QStringLiteral( "https://github.com/qgis/QGIS/archive/master.zip" ) ), QString() );
+  makeCall( QUrl( u"https://github.com/qgis/QGIS/archive/master.zip"_s ), QString() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
@@ -190,7 +190,7 @@ void TestQgsFileDownloader::testInvalidFile()
 void TestQgsFileDownloader::testInvalidUrl()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QStringLiteral( "xyz://www" ) ), mTempFile->fileName() );
+  makeCall( QUrl( u"xyz://www"_s ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
@@ -239,8 +239,8 @@ void TestQgsFileDownloader::testLacksWritePermissionsError()
   QFile tmpDir( dir.path() );
   tmpDir.setPermissions( tmpDir.permissions() & ~( QFile::Permission::WriteGroup | QFile::Permission::WriteUser | QFile::Permission::WriteOther | QFile::Permission::WriteOwner ) );
   QVERIFY( !tmpDir.isWritable() );
-  const QString fileName( dir.path() + '/' + QStringLiteral( "tmp.bin" ) );
-  makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), fileName );
+  const QString fileName( dir.path() + '/' + u"tmp.bin"_s );
+  makeCall( QUrl( u"http://www.qgis.org"_s ), fileName );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );

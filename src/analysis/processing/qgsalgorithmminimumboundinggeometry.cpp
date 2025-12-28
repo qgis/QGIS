@@ -23,7 +23,7 @@
 
 QString QgsMinimumBoundingGeometryAlgorithm::name() const
 {
-  return QStringLiteral( "minimumboundinggeometry" );
+  return u"minimumboundinggeometry"_s;
 }
 
 QString QgsMinimumBoundingGeometryAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsMinimumBoundingGeometryAlgorithm::group() const
 
 QString QgsMinimumBoundingGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMinimumBoundingGeometryAlgorithm::shortHelpString() const
@@ -68,34 +68,34 @@ QgsMinimumBoundingGeometryAlgorithm *QgsMinimumBoundingGeometryAlgorithm::create
 
 void QgsMinimumBoundingGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Field (optional, set if features should be grouped by class)" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Field (optional, set if features should be grouped by class)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
 
   QStringList geometryTypes = QStringList() << QObject::tr( "Envelope (Bounding Box)" )
                                             << QObject::tr( "Minimum Oriented Rectangle" )
                                             << QObject::tr( "Minimum Enclosing Circle" )
                                             << QObject::tr( "Convex Hull" );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TYPE" ), QObject::tr( "Geometry type" ), geometryTypes ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Bounding geometry" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "Geometry type" ), geometryTypes ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Bounding geometry" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
   {
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
   }
 
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  const int geometryType = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD"_s, context );
+  const int geometryType = parameterAsEnum( parameters, u"TYPE"_s, context );
   const bool useField = !fieldName.isEmpty();
 
   int fieldIndex = -1;
 
   QgsFields fields = QgsFields();
-  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::Int, QString(), 20 ) );
+  fields.append( QgsField( u"id"_s, QMetaType::Type::Int, QString(), 20 ) );
 
   if ( useField )
   {
@@ -110,38 +110,38 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
   if ( geometryType == 0 )
   {
     // envelope
-    fields.append( QgsField( QStringLiteral( "width" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "height" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"width"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"height"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   }
   else if ( geometryType == 1 )
   {
     // oriented rectangle
-    fields.append( QgsField( QStringLiteral( "width" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "height" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"width"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"height"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"angle"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   }
   else if ( geometryType == 2 )
   {
     // circle
-    fields.append( QgsField( QStringLiteral( "radius" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"radius"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   }
   else if ( geometryType == 3 )
   {
     // convex hull
-    fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-    fields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+    fields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
   if ( !sink )
   {
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
   }
 
   if ( fieldIndex >= 0 )
@@ -207,7 +207,7 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         feature.setGeometry( QgsGeometry::fromRect( rect ) );
         feature.setAttributes( QgsAttributes() << i << it.key() << rect.width() << rect.height() << rect.area() << rect.perimeter() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -223,7 +223,7 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         // envelope
         QgsFeature feature = createFeature( feedback, i, geometryType, it.value(), it.key() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -275,13 +275,13 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
       }
 
       if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
   }
   sink->finalize();
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), dest );
+  results.insert( u"OUTPUT"_s, dest );
   return results;
 }
 

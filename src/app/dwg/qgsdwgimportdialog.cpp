@@ -65,12 +65,12 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mBlockModeComboBox->addItem( tr( "Add Only Insert Points" ), static_cast<int>( BlockImportFlag::BlockImportAddInsertPoints ) );
 
   const QgsSettings s;
-  int index = mBlockModeComboBox->findData( s.value( QStringLiteral( "/DwgImport/lastBlockImportFlags" ), static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) ) );
+  int index = mBlockModeComboBox->findData( s.value( u"/DwgImport/lastBlockImportFlags"_s, static_cast<int>( BlockImportFlag::BlockImportExpandGeometry ) ) );
   mBlockModeComboBox->setCurrentIndex( index );
-  cbMergeLayers->setChecked( s.value( QStringLiteral( "/DwgImport/lastMergeLayers" ), false ).toBool() );
-  cbUseCurves->setChecked( s.value( QStringLiteral( "/DwgImport/lastUseCurves" ), true ).toBool() );
-  mDatabaseFileWidget->setFilePath( s.value( QStringLiteral( "/DwgImport/lastDatabaseFile" ) ).toString() );
-  mSourceDrawingFileWidget->setFilePath( s.value( QStringLiteral( "/DwgImport/lastDrawingFile" ) ).toString() );
+  cbMergeLayers->setChecked( s.value( u"/DwgImport/lastMergeLayers"_s, false ).toBool() );
+  cbUseCurves->setChecked( s.value( u"/DwgImport/lastUseCurves"_s, true ).toBool() );
+  mDatabaseFileWidget->setFilePath( s.value( u"/DwgImport/lastDatabaseFile"_s ).toString() );
+  mSourceDrawingFileWidget->setFilePath( s.value( u"/DwgImport/lastDrawingFile"_s ).toString() );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
   connect( mDatabaseFileWidget, &QgsFileWidget::fileChanged, this, &QgsDwgImportDialog::mDatabaseFileWidget_textChanged );
@@ -87,7 +87,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   lblMessage->setHidden( true );
 
-  const int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
+  const int crsid = s.value( u"/DwgImport/lastCrs"_s, QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
   mCrsSelector->setShowAccuracyWarnings( true );
   QgsCoordinateReferenceSystem crs;
@@ -100,7 +100,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );
 
-  if ( !QgsVectorFileWriter::supportedFormatExtensions().contains( QStringLiteral( "gpkg" ) ) )
+  if ( !QgsVectorFileWriter::supportedFormatExtensions().contains( u"gpkg"_s ) )
   {
     bar->pushMessage( tr( "GDAL/OGR not built with GPKG (sqlite3) support. You will not be able to export the DWG in a GPKG." ), Qgis::MessageLevel::Critical );
   }
@@ -117,9 +117,9 @@ QgsDwgImportDialog::~QgsDwgImportDialog()
   mPreviewLayers.clear();
 
   QgsSettings s;
-  s.setValue( QStringLiteral( "/DwgImport/lastBlockImportFlags" ), mBlockModeComboBox->currentData() );
-  s.setValue( QStringLiteral( "/DwgImport/lastMergeLayers" ), cbMergeLayers->isChecked() );
-  s.setValue( QStringLiteral( "/DwgImport/lastUseCurves" ), cbUseCurves->isChecked() );
+  s.setValue( u"/DwgImport/lastBlockImportFlags"_s, mBlockModeComboBox->currentData() );
+  s.setValue( u"/DwgImport/lastMergeLayers"_s, cbMergeLayers->isChecked() );
+  s.setValue( u"/DwgImport/lastUseCurves"_s, cbUseCurves->isChecked() );
 }
 
 void QgsDwgImportDialog::updateUI()
@@ -150,7 +150,7 @@ void QgsDwgImportDialog::updateUI()
 void QgsDwgImportDialog::mDatabaseFileWidget_textChanged( const QString &filename )
 {
   QgsSettings s;
-  s.setValue( QStringLiteral( "/DwgImport/lastDatabaseFile" ), QFileInfo( filename ).filePath() );
+  s.setValue( u"/DwgImport/lastDatabaseFile"_s, QFileInfo( filename ).filePath() );
   updateUI();
 }
 
@@ -159,7 +159,7 @@ void QgsDwgImportDialog::drawingFileWidgetFileChanged( const QString &filename )
   QFileInfo fileInfoSourceDrawing( filename );
 
   QgsSettings s;
-  s.setValue( QStringLiteral( "/DwgImport/lastDrawingFile" ), fileInfoSourceDrawing.filePath() );
+  s.setValue( u"/DwgImport/lastDrawingFile"_s, fileInfoSourceDrawing.filePath() );
 
   if ( fileInfoSourceDrawing.exists() )
   {
@@ -187,12 +187,12 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
-  auto d = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options );
+  auto d = std::make_unique<QgsVectorLayer>( u"%1|layername=drawing"_s.arg( mDatabaseFileWidget->filePath() ), u"layers"_s, u"ogr"_s, options );
   if ( d && d->isValid() )
   {
-    const int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
-    const int idxLastModified = d->fields().lookupField( QStringLiteral( "lastmodified" ) );
-    const int idxCrs = d->fields().lookupField( QStringLiteral( "crs" ) );
+    const int idxPath = d->fields().lookupField( u"path"_s );
+    const int idxLastModified = d->fields().lookupField( u"lastmodified"_s );
+    const int idxCrs = d->fields().lookupField( u"crs"_s );
 
     QgsFeature f;
     if ( d->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << idxPath << idxLastModified << idxCrs ) ).nextFeature( f ) )
@@ -228,14 +228,14 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  auto l = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options );
+  auto l = std::make_unique<QgsVectorLayer>( u"%1|layername=layers"_s.arg( mDatabaseFileWidget->filePath() ), u"layers"_s, u"ogr"_s, options );
   if ( l && l->isValid() )
   {
-    const int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
-    const int idxColor = l->fields().lookupField( QStringLiteral( "ocolor" ) );
-    const int idxFlags = l->fields().lookupField( QStringLiteral( "flags" ) );
+    const int idxName = l->fields().lookupField( u"name"_s );
+    const int idxColor = l->fields().lookupField( u"ocolor"_s );
+    const int idxFlags = l->fields().lookupField( u"flags"_s );
 
-    QgsDebugMsgLevel( QStringLiteral( "idxName:%1 idxColor:%2 idxFlags:%3" ).arg( idxName ).arg( idxColor ).arg( idxFlags ), 2 );
+    QgsDebugMsgLevel( u"idxName:%1 idxColor:%2 idxFlags:%3"_s.arg( idxName ).arg( idxColor ).arg( idxFlags ), 2 );
 
     QgsFeatureIterator fit = l->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << idxName << idxColor << idxFlags ) );
     QgsFeature f;
@@ -247,7 +247,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
       const int row = mLayers->rowCount();
       mLayers->setRowCount( row + 1 );
 
-      QgsDebugMsgLevel( QStringLiteral( "name:%1 color:%2 flags:%3" ).arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toInt(), 0, 16 ), 2 );
+      QgsDebugMsgLevel( u"name:%1 color:%2 flags:%3"_s.arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toInt(), 0, 16 ), 2 );
 
       QTableWidgetItem *item = nullptr;
       item = new QTableWidgetItem( f.attribute( idxName ).toString() );
@@ -299,8 +299,8 @@ QgsVectorLayer *QgsDwgImportDialog::createLayer( const QString &layerFilter, con
 {
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.loadDefaultStyle = false;
-  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseFileWidget->filePath(), table ), table, QStringLiteral( "ogr" ), options );
-  l->setSubsetString( QStringLiteral( "%1space=0 AND block=-1" ).arg( layerFilter ) );
+  QgsVectorLayer *l = new QgsVectorLayer( u"%1|layername=%2"_s.arg( mDatabaseFileWidget->filePath(), table ), table, u"ogr"_s, options );
+  l->setSubsetString( u"%1space=0 AND block=-1"_s.arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )
   {
@@ -320,19 +320,19 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     const auto constLayers = layerNames;
     for ( QString layer : constLayers )
     {
-      exprlist.append( QStringLiteral( "'%1'" ).arg( layer.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) ) );
+      exprlist.append( u"'%1'"_s.arg( layer.replace( "'"_L1, "''"_L1 ) ) );
     }
-    layerFilter = QStringLiteral( "layer IN (%1) AND " ).arg( exprlist.join( QLatin1Char( ',' ) ) );
+    layerFilter = u"layer IN (%1) AND "_s.arg( exprlist.join( QLatin1Char( ',' ) ) );
   }
 
   QgsSymbol *sym = nullptr;
 
   QList<QgsVectorLayer *> layers;
-  QgsVectorLayer *l = createLayer( layerFilter, QStringLiteral( "hatches" ) );
+  QgsVectorLayer *l = createLayer( layerFilter, u"hatches"_s );
   if ( l )
   {
     QgsSimpleFillSymbolLayer *sfl = new QgsSimpleFillSymbolLayer();
-    sfl->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sfl->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromField( u"color"_s ) );
     sfl->setStrokeStyle( Qt::NoPen );
     sym = new QgsFillSymbol();
     sym->changeSymbolLayer( 0, sfl );
@@ -340,13 +340,13 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     layers.append( l );
   }
 
-  l = createLayer( layerFilter, QStringLiteral( "lines" ) );
+  l = createLayer( layerFilter, u"lines"_s );
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( u"color"_s ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( u"linewidth"_s ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
     // sll->setDataDefinedProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromField( "linetype" ) );
@@ -357,16 +357,16 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     layers.append( l );
   }
 
-  l = createLayer( layerFilter, QStringLiteral( "polylines" ) );
+  l = createLayer( layerFilter, u"polylines"_s );
   if ( l )
   {
     sym = new QgsLineSymbol();
 
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( u"color"_s ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( QStringLiteral( "width" ) ) );
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( QStringLiteral( "coalesce(\"width\",0) > 0" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( u"width"_s ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( u"coalesce(\"width\",0) > 0"_s ) );
     sll->setOutputUnit( Qgis::RenderUnit::MapUnits );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
@@ -374,10 +374,10 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     sym->changeSymbolLayer( 0, sll );
 
     sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( u"color"_s ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
-    sll->setDataDefinedProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( QStringLiteral( "width=0" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( u"linewidth"_s ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( u"width=0"_s ) );
     sll->setOutputUnit( Qgis::RenderUnit::Millimeters );
     sym->appendSymbolLayer( sll );
 
@@ -385,7 +385,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     layers.append( l );
   }
 
-  l = createLayer( layerFilter, QStringLiteral( "texts" ) );
+  l = createLayer( layerFilter, u"texts"_s );
   if ( l )
   {
     l->setRenderer( new QgsNullSymbolRenderer() );
@@ -397,14 +397,14 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     pls.setFormat( tf );
 
     pls.drawLabels = true;
-    pls.fieldName = QStringLiteral( "text" );
-    pls.wrapChar = QStringLiteral( "\\P" );
+    pls.fieldName = u"text"_s;
+    pls.wrapChar = u"\\P"_s;
 
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( QStringLiteral( "height" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromField( QStringLiteral( "color" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( u"height"_s ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromField( u"color"_s ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromExpression( u"CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END"_s ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"$x"_s ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"$y"_s ) );
 
     // DXF TEXT
     // vertical: 0 = Base, 1 = Bottom, 2 = Middle, 3 = Top,  default Base
@@ -465,15 +465,15 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
       )
     );
 
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::AlwaysShow, QgsProperty::fromExpression( QStringLiteral( "1" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( u"360-angle"_s ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::AlwaysShow, QgsProperty::fromExpression( u"1"_s ) );
 
     l->setLabeling( new QgsVectorLayerSimpleLabeling( pls ) );
     l->setLabelsEnabled( true );
     layers.append( l );
   }
 
-  l = createLayer( layerFilter, QStringLiteral( "points" ) );
+  l = createLayer( layerFilter, u"points"_s );
   if ( l )
   {
     // FIXME: use PDMODE?
@@ -484,12 +484,12 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
   const BlockImportFlags blockImportFlags = BlockImportFlags( mBlockModeComboBox->currentData().toInt() );
   if ( blockImportFlags & BlockImportFlag::BlockImportAddInsertPoints )
   {
-    l = createLayer( layerFilter, QStringLiteral( "inserts" ) );
+    l = createLayer( layerFilter, u"inserts"_s );
     if ( l && l->renderer() )
     {
       QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
       if ( ssr && ssr->symbol() && ssr->symbol()->symbolLayer( 0 ) )
-        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
+        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromExpression( u"180-angle*180.0/pi()"_s ) );
       layers.append( l );
     }
   }
@@ -500,7 +500,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
 void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible )
 {
   QgsLayerTreeGroup *layerGroup = group->addGroup( name );
-  QgsDebugMsgLevel( QStringLiteral( " %1" ).arg( name ), 2 );
+  QgsDebugMsgLevel( u" %1"_s.arg( name ), 2 );
   Q_ASSERT( layerGroup );
 
   const QList<QgsVectorLayer *> layersList = createLayers( layers );
@@ -580,7 +580,7 @@ void QgsDwgImportDialog::buttonBox_accepted()
 
 void QgsDwgImportDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-dxf-or-dwg-file" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#importing-a-dxf-or-dwg-file"_s );
 }
 
 void QgsDwgImportDialog::layersClicked( QTableWidgetItem *item )

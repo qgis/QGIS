@@ -64,8 +64,8 @@
 
 #include "moc_qgswfsprovider.cpp"
 
-const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
-const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
+const QString QgsWFSProvider::WFS_PROVIDER_KEY = u"WFS"_s;
+const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = u"WFS data provider"_s;
 
 QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities &caps )
   : QgsVectorDataProvider( uri, options )
@@ -98,7 +98,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     for ( const QString &key : unknownParamKeys )
     {
       if ( !firstOne )
-        msg += QLatin1String( ", " );
+        msg += ", "_L1;
       firstOne = false;
       msg += key;
     }
@@ -109,8 +109,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   QString srsname = mShared->mURI.SRSName();
   if ( !srsname.isEmpty() )
   {
-    if ( srsname == QLatin1String( "EPSG:900913" ) )
-      mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
+    if ( srsname == "EPSG:900913"_L1 )
+      mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"EPSG:3857"_s );
     else
       mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srsname );
   }
@@ -250,7 +250,7 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
   // For WFS = 1.0, issue a GetFeature on one feature to check
   // if we do not known the exact geometry type from
   // describeFeatureType()
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && mShared->mWKBType == Qgis::WkbType::Unknown )
+  if ( mShared->mWFSVersion.startsWith( "1.0"_L1 ) && mShared->mWKBType == Qgis::WkbType::Unknown )
   {
     TryToDetectGeometryType();
   }
@@ -262,18 +262,18 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
   // missed by clients...).
   // Another reason to issue it if we do not known the exact geometry type
   // from describeFeatureType()
-  else if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && ( mShared->mWKBType == Qgis::WkbType::Unknown || mShared->mFields.indexOf( QLatin1String( "gmlId" ) ) < 0 || mShared->mFields.indexOf( QLatin1String( "gmlName" ) ) < 0 || mShared->mFields.indexOf( QLatin1String( "gmlDescription" ) ) < 0 ) )
+  else if ( !mShared->mWFSVersion.startsWith( "1.0"_L1 ) && ( mShared->mWKBType == Qgis::WkbType::Unknown || mShared->mFields.indexOf( "gmlId"_L1 ) < 0 || mShared->mFields.indexOf( "gmlName"_L1 ) < 0 || mShared->mFields.indexOf( "gmlDescription"_L1 ) < 0 ) )
   {
     // Try to see if gml:description, gml:identifier, gml:name attributes are
     // present. So insert them temporarily in mShared->mFields so that the
     // GML parser can detect them.
     const auto addGMLFields = [this]( bool forceAdd ) {
-      if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0 && ( forceAdd || mSampleFeatureHasDescription ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
-      if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0 && ( forceAdd || mSampleFeatureHasIdentifier ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
-      if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0 && ( forceAdd || mSampleFeatureHasName ) )
-        mShared->mFields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
+      if ( mShared->mFields.indexOf( "description"_L1 ) < 0 && ( forceAdd || mSampleFeatureHasDescription ) )
+        mShared->mFields.append( QgsField( u"description"_s, QMetaType::Type::QString, u"xsd:string"_s ) );
+      if ( mShared->mFields.indexOf( "identifier"_L1 ) < 0 && ( forceAdd || mSampleFeatureHasIdentifier ) )
+        mShared->mFields.append( QgsField( u"identifier"_s, QMetaType::Type::QString, u"xsd:string"_s ) );
+      if ( mShared->mFields.indexOf( "name"_L1 ) < 0 && ( forceAdd || mSampleFeatureHasName ) )
+        mShared->mFields.append( QgsField( u"name"_s, QMetaType::Type::QString, u"xsd:string"_s ) );
     };
 
     const QgsFields fieldsBackup = mShared->mFields;
@@ -292,7 +292,7 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
 
 QgsWFSProvider::~QgsWFSProvider()
 {
-  QgsDebugMsgLevel( QStringLiteral( "~QgsWFSProvider()" ), 4 );
+  QgsDebugMsgLevel( u"~QgsWFSProvider()"_s, 4 );
 }
 
 class QgsWFSProviderSQLFunctionValidator : public QgsSQLStatement::RecursiveVisitor
@@ -436,7 +436,7 @@ void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColu
 
 bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Processing SQL: %1" ).arg( sqlString ), 4 );
+  QgsDebugMsgLevel( u"Processing SQL: %1"_s.arg( sqlString ), 4 );
   errorMsg.clear();
   warningMsg.clear();
   QgsSQLStatement sql( sqlString );
@@ -449,21 +449,21 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     for ( const QString &part : constParts )
     {
       QString newPart( part );
-      if ( part == QLatin1String( "syntax error" ) )
+      if ( part == "syntax error"_L1 )
         newPart = tr( "Syntax error." );
-      else if ( part == QLatin1String( " unexpected $end" ) )
+      else if ( part == " unexpected $end"_L1 )
         newPart = tr( "Missing content at end of string." );
-      else if ( part.startsWith( QLatin1String( " unexpected " ) ) )
-        newPart = tr( "%1 is unexpected." ).arg( part.mid( QStringLiteral( " unexpected " ).size() ) );
-      else if ( part.startsWith( QLatin1String( " expecting " ) ) )
-        newPart = tr( "%1 is expected instead." ).arg( part.mid( QStringLiteral( " expecting " ).size() ) );
+      else if ( part.startsWith( " unexpected "_L1 ) )
+        newPart = tr( "%1 is unexpected." ).arg( part.mid( u" unexpected "_s.size() ) );
+      else if ( part.startsWith( " expecting "_L1 ) )
+        newPart = tr( "%1 is expected instead." ).arg( part.mid( u" expecting "_s.size() ) );
       if ( !parserErrorString.isEmpty() )
         parserErrorString += QLatin1Char( ' ' );
       parserErrorString += newPart;
     }
-    parserErrorString.replace( QLatin1String( " or " ), tr( "%1 or %2" ).arg( QString(), QString() ) );
-    parserErrorString.replace( QLatin1String( "COMMA" ), tr( "comma" ) );
-    parserErrorString.replace( QLatin1String( "IDENTIFIER" ), tr( "an identifier" ) );
+    parserErrorString.replace( " or "_L1, tr( "%1 or %2" ).arg( QString(), QString() ) );
+    parserErrorString.replace( "COMMA"_L1, tr( "comma" ) );
+    parserErrorString.replace( "IDENTIFIER"_L1, tr( "an identifier" ) );
     errorMsg = tr( "SQL query is invalid: %1" ).arg( parserErrorString );
     return false;
   }
@@ -475,14 +475,14 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   if ( sql.rootNode()->nodeType() != QgsSQLStatement::ntSelect )
   {
     // Shouldn't happen
-    QgsDebugError( QStringLiteral( "SQL statement is not a SELECT. This should not happen" ) );
+    QgsDebugError( u"SQL statement is not a SELECT. This should not happen"_s );
     return false;
   }
   const QgsSQLStatement::NodeSelect *select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
   if ( !select )
   {
     // Makes Coverity happy, but cannot happen in practice
-    QgsDebugError( QStringLiteral( "should not happen" ) );
+    QgsDebugError( u"should not happen"_s );
     return false;
   }
   mShared->mDistinctSelect = select->distinct();
@@ -756,7 +756,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       int idx = tableFields.lookupField( columnRef->name() );
       if ( idx < 0 )
       {
-        QgsDebugError( QStringLiteral( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );
+        QgsDebugError( u"Should not happen. Cannot find field for %1"_s.arg( columnRef->name() ) );
         continue;
       }
 
@@ -871,17 +871,17 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( const QVector<QgsFeatureU
         {
           if ( mShared->mWKBType == Qgis::WkbType::Point )
           {
-            QgsDebugMsgLevel( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint" ), 2 );
+            QgsDebugMsgLevel( u"Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint"_s, 2 );
             mShared->mWKBType = Qgis::WkbType::MultiPoint;
           }
           else if ( mShared->mWKBType == Qgis::WkbType::LineString )
           {
-            QgsDebugMsgLevel( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString" ), 2 );
+            QgsDebugMsgLevel( u"Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString"_s, 2 );
             mShared->mWKBType = Qgis::WkbType::MultiLineString;
           }
           else if ( mShared->mWKBType == Qgis::WkbType::Polygon )
           {
-            QgsDebugMsgLevel( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon" ), 2 );
+            QgsDebugMsgLevel( u"Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon"_s, 2 );
             mShared->mWKBType = Qgis::WkbType::MultiPolygon;
           }
           else
@@ -918,7 +918,7 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
 {
   Q_UNUSED( updateFeatureCount )
 
-  QgsDebugMsgLevel( QStringLiteral( "theSql = '%1'" ).arg( theSQL ), 4 );
+  QgsDebugMsgLevel( u"theSql = '%1'"_s.arg( theSQL ), 4 );
 
   if ( theSQL == mSubsetString )
     return true;
@@ -940,7 +940,7 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   mShared->mLayerPropertiesList.clear();
   mShared->mMapFieldNameToSrcLayerNameFieldName.clear();
   mShared->mDistinctSelect = false;
-  if ( theSQL.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) || theSQL.startsWith( QLatin1String( "SELECT\t" ), Qt::CaseInsensitive ) || theSQL.startsWith( QLatin1String( "SELECT\r" ), Qt::CaseInsensitive ) || theSQL.startsWith( QLatin1String( "SELECT\n" ), Qt::CaseInsensitive ) )
+  if ( theSQL.startsWith( "SELECT "_L1, Qt::CaseInsensitive ) || theSQL.startsWith( "SELECT\t"_L1, Qt::CaseInsensitive ) || theSQL.startsWith( "SELECT\r"_L1, Qt::CaseInsensitive ) || theSQL.startsWith( "SELECT\n"_L1, Qt::CaseInsensitive ) )
   {
     QString errorMsg, warningMsg;
     if ( !processSQL( theSQL, errorMsg, warningMsg ) )
@@ -975,7 +975,7 @@ QString QgsWFSProvider::subsetStringDialect() const
 
 QString QgsWFSProvider::subsetStringHelpUrl() const
 {
-  return QStringLiteral( "https://docs.ogc.org/is/09-025r2/09-025r2.html#83" );
+  return u"https://docs.ogc.org/is/09-025r2/09-025r2.html#83"_s;
 }
 
 bool QgsWFSProvider::supportsSubsetString() const
@@ -1001,7 +1001,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
   bool applyAxisInversion;
   QgsOgcUtils::GMLVersion gmlVersion;
 
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) || mShared->mWFSVersion.startsWith( QLatin1Char( '2' ) ) )
+  if ( mShared->mWFSVersion.startsWith( "1.1"_L1 ) || mShared->mWFSVersion.startsWith( QLatin1Char( '2' ) ) )
   {
     // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
     if ( !mShared->mServerPrefersCoordinatesForTransactions_1_1 )
@@ -1096,7 +1096,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   for ( ; featureIt != flist.end(); ++featureIt )
   {
     //Insert element
-    QDomElement insertElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Insert" ) );
+    QDomElement insertElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Insert"_s );
     transactionElem.appendChild( insertElem );
 
     QDomElement featureElem = transactionDoc.createElementNS( mShared->mApplicationNamespace, tname );
@@ -1154,7 +1154,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     const auto constIdList = idList;
     for ( const QString &v : constIdList )
     {
-      if ( v.startsWith( QLatin1String( "new" ) ) )
+      if ( v.startsWith( "new"_L1 ) )
       {
         reloadData();
         return true;
@@ -1214,9 +1214,9 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   QDomElement transactionElem = createTransactionElement( transactionDoc );
   transactionDoc.appendChild( transactionElem );
   //delete element
-  QDomElement deleteElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Delete" ) );
-  deleteElem.setAttribute( QStringLiteral( "typeName" ), tname );
-  QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "Filter" ) );
+  QDomElement deleteElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Delete"_s );
+  deleteElem.setAttribute( u"typeName"_s, tname );
+  QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, u"Filter"_s );
 
 
   QgsFeatureIds::const_iterator idIt = id.constBegin();
@@ -1226,11 +1226,11 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
     QString gmlid = mShared->findUniqueId( *idIt );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "Cannot identify feature of id %1" ).arg( *idIt ) );
+      QgsDebugError( u"Cannot identify feature of id %1"_s.arg( *idIt ) );
       continue;
     }
-    QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
-    featureIdElem.setAttribute( QStringLiteral( "fid" ), gmlid );
+    QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, u"FeatureId"_s );
+    featureIdElem.setAttribute( u"fid"_s, gmlid );
     filterElem.appendChild( featureIdElem );
   }
 
@@ -1282,18 +1282,18 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     QString gmlid = mShared->findUniqueId( geomIt.key() );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
+      QgsDebugError( u"Cannot identify feature of id %1"_s.arg( geomIt.key() ) );
       continue;
     }
-    QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
-    updateElem.setAttribute( QStringLiteral( "typeName" ), tname );
+    QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Update"_s );
+    updateElem.setAttribute( u"typeName"_s, tname );
     //Property
-    QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
-    QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
+    QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Property"_s );
+    QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Name"_s );
     QDomText nameText = transactionDoc.createTextNode( namespacePrefix + mShared->mGeometryAttribute );
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
-    QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
+    QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Value"_s );
 
     valueElem.appendChild( geometryElement( geomIt.value(), transactionDoc ) );
 
@@ -1301,9 +1301,9 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     updateElem.appendChild( propertyElem );
 
     //filter
-    QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "Filter" ) );
-    QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
-    featureIdElem.setAttribute( QStringLiteral( "fid" ), gmlid );
+    QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, u"Filter"_s );
+    QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, u"FeatureId"_s );
+    featureIdElem.setAttribute( u"fid"_s, gmlid );
     filterElem.appendChild( featureIdElem );
     updateElem.appendChild( filterElem );
 
@@ -1337,7 +1337,7 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
     QDateTime dt = value.toDateTime().toUTC();
     if ( !dt.isNull() )
     {
-      valueStr = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss.zzzZ" ) );
+      valueStr = dt.toString( u"yyyy-MM-ddThh:mm:ss.zzzZ"_s );
     }
     else
     {
@@ -1373,25 +1373,25 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     QString gmlid = mShared->findUniqueId( attIt.key() );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
+      QgsDebugError( u"Cannot identify feature of id %1"_s.arg( attIt.key() ) );
       continue;
     }
 
-    QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
-    updateElem.setAttribute( QStringLiteral( "typeName" ), tname );
+    QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Update"_s );
+    updateElem.setAttribute( u"typeName"_s, tname );
 
     QgsAttributeMap::const_iterator attMapIt = attIt.value().constBegin();
     for ( ; attMapIt != attIt.value().constEnd(); ++attMapIt )
     {
       QString fieldName = mShared->mFields.at( attMapIt.key() ).name();
-      QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
+      QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Property"_s );
 
-      QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
+      QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Name"_s );
       QDomText nameText = transactionDoc.createTextNode( namespacePrefix + fieldName );
       nameElem.appendChild( nameText );
       propertyElem.appendChild( nameElem );
 
-      QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
+      QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Value"_s );
 
       if ( attMapIt.value().isValid() && !QgsVariantUtils::isNull( attMapIt.value() ) )
       {
@@ -1406,9 +1406,9 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     }
 
     //Filter
-    QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "Filter" ) );
-    QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
-    featureIdElem.setAttribute( QStringLiteral( "fid" ), gmlid );
+    QDomElement filterElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, u"Filter"_s );
+    QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, u"FeatureId"_s );
+    featureIdElem.setAttribute( u"fid"_s, gmlid );
     filterElem.appendChild( featureIdElem );
     updateElem.appendChild( filterElem );
 
@@ -1437,23 +1437,23 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 QVariantMap QgsWFSProvider::metadata() const
 {
   QVariantMap result;
-  result[QStringLiteral( "MaxFeatures" )] = mShared->mCaps.maxFeatures;
-  result[QStringLiteral( "SupportsPaging" )] = mShared->mCaps.supportsPaging;
-  result[QStringLiteral( "SupportsJoins" )] = mShared->mCaps.supportsJoins;
+  result[u"MaxFeatures"_s] = mShared->mCaps.maxFeatures;
+  result[u"SupportsPaging"_s] = mShared->mCaps.supportsPaging;
+  result[u"SupportsJoins"_s] = mShared->mCaps.supportsJoins;
   return result;
 }
 
 QString QgsWFSProvider::translateMetadataKey( const QString &mdKey ) const
 {
-  if ( mdKey == QLatin1String( "MaxFeatures" ) )
+  if ( mdKey == "MaxFeatures"_L1 )
   {
     return tr( "Max Features" );
   }
-  else if ( mdKey == QLatin1String( "SupportsPaging" ) )
+  else if ( mdKey == "SupportsPaging"_L1 )
   {
     return tr( "Supports Paging" );
   }
-  else if ( mdKey == QLatin1String( "SupportsJoins" ) )
+  else if ( mdKey == "SupportsJoins"_L1 )
   {
     return tr( "Supports Joins" );
   }
@@ -1465,11 +1465,11 @@ QString QgsWFSProvider::translateMetadataKey( const QString &mdKey ) const
 
 QString QgsWFSProvider::translateMetadataValue( const QString &mdKey, const QVariant &value ) const
 {
-  if ( mdKey == QLatin1String( "MaxFeatures" ) )
+  if ( mdKey == "MaxFeatures"_L1 )
   {
     return value.toInt() == 0 ? tr( "not provided" ) : value.toString();
   }
-  else if ( mdKey == QLatin1String( "SupportsPaging" ) || mdKey == QLatin1String( "SupportsJoins" ) )
+  else if ( mdKey == "SupportsPaging"_L1 || mdKey == "SupportsJoins"_L1 )
   {
     return value.toBool() ? tr( "supported" ) : tr( "unsupported" );
   }
@@ -1575,42 +1575,42 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument &doc, QDomDocum
 
 QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
 {
-  QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
+  QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, u"Transaction"_s );
   const QString WfsVersion = mShared->mWFSVersion;
   // only 1.1.0 and 1.0.0 are supported
-  if ( WfsVersion == QLatin1String( "1.1.0" ) || WfsVersion.startsWith( QLatin1String( "2." ) ) )
+  if ( WfsVersion == "1.1.0"_L1 || WfsVersion.startsWith( "2."_L1 ) )
   {
-    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
+    transactionElem.setAttribute( u"version"_s, u"1.1.0"_s );
   }
   else
   {
-    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+    transactionElem.setAttribute( u"version"_s, u"1.0.0"_s );
   }
-  transactionElem.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
-  transactionElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+  transactionElem.setAttribute( u"service"_s, u"WFS"_s );
+  transactionElem.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
 
-  QUrl describeFeatureTypeURL = mShared->mURI.requestUrl( QStringLiteral( "DescribeFeatureType" ) );
+  QUrl describeFeatureTypeURL = mShared->mURI.requestUrl( u"DescribeFeatureType"_s );
   // For tests (since the URL contains part of random data, we need to replace it with a fixed content)
-  if ( describeFeatureTypeURL.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  if ( describeFeatureTypeURL.toString().contains( "fake_qgis_http_endpoint"_L1 ) )
   {
-    describeFeatureTypeURL = QUrl( QStringLiteral( "http://fake_qgis_http_endpoint" ) );
+    describeFeatureTypeURL = QUrl( u"http://fake_qgis_http_endpoint"_s );
     QUrlQuery query( describeFeatureTypeURL );
-    query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+    query.addQueryItem( u"REQUEST"_s, u"DescribeFeatureType"_s );
     describeFeatureTypeURL.setQuery( query );
   }
   QUrlQuery query( describeFeatureTypeURL );
-  query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
-  query.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  query.addQueryItem( u"VERSION"_s, u"1.0.0"_s );
+  query.addQueryItem( u"TYPENAME"_s, mShared->mURI.typeName() );
   describeFeatureTypeURL.setQuery( query );
 
-  transactionElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), mShared->mApplicationNamespace + ' ' + describeFeatureTypeURL.toEncoded() );
+  transactionElem.setAttribute( u"xsi:schemaLocation"_s, mShared->mApplicationNamespace + ' ' + describeFeatureTypeURL.toEncoded() );
 
   QString namespacePrefix = QgsWFSUtils::nameSpacePrefix( mShared->mURI.typeName() );
   if ( !namespacePrefix.isEmpty() )
   {
     transactionElem.setAttribute( "xmlns:" + namespacePrefix, mShared->mApplicationNamespace );
   }
-  transactionElem.setAttribute( QStringLiteral( "xmlns:gml" ), QgsWFSConstants::GML_NAMESPACE );
+  transactionElem.setAttribute( u"xmlns:gml"_s, QgsWFSConstants::GML_NAMESPACE );
 
   return transactionElem;
 }
@@ -1630,19 +1630,19 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
 
   const QString WfsVersion = mShared->mWFSVersion;
 
-  if ( WfsVersion == QLatin1String( "1.1.0" ) || WfsVersion.startsWith( QLatin1String( "2." ) ) )
+  if ( WfsVersion == "1.1.0"_L1 || WfsVersion.startsWith( "2."_L1 ) )
   {
-    const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
+    const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"TransactionSummary"_s );
     if ( transactionSummaryList.size() < 1 )
     {
-      QgsDebugMsgLevel( QStringLiteral( "TransactionSummary not found in response: %1" ).arg( serverResponse.toString() ), 4 );
+      QgsDebugMsgLevel( u"TransactionSummary not found in response: %1"_s.arg( serverResponse.toString() ), 4 );
       return false;
     }
 
     QDomElement transactionElement { transactionSummaryList.at( 0 ).toElement() };
-    QDomNodeList totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalInserted" ) );
-    QDomNodeList totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalUpdated" ) );
-    QDomNodeList totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalDeleted" ) );
+    QDomNodeList totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"totalInserted"_s );
+    QDomNodeList totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"totalUpdated"_s );
+    QDomNodeList totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"totalDeleted"_s );
     if ( totalInserted.size() > 0 && totalInserted.at( 0 ).toElement().text().toInt() > 0 )
     {
       return true;
@@ -1657,9 +1657,9 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
     }
 
     // Handle wrong QGIS server response (capital initial letter)
-    totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalInserted" ) );
-    totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalUpdated" ) );
-    totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalDeleted" ) );
+    totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"TotalInserted"_s );
+    totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"TotalUpdated"_s );
+    totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"TotalDeleted"_s );
     if ( totalInserted.size() > 0 && totalInserted.at( 0 ).toElement().text().toInt() > 0 )
     {
       return true;
@@ -1677,19 +1677,19 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
   }
   else
   {
-    const QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionResult" ) );
+    const QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"TransactionResult"_s );
     if ( transactionResultList.size() < 1 )
     {
       return false;
     }
 
-    const QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Status" ) );
+    const QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, u"Status"_s );
     if ( statusList.size() < 1 )
     {
       return false;
     }
 
-    return statusList.at( 0 ).firstChildElement().localName() == QLatin1String( "SUCCESS" );
+    return statusList.at( 0 ).firstChildElement().localName() == "SUCCESS"_L1;
   }
 }
 
@@ -1709,21 +1709,21 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
   // Handles WFS 1.1.0
   QString insertResultTagName;
-  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) || mShared->mWFSVersion.startsWith( QLatin1String( "2." ) ) )
+  if ( mShared->mWFSVersion == "1.1.0"_L1 || mShared->mWFSVersion.startsWith( "2."_L1 ) )
   {
-    insertResultTagName = QStringLiteral( "InsertResults" );
+    insertResultTagName = u"InsertResults"_s;
   }
   else
   {
-    insertResultTagName = QStringLiteral( "InsertResult" );
+    insertResultTagName = u"InsertResult"_s;
   }
   QDomNodeList insertResultList = rootElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, insertResultTagName );
   for ( int i = 0; i < insertResultList.size(); ++i )
   {
-    QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
+    QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( QgsWFSConstants::OGC_NAMESPACE, u"FeatureId"_s );
     for ( int j = 0; j < featureIdList.size(); ++j )
     {
-      QString fidString = featureIdList.at( j ).toElement().attribute( QStringLiteral( "fid" ) );
+      QString fidString = featureIdList.at( j ).toElement().attribute( u"fid"_s );
       if ( !fidString.isEmpty() )
       {
         ids << fidString;
@@ -1753,7 +1753,7 @@ bool QgsWFSProvider::getCapabilities()
   {
     pagingEnabled = true;
   }
-  else if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  else if ( mShared->mWFSVersion.startsWith( "2.0"_L1 ) )
   {
     if ( mShared->mCaps.supportsPaging && mShared->mURI.pagingStatus() == QgsWFSDataSourceURI::PagingStatus::DEFAULT )
       pagingEnabled = true;
@@ -1796,8 +1796,8 @@ bool QgsWFSProvider::getCapabilities()
     else
     {
       QgsSettings settings;
-      mShared->mPageSize = settings.value( QStringLiteral( "wfs/max_feature_count_if_not_provided" ), "1000" ).toInt();
-      QgsDebugError( QStringLiteral( "Server declares paging but does not advertise max feature count and user did not specify it. Using %1" ).arg( mShared->mPageSize ) );
+      mShared->mPageSize = settings.value( u"wfs/max_feature_count_if_not_provided"_s, "1000" ).toInt();
+      QgsDebugError( u"Server declares paging but does not advertise max feature count and user did not specify it. Using %1"_s.arg( mShared->mPageSize ) );
     }
   }
   else
@@ -1825,7 +1825,7 @@ bool QgsWFSProvider::getCapabilities()
       {
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
-          QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
+          QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"CRS:84"_s );
           QgsCoordinateTransform ct( src, mShared->mSourceCrs, transformContext() );
           QgsDebugMsgLevel( "latlon ext:" + r.toString(), 4 );
           QgsDebugMsgLevel( "src:" + src.authid(), 4 );
@@ -1838,7 +1838,7 @@ bool QgsWFSProvider::getCapabilities()
           }
           catch ( QgsCsException &e )
           {
-            QgsDebugError( QStringLiteral( "Error transforming layer extent: %1" ).arg( e.what() ) );
+            QgsDebugError( u"Error transforming layer extent: %1"_s.arg( e.what() ) );
             mShared->mCapabilityExtent = r;
           }
         }
@@ -1877,7 +1877,7 @@ bool QgsWFSProvider::getCapabilities()
 
 void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
 {
-  QgsDebugMsgLevel( QStringLiteral( "server response: %1" ).arg( serverResponse.toString() ), 4 );
+  QgsDebugMsgLevel( u"server response: %1"_s.arg( serverResponse.toString() ), 4 );
 
   QDomElement exceptionElem = serverResponse.documentElement();
   if ( exceptionElem.isNull() )
@@ -1886,34 +1886,34 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
     return;
   }
 
-  if ( exceptionElem.tagName() == QLatin1String( "ServiceExceptionReport" ) )
+  if ( exceptionElem.tagName() == "ServiceExceptionReport"_L1 )
   {
-    pushError( tr( "WFS service exception: %1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "ServiceException" ) ).text() ) );
+    pushError( tr( "WFS service exception: %1" ).arg( exceptionElem.firstChildElement( u"ServiceException"_s ).text() ) );
     return;
   }
 
-  if ( exceptionElem.tagName() == QLatin1String( "WFS_TransactionResponse" ) )
+  if ( exceptionElem.tagName() == "WFS_TransactionResponse"_L1 )
   {
-    pushError( tr( "Unsuccessful service response: %1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "TransactionResult" ) ).firstChildElement( QStringLiteral( "Message" ) ).text() ) );
+    pushError( tr( "Unsuccessful service response: %1" ).arg( exceptionElem.firstChildElement( u"TransactionResult"_s ).firstChildElement( u"Message"_s ).text() ) );
     return;
   }
 
   // WFS 1.1.0
-  if ( exceptionElem.tagName() == QLatin1String( "TransactionResponse" ) )
+  if ( exceptionElem.tagName() == "TransactionResponse"_L1 )
   {
     pushError( tr( "Unsuccessful service response: no features were added, deleted or changed." ) );
     return;
   }
 
 
-  if ( exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
+  if ( exceptionElem.tagName() == "ExceptionReport"_L1 )
   {
-    QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+    QDomElement exception = exceptionElem.firstChildElement( u"Exception"_s );
     // The XML schema at http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd uses
     // the "exceptionCode" attribute, but http://docs.opengeospatial.org/is/04-094r1/04-094r1.html#36
     // mentions "code". Accept both...
     pushError( tr( "WFS exception report (code=%1 text=%2)" )
-                 .arg( exception.attribute( QStringLiteral( "exceptionCode" ), exception.attribute( QStringLiteral( "code" ), tr( "missing" ) ) ), exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() )
+                 .arg( exception.attribute( u"exceptionCode"_s, exception.attribute( u"code"_s, tr( "missing" ) ) ), exception.firstChildElement( u"ExceptionText"_s ).text() )
     );
     return;
   }
@@ -1933,10 +1933,10 @@ QgsWfsCapabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
     QMutexLocker lock( &mutex );
     auto iter = gCacheCaps.find( requestUrl );
     QgsSettings s;
-    const int delayOfCachingInSecs = s.value( QStringLiteral( "qgis/wfsMemoryCacheDelay" ), 60 ).toInt();
+    const int delayOfCachingInSecs = s.value( u"qgis/wfsMemoryCacheDelay"_s, 60 ).toInt();
     if ( iter != gCacheCaps.end() && iter->second.first.secsTo( now ) < delayOfCachingInSecs )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Reusing cached GetCapabilities response for %1" ).arg( requestUrl.toString() ), 4 );
+      QgsDebugMsgLevel( u"Reusing cached GetCapabilities response for %1"_s.arg( requestUrl.toString() ), 4 );
       return iter->second.second;
     }
   }
@@ -1952,7 +1952,7 @@ QgsWfsCapabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
   caps = getCapabilities.capabilities();
 
   QgsSettings s;
-  if ( s.value( QStringLiteral( "qgis/wfsMemoryCacheAllowed" ), true ).toBool() )
+  if ( s.value( u"qgis/wfsMemoryCacheAllowed"_s, true ).toBool() )
   {
     QMutexLocker lock( &mutex );
     gCacheCaps[requestUrl] = std::make_pair( now, caps );

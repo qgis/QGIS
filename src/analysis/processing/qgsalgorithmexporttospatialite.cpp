@@ -27,7 +27,7 @@
 
 QString QgsExportToSpatialiteAlgorithm::name() const
 {
-  return QStringLiteral( "importintospatialite" );
+  return u"importintospatialite"_s;
 }
 
 QString QgsExportToSpatialiteAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QString QgsExportToSpatialiteAlgorithm::group() const
 
 QString QgsExportToSpatialiteAlgorithm::groupId() const
 {
-  return QStringLiteral( "database" );
+  return u"database"_s;
 }
 
 QString QgsExportToSpatialiteAlgorithm::shortHelpString() const
@@ -67,22 +67,22 @@ QgsExportToSpatialiteAlgorithm *QgsExportToSpatialiteAlgorithm::createInstance()
 
 void QgsExportToSpatialiteAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Layer to export" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "DATABASE" ), QObject::tr( "Database layer (or file)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "TABLENAME" ), QObject::tr( "Table to export to (leave blank to use layer name)" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "PRIMARY_KEY" ), QObject::tr( "Primary key field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "GEOMETRY_COLUMN" ), QObject::tr( "Geometry column" ), QStringLiteral( "geom" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QStringLiteral( "UTF-8" ), false, true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CREATEINDEX" ), QObject::tr( "Create spatial index" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "LOWERCASE_NAMES" ), QObject::tr( "Convert field names to lowercase" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_STRING_LENGTH" ), QObject::tr( "Drop length constraints on character fields" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_SINGLEPART" ), QObject::tr( "Create single-part geometries instead of multipart" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Layer to export" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"DATABASE"_s, QObject::tr( "Database layer (or file)" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterString( u"TABLENAME"_s, QObject::tr( "Table to export to (leave blank to use layer name)" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterField( u"PRIMARY_KEY"_s, QObject::tr( "Primary key field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterString( u"GEOMETRY_COLUMN"_s, QObject::tr( "Geometry column" ), u"geom"_s ) );
+  addParameter( new QgsProcessingParameterString( u"ENCODING"_s, QObject::tr( "Encoding" ), u"UTF-8"_s, false, true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"OVERWRITE"_s, QObject::tr( "Overwrite" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"CREATEINDEX"_s, QObject::tr( "Create spatial index" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"LOWERCASE_NAMES"_s, QObject::tr( "Convert field names to lowercase" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"DROP_STRING_LENGTH"_s, QObject::tr( "Drop length constraints on character fields" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"FORCE_SINGLEPART"_s, QObject::tr( "Create single-part geometries instead of multipart" ), false ) );
 }
 
 bool QgsExportToSpatialiteAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "DATABASE" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"DATABASE"_s, context );
   mProviderType = layer->providerType();
   mDatabaseUri = layer->dataProvider()->dataSourceUri();
   return true;
@@ -90,23 +90,23 @@ bool QgsExportToSpatialiteAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 QVariantMap QgsExportToSpatialiteAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   QgsDataSourceUri uri( mDatabaseUri );
   if ( uri.database().isEmpty() )
   {
     QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( mProviderType );
     const QVariantMap parts = md->decodeUri( mDatabaseUri );
-    mDatabaseUri = parts.value( QStringLiteral( "path" ) ).toString();
-    uri = QgsDataSourceUri( QStringLiteral( "dbname='%1'" ).arg( mDatabaseUri ) );
+    mDatabaseUri = parts.value( u"path"_s ).toString();
+    uri = QgsDataSourceUri( u"dbname='%1'"_s.arg( mDatabaseUri ) );
   }
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
   {
-    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s );
     conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), QVariantMap() ) ) );
   }
   catch ( QgsProviderConnectionException & )
@@ -114,11 +114,11 @@ QVariantMap QgsExportToSpatialiteAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Could not connect to %1" ).arg( uri.uri() ) );
   }
 
-  const QString primaryKeyField = parameterAsString( parameters, QStringLiteral( "PRIMARY_KEY" ), context );
-  const QString encoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
-  const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
+  const QString primaryKeyField = parameterAsString( parameters, u"PRIMARY_KEY"_s, context );
+  const QString encoding = parameterAsString( parameters, u"ENCODING"_s, context );
+  const bool overwrite = parameterAsBoolean( parameters, u"OVERWRITE"_s, context );
 
-  QString tableName = parameterAsDatabaseTableName( parameters, QStringLiteral( "TABLENAME" ), context ).trimmed();
+  QString tableName = parameterAsDatabaseTableName( parameters, u"TABLENAME"_s, context ).trimmed();
   if ( tableName.isEmpty() )
   {
     tableName = source->sourceName();
@@ -126,39 +126,39 @@ QVariantMap QgsExportToSpatialiteAlgorithm::processAlgorithm( const QVariantMap 
   }
   tableName = tableName.replace( ' ', QString() ).right( 63 );
 
-  QString geometryColumn = parameterAsString( parameters, QStringLiteral( "GEOMETRY_COLUMN" ), context );
+  QString geometryColumn = parameterAsString( parameters, u"GEOMETRY_COLUMN"_s, context );
   if ( geometryColumn.isEmpty() )
   {
-    geometryColumn = QStringLiteral( "geom" );
+    geometryColumn = u"geom"_s;
   }
   if ( source->wkbType() == Qgis::WkbType::NoGeometry )
   {
     geometryColumn.clear();
   }
 
-  const bool createSpatialIndex = parameterAsBoolean( parameters, QStringLiteral( "CREATEINDEX" ), context );
+  const bool createSpatialIndex = parameterAsBoolean( parameters, u"CREATEINDEX"_s, context );
 
   QMap<QString, QVariant> options;
   if ( overwrite )
   {
-    options[QStringLiteral( "overwrite" )] = true;
+    options[u"overwrite"_s] = true;
   }
-  if ( parameterAsBoolean( parameters, QStringLiteral( "LOWERCASE_NAMES" ), context ) )
+  if ( parameterAsBoolean( parameters, u"LOWERCASE_NAMES"_s, context ) )
   {
-    options[QStringLiteral( "lowercaseFieldNames" )] = true;
+    options[u"lowercaseFieldNames"_s] = true;
     geometryColumn = geometryColumn.toLower();
   }
-  if ( parameterAsBoolean( parameters, QStringLiteral( "DROP_STRING_LENGTH" ), context ) )
+  if ( parameterAsBoolean( parameters, u"DROP_STRING_LENGTH"_s, context ) )
   {
-    options[QStringLiteral( "dropStringConstraints" )] = true;
+    options[u"dropStringConstraints"_s] = true;
   }
-  if ( parameterAsBoolean( parameters, QStringLiteral( "FORCE_SINGLEPART" ), context ) )
+  if ( parameterAsBoolean( parameters, u"FORCE_SINGLEPART"_s, context ) )
   {
-    options[QStringLiteral( "forceSinglePartGeometryType" )] = true;
+    options[u"forceSinglePartGeometryType"_s] = true;
   }
   if ( !encoding.isEmpty() )
   {
-    options[QStringLiteral( "fileEncoding" )] = encoding;
+    options[u"fileEncoding"_s] = encoding;
   }
 
   uri = QgsDataSourceUri( conn->uri() );
@@ -166,7 +166,7 @@ QVariantMap QgsExportToSpatialiteAlgorithm::processAlgorithm( const QVariantMap 
   uri.setKeyColumn( primaryKeyField );
   uri.setGeometryColumn( geometryColumn );
 
-  auto exporter = std::make_unique<QgsVectorLayerExporter>( uri.uri(), QStringLiteral( "spatialite" ), source->fields(), source->wkbType(), source->sourceCrs(), overwrite, options );
+  auto exporter = std::make_unique<QgsVectorLayerExporter>( uri.uri(), u"spatialite"_s, source->fields(), source->wkbType(), source->sourceCrs(), overwrite, options );
 
   if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
     throw QgsProcessingException( QObject::tr( "Error exporting to SpatiaLite\n%1" ).arg( exporter->errorMessage() ) );

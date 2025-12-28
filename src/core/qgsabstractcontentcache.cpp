@@ -53,7 +53,7 @@ void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool 
 
 bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QString *mimeType, QString *data )
 {
-  const thread_local QRegularExpression sRx( QStringLiteral( "^data:([a-zA-Z0-9+\\-]*\\/[a-zA-Z0-9+\\-]*?)(?:;(base64|utf8))?,(.*)$" ) );
+  const thread_local QRegularExpression sRx( u"^data:([a-zA-Z0-9+\\-]*\\/[a-zA-Z0-9+\\-]*?)(?:;(base64|utf8))?,(.*)$"_s );
   const QRegularExpressionMatch base64Match = sRx.match( path );
   if ( !base64Match.hasMatch() )
     return false;
@@ -66,14 +66,14 @@ bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QStri
   if ( data )
     *data = base64Match.captured( 3 );
 
-  if ( typeMatch == QLatin1String( "base64" ) )
+  if ( typeMatch == "base64"_L1 )
     return true; // definitely base 64
-  else if ( typeMatch == QLatin1String( "utf8" ) )
+  else if ( typeMatch == "utf8"_L1 )
     return false; // definitely NOT base 64
 
   // if we aren't certain it's base 64, and it has an xml mime type, assume it's not.
   // see https://github.com/qgis/QGIS/issues/59575
-  if ( mimeMatch.endsWith( QLatin1String( "xml" ) ) || mimeMatch.endsWith( QLatin1String( "svg" ) ) )
+  if ( mimeMatch.endsWith( "xml"_L1 ) || mimeMatch.endsWith( "svg"_L1 ) )
     return false;
 
   return true;
@@ -81,7 +81,7 @@ bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QStri
 
 bool QgsAbstractContentCacheBase::parseEmbeddedStringData( const QString &path, QString *mimeType, QString *data )
 {
-  const thread_local QRegularExpression sRx( QStringLiteral( "^data:([a-zA-Z0-9+\\-]*\\/[a-zA-Z0-9+\\-]*?)\\;utf8,(.*)$" ), QRegularExpression::DotMatchesEverythingOption );
+  const thread_local QRegularExpression sRx( u"^data:([a-zA-Z0-9+\\-]*\\/[a-zA-Z0-9+\\-]*?)\\;utf8,(.*)$"_s, QRegularExpression::DotMatchesEverythingOption );
   const QRegularExpressionMatch stringMatch = sRx.match( path );
 
   if ( !stringMatch.hasMatch() )
@@ -97,6 +97,6 @@ bool QgsAbstractContentCacheBase::parseEmbeddedStringData( const QString &path, 
 
 bool QgsAbstractContentCacheBase::isBase64Data( const QString &path )
 {
-  return path.startsWith( QLatin1String( "base64:" ) )
+  return path.startsWith( "base64:"_L1 )
          || parseBase64DataUrl( path );
 }

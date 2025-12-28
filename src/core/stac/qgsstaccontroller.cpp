@@ -77,7 +77,7 @@ QNetworkReply *QgsStacController::fetchAsync( const QUrl &url )
 {
   QNetworkRequest req( url );
   mHeaders.updateNetworkRequest( req );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsStacController" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsStacController"_s );
   req.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   req.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -97,7 +97,7 @@ QNetworkReply *QgsStacController::fetchAsync( const QUrl &url )
 
   mReplies.append( reply );
 
-  QgsDebugMsgLevel( QStringLiteral( "Fired STAC request with id %1" ).arg( reply->property( "requestId" ).toInt() ), 2 );
+  QgsDebugMsgLevel( u"Fired STAC request with id %1"_s.arg( reply->property( "requestId" ).toInt() ), 2 );
 
   return reply;
 }
@@ -109,12 +109,12 @@ void QgsStacController::handleStacObjectReply()
     return;
 
   const int requestId = reply->property( "requestId" ).toInt();
-  QgsDebugMsgLevel( QStringLiteral( "Finished STAC request with id %1" ).arg( requestId ), 2 );
+  QgsDebugMsgLevel( u"Finished STAC request with id %1"_s.arg( requestId ), 2 );
 
   if ( reply->error() != QNetworkReply::NoError )
   {
     const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    const QString errorMessage = contentType.startsWith( QLatin1String( "text/plain" ) ) ? reply->readAll() : reply->errorString();
+    const QString errorMessage = contentType.startsWith( "text/plain"_L1 ) ? reply->readAll() : reply->errorString();
 
     emit finishedStacObjectRequest( requestId, errorMessage );
     reply->deleteLater();
@@ -142,7 +142,7 @@ void QgsStacController::handleStacObjectReply()
       break;
     case Qgis::StacObjectType::Unknown:
       object = nullptr;
-      error = parser.error().isEmpty() ? QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" ) : parser.error();
+      error = parser.error().isEmpty() ? u"Parsed STAC data is not a Catalog, Collection or Item"_s : parser.error();
       break;
   }
   mFetchedStacObjects.insert( requestId, object.release() );
@@ -158,12 +158,12 @@ void QgsStacController::handleItemCollectionReply()
     return;
 
   const int requestId = reply->property( "requestId" ).toInt();
-  QgsDebugMsgLevel( QStringLiteral( "Finished STAC request with id %1" ).arg( requestId ), 2 );
+  QgsDebugMsgLevel( u"Finished STAC request with id %1"_s.arg( requestId ), 2 );
 
   if ( reply->error() != QNetworkReply::NoError )
   {
     const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    const QString errorMessage = contentType.startsWith( QLatin1String( "text/plain" ) ) ? reply->readAll() : reply->errorString();
+    const QString errorMessage = contentType.startsWith( "text/plain"_L1 ) ? reply->readAll() : reply->errorString();
 
     emit finishedItemCollectionRequest( requestId, errorMessage );
     reply->deleteLater();
@@ -190,12 +190,12 @@ void QgsStacController::handleCollectionsReply()
     return;
 
   const int requestId = reply->property( "requestId" ).toInt();
-  QgsDebugMsgLevel( QStringLiteral( "Finished STAC request with id %1" ).arg( requestId ), 2 );
+  QgsDebugMsgLevel( u"Finished STAC request with id %1"_s.arg( requestId ), 2 );
 
   if ( reply->error() != QNetworkReply::NoError )
   {
     const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    const QString errorMessage = contentType.startsWith( QLatin1String( "text/plain" ) ) ? reply->readAll() : reply->errorString();
+    const QString errorMessage = contentType.startsWith( "text/plain"_L1 ) ? reply->readAll() : reply->errorString();
 
     emit finishedCollectionsRequest( requestId, errorMessage );
     reply->deleteLater();
@@ -297,7 +297,7 @@ QgsNetworkReplyContent QgsStacController::fetchBlocking( const QUrl &url )
 {
   QNetworkRequest req( url );
   mHeaders.updateNetworkRequest( req );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsStacController" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsStacController"_s );
   req.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   req.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
@@ -322,7 +322,7 @@ std::unique_ptr<QgsStacCatalog> QgsStacController::openLocalCatalog( const QStri
   const bool ok = file.open( QIODevice::ReadOnly );
   if ( !ok )
   {
-    QgsDebugError( QStringLiteral( "Could not open file: " ).arg( fileName ) );
+    QgsDebugError( u"Could not open file: "_s.arg( fileName ) );
     return nullptr;
   }
 
@@ -339,7 +339,7 @@ std::unique_ptr<QgsStacCollection> QgsStacController::openLocalCollection( const
   const bool ok = file.open( QIODevice::ReadOnly );
   if ( !ok )
   {
-    QgsDebugError( QStringLiteral( "Could not open file: " ).arg( fileName ) );
+    QgsDebugError( u"Could not open file: "_s.arg( fileName ) );
     return nullptr;
   }
 
@@ -355,7 +355,7 @@ std::unique_ptr<QgsStacItem> QgsStacController::openLocalItem( const QString &fi
   const bool ok = file.open( QIODevice::ReadOnly );
   if ( !ok )
   {
-    QgsDebugError( QStringLiteral( "Could not open file: " ).arg( fileName ) );
+    QgsDebugError( u"Could not open file: "_s.arg( fileName ) );
     return nullptr;
   }
 

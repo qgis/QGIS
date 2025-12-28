@@ -69,10 +69,10 @@ QString QgsCoordinateFormatter::format( const QgsPointXY &point, QgsCoordinateFo
   {
     case Qgis::CoordinateOrder::Default:
     case Qgis::CoordinateOrder::XY:
-      return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
+      return u"%1%2%3"_s.arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
 
     case Qgis::CoordinateOrder::YX:
-      return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
+      return u"%1%2%3"_s.arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
   }
   BUILTIN_UNREACHABLE
 }
@@ -86,10 +86,10 @@ QString QgsCoordinateFormatter::asPair( double x, double y, int precision, Qgis:
   {
     case Qgis::CoordinateOrder::Default:
     case Qgis::CoordinateOrder::XY:
-      return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
+      return u"%1%2%3"_s.arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
 
     case Qgis::CoordinateOrder::YX:
-      return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
+      return u"%1%2%3"_s.arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
   }
   BUILTIN_UNREACHABLE
 }

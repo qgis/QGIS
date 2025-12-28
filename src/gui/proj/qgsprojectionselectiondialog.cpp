@@ -103,18 +103,18 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
   } );
 
   const QgsSettings settings;
-  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelectorDialog/splitterState" ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"Windows/ProjectionSelectorDialog/splitterState"_s ).toByteArray() );
 }
 
 QgsCrsSelectionWidget::~QgsCrsSelectionWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ProjectionSelectorDialog/splitterState" ), mSplitter->saveState() );
+  settings.setValue( u"Windows/ProjectionSelectorDialog/splitterState"_s, mSplitter->saveState() );
 }
 
 void QgsCrsSelectionWidget::setMessage( const QString &message )
 {
-  textEdit->setHtml( QStringLiteral( "<head><style>%1</style></head><body>%2</body>" ).arg( QgsApplication::reportStyleSheet(), message ) );
+  textEdit->setHtml( u"<head><style>%1</style></head><body>%2</body>"_s.arg( QgsApplication::reportStyleSheet(), message ) );
   textEdit->show();
 }
 
@@ -347,5 +347,5 @@ void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsF
 
 void QgsProjectionSelectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+  QgsHelp::openHelp( u"working_with_projections/working_with_projections.html"_s );
 }

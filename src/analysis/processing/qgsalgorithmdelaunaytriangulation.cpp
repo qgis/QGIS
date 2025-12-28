@@ -25,7 +25,7 @@
 
 QString QgsDelaunayTriangulationAlgorithm::name() const
 {
-  return QStringLiteral( "delaunaytriangulation" );
+  return u"delaunaytriangulation"_s;
 }
 
 QString QgsDelaunayTriangulationAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsDelaunayTriangulationAlgorithm::group() const
 
 QString QgsDelaunayTriangulationAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsDelaunayTriangulationAlgorithm::shortHelpString() const
@@ -65,42 +65,42 @@ QgsDelaunayTriangulationAlgorithm *QgsDelaunayTriangulationAlgorithm::createInst
 
 void QgsDelaunayTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   toleranceParam->setHelp( QObject::tr( "Specifies an optional snapping tolerance which can be used to improve the robustness of the triangulation" ) );
   addParameter( toleranceParam.release() );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ADD_ATTRIBUTES" ), QObject::tr( "Add point IDs to output" ), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Delaunay triangulation" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterBoolean( u"ADD_ATTRIBUTES"_s, QObject::tr( "Add point IDs to output" ), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Delaunay triangulation" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   if ( source->featureCount() < 3 )
     throw QgsProcessingException( QObject::tr( "Input layer should contain at least 3 points." ) );
 
-  const double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
-  const bool addAttributes = parameterAsBool( parameters, QStringLiteral( "ADD_ATTRIBUTES" ), context );
+  const double tolerance = parameterAsDouble( parameters, u"TOLERANCE"_s, context );
+  const bool addAttributes = parameterAsBool( parameters, u"ADD_ATTRIBUTES"_s, context );
 
   QgsFields fields;
   if ( addAttributes )
   {
-    fields.append( QgsField( QStringLiteral( "POINTA" ), QMetaType::Type::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "POINTB" ), QMetaType::Type::LongLong ) );
-    fields.append( QgsField( QStringLiteral( "POINTC" ), QMetaType::Type::LongLong ) );
+    fields.append( QgsField( u"POINTA"_s, QMetaType::Type::LongLong ) );
+    fields.append( QgsField( u"POINTB"_s, QMetaType::Type::LongLong ) );
+    fields.append( QgsField( u"POINTC"_s, QMetaType::Type::LongLong ) );
   }
   else
   {
-    fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
+    fields.append( QgsField( u"id"_s, QMetaType::Type::LongLong ) );
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setNoAttributes(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
@@ -165,7 +165,7 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
       }
 
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       feedback->setProgress( 50 + i * step );
     }
   }
@@ -173,7 +173,7 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

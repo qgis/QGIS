@@ -69,7 +69,7 @@ void TestQgsGeoreferencer::initTestCase()
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
   // Set locale to ensure tests are consistent
-  QLocale::setDefault( QLocale( QStringLiteral( "en_US.UTF-8" ) ) );
+  QLocale::setDefault( QLocale( u"en_US.UTF-8"_s ) );
 }
 
 //runs after all tests
@@ -80,7 +80,7 @@ void TestQgsGeoreferencer::cleanupTestCase()
 
 void TestQgsGeoreferencer::testGcpPoint()
 {
-  QgsGcpPoint p( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false );
+  QgsGcpPoint p( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false );
 
   QCOMPARE( p.sourcePoint(), QgsPointXY( 1, 2 ) );
   p.setSourcePoint( QgsPointXY( 11, 22 ) );
@@ -90,25 +90,25 @@ void TestQgsGeoreferencer::testGcpPoint()
   p.setDestinationPoint( QgsPointXY( 33, 44 ) );
   QCOMPARE( p.destinationPoint(), QgsPointXY( 33, 44 ) );
 
-  QCOMPARE( p.destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
-  p.setDestinationPointCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
-  QCOMPARE( p.destinationPointCrs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QCOMPARE( p.destinationPointCrs().authid(), u"EPSG:3111"_s );
+  p.setDestinationPointCrs( QgsCoordinateReferenceSystem( u"EPSG:28356"_s ) );
+  QCOMPARE( p.destinationPointCrs().authid(), u"EPSG:28356"_s );
 
   QVERIFY( !p.isEnabled() );
   p.setEnabled( true );
   QVERIFY( p.isEnabled() );
 
   // equality operator
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) == QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) != QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), false ) );
-  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), true ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) == QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), false ) );
+  QVERIFY( QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) != QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), true ) );
 
 
   // transform destination point
-  QgsGcpPoint p2( QgsPointXY( 1, 2 ), QgsPointXY( 150, -30 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), false );
-  const QgsPointXY res = p2.transformedDestinationPoint( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext() );
+  QgsGcpPoint p2( QgsPointXY( 1, 2 ), QgsPointXY( 150, -30 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), false );
+  const QgsPointXY res = p2.transformedDestinationPoint( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsProject::instance()->transformContext() );
   QGSCOMPARENEAR( res.x(), 16697923, 10000 );
   QGSCOMPARENEAR( res.y(), -3503549, 10000 );
 }
@@ -117,7 +117,7 @@ void TestQgsGeoreferencer::testGeorefDataPoint()
 {
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  QgsGeorefDataPoint p( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false );
+  QgsGeorefDataPoint p( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false );
 
   QCOMPARE( p.sourcePoint(), QgsPointXY( 1, 2 ) );
   p.setSourcePoint( QgsPointXY( 11, 22 ) );
@@ -127,18 +127,18 @@ void TestQgsGeoreferencer::testGeorefDataPoint()
   p.setDestinationPoint( QgsPointXY( 33, 44 ) );
   QCOMPARE( p.destinationPoint(), QgsPointXY( 33, 44 ) );
 
-  QCOMPARE( p.destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( p.destinationPointCrs().authid(), u"EPSG:3111"_s );
 
   QVERIFY( !p.isEnabled() );
   p.setEnabled( true );
   QVERIFY( p.isEnabled() );
 
-  QCOMPARE( p.point(), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), true ) );
+  QCOMPARE( p.point(), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), true ) );
 
 
   // transform destination point
-  QgsGeorefDataPoint p2( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 150, -30 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), false );
-  const QgsPointXY res = p2.transformedDestinationPoint( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext() );
+  QgsGeorefDataPoint p2( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 150, -30 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), false );
+  const QgsPointXY res = p2.transformedDestinationPoint( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsProject::instance()->transformContext() );
   QGSCOMPARENEAR( res.x(), 16697923, 10000 );
   QGSCOMPARENEAR( res.y(), -3503549, 10000 );
 }
@@ -151,31 +151,31 @@ void TestQgsGeoreferencer::testGcpList()
 
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) );
   QCOMPARE( list.countEnabledPoints(), 0 );
-  QCOMPARE( list.asPoints(), { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ) } );
+  QCOMPARE( list.asPoints(), { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ) } );
 
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) );
   QCOMPARE( list.countEnabledPoints(), 1 );
-  QCOMPARE( list.asPoints(), QList<QgsGcpPoint>( { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true ) } ) );
+  QCOMPARE( list.asPoints(), QList<QgsGcpPoint>( { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) } ) );
 
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) );
   QCOMPARE( list.countEnabledPoints(), 2 );
-  QCOMPARE( list.asPoints(), QList<QgsGcpPoint>( { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), false ), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true ), QgsGcpPoint( QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), true ) } ) );
+  QCOMPARE( list.asPoints(), QList<QgsGcpPoint>( { QgsGcpPoint( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), false ), QgsGcpPoint( QgsPointXY( 11, 22 ), QgsPointXY( 33, 44 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ), QgsGcpPoint( QgsPointXY( 111, 222 ), QgsPointXY( 333, 444 ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), true ) } ) );
 
 
   qDeleteAll( list );
   list.clear();
 
   // create gcp vectors
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
   // disabled!
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 33, 44 ), QgsPointXY( 100, 200 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), false ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 33, 44 ), QgsPointXY( 100, 200 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), false ) );
 
   QVector<QgsPointXY> sourcePoints;
   QVector<QgsPointXY> destinationPoints;
-  list.createGCPVectors( sourcePoints, destinationPoints, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext() );
+  list.createGCPVectors( sourcePoints, destinationPoints, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsProject::instance()->transformContext() );
   QCOMPARE( sourcePoints.size(), 2 );
   QCOMPARE( sourcePoints.at( 0 ).x(), 111 );
   QCOMPARE( sourcePoints.at( 0 ).y(), 222 );
@@ -195,52 +195,52 @@ void TestQgsGeoreferencer::testSaveLoadGcps()
   QgsGCPList list;
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 111, 222 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 11, 22 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
   // disabled!
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 33, 44 ), QgsPointXY( 100, 200 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), false ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 33, 44 ), QgsPointXY( 100, 200 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), false ) );
 
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
-  const QString tempFilename = dir.filePath( QStringLiteral( "test.points" ) );
+  const QString tempFilename = dir.filePath( u"test.points"_s );
 
   QString error;
 
-  QVERIFY( list.saveGcps( tempFilename, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), error ) );
+  QVERIFY( list.saveGcps( tempFilename, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsProject::instance()->transformContext(), error ) );
   QVERIFY( error.isEmpty() );
 
 
   // load
   QgsCoordinateReferenceSystem actualDestinationCrs;
-  QList<QgsGcpPoint> res = QgsGCPList::loadGcps( QStringLiteral( "not real" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), actualDestinationCrs, error );
+  QList<QgsGcpPoint> res = QgsGCPList::loadGcps( u"not real"_s, QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), actualDestinationCrs, error );
   QVERIFY( !error.isEmpty() );
 
-  res = QgsGCPList::loadGcps( tempFilename, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), actualDestinationCrs, error );
+  res = QgsGCPList::loadGcps( tempFilename, QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), actualDestinationCrs, error );
   QVERIFY( error.isEmpty() );
   QCOMPARE( res.size(), 3 );
   // should be loaded from txt
-  QCOMPARE( actualDestinationCrs.authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( actualDestinationCrs.authid(), u"EPSG:3857"_s );
 
   QCOMPARE( res.at( 0 ).sourcePoint().x(), 111 );
   QCOMPARE( res.at( 0 ).sourcePoint().y(), 222 );
   QGSCOMPARENEAR( res.at( 0 ).destinationPoint().x(), -3339584, 10000 );
   QGSCOMPARENEAR( res.at( 0 ).destinationPoint().y(), 4865942, 10000 );
   QVERIFY( res.at( 0 ).isEnabled() );
-  QCOMPARE( res.at( 0 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( res.at( 0 ).destinationPointCrs().authid(), u"EPSG:3857"_s );
 
   QCOMPARE( res.at( 1 ).sourcePoint().x(), 11 );
   QCOMPARE( res.at( 1 ).sourcePoint().y(), 22 );
   QCOMPARE( res.at( 1 ).destinationPoint().x(), 16697923 );
   QCOMPARE( res.at( 1 ).destinationPoint().y(), -3503549 );
   QVERIFY( res.at( 1 ).isEnabled() );
-  QCOMPARE( res.at( 1 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( res.at( 1 ).destinationPointCrs().authid(), u"EPSG:3857"_s );
 
   QCOMPARE( res.at( 2 ).sourcePoint().x(), 33 );
   QCOMPARE( res.at( 2 ).sourcePoint().y(), 44 );
   QCOMPARE( res.at( 2 ).destinationPoint().x(), 100 );
   QCOMPARE( res.at( 2 ).destinationPoint().y(), 200 );
   QVERIFY( !res.at( 2 ).isEnabled() );
-  QCOMPARE( res.at( 2 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( res.at( 2 ).destinationPointCrs().authid(), u"EPSG:3857"_s );
 }
 
 void TestQgsGeoreferencer::testSaveLoadGcpsNoCrs()
@@ -256,7 +256,7 @@ void TestQgsGeoreferencer::testSaveLoadGcpsNoCrs()
 
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
-  const QString tempFilename = dir.filePath( QStringLiteral( "test2.points" ) );
+  const QString tempFilename = dir.filePath( u"test2.points"_s );
 
   QString error;
 
@@ -266,39 +266,39 @@ void TestQgsGeoreferencer::testSaveLoadGcpsNoCrs()
 
   // load
   QgsCoordinateReferenceSystem actualDestinationCrs;
-  QList<QgsGcpPoint> res = QgsGCPList::loadGcps( tempFilename, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), actualDestinationCrs, error );
+  QList<QgsGcpPoint> res = QgsGCPList::loadGcps( tempFilename, QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), actualDestinationCrs, error );
   QVERIFY( error.isEmpty() );
   QCOMPARE( res.size(), 3 );
   // should fallback to default CRS
-  QCOMPARE( actualDestinationCrs.authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( actualDestinationCrs.authid(), u"EPSG:3111"_s );
 
   QCOMPARE( res.at( 0 ).sourcePoint().x(), 111 );
   QCOMPARE( res.at( 0 ).sourcePoint().y(), 222 );
   QCOMPARE( res.at( 0 ).destinationPoint().x(), -30 );
   QCOMPARE( res.at( 0 ).destinationPoint().y(), 40 );
   QVERIFY( res.at( 0 ).isEnabled() );
-  QCOMPARE( res.at( 0 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( res.at( 0 ).destinationPointCrs().authid(), u"EPSG:3111"_s );
 
   QCOMPARE( res.at( 1 ).sourcePoint().x(), 11 );
   QCOMPARE( res.at( 1 ).sourcePoint().y(), 22 );
   QCOMPARE( res.at( 1 ).destinationPoint().x(), 34 );
   QCOMPARE( res.at( 1 ).destinationPoint().y(), -50 );
   QVERIFY( res.at( 1 ).isEnabled() );
-  QCOMPARE( res.at( 1 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( res.at( 1 ).destinationPointCrs().authid(), u"EPSG:3111"_s );
 
   QCOMPARE( res.at( 2 ).sourcePoint().x(), 33 );
   QCOMPARE( res.at( 2 ).sourcePoint().y(), 44 );
   QCOMPARE( res.at( 2 ).destinationPoint().x(), 100 );
   QCOMPARE( res.at( 2 ).destinationPoint().y(), 200 );
   QVERIFY( !res.at( 2 ).isEnabled() );
-  QCOMPARE( res.at( 2 ).destinationPointCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( res.at( 2 ).destinationPointCrs().authid(), u"EPSG:3111"_s );
 }
 
 void TestQgsGeoreferencer::testTransformClone()
 {
   // an image with no georeferencing
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1 );
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/rgb256x256.png"_s );
 
   QVERIFY( transform.updateParametersFromGcps( { QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ), QgsPointXY( 0, 30 ), QgsPointXY( 10, 30 ) }, { QgsPointXY( 10, 5 ), QgsPointXY( 16, 5 ), QgsPointXY( 10, 8 ), QgsPointXY( 16, 8 ) }, true ) );
 
@@ -323,7 +323,7 @@ void TestQgsGeoreferencer::testTransformClone()
 
   // an image which is already georeferenced
   QgsGeorefTransform transform2( QgsGcpTransformerInterface::TransformMethod::Linear );
-  transform2.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform2.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
 
   QVERIFY( transform2.updateParametersFromGcps( { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, { QgsPointXY( 783414, 3350122 ), QgsPointXY( 791344, 3349795 ), QgsPointXY( 783077, 334093 ), QgsPointXY( 791134, 3341401 ) }, true ) );
 
@@ -350,7 +350,7 @@ void TestQgsGeoreferencer::testTransformImageNoGeoference()
 {
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
   // this image has no georeferencing set
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/rgb256x256.png"_s );
 
   QVERIFY( !transform.hasExistingGeoreference() );
 
@@ -402,7 +402,7 @@ void TestQgsGeoreferencer::testTransformImageWithExistingGeoreference()
 {
   // load an image which is already georeferenced
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
 
   QVERIFY( transform.mRasterChangeCoords.mHasExistingGeoreference );
   QGSCOMPARENEAR( transform.mRasterChangeCoords.mResX, 57, 0.00001 );
@@ -503,7 +503,7 @@ void TestQgsGeoreferencer::testRasterChangeCoords()
   QgsRasterChangeCoords transform;
   QVERIFY( !transform.hasExistingGeoreference() );
 
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
   QVERIFY( transform.hasExistingGeoreference() );
   QGSCOMPARENEAR( transform.toXY( QgsPointXY( 0, 0 ) ).x(), 781662.375, 0.001 );
   QGSCOMPARENEAR( transform.toXY( QgsPointXY( 0, 0 ) ).y(), 3350923.125, 0.001 );
@@ -520,7 +520,7 @@ void TestQgsGeoreferencer::testRasterChangeCoords()
   QGSCOMPARENEAR( transform.toColumnLine( QgsPointXY( 787362.375, 3362323.125 ) ).y(), 200.0, 0.0001 );
 
   // load a raster with no georeferencing
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/rgb256x256.png" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/rgb256x256.png"_s );
   QVERIFY( !transform.hasExistingGeoreference() );
   // should be treat layer coordinates and pixels as identical
   QCOMPARE( transform.toXY( QgsPointXY( 0, 0 ) ).x(), 0.0 );
@@ -542,17 +542,17 @@ void TestQgsGeoreferencer::testUpdateResiduals()
 {
   // test updating residuals
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
   QVERIFY( transform.hasExistingGeoreference() );
 
   QgsGCPList list;
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( -35, 42 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( -35, 42 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
 
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), -189.189, 0.1 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), 105.7142, 0.1 );
@@ -561,7 +561,7 @@ void TestQgsGeoreferencer::testUpdateResiduals()
   QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
 
   // in map units
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::MapUnits );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::MapUnits );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), -34.999, 0.1 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), -92.499, 0.1 );
@@ -570,7 +570,7 @@ void TestQgsGeoreferencer::testUpdateResiduals()
   QGSCOMPARENEAR( list.at( 2 )->residual().y(), 0, 0.00001 );
 
   // different target CRS
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), -186.828, 0.1 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), 105.7142, 0.1 );
@@ -580,10 +580,10 @@ void TestQgsGeoreferencer::testUpdateResiduals()
 
   // projective transform -- except 0 residuals here
   QgsGeorefTransform projective( QgsGcpTransformerInterface::TransformMethod::Projective );
-  projective.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  projective.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
   QVERIFY( projective.hasExistingGeoreference() );
 
-  list.updateResiduals( &projective, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
+  list.updateResiduals( &projective, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
   QGSCOMPARENEAR( list.at( 0 )->residual().x(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 0 )->residual().y(), 0, 0.00001 );
   QGSCOMPARENEAR( list.at( 1 )->residual().x(), 0, 0.00001 );
@@ -598,68 +598,68 @@ void TestQgsGeoreferencer::testListModel()
   QgsGCPList list;
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( -35, 42 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( -35, 42 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
   QgsGeorefTransform transform( QgsGcpTransformerInterface::TransformMethod::Linear );
-  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  transform.loadRaster( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
   QVERIFY( transform.hasExistingGeoreference() );
-  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
+  list.updateResiduals( &transform, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext(), Qgis::RenderUnit::Pixels );
 
   QgsGCPListModel model;
   QCOMPARE( model.rowCount(), 0 );
   QCOMPARE( model.columnCount(), 9 );
 
   model.setGCPList( &list );
-  model.setTargetCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
+  model.setTargetCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext() );
 
   QCOMPARE( model.rowCount(), 3 );
-  QCOMPARE( model.data( model.index( 0, 1 ) ).toString(), QStringLiteral( "0" ) );
-  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), QStringLiteral( "781,662.38" ) );
-  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3,350,923.13" ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.000000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.000000" ) );
-  QCOMPARE( model.data( model.index( 0, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-30.000000</b><br>EPSG:4326 - WGS 84" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>40.000000</b><br>EPSG:4326 - WGS 84" ) );
+  QCOMPARE( model.data( model.index( 0, 1 ) ).toString(), u"0"_s );
+  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), u"781,662.38"_s );
+  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), u"3,350,923.13"_s );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), u"-30.000000"_s );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), u"40.000000"_s );
+  QCOMPARE( model.data( model.index( 0, 4 ), Qt::ToolTipRole ).toString(), u"<b>-30.000000</b><br>EPSG:4326 - WGS 84"_s );
+  QCOMPARE( model.data( model.index( 0, 5 ), Qt::ToolTipRole ).toString(), u"<b>40.000000</b><br>EPSG:4326 - WGS 84"_s );
 
-  QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), QStringLiteral( "n/a" ) );
-  QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), QStringLiteral( "n/a" ) );
-  QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), QStringLiteral( "n/a" ) );
+  QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), u"n/a"_s );
+  QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), u"n/a"_s );
+  QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), u"n/a"_s );
 
-  QCOMPARE( model.data( model.index( 1, 1 ) ).toString(), QStringLiteral( "1" ) );
-  QCOMPARE( model.data( model.index( 1, 2 ) ).toString(), QStringLiteral( "787,362.38" ) );
-  QCOMPARE( model.data( model.index( 1, 3 ) ).toString(), QStringLiteral( "3,350,923.13" ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "149.999994" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29.999993" ) );
+  QCOMPARE( model.data( model.index( 1, 1 ) ).toString(), u"1"_s );
+  QCOMPARE( model.data( model.index( 1, 2 ) ).toString(), u"787,362.38"_s );
+  QCOMPARE( model.data( model.index( 1, 3 ) ).toString(), u"3,350,923.13"_s );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), u"149.999994"_s );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), u"-29.999993"_s );
   // tooltip should show target CRS details for user clarification
-  QCOMPARE( model.data( model.index( 1, 4 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>149.999994</b><br>EPSG:4326 - WGS 84" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ), Qt::ToolTipRole ).toString(), QStringLiteral( "<b>-29.999993</b><br>EPSG:4326 - WGS 84" ) );
-  QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), QStringLiteral( "n/a" ) );
-  QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), QStringLiteral( "n/a" ) );
-  QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), QStringLiteral( "n/a" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ), Qt::ToolTipRole ).toString(), u"<b>149.999994</b><br>EPSG:4326 - WGS 84"_s );
+  QCOMPARE( model.data( model.index( 1, 5 ), Qt::ToolTipRole ).toString(), u"<b>-29.999993</b><br>EPSG:4326 - WGS 84"_s );
+  QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), u"n/a"_s );
+  QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), u"n/a"_s );
+  QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), u"n/a"_s );
 
-  QCOMPARE( model.data( model.index( 2, 1 ) ).toString(), QStringLiteral( "2" ) );
-  QCOMPARE( model.data( model.index( 2, 2 ) ).toString(), QStringLiteral( "787,362.38" ) );
-  QCOMPARE( model.data( model.index( 2, 3 ) ).toString(), QStringLiteral( "3,362,323.13" ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "-35.000000" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "42.000000" ) );
-  QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), QStringLiteral( "n/a" ) );
-  QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), QStringLiteral( "n/a" ) );
-  QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), QStringLiteral( "n/a" ) );
+  QCOMPARE( model.data( model.index( 2, 1 ) ).toString(), u"2"_s );
+  QCOMPARE( model.data( model.index( 2, 2 ) ).toString(), u"787,362.38"_s );
+  QCOMPARE( model.data( model.index( 2, 3 ) ).toString(), u"3,362,323.13"_s );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), u"-35.000000"_s );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), u"42.000000"_s );
+  QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), u"n/a"_s );
+  QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), u"n/a"_s );
+  QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), u"n/a"_s );
 
   // with transform set residuals should be visible
   model.setGeorefTransform( &transform );
-  QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), QStringLiteral( "0.000000" ) );
-  QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), QStringLiteral( "-189.189188" ) );
-  QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), QStringLiteral( "189.189188" ) );
+  QCOMPARE( model.data( model.index( 0, 6 ) ).toString(), u"0.000000"_s );
+  QCOMPARE( model.data( model.index( 0, 7 ) ).toString(), u"-189.189188"_s );
+  QCOMPARE( model.data( model.index( 0, 8 ) ).toString(), u"189.189188"_s );
 
-  QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), QStringLiteral( "105.714286" ) );
-  QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), QStringLiteral( "189.189188" ) );
-  QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), QStringLiteral( "216.721155" ) );
+  QCOMPARE( model.data( model.index( 1, 6 ) ).toString(), u"105.714286"_s );
+  QCOMPARE( model.data( model.index( 1, 7 ) ).toString(), u"189.189188"_s );
+  QCOMPARE( model.data( model.index( 1, 8 ) ).toString(), u"216.721155"_s );
 
-  QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), QStringLiteral( "-105.714286" ) );
-  QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), QStringLiteral( "0.000000" ) );
-  QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), QStringLiteral( "105.714286" ) );
+  QCOMPARE( model.data( model.index( 2, 6 ) ).toString(), u"-105.714286"_s );
+  QCOMPARE( model.data( model.index( 2, 7 ) ).toString(), u"0.000000"_s );
+  QCOMPARE( model.data( model.index( 2, 8 ) ).toString(), u"105.714286"_s );
 
   // set data
   // these columns are read-only
@@ -670,19 +670,19 @@ void TestQgsGeoreferencer::testListModel()
   QVERIFY( !model.setData( model.index( 0, 8 ), 11 ) );
 
   QVERIFY( model.setData( model.index( 0, 2 ), 777777.77 ) );
-  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), QStringLiteral( "777,777.77" ) );
+  QCOMPARE( model.data( model.index( 0, 2 ) ).toString(), u"777,777.77"_s );
   QCOMPARE( list.at( 0 )->sourcePoint().x(), 777777.77 );
 
   QVERIFY( model.setData( model.index( 0, 3 ), 3333333.33 ) );
-  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), QStringLiteral( "3,333,333.33" ) );
+  QCOMPARE( model.data( model.index( 0, 3 ) ).toString(), u"3,333,333.33"_s );
   QCOMPARE( list.at( 0 )->sourcePoint().y(), 3333333.33 );
 
   QVERIFY( model.setData( model.index( 0, 4 ), 1660000.77 ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "1,660,000.77" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), u"1,660,000.77"_s );
   QCOMPARE( list.at( 0 )->destinationPoint().x(), 1660000.77 );
 
   QVERIFY( model.setData( model.index( 0, 5 ), 4433333.33 ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "4,433,333.33" ) );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), u"4,433,333.33"_s );
   QCOMPARE( list.at( 0 )->destinationPoint().y(), 4433333.33 );
 
   // disable point
@@ -701,66 +701,66 @@ void TestQgsGeoreferencer::testListModelCrs()
   QgsGCPList list;
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( 17697923, -3403549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( 17697923, -3403549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
 
   QgsGCPListModel model;
   model.setGCPList( &list );
-  model.setTargetCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
+  model.setTargetCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext() );
 
   // all destination points are shown in target crs
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30.000000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.000000" ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "149.999994" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29.999993" ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.983147" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.218996" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), u"-30.000000"_s );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), u"40.000000"_s );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), u"149.999994"_s );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), u"-29.999993"_s );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), u"158.983147"_s );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), u"-29.218996"_s );
 
   // setting a point's destination x or y will update that point to being stored in the target crs
   QVERIFY( model.setData( model.index( 0, 4 ), -31.0 ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.000000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), u"-31.000000"_s );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), u"40.000000"_s );
   QCOMPARE( list.at( 0 )->destinationPoint().x(), -31.0 );
   QCOMPARE( list.at( 0 )->destinationPoint().y(), 40.0 );
-  QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), u"EPSG:4326"_s );
 
   QVERIFY( model.setData( model.index( 0, 5 ), 41.0 ) );
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-31.000000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "41.000000" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), u"-31.000000"_s );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), u"41.000000"_s );
   QCOMPARE( list.at( 0 )->destinationPoint().x(), -31.0 );
   QCOMPARE( list.at( 0 )->destinationPoint().y(), 41.0 );
-  QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( list.at( 0 )->destinationPointCrs().authid(), u"EPSG:4326"_s );
 
   // destination point was originally in EPSG:3857, should be changed to 4326 when destination x is set
   QVERIFY( model.setData( model.index( 1, 4 ), 148 ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.000000" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29.999993" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), u"148.000000"_s );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), u"-29.999993"_s );
   QCOMPARE( list.at( 1 )->destinationPoint().x(), 148 );
   QGSCOMPARENEAR( list.at( 1 )->destinationPoint().y(), -30, 0.001 );
-  QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), u"EPSG:4326"_s );
 
   QVERIFY( model.setData( model.index( 1, 5 ), -32.0 ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "148.000000" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-32.000000" ) );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), u"148.000000"_s );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), u"-32.000000"_s );
   QCOMPARE( list.at( 1 )->destinationPoint().x(), 148 );
   QCOMPARE( list.at( 1 )->destinationPoint().y(), -32 );
-  QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( list.at( 1 )->destinationPointCrs().authid(), u"EPSG:4326"_s );
 
   // destination point was originally in EPSG:3857, should be changed to 4326 when destination y is set
   QVERIFY( model.setData( model.index( 2, 5 ), -29.0 ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158.983147" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.000000" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), u"158.983147"_s );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), u"-29.000000"_s );
   QGSCOMPARENEAR( list.at( 2 )->destinationPoint().x(), 158.9831, 0.001 );
   QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
-  QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), u"EPSG:4326"_s );
 
   QVERIFY( model.setData( model.index( 2, 4 ), 159 ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "159.000000" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29.000000" ) );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), u"159.000000"_s );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), u"-29.000000"_s );
   QCOMPARE( list.at( 2 )->destinationPoint().x(), 159 );
   QCOMPARE( list.at( 2 )->destinationPoint().y(), -29 );
-  QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( list.at( 2 )->destinationPointCrs().authid(), u"EPSG:4326"_s );
 }
 
 void TestQgsGeoreferencer::testListModelLocalization()
@@ -768,36 +768,36 @@ void TestQgsGeoreferencer::testListModelLocalization()
   QgsGCPList list;
   QgsMapCanvas c1;
   QgsMapCanvas c2;
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
-  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( 17697923, -3403549 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 781662.375, 3350923.125 ), QgsPointXY( -30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3350923.125 ), QgsPointXY( 16697923, -3503549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
+  list.append( new QgsGeorefDataPoint( &c1, &c2, QgsPointXY( 787362.375, 3362323.125 ), QgsPointXY( 17697923, -3403549 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), true ) );
 
   QgsGCPListModel model;
   model.setGCPList( &list );
-  model.setTargetCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsProject::instance()->transformContext() );
+  model.setTargetCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsProject::instance()->transformContext() );
 
   const QLocale defaultLocale = QLocale();
 
   // Set locale to German
-  QLocale::setDefault( QLocale( QStringLiteral( "de_DE" ) ) );
+  QLocale::setDefault( QLocale( u"de_DE"_s ) );
 
   // Check that the numbers are formatted correctly
-  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), QStringLiteral( "-30,000000" ) );
-  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), QStringLiteral( "40,000000" ) );
-  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), QStringLiteral( "149,999994" ) );
-  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), QStringLiteral( "-29,999993" ) );
-  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), QStringLiteral( "158,983147" ) );
-  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), QStringLiteral( "-29,218996" ) );
+  QCOMPARE( model.data( model.index( 0, 4 ) ).toString(), u"-30,000000"_s );
+  QCOMPARE( model.data( model.index( 0, 5 ) ).toString(), u"40,000000"_s );
+  QCOMPARE( model.data( model.index( 1, 4 ) ).toString(), u"149,999994"_s );
+  QCOMPARE( model.data( model.index( 1, 5 ) ).toString(), u"-29,999993"_s );
+  QCOMPARE( model.data( model.index( 2, 4 ) ).toString(), u"158,983147"_s );
+  QCOMPARE( model.data( model.index( 2, 5 ) ).toString(), u"-29,218996"_s );
 
   // Check that setData works with localized numbers
-  model.setData( model.index( 0, 4 ), QStringLiteral( "-31,123" ) );
+  model.setData( model.index( 0, 4 ), u"-31,123"_s );
   QCOMPARE( QLocale().toDouble( model.data( model.index( 0, 4 ) ).toString() ), -31.123 );
 
-  model.setData( model.index( 0, 4 ), QStringLiteral( "1.123,1234" ) );
+  model.setData( model.index( 0, 4 ), u"1.123,1234"_s );
   QCOMPARE( QLocale().toDouble( model.data( model.index( 0, 4 ) ).toString() ), 1123.1234 );
 
   // Permissive check using C locale
-  model.setData( model.index( 0, 4 ), QStringLiteral( "123.4" ) );
+  model.setData( model.index( 0, 4 ), u"123.4"_s );
   QCOMPARE( QLocale().toDouble( model.data( model.index( 0, 4 ) ).toString() ), 123.4 );
 
   // Revert locale to english
@@ -807,7 +807,7 @@ void TestQgsGeoreferencer::testListModelLocalization()
 void TestQgsGeoreferencer::testGdalCommands()
 {
   QgsGeoreferencerMainWindow window;
-  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
+  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
 
   window.addPoint( QgsPointXY( 783414, 3350122 ), QgsPointXY( 783414.001234567, 3350122.002345678 ), QgsCoordinateReferenceSystem() );
   window.addPoint( QgsPointXY( 791344, 3349795 ), QgsPointXY( 791344, 33497952 ), QgsCoordinateReferenceSystem() );
@@ -816,32 +816,32 @@ void TestQgsGeoreferencer::testGdalCommands()
 
   QString command = window.generateGDALtranslateCommand();
   // gdal_translate command must use source pixels, not geographic coordinates
-  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.001 3350122.002 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\"" ).arg( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ), QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
+  QCOMPARE( command, u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.001 3350122.002 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s ) );
 
   command = window.generateGDALogr2ogrCommand();
-  QCOMPARE( command, QStringLiteral( "ogr2ogr -gcp 783414 3350122 783414.001 3350122.002 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:32633 \"\" \"%1\"" ).arg( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) ) );
+  QCOMPARE( command, u"ogr2ogr -gcp 783414 3350122 783414.001 3350122.002 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:32633 \"\" \"%1\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s ) );
 
-  window.mTargetCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  window.mTargetCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   command = window.generateGDALtranslateCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\"" ).arg( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ), QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
+  QCOMPARE( command, u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s ) );
 
   command = window.generateGDALogr2ogrCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, QStringLiteral( "ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\"" ).arg( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) ) );
+  QCOMPARE( command, u"ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s ) );
 
   const QLocale defaultLocale = QLocale();
 
   // Set locale to German
-  QLocale::setDefault( QLocale( QStringLiteral( "de_DE" ) ) );
+  QLocale::setDefault( QLocale( u"de_DE"_s ) );
 
   command = window.generateGDALtranslateCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, QStringLiteral( "gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\"" ).arg( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ), QDir::tempPath() + QStringLiteral( "/landsat.tif" ) ) );
+  QCOMPARE( command, u"gdal_translate -of GTiff -co TFW=YES -gcp 30.73 14.055 783414.00123457 3350122.00234568 -gcp 169.853 19.792 791344 33497952 -gcp 24.818 52926.844 783077 334093 -gcp 166.169 167.055 791134 3341401 \"%1\" \"%2\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s, QDir::tempPath() + u"/landsat.tif"_s ) );
 
   command = window.generateGDALogr2ogrCommand();
   QgsDebugMsgLevel( command, 1 );
-  QCOMPARE( command, QStringLiteral( "ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\"" ).arg( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) ) );
+  QCOMPARE( command, u"ogr2ogr -gcp 783414 3350122 783414.00123457 3350122.00234568 -gcp 791344 3349795 791344 33497952 -gcp 783077 334093 783077 334093 -gcp 791134 3341401 791134 3341401 -tps -t_srs EPSG:4326 \"\" \"%1\""_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s ) );
 
 
   // Revert locale to english
@@ -851,8 +851,8 @@ void TestQgsGeoreferencer::testGdalCommands()
 void TestQgsGeoreferencer::testWorldFile()
 {
   QgsGeoreferencerMainWindow window;
-  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.tif" ) );
-  QString worldFileName = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/landsat.wld" );
+  window.openLayer( Qgis::LayerType::Raster, QStringLiteral( TEST_DATA_DIR ) + u"/landsat.tif"_s );
+  QString worldFileName = QStringLiteral( TEST_DATA_DIR ) + u"/landsat.wld"_s;
 
   QVERIFY( window.writeWorldFile( QgsPointXY( 0, 0 ), 1.0, 1.0, 0 ) );
 

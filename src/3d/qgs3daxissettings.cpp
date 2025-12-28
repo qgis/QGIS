@@ -38,17 +38,17 @@ bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs ) const
 
 void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  QString sizeStr = element.attribute( QStringLiteral( "defaultViewportSize" ) );
+  QString sizeStr = element.attribute( u"defaultViewportSize"_s );
   if ( !sizeStr.isEmpty() )
     mDefaultViewportSize = sizeStr.toInt();
 
   double minViewportRatio = 0.0;
   double maxViewportRatio = 0.0;
-  sizeStr = element.attribute( QStringLiteral( "minViewportRatio" ) );
+  sizeStr = element.attribute( u"minViewportRatio"_s );
   if ( !sizeStr.isEmpty() && sizeStr.toDouble() != 0.0 )
     minViewportRatio = sizeStr.toDouble();
 
-  sizeStr = element.attribute( QStringLiteral( "maxViewportRatio" ) );
+  sizeStr = element.attribute( u"maxViewportRatio"_s );
   if ( !sizeStr.isEmpty() && sizeStr.toDouble() != 0.0 )
     maxViewportRatio = sizeStr.toDouble();
 
@@ -58,28 +58,28 @@ void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteC
   if ( minViewportRatio > 0.0 && mMaxViewportRatio > minViewportRatio )
     mMinViewportRatio = minViewportRatio;
 
-  const QString modeStr = element.attribute( QStringLiteral( "mode" ) );
-  if ( modeStr == QLatin1String( "Off" ) )
+  const QString modeStr = element.attribute( u"mode"_s );
+  if ( modeStr == "Off"_L1 )
     mMode = Qgs3DAxisSettings::Mode::Off;
-  else if ( modeStr == QLatin1String( "Crs" ) )
+  else if ( modeStr == "Crs"_L1 )
     mMode = Qgs3DAxisSettings::Mode::Crs;
-  else if ( modeStr == QLatin1String( "Cube" ) )
+  else if ( modeStr == "Cube"_L1 )
     mMode = Qgs3DAxisSettings::Mode::Cube;
 
-  const QString horizontalStr = element.attribute( QStringLiteral( "horizontal" ) );
-  if ( horizontalStr == QLatin1String( "Left" ) )
+  const QString horizontalStr = element.attribute( u"horizontal"_s );
+  if ( horizontalStr == "Left"_L1 )
     mHorizontalPosition = Qt::AnchorPoint::AnchorLeft;
-  else if ( horizontalStr == QLatin1String( "Middle" ) )
+  else if ( horizontalStr == "Middle"_L1 )
     mHorizontalPosition = Qt::AnchorPoint::AnchorHorizontalCenter;
-  else if ( horizontalStr == QLatin1String( "Right" ) )
+  else if ( horizontalStr == "Right"_L1 )
     mHorizontalPosition = Qt::AnchorPoint::AnchorRight;
 
-  const QString verticalStr = element.attribute( QStringLiteral( "vertical" ) );
-  if ( verticalStr == QLatin1String( "Top" ) )
+  const QString verticalStr = element.attribute( u"vertical"_s );
+  if ( verticalStr == "Top"_L1 )
     mVerticalPosition = Qt::AnchorPoint::AnchorTop;
-  else if ( verticalStr == QLatin1String( "Middle" ) )
+  else if ( verticalStr == "Middle"_L1 )
     mVerticalPosition = Qt::AnchorPoint::AnchorVerticalCenter;
-  else if ( verticalStr == QLatin1String( "Bottom" ) )
+  else if ( verticalStr == "Bottom"_L1 )
     mVerticalPosition = Qt::AnchorPoint::AnchorBottom;
 }
 
@@ -88,59 +88,59 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   QString str;
 
   str = QString::number( mDefaultViewportSize );
-  element.setAttribute( QStringLiteral( "defaultViewportSize" ), str );
+  element.setAttribute( u"defaultViewportSize"_s, str );
 
   str = QString::number( mMinViewportRatio );
-  element.setAttribute( QStringLiteral( "minViewportRatio" ), str );
+  element.setAttribute( u"minViewportRatio"_s, str );
 
   str = QString::number( mMaxViewportRatio );
-  element.setAttribute( QStringLiteral( "maxViewportRatio" ), str );
+  element.setAttribute( u"maxViewportRatio"_s, str );
 
   switch ( mMode )
   {
     case Qgs3DAxisSettings::Mode::Crs:
-      str = QLatin1String( "Crs" );
+      str = "Crs"_L1;
       break;
     case Qgs3DAxisSettings::Mode::Cube:
-      str = QLatin1String( "Cube" );
+      str = "Cube"_L1;
       break;
 
     case Qgs3DAxisSettings::Mode::Off:
     default:
-      str = QLatin1String( "Off" );
+      str = "Off"_L1;
       break;
   }
-  element.setAttribute( QStringLiteral( "mode" ), str );
+  element.setAttribute( u"mode"_s, str );
 
   switch ( mHorizontalPosition )
   {
     case Qt::AnchorPoint::AnchorLeft:
-      str = QLatin1String( "Left" );
+      str = "Left"_L1;
       break;
     case Qt::AnchorPoint::AnchorHorizontalCenter:
-      str = QLatin1String( "Middle" );
+      str = "Middle"_L1;
       break;
     case Qt::AnchorPoint::AnchorRight:
     default:
-      str = QLatin1String( "End" );
+      str = "End"_L1;
       break;
   }
-  element.setAttribute( QStringLiteral( "horizontal" ), str );
+  element.setAttribute( u"horizontal"_s, str );
 
   switch ( mVerticalPosition )
   {
     case Qt::AnchorPoint::AnchorBottom:
-      str = QLatin1String( "Bottom" );
+      str = "Bottom"_L1;
       break;
     case Qt::AnchorPoint::AnchorVerticalCenter:
-      str = QLatin1String( "Middle" );
+      str = "Middle"_L1;
       break;
     case Qt::AnchorPoint::AnchorTop:
     default:
-      str = QLatin1String( "Top" );
+      str = "Top"_L1;
       break;
   }
-  element.setAttribute( QStringLiteral( "vertical" ), str );
+  element.setAttribute( u"vertical"_s, str );
 }
 
 void Qgs3DAxisSettings::setMinViewportRatio( double ratio )

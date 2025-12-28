@@ -45,7 +45,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperWidth ), QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperHeight ), QgsPropertyDefinition( "dataDefinedPaperHeight", QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::NumPages ), QgsPropertyDefinition( "dataDefinedNumPages", QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperOrientation ), QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QLatin1String( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperOrientation ), QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + "[<b>portrait</b>|<b>landscape</b>]"_L1 ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PageNumber ), QgsPropertyDefinition( "dataDefinedPageNumber", QObject::tr( "Page number" ), QgsPropertyDefinition::IntegerPositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PositionX ), QgsPropertyDefinition( "dataDefinedPositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PositionY ), QgsPropertyDefinition( "dataDefinedPositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
@@ -82,14 +82,14 @@ void QgsLayoutObject::initPropertyDefinitions()
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridCrossSize ), QgsPropertyDefinition( "dataDefinedMapGridCrossSize", QObject::tr( "Grid cross size" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameMargin ), QgsPropertyDefinition( "dataDefinedMapGridFrameMargin", QObject::tr( "Grid frame margin" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridLabelDistance ), QgsPropertyDefinition( "dataDefinedMapGridLabelDistance", QObject::tr( "Grid label distance" ), QgsPropertyDefinition::DoublePositive ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayLeft ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display left" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayRight ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display right" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayTop ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display top" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayBottom ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display bottom" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsLeft ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display left" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display right" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display top" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
-    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display bottom" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayLeft ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display left" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayRight ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display right" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayTop ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display top" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridAnnotationDisplayBottom ), QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display bottom" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsLeft ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display left" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display right" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display top" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom ), QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frame divisions display bottom" ), QObject::tr( "string " ) + "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]"_L1 ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ), QgsPropertyDefinition( "dataDefinedMapGridDrawAnnotation", QObject::tr( "Draw map grid annotation" ), QgsPropertyDefinition::Boolean, QString(), QObject::tr( "Allows control over the visibility of individual grid annotations" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ), QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. 'EPSG:4326'), a proj string prefixes by \"PROJ:\" (e.g. 'PROJ: +proj=...') or a WKT string prefixed by \"WKT:\" (e.g. 'WKT:GEOGCRS[\"WGS 84\"...]')" ) ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ), QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
@@ -301,9 +301,9 @@ bool QgsLayoutObject::writeObjectPropertiesToElement( QDomElement &parentElement
   }
 
   //create object element
-  QDomElement objectElement = document.createElement( QStringLiteral( "LayoutObject" ) );
+  QDomElement objectElement = document.createElement( u"LayoutObject"_s );
 
-  QDomElement ddPropsElement = document.createElement( QStringLiteral( "dataDefinedProperties" ) );
+  QDomElement ddPropsElement = document.createElement( u"dataDefinedProperties"_s );
   mDataDefinedProperties.writeXml( ddPropsElement, sPropertyDefinitions );
   objectElement.appendChild( ddPropsElement );
 
@@ -322,14 +322,14 @@ bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parent
     return false;
   }
 
-  const QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList objectNodeList = parentElement.elementsByTagName( u"LayoutObject"_s );
   if ( objectNodeList.size() < 1 )
   {
     return false;
   }
   const QDomElement objectElement = objectNodeList.at( 0 ).toElement();
 
-  const QDomNode propsNode = objectElement.namedItem( QStringLiteral( "dataDefinedProperties" ) );
+  const QDomNode propsNode = objectElement.namedItem( u"dataDefinedProperties"_s );
   if ( !propsNode.isNull() )
   {
     mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );

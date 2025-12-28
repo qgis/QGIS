@@ -199,29 +199,29 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
     {
       mSymbolViewStackedWidget->setCurrentIndex( 0 );
       // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
-      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui );
+      QgsSettings().setValue( u"UI/symbolsList/lastIconView"_s, 0, QgsSettings::Gui );
     }
   } );
   connect( mButtonListView, &QToolButton::toggled, this, [this]( bool active ) {
     if ( active )
     {
-      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 1, QgsSettings::Gui );
+      QgsSettings().setValue( u"UI/symbolsList/lastIconView"_s, 1, QgsSettings::Gui );
       mSymbolViewStackedWidget->setCurrentIndex( 1 );
     }
   } );
 
   // restore previous view
   const QgsSettings settings;
-  const int currentView = settings.value( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui ).toInt();
+  const int currentView = settings.value( u"UI/symbolsList/lastIconView"_s, 0, QgsSettings::Gui ).toInt();
   if ( currentView == 0 )
     mButtonIconView->setChecked( true );
   else
     mButtonListView->setChecked( true );
 
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mSymbolTreeView->header()->restoreState( settings.value( u"UI/symbolsList/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
   connect( mSymbolTreeView->header(), &QHeaderView::sectionResized, this, [this] {
     // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
-    QgsSettings().setValue( QStringLiteral( "UI/symbolsList/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
+    QgsSettings().setValue( u"UI/symbolsList/treeState"_s, mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
   } );
 
   QgsFilterLineEdit *groupEdit = new QgsFilterLineEdit();
@@ -266,7 +266,7 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
   connect( groupsCombo, &QComboBox::currentTextChanged, this, &QgsStyleItemsListWidget::updateModelFilters );
 
   const QgsSettings settings;
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mSymbolTreeView->header()->restoreState( settings.value( u"UI/symbolsList/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
@@ -353,7 +353,7 @@ void QgsStyleItemsListWidget::setLayerType( Qgis::GeometryType type )
 
 QString QgsStyleItemsListWidget::currentTagFilter() const
 {
-  return groupsCombo->currentData().toString() == QLatin1String( "tag" ) ? groupsCombo->currentText() : QString();
+  return groupsCombo->currentData().toString() == "tag"_L1 ? groupsCombo->currentText() : QString();
 }
 
 QMenu *QgsStyleItemsListWidget::advancedMenu()
@@ -405,7 +405,7 @@ void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
   // are shown.
   QWidget::showEvent( event );
   const QgsSettings settings;
-  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mSymbolTreeView->header()->restoreState( settings.value( u"UI/symbolsList/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 void QgsStyleItemsListWidget::populateGroups()
@@ -484,7 +484,7 @@ void QgsStyleItemsListWidget::populateGroups()
   groupsCombo->blockSignals( false );
 
   const QgsSettings settings;
-  index = settings.value( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 ).toInt();
+  index = settings.value( u"qgis/symbolsListGroupsIndex"_s, 0 ).toInt();
   groupsCombo->setCurrentIndex( index );
 
   mUpdatingGroups = false;
@@ -507,21 +507,21 @@ void QgsStyleItemsListWidget::updateModelFilters()
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( groupsCombo->currentText() );
   }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
+  else if ( groupsCombo->currentData().toString() == "favorite"_L1 )
   {
     mModel->setFavoritesOnly( true );
     mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
+  else if ( groupsCombo->currentData().toString() == "all"_L1 )
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
-  else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
+  else if ( groupsCombo->currentData().toString() == "smartgroup"_L1 )
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagString( QString() );
@@ -585,5 +585,5 @@ void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index, cons
 void QgsStyleItemsListWidget::groupsCombo_currentIndexChanged( int index )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
+  settings.setValue( u"qgis/symbolsListGroupsIndex"_s, index );
 }

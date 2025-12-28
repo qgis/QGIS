@@ -133,7 +133,7 @@ void QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged()
 QgsLayerTreeGroupPropertiesWidgetFactory::QgsLayerTreeGroupPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 
