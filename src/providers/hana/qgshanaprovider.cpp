@@ -702,7 +702,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
 
   const bool allowBatchInserts = ( flags & QgsFeatureSink::FastInsert );
-  const QString sql = u"INSERT INTO %1.%2(%3) VALUES (%4)"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnNames.join( QLatin1Char( ',' ) ), values.join( QLatin1Char( ',' ) ) );
+  const QString sql = u"INSERT INTO %1.%2(%3) VALUES (%4)"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnNames.join( ','_L1 ), values.join( ','_L1 ) );
 
   try
   {
@@ -916,7 +916,7 @@ bool QgsHanaProvider::addAttributes( const QList<QgsField> &attributes )
   for ( const QgsField &field : attributes )
   {
     if ( !columnDefs.isEmpty() )
-      columnDefs += QLatin1Char( ',' );
+      columnDefs += ','_L1;
 
     columnDefs += QgsHanaUtils::quotedIdentifier( field.name() ) + u" "_s + field.typeName();
 
@@ -964,7 +964,7 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
   for ( int attrId : attributes )
   {
     if ( !columnNames.isEmpty() )
-      columnNames += QLatin1Char( ',' );
+      columnNames += ','_L1;
     const AttributeField &field = mAttributeFields.at( attrId );
     columnNames += QgsHanaUtils::quotedIdentifier( field.name );
   }
@@ -1199,7 +1199,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         return true;
 
       const QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( mFields, mPrimaryKeyType, mPrimaryKeyAttrs );
-      const QString sql = u"UPDATE %1.%2 SET %3 WHERE %4"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), attrs.join( QLatin1Char( ',' ) ), fidWhereClause );
+      const QString sql = u"UPDATE %1.%2 SET %3 WHERE %4"_s.arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), attrs.join( ','_L1 ), fidWhereClause );
 
       PreparedStatementRef stmtUpdate = conn->prepareStatement( sql );
 

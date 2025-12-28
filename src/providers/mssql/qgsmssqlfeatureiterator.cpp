@@ -129,7 +129,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
           delim = u" AND "_s;
         }
 
-        whereClause += QLatin1Char( ')' );
+        whereClause += ')'_L1;
       }
       else
       {
@@ -427,7 +427,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   if ( !orderByParts.isEmpty() )
   {
-    mOrderByClause = u" ORDER BY %1"_s.arg( orderByParts.join( QLatin1Char( ',' ) ) );
+    mOrderByClause = u" ORDER BY %1"_s.arg( orderByParts.join( ','_L1 ) );
   }
 
   QgsDebugMsgLevel( mStatement + " " + mOrderByClause, 2 );

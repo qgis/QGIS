@@ -61,7 +61,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   const auto constPaths = paths;
   for ( const QString &path : constPaths )
   {
-    if ( path.endsWith( "\\"_L1 ) || path.endsWith( QLatin1Char( '/' ) ) )
+    if ( path.endsWith( "\\"_L1 ) || path.endsWith( '/'_L1 ) )
     {
       fullPath = path.left( path.size() - 1 );
     }
@@ -93,16 +93,16 @@ QUrl QgsHelp::helpUrl( const QString &key )
     }
     else
     {
-      const QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( QLatin1Char( '#' ) ) );
+      const QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( '#'_L1 ) );
       if ( !QFileInfo::exists( filePath ) )
       {
         continue;
       }
       helpUrl = QUrl::fromLocalFile( filePath );
-      const int pos = helpPath.lastIndexOf( QLatin1Char( '#' ) );
+      const int pos = helpPath.lastIndexOf( '#'_L1 );
       if ( pos != -1 )
       {
-        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( QLatin1Char( '#' ) ) + 1, -1 ) );
+        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( '#'_L1 ) + 1, -1 ) );
       }
     }
 

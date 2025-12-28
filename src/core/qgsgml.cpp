@@ -636,7 +636,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     {
       if ( !mStringCash.isEmpty() )
       {
-        mStringCash.append( QLatin1Char( ' ' ) );
+        mStringCash.append( ' '_L1 );
       }
     }
     else

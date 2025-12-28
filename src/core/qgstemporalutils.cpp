@@ -73,13 +73,13 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     error = QObject::tr( "Filename template is empty" );
     return false;
   }
-  const int numberOfDigits = settings.fileNameTemplate.count( QLatin1Char( '#' ) );
+  const int numberOfDigits = settings.fileNameTemplate.count( '#'_L1 );
   if ( numberOfDigits < 0 )
   {
     error = QObject::tr( "Wrong filename template format (must contain #)" );
     return false;
   }
-  const QString token( numberOfDigits, QLatin1Char( '#' ) );
+  const QString token( numberOfDigits, '#'_L1 );
   if ( !settings.fileNameTemplate.contains( token ) )
   {
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );

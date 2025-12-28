@@ -81,13 +81,13 @@ std::pair<QString, QString> QgsWFSFeatureDownloaderImpl::determineTypeNames() co
     for ( const QgsOgcUtils::LayerProperties &layerProperties : std::as_const( mShared->mLayerPropertiesList ) )
     {
       if ( !typenames.isEmpty() )
-        typenames += QLatin1Char( ',' );
+        typenames += ','_L1;
       typenames += layerProperties.mName;
       const QString lNamespace = mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, layerProperties.mName );
       if ( !lNamespace.isEmpty() && !setNamespaces.contains( lNamespace ) )
       {
         if ( !namespaces.isEmpty() )
-          namespaces += QLatin1Char( ',' );
+          namespaces += ','_L1;
         namespaces += lNamespace;
         setNamespaces.insert( lNamespace );
       }
@@ -456,10 +456,10 @@ std::pair<QUrl, QByteArray> QgsWFSFeatureDownloaderImpl::buildPostRequest( qint6
     {
       QDomElement sortByElement = postDocument.createElement( useVersion2 ? u"fes:SortBy"_s : u"ogc:SortBy"_s );
 
-      const QStringList sortColumns = mShared->mSortBy.split( QLatin1Char( ',' ) );
+      const QStringList sortColumns = mShared->mSortBy.split( ','_L1 );
       for ( const QString &sortColumn : sortColumns )
       {
-        const QStringList sortComponents = sortColumn.split( QLatin1Char( ' ' ) );
+        const QStringList sortComponents = sortColumn.split( ' '_L1 );
         const QString propertyName = sortComponents[0];
         const QString sortOrder = ( sortComponents.size() > 1 && sortComponents[1].startsWith( 'D', Qt::CaseInsensitive ) ) ? u"DESC"_s : u"ASC"_s;
 

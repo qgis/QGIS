@@ -1501,7 +1501,7 @@ static QVariant fcnTitle( const QVariantList &values, const QgsExpressionContext
     if ( elems[i].size() > 1 )
       elems[i] = elems[i].at( 0 ).toUpper() + elems[i].mid( 1 ).toLower();
   }
-  return QVariant( elems.join( QLatin1Char( ' ' ) ) );
+  return QVariant( elems.join( ' '_L1 ) );
 }
 
 static QVariant fcnTrim( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

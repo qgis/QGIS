@@ -297,7 +297,7 @@ bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, 
   if ( action == Qt::MoveAction )
   {
     const QString source = data->data( u"application/qgis.layertree.source"_s );
-    if ( source.isEmpty() || source != u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+    if ( source.isEmpty() || source != u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, '0'_L1 ) )
     {
       return false;
     }
@@ -319,7 +319,7 @@ bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt:
 
   // don't accept moves from other layer trees -- only allow internal drag
   const QString source = data->data( u"application/qgis.layertree.source"_s );
-  if ( source.isEmpty() || source != u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+  if ( source.isEmpty() || source != u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, '0'_L1 ) )
   {
     if ( action == Qt::CopyAction )
     {

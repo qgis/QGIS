@@ -501,7 +501,7 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
   {
     words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
   }
-  return words.join( QLatin1Char( ' ' ) );
+  return words.join( ' '_L1 );
 }
 
 QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
@@ -520,7 +520,7 @@ QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
       QgsDebugMsgLevel( u"Warning: style map does not contain %1"_s.arg( words[i] ), 2 );
     }
   }
-  return words.join( QLatin1Char( ' ' ) );
+  return words.join( ' '_L1 );
 }
 
 QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )

@@ -226,7 +226,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     logMessageWithReason( u"GDAL SQLite driver not available"_s );
     return false;
   }
-  const QString vsimemFilename = u"/vsimem/qgis_cache_template_%1/features.sqlite"_s.arg( reinterpret_cast<quintptr>( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  const QString vsimemFilename = u"/vsimem/qgis_cache_template_%1/features.sqlite"_s.arg( reinterpret_cast<quintptr>( this ), QT_POINTER_SIZE * 2, 16, '0'_L1 );
   mCacheTablename = CPLGetBasename( vsimemFilename.toUtf8().constData() );
   VSIUnlink( vsimemFilename.toUtf8().constData() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
@@ -291,7 +291,7 @@ bool QgsBackgroundCachedSharedData::createCache()
 
       sql += u", %1 %2"_s.arg( quotedIdentifier( field.name() ), type );
     }
-    sql += QLatin1Char( ')' );
+    sql += ')'_L1;
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
@@ -929,19 +929,19 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedMD5( const QVector
   for ( int i = 0; i < featureList.size(); i++ )
   {
     if ( !first )
-      expr += QLatin1Char( ',' );
+      expr += ','_L1;
     else
     {
       expr = QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 + " IN (";
       first = false;
     }
-    expr += QLatin1Char( '\'' );
+    expr += '\''_L1;
     expr += getMD5( featureList[i].first );
-    expr += QLatin1Char( '\'' );
+    expr += '\''_L1;
 
     if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
     {
-      expr += QLatin1Char( ')' );
+      expr += ')'_L1;
 
       QgsFeatureRequest request;
       request.setFilterExpression( expr );

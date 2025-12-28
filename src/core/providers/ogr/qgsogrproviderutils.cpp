@@ -599,7 +599,7 @@ QString createFilters( const QString &type )
           {
             sExtensions << ext;
             if ( !glob.isEmpty() )
-              glob += QLatin1Char( ' ' );
+              glob += ' '_L1;
             glob += "*." + ext;
           }
 
@@ -646,7 +646,7 @@ QString createFilters( const QString &type )
     QStringList exts;
     for ( const QString &ext : std::as_const( sExtensions ) )
       exts << u"*.%1 *.%2"_s.arg( ext, ext.toUpper() );
-    sFileFilters.prepend( QObject::tr( "All supported files" ) + u" (%1);;"_s.arg( exts.join( QLatin1Char( ' ' ) ) ) );
+    sFileFilters.prepend( QObject::tr( "All supported files" ) + u" (%1);;"_s.arg( exts.join( ' '_L1 ) ) );
 
     // can't forget the default case - first
     sFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
@@ -676,15 +676,15 @@ QString createFilters( const QString &type )
   }
   if ( type == "extensions"_L1 )
   {
-    return sExtensions.join( QLatin1Char( '|' ) );
+    return sExtensions.join( '|'_L1 );
   }
   if ( type == "directory_extensions"_L1 )
   {
-    return sDirectoryExtensions.join( QLatin1Char( '|' ) );
+    return sDirectoryExtensions.join( '|'_L1 );
   }
   if ( type == "wildcards"_L1 )
   {
-    return sWildcards.join( QLatin1Char( '|' ) );
+    return sWildcards.join( '|'_L1 );
   }
   else
   {
@@ -972,7 +972,7 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     // Otherwise use the datasourceURI
     // Not completely sure about this logic. But at least, for GeoPackage this
     // works fine with multi layer datasets.
-    QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
+    QString filePath = dataSourceURI.left( dataSourceURI.indexOf( '|'_L1 ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
     {
@@ -2130,9 +2130,9 @@ QString QgsOgrProviderUtils::ogrWkbGeometryTypeName( OGRwkbGeometryType type )
   {
     geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
     if ( wkbHasZ( type ) )
-      geom += QLatin1Char( 'Z' );
+      geom += 'Z'_L1;
     if ( wkbHasM( type ) )
-      geom += QLatin1Char( 'M' );
+      geom += 'M'_L1;
     return geom;
   }
 

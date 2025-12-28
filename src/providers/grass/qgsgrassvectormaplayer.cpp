@@ -747,7 +747,7 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
     }
     QStringList queries;
     queries << u"BEGIN TRANSACTION"_s;
-    queries << u"CREATE TEMPORARY TABLE %1_tmp_drop_column AS SELECT %2 FROM %1"_s.arg( mFieldInfo->table, columns.join( QLatin1Char( ',' ) ) );
+    queries << u"CREATE TEMPORARY TABLE %1_tmp_drop_column AS SELECT %2 FROM %1"_s.arg( mFieldInfo->table, columns.join( ','_L1 ) );
     queries << u"DROP TABLE %1"_s.arg( mFieldInfo->table );
     queries << u"CREATE TABLE %1 AS SELECT * FROM %1_tmp_drop_column"_s.arg( mFieldInfo->table );
     queries << u"DROP TABLE %1_tmp_drop_column"_s.arg( mFieldInfo->table );
@@ -865,7 +865,7 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     }
   }
 
-  QString query = u"INSERT INTO %1 ( %2 ) VALUES ( %3 )"_s.arg( mFieldInfo->table, names.join( ", "_L1 ), values.join( QLatin1Char( ',' ) ) );
+  QString query = u"INSERT INTO %1 ( %2 ) VALUES ( %3 )"_s.arg( mFieldInfo->table, names.join( ", "_L1 ), values.join( ','_L1 ) );
   executeSql( query, error );
   if ( error.isEmpty() )
   {
@@ -912,7 +912,7 @@ void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
       }
     }
 
-    QString query = u"INSERT INTO %1 ( %2 ) VALUES ( %3 )"_s.arg( mFieldInfo->table, names.join( ", "_L1 ), values.join( QLatin1Char( ',' ) ) );
+    QString query = u"INSERT INTO %1 ( %2 ) VALUES ( %3 )"_s.arg( mFieldInfo->table, names.join( ", "_L1 ), values.join( ','_L1 ) );
     executeSql( query, error );
   }
   else
@@ -1094,7 +1094,7 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, const QgsField &fiel
     values << QString::number( cat );
     names << field.name();
     values << quotedValue( value );
-    query = u"INSERT INTO %1 ( %2 ) VALUES ( %3 )"_s.arg( mFieldInfo->table, names.join( ", "_L1 ), values.join( QLatin1Char( ',' ) ) );
+    query = u"INSERT INTO %1 ( %2 ) VALUES ( %3 )"_s.arg( mFieldInfo->table, names.join( ", "_L1 ), values.join( ','_L1 ) );
   }
 
   QgsDebugMsgLevel( QString( "query: %1" ).arg( query ), 2 );

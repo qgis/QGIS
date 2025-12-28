@@ -288,7 +288,7 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
     {
       formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
     }
-    const QString dialogFilter = u"%1 (%2);;%3 (*.*)"_s.arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+    const QString dialogFilter = u"%1 (%2);;%3 (*.*)"_s.arg( tr( "Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
     const QString initialDir = settingLastSourceFolder->value();
     const QString imagePath = QFileDialog::getOpenFileName( nullptr, tr( "Add Picture Annotation" ), initialDir.isEmpty() ? QDir::homePath() : initialDir, dialogFilter );
 

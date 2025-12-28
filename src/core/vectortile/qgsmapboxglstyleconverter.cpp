@@ -3495,7 +3495,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
         concatString += ", "_L1;
       concatString += parseValue( expression.value( i ), context );
     }
-    concatString += QLatin1Char( ')' );
+    concatString += ')'_L1;
     return concatString;
   }
   else if ( op == "length"_L1 )

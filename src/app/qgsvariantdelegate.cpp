@@ -339,7 +339,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
       return u"(%1,%2)"_s.arg( size.width() ).arg( size.height() );
     }
     case QMetaType::Type::QStringList:
-      return value.toStringList().join( QLatin1Char( ',' ) );
+      return value.toStringList().join( ','_L1 );
     case QMetaType::Type::QTime:
       return value.toTime().toString( Qt::ISODate );
     default:

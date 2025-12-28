@@ -293,7 +293,7 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
         }
         else
         {
-          list.append( domElements( el, names.join( QLatin1Char( '.' ) ) ) );
+          list.append( domElements( el, names.join( '.'_L1 ) ) );
         }
       }
     }
@@ -365,7 +365,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
   }
 
   mParsePathStack.append( elementName );
-  const QString path = mParsePathStack.join( QLatin1Char( '.' ) );
+  const QString path = mParsePathStack.join( '.'_L1 );
 
   QStringList splitName = elementName.split( NS_SEPARATOR );
   const QString localName = splitName.last();

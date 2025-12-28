@@ -601,10 +601,10 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
       const int h = m / 60;
       m = m % 60;
       ret = u"%1:%2:%3.%4"_s.
-            arg( h, 2, 10, QLatin1Char( '0' ) ).
-            arg( m, 2, 10, QLatin1Char( '0' ) ).
-            arg( s, 2, 10, QLatin1Char( '0' ) ).
-            arg( z, 3, 10, QLatin1Char( '0' ) );
+            arg( h, 2, 10, '0'_L1 ).
+            arg( m, 2, 10, '0'_L1 ).
+            arg( s, 2, 10, '0'_L1 ).
+            arg( z, 3, 10, '0'_L1 );
     }
     else if ( format == "hh:mm:ss"_L1 )
     {
@@ -614,9 +614,9 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
       const int h = m / 60;
       m = m % 60;
       ret = u"%1:%2:%3"_s.
-            arg( h, 2, 10, QLatin1Char( '0' ) ).
-            arg( m, 2, 10, QLatin1Char( '0' ) ).
-            arg( s, 2, 10, QLatin1Char( '0' ) );
+            arg( h, 2, 10, '0'_L1 ).
+            arg( m, 2, 10, '0'_L1 ).
+            arg( s, 2, 10, '0'_L1 );
 
     }
     else if ( format == "d hh:mm:ss"_L1 )
@@ -630,9 +630,9 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
       h = totalHours % 24;
       ret = u"%1 d %2:%3:%4"_s.
             arg( d ).
-            arg( h, 2, 10, QLatin1Char( '0' ) ).
-            arg( m, 2, 10, QLatin1Char( '0' ) ).
-            arg( s, 2, 10, QLatin1Char( '0' ) );
+            arg( h, 2, 10, '0'_L1 ).
+            arg( m, 2, 10, '0'_L1 ).
+            arg( s, 2, 10, '0'_L1 );
     }
     else if ( format == "d hh"_L1 )
     {

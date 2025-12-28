@@ -1718,11 +1718,11 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
     node = node.nextSibling();
   }
 
-  matrixSet.identifier = u"%1-wmsc-%2"_s.arg( layers.join( QLatin1Char( '_' ) ) ).arg( mTileLayersSupported.size() );
+  matrixSet.identifier = u"%1-wmsc-%2"_s.arg( layers.join( '_'_L1 ) ).arg( mTileLayersSupported.size() );
 
-  tileLayer.identifier = layers.join( QLatin1Char( ',' ) );
+  tileLayer.identifier = layers.join( ','_L1 );
   QgsWmtsStyle style;
-  style.identifier = styles.join( QLatin1Char( ',' ) );
+  style.identifier = styles.join( ','_L1 );
   tileLayer.styles.insert( style.identifier, style );
   tileLayer.defaultStyle = style.identifier;
 

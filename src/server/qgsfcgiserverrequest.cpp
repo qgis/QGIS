@@ -114,9 +114,9 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   for ( const auto &headerKey : qgsEnumMap<QgsServerRequest::RequestHeader>() )
   {
     const QString headerName = QgsStringUtils::capitalize(
-                                 QString( headerKey ).replace( QLatin1Char( '_' ), QLatin1Char( ' ' ) ), Qgis::Capitalization::TitleCase
+                                 QString( headerKey ).replace( '_'_L1, ' '_L1 ), Qgis::Capitalization::TitleCase
     )
-                                 .replace( QLatin1Char( ' ' ), QLatin1Char( '-' ) );
+                                 .replace( ' '_L1, '-'_L1 );
     const char *result = getenv( u"HTTP_%1"_s.arg( headerKey ).toStdString().c_str() );
     if ( result && strlen( result ) > 0 )
     {
@@ -286,7 +286,7 @@ QString QgsFcgiServerRequest::header( const QString &name ) const
   // https://tools.ietf.org/html/rfc3875#section-4.1.18
   if ( result.isEmpty() )
   {
-    result = qgetenv( u"HTTP_%1"_s.arg( name.toUpper().replace( QLatin1Char( '-' ), QLatin1Char( '_' ) ) ).toStdString().c_str() );
+    result = qgetenv( u"HTTP_%1"_s.arg( name.toUpper().replace( '-'_L1, '_'_L1 ) ).toStdString().c_str() );
   }
   return result;
 }

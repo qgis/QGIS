@@ -495,7 +495,7 @@ bool QgsPostgresUtils::tableExists( QgsPostgresConn *conn, const QString &schema
   }
 
   QgsPostgresResult res( conn->LoggedPQexec( u"tableExists"_s, sql ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 );
 }
 
 bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &schema, const QString &table, const QString &column )
@@ -512,7 +512,7 @@ bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &schem
                         .arg( sqlWhereClause );
 
   QgsPostgresResult res( conn->LoggedPQexec( u"columnExists"_s, sql ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 );
 }
 
 bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedClass )

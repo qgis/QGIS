@@ -497,7 +497,7 @@ void QgsGrassModule::run()
       QStringList outsideRegion = mOptions->checkRegion();
       if ( outsideRegion.size() > 0 )
       {
-        QMessageBox questionBox( QMessageBox::Question, tr( "Warning" ), tr( "Input %1 outside current region!" ).arg( outsideRegion.join( QLatin1Char( ',' ) ) ), QMessageBox::Ok | QMessageBox::Cancel );
+        QMessageBox questionBox( QMessageBox::Question, tr( "Warning" ), tr( "Input %1 outside current region!" ).arg( outsideRegion.join( ','_L1 ) ), QMessageBox::Ok | QMessageBox::Cancel );
         QPushButton *resetButton = nullptr;
         if ( QgsGrass::versionMajor() > 6 || ( QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 ) )
         {
@@ -528,7 +528,7 @@ void QgsGrassModule::run()
       QStringList outputExists = mOptions->checkOutput();
       if ( outputExists.size() > 0 )
       {
-        QMessageBox::StandardButton ret = QMessageBox::question( nullptr, u"Warning"_s, tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( QLatin1Char( ',' ) ) ), QMessageBox::Ok | QMessageBox::Cancel );
+        QMessageBox::StandardButton ret = QMessageBox::question( nullptr, u"Warning"_s, tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( ','_L1 ) ), QMessageBox::Ok | QMessageBox::Cancel );
 
         if ( ret == QMessageBox::Cancel )
           return;
@@ -622,7 +622,7 @@ void QgsGrassModule::run()
       }
     }
 
-    QString commandHtml = mXName + " " + argumentsHtml.join( QLatin1Char( ' ' ) );
+    QString commandHtml = mXName + " " + argumentsHtml.join( ' '_L1 );
 
     QgsDebugMsgLevel( "command: " + commandHtml, 2 );
     commandHtml.replace( "&"_L1, "&amp;"_L1 );

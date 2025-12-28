@@ -78,7 +78,7 @@ void QgsOapifSingleItemRequest::processReply()
     QgsDebugMsgLevel( u"parsing item response: "_s + buffer.left( 100 ) + u"[... snip ...]"_s + buffer.right( 100 ), 4 );
   }
 
-  const QString vsimemFilename = u"/vsimem/oaipf_%1.json"_s.arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  const QString vsimemFilename = u"/vsimem/oaipf_%1.json"_s.arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, '0'_L1 );
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;

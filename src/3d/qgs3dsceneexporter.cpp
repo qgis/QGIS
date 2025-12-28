@@ -476,7 +476,7 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const 
 {
   QString objectNamePrefix = layerName;
   if ( objectNamePrefix != QString() )
-    objectNamePrefix += QLatin1Char( '_' );
+    objectNamePrefix += '_'_L1;
 
   const QList<Qt3DRender::QGeometryRenderer *> renderers = tileEntity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )

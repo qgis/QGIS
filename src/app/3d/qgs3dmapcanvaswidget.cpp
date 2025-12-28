@@ -874,7 +874,7 @@ void Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged()
 
 void Qgs3DMapCanvasWidget::updateFpsCount( float fpsCount )
 {
-  mLabelFpsCounter->setText( u"%1 fps"_s.arg( fpsCount, 10, 'f', 2, QLatin1Char( ' ' ) ) );
+  mLabelFpsCounter->setText( u"%1 fps"_s.arg( fpsCount, 10, 'f', 2, ' '_L1 ) );
 }
 
 void Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged( double speed )

@@ -826,12 +826,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
         {
           hasAsterisk = true;
           // get table prefix
-          const QString tableName { columnName.section( QLatin1Char( '.' ), 0, 0 ) };
+          const QString tableName { columnName.section( '.'_L1, 0, 0 ) };
           // Get all fields in the table
           const QStringList fieldNames = fields( QString(), tableName ).names();
           columnNames.append( fieldNames );
         }
-        else if ( columnName == QLatin1Char( '*' ) )
+        else if ( columnName == '*'_L1 )
         {
           hasAsterisk = true;
           if ( tableNames.size() == 1 )

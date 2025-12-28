@@ -114,7 +114,7 @@ QgsField QgsMssqlUtils::createField( const QString &name, const QString &systemT
       // Field length in chars is "Length" of the sp_columns output,
       // except for uniqueidentifiers which must use "Precision".
       int stringLength = systemTypeName.startsWith( u"uniqueidentifier"_s, Qt::CaseInsensitive ) ? precision : length;
-      if ( systemTypeName.startsWith( QLatin1Char( 'n' ) ) )
+      if ( systemTypeName.startsWith( 'n'_L1 ) )
       {
         stringLength = stringLength / 2;
       }

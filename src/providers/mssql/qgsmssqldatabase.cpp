@@ -58,7 +58,7 @@ QString QgsMssqlDatabase::connectionName( const QString &service, const QString 
     connName = service;
 
   if ( !transaction )
-    connName += u":0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    connName += u":0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
   else
     connName += ":transaction";
   return connName;

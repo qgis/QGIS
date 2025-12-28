@@ -114,12 +114,12 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         {
           if ( !first )
           {
-            values += QLatin1Char( ',' );
+            values += ','_L1;
           }
           first = false;
           values += QString::number( v );
         }
-        values += QLatin1Char( ')' );
+        values += ')'_L1;
         wheres << values;
       }
     }
@@ -199,7 +199,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       const auto constMAttributes = mAttributes;
       for ( const int i : constMAttributes )
       {
-        columns += QLatin1Char( ',' );
+        columns += ','_L1;
         const QString cname = mSource->mFields.at( i ).name().toLower();
         columns += quotedColumn( cname );
       }

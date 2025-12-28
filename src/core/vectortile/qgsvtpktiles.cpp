@@ -442,11 +442,11 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
   const int fileCol = mPacketSize * static_cast< int >( std::floor( x / static_cast< double>( mPacketSize ) ) );
 
   const QString tileName = u"R%1C%2"_s
-                           .arg( fileRow, 4, 16, QLatin1Char( '0' ) )
-                           .arg( fileCol, 4, 16, QLatin1Char( '0' ) );
+                           .arg( fileRow, 4, 16, '0'_L1 )
+                           .arg( fileCol, 4, 16, '0'_L1 );
 
   const QString fileName = u"p12/tile/L%1/%2.bundle"_s
-                           .arg( z, 2, 10, QLatin1Char( '0' ) ).arg( tileName );
+                           .arg( z, 2, 10, '0'_L1 ).arg( tileName );
   struct zip_stat stat;
   zip_stat_init( &stat );
   zip_stat( mZip, fileName.toLocal8Bit().constData(), 0, &stat );

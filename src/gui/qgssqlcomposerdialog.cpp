@@ -451,13 +451,13 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list, QString
   {
     listApi << f.name;
     QString entryText( f.name );
-    entryText += QLatin1Char( '(' );
+    entryText += '('_L1;
     if ( !f.argumentList.isEmpty() )
     {
       for ( int i = 0; i < f.argumentList.size(); i++ )
       {
         if ( f.minArgs >= 0 && i >= f.minArgs )
-          entryText += QLatin1Char( '[' );
+          entryText += '['_L1;
         if ( i > 0 )
           entryText += ", "_L1;
         if ( f.argumentList[i].name == "number"_L1 && !f.argumentList[i].type.isEmpty() )
@@ -475,12 +475,12 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list, QString
           }
         }
         if ( f.minArgs >= 0 && i >= f.minArgs )
-          entryText += QLatin1Char( ']' );
+          entryText += ']'_L1;
       }
       if ( entryText.size() > 60 )
       {
         entryText = f.name;
-        entryText += QLatin1Char( '(' );
+        entryText += '('_L1;
         entryText += getFunctionAbbridgedParameters( f );
       }
     }
@@ -488,7 +488,7 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list, QString
     {
       entryText += getFunctionAbbridgedParameters( f );
     }
-    entryText += QLatin1Char( ')' );
+    entryText += ')'_L1;
     if ( !f.returnType.isEmpty() )
       entryText += ": " + sanitizeType( f.returnType );
     listCombo << entryText;

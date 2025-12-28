@@ -119,5 +119,5 @@ QString QgsHanaConnectionStringBuilder::toString() const
   addProperty( u"CHAR_AS_UTF8"_s, u"1"_s );
   addProperty( u"sessionVariable:APPLICATION"_s, u"QGIS %1"_s.arg( Qgis::version() ) );
 
-  return props.join( QLatin1Char( ';' ) );
+  return props.join( ';'_L1 );
 }

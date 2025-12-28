@@ -52,7 +52,7 @@ class TestQgsFileDownloader : public QObject
     {
       mError = true;
       errorMessages.sort();
-      mErrorMessage = errorMessages.join( QLatin1Char( ';' ) );
+      mErrorMessage = errorMessages.join( ';'_L1 );
     }
     //! Called when data ready to be processed
     void downloadProgress( qint64 bytesReceived, qint64 bytesTotal )

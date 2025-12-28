@@ -94,7 +94,7 @@ void QgsNmeaConnection::processStringBuffer()
   {
     endSentenceIndex = mStringBuffer.indexOf( "\r\n"_L1 );
 
-    dollarIndex = mStringBuffer.indexOf( QLatin1Char( '$' ) );
+    dollarIndex = mStringBuffer.indexOf( '$'_L1 );
     if ( endSentenceIndex == -1 )
     {
       break;

@@ -322,7 +322,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     {
       exprlist.append( u"'%1'"_s.arg( layer.replace( "'"_L1, "''"_L1 ) ) );
     }
-    layerFilter = u"layer IN (%1) AND "_s.arg( exprlist.join( QLatin1Char( ',' ) ) );
+    layerFilter = u"layer IN (%1) AND "_s.arg( exprlist.join( ','_L1 ) );
   }
 
   QgsSymbol *sym = nullptr;

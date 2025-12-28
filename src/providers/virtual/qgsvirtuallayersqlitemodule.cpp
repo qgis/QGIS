@@ -242,7 +242,7 @@ struct VTable
         mPkColumn = pkAttributeIndexes.at( 0 );
       }
 
-      mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QLatin1Char( ',' ) ) + ")";
+      mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( ','_L1 ) + ")";
 
       mCrs = provider->crs().postgisSrid();
     }
@@ -893,7 +893,7 @@ void registerQgisFunctions( sqlite3 *db )
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
         name = "_" + name;
-      if ( name.startsWith( QLatin1Char( '$' ) ) )
+      if ( name.startsWith( '$'_L1 ) )
         continue;
 
       // register the function and pass the pointer to the Function* as user data

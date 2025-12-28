@@ -542,7 +542,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     addVocabulary();
     int currentRow = tabKeywords->rowCount() - 1;
     tabKeywords->item( currentRow, 0 )->setText( i.key() );
-    tabKeywords->item( currentRow, 1 )->setText( i.value().join( QLatin1Char( ',' ) ) );
+    tabKeywords->item( currentRow, 1 )->setText( i.value().join( ','_L1 ) );
   }
 
   if ( QgsLayerMetadata *layerMetadata = dynamic_cast<QgsLayerMetadata *>( mMetadata.get() ) )
@@ -856,7 +856,7 @@ bool QgsMetadataWidget::checkMetadata()
       errors += "<b>"_L1 % result.section;
       if ( !QgsVariantUtils::isNull( result.identifier() ) )
       {
-        errors += QLatin1Char( ' ' ) % QVariant( result.identifier().toInt() + 1 ).toString();
+        errors += ' '_L1 % QVariant( result.identifier().toInt() + 1 ).toString();
       }
       errors += "</b>: "_L1 % result.note % "<br />"_L1;
     }
@@ -1067,7 +1067,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
       row = tabKeywords->rowCount() - 1;
       tabKeywords->item( row, 0 )->setText( u"gmd:topicCategory"_s );
     }
-    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( QLatin1Char( ',' ) ) );
+    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( ','_L1 ) );
   }
 }
 

@@ -139,8 +139,8 @@ void QgsMssqlGeomColumnTypeThread::run()
           srids << srid;
         }
 
-        type = types.join( QLatin1Char( ',' ) );
-        srid = srids.join( QLatin1Char( ',' ) );
+        type = types.join( ','_L1 );
+        srid = srids.join( ','_L1 );
       }
 
       layerProperty.type = type;

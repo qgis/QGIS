@@ -3225,7 +3225,7 @@ namespace QgsWms
     QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
     QString value( fieldFormatter->representValue( vl, idx, setup.config(), QVariant(), attributeVal ) );
 
-    if ( setup.config().value( u"AllowMulti"_s ).toBool() && value.startsWith( QLatin1Char( '{' ) ) && value.endsWith( QLatin1Char( '}' ) ) )
+    if ( setup.config().value( u"AllowMulti"_s ).toBool() && value.startsWith( '{'_L1 ) && value.endsWith( '}'_L1 ) )
     {
       value = value.mid( 1, value.size() - 2 );
     }

@@ -53,12 +53,12 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
     if ( !it.value() )
       continue;
 
-    const QString waypointDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Waypoint, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
-    const QString waypointUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Waypoint, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
-    const QString routeDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Route, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
-    const QString routeUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Route, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
-    const QString trackDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Track, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
-    const QString trackUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Track, u"%in"_s, u"%out"_s ).join( QLatin1Char( ' ' ) );
+    const QString waypointDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Waypoint, u"%in"_s, u"%out"_s ).join( ' '_L1 );
+    const QString waypointUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Waypoint, u"%in"_s, u"%out"_s ).join( ' '_L1 );
+    const QString routeDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Route, u"%in"_s, u"%out"_s ).join( ' '_L1 );
+    const QString routeUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Route, u"%in"_s, u"%out"_s ).join( ' '_L1 );
+    const QString trackDownloadCommand = it.value()->importCommand( u"%babel"_s, Qgis::GpsFeatureType::Track, u"%in"_s, u"%out"_s ).join( ' '_L1 );
+    const QString trackUploadCommand = it.value()->exportCommand( u"%babel"_s, Qgis::GpsFeatureType::Track, u"%in"_s, u"%out"_s ).join( ' '_L1 );
 
     mDevices.insert( it.key(), { waypointDownloadCommand, waypointUploadCommand, routeDownloadCommand, routeUploadCommand, trackDownloadCommand, trackUploadCommand } );
   }

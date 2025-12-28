@@ -110,10 +110,10 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
   query.addQueryItem( u"f"_s, u"json"_s );
-  query.addQueryItem( u"objectIds"_s, ids.join( QLatin1Char( ',' ) ) );
+  query.addQueryItem( u"objectIds"_s, ids.join( ','_L1 ) );
   if ( !crs.isEmpty() && crs.contains( ':' ) )
   {
-    const QString wkid = crs.indexOf( QLatin1Char( ':' ) ) >= 0 ? crs.split( ':' )[1] : QString();
+    const QString wkid = crs.indexOf( ':'_L1 ) >= 0 ? crs.split( ':' )[1] : QString();
     query.addQueryItem( u"inSR"_s, wkid );
     query.addQueryItem( u"outSR"_s, wkid );
   }
@@ -324,7 +324,7 @@ void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const
   QString base( baseUrl );
   bool baseChecked = false;
   if ( !base.endsWith( '/' ) )
-    base += QLatin1Char( '/' );
+    base += '/'_L1;
 
   const QStringList folderList = serviceData.value( u"folders"_s ).toStringList();
   for ( const QString &folder : folderList )
@@ -343,7 +343,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
   QString base( baseUrl );
   bool baseChecked = false;
   if ( !base.endsWith( '/' ) )
-    base += QLatin1Char( '/' );
+    base += '/'_L1;
 
   const QVariantList serviceList = serviceData.value( u"services"_s ).toList();
   for ( const QVariant &service : serviceList )

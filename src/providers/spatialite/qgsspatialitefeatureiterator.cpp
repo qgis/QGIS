@@ -215,12 +215,12 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
 
     // preparing the SQL statement
-    bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QLatin1Char( ',' ) ) );
+    bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( ','_L1 ) );
     if ( !success && useFallbackWhereClause )
     {
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
       mExpressionCompiled = false;
-      success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QLatin1Char( ',' ) ) );
+      success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( ','_L1 ) );
       mCompileFailed = true;
     }
 

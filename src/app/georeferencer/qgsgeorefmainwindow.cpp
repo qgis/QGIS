@@ -2342,7 +2342,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   mTranslatedFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
   gdalCommand << u"\"%1\""_s.arg( mFileName ) << u"\"%1\""_s.arg( mTranslatedFileName );
 
-  return gdalCommand.join( QLatin1Char( ' ' ) );
+  return gdalCommand.join( ' '_L1 );
 }
 
 QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
@@ -2388,7 +2388,7 @@ QString QgsGeoreferencerMainWindow::generateGDALogr2ogrCommand() const
 
   gdalCommand << u"\"%1\""_s.arg( mModifiedFileName ) << u"\"%1\""_s.arg( sourcePath );
 
-  return gdalCommand.join( QLatin1Char( ' ' ) );
+  return gdalCommand.join( ' '_L1 );
 }
 
 QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QStringList &options, bool useZeroForTrans, int order, double targetResX, double targetResY )
@@ -2429,7 +2429,7 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
 
   gdalCommand << u"\"%1\""_s.arg( mTranslatedFileName ) << u"\"%1\""_s.arg( mModifiedFileName );
 
-  return gdalCommand.join( QLatin1Char( ' ' ) );
+  return gdalCommand.join( ' '_L1 );
 }
 
 bool QgsGeoreferencerMainWindow::validate()

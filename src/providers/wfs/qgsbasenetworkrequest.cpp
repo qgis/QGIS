@@ -143,11 +143,11 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     {
       if ( modifiedUrlString.indexOf( '?' ) > 0 )
       {
-        modifiedUrlString += QLatin1Char( '&' );
+        modifiedUrlString += '&'_L1;
       }
       else
       {
-        modifiedUrlString += QLatin1Char( '?' );
+        modifiedUrlString += '?'_L1;
       }
       modifiedUrlString += QString::fromUtf8( headerPair.first ) + u"="_s + QString::fromUtf8( headerPair.second );
     }
@@ -516,7 +516,7 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   }
 
   QStringList res;
-  QStringList l = QString::fromLatin1( allowValue ).split( QLatin1Char( ',' ) );
+  QStringList l = QString::fromLatin1( allowValue ).split( ','_L1 );
   for ( const QString &s : l )
   {
     res.append( s.trimmed() );

@@ -51,6 +51,8 @@ pattern_qsl = re.compile(
     r'^(.*?)(?:QStringLiteral\s*\(\s*("(?:(?:\\.|[^"\\])*)")\s*\))(.*)$'
 )
 
+pattern_qlatin1char = re.compile(rf"^(.*?)(?:QLatin1Char*\(\s*('.'|'\\'')\s*\))(.*)$")
+
 pattern_qlatin1string = re.compile(
     rf"^(.*?)(?:QLatin1String\s*\(\s*{ascii_string_literal}\s*\))(.*)$"
 )
@@ -230,6 +232,17 @@ while i < len(lines):
         if m:
             g = m.groups()
             newline = g[0] + "u" + g[1] + "_s"
+            if g[2]:
+                newline += g[2]
+            line = newline
+        else:
+            break
+
+    while True:
+        m = pattern_qlatin1char.match(line)
+        if m:
+            g = m.groups()
+            newline = g[0] + g[1] + "_L1"
             if g[2]:
                 newline += g[2]
             line = newline

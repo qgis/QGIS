@@ -678,9 +678,10 @@ def read_line():
             f"OVR: {CONTEXT.is_override_or_make_private} CLSS: {CONTEXT.actual_class}/{len(CONTEXT.classname)} :: {new_line}"
         )
 
-    # SIP doesn't like Qt 6.4 u""_s or ""_L1 literals
+    # SIP doesn't like Qt 6.4 u""_s, ""_L1 or ''_L1 literals
     new_line = re.sub(r'u("(?:(?:\\.|[^"\\])*)")_s', r"QStringLiteral( \1 )", new_line)
     new_line = re.sub(r'("(?:(?:\\.|[^"\\])*)")_L1', r"QLatin1String( \1 )", new_line)
+    new_line = re.sub(r"('(?:(?:\\.|[^'\\])*)')_L1", r"QLatin1Char( \1 )", new_line)
 
     new_line = replace_macros(new_line)
     return new_line

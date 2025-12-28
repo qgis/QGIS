@@ -471,7 +471,7 @@ QVariantMap QgsGradientColorRamp::properties() const
                   : stop.colorSpec() == QColor::Hsl ? u"hsl"_s : QString(),
                   stop.direction() == Qgis::AngularDirection::CounterClockwise ? u"ccw"_s : u"cw"_s ) );
     }
-    map[u"stops"_s] = lst.join( QLatin1Char( ':' ) );
+    map[u"stops"_s] = lst.join( ':'_L1 );
   }
 
   map[u"discrete"_s] = mDiscrete ? "1" : "0";

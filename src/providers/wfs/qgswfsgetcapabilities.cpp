@@ -339,7 +339,7 @@ void QgsWfsGetCapabilitiesRequest::capabilitiesReplyFinished()
   bool updateCap = false;
   bool deleteCap = false;
   // WFS < 2
-  if ( mCaps.version.startsWith( QLatin1Char( '1' ) ) )
+  if ( mCaps.version.startsWith( '1'_L1 ) )
   {
     parseSupportedOperations( featureTypeListElem.firstChildElement( u"Operations"_s ), insertCap, updateCap, deleteCap );
   }

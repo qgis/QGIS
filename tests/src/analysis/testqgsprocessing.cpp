@@ -2167,7 +2167,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   auto def = std::make_unique<QgsProcessingParameterVectorDestination>( "with.inside", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
+  QVERIFY( !def->generateTemporaryDestination().endsWith( '.'_L1 ) );
   // check that temporary destination starts with tempFolder
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "gpkg"
@@ -2178,7 +2178,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   auto def2 = std::make_unique<QgsProcessingParameterRasterDestination>( "with.inside", QString(), QString(), false );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
+  QVERIFY( !def2->generateTemporaryDestination().endsWith( '.'_L1 ) );
   // check that temporary destination starts with tempFolder
   QVERIFY( def2->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "tif"
@@ -2189,7 +2189,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   auto def3 = std::make_unique<QgsProcessingParameterVectorDestination>( "without_inside", QString(), Qgis::ProcessingSourceType::VectorAnyGeometry, QString(), false );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
+  QVERIFY( !def3->generateTemporaryDestination().endsWith( '.'_L1 ) );
   // check that temporary destination starts with tempFolder
   QVERIFY( def3->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "gpkg"
@@ -9004,7 +9004,7 @@ void TestQgsProcessing::parameterFolderOut()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/", &context ) );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
+  QVERIFY( !def->generateTemporaryDestination().endsWith( '.'_L1 ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap params;

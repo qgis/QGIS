@@ -635,7 +635,7 @@ QString QgsExpression::helpText( QString name )
             if ( a.mOptional )
             {
               hasOptionalArgs = true;
-              helpContents += QLatin1Char( '[' );
+              helpContents += '['_L1;
             }
 
             helpContents += delim;
@@ -645,7 +645,7 @@ QString QgsExpression::helpText( QString name )
                             );
 
             if ( a.mOptional )
-              helpContents += QLatin1Char( ']' );
+              helpContents += ']'_L1;
           }
           delim = u","_s;
         }
@@ -1147,8 +1147,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !map.empty() )
-      mapStr += QLatin1Char( ' ' );
-    mapStr += QLatin1Char( '}' );
+      mapStr += ' '_L1;
+    mapStr += '}'_L1;
     return mapStr;
   }
   else if ( value.userType() == QMetaType::Type::QVariantList || value.userType() == QMetaType::Type::QStringList )
@@ -1171,8 +1171,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !list.empty() )
-      listStr += QLatin1Char( ' ' );
-    listStr += QLatin1Char( ']' );
+      listStr += ' '_L1;
+    listStr += ']'_L1;
     return listStr;
   }
   else if ( value.type() == QVariant::Color )

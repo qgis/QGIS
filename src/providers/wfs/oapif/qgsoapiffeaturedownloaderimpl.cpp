@@ -87,10 +87,10 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   }
 
   QString url = ( !mShared->mBulkDownloadGmlUrl.isEmpty() ) ? mShared->mBulkDownloadGmlUrl : mShared->mItemsUrl;
-  bool hasQueryParam = url.indexOf( QLatin1Char( '?' ) ) > 0;
+  bool hasQueryParam = url.indexOf( '?'_L1 ) > 0;
   if ( maxFeaturesThisRequest > 0 && mShared->mBulkDownloadGmlUrl.isEmpty() )
   {
-    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+    url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
     url += u"limit=%1"_s.arg( maxFeaturesThisRequest );
     hasQueryParam = true;
   }
@@ -99,12 +99,12 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   // mServerExpression comes from the translation of a getFeatures() expression
   if ( !mShared->mServerFilter.isEmpty() )
   {
-    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+    url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
     if ( !mShared->mServerExpression.isEmpty() )
     {
       // Combine mServerFilter and mServerExpression
-      QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
-      QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
+      QStringList components1 = mShared->mServerFilter.split( '&'_L1 );
+      QStringList components2 = mShared->mServerExpression.split( '&'_L1 );
       Q_ASSERT( components1[0].startsWith( "filter="_L1 ) );
       Q_ASSERT( components2[0].startsWith( "filter="_L1 ) );
       url += "filter="_L1;
@@ -137,7 +137,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   }
   else if ( !mShared->mServerExpression.isEmpty() )
   {
-    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+    url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
     url += mShared->mServerExpression;
     hasQueryParam = true;
   }
@@ -165,7 +165,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
 
     if ( !rect.isNull() )
     {
-      url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+      url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
       url += u"bbox=%1,%2,%3,%4"_s
                .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
 

@@ -701,7 +701,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     dirname, u"C"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName ) );
 
-  return dirname.join( QLatin1Char( ',' ) );
+  return dirname.join( ','_L1 );
 }
 
 QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust )
@@ -729,7 +729,7 @@ QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
   {
     sl << txt.mid( i, ( i + 2 > txt.size() ) ? -1 : 2 );
   }
-  return sl.join( QLatin1Char( ':' ) );
+  return sl.join( ':'_L1 );
 }
 
 QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate &cert, bool formatted )

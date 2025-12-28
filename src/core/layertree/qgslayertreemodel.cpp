@@ -1183,7 +1183,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   mimeData->setData( u"application/qgis.layertreemodeldata"_s, layerTreeDoc.toString().toUtf8() );
   mimeData->setData( u"application/qgis.application.pid"_s, QString::number( QCoreApplication::applicationPid() ).toUtf8() );
-  mimeData->setData( u"application/qgis.layertree.source"_s, u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ).toUtf8() );
+  mimeData->setData( u"application/qgis.layertree.source"_s, u":0x%1"_s.arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, '0'_L1 ).toUtf8() );
   mimeData->setData( u"application/qgis.layertree.layerdefinitions"_s, txt.toUtf8() );
   mimeData->setData( u"application/x-vnd.qgis.qgis.uri"_s, QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
 

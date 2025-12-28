@@ -872,7 +872,7 @@ QString QgsGrass::openMapset( const QString &gisdbase, const QString &location, 
   QString lockProgram( gisbase() + "/etc/lock" );
   QStringList lockArguments;
   lockArguments << lock << QString::number( pid );
-  QString lockCommand = lockProgram + " " + lockArguments.join( QLatin1Char( ' ' ) ); // for debug
+  QString lockCommand = lockProgram + " " + lockArguments.join( ' '_L1 ); // for debug
   QgsDebugMsgLevel( "lock command: " + lockCommand, 2 );
 
   process.start( lockProgram, lockArguments );
@@ -1913,7 +1913,7 @@ QProcess *QgsGrass::startModule( const QString &gisdbase, const QString &locatio
     throw QgsGrass::Exception( QObject::tr( "Cannot open GISRC file" ) );
   }
 
-  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( QLatin1Char( ' ' ) ) );
+  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( ' '_L1 ) );
 
   QTextStream out( &gisrcFile );
   out << "GISDBASE: " << gisdbase << "\n";
@@ -1967,7 +1967,7 @@ QByteArray QgsGrass::runModule( const QString &gisdbase, const QString &location
   {
     QgsDebugMsgLevel( u"process->exitCode() = "_s + QString::number( process->exitCode() ), 2 );
 
-    throw QgsGrass::Exception( QObject::tr( "Cannot run module" ) + "\n" + QObject::tr( "command: %1 %2\nstdout: %3\nstderr: %4" ).arg( moduleName, arguments.join( QLatin1Char( ' ' ) ), process->readAllStandardOutput().constData(), process->readAllStandardError().constData() ) );
+    throw QgsGrass::Exception( QObject::tr( "Cannot run module" ) + "\n" + QObject::tr( "command: %1 %2\nstdout: %3\nstderr: %4" ).arg( moduleName, arguments.join( ' '_L1 ), process->readAllStandardOutput().constData(), process->readAllStandardError().constData() ) );
   }
   QByteArray data = process->readAllStandardOutput();
   QgsDebugMsgLevel( u"time (ms) = %1"_s.arg( time.elapsed() ), 2 );

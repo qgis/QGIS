@@ -302,7 +302,7 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
     }
 
     case AnimatedImage:
@@ -313,7 +313,7 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
     }
   }
   BUILTIN_UNREACHABLE

@@ -124,7 +124,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
     QgsLogger::warning( u"Duplicate shortcut registered: %1"_s.arg( key ) );
 #endif
 
-  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + u"/"_s ) + key;
+  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( '/'_L1 ) ? section : section + u"/"_s ) + key;
 
   mActions.insert( action, { defaultSequence, settingKey } );
   connect( action, &QObject::destroyed, this, [action, this]() { actionDestroyed( action ); } );
@@ -168,7 +168,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
     QgsLogger::warning( u"Duplicate shortcut registered: %1"_s.arg( shortcut->objectName() ) );
 #endif
 
-  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + u"/"_s ) + shortcut->objectName();
+  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( '/'_L1 ) ? section : section + u"/"_s ) + shortcut->objectName();
 
   mShortcuts.insert( shortcut, { defaultSequence, settingKey } );
   connect( shortcut, &QObject::destroyed, this, [shortcut, this]() { shortcutDestroyed( shortcut ); } );

@@ -195,7 +195,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   projElems.prepend( QString() );
 #endif
 
-  return vsiPrefix + projElems.join( QLatin1Char( '/' ) );
+  return vsiPrefix + projElems.join( '/'_L1 );
 }
 
 QString QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
@@ -369,7 +369,7 @@ QString QgsPathResolver::writePath( const QString &s ) const
   }
 
   // Append url query if any
-  QString returnPath { vsiPrefix + srcElems.join( QLatin1Char( '/' ) ) };
+  QString returnPath { vsiPrefix + srcElems.join( '/'_L1 ) };
   if ( ! urlQuery.isEmpty() )
   {
     returnPath.append( '?' );

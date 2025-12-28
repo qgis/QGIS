@@ -730,7 +730,7 @@ QString QgsVirtualLayerProviderMetadata::absoluteToRelativeUri( const QString &u
         theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
       }
 
-      queryItems[i].second = theURIParts.join( QLatin1Char( ':' ) );
+      queryItems[i].second = theURIParts.join( ':'_L1 );
     }
   }
 
@@ -781,7 +781,7 @@ QString QgsVirtualLayerProviderMetadata::relativeToAbsoluteUri( const QString &u
       }
 
       theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
-      queryItems[i].second = theURIParts.join( QLatin1Char( ':' ) );
+      queryItems[i].second = theURIParts.join( ':'_L1 );
     }
   }
 

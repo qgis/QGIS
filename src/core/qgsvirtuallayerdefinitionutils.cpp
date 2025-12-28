@@ -46,7 +46,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       // find an uid name
       QString uid = u"uid"_s;
       while ( fields.lookupField( uid ) != -1 )
-        uid += QLatin1Char( '_' ); // add "_" each time this name already exists
+        uid += '_'_L1; // add "_" each time this name already exists
 
       // add a column
       columns << "t.rowid AS " + uid;
@@ -90,7 +90,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
   }
 
-  const QString query = "SELECT " + columns.join( ", "_L1 ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QLatin1Char( ' ' ) );
+  const QString query = "SELECT " + columns.join( ", "_L1 ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( ' '_L1 );
   def.setQuery( query );
 
   return def;

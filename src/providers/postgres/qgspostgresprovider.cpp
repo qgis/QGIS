@@ -787,7 +787,7 @@ bool QgsPostgresProvider::loadFields()
         tableoidsList.append( QString::number( tableoid ) );
       }
 
-      QString tableoidsFilter = '(' + tableoidsList.join( QLatin1Char( ',' ) ) + ')';
+      QString tableoidsFilter = '(' + tableoidsList.join( ','_L1 ) + ')';
 
       // Collect formatted field types
       sql = QStringLiteral(
@@ -4050,7 +4050,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
       QString dim = result.PQgetvalue( 0, 2 );
       if ( dim == "3"_L1 && !detectedType.endsWith( 'M' ) )
-        detectedType += QLatin1Char( 'Z' );
+        detectedType += 'Z'_L1;
       else if ( dim == "4"_L1 )
         detectedType += "ZM"_L1;
 
@@ -4425,7 +4425,7 @@ void postgisGeometryType( Qgis::WkbType wkbType, QString &geometryType, int &dim
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += QLatin1Char( 'M' );
+    geometryType += 'M'_L1;
     dim = 3;
   }
   else if ( wkbType >= Qgis::WkbType::Point25D && wkbType <= Qgis::WkbType::MultiPolygon25D )
@@ -4609,8 +4609,8 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
 
       if ( i )
       {
-        pk += QLatin1Char( ',' );
-        sql += QLatin1Char( ',' );
+        pk += ','_L1;
+        sql += ','_L1;
       }
 
       pk += col;

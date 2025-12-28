@@ -912,7 +912,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
                   + "<br><br>" + pathVariable + "=" + environment.value( pathVariable )
                   + "<br><br>PATH=" + environment.value( u"PATH"_s )
                   + "<br><br>PYTHONPATH=" + environment.value( u"PYTHONPATH"_s )
-                  + "<br><br>" + tr( "command" ) + u": %1 %2<br>%3<br>%4"_s.arg( cmd, arguments.join( QLatin1Char( ' ' ) ), process.readAllStandardOutput().constData(), process.readAllStandardError().constData() );
+                  + "<br><br>" + tr( "command" ) + u": %1 %2<br>%3<br>%4"_s.arg( cmd, arguments.join( ' '_L1 ), process.readAllStandardOutput().constData(), process.readAllStandardError().constData() );
     QgsDebugError( msg );
     errors << msg;
     return gDoc;

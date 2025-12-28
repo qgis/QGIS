@@ -95,7 +95,7 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
       addItem( "sslTrustStore", uri.param( u"sslTrustStore"_s ) );
   }
 
-  return connectionItems.join( QLatin1Char( ' ' ) );
+  return connectionItems.join( ' '_L1 );
 }
 
 QString QgsHanaUtils::quotedIdentifier( const QString &str )

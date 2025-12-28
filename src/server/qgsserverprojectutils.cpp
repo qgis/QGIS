@@ -388,11 +388,11 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   QString forwarded = request.header( QgsServerRequest::FORWARDED );
   if ( !forwarded.isEmpty() )
   {
-    forwarded = forwarded.split( QLatin1Char( ',' ) )[0];
+    forwarded = forwarded.split( ','_L1 )[0];
     const QStringList elements = forwarded.split( ';' );
     for ( const QString &element : elements )
     {
-      QStringList splited_element = element.trimmed().split( QLatin1Char( '=' ) );
+      QStringList splited_element = element.trimmed().split( '='_L1 );
       if ( splited_element[0] == "host" )
       {
         host = splited_element[1];
@@ -423,7 +423,7 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
 
   if ( !host.isEmpty() )
   {
-    QStringList hostPort = host.split( QLatin1Char( ':' ) );
+    QStringList hostPort = host.split( ':'_L1 );
     if ( hostPort.length() == 1 )
     {
       urlQUrl.setHost( hostPort[0] );

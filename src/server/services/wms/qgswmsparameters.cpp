@@ -547,7 +547,7 @@ namespace QgsWms
       }
       else //maybe an external wms parameter?
       {
-        int separator = key.indexOf( QLatin1Char( ':' ) );
+        int separator = key.indexOf( ':'_L1 );
         if ( separator >= 1 )
         {
           QString id = key.left( separator );
@@ -1446,7 +1446,7 @@ namespace QgsWms
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( QLatin1Char( '<' ) )
+      if ( f.startsWith( '<'_L1 )
            && f.endsWith( "Filter>"_L1 )
            && i < layers.size() )
       {
@@ -2032,7 +2032,7 @@ namespace QgsWms
   {
     const QString mStr = withMapTipAsString();
 
-    if ( mStr.startsWith( "true"_L1, Qt::CaseInsensitive ) || mStr.startsWith( "on"_L1, Qt::CaseInsensitive ) || mStr.startsWith( "yes"_L1, Qt::CaseInsensitive ) || mStr.startsWith( QLatin1Char( '1' ) ) )
+    if ( mStr.startsWith( "true"_L1, Qt::CaseInsensitive ) || mStr.startsWith( "on"_L1, Qt::CaseInsensitive ) || mStr.startsWith( "yes"_L1, Qt::CaseInsensitive ) || mStr.startsWith( '1'_L1 ) )
       return true;
     else
       return false;

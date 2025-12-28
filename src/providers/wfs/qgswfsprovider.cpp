@@ -458,7 +458,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       else if ( part.startsWith( " expecting "_L1 ) )
         newPart = tr( "%1 is expected instead." ).arg( part.mid( u" expecting "_s.size() ) );
       if ( !parserErrorString.isEmpty() )
-        parserErrorString += QLatin1Char( ' ' );
+        parserErrorString += ' '_L1;
       parserErrorString += newPart;
     }
     parserErrorString.replace( " or "_L1, tr( "%1 or %2" ).arg( QString(), QString() ) );
@@ -579,7 +579,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   for ( const QString &typeName : std::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
-      concatenatedTypenames += QLatin1Char( ',' );
+      concatenatedTypenames += ','_L1;
     concatenatedTypenames += typeName;
   }
 
@@ -1001,7 +1001,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
   bool applyAxisInversion;
   QgsOgcUtils::GMLVersion gmlVersion;
 
-  if ( mShared->mWFSVersion.startsWith( "1.1"_L1 ) || mShared->mWFSVersion.startsWith( QLatin1Char( '2' ) ) )
+  if ( mShared->mWFSVersion.startsWith( "1.1"_L1 ) || mShared->mWFSVersion.startsWith( '2'_L1 ) )
   {
     // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
     if ( !mShared->mServerPrefersCoordinatesForTransactions_1_1 )

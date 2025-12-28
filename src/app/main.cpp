@@ -1384,14 +1384,14 @@ int main( int argc, char *argv[] )
       const auto constCustomVarsList = customVarsList;
       for ( const QString &varStr : constCustomVarsList )
       {
-        int pos = varStr.indexOf( QLatin1Char( '|' ) );
+        int pos = varStr.indexOf( '|'_L1 );
         if ( pos == -1 )
           continue;
         QString envVarApply = varStr.left( pos );
         if ( envVarApply == "skip"_L1 )
           continue;
         QString varStrNameValue = varStr.mid( pos + 1 );
-        pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+        pos = varStrNameValue.indexOf( '='_L1 );
         if ( pos == -1 )
           continue;
         QString envVarName = varStrNameValue.left( pos );

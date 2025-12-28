@@ -96,7 +96,7 @@ QString QgsCoordinateFormatter::asPair( double x, double y, int precision, Qgis:
 
 QChar QgsCoordinateFormatter::separator()
 {
-  return QLocale().decimalPoint() == QLatin1Char( ',' ) ? QLatin1Char( ' ' ) : QLatin1Char( ',' );
+  return QLocale().decimalPoint() == ','_L1 ? ' '_L1 : ','_L1;
 }
 
 QString QgsCoordinateFormatter::formatAsPair( double val, int precision )

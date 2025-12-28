@@ -2911,7 +2911,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
         // This hacking around that removes '/' is no longer necessary with GDAL 2.3
         extensions << QString( ext ).remove( '/' ).remove( '*' ).remove( '.' );
         if ( !glob.isEmpty() )
-          glob += QLatin1Char( ' ' );
+          glob += ' '_L1;
         glob += "*." + QString( ext ).replace( '/', " *."_L1 );
       }
 
@@ -2981,7 +2981,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   QStringList exts;
   for ( const QString &ext : std::as_const( extensions ) )
     exts << u"*.%1 *.%2"_s.arg( ext, ext.toUpper() );
-  fileFiltersString.prepend( QObject::tr( "All supported files" ) + u" (%1);;"_s.arg( exts.join( QLatin1Char( ' ' ) ) ) );
+  fileFiltersString.prepend( QObject::tr( "All supported files" ) + u" (%1);;"_s.arg( exts.join( ' '_L1 ) ) );
 
   // can't forget the default case - first
   fileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );

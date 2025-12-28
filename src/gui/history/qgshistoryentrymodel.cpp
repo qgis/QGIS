@@ -335,7 +335,7 @@ QString QgsHistoryEntryRootNode::dateGroup( const QDateTime &timestamp, QString 
     else
     {
       // a bit of trickiness here, we need dates ordered descending
-      sortKey = u"3: %1 %2"_s.arg( QDate::currentDate().year() - timestamp.date().year(), 5, 10, QLatin1Char( '0' ) ).arg( 12 - timestamp.date().month(), 2, 10, QLatin1Char( '0' ) );
+      sortKey = u"3: %1 %2"_s.arg( QDate::currentDate().year() - timestamp.date().year(), 5, 10, '0'_L1 ).arg( 12 - timestamp.date().month(), 2, 10, '0'_L1 );
       groupString = timestamp.toString( u"MMMM yyyy"_s );
     }
   }

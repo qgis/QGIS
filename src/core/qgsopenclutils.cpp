@@ -172,8 +172,8 @@ void QgsOpenClUtils::init()
                 {
                   LPTSTR lpBuffer;
                   QString subBlock = QString( u"\\StringFileInfo\\%1%2\\%3"_s )
-                                     .arg( lpTranslate[0].wLanguage, 4, 16, QLatin1Char( '0' ) )
-                                     .arg( lpTranslate[0].wCodePage, 4, 16, QLatin1Char( '0' ) )
+                                     .arg( lpTranslate[0].wLanguage, 4, 16, '0'_L1 )
+                                     .arg( lpTranslate[0].wCodePage, 4, 16, '0'_L1 )
                                      .arg( d );
 
                   QgsDebugMsgLevel( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ), 2 );

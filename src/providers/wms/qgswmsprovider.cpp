@@ -1491,8 +1491,8 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
   setQueryItem( query, u"SERVICE"_s, u"WMS"_s );
   setQueryItem( query, u"VERSION"_s, mCaps.mCapabilities.version );
   setQueryItem( query, u"REQUEST"_s, u"GetMap"_s );
-  setQueryItem( query, u"LAYERS"_s, mSettings.mActiveSubLayers.join( QLatin1Char( ',' ) ) );
-  setQueryItem( query, u"STYLES"_s, mSettings.mActiveSubStyles.join( QLatin1Char( ',' ) ) );
+  setQueryItem( query, u"LAYERS"_s, mSettings.mActiveSubLayers.join( ','_L1 ) );
+  setQueryItem( query, u"STYLES"_s, mSettings.mActiveSubStyles.join( ','_L1 ) );
   setQueryItem( query, u"WIDTH"_s, QString::number( tm->tileWidth ) );
   setQueryItem( query, u"HEIGHT"_s, QString::number( tm->tileHeight ) );
   setFormatQueryItem( query );
@@ -2754,7 +2754,7 @@ QString QgsWmsProvider::htmlMetadata() const
                                                  "<tr><td class=\"strong\">" )
                   % tr( "Selected" ) % QStringLiteral( "</td>"
                                                        "<td class=\"strong\">" )
-                  % ( l.identifier == mSettings.mActiveSubLayers.join( QLatin1Char( ',' ) ) ? tr( "Yes" ) : tr( "No" ) ) % u"</td></tr>"_s;
+                  % ( l.identifier == mSettings.mActiveSubLayers.join( ','_L1 ) ? tr( "Yes" ) : tr( "No" ) ) % u"</td></tr>"_s;
 
       if ( !l.styles.isEmpty() )
       {
@@ -3534,7 +3534,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
         if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
         {
           QgsError err = QGS_ERROR( tr( "Cannot identify" ) );
-          err.append( tr( "Result parsing failed. %n feature type(s) were guessed from gml (%2) but no features were parsed.", nullptr, featureTypeNames.size() ).arg( featureTypeNames.join( QLatin1Char( ',' ) ) ) );
+          err.append( tr( "Result parsing failed. %n feature type(s) were guessed from gml (%2) but no features were parsed.", nullptr, featureTypeNames.size() ).arg( featureTypeNames.join( ','_L1 ) ) );
           QgsDebugError( "parsing GML error: " + err.message() );
           return QgsRasterIdentifyResult( err );
         }

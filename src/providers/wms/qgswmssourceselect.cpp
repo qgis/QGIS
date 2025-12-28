@@ -594,7 +594,7 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     for ( const QgsWmtsTileLayer &l : std::as_const( mTileLayers ) )
     {
-      if ( l.identifier == layers.join( QLatin1Char( ',' ) ) )
+      if ( l.identifier == layers.join( ','_L1 ) )
       {
         layer = &l;
         break;
@@ -670,9 +670,9 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( u"styles"_s, styles );
 
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), u"wms"_s );
+    emit addRasterLayer( uri.encodedUri(), titles.join( '/'_L1 ), u"wms"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( QLatin1Char( '/' ) ), u"wms"_s );
+    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( '/'_L1 ), u"wms"_s );
   }
 }
 

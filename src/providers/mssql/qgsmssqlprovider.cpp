@@ -1039,7 +1039,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         first = false;
 
       statement += u"[%1]"_s.arg( fld.name() );
-      values += QLatin1Char( '?' );
+      values += '?'_L1;
     }
 
     // append geometry column name
@@ -2014,7 +2014,7 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString 
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += QLatin1Char( 'M' );
+    geometryType += 'M'_L1;
     dim = 3;
   }
   else if ( wkbType >= Qgis::WkbType::Point25D && wkbType <= Qgis::WkbType::MultiPolygon25D )
@@ -3047,7 +3047,7 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
           delim = u" AND "_s;
         }
 
-        whereClause += QLatin1Char( ')' );
+        whereClause += ')'_L1;
       }
       else
       {

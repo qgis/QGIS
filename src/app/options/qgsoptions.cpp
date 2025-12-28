@@ -271,12 +271,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   const QStringList customVarsList = mSettings->value( u"qgis/customEnvVars"_s ).toStringList();
   for ( const QString &varStr : customVarsList )
   {
-    int pos = varStr.indexOf( QLatin1Char( '|' ) );
+    int pos = varStr.indexOf( '|'_L1 );
     if ( pos == -1 )
       continue;
     QString varStrApply = varStr.left( pos );
     QString varStrNameValue = varStr.mid( pos + 1 );
-    pos = varStrNameValue.indexOf( QLatin1Char( '=' ) );
+    pos = varStrNameValue.indexOf( '='_L1 );
     if ( pos == -1 )
       continue;
     QString varStrName = varStrNameValue.left( pos );
@@ -305,7 +305,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   for ( const QString &varStr : currentVarsList )
   {
-    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    int pos = varStr.indexOf( '='_L1 );
     if ( pos == -1 )
       continue;
     QStringList varStrItms;

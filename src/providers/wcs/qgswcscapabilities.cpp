@@ -611,7 +611,7 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
         }
         else
         {
-          list.append( domElements( nodeElement, names.join( QLatin1Char( '.' ) ) ) );
+          list.append( domElements( nodeElement, names.join( '.'_L1 ) ) );
         }
       }
     }
@@ -646,7 +646,7 @@ QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QS
     return firstChildElement;
   }
   names.removeFirst();
-  return domElement( firstChildElement, names.join( QLatin1Char( '.' ) ) );
+  return domElement( firstChildElement, names.join( '.'_L1 ) );
 }
 
 QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QString &path )

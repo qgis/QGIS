@@ -86,7 +86,7 @@ void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, c
   const auto constOrder = order;
   for ( const int id : constOrder )
     orderStr << QString::number( id );
-  const QString str = orderStr.isEmpty() ? u"empty"_s : orderStr.join( QLatin1Char( ',' ) );
+  const QString str = orderStr.isEmpty() ? u"empty"_s : orderStr.join( ','_L1 );
 
   nodeLayer->setCustomProperty( u"legend/node-order"_s, str );
 }

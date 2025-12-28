@@ -155,7 +155,7 @@ _ssr = StartupScriptRunner()
   newpaths << '"' + pythonPath() + '"';
   newpaths << homePythonPath();
   newpaths << pluginpaths;
-  runString( "sys.path = [" + newpaths.join( QLatin1Char( ',' ) ) + "] + sys.path" );
+  runString( "sys.path = [" + newpaths.join( ','_L1 ) + "] + sys.path" );
 
   // import SIP
   if ( !runString( u"from qgis.PyQt import sip"_s, QObject::tr( "Couldn't load SIP module." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )

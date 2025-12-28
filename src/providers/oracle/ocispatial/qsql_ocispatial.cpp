@@ -3417,12 +3417,12 @@ bool QOCISpatialDriver::hasFeature( DriverFeature f ) const
 static void qParseOpts( const QString &options, QOCISpatialDriverPrivate *d )
 {
   ENTER
-  const QStringList opts( options.split( QLatin1Char( ';' ), Qt::SkipEmptyParts ) );
+  const QStringList opts( options.split( ';'_L1, Qt::SkipEmptyParts ) );
   for ( int i = 0; i < opts.count(); ++i )
   {
     const QString tmp( opts.at( i ) );
     int idx;
-    if ( ( idx = tmp.indexOf( QLatin1Char( '=' ) ) ) == -1 )
+    if ( ( idx = tmp.indexOf( '='_L1 ) ) == -1 )
     {
       qWarning( "QOCISpatialDriver::parseArgs: Invalid parameter: '%s'", tmp.toLocal8Bit().constData() );
       continue;
@@ -3665,7 +3665,7 @@ static QString make_where_clause( const QString &user, Expression e )
     "WMSYS",
   };
   static const char joinC[][4] = { "or", "and" };
-  static Q_CONSTEXPR QLatin1Char bang[] = { QLatin1Char( ' ' ), QLatin1Char( '!' ) };
+  static Q_CONSTEXPR QLatin1Char bang[] = { ' '_L1, '!'_L1 };
 
   const QLatin1String join( joinC[e], -1 ); // -1: force strlen call
 
@@ -3677,7 +3677,7 @@ static QString make_where_clause( const QString &user, Expression e )
   {
     const QLatin1String l1( sysUser, -1 ); // -1: force strlen call
     if ( l1 != user )
-      result += "owner "_L1 + bang[e] + "= '"_L1 + l1 + QLatin1Char( ' ' ) + join + QLatin1Char( ' ' );
+      result += "owner "_L1 + bang[e] + "= '"_L1 + l1 + ' '_L1 + join + ' '_L1;
   }
 
   result.chop( join.size() + 2 ); // remove final " <join> "
@@ -3710,7 +3710,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
     while ( t.next() )
     {
       if ( t.value( 0 ).toString().toUpper() != user.toUpper() )
-        tl.append( t.value( 0 ).toString() + QLatin1Char( '.' ) + t.value( 1 ).toString() );
+        tl.append( t.value( 0 ).toString() + '.'_L1 + t.value( 1 ).toString() );
       else
         tl.append( t.value( 1 ).toString() );
     }
@@ -3721,7 +3721,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
     while ( t.next() )
     {
       if ( t.value( 0 ).toString() != d->user )
-        tl.append( t.value( 0 ).toString() + QLatin1Char( '.' ) + t.value( 1 ).toString() );
+        tl.append( t.value( 0 ).toString() + '.'_L1 + t.value( 1 ).toString() );
       else
         tl.append( t.value( 1 ).toString() );
     }
@@ -3734,7 +3734,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
     while ( t.next() )
     {
       if ( t.value( 0 ).toString().toUpper() != d->user.toUpper() )
-        tl.append( t.value( 0 ).toString() + QLatin1Char( '.' ) + t.value( 1 ).toString() );
+        tl.append( t.value( 0 ).toString() + '.'_L1 + t.value( 1 ).toString() );
       else
         tl.append( t.value( 1 ).toString() );
     }
@@ -3752,7 +3752,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
     while ( t.next() )
     {
       if ( t.value( 0 ).toString().toUpper() != user.toUpper() )
-        tl.append( t.value( 0 ).toString() + QLatin1Char( '.' ) + t.value( 1 ).toString() );
+        tl.append( t.value( 0 ).toString() + '.'_L1 + t.value( 1 ).toString() );
       else
         tl.append( t.value( 1 ).toString() );
     }
@@ -3763,7 +3763,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
     while ( t.next() )
     {
       if ( t.value( 0 ).toString() != d->user )
-        tl.append( t.value( 0 ).toString() + QLatin1Char( '.' ) + t.value( 1 ).toString() );
+        tl.append( t.value( 0 ).toString() + '.'_L1 + t.value( 1 ).toString() );
       else
         tl.append( t.value( 1 ).toString() );
     }
@@ -3774,7 +3774,7 @@ QStringList QOCISpatialDriver::tables( QSql::TableType type ) const
 void qSplitTableAndOwner( const QString &tname, QString *tbl, QString *owner )
 {
   ENTER
-  int i = tname.indexOf( QLatin1Char( '.' ) ); // prefixed with owner?
+  int i = tname.indexOf( '.'_L1 ); // prefixed with owner?
   if ( i != -1 )
   {
     *tbl = tname.right( tname.length() - i - 1 );
@@ -3814,7 +3814,7 @@ QSqlRecord QOCISpatialDriver::record( const QString &tablename ) const
   else
     table = table.toUpper();
 
-  tmpStmt = stmt.arg( QLatin1Char( '\'' ) + table + QLatin1Char( '\'' ) );
+  tmpStmt = stmt.arg( '\''_L1 + table + '\''_L1 );
   if ( owner.isEmpty() )
   {
     owner = d->user;
@@ -3825,7 +3825,7 @@ QSqlRecord QOCISpatialDriver::record( const QString &tablename ) const
   else
     owner = owner.toUpper();
 
-  tmpStmt += " and a.owner='"_L1 + owner + QLatin1Char( '\'' );
+  tmpStmt += " and a.owner='"_L1 + owner + '\''_L1;
   t.setForwardOnly( true );
   t.exec( tmpStmt );
   if ( !t.next() ) // try and see if the tablename is a synonym
@@ -3833,7 +3833,7 @@ QSqlRecord QOCISpatialDriver::record( const QString &tablename ) const
     stmt = stmt + QLatin1String( " join all_synonyms b "
                                  "on a.owner=b.table_owner and a.table_name=b.table_name "
                                  "where b.owner='" )
-           + owner + "' and b.synonym_name='"_L1 + table + QLatin1Char( '\'' );
+           + owner + "' and b.synonym_name='"_L1 + table + '\''_L1;
     t.setForwardOnly( true );
     t.exec( stmt );
     if ( t.next() )
@@ -3894,7 +3894,7 @@ QSqlIndex QOCISpatialDriver::primaryIndex( const QString &tablename ) const
   else
     table = table.toUpper();
 
-  tmpStmt = stmt + " and a.table_name='"_L1 + table + QLatin1Char( '\'' );
+  tmpStmt = stmt + " and a.table_name='"_L1 + table + '\''_L1;
   if ( owner.isEmpty() )
   {
     owner = d->user;
@@ -3905,7 +3905,7 @@ QSqlIndex QOCISpatialDriver::primaryIndex( const QString &tablename ) const
   else
     owner = owner.toUpper();
 
-  tmpStmt += " and a.owner='"_L1 + owner + QLatin1Char( '\'' );
+  tmpStmt += " and a.owner='"_L1 + owner + '\''_L1;
   t.setForwardOnly( true );
   t.exec( tmpStmt );
 
@@ -3933,7 +3933,7 @@ QSqlIndex QOCISpatialDriver::primaryIndex( const QString &tablename ) const
     idx.setName( t.value( 1 ).toString() );
     do
     {
-      tt.exec( "select data_type from all_tab_columns where table_name='"_L1 + t.value( 2 ).toString() + "' and column_name='"_L1 + t.value( 0 ).toString() + "' and owner='"_L1 + owner + QLatin1Char( '\'' ) );
+      tt.exec( "select data_type from all_tab_columns where table_name='"_L1 + t.value( 2 ).toString() + "' and column_name='"_L1 + t.value( 0 ).toString() + "' and owner='"_L1 + owner + '\''_L1 );
       if ( !tt.next() )
       {
         return QSqlIndex();
@@ -3959,11 +3959,11 @@ QString QOCISpatialDriver::formatValue( const QSqlField &field, bool trimStrings
       if ( datetime.isValid() )
       {
         datestring = "TO_DATE('"_L1 + QString::number( datetime.date().year() )
-                     + QLatin1Char( '-' )
-                     + QString::number( datetime.date().month() ) + QLatin1Char( '-' )
-                     + QString::number( datetime.date().day() ) + QLatin1Char( ' ' )
-                     + QString::number( datetime.time().hour() ) + QLatin1Char( ':' )
-                     + QString::number( datetime.time().minute() ) + QLatin1Char( ':' )
+                     + '-'_L1
+                     + QString::number( datetime.date().month() ) + '-'_L1
+                     + QString::number( datetime.date().day() ) + ' '_L1
+                     + QString::number( datetime.time().hour() ) + ':'_L1
+                     + QString::number( datetime.time().minute() ) + ':'_L1
                      + QString::number( datetime.time().second() )
                      + "','YYYY-MM-DD HH24:MI:SS')"_L1;
       }
@@ -3980,8 +3980,8 @@ QString QOCISpatialDriver::formatValue( const QSqlField &field, bool trimStrings
       if ( datetime.isValid() )
       {
         datestring = "TO_DATE('"_L1
-                     + QString::number( datetime.time().hour() ) + QLatin1Char( ':' )
-                     + QString::number( datetime.time().minute() ) + QLatin1Char( ':' )
+                     + QString::number( datetime.time().hour() ) + ':'_L1
+                     + QString::number( datetime.time().minute() ) + ':'_L1
                      + QString::number( datetime.time().second() )
                      + "','HH24:MI:SS')"_L1;
       }
@@ -3997,7 +3997,7 @@ QString QOCISpatialDriver::formatValue( const QSqlField &field, bool trimStrings
       QString datestring;
       if ( date.isValid() )
       {
-        datestring = "TO_DATE('"_L1 + QString::number( date.year() ) + QLatin1Char( '-' ) + QString::number( date.month() ) + QLatin1Char( '-' ) + QString::number( date.day() ) + "','YYYY-MM-DD')"_L1;
+        datestring = "TO_DATE('"_L1 + QString::number( date.year() ) + '-'_L1 + QString::number( date.month() ) + '-'_L1 + QString::number( date.day() ) + "','YYYY-MM-DD')"_L1;
       }
       else
       {
@@ -4024,9 +4024,9 @@ QString QOCISpatialDriver::escapeIdentifier( const QString &identifier, Identifi
   QString res = identifier;
   if ( !identifier.isEmpty() && !isIdentifierEscaped( identifier, type ) )
   {
-    res.replace( QLatin1Char( '"' ), "\"\""_L1 );
-    res.prepend( QLatin1Char( '"' ) ).append( QLatin1Char( '"' ) );
-    res.replace( QLatin1Char( '.' ), "\".\""_L1 );
+    res.replace( '"'_L1, "\"\""_L1 );
+    res.prepend( '"'_L1 ).append( '"'_L1 );
+    res.replace( '.'_L1, "\".\""_L1 );
   }
   return res;
 }

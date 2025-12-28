@@ -68,7 +68,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
 
   QMutexLocker locker( &mMutex );
 
-  const QString connectionName = u"authentication.configs:0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+  const QString connectionName = u"authentication.configs:0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
   QgsDebugMsgLevel( u"Using auth db connection name: %1 "_s.arg( connectionName ), 3 );
   if ( !QSqlDatabase::contains( connectionName ) )
   {
@@ -2313,7 +2313,7 @@ const QMap<QString, QVariant> QgsAuthConfigurationStorageDb::uriToSettings( cons
     settings.insert( u"port"_s, QString::number( url.port() ) );
     QString path { url.path() };
     // Remove leading slash from the path unless the driver is QSQLITE or QSPATIALITE
-    if ( path.startsWith( QLatin1Char( '/' ) ) &&
+    if ( path.startsWith( '/'_L1 ) &&
          !( settings.value( u"driver"_s ) == "QSQLITE"_L1 ||
             settings.value( u"driver"_s ) == "QSPATIALITE"_L1 ) )
     {

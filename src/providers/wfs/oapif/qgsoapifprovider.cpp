@@ -161,7 +161,7 @@ bool QgsOapifProvider::init()
     // Retry with a trailing slash. Works around a bug with
     // https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address not working
     // but https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address/ working
-    mShared->mCollectionUrl += QLatin1Char( '/' );
+    mShared->mCollectionUrl += '/'_L1;
     collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
     if ( !collectionRequest->request( synchronous, forceRefresh ) || collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
     {
@@ -277,10 +277,10 @@ bool QgsOapifProvider::init()
   }
 
   QString tenFeaturesRequestUrl = mShared->mItemsUrl;
-  if ( tenFeaturesRequestUrl.indexOf( QLatin1Char( '?' ) ) < 0 )
-    tenFeaturesRequestUrl += QLatin1Char( '?' );
+  if ( tenFeaturesRequestUrl.indexOf( '?'_L1 ) < 0 )
+    tenFeaturesRequestUrl += '?'_L1;
   else
-    tenFeaturesRequestUrl += QLatin1Char( '&' );
+    tenFeaturesRequestUrl += '&'_L1;
   tenFeaturesRequestUrl += "limit=10"_L1;
   if ( mShared->mSourceCrs
        != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
@@ -447,16 +447,16 @@ long long QgsOapifProvider::featureCount() const
     }
 
     QString url = mShared->mItemsUrl;
-    if ( url.indexOf( QLatin1Char( '?' ) ) < 0 )
-      url += QLatin1Char( '?' );
+    if ( url.indexOf( '?'_L1 ) < 0 )
+      url += '?'_L1;
     else
-      url += QLatin1Char( '&' );
+      url += '&'_L1;
     url += "limit=1"_L1;
     url = mShared->appendExtraQueryParameters( url );
 
     if ( !mShared->mServerFilter.isEmpty() )
     {
-      url += QLatin1Char( '&' );
+      url += '&'_L1;
       url += mShared->mServerFilter;
     }
 
@@ -558,7 +558,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
     }
     QgsOapifOptionsRequest optionsOneItemRequest( uri );
     QString url( mShared->mItemsUrl );
-    url += QLatin1Char( '/' );
+    url += '/'_L1;
     url += testId;
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
     if ( supportedOptions.contains( "PUT"_L1 ) )

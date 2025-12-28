@@ -47,7 +47,7 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
   const auto constMChildren = mChildren;
   for ( QgsDataItem *i : constMChildren )
   {
-    QgsDebugMsgLevel( u"delete child = 0x%0"_s.arg( static_cast<qlonglong>( i ), 8, 16, QLatin1Char( '0' ) ), 2 );
+    QgsDebugMsgLevel( u"delete child = 0x%0"_s.arg( static_cast<qlonglong>( i ), 8, 16, '0'_L1 ), 2 );
     delete i;
   }
 #endif

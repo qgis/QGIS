@@ -1074,7 +1074,7 @@ namespace QgsWfs
         fcString = u"{\"type\": \"FeatureCollection\",\n"_s;
         fcString += u" \"timeStamp\": \"%1\",\n"_s.arg( now.toString( Qt::ISODate ) );
         fcString += u" \"numberOfFeatures\": %1\n"_s.arg( QString::number( numberOfFeatures ) );
-        fcString += QLatin1Char( '}' );
+        fcString += '}'_L1;
       }
       else
       {
@@ -1382,7 +1382,7 @@ namespace QgsWfs
       if ( format == QgsWfsParameters::Format::GeoJSON )
       {
         fcString += " ]\n"_L1;
-        fcString += QLatin1Char( '}' );
+        fcString += '}'_L1;
       }
       else
       {

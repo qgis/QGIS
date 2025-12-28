@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     SIP_PYOBJECT __repr__();
     % MethodCode
     // override parent QgsLayerTreeGroup __repr__ and resort back to default repr for QgsLayerTree -- there's no extra useful context we can show
-    QString str = u"<qgis._core.QgsLayerTree object at 0x%1>"_s.arg( reinterpret_cast<quintptr>( sipCpp ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    QString str = u"<qgis._core.QgsLayerTree object at 0x%1>"_s.arg( reinterpret_cast<quintptr>( sipCpp ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -767,7 +767,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool allowGe
     layerProperty.geometryColName = column;
     layerProperty.geometryColType = columnType;
     if ( dim == 3 && !type.endsWith( 'M' ) )
-      type += QLatin1Char( 'Z' );
+      type += 'Z'_L1;
     else if ( dim == 4 )
       type += "ZM"_L1;
     layerProperty.types = QList<Qgis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
@@ -1341,7 +1341,7 @@ static QString quotedMap( const QVariantMap &map )
   {
     if ( !ret.isEmpty() )
     {
-      ret += QLatin1Char( ',' );
+      ret += ','_L1;
     }
     ret.append( doubleQuotedMapValue( i.key() ) + "=>" + doubleQuotedMapValue( i.value().toString() ) );
   }
@@ -1355,7 +1355,7 @@ static QString quotedList( const QVariantList &list )
   {
     if ( !ret.isEmpty() )
     {
-      ret += QLatin1Char( ',' );
+      ret += ','_L1;
     }
 
     QString inner = i->toString();
@@ -1813,7 +1813,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
     QString buf;
     for ( size_t i = 0; i < s; i++ )
     {
-      buf += u"%1 "_s.arg( *( unsigned char * ) ( p + i ), 0, 16, QLatin1Char( ' ' ) );
+      buf += u"%1 "_s.arg( *( unsigned char * ) ( p + i ), 0, 16, ' '_L1 );
     }
 
     QgsDebugMsgLevel( u"int in hex:%1"_s.arg( buf ), 2 );
@@ -2544,12 +2544,12 @@ void QgsPostgresConn::postgisWkbType( Qgis::WkbType wkbType, QString &geometryTy
   }
   else if ( QgsWkbTypes::hasZ( wkbType ) )
   {
-    geometryType += QLatin1Char( 'Z' );
+    geometryType += 'Z'_L1;
     dim = 3;
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += QLatin1Char( 'M' );
+    geometryType += 'M'_L1;
     dim = 3;
   }
   else if ( wkbType >= Qgis::WkbType::Point25D && wkbType <= Qgis::WkbType::MultiPolygon25D )

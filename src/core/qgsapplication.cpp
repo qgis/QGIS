@@ -483,7 +483,7 @@ void QgsApplication::init( QString profileFolder )
   const auto systemEnvironment = QProcessEnvironment::systemEnvironment().toStringList();
   for ( const QString &varStr : systemEnvironment )
   {
-    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    int pos = varStr.indexOf( '='_L1 );
     if ( pos == -1 )
       continue;
     QString varStrName = varStr.left( pos );
@@ -1921,7 +1921,7 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
     aPathElems.insert( 0, u"."_s );
   }
 
-  return aPathElems.join( QLatin1Char( '/' ) );
+  return aPathElems.join( '/'_L1 );
 }
 
 QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const QString &targetPath )
@@ -1971,7 +1971,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   targetElems.prepend( QString() );
 #endif
 
-  return targetElems.join( QLatin1Char( '/' ) );
+  return targetElems.join( '/'_L1 );
 }
 
 QString QgsApplication::buildSourcePath()
@@ -2027,7 +2027,7 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
-  settings.setValue( u"gdal/skipDrivers"_s, skippedGdalDrivers.join( QLatin1Char( ',' ) ) );
+  settings.setValue( u"gdal/skipDrivers"_s, skippedGdalDrivers.join( ','_L1 ) );
 
   applyGdalSkippedDrivers();
 }

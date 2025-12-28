@@ -655,9 +655,9 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     for ( const QString &fileName : fileNames )
     {
       const QString newSrcFilePath
-        = srcFilePath + QLatin1Char( '/' ) + fileName;
+        = srcFilePath + '/'_L1 + fileName;
       const QString newTgtFilePath
-        = tgtFilePath + QLatin1Char( '/' ) + fileName;
+        = tgtFilePath + '/'_L1 + fileName;
       if ( !copyRecursively( newSrcFilePath, newTgtFilePath, error ) )
         return false;
     }
@@ -690,7 +690,7 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
     QStringList fileNames = dir.entryList( QDir::Files | QDir::Hidden | QDir::System | QDir::Dirs | QDir::NoDotAndDotDot );
     for ( const QString &fileName : fileNames )
     {
-      if ( !removeRecursively( filePath + QLatin1Char( '/' ) + fileName, error ) )
+      if ( !removeRecursively( filePath + '/'_L1 + fileName, error ) )
         return false;
     }
     dir.cdUp();
@@ -899,7 +899,7 @@ void TestQgsGrassProvider::vectorImport()
     delete import;
 
     QStringList layers = QgsGrass::vectorLayers( tmpGisdbase, tmpLocation, tmpMapset, name );
-    reportRow( "created layers: " + layers.join( QLatin1Char( ',' ) ) );
+    reportRow( "created layers: " + layers.join( ','_L1 ) );
   }
   removeRecursively( tmpGisdbase );
   GVERIFY( ok );
@@ -1510,7 +1510,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
       {
         names << feature.fields().at( j ).name();
       }
-      reportRow( u"Attribute %1 not found, feature attributes: %2"_s.arg( name, names.join( QLatin1Char( ',' ) ) ) );
+      reportRow( u"Attribute %1 not found, feature attributes: %2"_s.arg( name, names.join( ','_L1 ) ) );
       return false;
     }
     indexes.remove( index );
@@ -1529,7 +1529,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
     {
       names << feature.fields().at( i ).name();
     }
-    reportRow( u"feature has %1 unexpected attributes: %2"_s.arg( indexes.size() ).arg( names.join( QLatin1Char( ',' ) ) ) );
+    reportRow( u"feature has %1 unexpected attributes: %2"_s.arg( indexes.size() ).arg( names.join( ','_L1 ) ) );
     return false;
   }
   return true;

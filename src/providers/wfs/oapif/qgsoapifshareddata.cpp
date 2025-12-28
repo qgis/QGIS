@@ -258,7 +258,7 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
   for ( const QString &equalityComparison : equalityComparisons )
   {
     if ( !ret.isEmpty() )
-      ret += QLatin1Char( '&' );
+      ret += '&'_L1;
     ret += equalityComparison;
   }
 
@@ -290,7 +290,7 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
         else
           untranslatedPart += " AND ("_L1;
         untranslatedPart += topAndNodes[i]->dump();
-        untranslatedPart += QLatin1Char( ')' );
+        untranslatedPart += ')'_L1;
       }
     }
   }

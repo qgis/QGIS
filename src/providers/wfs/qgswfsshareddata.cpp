@@ -174,7 +174,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
     for ( QgsSQLStatement::NodeColumnSorted *columnSorted : constOrderBy )
     {
       if ( !mSortBy.isEmpty() )
-        mSortBy += QLatin1Char( ',' );
+        mSortBy += ','_L1;
       mSortBy += columnSorted->column()->name();
       if ( !columnSorted->ascending() )
       {

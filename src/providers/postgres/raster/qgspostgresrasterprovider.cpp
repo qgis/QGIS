@@ -1552,7 +1552,7 @@ bool QgsPostgresRasterProvider::loadFields()
         tableoidsList.append( QString::number( tableoid ) );
       }
 
-      QString tableoidsFilter = '(' + tableoidsList.join( QLatin1Char( ',' ) ) + ')';
+      QString tableoidsFilter = '(' + tableoidsList.join( ','_L1 ) + ')';
 
       // Collect formatted field types
       sql = QStringLiteral(

@@ -1010,7 +1010,7 @@ QStringList QgsGrassModuleInput::options()
     {
       maps << mSelectedModel->item( i )->text();
     }
-    list << mKey + "=" + maps.join( QLatin1Char( ',' ) );
+    list << mKey + "=" + maps.join( ','_L1 );
   }
   else
   {
@@ -1032,7 +1032,7 @@ QStringList QgsGrassModuleInput::options()
 
     if ( !mGeometryTypeOption.isEmpty() )
     {
-      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( QLatin1Char( ',' ) );
+      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( ','_L1 );
     }
   }
 

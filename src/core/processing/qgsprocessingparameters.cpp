@@ -3612,7 +3612,7 @@ QString QgsProcessingParameterMapLayer::asPythonString( const QgsProcessing::Pyt
       }
       else
       {
-        code += QLatin1Char( ')' );
+        code += ')'_L1;
       }
 
       return code;
@@ -5847,7 +5847,7 @@ QString QgsProcessingParameterExpression::asPythonString( const QgsProcessing::P
           code += ", type=Qgis.ExpressionType.RasterCalculator)"_L1;
           break;
         default:
-          code += QLatin1Char( ')' );
+          code += ')'_L1;
           break;
       }
       return code;

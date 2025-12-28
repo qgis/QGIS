@@ -97,7 +97,7 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
   if ( pathCopy.startsWith( '/' ) )
     pathCopy = pathCopy.mid( 1 ); // remove '/'
   QStringList names = pathCopy.split( '/' );
-  pathCopy = QStringList( names.mid( 1 ) ).join( QLatin1Char( '/' ) );
+  pathCopy = QStringList( names.mid( 1 ) ).join( '/'_L1 );
 
   if ( !widgetItem )
   {

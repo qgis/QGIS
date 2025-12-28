@@ -134,7 +134,7 @@ void TestQgsRasterSubLayer::subLayersList()
     else
       sublayers << s;
   }
-  qDebug() << "sublayers: " << sublayers.join( QLatin1Char( ',' ) );
+  qDebug() << "sublayers: " << sublayers.join( ','_L1 );
   mReport += u"sublayers:<br>%1<br>\n"_s.arg( sublayers.join( "<br>"_L1 ) );
   mReport += u"expected:<br>%1<br>\n"_s.arg( expected.join( "<br>"_L1 ) );
 

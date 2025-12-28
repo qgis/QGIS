@@ -598,7 +598,7 @@ QString QgsGpxProviderMetadata::absoluteToRelativeUri( const QString &uri, const
   QString src = uri;
   QStringList theURIParts = src.split( '?' );
   theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-  src = theURIParts.join( QLatin1Char( '?' ) );
+  src = theURIParts.join( '?'_L1 );
   return src;
 }
 
@@ -607,7 +607,7 @@ QString QgsGpxProviderMetadata::relativeToAbsoluteUri( const QString &uri, const
   QString src = uri;
   QStringList theURIParts = src.split( '?' );
   theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-  src = theURIParts.join( QLatin1Char( '?' ) );
+  src = theURIParts.join( '?'_L1 );
   return src;
 }
 

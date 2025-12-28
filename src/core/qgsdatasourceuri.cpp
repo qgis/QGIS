@@ -621,7 +621,7 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
     }
   }
 
-  return connectionItems.join( QLatin1Char( ' ' ) );
+  return connectionItems.join( ' '_L1 );
 }
 
 QString QgsDataSourceUri::uri( bool expandAuthConfig ) const

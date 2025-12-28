@@ -110,7 +110,7 @@ namespace QgsGuiUtils
         imageFormats << u"*.%1 *.%2"_s.arg( format, QString( format ).toUpper() );
       }
     }
-    const QString formatByExtension = u"%1 (%2)"_s.arg( QObject::tr( "Format by Extension" ), imageFormats.join( QLatin1Char( ' ' ) ) );
+    const QString formatByExtension = u"%1 (%2)"_s.arg( QObject::tr( "Format by Extension" ), imageFormats.join( ' '_L1 ) );
 
 #ifdef QGISDEBUG
     QgsDebugMsgLevel( u"Available Filters Map: "_s, 2 );

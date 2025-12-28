@@ -300,7 +300,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       s.setValue( u"/browser/hiddenPaths"_s, pathsList );
 
       // get parent path and refresh corresponding node
-      int idx = path.lastIndexOf( QLatin1Char( '/' ) );
+      int idx = path.lastIndexOf( '/'_L1 );
       if ( idx != -1 && path.count( u"/"_s ) > 1 )
       {
         QString parentPath = path.left( idx );

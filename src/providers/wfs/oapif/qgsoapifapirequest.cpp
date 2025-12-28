@@ -54,7 +54,7 @@ static const json *resolveRef( const json &j, const std::string &ref )
 {
   if ( ref.compare( 0, 2, "#/" ) != 0 )
     return nullptr;
-  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( QLatin1Char( '/' ) );
+  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( '/'_L1 );
   const json *ret = &j;
   for ( const auto &subPath : subPaths )
   {

@@ -885,7 +885,7 @@ void QgsNetworkAccessManager::preprocessRequest( QNetworkRequest *req ) const
 QgsNetworkRequestParameters::QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, int requestId, const QByteArray &content )
   : mOperation( operation )
   , mRequest( request )
-  , mOriginatingThreadId( u"0x%2"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+  , mOriginatingThreadId( u"0x%2"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 ) )
   , mRequestId( requestId )
   , mContent( content )
   , mInitiatorClass( request.attribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorClass ) ).toString() )

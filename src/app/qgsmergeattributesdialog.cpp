@@ -658,7 +658,7 @@ QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
   {
     concatString << mTableWidget->item( i + 1, col )->text();
   }
-  return concatString.join( QLatin1Char( ',' ) ); //todo: make separator user configurable
+  return concatString.join( ','_L1 ); //todo: make separator user configurable
 }
 
 void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
