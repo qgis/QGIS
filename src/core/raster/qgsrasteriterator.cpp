@@ -277,9 +277,7 @@ double QgsRasterIterator::progress( int bandNumber, double currentBlockProgress 
       return 0;
     }
 
-    const double currentBlockProgressFraction = currentBlockProgress < 0
-        ? 0
-        : currentBlockProgress / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
+    const double currentBlockProgressFraction = currentBlockProgress / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
 
     return currentBlockProgressFraction + ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) )
                                             * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) )
