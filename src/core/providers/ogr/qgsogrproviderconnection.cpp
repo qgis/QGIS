@@ -136,7 +136,7 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
           {
             // Get the WKB representation of the geometry
             const int size = OGR_G_WkbSize( hGeom );
-            QByteArray wkbBuffer{ static_cast<qsizetype>( size ), Qt::Initialization::Uninitialized };
+            QByteArray wkbBuffer( size, Qt::Initialization::Uninitialized );
             OGR_G_ExportToWkb( hGeom, wkbNDR, reinterpret_cast<unsigned char *>( wkbBuffer.data() ) );
             if ( columnIndex < 0 || columnIndex >= row.count() )
             {

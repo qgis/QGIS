@@ -72,27 +72,22 @@
 #include "qgswebview.h"
 #include "qgswmsdimensiondialog.h"
 
-#include "moc_qgsvectorlayerproperties.cpp"
-
-#if WITH_QTWEBKIT
-#include <QWebElement>
-#endif
-
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
 #include <QDesktopServices>
-#include <QMessageBox>
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontDialog>
-#include <QComboBox>
-#include <QCheckBox>
 #include <QHeaderView>
-#include <QColorDialog>
 #include <QMenu>
-#include <QUrl>
+#include <QMessageBox>
 #include <QRegularExpressionValidator>
+#include <QUrl>
 
+#include "moc_qgsvectorlayerproperties.cpp"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsMapCanvas *canvas,
@@ -1889,12 +1884,6 @@ void QgsVectorLayerProperties::initMapTipPreview()
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
   mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
-#if WITH_QTWEBKIT
-  mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
-  mMapTipPreview->setContextMenuPolicy( Qt::NoContextMenu );                     //No context menu is allowed if you don't need it
-  connect( mMapTipPreview, &QWebView::loadFinished, this, &QgsVectorLayerProperties::resizeMapTip );
-#endif
-
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
@@ -1919,19 +1908,5 @@ void QgsVectorLayerProperties::resizeMapTip()
 {
   // Ensure the map tip is not bigger than the container
   mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
-#if WITH_QTWEBKIT
-  // Get the content size
-  const QWebElement container = mMapTipPreview->page()->mainFrame()->findFirstElement(
-    QStringLiteral( "#QgsWebViewContainer" )
-  );
-  const int width = container.geometry().width();
-  const int height = container.geometry().height();
-  mMapTipPreview->resize( width, height );
-
-  // Move the map tip to the center of the container
-  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2, ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
-
-#else
   mMapTipPreview->adjustSize();
-#endif
 }

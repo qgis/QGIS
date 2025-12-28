@@ -103,7 +103,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   QMap<QString, QString> userTemplateMap = defaultTemplates( true );
   addTemplates( userTemplateMap );
 
-  // TODO QGIS 4: Remove this, default templates should not be shipped in the application folder
+  // TODO QGIS 5: Remove this, default templates should not be shipped in the application folder
   mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
   addTemplates( defaultTemplateMap );

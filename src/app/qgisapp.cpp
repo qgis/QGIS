@@ -175,6 +175,10 @@
 #include <SFCGAL/version.h>
 #endif
 
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
+
 #ifdef HAVE_GEOREFERENCER
 #include "georeferencer/qgsgeorefmainwindow.h"
 #endif
@@ -997,6 +1001,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
+  // Initialize QGIS (and the plugins) before the network
+  QgsApplication::initQgis();
+
   // start the network logger early, we want all requests logged!
   startProfile( tr( "Create network logger" ) );
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
@@ -1042,8 +1049,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mSplash->showMessage( tr( "Setting up the GUI" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
-
-  QgsApplication::initQgis();
 
   // setup connections to auth system
   masterPasswordSetup();
@@ -1738,9 +1743,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutNorthArrowValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutOverviewValidityCheck() );
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutPictureSourceValidityCheck() );
-#ifndef WITH_QTWEBKIT
   QgsApplication::validityCheckRegistry()->addCheck( new QgsLayoutHtmlItemValidityCheck() );
-#endif
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
   qApp->processEvents();
@@ -5576,6 +5579,15 @@ QString QgisApp::getVersionString()
 #endif
   versionString += QLatin1String( "</td></tr><tr>" );
 
+  // GeographicLib version
+#ifdef WITH_GEOGRAPHICLIB
+  const QString geographicLibVersionRunning = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), geographicLibVersionRunning );
+#else
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "GeographicLib version" ), tr( "No support" ) );
+#endif
+  versionString += QLatin1String( "</td></tr><tr>" );
+
   // SQLite version
   const QString sqliteVersionCompiled { SQLITE_VERSION };
   const QString sqliteVersionRunning { sqlite3_libversion() };
@@ -5644,7 +5656,9 @@ QString QgisApp::getVersionString()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     versionString += QStringLiteral( "<td colspan=\"2\">&nbsp;</td></tr><tr><td colspan=\"2\"><b>%1</b></td>" ).arg( tr( "Active Python plugins" ) );
-    const QStringList activePlugins = mPythonUtils->listActivePlugins();
+    QStringList pluginsList = mPythonUtils->listActivePlugins();
+    pluginsList.sort();
+    const QStringList activePlugins = pluginsList;
     for ( const QString &plugin : activePlugins )
     {
       const QString version = mPythonUtils->getPluginMetadata( plugin, QStringLiteral( "version" ) );
@@ -5722,7 +5736,7 @@ void QgisApp::addVirtualLayer()
   dts->setMapCanvas( mMapCanvas );
   dts->setBrowserModel( mBrowserModel );
   Q_NOWARN_DEPRECATED_PUSH
-  // TODO QGIS 4.0 -- this should use the generic addLayer signal instead
+  // TODO QGIS 5.0 -- this should use the generic addLayer signal instead
   connect( dts, &QgsAbstractDataSourceWidget::addVectorLayer, this, &QgisApp::addVectorLayer );
   Q_NOWARN_DEPRECATED_POP
   connect( dts, &QgsAbstractDataSourceWidget::replaceVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
@@ -6134,10 +6148,6 @@ void QgisApp::newGpxLayer()
     }
 
     QTextStream outStream( &outputFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    outStream.setCodec( "UTF-8" );
-#endif
-
     outStream << "<gpx></gpx>" << Qt::endl;
     outputFile.close();
 

@@ -245,19 +245,6 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   if ( !loaded )
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
-#ifdef WITH_QTWEBKIT
-  //inject JSON feature
-  if ( !mAtlasFeatureJSON.isEmpty() )
-  {
-    JavascriptExecutorLoop jsLoop;
-
-    mWebPage->mainFrame()->addToJavaScriptWindowObject( QStringLiteral( "loop" ), &jsLoop );
-    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { try{ setFeature(%1); } catch (err) { loop.reportError(err.message); } }; loop.done();" ).arg( mAtlasFeatureJSON ) );
-
-    jsLoop.execIfNotDone();
-  }
-#endif
-
   recalculateFrameSizes();
   //trigger a repaint
   emit contentsChanged();
@@ -341,18 +328,6 @@ QSizeF QgsLayoutItemHtml::totalSize() const
 
 void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int frameIndex )
 {
-#ifdef WITH_QTWEBKIT
-  Q_UNUSED( frameIndex )
-  if ( !mWebPage )
-    return;
-
-  QPainter *painter = context.renderContext().painter();
-  const QgsScopedQPainterState painterState( painter );
-  // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits, context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits );
-  painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToLayoutUnits );
-  mWebPage->mainFrame()->render( painter, QRegion( renderExtent.left(), renderExtent.top() * mHtmlUnitsToLayoutUnits, renderExtent.width() * mHtmlUnitsToLayoutUnits, renderExtent.height() * mHtmlUnitsToLayoutUnits ) );
-#else
   Q_UNUSED( renderExtent )
   if ( mLayout->renderContext().isPreviewRender() )
   {
@@ -383,7 +358,6 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       td.documentLayout()->draw( painter, ctx );
     }
   }
-#endif
 }
 
 double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()

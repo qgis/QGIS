@@ -419,6 +419,7 @@ Draws a preview of the rasterlayer into a QImage
 
     virtual QDateTime timestamp() const;
 
+
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 

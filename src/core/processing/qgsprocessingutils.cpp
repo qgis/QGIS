@@ -1597,20 +1597,31 @@ QString QgsProcessingUtils::defaultVectorExtension()
   return setting;
 }
 
+QString QgsProcessingUtils::defaultRasterFormat()
+{
+  QString setting = QgsProcessing::settingsDefaultOutputRasterLayerFormat->value().trimmed();
+  if ( setting.isEmpty() )
+    return QStringLiteral( "GTiff" );
+
+  const QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersFormats =
+    QgsRasterFileWriter::supportedFiltersAndFormats();
+  for ( const QgsRasterFileWriter::FilterFormatDetails &detail : std::as_const( supportedFiltersFormats ) )
+  {
+    if ( detail.driverName.compare( setting, Qt::CaseInsensitive ) == 0 )
+      return detail.driverName;
+  }
+
+  return QStringLiteral( "GTiff" );
+}
+
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  QString setting = QgsProcessing::settingsDefaultOutputRasterLayerExt->value().trimmed();
-  if ( setting.isEmpty() )
-    return QStringLiteral( "tif" );
+  QString format = defaultRasterFormat();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( format );
+  if ( !extensions.isEmpty() )
+    return extensions[0];
 
-  if ( setting.startsWith( '.' ) )
-    setting = setting.mid( 1 );
-
-  const QStringList supportedFormats = QgsRasterFileWriter::supportedFormatExtensions();
-  if ( !supportedFormats.contains( setting, Qt::CaseInsensitive ) )
-    return QStringLiteral( "tif" );
-
-  return setting;
+  return QStringLiteral( "tif" );
 }
 
 QString QgsProcessingUtils::defaultPointCloudExtension()
@@ -1872,7 +1883,7 @@ QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int lim
     return mSource->uniqueValues( fieldIndex, limit );
 
   // inefficient method when filter expression in use
-  // TODO QGIS 4.0 -- add filter expression to virtual ::uniqueValues function
+  // TODO QGIS 5.0 -- add filter expression to virtual ::uniqueValues function
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     return QSet<QVariant>();
 
@@ -1899,7 +1910,7 @@ QVariant QgsProcessingFeatureSource::minimumValue( int fieldIndex ) const
     return mSource->minimumValue( fieldIndex );
 
   // inefficient method when filter expression in use
-  // TODO QGIS 4.0 -- add filter expression to virtual ::minimumValue function
+  // TODO QGIS 5.0 -- add filter expression to virtual ::minimumValue function
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     return QVariant();
 
@@ -1927,7 +1938,7 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
     return mSource->maximumValue( fieldIndex );
 
   // inefficient method when filter expression in use
-  // TODO QGIS 4.0 -- add filter expression to virtual ::maximumValue function
+  // TODO QGIS 5.0 -- add filter expression to virtual ::maximumValue function
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
     return QVariant();
 

@@ -37,6 +37,10 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
+
 #define qgis_xstr(x) qgis_str(x)
 #define qgis_str(x) #x
 
@@ -638,9 +642,6 @@ uint qHash( const QVariant &variant )
     case QMetaType::Type::QUrl:
     case QMetaType::Type::QLocale:
     case QMetaType::Type::QRegularExpression:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    case QMetaType::Type::QRegExp:
-#endif
       return qHash( variant.toString() );
     default:
       break;
@@ -719,13 +720,27 @@ int Qgis::sfcgalVersionInt()
 #endif
 }
 
-bool Qgis::hasQtWebkit()
+bool Qgis::hasGeographicLib()
 {
-#ifdef WITH_QTWEBKIT
+#ifdef WITH_GEOGRAPHICLIB
   return true;
 #else
   return false;
 #endif
+}
+
+int Qgis::geographicLibVersion()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return GEOGRAPHICLIB_VERSION_MAJOR * 10000 + GEOGRAPHICLIB_VERSION_MINOR * 100 + GEOGRAPHICLIB_VERSION_PATCH;
+#else
+  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+#endif
+}
+
+bool Qgis::hasQtWebkit()
+{
+  return false;
 }
 
 int Qgis::geosVersionInt()
@@ -753,13 +768,3 @@ int Qgis::geosVersionPatch()
   static const int version = atoi( qgis_xstr( GEOS_VERSION_PATCH ) );
   return version;
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-template<>
-bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
-{
-  // qt's built in qMapLessThanKey for QVariantList is broken and does a case-insensitive operation.
-  // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
-  return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
-}
-#endif

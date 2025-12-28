@@ -102,7 +102,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
      */
     QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    // TODO QGIS 4.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
+    // TODO QGIS 5.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
     // remove the override!
 
     /**

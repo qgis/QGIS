@@ -442,18 +442,9 @@ QSsl::SslProtocol QgsAuthConfigSslServer::decodeSslProtocol( const QString &prot
     switch ( qt5EnumInt )
     {
       case 0: // SslV3
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        return QSsl::SslProtocol::SslV3;
-#else
         return QSsl::SslProtocol::UnknownProtocol;
-#endif
 
       case 1: // SslV2
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        return QSsl::SslProtocol::SslV2;
-#else
-
-#endif
       case 2:
         return QSsl::SslProtocol::TlsV1_0;
       case 3:
@@ -463,11 +454,7 @@ QSsl::SslProtocol QgsAuthConfigSslServer::decodeSslProtocol( const QString &prot
       case 5:
         return QSsl::SslProtocol::AnyProtocol;
       case 6:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        return QSsl::SslProtocol::TlsV1SslV3;
-#else
         return QSsl::SslProtocol::TlsV1_3;
-#endif
       case 7:
         return QSsl::SslProtocol::SecureProtocols;
       case 8:
@@ -493,12 +480,6 @@ QSsl::SslProtocol QgsAuthConfigSslServer::decodeSslProtocol( const QString &prot
     }
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  if ( protocol == QLatin1String( "SslV3" ) )
-    return QSsl::SslProtocol::SslV3;
-  else if ( protocol == QLatin1String( "SslV2" ) )
-    return QSsl::SslProtocol::SslV2;
-#endif
   if ( protocol == QLatin1String( "TlsV1_0" ) )
     return QSsl::SslProtocol::TlsV1_0;
   else if ( protocol == QLatin1String( "TlsV1_1" ) )
@@ -507,10 +488,6 @@ QSsl::SslProtocol QgsAuthConfigSslServer::decodeSslProtocol( const QString &prot
     return QSsl::SslProtocol::TlsV1_2;
   else if ( protocol == QLatin1String( "AnyProtocol" ) )
     return QSsl::SslProtocol::AnyProtocol;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  else if ( protocol == QLatin1String( "TlsV1SslV3" ) )
-    return QSsl::SslProtocol::TlsV1SslV3;
-#endif
   else if ( protocol == QLatin1String( "SecureProtocols" ) )
     return QSsl::SslProtocol::SecureProtocols;
   else if ( protocol == QLatin1String( "TlsV1_0OrLater" ) )
@@ -541,12 +518,6 @@ QString QgsAuthConfigSslServer::encodeSslProtocol( QSsl::SslProtocol protocol )
 {
   switch ( protocol )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    case QSsl::SslV3:
-      return QStringLiteral( "SslV3" );
-    case QSsl::SslV2:
-      return QStringLiteral( "SslV2" );
-#endif
     case QSsl::TlsV1_0:
       return QStringLiteral( "TlsV1_0" );
     case QSsl::TlsV1_1:
@@ -555,10 +526,6 @@ QString QgsAuthConfigSslServer::encodeSslProtocol( QSsl::SslProtocol protocol )
       return QStringLiteral( "TlsV1_2" );
     case QSsl::AnyProtocol:
       return QStringLiteral( "AnyProtocol" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    case QSsl::TlsV1SslV3:
-      return QStringLiteral( "TlsV1SslV3" );
-#endif
     case QSsl::SecureProtocols:
       return QStringLiteral( "SecureProtocols" );
     case QSsl::TlsV1_0OrLater:

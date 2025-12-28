@@ -69,6 +69,8 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     mLayerMetadata.setParentIdentifier( parentUrl );
   }
 
+  bool xmlBulkIsGml = false;
+  bool foundGmlBulk = false;
   for ( const auto &link : links )
   {
     auto mdLink = QgsAbstractMetadataBase::Link( link.rel, QStringLiteral( "WWW:LINK" ), link.href );
@@ -80,12 +82,33 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
 
     if ( link.rel == QLatin1String( "items" ) )
     {
-      if ( link.type == QLatin1String( "application/geo+json" ) || link.type == QLatin1String( "application/flatgeobuf" ) || link.type == QLatin1String( "application/fg+json" ) )
+      if ( link.type == QLatin1String( "application/geo+json" ) || link.type == QLatin1String( "application/flatgeobuf" ) || link.type == QLatin1String( "application/fg+json" ) || link.type.startsWith( QLatin1String( "application/gml+xml" ) ) )
       {
         mFeatureFormats << link.type;
         mMapFeatureFormatToUrl[link.type] = link.href;
       }
     }
+    else if ( link.rel == QLatin1String( "enclosure" ) )
+    {
+      mMapFeatureFormatToBulkDownloadUrl[link.type] = link.href;
+      if ( link.type == QLatin1String( "application/xml" ) && link.title.contains( QLatin1String( "GML" ) ) )
+      {
+        xmlBulkIsGml = true;
+      }
+      else if ( link.type.startsWith( QLatin1String( "application/gml+xml" ) ) )
+      {
+        foundGmlBulk = true;
+      }
+    }
+    else if ( link.rel == QLatin1String( "describedby" ) && link.type == QLatin1String( "application/xml" ) )
+    {
+      mXmlSchemaUrl = link.href;
+    }
+  }
+
+  if ( xmlBulkIsGml && !foundGmlBulk )
+  {
+    mMapFeatureFormatToBulkDownloadUrl[QStringLiteral( "application/gml+xml" )] = mMapFeatureFormatToBulkDownloadUrl[QStringLiteral( "application/xml" )];
   }
 
   if ( j.contains( "title" ) )

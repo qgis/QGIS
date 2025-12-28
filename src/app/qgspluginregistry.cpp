@@ -732,12 +732,10 @@ bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) c
   const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "supportsQt6" ) ).trimmed();
   if ( supportsQt6.compare( QLatin1String( "YES" ), Qt::CaseInsensitive ) != 0 && supportsQt6.compare( QLatin1String( "TRUE" ), Qt::CaseInsensitive ) != 0 )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     if ( !getenv( "QGIS_DISABLE_SUPPORTS_QT6_CHECK" ) )
     {
       return false;
     }
-#endif
     supportsQgis4 = false;
   }
   const QString minVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMinimumVersion" ) );

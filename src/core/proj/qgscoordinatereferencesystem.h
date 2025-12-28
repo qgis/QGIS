@@ -233,7 +233,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     ~QgsCoordinateReferenceSystem();
 
-    // TODO QGIS 4: remove "POSTGIS" and "INTERNAL"
+    // TODO QGIS 5: remove "POSTGIS" and "INTERNAL"
 
     /**
      * Constructs a CRS object from a string definition using createFromString()
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     explicit QgsCoordinateReferenceSystem( const QString &definition );
 
-    // TODO QGIS 4: remove type and always use EPSG code
+    // TODO QGIS 5: remove type and always use EPSG code
 
     /**
      * Constructor
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     // Misc helper functions -----------------------
 
-    // TODO QGIS 4: remove type and always use EPSG code, rename to createFromEpsg
+    // TODO QGIS 5: remove type and always use EPSG code, rename to createFromEpsg
 
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     Q_DECL_DEPRECATED bool createFromId( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
-    // TODO QGIS 4: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
+    // TODO QGIS 5: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
 
     /**
      * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool createFromOgcWmsCrs( const QString &crs );
 
-    // TODO QGIS 4: remove unless really necessary - let's use EPSG codes instead
+    // TODO QGIS 5: remove unless really necessary - let's use EPSG codes instead
 
     /**
      * Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
@@ -550,7 +550,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool createFromString( const QString &definition );
 
-    // TODO QGIS 4: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
+    // TODO QGIS 5: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
 
     /**
      * Set up this CRS from various text formats.
@@ -601,7 +601,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     void validate();
 
-    // TODO QGIS 4: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
+    // TODO QGIS 5: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
 
     /**
      * Walks the CRS databases (both system and user database) trying to match
@@ -653,7 +653,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     long srsid() const;
 
-    // TODO QGIS 4: remove unless really necessary - let's use EPSG codes instead
+    // TODO QGIS 5: remove unless really necessary - let's use EPSG codes instead
 
     /**
      * Returns PostGIS SRID for the CRS.

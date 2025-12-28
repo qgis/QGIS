@@ -347,7 +347,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;
 
-    // TODO QGIS 4.0 -- remove
+    // TODO QGIS 5.0 -- remove
 #ifdef SIP_RUN
     % Property( name = param, get = parameterDefinition )
 #endif
@@ -417,7 +417,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
 
   signals:
 
-    // TODO QGIS 4.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
+    // TODO QGIS 5.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
     // yet can easily be retrieved by checking the sender()
 
     /**

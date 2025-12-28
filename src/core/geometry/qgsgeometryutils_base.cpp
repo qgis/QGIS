@@ -820,7 +820,7 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
 }
 
 
-double QgsGeometryUtilsBase::maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+double QgsGeometryUtilsBase::maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
     const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
     double epsilon )
 {

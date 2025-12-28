@@ -395,9 +395,6 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   if ( myFile.open( QIODevice::WriteOnly | QFile::Truncate ) )
   {
     QTextStream myFileStream( &myFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    myFileStream.setCodec( "UTF-8" );
-#endif
     myFileStream << txtPython->text() << Qt::endl;
     myFile.close();
   }

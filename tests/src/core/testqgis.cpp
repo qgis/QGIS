@@ -57,10 +57,8 @@ class TestQgis : public QgsTest
     void permissiveToLongLong();
     void doubleToString();
     void signalBlocker();
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     void qVariantOperators_data();
     void qVariantOperators();
-#endif
     void qVariantCompare_data();
     void qVariantCompare();
     void testNanCompatibleEquals_data();
@@ -266,7 +264,6 @@ void TestQgis::signalBlocker()
   QVERIFY( checkbox->signalsBlocked() );
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void TestQgis::qVariantOperators_data()
 {
   QTest::addColumn<QVariant>( "lhs" );
@@ -376,7 +373,6 @@ void TestQgis::qVariantOperators()
   QCOMPARE( lhs < rhs, lessThan );
   QCOMPARE( lhs > rhs, greaterThan );
 }
-#endif
 
 void TestQgis::qVariantCompare_data()
 {

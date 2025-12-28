@@ -63,6 +63,7 @@ class TestItem : public QgsAnnotationItem // clazy:exclude=missing-qobject-macro
     //implement pure virtual methods
     QString type() const override { return QStringLiteral( "mytype" ); }
     TestItem *clone() const override { return new TestItem(); }
+    using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override { return QgsRectangle(); }
     void render( QgsRenderContext &, QgsFeedback * ) override {}
     bool writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const override { return true; }

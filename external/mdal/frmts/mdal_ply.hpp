@@ -30,6 +30,7 @@ namespace MDAL
       bool canReadMesh( const std::string &uri ) override;
       int faceVerticesMaximumCount() const override {return 100;}
 
+      using Driver::load;
       std::unique_ptr< Mesh > load( const std::string &meshFile, const std::string &meshName = "" ) override;
       void save( const std::string &fileName, const std::string &meshName, Mesh *mesh ) override;
       bool persist( DatasetGroup *group ) override;

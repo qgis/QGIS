@@ -38,7 +38,7 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
     //! Returns field names for each sub-layer that are required for labeling
     virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext &context, int tileZoom ) const = 0;
 
-    //TODO QGIS 4.0 -- make pure virtual
+    //TODO QGIS 5.0 -- make pure virtual
 
     /**
      * Returns a list of the layers required for labeling.

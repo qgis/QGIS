@@ -93,7 +93,7 @@ void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( stDevParam.release() );
 
   // backwards compatibility parameter
-  // TODO QGIS 4: remove parameter and related logic
+  // TODO QGIS 5: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
@@ -157,8 +157,7 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
   if ( !groundOutputFile.isEmpty() )
   {
-    const QFileInfo fi( groundOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_GROUND" ), context );
 
     groundWriter = std::make_unique<QgsRasterFileWriter>( groundOutputFile );
     groundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -185,8 +184,7 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
   if ( !nonGroundOutputFile.isEmpty() )
   {
-    const QFileInfo fi( groundOutputFile );
-    const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_NONGROUND" ), context );
 
     nonGroundWriter = std::make_unique<QgsRasterFileWriter>( nonGroundOutputFile );
     nonGroundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );

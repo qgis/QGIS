@@ -452,7 +452,7 @@ void QgsTextFormatWidget::initWidget()
 
   overlapModeChanged();
 
-#if defined( HAS_KDE_QT5_FONT_STRETCH_FIX ) || ( QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 ) )
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
   // stretch is available
 #else
   mLabelStretch->hide();
@@ -724,7 +724,7 @@ void QgsTextFormatWidget::setPropertyOverrideButtonsVisible( bool visible )
   const QList<QgsPropertyOverrideButton *> buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
-#if defined( HAS_KDE_QT5_FONT_STRETCH_FIX ) || ( QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 ) )
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
     // stretch is available
 #else
     if ( button == mFontStretchDDBtn )
@@ -1647,7 +1647,7 @@ void QgsTextFormatWidget::populateFontCapitalsComboBox()
   mFontCapitalsComboBox->addItem( tr( "No Change" ), static_cast<int>( Qgis::Capitalization::MixedCase ) );
   mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), static_cast<int>( Qgis::Capitalization::AllUppercase ) );
   mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), static_cast<int>( Qgis::Capitalization::AllLowercase ) );
-#if defined( HAS_KDE_QT5_SMALL_CAPS_FIX ) || QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
   // Requires new enough build due to
   // https://bugreports.qt.io/browse/QTBUG-13965
   mFontCapitalsComboBox->addItem( tr( "Small Caps" ), static_cast<int>( Qgis::Capitalization::SmallCaps ) );

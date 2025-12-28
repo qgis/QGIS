@@ -128,6 +128,16 @@ class RegularPoints(QgisAlgorithm):
     def displayName(self):
         return self.tr("Regular points")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates a point layer with a given number of regular points, all of them within a given extent."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a point layer with a given number of regular points, all of them within a given extent."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         spacing = self.parameterAsDouble(parameters, self.SPACING, context)
         inset = self.parameterAsDouble(parameters, self.INSET, context)

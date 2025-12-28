@@ -2718,6 +2718,23 @@ static QVariant fcnStrpos( const QVariantList &values, const QgsExpressionContex
   return string.indexOf( QgsExpressionUtils::getStringValue( values.at( 1 ), parent ) ) + 1;
 }
 
+static QVariant fcnUnaccent(
+  const QVariantList &values,
+  const QgsExpressionContext *context,
+  QgsExpression *,
+  const QgsExpressionNodeFunction *node
+)
+{
+  Q_UNUSED( context )
+  Q_UNUSED( node )
+
+  if ( values.isEmpty() || values[0].isNull() )
+    return QVariant();
+
+  return QgsStringUtils::unaccent( values[0].toString() );
+}
+
+
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -6061,13 +6078,8 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
 
   if ( trimTrailingZeros )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    const QChar decimal = locale.decimalPoint();
-    const QChar zeroDigit = locale.zeroDigit();
-#else
     const QChar decimal = locale.decimalPoint().at( 0 );
     const QChar zeroDigit = locale.zeroDigit().at( 0 );
-#endif
 
     if ( res.contains( decimal ) )
     {
@@ -6108,15 +6120,15 @@ static QVariant fcnColorGrayscaleAverage( const QVariantList &values, const QgsE
   if ( !color.isValid() )
     return QVariant();
 
-  const float alpha = color.alphaF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  const float alpha = color.alphaF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   if ( color.spec() == QColor::Spec::Cmyk )
   {
-    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    const float avg = ( color.cyanF() + color.magentaF() + color.yellowF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
     color = QColor::fromCmykF( avg, avg, avg, color.blackF(), alpha );
   }
   else
   {
-    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    const float avg = ( color.redF() + color.greenF() + color.blueF() ) / 3; // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
     color.setRgbF( avg, avg, avg, alpha );
   }
 
@@ -6175,7 +6187,7 @@ static QVariant fcnColorMix( const QVariantList &values, const QgsExpressionCont
 
   const float ratio = static_cast<float>( std::clamp( QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0., 1. ) );
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
 
   QColor newColor;
@@ -8811,6 +8823,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "trim" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTrim, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "unaccent" ), { QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) }, fcnUnaccent, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ltrim" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "characters" ), true, QStringLiteral( " " ) ), fcnLTrim, QStringLiteral( "String" ) )
@@ -10216,3 +10229,4 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }
+

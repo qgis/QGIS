@@ -15,6 +15,8 @@
 
 #include "qgspointcloudlayerchunkloader_p.h"
 
+#include <memory>
+
 #include "qgs3dutils.h"
 #include "qgsbox3d.h"
 #include "qgschunknode.h"
@@ -30,20 +32,14 @@
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
 
+#include <QPointSize>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
 #include <QtConcurrent>
 
 #include "moc_qgspointcloudlayerchunkloader_p.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#else
-#include <Qt3DCore/QAttribute>
-#endif
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <QPointSize>
-#include <memory>
 
 ///@cond PRIVATE
 
@@ -237,7 +233,7 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
       continue;
     const QgsPointCloudNode childNode = mPointCloudIndex.getNode( childPcId );
     const QgsBox3D childBounds = childNode.bounds();
-    if ( !mExtent.isEmpty() && !childBounds.intersects( mExtent ) )
+    if ( !mExtent.isEmpty() && !childBounds.toRectangle().intersects( mExtent ) )
       continue;
 
     QgsBox3D childBox3D = nodeBoundsToBox3D( childBounds, mCoordinateTransform, mZValueOffset, mZValueScale );

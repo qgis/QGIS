@@ -1424,9 +1424,6 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
   {
     QString configurationsString;
     QTextStream ts( &configurationsString );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    ts.setCodec( "UTF-8" );
-#endif
     configurations.save( ts, 2 );
     root.appendChild( document.createTextNode( QgsAuthCrypto::encrypt( password, civ, configurationsString ) ) );
   }

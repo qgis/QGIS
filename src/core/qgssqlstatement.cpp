@@ -229,6 +229,7 @@ class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
      */
     QgsSQLStatementCollectTableNames() = default;
 
+    using QgsSQLStatement::RecursiveVisitor::visit;
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;
     void visit( const QgsSQLStatement::NodeTableDef &n ) override;
 

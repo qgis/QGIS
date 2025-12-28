@@ -39,7 +39,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
 
   if ( str.contains( ',' ) )
   {
-    // TODO QGIS 4 : remove this if branch, keep only else part
+    // TODO QGIS 5 : remove this if branch, keep only else part
     Q_NOWARN_DEPRECATED_PUSH
 
     // old masked symbol layer format (before 3.30), we use unique id now!

@@ -207,7 +207,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
   const QgsTextFormat format = settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
 
-  // TODO QGIS 4.0 -- make these all mandatory
+  // TODO QGIS 5.0 -- make these all mandatory
   std::optional< QgsTextDocument > tempDocument;
   const QgsTextDocument *document = ctx ? ctx->textDocument : nullptr;
   if ( !document )
@@ -674,7 +674,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
@@ -770,7 +770,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     Q_NOWARN_DEPRECATED_PUSH
-    // QGIS 4.0 -- ctx->context will be mandatory
+    // QGIS 5.0 -- ctx->context will be mandatory
     const bool forceVector = ctx->context ? ctx->context->rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector : !settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
 
@@ -854,7 +854,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
 
 
   QgsRenderContext ctx;
-  // QGIS 4.0 - use render context directly here, and note in the dox that the context must be correctly setup
+  // QGIS 5.0 - use render context directly here, and note in the dox that the context must be correctly setup
   Q_NOWARN_DEPRECATED_PUSH
   ctx.setScaleFactor( settings.dpi() / 25.4 );
   ctx.setRendererScale( settings.mapScale() );
@@ -1531,7 +1531,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );

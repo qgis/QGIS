@@ -201,7 +201,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) final;
 
     /**
-     * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
+     * Adds datasets to the mesh from file with \a path. Use the time \a defaultReferenceTime as reference time is not provided in the file
      *
      * \param path the path to the datasets file
      * \param defaultReferenceTime reference time used if not provided in the file

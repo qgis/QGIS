@@ -237,7 +237,7 @@ class CORE_EXPORT QgsGeometry
      * Sets the underlying geometry store. Ownership of geometry is transferred.
      *
      * \note In QGIS 2.x this method was named setGeometry().
-     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 5.
      *       Using this method will confuse Python's memory management and type information system.
      *       Better create a new QgsGeometry object instead.
      *
@@ -433,7 +433,7 @@ class CORE_EXPORT QgsGeometry
      * Compares the geometry with another geometry using GEOS.
      *
      * This method performs a slow, topological check, where geometries
-     * are considered equal if all of the their component edges overlap. E.g.
+     * are considered equal if all of their component edges overlap. E.g.
      * lines with the same vertex locations but opposite direction will be
      * considered equal by this method.
      *
@@ -517,7 +517,7 @@ class CORE_EXPORT QgsGeometry
 
 #ifndef SIP_RUN
 
-    // TODO QGIS 4: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
+    // TODO QGIS 5: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
     // to camelCase
 
     /**
@@ -941,7 +941,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY ) SIP_DEPRECATED;
 
@@ -959,7 +959,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints ) SIP_DEPRECATED;
 
@@ -977,7 +977,7 @@ class CORE_EXPORT QgsGeometry
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_DEPRECATED;
 
@@ -1052,7 +1052,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 
@@ -1082,8 +1082,8 @@ class CORE_EXPORT QgsGeometry
 
     /*
      This SIP code is to support overloaded methods of splitGeometry.
-     When the deprecated method is removed in QGIS 4.0 this code can be dropped
-     TODO QGIS 4 remove MethodCode
+     When the deprecated method is removed in QGIS 5.0 this code can be dropped
+     TODO QGIS 5 remove MethodCode
     */
 #ifdef SIP_RUN
 

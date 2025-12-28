@@ -138,7 +138,7 @@ bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeNa
 
 void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariantList &additionalValues )
 {
-  // this method should be made pure virtual in QGIS 4
+  // this method should be made pure virtual in QGIS 5
   Q_UNUSED( additionalValues );
   Q_NOWARN_DEPRECATED_PUSH
   // avoid infinite recursive loop

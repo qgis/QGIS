@@ -15,39 +15,24 @@
 
 #include "qgspostprocessingentity.h"
 
-#include "moc_qgspostprocessingentity.cpp"
+#include "qgs3dutils.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgsdirectionallightsettings.h"
+#include "qgsforwardrenderview.h"
+#include "qgsframegraph.h"
+#include "qgsshadowrenderview.h"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
+#include <QUrl>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
+#include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QDepthTest>
-#include <QUrl>
 
-#include "qgs3dutils.h"
-#include "qgsdirectionallightsettings.h"
-#include "qgsframegraph.h"
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
-#include "qgsambientocclusionrenderview.h"
+#include "moc_qgspostprocessingentity.cpp"
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )

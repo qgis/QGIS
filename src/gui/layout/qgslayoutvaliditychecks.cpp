@@ -16,16 +16,14 @@
 
 #include "qgslayoutvaliditychecks.h"
 
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemscalebar.h"
+#include "qgslayoutmultiframe.h"
+#include "qgssettings.h"
 #include "qgsvaliditycheckcontext.h"
 
-#ifndef WITH_QTWEBKIT
-#include "qgslayoutmultiframe.h"
-#endif
-#include "qgslayout.h"
-#include "qgssettings.h"
 #include <QUrl>
 
 //
@@ -248,7 +246,6 @@ QList<QgsValidityCheckResult> QgsLayoutPictureSourceValidityCheck::runCheck( con
   return mResults;
 }
 
-#ifndef WITH_QTWEBKIT
 //
 // QgsLayoutHtmlItemValidityCheck
 //
@@ -298,4 +295,3 @@ QList<QgsValidityCheckResult> QgsLayoutHtmlItemValidityCheck::runCheck( const Qg
 {
   return mResults;
 }
-#endif

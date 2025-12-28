@@ -18,29 +18,14 @@
 #include "qgs3dutils.h"
 #include "qgscolorutils.h"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
+#include <QMap>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-#include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
-#include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
-#include <QMap>
-
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
 
 QString QgsPhongMaterialSettings::type() const
 {
@@ -210,41 +195,41 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
 
 int QgsPhongMaterialSettings::dataDefinedByteStride() const { return 9 * sizeof( unsigned char ); }
 
-void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geometry, int vertexCount, const QByteArray &data ) const
+void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
-  Qt3DQBuffer *dataBuffer = new Qt3DQBuffer( geometry );
+  Qt3DCore::QBuffer *dataBuffer = new Qt3DCore::QBuffer( geometry );
 
   // use floats if we are adjusting color component strength, bytes don't
   // give us enough precision
   const bool useFloats = mDiffuseCoefficient < 1 || mAmbientCoefficient < 1 || mSpecularCoefficient < 1;
 
-  Qt3DQAttribute *diffuseAttribute = new Qt3DQAttribute( geometry );
+  Qt3DCore::QAttribute *diffuseAttribute = new Qt3DCore::QAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );
-  diffuseAttribute->setVertexBaseType( useFloats ? Qt3DQAttribute::Float : Qt3DQAttribute::UnsignedByte );
+  diffuseAttribute->setVertexBaseType( useFloats ? Qt3DCore::QAttribute::Float : Qt3DCore::QAttribute::UnsignedByte );
   diffuseAttribute->setVertexSize( 3 );
-  diffuseAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  diffuseAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   diffuseAttribute->setBuffer( dataBuffer );
   diffuseAttribute->setByteStride( 9 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   diffuseAttribute->setByteOffset( 0 );
   diffuseAttribute->setCount( vertexCount );
   geometry->addAttribute( diffuseAttribute );
 
-  Qt3DQAttribute *ambientAttribute = new Qt3DQAttribute( geometry );
+  Qt3DCore::QAttribute *ambientAttribute = new Qt3DCore::QAttribute( geometry );
   ambientAttribute->setName( QStringLiteral( "dataDefinedAmbiantColor" ) );
-  ambientAttribute->setVertexBaseType( useFloats ? Qt3DQAttribute::Float : Qt3DQAttribute::UnsignedByte );
+  ambientAttribute->setVertexBaseType( useFloats ? Qt3DCore::QAttribute::Float : Qt3DCore::QAttribute::UnsignedByte );
   ambientAttribute->setVertexSize( 3 );
-  ambientAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  ambientAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   ambientAttribute->setBuffer( dataBuffer );
   ambientAttribute->setByteStride( 9 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   ambientAttribute->setByteOffset( 3 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   ambientAttribute->setCount( vertexCount );
   geometry->addAttribute( ambientAttribute );
 
-  Qt3DQAttribute *specularAttribute = new Qt3DQAttribute( geometry );
+  Qt3DCore::QAttribute *specularAttribute = new Qt3DCore::QAttribute( geometry );
   specularAttribute->setName( QStringLiteral( "dataDefinedSpecularColor" ) );
-  specularAttribute->setVertexBaseType( useFloats ? Qt3DQAttribute::Float : Qt3DQAttribute::UnsignedByte );
+  specularAttribute->setVertexBaseType( useFloats ? Qt3DCore::QAttribute::Float : Qt3DCore::QAttribute::UnsignedByte );
   specularAttribute->setVertexSize( 3 );
-  specularAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  specularAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   specularAttribute->setBuffer( dataBuffer );
   specularAttribute->setByteStride( 9 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   specularAttribute->setByteOffset( 6 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );

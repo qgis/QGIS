@@ -88,7 +88,9 @@ approximation of the curve.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+
     virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+
 
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
 

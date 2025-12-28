@@ -814,7 +814,7 @@ void QgsPropertyOverrideButton::updateGui()
   }
   else if ( !mFullDescription.isEmpty() )
   {
-    mFullDescription += QStringLiteral( "<br>" );
+    mFullDescription += QLatin1String( "<br>" );
   }
 
   mFullDescription += tr( "<b>Data defined override</b><br>" );

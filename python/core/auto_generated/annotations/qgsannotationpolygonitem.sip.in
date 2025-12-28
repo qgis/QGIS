@@ -54,6 +54,7 @@ Creates a new polygon annotation item.
 
     virtual QgsAnnotationPolygonItem *clone() const /Factory/;
 
+
     virtual QgsRectangle boundingBox() const;
 
 

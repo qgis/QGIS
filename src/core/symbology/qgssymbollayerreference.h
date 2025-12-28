@@ -26,7 +26,7 @@
 
 class QgsVectorLayer;
 
-// TODO QGIS 4 : Remove class QgsSymbolLayerId
+// TODO QGIS 5 : Remove class QgsSymbolLayerId
 
 /**
  * We may need stable references to symbol layers, when pointers to symbol layers are not usable
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSymbolLayerReference
   private:
     QString mLayerId;
 
-    // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
+    // TODO QGIS 5 : remove mDeprecatedSymbolLayerId
     QgsSymbolLayerId mDeprecatedSymbolLayerId;
 
     QString mSymbolLayerId;

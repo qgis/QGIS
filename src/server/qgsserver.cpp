@@ -413,7 +413,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     // Set the request handler into the interface for plugins to manipulate it
     sServerInterface->setRequestHandler( &requestHandler );
 
-    // Initialize configfilepath so that is is available
+    // Initialize configfilepath so that it is available
     // before calling plugin methods
     // Note that plugins may still change that value using
     // setConfigFilePath() interface method
@@ -482,7 +482,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // lists the available projects metadata).
 
         // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
-        // TODO: QGIS 4 fix the OWS services and treat them as APIs
+        // TODO: QGIS 5 fix the OWS services and treat them as APIs
         if ( !response.feedback() || !response.feedback()->isCanceled() )
         {
           if ( params.service().isEmpty() )

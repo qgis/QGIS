@@ -104,13 +104,8 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    if ( metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString().rightRef( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
-         || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
-#else
     if ( QStringView { metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString() }.right( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
-#endif
     {
       x = -x;
     }
@@ -128,13 +123,8 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    if ( metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString().rightRef( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
-         || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
-#else
     if ( QStringView { metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString() }.right( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
-#endif
     {
       y = -y;
     }

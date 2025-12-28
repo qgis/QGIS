@@ -101,6 +101,14 @@ class SelectByExpression(QgisAlgorithm):
             "Selects features from a vector layer based on a QGIS expression."
         )
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a selection in a vector layer. "
+            "The criteria for selecting features is based on a QGIS expression.\n"
+            "For help with QGIS expression functions, see the inbuilt help "
+            "for specific functions which is available in the expression builder."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 

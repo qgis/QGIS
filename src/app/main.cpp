@@ -401,7 +401,7 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
        *  we have no control over and have low value anyway);
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
-      // TODO QGIS 4 reevaluate whether all these are still required on qt 6
+      // TODO QGIS 5 reevaluate whether all these are still required on qt 6
       if ( msg.contains( QLatin1String( "QXcbClipboard" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "QGestureManager::deliverEvent" ), Qt::CaseInsensitive ) || msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "OpenType support missing for" ), Qt::CaseInsensitive ) ||
 
            // warnings triggered by Wayland limitations, not our responsibility or anything we can fix
@@ -550,11 +550,6 @@ int main( int argc, char *argv[] )
 #ifdef HAVE_CRASH_HANDLER
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  // initialize random number seed - not required for Qt 6
-  qsrand( time( nullptr ) );
 #endif
 
   /////////////////////////////////////////////////////////////////
@@ -933,14 +928,6 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
-// Set up for high displays
-// The following values are set by default in Qt6
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling, true );
-  QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
-  QGuiApplication::setHighDpiScaleFactorRoundingPolicy( Qt::HighDpiScaleFactorRoundingPolicy::PassThrough );
-#endif
-
   // GUI customization is enabled according to settings (loaded when instance is created)
   // we force disabled here if --nocustomization argument is used
   if ( !myCustomization )
@@ -952,11 +939,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
-
-  // this is implicit in Qt 6 now
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
-#endif
 
   // Initialize the default surface format for all
   // QWindow and QWindow derived components

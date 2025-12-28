@@ -15,33 +15,6 @@
 
 #include "qgsglobechunkedentity.h"
 
-#include <QByteArray>
-#include <QImage>
-
-#include "moc_qgsglobechunkedentity.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QTextureImage>
 #include <memory>
 
 #include "qgs3dmapsettings.h"
@@ -55,9 +28,20 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
-#include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintextureimage_p.h"
 
+#include <QByteArray>
+#include <QImage>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QGeometry>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QTextureImage>
+
+#include "moc_qgsglobechunkedentity.cpp"
 
 ///@cond PRIVATE
 
@@ -145,48 +129,48 @@ static Qt3DCore::QEntity *makeGlobeMesh( double lonMin, double lonMax, double la
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-  Qt3DQBuffer *vertexBuffer = new Qt3DQBuffer( entity );
+  Qt3DCore::QBuffer *vertexBuffer = new Qt3DCore::QBuffer( entity );
   vertexBuffer->setData( bufferBytes );
 
-  Qt3DQBuffer *indexBuffer = new Qt3DQBuffer( entity );
+  Qt3DCore::QBuffer *indexBuffer = new Qt3DCore::QBuffer( entity );
   indexBuffer->setData( indexBytes );
 
-  Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( entity );
-  positionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-  positionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  Qt3DCore::QAttribute *positionAttribute = new Qt3DCore::QAttribute( entity );
+  positionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  positionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   positionAttribute->setVertexSize( 3 );
-  positionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  positionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   positionAttribute->setBuffer( vertexBuffer );
   positionAttribute->setByteStride( stride );
   positionAttribute->setCount( pointCount );
 
-  Qt3DQAttribute *texCoordAttribute = new Qt3DQAttribute( entity );
-  texCoordAttribute->setName( Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
-  texCoordAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  Qt3DCore::QAttribute *texCoordAttribute = new Qt3DCore::QAttribute( entity );
+  texCoordAttribute->setName( Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
+  texCoordAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   texCoordAttribute->setVertexSize( 2 );
-  texCoordAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  texCoordAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   texCoordAttribute->setBuffer( vertexBuffer );
   texCoordAttribute->setByteStride( stride );
   texCoordAttribute->setByteOffset( 3 * sizeof( float ) );
   texCoordAttribute->setCount( pointCount );
 
-  Qt3DQAttribute *normalAttribute = new Qt3DQAttribute( entity );
-  normalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
-  normalAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  Qt3DCore::QAttribute *normalAttribute = new Qt3DCore::QAttribute( entity );
+  normalAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+  normalAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   normalAttribute->setVertexSize( 3 );
-  normalAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  normalAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   normalAttribute->setBuffer( vertexBuffer );
   normalAttribute->setByteStride( stride );
   normalAttribute->setByteOffset( 5 * sizeof( float ) );
   normalAttribute->setCount( pointCount );
 
-  Qt3DQAttribute *indexAttribute = new Qt3DQAttribute( entity );
-  indexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
-  indexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedShort );
+  Qt3DCore::QAttribute *indexAttribute = new Qt3DCore::QAttribute( entity );
+  indexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+  indexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedShort );
   indexAttribute->setBuffer( indexBuffer );
   indexAttribute->setCount( faces * 3 );
 
-  Qt3DQGeometry *geometry = new Qt3DQGeometry( entity );
+  Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry( entity );
   geometry->addAttribute( positionAttribute );
   geometry->addAttribute( texCoordAttribute );
   geometry->addAttribute( normalAttribute );

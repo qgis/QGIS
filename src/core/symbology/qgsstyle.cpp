@@ -260,9 +260,6 @@ bool QgsStyle::saveSymbol( const QString &name, const QgsSymbol *symbol, bool fa
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   symEl.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO symbol VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -472,9 +469,6 @@ bool QgsStyle::saveColorRamp( const QString &name, const QgsColorRamp *ramp, boo
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   rampEl.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO colorramp VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -992,9 +986,6 @@ bool QgsStyle::saveTextFormat( const QString &name, const QgsTextFormat &format,
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   formatElem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO textformat VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );

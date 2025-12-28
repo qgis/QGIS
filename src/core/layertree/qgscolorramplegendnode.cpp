@@ -207,7 +207,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
@@ -407,7 +407,7 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );

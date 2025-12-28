@@ -670,10 +670,6 @@ bool QgsCodeEditor::readHistoryFile()
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    // Always use UTF-8
-    stream.setCodec( "UTF-8" );
-#endif
     QString line;
     while ( !stream.atEnd() )
     {
@@ -1049,9 +1045,6 @@ bool QgsCodeEditor::writeHistoryFile()
   }
 
   QTextStream ts( &f );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  ts.setCodec( "UTF-8" );
-#endif
   for ( const QString &command : std::as_const( mHistory ) )
   {
     ts << command + '\n';

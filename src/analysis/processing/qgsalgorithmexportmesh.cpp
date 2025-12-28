@@ -779,7 +779,7 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
   // backwards compatibility parameter
-  // TODO QGIS 4: remove parameter and related logic
+  // TODO QGIS 5: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
@@ -866,8 +866,7 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     creationOptions = optionsString;
 
   const QString fileName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fileInfo( fileName );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fileInfo.suffix() );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
   QgsRasterFileWriter rasterFileWriter( fileName );
   rasterFileWriter.setOutputProviderKey( QStringLiteral( "gdal" ) );
   if ( !creationOptions.isEmpty() )
@@ -1372,9 +1371,6 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( QObject::tr( "Unable to create the output file" ) );
 
   QTextStream textStream( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  textStream.setCodec( "UTF-8" );
-#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "offset" );
   for ( const DataGroup &datagroup : std::as_const( mDataPerGroup ) )
@@ -1699,9 +1695,6 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
     throw QgsProcessingException( QObject::tr( "Unable to create the output file" ) );
 
   QTextStream textStream( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  textStream.setCodec( "UTF-8" );
-#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "time" );
 

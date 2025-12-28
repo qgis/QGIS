@@ -63,7 +63,7 @@ QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 
   if ( !renderContext )
   {
-    // QGIS 4.0 - make render context mandatory
+    // QGIS 5.0 - make render context mandatory
     Q_NOWARN_DEPRECATED_PUSH
     tmpContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( nullptr ) );
     tmpContext->setRendererScale( mSettings.mapScale() );

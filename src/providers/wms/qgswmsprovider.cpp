@@ -3437,9 +3437,6 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, Qgis:
         dom.setContent( gmlByteArray ); // gets XML encoding
         gmlByteArray.clear();
         QTextStream stream( &gmlByteArray );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-        stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
-#endif
         dom.save( stream, 4, QDomNode::EncodingFromTextStream );
 
         QgsDebugMsgLevel( "GML UTF-8 (first 2000 bytes):\n" + gmlByteArray.left( 2000 ), 2 );

@@ -13,33 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Qt3DCore/QAspectEngine>
-
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DCore/QCoreAspect>
-#endif
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DInput/QInputSettings>
-#include <Qt3DLogic/QLogicAspect>
-#include <Qt3DLogic/QFrameAction>
+#include "qgs3dmapcanvas.h"
 
 #include "qgs3daxis.h"
-#include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
-#include "qgswindow3dengine.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
-#include "qgstemporalcontroller.h"
+#include "qgs3dutils.h"
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
-#include "qgsrubberband3d.h"
-#include "qgs3dutils.h"
 #include "qgsraycastcontext.h"
+#include "qgsrubberband3d.h"
+#include "qgstemporalcontroller.h"
+#include "qgswindow3dengine.h"
+
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/QCoreAspect>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/QInputSettings>
+#include <Qt3DLogic/QFrameAction>
+#include <Qt3DLogic/QLogicAspect>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderSettings>
 
 #include "moc_qgs3dmapcanvas.cpp"
-
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -54,9 +51,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   setSurfaceType( QSurface::OpenGLSurface );
 
   // register aspects
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
-#endif
   m_aspectEngine->registerAspect( m_renderAspect );
   m_aspectEngine->registerAspect( m_inputAspect );
   m_aspectEngine->registerAspect( m_logicAspect );

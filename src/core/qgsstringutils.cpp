@@ -24,6 +24,48 @@
 #include <QTextBoundaryFinder>
 #include <QVector>
 
+QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
+
+QString QgsStringUtils::unaccent( const QString &input )
+{
+  // Normalize input to NFC so that Unicode characters composed of base +
+  // combining marks are converted to their canonical composed form.
+  // This ensures lookups match the keys in UNACCENT_MAP, which are stored
+  // in NFC (e.g. "e" + U+0301 becomes "é", as PostgreSQL does it.).
+  const QString in = input.normalized( QString::NormalizationForm_C );
+  QString out;
+  out.reserve( in.size() );
+
+  qsizetype i = 0;
+  const qsizetype n = in.size();
+
+  while ( i < n )
+  {
+    const QChar c = in.at( i );
+    int len = 1;
+
+    // Detect surrogate pair (non-BMP)
+    if ( c.isHighSurrogate() && i + 1 < n )
+    {
+      const QChar c2 = in.at( i + 1 );
+      if ( c2.isLowSurrogate() )
+        len = 2;
+    }
+
+    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
+
+    auto it = UNACCENT_MAP.constFind( key );
+    if ( it != UNACCENT_MAP.constEnd() )
+      out.append( it.value() );
+    else
+      out.append( key );
+
+    i += len;
+  }
+
+  return out;
+}
+
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {
   if ( string.isEmpty() )
@@ -741,11 +783,7 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
   if ( truncateFrom <= 0 )
     return QChar( 0x2026 );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  return string.leftRef( truncateFrom ) + QString( QChar( 0x2026 ) ) + string.midRef( truncateFrom + charactersToTruncate + 1 );
-#else
   return QStringView( string ).first( truncateFrom ) + QString( QChar( 0x2026 ) ) + QStringView( string ).sliced( truncateFrom + charactersToTruncate + 1 );
-#endif
 }
 
 bool QgsStringUtils::containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity )

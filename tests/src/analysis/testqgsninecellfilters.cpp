@@ -212,8 +212,7 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAl
     const int y = cp.second;
     const double outVal = out.identify( x, y );
     const double refVal = ref.identify( x, y );
-    const double diff( qAbs( outVal - refVal ) );
-    QVERIFY( diff <= tolerance );
+    QGSCOMPARENEAR( outVal, refVal, tolerance );
   }
 }
 

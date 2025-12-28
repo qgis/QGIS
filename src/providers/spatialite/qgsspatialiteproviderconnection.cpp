@@ -37,7 +37,7 @@ QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString 
 {
   mProviderKey = QStringLiteral( "spatialite" );
   setDefaultCapabilities();
-  // TODO: QGIS 4: move into QgsSettings::Section::Providers group
+  // TODO: QGIS 5: move into QgsSettings::Section::Providers group
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "SpatiaLite" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
@@ -60,7 +60,7 @@ QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString 
 
 void QgsSpatiaLiteProviderConnection::store( const QString &name ) const
 {
-  // TODO: QGIS 4: move into QgsSettings::Section::Providers group
+  // TODO: QGIS 5: move into QgsSettings::Section::Providers group
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "SpatiaLite" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
@@ -70,7 +70,7 @@ void QgsSpatiaLiteProviderConnection::store( const QString &name ) const
 
 void QgsSpatiaLiteProviderConnection::remove( const QString &name ) const
 {
-  // TODO: QGIS 4: move into QgsSettings::Section::Providers group
+  // TODO: QGIS 5: move into QgsSettings::Section::Providers group
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "SpatiaLite" ) );
   settings.beginGroup( QStringLiteral( "connections" ) );
