@@ -854,7 +854,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         # For compatibility with 3.x API, we need to check whether the wrapper is
         # the deprecated WidgetWrapper class. If not, it's the newer
         # QgsAbstractProcessingParameterWidgetWrapper class
-        # TODO QGIS 4.0 - remove
+        # TODO QGIS 5.0 - remove
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
             widget = wrapper.createWrappedWidget(context)
