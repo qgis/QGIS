@@ -26,10 +26,6 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-
 QString QgsSimpleLineMaterialSettings::type() const
 {
   return QStringLiteral( "simpleline" );
@@ -146,15 +142,15 @@ QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const Q
   return array;
 }
 
-void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geometry, int vertexCount, const QByteArray &data ) const
+void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
-  Qt3DQBuffer *dataBuffer = new Qt3DQBuffer( geometry );
+  Qt3DCore::QBuffer *dataBuffer = new Qt3DCore::QBuffer( geometry );
 
-  Qt3DQAttribute *colorAttribute = new Qt3DQAttribute( geometry );
+  Qt3DCore::QAttribute *colorAttribute = new Qt3DCore::QAttribute( geometry );
   colorAttribute->setName( QStringLiteral( "dataDefinedColor" ) );
-  colorAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedByte );
+  colorAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedByte );
   colorAttribute->setVertexSize( 3 );
-  colorAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  colorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   colorAttribute->setBuffer( dataBuffer );
   colorAttribute->setByteStride( 3 * sizeof( unsigned char ) );
   colorAttribute->setByteOffset( 0 );

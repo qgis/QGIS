@@ -15,19 +15,15 @@
 
 #include "qgs3dexportobject.h"
 
+#include "qgsabstractmaterialsettings.h"
+#include "qgslogger.h"
+
 #include <QDir>
 #include <QImage>
 #include <QMatrix4x4>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-
-#include "qgslogger.h"
-#include "qgsabstractmaterialsettings.h"
-
 
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
