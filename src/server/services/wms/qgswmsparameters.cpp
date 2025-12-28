@@ -564,7 +564,7 @@ namespace QgsWms
 
   void QgsWmsParameters::dump() const
   {
-    log( u"WMS Request parameters:"_s );
+    ( void ) log( u"WMS Request parameters:"_s );
     for ( auto it = mWmsParameters.constBegin(); it != mWmsParameters.constEnd(); ++it )
     {
       const QString value = it->toString();
