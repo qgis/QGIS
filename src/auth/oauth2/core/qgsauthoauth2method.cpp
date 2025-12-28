@@ -127,9 +127,9 @@ QgsO2 *QgsOAuth2Factory::createO2Private( const QString &authcfg, QgsAuthOAuth2C
 QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 {
   setVersion( 1 );
-  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::NetworkReply );
+  setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::NetworkReply | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
-                                  << u"wcs"_s << u"wms"_s );
+                                  << u"wcs"_s << u"wms"_s << u"postgres"_s );
 
   const QStringList cachedirpaths = QStringList()
                                     << QgsAuthOAuth2Config::tokenCacheDirectory()
@@ -336,57 +336,66 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   QUrl url = request.url();
   QUrlQuery query( url );
 
-  switch ( accessmethod )
+  if ( dataprovider == "postgres"_L1 )
   {
-    case QgsAuthOAuth2Config::AccessMethod::Header:
+    // allow easy token "exfiltration" via QNetworkRequest, so that we can do without
+    // a postgres/oauth-specific update* method
+    request.setRawHeader( "Token"_ba, o2->token().toLatin1() );
+  }
+  else
+  {
+    switch ( accessmethod )
     {
-      const QString header = o2->oauth2config()->customHeader().isEmpty() ? QString( O2_HTTP_AUTHORIZATION_HEADER ) : o2->oauth2config()->customHeader();
-      request.setRawHeader( header.toLatin1(), u"Bearer %1"_s.arg( o2->token() ).toLatin1() );
-
-      const QVariantMap extraTokens = o2->oauth2config()->extraTokens();
-      if ( !extraTokens.isEmpty() )
+      case QgsAuthOAuth2Config::AccessMethod::Header:
       {
-        const QVariantMap receivedExtraTokens = o2->extraTokens();
-        const QStringList extraTokenNames = extraTokens.keys();
-        for ( const QString &extraTokenName : extraTokenNames )
+        const QString header = o2->oauth2config()->customHeader().isEmpty() ? QString( O2_HTTP_AUTHORIZATION_HEADER ) : o2->oauth2config()->customHeader();
+        request.setRawHeader( header.toLatin1(), u"Bearer %1"_s.arg( o2->token() ).toLatin1() );
+
+        const QVariantMap extraTokens = o2->oauth2config()->extraTokens();
+        if ( !extraTokens.isEmpty() )
         {
-          if ( receivedExtraTokens.contains( extraTokenName ) )
+          const QVariantMap receivedExtraTokens = o2->extraTokens();
+          const QStringList extraTokenNames = extraTokens.keys();
+          for ( const QString &extraTokenName : extraTokenNames )
           {
-            request.setRawHeader( extraTokens[extraTokenName].toString().replace( '_', '-' ).toLatin1(), receivedExtraTokens[extraTokenName].toString().toLatin1() );
+            if ( receivedExtraTokens.contains( extraTokenName ) )
+            {
+              request.setRawHeader( extraTokens[extraTokenName].toString().replace( '_', '-' ).toLatin1(), receivedExtraTokens[extraTokenName].toString().toLatin1() );
+            }
           }
         }
-      }
 
 #ifdef QGISDEBUG
-      msg = u"Updated request HEADER with access token for authcfg: %1"_s.arg( authcfg );
-      QgsDebugMsgLevel( msg, 2 );
+        msg = u"Updated request HEADER with access token for authcfg: %1"_s.arg( authcfg );
+        QgsDebugMsgLevel( msg, 2 );
 #endif
-      break;
+        break;
+      }
+      case QgsAuthOAuth2Config::AccessMethod::Form:
+        // FIXME: what to do here if the parent request is not POST?
+        //        probably have to skip this until auth system support is moved into QgsNetworkAccessManager
+        msg = u"Update request FAILED for authcfg %1: form POST token update is unsupported"_s.arg( authcfg );
+        QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+        break;
+      case QgsAuthOAuth2Config::AccessMethod::Query:
+        if ( !query.hasQueryItem( O2_OAUTH2_ACCESS_TOKEN ) )
+        {
+          query.addQueryItem( O2_OAUTH2_ACCESS_TOKEN, o2->token() );
+          url.setQuery( query );
+          request.setUrl( url );
+#ifdef QGISDEBUG
+          msg = u"Updated request QUERY with access token for authcfg: %1"_s.arg( authcfg );
+#endif
+        }
+        else
+        {
+#ifdef QGISDEBUG
+          msg = u"Updated request QUERY with access token SKIPPED (existing token) for authcfg: %1"_s.arg( authcfg );
+#endif
+        }
+        QgsDebugMsgLevel( msg, 2 );
+        break;
     }
-    case QgsAuthOAuth2Config::AccessMethod::Form:
-      // FIXME: what to do here if the parent request is not POST?
-      //        probably have to skip this until auth system support is moved into QgsNetworkAccessManager
-      msg = u"Update request FAILED for authcfg %1: form POST token update is unsupported"_s.arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
-      break;
-    case QgsAuthOAuth2Config::AccessMethod::Query:
-      if ( !query.hasQueryItem( O2_OAUTH2_ACCESS_TOKEN ) )
-      {
-        query.addQueryItem( O2_OAUTH2_ACCESS_TOKEN, o2->token() );
-        url.setQuery( query );
-        request.setUrl( url );
-#ifdef QGISDEBUG
-        msg = u"Updated request QUERY with access token for authcfg: %1"_s.arg( authcfg );
-#endif
-      }
-      else
-      {
-#ifdef QGISDEBUG
-        msg = u"Updated request QUERY with access token SKIPPED (existing token) for authcfg: %1"_s.arg( authcfg );
-#endif
-      }
-      QgsDebugMsgLevel( msg, 2 );
-      break;
   }
 
   return true;
@@ -588,9 +597,22 @@ void QgsAuthOAuth2Method::onAuthCode()
 
 bool QgsAuthOAuth2Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider )
 {
-  Q_UNUSED( connectionItems )
-  Q_UNUSED( authcfg )
-  Q_UNUSED( dataprovider )
+  if ( dataprovider == "postgres"_L1 )
+  {
+    QgsAuthOAuth2Config *config = getOAuth2Bundle( authcfg, true )->oauth2config();
+
+    connectionItems << u"oauth_issuer=%1"_s.arg( QUrl( config->requestUrl() ).toString( QUrl::RemovePath ) )
+                    << u"oauth_client_id=%1"_s.arg( config->clientId() );
+
+    if ( !config->clientSecret().isEmpty() )
+    {
+      connectionItems << u"oauth_client_secret=%1"_s.arg( config->clientSecret() );
+    }
+    if ( !config->scope().isEmpty() )
+    {
+      connectionItems << u"oauth_scope=%1"_s.arg( config->scope().replace( ' '_L1, u"%20"_s ) );
+    }
+  }
 
   return true;
 }
