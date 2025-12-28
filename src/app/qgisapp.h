@@ -2569,6 +2569,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Keep track of whether ongoing dataset(s) is/are being dropped through the table of contents
     bool mLayerTreeDrop = false;
 
+    bool mInitializationHasCompleted = false;
+    QStringList mDeferredFileOpenPaths;
+
     //! Helper class that connects layer tree with map canvas
     QgsLayerTreeMapCanvasBridge *mLayerTreeCanvasBridge = nullptr;
     //! Table of contents (legend) to order layers of the map
