@@ -14962,7 +14962,7 @@ QgsRasterIterator.input: src/core/raster/qgsrasteriterator.h#L174
 QgsRasterIterator.maximumTileHeight: src/core/raster/qgsrasteriterator.h#L202
 QgsRasterIterator.maximumTileWidth: src/core/raster/qgsrasteriterator.h#L188
 QgsRasterIterator.next: src/core/raster/qgsrasteriterator.h#L124
-QgsRasterIterator.progress: src/core/raster/qgsrasteriterator.h#L236
+QgsRasterIterator.progress: src/core/raster/qgsrasteriterator.h#L239
 QgsRasterIterator.readNextRasterPart: src/core/raster/qgsrasteriterator.h#L137
 QgsRasterIterator.readNextRasterPart: src/core/raster/qgsrasteriterator.h#L159
 QgsRasterIterator.setMaximumTileHeight: src/core/raster/qgsrasteriterator.h#L195
