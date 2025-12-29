@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/geometry/qgsnurbscurve.h
+try:
+    QgsNurbsCurve.__overridden_methods__ = ['clone', 'isClosed', 'isClosed2D', 'curveToLine', 'draw', 'drawAsPolygon', 'endPoint', 'equals', 'indexOf', 'interpolatePoint', 'numPoints', 'pointAt', 'points', 'reversed', 'scroll', 'startPoint', 'sumUpArea', 'xAt', 'yAt', 'zAt', 'mAt', 'asQPolygonF', 'addToPainterPath', 'curveSubstring', 'length', 'segmentLength', 'distanceBetweenVertices', 'snappedToGrid', 'simplifyByDistance', 'removeDuplicateNodes', 'vertexAngle', 'swapXy', 'transform', 'createEmptyWithSameType', 'closestSegment', 'boundingBox', 'boundingBox3D', 'moveVertex', 'insertVertex', 'wkbSize', 'asWkb', 'asWkt', 'asGml2', 'asGml3', 'asKml', 'dimension', 'isEmpty', 'clear', 'boundingBoxIntersects', 'centroid', 'addZValue', 'addMValue', 'dropZValue', 'dropMValue', 'deleteVertex', 'fromWkb', 'fromWkt', 'fuzzyEqual', 'fuzzyDistanceEqual', 'geometryType', 'hasCurvedSegments', 'partCount', 'toCurveType', 'vertexAt', 'vertexCount', 'vertexNumberFromVertexId', 'isValid', 'clearCache', 'compareToSameClass', 'calculateBoundingBox3D']
+    QgsNurbsCurve.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass

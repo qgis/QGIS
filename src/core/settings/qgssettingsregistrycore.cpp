@@ -47,6 +47,10 @@ const QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *QgsSettingsRegistryCore::sett
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( QStringLiteral( "stream-tolerance" ), QgsSettingsTree::sTreeDigitizing, 2 );
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingNurbsDegree = new QgsSettingsEntryInteger( QStringLiteral( "nurbs-degree" ), QgsSettingsTree::sTreeDigitizing, 3 );
+
+const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *QgsSettingsRegistryCore::settingsDigitizingNurbsMode = new QgsSettingsEntryEnumFlag<Qgis::NurbsMode>( QStringLiteral( "nurbs-mode" ), QgsSettingsTree::sTreeDigitizing, Qgis::NurbsMode::ControlPoints );
+
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( QStringLiteral( "line-width" ), QgsSettingsTree::sTreeDigitizing, 1 );
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( QStringLiteral( "line-color" ), QgsSettingsTree::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );
@@ -54,6 +58,10 @@ const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColo
 const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale = new QgsSettingsEntryDouble( QStringLiteral( "line-color-alpha-scale" ), QgsSettingsTree::sTreeDigitizing, 0.75 );
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingFillColor = new QgsSettingsEntryColor( QStringLiteral( "fill-color" ), QgsSettingsTree::sTreeDigitizing, QColor( 255, 0, 0, 30 ) );
+
+const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingControlPolygonColor = new QgsSettingsEntryColor( QStringLiteral( "control-polygon-color" ), QgsSettingsTree::sTreeDigitizing, QColor( 100, 100, 100, 150 ) );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingControlPolygonWidth = new QgsSettingsEntryInteger( QStringLiteral( "control-polygon-width" ), QgsSettingsTree::sTreeDigitizing, 1 );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingLineGhost = new QgsSettingsEntryBool( QStringLiteral( "line-ghost" ), QgsSettingsTree::sTreeDigitizing, false );
 

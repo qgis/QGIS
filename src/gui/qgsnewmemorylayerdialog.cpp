@@ -64,6 +64,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
     Qgis::WkbType::Point,
     Qgis::WkbType::LineString,
     Qgis::WkbType::CompoundCurve,
+    Qgis::WkbType::NurbsCurve,
     Qgis::WkbType::Polygon,
     Qgis::WkbType::CurvePolygon,
     Qgis::WkbType::MultiPoint,

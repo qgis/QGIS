@@ -133,6 +133,18 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::CircularStringZM:
           return Qgis::WkbType::CircularStringZM;
 
+        case Qgis::WkbType::NurbsCurve:
+          return Qgis::WkbType::NurbsCurve;
+
+        case Qgis::WkbType::NurbsCurveZ:
+          return Qgis::WkbType::NurbsCurveZ;
+
+        case Qgis::WkbType::NurbsCurveM:
+          return Qgis::WkbType::NurbsCurveM;
+
+        case Qgis::WkbType::NurbsCurveZM:
+          return Qgis::WkbType::NurbsCurveZM;
+
         case Qgis::WkbType::CompoundCurve:
         case Qgis::WkbType::MultiCurve:
           return Qgis::WkbType::CompoundCurve;
@@ -306,21 +318,25 @@ class CORE_EXPORT QgsWkbTypes
 
         case Qgis::WkbType::CompoundCurve:
         case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::NurbsCurve:
         case Qgis::WkbType::MultiCurve:
           return Qgis::WkbType::MultiCurve;
 
         case Qgis::WkbType::CompoundCurveZ:
         case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::NurbsCurveZ:
         case Qgis::WkbType::MultiCurveZ:
           return Qgis::WkbType::MultiCurveZ;
 
         case Qgis::WkbType::CompoundCurveM:
         case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::NurbsCurveM:
         case Qgis::WkbType::MultiCurveM:
           return Qgis::WkbType::MultiCurveM;
 
         case Qgis::WkbType::CompoundCurveZM:
         case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::NurbsCurveZM:
         case Qgis::WkbType::MultiCurveZM:
           return Qgis::WkbType::MultiCurveZM;
 
@@ -451,6 +467,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineString:
         case Qgis::WkbType::CompoundCurve:
         case Qgis::WkbType::CircularString:
+        case Qgis::WkbType::NurbsCurve:
           return Qgis::WkbType::CompoundCurve;
 
         case Qgis::WkbType::MultiLineString:
@@ -460,6 +477,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringZ:
         case Qgis::WkbType::CompoundCurveZ:
         case Qgis::WkbType::CircularStringZ:
+        case Qgis::WkbType::NurbsCurveZ:
         case Qgis::WkbType::LineString25D:
           return Qgis::WkbType::CompoundCurveZ;
 
@@ -471,6 +489,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringM:
         case Qgis::WkbType::CompoundCurveM:
         case Qgis::WkbType::CircularStringM:
+        case Qgis::WkbType::NurbsCurveM:
           return Qgis::WkbType::CompoundCurveM;
 
         case Qgis::WkbType::MultiLineStringM:
@@ -480,6 +499,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringZM:
         case Qgis::WkbType::CompoundCurveZM:
         case Qgis::WkbType::CircularStringZM:
+        case Qgis::WkbType::NurbsCurveZM:
           return Qgis::WkbType::CompoundCurveZM;
 
         case Qgis::WkbType::MultiLineStringZM:
@@ -557,18 +577,22 @@ class CORE_EXPORT QgsWkbTypes
 
         case Qgis::WkbType::CircularString:
         case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::NurbsCurve:
           return Qgis::WkbType::LineString;
 
         case Qgis::WkbType::CircularStringM:
         case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::NurbsCurveM:
           return Qgis::WkbType::LineStringM;
 
         case Qgis::WkbType::CircularStringZ:
         case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::NurbsCurveZ:
           return Qgis::WkbType::LineStringZ;
 
         case Qgis::WkbType::CircularStringZM:
         case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::NurbsCurveZM:
           return Qgis::WkbType::LineStringZM;
 
         case Qgis::WkbType::MultiCurve:
@@ -735,6 +759,12 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::CircularStringZM:
           return Qgis::WkbType::CircularString;
 
+        case Qgis::WkbType::NurbsCurve:
+        case Qgis::WkbType::NurbsCurveZ:
+        case Qgis::WkbType::NurbsCurveM:
+        case Qgis::WkbType::NurbsCurveZM:
+          return Qgis::WkbType::NurbsCurve;
+
         case Qgis::WkbType::CompoundCurve:
         case Qgis::WkbType::CompoundCurveZ:
         case Qgis::WkbType::CompoundCurveM:
@@ -821,6 +851,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::Triangle:
         case Qgis::WkbType::CircularString:
         case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::NurbsCurve:
         case Qgis::WkbType::CurvePolygon:
         case Qgis::WkbType::PolyhedralSurface:
         case Qgis::WkbType::TIN:
@@ -831,6 +862,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::TriangleZ:
         case Qgis::WkbType::CircularStringZ:
         case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::NurbsCurveZ:
         case Qgis::WkbType::CurvePolygonZ:
         case Qgis::WkbType::PolyhedralSurfaceZ:
         case Qgis::WkbType::TINZ:
@@ -840,6 +872,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::TriangleM:
         case Qgis::WkbType::CircularStringM:
         case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::NurbsCurveM:
         case Qgis::WkbType::CurvePolygonM:
         case Qgis::WkbType::PolyhedralSurfaceM:
         case Qgis::WkbType::TINM:
@@ -849,6 +882,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::TriangleZM:
         case Qgis::WkbType::CircularStringZM:
         case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::NurbsCurveZM:
         case Qgis::WkbType::CurvePolygonZM:
         case Qgis::WkbType::PolyhedralSurfaceZM:
         case Qgis::WkbType::TINZM:
@@ -872,6 +906,7 @@ class CORE_EXPORT QgsWkbTypes
       {
         case Qgis::WkbType::CircularString:
         case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::NurbsCurve:
         case Qgis::WkbType::CurvePolygon:
         case Qgis::WkbType::MultiCurve:
         case Qgis::WkbType::MultiSurface:
@@ -957,15 +992,19 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::MultiLineString25D:
         case Qgis::WkbType::CircularString:
         case Qgis::WkbType::CompoundCurve:
+        case Qgis::WkbType::NurbsCurve:
         case Qgis::WkbType::MultiCurve:
         case Qgis::WkbType::CircularStringZ:
         case Qgis::WkbType::CompoundCurveZ:
+        case Qgis::WkbType::NurbsCurveZ:
         case Qgis::WkbType::MultiCurveZ:
         case Qgis::WkbType::CircularStringM:
         case Qgis::WkbType::CompoundCurveM:
+        case Qgis::WkbType::NurbsCurveM:
         case Qgis::WkbType::MultiCurveM:
         case Qgis::WkbType::CircularStringZM:
         case Qgis::WkbType::CompoundCurveZM:
+        case Qgis::WkbType::NurbsCurveZM:
         case Qgis::WkbType::MultiCurveZM:
           return Qgis::GeometryType::Line;
 
@@ -1075,6 +1114,8 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::CurvePolygonZM:
         case Qgis::WkbType::MultiCurveZM:
         case Qgis::WkbType::MultiSurfaceZM:
+        case Qgis::WkbType::NurbsCurveZ:
+        case Qgis::WkbType::NurbsCurveZM:
         case Qgis::WkbType::Point25D:
         case Qgis::WkbType::LineString25D:
         case Qgis::WkbType::Polygon25D:
@@ -1129,6 +1170,8 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::CurvePolygonZM:
         case Qgis::WkbType::MultiCurveZM:
         case Qgis::WkbType::MultiSurfaceZM:
+        case Qgis::WkbType::NurbsCurveM:
+        case Qgis::WkbType::NurbsCurveZM:
           return true;
 
         default:

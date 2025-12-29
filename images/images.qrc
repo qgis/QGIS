@@ -294,6 +294,7 @@
         <file>themes/default/mActionDeselectActiveLayer.svg</file>
         <file>themes/default/mActionDigitizeShape.svg</file>
         <file>themes/default/mActionDigitizeWithCurve.svg</file>
+        <file>themes/default/mActionDigitizeWithNURBS.svg</file>
         <file>themes/default/mActionDigitizeWithSegment.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
@@ -744,6 +745,7 @@
         <file>themes/default/mIconSnappingAllLayers.svg</file>
         <file>themes/default/mIconSnappingArea.svg</file>
         <file>themes/default/mIconSnappingCentroid.svg</file>
+        <file>themes/default/mIconSnappingControlPoint.svg</file>
         <file>themes/default/mIconSnappingMiddle.svg</file>
         <file>themes/default/mIconSnappingOnScale.svg</file>
         <file>themes/default/mIconSnappingVertex.svg</file>

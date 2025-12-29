@@ -1235,8 +1235,8 @@ QgsArrowInferSchemaOptions.geometryColumnName: src/core/qgsarrowiterator.h#L123
 QgsArrowInferSchemaOptions.setGeometryColumnName: src/core/qgsarrowiterator.h#L115
 QgsArrowInferSchemaOptions: src/core/qgsarrowiterator.h#L103
 QgsArrowIterator.QgsArrowIterator: src/core/qgsarrowiterator.h#L332
-QgsArrowIterator.inferSchema: src/core/qgsarrowiterator.h#L364
-QgsArrowIterator.inferSchema: src/core/qgsarrowiterator.h#L371
+QgsArrowIterator.inferSchema(QgsFeatureSource*): src/core/qgsarrowiterator.h#L364
+QgsArrowIterator.inferSchema(QgsFeatureSource*,QgsArrowInferSchemaOptions): src/core/qgsarrowiterator.h#L371
 QgsArrowIterator.nextFeatures: src/core/qgsarrowiterator.h#L357
 QgsArrowIterator.setSchema: src/core/qgsarrowiterator.h#L344
 QgsArrowIterator.toArrayStream: src/core/qgsarrowiterator.h#L347

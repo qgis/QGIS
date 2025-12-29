@@ -1796,6 +1796,16 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
     case Qgis::WkbType::CircularStringZM:
       return wkbCircularStringZM;
 
+    // NURBS curves are converted to CompoundCurve for OGR compatibility
+    case Qgis::WkbType::NurbsCurve:
+      return wkbCompoundCurve;
+    case Qgis::WkbType::NurbsCurveZ:
+      return wkbCompoundCurveZ;
+    case Qgis::WkbType::NurbsCurveM:
+      return wkbCompoundCurveM;
+    case Qgis::WkbType::NurbsCurveZM:
+      return wkbCompoundCurveZM;
+
     case Qgis::WkbType::CompoundCurve:
       return wkbCompoundCurve;
     case Qgis::WkbType::CompoundCurveZ:

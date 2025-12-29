@@ -62,6 +62,15 @@ QColor QgsMapToolEdit::digitizingFillColor()
   return QgsSettingsRegistryCore::settingsDigitizingFillColor->value();
 }
 
+void QgsMapToolEdit::applyControlPolygonStyle( QgsRubberBand *rubberBand )
+{
+  if ( !rubberBand )
+    return;
+
+  rubberBand->setColor( QgsSettingsRegistryCore::settingsDigitizingControlPolygonColor->value() );
+  rubberBand->setWidth( QgsSettingsRegistryCore::settingsDigitizingControlPolygonWidth->value() );
+  rubberBand->setLineStyle( Qt::DashLine );
+}
 
 QgsRubberBand *QgsMapToolEdit::createRubberBand( Qgis::GeometryType geometryType, bool alternativeBand )
 {

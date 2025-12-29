@@ -27,6 +27,7 @@
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
+#include "qgsnurbscurve.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
@@ -59,7 +60,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWk
   {
     try
     {
-      geom->fromWkb( wkbPtr );  // also updates wkbPtr
+      geom->fromWkb( wkbPtr ); // also updates wkbPtr
     }
     catch ( const QgsWkbException &e )
     {
@@ -135,6 +136,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   else if ( trimmed.startsWith( QLatin1String( "TIN" ), Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsTriangulatedSurface >();
+  }
+  else if ( trimmed.startsWith( QLatin1String( "NurbsCurve" ), Qt::CaseInsensitive ) )
+  {
+    geom = std::make_unique< QgsNurbsCurve >();
   }
 
   if ( geom )
@@ -271,6 +276,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( Qgis::
       return std::make_unique< QgsPolyhedralSurface >();
     case Qgis::WkbType::TIN:
       return std::make_unique< QgsTriangulatedSurface >();
+    case Qgis::WkbType::NurbsCurve:
+      return std::make_unique< QgsNurbsCurve >();
     default:
       return nullptr;
   }

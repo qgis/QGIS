@@ -161,6 +161,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   if ( conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::Curves ) )
   {
     addGeomItem( Qgis::WkbType::CompoundCurve );
+    addGeomItem( Qgis::WkbType::NurbsCurve );
     addGeomItem( Qgis::WkbType::CurvePolygon );
     addGeomItem( Qgis::WkbType::MultiCurve );
     addGeomItem( Qgis::WkbType::MultiSurface );

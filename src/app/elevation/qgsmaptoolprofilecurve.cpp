@@ -46,6 +46,7 @@ bool QgsMapToolProfileCurve::supportsTechnique( Qgis::CaptureTechnique technique
     case Qgis::CaptureTechnique::StraightSegments:
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return true;
 
     case Qgis::CaptureTechnique::Shape:
