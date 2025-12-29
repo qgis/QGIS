@@ -32,6 +32,7 @@
 #include "libtasn1.h"
 #endif
 
+#ifdef HAVE_AUTH
 
 QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 {
@@ -1398,3 +1399,5 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   }
   return errors;
 }
+
+#endif
