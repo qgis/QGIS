@@ -46,8 +46,9 @@ class QgsProjectListItemDelegate : public QStyledItemDelegate
       PathRole = Qt::UserRole + 2,
       NativePathRole = Qt::UserRole + 3,
       CrsRole = Qt::UserRole + 4,
-      PinRole = Qt::UserRole + 5,
-      AnonymisedNativePathRole = Qt::UserRole + 6
+      PinnedRole = Qt::UserRole + 5,
+      AnonymisedNativePathRole = Qt::UserRole + 6,
+      PreviewImagePathRole = Qt::UserRole + 7
     };
 
     explicit QgsProjectListItemDelegate( QObject *parent = nullptr );

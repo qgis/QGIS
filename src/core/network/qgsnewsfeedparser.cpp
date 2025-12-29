@@ -22,6 +22,7 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QDateTime>
@@ -57,6 +58,9 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   , mAuthCfg( authcfg )
   , mFeedKey( keyForFeed( mBaseUrl ) )
 {
+  // Synchronize enabled/disabled state
+  mEnabled = !QgsSettings().value( QStringLiteral( "%1/disabled" ).arg( mFeedKey ), false, QgsSettings::Core ).toBool();
+
   // first thing we do is populate with existing entries
   readStoredEntries();
 
@@ -102,6 +106,19 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   {
     mFeedUrl.setQuery( query ); // doesn't work for local file urls
   }
+}
+
+void QgsNewsFeedParser::setEnabled( bool enabled )
+{
+  if ( mEnabled == enabled )
+  {
+    return;
+  }
+
+  mEnabled = enabled;
+  emit enabledChanged();
+
+  QgsSettings().setValue( QStringLiteral( "%1/disabled" ).arg( mFeedKey ), !mEnabled, QgsSettings::Core );
 }
 
 QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const
@@ -166,6 +183,11 @@ QString QgsNewsFeedParser::authcfg() const
 
 void QgsNewsFeedParser::fetch()
 {
+  if ( mIsFetching )
+  {
+    return;
+  }
+
   QNetworkRequest req( mFeedUrl );
   QgsSetRequestInitiatorClass( req, u"QgsNewsFeedParser"_s );
 
@@ -176,6 +198,9 @@ void QgsNewsFeedParser::fetch()
   task->setDescription( tr( "Fetching News Feed" ) );
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task]
   {
+    mIsFetching = false;
+    emit isFetchingChanged();
+
     QNetworkReply *reply = task->reply();
     if ( !reply )
     {
@@ -190,8 +215,12 @@ void QgsNewsFeedParser::fetch()
     }
 
     // queue up the handling
+    qDebug() << "fetched!" << task->contentAsString();
     QMetaObject::invokeMethod( this, "onFetch", Qt::QueuedConnection, Q_ARG( QString, task->contentAsString() ) );
   } );
+
+  mIsFetching = true;
+  emit isFetchingChanged();
 
   QgsApplication::taskManager()->addTask( task );
 }
