@@ -33,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: 🐩 Install CMake and Ninja
         uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # latest
