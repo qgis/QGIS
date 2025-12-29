@@ -256,7 +256,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
 
   if ( index.isValid() )
   {
-    const bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinRole ).toBool();
+    const bool pin = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PinnedRole ).toBool();
     QString path = mRecentProjectsModel->data( index, QgsProjectListItemDelegate::PathRole ).toString();
     if ( path.isEmpty() )
     {

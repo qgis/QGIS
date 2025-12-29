@@ -79,6 +79,17 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
   return QVariant();
 }
 
+QHash<int, QByteArray> QgsNewsFeedModel::roleNames() const
+{
+  QHash<int, QByteArray> roles;
+  roles[static_cast< int >( CustomRole::Title )] = "Title";
+  roles[static_cast< int >( CustomRole::Content )] = "Content";
+  roles[static_cast< int >( CustomRole::ImageUrl )] = "ImageUrl";
+  roles[static_cast< int >( CustomRole::Link )] = "Link";
+  roles[static_cast< int >( CustomRole::Sticky )] = "Sticky";
+  return roles;
+}
+
 Qt::ItemFlags QgsNewsFeedModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
@@ -120,6 +131,7 @@ int QgsNewsFeedModel::columnCount( const QModelIndex & ) const
 
 void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 {
+  qDebug() << "onEntryAdded" << entry.title;
   beginInsertRows( QModelIndex(), mEntries.count(), mEntries.count() );
   mEntries.append( entry );
   endInsertRows();

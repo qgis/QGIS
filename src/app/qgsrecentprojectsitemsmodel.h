@@ -27,6 +27,23 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
     Q_OBJECT
 
   public:
+    /**
+     * Custom model roles.
+     *
+     * \since QGIS 4.0
+     */
+    enum class CustomRole : int
+    {
+      TitleRole = Qt::UserRole + 1,
+      PathRole,
+      NativePathRole,
+      CrsRole,
+      PinnedRole,
+      AnonymisedNativePathRole,
+      PreviewImagePathRole,
+    };
+    Q_ENUM( CustomRole )
+
     struct RecentProjectData
     {
         bool operator==( const RecentProjectData &other ) const { return other.path == this->path; }
@@ -34,7 +51,7 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
         QString title;
         QString previewImagePath;
         QString crs;
-        mutable bool pin = false;
+        mutable bool pinned = false;
         mutable bool checkedExists = false;
         mutable bool exists = false;
     };
@@ -46,6 +63,7 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     void pinProject( const QModelIndex &index );
     void unpinProject( const QModelIndex &index );

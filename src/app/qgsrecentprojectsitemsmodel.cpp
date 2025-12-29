@@ -19,7 +19,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
@@ -32,6 +31,7 @@
 #include <QPixmap>
 #include <QString>
 #include <QTextDocument>
+#include <QUrl>
 
 #include "moc_qgsrecentprojectsitemsmodel.cpp"
 
@@ -61,11 +61,17 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
   switch ( role )
   {
     case Qt::DisplayRole:
-    case QgsProjectListItemDelegate::TitleRole:
+    case static_cast< int >( CustomRole::TitleRole ):
+    {
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
-    case QgsProjectListItemDelegate::PathRole:
+    }
+
+    case static_cast< int >( CustomRole::PathRole ):
+    {
       return mRecentProjects.at( index.row() ).path;
-    case QgsProjectListItemDelegate::NativePathRole:
+    }
+
+    case static_cast< int >( CustomRole::NativePathRole ):
     {
       const QString path = mRecentProjects.at( index.row() ).path;
       QString filePath;
@@ -76,33 +82,34 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       }
       return QDir::toNativeSeparators( !filePath.isEmpty() ? filePath : path );
     }
-    case QgsProjectListItemDelegate::CrsRole:
+
+    case static_cast< int >( CustomRole::CrsRole ):
+    {
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return u"%1 (%2)"_s.arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
-      else
-      {
-        return QString();
-      }
-    case QgsProjectListItemDelegate::PinRole:
-      return mRecentProjects.at( index.row() ).pin;
-    case Qt::DecorationRole:
+      return QString();
+    }
+
+    case static_cast< int >( CustomRole::PinnedRole ):
     {
-      const QString filename( mRecentProjects.at( index.row() ).previewImagePath );
-      if ( filename.isEmpty() )
-        return QVariant();
+      return mRecentProjects.at( index.row() ).pinned;
+    }
 
-      const QgsProjectPreviewImage thumbnail( filename );
-      if ( thumbnail.isNull() )
-        return QVariant();
-
-      return thumbnail.pixmap();
+    case static_cast< int >( CustomRole::PreviewImagePathRole ):
+    {
+      const QString imagePath = mRecentProjects.at( index.row() ).previewImagePath;
+      if ( !imagePath.isEmpty() && QFile::exists( imagePath ) )
+      {
+        return QUrl::fromLocalFile( imagePath );
+      }
+      return QVariant();
     }
 
     case Qt::ToolTipRole:
-    case QgsProjectListItemDelegate::AnonymisedNativePathRole:
+    case static_cast< int >( CustomRole::AnonymisedNativePathRole ):
     {
       QString path = mRecentProjects.at( index.row() ).path;
       QString filePath;
@@ -118,6 +125,21 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     default:
       return QVariant();
   }
+}
+
+QHash<int, QByteArray> QgsRecentProjectItemsModel::roleNames() const
+{
+  QHash<int, QByteArray> roles;
+  roles[Qt::DisplayRole] = "display";
+  roles[Qt::DecorationRole] = "decoration";
+  roles[static_cast< int >( CustomRole::TitleRole )] = "Title";
+  roles[static_cast< int >( CustomRole::PathRole )] = "ProjectPath";
+  roles[static_cast< int >( CustomRole::NativePathRole )] = "ProjectNativePath";
+  roles[static_cast< int >( CustomRole::CrsRole )] = "Crs";
+  roles[static_cast< int >( CustomRole::PinnedRole )] = "Pinned";
+  roles[static_cast< int >( CustomRole::AnonymisedNativePathRole )] = "AnonymisedNativePath";
+  roles[static_cast< int >( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
+  return roles;
 }
 
 Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) const
@@ -154,12 +176,12 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
 
 void QgsRecentProjectItemsModel::pinProject( const QModelIndex &index )
 {
-  mRecentProjects.at( index.row() ).pin = true;
+  mRecentProjects.at( index.row() ).pinned = true;
 }
 
 void QgsRecentProjectItemsModel::unpinProject( const QModelIndex &index )
 {
-  mRecentProjects.at( index.row() ).pin = false;
+  mRecentProjects.at( index.row() ).pinned = false;
 }
 
 void QgsRecentProjectItemsModel::removeProject( const QModelIndex &index )
@@ -182,7 +204,7 @@ void QgsRecentProjectItemsModel::clear( bool clearPinned )
       std::remove_if(
         mRecentProjects.begin(),
         mRecentProjects.end(),
-        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pin; }
+        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pinned; }
       ),
       mRecentProjects.end()
     );

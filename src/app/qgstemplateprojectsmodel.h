@@ -25,7 +25,24 @@ class QgsTemplateProjectsModel : public QStandardItemModel
     Q_OBJECT
 
   public:
+    /**
+     * Custom model roles.
+     *
+     * \since QGIS 4.0
+     */
+    enum class CustomRole : int
+    {
+      TitleRole = Qt::UserRole + 1,
+      PathRole,
+      NativePathRole,
+      CrsRole,
+      PreviewImagePathRole,
+    };
+    Q_ENUM( CustomRole )
+
     QgsTemplateProjectsModel( QObject *parent = nullptr );
+
+    QHash<int, QByteArray> roleNames() const override;
 
   private slots:
 

@@ -46,6 +46,10 @@ class QgsSettingsEntryVariant;
 class CORE_EXPORT QgsNewsFeedParser : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY( bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged );
+    Q_PROPERTY( bool isFetching READ isFetching NOTIFY isFetchingChanged );
+
   public:
 
 #ifndef SIP_RUN
@@ -107,6 +111,27 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString(), QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Returns TRUE if the feed URL associated with the news parser is enabled.
+     *
+     * \since QGIS 4.0
+     */
+    bool enabled() const { return mEnabled; }
+
+    /**
+     * Sets whether the feed URL associated with the news parser is enabled.
+     *
+     * \since QGIS 4.0
+     */
+    void setEnabled( bool enabled );
+
+    /**
+     * Returns TRUE if the news parser is fetching items.
+     *
+     * \since QGIS 4.0
+     */
+    bool isFetching() const { return mIsFetching; }
+
+    /**
      * Returns a list of existing entries in the feed.
      */
     QList< QgsNewsFeedParser::Entry > entries() const;
@@ -118,13 +143,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      *
      * \see dismissAll()
      */
-    void dismissEntry( int key );
+    Q_INVOKABLE void dismissEntry( int key );
 
     /**
      * Dismisses all current news items.
      * \see dismissEntry()
      */
-    void dismissAll();
+    Q_INVOKABLE void dismissAll();
 
     /**
      * Returns the authentication configuration for the parser.
@@ -185,6 +210,18 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      */
     void imageFetched( int key, const QPixmap &pixmap );
 
+    /**
+     * Emitted when the enabled/disabled state of the feed URL associated to the news parser changes.
+     * \since QGIS 4.0
+     */
+    void enabledChanged();
+
+    /**
+     * Emitted when the news parser's fetching state changes.
+     * \since QGIS 4.0
+     */
+    void isFetchingChanged();
+
   private slots:
 
     void onFetch( const QString &content );
@@ -199,6 +236,9 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 
     QList< Entry > mEntries;
     bool mBlockSignals = false;
+
+    bool mEnabled = true;
+    bool mIsFetching = false;
 
     void readStoredEntries();
     Entry readEntryFromSettings( int key );

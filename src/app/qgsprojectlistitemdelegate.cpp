@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsnewsfeedmodel.h"
+#include "qgsrecentprojectsitemsmodel.h"
 #include "qgsrendercontext.h"
 #include "qgswebframe.h"
 
@@ -86,7 +87,7 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
     iconSize /= w->devicePixelRatioF();
   }
 
-  doc.setHtml( u"<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>"_s.arg( textSize ).arg( QString::number( titleSize ), index.data( QgsProjectListItemDelegate::TitleRole ).toString(), index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? u"<img src=\":/images/themes/default/pin.svg\">"_s : QString(), mShowPath ? index.data( QgsProjectListItemDelegate::AnonymisedNativePathRole ).toString() : QString(), index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
+  doc.setHtml( u"<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>"_s.arg( textSize ).arg( QString::number( titleSize ), index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::TitleRole ) ).toString(), index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(), mShowPath ? index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::AnonymisedNativePathRole ) ).toString() : QString(), index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::CrsRole ) ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )
@@ -122,7 +123,7 @@ QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
   const int titleSize = QApplication::fontMetrics().height() * 1.1;
   const int textSize = titleSize * 0.85;
 
-  doc.setHtml( u"<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>"_s.arg( textSize ).arg( titleSize ).arg( index.data( QgsProjectListItemDelegate::TitleRole ).toString(), index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? u"<img src=\":/images/themes/default/pin.svg\">"_s : QString(), index.data( QgsProjectListItemDelegate::NativePathRole ).toString(), index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
+  doc.setHtml( u"<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>"_s.arg( textSize ).arg( titleSize ).arg( index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::TitleRole ) ).toString(), index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(), index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::NativePathRole ) ).toString(), index.data( static_cast<int>( QgsRecentProjectItemsModel::CustomRole::CrsRole ) ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( iconSize.height() ) ) + 2.5 * mRoundedRectSizePixels );
