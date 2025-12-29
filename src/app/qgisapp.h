@@ -98,7 +98,7 @@ class QgsUserInputWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsVectorTileLayer;
-class QgsWelcomePage;
+class QgsWelcomeScreen;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
 class QgsGeometryValidationService;
@@ -2805,7 +2805,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QDateTime mProjectLastModified;
 
-    QgsWelcomePage *mWelcomePage = nullptr;
+    QgsWelcomeScreen *mWelcomeScreen = nullptr;
 
     QStackedWidget *mCentralContainer = nullptr;
 

@@ -24,7 +24,7 @@
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsprojectstorageregistry.h"
-#include "qgswelcomepage.h"
+#include "qgswelcomescreen.h"
 
 #include <QAction>
 #include <QEvent>
@@ -33,8 +33,8 @@
 
 #include "moc_qgsrecentprojectsmenueventfilter.cpp"
 
-QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomePage *welcomePage, QObject *parent )
-  : QObject( parent ), mWelcomePage( welcomePage )
+QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomeScreen *welcomeScreen, QObject *parent )
+  : QObject( parent ), mWelcomeScreen( welcomeScreen )
 {
 }
 
@@ -63,9 +63,9 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   if ( !ok )
     return QObject::eventFilter( obj, event );
 
-  const QModelIndex modelIndex = mWelcomePage->recentProjectsModel()->index( actionIndex, 0 );
-  const bool pinned = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinRole ).toBool();
-  QString path = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PathRole ).toString();
+  const QModelIndex modelIndex = mWelcomeScreen->recentProjectsModel()->index( actionIndex, 0 );
+  const bool pinned = mWelcomeScreen->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinnedRole ).toBool();
+  QString path = mWelcomeScreen->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PathRole ).toString();
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
   if ( storage )
   {
@@ -76,12 +76,12 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   if ( pinned )
   {
     QAction *unpin = subMenu.addAction( tr( "Unpin from List" ) );
-    connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->unpinProject( actionIndex ); } );
+    connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->unpinProject( actionIndex ); } );
   }
   else
   {
     QAction *pin = subMenu.addAction( tr( "Pin to List" ) );
-    connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->pinProject( actionIndex ); } );
+    connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->pinProject( actionIndex ); } );
   }
 
   if ( !path.isEmpty() )
@@ -94,7 +94,7 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   }
 
   QAction *remove = subMenu.addAction( tr( "Remove from List" ) );
-  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->removeProject( actionIndex ); } );
+  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->removeProject( actionIndex ); } );
   subMenu.exec( menu->mapToGlobal( mouseEvent->pos() ) );
   return true;
 }
