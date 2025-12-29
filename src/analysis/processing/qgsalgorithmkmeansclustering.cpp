@@ -24,6 +24,113 @@
 
 constexpr uint KMEANS_MAX_ITERATIONS = 1000;
 
+//
+// QgsKmeansClusteringAlgorithmBase
+//
+
+QStringList QgsKMeansClusteringAlgorithmBase::tags() const
+{
+  return QObject::tr( "clustering,clusters,kmeans,points" ).split( ',' );
+}
+
+QString QgsKMeansClusteringAlgorithmBase::group() const
+{
+  return QObject::tr( "Vector analysis" );
+}
+
+QString QgsKMeansClusteringAlgorithmBase::groupId() const
+{
+  return QStringLiteral( "vectoranalysis" );
+}
+
+// ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
+
+void QgsKMeansClusteringAlgorithmBase::updateMeans( const std::vector<Feature> &points, std::vector<QgsPointXY> &centers, std::vector<uint> &weights, const int k )
+{
+  const uint n = points.size();
+  std::fill( weights.begin(), weights.end(), 0 );
+  for ( int i = 0; i < k; i++ )
+  {
+    centers[i].setX( 0.0 );
+    centers[i].setY( 0.0 );
+  }
+  for ( uint i = 0; i < n; i++ )
+  {
+    const int cluster = points[i].cluster;
+    centers[cluster] += QgsVector( points[i].point.x(), points[i].point.y() );
+    weights[cluster] += 1;
+  }
+  for ( int i = 0; i < k; i++ )
+  {
+    centers[i] /= weights[i];
+  }
+}
+
+// ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
+
+void QgsKMeansClusteringAlgorithmBase::findNearest( std::vector<QgsKMeansClusteringAlgorithm::Feature> &points, const std::vector<QgsPointXY> &centers, const int k, bool &changed )
+{
+  changed = false;
+  const std::size_t n = points.size();
+  for ( std::size_t i = 0; i < n; i++ )
+  {
+    Feature &point = points[i];
+
+    // Initialize with distance to first cluster
+    double currentDistance = point.point.sqrDist( centers[0] );
+    int currentCluster = 0;
+
+    // Check all other cluster centers and find the nearest
+    for ( int cluster = 1; cluster < k; cluster++ )
+    {
+      const double distance = point.point.sqrDist( centers[cluster] );
+      if ( distance < currentDistance )
+      {
+        currentDistance = distance;
+        currentCluster = cluster;
+      }
+    }
+
+    // Store the nearest cluster this object is in
+    if ( point.cluster != currentCluster )
+    {
+      changed = true;
+      point.cluster = currentCluster;
+    }
+  }
+}
+
+// ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
+
+void QgsKMeansClusteringAlgorithmBase::calculateKMeans( std::vector<QgsKMeansClusteringAlgorithm::Feature> &objs, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback )
+{
+  int converged = false;
+  bool changed = false;
+
+  // avoid reallocating weights array for every iteration
+  std::vector<uint> weights( k );
+
+  uint i = 0;
+  for ( i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++ )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    findNearest( objs, centers, k, changed );
+    updateMeans( objs, centers, weights, k );
+    converged = !changed;
+  }
+
+  if ( !converged && feedback )
+    feedback->reportError( QObject::tr( "Clustering did not converge after %n iteration(s)", nullptr, static_cast<int>( i ) ) );
+  else if ( feedback )
+    feedback->pushInfo( QObject::tr( "Clustering converged after %n iteration(s)", nullptr, static_cast<int>( i ) ) );
+}
+
+//
+// QgsKmeansClusteringAlgorithm
+//
+
 QString QgsKMeansClusteringAlgorithm::name() const
 {
   return QStringLiteral( "kmeansclustering" );
@@ -32,21 +139,6 @@ QString QgsKMeansClusteringAlgorithm::name() const
 QString QgsKMeansClusteringAlgorithm::displayName() const
 {
   return QObject::tr( "K-means clustering" );
-}
-
-QStringList QgsKMeansClusteringAlgorithm::tags() const
-{
-  return QObject::tr( "clustering,clusters,kmeans,points" ).split( ',' );
-}
-
-QString QgsKMeansClusteringAlgorithm::group() const
-{
-  return QObject::tr( "Vector analysis" );
-}
-
-QString QgsKMeansClusteringAlgorithm::groupId() const
-{
-  return QStringLiteral( "vectoranalysis" );
 }
 
 void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
@@ -460,89 +552,193 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
   }
 }
 
-// ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
+//
+// QgsKMeansClusteringFromSeedLayerAlgorithm
+//
 
-void QgsKMeansClusteringAlgorithm::calculateKMeans( std::vector<QgsKMeansClusteringAlgorithm::Feature> &objs, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback )
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::name() const
 {
-  int converged = false;
-  bool changed = false;
+  return QStringLiteral( "kmeansclusteringfromseedlayer" );
+}
 
-  // avoid reallocating weights array for every iteration
-  std::vector<uint> weights( k );
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::displayName() const
+{
+  return QObject::tr( "K-means clustering (from seed layer)" );
+}
 
-  uint i = 0;
-  for ( i = 0; i < KMEANS_MAX_ITERATIONS && !converged; i++ )
+void QgsKMeansClusteringFromSeedLayerAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SEED" ), QObject::tr( "Seed layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
+  fieldNameParam->setFlags( fieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( fieldNameParam.release() );
+  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ), QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
+  sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( sizeFieldNameParam.release() );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clusters" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+}
+
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the 2D distance based k-means cluster number for each input feature.\n\n"
+                      "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n" );
+}
+
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature.\n"
+                      "Uses the provided seed layer for starting centers." );
+}
+
+QgsKMeansClusteringFromSeedLayerAlgorithm *QgsKMeansClusteringFromSeedLayerAlgorithm::createInstance() const
+{
+  return new QgsKMeansClusteringFromSeedLayerAlgorithm();
+}
+
+QVariantMap QgsKMeansClusteringFromSeedLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
+  std::unique_ptr<QgsProcessingFeatureSource> seedSource( parameterAsSource( parameters, QStringLiteral( "SEED" ), context ) );
+  if ( !seedSource )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SEED" ) ) );
+
+  QgsFields outputFields = source->fields();
+  QgsFields newFields;
+  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  newFields.append( QgsField( clusterFieldName, QMetaType::Type::Int ) );
+  const QString clusterSizeFieldName = parameterAsString( parameters, QStringLiteral( "SIZE_FIELD_NAME" ), context );
+  newFields.append( QgsField( clusterSizeFieldName, QMetaType::Type::Int ) );
+  outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
+
+  QString dest;
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, source->wkbType(), source->sourceCrs() ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  // build list of point inputs - if it's already a point, use that. If not, take the centroid.
+  feedback->pushInfo( QObject::tr( "Collecting input points" ) );
+  const double step = source->featureCount() + seedSource->featureCount() > 0 ? 50.0 / static_cast< double >( source->featureCount() + seedSource->featureCount() ) : 1;
+  int i = 0;
+  int n = 0;
+  int featureWithGeometryCount = 0;
+  QgsFeature feat;
+
+  std::vector<Feature> clusterFeatures;
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
+  QHash<QgsFeatureId, std::size_t> idToObj;
+  while ( features.nextFeature( feat ) )
   {
-    if ( feedback && feedback->isCanceled() )
+    i++;
+    if ( feedback->isCanceled() )
+    {
       break;
-
-    findNearest( objs, centers, k, changed );
-    updateMeans( objs, centers, weights, k );
-    converged = !changed;
-  }
-
-  if ( !converged && feedback )
-    feedback->reportError( QObject::tr( "Clustering did not converge after %n iteration(s)", nullptr, static_cast<int>( i ) ) );
-  else if ( feedback )
-    feedback->pushInfo( QObject::tr( "Clustering converged after %n iteration(s)", nullptr, static_cast<int>( i ) ) );
-}
-
-// ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
-
-void QgsKMeansClusteringAlgorithm::findNearest( std::vector<QgsKMeansClusteringAlgorithm::Feature> &points, const std::vector<QgsPointXY> &centers, const int k, bool &changed )
-{
-  changed = false;
-  const std::size_t n = points.size();
-  for ( std::size_t i = 0; i < n; i++ )
-  {
-    Feature &point = points[i];
-
-    // Initialize with distance to first cluster
-    double currentDistance = point.point.sqrDist( centers[0] );
-    int currentCluster = 0;
-
-    // Check all other cluster centers and find the nearest
-    for ( int cluster = 1; cluster < k; cluster++ )
-    {
-      const double distance = point.point.sqrDist( centers[cluster] );
-      if ( distance < currentDistance )
-      {
-        currentDistance = distance;
-        currentCluster = cluster;
-      }
     }
 
-    // Store the nearest cluster this object is in
-    if ( point.cluster != currentCluster )
+    feedback->setProgress( i * step );
+    if ( !feat.hasGeometry() )
+      continue;
+    featureWithGeometryCount++;
+
+    QgsPointXY point;
+    if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == Qgis::WkbType::Point )
+      point = QgsPointXY( *qgsgeometry_cast<const QgsPoint *>( feat.geometry().constGet() ) );
+    else
     {
-      changed = true;
-      point.cluster = currentCluster;
+      const QgsGeometry centroid = feat.geometry().centroid();
+      if ( centroid.isNull() )
+        continue; // centroid failed, e.g. empty linestring
+
+      point = QgsPointXY( *qgsgeometry_cast<const QgsPoint *>( centroid.constGet() ) );
     }
+
+    n++;
+
+    idToObj[feat.id()] = clusterFeatures.size();
+    clusterFeatures.emplace_back( Feature( point ) );
   }
+
+  feedback->pushInfo( QObject::tr( "Collecting seed points" ) );
+  std::vector<QgsPointXY> centers;
+  QgsFeatureIterator seedFeatures = seedSource->getFeatures( QgsFeatureRequest().setNoAttributes() );
+  while ( seedFeatures.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+    
+    feedback->setProgress( i * step );
+    if ( !feat.hasGeometry() )
+      continue;
+
+    centers.emplace_back( QgsPointXY( *qgsgeometry_cast<const QgsPoint *>( feat.geometry().constGet() ) ) );
+  }
+
+  int k = centers.size();
+
+  if ( n < k )
+  {
+    feedback->reportError( QObject::tr( "Number of geometries is less than the number of clusters requested, not all clusters will get data" ) );
+    k = n;
+  }
+
+  if ( k > 1 )
+  {
+    feedback->pushInfo( QObject::tr( "Calculating clusters" ) );
+
+    calculateKMeans( clusterFeatures, centers, k, feedback );
+  }
+
+  // cluster size
+  std::unordered_map<int, int> clusterSize;
+  for ( auto it = idToObj.constBegin(); it != idToObj.constEnd(); ++it )
+  {
+    clusterSize[clusterFeatures[it.value()].cluster]++;
+  }
+
+  features = source->getFeatures();
+  i = 0;
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( 50 + i * step );
+    QgsAttributes attr = feat.attributes();
+    const auto obj = idToObj.find( feat.id() );
+    if ( !feat.hasGeometry() || obj == idToObj.end() )
+    {
+      attr << QVariant() << QVariant();
+    }
+    else if ( k <= 1 )
+    {
+      attr << 0 << featureWithGeometryCount;
+    }
+    else
+    {
+      const int cluster = clusterFeatures[*obj].cluster;
+      attr << cluster << clusterSize[cluster];
+    }
+    feat.setAttributes( attr );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+  }
+
+  sink->finalize();
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
 }
-
-// ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
-
-void QgsKMeansClusteringAlgorithm::updateMeans( const std::vector<Feature> &points, std::vector<QgsPointXY> &centers, std::vector<uint> &weights, const int k )
-{
-  const uint n = points.size();
-  std::fill( weights.begin(), weights.end(), 0 );
-  for ( int i = 0; i < k; i++ )
-  {
-    centers[i].setX( 0.0 );
-    centers[i].setY( 0.0 );
-  }
-  for ( uint i = 0; i < n; i++ )
-  {
-    const int cluster = points[i].cluster;
-    centers[cluster] += QgsVector( points[i].point.x(), points[i].point.y() );
-    weights[cluster] += 1;
-  }
-  for ( int i = 0; i < k; i++ )
-  {
-    centers[i] /= weights[i];
-  }
-}
-
 
 ///@endcond
