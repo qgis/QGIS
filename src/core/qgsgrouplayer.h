@@ -76,7 +76,7 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsGroupLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

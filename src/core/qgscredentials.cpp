@@ -28,7 +28,7 @@ void QgsCredentials::setInstance( QgsCredentials *instance )
 {
   if ( sInstance )
   {
-    QgsDebugError( QStringLiteral( "already registered an instance of QgsCredentials" ) );
+    QgsDebugError( u"already registered an instance of QgsCredentials"_s );
   }
 
   sInstance = instance;
@@ -51,7 +51,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
       const QPair<QString, QString> credentials = mCredentialCache.take( realm );
       username = credentials.first;
       password = credentials.second;
-      QgsDebugMsgLevel( QStringLiteral( "retrieved realm:%1 username:%2" ).arg( realm, username ), 2 );
+      QgsDebugMsgLevel( u"retrieved realm:%1 username:%2"_s.arg( realm, username ), 2 );
 
       if ( !password.isNull() )
         return true;
@@ -60,12 +60,12 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
 
   if ( requestCredentials && request( realm, username, password, message ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "requested realm:%1 username:%2" ).arg( realm, username ), 2 );
+    QgsDebugMsgLevel( u"requested realm:%1 username:%2"_s.arg( realm, username ), 2 );
     return true;
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "unset realm:%1" ).arg( realm ), 4 );
+    QgsDebugMsgLevel( u"unset realm:%1"_s.arg( realm ), 4 );
     return false;
   }
 }
@@ -73,7 +73,7 @@ bool QgsCredentials::get( const QString &realm, QString &username, QString &pass
 void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
   const QMutexLocker locker( &mCacheMutex );
-  QgsDebugMsgLevel( QStringLiteral( "inserting realm:%1 username:%2" ).arg( realm, username ), 2 );
+  QgsDebugMsgLevel( u"inserting realm:%1 username:%2"_s.arg( realm, username ), 2 );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
@@ -81,7 +81,7 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 {
   if ( requestMasterPassword( password, stored ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "requested master password" ), 2 );
+    QgsDebugMsgLevel( u"requested master password"_s, 2 );
     return true;
   }
   return false;

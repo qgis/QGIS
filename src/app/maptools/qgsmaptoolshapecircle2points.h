@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMe
       : QgsMapToolShapeMetadata()
     {}
 
-    static const inline QString TOOL_ID = QStringLiteral( "circle-from-2-points" );
+    static const inline QString TOOL_ID = u"circle-from-2-points"_s;
 
     QString id() const override;
     QString name() const override;

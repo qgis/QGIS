@@ -122,7 +122,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QStandardItem *typeItem = nullptr;
     if ( layerProperty.isRaster )
     {
-      typeItem = new QStandardItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLayer.svg" ) ), tr( "Raster" ) );
+      typeItem = new QStandardItem( QgsApplication::getThemeIcon( u"/mIconRasterLayer.svg"_s ), tr( "Raster" ) );
     }
     else
     {
@@ -142,10 +142,10 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     {
       // word wrap
       QString commentText { layerProperty.tableComment };
-      const thread_local QRegularExpression newLineRx( QStringLiteral( "^\n*" ) );
+      const thread_local QRegularExpression newLineRx( u"^\n*"_s );
       commentText.replace( newLineRx, QString() );
       commentItem->setText( commentText );
-      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QLatin1String( "<br/>" ) ) ) );
+      commentItem->setToolTip( u"<span>%1</span>"_s.arg( commentText.replace( '\n', "<br/>"_L1 ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
@@ -170,7 +170,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
 
-    QStringList defPk( QgsSettings().value( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, layerProperty.schemaName, layerProperty.tableName ), QStringList() ).toStringList() );
+    QStringList defPk( QgsSettings().value( u"/PostgreSQL/connections/%1/keys/%2/%3"_s.arg( mConnName, layerProperty.schemaName, layerProperty.tableName ), QStringList() ).toStringList() );
 
     if ( !layerProperty.pkCols.isEmpty() && defPk.isEmpty() )
     {
@@ -308,7 +308,7 @@ void QgsPgTableModel::setItemStatus( QStandardItem *item, const QString &tip, in
 
       if ( column == DbtmSchema )
       {
-        item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
+        item->setData( QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s ), Qt::DecorationRole );
       }
     }
   }
@@ -435,7 +435,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalid index" ), 2 );
+    QgsDebugMsgLevel( u"invalid index"_s, 2 );
     return QString();
   }
 
@@ -457,18 +457,18 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
       const QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
       const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
       const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
-      QString connString { QStringLiteral( "PG: %1 mode=2 %2schema='%3' column='%4' table='%5'" )
-                             .arg( connInfo, cols.isEmpty() ? QString() : QStringLiteral( "key='%1' " ).arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName ) };
+      QString connString { u"PG: %1 mode=2 %2schema='%3' column='%4' table='%5'"_s
+                             .arg( connInfo, cols.isEmpty() ? QString() : u"key='%1' "_s.arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName ) };
       const QString sql { index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString() };
       if ( !sql.isEmpty() )
       {
-        connString.append( QStringLiteral( " sql=%1" ).arg( sql ) );
+        connString.append( u" sql=%1"_s.arg( sql ) );
       }
       return connString;
     }
     else
     {
-      QgsDebugError( QStringLiteral( "unknown geometry type" ) );
+      QgsDebugError( u"unknown geometry type"_s );
       // no geometry type selected
       return QString();
     }
@@ -480,7 +480,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
-    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( u"no pk candidate selected"_s );
     return QString();
   }
 
@@ -498,7 +498,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     ( void ) srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugError( QStringLiteral( "srid not numeric" ) );
+      QgsDebugError( u"srid not numeric"_s );
       return QString();
     }
   }
@@ -516,15 +516,15 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
+  QgsSettings().setValue( u"/PostgreSQL/connections/%1/keys/%2/%3"_s.arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( ',' ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  uri.setParam( u"checkPrimaryKeyUnicity"_s, checkPrimaryKeyUnicity ? u"1"_s : u"0"_s );
 
-  QgsDebugMsgLevel( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ), 2 );
+  QgsDebugMsgLevel( u"returning uri %1"_s.arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }

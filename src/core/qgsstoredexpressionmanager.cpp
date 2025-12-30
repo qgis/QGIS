@@ -116,14 +116,14 @@ void QgsStoredExpressionManager::clearStoredExpressions()
 
 bool QgsStoredExpressionManager::writeXml( QDomNode &layerNode ) const
 {
-  QDomElement aStoredExpressions = layerNode.ownerDocument().createElement( QStringLiteral( "storedexpressions" ) );
+  QDomElement aStoredExpressions = layerNode.ownerDocument().createElement( u"storedexpressions"_s );
 
   for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
-    QDomElement aStoredExpression = layerNode.ownerDocument().createElement( QStringLiteral( "storedexpression" ) );
-    aStoredExpression.setAttribute( QStringLiteral( "name" ), storedExpression.name );
-    aStoredExpression.setAttribute( QStringLiteral( "expression" ), storedExpression.expression );
-    aStoredExpression.setAttribute( QStringLiteral( "tag" ), storedExpression.tag );
+    QDomElement aStoredExpression = layerNode.ownerDocument().createElement( u"storedexpression"_s );
+    aStoredExpression.setAttribute( u"name"_s, storedExpression.name );
+    aStoredExpression.setAttribute( u"expression"_s, storedExpression.expression );
+    aStoredExpression.setAttribute( u"tag"_s, storedExpression.tag );
     aStoredExpressions.appendChild( aStoredExpression );
   }
   layerNode.appendChild( aStoredExpressions );
@@ -135,15 +135,15 @@ bool QgsStoredExpressionManager::readXml( const QDomNode &layerNode )
 {
   clearStoredExpressions();
 
-  QDomNode aaNode = layerNode.namedItem( QStringLiteral( "storedexpressions" ) );
+  QDomNode aaNode = layerNode.namedItem( u"storedexpressions"_s );
 
   if ( !aaNode.isNull() )
   {
-    QDomNodeList aStoredExpressions = aaNode.toElement().elementsByTagName( QStringLiteral( "storedexpression" ) );
+    QDomNodeList aStoredExpressions = aaNode.toElement().elementsByTagName( u"storedexpression"_s );
     for ( int i = 0; i < aStoredExpressions.size(); ++i )
     {
       QDomElement aStoredExpression = aStoredExpressions.at( i ).toElement();
-      addStoredExpression( aStoredExpression.attribute( QStringLiteral( "name" ) ), aStoredExpression.attribute( QStringLiteral( "expression" ) ), QgsStoredExpression::Category( aStoredExpression.attribute( QStringLiteral( "tag" ) ).toInt() ) );
+      addStoredExpression( aStoredExpression.attribute( u"name"_s ), aStoredExpression.attribute( u"expression"_s ), QgsStoredExpression::Category( aStoredExpression.attribute( u"tag"_s ).toInt() ) );
     }
   }
   return true;

@@ -24,7 +24,7 @@
 
 QString QgsPdalMergeAlgorithm::name() const
 {
-  return QStringLiteral( "merge" );
+  return u"merge"_s;
 }
 
 QString QgsPdalMergeAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalMergeAlgorithm::group() const
 
 QString QgsPdalMergeAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalMergeAlgorithm::tags() const
@@ -64,41 +64,41 @@ QgsPdalMergeAlgorithm *QgsPdalMergeAlgorithm::createInstance() const
 
 void QgsPdalMergeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Merged" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Merged" ) ) );
 }
 
 QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
-  if ( outputFile.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive ) )
+  if ( outputFile.endsWith( u".vpc"_s, Qt::CaseInsensitive ) )
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "
                    "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." )
     );
 
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
   QStringList args;
   args.reserve( layers.count() + 3 );
 
-  args << QStringLiteral( "merge" )
-       << QStringLiteral( "--output=%1" ).arg( outputFile );
+  args << u"merge"_s
+       << u"--output=%1"_s.arg( outputFile );
 
   applyCommonParameters( args, layers.at( 0 )->crs(), parameters, context );
   applyThreadsParameter( args, context );
 
-  const QString fileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "inputFiles.txt" ), &context );
+  const QString fileName = QgsProcessingUtils::generateTempFilename( u"inputFiles.txt"_s, &context );
   QFile listFile( fileName );
   if ( !listFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
@@ -111,7 +111,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
     out << layer->source() << "\n";
   }
 
-  args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+  args << u"--input-file-list=%1"_s.arg( fileName );
 
   return args;
 }

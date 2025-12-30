@@ -38,7 +38,7 @@ void QgsTiledSceneLayer3DPropertiesWidget::syncToLayer( QgsTiledSceneLayer *laye
   mLayer = layer;
 
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
-  if ( !renderer || renderer->type() != QLatin1String( "tiledscene" ) )
+  if ( !renderer || renderer->type() != "tiledscene"_L1 )
     return;
 
   QgsTiledSceneLayer3DRenderer *r = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
@@ -62,7 +62,7 @@ QgsTiledSceneLayer3DRendererWidget::QgsTiledSceneLayer3DRendererWidget( QgsMapLa
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
-  setObjectName( QStringLiteral( "mOptsPage_3DView" ) );
+  setObjectName( u"mOptsPage_3DView"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -124,5 +124,5 @@ bool QgsTiledSceneLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsTiledSceneLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

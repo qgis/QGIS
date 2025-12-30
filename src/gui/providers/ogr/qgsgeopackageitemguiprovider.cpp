@@ -119,11 +119,11 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
     menu->addSeparator();
 
-    if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( collectionItem->name() ) )
+    if ( QgsOgrDbConnection::connectionList( u"GPKG"_s ).contains( collectionItem->name() ) )
     {
       QList<QgsGeoPackageCollectionItem *> connectionItems = QgsDataItem::filteredItems<QgsGeoPackageCollectionItem>( selectedItems );
       connectionItems.erase( std::remove_if( connectionItems.begin(), connectionItems.end(), []( QgsGeoPackageCollectionItem *connectionItem ) {
-                               return !QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( connectionItem->name() );
+                               return !QgsOgrDbConnection::connectionList( u"GPKG"_s ).contains( connectionItem->name() );
                              } ),
                              connectionItems.end() );
 
@@ -146,7 +146,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
             QgsOgrDbConnection::deleteConnection( connectionName );
           }
 
-          firstParent->refreshConnections( QStringLiteral( "GPKG" ) );
+          firstParent->refreshConnections( u"GPKG"_s );
         } );
       }
       else
@@ -196,7 +196,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
 
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
     QString errCause;
-    if ( parts.empty() || QgsVariantUtils::isNull( parts.value( QStringLiteral( "path" ) ) ) || QgsVariantUtils::isNull( parts.value( QStringLiteral( "layerName" ) ) ) )
+    if ( parts.empty() || QgsVariantUtils::isNull( parts.value( u"path"_s ) ) || QgsVariantUtils::isNull( parts.value( u"layerName"_s ) ) )
     {
       errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( layerItem->uri() );
     }
@@ -220,9 +220,9 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
       }
 
       // Actually rename
-      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
       std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( layerItem->collection()->path(), QVariantMap() ) ) );
-      const QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      const QString oldName = parts.value( u"layerName"_s ).toString();
       if ( !conn->tableExists( QString(), oldName ) )
       {
         errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( layerItem->collection()->name() );
@@ -263,7 +263,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const 
 {
   // Get layer name from layer URI
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
-  const QString layerName = pieces[QStringLiteral( "layerName" )].toString();
+  const QString layerName = pieces[u"layerName"_s].toString();
 
   QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames );
 
@@ -365,7 +365,7 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer<QgsGeoPackageR
   if ( item )
   {
     QgsSettings settings;
-    const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastGeoPackageDir" ), QDir::homePath() ).toString();
+    const QString lastUsedDir = settings.value( u"UI/lastGeoPackageDir"_s, QDir::homePath() ).toString();
 
     QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New GeoPackage" ), lastUsedDir, tr( "GeoPackage" ) + " (*.gpkg *.GPKG)" );
     if ( filename.isEmpty() )
@@ -373,12 +373,12 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer<QgsGeoPackageR
       return;
     }
 
-    filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "gpkg" ) );
+    filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << u"gpkg"_s );
 
     const QFileInfo fileInfo( filename );
-    settings.setValue( QStringLiteral( "UI/lastGeoPackageDir" ), fileInfo.absoluteDir().absolutePath() );
+    settings.setValue( u"UI/lastGeoPackageDir"_s, fileInfo.absoluteDir().absolutePath() );
 
-    if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) )
     {
       QString error;
       if ( !ogrMetadata->createDatabase( filename, error ) )
@@ -388,7 +388,7 @@ void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer<QgsGeoPackageR
       }
 
       // Call QFileInfo to normalize paths, see: https://github.com/qgis/QGIS/issues/36832
-      if ( QgsOgrProviderUtils::saveConnection( fileInfo.filePath(), QStringLiteral( "GPKG" ) ) )
+      if ( QgsOgrProviderUtils::saveConnection( fileInfo.filePath(), u"GPKG"_s ) )
       {
         item->refreshConnections();
       }
@@ -406,7 +406,7 @@ void QgsGeoPackageItemGuiProvider::createDatabaseAndLayer( const QPointer<QgsGeo
     if ( dialog.exec() == QDialog::Accepted )
     {
       // Call QFileInfo to normalize paths, see: https://github.com/qgis/QGIS/issues/36832
-      if ( QgsOgrProviderUtils::saveConnection( QFileInfo( dialog.databasePath() ).filePath(), QStringLiteral( "GPKG" ) ) )
+      if ( QgsOgrProviderUtils::saveConnection( QFileInfo( dialog.databasePath() ).filePath(), u"GPKG"_s ) )
       {
         item->refreshConnections();
       }
@@ -438,7 +438,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == "vector"_L1 )
   {
     return handleDropUri( item, sourceUris.at( 0 ), context );
   }
@@ -478,13 +478,13 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
       QString error;
       // Common checks for raster and vector
       // aspatial is treated like vector
-      if ( dropUri.layerType == QLatin1String( "vector" ) )
+      if ( dropUri.layerType == "vector"_L1 )
       {
         // open the source layer
         srcLayer = dropUri.vectorLayer( owner, error );
         isVector = true;
       }
-      else if ( dropUri.layerType == QLatin1String( "mesh" ) )
+      else if ( dropUri.layerType == "mesh"_L1 )
       {
         // unsupported
         hasError = true;
@@ -503,7 +503,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
 
       if ( srcLayer->isValid() )
       {
-        uri = item->path().remove( QStringLiteral( "gpkg:/" ) );
+        uri = item->path().remove( u"gpkg:/"_s );
         QgsDebugMsgLevel( "URI " + uri, 3 );
 
         // check if the destination layer already exists
@@ -533,11 +533,11 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             exporterOptions.wkbType = vectorSrcLayer->wkbType();
             const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
 
-            providerOptions.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-            providerOptions.insert( QStringLiteral( "update" ), true );
-            providerOptions.insert( QStringLiteral( "overwrite" ), true );
+            providerOptions.insert( u"driverName"_s, u"GPKG"_s );
+            providerOptions.insert( u"update"_s, true );
+            providerOptions.insert( u"overwrite"_s, true );
 
-            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, destUri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), providerOptions, owner );
+            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, destUri, u"ogr"_s, vectorSrcLayer->crs(), providerOptions, owner );
             mainTask->addSubTask( exportTask );
             hasSubTasks = true;
             // when export is successful:
@@ -629,9 +629,9 @@ bool QgsGeoPackageItemGuiProvider::handleDropUri( QgsGeoPackageCollectionItem *c
   };
 
   QVariantMap providerOptions;
-  providerOptions.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-  providerOptions.insert( QStringLiteral( "update" ), true );
-  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+  providerOptions.insert( u"driverName"_s, u"GPKG"_s );
+  providerOptions.insert( u"update"_s, true );
+  providerOptions.insert( u"overwrite"_s, true );
 
   return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, QString(), context, tr( "GeoPackage Import" ), tr( "Import to GeoPackage database" ), providerOptions, onSuccess, onFailure, this );
 }
@@ -661,9 +661,9 @@ void QgsGeoPackageItemGuiProvider::handleImportVector( QgsGeoPackageCollectionIt
   };
 
   QVariantMap providerOptions;
-  providerOptions.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
-  providerOptions.insert( QStringLiteral( "update" ), true );
-  providerOptions.insert( QStringLiteral( "overwrite" ), true );
+  providerOptions.insert( u"driverName"_s, u"GPKG"_s );
+  providerOptions.insert( u"update"_s, true );
+  providerOptions.insert( u"overwrite"_s, true );
 
   return QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), QString(), context, tr( "GeoPackage Import" ), tr( "Import to GeoPackage database" ), providerOptions, onSuccess, onFailure, this );
 }

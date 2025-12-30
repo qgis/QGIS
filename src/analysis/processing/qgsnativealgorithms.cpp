@@ -310,22 +310,22 @@ QgsNativeAlgorithms::QgsNativeAlgorithms( QObject *parent )
 
 QIcon QgsNativeAlgorithms::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+  return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
 }
 
 QString QgsNativeAlgorithms::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "providerQgis.svg" ) );
+  return QgsApplication::iconPath( u"providerQgis.svg"_s );
 }
 
 QString QgsNativeAlgorithms::id() const
 {
-  return QStringLiteral( "native" );
+  return u"native"_s;
 }
 
 QString QgsNativeAlgorithms::helpId() const
 {
-  return QStringLiteral( "qgis" );
+  return u"qgis"_s;
 }
 
 QString QgsNativeAlgorithms::name() const

@@ -155,7 +155,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRo
 
 bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( block )
     block->reset();
   //get partinfo
@@ -217,7 +217,7 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
       return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
+  QgsDebugMsgLevel( u"nCols = %1 nRows = %2"_s.arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle
   const QgsRectangle viewPortExtent = mExtent;

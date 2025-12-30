@@ -48,7 +48,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
 
     // when saving we used ; as a concatenator... but that was silly, cos maybe the symbol keys contain this string!
     // try to handle this gracefully via regex...
-    const thread_local QRegularExpression partsRx( QStringLiteral( "((?:.*?),(?:.*?),(?:(?:\\d+,)+)?(?:\\d+);)" ) );
+    const thread_local QRegularExpression partsRx( u"((?:.*?),(?:.*?),(?:(?:\\d+,)+)?(?:\\d+);)"_s );
     QRegularExpressionMatchIterator partsIt = partsRx.globalMatch( str + ';' );
 
     while ( partsIt.hasNext() )
@@ -59,7 +59,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
       // We should have "layer_id,symbol_key,symbol_layer_index0,symbol_layer_index1,..."
       // EXCEPT that the symbol_key CAN have commas, so this whole logic is extremely broken.
       // Let's see if a messy regex can save the day!
-      const thread_local QRegularExpression rx( QStringLiteral( "(.*?),(.*?),((?:\\d+,)+)?(\\d+)" ) );
+      const thread_local QRegularExpression rx( u"(.*?),(.*?),((?:\\d+,)+)?(\\d+)"_s );
 
       const QRegularExpressionMatch match = rx.match( tuple );
       if ( !match.hasMatch() )

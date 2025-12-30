@@ -134,7 +134,7 @@ QJsonObject QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &
 {
   QJsonObject json = exportSymbolToJson( settings, context );
   const QString text = data( Qt::DisplayRole ).toString();
-  json[ QStringLiteral( "title" ) ] = text;
+  json[ u"title"_s ] = text;
   return json;
 }
 
@@ -190,7 +190,7 @@ QJsonObject QgsLayerTreeModelLegendNode::exportSymbolToJson( const QgsLegendSett
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -432,7 +432,7 @@ QString QgsSymbolLegendNode::symbolLabel() const
   QString label;
   if ( mEmbeddedInParent )
   {
-    const QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
+    const QVariant legendlabel = mLayerNode->customProperty( u"legend/title-label"_s );
     const QString layerName = QgsVariantUtils::isNull( legendlabel ) ? mLayerNode->name() : legendlabel.toString();
     label = mUserLabel.isEmpty() ? layerName : mUserLabel;
   }
@@ -839,11 +839,11 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   QJsonObject json;
   if ( mItem.scaleMaxDenom() > 0 )
   {
-    json[ QStringLiteral( "scaleMaxDenom" ) ] = mItem.scaleMaxDenom();
+    json[ u"scaleMaxDenom"_s ] = mItem.scaleMaxDenom();
   }
   if ( mItem.scaleMinDenom() > 0 )
   {
-    json[ QStringLiteral( "scaleMinDenom" ) ] = mItem.scaleMinDenom();
+    json[ u"scaleMinDenom"_s ] = mItem.scaleMinDenom();
   }
 
   const QgsSymbol *s = mCustomSymbol ? mCustomSymbol.get() : mItem.symbol();
@@ -891,7 +891,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   img.save( &buffer, "PNG" );
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -926,7 +926,7 @@ void QgsSymbolLegendNode::updateLabel()
   if ( !mLayerNode )
     return;
 
-  const bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+  const bool showFeatureCount = mLayerNode->customProperty( u"showFeatureCount"_s, 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !mLayerNode->labelExpression().isEmpty() )
     mLabel = "[%" + mLayerNode->labelExpression() + "%]";
@@ -939,8 +939,8 @@ void QgsSymbolLegendNode::updateLabel()
     const qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ;
 
     // if you modify this line, please update QgsLayerTreeModel::data (DisplayRole)
-    mLabel += QStringLiteral( " [%1%2]" ).arg(
-                estimatedCount ? QStringLiteral( "≈" ) : QString(),
+    mLabel += u" [%1%2]"_s.arg(
+                estimatedCount ? u"≈"_s : QString(),
                 count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
   }
 
@@ -988,11 +988,11 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_label"_s, symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_id"_s, mItem.ruleKey(), true ) );
   if ( vl )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_count"_s, QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
   }
   return scope;
 }
@@ -1083,7 +1083,7 @@ QJsonObject QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, c
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -1279,7 +1279,7 @@ QJsonObject QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettin
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -1331,7 +1331,7 @@ QImage QgsWmsLegendNode::getLegendGraphic( bool synchronous ) const
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Failed to download legend graphics: layer is not valid." ) );
+      QgsDebugError( u"Failed to download legend graphics: layer is not valid."_s );
     }
   }
 
@@ -1414,7 +1414,7 @@ QJsonObject QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, con
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -1429,7 +1429,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
   QPainter painter;
   painter.begin( &image );
   painter.setPen( QColor( 255, 0, 0 ) );
-  painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
+  painter.setFont( QFont( u"Chicago"_s, fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
   painter.drawText( 0, margin + fontHeight, msg );
   //painter.drawText(0,2*(margin+fontHeight),tr("retrying in 5 seconds…"));
@@ -1670,7 +1670,7 @@ QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSetting
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 

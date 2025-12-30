@@ -246,7 +246,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
     if ( networkRequest.get( request ) != QgsBlockingNetworkRequest::NoError )
     {
       if ( errors )
-        *errors << QStringLiteral( "Failed to download image: %1" ).arg( url.toString() );
+        *errors << u"Failed to download image: %1"_s.arg( url.toString() );
     }
     else
     {
@@ -259,7 +259,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
     QString localFilePath = url.toLocalFile();
     if ( localFilePath.contains( ".slpk/" ) ) // we need to extract the image from SLPK archive
     {
-      const QStringList parts = localFilePath.split( QStringLiteral( ".slpk/" ) );
+      const QStringList parts = localFilePath.split( u".slpk/"_s );
       if ( parts.size() == 2 )
       {
         QString slpkPath = parts[0] + ".slpk";
@@ -273,13 +273,13 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
         else
         {
           if ( errors )
-            *errors << QStringLiteral( "Unable to extract image '%1' from SLPK archive: %2" ).arg( imagePath ).arg( slpkPath );
+            *errors << u"Unable to extract image '%1' from SLPK archive: %2"_s.arg( imagePath ).arg( slpkPath );
         }
       }
       else
       {
         if ( errors )
-          *errors << QStringLiteral( "Missing image path in SLPK archive: %1" ).arg( localFilePath );
+          *errors << u"Missing image path in SLPK archive: %1"_s.arg( localFilePath );
       }
     }
     else if ( QFile::exists( localFilePath ) )
@@ -293,7 +293,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
     else
     {
       if ( errors )
-        *errors << QStringLiteral( "Unable to open image: %1" ).arg( url.toString() );
+        *errors << u"Unable to open image: %1"_s.arg( url.toString() );
     }
   }
   return QByteArray();
@@ -341,7 +341,7 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
         if ( !QgsGltfUtils::loadImageDataWithQImage( &img, -1, nullptr, nullptr, 0, 0, ( const unsigned char * ) ba.constData(), ba.size(), nullptr ) )
         {
           if ( errors )
-            *errors << QStringLiteral( "Failed to load image: %1" ).arg( imgUri );
+            *errors << u"Failed to load image: %1"_s.arg( imgUri );
         }
       }
     }
@@ -424,7 +424,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       if ( primitive.mode != TINYGLTF_MODE_TRIANGLES )
       {
         if ( errors )
-          *errors << QStringLiteral( "Unsupported mesh primitive: %1" ).arg( primitive.mode );
+          *errors << u"Unsupported mesh primitive: %1"_s.arg( primitive.mode );
         continue;
       }
 
@@ -436,7 +436,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       if ( posAccessor.componentType != TINYGLTF_PARAMETER_TYPE_FLOAT || posAccessor.type != TINYGLTF_TYPE_VEC3 )
       {
         if ( errors )
-          *errors << QStringLiteral( "Unsupported position accessor type: %1 / %2" ).arg( posAccessor.componentType ).arg( posAccessor.type );
+          *errors << u"Unsupported position accessor type: %1 / %2"_s.arg( posAccessor.componentType ).arg( posAccessor.type );
         continue;
       }
 
@@ -554,17 +554,17 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
   bool res = QgsGltfUtils::loadGltfModel( data, model, &gltfErrors, &gltfWarnings );
   if ( !gltfErrors.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( baseUri, gltfErrors ) );
+    QgsDebugError( u"Error raised reading %1: %2"_s.arg( baseUri, gltfErrors ) );
   }
   if ( !gltfWarnings.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( baseUri, gltfWarnings ) );
+    QgsDebugError( u"Warnings raised reading %1: %2"_s.arg( baseUri, gltfWarnings ) );
   }
   if ( !res )
   {
     if ( errors )
     {
-      errors->append( QStringLiteral( "GLTF load error: " ) + gltfErrors );
+      errors->append( u"GLTF load error: "_s + gltfErrors );
     }
     return nullptr;
   }

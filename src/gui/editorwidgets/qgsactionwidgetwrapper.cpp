@@ -129,7 +129,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
               return;
             }
 
-            const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
+            const QString formCode = u"locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n"_s
                                        .arg( ( quint64 ) form );
             QgsAction action { mAction };
             action.setCommand( formCode + mAction.command() );

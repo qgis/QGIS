@@ -31,7 +31,7 @@ namespace QgsWfs
 {
   QString implementationVersion()
   {
-    return QStringLiteral( "1.1.0" );
+    return u"1.1.0"_s;
   }
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
@@ -43,9 +43,9 @@ namespace QgsWfs
     if ( href.isEmpty() )
     {
       static QSet<QString> sFilter {
-        QStringLiteral( "REQUEST" ),
-        QStringLiteral( "VERSION" ),
-        QStringLiteral( "SERVICE" ),
+        u"REQUEST"_s,
+        u"VERSION"_s,
+        u"SERVICE"_s,
       };
 
       href = request.originalUrl();
@@ -98,8 +98,8 @@ namespace QgsWfs
   {
     QgsFeatureRequest request;
 
-    QDomNodeList fidNodes = filterElem.elementsByTagName( QStringLiteral( "FeatureId" ) );
-    QDomNodeList goidNodes = filterElem.elementsByTagName( QStringLiteral( "GmlObjectId" ) );
+    QDomNodeList fidNodes = filterElem.elementsByTagName( u"FeatureId"_s );
+    QDomNodeList goidNodes = filterElem.elementsByTagName( u"GmlObjectId"_s );
     if ( !fidNodes.isEmpty() )
     {
       // Get the server feature ids in filter element
@@ -108,24 +108,24 @@ namespace QgsWfs
       for ( int f = 0; f < fidNodes.size(); f++ )
       {
         fidElem = fidNodes.at( f ).toElement();
-        if ( !fidElem.hasAttribute( QStringLiteral( "fid" ) ) )
+        if ( !fidElem.hasAttribute( u"fid"_s ) )
         {
           throw QgsRequestNotWellFormedException( "FeatureId element without fid attribute" );
         }
 
-        QString serverFid = fidElem.attribute( QStringLiteral( "fid" ) );
-        if ( serverFid.contains( QLatin1String( "." ) ) )
+        QString serverFid = fidElem.attribute( u"fid"_s );
+        if ( serverFid.contains( "."_L1 ) )
         {
-          if ( serverFid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+          if ( serverFid.section( u"."_s, 0, 0 ) != typeName )
             continue;
-          serverFid = serverFid.section( QStringLiteral( "." ), 1, 1 );
+          serverFid = serverFid.section( u"."_s, 1, 1 );
         }
         collectedServerFids << serverFid;
       }
       // No server feature ids found
       if ( collectedServerFids.isEmpty() )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element correctly parse against typeName '%1'" ).arg( typeName ) );
+        throw QgsRequestNotWellFormedException( u"No FeatureId element correctly parse against typeName '%1'"_s.arg( typeName ) );
       }
       // update server feature ids
       serverFids.append( collectedServerFids );
@@ -140,44 +140,44 @@ namespace QgsWfs
       for ( int f = 0; f < goidNodes.size(); f++ )
       {
         goidElem = goidNodes.at( f ).toElement();
-        if ( !goidElem.hasAttribute( QStringLiteral( "id" ) ) && !goidElem.hasAttribute( QStringLiteral( "gml:id" ) ) )
+        if ( !goidElem.hasAttribute( u"id"_s ) && !goidElem.hasAttribute( u"gml:id"_s ) )
         {
           throw QgsRequestNotWellFormedException( "GmlObjectId element without gml:id attribute" );
         }
 
-        QString serverFid = goidElem.attribute( QStringLiteral( "id" ) );
+        QString serverFid = goidElem.attribute( u"id"_s );
         if ( serverFid.isEmpty() )
-          serverFid = goidElem.attribute( QStringLiteral( "gml:id" ) );
-        if ( serverFid.contains( QLatin1String( "." ) ) )
+          serverFid = goidElem.attribute( u"gml:id"_s );
+        if ( serverFid.contains( "."_L1 ) )
         {
-          if ( serverFid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+          if ( serverFid.section( u"."_s, 0, 0 ) != typeName )
             continue;
-          serverFid = serverFid.section( QStringLiteral( "." ), 1, 1 );
+          serverFid = serverFid.section( u"."_s, 1, 1 );
         }
         collectedServerFids << serverFid;
       }
       // No server feature ids found
       if ( collectedServerFids.isEmpty() )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "No GmlObjectId element correctly parse against typeName '%1'" ).arg( typeName ) );
+        throw QgsRequestNotWellFormedException( u"No GmlObjectId element correctly parse against typeName '%1'"_s.arg( typeName ) );
       }
       // update server feature ids
       serverFids.append( collectedServerFids );
       request.setFlags( Qgis::FeatureRequestFlag::NoFlags );
       return request;
     }
-    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "BBOX" ) )
+    else if ( filterElem.firstChildElement().tagName() == "BBOX"_L1 )
     {
       QDomElement bboxElem = filterElem.firstChildElement();
       QDomElement childElem = bboxElem.firstChildElement();
 
       while ( !childElem.isNull() )
       {
-        if ( childElem.tagName() == QLatin1String( "Box" ) )
+        if ( childElem.tagName() == "Box"_L1 )
         {
           request.setFilterRect( QgsOgcUtils::rectangleFromGMLBox( childElem ) );
         }
-        else if ( childElem.tagName() != QLatin1String( "PropertyName" ) )
+        else if ( childElem.tagName() != "PropertyName"_L1 )
         {
           QgsOgcUtils::Context ctx { layer, project ? project->transformContext() : QgsCoordinateTransformContext() };
           QgsGeometry geom = QgsOgcUtils::geometryFromGML( childElem, ctx );
@@ -190,26 +190,26 @@ namespace QgsWfs
       return request;
     }
     // Apply BBOX through filterRect even inside an And to use spatial index
-    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) && !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
+    else if ( filterElem.firstChildElement().tagName() == "And"_L1 && !filterElem.firstChildElement().firstChildElement( "BBOX"_L1 ).isNull() )
     {
       int nbChildElem = filterElem.firstChildElement().childNodes().size();
 
       // Create a filter element to parse And child not BBOX
-      QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+      QDomElement childFilterElement = filterElem.ownerDocument().createElement( "Filter"_L1 );
       if ( nbChildElem > 2 )
       {
-        QDomElement childAndElement = filterElem.ownerDocument().createElement( QLatin1String( "And" ) );
+        QDomElement childAndElement = filterElem.ownerDocument().createElement( "And"_L1 );
         childFilterElement.appendChild( childAndElement );
       }
 
       // Create a filter element to parse  BBOX
-      QDomElement bboxFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+      QDomElement bboxFilterElement = filterElem.ownerDocument().createElement( "Filter"_L1 );
 
       QDomElement childElem = filterElem.firstChildElement().firstChildElement();
       while ( !childElem.isNull() )
       {
         // Update request based on BBOX
-        if ( childElem.tagName() == QLatin1String( "BBOX" ) )
+        if ( childElem.tagName() == "BBOX"_L1 )
         {
           // Clone BBOX
           bboxFilterElement.appendChild( childElem.cloneNode( true ) );

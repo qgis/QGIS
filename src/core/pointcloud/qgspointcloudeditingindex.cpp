@@ -170,7 +170,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   }
 
   QFileInfo fileInfo( mUri );
-  const QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-update.copc.laz" ) );
+  const QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + u"-update.copc.laz"_s );
 
   if ( !QgsCopcUpdate::writeUpdatedFile( mUri, outputFilename, updatedChunks, errorMessage ) )
   {
@@ -181,11 +181,11 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
   copcIndex->reset();
 
-  const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-original.copc.laz" ) );
+  const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + u"-original.copc.laz"_s );
   if ( !QFile::rename( mUri, originalFilename ) )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Rename of the old COPC failed!" );
+      *errorMessage = u"Rename of the old COPC failed!"_s;
     QFile::remove( outputFilename );
     return false;
   }
@@ -193,7 +193,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   if ( !QFile::rename( outputFilename, mUri ) )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Rename of the new COPC failed!" );
+      *errorMessage = u"Rename of the new COPC failed!"_s;
     QFile::rename( originalFilename, mUri );
     QFile::remove( outputFilename );
     return false;
@@ -202,7 +202,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   if ( !QFile::remove( originalFilename ) )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Removal of the old COPC failed!" );
+      *errorMessage = u"Removal of the old COPC failed!"_s;
     // TODO: cleanup here as well?
     return false;
   }

@@ -150,7 +150,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 {
 #ifdef HAVE_STATIC_PROVIDERS
   Q_UNUSED( pluginPath )
-  QgsDebugMsgLevel( QStringLiteral( "Forced only static GUI providers" ), 2 );
+  QgsDebugMsgLevel( u"Forced only static GUI providers"_s, 2 );
 #else
   typedef QgsProviderGuiMetadata *factory_function();
 
@@ -164,14 +164,14 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 #elif defined( ANDROID )
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
+  mLibraryDirectory.setNameFilters( QStringList( u"*.so"_s ) );
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "Checking %1 for GUI provider plugins" ).arg( mLibraryDirectory.path() ), 2 );
+  QgsDebugMsgLevel( u"Checking %1 for GUI provider plugins"_s.arg( mLibraryDirectory.path() ), 2 );
 
   if ( mLibraryDirectory.count() == 0 )
   {
-    QgsDebugError( QStringLiteral( "No dynamic QGIS GUI provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() ) );
+    QgsDebugError( u"No dynamic QGIS GUI provider plugins found in:\n%1\n"_s.arg( mLibraryDirectory.path() ) );
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
@@ -198,7 +198,7 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
     QLibrary myLib( fi.filePath() );
     if ( myLib.load() )
     {
-      QFunctionPointer func = myLib.resolve( QStringLiteral( "providerGuiMetadataFactory" ).toLatin1().data() );
+      QFunctionPointer func = myLib.resolve( u"providerGuiMetadataFactory"_s.toLatin1().data() );
       factory_function *function = reinterpret_cast<factory_function *>( cast_to_fptr( func ) );
       if ( !function )
         continue;

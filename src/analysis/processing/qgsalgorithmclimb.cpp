@@ -21,7 +21,7 @@
 
 QString QgsClimbAlgorithm::name() const
 {
-  return QStringLiteral( "climbalongline" );
+  return u"climbalongline"_s;
 }
 
 QString QgsClimbAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsClimbAlgorithm::group() const
 
 QString QgsClimbAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsClimbAlgorithm::shortHelpString() const
@@ -68,21 +68,21 @@ QgsClimbAlgorithm *QgsClimbAlgorithm::createInstance() const
 
 void QgsClimbAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Line layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Climb layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Line layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Climb layer" ) ) );
   // TODO QGIS 5.0 harmonize output names with the rest of algorithms (use underscore to separate words)
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTALCLIMB" ), QObject::tr( "Total climb" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTALDESCENT" ), QObject::tr( "Total descent" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MINELEVATION" ), QObject::tr( "Minimum elevation" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAXELEVATION" ), QObject::tr( "Maximum elevation" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"TOTALCLIMB"_s, QObject::tr( "Total climb" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"TOTALDESCENT"_s, QObject::tr( "Total descent" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MINELEVATION"_s, QObject::tr( "Minimum elevation" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MAXELEVATION"_s, QObject::tr( "Maximum elevation" ) ) );
 }
 
 QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
   {
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
   }
 
   if ( !QgsWkbTypes::hasZ( source->wkbType() ) )
@@ -92,16 +92,16 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
 
   QgsFields outputFields = source->fields();
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "climb" ), QMetaType::Type::Double ) );
-  newFields.append( QgsField( QStringLiteral( "descent" ), QMetaType::Type::Double ) );
-  newFields.append( QgsField( QStringLiteral( "minelev" ), QMetaType::Type::Double ) );
-  newFields.append( QgsField( QStringLiteral( "maxelev" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"climb"_s, QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"descent"_s, QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"minelev"_s, QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"maxelev"_s, QMetaType::Type::Double ) );
   outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   double totalClimb = 0;
   double totalDescent = 0;
@@ -183,7 +183,7 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     f.setAttributes( attrs );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
     minElevation = std::min( minElevation, minElev );
     maxElevation = std::max( maxElevation, maxElev );
@@ -196,19 +196,19 @@ QVariantMap QgsClimbAlgorithm::processAlgorithm( const QVariantMap &parameters, 
 
   if ( !noGeometry.empty() )
   {
-    feedback->pushInfo( QObject::tr( "The following features do not have geometry: %1" ).arg( noGeometry.join( QLatin1String( ", " ) ) ) );
+    feedback->pushInfo( QObject::tr( "The following features do not have geometry: %1" ).arg( noGeometry.join( ", "_L1 ) ) );
   }
   if ( !noZValue.empty() )
   {
-    feedback->pushInfo( QObject::tr( "The following points do not have Z value: %1" ).arg( noZValue.join( QLatin1String( ", " ) ) ) );
+    feedback->pushInfo( QObject::tr( "The following points do not have Z value: %1" ).arg( noZValue.join( ", "_L1 ) ) );
   }
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), dest );
-  results.insert( QStringLiteral( "TOTALCLIMB" ), totalClimb );
-  results.insert( QStringLiteral( "TOTALDESCENT" ), totalDescent );
-  results.insert( QStringLiteral( "MINELEVATION" ), minElevation );
-  results.insert( QStringLiteral( "MAXELEVATION" ), maxElevation );
+  results.insert( u"OUTPUT"_s, dest );
+  results.insert( u"TOTALCLIMB"_s, totalClimb );
+  results.insert( u"TOTALDESCENT"_s, totalDescent );
+  results.insert( u"MINELEVATION"_s, minElevation );
+  results.insert( u"MAXELEVATION"_s, maxElevation );
   return results;
 }
 

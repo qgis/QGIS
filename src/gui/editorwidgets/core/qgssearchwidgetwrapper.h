@@ -132,7 +132,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     virtual QString createExpression( FilterFlags flags ) const
     {
       Q_UNUSED( flags )
-      return QStringLiteral( "TRUE" );
+      return u"TRUE"_s;
     }
 
     /**

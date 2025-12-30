@@ -310,7 +310,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 
     QgsOuterGlowEffect();
 
-    QString type() const override { return QStringLiteral( "outerGlow" ); }
+    QString type() const override { return u"outerGlow"_s; }
     QgsOuterGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
 
     QgsInnerGlowEffect();
 
-    QString type() const override { return QStringLiteral( "innerGlow" ); }
+    QString type() const override { return u"innerGlow"_s; }
     QgsInnerGlowEffect *clone() const override SIP_FACTORY;
 
   protected:

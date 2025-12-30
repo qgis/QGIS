@@ -87,7 +87,7 @@ namespace pal
       friend class Layer;
 
     public:
-      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( QStringLiteral( "pal" ) );
+      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( u"pal"_s );
 
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPoints;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;

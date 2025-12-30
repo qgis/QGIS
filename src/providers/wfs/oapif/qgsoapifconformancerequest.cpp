@@ -60,7 +60,7 @@ void QgsOapifConformanceRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing Conformance response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing Conformance response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );

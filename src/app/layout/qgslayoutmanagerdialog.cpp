@@ -55,18 +55,18 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 
   QgsGui::enableAutoGeometryRestore( this );
   mTemplateFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  mTemplateFileWidget->setFilter( tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
+  mTemplateFileWidget->setFilter( tr( "Layout templates" ) + u" (*.qpt *.QPT)"_s );
   mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
   mTemplateFileWidget->lineEdit()->setShowClearButton( false );
   QgsSettings settings;
-  mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "lastComposerTemplateDir" ), QString(), QgsSettings::App ).toString() );
-  mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "ComposerManager/templatePath" ), QString(), QgsSettings::App ).toString() );
+  mTemplateFileWidget->setDefaultRoot( settings.value( u"lastComposerTemplateDir"_s, QString(), QgsSettings::App ).toString() );
+  mTemplateFileWidget->setFilePath( settings.value( u"ComposerManager/templatePath"_s, QString(), QgsSettings::App ).toString() );
 
   connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "ComposerManager/templatePath" ), mTemplateFileWidget->filePath(), QgsSettings::App );
+    settings.setValue( u"ComposerManager/templatePath"_s, mTemplateFileWidget->filePath(), QgsSettings::App );
     QFileInfo tmplFileInfo( mTemplateFileWidget->filePath() );
-    settings.setValue( QStringLiteral( "lastComposerTemplateDir" ), tmplFileInfo.absolutePath(), QgsSettings::App );
+    settings.setValue( u"lastComposerTemplateDir"_s, tmplFileInfo.absolutePath(), QgsSettings::App );
   } );
 
   mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(), this );
@@ -199,7 +199,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
   const QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
   for ( const QFileInfo &info : fileInfoList )
   {
-    if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
+    if ( info.suffix().compare( "qpt"_L1, Qt::CaseInsensitive ) == 0 )
     {
       templateMap.insert( info.completeBaseName(), info.absoluteFilePath() );
     }
@@ -240,7 +240,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     {
       QDomElement layoutElem = templateDoc.documentElement();
       if ( !layoutElem.isNull() )
-        storedTitle = layoutElem.attribute( QStringLiteral( "name" ) );
+        storedTitle = layoutElem.attribute( u"name"_s );
     }
   }
 
@@ -504,5 +504,5 @@ void QgsLayoutManagerDialog::itemDoubleClicked( const QModelIndex &index )
 
 void QgsLayoutManagerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#the-layout-manager" ) );
+  QgsHelp::openHelp( u"print_composer/overview_composer.html#the-layout-manager"_s );
 }

@@ -23,7 +23,7 @@
 
 #include <QPainter>
 
-const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = QStringLiteral( "Stacked" );
+const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = u"Stacked"_s;
 
 QgsStackedBarDiagram::QgsStackedBarDiagram()
 {

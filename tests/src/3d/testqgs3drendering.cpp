@@ -75,7 +75,7 @@ class TestQgs3DRendering : public QgsTest
 
   public:
     TestQgs3DRendering()
-      : QgsTest( QStringLiteral( "3D Rendering Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Rendering Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -635,9 +635,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhong()
   QgsProperty diffuseColor;
   QgsProperty ambientColor;
   QgsProperty specularColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  ambientColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  specularColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, ambientColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Specular, specularColor );
@@ -689,9 +689,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
   QgsProperty diffuseColor;
   QgsProperty ambientColor;
   QgsProperty specularColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  ambientColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  specularColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, ambientColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Specular, specularColor );
@@ -775,9 +775,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGooch()
   QgsProperty diffuseColor;
   QgsProperty warmColor;
   QgsProperty coolColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  warmColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  coolColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  warmColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  coolColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Warm, warmColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Cool, coolColor );
@@ -831,9 +831,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
   QgsProperty diffuseColor;
   QgsProperty warmColor;
   QgsProperty coolColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  warmColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  coolColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  warmColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  coolColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Warm, warmColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Cool, coolColor );
@@ -1264,7 +1264,7 @@ void TestQgs3DRendering::testLineRenderingDataDefinedColors()
   QgsSimpleLineMaterialSettings matSettings;
   matSettings.setAmbient( Qt::red );
   QgsPropertyCollection properties;
-  properties.setProperty( QgsSimpleLineMaterialSettings::Property::Ambient, QgsProperty::fromExpression( QStringLiteral( "case when \"category\" = 'blue' then '#2233cc' when \"category\" = 'green' then '#33ff55' end" ) ) );
+  properties.setProperty( QgsSimpleLineMaterialSettings::Property::Ambient, QgsProperty::fromExpression( u"case when \"category\" = 'blue' then '#2233cc' when \"category\" = 'green' then '#33ff55' end"_s ) );
   matSettings.setDataDefinedProperties( properties );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
@@ -1273,12 +1273,12 @@ void TestQgs3DRendering::testLineRenderingDataDefinedColors()
   pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
   QgsFeature f1( layerLines->fields() );
   f1.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
-  f1.setAttributes( QgsAttributes( { QStringLiteral( "blue" ) } ) );
+  f1.setAttributes( QgsAttributes( { u"blue"_s } ) );
   pts.clear();
   pts << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );
   QgsFeature f2( layerLines->fields() );
   f2.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
-  f2.setAttributes( QgsAttributes( { QStringLiteral( "green" ) } ) );
+  f2.setAttributes( QgsAttributes( { u"green"_s } ) );
   QgsFeatureList flist;
   flist << f1 << f2;
   layerLines->dataProvider()->addFeatures( flist );
@@ -1669,7 +1669,7 @@ void TestQgs3DRendering::testAnimationExport()
   );
 
   QVERIFY( success );
-  QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ) ) );
+  QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( u"test3danimation001.png"_s ) ) ) );
 }
 
 void TestQgs3DRendering::testInstancedRendering()
@@ -1697,7 +1697,7 @@ void TestQgs3DRendering::testInstancedRendering()
   QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
   sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
   QVariantMap vmSphere;
-  vmSphere[QStringLiteral( "radius" )] = 80.0f;
+  vmSphere[u"radius"_s] = 80.0f;
   sphere3DSymbol->setShapeProperties( vmSphere );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::gray );
@@ -1744,8 +1744,8 @@ void TestQgs3DRendering::testInstancedRendering()
   QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
-  vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 300.0f;
+  vmCylinder[u"radius"_s] = 20.0f;
+  vmCylinder[u"length"_s] = 300.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
 
@@ -1797,7 +1797,7 @@ void TestQgs3DRendering::testModelPointRendering()
   QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
   symbol->setShape( Qgis::Point3DShape::Model );
   QVariantMap vMap;
-  vMap[QStringLiteral( "model" )] = testDataPath( "/mesh/tree.obj" );
+  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
   symbol->setShapeProperties( vMap );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::green );
@@ -2014,7 +2014,7 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
 {
   QgsProject p;
 
-  QgsCoordinateReferenceSystem newCrs( QStringLiteral( "EPSG:4978" ) );
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
   p.setCrs( newCrs );
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( testDataPath( "/3d/earth_size_sphere_4978.gpkg" ), "lines", "ogr" );
@@ -2559,20 +2559,20 @@ void TestQgs3DRendering::testAnnotationLayerText()
 
   auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
 
-  auto text1 = std::make_unique< QgsAnnotationPointTextItem >( QStringLiteral( "POINT" ), QgsPoint( 1000, 1000 ) );
+  auto text1 = std::make_unique< QgsAnnotationPointTextItem >( u"POINT"_s, QgsPoint( 1000, 1000 ) );
   annotationLayer->addItem( text1.release() );
 
-  const QgsGeometry curve = QgsGeometry::fromWkt( QStringLiteral( "Linestring( 1000 2000, 1500 2000 )" ) );
-  auto text2 = std::make_unique< QgsAnnotationLineTextItem >( QStringLiteral( "LINE" ), qgsgeometry_cast< const QgsLineString * >( curve.constGet() )->clone() );
+  const QgsGeometry curve = QgsGeometry::fromWkt( u"Linestring( 1000 2000, 1500 2000 )"_s );
+  auto text2 = std::make_unique< QgsAnnotationLineTextItem >( u"LINE"_s, qgsgeometry_cast< const QgsLineString * >( curve.constGet() )->clone() );
   annotationLayer->addItem( text2.release() );
 
-  auto text3 = std::make_unique< QgsAnnotationRectangleTextItem >( QStringLiteral( "RECT" ), QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
+  auto text3 = std::make_unique< QgsAnnotationRectangleTextItem >( u"RECT"_s, QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
   annotationLayer->addItem( text3.release() );
 
   auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
   format.setSize( 48 );
   format.setSizeUnit( Qgis::RenderUnit::Points );
   format.setColor( QColor( 0, 0, 255 ) );

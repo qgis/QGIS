@@ -48,38 +48,38 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   spinCameraFieldOfView->setClearValue( 45.0 );
 
   QgsSettings settings;
-  const Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
+  const Qgis::NavigationMode defaultNavMode = settings.enumValue( u"map3d/defaultNavigation"_s, Qgis::NavigationMode::TerrainBased, QgsSettings::App );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( defaultNavMode ) ) );
 
-  const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( QStringLiteral( "map3d/axisInversion" ), Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
+  const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
   mInvertVerticalAxisCombo->setCurrentIndex( mInvertVerticalAxisCombo->findData( QVariant::fromValue( axisInversion ) ) );
 
-  const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( QStringLiteral( "map3d/defaultProjection" ), Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
+  const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
   cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( static_cast<int>( defaultProjection ) ) );
 
-  mCameraMovementSpeed->setValue( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
-  spinCameraFieldOfView->setValue( settings.value( QStringLiteral( "map3d/defaultFieldOfView" ), 45, QgsSettings::App ).toInt() );
+  mCameraMovementSpeed->setValue( settings.value( u"map3d/defaultMovementSpeed"_s, 5, QgsSettings::App ).toDouble() );
+  spinCameraFieldOfView->setValue( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
 
   mGpuMemoryLimit->setClearValue( 500 );
-  mGpuMemoryLimit->setValue( settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble() );
+  mGpuMemoryLimit->setValue( settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble() );
 }
 
 QString Qgs3DOptionsWidget::helpKey() const
 {
   // typo IS correct here!
-  return QStringLiteral( "introduction/qgis_configuration.html#d-options" );
+  return u"introduction/qgis_configuration.html#d-options"_s;
 }
 
 void Qgs3DOptionsWidget::apply()
 {
   QgsSettings settings;
-  settings.setEnumValue( QStringLiteral( "map3d/defaultNavigation" ), mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>(), QgsSettings::App );
-  settings.setEnumValue( QStringLiteral( "map3d/axisInversion" ), mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>(), QgsSettings::App );
-  settings.setValue( QStringLiteral( "map3d/defaultProjection" ), static_cast<Qt3DRender::QCameraLens::ProjectionType>( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
-  settings.setValue( QStringLiteral( "map3d/defaultMovementSpeed" ), mCameraMovementSpeed->value(), QgsSettings::App );
-  settings.setValue( QStringLiteral( "map3d/defaultFieldOfView" ), spinCameraFieldOfView->value(), QgsSettings::App );
+  settings.setEnumValue( u"map3d/defaultNavigation"_s, mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>(), QgsSettings::App );
+  settings.setEnumValue( u"map3d/axisInversion"_s, mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>(), QgsSettings::App );
+  settings.setValue( u"map3d/defaultProjection"_s, static_cast<Qt3DRender::QCameraLens::ProjectionType>( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
+  settings.setValue( u"map3d/defaultMovementSpeed"_s, mCameraMovementSpeed->value(), QgsSettings::App );
+  settings.setValue( u"map3d/defaultFieldOfView"_s, spinCameraFieldOfView->value(), QgsSettings::App );
 
-  settings.setValue( QStringLiteral( "map3d/gpuMemoryLimit" ), mGpuMemoryLimit->value(), QgsSettings::App );
+  settings.setValue( u"map3d/gpuMemoryLimit"_s, mGpuMemoryLimit->value(), QgsSettings::App );
 }
 
 
@@ -87,13 +87,13 @@ void Qgs3DOptionsWidget::apply()
 // Qgs3DOptionsFactory
 //
 Qgs3DOptionsFactory::Qgs3DOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "3D" ), QIcon(), QStringLiteral( "3d" ) )
+  : QgsOptionsWidgetFactory( tr( "3D" ), QIcon(), u"3d"_s )
 {
 }
 
 QIcon Qgs3DOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) );
+  return QgsApplication::getThemeIcon( u"/3d.svg"_s );
 }
 
 QgsOptionsPageWidget *Qgs3DOptionsFactory::createWidget( QWidget *parent ) const
@@ -103,5 +103,5 @@ QgsOptionsPageWidget *Qgs3DOptionsFactory::createWidget( QWidget *parent ) const
 
 QString Qgs3DOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageColors" );
+  return u"mOptionsPageColors"_s;
 }

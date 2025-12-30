@@ -160,7 +160,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+        QString str = u"<QgsProviderSublayerModel.NonLayerItem: %1 - %2>"_s.arg( sipCpp->type(), sipCpp->name() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif

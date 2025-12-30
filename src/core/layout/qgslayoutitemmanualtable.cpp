@@ -48,7 +48,7 @@ int QgsLayoutItemManualTable::type() const
 
 QIcon QgsLayoutItemManualTable::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemTable.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s );
 }
 
 QgsLayoutItemManualTable *QgsLayoutItemManualTable::create( QgsLayout *layout )
@@ -188,22 +188,22 @@ bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem,
   if ( !QgsLayoutTable::writePropertiesToElement( tableElem, doc, context ) )
     return false;
 
-  tableElem.setAttribute( QStringLiteral( "includeHeader" ), mIncludeHeader ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  tableElem.setAttribute( u"includeHeader"_s, mIncludeHeader ? u"1"_s : u"0"_s );
 
   //headers
-  QDomElement headersElem = doc.createElement( QStringLiteral( "headers" ) );
+  QDomElement headersElem = doc.createElement( u"headers"_s );
   for ( const QgsLayoutTableColumn &header : std::as_const( mHeaders ) )
   {
-    QDomElement headerElem = doc.createElement( QStringLiteral( "header" ) );
+    QDomElement headerElem = doc.createElement( u"header"_s );
     header.writeXml( headerElem, doc );
     headersElem.appendChild( headerElem );
   }
   tableElem.appendChild( headersElem );
 
-  QDomElement contentsElement = doc.createElement( QStringLiteral( "contents" ) );
+  QDomElement contentsElement = doc.createElement( u"contents"_s );
   for ( const QgsTableRow &row : mContents )
   {
-    QDomElement rowElement = doc.createElement( QStringLiteral( "row" ) );
+    QDomElement rowElement = doc.createElement( u"row"_s );
     for ( int i = 0; i < mColumns.count(); ++i )
     {
       if ( i < row.count() )
@@ -215,20 +215,20 @@ bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem,
   }
   tableElem.appendChild( contentsElement );
 
-  QDomElement rowHeightsElement = doc.createElement( QStringLiteral( "rowHeights" ) );
+  QDomElement rowHeightsElement = doc.createElement( u"rowHeights"_s );
   for ( double height : mRowHeights )
   {
-    QDomElement rowElement = doc.createElement( QStringLiteral( "row" ) );
-    rowElement.setAttribute( QStringLiteral( "height" ), height );
+    QDomElement rowElement = doc.createElement( u"row"_s );
+    rowElement.setAttribute( u"height"_s, height );
     rowHeightsElement.appendChild( rowElement );
   }
   tableElem.appendChild( rowHeightsElement );
 
-  QDomElement columnWidthsElement = doc.createElement( QStringLiteral( "columnWidths" ) );
+  QDomElement columnWidthsElement = doc.createElement( u"columnWidths"_s );
   for ( double width : mColumnWidths )
   {
-    QDomElement columnElement = doc.createElement( QStringLiteral( "column" ) );
-    columnElement.setAttribute( QStringLiteral( "width" ), width );
+    QDomElement columnElement = doc.createElement( u"column"_s );
+    columnElement.setAttribute( u"width"_s, width );
     columnWidthsElement.appendChild( columnElement );
   }
   tableElem.appendChild( columnWidthsElement );
@@ -241,14 +241,14 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
   if ( !QgsLayoutTable::readPropertiesFromElement( itemElem, doc, context ) )
     return false;
 
-  mIncludeHeader = itemElem.attribute( QStringLiteral( "includeHeader" ) ).toInt();
+  mIncludeHeader = itemElem.attribute( u"includeHeader"_s ).toInt();
   //restore header specifications
   mHeaders.clear();
-  QDomNodeList headersList = itemElem.elementsByTagName( QStringLiteral( "headers" ) );
+  QDomNodeList headersList = itemElem.elementsByTagName( u"headers"_s );
   if ( !headersList.isEmpty() )
   {
     QDomElement headersElem = headersList.at( 0 ).toElement();
-    QDomNodeList headerEntryList = headersElem.elementsByTagName( QStringLiteral( "header" ) );
+    QDomNodeList headerEntryList = headersElem.elementsByTagName( u"header"_s );
     for ( int i = 0; i < headerEntryList.size(); ++i )
     {
       QDomElement headerElem = headerEntryList.at( i ).toElement();
@@ -259,25 +259,25 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
   }
 
   mRowHeights.clear();
-  const QDomNodeList rowHeightNodeList = itemElem.firstChildElement( QStringLiteral( "rowHeights" ) ).childNodes();
+  const QDomNodeList rowHeightNodeList = itemElem.firstChildElement( u"rowHeights"_s ).childNodes();
   mRowHeights.reserve( rowHeightNodeList.size() );
   for ( int r = 0; r < rowHeightNodeList.size(); ++r )
   {
     const QDomElement rowHeightElement = rowHeightNodeList.at( r ).toElement();
-    mRowHeights.append( rowHeightElement.attribute( QStringLiteral( "height" ) ).toDouble() );
+    mRowHeights.append( rowHeightElement.attribute( u"height"_s ).toDouble() );
   }
 
   mColumnWidths.clear();
-  const QDomNodeList columnWidthNodeList = itemElem.firstChildElement( QStringLiteral( "columnWidths" ) ).childNodes();
+  const QDomNodeList columnWidthNodeList = itemElem.firstChildElement( u"columnWidths"_s ).childNodes();
   mColumnWidths.reserve( columnWidthNodeList.size() );
   for ( int r = 0; r < columnWidthNodeList.size(); ++r )
   {
     const QDomElement columnWidthElement = columnWidthNodeList.at( r ).toElement();
-    mColumnWidths.append( columnWidthElement.attribute( QStringLiteral( "width" ) ).toDouble() );
+    mColumnWidths.append( columnWidthElement.attribute( u"width"_s ).toDouble() );
   }
 
   QgsTableContents newContents;
-  const QDomElement contentsElement = itemElem.firstChildElement( QStringLiteral( "contents" ) );
+  const QDomElement contentsElement = itemElem.firstChildElement( u"contents"_s );
   const QDomNodeList rowNodeList = contentsElement.childNodes();
   newContents.reserve( rowNodeList.size() );
   for ( int r = 0; r < rowNodeList.size(); ++r )

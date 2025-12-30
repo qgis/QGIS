@@ -109,20 +109,20 @@ void *qgsMalloc( size_t size )
 {
   if ( size == 0 )
   {
-    QgsDebugError( QStringLiteral( "Zero size requested" ) );
+    QgsDebugError( u"Zero size requested"_s );
     return nullptr;
   }
 
   if ( ( size >> ( 8 * sizeof( size ) - 1 ) ) != 0 )
   {
-    QgsDebugError( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
+    QgsDebugError( u"qgsMalloc - bad size requested: %1"_s.arg( size ) );
     return nullptr;
   }
 
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugError( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugError( u"Allocation of %1 bytes failed."_s.arg( size ) );
   }
   return p;
 }
@@ -734,7 +734,7 @@ int Qgis::geographicLibVersion()
 #ifdef WITH_GEOGRAPHICLIB
   return GEOGRAPHICLIB_VERSION_MAJOR * 10000 + GEOGRAPHICLIB_VERSION_MINOR * 100 + GEOGRAPHICLIB_VERSION_PATCH;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -745,7 +745,7 @@ bool Qgis::hasQtWebkit()
 
 int Qgis::geosVersionInt()
 {
-  static const int version = QStringLiteral( "%1%2%3" )
+  static const int version = u"%1%2%3"_s
                              .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
                              .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
                              .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()

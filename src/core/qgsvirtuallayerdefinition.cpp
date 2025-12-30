@@ -35,7 +35,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   def.setFilePath( url.toLocalFile() );
 
   // regexp for column name
-  const QString columnNameRx( QStringLiteral( "[a-zA-Z_\\x80-\\xFF][a-zA-Z0-9_\\x80-\\xFF]*" ) );
+  const QString columnNameRx( u"[a-zA-Z_\\x80-\\xFF][a-zA-Z0-9_\\x80-\\xFF]*"_s );
 
   QgsFields fields;
 
@@ -46,7 +46,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   {
     const QString key = items.at( i ).first;
     const QString value = items.at( i ).second;
-    if ( key == QLatin1String( "layer_ref" ) )
+    if ( key == "layer_ref"_L1 )
     {
       layerIdx++;
       // layer id, with optional layer_name
@@ -55,7 +55,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
       if ( pos == -1 )
       {
         layerId = QUrl::fromPercentEncoding( value.toUtf8() );
-        vlayerName = QStringLiteral( "vtab%1" ).arg( layerIdx );
+        vlayerName = u"vtab%1"_s.arg( layerIdx );
       }
       else
       {
@@ -65,14 +65,14 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
       // add the layer to the list
       def.addSource( vlayerName, layerId );
     }
-    else if ( key == QLatin1String( "layer" ) )
+    else if ( key == "layer"_L1 )
     {
       layerIdx++;
       // syntax: layer=provider:url_encoded_source_URI(:name(:encoding)?)?
       const int pos = value.indexOf( ':' );
       if ( pos != -1 )
       {
-        QString providerKey, source, vlayerName, encoding = QStringLiteral( "UTF-8" );
+        QString providerKey, source, vlayerName, encoding = u"UTF-8"_s;
 
         providerKey = value.left( pos );
         int pos2 = value.indexOf( ':', pos + 1 );
@@ -95,13 +95,13 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         else
         {
           source = QUrl::fromPercentEncoding( value.mid( pos + 1 ).toUtf8() );
-          vlayerName = QStringLiteral( "vtab%1" ).arg( layerIdx );
+          vlayerName = u"vtab%1"_s.arg( layerIdx );
         }
 
         def.addSource( vlayerName, source, providerKey, encoding );
       }
     }
-    else if ( key == QLatin1String( "geometry" ) )
+    else if ( key == "geometry"_L1 )
     {
       // geometry field definition, optional
       // geometry_column(:wkb_type:srid)?
@@ -123,20 +123,20 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         }
       }
     }
-    else if ( key == QLatin1String( "nogeometry" ) )
+    else if ( key == "nogeometry"_L1 )
     {
       def.setGeometryWkbType( Qgis::WkbType::NoGeometry );
     }
-    else if ( key == QLatin1String( "uid" ) )
+    else if ( key == "uid"_L1 )
     {
       def.setUid( value );
     }
-    else if ( key == QLatin1String( "query" ) )
+    else if ( key == "query"_L1 )
     {
       // url encoded query
       def.setQuery( QUrl::fromPercentEncoding( value.toUtf8() ) );
     }
-    else if ( key == QLatin1String( "field" ) )
+    else if ( key == "field"_L1 )
     {
       // field_name:type (int, real, text)
       const thread_local QRegularExpression reField( "(" + columnNameRx + "):(int|real|text)" );
@@ -145,25 +145,25 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
       {
         const QString fieldName( match.captured( 1 ) );
         const QString fieldType( match.captured( 2 ) );
-        if ( fieldType == QLatin1String( "int" ) )
+        if ( fieldType == "int"_L1 )
         {
           fields.append( QgsField( fieldName, QMetaType::Type::LongLong, fieldType ) );
         }
-        else if ( fieldType == QLatin1String( "real" ) )
+        else if ( fieldType == "real"_L1 )
         {
           fields.append( QgsField( fieldName, QMetaType::Type::Double, fieldType ) );
         }
-        if ( fieldType == QLatin1String( "text" ) )
+        if ( fieldType == "text"_L1 )
         {
           fields.append( QgsField( fieldName, QMetaType::Type::QString, fieldType ) );
         }
       }
     }
-    else if ( key == QLatin1String( "lazy" ) )
+    else if ( key == "lazy"_L1 )
     {
       def.setLazy( true );
     }
-    else if ( key == QLatin1String( "subsetstring" ) )
+    else if ( key == "subsetstring"_L1 )
     {
       def.setSubsetString( QUrl::fromPercentEncoding( value.toUtf8() ) );
     }
@@ -185,12 +185,12 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   for ( const QgsVirtualLayerDefinition::SourceLayer &l : constSourceLayers )
   {
     if ( l.isReferenced() )
-      urlQuery.addQueryItem( QStringLiteral( "layer_ref" ), QStringLiteral( "%1:%2" ).arg( l.reference(), l.name() ) );
+      urlQuery.addQueryItem( u"layer_ref"_s, u"%1:%2"_s.arg( l.reference(), l.name() ) );
     else
       // if you can find a way to port this away from fromEncodedComponent_helper without breaking existing projects,
       // please do so... this is GROSS!
       urlQuery.addQueryItem( fromEncodedComponent_helper( "layer" ),
-                             fromEncodedComponent_helper( QStringLiteral( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
+                             fromEncodedComponent_helper( u"%1:%4:%2:%3"_s // the order is important, since the 4th argument may contain '%2' as well
                                  .arg( l.provider(),
                                        QString( QUrl::toPercentEncoding( l.name() ) ),
                                        l.encoding(),
@@ -199,20 +199,20 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
 
   if ( !query().isEmpty() )
   {
-    urlQuery.addQueryItem( QStringLiteral( "query" ), query() );
+    urlQuery.addQueryItem( u"query"_s, query() );
   }
 
   if ( !uid().isEmpty() )
-    urlQuery.addQueryItem( QStringLiteral( "uid" ), uid() );
+    urlQuery.addQueryItem( u"uid"_s, uid() );
 
   if ( geometryWkbType() == Qgis::WkbType::NoGeometry )
-    urlQuery.addQueryItem( QStringLiteral( "nogeometry" ), QString() );
+    urlQuery.addQueryItem( u"nogeometry"_s, QString() );
   else if ( !geometryField().isEmpty() )
   {
     if ( hasDefinedGeometry() )
-      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( qgsEnumValueToKey( geometryWkbType() ) ).arg( geometrySrid() ).toUtf8() );
+      urlQuery.addQueryItem( u"geometry"_s, u"%1:%2:%3"_s.arg( geometryField() ). arg( qgsEnumValueToKey( geometryWkbType() ) ).arg( geometrySrid() ).toUtf8() );
     else
-      urlQuery.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
+      urlQuery.addQueryItem( u"geometry"_s, geometryField() );
   }
 
   const auto constFields = fields();
@@ -222,21 +222,21 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
          || f.type() == QMetaType::Type::UInt
          || f.type() == QMetaType::Type::Bool
          || f.type() == QMetaType::Type::LongLong )
-      urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
+      urlQuery.addQueryItem( u"field"_s, f.name() + ":int" );
     else if ( f.type() == QMetaType::Type::Double )
-      urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );
+      urlQuery.addQueryItem( u"field"_s, f.name() + ":real" );
     else if ( f.type() == QMetaType::Type::QString )
-      urlQuery.addQueryItem( QStringLiteral( "field" ), f.name() + ":text" );
+      urlQuery.addQueryItem( u"field"_s, f.name() + ":text" );
   }
 
   if ( isLazy() )
   {
-    urlQuery.addQueryItem( QStringLiteral( "lazy" ), QString() );
+    urlQuery.addQueryItem( u"lazy"_s, QString() );
   }
 
   if ( ! subsetString().isEmpty() )
   {
-    urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
+    urlQuery.addQueryItem( u"subsetstring"_s, QUrl::toPercentEncoding( subsetString() ) );
   }
 
   url.setQuery( urlQuery );

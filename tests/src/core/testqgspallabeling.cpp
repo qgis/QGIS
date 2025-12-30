@@ -32,7 +32,7 @@ class TestQgsPalLabeling : public QgsTest
 
   public:
     TestQgsPalLabeling()
-      : QgsTest( QStringLiteral( "PAL labeling Tests" ), QStringLiteral( "pallabeling" ) ) {}
+      : QgsTest( u"PAL labeling Tests"_s, u"pallabeling"_s ) {}
 
   private slots:
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -61,11 +61,11 @@ void TestQgsPalLabeling::wrapChar()
   QCOMPARE( QgsPalLabeling::splitToLines( "with auto wrap", QString(), 6, false ), QStringList() << "with auto" << "wrap" );
 
   // manual wrap character should take precedence
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, true ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with automatic-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, true ), QStringList() << "with" << "automatic" << "wrap and" << "manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with automatic-wrap and manual-wrap" ), QStringLiteral( "-" ), 6, true ), QStringList() << "with" << "automatic" << "wrap" << "and" << "manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, false ), QStringList() << "with auto" << "wrap and manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 12, true ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with automatic-wrap and manual-wrap"_s, u"-"_s, 12, true ), QStringList() << "with" << "automatic" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with automatic-wrap and manual-wrap"_s, u"-"_s, 6, true ), QStringList() << "with" << "automatic" << "wrap" << "and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 12, false ), QStringList() << "with auto" << "wrap and manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
 }
 
 void TestQgsPalLabeling::graphemes()
@@ -170,13 +170,13 @@ void TestQgsPalLabeling::testGeometryGenerator()
   QgsPalLayerSettings settings;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
 
   settings.placement = Qgis::LabelPlacement::OverPoint;
@@ -184,7 +184,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   settings.geometryGeneratorType = Qgis::GeometryType::Point;
   settings.geometryGenerator = "translate($geometry, 1, 0)";
 
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=id:integer"_s, u"vl"_s, u"memory"_s );
 
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
@@ -211,7 +211,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   QgsCoordinateReferenceSystem tgtCrs;
-  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  tgtCrs.createFromString( u"EPSG:4326"_s );
   mapSettings.setDestinationCrs( tgtCrs );
 
   mapSettings.setOutputSize( size );
@@ -240,7 +240,7 @@ void TestQgsPalLabeling::testLabelSettingsToFromMime()
 {
   QgsPalLayerSettings settings;
 
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
 

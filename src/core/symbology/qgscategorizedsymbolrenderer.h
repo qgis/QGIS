@@ -147,10 +147,10 @@ class CORE_EXPORT QgsRendererCategory
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = !sipCpp->value().isValid()
-                        ? QStringLiteral( "<QgsRendererCategory>" )
+                        ? u"<QgsRendererCategory>"_s
                         : sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
-                        : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
+                        ? u"<QgsRendererCategory: %1>"_s.arg( sipCpp->value().toString() )
+                        : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

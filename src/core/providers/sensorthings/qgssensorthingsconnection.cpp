@@ -21,11 +21,11 @@
 #include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeSensorThingsConnections, QString() ) ;
-const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeSensorThingsConnections, QString() ) ;
+const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeSensorThingsConnections ) ;
 ///@endcond
 
 
@@ -98,7 +98,7 @@ QString QgsSensorThingsProviderConnection::encodedUri( const QgsSensorThingsProv
 {
   QgsDataSourceUri uri;
   if ( !data.url.isEmpty() )
-    uri.setParam( QStringLiteral( "url" ), data.url );
+    uri.setParam( u"url"_s, data.url );
   if ( !data.authCfg.isEmpty() )
     uri.setAuthConfigId( data.authCfg );
   if ( !data.username.isEmpty() )
@@ -116,7 +116,7 @@ QgsSensorThingsProviderConnection::Data QgsSensorThingsProviderConnection::decod
   dsUri.setEncodedUri( uri );
 
   QgsSensorThingsProviderConnection::Data conn;
-  conn.url = dsUri.param( QStringLiteral( "url" ) );
+  conn.url = dsUri.param( u"url"_s );
   conn.authCfg = dsUri.authConfigId();
   conn.username = dsUri.username();
   conn.password = dsUri.password();
@@ -129,7 +129,7 @@ QString QgsSensorThingsProviderConnection::encodedLayerUri( const QgsSensorThing
 {
   QgsDataSourceUri uri;
 
-  uri.setParam( QStringLiteral( "url" ), data.url );
+  uri.setParam( u"url"_s, data.url );
   if ( !data.authCfg.isEmpty() )
     uri.setAuthConfigId( data.authCfg );
   if ( !data.username.isEmpty() )

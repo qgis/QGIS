@@ -194,7 +194,7 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   mRelations.clear();
   mPolymorphicRelations.clear();
 
-  QDomNodeList relationNodes = doc.elementsByTagName( QStringLiteral( "relations" ) );
+  QDomNodeList relationNodes = doc.elementsByTagName( u"relations"_s );
   if ( relationNodes.count() )
   {
     QgsRelationContext relcontext( mProject );
@@ -209,10 +209,10 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "No relations data present in this document" ), 2 );
+    QgsDebugMsgLevel( u"No relations data present in this document"_s, 2 );
   }
 
-  QDomNodeList polymorphicRelationNodes = doc.elementsByTagName( QStringLiteral( "polymorphicRelations" ) );
+  QDomNodeList polymorphicRelationNodes = doc.elementsByTagName( u"polymorphicRelations"_s );
   if ( polymorphicRelationNodes.count() )
   {
     QgsRelationContext relcontext( mProject );
@@ -227,7 +227,7 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "No polymorphic relations data present in this document" ), 3 );
+    QgsDebugMsgLevel( u"No polymorphic relations data present in this document"_s, 3 );
   }
 
   emit relationsLoaded();
@@ -236,15 +236,15 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
 
 void QgsRelationManager::writeProject( QDomDocument &doc )
 {
-  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
+  QDomNodeList nl = doc.elementsByTagName( u"qgis"_s );
   if ( !nl.count() )
   {
-    QgsDebugError( QStringLiteral( "Unable to find qgis element in project file" ) );
+    QgsDebugError( u"Unable to find qgis element in project file"_s );
     return;
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one
 
-  QDomElement relationsNode = doc.createElement( QStringLiteral( "relations" ) );
+  QDomElement relationsNode = doc.createElement( u"relations"_s );
   qgisNode.appendChild( relationsNode );
 
   for ( const QgsRelation &relation : std::as_const( mRelations ) )
@@ -262,7 +262,7 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
     relation.writeXml( relationsNode, doc );
   }
 
-  QDomElement polymorphicRelationsNode = doc.createElement( QStringLiteral( "polymorphicRelations" ) );
+  QDomElement polymorphicRelationsNode = doc.createElement( u"polymorphicRelations"_s );
   qgisNode.appendChild( polymorphicRelationsNode );
 
   for ( const QgsPolymorphicRelation &relation : std::as_const( mPolymorphicRelations ) )

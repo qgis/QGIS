@@ -37,7 +37,7 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-xyz-tile-services" ) );
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-xyz-tile-services"_s );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
   connect( mSourceWidget, &QgsXyzSourceWidget::validChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );

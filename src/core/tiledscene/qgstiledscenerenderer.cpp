@@ -79,7 +79,7 @@ QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const 
     return nullptr;
 
   // load renderer
-  const QString rendererType = element.attribute( QStringLiteral( "type" ) );
+  const QString rendererType = element.attribute( u"type"_s );
 
   QgsTiledSceneRendererAbstractMetadata *m = QgsApplication::tiledSceneRendererRegistry()->rendererMetadata( rendererType );
   if ( !m )
@@ -149,14 +149,14 @@ void QgsTiledSceneRenderer::copyCommonProperties( QgsTiledSceneRenderer *destina
 
 void QgsTiledSceneRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "3" ) ).toDouble();
-  mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
-  mTileBorderRendering = element.attribute( QStringLiteral( "tileBorderRendering" ), QStringLiteral( "0" ) ).toInt();
+  mMaximumScreenError = element.attribute( u"maximumScreenError"_s, u"3"_s ).toDouble();
+  mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"maximumScreenErrorUnit"_s, u"MM"_s ) );
+  mTileBorderRendering = element.attribute( u"tileBorderRendering"_s, u"0"_s ).toInt();
 }
 
 void QgsTiledSceneRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
 {
-  element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
-  element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
-  element.setAttribute( QStringLiteral( "tileBorderRendering" ), mTileBorderRendering ? 1 : 0 );
+  element.setAttribute( u"maximumScreenError"_s, qgsDoubleToString( mMaximumScreenError ) );
+  element.setAttribute( u"maximumScreenErrorUnit"_s, QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
+  element.setAttribute( u"tileBorderRendering"_s, mTileBorderRendering ? 1 : 0 );
 }

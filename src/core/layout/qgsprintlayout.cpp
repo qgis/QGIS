@@ -55,7 +55,7 @@ QgsProject *QgsPrintLayout::layoutProject() const
 
 QIcon QgsPrintLayout::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconLayout.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconLayout.svg"_s );
 }
 
 QgsLayoutAtlas *QgsPrintLayout::atlas()
@@ -73,7 +73,7 @@ void QgsPrintLayout::setName( const QString &name )
 QDomElement QgsPrintLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement layoutElem = QgsLayout::writeXml( document, context );
-  layoutElem.setAttribute( QStringLiteral( "name" ), mName );
+  layoutElem.setAttribute( u"name"_s, mName );
   mAtlas->writeXml( layoutElem, document, context );
   return layoutElem;
 }
@@ -83,10 +83,10 @@ bool QgsPrintLayout::readXml( const QDomElement &layoutElement, const QDomDocume
   if ( !QgsLayout::readXml( layoutElement, document, context ) )
     return false;
 
-  const QDomElement atlasElem = layoutElement.firstChildElement( QStringLiteral( "Atlas" ) );
+  const QDomElement atlasElem = layoutElement.firstChildElement( u"Atlas"_s );
   mAtlas->readXml( atlasElem, document, context );
 
-  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
+  setName( layoutElement.attribute( u"name"_s ) );
 
   return true;
 }
@@ -121,12 +121,12 @@ void QgsPrintLayout::updateSettings()
 bool QgsPrintLayout::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   // NOTE: if visitEnter returns false it means "don't visit the layout", not "abort all further visitations"
-  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, QStringLiteral( "layout" ), mName ) ) )
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, u"layout"_s, mName ) ) )
     return true;
 
   if ( !accept( visitor ) )
     return false;
-  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, QStringLiteral( "layout" ), mName ) ) )
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::PrintLayout, u"layout"_s, mName ) ) )
     return false;
   return true;
 }

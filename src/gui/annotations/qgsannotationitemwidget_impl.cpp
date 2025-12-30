@@ -51,7 +51,7 @@ QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent 
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "polygon_annotation_item" ), qgis::down_cast<QgsFillSymbol *>( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( u"polygon_annotation_item"_s, qgis::down_cast<QgsFillSymbol *>( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -141,7 +141,7 @@ QgsAnnotationLineItemWidget::QgsAnnotationLineItemWidget( QWidget *parent )
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "line_annotation_item" ), qgis::down_cast<QgsLineSymbol *>( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( u"line_annotation_item"_s, qgis::down_cast<QgsLineSymbol *>( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -231,7 +231,7 @@ QgsAnnotationMarkerItemWidget::QgsAnnotationMarkerItemWidget( QWidget *parent )
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "marker_annotation_item" ), qgis::down_cast<QgsMarkerSymbol *>( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( u"marker_annotation_item"_s, qgis::down_cast<QgsMarkerSymbol *>( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -432,7 +432,7 @@ void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -566,7 +566,7 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -841,7 +841,7 @@ void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
 {
   QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, createExpressionContext() );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -889,7 +889,7 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mSourceLineEdit, &QgsPictureSourceLineEditBase::sourceChanged, this, [this]( const QString &source ) {
-    if ( !mRadioSVG->isChecked() && QFileInfo( source ).suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( !mRadioSVG->isChecked() && QFileInfo( source ).suffix().compare( "svg"_L1, Qt::CaseInsensitive ) == 0 )
     {
       mRadioSVG->setChecked( true );
     }

@@ -27,24 +27,24 @@
 
 #include "moc_qgslocator.cpp"
 
-const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterEnabled = new QgsSettingsEntryBool( QStringLiteral( "enabled" ), sTreeLocatorFilters, true, QObject::tr( "Locator filter enabled" ) );
+const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterEnabled = new QgsSettingsEntryBool( u"enabled"_s, sTreeLocatorFilters, true, QObject::tr( "Locator filter enabled" ) );
 
-const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterDefault = new QgsSettingsEntryBool( QStringLiteral( "default" ), sTreeLocatorFilters, false, QObject::tr( "Locator filter default value" ) );
+const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterDefault = new QgsSettingsEntryBool( u"default"_s, sTreeLocatorFilters, false, QObject::tr( "Locator filter default value" ) );
 
-const QgsSettingsEntryString *QgsLocator::settingsLocatorFilterPrefix = new QgsSettingsEntryString( QStringLiteral( "prefix" ), sTreeLocatorFilters, QString(), QObject::tr( "Locator filter prefix" ) );
+const QgsSettingsEntryString *QgsLocator::settingsLocatorFilterPrefix = new QgsSettingsEntryString( u"prefix"_s, sTreeLocatorFilters, QString(), QObject::tr( "Locator filter prefix" ) );
 
-const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiteral( "actions" )
-    <<  QStringLiteral( "processing_alg" )
-    <<  QStringLiteral( "layertree" )
-    <<  QStringLiteral( "layouts" )
-    <<  QStringLiteral( "features" )
-    <<  QStringLiteral( "allfeatures" )
-    <<  QStringLiteral( "calculator" )
-    <<  QStringLiteral( "bookmarks" )
-    <<  QStringLiteral( "optionpages" )
-    <<  QStringLiteral( "edit_features" )
-    <<  QStringLiteral( "goto" )
-    <<  QStringLiteral( "nominatimgeocoder" ) ;
+const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << u"actions"_s
+    <<  u"processing_alg"_s
+    <<  u"layertree"_s
+    <<  u"layouts"_s
+    <<  u"features"_s
+    <<  u"allfeatures"_s
+    <<  u"calculator"_s
+    <<  u"bookmarks"_s
+    <<  u"optionpages"_s
+    <<  u"edit_features"_s
+    <<  u"goto"_s
+    <<  u"nominatimgeocoder"_s ;
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
@@ -207,7 +207,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     {
       for ( int i = 0; i < autoCompleteList.length(); i++ )
       {
-        autoCompleteList[i].prepend( QStringLiteral( "%1 " ).arg( prefix ) );
+        autoCompleteList[i].prepend( u"%1 "_s.arg( prefix ) );
       }
     }
     mAutocompletionList.append( autoCompleteList );

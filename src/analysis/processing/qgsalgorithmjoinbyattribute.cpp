@@ -23,7 +23,7 @@
 
 QString QgsJoinByAttributeAlgorithm::name() const
 {
-  return QStringLiteral( "joinattributestable" );
+  return u"joinattributestable"_s;
 }
 
 QString QgsJoinByAttributeAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsJoinByAttributeAlgorithm::group() const
 
 QString QgsJoinByAttributeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
@@ -52,30 +52,30 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   methods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
           << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Table field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Table field" ), QVariant(), u"INPUT"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_2" ), QObject::tr( "Input layer 2" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_2" ), QObject::tr( "Table field 2" ), QVariant(), QStringLiteral( "INPUT_2" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_2"_s, QObject::tr( "Input layer 2" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD_2"_s, QObject::tr( "Table field 2" ), QVariant(), u"INPUT_2"_s ) );
 
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS_TO_COPY" ), QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), QStringLiteral( "INPUT_2" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+  addParameter( new QgsProcessingParameterField( u"FIELDS_TO_COPY"_s, QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ), QVariant(), u"INPUT_2"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Join type" ), methods, false, 1 ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ), QObject::tr( "Discard records which could not be joined" ), false ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Join type" ), methods, false, 1 ) );
+  addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
 
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ), QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
 
   auto nonMatchingSink = std::make_unique<QgsProcessingParameterFeatureSink>(
-    QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    u"NON_MATCHING"_s, QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   );
   // TODO GUI doesn't support advanced outputs yet
   //nonMatchingSink->setFlags(nonMatchingSink->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( nonMatchingSink.release() );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNJOINABLE_COUNT" ), QObject::tr( "Number of unjoinable features from input table" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"JOINED_COUNT"_s, QObject::tr( "Number of joined features from input table" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"UNJOINABLE_COUNT"_s, QObject::tr( "Number of unjoinable features from input table" ) ) );
 }
 
 QString QgsJoinByAttributeAlgorithm::shortHelpString() const
@@ -104,22 +104,22 @@ QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 
 QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
-  const bool discardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  const int joinMethod = parameterAsEnum( parameters, u"METHOD"_s, context );
+  const bool discardNonMatching = parameterAsBoolean( parameters, u"DISCARD_NONMATCHING"_s, context );
 
-  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  std::unique_ptr<QgsProcessingFeatureSource> input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> input2( parameterAsSource( parameters, u"INPUT_2"_s, context ) );
   if ( !input2 )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_2" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_2"_s ) );
 
-  const QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
+  const QString prefix = parameterAsString( parameters, u"PREFIX"_s, context );
 
-  const QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  const QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
-  const QStringList fieldsToCopy = parameterAsStrings( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
+  const QString field1Name = parameterAsString( parameters, u"FIELD"_s, context );
+  const QString field2Name = parameterAsString( parameters, u"FIELD_2"_s, context );
+  const QStringList fieldsToCopy = parameterAsStrings( parameters, u"FIELDS_TO_COPY"_s, context );
 
   const int joinField1Index = input->fields().lookupField( field1Name );
   if ( joinField1Index < 0 )
@@ -168,14 +168,14 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   const QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
-  if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outFields, input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  if ( parameters.value( u"OUTPUT"_s ).isValid() && !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString destNonMatching1;
-  std::unique_ptr<QgsFeatureSink> sinkNonMatching1( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING" ), context, destNonMatching1, input->fields(), input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
-  if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !sinkNonMatching1 )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
+  std::unique_ptr<QgsFeatureSink> sinkNonMatching1( parameterAsSink( parameters, u"NON_MATCHING"_s, context, destNonMatching1, input->fields(), input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  if ( parameters.value( u"NON_MATCHING"_s ).isValid() && !sinkNonMatching1 )
+    throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING"_s ) );
 
   // cache attributes of input2
   QMultiHash<QVariant, QgsAttributes> input2AttributeCache;
@@ -237,7 +237,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
           newAttrs.append( *attrsIt );
           feat.setAttributes( newAttrs );
           if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         }
       }
     }
@@ -247,12 +247,12 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( sink && !discardNonMatching )
       {
         if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       }
       if ( sinkNonMatching1 )
       {
         if ( !sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, QStringLiteral( "NON_MATCHING" ) ) );
+          throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, u"NON_MATCHING"_s ) );
       }
       unjoinedCount++;
     }
@@ -266,14 +266,14 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( sink )
   {
     sink->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+    outputs.insert( u"OUTPUT"_s, dest );
   }
-  outputs.insert( QStringLiteral( "JOINED_COUNT" ), joinedCount );
-  outputs.insert( QStringLiteral( "UNJOINABLE_COUNT" ), unjoinedCount );
+  outputs.insert( u"JOINED_COUNT"_s, joinedCount );
+  outputs.insert( u"UNJOINABLE_COUNT"_s, unjoinedCount );
   if ( sinkNonMatching1 )
   {
     sinkNonMatching1->finalize();
-    outputs.insert( QStringLiteral( "NON_MATCHING" ), destNonMatching1 );
+    outputs.insert( u"NON_MATCHING"_s, destNonMatching1 );
   }
   return outputs;
 }

@@ -25,7 +25,7 @@
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::name() const
 {
-  return QStringLiteral( "dtmslopebasedfilter" );
+  return u"dtmslopebasedfilter"_s;
 }
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::group() const
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasterterrainanalysis" );
+  return u"rasterterrainanalysis"_s;
 }
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
@@ -72,43 +72,43 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
 
 void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
-  auto radiusParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "RADIUS" ), QObject::tr( "Kernel radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1, 1000 );
+  auto radiusParam = std::make_unique<QgsProcessingParameterNumber>( u"RADIUS"_s, QObject::tr( "Kernel radius (pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1, 1000 );
   radiusParam->setHelp( QObject::tr( "The radius of the filter kernel (in pixels). Must be large enough to reach ground cells next to non-ground objects." ) );
   addParameter( radiusParam.release() );
 
-  auto terrainSlopeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TERRAIN_SLOPE" ), QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
+  auto terrainSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"TERRAIN_SLOPE"_s, QObject::tr( "Terrain slope (%, pixel size/vertical units)" ), Qgis::ProcessingNumberParameterType::Double, 30, false, 0, 1000 );
   terrainSlopeParam->setHelp( QObject::tr( "The approximate terrain slope in %. The terrain slope must be adjusted to account for the ratio of height units vs raster pixel dimensions. Used to relax the filter criterium in steeper terrain." ) );
   addParameter( terrainSlopeParam.release() );
 
-  auto filterModificationParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FILTER_MODIFICATION" ), QObject::tr( "Filter modification" ), QStringList { QObject::tr( "None" ), QObject::tr( "Relax filter" ), QObject::tr( "Amplify" ) }, false, 0 );
+  auto filterModificationParam = std::make_unique<QgsProcessingParameterEnum>( u"FILTER_MODIFICATION"_s, QObject::tr( "Filter modification" ), QStringList { QObject::tr( "None" ), QObject::tr( "Relax filter" ), QObject::tr( "Amplify" ) }, false, 0 );
   filterModificationParam->setHelp( QObject::tr( "Choose whether to apply the filter kernel without modification or to use a confidence interval to relax or amplify the height criterium." ) );
   addParameter( filterModificationParam.release() );
 
-  auto stDevParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "STANDARD_DEVIATION" ), QObject::tr( "Standard deviation" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0, 1000 );
+  auto stDevParam = std::make_unique<QgsProcessingParameterNumber>( u"STANDARD_DEVIATION"_s, QObject::tr( "Standard deviation" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0, 1000 );
   stDevParam->setHelp( QObject::tr( "The standard deviation used to calculate a 5% confidence interval applied to the height threshold." ) );
   addParameter( stDevParam.release() );
 
   // backwards compatibility parameter
   // TODO QGIS 5: remove parameter and related logic
-  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATE_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
 
-  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( creationOptsParam.release() );
 
-  auto outputLayerGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_GROUND" ), QObject::tr( "Output layer (ground)" ), QVariant(), true, true );
+  auto outputLayerGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT_GROUND"_s, QObject::tr( "Output layer (ground)" ), QVariant(), true, true );
   outputLayerGroundParam->setHelp( QObject::tr( "The filtered DEM containing only cells classified as ground." ) );
   addParameter( outputLayerGroundParam.release() );
 
-  auto outputLayerNonGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_NONGROUND" ), QObject::tr( "Output layer (non-ground objects)" ), QVariant(), true, false );
+  auto outputLayerNonGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT_NONGROUND"_s, QObject::tr( "Output layer (non-ground objects)" ), QVariant(), true, false );
   outputLayerNonGroundParam->setHelp( QObject::tr( "The non-ground objects removed by the filter." ) );
   addParameter( outputLayerNonGroundParam.release() );
 }
@@ -120,13 +120,13 @@ QgsRasterDtmSlopeBasedFilterAlgorithm *QgsRasterDtmSlopeBasedFilterAlgorithm::cr
 
 bool QgsRasterDtmSlopeBasedFilterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  const int band = parameterAsInt( parameters, u"BAND"_s, context );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
@@ -145,22 +145,22 @@ bool QgsRasterDtmSlopeBasedFilterAlgorithm::prepareAlgorithm( const QVariantMap 
 
 QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   // handle backwards compatibility parameter CREATE_OPTIONS
-  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
   if ( !optionsString.isEmpty() )
     creationOptions = optionsString;
 
-  const QString groundOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_GROUND" ), context );
+  const QString groundOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_GROUND"_s, context );
   std::unique_ptr<QgsRasterFileWriter> groundWriter;
   std::unique_ptr<QgsRasterDataProvider> groundDestProvider;
 
   if ( !groundOutputFile.isEmpty() )
   {
-    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_GROUND" ), context );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT_GROUND"_s, context );
 
     groundWriter = std::make_unique<QgsRasterFileWriter>( groundOutputFile );
-    groundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
+    groundWriter->setOutputProviderKey( u"gdal"_s );
     if ( !creationOptions.isEmpty() )
     {
       groundWriter->setCreationOptions( creationOptions.split( '|' ) );
@@ -178,16 +178,16 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
     groundDestProvider->setEditable( true );
   }
 
-  const QString nonGroundOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_NONGROUND" ), context );
+  const QString nonGroundOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_NONGROUND"_s, context );
   std::unique_ptr<QgsRasterFileWriter> nonGroundWriter;
   std::unique_ptr<QgsRasterDataProvider> nonGroundDestProvider;
 
   if ( !nonGroundOutputFile.isEmpty() )
   {
-    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_NONGROUND" ), context );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT_NONGROUND"_s, context );
 
     nonGroundWriter = std::make_unique<QgsRasterFileWriter>( nonGroundOutputFile );
-    nonGroundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
+    nonGroundWriter->setOutputProviderKey( u"gdal"_s );
     if ( !creationOptions.isEmpty() )
     {
       nonGroundWriter->setCreationOptions( creationOptions.split( '|' ) );
@@ -211,11 +211,11 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
   const int numBlocksY = static_cast<int>( std::ceil( 1.0 * mLayerHeight / blockHeight ) );
   const int numBlocks = numBlocksX * numBlocksY;
 
-  const int radius = parameterAsInt( parameters, QStringLiteral( "RADIUS" ), context );
+  const int radius = parameterAsInt( parameters, u"RADIUS"_s, context );
 
-  const double terrainSlopePercent = parameterAsDouble( parameters, QStringLiteral( "TERRAIN_SLOPE" ), context ) / 100; //20.0 / 100 * 0.143;
-  const int filterModification = parameterAsEnum( parameters, QStringLiteral( "FILTER_MODIFICATION" ), context );
-  const double standardDeviation = parameterAsDouble( parameters, QStringLiteral( "STANDARD_DEVIATION" ), context );
+  const double terrainSlopePercent = parameterAsDouble( parameters, u"TERRAIN_SLOPE"_s, context ) / 100; //20.0 / 100 * 0.143;
+  const int filterModification = parameterAsEnum( parameters, u"FILTER_MODIFICATION"_s, context );
+  const double standardDeviation = parameterAsDouble( parameters, u"STANDARD_DEVIATION"_s, context );
 
   // create kernel
   QVector<double> kernel;
@@ -374,8 +374,8 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
     nonGroundDestProvider->setEditable( false );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_GROUND" ), groundOutputFile );
-  outputs.insert( QStringLiteral( "OUTPUT_NONGROUND" ), nonGroundOutputFile );
+  outputs.insert( u"OUTPUT_GROUND"_s, groundOutputFile );
+  outputs.insert( u"OUTPUT_NONGROUND"_s, nonGroundOutputFile );
   return outputs;
 }
 

@@ -181,8 +181,8 @@ void QgsLayoutNodesItem::drawNodes( QgsLayoutItemRenderContext &context ) const
   const double rectSize = 9.0 / context.viewScaleFactor();
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "red" ) );
+  properties.insert( u"name"_s, u"cross"_s );
+  properties.insert( u"color_border"_s, u"red"_s );
 
   std::unique_ptr<QgsMarkerSymbol> symbol = QgsMarkerSymbol::createSimple( properties );
   symbol->setSize( rectSize );
@@ -202,10 +202,10 @@ void QgsLayoutNodesItem::drawSelectedNode( QgsLayoutItemRenderContext &context )
   const double rectSize = 9.0 / context.viewScaleFactor();
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "name" ), QStringLiteral( "square" ) );
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0, 0, 0, 0" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "blue" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "4" ) );
+  properties.insert( u"name"_s, u"square"_s );
+  properties.insert( u"color"_s, u"0, 0, 0, 0"_s );
+  properties.insert( u"color_border"_s, u"blue"_s );
+  properties.insert( u"width_border"_s, u"4"_s );
 
   std::unique_ptr<QgsMarkerSymbol> symbol = QgsMarkerSymbol::createSimple( properties );
   symbol->setSize( rectSize );
@@ -284,19 +284,19 @@ bool QgsLayoutNodesItem::readPropertiesFromElement( const QDomElement &itemElem,
     const QDomDocument &, const QgsReadWriteContext &context )
 {
   // restore style
-  const QDomElement styleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement styleSymbolElem = itemElem.firstChildElement( u"symbol"_s );
   if ( !styleSymbolElem.isNull() )
     _readXmlStyle( styleSymbolElem, context );
 
   // restore nodes
   mPolygon.clear();
-  const QDomNodeList nodesList = itemElem.elementsByTagName( QStringLiteral( "node" ) );
+  const QDomNodeList nodesList = itemElem.elementsByTagName( u"node"_s );
   for ( int i = 0; i < nodesList.size(); i++ )
   {
     const QDomElement nodeElem = nodesList.at( i ).toElement();
     QPointF newPt;
-    newPt.setX( nodeElem.attribute( QStringLiteral( "x" ) ).toDouble() );
-    newPt.setY( nodeElem.attribute( QStringLiteral( "y" ) ).toDouble() );
+    newPt.setX( nodeElem.attribute( u"x"_s ).toDouble() );
+    newPt.setY( nodeElem.attribute( u"y"_s ).toDouble() );
     mPolygon.append( newPt );
   }
 
@@ -366,12 +366,12 @@ bool QgsLayoutNodesItem::writePropertiesToElement( QDomElement &elem, QDomDocume
   _writeXmlStyle( doc, elem, context );
 
   // write nodes
-  QDomElement nodesElem = doc.createElement( QStringLiteral( "nodes" ) );
+  QDomElement nodesElem = doc.createElement( u"nodes"_s );
   for ( const QPointF pt : std::as_const( mPolygon ) )
   {
-    QDomElement nodeElem = doc.createElement( QStringLiteral( "node" ) );
-    nodeElem.setAttribute( QStringLiteral( "x" ), QString::number( pt.x() ) );
-    nodeElem.setAttribute( QStringLiteral( "y" ), QString::number( pt.y() ) );
+    QDomElement nodeElem = doc.createElement( u"node"_s );
+    nodeElem.setAttribute( u"x"_s, QString::number( pt.x() ) );
+    nodeElem.setAttribute( u"y"_s, QString::number( pt.y() ) );
     nodesElem.appendChild( nodeElem );
   }
   elem.appendChild( nodesElem );

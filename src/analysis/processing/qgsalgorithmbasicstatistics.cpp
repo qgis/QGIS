@@ -25,7 +25,7 @@
 
 QString QgsBasicStatisticsAlgorithm::name() const
 {
-  return QStringLiteral( "basicstatisticsforfields" );
+  return u"basicstatisticsforfields"_s;
 }
 
 QString QgsBasicStatisticsAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsBasicStatisticsAlgorithm::group() const
 
 QString QgsBasicStatisticsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsBasicStatisticsAlgorithm::shortHelpString() const
@@ -65,40 +65,40 @@ QgsBasicStatisticsAlgorithm *QgsBasicStatisticsAlgorithm::createInstance() const
 
 void QgsBasicStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_LAYER" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field to calculate statistics on" ), QVariant(), QStringLiteral( "INPUT_LAYER" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Statistics" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Statistics report" ), QObject::tr( "'HTML files (*.html)" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_LAYER"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD_NAME"_s, QObject::tr( "Field to calculate statistics on" ), QVariant(), u"INPUT_LAYER"_s ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Statistics" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Statistics report" ), QObject::tr( "'HTML files (*.html)" ), QVariant(), true ) );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COUNT" ), QObject::tr( "Count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNIQUE" ), QObject::tr( "Number of unique values" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "EMPTY" ), QObject::tr( "Number of empty (null) values" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FILLED" ), QObject::tr( "Number of non-empty values" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MIN" ), QObject::tr( "Minimum value" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAX" ), QObject::tr( "Maximum value" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Minimum length" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAX_LENGTH" ), QObject::tr( "Maximum length" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_LENGTH" ), QObject::tr( "Mean length" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "CV" ), QObject::tr( "Coefficient of Variation" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "SUM" ), QObject::tr( "Sum" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN" ), QObject::tr( "Mean value" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "STD_DEV" ), QObject::tr( "Standard deviation" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "RANGE" ), QObject::tr( "Range" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEDIAN" ), QObject::tr( "Median" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MINORITY" ), QObject::tr( "Minority (rarest occurring value)" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAJORITY" ), QObject::tr( "Majority (most frequently occurring value)" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FIRSTQUARTILE" ), QObject::tr( "First quartile" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "THIRDQUARTILE" ), QObject::tr( "Third quartile" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "IQR" ), QObject::tr( "Interquartile Range (IQR)" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"COUNT"_s, QObject::tr( "Count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"UNIQUE"_s, QObject::tr( "Number of unique values" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"EMPTY"_s, QObject::tr( "Number of empty (null) values" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"FILLED"_s, QObject::tr( "Number of non-empty values" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MIN"_s, QObject::tr( "Minimum value" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MAX"_s, QObject::tr( "Maximum value" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MIN_LENGTH"_s, QObject::tr( "Minimum length" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MAX_LENGTH"_s, QObject::tr( "Maximum length" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MEAN_LENGTH"_s, QObject::tr( "Mean length" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"CV"_s, QObject::tr( "Coefficient of Variation" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"SUM"_s, QObject::tr( "Sum" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MEAN"_s, QObject::tr( "Mean value" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"STD_DEV"_s, QObject::tr( "Standard deviation" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"RANGE"_s, QObject::tr( "Range" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MEDIAN"_s, QObject::tr( "Median" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MINORITY"_s, QObject::tr( "Minority (rarest occurring value)" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"MAJORITY"_s, QObject::tr( "Majority (most frequently occurring value)" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"FIRSTQUARTILE"_s, QObject::tr( "First quartile" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"THIRDQUARTILE"_s, QObject::tr( "Third quartile" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"IQR"_s, QObject::tr( "Interquartile Range (IQR)" ) ) );
 }
 
 QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT_LAYER" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT_LAYER"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_LAYER" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_LAYER"_s ) );
 
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD_NAME"_s, context );
   const int fieldIndex = source->fields().lookupField( fieldName );
   if ( fieldIndex < 0 )
   {
@@ -107,7 +107,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 
   QgsField field = source->fields().at( fieldIndex );
 
-  QString outputHtml = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+  QString outputHtml = parameterAsFileOutput( parameters, u"OUTPUT_HTML_FILE"_s, context );
 
   QgsFeatureRequest request;
   request.setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( QStringList() << fieldName, source->fields() );
@@ -115,61 +115,61 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   const long long count = source->featureCount();
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "count" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "unique" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "empty" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "filled" ), QMetaType::Int ) );
+  fields.append( QgsField( u"count"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"unique"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"empty"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"filled"_s, QMetaType::Int ) );
 
   if ( field.isNumeric() )
   {
-    fields.append( QgsField( QStringLiteral( "min" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "max" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "range" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "sum" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "mean" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "median" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "stddev" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "cv" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "minority" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "majority" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "q1" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "q3" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "iqr" ), QMetaType::Double ) );
+    fields.append( QgsField( u"min"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"max"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"range"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"sum"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"mean"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"median"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"stddev"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"cv"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"minority"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"majority"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"q1"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"q3"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"iqr"_s, QMetaType::Double ) );
   }
   else if ( field.isDateOrTime() )
   {
     if ( field.type() == QMetaType::Type::QDate )
     {
-      fields.append( QgsField( QStringLiteral( "min" ), QMetaType::QDate ) );
-      fields.append( QgsField( QStringLiteral( "max" ), QMetaType::QDate ) );
+      fields.append( QgsField( u"min"_s, QMetaType::QDate ) );
+      fields.append( QgsField( u"max"_s, QMetaType::QDate ) );
     }
     else if ( field.type() == QMetaType::Type::QTime )
     {
-      fields.append( QgsField( QStringLiteral( "min" ), QMetaType::QTime ) );
-      fields.append( QgsField( QStringLiteral( "max" ), QMetaType::QTime ) );
+      fields.append( QgsField( u"min"_s, QMetaType::QTime ) );
+      fields.append( QgsField( u"max"_s, QMetaType::QTime ) );
     }
     else
     {
-      fields.append( QgsField( QStringLiteral( "min" ), QMetaType::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "max" ), QMetaType::QDateTime ) );
+      fields.append( QgsField( u"min"_s, QMetaType::QDateTime ) );
+      fields.append( QgsField( u"max"_s, QMetaType::QDateTime ) );
     }
-    fields.append( QgsField( QStringLiteral( "range" ), QMetaType::Double ) );
+    fields.append( QgsField( u"range"_s, QMetaType::Double ) );
   }
   else
   {
-    fields.append( QgsField( QStringLiteral( "min" ), QMetaType::QString ) );
-    fields.append( QgsField( QStringLiteral( "max" ), QMetaType::QString ) );
-    fields.append( QgsField( QStringLiteral( "min_length" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "max_length" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "mean_length" ), QMetaType::Double ) );
-    fields.append( QgsField( QStringLiteral( "minority" ), QMetaType::QString ) );
-    fields.append( QgsField( QStringLiteral( "majority" ), QMetaType::QString ) );
+    fields.append( QgsField( u"min"_s, QMetaType::QString ) );
+    fields.append( QgsField( u"max"_s, QMetaType::QString ) );
+    fields.append( QgsField( u"min_length"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"max_length"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"mean_length"_s, QMetaType::Double ) );
+    fields.append( QgsField( u"minority"_s, QMetaType::QString ) );
+    fields.append( QgsField( u"majority"_s, QMetaType::QString ) );
   }
 
   QString destId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
-  if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, destId, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
+  if ( parameters.value( u"OUTPUT"_s ).isValid() && !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QStringList data;
   data << QObject::tr( "Analyzed field: %1" ).arg( fieldName );
@@ -197,20 +197,20 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
+      out << u"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n"_s;
       for ( const QString &s : data )
       {
-        out << QStringLiteral( "<p>%1</p>" ).arg( s );
+        out << u"<p>%1</p>"_s.arg( s );
       }
-      out << QStringLiteral( "</body></html>" );
+      out << u"</body></html>"_s;
 
-      outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputHtml );
+      outputs.insert( u"OUTPUT_HTML_FILE"_s, outputHtml );
     }
   }
 
   if ( sink )
   {
-    outputs.insert( QStringLiteral( "OUTPUT" ), destId );
+    outputs.insert( u"OUTPUT"_s, destId );
   }
 
   return outputs;
@@ -240,23 +240,23 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const QVari
   const double cv = stat.mean() != 0 ? stat.stDev() / stat.mean() : 0;
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "COUNT" ), stat.count() );
-  outputs.insert( QStringLiteral( "UNIQUE" ), stat.variety() );
-  outputs.insert( QStringLiteral( "EMPTY" ), stat.countMissing() );
-  outputs.insert( QStringLiteral( "FILLED" ), count - stat.countMissing() );
-  outputs.insert( QStringLiteral( "MIN" ), stat.min() );
-  outputs.insert( QStringLiteral( "MAX" ), stat.max() );
-  outputs.insert( QStringLiteral( "RANGE" ), stat.range() );
-  outputs.insert( QStringLiteral( "SUM" ), stat.sum() );
-  outputs.insert( QStringLiteral( "MEAN" ), stat.mean() );
-  outputs.insert( QStringLiteral( "MEDIAN" ), stat.median() );
-  outputs.insert( QStringLiteral( "STD_DEV" ), stat.stDev() );
-  outputs.insert( QStringLiteral( "CV" ), cv );
-  outputs.insert( QStringLiteral( "MINORITY" ), stat.minority() );
-  outputs.insert( QStringLiteral( "MAJORITY" ), stat.majority() );
-  outputs.insert( QStringLiteral( "FIRSTQUARTILE" ), stat.firstQuartile() );
-  outputs.insert( QStringLiteral( "THIRDQUARTILE" ), stat.thirdQuartile() );
-  outputs.insert( QStringLiteral( "IQR" ), stat.interQuartileRange() );
+  outputs.insert( u"COUNT"_s, stat.count() );
+  outputs.insert( u"UNIQUE"_s, stat.variety() );
+  outputs.insert( u"EMPTY"_s, stat.countMissing() );
+  outputs.insert( u"FILLED"_s, count - stat.countMissing() );
+  outputs.insert( u"MIN"_s, stat.min() );
+  outputs.insert( u"MAX"_s, stat.max() );
+  outputs.insert( u"RANGE"_s, stat.range() );
+  outputs.insert( u"SUM"_s, stat.sum() );
+  outputs.insert( u"MEAN"_s, stat.mean() );
+  outputs.insert( u"MEDIAN"_s, stat.median() );
+  outputs.insert( u"STD_DEV"_s, stat.stDev() );
+  outputs.insert( u"CV"_s, cv );
+  outputs.insert( u"MINORITY"_s, stat.minority() );
+  outputs.insert( u"MAJORITY"_s, stat.majority() );
+  outputs.insert( u"FIRSTQUARTILE"_s, stat.firstQuartile() );
+  outputs.insert( u"THIRDQUARTILE"_s, stat.thirdQuartile() );
+  outputs.insert( u"IQR"_s, stat.interQuartileRange() );
 
   data << QObject::tr( "Count: %1" ).arg( stat.count() )
        << QObject::tr( "Unique values: %1" ).arg( stat.variety() )
@@ -279,7 +279,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const QVari
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "RANGE" ) ) << outputs.value( QStringLiteral( "SUM" ) ) << outputs.value( QStringLiteral( "MEAN" ) ) << outputs.value( QStringLiteral( "MEDIAN" ) ) << outputs.value( QStringLiteral( "STD_DEV" ) ) << outputs.value( QStringLiteral( "CV" ) ) << outputs.value( QStringLiteral( "MINORITY" ) ) << outputs.value( QStringLiteral( "MAJORITY" ) ) << outputs.value( QStringLiteral( "FIRSTQUARTILE" ) ) << outputs.value( QStringLiteral( "THIRDQUARTILE" ) ) << outputs.value( QStringLiteral( "IQR" ) ) );
+    f.setAttributes( QgsAttributes() << outputs.value( u"COUNT"_s ) << outputs.value( u"UNIQUE"_s ) << outputs.value( u"EMPTY"_s ) << outputs.value( u"FILLED"_s ) << outputs.value( u"MIN"_s ) << outputs.value( u"MAX"_s ) << outputs.value( u"RANGE"_s ) << outputs.value( u"SUM"_s ) << outputs.value( u"MEAN"_s ) << outputs.value( u"MEDIAN"_s ) << outputs.value( u"STD_DEV"_s ) << outputs.value( u"CV"_s ) << outputs.value( u"MINORITY"_s ) << outputs.value( u"MAJORITY"_s ) << outputs.value( u"FIRSTQUARTILE"_s ) << outputs.value( u"THIRDQUARTILE"_s ) << outputs.value( u"IQR"_s ) );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
@@ -311,13 +311,13 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const QVar
   stat.finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "COUNT" ), stat.count() );
-  outputs.insert( QStringLiteral( "UNIQUE" ), stat.countDistinct() );
-  outputs.insert( QStringLiteral( "EMPTY" ), stat.countMissing() );
-  outputs.insert( QStringLiteral( "FILLED" ), stat.count() - stat.countMissing() );
-  outputs.insert( QStringLiteral( "MIN" ), stat.statistic( Qgis::DateTimeStatistic::Min ) );
-  outputs.insert( QStringLiteral( "MAX" ), stat.statistic( Qgis::DateTimeStatistic::Max ) );
-  outputs.insert( QStringLiteral( "RANGE" ), stat.range().seconds() );
+  outputs.insert( u"COUNT"_s, stat.count() );
+  outputs.insert( u"UNIQUE"_s, stat.countDistinct() );
+  outputs.insert( u"EMPTY"_s, stat.countMissing() );
+  outputs.insert( u"FILLED"_s, stat.count() - stat.countMissing() );
+  outputs.insert( u"MIN"_s, stat.statistic( Qgis::DateTimeStatistic::Min ) );
+  outputs.insert( u"MAX"_s, stat.statistic( Qgis::DateTimeStatistic::Max ) );
+  outputs.insert( u"RANGE"_s, stat.range().seconds() );
 
   data << QObject::tr( "Count: %1" ).arg( stat.count() )
        << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
@@ -330,7 +330,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const QVar
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "RANGE" ) ) );
+    f.setAttributes( QgsAttributes() << outputs.value( u"COUNT"_s ) << outputs.value( u"UNIQUE"_s ) << outputs.value( u"EMPTY"_s ) << outputs.value( u"FILLED"_s ) << outputs.value( u"MIN"_s ) << outputs.value( u"MAX"_s ) << outputs.value( u"RANGE"_s ) );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
@@ -362,17 +362,17 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const QVaria
   stat.finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "COUNT" ), stat.count() );
-  outputs.insert( QStringLiteral( "UNIQUE" ), stat.countDistinct() );
-  outputs.insert( QStringLiteral( "EMPTY" ), stat.countMissing() );
-  outputs.insert( QStringLiteral( "FILLED" ), stat.count() - stat.countMissing() );
-  outputs.insert( QStringLiteral( "MIN" ), stat.min() );
-  outputs.insert( QStringLiteral( "MAX" ), stat.max() );
-  outputs.insert( QStringLiteral( "MIN_LENGTH" ), stat.minLength() );
-  outputs.insert( QStringLiteral( "MAX_LENGTH" ), stat.maxLength() );
-  outputs.insert( QStringLiteral( "MEAN_LENGTH" ), stat.meanLength() );
-  outputs.insert( QStringLiteral( "MINORITY" ), stat.minority() );
-  outputs.insert( QStringLiteral( "MAJORITY" ), stat.majority() );
+  outputs.insert( u"COUNT"_s, stat.count() );
+  outputs.insert( u"UNIQUE"_s, stat.countDistinct() );
+  outputs.insert( u"EMPTY"_s, stat.countMissing() );
+  outputs.insert( u"FILLED"_s, stat.count() - stat.countMissing() );
+  outputs.insert( u"MIN"_s, stat.min() );
+  outputs.insert( u"MAX"_s, stat.max() );
+  outputs.insert( u"MIN_LENGTH"_s, stat.minLength() );
+  outputs.insert( u"MAX_LENGTH"_s, stat.maxLength() );
+  outputs.insert( u"MEAN_LENGTH"_s, stat.meanLength() );
+  outputs.insert( u"MINORITY"_s, stat.minority() );
+  outputs.insert( u"MAJORITY"_s, stat.majority() );
 
   data << QObject::tr( "Count: %1" ).arg( stat.count() )
        << QObject::tr( "Unique values: %1" ).arg( stat.countDistinct() )
@@ -389,7 +389,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const QVaria
   if ( sink )
   {
     QgsFeature f;
-    f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "MIN_LENGTH" ) ) << outputs.value( QStringLiteral( "MAX_LENGTH" ) ) << outputs.value( QStringLiteral( "MEAN_LENGTH" ) ) << outputs.value( QStringLiteral( "MINORITY" ) ) << outputs.value( QStringLiteral( "MAJORITY" ) ) );
+    f.setAttributes( QgsAttributes() << outputs.value( u"COUNT"_s ) << outputs.value( u"UNIQUE"_s ) << outputs.value( u"EMPTY"_s ) << outputs.value( u"FILLED"_s ) << outputs.value( u"MIN"_s ) << outputs.value( u"MAX"_s ) << outputs.value( u"MIN_LENGTH"_s ) << outputs.value( u"MAX_LENGTH"_s ) << outputs.value( u"MEAN_LENGTH"_s ) << outputs.value( u"MINORITY"_s ) << outputs.value( u"MAJORITY"_s ) );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
     {
       throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );

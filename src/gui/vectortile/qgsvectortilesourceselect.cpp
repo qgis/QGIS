@@ -207,7 +207,7 @@ void QgsVectorTileSourceSelect::addButtonClicked()
     }
 
     QVariantMap parts;
-    parts.insert( QStringLiteral( "path" ), filePath );
+    parts.insert( u"path"_s, filePath );
     const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
 
     Q_NOWARN_DEPRECATED_PUSH
@@ -257,7 +257,7 @@ void QgsVectorTileSourceSelect::cmbConnections_currentTextChanged( const QString
 
 void QgsVectorTileSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-vector-tiles-services"_s );
 }
 
 ///@endcond

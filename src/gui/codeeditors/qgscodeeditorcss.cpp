@@ -90,7 +90,7 @@ QString QgsQsciLexerCSS::description( int style ) const
 {
   // see https://www.riverbankcomputing.com/pipermail/qscintilla/2019-July/001415.html
   if ( style == QsciLexerCSS::Comment )
-    return QStringLiteral( "Comment" );
+    return u"Comment"_s;
 
   return QsciLexerCSS::description( style );
 }

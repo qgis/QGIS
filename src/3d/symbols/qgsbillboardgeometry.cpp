@@ -107,7 +107,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasOffsetAttribute->setVertexSize( 2 );
       mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
       mAtlasOffsetAttribute->setByteStride( stride );
-      mAtlasOffsetAttribute->setName( QStringLiteral( "atlasOffset" ) );
+      mAtlasOffsetAttribute->setName( u"atlasOffset"_s );
       addAttribute( mAtlasOffsetAttribute );
 
       mAtlasSizeAttribute = new Qt3DCore::QAttribute( this );
@@ -117,7 +117,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasSizeAttribute->setVertexSize( 2 );
       mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
       mAtlasSizeAttribute->setByteStride( stride );
-      mAtlasSizeAttribute->setName( QStringLiteral( "atlasSize" ) );
+      mAtlasSizeAttribute->setName( u"atlasSize"_s );
       addAttribute( mAtlasSizeAttribute );
       break;
     }
@@ -131,7 +131,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasOffsetAttribute->setVertexSize( 2 );
       mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
       mAtlasOffsetAttribute->setByteStride( stride );
-      mAtlasOffsetAttribute->setName( QStringLiteral( "atlasOffset" ) );
+      mAtlasOffsetAttribute->setName( u"atlasOffset"_s );
       addAttribute( mAtlasOffsetAttribute );
 
       mAtlasSizeAttribute = new Qt3DCore::QAttribute( this );
@@ -141,7 +141,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasSizeAttribute->setVertexSize( 2 );
       mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
       mAtlasSizeAttribute->setByteStride( stride );
-      mAtlasSizeAttribute->setName( QStringLiteral( "atlasSize" ) );
+      mAtlasSizeAttribute->setName( u"atlasSize"_s );
       addAttribute( mAtlasSizeAttribute );
 
       mAtlasPixelOffsetAttribute = new Qt3DCore::QAttribute( this );
@@ -151,7 +151,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasPixelOffsetAttribute->setVertexSize( 2 );
       mAtlasPixelOffsetAttribute->setByteOffset( ( 3 + 2 + 2 ) * sizeof( float ) );
       mAtlasPixelOffsetAttribute->setByteStride( stride );
-      mAtlasPixelOffsetAttribute->setName( QStringLiteral( "pixelOffset" ) );
+      mAtlasPixelOffsetAttribute->setName( u"pixelOffset"_s );
       addAttribute( mAtlasPixelOffsetAttribute );
       break;
     }

@@ -168,7 +168,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "No model assigned to this view" ) );
+    QgsDebugError( u"No model assigned to this view"_s );
   }
 }
 
@@ -303,7 +303,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "No model assigned to this view" ) );
+    QgsDebugError( u"No model assigned to this view"_s );
   }
 }
 
@@ -393,7 +393,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     const QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureWithGeometryRole ).value<QgsFeature>();
 
-    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, u"Feature"_s, this );
 
     // Index is from feature list model, but we need an index from the
     // filter model to be passed to listeners, using fid instead would

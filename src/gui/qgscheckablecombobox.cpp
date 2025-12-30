@@ -79,7 +79,7 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
   , mModel( new QgsCheckableItemModel( this ) )
-  , mSeparator( QStringLiteral( ", " ) )
+  , mSeparator( u", "_s )
 {
   setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );

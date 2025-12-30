@@ -20,17 +20,17 @@
 #include "qgsmaplayerstore.h"
 #include "qgsxmlutils.h"
 
-const QString QgsExpressionContext::EXPR_FIELDS( QStringLiteral( "_fields_" ) );
-const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( QStringLiteral( "value" ) );
-const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( QStringLiteral( "symbol_color" ) );
-const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( QStringLiteral( "symbol_angle" ) );
-const QString QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT( QStringLiteral( "geometry_part_count" ) );
-const QString QgsExpressionContext::EXPR_GEOMETRY_PART_NUM( QStringLiteral( "geometry_part_num" ) );
-const QString QgsExpressionContext::EXPR_GEOMETRY_RING_NUM( QStringLiteral( "geometry_ring_num" ) );
-const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT( QStringLiteral( "geometry_point_count" ) );
-const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM( QStringLiteral( "geometry_point_num" ) );
-const QString QgsExpressionContext::EXPR_CLUSTER_SIZE( QStringLiteral( "cluster_size" ) );
-const QString QgsExpressionContext::EXPR_CLUSTER_COLOR( QStringLiteral( "cluster_color" ) );
+const QString QgsExpressionContext::EXPR_FIELDS( u"_fields_"_s );
+const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( u"value"_s );
+const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( u"symbol_color"_s );
+const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( u"symbol_angle"_s );
+const QString QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT( u"geometry_part_count"_s );
+const QString QgsExpressionContext::EXPR_GEOMETRY_PART_NUM( u"geometry_part_num"_s );
+const QString QgsExpressionContext::EXPR_GEOMETRY_RING_NUM( u"geometry_ring_num"_s );
+const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT( u"geometry_point_count"_s );
+const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM( u"geometry_point_num"_s );
+const QString QgsExpressionContext::EXPR_CLUSTER_SIZE( u"cluster_size"_s );
+const QString QgsExpressionContext::EXPR_CLUSTER_COLOR( u"cluster_color"_s );
 
 //
 // QgsExpressionContextScope
@@ -162,9 +162,9 @@ QStringList QgsExpressionContextScope::variableNames() const
 
   if ( hasFeature() )
   {
-    names.append( QStringLiteral( "feature" ) );
-    names.append( QStringLiteral( "id" ) );
-    names.append( QStringLiteral( "geometry" ) );
+    names.append( u"feature"_s );
+    names.append( u"id"_s );
+    names.append( u"geometry"_s );
   }
 
   return names;
@@ -296,10 +296,10 @@ void QgsExpressionContextScope::readXml( const QDomElement &element, const QgsRe
   for ( int i = 0; i < variablesNodeList.size(); ++i )
   {
     const QDomElement variableElement = variablesNodeList.at( i ).toElement();
-    const QString key = variableElement.attribute( QStringLiteral( "name" ) );
-    if ( variableElement.tagName() == QLatin1String( "Variable" ) )
+    const QString key = variableElement.attribute( u"name"_s );
+    if ( variableElement.tagName() == "Variable"_L1 )
     {
-      const QVariant value = QgsXmlUtils::readVariant( variableElement.firstChildElement( QStringLiteral( "Option" ) ) );
+      const QVariant value = QgsXmlUtils::readVariant( variableElement.firstChildElement( u"Option"_s ) );
       setVariable( key, value );
     }
     else
@@ -312,8 +312,8 @@ bool QgsExpressionContextScope::writeXml( QDomElement &element, QDomDocument &do
 {
   for ( auto it = mVariables.constBegin(); it != mVariables.constEnd(); ++it )
   {
-    QDomElement varElem = document.createElement( QStringLiteral( "Variable" ) );
-    varElem.setAttribute( QStringLiteral( "name" ), it.key() );
+    QDomElement varElem = document.createElement( u"Variable"_s );
+    varElem.setAttribute( u"name"_s, it.key() );
     QDomElement valueElem = QgsXmlUtils::writeVariant( it.value().value, document );
     varElem.appendChild( valueElem );
     element.appendChild( varElem );
@@ -321,8 +321,8 @@ bool QgsExpressionContextScope::writeXml( QDomElement &element, QDomDocument &do
 
   for ( QString hiddenVariable : mHiddenVariables )
   {
-    QDomElement varElem = document.createElement( QStringLiteral( "HiddenVariable" ) );
-    varElem.setAttribute( QStringLiteral( "name" ), hiddenVariable );
+    QDomElement varElem = document.createElement( u"HiddenVariable"_s );
+    varElem.setAttribute( u"name"_s, hiddenVariable );
     element.appendChild( varElem );
   }
   return true;
@@ -595,7 +595,7 @@ QString QgsExpressionContext::description( const QString &name ) const
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const
 {
-  if ( name.compare( QLatin1String( "load_layer" ) ) == 0 && mDestinationStore )
+  if ( name.compare( "load_layer"_L1 ) == 0 && mDestinationStore )
     return true;
 
   for ( const QgsExpressionContextScope *scope : mStack )
@@ -617,7 +617,7 @@ QStringList QgsExpressionContext::functionNames() const
   }
 
   if ( mDestinationStore )
-    result.insert( QStringLiteral( "load_layer" ) );
+    result.insert( u"load_layer"_s );
 
   QStringList listResult( result.constBegin(), result.constEnd() );
   listResult.sort();
@@ -626,7 +626,7 @@ QStringList QgsExpressionContext::functionNames() const
 
 QgsExpressionFunction *QgsExpressionContext::function( const QString &name ) const
 {
-  if ( name.compare( QLatin1String( "load_layer" ) ) == 0 && mDestinationStore )
+  if ( name.compare( "load_layer"_L1 ) == 0 && mDestinationStore )
   {
     return mLoadLayerFunction.get();
   }
@@ -822,7 +822,7 @@ QString QgsExpressionContext::uniqueHash( bool &ok, const QSet<QString> &variabl
 {
   QString hash;
   ok = true;
-  const QString delimiter( QStringLiteral( "||~~||" ) );
+  const QString delimiter( u"||~~||"_s );
 
   if ( hasFeature() )
   {

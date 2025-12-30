@@ -59,9 +59,9 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   // keep it in sync with qgsrasterlayerproperties.cpp
   tmpStr = mySettings.value( prefix + "format", "external" ).toString();
-  if ( tmpStr == QLatin1String( "internal" ) )
+  if ( tmpStr == "internal"_L1 )
     cbxPyramidsFormat->setCurrentIndex( cbxPyramidsFormat->findData( QVariant::fromValue( Qgis::RasterPyramidFormat::Internal ) ) );
-  else if ( tmpStr == QLatin1String( "external_erdas" ) )
+  else if ( tmpStr == "external_erdas"_L1 )
     cbxPyramidsFormat->setCurrentIndex( cbxPyramidsFormat->findData( QVariant::fromValue( Qgis::RasterPyramidFormat::Erdas ) ) );
   else
     cbxPyramidsFormat->setCurrentIndex( cbxPyramidsFormat->findData( QVariant::fromValue( Qgis::RasterPyramidFormat::GeoTiff ) ) );
@@ -134,13 +134,13 @@ void QgsRasterPyramidsOptionsWidget::apply()
   switch ( format )
   {
     case Qgis::RasterPyramidFormat::GeoTiff:
-      tmpStr = QStringLiteral( "external" );
+      tmpStr = u"external"_s;
       break;
     case Qgis::RasterPyramidFormat::Internal:
-      tmpStr = QStringLiteral( "internal" );
+      tmpStr = u"internal"_s;
       break;
     case Qgis::RasterPyramidFormat::Erdas:
-      tmpStr = QStringLiteral( "external_erdas" );
+      tmpStr = u"external_erdas"_s;
       break;
   }
   mySettings.setValue( prefix + "format", tmpStr );

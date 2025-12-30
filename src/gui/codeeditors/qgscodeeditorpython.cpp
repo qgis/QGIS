@@ -49,13 +49,13 @@ const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs {
 };
 const QStringList QgsCodeEditorPython::sCompletionSingleCharacters { "`", "*" };
 ///@cond PRIVATE
-const QgsSettingsEntryString *QgsCodeEditorPython::settingCodeFormatter = new QgsSettingsEntryString( QStringLiteral( "formatter" ), sTreePythonCodeEditor, QStringLiteral( "autopep8" ), QStringLiteral( "Python code autoformatter" ) );
-const QgsSettingsEntryInteger *QgsCodeEditorPython::settingMaxLineLength = new QgsSettingsEntryInteger( QStringLiteral( "max-line-length" ), sTreePythonCodeEditor, 80, QStringLiteral( "Maximum line length" ) );
-const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSettingsEntryBool( QStringLiteral( "sort-imports" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether imports should be sorted when auto-formatting code" ) );
-const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( QStringLiteral( "autopep8-level" ), sTreePythonCodeEditor, 1, QStringLiteral( "Autopep8 aggressive level" ) );
-const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( QStringLiteral( "black-normalize-quotes" ), sTreePythonCodeEditor, true, QStringLiteral( "Whether quotes should be normalized when auto-formatting code using black" ) );
-const QgsSettingsEntryString *QgsCodeEditorPython::settingExternalPythonEditorCommand = new QgsSettingsEntryString( QStringLiteral( "external-editor" ), sTreePythonCodeEditor, QString(), QStringLiteral( "Command to launch an external Python code editor. Use the token <file> to insert the filename, <line> to insert line number, and <col> to insert the column number." ) );
-const QgsSettingsEntryEnumFlag<Qgis::DocumentationBrowser> *QgsCodeEditorPython::settingContextHelpBrowser = new QgsSettingsEntryEnumFlag<Qgis::DocumentationBrowser>( QStringLiteral( "context-help-browser" ), sTreePythonCodeEditor, Qgis::DocumentationBrowser::DeveloperToolsPanel, QStringLiteral( "Web browser used to display the api documentation" ) );
+const QgsSettingsEntryString *QgsCodeEditorPython::settingCodeFormatter = new QgsSettingsEntryString( u"formatter"_s, sTreePythonCodeEditor, u"autopep8"_s, u"Python code autoformatter"_s );
+const QgsSettingsEntryInteger *QgsCodeEditorPython::settingMaxLineLength = new QgsSettingsEntryInteger( u"max-line-length"_s, sTreePythonCodeEditor, 80, u"Maximum line length"_s );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingSortImports = new QgsSettingsEntryBool( u"sort-imports"_s, sTreePythonCodeEditor, true, u"Whether imports should be sorted when auto-formatting code"_s );
+const QgsSettingsEntryInteger *QgsCodeEditorPython::settingAutopep8Level = new QgsSettingsEntryInteger( u"autopep8-level"_s, sTreePythonCodeEditor, 1, u"Autopep8 aggressive level"_s );
+const QgsSettingsEntryBool *QgsCodeEditorPython::settingBlackNormalizeQuotes = new QgsSettingsEntryBool( u"black-normalize-quotes"_s, sTreePythonCodeEditor, true, u"Whether quotes should be normalized when auto-formatting code using black"_s );
+const QgsSettingsEntryString *QgsCodeEditorPython::settingExternalPythonEditorCommand = new QgsSettingsEntryString( u"external-editor"_s, sTreePythonCodeEditor, QString(), u"Command to launch an external Python code editor. Use the token <file> to insert the filename, <line> to insert line number, and <col> to insert the column number."_s );
+const QgsSettingsEntryEnumFlag<Qgis::DocumentationBrowser> *QgsCodeEditorPython::settingContextHelpBrowser = new QgsSettingsEntryEnumFlag<Qgis::DocumentationBrowser>( u"context-help-browser"_s, sTreePythonCodeEditor, Qgis::DocumentationBrowser::DeveloperToolsPanel, u"Web browser used to display the api documentation"_s );
 ///@endcond PRIVATE
 
 
@@ -144,23 +144,23 @@ void QgsCodeEditorPython::initializeLexer()
   QgsSettings settings;
   if ( mAPISFilesList.isEmpty() )
   {
-    if ( settings.value( QStringLiteral( "pythonConsole/preloadAPI" ), true ).toBool() )
+    if ( settings.value( u"pythonConsole/preloadAPI"_s, true ).toBool() )
     {
-      mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/PyQGIS.pap" );
+      mPapFile = QgsApplication::pkgDataPath() + u"/python/qsci_apis/PyQGIS.pap"_s;
       apis->loadPrepared( mPapFile );
     }
-    else if ( settings.value( QStringLiteral( "pythonConsole/usePreparedAPIFile" ), false ).toBool() )
+    else if ( settings.value( u"pythonConsole/usePreparedAPIFile"_s, false ).toBool() )
     {
-      apis->loadPrepared( settings.value( QStringLiteral( "pythonConsole/preparedAPIFile" ) ).toString() );
+      apis->loadPrepared( settings.value( u"pythonConsole/preparedAPIFile"_s ).toString() );
     }
     else
     {
-      const QStringList apiPaths = settings.value( QStringLiteral( "pythonConsole/userAPI" ) ).toStringList();
+      const QStringList apiPaths = settings.value( u"pythonConsole/userAPI"_s ).toStringList();
       for ( const QString &path : apiPaths )
       {
         if ( !QFileInfo::exists( path ) )
         {
-          QgsDebugError( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
+          QgsDebugError( u"The apis file %1 was not found"_s.arg( path ) );
         }
         else
         {
@@ -170,11 +170,11 @@ void QgsCodeEditorPython::initializeLexer()
       apis->prepare();
     }
   }
-  else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == QLatin1String( "pap" ) )
+  else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == "pap"_L1 )
   {
     if ( !QFileInfo::exists( mAPISFilesList[0] ) )
     {
-      QgsDebugError( QStringLiteral( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
+      QgsDebugError( u"The apis file %1 not found"_s.arg( mAPISFilesList.at( 0 ) ) );
       return;
     }
     mPapFile = mAPISFilesList[0];
@@ -186,7 +186,7 @@ void QgsCodeEditorPython::initializeLexer()
     {
       if ( !QFileInfo::exists( path ) )
       {
-        QgsDebugError( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
+        QgsDebugError( u"The apis file %1 was not found"_s.arg( path ) );
       }
       else
       {
@@ -199,7 +199,7 @@ void QgsCodeEditorPython::initializeLexer()
 
   setLexer( pyLexer );
 
-  const int threshold = settings.value( QStringLiteral( "pythonConsole/autoCompThreshold" ), 2 ).toInt();
+  const int threshold = settings.value( u"pythonConsole/autoCompThreshold"_s, 2 ).toInt();
   setAutoCompletionThreshold( threshold );
   if ( !settings.value( "pythonConsole/autoCompleteEnabled", true ).toBool() )
   {
@@ -207,10 +207,10 @@ void QgsCodeEditorPython::initializeLexer()
   }
   else
   {
-    const QString autoCompleteSource = settings.value( QStringLiteral( "pythonConsole/autoCompleteSource" ), QStringLiteral( "fromAPI" ) ).toString();
-    if ( autoCompleteSource == QLatin1String( "fromDoc" ) )
+    const QString autoCompleteSource = settings.value( u"pythonConsole/autoCompleteSource"_s, u"fromAPI"_s ).toString();
+    if ( autoCompleteSource == "fromDoc"_L1 )
       setAutoCompletionSource( AcsDocument );
-    else if ( autoCompleteSource == QLatin1String( "fromDocAPI" ) )
+    else if ( autoCompleteSource == "fromDocAPI"_L1 )
       setAutoCompletionSource( AcsAll );
     else
       setAutoCompletionSource( AcsAPIs );
@@ -233,9 +233,9 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
 
   const QgsSettings settings;
 
-  bool autoCloseBracket = settings.value( QStringLiteral( "/pythonConsole/autoCloseBracket" ), true ).toBool();
-  bool autoSurround = settings.value( QStringLiteral( "/pythonConsole/autoSurround" ), true ).toBool();
-  bool autoInsertImport = settings.value( QStringLiteral( "/pythonConsole/autoInsertImport" ), false ).toBool();
+  bool autoCloseBracket = settings.value( u"/pythonConsole/autoCloseBracket"_s, true ).toBool();
+  bool autoSurround = settings.value( u"/pythonConsole/autoSurround"_s, true ).toBool();
+  bool autoInsertImport = settings.value( u"/pythonConsole/autoInsertImport"_s, false ).toBool();
 
   // Get entered text and cursor position
   const QString eText = event->text();
@@ -289,10 +289,10 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
     if ( autoInsertImport && eText == " " )
     {
       const QString lineText = text( line );
-      const thread_local QRegularExpression re( QStringLiteral( "^from [\\w.]+$" ) );
+      const thread_local QRegularExpression re( u"^from [\\w.]+$"_s );
       if ( re.match( lineText.trimmed() ).hasMatch() )
       {
-        insert( QStringLiteral( " import" ) );
+        insert( u" import"_s );
         setCursorPosition( line, column + 7 );
         return QgsCodeEditor::keyPressEvent( event );
       }
@@ -382,21 +382,21 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
                                         "  return isort.code(script, **options)\n"
     )
                                         .arg( maxLineLength )
-                                        .arg( formatter == QLatin1String( "black" ) ? QStringLiteral( "black" ) : QString() );
+                                        .arg( formatter == "black"_L1 ? u"black"_s : QString() );
 
     if ( !QgsPythonRunner::run( defineSortImports ) )
     {
-      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineSortImports ) );
+      QgsDebugError( u"Error running script: %1"_s.arg( defineSortImports ) );
       return string;
     }
 
-    const QString script = QStringLiteral( "__qgis_sort_imports(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+    const QString script = u"__qgis_sort_imports(%1)"_s.arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
     QString result;
     if ( QgsPythonRunner::eval( script, result ) )
     {
-      if ( result == QLatin1String( "_ImportError" ) )
+      if ( result == "_ImportError"_L1 )
       {
-        missingModules << QStringLiteral( "isort" );
+        missingModules << u"isort"_s;
       }
       else
       {
@@ -405,12 +405,12 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      QgsDebugError( u"Error running script: %1"_s.arg( script ) );
       return newText;
     }
   }
 
-  if ( formatter == QLatin1String( "autopep8" ) )
+  if ( formatter == "autopep8"_L1 )
   {
     const int level = settingAutopep8Level->value();
 
@@ -428,17 +428,17 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
 
     if ( !QgsPythonRunner::run( defineReformat ) )
     {
-      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
+      QgsDebugError( u"Error running script: %1"_s.arg( defineReformat ) );
       return newText;
     }
 
-    const QString script = QStringLiteral( "__qgis_reformat(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+    const QString script = u"__qgis_reformat(%1)"_s.arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
     QString result;
     if ( QgsPythonRunner::eval( script, result ) )
     {
-      if ( result == QLatin1String( "_ImportError" ) )
+      if ( result == "_ImportError"_L1 )
       {
-        missingModules << QStringLiteral( "autopep8" );
+        missingModules << u"autopep8"_s;
       }
       else
       {
@@ -447,11 +447,11 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      QgsDebugError( u"Error running script: %1"_s.arg( script ) );
       return newText;
     }
   }
-  else if ( formatter == QLatin1String( "black" ) )
+  else if ( formatter == "black"_L1 )
   {
     const bool normalize = settingBlackNormalizeQuotes->value();
 
@@ -475,17 +475,17 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
 
     if ( !QgsPythonRunner::run( defineReformat ) )
     {
-      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
+      QgsDebugError( u"Error running script: %1"_s.arg( defineReformat ) );
       return string;
     }
 
-    const QString script = QStringLiteral( "__qgis_reformat(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+    const QString script = u"__qgis_reformat(%1)"_s.arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
     QString result;
     if ( QgsPythonRunner::eval( script, result ) )
     {
-      if ( result == QLatin1String( "_ImportError" ) )
+      if ( result == "_ImportError"_L1 )
       {
-        missingModules << QStringLiteral( "black" );
+        missingModules << u"black"_s;
       }
       else
       {
@@ -494,7 +494,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      QgsDebugError( u"Error running script: %1"_s.arg( script ) );
       return newText;
     }
   }
@@ -507,7 +507,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      const QString modules = missingModules.join( QLatin1String( ", " ) );
+      const QString modules = missingModules.join( ", "_L1 );
       showMessage( tr( "Reformat Code" ), tr( "The Python modules %1 are missing" ).arg( modules ), Qgis::MessageLevel::Warning );
     }
   }
@@ -530,7 +530,7 @@ void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
   }
 
   QAction *pyQgisHelpAction = new QAction(
-    QgsApplication::getThemeIcon( QStringLiteral( "console/iconHelpConsole.svg" ) ),
+    QgsApplication::getThemeIcon( u"console/iconHelpConsole.svg"_s ),
     tr( "Search Selection in PyQGIS Documentation" ),
     menu
   );
@@ -567,13 +567,13 @@ void QgsCodeEditorPython::autoComplete()
 void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {
   mAPISFilesList = filenames;
-  //QgsDebugMsgLevel( QStringLiteral( "The apis files: %1" ).arg( mAPISFilesList[0] ), 2 );
+  //QgsDebugMsgLevel( u"The apis files: %1"_s.arg( mAPISFilesList[0] ), 2 );
   initializeLexer();
 }
 
 bool QgsCodeEditorPython::loadScript( const QString &script )
 {
-  QgsDebugMsgLevel( QStringLiteral( "The script file: %1" ).arg( script ), 2 );
+  QgsDebugMsgLevel( u"The script file: %1"_s.arg( script ), 2 );
   QFile file( script );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
@@ -684,11 +684,11 @@ bool QgsCodeEditorPython::checkSyntax()
 
   if ( !QgsPythonRunner::run( defineCheckSyntax ) )
   {
-    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineCheckSyntax ) );
+    QgsDebugError( u"Error running script: %1"_s.arg( defineCheckSyntax ) );
     return true;
   }
 
-  const QString script = QStringLiteral( "__check_syntax(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( originalText ) );
+  const QString script = u"__check_syntax(%1)"_s.arg( QgsProcessingUtils::stringToPythonLiteral( originalText ) );
   QString result;
   if ( QgsPythonRunner::eval( script, result ) )
   {
@@ -698,7 +698,7 @@ bool QgsCodeEditorPython::checkSyntax()
     }
     else
     {
-      const QStringList parts = result.split( QStringLiteral( "!!!!" ) );
+      const QStringList parts = result.split( u"!!!!"_s );
       if ( parts.size() == 3 )
       {
         const int line = parts.at( 0 ).toInt();
@@ -712,7 +712,7 @@ bool QgsCodeEditorPython::checkSyntax()
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    QgsDebugError( u"Error running script: %1"_s.arg( script ) );
     return true;
   }
 }
@@ -725,7 +725,7 @@ void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
 void QgsCodeEditorPython::showApiDocumentation( const QString &text )
 {
   QString searchText = text;
-  searchText = searchText.replace( QLatin1String( ">>> " ), QString() ).replace( QLatin1String( "... " ), QString() ).trimmed(); // removing prompts
+  searchText = searchText.replace( ">>> "_L1, QString() ).replace( "... "_L1, QString() ).trimmed(); // removing prompts
 
   QRegularExpression qtExpression( "^Q[A-Z][a-zA-Z]" );
 
@@ -733,23 +733,23 @@ void QgsCodeEditorPython::showApiDocumentation( const QString &text )
   {
     const QString qtVersion = QString( qVersion() ).split( '.' ).mid( 0, 2 ).join( '.' );
     QString baseUrl = QString( "https://doc.qt.io/qt-%1" ).arg( qtVersion );
-    QDesktopServices::openUrl( QUrl( QStringLiteral( "%1/%2.html" ).arg( baseUrl, searchText.toLower() ) ) );
+    QDesktopServices::openUrl( QUrl( u"%1/%2.html"_s.arg( baseUrl, searchText.toLower() ) ) );
     return;
   }
   const QString qgisVersion = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
   if ( searchText.isEmpty() )
   {
-    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/" ).arg( qgisVersion ) ) );
+    QDesktopServices::openUrl( QUrl( u"https://qgis.org/pyqgis/%1/"_s.arg( qgisVersion ) ) );
   }
   else
   {
-    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( qgisVersion, searchText ) ) );
+    QDesktopServices::openUrl( QUrl( u"https://qgis.org/pyqgis/%1/search.html?q=%2"_s.arg( qgisVersion, searchText ) ) );
   }
 }
 
 void QgsCodeEditorPython::toggleComment()
 {
-  toggleLineComments( QStringLiteral( "#" ) );
+  toggleLineComments( u"#"_s );
 }
 
 ///@cond PRIVATE

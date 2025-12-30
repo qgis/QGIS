@@ -72,7 +72,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsVectorLayer *> addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ), bool addToLegend = true );
+    static QList<QgsVectorLayer *> addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = "ogr"_L1, bool addToLegend = true );
 
     /**
      * Adds a list of vector layers from a list of layer \a uris supported by the OGR provider.
@@ -96,7 +96,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsRasterLayer *> addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ), bool addToLegend = true );
+    static QList<QgsRasterLayer *> addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = "gdal"_L1, bool addToLegend = true );
 
     /**
      * Adds a list of raster layers from a list of layer \a uris supported by the GDAL provider.

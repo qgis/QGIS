@@ -70,11 +70,11 @@ void QgsLayerTreeNode::makeOrphan()
 QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsLayerTreeNode *node = nullptr;
-  if ( element.tagName() == QLatin1String( "layer-tree-group" ) )
+  if ( element.tagName() == "layer-tree-group"_L1 )
     node = QgsLayerTreeGroup::readXml( element, context );
-  else if ( element.tagName() == QLatin1String( "layer-tree-layer" ) )
+  else if ( element.tagName() == "layer-tree-layer"_L1 )
     node = QgsLayerTreeLayer::readXml( element, context );
-  else if ( element.tagName() == QLatin1String( "layer-tree-custom-node" ) )
+  else if ( element.tagName() == "layer-tree-custom-node"_L1 )
     node = QgsLayerTreeCustomNode::readXml( element, context );
 
   return node;

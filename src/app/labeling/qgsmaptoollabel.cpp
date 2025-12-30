@@ -422,48 +422,48 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
   // quadrant defined by DD alignment
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::Hali ) || mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::Vali ) )
   {
-    QString hali = QStringLiteral( "Left" );
-    QString vali = QStringLiteral( "Bottom" );
+    QString hali = u"Left"_s;
+    QString vali = u"Bottom"_s;
     hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Property::Hali, mCurrentLabel.settings, f, hali ).toString();
     vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Property::Vali, mCurrentLabel.settings, f, vali ).toString();
 
-    if ( hali.compare( QLatin1String( "Left" ), Qt::CaseInsensitive ) == 0 )
+    if ( hali.compare( "Left"_L1, Qt::CaseInsensitive ) == 0 )
     {
-      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+      if ( vali.compare( "Top"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::TopLeft;
-      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Half"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::HalfLeft;
-      else if ( vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Bottom"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::BottomLeft;
-      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Base"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::BaseLeft;
-      else if ( vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Cap"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::CapLeft;
     }
-    else if ( hali.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+    else if ( hali.compare( "Center"_L1, Qt::CaseInsensitive ) == 0 )
     {
-      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+      if ( vali.compare( "Top"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::TopCenter;
-      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Half"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::HalfCenter;
-      else if ( vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Bottom"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::BottomCenter;
-      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Base"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::BaseCenter;
-      else if ( vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Cap"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::CapCenter;
     }
-    else if ( hali.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+    else if ( hali.compare( "Right"_L1, Qt::CaseInsensitive ) == 0 )
     {
-      if ( vali.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+      if ( vali.compare( "Top"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::TopRight;
-      else if ( vali.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Half"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::HalfRight;
-      else if ( vali.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Bottom"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::BottomRight;
-      else if ( vali.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Base"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::BaseRight;
-      else if ( vali.compare( QLatin1String( "Cap" ), Qt::CaseInsensitive ) == 0 )
+      else if ( vali.compare( "Cap"_L1, Qt::CaseInsensitive ) == 0 )
         labelAlignment = LabelAlignment::CapRight;
     }
   }
@@ -594,9 +594,9 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   QgsPointXY cp_0 = cornerPoints.at( 0 );
   QgsPointXY cp_1 = cornerPoints.at( 1 );
   QgsPointXY cp_3 = cornerPoints.at( 3 );
-  //  QgsDebugMsgLevel( QStringLiteral( "cp_0: x=%1, y=%2" ).arg( cp_0.x() ).arg( cp_0.y() ), 2 );
-  //  QgsDebugMsgLevel( QStringLiteral( "cp_1: x=%1, y=%2" ).arg( cp_1.x() ).arg( cp_1.y() ), 2 );
-  //  QgsDebugMsgLevel( QStringLiteral( "cp_3: x=%1, y=%2" ).arg( cp_3.x() ).arg( cp_3.y() ), 2 );
+  //  QgsDebugMsgLevel( u"cp_0: x=%1, y=%2"_s.arg( cp_0.x() ).arg( cp_0.y() ), 2 );
+  //  QgsDebugMsgLevel( u"cp_1: x=%1, y=%2"_s.arg( cp_1.x() ).arg( cp_1.y() ), 2 );
+  //  QgsDebugMsgLevel( u"cp_3: x=%1, y=%2"_s.arg( cp_3.x() ).arg( cp_3.y() ), 2 );
   double labelSizeX = std::sqrt( cp_0.sqrDist( cp_1 ) );
   double labelSizeY = std::sqrt( cp_0.sqrDist( cp_3 ) );
 
@@ -743,7 +743,7 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
           const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
           if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
           {
-            if ( function->name() == QLatin1String( "coalesce" ) )
+            if ( function->name() == "coalesce"_L1 )
             {
               if ( const QgsExpressionNode *firstArg = functionNode->args()->list().value( 0 ) )
               {
@@ -1018,19 +1018,19 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedLineAnchorPercent( const QVar
     const QString lineAnchorClippingColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorClipping, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorClippingCol = mCurrentLabel.layer->fields().lookupField( lineAnchorClippingColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorClippingCol, QStringLiteral( "entire" ) ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorClippingCol, u"entire"_s ) )
       return false;
 
     const QString lineAnchorTypeColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorType, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorTypeCol = mCurrentLabel.layer->fields().lookupField( lineAnchorTypeColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTypeCol, QStringLiteral( "strict" ) ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTypeCol, u"strict"_s ) )
       return false;
 
     const QString lineAnchorTextPointColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorTextPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorTextPointCol = mCurrentLabel.layer->fields().lookupField( lineAnchorTextPointColName );
 
-    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTextPointCol, QStringLiteral( "start" ) ) )
+    if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTextPointCol, u"start"_s ) )
       return false;
   }
   else

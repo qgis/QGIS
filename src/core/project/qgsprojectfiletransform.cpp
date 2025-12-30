@@ -118,7 +118,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
 
 void QgsProjectFileTransform::dump()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Current project file version is %1.%2.%3" )
+  QgsDebugMsgLevel( u"Current project file version is %1.%2.%3"_s
                     .arg( mCurrentVersion.majorVersion() )
                     .arg( mCurrentVersion.minorVersion() )
                     .arg( mCurrentVersion.subVersion() ), 1 );
@@ -135,42 +135,42 @@ void QgsProjectFileTransform::dump()
 void transform2200to2300( QgsProjectFileTransform *pft )
 {
   //composer: set placement for all picture items to middle, to mimic <=2.2 behavior
-  const QDomNodeList composerPictureList = pft->dom().elementsByTagName( QStringLiteral( "ComposerPicture" ) );
+  const QDomNodeList composerPictureList = pft->dom().elementsByTagName( u"ComposerPicture"_s );
   for ( int i = 0; i < composerPictureList.size(); ++i )
   {
     QDomElement picture = composerPictureList.at( i ).toElement();
-    picture.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( 4 ) );
+    picture.setAttribute( u"anchorPoint"_s, QString::number( 4 ) );
   }
 }
 
 void transform3000( QgsProjectFileTransform *pft )
 {
   // transform OTF off to "no projection" for project
-  QDomElement propsElem = pft->dom().firstChildElement( QStringLiteral( "qgis" ) ).toElement().firstChildElement( QStringLiteral( "properties" ) );
+  QDomElement propsElem = pft->dom().firstChildElement( u"qgis"_s ).toElement().firstChildElement( u"properties"_s );
   if ( !propsElem.isNull() )
   {
-    const QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+    const QDomNodeList srsNodes = propsElem.elementsByTagName( u"SpatialRefSys"_s );
     QDomElement srsElem;
     QDomElement projElem;
     if ( srsNodes.count() > 0 )
     {
       srsElem = srsNodes.at( 0 ).toElement();
-      const QDomNodeList projNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
+      const QDomNodeList projNodes = srsElem.elementsByTagName( u"ProjectionsEnabled"_s );
       if ( projNodes.count() == 0 )
       {
-        projElem = pft->dom().createElement( QStringLiteral( "ProjectionsEnabled" ) );
-        projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-        const QDomText projText = pft->dom().createTextNode( QStringLiteral( "0" ) );
+        projElem = pft->dom().createElement( u"ProjectionsEnabled"_s );
+        projElem.setAttribute( u"type"_s, u"int"_s );
+        const QDomText projText = pft->dom().createTextNode( u"0"_s );
         projElem.appendChild( projText );
         srsElem.appendChild( projElem );
       }
     }
     else
     {
-      srsElem = pft->dom().createElement( QStringLiteral( "SpatialRefSys" ) );
-      projElem = pft->dom().createElement( QStringLiteral( "ProjectionsEnabled" ) );
-      projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-      const QDomText projText = pft->dom().createTextNode( QStringLiteral( "0" ) );
+      srsElem = pft->dom().createElement( u"SpatialRefSys"_s );
+      projElem = pft->dom().createElement( u"ProjectionsEnabled"_s );
+      projElem.setAttribute( u"type"_s, u"int"_s );
+      const QDomText projText = pft->dom().createTextNode( u"0"_s );
       projElem.appendChild( projText );
       srsElem.appendChild( projElem );
       propsElem.appendChild( srsElem );
@@ -179,11 +179,11 @@ void transform3000( QgsProjectFileTransform *pft )
     // transform map canvas CRS to project CRS - this is because project CRS was inconsistently used
     // prior to 3.0. In >= 3.0 main canvas CRS is forced to match project CRS, so we need to make
     // sure we can read the project CRS correctly
-    const QDomNodeList canvasNodes = pft->dom().elementsByTagName( QStringLiteral( "mapcanvas" ) );
+    const QDomNodeList canvasNodes = pft->dom().elementsByTagName( u"mapcanvas"_s );
     if ( canvasNodes.count() > 0 )
     {
       const QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
-      const QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
+      const QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( u"spatialrefsys"_s );
       if ( canvasSrsNodes.count() > 0 )
       {
         const QDomElement canvasSrsElem = canvasSrsNodes.at( 0 ).toElement();
@@ -191,19 +191,19 @@ void transform3000( QgsProjectFileTransform *pft )
         QString authid;
         QString srsid;
 
-        const QDomNodeList proj4Nodes = canvasSrsElem.elementsByTagName( QStringLiteral( "proj4" ) );
+        const QDomNodeList proj4Nodes = canvasSrsElem.elementsByTagName( u"proj4"_s );
         if ( proj4Nodes.count() > 0 )
         {
           const QDomElement proj4Node = proj4Nodes.at( 0 ).toElement();
           proj = proj4Node.text();
         }
-        const QDomNodeList authidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "authid" ) );
+        const QDomNodeList authidNodes = canvasSrsElem.elementsByTagName( u"authid"_s );
         if ( authidNodes.count() > 0 )
         {
           const QDomElement authidNode = authidNodes.at( 0 ).toElement();
           authid = authidNode.text();
         }
-        const QDomNodeList srsidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "srsid" ) );
+        const QDomNodeList srsidNodes = canvasSrsElem.elementsByTagName( u"srsid"_s );
         if ( srsidNodes.count() > 0 )
         {
           const QDomElement srsidNode = srsidNodes.at( 0 ).toElement();
@@ -211,49 +211,49 @@ void transform3000( QgsProjectFileTransform *pft )
         }
 
         // clear existing project CRS nodes
-        const QDomNodeList oldProjectProj4Nodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSProj4String" ) );
+        const QDomNodeList oldProjectProj4Nodes = srsElem.elementsByTagName( u"ProjectCRSProj4String"_s );
         for ( int i = oldProjectProj4Nodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( oldProjectProj4Nodes.at( i ) );
         }
-        const QDomNodeList oldProjectCrsNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCrs" ) );
+        const QDomNodeList oldProjectCrsNodes = srsElem.elementsByTagName( u"ProjectCrs"_s );
         for ( int i = oldProjectCrsNodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( oldProjectCrsNodes.at( i ) );
         }
-        const QDomNodeList oldProjectCrsIdNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSID" ) );
+        const QDomNodeList oldProjectCrsIdNodes = srsElem.elementsByTagName( u"ProjectCRSID"_s );
         for ( int i = oldProjectCrsIdNodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( oldProjectCrsIdNodes.at( i ) );
         }
-        const QDomNodeList projectionsEnabledNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
+        const QDomNodeList projectionsEnabledNodes = srsElem.elementsByTagName( u"ProjectionsEnabled"_s );
         for ( int i = projectionsEnabledNodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( projectionsEnabledNodes.at( i ) );
         }
 
-        QDomElement proj4Elem = pft->dom().createElement( QStringLiteral( "ProjectCRSProj4String" ) );
-        proj4Elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
+        QDomElement proj4Elem = pft->dom().createElement( u"ProjectCRSProj4String"_s );
+        proj4Elem.setAttribute( u"type"_s, u"QString"_s );
         const QDomText proj4Text = pft->dom().createTextNode( proj );
         proj4Elem.appendChild( proj4Text );
-        QDomElement projectCrsElem = pft->dom().createElement( QStringLiteral( "ProjectCrs" ) );
-        projectCrsElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
+        QDomElement projectCrsElem = pft->dom().createElement( u"ProjectCrs"_s );
+        projectCrsElem.setAttribute( u"type"_s, u"QString"_s );
         const QDomText projectCrsText = pft->dom().createTextNode( authid );
         projectCrsElem.appendChild( projectCrsText );
-        QDomElement projectCrsIdElem = pft->dom().createElement( QStringLiteral( "ProjectCRSID" ) );
-        projectCrsIdElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
+        QDomElement projectCrsIdElem = pft->dom().createElement( u"ProjectCRSID"_s );
+        projectCrsIdElem.setAttribute( u"type"_s, u"int"_s );
         const QDomText srsidText = pft->dom().createTextNode( srsid );
         projectCrsIdElem.appendChild( srsidText );
-        QDomElement projectionsEnabledElem = pft->dom().createElement( QStringLiteral( "ProjectionsEnabled" ) );
-        projectionsEnabledElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-        const QDomText projectionsEnabledText = pft->dom().createTextNode( QStringLiteral( "1" ) );
+        QDomElement projectionsEnabledElem = pft->dom().createElement( u"ProjectionsEnabled"_s );
+        projectionsEnabledElem.setAttribute( u"type"_s, u"int"_s );
+        const QDomText projectionsEnabledText = pft->dom().createTextNode( u"1"_s );
         projectionsEnabledElem.appendChild( projectionsEnabledText );
         srsElem.appendChild( proj4Elem );
         srsElem.appendChild( projectCrsElem );
         srsElem.appendChild( projectCrsIdElem );
         srsElem.appendChild( projectionsEnabledElem );
 
-        const QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+        const QDomNodeList srsNodes = propsElem.elementsByTagName( u"SpatialRefSys"_s );
         for ( int i = srsNodes.count(); i >= 0; --i )
         {
           propsElem.removeChild( srsNodes.at( i ) );
@@ -264,18 +264,18 @@ void transform3000( QgsProjectFileTransform *pft )
   }
 
 
-  const QDomNodeList mapLayers = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
+  const QDomNodeList mapLayers = pft->dom().elementsByTagName( u"maplayer"_s );
 
   for ( int mapLayerIndex = 0; mapLayerIndex < mapLayers.count(); ++mapLayerIndex )
   {
     QDomElement layerElem = mapLayers.at( mapLayerIndex ).toElement();
 
     // The newly added fieldConfiguration element
-    QDomElement fieldConfigurationElement = pft->dom().createElement( QStringLiteral( "fieldConfiguration" ) );
+    QDomElement fieldConfigurationElement = pft->dom().createElement( u"fieldConfiguration"_s );
     layerElem.appendChild( fieldConfigurationElement );
 
-    const QDomNodeList editTypeNodes = layerElem.namedItem( QStringLiteral( "edittypes" ) ).childNodes();
-    QDomElement constraintExpressionsElem = pft->dom().createElement( QStringLiteral( "constraintExpressions" ) );
+    const QDomNodeList editTypeNodes = layerElem.namedItem( u"edittypes"_s ).childNodes();
+    QDomElement constraintExpressionsElem = pft->dom().createElement( u"constraintExpressions"_s );
     layerElem.appendChild( constraintExpressionsElem );
 
     for ( int i = 0; i < editTypeNodes.size(); ++i )
@@ -283,26 +283,26 @@ void transform3000( QgsProjectFileTransform *pft )
       const QDomNode editTypeNode = editTypeNodes.at( i );
       const QDomElement editTypeElement = editTypeNode.toElement();
 
-      QDomElement fieldElement = pft->dom().createElement( QStringLiteral( "field" ) );
+      QDomElement fieldElement = pft->dom().createElement( u"field"_s );
       fieldConfigurationElement.appendChild( fieldElement );
 
-      const QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
-      fieldElement.setAttribute( QStringLiteral( "name" ), name );
-      QDomElement constraintExpressionElem = pft->dom().createElement( QStringLiteral( "constraint" ) );
-      constraintExpressionElem.setAttribute( QStringLiteral( "field" ), name );
+      const QString name = editTypeElement.attribute( u"name"_s );
+      fieldElement.setAttribute( u"name"_s, name );
+      QDomElement constraintExpressionElem = pft->dom().createElement( u"constraint"_s );
+      constraintExpressionElem.setAttribute( u"field"_s, name );
       constraintExpressionsElem.appendChild( constraintExpressionElem );
 
-      QDomElement editWidgetElement = pft->dom().createElement( QStringLiteral( "editWidget" ) );
+      QDomElement editWidgetElement = pft->dom().createElement( u"editWidget"_s );
       fieldElement.appendChild( editWidgetElement );
 
-      const QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
-      editWidgetElement.setAttribute( QStringLiteral( "type" ), ewv2Type );
+      const QString ewv2Type = editTypeElement.attribute( u"widgetv2type"_s );
+      editWidgetElement.setAttribute( u"type"_s, ewv2Type );
 
-      const QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
+      const QDomElement ewv2CfgElem = editTypeElement.namedItem( u"widgetv2config"_s ).toElement();
 
       if ( !ewv2CfgElem.isNull() )
       {
-        QDomElement editWidgetConfigElement = pft->dom().createElement( QStringLiteral( "config" ) );
+        QDomElement editWidgetConfigElement = pft->dom().createElement( u"config"_s );
         editWidgetElement.appendChild( editWidgetConfigElement );
 
         QVariantMap editWidgetConfiguration;
@@ -311,25 +311,25 @@ void transform3000( QgsProjectFileTransform *pft )
         for ( int configIndex = 0; configIndex < configAttrs.count(); ++configIndex )
         {
           const QDomAttr configAttr = configAttrs.item( configIndex ).toAttr();
-          if ( configAttr.name() == QLatin1String( "fieldEditable" ) )
+          if ( configAttr.name() == "fieldEditable"_L1 )
           {
-            editWidgetConfigElement.setAttribute( QStringLiteral( "fieldEditable" ), configAttr.value() );
+            editWidgetConfigElement.setAttribute( u"fieldEditable"_s, configAttr.value() );
           }
-          else if ( configAttr.name() == QLatin1String( "labelOnTop" ) )
+          else if ( configAttr.name() == "labelOnTop"_L1 )
           {
-            editWidgetConfigElement.setAttribute( QStringLiteral( "labelOnTop" ), configAttr.value() );
+            editWidgetConfigElement.setAttribute( u"labelOnTop"_s, configAttr.value() );
           }
-          else if ( configAttr.name() == QLatin1String( "notNull" ) )
+          else if ( configAttr.name() == "notNull"_L1 )
           {
-            editWidgetConfigElement.setAttribute( QStringLiteral( "notNull" ), configAttr.value() );
+            editWidgetConfigElement.setAttribute( u"notNull"_s, configAttr.value() );
           }
-          else if ( configAttr.name() == QLatin1String( "constraint" ) )
+          else if ( configAttr.name() == "constraint"_L1 )
           {
-            constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), configAttr.value() );
+            constraintExpressionElem.setAttribute( u"exp"_s, configAttr.value() );
           }
-          else if ( configAttr.name() == QLatin1String( "constraintDescription" ) )
+          else if ( configAttr.name() == "constraintDescription"_L1 )
           {
-            constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), configAttr.value() );
+            constraintExpressionElem.setAttribute( u"desc"_s, configAttr.value() );
           }
           else
           {
@@ -337,39 +337,39 @@ void transform3000( QgsProjectFileTransform *pft )
           }
         }
 
-        if ( ewv2Type == QLatin1String( "ValueMap" ) )
+        if ( ewv2Type == "ValueMap"_L1 )
         {
           const QDomNodeList configElements = ewv2CfgElem.childNodes();
           QVariantMap map;
           for ( int configIndex = 0; configIndex < configElements.count(); ++configIndex )
           {
             const QDomElement configElem = configElements.at( configIndex ).toElement();
-            map.insert( configElem.attribute( QStringLiteral( "key" ) ), configElem.attribute( QStringLiteral( "value" ) ) );
+            map.insert( configElem.attribute( u"key"_s ), configElem.attribute( u"value"_s ) );
           }
-          editWidgetConfiguration.insert( QStringLiteral( "map" ), map );
+          editWidgetConfiguration.insert( u"map"_s, map );
         }
-        else if ( ewv2Type == QLatin1String( "Photo" ) )
+        else if ( ewv2Type == "Photo"_L1 )
         {
-          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( u"type"_s, u"ExternalResource"_s );
 
-          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewer" ), 1 );
-          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
-          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
-          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+          editWidgetConfiguration.insert( u"DocumentViewer"_s, 1 );
+          editWidgetConfiguration.insert( u"DocumentViewerHeight"_s, editWidgetConfiguration.value( u"Height"_s ) );
+          editWidgetConfiguration.insert( u"DocumentViewerWidth"_s, editWidgetConfiguration.value( u"Width"_s ) );
+          editWidgetConfiguration.insert( u"RelativeStorage"_s, 1 );
         }
-        else if ( ewv2Type == QLatin1String( "FileName" ) )
+        else if ( ewv2Type == "FileName"_L1 )
         {
-          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( u"type"_s, u"ExternalResource"_s );
 
-          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+          editWidgetConfiguration.insert( u"RelativeStorage"_s, 1 );
         }
-        else if ( ewv2Type == QLatin1String( "WebView" ) )
+        else if ( ewv2Type == "WebView"_L1 )
         {
-          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( u"type"_s, u"ExternalResource"_s );
 
-          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
-          editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
-          editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
+          editWidgetConfiguration.insert( u"DocumentViewerHeight"_s, editWidgetConfiguration.value( u"Height"_s ) );
+          editWidgetConfiguration.insert( u"DocumentViewerWidth"_s, editWidgetConfiguration.value( u"Width"_s ) );
+          editWidgetConfiguration.insert( u"RelativeStorage"_s, 1 );
         }
 
         editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( editWidgetConfiguration, pft->dom() ) );
@@ -383,19 +383,19 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
 {
   //no data
   //TODO: We would need to set no data on all bands, but we don't know number of bands here
-  const QDomNode noDataNode = rasterPropertiesElem.namedItem( QStringLiteral( "mNoDataValue" ) );
+  const QDomNode noDataNode = rasterPropertiesElem.namedItem( u"mNoDataValue"_s );
   const QDomElement noDataElement = noDataNode.toElement();
   if ( !noDataElement.text().isEmpty() )
   {
     QgsDebugMsgLevel( "mNoDataValue = " + noDataElement.text(), 2 );
-    QDomElement noDataElem = doc.createElement( QStringLiteral( "noData" ) );
+    QDomElement noDataElem = doc.createElement( u"noData"_s );
 
-    QDomElement noDataRangeList = doc.createElement( QStringLiteral( "noDataRangeList" ) );
-    noDataRangeList.setAttribute( QStringLiteral( "bandNo" ), 1 );
+    QDomElement noDataRangeList = doc.createElement( u"noDataRangeList"_s );
+    noDataRangeList.setAttribute( u"bandNo"_s, 1 );
 
-    QDomElement noDataRange = doc.createElement( QStringLiteral( "noDataRange" ) );
-    noDataRange.setAttribute( QStringLiteral( "min" ), noDataElement.text() );
-    noDataRange.setAttribute( QStringLiteral( "max" ), noDataElement.text() );
+    QDomElement noDataRange = doc.createElement( u"noDataRange"_s );
+    noDataRange.setAttribute( u"min"_s, noDataElement.text() );
+    noDataRange.setAttribute( u"max"_s, noDataElement.text() );
     noDataRangeList.appendChild( noDataRange );
 
     noDataElem.appendChild( noDataRangeList );
@@ -403,82 +403,82 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     parentNode.appendChild( noDataElem );
   }
 
-  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  QDomElement rasterRendererElem = doc.createElement( u"rasterrenderer"_s );
   //convert general properties
 
   //invert color
-  rasterRendererElem.setAttribute( QStringLiteral( "invertColor" ), QStringLiteral( "0" ) );
-  const QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "mInvertColor" ) );
+  rasterRendererElem.setAttribute( u"invertColor"_s, u"0"_s );
+  const QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( u"mInvertColor"_s );
   if ( !invertColorElem.isNull() )
   {
-    if ( invertColorElem.text() == QLatin1String( "true" ) )
+    if ( invertColorElem.text() == "true"_L1 )
     {
-      rasterRendererElem.setAttribute( QStringLiteral( "invertColor" ), QStringLiteral( "1" ) );
+      rasterRendererElem.setAttribute( u"invertColor"_s, u"1"_s );
     }
   }
 
   //opacity
-  rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) );
-  const QDomElement transparencyElem = parentNode.firstChildElement( QStringLiteral( "transparencyLevelInt" ) );
+  rasterRendererElem.setAttribute( u"opacity"_s, u"1"_s );
+  const QDomElement transparencyElem = parentNode.firstChildElement( u"transparencyLevelInt"_s );
   if ( !transparencyElem.isNull() )
   {
     const double transparency = transparencyElem.text().toInt();
-    rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( transparency / 255.0 ) );
+    rasterRendererElem.setAttribute( u"opacity"_s, QString::number( transparency / 255.0 ) );
   }
 
   //alphaBand was not saved until now (bug)
-  rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), -1 );
+  rasterRendererElem.setAttribute( u"alphaBand"_s, -1 );
 
   //gray band is used for several renderers
-  const int grayBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mGrayBandName" ), rlayer );
+  const int grayBand = rasterBandNumber( rasterPropertiesElem, u"mGrayBandName"_s, rlayer );
 
   //convert renderer specific properties
-  QString drawingStyle = rasterPropertiesElem.firstChildElement( QStringLiteral( "mDrawingStyle" ) ).text();
+  QString drawingStyle = rasterPropertiesElem.firstChildElement( u"mDrawingStyle"_s ).text();
 
   // While PalettedColor should normally contain only integer values, usually
   // color palette 0-255, it may happen (Tim, issue #7023) that it contains
   // colormap classification with double values and text labels
   // (which should normally only appear in SingleBandPseudoColor drawingStyle)
   // => we have to check first the values and change drawingStyle if necessary
-  if ( drawingStyle == QLatin1String( "PalettedColor" ) )
+  if ( drawingStyle == "PalettedColor"_L1 )
   {
-    const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
-    const QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
+    const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( u"customColorRamp"_s );
+    const QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( u"colorRampEntry"_s );
 
     for ( int i = 0; i < colorRampEntryList.size(); ++i )
     {
       const QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
-      const QString strValue = colorRampEntryElem.attribute( QStringLiteral( "value" ) );
+      const QString strValue = colorRampEntryElem.attribute( u"value"_s );
       const double value = strValue.toDouble();
       if ( value < 0 || value > 10000 || !qgsDoubleNear( value, static_cast< int >( value ) ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "forcing SingleBandPseudoColor value = %1" ).arg( value ), 2 );
-        drawingStyle = QStringLiteral( "SingleBandPseudoColor" );
+        QgsDebugMsgLevel( u"forcing SingleBandPseudoColor value = %1"_s.arg( value ), 2 );
+        drawingStyle = u"SingleBandPseudoColor"_s;
         break;
       }
     }
   }
 
-  if ( drawingStyle == QLatin1String( "SingleBandGray" ) )
+  if ( drawingStyle == "SingleBandGray"_L1 )
   {
-    rasterRendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singlebandgray" ) );
-    rasterRendererElem.setAttribute( QStringLiteral( "grayBand" ), grayBand );
+    rasterRendererElem.setAttribute( u"type"_s, u"singlebandgray"_s );
+    rasterRendererElem.setAttribute( u"grayBand"_s, grayBand );
     transformContrastEnhancement( doc, rasterPropertiesElem, rasterRendererElem );
   }
-  else if ( drawingStyle == QLatin1String( "SingleBandPseudoColor" ) )
+  else if ( drawingStyle == "SingleBandPseudoColor"_L1 )
   {
-    rasterRendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singlebandpseudocolor" ) );
-    rasterRendererElem.setAttribute( QStringLiteral( "band" ), grayBand );
-    QDomElement newRasterShaderElem = doc.createElement( QStringLiteral( "rastershader" ) );
-    QDomElement newColorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
+    rasterRendererElem.setAttribute( u"type"_s, u"singlebandpseudocolor"_s );
+    rasterRendererElem.setAttribute( u"band"_s, grayBand );
+    QDomElement newRasterShaderElem = doc.createElement( u"rastershader"_s );
+    QDomElement newColorRampShaderElem = doc.createElement( u"colorrampshader"_s );
     newRasterShaderElem.appendChild( newColorRampShaderElem );
     rasterRendererElem.appendChild( newRasterShaderElem );
 
     //switch depending on mColorShadingAlgorithm
-    const QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( QStringLiteral( "mColorShadingAlgorithm" ) ).text();
-    if ( colorShadingAlgorithm == QLatin1String( "PseudoColorShader" ) || colorShadingAlgorithm == QLatin1String( "FreakOutShader" ) )
+    const QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( u"mColorShadingAlgorithm"_s ).text();
+    if ( colorShadingAlgorithm == "PseudoColorShader"_L1 || colorShadingAlgorithm == "FreakOutShader"_L1 )
     {
-      newColorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) );
+      newColorRampShaderElem.setAttribute( u"colorRampType"_s, u"INTERPOLATED"_s );
 
       //get minmax from rasterlayer
       const QgsRasterBandStats rasterBandStats = rlayer->dataProvider()->bandStatistics( grayBand );
@@ -487,32 +487,32 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
       const double breakSize = ( maxValue - minValue ) / 3;
 
       QStringList colorList;
-      if ( colorShadingAlgorithm == QLatin1String( "FreakOutShader" ) )
+      if ( colorShadingAlgorithm == "FreakOutShader"_L1 )
       {
-        colorList << QStringLiteral( "#ff00ff" ) << QStringLiteral( "#00ffff" ) << QStringLiteral( "#ff0000" ) << QStringLiteral( "#00ff00" );
+        colorList << u"#ff00ff"_s << u"#00ffff"_s << u"#ff0000"_s << u"#00ff00"_s;
       }
       else //pseudocolor
       {
-        colorList << QStringLiteral( "#0000ff" ) << QStringLiteral( "#00ffff" ) << QStringLiteral( "#ffff00" ) << QStringLiteral( "#ff0000" );
+        colorList << u"#0000ff"_s << u"#00ffff"_s << u"#ffff00"_s << u"#ff0000"_s;
       }
       QStringList::const_iterator colorIt = colorList.constBegin();
       double boundValue = minValue;
       for ( ; colorIt != colorList.constEnd(); ++colorIt )
       {
-        QDomElement newItemElem = doc.createElement( QStringLiteral( "item" ) );
-        newItemElem.setAttribute( QStringLiteral( "value" ), QString::number( boundValue ) );
-        newItemElem.setAttribute( QStringLiteral( "label" ), QString::number( boundValue ) );
-        newItemElem.setAttribute( QStringLiteral( "color" ), *colorIt );
+        QDomElement newItemElem = doc.createElement( u"item"_s );
+        newItemElem.setAttribute( u"value"_s, QString::number( boundValue ) );
+        newItemElem.setAttribute( u"label"_s, QString::number( boundValue ) );
+        newItemElem.setAttribute( u"color"_s, *colorIt );
         newColorRampShaderElem.appendChild( newItemElem );
         boundValue += breakSize;
       }
     }
-    else if ( colorShadingAlgorithm == QLatin1String( "ColorRampShader" ) )
+    else if ( colorShadingAlgorithm == "ColorRampShader"_L1 )
     {
-      const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
-      const QString type = customColorRampElem.firstChildElement( QStringLiteral( "colorRampType" ) ).text();
-      newColorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), type );
-      const QDomNodeList colorNodeList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
+      const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( u"customColorRamp"_s );
+      const QString type = customColorRampElem.firstChildElement( u"colorRampType"_s ).text();
+      newColorRampShaderElem.setAttribute( u"colorRampType"_s, type );
+      const QDomNodeList colorNodeList = customColorRampElem.elementsByTagName( u"colorRampEntry"_s );
 
       QString value, label;
       QColor newColor;
@@ -521,27 +521,27 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
       for ( int i = 0; i < colorNodeList.size(); ++i )
       {
         currentItemElem = colorNodeList.at( i ).toElement();
-        value = currentItemElem.attribute( QStringLiteral( "value" ) );
-        label = currentItemElem.attribute( QStringLiteral( "label" ) );
-        red = currentItemElem.attribute( QStringLiteral( "red" ) ).toInt();
-        green = currentItemElem.attribute( QStringLiteral( "green" ) ).toInt();
-        blue = currentItemElem.attribute( QStringLiteral( "blue" ) ).toInt();
+        value = currentItemElem.attribute( u"value"_s );
+        label = currentItemElem.attribute( u"label"_s );
+        red = currentItemElem.attribute( u"red"_s ).toInt();
+        green = currentItemElem.attribute( u"green"_s ).toInt();
+        blue = currentItemElem.attribute( u"blue"_s ).toInt();
         newColor = QColor( red, green, blue );
-        QDomElement newItemElem = doc.createElement( QStringLiteral( "item" ) );
-        newItemElem.setAttribute( QStringLiteral( "value" ), value );
-        newItemElem.setAttribute( QStringLiteral( "label" ), label );
-        newItemElem.setAttribute( QStringLiteral( "color" ), newColor.name() );
+        QDomElement newItemElem = doc.createElement( u"item"_s );
+        newItemElem.setAttribute( u"value"_s, value );
+        newItemElem.setAttribute( u"label"_s, label );
+        newItemElem.setAttribute( u"color"_s, newColor.name() );
         newColorRampShaderElem.appendChild( newItemElem );
       }
     }
   }
-  else if ( drawingStyle == QLatin1String( "PalettedColor" ) )
+  else if ( drawingStyle == "PalettedColor"_L1 )
   {
-    rasterRendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "paletted" ) );
-    rasterRendererElem.setAttribute( QStringLiteral( "band" ), grayBand );
-    const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
-    const QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
-    QDomElement newColorPaletteElem = doc.createElement( QStringLiteral( "colorPalette" ) );
+    rasterRendererElem.setAttribute( u"type"_s, u"paletted"_s );
+    rasterRendererElem.setAttribute( u"band"_s, grayBand );
+    const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( u"customColorRamp"_s );
+    const QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( u"colorRampEntry"_s );
+    QDomElement newColorPaletteElem = doc.createElement( u"colorPalette"_s );
 
     int red = 0;
     int green = 0;
@@ -551,33 +551,33 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     for ( int i = 0; i < colorRampEntryList.size(); ++i )
     {
       colorRampEntryElem = colorRampEntryList.at( i ).toElement();
-      QDomElement newPaletteElem = doc.createElement( QStringLiteral( "paletteEntry" ) );
-      value = static_cast< int >( colorRampEntryElem.attribute( QStringLiteral( "value" ) ).toDouble() );
-      newPaletteElem.setAttribute( QStringLiteral( "value" ), value );
-      red = colorRampEntryElem.attribute( QStringLiteral( "red" ) ).toInt();
-      green = colorRampEntryElem.attribute( QStringLiteral( "green" ) ).toInt();
-      blue = colorRampEntryElem.attribute( QStringLiteral( "blue" ) ).toInt();
-      newPaletteElem.setAttribute( QStringLiteral( "color" ), QColor( red, green, blue ).name() );
-      const QString label = colorRampEntryElem.attribute( QStringLiteral( "label" ) );
+      QDomElement newPaletteElem = doc.createElement( u"paletteEntry"_s );
+      value = static_cast< int >( colorRampEntryElem.attribute( u"value"_s ).toDouble() );
+      newPaletteElem.setAttribute( u"value"_s, value );
+      red = colorRampEntryElem.attribute( u"red"_s ).toInt();
+      green = colorRampEntryElem.attribute( u"green"_s ).toInt();
+      blue = colorRampEntryElem.attribute( u"blue"_s ).toInt();
+      newPaletteElem.setAttribute( u"color"_s, QColor( red, green, blue ).name() );
+      const QString label = colorRampEntryElem.attribute( u"label"_s );
       if ( !label.isEmpty() )
       {
-        newPaletteElem.setAttribute( QStringLiteral( "label" ), label );
+        newPaletteElem.setAttribute( u"label"_s, label );
       }
       newColorPaletteElem.appendChild( newPaletteElem );
     }
     rasterRendererElem.appendChild( newColorPaletteElem );
   }
-  else if ( drawingStyle == QLatin1String( "MultiBandColor" ) )
+  else if ( drawingStyle == "MultiBandColor"_L1 )
   {
-    rasterRendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "multibandcolor" ) );
+    rasterRendererElem.setAttribute( u"type"_s, u"multibandcolor"_s );
 
     //red band, green band, blue band
-    const int redBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mRedBandName" ), rlayer );
-    const int greenBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mGreenBandName" ), rlayer );
-    const int blueBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mBlueBandName" ), rlayer );
-    rasterRendererElem.setAttribute( QStringLiteral( "redBand" ), redBand );
-    rasterRendererElem.setAttribute( QStringLiteral( "greenBand" ), greenBand );
-    rasterRendererElem.setAttribute( QStringLiteral( "blueBand" ), blueBand );
+    const int redBand = rasterBandNumber( rasterPropertiesElem, u"mRedBandName"_s, rlayer );
+    const int greenBand = rasterBandNumber( rasterPropertiesElem, u"mGreenBandName"_s, rlayer );
+    const int blueBand = rasterBandNumber( rasterPropertiesElem, u"mBlueBandName"_s, rlayer );
+    rasterRendererElem.setAttribute( u"redBand"_s, redBand );
+    rasterRendererElem.setAttribute( u"greenBand"_s, greenBand );
+    rasterRendererElem.setAttribute( u"blueBand"_s, blueBand );
 
     transformContrastEnhancement( doc, rasterPropertiesElem, rasterRendererElem );
   }
@@ -633,13 +633,13 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
 
   double minimumValue = 0;
   double maximumValue = 0;
-  const QDomElement contrastMinMaxElem = rasterproperties.firstChildElement( QStringLiteral( "contrastEnhancementMinMaxValues" ) );
+  const QDomElement contrastMinMaxElem = rasterproperties.firstChildElement( u"contrastEnhancementMinMaxValues"_s );
   if ( contrastMinMaxElem.isNull() )
   {
     return;
   }
 
-  const QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( QStringLiteral( "mContrastEnhancementAlgorithm" ) );
+  const QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( u"mContrastEnhancementAlgorithm"_s );
   if ( contrastEnhancementAlgorithmElem.isNull() )
   {
     return;
@@ -648,32 +648,32 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
   //convert enhancement name to enumeration
   int algorithmEnum = 0;
   const QString algorithmString = contrastEnhancementAlgorithmElem.text();
-  if ( algorithmString == QLatin1String( "StretchToMinimumMaximum" ) )
+  if ( algorithmString == "StretchToMinimumMaximum"_L1 )
   {
     algorithmEnum = 1;
   }
-  else if ( algorithmString == QLatin1String( "StretchAndClipToMinimumMaximum" ) )
+  else if ( algorithmString == "StretchAndClipToMinimumMaximum"_L1 )
   {
     algorithmEnum = 2;
   }
-  else if ( algorithmString == QLatin1String( "ClipToMinimumMaximum" ) )
+  else if ( algorithmString == "ClipToMinimumMaximum"_L1 )
   {
     algorithmEnum = 3;
   }
-  else if ( algorithmString == QLatin1String( "UserDefinedEnhancement" ) )
+  else if ( algorithmString == "UserDefinedEnhancement"_L1 )
   {
     algorithmEnum = 4;
   }
 
-  const QDomNodeList minMaxEntryList = contrastMinMaxElem.elementsByTagName( QStringLiteral( "minMaxEntry" ) );
+  const QDomNodeList minMaxEntryList = contrastMinMaxElem.elementsByTagName( u"minMaxEntry"_s );
   QStringList enhancementNameList;
   if ( minMaxEntryList.size() == 1 )
   {
-    enhancementNameList << QStringLiteral( "contrastEnhancement" );
+    enhancementNameList << u"contrastEnhancement"_s;
   }
   if ( minMaxEntryList.size() == 3 )
   {
-    enhancementNameList << QStringLiteral( "redContrastEnhancement" ) << QStringLiteral( "greenContrastEnhancement" ) << QStringLiteral( "blueContrastEnhancement" );
+    enhancementNameList << u"redContrastEnhancement"_s << u"greenContrastEnhancement"_s << u"blueContrastEnhancement"_s;
   }
   if ( minMaxEntryList.size() > enhancementNameList.size() )
   {
@@ -684,14 +684,14 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
   for ( int i = 0; i < minMaxEntryList.size(); ++i )
   {
     minMaxEntryElem = minMaxEntryList.at( i ).toElement();
-    const QDomElement minElem = minMaxEntryElem.firstChildElement( QStringLiteral( "min" ) );
+    const QDomElement minElem = minMaxEntryElem.firstChildElement( u"min"_s );
     if ( minElem.isNull() )
     {
       return;
     }
     minimumValue = minElem.text().toDouble();
 
-    const QDomElement maxElem = minMaxEntryElem.firstChildElement( QStringLiteral( "max" ) );
+    const QDomElement maxElem = minMaxEntryElem.firstChildElement( u"max"_s );
     if ( maxElem.isNull() )
     {
       return;
@@ -699,16 +699,16 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
     maximumValue = maxElem.text().toDouble();
 
     QDomElement newContrastEnhancementElem = doc.createElement( enhancementNameList.at( i ) );
-    QDomElement newMinValElem = doc.createElement( QStringLiteral( "minValue" ) );
+    QDomElement newMinValElem = doc.createElement( u"minValue"_s );
     const QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
     newMinValElem.appendChild( minText );
     newContrastEnhancementElem.appendChild( newMinValElem );
-    QDomElement newMaxValElem = doc.createElement( QStringLiteral( "maxValue" ) );
+    QDomElement newMaxValElem = doc.createElement( u"maxValue"_s );
     const QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
     newMaxValElem.appendChild( maxText );
     newContrastEnhancementElem.appendChild( newMaxValElem );
 
-    QDomElement newAlgorithmElem = doc.createElement( QStringLiteral( "algorithm" ) );
+    QDomElement newAlgorithmElem = doc.createElement( u"algorithm"_s );
     const QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
     newAlgorithmElem.appendChild( newAlgorithmText );
     newContrastEnhancementElem.appendChild( newAlgorithmElem );

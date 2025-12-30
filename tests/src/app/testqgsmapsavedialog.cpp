@@ -27,7 +27,7 @@ class TestQgsMapSaveDialog : public QgsTest
 
   public:
     TestQgsMapSaveDialog()
-      : QgsTest( QStringLiteral( "Map save dialogs" ) )
+      : QgsTest( u"Map save dialogs"_s )
     {}
 
   private:
@@ -51,7 +51,7 @@ class TestQgsMapSaveDialog : public QgsTest
     {
       // Set up base canvas
       QgsMapCanvas canvas;
-      canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+      canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
       canvas.setFrameStyle( QFrame::NoFrame );
       canvas.resize( 800, 600 );
       canvas.show(); // to make the canvas resize

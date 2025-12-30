@@ -492,20 +492,20 @@ int QgsLayoutMultiFrame::frameIndex( QgsLayoutFrame *frame ) const
 
 bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context, bool includeFrames ) const
 {
-  QDomElement element = doc.createElement( QStringLiteral( "LayoutMultiFrame" ) );
-  element.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
-  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "templateUuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "type" ), type() );
+  QDomElement element = doc.createElement( u"LayoutMultiFrame"_s );
+  element.setAttribute( u"resizeMode"_s, mResizeMode );
+  element.setAttribute( u"uuid"_s, mUuid );
+  element.setAttribute( u"templateUuid"_s, mUuid );
+  element.setAttribute( u"type"_s, type() );
 
   for ( QgsLayoutFrame *frame : mFrameItems )
   {
     if ( !frame )
       continue;
 
-    QDomElement childItem = doc.createElement( QStringLiteral( "childFrame" ) );
-    childItem.setAttribute( QStringLiteral( "uuid" ), frame->uuid() );
-    childItem.setAttribute( QStringLiteral( "templateUuid" ), frame->uuid() );
+    QDomElement childItem = doc.createElement( u"childFrame"_s );
+    childItem.setAttribute( u"uuid"_s, frame->uuid() );
+    childItem.setAttribute( u"templateUuid"_s, frame->uuid() );
 
     if ( includeFrames )
     {
@@ -523,7 +523,7 @@ bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &do
 
 bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context, bool includeFrames )
 {
-  if ( element.nodeName() != QLatin1String( "LayoutMultiFrame" ) )
+  if ( element.nodeName() != "LayoutMultiFrame"_L1 )
   {
     return false;
   }
@@ -533,14 +533,14 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
 
   readObjectPropertiesFromElement( element, doc, context );
 
-  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
-  mTemplateUuid = element.attribute( QStringLiteral( "templateUuid" ), QUuid::createUuid().toString() );
-  mResizeMode = static_cast< ResizeMode >( element.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
+  mUuid = element.attribute( u"uuid"_s, QUuid::createUuid().toString() );
+  mTemplateUuid = element.attribute( u"templateUuid"_s, QUuid::createUuid().toString() );
+  mResizeMode = static_cast< ResizeMode >( element.attribute( u"resizeMode"_s, u"0"_s ).toInt() );
 
   deleteFrames();
   mFrameUuids.clear();
   mFrameTemplateUuids.clear();
-  QDomNodeList elementNodes = element.elementsByTagName( QStringLiteral( "childFrame" ) );
+  QDomNodeList elementNodes = element.elementsByTagName( u"childFrame"_s );
   for ( int i = 0; i < elementNodes.count(); ++i )
   {
     QDomNode elementNode = elementNodes.at( i );
@@ -549,14 +549,14 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
 
     QDomElement frameElement = elementNode.toElement();
 
-    QString uuid = frameElement.attribute( QStringLiteral( "uuid" ) );
+    QString uuid = frameElement.attribute( u"uuid"_s );
     mFrameUuids << uuid;
-    QString templateUuid = frameElement.attribute( QStringLiteral( "templateUuid" ) );
+    QString templateUuid = frameElement.attribute( u"templateUuid"_s );
     mFrameTemplateUuids << templateUuid;
 
     if ( includeFrames )
     {
-      QDomNodeList frameNodes = frameElement.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+      QDomNodeList frameNodes = frameElement.elementsByTagName( u"LayoutItem"_s );
       if ( !frameNodes.isEmpty() )
       {
         QDomElement frameItemElement = frameNodes.at( 0 ).toElement();

@@ -34,7 +34,7 @@ double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, 
 {
   if ( i < 0 || j < 0 || k < 0 )
   {
-    QgsDebugError( QStringLiteral( "Invalid parameters for Bernstein poly calculation!" ) );
+    QgsDebugError( u"Invalid parameters for Bernstein poly calculation!"_s );
     return 0;
   }
 
@@ -155,7 +155,7 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -466,7 +466,7 @@ void CloughTocherInterpolator::init( double x, double y ) //version, which has t
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
   }
 }
 
@@ -735,7 +735,7 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
   }
 }
 #endif

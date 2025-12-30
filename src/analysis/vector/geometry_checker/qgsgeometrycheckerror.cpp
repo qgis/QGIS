@@ -61,7 +61,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, con
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Can not show error in current map coordinate reference system" ) );
+      QgsDebugError( u"Can not show error in current map coordinate reference system"_s );
     }
   }
 }
@@ -182,9 +182,9 @@ QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
 QIcon QgsGeometryCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmLineIntersections.svg"_s );
 }
 
 void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )

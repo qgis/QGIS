@@ -36,11 +36,11 @@
 
 #include "moc_qgsmeasuredialog.cpp"
 
-const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( QStringLiteral( "clipboard-header" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( u"clipboard-header"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
 
-const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator = new QgsSettingsEntryString( QStringLiteral( "clipboard-separator" ), QgsSettingsTree::sTreeMeasure, QStringLiteral( "\t" ), QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
+const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator = new QgsSettingsEntryString( u"clipboard-separator"_s, QgsSettingsTree::sTreeMeasure, u"\t"_s, QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
 
-const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint = new QgsSettingsEntryBool( QStringLiteral( "clipboard-use-decimal-point" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether to use the locale decimal separator or always use the decimal point. Needed to export data as csv with a locale that uses a comma as its decimal separator." ) );
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint = new QgsSettingsEntryBool( u"clipboard-use-decimal-point"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether to use the locale decimal separator or always use the decimal point. Needed to export data as csv with a locale that uses a comma as its decimal separator." ) );
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -130,7 +130,7 @@ void QgsMeasureDialog::projChanged()
 
 void QgsMeasureDialog::openConfigTab()
 {
-  QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
+  QgisApp::instance()->showOptionsDialog( this, u"mOptionsPageMapTools"_s );
 }
 
 void QgsMeasureDialog::crsChanged()
@@ -155,7 +155,7 @@ void QgsMeasureDialog::updateSettings()
 {
   const QgsSettings settings;
 
-  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
   mCanvasUnits = mCanvas->mapUnits();
 
   // Configure QgsDistanceArea
@@ -246,7 +246,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      QgsDebugError( u"An error occurred while calculating area"_s );
     }
 
     editTotal->setText( formatArea( area ) );
@@ -263,7 +263,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      QgsDebugError( u"An error occurred while calculating length"_s );
     }
     editTotal->setText( formatDistance( mTotal + d, mConvertToDisplayUnits ) );
     d = convertLength( d, mDistanceUnits );
@@ -292,7 +292,7 @@ void QgsMeasureDialog::addPoint()
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      QgsDebugError( u"An error occurred while calculating area"_s );
     }
 
     editTotal->setText( formatArea( area ) );
@@ -328,7 +328,7 @@ void QgsMeasureDialog::addPoint()
       catch ( QgsCsException & )
       {
         // TODO report errors to user
-        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        QgsDebugError( u"An error occurred while calculating length"_s );
       }
 
       editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );
@@ -354,7 +354,7 @@ void QgsMeasureDialog::removeLastPoint()
       catch ( QgsCsException & )
       {
         // TODO report errors to user
-        QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+        QgsDebugError( u"An error occurred while calculating area"_s );
       }
       editTotal->setText( formatArea( area ) );
     }
@@ -375,7 +375,7 @@ void QgsMeasureDialog::removeLastPoint()
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      QgsDebugError( u"An error occurred while calculating length"_s );
     }
 
     if ( !mTool->done() )
@@ -391,7 +391,7 @@ void QgsMeasureDialog::removeLastPoint()
       catch ( QgsCsException & )
       {
         // TODO report errors to user
-        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        QgsDebugError( u"An error occurred while calculating length"_s );
       }
 
       d = convertLength( d, mDistanceUnits );
@@ -420,9 +420,9 @@ void QgsMeasureDialog::restorePosition()
   const QgsSettings settings;
   int wh;
   if ( mMeasureArea )
-    wh = settings.value( QStringLiteral( "Windows/Measure/hNoTable" ), 70 ).toInt();
+    wh = settings.value( u"Windows/Measure/hNoTable"_s, 70 ).toInt();
   else
-    wh = settings.value( QStringLiteral( "Windows/Measure/h" ), 200 ).toInt();
+    wh = settings.value( u"Windows/Measure/h"_s, 200 ).toInt();
   resize( width(), wh );
   updateUi();
 }
@@ -437,7 +437,7 @@ void QgsMeasureDialog::saveWindowLocation()
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
@@ -537,12 +537,12 @@ void QgsMeasureDialog::updateUi()
 
       if ( QgsUnitTypes::unitType( resultUnit ) == Qgis::DistanceUnitType::Geographic && QgsUnitTypes::unitType( mAreaUnits ) == Qgis::DistanceUnitType::Standard )
       {
-        toolTip += QLatin1String( "<br> * Area is roughly converted to square meters by using scale at equator (1 degree = 111319.49 meters)." );
+        toolTip += "<br> * Area is roughly converted to square meters by using scale at equator (1 degree = 111319.49 meters)."_L1;
         resultUnit = Qgis::AreaUnit::SquareMeters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == Qgis::DistanceUnitType::Standard && QgsUnitTypes::unitType( mAreaUnits ) == Qgis::DistanceUnitType::Geographic )
       {
-        toolTip += QLatin1String( "<br> * Area is roughly converted to square degrees by using scale at equator (1 degree = 111319.49 meters)." );
+        toolTip += "<br> * Area is roughly converted to square degrees by using scale at equator (1 degree = 111319.49 meters)."_L1;
         resultUnit = Qgis::AreaUnit::SquareDegrees;
       }
 
@@ -608,12 +608,12 @@ void QgsMeasureDialog::updateUi()
 
       if ( QgsUnitTypes::unitType( resultUnit ) == Qgis::DistanceUnitType::Geographic && QgsUnitTypes::unitType( mDistanceUnits ) == Qgis::DistanceUnitType::Standard )
       {
-        toolTip += QLatin1String( "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters)." );
+        toolTip += "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters)."_L1;
         resultUnit = Qgis::DistanceUnit::Meters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == Qgis::DistanceUnitType::Standard && QgsUnitTypes::unitType( mDistanceUnits ) == Qgis::DistanceUnitType::Geographic )
       {
-        toolTip += QLatin1String( "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters)." );
+        toolTip += "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters)."_L1;
         resultUnit = Qgis::DistanceUnit::Degrees;
       }
 
@@ -684,7 +684,7 @@ void QgsMeasureDialog::updateUi()
       catch ( QgsCsException & )
       {
         // TODO report errors to user
-        QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+        QgsDebugError( u"An error occurred while calculating area"_s );
       }
     }
     mTable->hide(); // Hide the table, only show summary
@@ -718,7 +718,7 @@ void QgsMeasureDialog::updateUi()
         catch ( QgsCsException & )
         {
           // TODO report errors to user
-          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+          QgsDebugError( u"An error occurred while calculating length"_s );
         }
 
         if ( mConvertToDisplayUnits )
@@ -745,7 +745,7 @@ void QgsMeasureDialog::updateUi()
     }
     catch ( QgsCsException &e )
     {
-      QgsDebugError( QStringLiteral( "Coordinate transform error while calculating line length: %1" ).arg( e.what() ) );
+      QgsDebugError( u"Coordinate transform error while calculating line length: %1"_s.arg( e.what() ) );
       mTotal = 0;
     }
 
@@ -829,11 +829,11 @@ void QgsMeasureDialog::copyMeasurements()
   QString separator = settingClipboardSeparator->value();
 
   // If the field separator is a comma and the locale uses a comma as decimal separator, change to a semicolon
-  if ( separator == QLatin1String( "," ) && !alwaysUseDecimalPoint && QLocale().decimalPoint() == QLatin1String( "," ) )
-    separator = QStringLiteral( ";" );
+  if ( separator == ","_L1 && !alwaysUseDecimalPoint && QLocale().decimalPoint() == ","_L1 )
+    separator = u";"_s;
 
   if ( separator.isEmpty() )
-    separator = QStringLiteral( "\t" );
+    separator = u"\t"_s;
 
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
@@ -843,14 +843,14 @@ void QgsMeasureDialog::copyMeasurements()
   {
     text += mTable->headerItem()->text( Columns::X ) + separator;
     text += mTable->headerItem()->text( Columns::Y ) + separator;
-    text += mTable->headerItem()->text( Columns::Distance ) + QStringLiteral( "\n" );
+    text += mTable->headerItem()->text( Columns::Distance ) + u"\n"_s;
   }
 
 
   auto replaceDecimalSeparator = [alwaysUseDecimalPoint]( const QString &value ) -> QString {
     QString result = value;
-    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != QLatin1String( "." ) )
-      result.replace( QLocale().decimalPoint(), QStringLiteral( "." ) );
+    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != "."_L1 )
+      result.replace( QLocale().decimalPoint(), u"."_s );
     return result;
   };
 
@@ -858,7 +858,7 @@ void QgsMeasureDialog::copyMeasurements()
   {
     text += replaceDecimalSeparator( ( *it )->text( Columns::X ) ) + separator;
     text += replaceDecimalSeparator( ( *it )->text( Columns::Y ) ) + separator;
-    text += replaceDecimalSeparator( ( *it )->text( Columns::Distance ) ) + QStringLiteral( "\n" );
+    text += replaceDecimalSeparator( ( *it )->text( Columns::Distance ) ) + u"\n"_s;
     it++;
   }
 
@@ -877,5 +877,5 @@ void QgsMeasureDialog::reject()
 
 void QgsMeasureDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-measure" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-measure"_s );
 }

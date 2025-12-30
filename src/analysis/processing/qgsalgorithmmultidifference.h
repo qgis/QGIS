@@ -29,8 +29,8 @@ class QgsMultiDifferenceAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsMultiDifferenceAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmDifference.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmDifference.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmDifference.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmDifference.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

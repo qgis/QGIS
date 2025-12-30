@@ -52,7 +52,7 @@ class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, p
     QgsReport( QgsProject *project );
 
     QgsMasterLayoutInterface::Type layoutType() const override;
-    QString type() const override { return QStringLiteral( "SectionReport" ); }
+    QString type() const override { return u"SectionReport"_s; }
     QString description() const override { return QObject::tr( "Report" ); }
     QIcon icon() const override;
     QgsProject *layoutProject() const override { return mProject; }

@@ -96,7 +96,7 @@
 #include "moc_qgsrasterlayerproperties.cpp"
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
-  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "RasterLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, canvas, u"RasterLayerProperties"_s, parent, fl )
   // Constant that signals property not used.
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
@@ -272,7 +272,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     int selectionStart = mMapTipWidget->selectionStart();
     int selectionEnd = mMapTipWidget->selectionEnd();
     QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mMapTipWidget );
-    QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), mContext );
+    QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, mContext );
 
     exprDlg.setWindowTitle( tr( "Insert Expression" ) );
     if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
@@ -311,11 +311,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     {
       if ( pyramid.getExists() )
       {
-        lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap, QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) + QString::number( pyramid.getYDim() ) ) );
+        lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap, QString::number( pyramid.getXDim() ) + u" x "_s + QString::number( pyramid.getYDim() ) ) );
       }
       else
       {
-        lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap, QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) + QString::number( pyramid.getYDim() ) ) );
+        lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap, QString::number( pyramid.getXDim() ) + u" x "_s + QString::number( pyramid.getYDim() ) ) );
       }
     }
   }
@@ -352,7 +352,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mCrsSelector->setCrs( mRasterLayer->crs() );
 
   // Set text for pyramid info box
-  QString pyramidFormat( QStringLiteral( "<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>" ) );
+  QString pyramidFormat( u"<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>"_s );
   QString pyramidHeader = tr( "Description" );
   QString pyramidSentence1 = tr( "Large resolution raster layers can slow navigation in QGIS." );
   QString pyramidSentence2 = tr( "By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom." );
@@ -370,7 +370,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   const QgsRasterRenderer *renderer = mRasterLayer->renderer();
 
   btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );
-  btnColorizeColor->setContext( QStringLiteral( "symbology" ) );
+  btnColorizeColor->setContext( u"symbology"_s );
 
   // Hue and saturation color control
   const QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
@@ -405,7 +405,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 #if 0
     if ( renderer )
     {
-      QgsDebugMsgLevel( QStringLiteral( "alphaBand = %1" ).arg( renderer->alphaBand() ), 2 );
+      QgsDebugMsgLevel( u"alphaBand = %1"_s.arg( renderer->alphaBand() ), 2 );
       if ( renderer->alphaBand() > 0 )
       {
         cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
@@ -423,13 +423,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   }
 
   //insert renderer widgets into registry
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "paletted" ), QgsPalettedRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "multibandcolor" ), QgsMultiBandColorRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "contour" ), QgsRasterContourRendererWidget::create );
-  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlecolor" ), QgsRasterSingleColorRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"paletted"_s, QgsPalettedRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"multibandcolor"_s, QgsMultiBandColorRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlebandpseudocolor"_s, QgsSingleBandPseudoColorRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlebandgray"_s, QgsSingleBandGrayRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"hillshade"_s, QgsHillshadeRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"contour"_s, QgsRasterContourRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlecolor"_s, QgsRasterSingleColorRendererWidget::create );
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
@@ -439,7 +439,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
     {
-      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != QLatin1String( "singlebandcolordata" ) ) || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == QLatin1String( "singlebandcolordata" ) ) )
+      if ( ( mRasterLayer->rasterType() != Qgis::RasterLayerType::SingleBandColorData && entry.name != "singlebandcolordata"_L1 ) || ( mRasterLayer->rasterType() == Qgis::RasterLayerType::SingleBandColorData && entry.name == "singlebandcolordata"_L1 ) )
       {
         mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
       }
@@ -459,7 +459,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mDisableRenderTypeComboBoxCurrentIndexChanged = false;
     }
 
-    if ( rendererType == QLatin1String( "singlebandcolordata" ) && mRenderTypeComboBox->count() == 1 )
+    if ( rendererType == "singlebandcolordata"_L1 && mRenderTypeComboBox->count() == 1 )
     {
       // no band rendering options for singlebandcolordata, so minimize group box
       QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
@@ -469,7 +469,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mBandRenderingGrpBx->updateGeometry();
     }
 
-    if ( mRasterLayer->providerType() != QLatin1String( "wms" ) )
+    if ( mRasterLayer->providerType() != "wms"_L1 )
     {
       mWMSPrintGroupBox->hide();
       mPublishDataSourceUrlCheckBox->hide();
@@ -508,36 +508,36 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QStringLiteral( "/Windows/RasterLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/RasterLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/RasterLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( u"Windows/RasterLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
+  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( u"/mActionUndo.svg"_s ) );
 
   optionsStackedWidget_CurrentChanged( mOptionsStackedWidget->currentIndex() );
 
   //Add help page references
-  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#information-properties" ) );
-  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#source-properties" ) );
-  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#symbology-properties" ) );
-  mOptsPage_Transparency->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#transparency-properties" ) );
+  mOptsPage_Information->setProperty( "helpPage", u"working_with_raster/raster_properties.html#information-properties"_s );
+  mOptsPage_Source->setProperty( "helpPage", u"working_with_raster/raster_properties.html#source-properties"_s );
+  mOptsPage_Style->setProperty( "helpPage", u"working_with_raster/raster_properties.html#symbology-properties"_s );
+  mOptsPage_Transparency->setProperty( "helpPage", u"working_with_raster/raster_properties.html#transparency-properties"_s );
 
   if ( mOptsPage_Histogram )
-    mOptsPage_Histogram->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#histogram-properties" ) );
+    mOptsPage_Histogram->setProperty( "helpPage", u"working_with_raster/raster_properties.html#histogram-properties"_s );
 
-  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#rendering-properties" ) );
-  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#temporal-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", u"working_with_raster/raster_properties.html#rendering-properties"_s );
+  mOptsPage_Temporal->setProperty( "helpPage", u"working_with_raster/raster_properties.html#temporal-properties"_s );
 
   if ( mOptsPage_Pyramids )
-    mOptsPage_Pyramids->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#pyramids-properties" ) );
+    mOptsPage_Pyramids->setProperty( "helpPage", u"working_with_raster/raster_properties.html#pyramids-properties"_s );
 
   if ( mOptsPage_Display )
-    mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#display-properties" ) );
+    mOptsPage_Display->setProperty( "helpPage", u"working_with_raster/raster_properties.html#display-properties"_s );
 
-  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#metadata-properties" ) );
-  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#legend-properties" ) );
-  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", u"working_with_raster/raster_properties.html#metadata-properties"_s );
+  mOptsPage_Legend->setProperty( "helpPage", u"working_with_raster/raster_properties.html#legend-properties"_s );
+  mOptsPage_Server->setProperty( "helpPage", u"working_with_raster/raster_properties.html#server-properties"_s );
 
   initialize();
 }
@@ -622,17 +622,17 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
   {
     if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
     {
-      QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
+      QgsDebugMsgLevel( u"renderer has widgetCreateFunction"_s, 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mCanvas->extent() );
       if ( oldWidget && ( !oldRenderer || rendererName != oldRenderer->type() ) )
       {
-        if ( rendererName == QLatin1String( "singlebandgray" ) )
+        if ( rendererName == "singlebandgray"_L1 )
         {
           whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ) );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
-        else if ( rendererName == QLatin1String( "multibandcolor" ) )
+        else if ( rendererName == "multibandcolor"_L1 )
         {
           whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ) );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
@@ -741,7 +741,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "populate transparency tab" ), 3 );
+  QgsDebugMsgLevel( u"populate transparency tab"_s, 3 );
 
   /*
    * Style tab
@@ -781,14 +781,14 @@ void QgsRasterLayerProperties::sync()
   mRefreshSettingsWidget->syncToLayer();
   mMapLayerServerPropertiesWidget->sync();
 
-  QgsDebugMsgLevel( QStringLiteral( "populate general tab" ), 3 );
+  QgsDebugMsgLevel( u"populate general tab"_s, 3 );
   /*
    * General Tab
    */
 
   mLayerOrigNameLineEd->setText( mRasterLayer->name() );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate metadata tab" ), 2 );
+  QgsDebugMsgLevel( u"populate metadata tab"_s, 2 );
   /*
    * Metadata Tab
    */
@@ -799,19 +799,19 @@ void QgsRasterLayerProperties::sync()
   mMapTipWidget->setText( mRasterLayer->mapTipTemplate() );
 
   //WMS print layer
-  QVariant wmsPrintLayer = mRasterLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
+  QVariant wmsPrintLayer = mRasterLayer->customProperty( u"WMSPrintLayer"_s );
   if ( wmsPrintLayer.isValid() )
   {
     mWMSPrintLayerLineEdit->setText( wmsPrintLayer.toString() );
   }
 
-  QVariant wmsPublishDataSourceUrl = mRasterLayer->customProperty( QStringLiteral( "WMSPublishDataSourceUrl" ), false );
+  QVariant wmsPublishDataSourceUrl = mRasterLayer->customProperty( u"WMSPublishDataSourceUrl"_s, false );
   mPublishDataSourceUrlCheckBox->setChecked( wmsPublishDataSourceUrl.toBool() );
 
-  QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
+  QVariant wmsBackgroundLayer = mRasterLayer->customProperty( u"WMSBackgroundLayer"_s, false );
   mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
 
-  mLegendPlaceholderWidget->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
+  mLegendPlaceholderWidget->setLastPathSettingsKey( u"lastLegendPlaceholderDir"_s );
   mLegendPlaceholderWidget->setSource( mRasterLayer->legendPlaceholderImage() );
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
   mIncludeByDefaultInLayoutLegendsCheck->setChecked( mRasterLayer->legend() && !mRasterLayer->legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
@@ -855,7 +855,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setLegendPlaceholderImage( mLegendPlaceholderWidget->source() );
   mLegendConfigEmbeddedWidget->applyToLayer();
 
-  QgsDebugMsgLevel( QStringLiteral( "apply processing symbology tab" ), 3 );
+  QgsDebugMsgLevel( u"apply processing symbology tab"_s, 3 );
   /*
    * Symbology Tab
    */
@@ -867,7 +867,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
   mRasterLayer->brightnessFilter()->setGamma( mGammaSpinBox->value() );
 
-  QgsDebugMsgLevel( QStringLiteral( "processing transparency tab" ), 3 );
+  QgsDebugMsgLevel( u"processing transparency tab"_s, 3 );
   /*
    * Transparent Pixel Tab
    */
@@ -899,7 +899,7 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->emitStyleChanged();
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "processing general tab" ), 3 );
+  QgsDebugMsgLevel( u"processing general tab"_s, 3 );
   /*
    * General Tab
    */
@@ -943,7 +943,7 @@ void QgsRasterLayerProperties::apply()
 
   if ( !mWMSPrintLayerLineEdit->text().isEmpty() )
   {
-    mRasterLayer->setCustomProperty( QStringLiteral( "WMSPrintLayer" ), mWMSPrintLayerLineEdit->text() );
+    mRasterLayer->setCustomProperty( u"WMSPrintLayer"_s, mWMSPrintLayerLineEdit->text() );
   }
 
   mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
@@ -1011,28 +1011,28 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   buttonBuildPyramids->setEnabled( false );
   if ( !res.isNull() )
   {
-    if ( res == QLatin1String( "CANCELED" ) )
+    if ( res == "CANCELED"_L1 )
     {
       // user canceled
     }
-    else if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
+    else if ( res == "ERROR_WRITE_ACCESS"_L1 )
     {
       QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "Write access denied. Adjust the file permissions and try again." ) );
     }
-    else if ( res == QLatin1String( "ERROR_WRITE_FORMAT" ) )
+    else if ( res == "ERROR_WRITE_FORMAT"_L1 )
     {
       QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "The file was not writable. Some formats do not "
                                                                  "support pyramid overviews. Consult the GDAL documentation if in doubt." ) );
     }
-    else if ( res == QLatin1String( "FAILED_NOT_SUPPORTED" ) )
+    else if ( res == "FAILED_NOT_SUPPORTED"_L1 )
     {
       QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "Building pyramid overviews is not supported on this type of raster." ) );
     }
-    else if ( res == QLatin1String( "ERROR_JPEG_COMPRESSION" ) )
+    else if ( res == "ERROR_JPEG_COMPRESSION"_L1 )
     {
       QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." ) );
     }
-    else if ( res == QLatin1String( "ERROR_VIRTUAL" ) )
+    else if ( res == "ERROR_VIRTUAL"_L1 )
     {
       QMessageBox::warning( this, tr( "Building Pyramids" ), tr( "Building pyramid overviews is not supported on this type of raster." ) );
     }
@@ -1051,11 +1051,11 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   {
     if ( pyramid.getExists() )
     {
-      lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap, QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) + QString::number( pyramid.getYDim() ) ) );
+      lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap, QString::number( pyramid.getXDim() ) + u" x "_s + QString::number( pyramid.getYDim() ) ) );
     }
     else
     {
-      lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap, QString::number( pyramid.getXDim() ) + QStringLiteral( " x " ) + QString::number( pyramid.getYDim() ) ) );
+      lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap, QString::number( pyramid.getXDim() ) + u" x "_s + QString::number( pyramid.getYDim() ) ) );
     }
   }
   //update the legend pixmap
@@ -1297,7 +1297,7 @@ void QgsRasterLayerProperties::updateInformationContent()
 {
   const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
   // Inject the stylesheet
-  const QString html { mRasterLayer->htmlMetadata().replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
+  const QString html { mRasterLayer->htmlMetadata().replace( "<head>"_L1, QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
   mMetadataViewer->setHtml( html );
   mMetadataFilled = true;
 }
@@ -1325,7 +1325,7 @@ void QgsRasterLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) );
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html"_s );
   }
 }
 

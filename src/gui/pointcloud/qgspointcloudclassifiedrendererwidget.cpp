@@ -38,7 +38,7 @@
 
 QgsPointCloudClassifiedRendererModel::QgsPointCloudClassifiedRendererModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mMimeFormat( QStringLiteral( "application/x-qgspointcloudclassifiedrenderermodel" ) )
+  , mMimeFormat( u"application/x-qgspointcloudclassifiedrenderermodel"_s )
 {
 }
 
@@ -134,7 +134,7 @@ QVariant QgsPointCloudClassifiedRendererModel::data( const QModelIndex &index, i
           if ( value < 0 )
             str = tr( "N/A" );
           else if ( value != 0 && std::round( value * 10 ) < 1 )
-            str = QStringLiteral( "< " ) + QLocale().toString( 0.1, 'f', 1 );
+            str = u"< "_s + QLocale().toString( 0.1, 'f', 1 );
           else
             str = QLocale().toString( mPercentages.value( category.value() ), 'f', 1 );
           return str;
@@ -516,8 +516,8 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
 
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
 
-  const bool isClassificationAttribute = ( 0 == currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive ) );
-  const bool isBooleanAttribute = ( 0 == currentAttribute.compare( QStringLiteral( "Synthetic" ), Qt::CaseInsensitive ) || 0 == currentAttribute.compare( QStringLiteral( "KeyPoint" ), Qt::CaseInsensitive ) || 0 == currentAttribute.compare( QStringLiteral( "Withheld" ), Qt::CaseInsensitive ) || 0 == currentAttribute.compare( QStringLiteral( "Overlap" ), Qt::CaseInsensitive ) );
+  const bool isClassificationAttribute = ( 0 == currentAttribute.compare( u"Classification"_s, Qt::CaseInsensitive ) );
+  const bool isBooleanAttribute = ( 0 == currentAttribute.compare( u"Synthetic"_s, Qt::CaseInsensitive ) || 0 == currentAttribute.compare( u"KeyPoint"_s, Qt::CaseInsensitive ) || 0 == currentAttribute.compare( u"Withheld"_s, Qt::CaseInsensitive ) || 0 == currentAttribute.compare( u"Overlap"_s, Qt::CaseInsensitive ) );
 
   QList<int> providerCategories = stats.classesOf( currentAttribute );
 
@@ -618,9 +618,9 @@ void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCate
 
 void QgsPointCloudClassifiedRendererWidget::initialize()
 {
-  if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
+  if ( mAttributeComboBox->findText( u"Classification"_s ) > -1 )
   {
-    mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
+    mAttributeComboBox->setAttribute( u"Classification"_s );
   }
   else
   {

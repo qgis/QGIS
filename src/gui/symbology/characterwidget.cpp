@@ -216,7 +216,7 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
   const QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   const uint key = ( widgetPosition.y() / mSquareSize ) * mColumns + widgetPosition.x() / mSquareSize;
 
-  const QString text = QStringLiteral( "<p style=\"text-align: center; font-size: 24pt; font-family: %1\">%2</p><p><table><tr><td>%3</td><td>%2</td></tr><tr><td>%4</td><td>%5</td></tr><tr><td>%6</td><td>0x%7</td></tr></table>" )
+  const QString text = u"<p style=\"text-align: center; font-size: 24pt; font-family: %1\">%2</p><p><table><tr><td>%3</td><td>%2</td></tr><tr><td>%4</td><td>%5</td></tr><tr><td>%6</td><td>0x%7</td></tr></table>"_s
                          .arg( mDisplayFont.family() )
                          .arg( QChar( key ) )
                          .arg( tr( "Character" ), tr( "Decimal" ) )

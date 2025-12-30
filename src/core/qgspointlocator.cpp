@@ -836,13 +836,13 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
       if ( !n )
         return;
 
-      QgsDebugMsgLevel( QStringLiteral( "NODE: %1" ).arg( n->getIdentifier() ), 4 );
+      QgsDebugMsgLevel( u"NODE: %1"_s.arg( n->getIdentifier() ), 4 );
       if ( n->getLevel() > 0 )
       {
         // inner nodes
         for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "- CH: %1" ).arg( n->getChildIdentifier( cChild ) ), 4 );
+          QgsDebugMsgLevel( u"- CH: %1"_s.arg( n->getChildIdentifier( cChild ) ), 4 );
           ids.push( n->getChildIdentifier( cChild ) );
         }
       }
@@ -851,7 +851,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
         // leaves
         for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "- L: %1" ).arg( n->getChildIdentifier( cChild ) ), 4 );
+          QgsDebugMsgLevel( u"- L: %1"_s.arg( n->getChildIdentifier( cChild ) ), 4 );
         }
       }
 
@@ -1042,7 +1042,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   QElapsedTimer t;
   t.start();
 
-  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ), 2 );
+  QgsDebugMsgLevel( u"RebuildIndex start : %1"_s.arg( mSource->id() ), 2 );
 
   destroyIndex();
 
@@ -1067,7 +1067,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e )
         // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
+        QgsDebugError( u"could not transform bounding box to map, skipping the snap filter (%1)"_s.arg( e.what() ) );
       }
     }
     request.setFilterRect( rect );
@@ -1116,7 +1116,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e )
         // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        QgsDebugError( u"could not transform geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
         continue;
       }
     }
@@ -1170,7 +1170,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
   catch ( const std::exception &e )
   {
-    QgsDebugError( QStringLiteral( "An exception has occurred during the creation of RTree: %1" ).arg( e.what() ) );
+    QgsDebugError( u"An exception has occurred during the creation of RTree: %1"_s.arg( e.what() ) );
     destroyIndex();
     return false;
   }
@@ -1181,7 +1181,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     mRenderer->stopRender( *ctx );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ), 2 );
+  QgsDebugMsgLevel( u"RebuildIndex end : %1 ms (%2)"_s.arg( t.elapsed() ).arg( mSource->id() ), 2 );
 
   return true;
 }
@@ -1260,7 +1260,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       {
         Q_UNUSED( e )
         // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        QgsDebugError( u"could not transform geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
         return;
       }
     }

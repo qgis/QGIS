@@ -155,34 +155,34 @@ void QgsRequestHandler::setupParameters()
   const QgsServerRequest::Parameters parameters = mRequest.parameters();
 
   //feature info format?
-  const QString infoFormat = parameters.value( QStringLiteral( "INFO_FORMAT" ) );
+  const QString infoFormat = parameters.value( u"INFO_FORMAT"_s );
   if ( !infoFormat.isEmpty() )
   {
     mFormat = infoFormat;
   }
   else //capabilities format or GetMap format
   {
-    mFormatString = parameters.value( QStringLiteral( "FORMAT" ) );
+    mFormatString = parameters.value( u"FORMAT"_s );
     QString formatString = mFormatString;
     if ( !formatString.isEmpty() )
     {
       //remove the image/ in front of the format
-      if ( formatString.contains( QLatin1String( "image/png" ), Qt::CaseInsensitive ) || formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+      if ( formatString.contains( "image/png"_L1, Qt::CaseInsensitive ) || formatString.compare( "png"_L1, Qt::CaseInsensitive ) == 0 )
       {
-        formatString = QStringLiteral( "PNG" );
+        formatString = u"PNG"_s;
       }
-      else if ( formatString.contains( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) || formatString.contains( QLatin1String( "image/jpg" ), Qt::CaseInsensitive )
-                || formatString.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0 )
+      else if ( formatString.contains( "image/jpeg"_L1, Qt::CaseInsensitive ) || formatString.contains( "image/jpg"_L1, Qt::CaseInsensitive )
+                || formatString.compare( "jpg"_L1, Qt::CaseInsensitive ) == 0 )
       {
-        formatString = QStringLiteral( "JPG" );
+        formatString = u"JPG"_s;
       }
-      else if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+      else if ( formatString.compare( "svg"_L1, Qt::CaseInsensitive ) == 0 )
       {
-        formatString = QStringLiteral( "SVG" );
+        formatString = u"SVG"_s;
       }
-      else if ( formatString.contains( QLatin1String( "pdf" ), Qt::CaseInsensitive ) )
+      else if ( formatString.contains( "pdf"_L1, Qt::CaseInsensitive ) )
       {
-        formatString = QStringLiteral( "PDF" );
+        formatString = u"PDF"_s;
       }
 
       mFormat = formatString;
@@ -194,7 +194,7 @@ void QgsRequestHandler::parseInput()
 {
   if ( mRequest.method() == QgsServerRequest::PostMethod || mRequest.method() == QgsServerRequest::PutMethod || mRequest.method() == QgsServerRequest::PatchMethod )
   {
-    if ( mRequest.header( QStringLiteral( "Content-Type" ) ).contains( QStringLiteral( "json" ) ) )
+    if ( mRequest.header( u"Content-Type"_s ).contains( u"json"_s ) )
     {
       setupParameters();
     }
@@ -208,7 +208,7 @@ void QgsRequestHandler::parseInput()
       if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
       {
         // Output Warning about POST without XML content
-        QgsMessageLog::logMessage( QStringLiteral( "Error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." ).arg( line ).arg( column ).arg( errorMsg ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( u"Error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body."_s.arg( line ).arg( column ).arg( errorMsg ), u"Server"_s, Qgis::MessageLevel::Warning );
 
         // Process input string as a simple query text
 
@@ -229,7 +229,7 @@ void QgsRequestHandler::parseInput()
 
         const QDomElement docElem = doc.documentElement();
         // the document element tag name is the request
-        mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
+        mRequest.setParameter( u"REQUEST"_s, docElem.tagName() );
         // loop through the attributes which are the parameters
         // excepting the attributes started by xmlns or xsi
         const QDomNamedNodeMap map = docElem.attributes();
@@ -249,7 +249,7 @@ void QgsRequestHandler::parseInput()
 
           mRequest.setParameter( attrName.toUpper(), attr.value() );
         }
-        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString.replace( '+', QLatin1String( "%2B" ) ) );
+        mRequest.setParameter( u"REQUEST_BODY"_s, inputString.replace( '+', "%2B"_L1 ) );
       }
     }
   }
@@ -265,9 +265,9 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
   {
     // Warn for potential breaking change if plugin set the MAP parameter
     // expecting changing the config file path, see PR #9773
-    if ( key.compare( QLatin1String( "MAP" ), Qt::CaseInsensitive ) == 0 )
+    if ( key.compare( "MAP"_L1, Qt::CaseInsensitive ) == 0 )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Changing the 'MAP' parameter will have no effect on config path: use QgsSerververInterface::setConfigFilePath instead" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"Changing the 'MAP' parameter will have no effect on config path: use QgsSerververInterface::setConfigFilePath instead"_s, u"Server"_s, Qgis::MessageLevel::Warning );
     }
     mRequest.setParameter( key, value );
   }

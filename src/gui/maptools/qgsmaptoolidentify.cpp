@@ -128,7 +128,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
   if ( mode == DefaultQgsSetting )
   {
     QgsSettings settings;
-    mode = settings.enumValue( QStringLiteral( "Map/identifyMode" ), ActiveLayer );
+    mode = settings.enumValue( u"Map/identifyMode"_s, ActiveLayer );
   }
 
   if ( mode == LayerSelection )
@@ -436,7 +436,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    QgsDebugMsgLevel( u"Out of scale limits"_s, 2 );
     return false;
   }
 
@@ -551,7 +551,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( u"Caught CRS exception %1"_s.arg( cse.what() ) );
   }
 
   return featureCount > 0;
@@ -609,7 +609,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    QgsDebugMsgLevel( u"Out of scale limits"_s, 2 );
     return false;
   }
 
@@ -694,7 +694,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( u"Caught CRS exception %1"_s.arg( cse.what() ) );
   }
 
   bool filter = false;
@@ -803,7 +803,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsCoordinateTransform l
     QgsVertexId vIdAfter = vId;
     ++vIdAfter.vertex;
     QgsGeometryUtils::circleCenterRadius( geometry.vertexAt( vIdBefore ), geometry.vertexAt( vId ), geometry.vertexAt( vIdAfter ), radius, centerX, centerY );
-    derivedAttributes.insert( QStringLiteral( "Closest vertex radius" ), QLocale().toString( radius ) );
+    derivedAttributes.insert( u"Closest vertex radius"_s, QLocale().toString( radius ) );
   }
 }
 
@@ -937,7 +937,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
     catch ( QgsCsException & )
     {
       //TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      QgsDebugError( u"An error occurred while calculating length"_s );
     }
 
     QString str;
@@ -1001,7 +1001,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating area" ) );
+      QgsDebugError( u"An error occurred while calculating area"_s );
     }
 
     QString str;
@@ -1024,7 +1024,7 @@ QMap<QString, QString> QgsMapToolIdentify::featureDerivedAttributes( const QgsFe
       catch ( QgsCsException & )
       {
         // TODO report errors to user
-        QgsDebugError( QStringLiteral( "An error occurred while calculating perimeter" ) );
+        QgsDebugError( u"An error occurred while calculating perimeter"_s );
       }
       str = formatDistance( perimeter );
       derivedAttributes.insert( tr( "Perimeter (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
@@ -1136,17 +1136,17 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugError( QStringLiteral( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
+    QgsDebugError( u"coordinate not reprojectable: %1"_s.arg( cse.what() ) );
     return false;
   }
-  QgsDebugMsgLevel( QStringLiteral( "point = %1 %2" ).arg( point.x() ).arg( point.y() ), 2 );
+  QgsDebugMsgLevel( u"point = %1 %2"_s.arg( point.x() ).arg( point.y() ), 2 );
 
   if ( !layer->extent().contains( point ) )
     return false;
 
   QMap<QString, QString> attributes, derivedAttributes;
 
-  Qgis::RasterIdentifyFormat format = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( QStringLiteral( "identify/format" ) ).toString() );
+  Qgis::RasterIdentifyFormat format = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( u"identify/format"_s ).toString() );
 
   // check if the format is really supported otherwise use first supported format
   if ( !( capabilities & QgsRasterDataProvider::identifyFormatToCapability( format ) ) )
@@ -1200,9 +1200,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     int width = static_cast<int>( std::round( viewExtent.width() / mapUnitsPerPixel ) );
     int height = static_cast<int>( std::round( viewExtent.height() / mapUnitsPerPixel ) );
 
-    QgsDebugMsgLevel( QStringLiteral( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ), 2 );
+    QgsDebugMsgLevel( u"viewExtent.width = %1 viewExtent.height = %2"_s.arg( viewExtent.width() ).arg( viewExtent.height() ), 2 );
+    QgsDebugMsgLevel( u"width = %1 height = %2"_s.arg( width ).arg( height ), 2 );
+    QgsDebugMsgLevel( u"xRes = %1 yRes = %2 mapUnitsPerPixel = %3"_s.arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ), 2 );
 
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
@@ -1388,10 +1388,10 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.
             // Sublayer name may be the same as layer name and feature type name
             // may be the same as sublayer. We try to avoid duplicities in label.
-            QString sublayer = featureStore.params().value( QStringLiteral( "sublayer" ) ).toString();
-            QString featureType = featureStore.params().value( QStringLiteral( "featureType" ) ).toString();
+            QString sublayer = featureStore.params().value( u"sublayer"_s ).toString();
+            QString featureType = featureStore.params().value( u"featureType"_s ).toString();
             // Strip UMN MapServer '_feature'
-            featureType.remove( QStringLiteral( "_feature" ) );
+            featureType.remove( u"_feature"_s );
             QStringList labels;
             if ( sublayer.compare( layer->name(), Qt::CaseInsensitive ) != 0 )
             {
@@ -1405,9 +1405,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             QMap<QString, QString> derAttributes = derivedAttributes;
             derAttributes.insert( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
 
-            IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( QLatin1String( " / " ) ), featureStore.fields(), feature, derAttributes );
+            IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( " / "_L1 ), featureStore.fields(), feature, derAttributes );
 
-            identifyResult.mParams.insert( QStringLiteral( "getFeatureInfoUrl" ), featureStore.params().value( QStringLiteral( "getFeatureInfoUrl" ) ) );
+            identifyResult.mParams.insert( u"getFeatureInfoUrl"_s, featureStore.params().value( u"getFeatureInfoUrl"_s ) );
             results->append( identifyResult );
           }
         }
@@ -1415,7 +1415,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else // text or html
     {
-      QgsDebugMsgLevel( QStringLiteral( "%1 HTML or text values" ).arg( values.size() ), 2 );
+      QgsDebugMsgLevel( u"%1 HTML or text values"_s.arg( values.size() ), 2 );
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QString value = it.value().toString();
@@ -1462,7 +1462,7 @@ QString QgsMapToolIdentify::formatArea( double area ) const
 QString QgsMapToolIdentify::formatDistance( double distance, Qgis::DistanceUnit unit ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
 
   return QgsDistanceArea::formatDistance( distance, mCoordinatePrecision, unit, baseUnit );
 }
@@ -1470,7 +1470,7 @@ QString QgsMapToolIdentify::formatDistance( double distance, Qgis::DistanceUnit 
 QString QgsMapToolIdentify::formatArea( double area, Qgis::AreaUnit unit ) const
 {
   QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
 
   return QgsDistanceArea::formatArea( area, mCoordinatePrecision, unit, baseUnit );
 }
@@ -1501,17 +1501,17 @@ void QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( QgsPoint
     QString classification;
     for ( auto attrIt = pt.constBegin(); attrIt != pt.constEnd(); ++attrIt )
     {
-      if ( attrIt.key().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0
+      if ( attrIt.key().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0
            && ( !qgsDoubleNear( elevationProps->zScale(), 1 ) || !qgsDoubleNear( elevationProps->zOffset(), 0 ) ) )
       {
         // Apply elevation properties
         ptStr[tr( "Z (original)" )] = attrIt.value().toString();
         ptStr[tr( "Z (adjusted)" )] = QString::number( attrIt.value().toDouble() * elevationProps->zScale() + elevationProps->zOffset() );
       }
-      else if ( attrIt.key().compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+      else if ( attrIt.key().compare( "Classification"_L1, Qt::CaseInsensitive ) == 0 )
       {
         classification = QgsPointCloudDataProvider::translatedLasClassificationCodes().value( attrIt.value().toInt() );
-        ptStr[attrIt.key()] = QStringLiteral( "%1 (%2)" ).arg( attrIt.value().toString(), classification );
+        ptStr[attrIt.key()] = u"%1 (%2)"_s.arg( attrIt.value().toString(), classification );
       }
       else
       {
@@ -1557,7 +1557,7 @@ void QgsMapToolIdentify::fromPointCloudIdentificationToIdentifyResults( QgsPoint
       derivedAttributes.insert( tr( "Z (%1)" ).arg( mapVertCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), str );
     }
 
-    QgsMapToolIdentify::IdentifyResult res( layer, classification.isEmpty() ? QString::number( id ) : QStringLiteral( "%1 (%2)" ).arg( id ).arg( classification ), ptStr, derivedAttributes );
+    QgsMapToolIdentify::IdentifyResult res( layer, classification.isEmpty() ? QString::number( id ) : u"%1 (%2)"_s.arg( id ).arg( classification ), ptStr, derivedAttributes );
     results.append( res );
     ++id;
   }
@@ -1584,23 +1584,23 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
       QgsFeatureIds filterIds;
       for ( const QVariantMap &map : identified )
       {
-        if ( !map.contains( QStringLiteral( "id" ) ) )
+        if ( !map.contains( u"id"_s ) )
         {
           QMap<QString, QString> attributes;
-          if ( map.value( QStringLiteral( "distance" ) ).isValid() )
-            attributes.insert( tr( "Distance along curve" ), QString::number( map.value( QStringLiteral( "distance" ) ).toDouble() ) );
-          if ( map.value( QStringLiteral( "elevation" ) ).isValid() )
-            attributes.insert( tr( "Elevation" ), QString::number( map.value( QStringLiteral( "elevation" ) ).toDouble() ) );
+          if ( map.value( u"distance"_s ).isValid() )
+            attributes.insert( tr( "Distance along curve" ), QString::number( map.value( u"distance"_s ).toDouble() ) );
+          if ( map.value( u"elevation"_s ).isValid() )
+            attributes.insert( tr( "Elevation" ), QString::number( map.value( u"elevation"_s ).toDouble() ) );
 
           results.append( IdentifyResult( layer, layer->name(), {}, attributes ) );
         }
         else
         {
-          const QgsFeatureId id = map.value( QStringLiteral( "id" ) ).toLongLong();
+          const QgsFeatureId id = map.value( u"id"_s ).toLongLong();
           filterIds.insert( id );
 
-          featureDistances.insert( id, map.value( QStringLiteral( "distance" ) ) );
-          featureElevations.insert( id, map.value( QStringLiteral( "elevation" ) ) );
+          featureDistances.insert( id, map.value( u"distance"_s ) );
+          featureElevations.insert( id, map.value( u"elevation"_s ) );
         }
       }
 
@@ -1630,10 +1630,10 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
       for ( const QVariantMap &map : identified )
       {
         QMap<QString, QString> attributes;
-        if ( map.value( QStringLiteral( "distance" ) ).isValid() )
-          attributes.insert( tr( "Distance along curve" ), QString::number( map.value( QStringLiteral( "distance" ) ).toDouble() ) );
-        if ( map.value( QStringLiteral( "elevation" ) ).isValid() )
-          attributes.insert( tr( "Elevation" ), QString::number( map.value( QStringLiteral( "elevation" ) ).toDouble() ) );
+        if ( map.value( u"distance"_s ).isValid() )
+          attributes.insert( tr( "Distance along curve" ), QString::number( map.value( u"distance"_s ).toDouble() ) );
+        if ( map.value( u"elevation"_s ).isValid() )
+          attributes.insert( tr( "Elevation" ), QString::number( map.value( u"elevation"_s ).toDouble() ) );
 
         results.append( IdentifyResult( layer, layer->name(), {}, attributes ) );
       }

@@ -87,9 +87,9 @@ struct QgsChunkNodeId
       if ( uniqueId != -1 )
         return QString::number( uniqueId );
       else if ( z == -1 )
-        return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y ); // quadtree
+        return u"%1/%2/%3"_s.arg( d ).arg( x ).arg( y ); // quadtree
       else
-        return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z ); // octree
+        return u"%1/%2/%3/%4"_s.arg( d ).arg( x ).arg( y ).arg( z ); // octree
     }
 
     bool operator==( const QgsChunkNodeId &other ) const

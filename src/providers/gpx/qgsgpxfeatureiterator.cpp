@@ -320,7 +320,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute &rte, QgsFeature &feature 
 
 bool QgsGPXFeatureIterator::readTrack( const QgsTrack &trk, QgsFeature &feature )
 {
-  //QgsDebugMsgLevel( QStringLiteral( "GPX feature track segments: %1" ).arg( trk.segments.size() ), 2 );
+  //QgsDebugMsgLevel( u"GPX feature track segments: %1"_s.arg( trk.segments.size() ), 2 );
 
   QgsGeometry *geometry = readTrackGeometry( trk );
 
@@ -524,7 +524,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
   unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
-    QgsDebugError( QStringLiteral( "Track too large!" ) );
+    QgsDebugError( u"Track too large!"_s );
     return nullptr;
   }
 

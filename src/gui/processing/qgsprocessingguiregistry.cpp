@@ -137,7 +137,7 @@ bool QgsProcessingGuiRegistry::addParameterWidgetFactory( QgsProcessingParameter
 
   if ( mParameterWidgetFactories.contains( factory->parameterType() ) )
   {
-    QgsLogger::warning( QStringLiteral( "Duplicate parameter factory for %1 registered" ).arg( factory->parameterType() ) );
+    QgsLogger::warning( u"Duplicate parameter factory for %1 registered"_s.arg( factory->parameterType() ) );
     return false;
   }
 
@@ -160,7 +160,7 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createPar
     return nullptr;
 
   const QVariantMap metadata = parameter->metadata();
-  const QString widgetType = metadata.value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "widget_type" ) ).toString();
+  const QString widgetType = metadata.value( u"widget_wrapper"_s ).toMap().value( u"widget_type"_s ).toString();
   const QString parameterType = !widgetType.isEmpty() ? widgetType : parameter->type();
   if ( !mParameterWidgetFactories.contains( parameterType ) )
     return nullptr;

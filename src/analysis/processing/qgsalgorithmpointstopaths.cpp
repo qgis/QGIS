@@ -28,7 +28,7 @@
 
 QString QgsPointsToPathsAlgorithm::name() const
 {
-  return QStringLiteral( "pointstopath" );
+  return u"pointstopath"_s;
 }
 
 QString QgsPointsToPathsAlgorithm::displayName() const
@@ -68,32 +68,32 @@ QString QgsPointsToPathsAlgorithm::group() const
 
 QString QgsPointsToPathsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( std::make_unique<QgsProcessingParameterFeatureSource>( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "CLOSE_PATH" ), QObject::tr( "Create closed paths" ), false ) );
-  addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "ORDER_EXPRESSION" ), QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
-  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NATURAL_SORT" ), QObject::tr( "Sort text containing numbers naturally" ), false ) );
-  addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "GROUP_EXPRESSION" ), QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
-  addParameter( std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
+  addParameter( std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( std::make_unique<QgsProcessingParameterBoolean>( u"CLOSE_PATH"_s, QObject::tr( "Create closed paths" ), false ) );
+  addParameter( std::make_unique<QgsProcessingParameterExpression>( u"ORDER_EXPRESSION"_s, QObject::tr( "Order expression" ), QVariant(), u"INPUT"_s, true ) );
+  addParameter( std::make_unique<QgsProcessingParameterBoolean>( u"NATURAL_SORT"_s, QObject::tr( "Sort text containing numbers naturally" ), false ) );
+  addParameter( std::make_unique<QgsProcessingParameterExpression>( u"GROUP_EXPRESSION"_s, QObject::tr( "Path group expression" ), QVariant(), u"INPUT"_s, true ) );
+  addParameter( std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT"_s, QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
   // TODO QGIS 5: remove parameter. move logic to separate algorithm if needed.
-  addParameter( std::make_unique<QgsProcessingParameterFolderDestination>( QStringLiteral( "OUTPUT_TEXT_DIR" ), QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
-  addOutput( std::make_unique<QgsProcessingOutputNumber>( QStringLiteral( "NUM_PATHS" ), QObject::tr( "Number of paths" ) ) );
+  addParameter( std::make_unique<QgsProcessingParameterFolderDestination>( u"OUTPUT_TEXT_DIR"_s, QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
+  addOutput( std::make_unique<QgsProcessingOutputNumber>( u"NUM_PATHS"_s, QObject::tr( "Number of paths" ) ) );
 
   // backwards compatibility parameters
   // TODO QGIS 5: remove compatibility parameters and their logic
-  auto orderField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "ORDER_FIELD" ), QObject::tr( "Order field" ), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  auto orderField = std::make_unique<QgsProcessingParameterField>( u"ORDER_FIELD"_s, QObject::tr( "Order field" ), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, true );
   orderField->setFlags( orderField->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( std::move( orderField ) );
 
-  auto groupField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "GROUP_FIELD" ), QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  auto groupField = std::make_unique<QgsProcessingParameterField>( u"GROUP_FIELD"_s, QObject::tr( "Group field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
   groupField->setFlags( groupField->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( std::move( groupField ) );
 
-  auto dateFormat = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DATE_FORMAT" ), QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
+  auto dateFormat = std::make_unique<QgsProcessingParameterString>( u"DATE_FORMAT"_s, QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
   dateFormat->setFlags( dateFormat->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( std::move( dateFormat ) );
 }
@@ -105,20 +105,20 @@ QgsPointsToPathsAlgorithm *QgsPointsToPathsAlgorithm::createInstance() const
 
 QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const bool closePaths = parameterAsBool( parameters, QStringLiteral( "CLOSE_PATH" ), context );
+  const bool closePaths = parameterAsBool( parameters, u"CLOSE_PATH"_s, context );
 
-  QString orderExpressionString = parameterAsString( parameters, QStringLiteral( "ORDER_EXPRESSION" ), context );
-  const QString orderFieldString = parameterAsString( parameters, QStringLiteral( "ORDER_FIELD" ), context );
+  QString orderExpressionString = parameterAsString( parameters, u"ORDER_EXPRESSION"_s, context );
+  const QString orderFieldString = parameterAsString( parameters, u"ORDER_FIELD"_s, context );
   if ( !orderFieldString.isEmpty() )
   {
     // this is a backwards compatibility parameter
     orderExpressionString = QgsExpression::quotedColumnRef( orderFieldString );
 
-    QString dateFormat = parameterAsString( parameters, QStringLiteral( "DATE_FORMAT" ), context );
+    QString dateFormat = parameterAsString( parameters, u"DATE_FORMAT"_s, context );
     if ( !dateFormat.isEmpty() )
     {
       QVector<QPair<QString, QString>> codeMap;
@@ -177,9 +177,9 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
 
-  QString groupExpressionString = parameterAsString( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
+  QString groupExpressionString = parameterAsString( parameters, u"GROUP_EXPRESSION"_s, context );
   // handle backwards compatibility parameter GROUP_FIELD
-  const QString groupFieldString = parameterAsString( parameters, QStringLiteral( "GROUP_FIELD" ), context );
+  const QString groupFieldString = parameterAsString( parameters, u"GROUP_FIELD"_s, context );
   if ( !groupFieldString.isEmpty() )
     groupExpressionString = QgsExpression::quotedColumnRef( groupFieldString );
 
@@ -191,13 +191,13 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   if ( !groupExpressionString.isEmpty() )
   {
     requiredFields.append( groupExpression.referencedColumns().values() );
-    const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : QStringLiteral( "group" );
+    const QgsField field = groupExpression.isField() ? source->fields().field( requiredFields.last() ) : u"group"_s;
     outputFields.append( field );
   }
   outputFields.append( QgsField( "begin", orderFieldType ) );
   outputFields.append( QgsField( "end", orderFieldType ) );
 
-  const bool naturalSort = parameterAsBool( parameters, QStringLiteral( "NATURAL_SORT" ), context );
+  const bool naturalSort = parameterAsBool( parameters, u"NATURAL_SORT"_s, context );
   QCollator collator;
   collator.setNumericMode( true );
 
@@ -208,11 +208,11 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     wkbType = QgsWkbTypes::addZ( wkbType );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, wkbType, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, wkbType, source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-  const QString textDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_TEXT_DIR" ), context );
+  const QString textDir = parameterAsString( parameters, u"OUTPUT_TEXT_DIR"_s, context );
   if ( !textDir.isEmpty() && !QDir().mkpath( textDir ) )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create the text output directory" ) );
@@ -325,7 +325,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
     if ( !textDir.isEmpty() )
     {
@@ -366,11 +366,11 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  outputs.insert( QStringLiteral( "NUM_PATHS" ), pathCount );
+  outputs.insert( u"OUTPUT"_s, dest );
+  outputs.insert( u"NUM_PATHS"_s, pathCount );
   if ( !textDir.isEmpty() )
   {
-    outputs.insert( QStringLiteral( "OUTPUT_TEXT_DIR" ), textDir );
+    outputs.insert( u"OUTPUT_TEXT_DIR"_s, textDir );
   }
   return outputs;
 }

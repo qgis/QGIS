@@ -19,14 +19,16 @@
 
 #include "moc_qgsambientocclusionblurentity.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsAmbientOcclusionBlurEntity::QgsAmbientOcclusionBlurEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
-  mAmbientOcclusionFactorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "texture" ), texture );
+  mAmbientOcclusionFactorTextureParameter = new Qt3DRender::QParameter( u"texture"_s, texture );
   mMaterial->addParameter( mAmbientOcclusionFactorTextureParameter );
 
-  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.vert" );
-  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.frag" );
+  const QString vertexShaderPath = u"qrc:/shaders/ssao_factor_blur.vert"_s;
+  const QString fragmentShaderPath = u"qrc:/shaders/ssao_factor_blur.frag"_s;
 
   mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );

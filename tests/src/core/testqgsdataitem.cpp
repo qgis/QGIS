@@ -80,23 +80,23 @@ void TestQgsDataItem::initTestCase()
   mTestDataDir = dataDir + '/';
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   // save current scanItemsSetting value
   QgsSettings settings;
   settings.clear();
-  mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
+  mScanItemsSetting = settings.value( u"/qgis/scanItemsInBrowser2"_s, QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
-  mDirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  mDirItem = new QgsDirectoryItem( nullptr, u"Test"_s, TEST_DATA_DIR );
 }
 
 void TestQgsDataItem::cleanupTestCase()
 {
   // restore scanItemsSetting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), mScanItemsSetting );
+  settings.setValue( u"/qgis/scanItemsInBrowser2"_s, mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
 
@@ -112,33 +112,33 @@ void TestQgsDataItem::testValid()
 {
   if ( mDirItem )
   {
-    QgsDebugMsgLevel( QStringLiteral( "dirItem has %1 children" ).arg( mDirItem->rowCount() ), 1 );
+    QgsDebugMsgLevel( u"dirItem has %1 children"_s.arg( mDirItem->rowCount() ), 1 );
   }
   QVERIFY( isValidDirItem( mDirItem ) );
 }
 
 void TestQgsDataItem::testDirItem()
 {
-  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, u"Test"_s, TEST_DATA_DIR );
   QCOMPARE( dirItem->dirPath(), QStringLiteral( TEST_DATA_DIR ) );
-  QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
+  QCOMPARE( dirItem->name(), u"Test"_s );
 
   QVERIFY( dirItem->hasDragEnabled() );
   QgsMimeDataUtils::Uri mime = dirItem->mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : dirItem->mimeUris().first();
   QVERIFY( mime.isValid() );
   QCOMPARE( mime.uri, QStringLiteral( TEST_DATA_DIR ) );
-  QCOMPARE( mime.layerType, QStringLiteral( "directory" ) );
+  QCOMPARE( mime.layerType, u"directory"_s );
 }
 
 void TestQgsDataItem::testDirItemChildren()
 {
   QgsSettings settings;
   QStringList tmpSettings;
-  tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
+  tmpSettings << QString() << u"contents"_s << u"extension"_s;
   for ( const QString &tmpSetting : std::as_const( tmpSettings ) )
   {
-    settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
-    QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+    settings.setValue( u"/qgis/scanItemsInBrowser2"_s, tmpSetting );
+    QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 
     QVector<QgsDataItem *> children = dirItem->createChildren();
@@ -153,50 +153,50 @@ void TestQgsDataItem::testDirItemChildren()
       QFileInfo info( layerItem->path() );
       QString lFile = info.fileName();
       QString lProvider = layerItem->providerKey();
-      QString errStr = QStringLiteral( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lProvider, tmpSetting );
+      QString errStr = u"layer #%1 - %2 provider = %3 tmpSetting = %4"_s.arg( i ).arg( lFile, lProvider, tmpSetting );
 
-      QgsDebugMsgLevel( QStringLiteral( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name(), lProvider, lFile, tmpSetting ), 1 );
+      QgsDebugMsgLevel( u"testing child name=%1 provider=%2 path=%3 tmpSetting = %4"_s.arg( layerItem->name(), lProvider, lFile, tmpSetting ), 1 );
 
-      if ( lFile == QLatin1String( "landsat.tif" ) )
+      if ( lFile == "landsat.tif"_L1 )
       {
-        QVERIFY2( lProvider == QLatin1String( "gdal" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == "gdal"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "points.vrt" ) )
+      else if ( lFile == "points.vrt"_L1 )
       {
-        QVERIFY2( lProvider == QLatin1String( "ogr" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == "ogr"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "landsat.vrt" ) )
+      else if ( lFile == "landsat.vrt"_L1 )
       {
-        QVERIFY2( lProvider == QLatin1String( "gdal" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == "gdal"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
+      else if ( lFile == "landsat_b1.tif.gz"_L1 )
       {
-        QVERIFY2( lProvider == QLatin1String( "gdal" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == "gdal"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
+      else if ( lFile == "points3.geojson.gz"_L1 )
       {
-        QVERIFY2( lProvider == QLatin1String( "ogr" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == "ogr"_L1, errStr.toLocal8Bit().constData() );
       }
 
       // test layerName() does not include extension for gdal and ogr items (bug #5621)
       QString lName = layerItem->layerName();
-      errStr = QStringLiteral( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lName, tmpSetting );
+      errStr = u"layer #%1 - %2 lName = %3 tmpSetting = %4"_s.arg( i ).arg( lFile, lName, tmpSetting );
 
-      if ( lFile == QLatin1String( "landsat.tif" ) )
+      if ( lFile == "landsat.tif"_L1 )
       {
-        QVERIFY2( lName == QLatin1String( "landsat" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == "landsat"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "points.shp" ) )
+      else if ( lFile == "points.shp"_L1 )
       {
-        QVERIFY2( lName == QLatin1String( "points" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == "points"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
+      else if ( lFile == "landsat_b1.tif.gz"_L1 )
       {
-        QVERIFY2( lName == QLatin1String( "landsat_b1" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == "landsat_b1"_L1, errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
+      else if ( lFile == "points3.geojson.gz"_L1 )
       {
-        QVERIFY2( lName == QLatin1String( "points3" ), errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == "points3"_L1, errStr.toLocal8Bit().constData() );
       }
     }
     qDeleteAll( children );
@@ -210,12 +210,12 @@ void TestQgsDataItem::testDirItemMonitoring()
   QTemporaryDir dir;
 
   const QString parentDir = dir.path();
-  const QString child1 = parentDir + QStringLiteral( "/child1" );
-  const QString child2 = parentDir + QStringLiteral( "/child2" );
+  const QString child1 = parentDir + u"/child1"_s;
+  const QString child2 = parentDir + u"/child2"_s;
   QVERIFY( QDir().mkpath( child1 ) );
   QVERIFY( QDir().mkpath( child2 ) );
 
-  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, parentDir + '/' );
+  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, u"parent name"_s, parentDir, parentDir + '/' );
   QCOMPARE( dirItem->path(), parentDir + '/' );
   QCOMPARE( dirItem->dirPath(), parentDir );
 
@@ -245,7 +245,7 @@ void TestQgsDataItem::testDirItemMonitoring()
 
   // avoid the normal required timeout between population
   dirItem->mLastScan = QDateTime( QDate( 2000, 1, 1 ), QTime( 0, 0, 0 ) );
-  const QString child3 = parentDir + QStringLiteral( "/child3" );
+  const QString child3 = parentDir + u"/child3"_s;
   QVERIFY( QDir().mkpath( child3 ) );
   QSignalSpy spy( dirItem.get(), &QgsDataItem::endInsertItems );
   spy.wait();
@@ -349,7 +349,7 @@ void TestQgsDataItem::testDirItemMonitoring()
   QVERIFY( !childItem3->mFileSystemWatcher );
 
   // turn off monitoring
-  QgsSettings().setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), false );
+  QgsSettings().setValue( u"/qgis/monitorDirectoriesInBrowser"_s, false );
   dirItem->reevaluateMonitoring();
   QVERIFY( !dirItem->isMonitored() );
   QVERIFY( !dirItem->mFileSystemWatcher );
@@ -362,7 +362,7 @@ void TestQgsDataItem::testDirItemMonitoring()
   QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
   QVERIFY( !childItem3->isMonitored() );
   QVERIFY( !childItem3->mFileSystemWatcher );
-  QgsSettings().setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true );
+  QgsSettings().setValue( u"/qgis/monitorDirectoriesInBrowser"_s, true );
 }
 
 void TestQgsDataItem::testDirItemMonitoringSlowDrive()
@@ -370,12 +370,12 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
   QTemporaryDir dir;
 
   // fake a directory on a slow drive -- this is a special hardcoded path which always reports to be on a slow drive. See QgsFileUtils::pathIsSlowDevice
-  const QString parentDir = dir.path() + QStringLiteral( "/fake_slow_path_for_unit_tests" );
-  const QString child1 = parentDir + QStringLiteral( "/child1" );
+  const QString parentDir = dir.path() + u"/fake_slow_path_for_unit_tests"_s;
+  const QString child1 = parentDir + u"/child1"_s;
   QVERIFY( QDir().mkpath( child1 ) );
-  const QString child2 = parentDir + QStringLiteral( "/child2" );
+  const QString child2 = parentDir + u"/child2"_s;
   QVERIFY( QDir().mkpath( child2 ) );
-  const QString child2child = child2 + QStringLiteral( "/child" );
+  const QString child2child = child2 + u"/child"_s;
   QVERIFY( QDir().mkpath( child2child ) );
 
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( parentDir ) );
@@ -383,7 +383,7 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2 ) );
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2child ) );
 
-  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
+  auto dirItem = std::make_unique<QgsDirectoryItem>( nullptr, u"parent name"_s, parentDir, u"/"_s + parentDir );
   // user has not explicitly set the path to be monitored or not, so Default should be returned here:
   QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
   // but directory should NOT be monitored
@@ -418,30 +418,30 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
 
 void TestQgsDataItem::testLayerItemType()
 {
-  std::unique_ptr<QgsMapLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp", QString(), QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsMapLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp", QString(), u"ogr"_s );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Polygon );
 
-  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "points.shp", QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "points.shp", QString(), u"ogr"_s );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Point );
 
-  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "lines.shp", QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "lines.shp", QString(), u"ogr"_s );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Line );
 
-  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "nonspatial.dbf", QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "nonspatial.dbf", QString(), u"ogr"_s );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::TableLayer );
 
-  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "invalid.dbf", QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "invalid.dbf", QString(), u"ogr"_s );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Vector );
 
-  layer = std::make_unique<QgsRasterLayer>( mTestDataDir + "rgb256x256.png", QString(), QStringLiteral( "gdal" ) );
+  layer = std::make_unique<QgsRasterLayer>( mTestDataDir + "rgb256x256.png", QString(), u"gdal"_s );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Raster );
 
-  layer = std::make_unique<QgsMeshLayer>( mTestDataDir + "mesh/quad_and_triangle.2dm", QString(), QStringLiteral( "mdal" ) );
+  layer = std::make_unique<QgsMeshLayer>( mTestDataDir + "mesh/quad_and_triangle.2dm", QString(), u"mdal"_s );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Mesh );
 }
@@ -450,12 +450,12 @@ void TestQgsDataItem::testLayerItemType()
 class TestProjectDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "project_test" ); }
+    QString name() override { return u"project_test"_s; }
     Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Files; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       QFileInfo fileInfo( path );
-      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+      if ( fileInfo.suffix().compare( "qgs"_L1, Qt::CaseInsensitive ) == 0 || fileInfo.suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0 )
       {
         return new QgsDataItem( Qgis::BrowserItemType::Custom, parentItem, path, path );
       }
@@ -465,7 +465,7 @@ class TestProjectDataItemProvider : public QgsDataItemProvider
 
 void TestQgsDataItem::testProjectItemCreation()
 {
-  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), mTestDataDir + QStringLiteral( "qgis_server/" ) );
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, mTestDataDir + u"qgis_server/"_s );
   QVector<QgsDataItem *> children = dirItem->createChildren();
 
   // ensure that QgsProjectItem items were created
@@ -473,12 +473,12 @@ void TestQgsDataItem::testProjectItemCreation()
   bool foundQgzProject = false;
   for ( QgsDataItem *child : children )
   {
-    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + u"qgis_server/test_project.qgs"_s )
     {
       foundQgsProject = true;
       continue;
     }
-    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + u"qgis_server/test_project.qgz"_s )
     {
       foundQgzProject = true;
       continue;
@@ -491,7 +491,7 @@ void TestQgsDataItem::testProjectItemCreation()
   // now, add a specific provider which handles project files
   QgsApplication::dataItemProviderRegistry()->addProvider( new TestProjectDataItemProvider() );
 
-  dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), mTestDataDir + QStringLiteral( "qgis_server/" ) );
+  dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, mTestDataDir + u"qgis_server/"_s );
   children = dirItem->createChildren();
 
   // ensure that QgsProjectItem items were NOT created -- our test provider should have created custom items instead
@@ -501,22 +501,22 @@ void TestQgsDataItem::testProjectItemCreation()
   bool foundCustomQgzProject = false;
   for ( QgsDataItem *child : std::as_const( children ) )
   {
-    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + u"qgis_server/test_project.qgs"_s )
     {
       foundQgsProject = true;
       continue;
     }
-    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + u"qgis_server/test_project.qgz"_s )
     {
       foundQgzProject = true;
       continue;
     }
-    if ( child->type() == Qgis::BrowserItemType::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Custom && child->path() == mTestDataDir + u"qgis_server/test_project.qgs"_s )
     {
       foundCustomQgsProject = true;
       continue;
     }
-    if ( child->type() == Qgis::BrowserItemType::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    if ( child->type() == Qgis::BrowserItemType::Custom && child->path() == mTestDataDir + u"qgis_server/test_project.qgz"_s )
     {
       foundCustomQgzProject = true;
       continue;

@@ -597,7 +597,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   mFilteredFeatures.clear();
   if ( !layer()->renderer() )
   {
-    QgsDebugError( QStringLiteral( "Cannot get renderer" ) );
+    QgsDebugError( u"Cannot get renderer"_s );
     return;
   }
 
@@ -606,7 +606,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   const QgsMapSettings &ms = mCanvas->mapSettings();
   if ( !layer()->isInScaleRange( ms.scale() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    QgsDebugMsgLevel( u"Out of scale limits"_s, 2 );
   }
   else
   {
@@ -637,7 +637,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mCanvas, layer() );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
     return;
   if ( !canvasFilter.isEmpty() )
     r.setFilterExpression( canvasFilter );

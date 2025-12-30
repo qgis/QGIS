@@ -46,9 +46,9 @@ void TestQgsDecorationScalebar::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
@@ -65,9 +65,9 @@ void TestQgsDecorationScalebar::cleanupTestCase()
 
 void TestQgsDecorationScalebar::mapWidth()
 {
-  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   QgsMapSettings settings;
-  settings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   settings.setOutputSize( QSize( 800, 400 ) );
   // same aspect ratio as output size
   settings.setExtent( QgsRectangle( 16700000, -4210000, 16708000, -4206000 ) );
@@ -82,7 +82,7 @@ void TestQgsDecorationScalebar::mapWidth()
   QGSCOMPARENEAR( scalebar.mapWidth( settings ), 4.97097, 0.0001 );
 
   // ellipsoidal measure
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7030" ) );
+  QgsProject::instance()->setEllipsoid( u"EPSG:7030"_s );
   QGSCOMPARENEAR( scalebar.mapWidth( settings ), 4.060337, 0.0001 );
   QgsProject::instance()->setEllipsoid( QString() );
 

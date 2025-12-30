@@ -37,7 +37,7 @@ typedef struct
 class QgsOracleProjectStorage : public QgsProjectStorage
 {
   public:
-    QString type() override { return QStringLiteral( "oracle" ); }
+    QString type() override { return u"oracle"_s; }
 
     QStringList listProjects( const QString &uri ) override;
 

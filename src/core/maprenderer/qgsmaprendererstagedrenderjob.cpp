@@ -46,7 +46,7 @@ void QgsMapRendererStagedRenderJob::startPrivate()
   mRenderingStart.start();
   mErrors.clear();
 
-  QgsDebugMsgLevel( QStringLiteral( "Preparing list of layer jobs for rendering" ), 5 );
+  QgsDebugMsgLevel( u"Preparing list of layer jobs for rendering"_s, 5 );
   QElapsedTimer prepareTime;
   prepareTime.start();
 

@@ -36,7 +36,7 @@ QgsProcessingModelGroupBox *QgsProcessingModelGroupBox::clone() const
 QVariant QgsProcessingModelGroupBox::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "uuid" ), mUuid );
+  map.insert( u"uuid"_s, mUuid );
   saveCommonProperties( map );
   return map;
 }
@@ -45,7 +45,7 @@ bool QgsProcessingModelGroupBox::loadVariant( const QVariantMap &map, bool ignor
 {
   restoreCommonProperties( map );
   if ( !ignoreUuid )
-    mUuid = map.value( QStringLiteral( "uuid" ) ).toString();
+    mUuid = map.value( u"uuid"_s ).toString();
   return true;
 }
 

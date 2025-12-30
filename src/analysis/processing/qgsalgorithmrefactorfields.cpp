@@ -23,7 +23,7 @@
 
 QString QgsRefactorFieldsAlgorithm::name() const
 {
-  return QStringLiteral( "refactorfields" );
+  return u"refactorfields"_s;
 }
 
 QString QgsRefactorFieldsAlgorithm::displayName() const
@@ -59,7 +59,7 @@ QString QgsRefactorFieldsAlgorithm::group() const
 
 QString QgsRefactorFieldsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return u"vectortable"_s;
 }
 
 QString QgsRefactorFieldsAlgorithm::outputName() const
@@ -89,7 +89,7 @@ QgsRefactorFieldsAlgorithm *QgsRefactorFieldsAlgorithm::createInstance() const
 
 void QgsRefactorFieldsAlgorithm::initParameters( const QVariantMap & )
 {
-  auto param = std::make_unique<QgsProcessingParameterFieldMapping>( QStringLiteral( "FIELDS_MAPPING" ), QObject::tr( "Fields mapping" ), QStringLiteral( "INPUT" ) );
+  auto param = std::make_unique<QgsProcessingParameterFieldMapping>( u"FIELDS_MAPPING"_s, QObject::tr( "Fields mapping" ), u"INPUT"_s );
   addParameter( param.release() );
 }
 
@@ -100,39 +100,39 @@ QgsFields QgsRefactorFieldsAlgorithm::outputFields( const QgsFields & ) const
 
 bool QgsRefactorFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   mDa.setSourceCrs( source->sourceCrs(), context.transformContext() );
   mDa.setEllipsoid( context.ellipsoid() );
 
   mExpressionContext = createExpressionContext( parameters, context, source.get() );
 
-  const QVariantList mapping = parameters.value( QStringLiteral( "FIELDS_MAPPING" ) ).toList();
+  const QVariantList mapping = parameters.value( u"FIELDS_MAPPING"_s ).toList();
   for ( const QVariant &map : mapping )
   {
     const QVariantMap fieldDef = map.toMap();
-    const QString name = fieldDef.value( QStringLiteral( "name" ) ).toString();
+    const QString name = fieldDef.value( u"name"_s ).toString();
     if ( name.isEmpty() )
       throw QgsProcessingException( QObject::tr( "Field name cannot be empty" ) );
 
-    const QMetaType::Type type = static_cast<QMetaType::Type>( fieldDef.value( QStringLiteral( "type" ) ).toInt() );
-    const QString typeName = fieldDef.value( QStringLiteral( "sub_name" ) ).toString();
-    const QMetaType::Type subType = static_cast<QMetaType::Type>( fieldDef.value( QStringLiteral( "sub_type" ) ).toInt() );
+    const QMetaType::Type type = static_cast<QMetaType::Type>( fieldDef.value( u"type"_s ).toInt() );
+    const QString typeName = fieldDef.value( u"sub_name"_s ).toString();
+    const QMetaType::Type subType = static_cast<QMetaType::Type>( fieldDef.value( u"sub_type"_s ).toInt() );
 
-    const int length = fieldDef.value( QStringLiteral( "length" ), 0 ).toInt();
-    const int precision = fieldDef.value( QStringLiteral( "precision" ), 0 ).toInt();
+    const int length = fieldDef.value( u"length"_s, 0 ).toInt();
+    const int precision = fieldDef.value( u"precision"_s, 0 ).toInt();
 
-    const QString alias = fieldDef.value( QStringLiteral( "alias" ) ).toString();
-    const QString comment = fieldDef.value( QStringLiteral( "comment" ) ).toString();
+    const QString alias = fieldDef.value( u"alias"_s ).toString();
+    const QString comment = fieldDef.value( u"comment"_s ).toString();
 
     QgsField newField( name, type, typeName, length, precision, QString(), subType );
     newField.setAlias( alias );
     newField.setComment( comment );
     mFields.append( newField );
 
-    const QString expressionString = fieldDef.value( QStringLiteral( "expression" ) ).toString();
+    const QString expressionString = fieldDef.value( u"expression"_s ).toString();
     if ( !expressionString.isEmpty() )
     {
       QgsExpression expression( expressionString );
@@ -177,7 +177,7 @@ QgsFeatureList QgsRefactorFieldsAlgorithm::processFeature( const QgsFeature &fea
     if ( it->isValid() )
     {
       mExpressionContext.setFeature( feature );
-      mExpressionContext.lastScope()->setVariable( QStringLiteral( "row_number" ), mRowNumber );
+      mExpressionContext.lastScope()->setVariable( u"row_number"_s, mRowNumber );
       const QVariant value = it->evaluate( &mExpressionContext );
       if ( it->hasEvalError() )
       {

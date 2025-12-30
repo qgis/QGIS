@@ -50,7 +50,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
 
 QWidget *QgsUniqueValuesWidgetWrapper::createWidget( QWidget *parent )
 {
-  if ( config( QStringLiteral( "Editable" ) ).toBool() )
+  if ( config( u"Editable"_s ).toBool() )
     return new QgsFilterLineEdit( parent );
   else
   {

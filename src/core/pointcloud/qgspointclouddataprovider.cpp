@@ -84,34 +84,34 @@ QMap<int, QString> QgsPointCloudDataProvider::lasClassificationCodes()
 {
   static QMap< int, QString > sCodes
   {
-    {0, QStringLiteral( "Created, Never Classified" )},
-    {1, QStringLiteral( "Unclassified" )},
-    {2, QStringLiteral( "Ground" )},
-    {3, QStringLiteral( "Low Vegetation" )},
-    {4, QStringLiteral( "Medium Vegetation" )},
-    {5, QStringLiteral( "High Vegetation" )},
-    {6, QStringLiteral( "Building" )},
-    {7, QStringLiteral( "Low Point (Low Noise)" )},
-    {8, QStringLiteral( "Reserved" )},
-    {9, QStringLiteral( "Water" )},
-    {10, QStringLiteral( "Rail" )},
-    {11, QStringLiteral( "Road Surface" )},
-    {12, QStringLiteral( "Reserved" )},
-    {13, QStringLiteral( "Wire - Guard (Shield)" )},
-    {14, QStringLiteral( "Wire - Conductor (Phase)" )},
-    {15, QStringLiteral( "Transmission Tower" )},
-    {16, QStringLiteral( "Wire-Structure Connector (Insulator)" )},
-    {17, QStringLiteral( "Bridge Deck" )},
-    {18, QStringLiteral( "High Noise" )},
+    {0, u"Created, Never Classified"_s},
+    {1, u"Unclassified"_s},
+    {2, u"Ground"_s},
+    {3, u"Low Vegetation"_s},
+    {4, u"Medium Vegetation"_s},
+    {5, u"High Vegetation"_s},
+    {6, u"Building"_s},
+    {7, u"Low Point (Low Noise)"_s},
+    {8, u"Reserved"_s},
+    {9, u"Water"_s},
+    {10, u"Rail"_s},
+    {11, u"Road Surface"_s},
+    {12, u"Reserved"_s},
+    {13, u"Wire - Guard (Shield)"_s},
+    {14, u"Wire - Conductor (Phase)"_s},
+    {15, u"Transmission Tower"_s},
+    {16, u"Wire-Structure Connector (Insulator)"_s},
+    {17, u"Bridge Deck"_s},
+    {18, u"High Noise"_s},
   };
 
   static std::once_flag initialized;
   std::call_once( initialized, []( )
   {
     for ( int i = 19; i <= 63; ++i )
-      sCodes.insert( i, QStringLiteral( "Reserved" ) );
+      sCodes.insert( i, u"Reserved"_s );
     for ( int i = 64; i <= 255; ++i )
-      sCodes.insert( i, QStringLiteral( "User Definable" ) );
+      sCodes.insert( i, u"User Definable"_s );
   } );
 
   return sCodes;
@@ -158,13 +158,13 @@ QMap<int, QString> QgsPointCloudDataProvider::dataFormatIds()
 {
   static const QMap< int, QString > sCodes
   {
-    {0, QStringLiteral( "No color or time stored" )},
-    {1, QStringLiteral( "Time is stored" )},
-    {2, QStringLiteral( "Color is stored" )},
-    {3, QStringLiteral( "Color and time are stored" )},
-    {6, QStringLiteral( "Time is stored" )},
-    {7, QStringLiteral( "Time and color are stored)" )},
-    {8, QStringLiteral( "Time, color and near infrared are stored" )},
+    {0, u"No color or time stored"_s},
+    {1, u"Time is stored"_s},
+    {2, u"Color is stored"_s},
+    {3, u"Color and time are stored"_s},
+    {6, u"Time is stored"_s},
+    {7, u"Time and color are stored)"_s},
+    {8, u"Time, color and near infrared are stored"_s},
   };
 
   return sCodes;
@@ -235,16 +235,16 @@ struct MapIndexedPointCloudNode
     const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
     int xOffset = 0, yOffset = 0, zOffset = 0;
-    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( u"X"_s, xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( u"Y"_s, yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( u"Z"_s, zOffset )->type();
     auto extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
     extentEngine->prepareGeometry();
 
     std::optional<bool> copcTimeFlag = std::nullopt;
     QVariantMap extraMetadata = mIndex.extraMetadata();
-    if ( extraMetadata.contains( QStringLiteral( "CopcGpsTimeFlag" ) ) )
-      copcTimeFlag = extraMetadata[ QStringLiteral( "CopcGpsTimeFlag" ) ].toBool();
+    if ( extraMetadata.contains( u"CopcGpsTimeFlag"_s ) )
+      copcTimeFlag = extraMetadata[ u"CopcGpsTimeFlag"_s ].toBool();
 
     for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
@@ -254,9 +254,9 @@ struct MapIndexedPointCloudNode
       if ( mZRange.contains( z ) && extentEngine->contains( x, y ) )
       {
         QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
-        pointAttr[ QStringLiteral( "X" ) ] = x;
-        pointAttr[ QStringLiteral( "Y" ) ] = y;
-        pointAttr[ QStringLiteral( "Z" ) ] = z;
+        pointAttr[ u"X"_s ] = x;
+        pointAttr[ u"Y"_s ] = y;
+        pointAttr[ u"Z"_s ] = z;
 
 
         if ( copcTimeFlag.has_value() )
@@ -266,17 +266,17 @@ struct MapIndexedPointCloudNode
           // here we check the flag set in header to determine if we need to
           // parse the time as GPS week time or GPS adjusted standard time
           // however often times the flag is set wrong, so we determine if the value is bigger than the maximum amount of seconds in week then it has to be adjusted standard time
-          if ( *copcTimeFlag || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
+          if ( *copcTimeFlag || pointAttr[u"GpsTime"_s].toDouble() > numberOfSecsInWeek )
           {
-            const QString utcTime = gpsBaseTime.addSecs( static_cast<qint64>( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ) ).toString( Qt::ISODate );
-            pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
-            pointAttr[ QStringLiteral( "GpsTime" )] = utcTime;
+            const QString utcTime = gpsBaseTime.addSecs( static_cast<qint64>( pointAttr[u"GpsTime"_s].toDouble() + 1e9 ) ).toString( Qt::ISODate );
+            pointAttr[ u"GpsTime (raw)"_s] = pointAttr[u"GpsTime"_s];
+            pointAttr[ u"GpsTime"_s] = utcTime;
           }
           else
           {
-            const QString weekTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toLongLong() ).toString( "ddd hh:mm:ss" );
-            pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
-            pointAttr[ QStringLiteral( "GpsTime" )] = weekTime;
+            const QString weekTime = gpsBaseTime.addSecs( pointAttr[u"GpsTime"_s].toLongLong() ).toString( "ddd hh:mm:ss" );
+            pointAttr[ u"GpsTime (raw)"_s] = pointAttr[u"GpsTime"_s];
+            pointAttr[ u"GpsTime"_s] = weekTime;
           }
         }
         pointsCount++;

@@ -204,7 +204,7 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
-    QgsDebugError( QStringLiteral( "Caught CRS exception " ) );
+    QgsDebugError( u"Caught CRS exception "_s );
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
@@ -373,7 +373,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
-  QgsDebugMsgLevel( "doContains: " + QString( doContains ? QStringLiteral( "T" ) : QStringLiteral( "F" ) ), 3 );
+  QgsDebugMsgLevel( "doContains: " + QString( doContains ? u"T"_s : u"F"_s ), 3 );
 
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid() )
@@ -402,7 +402,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   }
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( canvas, vlayer );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
     return newSelectedFeatures;
 
   QgsFeatureRequest request;
@@ -540,7 +540,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateMenu( QMenu *me
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 {
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mCanvas, mVectorLayer );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
     return;
 
   mJobData = std::make_shared<DataForSearchingJob>();

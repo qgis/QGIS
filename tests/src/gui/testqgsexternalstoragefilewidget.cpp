@@ -64,7 +64,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 
   public:
     QgsTestExternalStorageStoredContent( const QString &filePath, const QString &url )
-      : QgsExternalStorageStoredContent(), mUrl( filePath.endsWith( QLatin1String( "mydir" ) ) ? url + "mydir/" : url )
+      : QgsExternalStorageStoredContent(), mUrl( filePath.endsWith( "mydir"_L1 ) ? url + "mydir/" : url )
     {}
 
     void store() override
@@ -81,7 +81,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
     void error()
     {
       setStatus( Qgis::ContentStatus::Failed );
-      mErrorString = QStringLiteral( "error" );
+      mErrorString = u"error"_s;
       emit errorOccurred( mErrorString );
     }
 
@@ -108,9 +108,9 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 class QgsTestExternalStorage : public QgsExternalStorage
 {
   public:
-    QString type() const override { return QStringLiteral( "test" ); }
+    QString type() const override { return u"test"_s; }
 
-    QString displayName() const override { return QStringLiteral( "Test" ); }
+    QString displayName() const override { return u"Test"_s; }
 
     static QPointer<QgsTestExternalStorageStoredContent> sCurrentStoredContent;
 
@@ -154,7 +154,7 @@ void TestQgsExternalStorageFileWidget::testLayout_data()
   QTest::addColumn<QString>( "storageType" );
 
   QTest::newRow( "without external storage" ) << QString();
-  QTest::newRow( "with external storage" ) << QStringLiteral( "test" );
+  QTest::newRow( "with external storage" ) << u"test"_s;
 }
 
 void TestQgsExternalStorageFileWidget::testLayout()
@@ -167,8 +167,8 @@ void TestQgsExternalStorageFileWidget::testLayout()
   w.setStorageType( storageType );
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
-  QIcon saveIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
+  QIcon saveIcon = QgsApplication::getThemeIcon( u"/mActionSaveEdits.svg"_s );
 
   // with link, read-only
   w.setReadOnly( true );
@@ -268,7 +268,7 @@ void TestQgsExternalStorageFileWidget::testStoring()
   QgsExternalStorageFileWidget w;
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/test/' || file_name(@selected_file_path)" );
@@ -329,9 +329,9 @@ void TestQgsExternalStorageFileWidget::testStoring()
     QVERIFY( !w.mProgressBar->isVisible() );
     QVERIFY( !w.mCancelButton->isVisible() );
     if ( useLink )
-      QCOMPARE( w.mLinkLabel->text(), QStringLiteral( "<a href=\"http://test.url.com/test/%1\">%1</a>" ).arg( fileName ) );
+      QCOMPARE( w.mLinkLabel->text(), u"<a href=\"http://test.url.com/test/%1\">%1</a>"_s.arg( fileName ) );
     else
-      QCOMPARE( w.mLineEdit->text(), QStringLiteral( "http://test.url.com/test/%1" ).arg( fileName ) );
+      QCOMPARE( w.mLineEdit->text(), u"http://test.url.com/test/%1"_s.arg( fileName ) );
   }
 }
 
@@ -353,7 +353,7 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFiles()
   QgsExternalStorageFileWidget w;
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/test/' || file_name(@selected_file_path)" );
@@ -374,7 +374,7 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFiles()
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
 
-  w.setSelectedFileNames( QStringList() << QStringLiteral( "myfile1" ) << QStringLiteral( "myfile2" ) );
+  w.setSelectedFileNames( QStringList() << u"myfile1"_s << u"myfile2"_s );
 
   QPointer<QgsTestExternalStorageStoredContent> content1 = QgsTestExternalStorage::sCurrentStoredContent;
   QVERIFY( content1 );
@@ -424,9 +424,9 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFiles()
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
   if ( useLink )
-    QCOMPARE( w.mLinkLabel->text(), QStringLiteral( "<a>\"http://test.url.com/test/myfile1\" \"http://test.url.com/test/myfile2\"</a>" ) );
+    QCOMPARE( w.mLinkLabel->text(), u"<a>\"http://test.url.com/test/myfile1\" \"http://test.url.com/test/myfile2\"</a>"_s );
   else
-    QCOMPARE( w.mLineEdit->text(), QStringLiteral( "\"http://test.url.com/test/myfile1\" \"http://test.url.com/test/myfile2\"" ) );
+    QCOMPARE( w.mLineEdit->text(), u"\"http://test.url.com/test/myfile1\" \"http://test.url.com/test/myfile2\""_s );
 
   // wait for second file content to be destroyed
   connect( QgsTestExternalStorage::sCurrentStoredContent, &QObject::destroyed, &loop, &QEventLoop::quit );
@@ -452,7 +452,7 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesError()
   QgsMessageBar messageBar;
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/test/' || file_name(@selected_file_path)" );
@@ -473,7 +473,7 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesError()
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
 
-  w.setSelectedFileNames( QStringList() << QStringLiteral( "myfile1" ) << QStringLiteral( "error.txt" ) );
+  w.setSelectedFileNames( QStringList() << u"myfile1"_s << u"error.txt"_s );
 
   QPointer<QgsTestExternalStorageStoredContent> content1 = QgsTestExternalStorage::sCurrentStoredContent;
   QVERIFY( content1 );
@@ -553,7 +553,7 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesCancel()
   QgsExternalStorageFileWidget w;
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/test/' || file_name(@selected_file_path)" );
@@ -573,7 +573,7 @@ void TestQgsExternalStorageFileWidget::testStoringSeveralFilesCancel()
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
 
-  w.setSelectedFileNames( QStringList() << QStringLiteral( "myfile1" ) << QStringLiteral( "error.txt" ) );
+  w.setSelectedFileNames( QStringList() << u"myfile1"_s << u"error.txt"_s );
 
   QPointer<QgsTestExternalStorageStoredContent> content1 = QgsTestExternalStorage::sCurrentStoredContent;
   QVERIFY( content1 );
@@ -642,10 +642,10 @@ void TestQgsExternalStorageFileWidget::testStoringChangeFeature()
   w.show();
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "myfield" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( u"myfield"_s, QMetaType::Type::QString ) );
 
   QgsFeature f1( fields );
-  f1.setAttribute( QStringLiteral( "myfield" ), QStringLiteral( "val1" ) );
+  f1.setAttribute( u"myfield"_s, u"val1"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/' || attribute( @current_feature, 'myfield' )" );
@@ -657,24 +657,24 @@ void TestQgsExternalStorageFileWidget::testStoringChangeFeature()
   w.setUseLink( false );
   w.setReadOnly( false );
 
-  w.setSelectedFileNames( QStringList() << QStringLiteral( "blank" ) );
+  w.setSelectedFileNames( QStringList() << u"blank"_s );
 
   QgsTestExternalStorage::sCurrentStoredContent->finish();
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "http://test.url.com/val1" ) );
+  QCOMPARE( w.mLineEdit->text(), u"http://test.url.com/val1"_s );
 
   QgsFeature f2( fields );
-  f2.setAttribute( QStringLiteral( "myfield" ), QStringLiteral( "val2" ) );
+  f2.setAttribute( u"myfield"_s, u"val2"_s );
 
   QgsExpressionContext expressionContext2;
   expressionContext2.appendScope( QgsExpressionContextUtils::formScope( f2 ) );
   w.setExpressionContext( expressionContext2 );
 
-  w.setSelectedFileNames( QStringList() << QStringLiteral( "blank" ) );
+  w.setSelectedFileNames( QStringList() << u"blank"_s );
 
   QgsTestExternalStorage::sCurrentStoredContent->finish();
 
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "http://test.url.com/val2" ) );
+  QCOMPARE( w.mLineEdit->text(), u"http://test.url.com/val2"_s );
 }
 
 void TestQgsExternalStorageFileWidget::testStoringBadExpression_data()
@@ -694,7 +694,7 @@ void TestQgsExternalStorageFileWidget::testStoringBadExpression()
   QgsExternalStorageFileWidget w;
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/test/' || file_name(@not_existing_variable)" );
@@ -714,7 +714,7 @@ void TestQgsExternalStorageFileWidget::testStoringBadExpression()
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
 
-  w.setSelectedFileNames( QStringList() << QStringLiteral( "myfile" ) );
+  w.setSelectedFileNames( QStringList() << u"myfile"_s );
 
   QVERIFY( !QgsTestExternalStorage::sCurrentStoredContent );
 
@@ -750,7 +750,7 @@ void TestQgsExternalStorageFileWidget::testStoringDirectory()
   QgsExternalStorageFileWidget w;
   w.show();
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   w.setStorageType( "test" );
   w.setStorageUrlExpression( "'http://test.url.com/test/'" );
@@ -797,9 +797,9 @@ void TestQgsExternalStorageFileWidget::testStoringDirectory()
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
   if ( useLink )
-    QCOMPARE( w.mLinkLabel->text(), QStringLiteral( "<a href=\"http://test.url.com/test/mydir/\"></a>" ) );
+    QCOMPARE( w.mLinkLabel->text(), u"<a href=\"http://test.url.com/test/mydir/\"></a>"_s );
   else
-    QCOMPARE( w.mLineEdit->text(), QStringLiteral( "http://test.url.com/test/mydir/" ) );
+    QCOMPARE( w.mLineEdit->text(), u"http://test.url.com/test/mydir/"_s );
 
   // wait for file content to be destroyed
   connect( QgsTestExternalStorage::sCurrentStoredContent, &QObject::destroyed, &loop, &QEventLoop::quit );
@@ -816,9 +816,9 @@ void TestQgsExternalStorageFileWidget::testDragAndDrop()
   w.show();
 
   auto mime = std::make_unique<QMimeData>();
-  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + u"/bug5598.shp"_s ) );
 
-  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+  QIcon editIcon = QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s );
 
   QVERIFY( !w.acceptDrops() );
 
@@ -873,7 +873,7 @@ void TestQgsExternalStorageFileWidget::testDragAndDrop()
   QVERIFY( !w.mProgressLabel->isVisible() );
   QVERIFY( !w.mProgressBar->isVisible() );
   QVERIFY( !w.mCancelButton->isVisible() );
-  QCOMPARE( w.mLinkLabel->text(), QStringLiteral( "<a href=\"http://test.url.com/test/bug5598.shp\">bug5598.shp</a>" ) );
+  QCOMPARE( w.mLinkLabel->text(), u"<a href=\"http://test.url.com/test/bug5598.shp\">bug5598.shp</a>"_s );
 
   // wait for file content to be destroyed
   connect( QgsTestExternalStorage::sCurrentStoredContent, &QObject::destroyed, &loop, &QEventLoop::quit );

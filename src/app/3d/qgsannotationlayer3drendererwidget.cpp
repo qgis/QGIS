@@ -28,14 +28,14 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
-  setObjectName( QStringLiteral( "mOptsPage_3DView" ) );
+  setObjectName( u"mOptsPage_3DView"_s );
 
   setupUi( this );
 
   mFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
-  mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRenderOnTerrain.svg" ) ), tr( "Render on Terrain Surface" ), QVariant::fromValue( RendererType::None ) );
-  mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "3D Billboards" ), QVariant::fromValue( RendererType::Billboards ) );
+  mComboRendererType->addItem( QgsApplication::getThemeIcon( u"mIconRenderOnTerrain.svg"_s ), tr( "Render on Terrain Surface" ), QVariant::fromValue( RendererType::None ) );
+  mComboRendererType->addItem( QgsApplication::getThemeIcon( u"rendererSingleSymbol.svg"_s ), tr( "3D Billboards" ), QVariant::fromValue( RendererType::Billboards ) );
   mComboRendererType->setCurrentIndex( mComboRendererType->findData( QVariant::fromValue( RendererType::None ) ) );
   mStackedWidget->setCurrentWidget( mPageNoRenderer );
 
@@ -136,18 +136,18 @@ void QgsAnnotationLayer3DRendererWidget::clampingChanged()
   {
     case Qgis::AltitudeClamping::Absolute:
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "All billboards will be placed at the same elevation." ), tr( "The terrain height will be ignored." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "All billboards will be placed at the same elevation." ), tr( "The terrain height will be ignored." ) )
       );
 
       break;
     case Qgis::AltitudeClamping::Relative:
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Billboard elevation is relative to terrain height." ) )
+        u"<p><b>%1</b></p>"_s.arg( tr( "Billboard elevation is relative to terrain height." ) )
       );
       break;
     case Qgis::AltitudeClamping::Terrain:
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "Billboard elevation will be taken directly from the terrain height." ), tr( "Billboards will be placed directly on the terrain." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Billboard elevation will be taken directly from the terrain height." ), tr( "Billboards will be placed directly on the terrain." ) )
       );
       break;
   }
@@ -159,7 +159,7 @@ void QgsAnnotationLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QLatin1String( "annotation" ) )
+  if ( r && r->type() == "annotation"_L1 )
   {
     QgsAnnotationLayer3DRenderer *annotationRenderer = qgis::down_cast<QgsAnnotationLayer3DRenderer *>( r );
     setRenderer( annotationRenderer );
@@ -207,5 +207,5 @@ bool QgsAnnotationLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsAnnotationLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

@@ -71,60 +71,60 @@ void TestQgsValueRelationFieldFormatter::cleanup()
 void TestQgsValueRelationFieldFormatter::init()
 {
   // create layer
-  mLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  mLayer1 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3111&field=pk:int&field=fk:int"_s, u"vl1"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( mLayer1.get(), false, false );
 
-  mLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  mLayer2 = std::make_unique<QgsVectorLayer>( u"LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string"_s, u"vl2"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( mLayer2.get(), false, false );
 
   // create relation
   mRelation = std::make_unique<QgsRelation>();
-  mRelation->setId( QStringLiteral( "vl1.vl2" ) );
-  mRelation->setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation->setId( u"vl1.vl2"_s );
+  mRelation->setName( u"vl1.vl2"_s );
   mRelation->setReferencingLayer( mLayer1->id() );
   mRelation->setReferencedLayer( mLayer2->id() );
-  mRelation->addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  mRelation->addFieldPair( u"fk"_s, u"pk"_s );
   QVERIFY( mRelation->isValid() );
   QgsProject::instance()->relationManager()->addRelation( *mRelation );
 
   // add features
   QgsFeature ft0( mLayer1->fields() );
-  ft0.setAttribute( QStringLiteral( "pk" ), 0 );
-  ft0.setAttribute( QStringLiteral( "fk" ), 0 );
+  ft0.setAttribute( u"pk"_s, 0 );
+  ft0.setAttribute( u"fk"_s, 0 );
   mLayer1->startEditing();
   mLayer1->addFeature( ft0 );
   mLayer1->commitChanges();
 
   QgsFeature ft1( mLayer1->fields() );
-  ft1.setAttribute( QStringLiteral( "pk" ), 1 );
-  ft1.setAttribute( QStringLiteral( "fk" ), 1 );
+  ft1.setAttribute( u"pk"_s, 1 );
+  ft1.setAttribute( u"fk"_s, 1 );
   mLayer1->startEditing();
   mLayer1->addFeature( ft1 );
   mLayer1->commitChanges();
 
   QgsFeature ft2( mLayer2->fields() );
-  ft2.setAttribute( QStringLiteral( "pk" ), 10 );
-  ft2.setAttribute( QStringLiteral( "material" ), "iron" );
-  ft2.setAttribute( QStringLiteral( "diameter" ), 120 );
-  ft2.setAttribute( QStringLiteral( "raccord" ), "brides" );
+  ft2.setAttribute( u"pk"_s, 10 );
+  ft2.setAttribute( u"material"_s, "iron" );
+  ft2.setAttribute( u"diameter"_s, 120 );
+  ft2.setAttribute( u"raccord"_s, "brides" );
   mLayer2->startEditing();
   mLayer2->addFeature( ft2 );
   mLayer2->commitChanges();
 
   QgsFeature ft3( mLayer2->fields() );
-  ft3.setAttribute( QStringLiteral( "pk" ), 11 );
-  ft3.setAttribute( QStringLiteral( "material" ), "iron" );
-  ft3.setAttribute( QStringLiteral( "diameter" ), 110 );
-  ft3.setAttribute( QStringLiteral( "raccord" ), "sleeve" );
+  ft3.setAttribute( u"pk"_s, 11 );
+  ft3.setAttribute( u"material"_s, "iron" );
+  ft3.setAttribute( u"diameter"_s, 110 );
+  ft3.setAttribute( u"raccord"_s, "sleeve" );
   mLayer2->startEditing();
   mLayer2->addFeature( ft3 );
   mLayer2->commitChanges();
 
   QgsFeature ft4( mLayer2->fields() );
-  ft4.setAttribute( QStringLiteral( "pk" ), 12 );
-  ft4.setAttribute( QStringLiteral( "material" ), "steel" );
-  ft4.setAttribute( QStringLiteral( "diameter" ), 100 );
-  ft4.setAttribute( QStringLiteral( "raccord" ), "collar" );
+  ft4.setAttribute( u"pk"_s, 12 );
+  ft4.setAttribute( u"material"_s, "steel" );
+  ft4.setAttribute( u"diameter"_s, 100 );
+  ft4.setAttribute( u"raccord"_s, "collar" );
   mLayer2->startEditing();
   mLayer2->addFeature( ft4 );
   mLayer2->commitChanges();
@@ -134,7 +134,7 @@ void TestQgsValueRelationFieldFormatter::testDependencies()
 {
   // Test dependencies
 
-  const QgsEditorWidgetSetup setup { QStringLiteral( "ValueRelation" ), { { QStringLiteral( "LayerSource" ), mLayer2->publicSource() }, { QStringLiteral( "LayerProviderName" ), mLayer2->providerType() }, { QStringLiteral( "LayerName" ), mLayer2->name() }, { QStringLiteral( "Layer" ), mLayer2->id() } } };
+  const QgsEditorWidgetSetup setup { u"ValueRelation"_s, { { u"LayerSource"_s, mLayer2->publicSource() }, { u"LayerProviderName"_s, mLayer2->providerType() }, { u"LayerName"_s, mLayer2->name() }, { u"Layer"_s, mLayer2->id() } } };
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   const QList<QgsVectorLayerRef> dependencies = fieldFormatter->layerDependencies( setup.config() );
   QVERIFY( dependencies.count() == 1 );
@@ -149,9 +149,9 @@ void TestQgsValueRelationFieldFormatter::testSortValueNull()
 {
   const QgsValueRelationFieldFormatter formatter;
   QVariantMap config;
-  config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
-  config.insert( QStringLiteral( "Key" ), QStringLiteral( "pk" ) );
-  config.insert( QStringLiteral( "Value" ), QStringLiteral( "material" ) );
+  config.insert( u"Layer"_s, mLayer2->id() );
+  config.insert( u"Key"_s, u"pk"_s );
+  config.insert( u"Value"_s, u"material"_s );
 
   // when sorting, a null value is represented with a null QString, not "NULL" string
   // if not, the NULL values will take place between M and O (see https://github.com/qgis/QGIS/issues/36114)
@@ -166,15 +166,15 @@ void TestQgsValueRelationFieldFormatter::testGroup()
 {
   const QgsValueRelationFieldFormatter formatter;
   QVariantMap config;
-  config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
-  config.insert( QStringLiteral( "Key" ), QStringLiteral( "pk" ) );
-  config.insert( QStringLiteral( "Value" ), QStringLiteral( "raccord" ) );
-  config.insert( QStringLiteral( "Group" ), QStringLiteral( "material" ) );
+  config.insert( u"Layer"_s, mLayer2->id() );
+  config.insert( u"Key"_s, u"pk"_s );
+  config.insert( u"Value"_s, u"raccord"_s );
+  config.insert( u"Group"_s, u"material"_s );
 
   QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
   QVERIFY( !cache.isEmpty() );
-  QCOMPARE( cache.at( 0 ).group, QVariant( QStringLiteral( "iron" ) ) );
-  QCOMPARE( cache.at( cache.size() - 1 ).group, QVariant( QStringLiteral( "steel" ) ) );
+  QCOMPARE( cache.at( 0 ).group, QVariant( u"iron"_s ) );
+  QCOMPARE( cache.at( cache.size() - 1 ).group, QVariant( u"steel"_s ) );
 }
 
 void TestQgsValueRelationFieldFormatter::testOrderBy_data()
@@ -185,13 +185,13 @@ void TestQgsValueRelationFieldFormatter::testOrderBy_data()
   QTest::addColumn<QStringList>( "expectedLast" );
 
   QTest::newRow( "orderByDefault(pk)" ) << QString() << QString() << QStringList { "brides" } << QStringList { "collar" };
-  QTest::newRow( "orderByKey(pk)" ) << QString() << QStringLiteral( "Key" ) << QStringList { "brides" } << QStringList { "collar" };
-  QTest::newRow( "orderByValue(raccord)" ) << QString() << QStringLiteral( "Value" ) << QStringList { "brides" } << QStringList { "collar" };
-  QTest::newRow( "orderByField(raccord)" ) << QStringLiteral( "Field" ) << QStringLiteral( "raccord" ) << QStringList { "brides" } << QStringList { "sleeve" };
-  QTest::newRow( "orderByField(diameter)" ) << QStringLiteral( "Field" ) << QStringLiteral( "diameter" ) << QStringList { "collar" } << QStringList { "brides" };
+  QTest::newRow( "orderByKey(pk)" ) << QString() << u"Key"_s << QStringList { "brides" } << QStringList { "collar" };
+  QTest::newRow( "orderByValue(raccord)" ) << QString() << u"Value"_s << QStringList { "brides" } << QStringList { "collar" };
+  QTest::newRow( "orderByField(raccord)" ) << u"Field"_s << u"raccord"_s << QStringList { "brides" } << QStringList { "sleeve" };
+  QTest::newRow( "orderByField(diameter)" ) << u"Field"_s << u"diameter"_s << QStringList { "collar" } << QStringList { "brides" };
 
   // material field has two duplicate values (for "iron"), so the ordering here is not well defined. Accept either "brides" OR "sleeve" as first value, as they both have material = "iron" and may be in either order.
-  QTest::newRow( "orderByField(material)" ) << QStringLiteral( "Field" ) << QStringLiteral( "material" ) << QStringList { "brides", "sleeve" } << QStringList { "collar" };
+  QTest::newRow( "orderByField(material)" ) << u"Field"_s << u"material"_s << QStringList { "brides", "sleeve" } << QStringList { "collar" };
 }
 
 void TestQgsValueRelationFieldFormatter::testOrderBy()
@@ -202,17 +202,17 @@ void TestQgsValueRelationFieldFormatter::testOrderBy()
   QFETCH( QStringList, expectedLast );
 
   QVariantMap config;
-  config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
-  config.insert( QStringLiteral( "Key" ), QStringLiteral( "pk" ) );
-  config.insert( QStringLiteral( "Value" ), QStringLiteral( "raccord" ) );
+  config.insert( u"Layer"_s, mLayer2->id() );
+  config.insert( u"Key"_s, u"pk"_s );
+  config.insert( u"Value"_s, u"raccord"_s );
 
   if ( !orderBy.isEmpty() )
   {
-    config.insert( QStringLiteral( "OrderBy%1" ).arg( orderBy ), true );
+    config.insert( u"OrderBy%1"_s.arg( orderBy ), true );
   }
   if ( !fieldName.isEmpty() )
   {
-    config.insert( QStringLiteral( "OrderByFieldName" ), fieldName );
+    config.insert( u"OrderByFieldName"_s, fieldName );
   }
 
   // Ascending
@@ -241,7 +241,7 @@ void TestQgsValueRelationFieldFormatter::testOrderBy()
 
   // Descending
   {
-    config.insert( QStringLiteral( "OrderByDescending" ), true );
+    config.insert( u"OrderByDescending"_s, true );
     const QgsValueRelationFieldFormatter formatter;
     QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
     QVERIFY( !cache.isEmpty() );

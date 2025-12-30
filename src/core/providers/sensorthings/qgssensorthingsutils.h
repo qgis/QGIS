@@ -325,24 +325,24 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
       QString innerDefinition;
       if ( !sipCpp->orderBy().isEmpty() )
       {
-        innerDefinition = QStringLiteral( "by %1 (%2)" ).arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) );
+        innerDefinition = u"by %1 (%2)"_s.arg( sipCpp->orderBy(), sipCpp->sortOrder() == Qt::SortOrder::AscendingOrder ? u"asc"_s : u"desc"_s );
       }
       if ( sipCpp->limit() >= 0 )
       {
         if ( !innerDefinition.isEmpty() )
-          innerDefinition = QStringLiteral( "%1, limit %2" ).arg( innerDefinition ).arg( sipCpp->limit() );
+          innerDefinition = u"%1, limit %2"_s.arg( innerDefinition ).arg( sipCpp->limit() );
         else
-          innerDefinition = QStringLiteral( "limit %1" ).arg( sipCpp->limit() );
+          innerDefinition = u"limit %1"_s.arg( sipCpp->limit() );
       }
       if ( !sipCpp->filter().isEmpty() )
       {
         if ( !innerDefinition.isEmpty() )
-          innerDefinition = QStringLiteral( "%1, filter '%2'" ).arg( innerDefinition ).arg( sipCpp->filter() );
+          innerDefinition = u"%1, filter '%2'"_s.arg( innerDefinition ).arg( sipCpp->filter() );
         else
-          innerDefinition = QStringLiteral( "filter '%1'" ).arg( sipCpp->filter() );
+          innerDefinition = u"filter '%1'"_s.arg( sipCpp->filter() );
       }
 
-      QString str = QStringLiteral( "<QgsSensorThingsExpansionDefinition: %1%2>" ).arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( QStringLiteral( " " ) + innerDefinition ) );
+      QString str = u"<QgsSensorThingsExpansionDefinition: %1%2>"_s.arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( u" "_s + innerDefinition ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     % End

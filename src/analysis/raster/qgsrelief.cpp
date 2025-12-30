@@ -189,7 +189,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
       }
       if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
     }
     else
@@ -212,7 +212,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
     {
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
     }
 
@@ -241,15 +241,15 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
 
     if ( GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
     if ( GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
     if ( GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
   }
 
@@ -529,7 +529,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
   {
     if ( GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
 
     for ( int j = 0; j < nCellsX; ++j )
@@ -608,7 +608,7 @@ QList<QgsRelief::ReliefColor> QgsRelief::calculateOptimizedReliefClasses()
   {
     if ( GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
     for ( int j = 0; j < nCellsX; ++j )
     {

@@ -27,7 +27,7 @@
 
 #include "moc_qgsmaptoolshapeellipsefoci.cpp"
 
-const QString QgsMapToolShapeEllipseFociMetadata::TOOL_ID = QStringLiteral( "ellipse-from-foci" );
+const QString QgsMapToolShapeEllipseFociMetadata::TOOL_ID = u"ellipse-from-foci"_s;
 
 QString QgsMapToolShapeEllipseFociMetadata::id() const
 {
@@ -41,7 +41,7 @@ QString QgsMapToolShapeEllipseFociMetadata::name() const
 
 QIcon QgsMapToolShapeEllipseFociMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionEllipseFoci.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionEllipseFoci.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeEllipseFociMetadata::category() const

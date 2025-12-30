@@ -22,7 +22,7 @@
 
 #include <QPainter>
 
-const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = QStringLiteral( "Histogram" );
+const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = u"Histogram"_s;
 
 QgsHistogramDiagram::QgsHistogramDiagram()
 {

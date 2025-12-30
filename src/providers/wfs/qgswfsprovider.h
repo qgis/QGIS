@@ -101,7 +101,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
 
     Qgis::VectorProviderCapabilities capabilities() const override;
 
-    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
+    QString storageType() const override { return u"OGC WFS (Web Feature Service)"_s; }
 
     /* new functions */
 

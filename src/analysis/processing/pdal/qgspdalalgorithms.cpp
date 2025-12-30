@@ -47,22 +47,22 @@ QgsPdalAlgorithms::QgsPdalAlgorithms( QObject *parent )
 
 QIcon QgsPdalAlgorithms::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+  return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
 }
 
 QString QgsPdalAlgorithms::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "providerQgis.svg" ) );
+  return QgsApplication::iconPath( u"providerQgis.svg"_s );
 }
 
 QString QgsPdalAlgorithms::id() const
 {
-  return QStringLiteral( "pdal" );
+  return u"pdal"_s;
 }
 
 QString QgsPdalAlgorithms::helpId() const
 {
-  return QStringLiteral( "qgis" );
+  return u"qgis"_s;
 }
 
 QString QgsPdalAlgorithms::name() const
@@ -77,17 +77,17 @@ bool QgsPdalAlgorithms::supportsNonFileBasedOutput() const
 
 QStringList QgsPdalAlgorithms::supportedOutputVectorLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "gpkg" );
+  return QStringList() << u"gpkg"_s;
 }
 
 QList<QPair<QString, QString>> QgsPdalAlgorithms::supportedOutputRasterLayerFormatAndExtensions() const
 {
-  return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), QStringLiteral( "tif" ) );
+  return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), u"tif"_s );
 }
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "las" ) << QStringLiteral( "laz" ) << QStringLiteral( "copc.laz" ) << QStringLiteral( "vpc" );
+  return QStringList() << u"las"_s << u"laz"_s << u"copc.laz"_s << u"vpc"_s;
 }
 
 void QgsPdalAlgorithms::loadAlgorithms()

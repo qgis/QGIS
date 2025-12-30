@@ -23,7 +23,7 @@
 
 QString QgsRasterSamplingAlgorithm::name() const
 {
-  return QStringLiteral( "rastersampling" );
+  return u"rastersampling"_s;
 }
 
 QString QgsRasterSamplingAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsRasterSamplingAlgorithm::group() const
 
 QString QgsRasterSamplingAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsRasterSamplingAlgorithm::shortDescription() const
@@ -64,18 +64,18 @@ QgsRasterSamplingAlgorithm *QgsRasterSamplingAlgorithm::createInstance() const
 
 void QgsRasterSamplingAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "RASTERCOPY" ), QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"RASTERCOPY"_s, QObject::tr( "Raster layer" ) ) );
 
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "SAMPLE_" ), false, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Sampled" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterString( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), u"SAMPLE_"_s, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Sampled" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 bool QgsRasterSamplingAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "RASTERCOPY" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"RASTERCOPY"_s, context );
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "RASTERCOPY" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"RASTERCOPY"_s ) );
 
   mBandCount = layer->bandCount();
   mCrs = layer->crs();
@@ -86,11 +86,11 @@ bool QgsRasterSamplingAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString fieldPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
+  const QString fieldPrefix = parameterAsString( parameters, u"COLUMN_PREFIX"_s, context );
   QgsFields newFields;
   QgsAttributes emptySampleAttributes;
   for ( int band = 1; band <= mBandCount; band++ )
@@ -98,15 +98,15 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     const Qgis::DataType dataType = mDataProvider->dataType( band );
     const bool intSafe = ( dataType == Qgis::DataType::Byte || dataType == Qgis::DataType::UInt16 || dataType == Qgis::DataType::Int16 || dataType == Qgis::DataType::UInt32 || dataType == Qgis::DataType::Int32 || dataType == Qgis::DataType::CInt16 || dataType == Qgis::DataType::CInt32 );
 
-    newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, QString::number( band ) ), intSafe ? QMetaType::Type::Int : QMetaType::Type::Double ) );
+    newFields.append( QgsField( u"%1%2"_s.arg( fieldPrefix, QString::number( band ) ), intSafe ? QMetaType::Type::Int : QMetaType::Type::Double ) );
     emptySampleAttributes += QVariant();
   }
   const QgsFields fields = QgsProcessingUtils::combineFields( source->fields(), newFields );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const long count = source->featureCount();
   const double step = count > 0 ? 100.0 / count : 1;
@@ -131,7 +131,7 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       feedback->reportError( QObject::tr( "No geometry attached to feature %1." ).arg( feature.id() ) );
       continue;
     }
@@ -142,7 +142,7 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       feedback->reportError( QObject::tr( "Impossible to sample data of multipart feature %1." ).arg( feature.id() ) );
       continue;
     }
@@ -156,7 +156,7 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );
       if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       feedback->reportError( QObject::tr( "Could not reproject feature %1 to raster CRS." ).arg( feature.id() ) );
       continue;
     }
@@ -169,13 +169,13 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     }
     outputFeature.setAttributes( attributes );
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

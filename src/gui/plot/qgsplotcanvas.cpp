@@ -33,7 +33,7 @@
 QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   : QGraphicsView( parent )
 {
-  setObjectName( QStringLiteral( "PlotCanvas" ) );
+  setObjectName( u"PlotCanvas"_s );
   mScene = new QGraphicsScene( this );
   setScene( mScene );
 

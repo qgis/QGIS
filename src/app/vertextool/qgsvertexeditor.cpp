@@ -48,7 +48,7 @@
 
 #include "moc_qgsvertexeditor.cpp"
 
-const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto-popup-vertex-editor-dock" ), QgsSettingsTree::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
+const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( u"auto-popup-vertex-editor-dock"_s, QgsSettingsTree::sTreeDigitizing, true, u"Whether the auto-popup behavior of the vertex editor dock should be enabled"_s );
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
@@ -331,7 +331,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   , mVertexModel( new QgsVertexEditorModel( mCanvas, this ) )
 {
   setPanelTitle( tr( "Vertex Editor" ) );
-  setObjectName( QStringLiteral( "VertexEditor" ) );
+  setObjectName( u"VertexEditor"_s );
 
   QVBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -342,7 +342,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
 
   QVBoxLayout *pageHintLayout = new QVBoxLayout();
   mHintLabel = new QLabel();
-  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ), tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
+  mHintLabel->setText( u"%1\n\n%2"_s.arg( tr( "Right click on an editable feature to show its table of vertices." ), tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
 
   pageHintLayout->addStretch();
@@ -526,7 +526,7 @@ void QgsVertexEditorWidget::keyPressEvent( QKeyEvent *e )
 QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
-  setObjectName( QStringLiteral( "VertexEditor" ) );
+  setObjectName( u"VertexEditor"_s );
 
   QgsPanelWidgetStack *stack = new QgsPanelWidgetStack();
   setWidget( stack );

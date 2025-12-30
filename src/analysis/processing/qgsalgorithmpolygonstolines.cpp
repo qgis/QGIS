@@ -26,7 +26,7 @@
 
 QString QgsPolygonsToLinesAlgorithm::name() const
 {
-  return QStringLiteral( "polygonstolines" );
+  return u"polygonstolines"_s;
 }
 
 QString QgsPolygonsToLinesAlgorithm::displayName() const
@@ -46,7 +46,7 @@ QString QgsPolygonsToLinesAlgorithm::group() const
 
 QString QgsPolygonsToLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsPolygonsToLinesAlgorithm::outputName() const

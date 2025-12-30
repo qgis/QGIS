@@ -58,16 +58,16 @@ QgsCacheDirectoryManager::QgsCacheDirectoryManager( const QString &providerName 
 QString QgsCacheDirectoryManager::getBaseCacheDirectory( bool createIfNotExisting )
 {
   const QgsSettings settings;
-  QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+  QString cacheDirectory = settings.value( u"cache/directory"_s ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
-  const QString subDir = mProviderName + QStringLiteral( "provider" );
+  const QString subDir = mProviderName + u"provider"_s;
   if ( createIfNotExisting )
   {
     const QMutexLocker locker( &mMutex );
     if ( !QDir( cacheDirectory ).exists( subDir ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Creating main cache dir %1/%2" ).arg( cacheDirectory ).arg( subDir ), 2 );
+      QgsDebugMsgLevel( u"Creating main cache dir %1/%2"_s.arg( cacheDirectory ).arg( subDir ), 2 );
       QDir( cacheDirectory ).mkpath( subDir );
     }
   }
@@ -77,13 +77,13 @@ QString QgsCacheDirectoryManager::getBaseCacheDirectory( bool createIfNotExistin
 QString QgsCacheDirectoryManager::getCacheDirectory( bool createIfNotExisting )
 {
   const QString baseDirectory( getBaseCacheDirectory( createIfNotExisting ) );
-  const QString processPath( QStringLiteral( "pid_%1" ).arg( QCoreApplication::applicationPid() ) );
+  const QString processPath( u"pid_%1"_s.arg( QCoreApplication::applicationPid() ) );
   if ( createIfNotExisting )
   {
     const QMutexLocker locker( &mMutex );
     if ( !QDir( baseDirectory ).exists( processPath ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ), 2 );
+      QgsDebugMsgLevel( u"Creating our cache dir %1/%2"_s.arg( baseDirectory, processPath ), 2 );
       QDir( baseDirectory ).mkpath( processPath );
     }
 #if not defined( Q_OS_ANDROID )
@@ -121,7 +121,7 @@ void QgsCacheDirectoryManager::releaseCacheDirectory()
     const QString tmpDirname( getCacheDirectory( false ) );
     if ( QDir( tmpDirname ).exists() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Removing our cache dir %1" ).arg( tmpDirname ), 2 );
+      QgsDebugMsgLevel( u"Removing our cache dir %1"_s.arg( tmpDirname ), 2 );
       removeDir( tmpDirname );
 
       const QString baseDirname( getBaseCacheDirectory( false ) );
@@ -129,12 +129,12 @@ void QgsCacheDirectoryManager::releaseCacheDirectory()
       const QFileInfoList fileList( baseDir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
       if ( fileList.size() == 0 )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Removing main cache dir %1" ).arg( baseDirname ), 2 );
+        QgsDebugMsgLevel( u"Removing main cache dir %1"_s.arg( baseDirname ), 2 );
         removeDir( baseDirname );
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "%1 entries remaining in %2" ).arg( fileList.size() ).arg( baseDirname ), 2 );
+        QgsDebugMsgLevel( u"%1 entries remaining in %2"_s.arg( fileList.size() ).arg( baseDirname ), 2 );
       }
     }
   }
@@ -170,7 +170,7 @@ std::unique_ptr<QSharedMemory> QgsCacheDirectoryManager::createAndAttachSHM()
   // For debug purpose. To test in the case where shared memory mechanism doesn't work
   if ( !getenv( "QGIS_USE_SHARED_MEMORY_KEEP_ALIVE" ) )
   {
-    sharedMemory = std::make_unique<QSharedMemory>( QStringLiteral( "qgis_%1_pid_%2" ).arg( mProviderName ).arg( QCoreApplication::applicationPid() ) );
+    sharedMemory = std::make_unique<QSharedMemory>( u"qgis_%1_pid_%2"_s.arg( mProviderName ).arg( QCoreApplication::applicationPid() ) );
     if ( sharedMemory->create( sizeof( qint64 ) ) && sharedMemory->lock() && sharedMemory->unlock() )
     {
       return sharedMemory;
@@ -202,11 +202,11 @@ void QgsCacheDirectoryManager::init()
 
   if ( mKeepAliveWorks )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Keep-alive mechanism works" ), 4 );
+    QgsDebugMsgLevel( u"Keep-alive mechanism works"_s, 4 );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Keep-alive mechanism does not work" ), 4 );
+    QgsDebugMsgLevel( u"Keep-alive mechanism does not work"_s, 4 );
   }
 
   // Remove temporary directories of qgis instances that haven't demonstrated
@@ -219,7 +219,7 @@ void QgsCacheDirectoryManager::init()
     const auto constFileList = fileList;
     for ( const QFileInfo &info : constFileList )
     {
-      if ( info.isDir() && info.fileName().startsWith( QLatin1String( "pid_" ) ) )
+      if ( info.isDir() && info.fileName().startsWith( "pid_"_L1 ) )
       {
         const QString pidStr( info.fileName().mid( 4 ) );
         const qint64 pid = pidStr.toLongLong();
@@ -232,7 +232,7 @@ void QgsCacheDirectoryManager::init()
         else if ( mKeepAliveWorks )
         {
           canDelete = true;
-          QSharedMemory otherSharedMemory( QStringLiteral( "qgis_%1_pid_%2" ).arg( mProviderName ).arg( pid ) );
+          QSharedMemory otherSharedMemory( u"qgis_%1_pid_%2"_s.arg( mProviderName ).arg( pid ) );
           if ( otherSharedMemory.attach() )
           {
             if ( otherSharedMemory.size() == sizeof( qint64 ) )
@@ -244,12 +244,12 @@ void QgsCacheDirectoryManager::init()
                 otherSharedMemory.unlock();
                 if ( currentTimestamp > otherTimestamp && otherTimestamp > 0 && currentTimestamp - otherTimestamp < 2 * KEEP_ALIVE_DELAY )
                 {
-                  QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 kept since process seems to be still alive" ).arg( info.absoluteFilePath() ), 4 );
+                  QgsDebugMsgLevel( u"Cache dir %1 kept since process seems to be still alive"_s.arg( info.absoluteFilePath() ), 4 );
                   canDelete = false;
                 }
                 else
                 {
-                  QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 to be destroyed since process seems to be no longer alive" ).arg( info.absoluteFilePath() ), 4 );
+                  QgsDebugMsgLevel( u"Cache dir %1 to be destroyed since process seems to be no longer alive"_s.arg( info.absoluteFilePath() ), 4 );
                 }
 
                 otherSharedMemory.unlock();
@@ -259,7 +259,7 @@ void QgsCacheDirectoryManager::init()
           }
           else
           {
-            QgsDebugError( QStringLiteral( "Cannot attach to shared memory segment of process %1. It must be ghost" ).arg( pid ) );
+            QgsDebugError( u"Cannot attach to shared memory segment of process %1. It must be ghost"_s.arg( pid ) );
           }
         }
 #endif
@@ -270,18 +270,18 @@ void QgsCacheDirectoryManager::init()
           const qint64 fileTimestamp = info.lastModified().toMSecsSinceEpoch();
           if ( currentTimestamp > fileTimestamp && currentTimestamp - fileTimestamp < 24 * 3600 * 1000 )
           {
-            QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 kept since last modified in the past 24 hours" ).arg( info.absoluteFilePath() ), 4 );
+            QgsDebugMsgLevel( u"Cache dir %1 kept since last modified in the past 24 hours"_s.arg( info.absoluteFilePath() ), 4 );
             canDelete = false;
           }
           else
           {
-            QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 to be destroyed since not modified in the past 24 hours" ).arg( info.absoluteFilePath() ), 4 );
+            QgsDebugMsgLevel( u"Cache dir %1 to be destroyed since not modified in the past 24 hours"_s.arg( info.absoluteFilePath() ), 4 );
             canDelete = true;
           }
         }
         if ( canDelete )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Removing cache dir %1" ).arg( info.absoluteFilePath() ), 4 );
+          QgsDebugMsgLevel( u"Removing cache dir %1"_s.arg( info.absoluteFilePath() ), 4 );
           removeDir( info.absoluteFilePath() );
         }
       }
@@ -311,7 +311,7 @@ void QgsCacheDirectoryManagerKeepAlive::updateTimestamp()
   qint64 timestamp = QDateTime::currentMSecsSinceEpoch();
   if ( mSharedMemory->lock() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Updating keep-alive" ), 4 );
+    QgsDebugMsgLevel( u"Updating keep-alive"_s, 4 );
     memcpy( mSharedMemory->data(), &timestamp, sizeof( timestamp ) );
     mSharedMemory->unlock();
   }

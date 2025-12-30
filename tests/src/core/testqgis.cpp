@@ -46,7 +46,7 @@ class TestQgis : public QgsTest
 
   public:
     TestQgis()
-      : QgsTest( QStringLiteral( "Qgis Tests" ) ) {}
+      : QgsTest( u"Qgis Tests"_s ) {}
 
   private slots:
     void init() {}    // will be called before each testfunction is executed.
@@ -80,34 +80,34 @@ void TestQgis::permissiveToDouble()
 {
   //good inputs
   bool ok = false;
-  double result = qgsPermissiveToDouble( QStringLiteral( "1000" ), ok );
+  double result = qgsPermissiveToDouble( u"1000"_s, ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale().groupSeparator() + "000", ok );
+  result = qgsPermissiveToDouble( u"1"_s + QLocale().groupSeparator() + "000", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "5" ) + QLocale().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( u"5"_s + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 5.5 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale().groupSeparator() + "000" + QLocale().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( u"1"_s + QLocale().groupSeparator() + "000" + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 
   //bad input
   ok = false;
-  ( void ) qgsPermissiveToDouble( QStringLiteral( "a" ), ok );
+  ( void ) qgsPermissiveToDouble( u"a"_s, ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale().groupSeparator() + "00", ok );
+  result = qgsPermissiveToDouble( u"10"_s + QLocale().groupSeparator() + "00", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale().groupSeparator() + "00" + QLocale().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( u"10"_s + QLocale().groupSeparator() + "00" + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 }
@@ -116,22 +116,22 @@ void TestQgis::permissiveToInt()
 {
   //good inputs
   bool ok = false;
-  int result = qgsPermissiveToInt( QStringLiteral( "1000" ), ok );
+  int result = qgsPermissiveToInt( u"1000"_s, ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = qgsPermissiveToInt( QStringLiteral( "1%01000" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( u"1%01000"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) qgsPermissiveToInt( QStringLiteral( "a" ), ok );
+  ( void ) qgsPermissiveToInt( u"a"_s, ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToInt( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( u"10%0100"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
@@ -140,57 +140,57 @@ void TestQgis::permissiveToLongLong()
 {
   //good inputs
   bool ok = false;
-  qlonglong result = qgsPermissiveToLongLong( QStringLiteral( "1000" ), ok );
+  qlonglong result = qgsPermissiveToLongLong( u"1000"_s, ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = qgsPermissiveToLongLong( QStringLiteral( "1%01000" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToLongLong( u"1%01000"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) qgsPermissiveToLongLong( QStringLiteral( "a" ), ok );
+  ( void ) qgsPermissiveToLongLong( u"a"_s, ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToLongLong( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToLongLong( u"10%0100"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
 
 void TestQgis::doubleToString()
 {
-  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QStringLiteral( "5.67832" ) );
-  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QStringLiteral( "5.55556" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 1 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 2 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 10 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12, 1 ), QStringLiteral( "12" ) );
-  QCOMPARE( qgsDoubleToString( 12, 0 ), QStringLiteral( "12" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 0 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 1 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 10 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12345, -1 ), QStringLiteral( "12350" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -1 ), QStringLiteral( "12350" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -2 ), QStringLiteral( "12300" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -3 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -4 ), QStringLiteral( "10000" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -5 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( 62345.0111, -5 ), QStringLiteral( "100000" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -6 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -1 ), QStringLiteral( "-12350" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -2 ), QStringLiteral( "-12300" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -3 ), QStringLiteral( "-12000" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -4 ), QStringLiteral( "-10000" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -5 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( -62345.0111, -5 ), QStringLiteral( "-100000" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -6 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), QStringLiteral( "12345.123" ) );
-  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), QStringLiteral( "12345" ) );
-  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), QStringLiteral( "0" ) );
+  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), u"5.67832"_s );
+  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), u"5.55556"_s );
+  QCOMPARE( qgsDoubleToString( 12.2, 1 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12.2, 2 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12.2, 10 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12, 1 ), u"12"_s );
+  QCOMPARE( qgsDoubleToString( 12, 0 ), u"12"_s );
+  QCOMPARE( qgsDoubleToString( 12000, 0 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12000, 1 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12000, 10 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12345, -1 ), u"12350"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -1 ), u"12350"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -2 ), u"12300"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -3 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -4 ), u"10000"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -5 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( 62345.0111, -5 ), u"100000"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -6 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -1 ), u"-12350"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -2 ), u"-12300"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -3 ), u"-12000"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -4 ), u"-10000"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -5 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( -62345.0111, -5 ), u"-100000"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -6 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), u"12345.123"_s );
+  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), u"12345"_s );
+  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), u"0"_s );
 }
 
 void TestQgis::signalBlocker()
@@ -349,14 +349,14 @@ void TestQgis::qVariantOperators_data()
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true;
   QTest::newRow( "qstringlist empty" ) << QVariant( QStringList() ) << QVariant( QStringList() ) << false << false;
-  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << true << false;
-  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true;
-  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << false << false;
-  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false;
-  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << false << true;
-  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << false << false;
-  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false;
-  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true;
+  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"bb"_s ) << true << false;
+  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true;
+  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"bb"_s ) << false << false;
+  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false;
+  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << false << true;
+  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << false << false;
+  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false;
+  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true;
   QTest::newRow( "string both empty" ) << QVariant( QString() ) << QVariant( QString() ) << false << false;
   QTest::newRow( "string" ) << QVariant( "a b c" ) << QVariant( "d e f" ) << true << false;
   QTest::newRow( "string 2" ) << QVariant( "d e f" ) << QVariant( "a b c" ) << false << true;
@@ -563,14 +563,14 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false << -1;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true << 1;
   QTest::newRow( "qstringlist empty" ) << QVariant( QStringList() ) << QVariant( QStringList() ) << false << false << 0;
-  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << true << false << -1;
-  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true << 1;
-  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << false << false << 0;
-  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false << -1;
-  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << false << true << 1;
-  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << false << false << 0;
-  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false << -1;
-  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true << 1;
+  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"bb"_s ) << true << false << -1;
+  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true << 1;
+  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"bb"_s ) << false << false << 0;
+  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false << -1;
+  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << false << true << 1;
+  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << false << false << 0;
+  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false << -1;
+  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true << 1;
   QTest::newRow( "string both empty" ) << QVariant( QString() ) << QVariant( QString() ) << false << false << 0;
   QTest::newRow( "string" ) << QVariant( "a b c" ) << QVariant( "d e f" ) << true << false << -1;
   QTest::newRow( "string 2" ) << QVariant( "d e f" ) << QVariant( "a b c" ) << false << true << 1;
@@ -713,7 +713,7 @@ void TestQgis::testQgsEnumMapList()
 {
   QCOMPARE( qgsEnumList<TestEnum>(), QList<TestEnum>( { TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3 } ) );
   QCOMPARE( qgsEnumMap<TestEnum>().keys(), QList<TestEnum>( { TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3 } ) );
-  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( { QStringLiteral( "TestEnum1" ), QStringLiteral( "TestEnum2" ), QStringLiteral( "TestEnum3" ) } ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( { u"TestEnum1"_s, u"TestEnum2"_s, u"TestEnum3"_s } ) );
 }
 
 
@@ -724,7 +724,7 @@ void TestQgis::testQgsEnumValueToKey()
   QgsMapLayerModel::CustomRole badValue = static_cast<QgsMapLayerModel::CustomRole>( -1 );
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
   QVERIFY( !metaEnum.valueToKey( static_cast<int>( badValue ) ) );
-  QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "Layer" ) );
+  QCOMPARE( qgsEnumValueToKey( value, &ok ), u"Layer"_s );
   QCOMPARE( ok, true );
   QCOMPARE( qgsEnumValueToKey( badValue, &ok ), QString() );
   QCOMPARE( ok, false );
@@ -733,11 +733,11 @@ void TestQgis::testQgsEnumKeyToValue()
 {
   bool ok = false;
   QgsMapLayerModel::CustomRole defaultValue = QgsMapLayerModel::CustomRole::LayerId;
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "Additional" ), defaultValue, false, &ok ), QgsMapLayerModel::CustomRole::Additional );
+  QCOMPARE( qgsEnumKeyToValue( u"Additional"_s, defaultValue, false, &ok ), QgsMapLayerModel::CustomRole::Additional );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( qgsEnumKeyToValue( u"UnknownKey"_s, defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( qgsEnumKeyToValue( u"UnknownKey"_s, defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
 
   // try with int values as string keys
@@ -757,7 +757,7 @@ void TestQgis::testQgsFlagValueToKeys()
 {
   bool ok = false;
   QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double;
-  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), QStringLiteral( "String|Double" ) );
+  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), u"String|Double"_s );
   QCOMPARE( ok, true );
   QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
   QCOMPARE( ok, false );
@@ -772,11 +772,11 @@ void TestQgis::testQgsFlagKeysToValue()
   QCOMPARE( qgsFlagKeysToValue( QString(), defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
 
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "String|Double" ), defaultValue, false, &ok ), newValue );
+  QCOMPARE( qgsFlagKeysToValue( u"String|Double"_s, defaultValue, false, &ok ), newValue );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( qgsFlagKeysToValue( u"UnknownKey"_s, defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( qgsFlagKeysToValue( u"UnknownKey"_s, defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
 
   // try with int values as string keys
@@ -816,7 +816,7 @@ void TestQgis::testQgsMapJoin()
   map.insert( "titi", 4 );
   map.insert( "tata", 5 );
 
-  QString res = qgsMapJoinValues( map, QStringLiteral( ", " ) );
+  QString res = qgsMapJoinValues( map, u", "_s );
 
   QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
   QVERIFY( re.match( res ).hasMatch() );
@@ -824,7 +824,7 @@ void TestQgis::testQgsMapJoin()
   QVERIFY( res.contains( "4" ) );
   QVERIFY( res.contains( "5" ) );
 
-  res = qgsMapJoinKeys( map, QStringLiteral( ", " ) );
+  res = qgsMapJoinKeys( map, u", "_s );
 
   re.setPattern( "(tutu|titi|tata), (tutu|titi|tata), (tutu|titi|tata)" );
   QVERIFY( re.match( res ).hasMatch() );
@@ -842,7 +842,7 @@ void TestQgis::testQgsSetJoin()
   set.insert( 4 );
   set.insert( 5 );
 
-  const QString res = qgsSetJoin( set, QStringLiteral( ", " ) );
+  const QString res = qgsSetJoin( set, u", "_s );
 
   const thread_local QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
   QVERIFY( re.match( res ).hasMatch() );

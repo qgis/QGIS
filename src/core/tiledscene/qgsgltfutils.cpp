@@ -80,7 +80,7 @@ bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int a
     {
       case Qgis::Axis::X:
       {
-        QgsDebugError( QStringLiteral( "X up translation not yet supported" ) );
+        QgsDebugError( u"X up translation not yet supported"_s );
         v = tileTransform.map( tileTranslationEcef );
         break;
       }
@@ -262,7 +262,7 @@ QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model, Qgis::
       switch ( upAxis )
       {
         case Qgis::Axis::X:
-          QgsDebugError( QStringLiteral( "X up translation not yet supported" ) );
+          QgsDebugError( u"X up translation not yet supported"_s );
           break;
         case Qgis::Axis::Y:
         {
@@ -372,9 +372,9 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
     *warnings = QString::fromStdString( warn );
 
     // strip unwanted warnings
-    const thread_local QRegularExpression rxFailedToLoadExternalUriForImage( QStringLiteral( "Failed to load external 'uri' for image\\[\\d+\\] name = \".*?\"\\n?" ) );
+    const thread_local QRegularExpression rxFailedToLoadExternalUriForImage( u"Failed to load external 'uri' for image\\[\\d+\\] name = \".*?\"\\n?"_s );
     warnings->replace( rxFailedToLoadExternalUriForImage, QString() );
-    const thread_local QRegularExpression rxFileNotFound( QStringLiteral( "File not found : .*?\\n" ) );
+    const thread_local QRegularExpression rxFileNotFound( u"File not found : .*?\\n"_s );
     warnings->replace( rxFileNotFound, QString() );
   }
 
@@ -818,7 +818,7 @@ void QgsGltfUtils::I3SNodeContext::initFromTile( const QgsTiledSceneTile &tile, 
 {
   const QVariantMap tileMetadata = tile.metadata();
 
-  materialInfo = tileMetadata[QStringLiteral( "material" )].toMap();
+  materialInfo = tileMetadata[u"material"_s].toMap();
   isGlobalMode = sceneCrs.type() == Qgis::CrsType::Geocentric;
   if ( isGlobalMode )
   {

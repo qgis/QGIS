@@ -39,67 +39,67 @@ QString QgsRasterBooleanLogicAlgorithmBase::group() const
 
 QString QgsRasterBooleanLogicAlgorithmBase::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"INPUT"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
 
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NODATA_AS_FALSE" ), QObject::tr( "Treat NoData values as false" ), false ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"REF_LAYER"_s, QObject::tr( "Reference layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"NODATA_AS_FALSE"_s, QObject::tr( "Treat NoData values as false" ), false ) );
 
-  auto noDataValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NO_DATA" ), QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
+  auto noDataValueParam = std::make_unique<QgsProcessingParameterNumber>( u"NO_DATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
   noDataValueParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( noDataValueParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterDefinition> typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
+  std::unique_ptr<QgsProcessingParameterDefinition> typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( u"DATA_TYPE"_s, QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
   typeChoice->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( typeChoice.release() );
 
   // backwards compatibility parameter
   // TODO QGIS 5: remove parameter and related logic
-  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATE_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
 
-  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( creationOptsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
 
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_PIXEL_COUNT" ), QObject::tr( "NoData pixel count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TRUE_PIXEL_COUNT" ), QObject::tr( "True pixel count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FALSE_PIXEL_COUNT" ), QObject::tr( "False pixel count" ) ) );
+  addOutput( new QgsProcessingOutputString( u"EXTENT"_s, QObject::tr( "Extent" ) ) );
+  addOutput( new QgsProcessingOutputString( u"CRS_AUTHID"_s, QObject::tr( "CRS authority identifier" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"WIDTH_IN_PIXELS"_s, QObject::tr( "Width in pixels" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"HEIGHT_IN_PIXELS"_s, QObject::tr( "Height in pixels" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"TOTAL_PIXEL_COUNT"_s, QObject::tr( "Total pixel count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"NODATA_PIXEL_COUNT"_s, QObject::tr( "NoData pixel count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"TRUE_PIXEL_COUNT"_s, QObject::tr( "True pixel count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"FALSE_PIXEL_COUNT"_s, QObject::tr( "False pixel count" ) ) );
 }
 
 bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REF_LAYER" ), context );
+  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, u"REF_LAYER"_s, context );
   if ( !referenceLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REF_LAYER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"REF_LAYER"_s ) );
   mCrs = referenceLayer->crs();
   mRasterUnitsPerPixelX = referenceLayer->rasterUnitsPerPixelX();
   mRasterUnitsPerPixelY = referenceLayer->rasterUnitsPerPixelY();
   mLayerWidth = referenceLayer->width();
   mLayerHeight = referenceLayer->height();
   mExtent = referenceLayer->extent();
-  mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
-  mDataType = QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( parameterAsEnum( parameters, QStringLiteral( "DATA_TYPE" ), context ) );
+  mNoDataValue = parameterAsDouble( parameters, u"NO_DATA"_s, context );
+  mDataType = QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( parameterAsEnum( parameters, u"DATA_TYPE"_s, context ) );
   if ( mDataType == Qgis::DataType::Int8 && atoi( GDALVersionInfo( "VERSION_NUM" ) ) < GDAL_COMPUTE_VERSION( 3, 7, 0 ) )
     throw QgsProcessingException( QObject::tr( "Int8 data type requires GDAL version 3.7 or later" ) );
 
-  mTreatNodataAsFalse = parameterAsBoolean( parameters, QStringLiteral( "NODATA_AS_FALSE" ), context );
+  mTreatNodataAsFalse = parameterAsBoolean( parameters, u"NODATA_AS_FALSE"_s, context );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "INPUT" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"INPUT"_s, context );
   QList<QgsRasterLayer *> rasterLayers;
   rasterLayers.reserve( layers.count() );
   for ( QgsMapLayer *l : layers )
@@ -129,17 +129,17 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
 
 QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   // handle backwards compatibility parameter CREATE_OPTIONS
-  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
   if ( !optionsString.isEmpty() )
     creationOptions = optionsString;
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
+  writer->setOutputProviderKey( u"gdal"_s );
   if ( !creationOptions.isEmpty() )
   {
     writer->setCreationOptions( creationOptions.split( '|' ) );
@@ -160,15 +160,15 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
   QgsRasterAnalysisUtils::applyRasterLogicOperator( mInputs, provider.get(), mNoDataValue, mTreatNodataAsFalse, mLayerWidth, mLayerHeight, mExtent, feedback, mExtractValFunc, noDataCount, trueCount, falseCount );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
-  outputs.insert( QStringLiteral( "CRS_AUTHID" ), mCrs.authid() );
-  outputs.insert( QStringLiteral( "WIDTH_IN_PIXELS" ), mLayerWidth );
-  outputs.insert( QStringLiteral( "HEIGHT_IN_PIXELS" ), mLayerHeight );
-  outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
-  outputs.insert( QStringLiteral( "NODATA_PIXEL_COUNT" ), noDataCount );
-  outputs.insert( QStringLiteral( "TRUE_PIXEL_COUNT" ), trueCount );
-  outputs.insert( QStringLiteral( "FALSE_PIXEL_COUNT" ), falseCount );
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"CRS_AUTHID"_s, mCrs.authid() );
+  outputs.insert( u"WIDTH_IN_PIXELS"_s, mLayerWidth );
+  outputs.insert( u"HEIGHT_IN_PIXELS"_s, mLayerHeight );
+  outputs.insert( u"TOTAL_PIXEL_COUNT"_s, layerSize );
+  outputs.insert( u"NODATA_PIXEL_COUNT"_s, noDataCount );
+  outputs.insert( u"TRUE_PIXEL_COUNT"_s, trueCount );
+  outputs.insert( u"FALSE_PIXEL_COUNT"_s, falseCount );
+  outputs.insert( u"OUTPUT"_s, outputFile );
 
   return outputs;
 }
@@ -218,7 +218,7 @@ QgsRasterLogicalOrAlgorithm::QgsRasterLogicalOrAlgorithm()
 
 QString QgsRasterLogicalOrAlgorithm::name() const
 {
-  return QStringLiteral( "rasterlogicalor" );
+  return u"rasterlogicalor"_s;
 }
 
 QString QgsRasterLogicalOrAlgorithm::displayName() const
@@ -294,7 +294,7 @@ QgsRasterLogicalAndAlgorithm::QgsRasterLogicalAndAlgorithm()
 
 QString QgsRasterLogicalAndAlgorithm::name() const
 {
-  return QStringLiteral( "rasterbooleanand" );
+  return u"rasterbooleanand"_s;
 }
 
 QString QgsRasterLogicalAndAlgorithm::displayName() const

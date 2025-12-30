@@ -1182,11 +1182,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   const QString joinFieldName = joinInfo->joinFieldName();
 
-  subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
+  subsetString.append( u"\"%1\""_s.arg( joinFieldName ) );
 
   if ( QgsVariantUtils::isNull( joinValue ) )
   {
-    subsetString += QLatin1String( " IS NULL" );
+    subsetString += " IS NULL"_L1;
   }
   else
   {
@@ -1200,7 +1200,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QMetaType::Type::QString:
-        v.replace( '\'', QLatin1String( "''" ) );
+        v.replace( '\'', "''"_L1 );
         v.prepend( '\'' ).append( '\'' );
         break;
     }

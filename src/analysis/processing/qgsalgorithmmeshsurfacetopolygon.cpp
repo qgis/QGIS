@@ -42,7 +42,7 @@ QString QgsMeshSurfaceToPolygonAlgorithm::shortDescription() const
 
 QString QgsMeshSurfaceToPolygonAlgorithm::name() const
 {
-  return QStringLiteral( "surfacetopolygon" );
+  return u"surfacetopolygon"_s;
 }
 
 QString QgsMeshSurfaceToPolygonAlgorithm::displayName() const
@@ -57,7 +57,7 @@ QString QgsMeshSurfaceToPolygonAlgorithm::group() const
 
 QString QgsMeshSurfaceToPolygonAlgorithm::groupId() const
 {
-  return QStringLiteral( "mesh" );
+  return u"mesh"_s;
 }
 
 QgsProcessingAlgorithm *QgsMeshSurfaceToPolygonAlgorithm::createInstance() const
@@ -69,16 +69,16 @@ void QgsMeshSurfaceToPolygonAlgorithm::initAlgorithm( const QVariantMap &configu
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( u"INPUT"_s, QObject::tr( "Input mesh layer" ) ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS_OUTPUT"_s, QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output vector layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 bool QgsMeshSurfaceToPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, u"INPUT"_s, context );
 
   if ( !meshLayer || !meshLayer->isValid() )
     return false;
@@ -86,7 +86,7 @@ bool QgsMeshSurfaceToPolygonAlgorithm::prepareAlgorithm( const QVariantMap &para
   if ( meshLayer->isEditable() )
     throw QgsProcessingException( QObject::tr( "Input mesh layer in edit mode is not supported" ) );
 
-  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, u"CRS_OUTPUT"_s, context );
   if ( !outputCrs.isValid() )
     outputCrs = meshLayer->crs();
   mTransform = QgsCoordinateTransform( meshLayer->crs(), outputCrs, context.transformContext() );
@@ -109,9 +109,9 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     feedback->pushInfo( QObject::tr( "Creating output vector layer" ) );
   }
 
-  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, u"CRS_OUTPUT"_s, context );
   QString identifier;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, identifier, QgsFields(), Qgis::WkbType::MultiPolygon, outputCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, identifier, QgsFields(), Qgis::WkbType::MultiPolygon, outputCrs ) );
   if ( !sink )
     return QVariantMap();
 
@@ -300,7 +300,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   feat.setGeometry( resultGeom );
 
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
   if ( feedback )
   {
@@ -310,7 +310,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   }
 
   QVariantMap ret;
-  ret[QStringLiteral( "OUTPUT" )] = identifier;
+  ret[u"OUTPUT"_s] = identifier;
 
   return ret;
 }

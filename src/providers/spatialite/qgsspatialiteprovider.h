@@ -173,7 +173,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
         QString errorMessage() const
         {
-          return !errMsg.isEmpty() ? errMsg : QStringLiteral( "unknown cause" );
+          return !errMsg.isEmpty() ? errMsg : u"unknown cause"_s;
         }
 
       private:

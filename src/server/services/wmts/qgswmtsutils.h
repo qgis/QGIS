@@ -131,9 +131,9 @@ namespace QgsWmts
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
 
   // Define namespaces used in WMTS documents
-  const QString WMTS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wmts/1.0" );
-  const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
-  const QString OWS_NAMESPACE = QStringLiteral( "http://www.opengis.net/ows/1.1" );
+  const QString WMTS_NAMESPACE = u"http://www.opengis.net/wmts/1.0"_s;
+  const QString GML_NAMESPACE = u"http://www.opengis.net/gml"_s;
+  const QString OWS_NAMESPACE = u"http://www.opengis.net/ows/1.1"_s;
 
   tileMatrixInfo calculateTileMatrixInfo( const QString &crsStr, const QgsProject *project );
   tileMatrixSetDef calculateTileMatrixSet( tileMatrixInfo tmi, double minScale );

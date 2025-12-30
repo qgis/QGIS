@@ -37,7 +37,7 @@ QgsAnnotationRectangleTextItem::~QgsAnnotationRectangleTextItem() = default;
 
 QString QgsAnnotationRectangleTextItem::type() const
 {
-  return QStringLiteral( "recttext" );
+  return u"recttext"_s;
 }
 
 void QgsAnnotationRectangleTextItem::renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback * )
@@ -67,15 +67,15 @@ void QgsAnnotationRectangleTextItem::renderInBounds( QgsRenderContext &context, 
 
 bool QgsAnnotationRectangleTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "text" ), mText );
-  element.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
+  element.setAttribute( u"text"_s, mText );
+  element.setAttribute( u"alignment"_s, QString::number( mAlignment ) );
 
-  QDomElement textFormatElem = document.createElement( QStringLiteral( "rectTextFormat" ) );
+  QDomElement textFormatElem = document.createElement( u"rectTextFormat"_s );
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElem );
 
-  element.setAttribute( QStringLiteral( "margins" ), mMargins.toString() );
-  element.setAttribute( QStringLiteral( "marginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
+  element.setAttribute( u"margins"_s, mMargins.toString() );
+  element.setAttribute( u"marginUnit"_s, QgsUnitTypes::encodeUnit( mMarginUnit ) );
 
   writeCommonProperties( element, document, context );
   return true;
@@ -88,20 +88,20 @@ QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::create()
 
 bool QgsAnnotationRectangleTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mText = element.attribute( QStringLiteral( "text" ) );
+  mText = element.attribute( u"text"_s );
 
-  const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "rectTextFormat" ) );
+  const QDomElement textFormatElem = element.firstChildElement( u"rectTextFormat"_s );
   if ( !textFormatElem.isNull() )
   {
-    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( u"text-style"_s );
     const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mTextFormat.readXml( textFormatElem, context );
   }
 
-  mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
-  mMarginUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "marginUnit" ), QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Millimeters ) ) );
+  mMargins = QgsMargins::fromString( element.attribute( u"margins"_s ) );
+  mMarginUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"marginUnit"_s, QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Millimeters ) ) );
 
-  mAlignment = static_cast< Qt::Alignment >( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
+  mAlignment = static_cast< Qt::Alignment >( element.attribute( u"alignment"_s ).toInt() );
 
   readCommonProperties( element, context );
   return true;

@@ -24,7 +24,7 @@
 
 QString QgsIntersectionAlgorithm::name() const
 {
-  return QStringLiteral( "intersection" );
+  return u"intersection"_s;
 }
 
 QString QgsIntersectionAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsIntersectionAlgorithm::group() const
 
 QString QgsIntersectionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoroverlay" );
+  return u"vectoroverlay"_s;
 }
 
 QString QgsIntersectionAlgorithm::shortHelpString() const
@@ -66,27 +66,27 @@ QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
 
 void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"OVERLAY"_s, QObject::tr( "Overlay layer" ) ) );
 
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "INPUT_FIELDS" ),
+    u"INPUT_FIELDS"_s,
     QObject::tr( "Input fields to keep (leave empty to keep all fields)" ), QVariant(),
-    QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true, true
+    u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "OVERLAY_FIELDS" ),
+    u"OVERLAY_FIELDS"_s,
     QObject::tr( "Overlay fields to keep (leave empty to keep all fields)" ), QVariant(),
-    QStringLiteral( "OVERLAY" ), Qgis::ProcessingFieldParameterDataType::Any, true, true
+    u"OVERLAY"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true
   ) );
 
-  auto prefix = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  auto prefix = std::make_unique<QgsProcessingParameterString>( u"OVERLAY_FIELDS_PREFIX"_s, QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( prefix.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Intersection" ) ) );
 
-  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "GRID_SIZE" ), QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( u"GRID_SIZE"_s, QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }
@@ -94,23 +94,23 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  std::unique_ptr<QgsFeatureSource> sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
+  std::unique_ptr<QgsFeatureSource> sourceB( parameterAsSource( parameters, u"OVERLAY"_s, context ) );
   if ( !sourceB )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"OVERLAY"_s ) );
 
   const Qgis::WkbType geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
-  const QStringList fieldsA = parameterAsStrings( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
-  const QStringList fieldsB = parameterAsStrings( parameters, QStringLiteral( "OVERLAY_FIELDS" ), context );
+  const QStringList fieldsA = parameterAsStrings( parameters, u"INPUT_FIELDS"_s, context );
+  const QStringList fieldsB = parameterAsStrings( parameters, u"OVERLAY_FIELDS"_s, context );
 
   const QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( fieldsA, sourceA->fields() );
   const QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( fieldsB, sourceB->fields() );
 
-  const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
+  const QString overlayFieldsPrefix = parameterAsString( parameters, u"OVERLAY_FIELDS_PREFIX"_s, context );
   const QgsFields outputFields = QgsProcessingUtils::combineFields(
     QgsProcessingUtils::indicesToFields( fieldIndicesA, sourceA->fields() ),
     QgsProcessingUtils::indicesToFields( fieldIndicesB, sourceB->fields() ),
@@ -118,20 +118,20 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
 
   long count = 0;
   const long total = sourceA->featureCount();
 
   QgsGeometryParameters geometryParameters;
-  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  if ( parameters.value( u"GRID_SIZE"_s ).isValid() )
   {
-    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+    geometryParameters.setGridSize( parameterAsDouble( parameters, u"GRID_SIZE"_s, context ) );
   }
 
   QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );

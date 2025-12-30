@@ -20,7 +20,7 @@
 #include <QRegularExpression>
 #include <QTextEdit>
 
-static const QString EXPRESSION_PATTERN = QStringLiteral( "\\[%\\s*(.*?)\\s*%\\]" );
+static const QString EXPRESSION_PATTERN = u"\\[%\\s*(.*?)\\s*%\\]"_s;
 
 
 void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression, const QString &pattern )

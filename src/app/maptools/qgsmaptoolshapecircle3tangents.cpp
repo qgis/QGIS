@@ -30,7 +30,7 @@
 
 #include "moc_qgsmaptoolshapecircle3tangents.cpp"
 
-const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-tangents" );
+const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = u"circle-from-3-tangents"_s;
 
 QString QgsMapToolShapeCircle3TangentsMetadata::id() const
 {
@@ -44,7 +44,7 @@ QString QgsMapToolShapeCircle3TangentsMetadata::name() const
 
 QIcon QgsMapToolShapeCircle3TangentsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle3Tangents.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle3Tangents.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle3TangentsMetadata::category() const

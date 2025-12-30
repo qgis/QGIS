@@ -32,11 +32,11 @@ void QgsArcGisRestSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, uri );
 
-  mAuthSettings->setUsername( mSourceParts.value( QStringLiteral( "username" ) ).toString() );
-  mAuthSettings->setPassword( mSourceParts.value( QStringLiteral( "password" ) ).toString() );
-  mEditReferer->setText( mSourceParts.value( QStringLiteral( "referer" ) ).toString() );
+  mAuthSettings->setUsername( mSourceParts.value( u"username"_s ).toString() );
+  mAuthSettings->setPassword( mSourceParts.value( u"password"_s ).toString() );
+  mEditReferer->setText( mSourceParts.value( u"referer"_s ).toString() );
 
-  mAuthSettings->setConfigId( mSourceParts.value( QStringLiteral( "authcfg" ) ).toString() );
+  mAuthSettings->setConfigId( mSourceParts.value( u"authcfg"_s ).toString() );
 }
 
 QString QgsArcGisRestSourceWidget::sourceUri() const
@@ -44,23 +44,23 @@ QString QgsArcGisRestSourceWidget::sourceUri() const
   QVariantMap parts = mSourceParts;
 
   if ( !mAuthSettings->username().isEmpty() )
-    parts.insert( QStringLiteral( "username" ), mAuthSettings->username() );
+    parts.insert( u"username"_s, mAuthSettings->username() );
   else
-    parts.remove( QStringLiteral( "username" ) );
+    parts.remove( u"username"_s );
   if ( !mAuthSettings->password().isEmpty() )
-    parts.insert( QStringLiteral( "password" ), mAuthSettings->password() );
+    parts.insert( u"password"_s, mAuthSettings->password() );
   else
-    parts.remove( QStringLiteral( "password" ) );
+    parts.remove( u"password"_s );
 
   if ( !mEditReferer->text().isEmpty() )
-    parts.insert( QStringLiteral( "referer" ), mEditReferer->text() );
+    parts.insert( u"referer"_s, mEditReferer->text() );
   else
-    parts.remove( QStringLiteral( "referer" ) );
+    parts.remove( u"referer"_s );
 
   if ( !mAuthSettings->configId().isEmpty() )
-    parts.insert( QStringLiteral( "authcfg" ), mAuthSettings->configId() );
+    parts.insert( u"authcfg"_s, mAuthSettings->configId() );
   else
-    parts.remove( QStringLiteral( "authcfg" ) );
+    parts.remove( u"authcfg"_s );
 
   return QgsProviderRegistry::instance()->encodeUri( mProviderKey, parts );
 }

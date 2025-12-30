@@ -19,12 +19,12 @@
 
 QgsExpressionBasedNumericFormat::QgsExpressionBasedNumericFormat()
 {
-  setExpression( QStringLiteral( "@value" ) );
+  setExpression( u"@value"_s );
 }
 
 QString QgsExpressionBasedNumericFormat::id() const
 {
-  return QStringLiteral( "expression" );
+  return u"expression"_s;
 }
 
 QString QgsExpressionBasedNumericFormat::visibleName() const
@@ -53,14 +53,14 @@ QgsNumericFormat *QgsExpressionBasedNumericFormat::clone() const
 QgsNumericFormat *QgsExpressionBasedNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext & ) const
 {
   auto res = std::make_unique< QgsExpressionBasedNumericFormat >();
-  res->mExpression = QgsExpression( configuration.value( QStringLiteral( "expression" ), QStringLiteral( "@value" ) ).toString() );
+  res->mExpression = QgsExpression( configuration.value( u"expression"_s, u"@value"_s ).toString() );
   return res.release();
 }
 
 QVariantMap QgsExpressionBasedNumericFormat::configuration( const QgsReadWriteContext & ) const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "expression" ), mExpression.expression() );
+  res.insert( u"expression"_s, mExpression.expression() );
   return res;
 }
 

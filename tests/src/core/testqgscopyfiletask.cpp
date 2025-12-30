@@ -83,7 +83,7 @@ void TestQgsCopyFileTask::testCopySourceDoesNotExist()
   const QTemporaryDir dir;
   const QString destination = dir.filePath( "dest.txt" );
 
-  QgsCopyFileTask *task = new QgsCopyFileTask( QStringLiteral( "/not/existing/file.txt" ), destination );
+  QgsCopyFileTask *task = new QgsCopyFileTask( u"/not/existing/file.txt"_s, destination );
   manager.addTask( task );
   task->waitForFinished();
 
@@ -103,7 +103,7 @@ void TestQgsCopyFileTask::testCopyDestinationDoesNotExist()
   testFile.close();
 
   const QString source = testFile.fileName();
-  const QString destination = QStringLiteral( "/not/existing/destination/" );
+  const QString destination = u"/not/existing/destination/"_s;
 
   QgsCopyFileTask *task = new QgsCopyFileTask( source, destination );
   manager.addTask( task );
