@@ -22,6 +22,7 @@
 #include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgscredentials.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdbquerylog.h"
@@ -29,6 +30,7 @@
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgspostgresconnoauthhandler.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresstringutils.h"
 #include "qgssettings.h"
@@ -49,6 +51,11 @@
 #else
 #include <netinet/in.h>
 #endif
+
+extern "C"
+{
+#include <pg_config.h>
+}
 
 const int PG_DEFAULT_TIMEOUT = 30;
 
@@ -303,8 +310,30 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   };
   addDefaultTimeoutAndClientEncoding( expandedConnectionInfo );
 
+  bool isOAuth = false;
+  if ( !mUri.authConfigId().isEmpty() )
+  {
+    QgsAuthMethod *method = QgsApplication::authManager()->configAuthMethod( mUri.authConfigId() );
+    QStringList items;
+    if ( method->key() == QLatin1String( "OAuth2" ) && method->updateDataSourceUriItems( items, mUri.authConfigId(), QStringLiteral( "postgres" ) ) )
+    {
+#if PG_MAJORVERSION_NUM >= 18
+      isOAuth = true;
+      expandedConnectionInfo += QStringLiteral( " %1" ).arg( items.join( " " ) );
+#else
+      QgsMessageLog::logMessage(
+        tr( "OAuth authentication requires PostgreSQL 18, this QGIS is built using the PostgreSQL client library version %1.%2, falling back to basic authentication" ).arg( PG_MAJORVERSION_NUM ).arg( PG_MINORVERSION_NUM ),
+        tr( "PostGIS" )
+      );
+#endif
+    }
+  }
+
   auto logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), expandedConnectionInfo.toUtf8(), QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
-  mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
+  {
+    const auto auth = QgsPostgresConnOAuthHandler( mUri.authConfigId() );
+    mConn = PQconnectdb( expandedConnectionInfo.toUtf8() );
+  }
 
   // remove temporary cert/key/CA if they exist
   QgsDataSourceUri expandedUri( expandedConnectionInfo );
@@ -343,7 +372,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   }
 
   // check the connection status
-  if ( PQstatus() != CONNECTION_OK )
+  if ( PQstatus() != CONNECTION_OK && !isOAuth )
   {
     QString username = mUri.username();
     QString password = mUri.password();
