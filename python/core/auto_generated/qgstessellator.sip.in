@@ -232,6 +232,20 @@ Returns array of triangle vertex data
 Vertice coordinates are stored as (x, z, -y)
 %End
 
+    QVector<uint32_t> indexBuffer() const;
+%Docstring
+Returns index buffer for the generated points.
+
+.. versionadded:: 4.0
+%End
+
+    QVector<float> vertexBuffer() const;
+%Docstring
+Returns vertex buffer for the generated points.
+
+.. versionadded:: 4.0
+%End
+
     int dataVerticesCount() const;
 %Docstring
 Returns the number of vertices stored in the output data array
@@ -240,6 +254,11 @@ Returns the number of vertices stored in the output data array
     int stride() const;
 %Docstring
 Returns size of one vertex entry in bytes
+%End
+
+    int indexStride() const;
+%Docstring
+Returns size of one index entry in bytes
 %End
 
 
