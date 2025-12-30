@@ -14,7 +14,10 @@
  ***************************************************************************/
 #include "qgshtmlutils.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QString QgsHtmlUtils::buildBulletList( const QStringList &values )
 {
