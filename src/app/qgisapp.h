@@ -18,6 +18,7 @@
 #ifndef QGISAPP_H
 #define QGISAPP_H
 
+#include "qgslayerchangescommitblockerinterface.h"
 class QActionGroup;
 class QCheckBox;
 class QCursor;
@@ -109,6 +110,7 @@ class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
+class QgsLayerChangesCommitBlockerInterface;
 class QgsAbstractMapToolHandler;
 class QgsAppMapTools;
 class QgsMapToolIdentifyAction;
@@ -329,6 +331,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *messageBar();
 
     /**
+     * Displays a warning about layer `layer` being blocked from the process of
+     * committing changes using the messagebar.
+     *
+    **/
+
+    /**
      * Opens the message log dock widget, and optionally activates a specific tab by name.
      *
      * \param tabName Name of the tab to be activated.
@@ -525,6 +533,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;
+
+    /**
+     * Tries to commit changes to a \a layer
+     */
+    bool tryCommitChanges( QgsMapLayer * layer );
 
     /**
      * Access the vector layer tools. This will be an instance of {\see QgsGuiVectorLayerTools}
@@ -847,10 +860,27 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
 
     /**
+     * Register a new application commit layer changes blocker, which can be used to prevent the QGIS application
+     * from committing changes to a specified layer
+     *
+     * \note Ownership of \a blocker is not transferred, and the blocker must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregisterLayerChangesCommitBlocker()
+     */
+    void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker );
+
+    /**
      * Unregister a previously registered application exit \a blocker.
      * \see registerApplicationExitBlocker()
     */
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
+
+    /**
+     * Unregister a previously registered commit layer changes \a blocker.
+     * \see registerLayerChangesCommitBlocker()
+    */
+    void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker );
 
     /**
      * Register a new application map tool \a handler, which can be used to automatically setup all connections
@@ -2265,7 +2295,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
-
     void showProgress( int progress, int totalSteps );
 
     /**
@@ -2745,6 +2774,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDevToolWidgetFactory *> mDevToolFactories;
 
     QList<QgsApplicationExitBlockerInterface *> mApplicationExitBlockers;
+    QList<QgsLayerChangesCommitBlockerInterface *> mLayerChangesCommitBlockers;
     QList<QgsAbstractMapToolHandler *> mMapToolHandlers;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
