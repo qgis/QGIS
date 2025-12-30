@@ -477,7 +477,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         {
           if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes &&
                // Pyramid creation is done by the driver itself
-               mOutputFormat != QLatin1String( "COG" ) )
+               mOutputFormat != "COG"_L1 )
           {
             if ( !buildPyramids( mOutputUrl, destProvider.get() ) )
             {
@@ -815,7 +815,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
 
     if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes &&
          // Pyramid creation is done by the driver itself
-         mOutputFormat != QLatin1String( "COG" ) )
+         mOutputFormat != "COG"_L1 )
     {
       if ( !buildPyramids( mOutputUrl ) )
         return Qgis::RasterFileWriterResult::WriteError;
@@ -1083,7 +1083,7 @@ QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider( const QgsRectang
 void QgsRasterFileWriter::setOutputFormat( const QString &format )
 {
   mOutputFormat = format;
-  if ( !mBuildPyramidsFlagSet && format == QLatin1String( "COG" ) )
+  if ( !mBuildPyramidsFlagSet && format == "COG"_L1 )
   {
     setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption::Yes );
   }
@@ -1113,13 +1113,13 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
       mCreationOptions << "COPY_SRC_OVERVIEWS=YES";
 #endif
     QStringList creationOptions( mCreationOptions );
-    if ( mOutputFormat == QLatin1String( "COG" ) )
+    if ( mOutputFormat == "COG"_L1 )
     {
       if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::No )
-        creationOptions << QStringLiteral( "OVERVIEWS=NO" );
+        creationOptions << u"OVERVIEWS=NO"_s;
       else
       {
-        creationOptions << QStringLiteral( "OVERVIEW_RESAMPLING=" ) + mPyramidsResampling;
+        creationOptions << u"OVERVIEW_RESAMPLING="_s + mPyramidsResampling;
         for ( const QString &opt : std::as_const( mPyramidsConfigOptions ) )
         {
           const std::string optStr( opt.toStdString() );
@@ -1129,15 +1129,15 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
           {
             if ( EQUAL( key, "JPEG_QUALITY_OVERVIEW" ) )
             {
-              creationOptions << QStringLiteral( "OVERVIEW_QUALITY=" ) + value;
+              creationOptions << u"OVERVIEW_QUALITY="_s + value;
             }
             else if ( EQUAL( key, "COMPRESS_OVERVIEW" ) )
             {
-              creationOptions << QStringLiteral( "OVERVIEW_COMPRESS=" ) + value;
+              creationOptions << u"OVERVIEW_COMPRESS="_s + value;
             }
             else if ( EQUAL( key, "PREDICTOR_OVERVIEW" ) )
             {
-              creationOptions << QStringLiteral( "OVERVIEW_PREDICTOR=" ) + value;
+              creationOptions << u"OVERVIEW_PREDICTOR="_s + value;
             }
           }
           CPLFree( key );

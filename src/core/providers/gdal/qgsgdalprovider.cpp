@@ -4155,7 +4155,7 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   }
   if ( !GDALGetMetadataItem( driver, GDAL_DCAP_CREATE, nullptr ) )
   {
-    QgsError error( "GDAL driver " + format + " does not implement the Create interface", QStringLiteral( "GDAL provider" ) );
+    QgsError error( "GDAL driver " + format + " does not implement the Create interface", u"GDAL provider"_s );
     return new QgsGdalProvider( uri, error );
   }
 

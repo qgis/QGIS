@@ -351,7 +351,7 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
     mLayerName->setText( QString() );
   }
 
-  const bool isCOG = ( outputFormat() == QLatin1String( "COG" ) );
+  const bool isCOG = ( outputFormat() == "COG"_L1 );
   if ( isCOG )
   {
     mPyramidsGroupBox->setChecked( true );

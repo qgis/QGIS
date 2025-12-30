@@ -161,7 +161,7 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
 void QgsRasterPyramidsOptionsWidget::tuneForFormat( const QString &driverName )
 {
-  const bool visible = ( driverName != QLatin1String( "COG" ) );
+  const bool visible = ( driverName != "COG"_L1 );
   labelOverviewFormat->setVisible( visible );
   cbxPyramidsFormat->setVisible( visible );
   labelLevels->setVisible( visible );
