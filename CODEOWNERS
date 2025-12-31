@@ -1,28 +1,28 @@
 # Collaborators can optionally add themselves here to indicate their availability for reviewing related PRs
 
 # Default owners for paths not covered below
-/* @nyalldawson @jef-n @matthias-kuhn
+/* @nyalldawson @jef-n @m-kuhn
 
 # Build, CI, and tooling
-/.github/ @3nids @matthias-kuhn @nyalldawson
-/.ci/ @nyalldawson @3nids @matthias-kuhn
+/.github/ @3nids @m-kuhn @nyalldawson
+/.ci/ @nyalldawson @3nids @m-kuhn
 /.docker/ @nyalldawson @3nids
 /.tx/ @mach0 @jef-n
-/cmake/ @jef-n @matthias-kuhn @nyalldawson
-/cmake_templates/ @nyalldawson @3nids @matthias-kuhn
+/cmake/ @jef-n @m-kuhn @nyalldawson
+/cmake_templates/ @nyalldawson @3nids @m-kuhn
 /scripts/ @nyalldawson @jef-n @3nids
 /editors/ @NathanW2 @nyalldawson
 /postinstall/ @3nids
 
 # Core directories (general)
-/src/ @nyalldawson @matthias-kuhn @elpaso
-/python/ @nyalldawson @alexbruy @matthias-kuhn
+/src/ @nyalldawson @m-kuhn @elpaso
+/python/ @nyalldawson @alexbruy @m-kuhn
 /doc/ @jef-n @nyalldawson @mach0
-/tests/ @nyalldawson @elpaso @matthias-kuhn
+/tests/ @nyalldawson @elpaso @m-kuhn
 /resources/ @nyalldawson @DelazJ @elpaso
 /images/ @nyalldawson @nirvn
 /i18n/ @mach0 @jef-n
-/external/ @nyalldawson @jef-n @matthias-kuhn
+/external/ @nyalldawson @jef-n @m-kuhn
 
 # Platform and packaging
 /ms-windows/ @jef-n @nyalldawson @elpaso
@@ -30,15 +30,15 @@
 /debian/ @jef-n @sebastic
 /rpm/ @daniviga @basilrabi
 /nix/ @imincik
-/vcpkg/ @matthias-kuhn @nirvn
-/platform/ @matthias-kuhn
+/vcpkg/ @m-kuhn @nirvn
+/platform/ @m-kuhn
 
 # Core application (C++)
-/src/app/ @nyalldawson @jef-n @matthias-kuhn
-/src/core/ @nyalldawson @matthias-kuhn @elpaso
+/src/app/ @nyalldawson @jef-n @m-kuhn
+/src/core/ @nyalldawson @m-kuhn @elpaso
 /src/gui/ @nyalldawson @3nids @elpaso
-/src/analysis/ @nyalldawson @alexbruy @matthias-kuhn
-/src/process/ @nyalldawson @3nids @matthias-kuhn
+/src/analysis/ @nyalldawson @alexbruy @m-kuhn
+/src/process/ @nyalldawson @3nids @m-kuhn
 /src/quickgui/ @zilolv @sklencar @nyalldawson
 /src/server/ @elpaso @pblottiere @rldhont
 /resources/server/ @elpaso @pblottiere @rldhont
@@ -52,18 +52,18 @@
 /src/providers/wms/ @nyalldawson @jef-n @wonder-sk
 /src/providers/wfs/ @nyalldawson @rouault @jef-n
 /src/providers/wcs/ @nyalldawson @blazek @jef-n
-/src/providers/arcgisrest/ @nyalldawson @matthias-kuhn @3nids
+/src/providers/arcgisrest/ @nyalldawson @m-kuhn @3nids
 /src/providers/delimitedtext/ @nyalldawson @ccrook @jef-n
 /src/providers/gpx/ @nyalldawson @jef-n @3nids
 /src/providers/grass/ @blazek @nyalldawson @jef-n
 /src/providers/mdal/ @nyalldawson @zilolv @vcloarec
 /src/providers/pdal/ @nyalldawson @NEDJIMAbelgacem @uclaros
-/src/providers/virtual/ @nyalldawson @mhugo @matthias-kuhn
+/src/providers/virtual/ @nyalldawson @mhugo @m-kuhn
 /src/providers/virtualraster/ @nyalldawson @3nids @rouault
 /src/providers/hana/ @Rungee @nyalldawson @stefanuhrig
 
 # Python and plugins (specific)
-/python/analysis/ @nyalldawson @alexbruy @matthias-kuhn
+/python/analysis/ @nyalldawson @alexbruy @m-kuhn
 /python/console/ @lrssvtml @nyalldawson @YoannQDQ
 /python/plugins/ @nyalldawson @alexbruy @volaya
 /python/plugins/processing/ @nyalldawson @alexbruy @volaya
@@ -76,17 +76,17 @@
 /src/app/3d/ @nyalldawson @NEDJIMAbelgacem @wonder-sk
 /resources/3d/ @nyalldawson @NEDJIMAbelgacem @wonder-sk
 
-/src/core/annotations/ @nyalldawson @3nids @matthias-kuhn
+/src/core/annotations/ @nyalldawson @3nids @m-kuhn
 /src/gui/annotations/ @nyalldawson @3nids @YoannQDQ
 
-/src/core/expression/ @nyalldawson @matthias-kuhn @elpaso
-/resources/function_help/ @nyalldawson @matthias-kuhn @elpaso
+/src/core/expression/ @nyalldawson @m-kuhn @elpaso
+/resources/function_help/ @nyalldawson @m-kuhn @elpaso
 
 /src/core/editform/ @nyalldawson @elpaso @3nids
 /src/gui/attributeformconfig/ @nyalldawson @elpaso @gacarrillor
 
 /src/app/labeling/ @nyalldawson @domi4484 @elpaso
-/src/core/labeling/ @nyalldawson @domi4484 @matthias-kuhn
+/src/core/labeling/ @nyalldawson @domi4484 @m-kuhn
 
 /src/core/locator/ @3nids @nyalldawson @nirvn
 /src/gui/locator/ @nyalldawson @3nids
