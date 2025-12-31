@@ -31,13 +31,13 @@
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
-  , mGapThresholdMapUnits( configuration.value( QStringLiteral( "gapThreshold" ) ).toDouble() )
+  , mGapThresholdMapUnits( configuration.value( u"gapThreshold"_s ).toDouble() )
 {
 }
 
 void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
 {
-  if ( configuration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
+  if ( configuration.value( u"allowedGapsEnabled"_s ).toBool() )
   {
     QgsVectorLayer *layer = context->project()->mapLayer<QgsVectorLayer *>( configuration.value( "allowedGapsLayer" ).toString() );
     if ( layer )
@@ -45,7 +45,7 @@ void QgsGeometryGapCheck::prepare( const QgsGeometryCheckContext *context, const
       mAllowedGapsLayer = layer;
       mAllowedGapsSource = std::make_unique<QgsVectorLayerFeatureSource>( layer );
 
-      mAllowedGapsBuffer = configuration.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble();
+      mAllowedGapsBuffer = configuration.value( u"allowedGapsBuffer"_s ).toDouble();
     }
   }
   else
@@ -497,7 +497,7 @@ QString QgsGeometryGapCheck::factoryDescription()
 
 QString QgsGeometryGapCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryGapCheck" );
+  return u"QgsGeometryGapCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryGapCheck::factoryFlags()
@@ -565,7 +565,7 @@ QMap<QString, QgsFeatureIds> QgsGeometryGapCheckError::involvedFeatures() const
 QIcon QgsGeometryGapCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/SliverOrGap.svg" ) );
+    return QgsApplication::getThemeIcon( u"/checks/SliverOrGap.svg"_s );
 }

@@ -57,7 +57,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataP
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
   const QgsSettings settings;
-  mMinimizeWindowCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
+  mMinimizeWindowCheckBox->setChecked( settings.value( u"/Plugin-GeoReferencer/Config/Minimize"_s, u"1"_s ).toBool() );
 
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
@@ -77,7 +77,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
   delete mToolEmitPoint;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), mMinimizeWindowCheckBox->isChecked() );
+  settings.setValue( u"/Plugin-GeoReferencer/Config/Minimize"_s, mMinimizeWindowCheckBox->isChecked() );
 }
 
 void QgsMapCoordsDialog::updateOK()

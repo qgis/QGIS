@@ -38,10 +38,10 @@ bool QgsSensorRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
-  addSensorType( new QgsSensorMetadata( QLatin1String( "tcp_socket" ), QObject::tr( "TCP socket sensor" ), QgsTcpSocketSensor::create ) );
-  addSensorType( new QgsSensorMetadata( QLatin1String( "udp_socket" ), QObject::tr( "UDP socket sensor" ), QgsUdpSocketSensor::create ) );
+  addSensorType( new QgsSensorMetadata( "tcp_socket"_L1, QObject::tr( "TCP socket sensor" ), QgsTcpSocketSensor::create ) );
+  addSensorType( new QgsSensorMetadata( "udp_socket"_L1, QObject::tr( "UDP socket sensor" ), QgsUdpSocketSensor::create ) );
 #if defined( HAVE_QTSERIALPORT )
-  addSensorType( new QgsSensorMetadata( QLatin1String( "serial_port" ), QObject::tr( "Serial port sensor" ), QgsSerialPortSensor::create ) );
+  addSensorType( new QgsSensorMetadata( "serial_port"_L1, QObject::tr( "Serial port sensor" ), QgsSerialPortSensor::create ) );
 #endif
 
   return true;

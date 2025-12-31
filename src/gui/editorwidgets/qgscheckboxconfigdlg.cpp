@@ -38,8 +38,8 @@ QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
     leCheckedState->setEnabled( false );
     leUncheckedState->setEnabled( false );
 
-    leCheckedState->setPlaceholderText( QStringLiteral( "TRUE" ) );
-    leUncheckedState->setPlaceholderText( QStringLiteral( "FALSE" ) );
+    leCheckedState->setPlaceholderText( u"TRUE"_s );
+    leUncheckedState->setPlaceholderText( u"FALSE"_s );
   }
 }
 
@@ -47,10 +47,10 @@ QVariantMap QgsCheckBoxConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "CheckedState" ), leCheckedState->text() );
-  cfg.insert( QStringLiteral( "UncheckedState" ), leUncheckedState->text() );
-  cfg.insert( QStringLiteral( "TextDisplayMethod" ), mDisplayAsTextComboBox->currentData().toInt() );
-  cfg.insert( QStringLiteral( "AllowNullState" ), mAllowNullState->isChecked() );
+  cfg.insert( u"CheckedState"_s, leCheckedState->text() );
+  cfg.insert( u"UncheckedState"_s, leUncheckedState->text() );
+  cfg.insert( u"TextDisplayMethod"_s, mDisplayAsTextComboBox->currentData().toInt() );
+  cfg.insert( u"AllowNullState"_s, mAllowNullState->isChecked() );
 
   return cfg;
 }
@@ -59,9 +59,9 @@ void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
 {
   if ( layer()->fields().at( field() ).type() != QMetaType::Type::Bool )
   {
-    leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
-    leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
+    leCheckedState->setText( config.value( u"CheckedState"_s ).toString() );
+    leUncheckedState->setText( config.value( u"UncheckedState"_s ).toString() );
   }
-  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( QStringLiteral( "TextDisplayMethod" ), QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
-  mAllowNullState->setChecked( config.value( QStringLiteral( "AllowNullState" ) ).toBool() );
+  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( u"TextDisplayMethod"_s, QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
+  mAllowNullState->setChecked( config.value( u"AllowNullState"_s ).toBool() );
 }

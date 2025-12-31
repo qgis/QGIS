@@ -135,5 +135,5 @@ QDialogButtonBox *QgsPresetColorRampDialog::buttonBox() const
 
 void QgsPresetColorRampDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
+  QgsHelp::openHelp( u"style_library/style_manager.html#setting-a-color-ramp"_s );
 }

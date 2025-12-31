@@ -38,6 +38,7 @@ Creates a new QgsColorEffect effect from a properties string map.
     virtual QString type() const;
     virtual QVariantMap properties() const;
 
+
     virtual void readProperties( const QVariantMap &props );
 
     virtual QgsColorEffect *clone() const /Factory/;

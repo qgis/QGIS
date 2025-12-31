@@ -168,7 +168,7 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QSt
     // Asserts are bad as they just crash out, changed to just return false. TS
     if ( adfGeoTransform[0] <= 0.0 || adfGeoTransform[5] >= 0.0 )
     {
-      QgsDebugError( QStringLiteral( "Image is not north up after GDALSuggestedWarpOutput, bailing out." ) );
+      QgsDebugError( u"Image is not north up after GDALSuggestedWarpOutput, bailing out."_s );
       return QgsImageWarper::Result::InvalidParameters;
     }
     // Find suggested output image extent (in georeferenced units)

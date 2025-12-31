@@ -357,8 +357,9 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
-  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+  maptools/qgsmaptooledit.cpp
+  maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -1370,6 +1371,7 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapturerubberband.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
+  maptools/qgsmaptooleditblanksegments.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
@@ -2003,12 +2005,10 @@ target_link_libraries(qgis_gui
   Qt::MultimediaWidgets
 )
 
-if (BUILD_WITH_QT6)
-  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
-  target_link_libraries(qgis_gui
-    Qt6::SvgWidgets
-  )
-endif()
+find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+target_link_libraries(qgis_gui
+  Qt6::SvgWidgets
+)
 
 if (WITH_QTWEBENGINE)
   find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)

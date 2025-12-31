@@ -69,7 +69,7 @@ class TestQgsAuthManager : public QgsTest
 
 
 TestQgsAuthManager::TestQgsAuthManager()
-  : QgsTest( QStringLiteral( "QgsAuthManager Tests" ) )
+  : QgsTest( u"QgsAuthManager Tests"_s )
   , mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
   , mTempDir( QDir::tempPath() + "/auth" )
   , mPass( "pass" )
@@ -131,7 +131,7 @@ void TestQgsAuthManager::cleanup()
 {
   // Restore password_helper_insecure_fallback value
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth );
+  settings.setValue( u"password_helper_insecure_fallback"_s, false, QgsSettings::Section::Auth );
 }
 
 void TestQgsAuthManager::cleanupTempDir()
@@ -304,16 +304,16 @@ void TestQgsAuthManager::testAuthConfigs()
   QCOMPARE( authm->availableAuthMethodConfigs().size(), 3 );
 
   // Password-less export / import
-  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + QStringLiteral( "/configs.xml" ), idcfgmap.keys() ) );
+  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + u"/configs.xml"_s, idcfgmap.keys() ) );
   QVERIFY( authm->removeAllAuthenticationConfigs() );
-  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + QStringLiteral( "/configs.xml" ) ) );
+  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + u"/configs.xml"_s ) );
 
   QCOMPARE( authm->availableAuthMethodConfigs().size(), 3 );
 
   // Password-protected export / import
-  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + QStringLiteral( "/configs.xml" ), idcfgmap.keys(), QStringLiteral( "1234" ) ) );
+  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + u"/configs.xml"_s, idcfgmap.keys(), u"1234"_s ) );
   QVERIFY( authm->removeAllAuthenticationConfigs() );
-  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + QStringLiteral( "/configs.xml" ), QStringLiteral( "1234" ) ) );
+  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + u"/configs.xml"_s, u"1234"_s ) );
 
   QgsAuthMethodConfigsMap authmap( authm->availableAuthMethodConfigs() );
   QCOMPARE( authmap.size(), 3 );
@@ -367,12 +367,12 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
   // Basic
   QgsAuthMethodConfig b_config;
-  b_config.setName( QStringLiteral( "Basic" ) );
-  b_config.setMethod( QStringLiteral( "Basic" ) );
-  b_config.setUri( QStringLiteral( "http://example.com" ) );
-  b_config.setConfig( QStringLiteral( "username" ), QStringLiteral( "username" ) );
-  b_config.setConfig( QStringLiteral( "password" ), QStringLiteral( "password" ) );
-  b_config.setConfig( QStringLiteral( "realm" ), QStringLiteral( "Realm" ) );
+  b_config.setName( u"Basic"_s );
+  b_config.setMethod( u"Basic"_s );
+  b_config.setUri( u"http://example.com"_s );
+  b_config.setConfig( u"username"_s, u"username"_s );
+  b_config.setConfig( u"password"_s, u"password"_s );
+  b_config.setConfig( u"realm"_s, u"Realm"_s );
   if ( !b_config.isValid() )
   {
     return configs;
@@ -380,11 +380,11 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
   // PKI-Paths
   QgsAuthMethodConfig p_config;
-  p_config.setName( QStringLiteral( "PKI-Paths" ) );
-  p_config.setMethod( QStringLiteral( "PKI-Paths" ) );
-  p_config.setUri( QStringLiteral( "http://example.com" ) );
-  p_config.setConfig( QStringLiteral( "certpath" ), mPkiData + "/gerardus_cert.pem" );
-  p_config.setConfig( QStringLiteral( "keypath" ), mPkiData + "gerardus_key_w-pass.pem" );
+  p_config.setName( u"PKI-Paths"_s );
+  p_config.setMethod( u"PKI-Paths"_s );
+  p_config.setUri( u"http://example.com"_s );
+  p_config.setConfig( u"certpath"_s, mPkiData + "/gerardus_cert.pem" );
+  p_config.setConfig( u"keypath"_s, mPkiData + "gerardus_key_w-pass.pem" );
   if ( !p_config.isValid() )
   {
     return configs;
@@ -392,11 +392,11 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
   // PKI-PKCS#12
   QgsAuthMethodConfig k_config;
-  k_config.setName( QStringLiteral( "PKI-PKCS#12" ) );
-  k_config.setMethod( QStringLiteral( "PKI-PKCS#12" ) );
-  k_config.setUri( QStringLiteral( "http://example.com" ) );
-  k_config.setConfig( QStringLiteral( "bundlepath" ), mPkiData + "/gerardus.p12" );
-  k_config.setConfig( QStringLiteral( "bundlepass" ), QStringLiteral( "password" ) );
+  k_config.setName( u"PKI-PKCS#12"_s );
+  k_config.setMethod( u"PKI-PKCS#12"_s );
+  k_config.setUri( u"http://example.com"_s );
+  k_config.setConfig( u"bundlepath"_s, mPkiData + "/gerardus.p12" );
+  k_config.setConfig( u"bundlepass"_s, u"password"_s );
   if ( !k_config.isValid() )
   {
     return configs;
@@ -426,7 +426,7 @@ void TestQgsAuthManager::testPasswordHelper()
   authm->clearMasterPassword();
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "password_helper_insecure_fallback" ), true, QgsSettings::Section::Auth );
+  settings.setValue( u"password_helper_insecure_fallback"_s, true, QgsSettings::Section::Auth );
 
   // Test enable/disable
   // It should be enabled by default

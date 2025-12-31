@@ -65,7 +65,7 @@ void QgsPointCloudLayerProfileResults::finalize( QgsFeedback *feedback )
 
 QString QgsPointCloudLayerProfileResults::type() const
 {
-  return QStringLiteral( "pointcloud" );
+  return u"pointcloud"_s;
 }
 
 QMap<double, double> QgsPointCloudLayerProfileResults::distanceToHeightMap() const
@@ -148,8 +148,8 @@ QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::as
         f.layerIdentifier = mLayerId;
         f.attributes =
         {
-          { QStringLiteral( "distance" ),  point.distanceAlongCurve },
-          { QStringLiteral( "elevation" ),  point.z }
+          { u"distance"_s,  point.distanceAlongCurve },
+          { u"elevation"_s,  point.z }
         };
         f.geometry = QgsGeometry( std::make_unique< QgsPoint >( point.x, point.y, point.z ) );
         res << f;
@@ -432,7 +432,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to layer CRS" ) );
+    QgsDebugError( u"Error transforming profile line to layer CRS"_s );
     return false;
   }
 
@@ -446,7 +446,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   double maximumErrorPixels = context.convertDistanceToPixels( mMaximumScreenError, mMaximumScreenErrorUnit );
   if ( maximumErrorPixels < 0.0 )
   {
-    QgsDebugError( QStringLiteral( "Invalid maximum error in pixels" ) );
+    QgsDebugError( u"Invalid maximum error in pixels"_s );
     return false;
   }
 
@@ -460,9 +460,9 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
 
   QgsPointCloudRequest request;
   QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   if ( mRenderer )
   {
@@ -503,7 +503,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   const double mapUnitsPerPixel = context.mapUnitsPerDistancePixel();
   if ( mapUnitsPerPixel < 0.0 )
   {
-    QgsDebugError( QStringLiteral( "Invalid map units per pixel ratio" ) );
+    QgsDebugError( u"Invalid map units per pixel ratio"_s );
     return false;
   }
 
@@ -518,14 +518,14 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform node extent to curve CRS" ) );
+      QgsDebugError( u"Could not transform node extent to curve CRS"_s );
       rootNodeExtentInCurveCrs = rootNodeExtentLayerCoords;
     }
 
     const double rootErrorInMapCoordinates = rootNodeExtentInCurveCrs.width() / pc.span(); // in curve coords
     if ( rootErrorInMapCoordinates < 0.0 )
     {
-      QgsDebugError( QStringLiteral( "Invalid root node error" ) );
+      QgsDebugError( u"Invalid root node error"_s );
       return false;
     }
 
@@ -700,7 +700,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointC
 
       if ( !block )
       {
-        QgsDebugError( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+        QgsDebugError( u"Unable to load node %1, error: %2"_s.arg( nStr, blockRequest->errorStr() ) );
         return;
       }
 
@@ -736,9 +736,9 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
 
   const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
   int xOffset = 0, yOffset = 0, zOffset = 0;
-  const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-  const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-  const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+  const QgsPointCloudAttribute::DataType xType = blockAttributes.find( u"X"_s, xOffset )->type();
+  const QgsPointCloudAttribute::DataType yType = blockAttributes.find( u"Y"_s, yOffset )->type();
+  const QgsPointCloudAttribute::DataType zType = blockAttributes.find( u"Z"_s, zOffset )->type();
 
   bool useRenderer = false;
   if ( mPreparedRendererData )

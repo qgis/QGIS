@@ -55,7 +55,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       break;
   }
 
-  QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( QStringLiteral( "chart" ) );
+  QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
   context.painter()->save();
@@ -104,7 +104,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
               continue;
             }
             x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustment;
-            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
+            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_category"_s, categories[pair.first], true ) );
             break;
 
           case Qgis::PlotAxisType::Interval:
@@ -120,7 +120,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         const QPoint bottomRight( plotArea.left() + x + barWidth,
                                   plotArea.y() + plotArea.height() - zero );
 
-        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
+        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, pair.second, true ) );
         symbol->renderPolygon( QPolygonF( QRectF( topLeft, bottomRight ) ), nullptr, nullptr, context );
       }
     }
@@ -161,11 +161,11 @@ bool QgsBarChartPlot::writeXml( QDomElement &element, QDomDocument &document, co
 {
   Qgs2DXyPlot::writeXml( element, document, context );
 
-  QDomElement fillSymbolsElement = document.createElement( QStringLiteral( "fillSymbols" ) );
+  QDomElement fillSymbolsElement = document.createElement( u"fillSymbols"_s );
   for ( int i = 0; i < static_cast<int>( mFillSymbols.size() ); i++ )
   {
-    QDomElement fillSymbolElement = document.createElement( QStringLiteral( "fillSymbol" ) );
-    fillSymbolElement.setAttribute( QStringLiteral( "index" ), QString::number( i ) );
+    QDomElement fillSymbolElement = document.createElement( u"fillSymbol"_s );
+    fillSymbolElement.setAttribute( u"index"_s, QString::number( i ) );
     if ( mFillSymbols[i] )
     {
       fillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mFillSymbols[i].get(), document, context ) );
@@ -181,16 +181,16 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
 {
   Qgs2DXyPlot::readXml( element, context );
 
-  const QDomNodeList fillSymbolsList = element.firstChildElement( QStringLiteral( "fillSymbols" ) ).childNodes();
+  const QDomNodeList fillSymbolsList = element.firstChildElement( u"fillSymbols"_s ).childNodes();
   for ( int i = 0; i < fillSymbolsList.count(); i++ )
   {
     const QDomElement fillSymbolElement = fillSymbolsList.at( i ).toElement();
-    const int index = fillSymbolElement.attribute( QStringLiteral( "index" ), QStringLiteral( "-1" ) ).toInt();
+    const int index = fillSymbolElement.attribute( u"index"_s, u"-1"_s ).toInt();
     if ( index >= 0 )
     {
       if ( fillSymbolElement.hasChildNodes() )
       {
-        const QDomElement symbolElement = fillSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
+        const QDomElement symbolElement = fillSymbolElement.firstChildElement( u"symbol"_s );
         setFillSymbolAt( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
       }
       else

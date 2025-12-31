@@ -21,19 +21,19 @@
 
 bool QgsWmsUtils::isWmsLayer( QgsMapLayer *layer )
 {
-  if ( !layer || layer->providerType() != QLatin1String( "wms" ) )
+  if ( !layer || layer->providerType() != "wms"_L1 )
     return false;
 
   // Discard WMTS layers
   const QString url = layer->publicSource();
-  if ( url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) || url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive ) )
+  if ( url.contains( "SERVICE=WMTS"_L1, Qt::CaseInsensitive ) || url.contains( "/WMTSCapabilities.xml"_L1, Qt::CaseInsensitive ) )
   {
     return false;
   }
 
   // Discard XYZ layers
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), layer->source() );
-  if ( parts.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "xyz" ) )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"wms"_s, layer->source() );
+  if ( parts.value( u"type"_s ).toString() == "xyz"_L1 )
   {
     return false;
   }
@@ -46,5 +46,5 @@ QString QgsWmsUtils::wmsVersion( QgsRasterLayer *layer )
   if ( !layer || !layer->dataProvider() || !QgsWmsUtils::isWmsLayer( layer ) )
     return QString();
 
-  return layer->dataProvider()->metadata().value( QStringLiteral( "WmsVersion" ), QString() ).toString();
+  return layer->dataProvider()->metadata().value( u"WmsVersion"_s, QString() ).toString();
 }

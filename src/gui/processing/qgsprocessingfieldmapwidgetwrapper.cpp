@@ -109,15 +109,15 @@ QVariant QgsProcessingFieldMapPanelWidget::value() const
   for ( const QgsFieldMappingModel::Field &field : mapping )
   {
     QVariantMap def;
-    def.insert( QStringLiteral( "name" ), field.field.name() );
-    def.insert( QStringLiteral( "type" ), static_cast<int>( field.field.type() ) );
-    def.insert( QStringLiteral( "type_name" ), field.field.typeName() );
-    def.insert( QStringLiteral( "length" ), field.field.length() );
-    def.insert( QStringLiteral( "precision" ), field.field.precision() );
-    def.insert( QStringLiteral( "sub_type" ), static_cast<int>( field.field.subType() ) );
-    def.insert( QStringLiteral( "expression" ), field.expression );
-    def.insert( QStringLiteral( "alias" ), field.field.alias() );
-    def.insert( QStringLiteral( "comment" ), field.field.comment() );
+    def.insert( u"name"_s, field.field.name() );
+    def.insert( u"type"_s, static_cast<int>( field.field.type() ) );
+    def.insert( u"type_name"_s, field.field.typeName() );
+    def.insert( u"length"_s, field.field.length() );
+    def.insert( u"precision"_s, field.field.precision() );
+    def.insert( u"sub_type"_s, static_cast<int>( field.field.subType() ) );
+    def.insert( u"expression"_s, field.expression );
+    def.insert( u"alias"_s, field.field.alias() );
+    def.insert( u"comment"_s, field.field.comment() );
     results.append( def );
   }
   return results;
@@ -136,13 +136,13 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
   for ( const QVariant &field : fields )
   {
     const QVariantMap map = field.toMap();
-    QgsField f( map.value( QStringLiteral( "name" ) ).toString(), static_cast<QMetaType::Type>( map.value( QStringLiteral( "type" ), static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ), map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast<QMetaType::Type>( map.value( QStringLiteral( "type" ), static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(), map.value( QStringLiteral( "length" ), 0 ).toInt(), map.value( QStringLiteral( "precision" ), 0 ).toInt(), QString(), static_cast<QMetaType::Type>( map.value( QStringLiteral( "sub_type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
-    f.setAlias( map.value( QStringLiteral( "alias" ) ).toString() );
-    f.setComment( map.value( QStringLiteral( "comment" ) ).toString() );
+    QgsField f( map.value( u"name"_s ).toString(), static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ), map.value( u"type_name"_s, QVariant::typeToName( static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(), map.value( u"length"_s, 0 ).toInt(), map.value( u"precision"_s, 0 ).toInt(), QString(), static_cast<QMetaType::Type>( map.value( u"sub_type"_s, QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
+    f.setAlias( map.value( u"alias"_s ).toString() );
+    f.setComment( map.value( u"comment"_s ).toString() );
 
-    if ( map.contains( QStringLiteral( "constraints" ) ) )
+    if ( map.contains( u"constraints"_s ) )
     {
-      const QgsFieldConstraints::Constraints constraints = static_cast<QgsFieldConstraints::Constraints>( map.value( QStringLiteral( "constraints" ), 0 ).toInt() );
+      const QgsFieldConstraints::Constraints constraints = static_cast<QgsFieldConstraints::Constraints>( map.value( u"constraints"_s, 0 ).toInt() );
       QgsFieldConstraints fieldConstraints;
 
       if ( constraints & QgsFieldConstraints::ConstraintNotNull )
@@ -155,9 +155,9 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
       f.setConstraints( fieldConstraints );
     }
 
-    if ( !map.value( QStringLiteral( "expression" ) ).toString().isEmpty() )
+    if ( !map.value( u"expression"_s ).toString().isEmpty() )
     {
-      expressions.insert( f.name(), map.value( QStringLiteral( "expression" ) ).toString() );
+      expressions.insert( f.name(), map.value( u"expression"_s ).toString() );
     }
 
     destinationFields.append( f );
@@ -188,7 +188,7 @@ void QgsProcessingFieldMapPanelWidget::loadFieldsFromLayer()
 void QgsProcessingFieldMapPanelWidget::addField()
 {
   const int rowCount = mModel->rowCount();
-  mModel->appendField( QgsField( QStringLiteral( "new_field" ) ) );
+  mModel->appendField( QgsField( u"new_field"_s ) );
   const QModelIndex index = mModel->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,

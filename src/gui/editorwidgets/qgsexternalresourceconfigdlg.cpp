@@ -60,7 +60,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
 
   const QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
 
-  mRootPath->setPlaceholderText( QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
+  mRootPath->setPlaceholderText( QgsSettings().value( u"/UI/lastExternalResourceWidgetDefaultPath"_s, QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
   connect( mRootPathButton, &QToolButton::clicked, this, &QgsExternalResourceConfigDlg::chooseDefaultPath );
 
@@ -125,7 +125,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
   else
   {
     const QString path = QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
-    dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
+    dir = QgsSettings().value( u"/UI/lastExternalResourceWidgetDefaultPath"_s, QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
   }
 
   const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a Directory" ), dir, QFileDialog::Options() );
@@ -171,44 +171,44 @@ QVariantMap QgsExternalResourceConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "StorageType" ), mStorageType->currentData() );
-  cfg.insert( QStringLiteral( "StorageAuthConfigId" ), mAuthSettingsProtocol->configId() );
+  cfg.insert( u"StorageType"_s, mStorageType->currentData() );
+  cfg.insert( u"StorageAuthConfigId"_s, mAuthSettingsProtocol->configId() );
   if ( !mStorageUrl->text().isEmpty() )
-    cfg.insert( QStringLiteral( "StorageUrl" ), mStorageUrl->text() );
+    cfg.insert( u"StorageUrl"_s, mStorageUrl->text() );
 
-  cfg.insert( QStringLiteral( "FileWidget" ), mFileWidgetGroupBox->isChecked() );
-  cfg.insert( QStringLiteral( "FileWidgetButton" ), mFileWidgetButtonGroupBox->isChecked() );
-  cfg.insert( QStringLiteral( "FileWidgetFilter" ), mFileWidgetFilterLineEdit->text() );
+  cfg.insert( u"FileWidget"_s, mFileWidgetGroupBox->isChecked() );
+  cfg.insert( u"FileWidgetButton"_s, mFileWidgetButtonGroupBox->isChecked() );
+  cfg.insert( u"FileWidgetFilter"_s, mFileWidgetFilterLineEdit->text() );
 
   if ( mUseLink->isChecked() )
   {
-    cfg.insert( QStringLiteral( "UseLink" ), mUseLink->isChecked() );
+    cfg.insert( u"UseLink"_s, mUseLink->isChecked() );
     if ( mFullUrl->isChecked() )
-      cfg.insert( QStringLiteral( "FullUrl" ), mFullUrl->isChecked() );
+      cfg.insert( u"FullUrl"_s, mFullUrl->isChecked() );
   }
 
-  cfg.insert( QStringLiteral( "PropertyCollection" ), mPropertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
+  cfg.insert( u"PropertyCollection"_s, mPropertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
 
   if ( !mRootPath->text().isEmpty() )
-    cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
+    cfg.insert( u"DefaultRoot"_s, mRootPath->text() );
 
   if ( !mStorageType->currentIndex() )
   {
     // Save Storage Mode
-    cfg.insert( QStringLiteral( "StorageMode" ), mStorageModeCbx->currentData().toInt() );
+    cfg.insert( u"StorageMode"_s, mStorageModeCbx->currentData().toInt() );
     // Save Relative Paths option
-    cfg.insert( QStringLiteral( "RelativeStorage" ), mStoragePathCbx->currentData().toInt() );
+    cfg.insert( u"RelativeStorage"_s, mStoragePathCbx->currentData().toInt() );
   }
   else
   {
     // Only file mode and absolute paths are supported for external storage
-    cfg.insert( QStringLiteral( "StorageMode" ), static_cast<int>( QgsFileWidget::GetFile ) );
-    cfg.insert( QStringLiteral( "RelativeStorage" ), static_cast<int>( QgsFileWidget::Absolute ) );
+    cfg.insert( u"StorageMode"_s, static_cast<int>( QgsFileWidget::GetFile ) );
+    cfg.insert( u"RelativeStorage"_s, static_cast<int>( QgsFileWidget::Absolute ) );
   }
 
-  cfg.insert( QStringLiteral( "DocumentViewer" ), mDocumentViewerContentComboBox->currentData().toInt() );
-  cfg.insert( QStringLiteral( "DocumentViewerHeight" ), mDocumentViewerHeight->value() );
-  cfg.insert( QStringLiteral( "DocumentViewerWidth" ), mDocumentViewerWidth->value() );
+  cfg.insert( u"DocumentViewer"_s, mDocumentViewerContentComboBox->currentData().toInt() );
+  cfg.insert( u"DocumentViewerHeight"_s, mDocumentViewerHeight->value() );
+  cfg.insert( u"DocumentViewerWidth"_s, mDocumentViewerWidth->value() );
 
   return cfg;
 }
@@ -216,71 +216,71 @@ QVariantMap QgsExternalResourceConfigDlg::config()
 
 void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
 {
-  if ( config.contains( QStringLiteral( "StorageType" ) ) )
+  if ( config.contains( u"StorageType"_s ) )
   {
-    const int index = mStorageType->findData( config.value( QStringLiteral( "StorageType" ) ) );
+    const int index = mStorageType->findData( config.value( u"StorageType"_s ) );
     if ( index >= 0 )
       mStorageType->setCurrentIndex( index );
   }
 
-  mAuthSettingsProtocol->setConfigId( config.value( QStringLiteral( "StorageAuthConfigId" ) ).toString() );
-  mStorageUrl->setText( config.value( QStringLiteral( "StorageUrl" ) ).toString() );
+  mAuthSettingsProtocol->setConfigId( config.value( u"StorageAuthConfigId"_s ).toString() );
+  mStorageUrl->setText( config.value( u"StorageUrl"_s ).toString() );
 
-  if ( config.contains( QStringLiteral( "FileWidget" ) ) )
+  if ( config.contains( u"FileWidget"_s ) )
   {
-    mFileWidgetGroupBox->setChecked( config.value( QStringLiteral( "FileWidget" ) ).toBool() );
+    mFileWidgetGroupBox->setChecked( config.value( u"FileWidget"_s ).toBool() );
   }
-  if ( config.contains( QStringLiteral( "FileWidget" ) ) )
+  if ( config.contains( u"FileWidget"_s ) )
   {
-    mFileWidgetButtonGroupBox->setChecked( config.value( QStringLiteral( "FileWidgetButton" ) ).toBool() );
+    mFileWidgetButtonGroupBox->setChecked( config.value( u"FileWidgetButton"_s ).toBool() );
   }
-  if ( config.contains( QStringLiteral( "FileWidgetFilter" ) ) )
+  if ( config.contains( u"FileWidgetFilter"_s ) )
   {
-    mFileWidgetFilterLineEdit->setText( config.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
+    mFileWidgetFilterLineEdit->setText( config.value( u"FileWidgetFilter"_s ).toString() );
   }
 
-  if ( config.contains( QStringLiteral( "UseLink" ) ) )
+  if ( config.contains( u"UseLink"_s ) )
   {
-    mUseLink->setChecked( config.value( QStringLiteral( "UseLink" ) ).toBool() );
-    if ( config.contains( QStringLiteral( "FullUrl" ) ) )
+    mUseLink->setChecked( config.value( u"UseLink"_s ).toBool() );
+    if ( config.contains( u"FullUrl"_s ) )
       mFullUrl->setChecked( true );
   }
 
-  mPropertyCollection.loadVariant( config.value( QStringLiteral( "PropertyCollection" ) ), QgsWidgetWrapper::propertyDefinitions() );
+  mPropertyCollection.loadVariant( config.value( u"PropertyCollection"_s ), QgsWidgetWrapper::propertyDefinitions() );
   updateDataDefinedButtons();
 
-  mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
+  mRootPath->setText( config.value( u"DefaultRoot"_s ).toString() );
 
   // relative storage
-  if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
+  if ( config.contains( u"RelativeStorage"_s ) )
   {
-    const int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
+    const int relative = config.value( u"RelativeStorage"_s ).toInt();
     mStoragePathCbx->setCurrentIndex( relative );
   }
 
   // set storage mode
-  if ( config.contains( QStringLiteral( "StorageMode" ) ) )
+  if ( config.contains( u"StorageMode"_s ) )
   {
-    const int mode = config.value( QStringLiteral( "StorageMode" ) ).toInt();
+    const int mode = config.value( u"StorageMode"_s ).toInt();
     mStorageModeCbx->setCurrentIndex( mode );
   }
 
   // Document viewer
-  if ( config.contains( QStringLiteral( "DocumentViewer" ) ) )
+  if ( config.contains( u"DocumentViewer"_s ) )
   {
-    const QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent ) config.value( QStringLiteral( "DocumentViewer" ) ).toInt();
+    const QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent ) config.value( u"DocumentViewer"_s ).toInt();
     const int idx = mDocumentViewerContentComboBox->findData( content );
     if ( idx >= 0 )
     {
       mDocumentViewerContentComboBox->setCurrentIndex( idx );
     }
-    if ( config.contains( QStringLiteral( "DocumentViewerHeight" ) ) )
+    if ( config.contains( u"DocumentViewerHeight"_s ) )
     {
-      mDocumentViewerHeight->setValue( config.value( QStringLiteral( "DocumentViewerHeight" ) ).toInt() );
+      mDocumentViewerHeight->setValue( config.value( u"DocumentViewerHeight"_s ).toInt() );
     }
-    if ( config.contains( QStringLiteral( "DocumentViewerWidth" ) ) )
+    if ( config.contains( u"DocumentViewerWidth"_s ) )
     {
-      mDocumentViewerWidth->setValue( config.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt() );
+      mDocumentViewerWidth->setValue( config.value( u"DocumentViewerWidth"_s ).toInt() );
     }
   }
 }

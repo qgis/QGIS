@@ -26,36 +26,36 @@ QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
 
 bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion, const QString &typeName, const QgsWfsCapabilities &caps )
 {
-  QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ), mUri.httpMethod() ) );
+  QUrl url( mUri.requestUrl( u"DescribeFeatureType"_s, mUri.httpMethod() ) );
 
   switch ( mUri.httpMethod() )
   {
     case Qgis::HttpMethod::Get:
     {
       QUrlQuery query( url );
-      query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+      query.addQueryItem( u"VERSION"_s, WFSVersion );
 
       const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
 
-      if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      if ( WFSVersion.startsWith( "2.0"_L1 ) )
       {
-        query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+        query.addQueryItem( u"TYPENAMES"_s, typeName );
         if ( !namespaceValue.isEmpty() )
         {
-          query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+          query.addQueryItem( u"NAMESPACES"_s, namespaceValue );
         }
       }
       else
       {
         if ( !namespaceValue.isEmpty() )
         {
-          query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+          query.addQueryItem( u"NAMESPACE"_s, namespaceValue );
         }
       }
 
       // Always add singular form for broken servers
       // See: https://github.com/qgis/QGIS/issues/41087
-      query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+      query.addQueryItem( u"TYPENAME"_s, typeName );
 
       url.setQuery( query );
       return sendGET( url, QString(), true, false );
@@ -64,13 +64,13 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion, c
     case Qgis::HttpMethod::Post:
     {
       QDomDocument postDocument = createPostDocument();
-      QDomElement describeFeatureTypeElement = createRootPostElement( caps, WFSVersion, postDocument, QStringLiteral( "wfs:DescribeFeatureType" ), { typeName } );
+      QDomElement describeFeatureTypeElement = createRootPostElement( caps, WFSVersion, postDocument, u"wfs:DescribeFeatureType"_s, { typeName } );
 
-      QDomElement typeNameElement = postDocument.createElement( QStringLiteral( "wfs:TypeName" ) );
+      QDomElement typeNameElement = postDocument.createElement( u"wfs:TypeName"_s );
       typeNameElement.appendChild( postDocument.createTextNode( typeName ) );
       describeFeatureTypeElement.appendChild( typeNameElement );
 
-      return sendPOST( url, QStringLiteral( "application/xml; charset=utf-8" ), postDocument.toByteArray(), true, { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
+      return sendPOST( url, u"application/xml; charset=utf-8"_s, postDocument.toByteArray(), true, { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
     }
 
     case Qgis::HttpMethod::Head:

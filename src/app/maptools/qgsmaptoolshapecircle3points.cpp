@@ -25,7 +25,7 @@
 
 #include "moc_qgsmaptoolshapecircle3points.cpp"
 
-const QString QgsMapToolShapeCircle3PointsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-points" );
+const QString QgsMapToolShapeCircle3PointsMetadata::TOOL_ID = u"circle-from-3-points"_s;
 
 QString QgsMapToolShapeCircle3PointsMetadata::id() const
 {
@@ -39,7 +39,7 @@ QString QgsMapToolShapeCircle3PointsMetadata::name() const
 
 QIcon QgsMapToolShapeCircle3PointsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle3Points.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle3Points.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle3PointsMetadata::category() const

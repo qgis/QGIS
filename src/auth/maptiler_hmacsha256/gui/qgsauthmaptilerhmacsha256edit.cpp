@@ -40,7 +40,7 @@ bool QgsAuthMapTilerHmacSha256Edit::validateConfig()
 QgsStringMap QgsAuthMapTilerHmacSha256Edit::configMap() const
 {
   QgsStringMap config;
-  config.insert( QStringLiteral( "token" ), mTokenEdit->toPlainText() );
+  config.insert( u"token"_s, mTokenEdit->toPlainText() );
 
   return config;
 }
@@ -50,7 +50,7 @@ void QgsAuthMapTilerHmacSha256Edit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  mTokenEdit->setPlainText( configmap.value( QStringLiteral( "token" ) ) );
+  mTokenEdit->setPlainText( configmap.value( u"token"_s ) );
 
   validateConfig();
 }

@@ -93,7 +93,7 @@ void QgsRuleBasedChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
-    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"RB chunk load"_s );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
@@ -115,7 +115,7 @@ void QgsRuleBasedChunkLoader::start()
     }
     if ( !featureLimitReached )
     {
-      QgsDebugMsgLevel( QStringLiteral( "All features fetched for node: %1" ).arg( mNode->tileId().text() ), 3 );
+      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
       // we want to avoid having huge leaf nodes so we don't have float precision issues
       constexpr int MAX_LEAF_SIZE = 500'000;
       if ( fc == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < MAX_LEAF_SIZE )
@@ -197,7 +197,7 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
   {
     // TODO: add support for handling of vector layers
     // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
-    QgsDebugError( QStringLiteral( "Vector layers in globe scenes are not supported yet!" ) );
+    QgsDebugError( u"Vector layers in globe scenes are not supported yet!"_s );
     setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
     return;
   }
@@ -291,7 +291,7 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+          QgsDebugMsgLevel( u"QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1"_s.arg( symbolType ), 2 );
         }
       }
     }

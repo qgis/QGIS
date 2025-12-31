@@ -68,7 +68,7 @@ void QgsTextWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setText( QgsExpression::replaceExpressionText( mText, &mTextContext ) );
   mWidget->setOpenExternalLinks( true );
 
-  const thread_local QRegularExpression sRegEx { QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+  const thread_local QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
   mNeedsGeometry = false;
   QRegularExpressionMatchIterator matchIt { sRegEx.globalMatch( mText ) };
@@ -94,7 +94,7 @@ void QgsTextWidgetWrapper::setText( const QString &text )
   mText = text;
 
   bool ok = false;
-  const thread_local QRegularExpression sRegEx( QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
+  const thread_local QRegularExpression sRegEx( u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
   QRegularExpressionMatchIterator matchIt = sRegEx.globalMatch( mText );
   while ( !ok && matchIt.hasNext() )
   {

@@ -28,7 +28,7 @@
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::name() const
 {
-  return QStringLiteral( "checkgeometrypointcoveredbyline" );
+  return u"checkgeometrypointcoveredbyline"_s;
 }
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::displayName() const
@@ -53,7 +53,7 @@ QString QgsGeometryCheckPointCoveredByLineAlgorithm::group() const
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::groupId() const
 {
-  return QStringLiteral( "checkgeometry" );
+  return u"checkgeometry"_s;
 }
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::shortHelpString() const
@@ -77,20 +77,20 @@ void QgsGeometryCheckPointCoveredByLineAlgorithm::initAlgorithm( const QVariantM
   Q_UNUSED( configuration )
 
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
   ) );
   addParameter( new QgsProcessingParameterMultipleLayers(
-    QStringLiteral( "LINES" ), QObject::tr( "Line layers" ), Qgis::ProcessingSourceType::VectorLine
+    u"LINES"_s, QObject::tr( "Line layers" ), Qgis::ProcessingSourceType::VectorLine
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Points not covered by a line" ), Qgis::ProcessingSourceType::VectorPoint
+    u"ERRORS"_s, QObject::tr( "Points not covered by a line" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
@@ -100,7 +100,7 @@ void QgsGeometryCheckPointCoveredByLineAlgorithm::initAlgorithm( const QVariantM
 
 bool QgsGeometryCheckPointCoveredByLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
 
   return true;
 }
@@ -108,25 +108,25 @@ bool QgsGeometryCheckPointCoveredByLineAlgorithm::prepareAlgorithm( const QVaria
 QgsFields QgsGeometryCheckPointCoveredByLineAlgorithm::outputFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_layername" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_partidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_ringidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_vertidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_errorx" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_errory" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layerid"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layername"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_partidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_ringidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_vertidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_errorx"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_errory"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_error"_s, QMetaType::QString ) );
   return fields;
 }
 
 QVariantMap QgsGeometryCheckPointCoveredByLineAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_errors;
-  const std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const QString uniqueIdFieldName( parameterAsString( parameters, u"UNIQUE_ID"_s, context ) );
   const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
@@ -136,15 +136,15 @@ QVariantMap QgsGeometryCheckPointCoveredByLineAlgorithm::processAlgorithm( const
   QgsFields fields = outputFields();
   fields.append( uniqueIdField );
 
-  QList<QgsMapLayer *> lineLayers = parameterAsLayerList( parameters, QStringLiteral( "LINES" ), context );
+  QList<QgsMapLayer *> lineLayers = parameterAsLayerList( parameters, u"LINES"_s, context );
   if ( lineLayers.isEmpty() )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "LINES" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"LINES"_s ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
+    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
   ) );
   if ( !sink_errors )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
@@ -219,7 +219,7 @@ QVariantMap QgsGeometryCheckPointCoveredByLineAlgorithm::processAlgorithm( const
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -232,7 +232,7 @@ QVariantMap QgsGeometryCheckPointCoveredByLineAlgorithm::processAlgorithm( const
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
+  outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;
 }

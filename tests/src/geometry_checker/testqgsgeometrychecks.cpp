@@ -367,7 +367,7 @@ void TestQgsGeometryChecks::testContainedCheck()
 
   QList<QgsGeometryCheckError *> errs1;
 
-  QCOMPARE( checkErrors.size(), 4 );
+  QCOMPARE( checkErrors.size(), 5 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 4, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:5" ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 5, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
@@ -641,7 +641,7 @@ void TestQgsGeometryChecks::testAllowedGaps()
   const auto testContext = createTestContext( dir, layers );
 
   // Allowed gaps layer
-  auto allowedGaps = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  auto allowedGaps = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:4326"_s, u"allowedGaps"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( allowedGaps.get(), true, false );
 
   // Test detection
@@ -650,9 +650,9 @@ void TestQgsGeometryChecks::testAllowedGaps()
 
   QVariantMap configuration;
   configuration.insert( "gapThreshold", 0.01 );
-  configuration.insert( QStringLiteral( "allowedGapsEnabled" ), true );
-  configuration.insert( QStringLiteral( "allowedGapsLayer" ), allowedGaps->id() );
-  configuration.insert( QStringLiteral( "allowedGapsBuffer" ), 0.01 );
+  configuration.insert( u"allowedGapsEnabled"_s, true );
+  configuration.insert( u"allowedGapsLayer"_s, allowedGaps->id() );
+  configuration.insert( u"allowedGapsBuffer"_s, 0.01 );
 
   QgsGeometryGapCheck check( testContext.first, configuration );
   check.prepare( testContext.first, configuration );
@@ -709,7 +709,7 @@ void TestQgsGeometryChecks::testMissingVertexCheck()
 {
   QTemporaryDir dir;
   QMap<QString, QString> layers;
-  layers.insert( QStringLiteral( "missing_vertex.gpkg" ), QString() );
+  layers.insert( u"missing_vertex.gpkg"_s, QString() );
   auto testContext = createTestContext( dir, layers );
 
   // Test detection
@@ -928,9 +928,9 @@ void TestQgsGeometryChecks::testOverlapCheckNoMaxArea()
 {
   QTemporaryDir dir;
   QMap<QString, QString> layers;
-  layers.insert( QStringLiteral( "point_layer.shp" ), QString() );
-  layers.insert( QStringLiteral( "line_layer.shp" ), QString() );
-  layers.insert( QStringLiteral( "polygon_layer.shp" ), QString() );
+  layers.insert( u"point_layer.shp"_s, QString() );
+  layers.insert( u"line_layer.shp"_s, QString() );
+  layers.insert( u"polygon_layer.shp"_s, QString() );
 
   const auto testContext = createTestContext( dir, layers );
 
@@ -1003,8 +1003,9 @@ void TestQgsGeometryChecks::testPointInPolygonCheck()
 
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"] ).isEmpty() );
-  // Check that the point which is properly inside a polygon is not listed as error
+  // Check that the points which are properly inside a polygon are not listed as errors
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 5 ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 7 ).isEmpty() );
   QVERIFY( messages.contains( "Point in polygon check failed for (polygon_layer.shp:1): the geometry is invalid" ) );
 
   cleanupTestContext( testContext );
@@ -1070,9 +1071,9 @@ void TestQgsGeometryChecks::testSelfContactCheck()
 
   // https://github.com/qgis/QGIS/issues/28228
   // test with a linestring which collapses to an empty linestring
-  QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext(), nullptr );
+  QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext(), nullptr );
   const QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
-  QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((2988987 10262483, 2988983 10262480, 2988991 10262432, 2988990 10262419, 2988977 10262419, 2988976 10262420, 2988967 10262406, 2988970 10262421, 2988971 10262424),(2995620 10301368))" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( u"MultiLineString ((2988987 10262483, 2988983 10262480, 2988991 10262432, 2988990 10262419, 2988977 10262419, 2988976 10262420, 2988967 10262406, 2988970 10262421, 2988971 10262424),(2995620 10301368))"_s );
   QList<QgsSingleGeometryCheckError *> errors = check2.processGeometry( g );
   QVERIFY( errors.isEmpty() );
 
@@ -1137,14 +1138,14 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   testContext.second[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
   const QgsGeometryCollection *collectionResult = qgsgeometry_cast<const QgsGeometryCollection *>( f.geometry().constGet() );
 
-  QCOMPARE( qgsgeometry_cast<const QgsPolygon *>( collectionResult->geometryN( 0 ) )->exteriorRing()->asWkt( 2 ), QStringLiteral( "LineString (0.7 0.59, 1.32 0.6, 1.26 0.09, 0.51 0.05, 0.89 0.57, 0.7 0.59)" ) );
+  QCOMPARE( qgsgeometry_cast<const QgsPolygon *>( collectionResult->geometryN( 0 ) )->exteriorRing()->asWkt( 2 ), u"LineString (0.7 0.59, 1.32 0.6, 1.26 0.09, 0.51 0.05, 0.89 0.57, 0.7 0.59)"_s );
   // make sure the other part of the ring isn't present in this feature. We may have OTHER parts in this feature though, depending on the GDAL version!
   for ( int i = 1; i < collectionResult->numGeometries(); ++i )
   {
-    QVERIFY( qgsgeometry_cast<const QgsPolygon *>( collectionResult->geometryN( i ) )->exteriorRing()->asWkt( 2 ) != QLatin1String( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );
+    QVERIFY( qgsgeometry_cast<const QgsPolygon *>( collectionResult->geometryN( i ) )->exteriorRing()->asWkt( 2 ) != "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)"_L1 );
   }
   testContext.second[errs3[0]->layerId()]->getFeature( nextId, f );
-  QCOMPARE( qgsgeometry_cast<const QgsPolygon *>( f.geometry().constGet() )->exteriorRing()->asWkt( 2 ), QStringLiteral( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );
+  QCOMPARE( qgsgeometry_cast<const QgsPolygon *>( f.geometry().constGet() )->exteriorRing()->asWkt( 2 ), u"LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)"_s );
 
   QVERIFY( fixCheckError( testContext.second, errs4[0], QgsGeometrySelfIntersectionCheck::ToMultiObject, QgsGeometryCheckError::StatusFixed, { { errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeChanged, QgsVertexId( 0, 0 ) }, { errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0, 1 ) }, { errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 1 ) } } ) );
   testContext.second[errs4[0]->layerId()]->getFeature( errs4[0]->featureId(), f );
@@ -1312,8 +1313,8 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   qDebug() << f.geometry().vertexAt( 2 ).asWkt() << "\n"; // "Point (2537297.08237999258562922 1152290.78251273254863918)"
   qDebug() << pointOld_2.asWkt() << "\n"; //  "Point (2537366.84566075634211302 1152360.28978145681321621)"
   */
-  QCOMPARE( f.geometry().vertexAt( 1 ).asWkt( 4 ), QStringLiteral( "Point (2537366.8457 1152360.2898)" ) );
-  QCOMPARE( f.geometry().vertexAt( 2 ).asWkt( 4 ), QStringLiteral( "Point (2537297.0824 1152290.7825)" ) );
+  QCOMPARE( f.geometry().vertexAt( 1 ).asWkt( 4 ), u"Point (2537366.8457 1152360.2898)"_s );
+  QCOMPARE( f.geometry().vertexAt( 2 ).asWkt( 4 ), u"Point (2537297.0824 1152290.7825)"_s );
 
   cleanupTestContext( testContext );
 }

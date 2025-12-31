@@ -34,7 +34,7 @@ QString QgsClassificationJenks::name() const
 
 QString QgsClassificationJenks::id() const
 {
-  return QStringLiteral( "Jenks" );
+  return u"Jenks"_s;
 }
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationJenks::clone() const
@@ -89,8 +89,8 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
     sample.resize( std::max( mMaximumSize, static_cast<int>( values.size() ) / 10 ) );
 
-    QgsDebugMsgLevel( QStringLiteral( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "values:%1" ).arg( values.size() ), 2 );
+    QgsDebugMsgLevel( u"natural breaks (jenks) sample size: %1"_s.arg( sample.size() ), 2 );
+    QgsDebugMsgLevel( u"values:%1"_s.arg( values.size() ), 2 );
 
     sample[ 0 ] = minimum;
     sample[ 1 ] = maximum;

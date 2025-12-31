@@ -34,10 +34,10 @@
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
-  , mEncoding( QStringLiteral( "UTF-8" ) )
+  , mEncoding( u"UTF-8"_s )
   , mFirstEOLChar( QChar( 0 ) )
-  , mDefaultFieldName( QStringLiteral( "field_%1" ) )
-  , mDefaultFieldRegexp( QStringLiteral( "^(?:field_)(\\d+)$" ) )
+  , mDefaultFieldName( u"field_%1"_s )
+  , mDefaultFieldRegexp( u"^(?:field_)(\\d+)$"_s )
 {
   mDefaultFieldRegexp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
   // The default type is CSV
@@ -96,7 +96,7 @@ bool QgsDelimitedTextFile::open()
       mCodec = QTextCodec::codecForName( !mEncoding.isEmpty() ? mEncoding.toLatin1() : QByteArray( "UTF-8" ) );
       if ( !mCodec )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Wrong codec '%1' for %2, falling back to locale default." ).arg( mEncoding, mFileName ), 2 );
+        QgsDebugMsgLevel( u"Wrong codec '%1' for %2, falling back to locale default."_s.arg( mEncoding, mFileName ), 2 );
         mCodec = QTextCodec::codecForLocale();
         mEncoding = mCodec->name();
       }
@@ -143,81 +143,81 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
 
   // Extract the encoding
   const QUrlQuery query( url );
-  if ( query.hasQueryItem( QStringLiteral( "encoding" ) ) )
+  if ( query.hasQueryItem( u"encoding"_s ) )
   {
-    mEncoding = query.queryItemValue( QStringLiteral( "encoding" ) );
+    mEncoding = query.queryItemValue( u"encoding"_s );
   }
 
   //
-  if ( query.hasQueryItem( QStringLiteral( "watchFile" ) ) )
+  if ( query.hasQueryItem( u"watchFile"_s ) )
   {
-    mUseWatcher = query.queryItemValue( QStringLiteral( "watchFile" ) ).toUpper().startsWith( 'Y' );
+    mUseWatcher = query.queryItemValue( u"watchFile"_s ).toUpper().startsWith( 'Y' );
   }
 
   // The default type is csv, to be consistent with the
   // previous implementation (except that quoting should be handled properly)
 
-  QString type( QStringLiteral( "csv" ) );
-  QString delimiter( QStringLiteral( "," ) );
-  QString quote = QStringLiteral( "\"" );
-  QString escape = QStringLiteral( "\"" );
+  QString type( u"csv"_s );
+  QString delimiter( u","_s );
+  QString quote = u"\""_s;
+  QString escape = u"\""_s;
   mUseHeader = true;
   mSkipLines = 0;
 
   // Prefer simple "type" for delimiter type, but include delimiterType
   // as optional name  for backwards compatibility
-  if ( query.hasQueryItem( QStringLiteral( "type" ) ) || query.hasQueryItem( QStringLiteral( "delimiterType" ) ) )
+  if ( query.hasQueryItem( u"type"_s ) || query.hasQueryItem( u"delimiterType"_s ) )
   {
-    if ( query.hasQueryItem( QStringLiteral( "type" ) ) )
-      type = query.queryItemValue( QStringLiteral( "type" ) );
-    else if ( query.hasQueryItem( QStringLiteral( "delimiterType" ) ) )
-      type = query.queryItemValue( QStringLiteral( "delimiterType" ) );
+    if ( query.hasQueryItem( u"type"_s ) )
+      type = query.queryItemValue( u"type"_s );
+    else if ( query.hasQueryItem( u"delimiterType"_s ) )
+      type = query.queryItemValue( u"delimiterType"_s );
 
     // Support for previous version of Qgs - plain chars had
     // quote characters ' or "
-    if ( type == QLatin1String( "plain" ) )
+    if ( type == "plain"_L1 )
     {
-      quote = QStringLiteral( "'\"" );
+      quote = u"'\""_s;
       escape.clear();
     }
-    else if ( type == QLatin1String( "regexp " ) )
+    else if ( type == "regexp "_L1 )
     {
       delimiter.clear();
       quote.clear();
       escape.clear();
     }
   }
-  if ( query.hasQueryItem( QStringLiteral( "delimiter" ) ) )
+  if ( query.hasQueryItem( u"delimiter"_s ) )
   {
-    delimiter = query.queryItemValue( QStringLiteral( "delimiter" ) );
+    delimiter = query.queryItemValue( u"delimiter"_s );
   }
-  if ( query.hasQueryItem( QStringLiteral( "quote" ) ) )
+  if ( query.hasQueryItem( u"quote"_s ) )
   {
-    quote = query.queryItemValue( QStringLiteral( "quote" ) );
+    quote = query.queryItemValue( u"quote"_s );
   }
-  if ( query.hasQueryItem( QStringLiteral( "escape" ) ) )
+  if ( query.hasQueryItem( u"escape"_s ) )
   {
-    escape = query.queryItemValue( QStringLiteral( "escape" ) );
+    escape = query.queryItemValue( u"escape"_s );
   }
-  if ( query.hasQueryItem( QStringLiteral( "skipLines" ) ) )
+  if ( query.hasQueryItem( u"skipLines"_s ) )
   {
-    mSkipLines = query.queryItemValue( QStringLiteral( "skipLines" ) ).toInt();
+    mSkipLines = query.queryItemValue( u"skipLines"_s ).toInt();
   }
-  if ( query.hasQueryItem( QStringLiteral( "useHeader" ) ) )
+  if ( query.hasQueryItem( u"useHeader"_s ) )
   {
-    mUseHeader = !query.queryItemValue( QStringLiteral( "useHeader" ) ).toUpper().startsWith( 'N' );
+    mUseHeader = !query.queryItemValue( u"useHeader"_s ).toUpper().startsWith( 'N' );
   }
-  if ( query.hasQueryItem( QStringLiteral( "skipEmptyFields" ) ) )
+  if ( query.hasQueryItem( u"skipEmptyFields"_s ) )
   {
-    mDiscardEmptyFields = !query.queryItemValue( QStringLiteral( "skipEmptyFields" ) ).toUpper().startsWith( 'N' );
+    mDiscardEmptyFields = !query.queryItemValue( u"skipEmptyFields"_s ).toUpper().startsWith( 'N' );
   }
-  if ( query.hasQueryItem( QStringLiteral( "trimFields" ) ) )
+  if ( query.hasQueryItem( u"trimFields"_s ) )
   {
-    mTrimFields = !query.queryItemValue( QStringLiteral( "trimFields" ) ).toUpper().startsWith( 'N' );
+    mTrimFields = !query.queryItemValue( u"trimFields"_s ).toUpper().startsWith( 'N' );
   }
-  if ( query.hasQueryItem( QStringLiteral( "maxFields" ) ) )
+  if ( query.hasQueryItem( u"maxFields"_s ) )
   {
-    mMaxFields = query.queryItemValue( QStringLiteral( "maxFields" ) ).toInt();
+    mMaxFields = query.queryItemValue( u"maxFields"_s ).toInt();
   }
 
   QgsDebugMsgLevel( "Delimited text file is: " + mFileName, 2 );
@@ -233,15 +233,15 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
   QgsDebugMsgLevel( "Trim fields: " + QString( mTrimFields ? "Yes" : "No" ), 2 );
 
   // Support for previous version of plain characters
-  if ( type == QLatin1String( "csv" ) || type == QLatin1String( "plain" ) )
+  if ( type == "csv"_L1 || type == "plain"_L1 )
   {
     setTypeCSV( delimiter, quote, escape );
   }
-  else if ( type == QLatin1String( "whitespace" ) )
+  else if ( type == "whitespace"_L1 )
   {
     setTypeWhitespace();
   }
-  else if ( type == QLatin1String( "regexp" ) )
+  else if ( type == "regexp"_L1 )
   {
     setTypeRegexp( delimiter );
   }
@@ -256,49 +256,49 @@ QUrl QgsDelimitedTextFile::url() const
 {
   QUrl url = QUrl::fromLocalFile( mFileName );
   QUrlQuery query( url );
-  if ( mEncoding != QLatin1String( "UTF-8" ) )
+  if ( mEncoding != "UTF-8"_L1 )
   {
-    query.addQueryItem( QStringLiteral( "encoding" ), mEncoding );
+    query.addQueryItem( u"encoding"_s, mEncoding );
   }
 
   if ( mUseWatcher )
   {
-    query.addQueryItem( QStringLiteral( "watchFile" ), QStringLiteral( "yes" ) );
+    query.addQueryItem( u"watchFile"_s, u"yes"_s );
   }
 
-  query.addQueryItem( QStringLiteral( "type" ), type() );
+  query.addQueryItem( u"type"_s, type() );
   if ( mType == DelimTypeRegexp )
   {
-    query.addQueryItem( QStringLiteral( "delimiter" ), mDelimRegexp.pattern() );
+    query.addQueryItem( u"delimiter"_s, mDelimRegexp.pattern() );
   }
   if ( mType == DelimTypeCSV )
   {
-    if ( mDelimChars != QLatin1String( "," ) )
-      query.addQueryItem( QStringLiteral( "delimiter" ), encodeChars( mDelimChars ) );
-    if ( mQuoteChar != QLatin1String( "\"" ) )
-      query.addQueryItem( QStringLiteral( "quote" ), encodeChars( mQuoteChar ) );
-    if ( mEscapeChar != QLatin1String( "\"" ) )
-      query.addQueryItem( QStringLiteral( "escape" ), encodeChars( mEscapeChar ) );
+    if ( mDelimChars != ","_L1 )
+      query.addQueryItem( u"delimiter"_s, encodeChars( mDelimChars ) );
+    if ( mQuoteChar != "\""_L1 )
+      query.addQueryItem( u"quote"_s, encodeChars( mQuoteChar ) );
+    if ( mEscapeChar != "\""_L1 )
+      query.addQueryItem( u"escape"_s, encodeChars( mEscapeChar ) );
   }
   if ( mSkipLines > 0 )
   {
-    query.addQueryItem( QStringLiteral( "skipLines" ), QString::number( mSkipLines ) );
+    query.addQueryItem( u"skipLines"_s, QString::number( mSkipLines ) );
   }
   if ( !mUseHeader )
   {
-    query.addQueryItem( QStringLiteral( "useHeader" ), QStringLiteral( "No" ) );
+    query.addQueryItem( u"useHeader"_s, u"No"_s );
   }
   if ( mTrimFields )
   {
-    query.addQueryItem( QStringLiteral( "trimFields" ), QStringLiteral( "Yes" ) );
+    query.addQueryItem( u"trimFields"_s, u"Yes"_s );
   }
   if ( mDiscardEmptyFields && mType != DelimTypeWhitespace )
   {
-    query.addQueryItem( QStringLiteral( "skipEmptyFields" ), QStringLiteral( "Yes" ) );
+    query.addQueryItem( u"skipEmptyFields"_s, u"Yes"_s );
   }
   if ( mMaxFields > 0 )
   {
-    query.addQueryItem( QStringLiteral( "maxFields" ), QString::number( mMaxFields ) );
+    query.addQueryItem( u"maxFields"_s, QString::number( mMaxFields ) );
   }
   url.setQuery( query );
   return url;
@@ -325,17 +325,17 @@ void QgsDelimitedTextFile::setUseWatcher( bool useWatcher )
 QString QgsDelimitedTextFile::type() const
 {
   if ( mType == DelimTypeWhitespace )
-    return QStringLiteral( "whitespace" );
+    return u"whitespace"_s;
   if ( mType == DelimTypeCSV )
-    return QStringLiteral( "csv" );
+    return u"csv"_s;
   if ( mType == DelimTypeRegexp )
-    return QStringLiteral( "regexp" );
-  return QStringLiteral( "csv" );
+    return u"regexp"_s;
+  return u"csv"_s;
 }
 
 void QgsDelimitedTextFile::setTypeWhitespace()
 {
-  setTypeRegexp( QStringLiteral( "\\s+" ) );
+  setTypeRegexp( u"\\s+"_s );
   mDiscardEmptyFields = true;
   mType = DelimTypeWhitespace;
 }
@@ -361,13 +361,13 @@ void QgsDelimitedTextFile::setTypeRegexp( const QString &regexp )
 
 QString QgsDelimitedTextFile::decodeChars( QString chars )
 {
-  chars = chars.replace( QLatin1String( "\\t" ), QLatin1String( "\t" ) );
+  chars = chars.replace( "\\t"_L1, "\t"_L1 );
   return chars;
 }
 
 QString QgsDelimitedTextFile::encodeChars( QString chars )
 {
-  chars = chars.replace( '\t', QLatin1String( "\\t" ) );
+  chars = chars.replace( '\t', "\\t"_L1 );
   return chars;
 }
 
@@ -382,7 +382,7 @@ void QgsDelimitedTextFile::setTypeCSV( const QString &delim, const QString &quot
   mDefinitionValid = !mDelimChars.isEmpty();
   if ( !mDefinitionValid )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Invalid empty delimiter defined for text file delimiter" ), 2 );
+    QgsDebugMsgLevel( u"Invalid empty delimiter defined for text file delimiter"_s, 2 );
   }
 }
 

@@ -55,13 +55,13 @@ void QgsAttributeEditorAction::setAction( const QgsAction &newAction )
 
 QString QgsAttributeEditorAction::typeIdentifier() const
 {
-  return QStringLiteral( "attributeEditorAction" );
+  return u"attributeEditorAction"_s;
 }
 
 void QgsAttributeEditorAction::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc )
-  elem.setAttribute( QStringLiteral( "ActionUUID" ), mUuid.toString() );
+  elem.setAttribute( u"ActionUUID"_s, mUuid.toString() );
 }
 
 void QgsAttributeEditorAction::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
@@ -69,5 +69,5 @@ void QgsAttributeEditorAction::loadConfiguration( const QDomElement &element, co
   Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
-  mUuid = QUuid( element.attribute( QStringLiteral( "ActionUUID" ) ) );
+  mUuid = QUuid( element.attribute( u"ActionUUID"_s ) );
 }

@@ -30,7 +30,7 @@ QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndic
 QString QgsLayerTreeViewNonRemovableIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorNonRemovable.svg" );
+  return u"/mIndicatorNonRemovable.svg"_s;
 }
 
 QString QgsLayerTreeViewNonRemovableIndicatorProvider::tooltipText( QgsMapLayer *layer )

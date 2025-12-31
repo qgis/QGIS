@@ -55,8 +55,8 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   // Shader program
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
 
-  const QUrl urlVert( QStringLiteral( "qrc:/shaders/billboards.vert" ) );
-  const QUrl urlGeom( QStringLiteral( "qrc:/shaders/billboards.geom" ) );
+  const QUrl urlVert( u"qrc:/shaders/billboards.vert"_s );
+  const QUrl urlGeom( u"qrc:/shaders/billboards.geom"_s );
 
   switch ( mode )
   {
@@ -89,7 +89,7 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
       break;
     }
   }
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.frag" ) ) ) );
+  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/billboards.frag"_s ) ) );
 
   // Render Pass
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
@@ -99,7 +99,7 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
+  filterKey->setName( u"renderingStyle"_s );
   filterKey->setValue( "forward" );
 
   // Technique

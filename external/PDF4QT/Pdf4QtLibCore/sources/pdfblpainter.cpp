@@ -32,7 +32,49 @@
 #ifdef Q_OS_WIN
 #include <Blend2d.h>
 #else
-#include <blend2d.h>
+  #if __has_include(<blend2d/blend2d.h>)
+    #include <blend2d/blend2d.h>
+  #else
+    #include <blend2d.h>
+  #endif
+#endif
+
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+  #define assignData          assign_data
+  #define assignDeep          assign_deep
+  #define assignStops         assign_stops
+  #define blitImage           blit_image
+  #define clearAll            clear_all
+  #define clipToRect          clip_to_rect
+  #define createFromData      create_from_data
+  #define createFromFace      create_from_face
+  #define cubicTo             cubic_to
+  #define dashArray           dash_array
+  #define fillEllipse         fill_ellipse
+  #define fillRectArray       fill_rect_array
+  #define resetTransform      reset_transform
+  #define restoreClipping     restore_clipping
+  #define setCompOp           set_comp_op
+  #define setFillStyle        set_fill_style
+  #define setGlobalAlpha      set_global_alpha
+  #define setHint             set_hint
+  #define setStrokeAlpha      set_stroke_alpha
+  #define setStrokeCaps       set_stroke_caps
+  #define setStrokeDashArray  set_stroke_dash_array
+  #define setStrokeDashOffset set_stroke_dash_offset
+  #define setStrokeJoin       set_stroke_join
+  #define setStrokeMiterLimit set_stroke_miter_limit
+  #define setStrokeOptions    set_stroke_options
+  #define setStrokeStyle      set_stroke_style
+  #define setStrokeWidth      set_stroke_width
+  #define setTransform        set_transform
+  #define strokeLine          stroke_line
+  #define strokeOptions       stroke_options
+  #define strokePath          stroke_path
+  #define strokeRectArray     stroke_rect_array
+  #define threadCount         thread_count
+  #define userToMeta          user_to_meta
+  #define userTransform       user_transform
 #endif
 
 namespace pdf
@@ -586,7 +628,11 @@ void PDFBLPaintEngine::drawPathImpl(const QPainterPath& path, bool enableStroke,
                 {
                     m_blContext->save();
                     m_blContext->resetTransform();
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+                    m_blContext->fill_path(getBLPath(fillPath));
+#else
                     m_blContext->fillPath(getBLPath(fillPath));
+#endif
                     m_blContext->restore();
                 }
             }
@@ -603,7 +649,11 @@ void PDFBLPaintEngine::drawPathImpl(const QPainterPath& path, bool enableStroke,
                     m_blContext->save();
                     m_blContext->resetTransform();
                     setBLBrush(m_blContext.value(), m_currentPen.brush());
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+                    m_blContext->fill_path(getBLPath(finalTransformedStrokedPath));
+#else
                     m_blContext->fillPath(getBLPath(finalTransformedStrokedPath));
+#endif
                     m_blContext->restore();
                 }
             }
@@ -616,7 +666,11 @@ void PDFBLPaintEngine::drawPathImpl(const QPainterPath& path, bool enableStroke,
 
     if ((isFillActive() && enableFill) || forceFill)
     {
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+        m_blContext->fill_path(blPath);
+#else
         m_blContext->fillPath(blPath);
+#endif
     }
 
     if (isStrokeActive() && enableStroke)
@@ -838,11 +892,19 @@ BLPath PDFBLPaintEngine::getBLPath(const QPainterPath& path)
         switch (element.type)
         {
         case QPainterPath::MoveToElement:
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+            blPath.move_to(element.x, element.y);
+#else
             blPath.moveTo(element.x, element.y);
+#endif
             break;
 
         case QPainterPath::LineToElement:
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+            blPath.line_to(element.x, element.y);
+#else
             blPath.lineTo(element.x, element.y);
+#endif
             break;
 
         case QPainterPath::CurveToElement:
@@ -930,7 +992,11 @@ void PDFBLPaintEngine::setBLPen(BLContext& context, const QPen& pen)
     {
     case Qt::SolidLine:
         strokeOptions.dashArray.clear();
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+        strokeOptions.dash_offset = 0.0;
+#else
         strokeOptions.dashOffset = 0.0;
+#endif
         break;
 
     case Qt::DashLine:
@@ -965,7 +1031,11 @@ void PDFBLPaintEngine::setBLPen(BLContext& context, const QPen& pen)
     {
         auto dashPattern = pen.dashPattern();
         strokeOptions.dashArray.assignData(dashPattern.data(), dashPattern.size());
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+        strokeOptions.dash_offset = pen.dashOffset();
+#else
         strokeOptions.dashOffset = pen.dashOffset();
+#endif
         break;
     }
 
@@ -1316,7 +1386,11 @@ void PDFBLPaintEngine::setFillRule(Qt::FillRule fillRule)
         break;
     }
 
+#if defined(BL_VERSION) && (BL_VERSION >= BL_MAKE_VERSION(0,20,0))
+    m_blContext->set_fill_rule(blFillRule);
+#else
     m_blContext->setFillRule(blFillRule);
+#endif
 }
 
 }   // namespace pdf

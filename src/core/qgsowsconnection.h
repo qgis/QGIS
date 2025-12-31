@@ -46,7 +46,7 @@ template<class T> class QgsSettingsEntryEnumFlag;
 class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeXyzConnections = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "xyz" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeXyzConnections = QgsSettingsTree::sTreeConnections->createNamedListNode( u"xyz"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsXyzConnectionSettings SIP_SKIP
 class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 {
   public:
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "arcgisfeatureserver" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionArcgis = QgsSettingsTree::sTreeConnections->createNamedListNode( u"arcgisfeatureserver"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;
@@ -94,8 +94,8 @@ class CORE_EXPORT QgsOwsConnection : public QObject
   public:
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListNode *sTtreeOwsServices = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "ows" ) );
-    static inline QgsSettingsTreeNamedListNode *sTreeOwsConnections = sTtreeOwsServices->createNamedListNode( QStringLiteral( "connections" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTtreeOwsServices = QgsSettingsTree::sTreeConnections->createNamedListNode( u"ows"_s );
+    static inline QgsSettingsTreeNamedListNode *sTreeOwsConnections = sTtreeOwsServices->createNamedListNode( u"connections"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;

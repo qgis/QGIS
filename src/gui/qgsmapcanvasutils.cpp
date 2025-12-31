@@ -78,7 +78,7 @@ QString QgsMapCanvasUtils::filterForLayer( QgsMapCanvas *canvas, QgsVectorLayer 
   if ( canvas->mapSettings().isTemporal() )
   {
     if ( !layer->temporalProperties()->isVisibleInTemporalRange( canvas->temporalRange() ) )
-      return QStringLiteral( "FALSE" );
+      return u"FALSE"_s;
 
     QgsVectorLayerTemporalContext temporalContext;
     temporalContext.setLayer( layer );

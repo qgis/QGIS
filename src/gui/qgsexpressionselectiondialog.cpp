@@ -46,10 +46,10 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 
   setWindowTitle( tr( "%1 — Select by Expression" ).arg( layer->name() ) );
 
-  mActionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
-  mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
-  mActionRemoveFromSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ) );
-  mActionSelectIntersect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectIntersect.svg" ) ) );
+  mActionSelect->setIcon( QgsApplication::getThemeIcon( u"/mIconExpressionSelect.svg"_s ) );
+  mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( u"/mIconSelectAdd.svg"_s ) );
+  mActionRemoveFromSelection->setIcon( QgsApplication::getThemeIcon( u"/mIconSelectRemove.svg"_s ) );
+  mActionSelectIntersect->setIcon( QgsApplication::getThemeIcon( u"/mIconSelectIntersect.svg"_s ) );
 
   mButtonSelect->addAction( mActionSelect );
   mButtonSelect->addAction( mActionAddToSelection );
@@ -58,7 +58,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mButtonSelect->setDefaultAction( mActionSelect );
 
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  mExpressionBuilder->initWithLayer( layer, context, QStringLiteral( "selection" ) );
+  mExpressionBuilder->initWithLayer( layer, context, u"selection"_s );
   mExpressionBuilder->setExpressionText( startText );
 
   // by default, zoom to features is hidden, shown only if canvas is set
@@ -203,10 +203,10 @@ void QgsExpressionSelectionDialog::done( int r )
 
 void QgsExpressionSelectionDialog::saveRecent()
 {
-  mExpressionBuilder->expressionTree()->saveToRecent( mExpressionBuilder->expressionText(), QStringLiteral( "selection" ) );
+  mExpressionBuilder->expressionTree()->saveToRecent( mExpressionBuilder->expressionText(), u"selection"_s );
 }
 
 void QgsExpressionSelectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#automatic-selection" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#automatic-selection"_s );
 }

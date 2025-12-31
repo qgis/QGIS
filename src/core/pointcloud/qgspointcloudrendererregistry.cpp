@@ -28,16 +28,16 @@
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "extent" ),
+  addRenderer( new QgsPointCloudRendererMetadata( u"extent"_s,
                QObject::tr( "Extent Only" ),
                QgsPointCloudExtentRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "ramp" ),
+  addRenderer( new QgsPointCloudRendererMetadata( u"ramp"_s,
                QObject::tr( "Attribute by Ramp" ),
                QgsPointCloudAttributeByRampRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "rgb" ),
+  addRenderer( new QgsPointCloudRendererMetadata( u"rgb"_s,
                QObject::tr( "RGB" ),
                QgsPointCloudRgbRenderer::create ) );
-  addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "classified" ),
+  addRenderer( new QgsPointCloudRendererMetadata( u"classified"_s,
                QObject::tr( "Classification" ),
                QgsPointCloudClassifiedRenderer::create ) );
 }
@@ -93,7 +93,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
 
   const QgsPointCloudStatistics stats = layer->statistics();
 
-  if ( ( provider->name() == QLatin1String( "pdal" ) ) && ( !provider->hasValidIndex() ) )
+  if ( ( provider->name() == "pdal"_L1 ) && ( !provider->hasValidIndex() ) )
   {
     // for now, default to extent renderer only for las/laz files
     return new QgsPointCloudExtentRenderer();
@@ -108,14 +108,14 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   const QgsPointCloudAttributeCollection attributes = provider->attributes();
 
   //if red/green/blue attributes are present, then default to a RGB renderer
-  if ( attributes.indexOf( QLatin1String( "Red" ) ) >= 0 && attributes.indexOf( QLatin1String( "Green" ) ) >= 0 && attributes.indexOf( QLatin1String( "Blue" ) ) >= 0 )
+  if ( attributes.indexOf( "Red"_L1 ) >= 0 && attributes.indexOf( "Green"_L1 ) >= 0 && attributes.indexOf( "Blue"_L1 ) >= 0 )
   {
     auto renderer = std::make_unique< QgsPointCloudRgbRenderer >();
 
     // set initial guess for rgb ranges
-    const double redMax = stats.maximum( QStringLiteral( "Red" ) );
-    const double greenMax = stats.maximum( QStringLiteral( "Red" ) );
-    const double blueMax = stats.maximum( QStringLiteral( "Red" ) );
+    const double redMax = stats.maximum( u"Red"_s );
+    const double greenMax = stats.maximum( u"Red"_s );
+    const double blueMax = stats.maximum( u"Red"_s );
     if ( !std::isnan( redMax ) && !std::isnan( greenMax ) && !std::isnan( blueMax ) )
     {
       const int maxValue = std::max( blueMax, std::max( redMax, greenMax ) );
@@ -161,28 +161,28 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   }
 
   // otherwise try a classified renderer...
-  if ( attributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
+  if ( attributes.indexOf( "Classification"_L1 ) >= 0 )
   {
     // are any classifications present?
-    QList<int> classes = stats.classesOf( QStringLiteral( "Classification" ) );
+    QList<int> classes = stats.classesOf( u"Classification"_s );
     // ignore "not classified" classes, and see if any are left...
     classes.removeAll( 0 );
     classes.removeAll( 1 );
     if ( !classes.empty() )
     {
       const QgsPointCloudCategoryList categories = classificationAttributeCategories( layer );
-      auto renderer = std::make_unique< QgsPointCloudClassifiedRenderer >( QLatin1String( "Classification" ), categories );
+      auto renderer = std::make_unique< QgsPointCloudClassifiedRenderer >( "Classification"_L1, categories );
       return renderer.release();
     }
   }
 
   // fallback to shading by Z
   auto renderer = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
-  renderer->setAttribute( QStringLiteral( "Z" ) );
+  renderer->setAttribute( u"Z"_s );
 
   // set initial range for z values if possible
-  const double zMin = stats.minimum( QStringLiteral( "Z" ) );
-  const double zMax = stats.maximum( QStringLiteral( "Z" ) );
+  const double zMin = stats.minimum( u"Z"_s );
+  const double zMax = stats.maximum( u"Z"_s );
   if ( !std::isnan( zMin ) && !std::isnan( zMax ) )
   {
     renderer->setMinimum( zMin );
@@ -203,7 +203,7 @@ QgsPointCloudCategoryList QgsPointCloudRendererRegistry::classificationAttribute
     return QgsPointCloudCategoryList();
 
   const QgsPointCloudStatistics stats = layer->statistics();
-  const QList<int> layerClasses = stats.classesOf( QStringLiteral( "Classification" ) );
+  const QList<int> layerClasses = stats.classesOf( u"Classification"_s );
   const QgsPointCloudCategoryList defaultCategories = QgsPointCloudClassifiedRenderer::defaultCategories();
 
   if ( layerClasses.isEmpty() )

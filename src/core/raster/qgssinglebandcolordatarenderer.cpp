@@ -27,7 +27,7 @@
 #include <QImage>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band )
-  : QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) )
+  : QgsRasterRenderer( input, u"singlebandcolordata"_s )
   , mBand( band )
 {
 
@@ -52,7 +52,7 @@ QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &el
     return nullptr;
   }
 
-  const int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
+  const int band = elem.attribute( u"band"_s, u"-1"_s ).toInt();
   QgsRasterRenderer *r = new QgsSingleBandColorDataRenderer( input, band );
   r->readXml( elem );
   return r;
@@ -71,7 +71,7 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( u"No raster data!"_s );
     return outputBlock.release();
   }
 
@@ -107,9 +107,9 @@ void QgsSingleBandColorDataRenderer::writeXml( QDomDocument &doc, QDomElement &p
   if ( parentElem.isNull() )
     return;
 
-  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  QDomElement rasterRendererElem = doc.createElement( u"rasterrenderer"_s );
   _writeXml( doc, rasterRendererElem );
-  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mBand );
+  rasterRendererElem.setAttribute( u"band"_s, mBand );
   parentElem.appendChild( rasterRendererElem );
 }
 

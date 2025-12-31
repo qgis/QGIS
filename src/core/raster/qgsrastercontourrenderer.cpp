@@ -23,7 +23,7 @@
 #include "qgssymbollayerutils.h"
 
 QgsRasterContourRenderer::QgsRasterContourRenderer( QgsRasterInterface *input )
-  : QgsRasterRenderer( input, QStringLiteral( "contour" ) )
+  : QgsRasterRenderer( input, u"contour"_s )
 {
   mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
 }
@@ -58,29 +58,29 @@ QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, Qg
   QgsRasterContourRenderer *r = new QgsRasterContourRenderer( input );
   r->readXml( elem );
 
-  const int inputBand = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
-  const double contourInterval = elem.attribute( QStringLiteral( "contour-interval" ), QStringLiteral( "100" ) ).toDouble();
-  const double contourIndexInterval = elem.attribute( QStringLiteral( "contour-index-interval" ), QStringLiteral( "0" ) ).toDouble();
-  const double downscale = elem.attribute( QStringLiteral( "downscale" ), QStringLiteral( "4" ) ).toDouble();
+  const int inputBand = elem.attribute( u"band"_s, u"-1"_s ).toInt();
+  const double contourInterval = elem.attribute( u"contour-interval"_s, u"100"_s ).toDouble();
+  const double contourIndexInterval = elem.attribute( u"contour-index-interval"_s, u"0"_s ).toDouble();
+  const double downscale = elem.attribute( u"downscale"_s, u"4"_s ).toDouble();
 
   r->setInputBand( inputBand );
   r->setContourInterval( contourInterval );
   r->setContourIndexInterval( contourIndexInterval );
   r->setDownscale( downscale );
 
-  QDomElement symbolsElem = elem.firstChildElement( QStringLiteral( "symbols" ) );
+  QDomElement symbolsElem = elem.firstChildElement( u"symbols"_s );
   if ( !symbolsElem.isNull() )
   {
     QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, QgsReadWriteContext() );
-    if ( symbolMap.contains( QStringLiteral( "contour" ) ) )
+    if ( symbolMap.contains( u"contour"_s ) )
     {
-      QgsSymbol *symbol = symbolMap.take( QStringLiteral( "contour" ) );
+      QgsSymbol *symbol = symbolMap.take( u"contour"_s );
       if ( symbol->type() == Qgis::SymbolType::Line )
         r->setContourSymbol( static_cast<QgsLineSymbol *>( symbol ) );
     }
-    if ( symbolMap.contains( QStringLiteral( "index-contour" ) ) )
+    if ( symbolMap.contains( u"index-contour"_s ) )
     {
-      QgsSymbol *symbol = symbolMap.take( QStringLiteral( "index-contour" ) );
+      QgsSymbol *symbol = symbolMap.take( u"index-contour"_s );
       if ( symbol->type() == Qgis::SymbolType::Line )
         r->setContourIndexSymbol( static_cast<QgsLineSymbol *>( symbol ) );
     }
@@ -95,19 +95,19 @@ void QgsRasterContourRenderer::writeXml( QDomDocument &doc, QDomElement &parentE
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  QDomElement rasterRendererElem = doc.createElement( u"rasterrenderer"_s );
   _writeXml( doc, rasterRendererElem );
 
-  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mInputBand );
-  rasterRendererElem.setAttribute( QStringLiteral( "contour-interval" ), mContourInterval );
-  rasterRendererElem.setAttribute( QStringLiteral( "contour-index-interval" ), mContourIndexInterval );
-  rasterRendererElem.setAttribute( QStringLiteral( "downscale" ), mDownscale );
+  rasterRendererElem.setAttribute( u"band"_s, mInputBand );
+  rasterRendererElem.setAttribute( u"contour-interval"_s, mContourInterval );
+  rasterRendererElem.setAttribute( u"contour-index-interval"_s, mContourIndexInterval );
+  rasterRendererElem.setAttribute( u"downscale"_s, mDownscale );
 
   QgsSymbolMap symbols;
-  symbols[QStringLiteral( "contour" )] = mContourSymbol.get();
+  symbols[u"contour"_s] = mContourSymbol.get();
   if ( mContourIndexSymbol )
-    symbols[QStringLiteral( "index-contour" )] = mContourIndexSymbol.get();
-  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
+    symbols[u"index-contour"_s] = mContourIndexSymbol.get();
+  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, u"symbols"_s, doc, QgsReadWriteContext() );
   rasterRendererElem.appendChild( symbolsElem );
 
   parentElem.appendChild( rasterRendererElem );
@@ -157,7 +157,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, inputWidth, inputHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( u"No raster data!"_s );
     return outputBlock.release();
   }
 
@@ -225,12 +225,12 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterContourRenderer::createLegendNodes
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  const QgsLegendSymbolItem contourItem( mContourSymbol.get(), QString::number( mContourInterval ), QStringLiteral( "contour" ) );
+  const QgsLegendSymbolItem contourItem( mContourSymbol.get(), QString::number( mContourInterval ), u"contour"_s );
   nodes << new QgsSymbolLegendNode( nodeLayer, contourItem );
 
   if ( mContourIndexInterval > 0 )
   {
-    const QgsLegendSymbolItem indexItem( mContourIndexSymbol.get(), QString::number( mContourIndexInterval ), QStringLiteral( "index" ) );
+    const QgsLegendSymbolItem indexItem( mContourIndexSymbol.get(), QString::number( mContourIndexInterval ), u"index"_s );
     nodes << new QgsSymbolLegendNode( nodeLayer, indexItem );
   }
 

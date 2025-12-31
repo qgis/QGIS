@@ -31,7 +31,7 @@ class TestQgsMaskingWidget : public QgsTest
 
   public:
     TestQgsMaskingWidget()
-      : QgsTest( QStringLiteral( "Masking widget Tests" ) ) {}
+      : QgsTest( u"Masking widget Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -62,7 +62,7 @@ void TestQgsMaskingWidget::cleanup()
 
 void TestQgsMaskingWidget::testTreeWidget()
 {
-  const QString projectFilePath = testDataPath( QStringLiteral( "selective_masking.qgs" ) );
+  const QString projectFilePath = testDataPath( u"selective_masking.qgs"_s );
   QVERIFY( QgsProject::instance()->read( projectFilePath ) );
 
   // get layers
@@ -89,12 +89,12 @@ void TestQgsMaskingWidget::testTreeWidget()
   polys->labeling()->setSettings( labelSettings );
 
   QgsMaskMarkerSymbolLayer *maskLayer = new QgsMaskMarkerSymbolLayer();
-  maskLayer->setSubSymbol( QgsMarkerSymbol::createSimple( { { QStringLiteral( "size" ), 6 } } ).release() );
+  maskLayer->setSubSymbol( QgsMarkerSymbol::createSimple( { { u"size"_s, 6 } } ).release() );
   QgsCategorizedSymbolRenderer *renderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( points->renderer() );
   QVERIFY( renderer );
   const QgsCategoryList categories = renderer->categories();
   QCOMPARE( categories.count(), 3 );
-  QCOMPARE( categories.at( 0 ).label(), QStringLiteral( "B52" ) );
+  QCOMPARE( categories.at( 0 ).label(), u"B52"_s );
   QgsSymbol *symbol = categories.at( 0 ).symbol();
   QVERIFY( symbol );
   symbol->appendSymbolLayer( maskLayer );
@@ -114,24 +114,24 @@ void TestQgsMaskingWidget::testTreeWidget()
 
   // check masking symbol, first branch : points > B52 > Mask symbol layer
   QTreeWidgetItem *item = mw->mMaskSourcesWidget->mTree->topLevelItem( 0 );
-  QCOMPARE( item->text( 0 ), QStringLiteral( "points" ) );
+  QCOMPARE( item->text( 0 ), u"points"_s );
 
   QCOMPARE( item->childCount(), 1 );
   item = item->child( 0 );
-  QCOMPARE( item->text( 0 ), QStringLiteral( "B52" ) );
+  QCOMPARE( item->text( 0 ), u"B52"_s );
 
   QCOMPARE( item->childCount(), 1 );
   item = item->child( 0 );
-  QCOMPARE( item->text( 0 ), QStringLiteral( "Mask symbol layer" ) );
+  QCOMPARE( item->text( 0 ), u"Mask symbol layer"_s );
   QTreeWidgetItem *pointMaskItem = item;
 
   // check masking symbol, second branch : polys > Label mask
   item = mw->mMaskSourcesWidget->mTree->topLevelItem( 1 );
-  QCOMPARE( item->text( 0 ), QStringLiteral( "polys" ) );
+  QCOMPARE( item->text( 0 ), u"polys"_s );
 
   QCOMPARE( item->childCount(), 1 );
   item = item->child( 0 );
-  QCOMPARE( item->text( 0 ), QStringLiteral( "Label mask" ) );
+  QCOMPARE( item->text( 0 ), u"Label mask"_s );
 
   // check masked symbol, one branch, 2 children
   QVERIFY( mw->mMaskTargetsWidget->mTree );

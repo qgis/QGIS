@@ -558,7 +558,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
 
   // Load fields
 
-  auto itemFields = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, QStringLiteral( "Fields" ), tr( "Fields" ) );
+  auto itemFields = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, u"Fields"_s, tr( "Fields" ) );
 
   const QgsFields fields = mLayer->fields();
   for ( int i = 0; i < fields.size(); ++i )
@@ -585,7 +585,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
 
   // Load relations
 
-  auto itemRelations = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, QStringLiteral( "Relations" ), tr( "Relations" ) );
+  auto itemRelations = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, u"Relations"_s, tr( "Relations" ) );
 
   const QList<QgsRelation> relations = mProject->relationManager()->referencedRelations( mLayer );
 
@@ -595,7 +595,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
     const QgsPolymorphicRelation polymorphicRelation = relation.polymorphicRelation();
     if ( polymorphicRelation.isValid() )
     {
-      name = QStringLiteral( "%1 (%2)" ).arg( relation.name(), polymorphicRelation.name() );
+      name = u"%1 (%2)"_s.arg( relation.name(), polymorphicRelation.name() );
     }
     else
     {
@@ -609,7 +609,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
     itemRelation->setData( ItemNameRole, name );
     itemRelation->setData( ItemIdRole, relation.id() );
     itemRelation->setData( ItemDataRole, itemData );
-    itemRelation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRelationEditor.svg" ) ) );
+    itemRelation->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetRelationEditor.svg"_s ) );
     itemRelations->addChild( std::move( itemRelation ) );
   }
 
@@ -617,36 +617,36 @@ void QgsAttributesAvailableWidgetsModel::populate()
 
   // Load form actions
 
-  auto itemActions = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
+  auto itemActions = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, u"Actions"_s, tr( "Actions" ) );
   mRootItem->addChild( std::move( itemActions ) );
   populateActionItems( mLayer->actions()->actions() );
 
   // Other widgets
 
-  auto itemOtherWidgets = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
+  auto itemOtherWidgets = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::WidgetType, u"Other"_s, tr( "Other Widgets" ) );
 
   QgsAttributesFormData::AttributeFormItemData itemData = QgsAttributesFormData::AttributeFormItemData();
   itemData.setShowLabel( true );
-  auto itemQml = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::QmlWidget, itemData, QStringLiteral( "QML Widget" ), tr( "QML Widget" ) );
-  itemQml->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetQml.svg" ) ) );
+  auto itemQml = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::QmlWidget, itemData, u"QML Widget"_s, tr( "QML Widget" ) );
+  itemQml->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetQml.svg"_s ) );
   itemOtherWidgets->addChild( std::move( itemQml ) );
 
   QgsAttributesFormData::AttributeFormItemData itemHtmlData = QgsAttributesFormData::AttributeFormItemData();
   itemHtmlData.setShowLabel( true );
-  auto itemHtml = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::HtmlWidget, itemHtmlData, QStringLiteral( "HTML Widget" ), tr( "HTML Widget" ) );
-  itemHtml->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetHtml.svg" ) ) );
+  auto itemHtml = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::HtmlWidget, itemHtmlData, u"HTML Widget"_s, tr( "HTML Widget" ) );
+  itemHtml->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetHtml.svg"_s ) );
   itemOtherWidgets->addChild( std::move( itemHtml ) );
 
   QgsAttributesFormData::AttributeFormItemData itemTextData = QgsAttributesFormData::AttributeFormItemData();
   itemTextData.setShowLabel( true );
-  auto itemText = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::TextWidget, itemTextData, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) );
-  itemText->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetText.svg" ) ) );
+  auto itemText = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::TextWidget, itemTextData, u"Text Widget"_s, tr( "Text Widget" ) );
+  itemText->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetText.svg"_s ) );
   itemOtherWidgets->addChild( std::move( itemText ) );
 
   QgsAttributesFormData::AttributeFormItemData itemSpacerData = QgsAttributesFormData::AttributeFormItemData();
   itemTextData.setShowLabel( false );
-  auto itemSpacer = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) );
-  itemSpacer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetSpacer.svg" ) ) );
+  auto itemSpacer = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::SpacerWidget, u"Spacer Widget"_s, tr( "Spacer Widget" ) );
+  itemSpacer->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetSpacer.svg"_s ) );
   itemOtherWidgets->addChild( std::move( itemSpacer ) );
 
   mRootItem->addChild( std::move( itemOtherWidgets ) );
@@ -666,7 +666,7 @@ void QgsAttributesAvailableWidgetsModel::populateLayerActions( const QList< QgsA
   int count = 0;
   for ( const auto &action : std::as_const( actions ) )
   {
-    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
+    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( u"Feature"_s ) || action.actionScopes().contains( u"Layer"_s ) ) )
     {
       count++;
     }
@@ -687,7 +687,7 @@ void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAct
 
   for ( const auto &action : std::as_const( actions ) )
   {
-    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
+    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( u"Feature"_s ) || action.actionScopes().contains( u"Layer"_s ) ) )
     {
       const QString actionTitle { action.shortTitle().isEmpty() ? action.name() : action.shortTitle() };
 
@@ -699,7 +699,7 @@ void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAct
       itemAction->setData( ItemTypeRole, QgsAttributesFormData::Action );
       itemAction->setData( ItemNameRole, actionTitle );
       itemAction->setData( ItemDataRole, itemData );
-      itemAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetAction.svg" ) ) );
+      itemAction->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetAction.svg"_s ) );
 
       itemActions->addChild( std::move( itemAction ) );
     }
@@ -818,7 +818,7 @@ Qt::DropActions QgsAttributesAvailableWidgetsModel::supportedDragActions() const
 
 QStringList QgsAttributesAvailableWidgetsModel::mimeTypes() const
 {
-  return QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" );
+  return QStringList() << u"application/x-qgsattributesformavailablewidgetsrelement"_s;
 }
 
 QMimeData *QgsAttributesAvailableWidgetsModel::mimeData( const QModelIndexList &indexes ) const
@@ -864,7 +864,7 @@ QModelIndex QgsAttributesAvailableWidgetsModel::fieldContainer() const
   {
     const int row = 0;
     QgsAttributesFormItem *item = mRootItem->child( row );
-    if ( item && item->name() == QLatin1String( "Fields" ) && item->type() == QgsAttributesFormData::WidgetType )
+    if ( item && item->name() == "Fields"_L1 && item->type() == QgsAttributesFormData::WidgetType )
       return createIndex( row, 0, item );
   }
   return QModelIndex();
@@ -876,7 +876,7 @@ QModelIndex QgsAttributesAvailableWidgetsModel::relationContainer() const
   {
     const int row = 1;
     QgsAttributesFormItem *item = mRootItem->child( row );
-    if ( item && item->name() == QLatin1String( "Relations" ) && item->type() == QgsAttributesFormData::WidgetType )
+    if ( item && item->name() == "Relations"_L1 && item->type() == QgsAttributesFormData::WidgetType )
       return createIndex( row, 0, item );
   }
   return QModelIndex();
@@ -888,7 +888,7 @@ QModelIndex QgsAttributesAvailableWidgetsModel::actionContainer() const
   {
     const int row = 2;
     QgsAttributesFormItem *item = mRootItem->child( row );
-    if ( item && item->name() == QLatin1String( "Actions" ) && item->type() == QgsAttributesFormData::WidgetType )
+    if ( item && item->name() == "Actions"_L1 && item->type() == QgsAttributesFormData::WidgetType )
       return createIndex( row, 0, item );
   }
   return QModelIndex();
@@ -900,7 +900,7 @@ QModelIndex QgsAttributesAvailableWidgetsModel::fieldModelIndex( const QString &
     return QModelIndex();
 
   QgsAttributesFormItem *fieldItems = mRootItem->child( 0 );
-  if ( !fieldItems || fieldItems->name() != QLatin1String( "Fields" ) || fieldItems->type() != QgsAttributesFormData::WidgetType )
+  if ( !fieldItems || fieldItems->name() != "Fields"_L1 || fieldItems->type() != QgsAttributesFormData::WidgetType )
     return QModelIndex();
 
   QgsAttributesFormItem *item = fieldItems->firstTopChild( QgsAttributesFormData::Field, fieldName );
@@ -999,11 +999,11 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
         editorItem->setData( ItemNameRole, action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
         editorItem->setData( ItemTypeRole, QgsAttributesFormData::Action );
         editorItem->setData( ItemDataRole, itemData );
-        editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetAction.svg" ) ) );
+        editorItem->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetAction.svg"_s ) );
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid form action" ) );
+        QgsDebugError( u"Invalid form action"_s );
       }
       break;
     }
@@ -1035,7 +1035,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemDisplayRole, relationEditorConfig.label );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::Relation );
       editorItem->setData( ItemDataRole, itemData );
-      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRelationEditor.svg" ) ) );
+      editorItem->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetRelationEditor.svg"_s ) );
 
       break;
     }
@@ -1083,7 +1083,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::QmlWidget );
       editorItem->setData( ItemDataRole, itemData );
-      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetQml.svg" ) ) );
+      editorItem->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetQml.svg"_s ) );
       break;
     }
 
@@ -1100,7 +1100,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::HtmlWidget );
       editorItem->setData( ItemDataRole, itemData );
-      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetHtml.svg" ) ) );
+      editorItem->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetHtml.svg"_s ) );
       break;
     }
 
@@ -1117,7 +1117,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::TextWidget );
       editorItem->setData( ItemDataRole, itemData );
-      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetText.svg" ) ) );
+      editorItem->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetText.svg"_s ) );
       break;
     }
 
@@ -1135,13 +1135,13 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::SpacerWidget );
       editorItem->setData( ItemDataRole, itemData );
-      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetSpacer.svg" ) ) );
+      editorItem->setIcon( QgsApplication::getThemeIcon( u"/mEditorWidgetSpacer.svg"_s ) );
       break;
     }
 
     case Qgis::AttributeEditorType::Invalid:
     {
-      QgsDebugError( QStringLiteral( "Not loading invalid attribute editor type..." ) );
+      QgsDebugError( u"Not loading invalid attribute editor type..."_s );
       break;
     }
   }
@@ -1345,7 +1345,7 @@ Qt::DropActions QgsAttributesFormLayoutModel::supportedDropActions() const
 
 QStringList QgsAttributesFormLayoutModel::mimeTypes() const
 {
-  return QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" );
+  return QStringList() << u"application/x-qgsattributesformlayoutelement"_s << u"application/x-qgsattributesformavailablewidgetsrelement"_s;
 }
 
 QModelIndexList QgsAttributesFormLayoutModel::curateIndexesForMimeData( const QModelIndexList &indexes ) const
@@ -1425,7 +1425,7 @@ QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexe
     {
       QDomDocument doc;
 
-      QDomElement rootElem = doc.createElement( QStringLiteral( "form_layout_mime" ) );
+      QDomElement rootElem = doc.createElement( u"form_layout_mime"_s );
       QgsAttributeEditorElement *editor = createAttributeEditorWidget( index, nullptr );
       QDomElement editorElem = editor->toDomElement( doc );
       rootElem.appendChild( editorElem );
@@ -1452,10 +1452,10 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   {
     isDropSuccessful = true;
   }
-  else if ( data->hasFormat( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) ) )
+  else if ( data->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s ) )
   {
     Q_ASSERT( action == Qt::CopyAction ); // External drop
-    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+    QByteArray itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
 
     while ( !stream.atEnd() )
@@ -1476,10 +1476,10 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
       rows++;
     }
   }
-  else if ( data->hasFormat( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) ) )
+  else if ( data->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) )
   {
     Q_ASSERT( action == Qt::MoveAction ); // Internal move
-    QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributesformlayoutelement" ) );
+    QByteArray itemData = data->data( u"application/x-qgsattributesformlayoutelement"_s );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
 
     while ( !stream.atEnd() )
@@ -1491,7 +1491,7 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
       if ( !doc.setContent( text ) )
         continue;
       const QDomElement rootElem = doc.documentElement();
-      if ( rootElem.tagName() != QLatin1String( "form_layout_mime" ) || !rootElem.hasChildNodes() )
+      if ( rootElem.tagName() != "form_layout_mime"_L1 || !rootElem.hasChildNodes() )
         continue;
       const QDomElement childElem = rootElem.firstChild().toElement();
 

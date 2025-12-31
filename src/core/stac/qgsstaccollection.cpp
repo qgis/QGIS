@@ -36,66 +36,66 @@ Qgis::StacObjectType QgsStacCollection::type() const
 
 QString QgsStacCollection::toHtml() const
 {
-  QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
+  QString html = u"<html><head></head>\n<body>\n"_s;
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Collection" ) );
-  html += QLatin1String( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), id() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "stac_version" ), stacVersion() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), title() );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Collection"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"id"_s, id() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"stac_version"_s, stacVersion() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, title() );
   QTextDocument descr;
   descr.setMarkdown( description() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), descr.toHtml() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "license" ), license() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "keywords" ), keywords().join( ',' ) );
-  html += QLatin1String( "</table>\n" );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"description"_s, descr.toHtml() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"license"_s, license() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"keywords"_s, keywords().join( ',' ) );
+  html += "</table>\n"_L1;
 
   if ( !mStacExtensions.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Extensions" ) );
-    html += QLatin1String( "<ul>\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Extensions"_L1 );
+    html += "<ul>\n"_L1;
     for ( const QString &extension : mStacExtensions )
     {
-      html += QStringLiteral( "<li>%1</li>\n" ).arg( extension );
+      html += u"<li>%1</li>\n"_s.arg( extension );
     }
-    html += QLatin1String( "</ul>\n" );
+    html += "</ul>\n"_L1;
   }
 
   if ( ! mConformanceClasses.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Conformance Classes" ) );
-    html += QLatin1String( "<ul>\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Conformance Classes"_L1 );
+    html += "<ul>\n"_L1;
     for ( const QString &cc : mConformanceClasses )
     {
-      html += QStringLiteral( "<li>%1</li>\n" ).arg( cc );
+      html += u"<li>%1</li>\n"_s.arg( cc );
     }
-    html += QLatin1String( "</ul>\n" );
+    html += "</ul>\n"_L1;
   }
 
   if ( ! mProviders.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Providers" ) );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Providers"_L1 );
     QTextDocument descr;
     for ( const QgsStacProvider &p : mProviders )
     {
-      html += QLatin1String( "<table class=\"list-view\">\n" );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "name" ), p.name() );
+      html += "<table class=\"list-view\">\n"_L1;
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"name"_s, p.name() );
       descr.setMarkdown( p.description() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), descr.toHtml() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), p.roles().join( ',' ) );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), p.url() );
-      html += QLatin1String( "</table><br/>\n" );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"description"_s, descr.toHtml() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"roles"_s, p.roles().join( ',' ) );
+      html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, p.url() );
+      html += "</table><br/>\n"_L1;
     }
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Spatial Extent" ) );
-  html += QLatin1String( "<table class=\"list-view\">\n" );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Spatial Extent"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
   QString extentString;
   if ( mExtent.spatialExtent().is3D() )
     extentString = mExtent.spatialExtent().toString();
   else
     extentString =  mExtent.spatialExtent().toRectangle().toString();
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "overall" ), extentString );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"overall"_s, extentString );
 
 
   if ( mExtent.hasDetailedSpatialExtents() )
@@ -108,73 +108,73 @@ QString QgsStacCollection::toHtml() const
         extentString = extent.toString();
       else
         extentString =  extent.toRectangle().toString();
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "detailed" ), extentString );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"detailed"_s, extentString );
     }
   }
-  html += QLatin1String( "</table><br/>\n" );
+  html += "</table><br/>\n"_L1;
 
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Temporal Extent" ) );
-  html += QLatin1String( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "start" ), mExtent.temporalExtent().begin().toString() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "end" ), mExtent.temporalExtent().end().toString() );
-  html += QLatin1String( "</table><br/>\n" );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Temporal Extent"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"start"_s, mExtent.temporalExtent().begin().toString() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"end"_s, mExtent.temporalExtent().end().toString() );
+  html += "</table><br/>\n"_L1;
 
   if ( mExtent.hasDetailedTemporalExtents() )
   {
-    html += QLatin1String( "Detailed extents:\n" );
+    html += "Detailed extents:\n"_L1;
     const QVector< QgsDateTimeRange > extents = mExtent.detailedTemporalExtents();
     for ( const QgsDateTimeRange &extent : extents )
     {
-      html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Temporal Extent" ) );
-      html += QLatin1String( "<table class=\"list-view\">\n" );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "start" ), extent.begin().toString() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "end" ), extent.end().toString() );
-      html += QLatin1String( "</table><br/>\n" );
+      html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Temporal Extent"_L1 );
+      html += "<table class=\"list-view\">\n"_L1;
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"start"_s, extent.begin().toString() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"end"_s, extent.end().toString() );
+      html += "</table><br/>\n"_L1;
     }
   }
 
   if ( ! mSummaries.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Summaries" ) );
-    html += QLatin1String( "<table class=\"list-view\">\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Summaries"_L1 );
+    html += "<table class=\"list-view\">\n"_L1;
     for ( auto it = mSummaries.constBegin(); it != mSummaries.constEnd(); ++it )
     {
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( it.key(), it.value().toString() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( it.key(), it.value().toString() );
     }
-    html += QLatin1String( "</table><br/>\n" );
+    html += "</table><br/>\n"_L1;
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Links" ) );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Links"_L1 );
   for ( const QgsStacLink &link : mLinks )
   {
-    html += QLatin1String( "<table class=\"list-view\">\n" );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "relation" ), link.relation() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), link.title() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), link.href() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), link.mediaType() );
-    html += QLatin1String( "</table><br/>\n" );
+    html += "<table class=\"list-view\">\n"_L1;
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"relation"_s, link.relation() );
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, link.title() );
+    html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, link.href() );
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"type"_s, link.mediaType() );
+    html += "</table><br/>\n"_L1;
   }
 
   if ( ! mAssets.isEmpty() )
   {
     QTextDocument descr;
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Assets" ) );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Assets"_L1 );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
     {
-      html += QLatin1String( "<table class=\"list-view\">\n" );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), it.key() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), it->title() );
+      html += "<table class=\"list-view\">\n"_L1;
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"id"_s, it.key() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, it->title() );
       descr.setMarkdown( it->description() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), descr.toHtml() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), it->href() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), it->mediaType() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), it->roles().join( ',' ) );
-      html += QLatin1String( "</table><br/>\n" );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"description"_s, descr.toHtml() );
+      html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, it->href() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"type"_s, it->mediaType() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"roles"_s, it->roles().join( ',' ) );
+      html += "</table><br/>\n"_L1;
     }
   }
 
-  html += QLatin1String( "\n</body>\n</html>\n" );
+  html += "\n</body>\n</html>\n"_L1;
   return html;
 }
 

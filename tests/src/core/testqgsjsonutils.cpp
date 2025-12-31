@@ -61,7 +61,7 @@ void TestQgsJsonUtils::testStringList()
   }
 
   {
-    list << QStringLiteral( "one" ) << QStringLiteral( "<',\"\\>" ) << QStringLiteral( "two" );
+    list << u"one"_s << u"<',\"\\>"_s << u"two"_s;
     const QString json = QgsJsonUtils::encodeValue( list );
     QCOMPARE( json, QString( "[\"one\",\"<',\\\"\\\\>\",\"two\"]" ) );
     const QVariant back = QgsJsonUtils::parseArray( json, QMetaType::Type::QString );
@@ -114,12 +114,12 @@ void TestQgsJsonUtils::testJsonToVariant()
   const json value = json::parse( "{\"_bool\":true,\"_double\":1234.45,\"_int\":123,\"_list\":[1,2,3.4,null],\"_null\":null,\"_object\":{\"int\":123}}" );
   const QVariant variant = QgsJsonUtils::jsonToVariant( value );
   QCOMPARE( static_cast<QMetaType::Type>( variant.userType() ), QMetaType::Type::QVariantMap );
-  QCOMPARE( variant.toMap().value( QStringLiteral( "_bool" ) ), true );
-  QCOMPARE( variant.toMap().value( QStringLiteral( "_double" ) ), 1234.45 );
-  QCOMPARE( variant.toMap().value( QStringLiteral( "_int" ) ), 123 );
-  QCOMPARE( variant.toMap().value( QStringLiteral( "_list" ) ), QVariantList( { 1, 2, 3.4, QVariant() } ) );
-  QCOMPARE( variant.toMap().value( QStringLiteral( "_null" ) ), QVariant() );
-  QCOMPARE( variant.toMap().value( QStringLiteral( "_object" ) ), QVariantMap( { { QStringLiteral( "int" ), 123 } } ) );
+  QCOMPARE( variant.toMap().value( u"_bool"_s ), true );
+  QCOMPARE( variant.toMap().value( u"_double"_s ), 1234.45 );
+  QCOMPARE( variant.toMap().value( u"_int"_s ), 123 );
+  QCOMPARE( variant.toMap().value( u"_list"_s ), QVariantList( { 1, 2, 3.4, QVariant() } ) );
+  QCOMPARE( variant.toMap().value( u"_null"_s ), QVariant() );
+  QCOMPARE( variant.toMap().value( u"_object"_s ), QVariantMap( { { u"int"_s, 123 } } ) );
 }
 
 void TestQgsJsonUtils::testParseJson()
@@ -147,10 +147,10 @@ void TestQgsJsonUtils::testParseJson()
   // Test empty string: null
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QString() ) ).dump() ), QString( "null" ) );
   // invalid json -> null
-  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "invalid json" ) ) ).dump() ), QString( "null" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( u"invalid json"_s ) ).dump() ), QString( "null" ) );
   // String lists
-  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QStringList() << QStringLiteral( "A string" ) << QStringLiteral( "Another string" ) ).dump() ), QString( R"raw(["A string","Another string"])raw" ) );
-  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QStringList() << QStringLiteral( "A string" ) ).dump() ), QString( R"raw(["A string"])raw" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QStringList() << u"A string"_s << u"Another string"_s ).dump() ), QString( R"raw(["A string","Another string"])raw" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QStringList() << u"A string"_s ).dump() ), QString( R"raw(["A string"])raw" ) );
 }
 
 void TestQgsJsonUtils::testIntList()
@@ -168,7 +168,7 @@ void TestQgsJsonUtils::testIntList()
 
   {
     // check invalid entries are ignored
-    const QVariantList back = QgsJsonUtils::parseArray( QStringLiteral( "[1,\"a\",-2]" ), QMetaType::Type::Int );
+    const QVariantList back = QgsJsonUtils::parseArray( u"[1,\"a\",-2]"_s, QMetaType::Type::Int );
     QCOMPARE( back, list );
   }
 }
@@ -196,9 +196,9 @@ void TestQgsJsonUtils::testExportAttributesJson()
 {
   QFETCH( enum JsonAlgs, jsonAlg );
 
-  QgsVectorLayer vl { QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer vl { u"Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double"_s, u"mem"_s, u"memory"_s };
   QgsFeature feature { vl.fields() };
-  feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
+  feature.setAttributes( QgsAttributes() << u"a value"_s << 1 << 2.0 );
 
   if ( jsonAlg == JsonAlgs::Json ) // 0.0022
   {
@@ -213,17 +213,17 @@ void TestQgsJsonUtils::testExportAttributesJson()
     QBENCHMARK
     {
       const auto json = QgsJsonUtils::exportAttributes( feature, &vl );
-      QCOMPARE( json, QStringLiteral( "{\"fldtxt\":\"a value\",\n\"fldint\":1,\n\"flddbl\":2}" ) );
+      QCOMPARE( json, u"{\"fldtxt\":\"a value\",\n\"fldint\":1,\n\"flddbl\":2}"_s );
     }
   }
 }
 
 void TestQgsJsonUtils::testExportFeatureJson()
 {
-  QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer vl { u"Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double"_s, u"mem"_s, u"memory"_s };
   QgsFeature feature { vl.fields() };
-  feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
-  feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
+  feature.setGeometry( QgsGeometry::fromWkt( u"POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))"_s ) );
+  feature.setAttributes( QgsAttributes() << u"a value"_s << 1 << 2.0 );
 
   const QgsJsonExporter exporter { &vl };
 
@@ -256,10 +256,10 @@ void TestQgsJsonUtils::testExportFeatureJson()
 
 void TestQgsJsonUtils::testExportFeatureJsonCrs()
 {
-  QgsVectorLayer vl { QStringLiteral( "Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double" ), QStringLiteral( "mem" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer vl { u"Polygon?field=fldtxt:string&field=fldint:integer&field=flddbl:double"_s, u"mem"_s, u"memory"_s };
   QgsFeature feature { vl.fields() };
-  feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))" ) ) );
-  feature.setAttributes( QgsAttributes() << QStringLiteral( "a value" ) << 1 << 2.0 );
+  feature.setGeometry( QgsGeometry::fromWkt( u"POLYGON((1.12 1.34,5.45 1.12,5.34 5.33,1.56 5.2,1.12 1.34),(2 2, 3 2, 3 3, 2 3,2 2))"_s ) );
+  feature.setAttributes( QgsAttributes() << u"a value"_s << 1 << 2.0 );
 
   QgsJsonExporter exporterPrecision { &vl, 1 };
   exporterPrecision.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
@@ -283,23 +283,23 @@ void TestQgsJsonUtils::testExportGeomToJson()
 {
   const QMap<QString, QString> testWkts {
     {
-      { QStringLiteral( "LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)" ),
+      { u"LINESTRING(-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932)"_s,
         QStringLiteral( R"json({"coordinates":[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],"type":"LineString"})json" )
       },
-      { QStringLiteral( "MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932), (-70 43.56, -67 44.68))" ),
+      { u"MULTILINESTRING((-71.160281 42.258729,-71.160837 42.259113,-71.161144 42.25932), (-70 43.56, -67 44.68))"_s,
         QStringLiteral( R"json({"coordinates":[[[-71.16,42.259],[-71.161,42.259],[-71.161,42.259]],[[-70.0,43.56],[-67.0,44.68]]],"type":"MultiLineString"})json" )
       },
-      { QStringLiteral( "POINT(-71.064544 42.28787)" ), QStringLiteral( R"json({"coordinates":[-71.065,42.288],"type":"Point"})json" ) },
-      { QStringLiteral( "MULTIPOINT(-71.064544 42.28787, -71.1776585052917 42.3902909739571)" ), QStringLiteral( R"json({"coordinates":[[-71.065,42.288],[-71.178,42.39]],"type":"MultiPoint"})json" ) },
+      { u"POINT(-71.064544 42.28787)"_s, QStringLiteral( R"json({"coordinates":[-71.065,42.288],"type":"Point"})json" ) },
+      { u"MULTIPOINT(-71.064544 42.28787, -71.1776585052917 42.3902909739571)"_s, QStringLiteral( R"json({"coordinates":[[-71.065,42.288],[-71.178,42.39]],"type":"MultiPoint"})json" ) },
       { QStringLiteral( "POLYGON((-71.1776585052917 42.3902909739571,-71.1776820268866 42.3903701743239,"
                         "-71.1776063012595 42.3903825660754,-71.1775826583081 42.3903033653531,-71.1776585052917 42.3902909739571))" ),
         QStringLiteral( R"json({"coordinates":[[[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39],[-71.178,42.39]]],"type":"Polygon"})json" )
       },
-      { QStringLiteral( "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))" ),
+      { u"MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))"_s,
         QStringLiteral( R"json({"coordinates":[[[[1.0,1.0],[5.0,1.0],[5.0,5.0],[1.0,5.0],[1.0,1.0]],[[2.0,2.0],[3.0,2.0],[3.0,3.0],[2.0,3.0],[2.0,2.0]]],[[[3.0,3.0],[6.0,2.0],[6.0,4.0],[3.0,3.0]]]],"type":"MultiPolygon"})json" )
       },
       // Note: CIRCULARSTRING json is very long, we will check first three vertices only
-      { QStringLiteral( "CIRCULARSTRING(220268 150415,220227 150505,220227 150406)" ), QStringLiteral( R"json({"coordinates":[[220268.0,150415.0],[220268.7,150415.535],[220269.391,150416.081])json" ) },
+      { u"CIRCULARSTRING(220268 150415,220227 150505,220227 150406)"_s, QStringLiteral( R"json({"coordinates":[[220268.0,150415.0],[220268.7,150415.535],[220269.391,150416.081])json" ) },
     }
   };
 
@@ -307,7 +307,7 @@ void TestQgsJsonUtils::testExportGeomToJson()
   {
     const auto g { QgsGeometry::fromWkt( w.first ) };
     QVERIFY( !g.isNull() );
-    if ( w.first.startsWith( QLatin1String( "CIRCULARSTRING" ) ) )
+    if ( w.first.startsWith( "CIRCULARSTRING"_L1 ) )
     {
       QVERIFY( g.asJson( 3 ).startsWith( w.second ) );
       QCOMPARE( QString::fromStdString( g.asJsonObject( 3 )["type"].dump() ), QStringLiteral( R"("LineString")" ) );

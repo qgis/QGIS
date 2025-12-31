@@ -24,7 +24,7 @@
 
 QString QgsRemovePartsByAreaAlgorithm::name() const
 {
-  return QStringLiteral( "removepartsbyarea" );
+  return u"removepartsbyarea"_s;
 }
 
 QString QgsRemovePartsByAreaAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsRemovePartsByAreaAlgorithm::group() const
 
 QString QgsRemovePartsByAreaAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRemovePartsByAreaAlgorithm::outputName() const
@@ -91,19 +91,19 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByAreaAlgorithm::sourceFlags() 
 
 void QgsRemovePartsByAreaAlgorithm::initParameters( const QVariantMap & )
 {
-  auto minArea = std::make_unique< QgsProcessingParameterArea >( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove parts with area less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minArea = std::make_unique< QgsProcessingParameterArea >( u"MIN_AREA"_s, QObject::tr( "Remove parts with area less than" ), 0.0, u"INPUT"_s, false, 0 );
   minArea->setIsDynamic( true );
-  minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove parts with area less than" ), QgsPropertyDefinition::DoublePositive ) );
-  minArea->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_AREA"_s, QObject::tr( "Remove parts with area less than" ), QgsPropertyDefinition::DoublePositive ) );
+  minArea->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( minArea.release() );
 }
 
 bool QgsRemovePartsByAreaAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMinArea = parameterAsDouble( parameters, QStringLiteral( "MIN_AREA" ), context );
-  mDynamicMinArea = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN_AREA" ) );
+  mMinArea = parameterAsDouble( parameters, u"MIN_AREA"_s, context );
+  mDynamicMinArea = QgsProcessingParameters::isDynamic( parameters, u"MIN_AREA"_s );
   if ( mDynamicMinArea )
-    mMinAreaProperty = parameters.value( QStringLiteral( "MIN_AREA" ) ).value< QgsProperty >();
+    mMinAreaProperty = parameters.value( u"MIN_AREA"_s ).value< QgsProperty >();
 
   return true;
 }

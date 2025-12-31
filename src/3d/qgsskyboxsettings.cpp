@@ -41,19 +41,19 @@ QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QgsPathResolver &pathResolver = context.pathResolver();
-  const QString skyboxTypeStr = element.attribute( QStringLiteral( "skybox-type" ) );
-  if ( skyboxTypeStr == QLatin1String( "Distinct Faces" ) )
+  const QString skyboxTypeStr = element.attribute( u"skybox-type"_s );
+  if ( skyboxTypeStr == "Distinct Faces"_L1 )
     mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
-  else if ( skyboxTypeStr == QLatin1String( "Panoramic Texture" ) )
+  else if ( skyboxTypeStr == "Panoramic Texture"_L1 )
     mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
-  mPanoramicTexturePath = pathResolver.readPath( element.attribute( QStringLiteral( "panoramic-texture-path" ) ) );
+  mPanoramicTexturePath = pathResolver.readPath( element.attribute( u"panoramic-texture-path"_s ) );
   mCubeMapFacesPaths.clear();
-  mCubeMapFacesPaths[QStringLiteral( "posX" )] = pathResolver.readPath( element.attribute( QStringLiteral( "posX-texture-path" ) ) );
-  mCubeMapFacesPaths[QStringLiteral( "posY" )] = pathResolver.readPath( element.attribute( QStringLiteral( "posY-texture-path" ) ) );
-  mCubeMapFacesPaths[QStringLiteral( "posZ" )] = pathResolver.readPath( element.attribute( QStringLiteral( "posZ-texture-path" ) ) );
-  mCubeMapFacesPaths[QStringLiteral( "negX" )] = pathResolver.readPath( element.attribute( QStringLiteral( "negX-texture-path" ) ) );
-  mCubeMapFacesPaths[QStringLiteral( "negY" )] = pathResolver.readPath( element.attribute( QStringLiteral( "negY-texture-path" ) ) );
-  mCubeMapFacesPaths[QStringLiteral( "negZ" )] = pathResolver.readPath( element.attribute( QStringLiteral( "negZ-texture-path" ) ) );
+  mCubeMapFacesPaths[u"posX"_s] = pathResolver.readPath( element.attribute( u"posX-texture-path"_s ) );
+  mCubeMapFacesPaths[u"posY"_s] = pathResolver.readPath( element.attribute( u"posY-texture-path"_s ) );
+  mCubeMapFacesPaths[u"posZ"_s] = pathResolver.readPath( element.attribute( u"posZ-texture-path"_s ) );
+  mCubeMapFacesPaths[u"negX"_s] = pathResolver.readPath( element.attribute( u"negX-texture-path"_s ) );
+  mCubeMapFacesPaths[u"negY"_s] = pathResolver.readPath( element.attribute( u"negY-texture-path"_s ) );
+  mCubeMapFacesPaths[u"negZ"_s] = pathResolver.readPath( element.attribute( u"negZ-texture-path"_s ) );
 }
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -61,19 +61,19 @@ void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   switch ( mSkyboxType )
   {
     case QgsSkyboxEntity::DistinctTexturesSkybox:
-      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Distinct Faces" ) );
+      element.setAttribute( u"skybox-type"_s, u"Distinct Faces"_s );
       break;
     case QgsSkyboxEntity::PanoramicSkybox:
-      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Panoramic Texture" ) );
+      element.setAttribute( u"skybox-type"_s, u"Panoramic Texture"_s );
       break;
   }
 
   const QgsPathResolver &pathResolver = context.pathResolver();
-  element.setAttribute( QStringLiteral( "panoramic-texture-path" ), pathResolver.writePath( mPanoramicTexturePath ) );
-  element.setAttribute( QStringLiteral( "posX-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[QStringLiteral( "posX" )] ) );
-  element.setAttribute( QStringLiteral( "posY-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[QStringLiteral( "posY" )] ) );
-  element.setAttribute( QStringLiteral( "posZ-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[QStringLiteral( "posZ" )] ) );
-  element.setAttribute( QStringLiteral( "negX-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[QStringLiteral( "negX" )] ) );
-  element.setAttribute( QStringLiteral( "negY-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[QStringLiteral( "negY" )] ) );
-  element.setAttribute( QStringLiteral( "negZ-texture-path" ), pathResolver.writePath( mCubeMapFacesPaths[QStringLiteral( "negZ" )] ) );
+  element.setAttribute( u"panoramic-texture-path"_s, pathResolver.writePath( mPanoramicTexturePath ) );
+  element.setAttribute( u"posX-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"posX"_s] ) );
+  element.setAttribute( u"posY-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"posY"_s] ) );
+  element.setAttribute( u"posZ-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"posZ"_s] ) );
+  element.setAttribute( u"negX-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negX"_s] ) );
+  element.setAttribute( u"negY-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negY"_s] ) );
+  element.setAttribute( u"negZ-texture-path"_s, pathResolver.writePath( mCubeMapFacesPaths[u"negZ"_s] ) );
 }

@@ -70,7 +70,7 @@ const QgsPolygon *QgsMultiPolygon::polygonN( int index ) const
 
 QString QgsMultiPolygon::geometryType() const
 {
-  return QStringLiteral( "MultiPolygon" );
+  return u"MultiPolygon"_s;
 }
 
 void QgsMultiPolygon::clear()
@@ -93,13 +93,13 @@ QgsMultiPolygon *QgsMultiPolygon::clone() const
 
 bool QgsMultiPolygon::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon }, QStringLiteral( "Polygon" ) );
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon }, u"Polygon"_s );
 }
 
 QDomElement QgsMultiPolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
-  QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+  QDomElement elemMultiPolygon = doc.createElementNS( ns, u"MultiPolygon"_s );
 
   if ( isEmpty() )
     return elemMultiPolygon;
@@ -108,7 +108,7 @@ QDomElement QgsMultiPolygon::asGml2( QDomDocument &doc, int precision, const QSt
   {
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
-      QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
+      QDomElement elemPolygonMember = doc.createElementNS( ns, u"polygonMember"_s );
       elemPolygonMember.appendChild( geom->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiPolygon.appendChild( elemPolygonMember );
     }
@@ -119,7 +119,7 @@ QDomElement QgsMultiPolygon::asGml2( QDomDocument &doc, int precision, const QSt
 
 QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
+  QDomElement elemMultiSurface = doc.createElementNS( ns, u"MultiSurface"_s );
 
   if ( isEmpty() )
     return elemMultiSurface;
@@ -128,7 +128,7 @@ QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QSt
   {
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
-      QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "surfaceMember" ) );
+      QDomElement elemSurfaceMember = doc.createElementNS( ns, u"surfaceMember"_s );
       elemSurfaceMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiSurface.appendChild( elemSurfaceMember );
     }

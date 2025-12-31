@@ -54,7 +54,7 @@ QgsPointCloudClassifiedRenderer::QgsPointCloudClassifiedRenderer( const QString 
 
 QString QgsPointCloudClassifiedRenderer::type() const
 {
-  return QStringLiteral( "classified" );
+  return u"classified"_s;
 }
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
@@ -189,22 +189,22 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 {
   auto r = std::make_unique< QgsPointCloudClassifiedRenderer >();
 
-  r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Classification" ) ) );
+  r->setAttribute( element.attribute( u"attribute"_s, u"Classification"_s ) );
 
   QgsPointCloudCategoryList categories;
-  const QDomElement catsElem = element.firstChildElement( QStringLiteral( "categories" ) );
+  const QDomElement catsElem = element.firstChildElement( u"categories"_s );
   if ( !catsElem.isNull() )
   {
     QDomElement catElem = catsElem.firstChildElement();
     while ( !catElem.isNull() )
     {
-      if ( catElem.tagName() == QLatin1String( "category" ) )
+      if ( catElem.tagName() == "category"_L1 )
       {
-        const int value = catElem.attribute( QStringLiteral( "value" ) ).toInt();
-        const double size = catElem.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "0" ) ).toDouble();
-        const QString label = catElem.attribute( QStringLiteral( "label" ) );
-        const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
-        const QColor color = QgsColorUtils::colorFromString( catElem.attribute( QStringLiteral( "color" ) ) );
+        const int value = catElem.attribute( u"value"_s ).toInt();
+        const double size = catElem.attribute( u"pointSize"_s, u"0"_s ).toDouble();
+        const QString label = catElem.attribute( u"label"_s );
+        const bool render = catElem.attribute( u"render"_s ) != "false"_L1;
+        const QColor color = QgsColorUtils::colorFromString( catElem.attribute( u"color"_s ) );
         categories.append( QgsPointCloudCategory( value, color, label, render, size ) );
       }
       catElem = catElem.nextSiblingElement();
@@ -242,21 +242,21 @@ QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
 
 QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
+  QDomElement rendererElem = doc.createElement( u"renderer"_s );
 
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "classified" ) );
-  rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
+  rendererElem.setAttribute( u"type"_s, u"classified"_s );
+  rendererElem.setAttribute( u"attribute"_s, mAttribute );
 
   // categories
-  QDomElement catsElem = doc.createElement( QStringLiteral( "categories" ) );
+  QDomElement catsElem = doc.createElement( u"categories"_s );
   for ( const QgsPointCloudCategory &category : mCategories )
   {
-    QDomElement catElem = doc.createElement( QStringLiteral( "category" ) );
-    catElem.setAttribute( QStringLiteral( "value" ), QString::number( category.value() ) );
-    catElem.setAttribute( QStringLiteral( "pointSize" ), QString::number( category.pointSize() ) );
-    catElem.setAttribute( QStringLiteral( "label" ), category.label() );
-    catElem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( category.color() ) );
-    catElem.setAttribute( QStringLiteral( "render" ), category.renderState() ? "true" : "false" );
+    QDomElement catElem = doc.createElement( u"category"_s );
+    catElem.setAttribute( u"value"_s, QString::number( category.value() ) );
+    catElem.setAttribute( u"pointSize"_s, QString::number( category.pointSize() ) );
+    catElem.setAttribute( u"label"_s, category.label() );
+    catElem.setAttribute( u"color"_s, QgsColorUtils::colorToString( category.color() ) );
+    catElem.setAttribute( u"render"_s, category.renderState() ? "true" : "false" );
     catsElem.appendChild( catElem );
   }
   rendererElem.appendChild( catsElem );

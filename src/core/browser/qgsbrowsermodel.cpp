@@ -118,8 +118,8 @@ void QgsBrowserModel::addRootItems()
   // give the home directory a prominent third place
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(),
       QStringLiteral( HOME_PREFIX ) + QDir::homePath(),
-      QStringLiteral( "special:Home" ) );
-  item->setSortKey( QStringLiteral( " 2" ) );
+      u"special:Home"_s );
+  item->setSortKey( u" 2"_s );
   setupItemConnections( item );
   mRootItems << item;
 
@@ -141,10 +141,10 @@ void QgsBrowserModel::addRootItems()
       continue;
 
     const QString driveName = QStorageInfo( path ).displayName();
-    const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+    const QString name = driveName.isEmpty() || driveName == path ? path : u"%1 (%2)"_s.arg( path, driveName );
 
-    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
-    item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, u"special:Drives"_s );
+    item->setSortKey( u" 3 %1"_s.arg( path ) );
     mDriveItems.insert( path, item );
 
     setupItemConnections( item );
@@ -153,7 +153,7 @@ void QgsBrowserModel::addRootItems()
 
 #ifdef Q_OS_MAC
   QString path = QString( "/Volumes" );
-  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Volumes" ) );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path, path, u"special:Volumes"_s );
   setupItemConnections( vols );
   mRootItems << vols;
 #endif
@@ -268,7 +268,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 
   if ( !ptr )
   {
-    QgsDebugMsgLevel( QStringLiteral( "FLAGS PROBLEM!" ), 4 );
+    QgsDebugMsgLevel( u"FLAGS PROBLEM!"_s, 4 );
     return Qt::ItemFlags();
   }
 
@@ -459,7 +459,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( matchFlag == Qt::MatchStartsWith )
     return index;
 
-  QgsDebugMsgLevel( QStringLiteral( "path not found" ), 4 );
+  QgsDebugMsgLevel( u"path not found"_s, 4 );
   return QModelIndex(); // not found
 }
 
@@ -537,10 +537,10 @@ void QgsBrowserModel::refreshDrives()
     if ( !mDriveItems.contains( path ) )
     {
       const QString driveName = QStorageInfo( path ).displayName();
-      const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+      const QString name = driveName.isEmpty() || driveName == path ? path : u"%1 (%2)"_s.arg( path, driveName );
 
-      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
-      item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
+      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, u"special:Drives"_s );
+      item->setSortKey( u" 3 %1"_s.arg( path ) );
 
       mDriveItems.insert( path, item );
       setupItemConnections( item );
@@ -594,13 +594,13 @@ void QgsBrowserModel::beginInsertItems( QgsDataItem *parent, int first, int last
   QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( QStringLiteral( "valid" ), 3 );
+  QgsDebugMsgLevel( u"valid"_s, 3 );
   beginInsertRows( idx, first, last );
-  QgsDebugMsgLevel( QStringLiteral( "end" ), 3 );
+  QgsDebugMsgLevel( u"end"_s, 3 );
 }
 void QgsBrowserModel::endInsertItems()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 3 );
+  QgsDebugMsgLevel( u"Entered"_s, 3 );
   endInsertRows();
 }
 void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last )
@@ -613,12 +613,12 @@ void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last
 }
 void QgsBrowserModel::endRemoveItems()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 3 );
+  QgsDebugMsgLevel( u"Entered"_s, 3 );
   endRemoveRows();
 }
 void QgsBrowserModel::itemDataChanged( QgsDataItem *item )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 3 );
+  QgsDebugMsgLevel( u"Entered"_s, 3 );
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
@@ -631,7 +631,7 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, Qgis::BrowserItemStat
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( QStringLiteral( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( oldState ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( item->state() ) ), 4 );
+  QgsDebugMsgLevel( u"item %1 state changed %2 -> %3"_s.arg( item->path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( oldState ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( item->state() ) ), 4 );
   emit stateChanged( idx, oldState );
 }
 
@@ -661,7 +661,7 @@ QStringList QgsBrowserModel::mimeTypes() const
   QStringList types;
   // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
   // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
-  types << QStringLiteral( "application/x-vnd.qgis.qgis.uri" );
+  types << u"application/x-vnd.qgis.qgis.uri"_s;
   return types;
 }
 
@@ -703,7 +703,7 @@ bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsgLevel( QStringLiteral( "DROP PROBLEM!" ), 4 );
+    QgsDebugMsgLevel( u"DROP PROBLEM!"_s, 4 );
     return false;
   }
 
@@ -724,7 +724,7 @@ bool QgsBrowserModel::canFetchMore( const QModelIndex &parent ) const
 {
   QgsDataItem *item = dataItem( parent );
   // if ( item )
-  //   QgsDebugMsgLevel( QStringLiteral( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ), 2 );
+  //   QgsDebugMsgLevel( u"path = %1 canFetchMore = %2"_s.arg( item->path() ).arg( item && ! item->isPopulated() ), 2 );
   return ( item && item->state() == Qgis::BrowserItemState::NotPopulated );
 }
 
@@ -785,7 +785,7 @@ void QgsBrowserModel::removeFavorite( QgsFavoriteItem *favorite )
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QgsSettings settings;
-  QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
+  QStringList hiddenItems = settings.value( u"browser/hiddenPaths"_s,
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
@@ -796,7 +796,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( QStringLiteral( "browser/hiddenPaths" ), hiddenItems );
+  settings.setValue( u"browser/hiddenPaths"_s, hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );

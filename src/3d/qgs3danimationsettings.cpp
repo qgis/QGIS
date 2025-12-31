@@ -81,42 +81,42 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
 
 void Qgs3DAnimationSettings::readXml( const QDomElement &elem )
 {
-  mEasingCurve = QEasingCurve( ( QEasingCurve::Type ) elem.attribute( QStringLiteral( "interpolation" ), QStringLiteral( "0" ) ).toInt() );
+  mEasingCurve = QEasingCurve( ( QEasingCurve::Type ) elem.attribute( u"interpolation"_s, u"0"_s ).toInt() );
 
   mKeyframes.clear();
 
-  const QDomElement elemKeyframes = elem.firstChildElement( QStringLiteral( "keyframes" ) );
-  QDomElement elemKeyframe = elemKeyframes.firstChildElement( QStringLiteral( "keyframe" ) );
+  const QDomElement elemKeyframes = elem.firstChildElement( u"keyframes"_s );
+  QDomElement elemKeyframe = elemKeyframes.firstChildElement( u"keyframe"_s );
   while ( !elemKeyframe.isNull() )
   {
     Keyframe kf;
-    kf.time = elemKeyframe.attribute( QStringLiteral( "time" ) ).toFloat();
-    kf.point.set( elemKeyframe.attribute( QStringLiteral( "x" ) ).toDouble(), elemKeyframe.attribute( QStringLiteral( "y" ) ).toDouble(), elemKeyframe.attribute( QStringLiteral( "z" ) ).toDouble() );
-    kf.dist = elemKeyframe.attribute( QStringLiteral( "dist" ) ).toFloat();
-    kf.pitch = elemKeyframe.attribute( QStringLiteral( "pitch" ) ).toFloat();
-    kf.yaw = elemKeyframe.attribute( QStringLiteral( "yaw" ) ).toFloat();
+    kf.time = elemKeyframe.attribute( u"time"_s ).toFloat();
+    kf.point.set( elemKeyframe.attribute( u"x"_s ).toDouble(), elemKeyframe.attribute( u"y"_s ).toDouble(), elemKeyframe.attribute( u"z"_s ).toDouble() );
+    kf.dist = elemKeyframe.attribute( u"dist"_s ).toFloat();
+    kf.pitch = elemKeyframe.attribute( u"pitch"_s ).toFloat();
+    kf.yaw = elemKeyframe.attribute( u"yaw"_s ).toFloat();
     mKeyframes.append( kf );
-    elemKeyframe = elemKeyframe.nextSiblingElement( QStringLiteral( "keyframe" ) );
+    elemKeyframe = elemKeyframe.nextSiblingElement( u"keyframe"_s );
   }
 }
 
 QDomElement Qgs3DAnimationSettings::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "animation3d" ) );
-  elem.setAttribute( QStringLiteral( "interpolation" ), mEasingCurve.type() );
+  QDomElement elem = doc.createElement( u"animation3d"_s );
+  elem.setAttribute( u"interpolation"_s, mEasingCurve.type() );
 
-  QDomElement elemKeyframes = doc.createElement( QStringLiteral( "keyframes" ) );
+  QDomElement elemKeyframes = doc.createElement( u"keyframes"_s );
 
   for ( const Keyframe &keyframe : mKeyframes )
   {
-    QDomElement elemKeyframe = doc.createElement( QStringLiteral( "keyframe" ) );
-    elemKeyframe.setAttribute( QStringLiteral( "time" ), keyframe.time );
-    elemKeyframe.setAttribute( QStringLiteral( "x" ), keyframe.point.x() );
-    elemKeyframe.setAttribute( QStringLiteral( "y" ), keyframe.point.y() );
-    elemKeyframe.setAttribute( QStringLiteral( "z" ), keyframe.point.z() );
-    elemKeyframe.setAttribute( QStringLiteral( "dist" ), keyframe.dist );
-    elemKeyframe.setAttribute( QStringLiteral( "pitch" ), keyframe.pitch );
-    elemKeyframe.setAttribute( QStringLiteral( "yaw" ), keyframe.yaw );
+    QDomElement elemKeyframe = doc.createElement( u"keyframe"_s );
+    elemKeyframe.setAttribute( u"time"_s, keyframe.time );
+    elemKeyframe.setAttribute( u"x"_s, keyframe.point.x() );
+    elemKeyframe.setAttribute( u"y"_s, keyframe.point.y() );
+    elemKeyframe.setAttribute( u"z"_s, keyframe.point.z() );
+    elemKeyframe.setAttribute( u"dist"_s, keyframe.dist );
+    elemKeyframe.setAttribute( u"pitch"_s, keyframe.pitch );
+    elemKeyframe.setAttribute( u"yaw"_s, keyframe.yaw );
     elemKeyframes.appendChild( elemKeyframe );
   }
 

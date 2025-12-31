@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Multipart object with only one feature" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
+    static QString factoryId() { return u"QgsGeometryMultipartCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }

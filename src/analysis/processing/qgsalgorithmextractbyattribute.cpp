@@ -21,7 +21,7 @@
 
 QString QgsExtractByAttributeAlgorithm::name() const
 {
-  return QStringLiteral( "extractbyattribute" );
+  return u"extractbyattribute"_s;
 }
 
 QString QgsExtractByAttributeAlgorithm::displayName() const
@@ -41,18 +41,18 @@ QString QgsExtractByAttributeAlgorithm::group() const
 
 QString QgsExtractByAttributeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return u"vectorselection"_s;
 }
 
 void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Selection attribute" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OPERATOR" ), QObject::tr( "Operator" ), QStringList() << QObject::tr( "=" ) << QObject::tr( "≠" ) << QObject::tr( ">" ) << QObject::tr( "≥" ) << QObject::tr( "<" ) << QObject::tr( "≤" ) << QObject::tr( "begins with" ) << QObject::tr( "contains" ) << QObject::tr( "is null" ) << QObject::tr( "is not null" ) << QObject::tr( "does not contain" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Selection attribute" ), QVariant(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterEnum( u"OPERATOR"_s, QObject::tr( "Operator" ), QStringList() << QObject::tr( "=" ) << QObject::tr( "≠" ) << QObject::tr( ">" ) << QObject::tr( "≥" ) << QObject::tr( "<" ) << QObject::tr( "≤" ) << QObject::tr( "begins with" ) << QObject::tr( "contains" ) << QObject::tr( "is null" ) << QObject::tr( "is not null" ) << QObject::tr( "does not contain" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterString( u"VALUE"_s, QObject::tr( "Value" ), QVariant(), false, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (attribute)" ) ) );
-  QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "FAIL_OUTPUT" ), QObject::tr( "Extracted (non-matching)" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (attribute)" ) ) );
+  QgsProcessingParameterFeatureSink *failOutput = new QgsProcessingParameterFeatureSink( u"FAIL_OUTPUT"_s, QObject::tr( "Extracted (non-matching)" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
   failOutput->setCreateByDefault( false );
   addParameter( failOutput );
 }
@@ -76,21 +76,21 @@ QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::createInstance()
 
 QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  const Operation op = static_cast<Operation>( parameterAsEnum( parameters, QStringLiteral( "OPERATOR" ), context ) );
-  const QString value = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD"_s, context );
+  const Operation op = static_cast<Operation>( parameterAsEnum( parameters, u"OPERATOR"_s, context ) );
+  const QString value = parameterAsString( parameters, u"VALUE"_s, context );
 
   QString matchingSinkId;
-  std::unique_ptr<QgsFeatureSink> matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> matchingSink( parameterAsSink( parameters, u"OUTPUT"_s, context, matchingSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
   if ( !matchingSink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString nonMatchingSinkId;
-  std::unique_ptr<QgsFeatureSink> nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> nonMatchingSink( parameterAsSink( parameters, u"FAIL_OUTPUT"_s, context, nonMatchingSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
 
   const int idx = source->fields().lookupField( fieldName );
   if ( idx < 0 )
@@ -126,37 +126,37 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   switch ( op )
   {
     case Equals:
-      expr = QStringLiteral( "%1 = %3" ).arg( fieldRef, quotedVal );
+      expr = u"%1 = %3"_s.arg( fieldRef, quotedVal );
       break;
     case NotEquals:
-      expr = QStringLiteral( "%1 != %3" ).arg( fieldRef, quotedVal );
+      expr = u"%1 != %3"_s.arg( fieldRef, quotedVal );
       break;
     case GreaterThan:
-      expr = QStringLiteral( "%1 > %3" ).arg( fieldRef, quotedVal );
+      expr = u"%1 > %3"_s.arg( fieldRef, quotedVal );
       break;
     case GreaterThanEqualTo:
-      expr = QStringLiteral( "%1 >= %3" ).arg( fieldRef, quotedVal );
+      expr = u"%1 >= %3"_s.arg( fieldRef, quotedVal );
       break;
     case LessThan:
-      expr = QStringLiteral( "%1 < %3" ).arg( fieldRef, quotedVal );
+      expr = u"%1 < %3"_s.arg( fieldRef, quotedVal );
       break;
     case LessThanEqualTo:
-      expr = QStringLiteral( "%1 <= %3" ).arg( fieldRef, quotedVal );
+      expr = u"%1 <= %3"_s.arg( fieldRef, quotedVal );
       break;
     case BeginsWith:
-      expr = QStringLiteral( "%1 LIKE '%2%'" ).arg( fieldRef, value );
+      expr = u"%1 LIKE '%2%'"_s.arg( fieldRef, value );
       break;
     case Contains:
-      expr = QStringLiteral( "%1 LIKE '%%2%'" ).arg( fieldRef, value );
+      expr = u"%1 LIKE '%%2%'"_s.arg( fieldRef, value );
       break;
     case IsNull:
-      expr = QStringLiteral( "%1 IS NULL" ).arg( fieldRef );
+      expr = u"%1 IS NULL"_s.arg( fieldRef );
       break;
     case IsNotNull:
-      expr = QStringLiteral( "%1 IS NOT NULL" ).arg( fieldRef );
+      expr = u"%1 IS NOT NULL"_s.arg( fieldRef );
       break;
     case DoesNotContain:
-      expr = QStringLiteral( "%1 NOT LIKE '%%2%'" ).arg( fieldRef, value );
+      expr = u"%1 NOT LIKE '%%2%'"_s.arg( fieldRef, value );
       break;
   }
 
@@ -190,7 +190,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
       }
 
       if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, u"OUTPUT"_s ) );
 
       feedback->setProgress( current * step );
       current++;
@@ -215,12 +215,12 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
       if ( expression.evaluate( &expressionContext ).toBool() )
       {
         if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, u"OUTPUT"_s ) );
       }
       else
       {
         if ( !nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( nonMatchingSink.get(), parameters, QStringLiteral( "FAIL_OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( nonMatchingSink.get(), parameters, u"FAIL_OUTPUT"_s ) );
       }
 
       feedback->setProgress( current * step );
@@ -234,9 +234,9 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     nonMatchingSink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), matchingSinkId );
+  outputs.insert( u"OUTPUT"_s, matchingSinkId );
   if ( nonMatchingSink )
-    outputs.insert( QStringLiteral( "FAIL_OUTPUT" ), nonMatchingSinkId );
+    outputs.insert( u"FAIL_OUTPUT"_s, nonMatchingSinkId );
   return outputs;
 }
 

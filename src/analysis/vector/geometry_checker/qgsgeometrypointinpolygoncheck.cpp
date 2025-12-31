@@ -70,10 +70,21 @@ QgsGeometryCheck::Result QgsGeometryPointInPolygonCheck::collectErrors( const QM
           messages.append( tr( "Point in polygon check failed for (%1): the geometry is invalid" ).arg( checkFeature.id() ) );
           continue;
         }
-        if ( testGeomEngine->contains( point ) && !testGeomEngine->touches( point ) )
+
+        // if the point is inside the polygon, it's ok, we incremented nInside to match nTested
+        // and we go the the next polygon.
+        if ( testGeomEngine->contains( point ) )
         {
           ++nInside;
         }
+        // else, if the point and the polygon do not touch each other, then this polygon is not meant
+        // to be tested here.
+        else if ( !testGeomEngine->touches( point ) )
+        {
+          --nTested;
+        }
+        // else, the point and the polygon do touch each other on the edge. This is an error,
+        // do nothing and nTested will not match nInside
       }
       if ( nTested == 0 || nTested != nInside )
       {

@@ -69,19 +69,19 @@ void QgsGeometryPaintEngine::updateState( const QPaintEngineState &state )
 void QgsGeometryPaintEngine::drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawImage method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawImage method"_s );
 }
 
 void QgsGeometryPaintEngine::drawPixmap( const QRectF &, const QPixmap &, const QRectF & )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawPixmap method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawPixmap method"_s );
 }
 
 void QgsGeometryPaintEngine::drawTiledPixmap( const QRectF &, const QPixmap &, const QPointF & )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawTiledPixmap method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawTiledPixmap method"_s );
 }
 
 template <typename T>

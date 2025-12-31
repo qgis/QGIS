@@ -122,7 +122,7 @@ QVariant QgsGCPListModel::data( const QModelIndex &index, int role ) const
             {
               const QString crsString = mTargetCrs.userFriendlyIdentifier();
               const double value = column == QgsGCPListModel::Column::DestinationX ? transformedDestinationPoint.x() : transformedDestinationPoint.y();
-              return QStringLiteral( "<b>%1</b><br>%2" ).arg( formatNumber( value ), crsString );
+              return u"<b>%1</b><br>%2"_s.arg( formatNumber( value ), crsString );
             }
 
             case Qt::EditRole:
@@ -377,7 +377,7 @@ QVariant QgsGCPListModel::headerData( int section, Qt::Orientation orientation, 
                 case Qt::ToolTipRole:
                 {
                   const QString crsString = mTargetCrs.userFriendlyIdentifier();
-                  return QStringLiteral( "<b>%1</b><br>%2" ).arg( heading, crsString );
+                  return u"<b>%1</b><br>%2"_s.arg( heading, crsString );
                 }
 
                 default:
@@ -415,7 +415,7 @@ Qgis::RenderUnit QgsGCPListModel::residualUnit() const
     mapUnitsPossible = mGeorefTransform->providesAccurateInverseTransformation();
   }
 
-  if ( mapUnitsPossible && QgsSettings().value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" )
+  if ( mapUnitsPossible && QgsSettings().value( u"/Plugin-GeoReferencer/Config/ResidualUnits"_s ) == "mapUnits" )
   {
     return Qgis::RenderUnit::MapUnits;
   }

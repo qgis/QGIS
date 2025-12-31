@@ -223,7 +223,9 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrastercalculator.cpp
   processing/qgsalgorithmrasterdtmslopebasedfilter.cpp
+  processing/qgsalgorithmrasterfeaturepreservingsmoothing.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
+  processing/qgsalgorithmrastergaussianblur.cpp
   processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
@@ -288,7 +290,10 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
+  processing/qgsalgorithmtotalcurvature.cpp
   processing/qgsalgorithmtransect.cpp
+  processing/qgsalgorithmtransectbase.cpp
+  processing/qgsalgorithmtransectfixeddistance.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmtruncatetable.cpp

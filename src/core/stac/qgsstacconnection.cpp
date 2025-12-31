@@ -20,18 +20,18 @@
 
 ///@cond PRIVATE
 
-const QgsSettingsEntryString *QgsStacConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionStac );
-const QgsSettingsEntryString *QgsStacConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionStac );
-const QgsSettingsEntryString *QgsStacConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionStac );
-const QgsSettingsEntryString *QgsStacConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionStac );
-const QgsSettingsEntryVariantMap *QgsStacConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionStac );
+const QgsSettingsEntryString *QgsStacConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeConnectionStac );
+const QgsSettingsEntryString *QgsStacConnection::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeConnectionStac );
+const QgsSettingsEntryString *QgsStacConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeConnectionStac );
+const QgsSettingsEntryString *QgsStacConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeConnectionStac );
+const QgsSettingsEntryVariantMap *QgsStacConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeConnectionStac );
 
 
 QString QgsStacConnection::encodedUri( const QgsStacConnection::Data &conn )
 {
   QgsDataSourceUri uri;
 
-  uri.setParam( QStringLiteral( "url" ), conn.url );
+  uri.setParam( u"url"_s, conn.url );
   if ( !conn.authCfg.isEmpty() )
     uri.setAuthConfigId( conn.authCfg );
   if ( !conn.username.isEmpty() )
@@ -50,7 +50,7 @@ QgsStacConnection::Data QgsStacConnection::decodedUri( const QString &uri )
   dsUri.setEncodedUri( uri );
 
   QgsStacConnection::Data conn;
-  conn.url = dsUri.param( QStringLiteral( "url" ) );
+  conn.url = dsUri.param( u"url"_s );
   conn.authCfg = dsUri.authConfigId();
   conn.username = dsUri.username();
   conn.password = dsUri.password();

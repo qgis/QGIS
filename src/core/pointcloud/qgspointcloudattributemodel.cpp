@@ -222,9 +222,9 @@ QVariant QgsPointCloudAttributeModel::data( const QModelIndex &index, int role )
 
 QString QgsPointCloudAttributeModel::attributeToolTip( const QgsPointCloudAttribute &attribute )
 {
-  QString toolTip = QStringLiteral( "<b>%1</b>" ).arg( attribute.name() );
+  QString toolTip = u"<b>%1</b>"_s.arg( attribute.name() );
 
-  toolTip += QStringLiteral( "<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>" ).arg( attribute.displayType() );
+  toolTip += u"<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>"_s.arg( attribute.displayType() );
 
   return toolTip;
 }

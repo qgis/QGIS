@@ -515,6 +515,7 @@ set(QGIS_CORE_SRCS
   qgslocalec.cpp
   qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
+  qgsmagneticmodel.cpp
   qgsmapclippingregion.cpp
   qgsmapclippingutils.cpp
   qgsmapdecoration.cpp
@@ -625,6 +626,7 @@ set(QGIS_CORE_SRCS
   qgstrackedvectorlayertools.cpp
   qgstransaction.cpp
   qgstransactiongroup.cpp
+  qgsunaccentrules.cpp
   qgsunittypes.cpp
   qgsvariantutils.cpp
   qgsvector.cpp
@@ -1227,6 +1229,7 @@ set(QGIS_CORE_HDRS
   qgslocalec.h
   qgslocalizeddatapathregistry.h
   qgslogger.h
+  qgsmagneticmodel.h
   qgsmapclippingregion.h
   qgsmapclippingutils.h
   qgsmapdecoration.h
@@ -1363,6 +1366,7 @@ set(QGIS_CORE_HDRS
   qgsvirtuallayertask.h
   qgswebpage.h
   qgswebview.h
+  qgswebframe.h
   qgswmsutils.h
   qgsxmlutils.h
   qgsziputils.h
@@ -2001,6 +2005,7 @@ set(QGIS_CORE_HDRS
   stac/qgsstacparser.h
   stac/qgsstacprovider.h
 
+  symbology/line_p.h
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
 
@@ -2235,12 +2240,6 @@ set(QGIS_CORE_PRIVATE_HDRS
 
   textrenderer/qgstextrenderer_p.h
 )
-
-if (NOT WITH_QTWEBKIT)
-  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-    qgswebframe.h
-  )
-endif()
 
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2653,6 +2652,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
 if (WITH_PDF4QT)
@@ -2670,6 +2670,11 @@ if (WITH_COPC)
   target_include_directories(qgis_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/core/providers/copc
     ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
+endif()
+
+if (WITH_GEOGRAPHICLIB)
+  target_include_directories(qgis_core PRIVATE
+     ${GeographicLib_INCLUDE_DIR})
 endif()
 
 find_package(${QT_VERSION_BASE} COMPONENTS Multimedia REQUIRED)
@@ -2731,7 +2736,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
   ${QT_VERSION_BASE}::Multimedia
-  ${OPTIONAL_QTWEBKIT}
   GEOS::geos_c
   GDAL::GDAL
   EXPAT::EXPAT
@@ -2765,15 +2769,9 @@ if(NOT WITH_INTERNAL_SPATIALINDEX)
   target_link_libraries(qgis_core ${SPATIALINDEX_LIBRARY})
 endif()
 
-if(BUILD_WITH_QT6)
-  target_link_libraries(qgis_core
-    Qt6Keychain::Qt6Keychain
-  )
-else()
-  target_link_libraries(qgis_core
-    qt5keychain
-  )
-endif()
+target_link_libraries(qgis_core
+  Qt6Keychain::Qt6Keychain
+)
 
 if (WITH_QTPRINTER)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
@@ -2787,9 +2785,7 @@ if (WITH_SPATIALITE)
   target_link_libraries(qgis_core spatialite::spatialite)
 endif()
 
-if (BUILD_WITH_QT6)
-  target_link_libraries(qgis_core Qt6::Core5Compat)
-endif()
+target_link_libraries(qgis_core Qt6::Core5Compat)
 
 if (WITH_EPT)
   target_link_libraries(qgis_core
@@ -2815,18 +2811,16 @@ if (WITH_SFCGAL)
   )
 endif()
 
+if (WITH_GEOGRAPHICLIB)
+  target_link_libraries(qgis_core
+    ${GeographicLib_LIBRARIES}
+  )
+endif()
+
 if (WITH_QTWEBENGINE)
-    if(BUILD_WITH_QT6)
-      target_link_libraries(qgis_core
-        ${QT_VERSION_BASE}::WebEngineCore
-      )
-    else()
-      # QWebEnginePage is in WebEngineWidgets for Qt5
-      target_link_libraries(qgis_core
-        ${QT_VERSION_BASE}::WebEngineCore
-        ${QT_VERSION_BASE}::WebEngineWidgets
-      )
-    endif()
+    target_link_libraries(qgis_core
+      ${QT_VERSION_BASE}::WebEngineCore
+    )
 endif()
 
 if (FORCE_STATIC_LIBS)

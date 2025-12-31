@@ -38,7 +38,7 @@ class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetai
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRenderedAnnotationItemDetails: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->itemId() );
+    QString str = u"<QgsRenderedAnnotationItemDetails: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->itemId() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

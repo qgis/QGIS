@@ -1,0 +1,358 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmagneticmodel.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMagneticModel
+{
+%Docstring(signature="appended")
+Represents a model of the Earth's magnetic field.
+
+.. warning::
+
+   This class is only usable if QGIS was built with GeographicLib support. If not,
+   then :py:class:`QgsNotSupportedException` exceptions will be raised when calling the
+   methods for this class.
+
+The :py:func:`Qgis.hasGeographicLib()` method can be used to determine
+if QGIS was built with GeographicLib support.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsmagneticmodel.h"
+%End
+  public:
+
+    static QString defaultFilePath() throw( QgsNotSupportedException );
+%Docstring
+Returns the default path used by GeographicLib to search for magnetic
+models.
+
+.. seealso:: :py:func:`defaultModelName`
+%End
+
+    static QString defaultModelName() throw( QgsNotSupportedException );
+%Docstring
+Returns the name of the default magnetic model used by GeographicLib.
+
+.. seealso:: :py:func:`defaultFilePath`
+%End
+
+    QgsMagneticModel( const QString &name, const QString &path = QString(), int maxDegree = -1, int maxOrder = -1 );
+%Docstring
+Constructor for QgsMagneticModel.
+
+A filename is formed by appending ".wmm" (World Magnetic Model) to the
+``name`` argument.
+
+If ``path`` is specified (and is non-empty), then the associated file is
+loaded from this path. Otherwise the file path is given by the
+:py:func:`~QgsMagneticModel.defaultFilePath`.
+
+The associated file must exist and point to a valid magnetic model file.
+If not, then :py:func:`~QgsMagneticModel.isValid` will return ``False``
+and a descriptive error can be retrieved by
+:py:func:`~QgsMagneticModel.error`.
+
+If ``maxDegree`` ≥ 0 and ``maxOrder`` < 0, then ``maxOrder`` is set to
+``maxDegree``. After the model is loaded, the maximum degree and order
+of the model can be found by the :py:func:`~QgsMagneticModel.degree` and
+:py:func:`~QgsMagneticModel.order` methods.
+
+:param name: the name of the model.
+:param path: optional directory for data file. If not specified then
+             :py:func:`~QgsMagneticModel.defaultFilePath` is used.
+:param maxDegree: if nonnegative, truncate the degree of the model to
+                  this value
+:param maxOrder: if nonnegative, truncate the order of the model to this
+                 value
+%End
+    ~QgsMagneticModel();
+
+
+    bool isValid() const throw( QgsNotSupportedException );
+%Docstring
+Returns ``True`` if the model is valid and can be used.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`error`
+%End
+
+    QString description() const throw( QgsNotSupportedException );
+%Docstring
+Returns the description of the magnetic model, if available.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+%End
+
+    QDateTime dateTime() const throw( QgsNotSupportedException );
+%Docstring
+Returns the date of the magnetic model, if available.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+%End
+
+    QString file() const throw( QgsNotSupportedException );
+%Docstring
+Returns the full file name for the magnetic model.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+%End
+
+    QString directory() const throw( QgsNotSupportedException );
+%Docstring
+Returns the full directory name containing the magnetic model file.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+%End
+
+    QString name() const throw( QgsNotSupportedException );
+%Docstring
+Returns the name of the magnetic model.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+%End
+
+    QString error() const;
+%Docstring
+Returns a string for the last error encountered by the model.
+%End
+
+    double minimumHeight() const throw( QgsNotSupportedException );
+%Docstring
+Returns the minimum height above the ellipsoid (in meters) for which the
+model should be used.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`maximumHeight`
+%End
+
+    double maximumHeight() const throw( QgsNotSupportedException );
+%Docstring
+Returns the maximum height above the ellipsoid (in meters) for which the
+model should be used.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`minimumHeight`
+%End
+
+    double minimumYear() const throw( QgsNotSupportedException );
+%Docstring
+Returns the minimum time (in decimal years) for which the model should
+be used.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`maximumYear`
+%End
+
+    double maximumYear() const throw( QgsNotSupportedException );
+%Docstring
+Returns the maximum time (in decimal years) for which the model should
+be used.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`minimumYear`
+%End
+
+    int degree() const throw( QgsNotSupportedException );
+%Docstring
+Returns the maximum degree of the components of the model.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`order`
+%End
+
+    int order() const throw( QgsNotSupportedException );
+%Docstring
+Returns the maximum order of the components of the model.
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`degree`
+%End
+
+    bool declination( double years, double latitude, double longitude, double height, double &declination /Out/ ) const throw( QgsNotSupportedException );
+%Docstring
+Calculates the declination of the field at a point.
+
+.. note::
+
+   The latitude and longitude should be specified as a WGS84 coordinate
+
+.. note::
+
+   If calculating both the inclination and declination at the same point it is more efficient to use :py:func:`~QgsMagneticModel.getComponents` and :py:func:`~QgsMagneticModel.fieldComponents`
+
+:param years: the time (in fractional years)
+:param latitude: latitude of the point (in decimal degrees)
+:param longitude: longitude of the point (in decimal degrees)
+:param height: height of the point above the ellipsoid (in meters)
+
+:return: - ``True`` if declination was successfully calculated
+         - declination: magnetic field declination, in degrees east of
+           north
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`inclination`
+%End
+
+    bool inclination( double years, double latitude, double longitude, double height, double &inclination /Out/ ) const throw( QgsNotSupportedException );
+%Docstring
+Calculates the inclination of the field at a point.
+
+.. note::
+
+   The latitude and longitude should be specified as a WGS84 coordinate
+
+.. note::
+
+   If calculating both the inclination and declination at the same point it is more efficient to use :py:func:`~QgsMagneticModel.getComponents` and :py:func:`~QgsMagneticModel.fieldComponents`
+
+:param years: the time (in fractional years)
+:param latitude: latitude of the point (in decimal degrees)
+:param longitude: longitude of the point (in decimal degrees)
+:param height: height of the point above the ellipsoid (in meters)
+
+:return: - ``True`` if inclination was successfully calculated
+         - inclination: magnetic field inclination, in degrees down from
+           horizontal
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`declination`
+%End
+
+    bool getComponents( double years, double latitude, double longitude, double height, double &Bx /Out/, double &By /Out/, double &Bz /Out/ ) const throw( QgsNotSupportedException );
+%Docstring
+Evaluates the components of the geomagnetic field at a point.
+
+.. note::
+
+   The latitude and longitude should be specified as a WGS84 coordinate
+
+:param years: the time (in fractional years)
+:param latitude: latitude of the point (in decimal degrees)
+:param longitude: longitude of the point (in decimal degrees)
+:param height: height of the point above the ellipsoid (in meters)
+
+:return: - ``True`` if the components were successfully calculated
+         - Bx: the easterly component of the magnetic field (in
+           nanotesla).
+         - By: the northerly component of the magnetic field (in
+           nanotesla)
+         - Bz: the vertical (up) component of the magnetic field (in
+           nanotesla)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`getComponentsWithTimeDerivatives`
+%End
+
+    bool getComponentsWithTimeDerivatives( double years, double latitude, double longitude, double height, double &Bx /Out/, double &By /Out/, double &Bz /Out/, double &Bxt /Out/, double &Byt /Out/, double &Bzt /Out/ ) const throw( QgsNotSupportedException );
+%Docstring
+Evaluates the components of the geomagnetic field at a point, and their
+time derivatives.
+
+.. note::
+
+   The latitude and longitude should be specified as a WGS84 coordinate
+
+:param years: the time (in fractional years)
+:param latitude: latitude of the point (in decimal degrees)
+:param longitude: longitude of the point (in decimal degrees)
+:param height: height of the point above the ellipsoid (in meters)
+
+:return: - ``True`` if the components were successfully calculated
+         - Bx: the easterly component of the magnetic field (in
+           nanotesla).
+         - By: the northerly component of the magnetic field (in
+           nanotesla)
+         - Bz: the vertical (up) component of the magnetic field (in
+           nanotesla)
+         - Bxt: the rate of change of Bx (nT/yr)
+         - Byt: the rate of change of By (nT/yr)
+         - Bzt: the rate of change of Bz (nT/yr)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`getComponents`
+%End
+
+    static bool fieldComponents( double Bx, double By, double Bz, double &H /Out/, double &F /Out/, double &D /Out/, double &I /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Compute various quantities dependent on a magnetic field.
+
+:param Bx: the easterly component of the magnetic field (in nanotesla)
+:param By: the northerly component of the magnetic field (in nanotesla)
+:param Bz: the vertical (up) component of the magnetic field (in
+           nanotesla)
+
+:return: - ``True`` if the components were successfully calculated
+         - H: the horizontal magnetic field (in nanotesla)
+         - F: the total magnetic field (in nanotesla)
+         - D: the declination of the field (degrees east of north)
+         - I: the inclination of the field (degrees down from
+           horizontal)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`fieldComponentsWithTimeDerivatives`
+%End
+
+    static bool fieldComponentsWithTimeDerivatives( double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H /Out/, double &F /Out/, double &D /Out/, double &I /Out/, double &Ht /Out/, double &Ft /Out/, double &Dt /Out/, double &It /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Compute various quantities dependent on a magnetic field and their rates
+of change.
+
+:param Bx: the easterly component of the magnetic field (in nanotesla)
+:param By: the northerly component of the magnetic field (in nanotesla)
+:param Bz: the vertical (up) component of the magnetic field (in
+           nanotesla)
+:param Bxt: the rate of change of Bx (nT/yr)
+:param Byt: the rate of change of By (nT/yr)
+:param Bzt: the rate of change of Bz (nT/yr)
+
+:return: - ``True`` if the components were successfully calculated
+         - H: the horizontal magnetic field (in nanotesla)
+         - F: the total magnetic field (in nanotesla)
+         - D: the declination of the field (degrees east of north)
+         - I: the inclination of the field (degrees down from
+           horizontal)
+         - Ht: the rate of change of H (nT/yr)
+         - Ft: the rate of change of F (nT/yr)
+         - Dt: the rate of change of D (degrees/yr)
+         - It: the rate of change of I (degrees/yr)
+
+:raises QgsNotSupportedException: if GeographicLib is not available
+
+.. seealso:: :py:func:`fieldComponentsWithTimeDerivatives`
+%End
+
+  private:
+    QgsMagneticModel( const QgsMagneticModel &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmagneticmodel.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

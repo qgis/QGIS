@@ -31,7 +31,7 @@
 
 #include "moc_qgswmsconnection.cpp"
 
-static const QString SERVICE_WMS = QStringLiteral( "WMS" );
+static const QString SERVICE_WMS = u"WMS"_s;
 
 
 QgsWMSConnection::QgsWMSConnection( const QString &connName )

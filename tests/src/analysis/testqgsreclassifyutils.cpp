@@ -28,7 +28,7 @@ class TestQgsReclassifyUtils : public QgsTest
 
   public:
     TestQgsReclassifyUtils()
-      : QgsTest( QStringLiteral( "Reclassify Utils Test" ) )
+      : QgsTest( u"Reclassify Utils Test"_s )
     {}
 
 
@@ -186,7 +186,7 @@ void TestQgsReclassifyUtils::testReclassify()
   QFETCH( QVector<double>, expected );
 
   const QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
-  const QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
   double tform[] = {
     extent.xMinimum(), extent.width() / nCols, 0.0,
     extent.yMaximum(), 0.0, -extent.height() / nRows
@@ -198,11 +198,11 @@ void TestQgsReclassifyUtils::testReclassify()
   const QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
 
   // create a GeoTIFF - this will create data provider in editable mode
-  QString filename = dirPath + QStringLiteral( "/test.tif" );
+  QString filename = dirPath + u"/test.tif"_s;
 
   auto writer = std::make_unique<QgsRasterFileWriter>( filename );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  writer->setOutputFormat( QStringLiteral( "GTiff" ) );
+  writer->setOutputProviderKey( u"gdal"_s );
+  writer->setOutputFormat( u"GTiff"_s );
   std::unique_ptr<QgsRasterDataProvider> dp( writer->createOneBandRaster( Qgis::DataType::Float32, nCols, nRows, extent, crs ) );
   QVERIFY( dp->isValid() );
   dp->setNoDataValue( 1, -9999 );
@@ -225,8 +225,8 @@ void TestQgsReclassifyUtils::testReclassify()
   // make destination raster
 
   // create a GeoTIFF - this will create data provider in editable mode
-  filename = dirPath + QStringLiteral( "/test2.tif" );
-  std::unique_ptr<QgsRasterDataProvider> dp2( QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, static_cast<Qgis::DataType>( dataType ), 10, 10, tform, crs ) );
+  filename = dirPath + u"/test2.tif"_s;
+  std::unique_ptr<QgsRasterDataProvider> dp2( QgsRasterDataProvider::create( u"gdal"_s, filename, u"GTiff"_s, 1, static_cast<Qgis::DataType>( dataType ), 10, 10, tform, crs ) );
   QVERIFY( dp2->isValid() );
 
   // reclassify

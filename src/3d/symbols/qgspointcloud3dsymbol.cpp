@@ -91,24 +91,24 @@ void QgsPointCloud3DSymbol::writeBaseXml( QDomElement &elem, const QgsReadWriteC
 {
   Q_UNUSED( context )
 
-  elem.setAttribute( QStringLiteral( "point-size" ), mPointSize );
-  elem.setAttribute( QStringLiteral( "render-as-triangles" ), mRenderAsTriangles ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "horizontal-triangle-filter" ), mHorizontalTriangleFilter ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "horizontal-filter-threshold" ), mHorizontalFilterThreshold );
-  elem.setAttribute( QStringLiteral( "vertical-triangle-filter" ), mVerticalTriangleFilter ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "vertical-filter-threshold" ), mVerticalFilterThreshold );
+  elem.setAttribute( u"point-size"_s, mPointSize );
+  elem.setAttribute( u"render-as-triangles"_s, mRenderAsTriangles ? 1 : 0 );
+  elem.setAttribute( u"horizontal-triangle-filter"_s, mHorizontalTriangleFilter ? 1 : 0 );
+  elem.setAttribute( u"horizontal-filter-threshold"_s, mHorizontalFilterThreshold );
+  elem.setAttribute( u"vertical-triangle-filter"_s, mVerticalTriangleFilter ? 1 : 0 );
+  elem.setAttribute( u"vertical-filter-threshold"_s, mVerticalFilterThreshold );
 }
 
 void QgsPointCloud3DSymbol::readBaseXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
 
-  mPointSize = elem.attribute( QStringLiteral( "point-size" ), QStringLiteral( "3.0" ) ).toFloat();
-  mRenderAsTriangles = elem.attribute( QStringLiteral( "render-as-triangles" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mHorizontalTriangleFilter = elem.attribute( QStringLiteral( "horizontal-triangle-filter" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mHorizontalFilterThreshold = elem.attribute( QStringLiteral( "horizontal-filter-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
-  mVerticalTriangleFilter = elem.attribute( QStringLiteral( "vertical-triangle-filter" ), QStringLiteral( "0" ) ).toInt() == 1;
-  mVerticalFilterThreshold = elem.attribute( QStringLiteral( "vertical-filter-threshold" ), QStringLiteral( "10.0" ) ).toFloat();
+  mPointSize = elem.attribute( u"point-size"_s, u"3.0"_s ).toFloat();
+  mRenderAsTriangles = elem.attribute( u"render-as-triangles"_s, u"0"_s ).toInt() == 1;
+  mHorizontalTriangleFilter = elem.attribute( u"horizontal-triangle-filter"_s, u"0"_s ).toInt() == 1;
+  mHorizontalFilterThreshold = elem.attribute( u"horizontal-filter-threshold"_s, u"10.0"_s ).toFloat();
+  mVerticalTriangleFilter = elem.attribute( u"vertical-triangle-filter"_s, u"0"_s ).toInt() == 1;
+  mVerticalFilterThreshold = elem.attribute( u"vertical-filter-threshold"_s, u"10.0"_s ).toFloat();
 }
 
 void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const
@@ -132,7 +132,7 @@ QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
 
 QString QgsSingleColorPointCloud3DSymbol::symbolType() const
 {
-  return QStringLiteral( "single-color" );
+  return u"single-color"_s;
 }
 
 QgsSingleColorPointCloud3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
@@ -148,7 +148,7 @@ void QgsSingleColorPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsRea
   Q_UNUSED( context )
 
   writeBaseXml( elem, context );
-  elem.setAttribute( QStringLiteral( "single-color" ), QgsColorUtils::colorToString( mSingleColor ) );
+  elem.setAttribute( u"single-color"_s, QgsColorUtils::colorToString( mSingleColor ) );
 }
 
 void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -156,7 +156,7 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
   Q_UNUSED( context )
 
   readBaseXml( elem, context );
-  mSingleColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "single-color" ), QStringLiteral( "0,0,255" ) ) );
+  mSingleColor = QgsColorUtils::colorFromString( elem.attribute( u"single-color"_s, u"0,0,255"_s ) );
 }
 
 void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
@@ -194,7 +194,7 @@ QgsColorRampPointCloud3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 
 QString QgsColorRampPointCloud3DSymbol::symbolType() const
 {
-  return QStringLiteral( "color-ramp" );
+  return u"color-ramp"_s;
 }
 
 void QgsColorRampPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -202,9 +202,9 @@ void QgsColorRampPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadW
   Q_UNUSED( context )
 
   writeBaseXml( elem, context );
-  elem.setAttribute( QStringLiteral( "rendering-parameter" ), mRenderingParameter );
-  elem.setAttribute( QStringLiteral( "color-ramp-shader-min" ), mColorRampShaderMin );
-  elem.setAttribute( QStringLiteral( "color-ramp-shader-max" ), mColorRampShaderMax );
+  elem.setAttribute( u"rendering-parameter"_s, mRenderingParameter );
+  elem.setAttribute( u"color-ramp-shader-min"_s, mColorRampShaderMin );
+  elem.setAttribute( u"color-ramp-shader-max"_s, mColorRampShaderMax );
   QDomDocument doc = elem.ownerDocument();
   const QDomElement elemColorRampShader = mColorRampShader.writeXml( doc );
   elem.appendChild( elemColorRampShader );
@@ -216,8 +216,8 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
 
   readBaseXml( elem, context );
   mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
-  mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
-  mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
+  mColorRampShaderMin = elem.attribute( u"color-ramp-shader-min"_s, u"0.0"_s ).toDouble();
+  mColorRampShaderMax = elem.attribute( u"color-ramp-shader-max"_s, u"1.0"_s ).toDouble();
   mColorRampShader.readXml( elem );
 }
 
@@ -282,7 +282,7 @@ QgsRgbPointCloud3DSymbol::QgsRgbPointCloud3DSymbol()
 
 QString QgsRgbPointCloud3DSymbol::symbolType() const
 {
-  return QStringLiteral( "rgb" );
+  return u"rgb"_s;
 }
 
 QgsRgbPointCloud3DSymbol *QgsRgbPointCloud3DSymbol::clone() const
@@ -314,28 +314,28 @@ void QgsRgbPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteCo
 
   writeBaseXml( elem, context );
 
-  elem.setAttribute( QStringLiteral( "red" ), mRedAttribute );
-  elem.setAttribute( QStringLiteral( "green" ), mGreenAttribute );
-  elem.setAttribute( QStringLiteral( "blue" ), mBlueAttribute );
+  elem.setAttribute( u"red"_s, mRedAttribute );
+  elem.setAttribute( u"green"_s, mGreenAttribute );
+  elem.setAttribute( u"blue"_s, mBlueAttribute );
 
   QDomDocument doc = elem.ownerDocument();
 
   //contrast enhancement
   if ( mRedContrastEnhancement )
   {
-    QDomElement redContrastElem = doc.createElement( QStringLiteral( "redContrastEnhancement" ) );
+    QDomElement redContrastElem = doc.createElement( u"redContrastEnhancement"_s );
     mRedContrastEnhancement->writeXml( doc, redContrastElem );
     elem.appendChild( redContrastElem );
   }
   if ( mGreenContrastEnhancement )
   {
-    QDomElement greenContrastElem = doc.createElement( QStringLiteral( "greenContrastEnhancement" ) );
+    QDomElement greenContrastElem = doc.createElement( u"greenContrastEnhancement"_s );
     mGreenContrastEnhancement->writeXml( doc, greenContrastElem );
     elem.appendChild( greenContrastElem );
   }
   if ( mBlueContrastEnhancement )
   {
-    QDomElement blueContrastElem = doc.createElement( QStringLiteral( "blueContrastEnhancement" ) );
+    QDomElement blueContrastElem = doc.createElement( u"blueContrastEnhancement"_s );
     mBlueContrastEnhancement->writeXml( doc, blueContrastElem );
     elem.appendChild( blueContrastElem );
   }
@@ -347,13 +347,13 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
 
   readBaseXml( elem, context );
 
-  setRedAttribute( elem.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
-  setGreenAttribute( elem.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
-  setBlueAttribute( elem.attribute( QStringLiteral( "blue" ), QStringLiteral( "Blue" ) ) );
+  setRedAttribute( elem.attribute( u"red"_s, u"Red"_s ) );
+  setGreenAttribute( elem.attribute( u"green"_s, u"Green"_s ) );
+  setBlueAttribute( elem.attribute( u"blue"_s, u"Blue"_s ) );
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
-  const QDomElement redContrastElem = elem.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  const QDomElement redContrastElem = elem.firstChildElement( u"redContrastEnhancement"_s );
   if ( !redContrastElem.isNull() )
   {
     redContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -362,7 +362,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   }
 
   QgsContrastEnhancement *greenContrastEnhancement = nullptr;
-  const QDomElement greenContrastElem = elem.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  const QDomElement greenContrastElem = elem.firstChildElement( u"greenContrastEnhancement"_s );
   if ( !greenContrastElem.isNull() )
   {
     greenContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -371,7 +371,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   }
 
   QgsContrastEnhancement *blueContrastEnhancement = nullptr;
-  const QDomElement blueContrastElem = elem.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  const QDomElement blueContrastElem = elem.firstChildElement( u"blueContrastEnhancement"_s );
   if ( !blueContrastElem.isNull() )
   {
     blueContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -468,7 +468,7 @@ QgsClassificationPointCloud3DSymbol *QgsClassificationPointCloud3DSymbol::clone(
 
 QString QgsClassificationPointCloud3DSymbol::symbolType() const
 {
-  return QStringLiteral( "classification" );
+  return u"classification"_s;
 }
 
 void QgsClassificationPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -478,18 +478,18 @@ void QgsClassificationPointCloud3DSymbol::writeXml( QDomElement &elem, const Qgs
 
   writeBaseXml( elem, context );
 
-  elem.setAttribute( QStringLiteral( "rendering-parameter" ), mRenderingParameter );
+  elem.setAttribute( u"rendering-parameter"_s, mRenderingParameter );
 
   // categories
-  QDomElement catsElem = doc.createElement( QStringLiteral( "categories" ) );
+  QDomElement catsElem = doc.createElement( u"categories"_s );
   for ( const QgsPointCloudCategory &category : mCategoriesList )
   {
-    QDomElement catElem = doc.createElement( QStringLiteral( "category" ) );
-    catElem.setAttribute( QStringLiteral( "value" ), QString::number( category.value() ) );
-    catElem.setAttribute( QStringLiteral( "pointSize" ), category.pointSize() );
-    catElem.setAttribute( QStringLiteral( "label" ), category.label() );
-    catElem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( category.color() ) );
-    catElem.setAttribute( QStringLiteral( "render" ), category.renderState() ? "true" : "false" );
+    QDomElement catElem = doc.createElement( u"category"_s );
+    catElem.setAttribute( u"value"_s, QString::number( category.value() ) );
+    catElem.setAttribute( u"pointSize"_s, category.pointSize() );
+    catElem.setAttribute( u"label"_s, category.label() );
+    catElem.setAttribute( u"color"_s, QgsColorUtils::colorToString( category.color() ) );
+    catElem.setAttribute( u"render"_s, category.renderState() ? "true" : "false" );
     catsElem.appendChild( catElem );
   }
   elem.appendChild( catsElem );
@@ -502,20 +502,20 @@ void QgsClassificationPointCloud3DSymbol::readXml( const QDomElement &elem, cons
   readBaseXml( elem, context );
   mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
 
-  const QDomElement catsElem = elem.firstChildElement( QStringLiteral( "categories" ) );
+  const QDomElement catsElem = elem.firstChildElement( u"categories"_s );
   if ( !catsElem.isNull() )
   {
     mCategoriesList.clear();
     QDomElement catElem = catsElem.firstChildElement();
     while ( !catElem.isNull() )
     {
-      if ( catElem.tagName() == QLatin1String( "category" ) )
+      if ( catElem.tagName() == "category"_L1 )
       {
-        const int value = catElem.attribute( QStringLiteral( "value" ) ).toInt();
-        const double size = catElem.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "0" ) ).toDouble();
-        const QString label = catElem.attribute( QStringLiteral( "label" ) );
-        const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
-        const QColor color = QgsColorUtils::colorFromString( catElem.attribute( QStringLiteral( "color" ) ) );
+        const int value = catElem.attribute( u"value"_s ).toInt();
+        const double size = catElem.attribute( u"pointSize"_s, u"0"_s ).toDouble();
+        const QString label = catElem.attribute( u"label"_s );
+        const bool render = catElem.attribute( u"render"_s ) != "false"_L1;
+        const QColor color = QgsColorUtils::colorFromString( catElem.attribute( u"color"_s ) );
         mCategoriesList.append( QgsPointCloudCategory( value, color, label, render, size ) );
       }
       catElem = catElem.nextSiblingElement();

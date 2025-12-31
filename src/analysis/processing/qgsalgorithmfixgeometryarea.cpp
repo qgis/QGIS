@@ -26,7 +26,7 @@
 
 QString QgsFixGeometryAreaAlgorithm::name() const
 {
-  return QStringLiteral( "fixgeometryarea" );
+  return u"fixgeometryarea"_s;
 }
 
 QString QgsFixGeometryAreaAlgorithm::displayName() const
@@ -51,7 +51,7 @@ QString QgsFixGeometryAreaAlgorithm::group() const
 
 QString QgsFixGeometryAreaAlgorithm::groupId() const
 {
-  return QStringLiteral( "fixgeometry" );
+  return u"fixgeometry"_s;
 }
 
 QString QgsFixGeometryAreaAlgorithm::shortHelpString() const
@@ -70,10 +70,10 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
   Q_UNUSED( configuration )
 
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+    u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
   ) );
 
   QStringList methods;
@@ -84,42 +84,42 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
       []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); }
     );
   }
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), methods ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), methods ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "MERGE_ATTRIBUTE" ), QObject::tr( "Field to consider when merging polygons with the identical attribute method" ),
-    QString(), QStringLiteral( "INPUT" ),
+    u"MERGE_ATTRIBUTE"_s, QObject::tr( "Field to consider when merging polygons with the identical attribute method" ),
+    QString(), u"INPUT"_s,
     Qgis::ProcessingFieldParameterDataType::Any, false, true
   ) );
 
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
-    QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
+    u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ),
+    u"id"_s, u"ERRORS"_s
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
-    QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
+    u"PART_IDX"_s, QObject::tr( "Field of part index" ),
+    u"gc_partidx"_s, u"ERRORS"_s,
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
-    QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
+    u"RING_IDX"_s, QObject::tr( "Field of ring index" ),
+    u"gc_ringidx"_s, u"ERRORS"_s,
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
-    QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
+    u"VERTEX_IDX"_s, QObject::tr( "Field of vertex index" ),
+    u"gc_vertidx"_s, u"ERRORS"_s,
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Small polygons merged layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    u"OUTPUT"_s, QObject::tr( "Small polygons merged layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from merging small polygons" ), Qgis::ProcessingSourceType::VectorPoint
+    u"REPORT"_s, QObject::tr( "Report layer from merging small polygons" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
@@ -129,24 +129,24 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
 
 QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const std::unique_ptr<QgsProcessingFeatureSource> errors( parameterAsSource( parameters, QStringLiteral( "ERRORS" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> errors( parameterAsSource( parameters, u"ERRORS"_s, context ) );
   if ( !errors )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 2, feedback );
 
-  const QString featIdFieldName = parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context );
-  const QString partIdxFieldName = parameterAsString( parameters, QStringLiteral( "PART_IDX" ), context );
-  const QString ringIdxFieldName = parameterAsString( parameters, QStringLiteral( "RING_IDX" ), context );
-  const QString vertexIdxFieldName = parameterAsString( parameters, QStringLiteral( "VERTEX_IDX" ), context );
+  const QString featIdFieldName = parameterAsString( parameters, u"UNIQUE_ID"_s, context );
+  const QString partIdxFieldName = parameterAsString( parameters, u"PART_IDX"_s, context );
+  const QString ringIdxFieldName = parameterAsString( parameters, u"RING_IDX"_s, context );
+  const QString vertexIdxFieldName = parameterAsString( parameters, u"VERTEX_IDX"_s, context );
 
   // Specific inputs for this check
-  const QString mergeAttributeName = parameterAsString( parameters, QStringLiteral( "MERGE_ATTRIBUTE" ), context );
-  const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  const QString mergeAttributeName = parameterAsString( parameters, u"MERGE_ATTRIBUTE"_s, context );
+  const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
 
   // Verify that input fields exists
   if ( errors->fields().indexFromName( featIdFieldName ) == -1 )
@@ -166,17 +166,17 @@ QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString dest_report;
   QgsFields reportFields = errors->fields();
-  reportFields.append( QgsField( QStringLiteral( "report" ), QMetaType::QString ) );
-  reportFields.append( QgsField( QStringLiteral( "error_fixed" ), QMetaType::Bool ) );
-  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
+  reportFields.append( QgsField( u"report"_s, QMetaType::QString ) );
+  reportFields.append( QgsField( u"error_fixed"_s, QMetaType::Bool ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
   if ( !sink_report )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"REPORT"_s ) );
 
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
   QVariantMap configurationCheck;
@@ -266,7 +266,7 @@ QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &pa
     }
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, QStringLiteral( "REPORT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -284,20 +284,20 @@ QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &pa
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
   }
   multiStepFeedback.setProgress( 100 );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
-  outputs.insert( QStringLiteral( "REPORT" ), dest_report );
+  outputs.insert( u"OUTPUT"_s, dest_output );
+  outputs.insert( u"REPORT"_s, dest_report );
 
   return outputs;
 }
 
 bool QgsFixGeometryAreaAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
 
   return true;
 }

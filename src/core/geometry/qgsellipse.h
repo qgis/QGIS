@@ -242,7 +242,7 @@ class CORE_EXPORT QgsEllipse
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsEllipse: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

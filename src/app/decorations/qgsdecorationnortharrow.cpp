@@ -57,7 +57,7 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "North Arrow" ) );
-  mConfigurationName = QStringLiteral( "NorthArrow" );
+  mConfigurationName = u"NorthArrow"_s;
 
   projectRead();
 }
@@ -65,27 +65,27 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
 void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mSize = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/Size" ), 16.0 );
-  mSvgPath = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/SvgPath" ), QString() );
-  mRotationInt = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Rotation" ), 0 );
-  mAutomatic = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Automatic" ), true );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
+  mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/Color"_s, u"#000000"_s ) );
+  mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/OutlineColor"_s, u"#FFFFFF"_s ) );
+  mSize = QgsProject::instance()->readDoubleEntry( mConfigurationName, u"/Size"_s, 16.0 );
+  mSvgPath = QgsProject::instance()->readEntry( mConfigurationName, u"/SvgPath"_s, QString() );
+  mRotationInt = QgsProject::instance()->readNumEntry( mConfigurationName, u"/Rotation"_s, 0 );
+  mAutomatic = QgsProject::instance()->readBoolEntry( mConfigurationName, u"/Automatic"_s, true );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginH"_s, 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginV"_s, 0 );
 }
 
 void QgsDecorationNorthArrow::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsColorUtils::colorToString( mColor ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QgsColorUtils::colorToString( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Size" ), mSize );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/SvgPath" ), mSvgPath );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Rotation" ), mRotationInt );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Automatic" ), mAutomatic );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Color"_s, QgsColorUtils::colorToString( mColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/OutlineColor"_s, QgsColorUtils::colorToString( mOutlineColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Size"_s, mSize );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/SvgPath"_s, mSvgPath );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Rotation"_s, mRotationInt );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Automatic"_s, mAutomatic );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginH"_s, mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginV"_s, mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -97,7 +97,7 @@ void QgsDecorationNorthArrow::run()
 
 QString QgsDecorationNorthArrow::svgPath()
 {
-  if ( mSvgPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  if ( mSvgPath.startsWith( "base64:"_L1, Qt::CaseInsensitive ) )
     return mSvgPath;
 
   if ( !mSvgPath.isEmpty() )
@@ -110,7 +110,7 @@ QString QgsDecorationNorthArrow::svgPath()
     }
   }
 
-  return QStringLiteral( ":/images/north_arrows/default.svg" );
+  return u":/images/north_arrows/default.svg"_s;
 }
 
 void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
@@ -222,7 +222,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
         context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset, deviceHeight - yOffset - size.height() );
         break;
       default:
-        QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+        QgsDebugError( u"Unsupported placement index of %1"_s.arg( static_cast<int>( mPlacement ) ) );
     }
 
     //rotate the canvas by the north arrow rotation amount

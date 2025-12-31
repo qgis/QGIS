@@ -23,15 +23,17 @@
 
 #include "moc_qgsphongtexturedmaterial.cpp"
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mAmbientParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
-  , mDiffuseTextureParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseTexture" ), QVariant() ) )
-  , mDiffuseTextureScaleParameter( new Qt3DRender::QParameter( QStringLiteral( "texCoordScale" ), 1.0f ) )
-  , mSpecularParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) ) )
-  , mShininessParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f ) )
-  , mOpacityParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), 1.0f ) )
+  , mAmbientParameter( new Qt3DRender::QParameter( u"ambientColor"_s, QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) ) )
+  , mDiffuseTextureParameter( new Qt3DRender::QParameter( u"diffuseTexture"_s, QVariant() ) )
+  , mDiffuseTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f ) )
+  , mSpecularParameter( new Qt3DRender::QParameter( u"specularColor"_s, QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) ) )
+  , mShininessParameter( new Qt3DRender::QParameter( u"shininess"_s, 150.0f ) )
+  , mOpacityParameter( new Qt3DRender::QParameter( u"opacity"_s, 1.0f ) )
 {
   init();
 }
@@ -57,8 +59,8 @@ void QgsPhongTexturedMaterial::init()
   effect->addParameter( mOpacityParameter );
 
   Qt3DRender::QShaderProgram *gL3Shader = new Qt3DRender::QShaderProgram();
-  gL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
-  gL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/diffuseSpecular.frag" ) ) ) );
+  gL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+  gL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/diffuseSpecular.frag"_s ) ) );
 
   Qt3DRender::QTechnique *gL3Technique = new Qt3DRender::QTechnique();
   gL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
@@ -67,8 +69,8 @@ void QgsPhongTexturedMaterial::init()
   gL3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
 
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey( this );
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
-  filterKey->setValue( QStringLiteral( "forward" ) );
+  filterKey->setName( u"renderingStyle"_s );
+  filterKey->setValue( u"forward"_s );
 
   gL3Technique->addFilterKey( filterKey );
 

@@ -23,7 +23,7 @@
 
 QString QgsSwapXYAlgorithm::name() const
 {
-  return QStringLiteral( "swapxy" );
+  return u"swapxy"_s;
 }
 
 QString QgsSwapXYAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsSwapXYAlgorithm::group() const
 
 QString QgsSwapXYAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSwapXYAlgorithm::outputName() const

@@ -145,6 +145,14 @@ class Relief(QgisAlgorithm):
     def displayName(self):
         return self.tr("Relief")
 
+    def shortDescription(self):
+        return self.tr("Creates a shaded relief layer from digital elevation data.")
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a shaded relief layer from digital elevation data."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         inputFile = self.parameterAsRasterLayer(
             parameters, self.INPUT, context

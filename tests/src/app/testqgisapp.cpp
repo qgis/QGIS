@@ -61,9 +61,9 @@ TestQgisApp::TestQgisApp() = default;
 void TestQgisApp::initTestCase()
 {
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   qDebug() << "TestQgisApp::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -98,12 +98,12 @@ void TestQgisApp::cleanup()
 
 void TestQgisApp::addVectorLayerShp()
 {
-  const QString filePath = mTestDataDir + QStringLiteral( "points.shp" );
-  QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", QStringLiteral( "ogr" ) );
+  const QString filePath = mTestDataDir + u"points.shp"_s;
+  QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", u"ogr"_s );
   QVERIFY( layer->isValid() );
 
   // No need for |layerName= for shapefiles
-  QVERIFY( layer->source().endsWith( QLatin1String( "points.shp" ) ) );
+  QVERIFY( layer->source().endsWith( "points.shp"_L1 ) );
 
   // cleanup
   QgsProject::instance()->layerStore()->removeMapLayers( QStringList() << layer->id() );
@@ -111,12 +111,12 @@ void TestQgisApp::addVectorLayerShp()
 
 void TestQgisApp::addVectorLayerGeopackageSingleLayer()
 {
-  const QString filePath = QLatin1String( "/vsimem/test.gpkg" );
-  QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", QStringLiteral( "ogr" ) );
+  const QString filePath = "/vsimem/test.gpkg"_L1;
+  QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", u"ogr"_s );
   QVERIFY( layer->isValid() );
 
   // Need for |layerName= for geopackage
-  QVERIFY( layer->source().endsWith( QLatin1String( "/vsimem/test.gpkg|layername=my_layer" ) ) );
+  QVERIFY( layer->source().endsWith( "/vsimem/test.gpkg|layername=my_layer"_L1 ) );
 
   // cleanup
   QgsProject::instance()->layerStore()->removeMapLayers( QStringList() << layer->id() );
@@ -124,12 +124,12 @@ void TestQgisApp::addVectorLayerGeopackageSingleLayer()
 
 void TestQgisApp::addVectorLayerGeopackageSingleLayerAlreadyLayername()
 {
-  const QString filePath = QLatin1String( "/vsimem/test.gpkg|layername=my_layer" );
-  QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", QStringLiteral( "ogr" ) );
+  const QString filePath = "/vsimem/test.gpkg|layername=my_layer"_L1;
+  QgsVectorLayer *layer = mQgisApp->addVectorLayer( filePath, "test", u"ogr"_s );
   QVERIFY( layer->isValid() );
 
   // Need for |layerName= for geopackage
-  QVERIFY( layer->source().endsWith( QLatin1String( "/vsimem/test.gpkg|layername=my_layer" ) ) );
+  QVERIFY( layer->source().endsWith( "/vsimem/test.gpkg|layername=my_layer"_L1 ) );
 
   // cleanup
   QgsProject::instance()->layerStore()->removeMapLayers( QStringList() << layer->id() );
@@ -137,22 +137,22 @@ void TestQgisApp::addVectorLayerGeopackageSingleLayerAlreadyLayername()
 
 void TestQgisApp::addVectorLayerInvalid()
 {
-  QgsVectorLayer *layer = mQgisApp->addVectorLayer( "i_do_not_exist", "test", QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer = mQgisApp->addVectorLayer( "i_do_not_exist", "test", u"ogr"_s );
   QVERIFY( !layer );
 
-  layer = mQgisApp->addVectorLayer( "/vsimem/test.gpkg|layername=invalid_layer_name", "test", QStringLiteral( "ogr" ) );
+  layer = mQgisApp->addVectorLayer( "/vsimem/test.gpkg|layername=invalid_layer_name", "test", u"ogr"_s );
   QVERIFY( !layer );
 }
 
 void TestQgisApp::addEmbeddedGroup()
 {
-  const QString projectPath = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/joins1.qgs" );
+  const QString projectPath = QString( TEST_DATA_DIR ) + u"/embedded_groups/joins1.qgs"_s;
 
   QCOMPARE( QgsProject::instance()->layers<QgsVectorLayer *>().count(), 0 );
 
-  mQgisApp->addEmbeddedItems( projectPath, QStringList() << QStringLiteral( "GROUP" ), QStringList() );
+  mQgisApp->addEmbeddedItems( projectPath, QStringList() << u"GROUP"_s, QStringList() );
 
-  QgsVectorLayer *vl = QgsProject::instance()->mapLayer<QgsVectorLayer *>( QStringLiteral( "polys_with_id_32002f94_eebe_40a5_a182_44198ba1bc5a" ) );
+  QgsVectorLayer *vl = QgsProject::instance()->mapLayer<QgsVectorLayer *>( u"polys_with_id_32002f94_eebe_40a5_a182_44198ba1bc5a"_s );
   QCOMPARE( vl->fields().count(), 5 );
 
   // cleanup
@@ -161,10 +161,10 @@ void TestQgisApp::addEmbeddedGroup()
 
 void TestQgisApp::pasteFeature()
 {
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:4326" ), QStringLiteral( "polygons" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( u"Polygon?crs=EPSG:4326"_s, u"polygons"_s, u"memory"_s );
 
   QgsFeature f;
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))"_s ) );
   vl->startEditing();
   vl->addFeature( f );
   vl->commitChanges();
@@ -178,7 +178,7 @@ void TestQgisApp::pasteFeature()
   mQgisApp->copySelectionToClipboard( vl );
 
   vl->startEditing();
-  QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "POLYGON((5 0, 10 0, 10 10, 5 10, 5 0))" ) );
+  QgsGeometry geom = QgsGeometry::fromWkt( u"POLYGON((5 0, 10 0, 10 10, 5 10, 5 0))"_s );
   vl->changeGeometry( 1, geom );
   vl->commitChanges();
 
@@ -187,7 +187,7 @@ void TestQgisApp::pasteFeature()
   vl->commitChanges();
 
   f = vl->getFeature( 2 );
-  QCOMPARE( f.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 5 10, 5 0, 0 0))" ) );
+  QCOMPARE( f.geometry().asWkt(), u"Polygon ((0 0, 0 10, 5 10, 5 0, 0 0))"_s );
 }
 
 void TestQgisApp::pasteRasterStyleCategory()
@@ -195,8 +195,8 @@ void TestQgisApp::pasteRasterStyleCategory()
   // Create a 2x2 int rasters using gdal
   QTemporaryDir tempDir;
   const QString tempDirPath = tempDir.path();
-  const QString rasterPath1 = tempDirPath + QStringLiteral( "/raster1.tif" );
-  const QString rasterPath2 = tempDirPath + QStringLiteral( "/raster2.tif" );
+  const QString rasterPath1 = tempDirPath + u"/raster1.tif"_s;
+  const QString rasterPath2 = tempDirPath + u"/raster2.tif"_s;
 
   GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
   QVERIFY( hDriver );
@@ -206,8 +206,8 @@ void TestQgisApp::pasteRasterStyleCategory()
   hDS = GDALCreate( hDriver, rasterPath2.toUtf8().constData(), 2, 2, 1, GDT_Int32, nullptr );
   QVERIFY( hDS );
   GDALClose( hDS );
-  QgsRasterLayer rl1( rasterPath1, QStringLiteral( "raster1" ) );
-  QgsRasterLayer rl2( rasterPath2, QStringLiteral( "raster2" ) );
+  QgsRasterLayer rl1( rasterPath1, u"raster1"_s );
+  QgsRasterLayer rl2( rasterPath2, u"raster2"_s );
   QVERIFY( rl1.isValid() );
   QVERIFY( rl2.isValid() );
 

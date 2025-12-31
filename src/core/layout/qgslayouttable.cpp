@@ -39,15 +39,15 @@
 bool QgsLayoutTableStyle::writeXml( QDomElement &styleElem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc )
-  styleElem.setAttribute( QStringLiteral( "cellBackgroundColor" ), QgsColorUtils::colorToString( cellBackgroundColor ) );
-  styleElem.setAttribute( QStringLiteral( "enabled" ), enabled );
+  styleElem.setAttribute( u"cellBackgroundColor"_s, QgsColorUtils::colorToString( cellBackgroundColor ) );
+  styleElem.setAttribute( u"enabled"_s, enabled );
   return true;
 }
 
 bool QgsLayoutTableStyle::readXml( const QDomElement &styleElem )
 {
-  cellBackgroundColor = QgsColorUtils::colorFromString( styleElem.attribute( QStringLiteral( "cellBackgroundColor" ), QStringLiteral( "255,255,255,255" ) ) );
-  enabled = ( styleElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  cellBackgroundColor = QgsColorUtils::colorFromString( styleElem.attribute( u"cellBackgroundColor"_s, u"255,255,255,255"_s ) );
+  enabled = ( styleElem.attribute( u"enabled"_s, u"0"_s ) != "0"_L1 );
   return true;
 }
 
@@ -73,44 +73,44 @@ QgsLayoutTable::~QgsLayoutTable()
 
 bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "cellMargin" ), QString::number( mCellMargin ) );
-  elem.setAttribute( QStringLiteral( "emptyTableMode" ), QString::number( static_cast< int >( mEmptyTableMode ) ) );
-  elem.setAttribute( QStringLiteral( "emptyTableMessage" ), mEmptyTableMessage );
-  elem.setAttribute( QStringLiteral( "showEmptyRows" ), mShowEmptyRows );
+  elem.setAttribute( u"cellMargin"_s, QString::number( mCellMargin ) );
+  elem.setAttribute( u"emptyTableMode"_s, QString::number( static_cast< int >( mEmptyTableMode ) ) );
+  elem.setAttribute( u"emptyTableMessage"_s, mEmptyTableMessage );
+  elem.setAttribute( u"showEmptyRows"_s, mShowEmptyRows );
 
-  QDomElement headerElem = doc.createElement( QStringLiteral( "headerTextFormat" ) );
+  QDomElement headerElem = doc.createElement( u"headerTextFormat"_s );
   const QDomElement headerTextElem = mHeaderTextFormat.writeXml( doc, context );
   headerElem.appendChild( headerTextElem );
   elem.appendChild( headerElem );
-  elem.setAttribute( QStringLiteral( "headerHAlignment" ), QString::number( static_cast< int >( mHeaderHAlignment ) ) );
-  elem.setAttribute( QStringLiteral( "headerMode" ), QString::number( static_cast< int >( mHeaderMode ) ) );
+  elem.setAttribute( u"headerHAlignment"_s, QString::number( static_cast< int >( mHeaderHAlignment ) ) );
+  elem.setAttribute( u"headerMode"_s, QString::number( static_cast< int >( mHeaderMode ) ) );
 
-  QDomElement contentElem = doc.createElement( QStringLiteral( "contentTextFormat" ) );
+  QDomElement contentElem = doc.createElement( u"contentTextFormat"_s );
   const QDomElement contentTextElem = mContentTextFormat.writeXml( doc, context );
   contentElem.appendChild( contentTextElem );
   elem.appendChild( contentElem );
-  elem.setAttribute( QStringLiteral( "gridStrokeWidth" ), QString::number( mGridStrokeWidth ) );
-  elem.setAttribute( QStringLiteral( "gridColor" ), QgsColorUtils::colorToString( mGridColor ) );
-  elem.setAttribute( QStringLiteral( "horizontalGrid" ), mHorizontalGrid );
-  elem.setAttribute( QStringLiteral( "verticalGrid" ), mVerticalGrid );
-  elem.setAttribute( QStringLiteral( "showGrid" ), mShowGrid );
-  elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsColorUtils::colorToString( mBackgroundColor ) );
-  elem.setAttribute( QStringLiteral( "wrapBehavior" ), QString::number( static_cast< int >( mWrapBehavior ) ) );
+  elem.setAttribute( u"gridStrokeWidth"_s, QString::number( mGridStrokeWidth ) );
+  elem.setAttribute( u"gridColor"_s, QgsColorUtils::colorToString( mGridColor ) );
+  elem.setAttribute( u"horizontalGrid"_s, mHorizontalGrid );
+  elem.setAttribute( u"verticalGrid"_s, mVerticalGrid );
+  elem.setAttribute( u"showGrid"_s, mShowGrid );
+  elem.setAttribute( u"backgroundColor"_s, QgsColorUtils::colorToString( mBackgroundColor ) );
+  elem.setAttribute( u"wrapBehavior"_s, QString::number( static_cast< int >( mWrapBehavior ) ) );
 
   // display columns
-  QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
+  QDomElement displayColumnsElem = doc.createElement( u"displayColumns"_s );
   for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
   {
-    QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
+    QDomElement columnElem = doc.createElement( u"column"_s );
     column.writeXml( columnElem, doc );
     displayColumnsElem.appendChild( columnElem );
   }
   elem.appendChild( displayColumnsElem );
   // sort columns
-  QDomElement sortColumnsElem = doc.createElement( QStringLiteral( "sortColumns" ) );
+  QDomElement sortColumnsElem = doc.createElement( u"sortColumns"_s );
   for ( const QgsLayoutTableColumn &column : std::as_const( mSortColumns ) )
   {
-    QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
+    QDomElement columnElem = doc.createElement( u"column"_s );
     column.writeXml( columnElem, doc );
     sortColumnsElem.appendChild( columnElem );
   }
@@ -118,7 +118,7 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
 
 
   //cell styles
-  QDomElement stylesElem = doc.createElement( QStringLiteral( "cellStyles" ) );
+  QDomElement stylesElem = doc.createElement( u"cellStyles"_s );
   QMap< CellStyleGroup, QString >::const_iterator it = mCellStyleNames.constBegin();
   for ( ; it != mCellStyleNames.constEnd(); ++it )
   {
@@ -137,25 +137,25 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
 
 bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  mEmptyTableMode = QgsLayoutTable::EmptyTableMode( itemElem.attribute( QStringLiteral( "emptyTableMode" ), QStringLiteral( "0" ) ).toInt() );
-  mEmptyTableMessage = itemElem.attribute( QStringLiteral( "emptyTableMessage" ), tr( "No matching records" ) );
-  mShowEmptyRows = itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt();
+  mEmptyTableMode = QgsLayoutTable::EmptyTableMode( itemElem.attribute( u"emptyTableMode"_s, u"0"_s ).toInt() );
+  mEmptyTableMessage = itemElem.attribute( u"emptyTableMessage"_s, tr( "No matching records" ) );
+  mShowEmptyRows = itemElem.attribute( u"showEmptyRows"_s, u"0"_s ).toInt();
 
-  const QDomElement headerTextFormat = itemElem.firstChildElement( QStringLiteral( "headerTextFormat" ) );
+  const QDomElement headerTextFormat = itemElem.firstChildElement( u"headerTextFormat"_s );
   if ( !headerTextFormat.isNull() )
   {
-    QDomNodeList textFormatNodeList = headerTextFormat.elementsByTagName( QStringLiteral( "text-style" ) );
+    QDomNodeList textFormatNodeList = headerTextFormat.elementsByTagName( u"text-style"_s );
     QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mHeaderTextFormat.readXml( textFormatElem, context );
   }
   else
   {
     QFont headerFont;
-    if ( !QgsFontUtils::setFromXmlChildNode( headerFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
+    if ( !QgsFontUtils::setFromXmlChildNode( headerFont, itemElem, u"headerFontProperties"_s ) )
     {
-      headerFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
+      headerFont.fromString( itemElem.attribute( u"headerFont"_s, QString() ) );
     }
-    QColor headerFontColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
+    QColor headerFontColor = QgsColorUtils::colorFromString( itemElem.attribute( u"headerFontColor"_s, u"0,0,0,255"_s ) );
     mHeaderTextFormat.setFont( headerFont );
     if ( headerFont.pointSizeF() > 0 )
     {
@@ -170,24 +170,24 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
     mHeaderTextFormat.setColor( headerFontColor );
   }
 
-  mHeaderHAlignment = QgsLayoutTable::HeaderHAlignment( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() );
-  mHeaderMode = QgsLayoutTable::HeaderMode( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() );
+  mHeaderHAlignment = QgsLayoutTable::HeaderHAlignment( itemElem.attribute( u"headerHAlignment"_s, u"0"_s ).toInt() );
+  mHeaderMode = QgsLayoutTable::HeaderMode( itemElem.attribute( u"headerMode"_s, u"0"_s ).toInt() );
 
-  const QDomElement contentTextFormat = itemElem.firstChildElement( QStringLiteral( "contentTextFormat" ) );
+  const QDomElement contentTextFormat = itemElem.firstChildElement( u"contentTextFormat"_s );
   if ( !contentTextFormat.isNull() )
   {
-    QDomNodeList textFormatNodeList = contentTextFormat.elementsByTagName( QStringLiteral( "text-style" ) );
+    QDomNodeList textFormatNodeList = contentTextFormat.elementsByTagName( u"text-style"_s );
     QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mContentTextFormat.readXml( textFormatElem, context );
   }
   else
   {
     QFont contentFont;
-    if ( !QgsFontUtils::setFromXmlChildNode( contentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
+    if ( !QgsFontUtils::setFromXmlChildNode( contentFont, itemElem, u"contentFontProperties"_s ) )
     {
-      contentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
+      contentFont.fromString( itemElem.attribute( u"contentFont"_s, QString() ) );
     }
-    QColor contentFontColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
+    QColor contentFontColor = QgsColorUtils::colorFromString( itemElem.attribute( u"contentFontColor"_s, u"0,0,0,255"_s ) );
     mContentTextFormat.setFont( contentFont );
     if ( contentFont.pointSizeF() > 0 )
     {
@@ -202,22 +202,22 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
     mContentTextFormat.setColor( contentFontColor );
   }
 
-  mCellMargin = itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble();
-  mGridStrokeWidth = itemElem.attribute( QStringLiteral( "gridStrokeWidth" ), QStringLiteral( "0.5" ) ).toDouble();
-  mHorizontalGrid = itemElem.attribute( QStringLiteral( "horizontalGrid" ), QStringLiteral( "1" ) ).toInt();
-  mVerticalGrid = itemElem.attribute( QStringLiteral( "verticalGrid" ), QStringLiteral( "1" ) ).toInt();
-  mShowGrid = itemElem.attribute( QStringLiteral( "showGrid" ), QStringLiteral( "1" ) ).toInt();
-  mGridColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "gridColor" ), QStringLiteral( "0,0,0,255" ) ) );
-  mBackgroundColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
-  mWrapBehavior = QgsLayoutTable::WrapBehavior( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() );
+  mCellMargin = itemElem.attribute( u"cellMargin"_s, u"1.0"_s ).toDouble();
+  mGridStrokeWidth = itemElem.attribute( u"gridStrokeWidth"_s, u"0.5"_s ).toDouble();
+  mHorizontalGrid = itemElem.attribute( u"horizontalGrid"_s, u"1"_s ).toInt();
+  mVerticalGrid = itemElem.attribute( u"verticalGrid"_s, u"1"_s ).toInt();
+  mShowGrid = itemElem.attribute( u"showGrid"_s, u"1"_s ).toInt();
+  mGridColor = QgsColorUtils::colorFromString( itemElem.attribute( u"gridColor"_s, u"0,0,0,255"_s ) );
+  mBackgroundColor = QgsColorUtils::colorFromString( itemElem.attribute( u"backgroundColor"_s, u"255,255,255,0"_s ) );
+  mWrapBehavior = QgsLayoutTable::WrapBehavior( itemElem.attribute( u"wrapBehavior"_s, u"0"_s ).toInt() );
 
   //restore display column specifications
   mColumns.clear();
-  QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
+  QDomNodeList columnsList = itemElem.elementsByTagName( u"displayColumns"_s );
   if ( !columnsList.isEmpty() )
   {
     QDomElement columnsElem = columnsList.at( 0 ).toElement();
-    QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( u"column"_s );
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
@@ -228,11 +228,11 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   }
   // sort columns
   mSortColumns.clear();
-  QDomNodeList sortColumnsList = itemElem.elementsByTagName( QStringLiteral( "sortColumns" ) );
+  QDomNodeList sortColumnsList = itemElem.elementsByTagName( u"sortColumns"_s );
   if ( !sortColumnsList.isEmpty() )
   {
     QDomElement columnsElem = sortColumnsList.at( 0 ).toElement();
-    QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( u"column"_s );
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
@@ -252,7 +252,7 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   }
 
   //restore cell styles
-  QDomNodeList stylesList = itemElem.elementsByTagName( QStringLiteral( "cellStyles" ) );
+  QDomNodeList stylesList = itemElem.elementsByTagName( u"cellStyles"_s );
   if ( !stylesList.isEmpty() )
   {
     QDomElement stylesElem = stylesList.at( 0 ).toElement();
@@ -434,7 +434,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
     for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
     {
       auto headerCellScope = std::make_unique< QgsExpressionContextScope >();
-      headerCellScope->setVariable( QStringLiteral( "column_number" ), col + 1, true );
+      headerCellScope->setVariable( u"column_number"_s, col + 1, true );
       QgsExpressionContextScopePopper popper( context.renderContext().expressionContext(), headerCellScope.release() );
 
       const QgsTextFormat headerFormat = textFormatForHeader( col );
@@ -1026,8 +1026,8 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
 QgsExpressionContextScope *QgsLayoutTable::scopeForCell( int row, int column ) const
 {
   auto cellScope = std::make_unique< QgsExpressionContextScope >();
-  cellScope->setVariable( QStringLiteral( "row_number" ), row + 1, true );
-  cellScope->setVariable( QStringLiteral( "column_number" ), column + 1, true );
+  cellScope->setVariable( u"row_number"_s, row + 1, true );
+  cellScope->setVariable( u"column_number"_s, column + 1, true );
   return cellScope.release();
 }
 
@@ -1101,15 +1101,15 @@ void QgsLayoutTable::initStyles()
   mCellStyles.insert( FirstRow, new QgsLayoutTableStyle() );
   mCellStyles.insert( LastRow, new QgsLayoutTableStyle() );
 
-  mCellStyleNames.insert( OddColumns, QStringLiteral( "oddColumns" ) );
-  mCellStyleNames.insert( EvenColumns, QStringLiteral( "evenColumns" ) );
-  mCellStyleNames.insert( OddRows, QStringLiteral( "oddRows" ) );
-  mCellStyleNames.insert( EvenRows, QStringLiteral( "evenRows" ) );
-  mCellStyleNames.insert( FirstColumn, QStringLiteral( "firstColumn" ) );
-  mCellStyleNames.insert( LastColumn, QStringLiteral( "lastColumn" ) );
-  mCellStyleNames.insert( HeaderRow, QStringLiteral( "headerRow" ) );
-  mCellStyleNames.insert( FirstRow, QStringLiteral( "firstRow" ) );
-  mCellStyleNames.insert( LastRow, QStringLiteral( "lastRow" ) );
+  mCellStyleNames.insert( OddColumns, u"oddColumns"_s );
+  mCellStyleNames.insert( EvenColumns, u"evenColumns"_s );
+  mCellStyleNames.insert( OddRows, u"oddRows"_s );
+  mCellStyleNames.insert( EvenRows, u"evenRows"_s );
+  mCellStyleNames.insert( FirstColumn, u"firstColumn"_s );
+  mCellStyleNames.insert( LastColumn, u"lastColumn"_s );
+  mCellStyleNames.insert( HeaderRow, u"headerRow"_s );
+  mCellStyleNames.insert( FirstRow, u"firstRow"_s );
+  mCellStyleNames.insert( LastRow, u"lastRow"_s );
 }
 
 bool QgsLayoutTable::calculateMaxColumnWidths()
@@ -1138,7 +1138,7 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
     else if ( mHeaderMode != QgsLayoutTable::NoHeaders )
     {
       auto headerCellScope = std::make_unique< QgsExpressionContextScope >();
-      headerCellScope->setVariable( QStringLiteral( "column_number" ), i + 1, true );
+      headerCellScope->setVariable( u"column_number"_s, i + 1, true );
       QgsExpressionContextScopePopper popper( context.expressionContext(), headerCellScope.release() );
 
       //column width set to automatic, so check content size
@@ -1215,7 +1215,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   for ( const QgsLayoutTableColumn &col : std::as_const( mColumns ) )
   {
     auto headerCellScope = std::make_unique< QgsExpressionContextScope >();
-    headerCellScope->setVariable( QStringLiteral( "column_number" ), i + 1, true );
+    headerCellScope->setVariable( u"column_number"_s, i + 1, true );
     QgsExpressionContextScopePopper popper( context.expressionContext(), headerCellScope.release() );
 
     const QgsTextFormat cellFormat = textFormatForHeader( i );

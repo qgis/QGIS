@@ -47,21 +47,21 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
       return false;
     const QVariantMap layerMap = variantLayer.toMap();
 
-    if ( !layerMap.contains( QStringLiteral( "source" ) ) ||
-         !layerMap.contains( QStringLiteral( "type" ) ) ||
-         !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
+    if ( !layerMap.contains( u"source"_s ) ||
+         !layerMap.contains( u"type"_s ) ||
+         !layerMap.contains( u"attributeIndex"_s ) )
       return false;
 
     if ( !context )
       continue;  // when called without context, we will skip checking whether the layer can be resolved
 
-    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "source" ) ).toString(), *context );
+    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( u"source"_s ).toString(), *context );
     if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
       return false;
 
     QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
 
-    if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
+    if ( layerMap.value( u"attributeIndex"_s ).toInt() >= vectorLayer->fields().count() )
       return false;
   }
 
@@ -77,10 +77,10 @@ QString QgsProcessingParameterTinInputLayers::valueAsPythonString( const QVarian
   {
     const QVariantMap layerMap = variantLayer.toMap();
     QStringList layerDefParts;
-    layerDefParts << QStringLiteral( "'source': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "source" ) ) );
-    layerDefParts << QStringLiteral( "'type': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "type" ) ) );
-    layerDefParts << QStringLiteral( "'attributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "attributeIndex" ) ) );
-    const QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
+    layerDefParts << u"'source': "_s + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( u"source"_s ) );
+    layerDefParts << u"'type': "_s + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( u"type"_s ) );
+    layerDefParts << u"'attributeIndex': "_s + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( u"attributeIndex"_s ) );
+    const QString layerDef = u"{%1}"_s.arg( layerDefParts.join( ',' ) );
     parts.append( layerDef );
   }
   return parts.join( ',' ).prepend( '[' ).append( ']' );
@@ -102,7 +102,7 @@ QString QgsProcessingParameterTinInputLayers::asPythonString( QgsProcessing::Pyt
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterTinInputLayers('%1', %2)" )
+      QString code = u"QgsProcessingParameterTinInputLayers('%1', %2)"_s
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }

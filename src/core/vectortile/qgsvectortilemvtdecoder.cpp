@@ -192,7 +192,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           const int valueIndex = static_cast<int>( feature.tags( tagNum + 1 ) );
           if ( valueIndex >= layer.values_size() )
           {
-            QgsDebugError( QStringLiteral( "Invalid value index for attribute" ) );
+            QgsDebugError( u"Invalid value index for attribute"_s );
             continue;
           }
           const ::vector_tile::Tile_Value &value = layer.values( valueIndex );
@@ -213,7 +213,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             f.setAttribute( fieldIndex, static_cast<bool>( value.bool_value() ) );
           else
           {
-            QgsDebugError( QStringLiteral( "Unexpected attribute value" ) );
+            QgsDebugError( u"Unexpected attribute value"_s );
           }
         }
 
@@ -238,7 +238,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
             {
-              QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+              QgsDebugError( u"Malformed geometry: invalid cmdCount"_s );
               break;
             }
 
@@ -282,7 +282,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
             {
-              QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+              QgsDebugError( u"Malformed geometry: invalid cmdCount"_s );
               break;
             }
             tmpPoints.reserve( tmpPoints.size() + cmdCount );
@@ -326,7 +326,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
                 }
                 else
                 {
-                  QgsDebugError( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
+                  QgsDebugError( u"Malformed geometry: first ring of a polygon is interior ring"_s );
                 }
               }
             }
@@ -334,14 +334,14 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           }
           else
           {
-            QgsDebugError( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
+            QgsDebugError( u"Unexpected command ID: %1"_s.arg( cmdId ) );
           }
         }
 
         QString geomType;
         if ( feature.type() == vector_tile::Tile_GeomType_POINT )
         {
-          geomType = QStringLiteral( "Point" );
+          geomType = u"Point"_s;
           if ( outputPoints.count() == 1 )
             f.setGeometry( QgsGeometry( outputPoints.at( 0 ) ) );
           else
@@ -355,7 +355,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else if ( feature.type() == vector_tile::Tile_GeomType_LINESTRING )
         {
-          geomType = QStringLiteral( "LineString" );
+          geomType = u"LineString"_s;
 
           // finish the linestring we have started
           outputLinestrings.append( new QgsLineString( tmpPoints ) );
@@ -373,7 +373,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else if ( feature.type() == vector_tile::Tile_GeomType_POLYGON )
         {
-          geomType = QStringLiteral( "Polygon" );
+          geomType = u"Polygon"_s;
 
           if ( outputPolygons.count() == 1 )
             f.setGeometry( QgsGeometry( outputPolygons.at( 0 ) ) );
@@ -387,7 +387,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           }
         }
 
-        f.setAttribute( QStringLiteral( "_geom_type" ), geomType );
+        f.setAttribute( u"_geom_type"_s, geomType );
         f.geometry().transform( ct );
 
         layerFeatures.append( f );

@@ -66,7 +66,7 @@ void TestQgsMapToolCapture::addVertexNoLayer()
 {
   QgsProject::instance()->clear();
   QgsMapCanvas canvas;
-  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   canvas.setFrameStyle( QFrame::NoFrame );
   canvas.resize( 600, 600 );
   canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
@@ -81,7 +81,7 @@ void TestQgsMapToolCapture::addVertexNoLayer()
   // even though we don't have any asssociated layer, adding vertices should still be allowed
   QCOMPARE( tool.addVertex( QgsPoint( 5, 5 ), QgsPointLocator::Match() ), 0 );
 
-  QCOMPARE( tool.captureCurve()->asWkt(), QStringLiteral( "CompoundCurve ((5 5))" ) );
+  QCOMPARE( tool.captureCurve()->asWkt(), u"CompoundCurve ((5 5))"_s );
 
   // the nextPoint method must also handle no layer
   QgsPoint layerPoint;
@@ -100,12 +100,12 @@ void TestQgsMapToolCapture::addPointNoLayerSnapping()
 
   QgsMapCanvas canvas;
   canvas.resize( 600, 600 );
-  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2056" ) ) );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:2056"_s ) );
   canvas.setFrameStyle( QFrame::NoFrame );
   canvas.setExtent( QgsRectangle( p.x() - 50, p.y() - 50, p.x() + 50, p.y() + 50 ) );
   canvas.show(); // to make the canvas resize
 
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:2056" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:2056"_s, u"point"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( layer );
   QgsFeature f( layer->fields() );
   f.setGeometry( QgsGeometry( p.clone() ) );
@@ -152,13 +152,13 @@ void TestQgsMapToolCapture::addVertexNonVectorLayer()
 {
   QgsProject::instance()->clear();
   QgsMapCanvas canvas;
-  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   canvas.setFrameStyle( QFrame::NoFrame );
   canvas.resize( 600, 600 );
   canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   canvas.show(); // to make the canvas resize
 
-  QgsAnnotationLayer *layer = new QgsAnnotationLayer( QStringLiteral( "test" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
   QVERIFY( layer->isValid() );
   QgsProject::instance()->addMapLayers( { layer } );
 
@@ -172,7 +172,7 @@ void TestQgsMapToolCapture::addVertexNonVectorLayer()
   // even though we don't have a vector layer selected, adding vertices should still be allowed
   QCOMPARE( tool.addVertex( QgsPoint( 5, 5 ), QgsPointLocator::Match() ), 0 );
 
-  QCOMPARE( tool.captureCurve()->asWkt(), QStringLiteral( "CompoundCurve ((5 5))" ) );
+  QCOMPARE( tool.captureCurve()->asWkt(), u"CompoundCurve ((5 5))"_s );
 
   // the nextPoint method must also accept non vector layers
   QgsPoint layerPoint;
@@ -185,14 +185,14 @@ void TestQgsMapToolCapture::addVertexNonVectorLayerTransform()
 {
   QgsProject::instance()->clear();
   QgsMapCanvas canvas;
-  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   canvas.setFrameStyle( QFrame::NoFrame );
   canvas.resize( 600, 600 );
   canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   canvas.show(); // to make the canvas resize
 
-  QgsAnnotationLayer *layer = new QgsAnnotationLayer( QStringLiteral( "test" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
-  layer->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   QVERIFY( layer->isValid() );
   QgsProject::instance()->addMapLayers( { layer } );
 
@@ -206,7 +206,7 @@ void TestQgsMapToolCapture::addVertexNonVectorLayerTransform()
   // even though we don't have a vector layer selected, adding vertices should still be allowed
   QCOMPARE( tool.addVertex( QgsPoint( 5, 5 ), QgsPointLocator::Match() ), 0 );
 
-  QCOMPARE( tool.captureCurve()->asWkt( 0 ), QStringLiteral( "CompoundCurve ((556597 557305))" ) );
+  QCOMPARE( tool.captureCurve()->asWkt( 0 ), u"CompoundCurve ((556597 557305))"_s );
 
   // the nextPoint method must also accept non vector layers
   QgsPoint layerPoint;

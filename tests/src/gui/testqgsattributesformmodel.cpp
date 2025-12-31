@@ -58,9 +58,9 @@ void TestQgsAttributesFormModel::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsAttributesFormModel::setUpProjectWithRelation()
@@ -68,7 +68,7 @@ void TestQgsAttributesFormModel::setUpProjectWithRelation()
   const QString projectPath = QStringLiteral( TEST_DATA_DIR ) + "/relations.qgs";
   QVERIFY( mProject->read( projectPath ) );
 
-  const QString layerId = QLatin1String( "points_97805748_6b30_49b8_a80b_bdbb4e8e78a3" );
+  const QString layerId = "points_97805748_6b30_49b8_a80b_bdbb4e8e78a3"_L1;
   mLayer = qobject_cast< QgsVectorLayer * >( mProject->mapLayer( layerId ) );
 }
 
@@ -77,7 +77,7 @@ void TestQgsAttributesFormModel::setUpProjectWithInvalidRelations()
   const QString projectPath = QStringLiteral( TEST_DATA_DIR ) + "/broken_relations2.qgz";
   QVERIFY( mProject->read( projectPath ) );
 
-  const QString layerId = QLatin1String( "household_0c432204_12d4_47a6_8d90_d759b02560dd" );
+  const QString layerId = "household_0c432204_12d4_47a6_8d90_d759b02560dd"_L1;
   mLayer = qobject_cast< QgsVectorLayer * >( mProject->mapLayer( layerId ) );
 }
 
@@ -103,8 +103,8 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QVERIFY( !rootItem->child( 0 ) );
 
   // Second constructor
-  const QString item1Name = QStringLiteral( "child item1 name" );
-  const QString item1DisplayName = QStringLiteral( "child item1 display name" );
+  const QString item1Name = u"child item1 name"_s;
+  const QString item1DisplayName = u"child item1 display name"_s;
   auto item = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Field, item1Name, item1DisplayName );
   QVERIFY( !item->parent() );
   QCOMPARE( item->data( QgsAttributesFormModel::ItemNameRole ).toString(), item1Name );
@@ -115,7 +115,7 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QCOMPARE( item->type(), QgsAttributesFormData::Field );
   QCOMPARE( item->id(), QString() );
 
-  const QString item1Id = QStringLiteral( "itemId" );
+  const QString item1Id = u"itemId"_s;
   item->setData( QgsAttributesFormModel::ItemIdRole, item1Id );
   QCOMPARE( item->id(), item1Id );
 
@@ -133,8 +133,8 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
 
   // Third constructor
-  const QString item2Name = QStringLiteral( "child item2 name" );
-  const QString item2DisplayName = QStringLiteral( "child item2 display name" );
+  const QString item2Name = u"child item2 name"_s;
+  const QString item2DisplayName = u"child item2 display name"_s;
   QgsAttributesFormData::AttributeFormItemData itemData;
   itemData.setShowLabel( false );
 
@@ -145,7 +145,7 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( item2->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
   QCOMPARE( item2->data( QgsAttributesFormModel::ItemDataRole ).value< QgsAttributesFormData::AttributeFormItemData >().showLabel(), false );
 
-  const QString item2Id = QStringLiteral( "item2Id" );
+  const QString item2Id = u"item2Id"_s;
   item2->setData( QgsAttributesFormModel::ItemIdRole, item2Id );
 
   rootItem->insertChild( 1, std::move( item2 ) );
@@ -161,15 +161,15 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
 
   // Add container and grandchild
-  const QString containerName = QStringLiteral( "Tab" );
+  const QString containerName = u"Tab"_s;
   auto containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, containerName );
   QCOMPARE( containerItem->childCount(), 0 );
   containerItem->setData( QgsAttributesFormModel::ItemIdRole, containerName );
 
-  const QString relationName = QStringLiteral( "Relation item" );
+  const QString relationName = u"Relation item"_s;
   auto relationItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Relation, relationName );
 
-  const QString relationId = QStringLiteral( "relationId" );
+  const QString relationId = u"relationId"_s;
   relationItem->setData( QgsAttributesFormModel::ItemIdRole, relationId );
 
   containerItem->addChild( std::move( relationItem ) );
@@ -188,7 +188,7 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( itemPointer->data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
 
   // Search items
-  itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Field, QStringLiteral( "Inexistent" ) );
+  itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Field, u"Inexistent"_s );
   QVERIFY( !itemPointer );
 
   itemPointer = rootItem->firstTopChild( QgsAttributesFormData::Relation, relationId );
@@ -203,7 +203,7 @@ void TestQgsAttributesFormModel::testAttributesFormItem()
   QVERIFY( itemPointer );
   QCOMPARE( itemPointer->name(), item2Name );
 
-  itemPointer = rootItem->firstChildRecursive( QgsAttributesFormData::Field, QStringLiteral( "Inexistent" ) );
+  itemPointer = rootItem->firstChildRecursive( QgsAttributesFormData::Field, u"Inexistent"_s );
   QVERIFY( !itemPointer );
 
   itemPointer = rootItem->firstChildRecursive( QgsAttributesFormData::Relation, relationId );
@@ -246,7 +246,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModel()
   QVERIFY( !availableWidgetsModel.hasChildren() );
   QCOMPARE( availableWidgetsModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Available Widgets" ) );
   QVERIFY( availableWidgetsModel.mimeTypes().size() == 1 );
-  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << u"application/x-qgsattributesformavailablewidgetsrelement"_s );
 
   // Add data to the model
   availableWidgetsModel.populate();
@@ -350,7 +350,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   QVERIFY( !availableWidgetsModel.hasChildren() );
   QCOMPARE( availableWidgetsModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Available Widgets" ) );
   QVERIFY( availableWidgetsModel.mimeTypes().size() == 1 );
-  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << u"application/x-qgsattributesformavailablewidgetsrelement"_s );
 
   // Add data to the model
   availableWidgetsModel.populate();
@@ -373,7 +373,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   }
 
   QMimeData *data = availableWidgetsModel.mimeData( indexes );
-  QByteArray itemData = data->data( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QByteArray itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
   QDataStream stream( &itemData, QIODevice::ReadOnly );
   QStringList obtainedItemIds;
 
@@ -407,7 +407,7 @@ void TestQgsAttributesFormModel::testAvailableWidgetsModelIndexOderInDragAndDrop
   expectedItemIds.insert( 0, tmpIndex.data( QgsAttributesFormModel::ItemIdRole ).toString() );
 
   data = availableWidgetsModel.mimeData( indexes );
-  itemData = data->data( QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  itemData = data->data( u"application/x-qgsattributesformavailablewidgetsrelement"_s );
   QDataStream stream2 = QDataStream( &itemData, QIODevice::ReadOnly );
 
   while ( !stream2.atEnd() )
@@ -440,7 +440,7 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QVERIFY( !formLayoutModel.hasChildren() );
   QCOMPARE( formLayoutModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Form Layout" ) );
   QVERIFY( formLayoutModel.mimeTypes().size() == 2 );
-  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << u"application/x-qgsattributesformlayoutelement"_s << u"application/x-qgsattributesformavailablewidgetsrelement"_s );
 
   QVERIFY( !formLayoutModel.showAliases() );
   formLayoutModel.setShowAliases( true );
@@ -459,11 +459,11 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QModelIndex containerIndex = formLayoutModel.index( 0, 0, rootIndex );
   QVERIFY( containerIndex.isValid() );
   QCOMPARE( containerIndex.row(), 0 );
-  QCOMPARE( formLayoutModel.data( containerIndex, Qt::DisplayRole ).toString(), QLatin1String( "tab" ) );
+  QCOMPARE( formLayoutModel.data( containerIndex, Qt::DisplayRole ).toString(), "tab"_L1 );
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( containerIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
   QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
 
-  QCOMPARE( containerIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), QLatin1String( "tab" ) );
+  QCOMPARE( containerIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), "tab"_L1 );
   const auto containerData = containerIndex.data( QgsAttributesFormModel::ItemDataRole ).value< QgsAttributesFormData::AttributeFormItemData >();
   QCOMPARE( containerData.containerType(), Qgis::AttributeEditorContainerType::Tab );
   QCOMPARE( containerData.columnCount(), 1 );
@@ -471,21 +471,21 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
 
   QList< QgsAddAttributeFormContainerDialog::ContainerPair > containers = formLayoutModel.listOfContainers();
   QCOMPARE( containers.size(), 1 );
-  QCOMPARE( containers.at( 0 ).first, QLatin1String( "tab" ) );
+  QCOMPARE( containers.at( 0 ).first, "tab"_L1 );
   QCOMPARE( containers.at( 0 ).second, containerIndex );
 
   // Start modifying model data to check other cases
-  formLayoutModel.addContainer( containerIndex, QStringLiteral( "My group box" ), 2, Qgis::AttributeEditorContainerType::GroupBox );
+  formLayoutModel.addContainer( containerIndex, u"My group box"_s, 2, Qgis::AttributeEditorContainerType::GroupBox );
   QCOMPARE( formLayoutModel.rowCount( containerIndex ), 8 );
   QCOMPARE( formLayoutModel.rowCount(), 1 );
 
-  const QString rowName = QStringLiteral( "My row" );
+  const QString rowName = u"My row"_s;
   formLayoutModel.addContainer( rootIndex, rowName, 4, Qgis::AttributeEditorContainerType::Row );
   QCOMPARE( formLayoutModel.rowCount(), 2 );
 
   containers = formLayoutModel.listOfContainers();
   QCOMPARE( containers.size(), 3 );
-  QCOMPARE( containers.at( 1 ).first, QLatin1String( "My group box" ) );
+  QCOMPARE( containers.at( 1 ).first, "My group box"_L1 );
   QCOMPARE( containers.at( 2 ).first, rowName );
 
   QModelIndex groupContainerIndex = formLayoutModel.index( formLayoutModel.rowCount( containerIndex ) - 1, 0, containerIndex );
@@ -496,13 +496,13 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QCOMPARE( rowContainerIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), rowName );
   QCOMPARE( rowContainerIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), rowName );
 
-  const QString newFieldName = QStringLiteral( "Staff" );
+  const QString newFieldName = u"Staff"_s;
   QCOMPARE( formLayoutModel.rowCount( groupContainerIndex ), 0 );
   formLayoutModel.insertChild( groupContainerIndex, 0, newFieldName, QgsAttributesFormData::Field, newFieldName );
   QCOMPARE( formLayoutModel.rowCount( groupContainerIndex ), 1 );
 
   // First recursive match
-  const QString inexistentFieldName = QStringLiteral( "my field" );
+  const QString inexistentFieldName = u"my field"_s;
   QModelIndex invalidIndex = formLayoutModel.firstRecursiveMatchingModelIndex( QgsAttributesFormData::Field, inexistentFieldName );
   QVERIFY( !invalidIndex.isValid() );
 
@@ -558,7 +558,7 @@ void TestQgsAttributesFormModel::testFormLayoutModel()
   QCOMPARE( staffIndex.data( Qt::DisplayRole ).toString(), newFieldName );
 
   // Check that non-empty aliases are actually shown
-  const QString staffAlias = QStringLiteral( "Staff alias!" );
+  const QString staffAlias = u"Staff alias!"_s;
   formLayoutModel.updateAliasForFieldItems( newFieldName, staffAlias );
   QCOMPARE( staffIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString(), staffAlias );
   QCOMPARE( staffIndex.data( Qt::DisplayRole ).toString(), staffAlias );
@@ -600,7 +600,7 @@ void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
   QVERIFY( !formLayoutModel.hasChildren() );
   QCOMPARE( formLayoutModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Form Layout" ) );
   QVERIFY( formLayoutModel.mimeTypes().size() == 2 );
-  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << u"application/x-qgsattributesformlayoutelement"_s << u"application/x-qgsattributesformavailablewidgetsrelement"_s );
 
   // Add data to the model
   formLayoutModel.populate();
@@ -613,7 +613,7 @@ void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
   const QModelIndex containerIndex = formLayoutModel.index( 0, 0, rootIndex );
   QVERIFY( containerIndex.isValid() );
   QCOMPARE( containerIndex.row(), 0 );
-  QCOMPARE( formLayoutModel.data( containerIndex, Qt::DisplayRole ).toString(), QLatin1String( "tab" ) );
+  QCOMPARE( formLayoutModel.data( containerIndex, Qt::DisplayRole ).toString(), "tab"_L1 );
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( containerIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
   QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
 
@@ -621,22 +621,22 @@ void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
   const int fieldPosition = 5;
   QModelIndex fieldIndex = formLayoutModel.index( fieldPosition, 0, containerIndex );
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( fieldIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
-  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::DisplayRole ).toString(), QLatin1String( "Pilots" ) );
-  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::ToolTipRole ).toString(), QLatin1String( "Pilots" ) );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::DisplayRole ).toString(), "Pilots"_L1 );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::ToolTipRole ).toString(), "Pilots"_L1 );
 
   // Remove field Pilots (even without committing, which reproduces
   // the scenario of removing a field in Layer Properties without saving,
   // and then going back to Attributes Form page)
   mLayer->startEditing();
-  const bool deleted = mLayer->deleteAttribute( mLayer->fields().indexOf( QLatin1String( "Pilots" ) ) );
+  const bool deleted = mLayer->deleteAttribute( mLayer->fields().indexOf( "Pilots"_L1 ) );
   QVERIFY( deleted );
 
   // Check field Pilots'data changes after layer field removal
   QCOMPARE( formLayoutModel.rowCount( containerIndex ), 7 );
   fieldIndex = formLayoutModel.index( fieldPosition, 0, containerIndex );
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( fieldIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Field );
-  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::DisplayRole ).toString(), QLatin1String( "Pilots" ) );
-  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::ToolTipRole ).toString(), QLatin1String( "Invalid field" ) );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::DisplayRole ).toString(), "Pilots"_L1 );
+  QCOMPARE( formLayoutModel.data( fieldIndex, Qt::ToolTipRole ).toString(), "Invalid field"_L1 );
 
   const bool discarded = mLayer->rollBack();
   QVERIFY( discarded );
@@ -657,7 +657,7 @@ void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()
   QVERIFY( !availableWidgetsModel.hasChildren() );
   QCOMPARE( availableWidgetsModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Available Widgets" ) );
   QVERIFY( availableWidgetsModel.mimeTypes().size() == 1 );
-  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QCOMPARE( availableWidgetsModel.mimeTypes(), QStringList() << u"application/x-qgsattributesformavailablewidgetsrelement"_s );
 
   // Add data to the model
   availableWidgetsModel.populate();
@@ -680,9 +680,9 @@ void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()
   // find in relation manager. We add a custom tooltip to it and color it red.
   const QModelIndex invalidRelationIndex = availableWidgetsModel.index( 0, 0, relationsIndex );
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( availableWidgetsModel.data( invalidRelationIndex, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Relation );
-  QCOMPARE( invalidRelationIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), QStringLiteral( "side_buildings_cbbdebec_0396_4617_9416_a4c348d1d529_household_household_0c432204_12d4_47a6_8d90_d759b02560dd_id" ) );
-  QCOMPARE( invalidRelationIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), QStringLiteral( "side_buildings_household_fkey" ) );
-  QCOMPARE( invalidRelationIndex.data( Qt::DisplayRole ), QStringLiteral( "side_buildings_household_fkey" ) );
+  QCOMPARE( invalidRelationIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"side_buildings_cbbdebec_0396_4617_9416_a4c348d1d529_household_household_0c432204_12d4_47a6_8d90_d759b02560dd_id"_s );
+  QCOMPARE( invalidRelationIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), u"side_buildings_household_fkey"_s );
+  QCOMPARE( invalidRelationIndex.data( Qt::DisplayRole ), u"side_buildings_household_fkey"_s );
   QCOMPARE( invalidRelationIndex.data( Qt::ToolTipRole ), tr( "Invalid relation" ) );
 }
 
@@ -702,7 +702,7 @@ void TestQgsAttributesFormModel::testInvalidRelationInFormLayout()
   QVERIFY( !formLayoutModel.hasChildren() );
   QCOMPARE( formLayoutModel.headerData( 0, Qt::Orientation::Horizontal, Qt::DisplayRole ), tr( "Form Layout" ) );
   QVERIFY( formLayoutModel.mimeTypes().size() == 2 );
-  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << QStringLiteral( "application/x-qgsattributesformlayoutelement" ) << QStringLiteral( "application/x-qgsattributesformavailablewidgetsrelement" ) );
+  QCOMPARE( formLayoutModel.mimeTypes(), QStringList() << QStringList() << u"application/x-qgsattributesformlayoutelement"_s << u"application/x-qgsattributesformavailablewidgetsrelement"_s );
 
   // Add data to the model
   formLayoutModel.populate();
@@ -722,9 +722,9 @@ void TestQgsAttributesFormModel::testInvalidRelationInFormLayout()
   // Since it can be found in relation manager, it has an id and name.
   // We add a custom tooltip to it and color it red.
   QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( formLayoutModel.data( relation1Index, QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Relation );
-  QCOMPARE( relation1Index.data( QgsAttributesFormModel::ItemIdRole ).toString(), QStringLiteral( "side_buildings_cbbdebec_0396_4617_9416_a4c348d1d529_household_household_0c432204_12d4_47a6_8d90_d759b02560dd_id" ) );
-  QCOMPARE( relation1Index.data( QgsAttributesFormModel::ItemNameRole ).toString(), QStringLiteral( "side_buildings_household_fkey" ) );
-  QCOMPARE( relation1Index.data( Qt::DisplayRole ), QStringLiteral( "side_buildings_household_fkey" ) );
+  QCOMPARE( relation1Index.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"side_buildings_cbbdebec_0396_4617_9416_a4c348d1d529_household_household_0c432204_12d4_47a6_8d90_d759b02560dd_id"_s );
+  QCOMPARE( relation1Index.data( QgsAttributesFormModel::ItemNameRole ).toString(), u"side_buildings_household_fkey"_s );
+  QCOMPARE( relation1Index.data( Qt::DisplayRole ), u"side_buildings_household_fkey"_s );
   QCOMPARE( relation1Index.data( Qt::ToolTipRole ), tr( "Invalid relation" ) );
 
   // Check broken relation 2 (does not exist in relation manager)

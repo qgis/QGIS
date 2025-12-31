@@ -32,7 +32,7 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
   mPreviewLabel->setContextMenuPolicy( Qt::ActionsContextMenu );
-  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ), tr( "Copy Expression Value" ), this );
+  mCopyPreviewAction = new QAction( QgsApplication::getThemeIcon( u"/mActionEditCopy.svg"_s ), tr( "Copy Expression Value" ), this );
   mPreviewLabel->addAction( mCopyPreviewAction );
   mFeaturePickerWidget->setShowBrowserButtons( true );
   mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
@@ -147,7 +147,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
         if ( !mExpression.referencedColumns().isEmpty() || mExpression.needsGeometry() )
         {
           mPreviewLabel->setText( tr( "No feature was found on this layer to evaluate the expression." ) );
-          mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(220, 125, 0, 255);" ) );
+          mPreviewLabel->setStyleSheet( u"color: rgba(220, 125, 0, 255);"_s );
           emit expressionParsed( true );
           setParserError( false );
           setEvalError( false );
@@ -155,7 +155,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
         }
       }
 
-      const QString errorString = mExpression.parserErrorString().replace( QLatin1String( "\n" ), QLatin1String( "<br>" ) );
+      const QString errorString = mExpression.parserErrorString().replace( "\n"_L1, "<br>"_L1 );
       QString tooltip;
       if ( mExpression.hasParserError() )
         tooltip = QStringLiteral( "<b>%1:</b>"
@@ -163,12 +163,12 @@ void QgsExpressionPreviewWidget::refreshPreview()
                     .arg( tr( "Parser Errors" ), errorString );
       // Only show the eval error if there is no parser error.
       if ( !mExpression.hasParserError() && mExpression.hasEvalError() )
-        tooltip += QStringLiteral( "<b>%1:</b> %2" ).arg( tr( "Eval Error" ), mExpression.evalErrorString() );
+        tooltip += u"<b>%1:</b> %2"_s.arg( tr( "Eval Error" ), mExpression.evalErrorString() );
 
       mPreviewLabel->setText( tr( "Expression is invalid <a href="
                                   "more"
                                   ">(more info)</a>" ) );
-      mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10, 255);" ) );
+      mPreviewLabel->setStyleSheet( u"color: rgba(255, 6, 10, 255);"_s );
       setExpressionToolTip( tooltip );
       emit expressionParsed( false );
       setParserError( mExpression.hasParserError() );
@@ -253,7 +253,7 @@ void QgsExpressionPreviewWidget::copyFullExpressionValue()
   QClipboard *clipboard = QApplication::clipboard();
   const QVariant value = mExpression.evaluate( &mExpressionContext );
   const QString copiedValue = QgsExpression::formatPreviewString( value, false, 100000 );
-  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( copiedValue ), 4 );
+  QgsDebugMsgLevel( u"set clipboard: %1"_s.arg( copiedValue ), 4 );
   clipboard->setText( copiedValue );
 }
 

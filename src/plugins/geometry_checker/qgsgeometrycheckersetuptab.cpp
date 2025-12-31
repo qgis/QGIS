@@ -359,7 +359,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
         continue;
       }
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ), options );
+      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), u"ogr"_s, options );
       if ( selectedOnly )
       {
         QgsFeature feature;
@@ -430,7 +430,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
         {
           QString layerPath = layer->dataProvider()->dataSourceUri();
           delete layer;
-          if ( ui.comboBoxOutputFormat->currentText() == QLatin1String( "ESRI Shapefile" ) )
+          if ( ui.comboBoxOutputFormat->currentText() == "ESRI Shapefile"_L1 )
           {
             QgsVectorFileWriter::deleteShapeFile( layerPath );
           }

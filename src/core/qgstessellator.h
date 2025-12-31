@@ -22,6 +22,7 @@
 
 class QgsPolygon;
 class QgsMultiPolygon;
+class QgsLineString;
 
 #include <QVector>
 #include <memory>
@@ -165,6 +166,18 @@ class CORE_EXPORT QgsTessellator
     bool hasInvertedNormals() const { return mInvertNormals; }
 
     /**
+     * Sets the triangulation algorithm.
+     * \since QGIS 4.0
+     */
+    void setTriangulationAlgorithm( Qgis::TriangulationAlgorithm algorithm );
+
+    /**
+     * Returns the algorithm used for triangulation.
+     * \since QGIS 4.0
+     */
+    Qgis::TriangulationAlgorithm triangulationAlgorithm() const { return mTriangulationAlgorithm; }
+
+    /**
      * Sets whether the "up" direction should be the Z axis on output (TRUE),
      * otherwise the "up" direction will be the Y axis (FALSE). The default
      * value is FALSE (to keep compatibility for existing tessellator use cases).
@@ -226,7 +239,9 @@ class CORE_EXPORT QgsTessellator
     void setExtrusionFacesLegacy( int facade );
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
     void addTriangleVertices( const std::array<QVector3D, 3> &points, QVector3D pNormal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool reverse );
+    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2>*, float> *zHash );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
+    std::vector<QVector3D> generateEarcutTriangles( const QgsPolygon *polygonNew );
 
     QgsVector3D mOrigin = QgsVector3D( 0, 0, 0 );
     bool mAddNormals = false;
@@ -238,6 +253,7 @@ class CORE_EXPORT QgsTessellator
     int mStride = 3 * sizeof( float );
     bool mInputZValueIgnored = false;
     Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
+    Qgis::TriangulationAlgorithm mTriangulationAlgorithm = Qgis::TriangulationAlgorithm::ConstrainedDelaunay;
     float mTextureRotation = 0.0f;
     float mScale = 1.0f;
     QString mError;

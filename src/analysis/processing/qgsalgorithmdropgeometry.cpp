@@ -23,7 +23,7 @@
 
 QString QgsDropGeometryAlgorithm::name() const
 {
-  return QStringLiteral( "dropgeometries" );
+  return u"dropgeometries"_s;
 }
 
 QString QgsDropGeometryAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsDropGeometryAlgorithm::group() const
 
 QString QgsDropGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsDropGeometryAlgorithm::outputName() const

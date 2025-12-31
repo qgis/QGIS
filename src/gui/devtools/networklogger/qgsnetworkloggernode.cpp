@@ -86,7 +86,7 @@ QVariant QgsNetworkLoggerRequestGroup::data( int role ) const
   switch ( role )
   {
     case Qt::DisplayRole:
-      return QStringLiteral( "%1 %2 %3" ).arg( QString::number( mRequestId ), mOperation == QNetworkAccessManager::Operation::CustomOperation ? mVerb : operationToString( mOperation ), mUrl.url() );
+      return u"%1 %2 %3"_s.arg( QString::number( mRequestId ), mOperation == QNetworkAccessManager::Operation::CustomOperation ? mVerb : operationToString( mOperation ), mUrl.url() );
 
     case Qt::ToolTipRole:
     {
@@ -94,13 +94,13 @@ QVariant QgsNetworkLoggerRequestGroup::data( int role ) const
       if ( mBytesTotal != 0 )
       {
         if ( mBytesReceived > 0 && mBytesReceived < mBytesTotal )
-          bytes = QStringLiteral( "%1/%2" ).arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
+          bytes = u"%1/%2"_s.arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
         else if ( mBytesReceived > 0 && mBytesReceived == mBytesTotal )
           bytes = QString::number( mBytesTotal );
       }
       // ?? adding <br/> instead of \n after (very long) url seems to break url up
       // COMPLETE, Status: 200 - text/xml; charset=utf-8 - 2334 bytes - 657 milliseconds
-      return QStringLiteral( "%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies" )
+      return u"%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies"_s
         .arg( mUrl.url(), statusToString( mStatus ), QString::number( mHttpStatus ), mContentType, bytes, mStatus == Status::Pending ? QString::number( mTimer.elapsed() / 1000 ) : QString::number( mTotalTime ), QString::number( mReplies ) );
     }
 
@@ -170,7 +170,7 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
   QObject::connect( copyAsCurlAction, &QAction::triggered, copyAsCurlAction, [this] {
     QString curlHeaders;
     for ( const QPair<QString, QString> &header : std::as_const( mHeaders ) )
-      curlHeaders += QStringLiteral( "-H '%1: %2' " ).arg( header.first, header.second );
+      curlHeaders += u"-H '%1: %2' "_s.arg( header.first, header.second );
 
     switch ( mOperation )
     {
@@ -178,37 +178,37 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
         break;
 
       case QNetworkAccessManager::PutOperation:
-        curlHeaders += QLatin1String( "-X PUT" );
+        curlHeaders += "-X PUT"_L1;
         break;
 
       case QNetworkAccessManager::PostOperation:
-        curlHeaders += QLatin1String( "-X POST" );
+        curlHeaders += "-X POST"_L1;
         break;
 
       case QNetworkAccessManager::HeadOperation:
-        curlHeaders += QLatin1String( "-X HEAD" );
+        curlHeaders += "-X HEAD"_L1;
         break;
 
       case QNetworkAccessManager::DeleteOperation:
-        curlHeaders += QLatin1String( "-X DELETE" );
+        curlHeaders += "-X DELETE"_L1;
         break;
 
       case QNetworkAccessManager::CustomOperation:
-        curlHeaders += QStringLiteral( "-X %1" ).arg( mVerb );
+        curlHeaders += u"-X %1"_s.arg( mVerb );
         break;
 
       case QNetworkAccessManager::UnknownOperation:
         if ( !mVerb.isEmpty() )
-          curlHeaders += QStringLiteral( "-X %1" ).arg( mVerb );
+          curlHeaders += u"-X %1"_s.arg( mVerb );
         break;
     }
 
     QString curlData;
     if ( mOperation == QNetworkAccessManager::PostOperation || mOperation == QNetworkAccessManager::PutOperation
          || ( mOperation == QNetworkAccessManager::CustomOperation && !mData.isEmpty() ) )
-      curlData = QStringLiteral( "--data '%1' " ).arg( QString( mData ) );
+      curlData = u"--data '%1' "_s.arg( QString( mData ) );
 
-    QString curlCmd = QStringLiteral( "curl '%1' %2 %3--compressed" ).arg( mUrl.url(), curlHeaders, curlData );
+    QString curlCmd = u"curl '%1' %2 %3--compressed"_s.arg( mUrl.url(), curlHeaders, curlData );
     QApplication::clipboard()->setText( curlCmd );
   } );
   res << copyAsCurlAction;
@@ -227,11 +227,11 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
 QVariant QgsNetworkLoggerRequestGroup::toVariant() const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "URL" ), mUrl.url() );
-  res.insert( QStringLiteral( "Total time (ms)" ), mTotalTime );
-  res.insert( QStringLiteral( "Bytes Received" ), mBytesReceived );
-  res.insert( QStringLiteral( "Bytes Total" ), mBytesTotal );
-  res.insert( QStringLiteral( "Replies" ), mReplies );
+  res.insert( u"URL"_s, mUrl.url() );
+  res.insert( u"Total time (ms)"_s, mTotalTime );
+  res.insert( u"Bytes Received"_s, mBytesReceived );
+  res.insert( u"Bytes Total"_s, mBytesTotal );
+  res.insert( u"Replies"_s, mReplies );
   if ( mDetailsGroup )
   {
     const QVariantMap detailsMap = mDetailsGroup->toVariant().toMap();
@@ -307,19 +307,19 @@ QString QgsNetworkLoggerRequestGroup::operationToString( QNetworkAccessManager::
   switch ( operation )
   {
     case QNetworkAccessManager::HeadOperation:
-      return QStringLiteral( "HEAD" );
+      return u"HEAD"_s;
     case QNetworkAccessManager::GetOperation:
-      return QStringLiteral( "GET" );
+      return u"GET"_s;
     case QNetworkAccessManager::PutOperation:
-      return QStringLiteral( "PUT" );
+      return u"PUT"_s;
     case QNetworkAccessManager::PostOperation:
-      return QStringLiteral( "POST" );
+      return u"POST"_s;
     case QNetworkAccessManager::DeleteOperation:
-      return QStringLiteral( "DELETE" );
+      return u"DELETE"_s;
     case QNetworkAccessManager::UnknownOperation:
-      return QStringLiteral( "UNKNOWN" );
+      return u"UNKNOWN"_s;
     case QNetworkAccessManager::CustomOperation:
-      return QStringLiteral( "CUSTOM" );
+      return u"CUSTOM"_s;
   }
   return QString();
 }

@@ -22,7 +22,7 @@
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::name() const
 {
-  return QStringLiteral( "densifygeometriesgivenaninterval" );
+  return u"densifygeometriesgivenaninterval"_s;
 }
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::displayName() const
@@ -42,7 +42,7 @@ QString QgsDensifyGeometriesByIntervalAlgorithm::group() const
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::shortHelpString() const
@@ -72,10 +72,10 @@ QList<int> QgsDensifyGeometriesByIntervalAlgorithm::inputLayerTypes() const
 void QgsDensifyGeometriesByIntervalAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  auto interval = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "INTERVAL" ), QObject::tr( "Interval between vertices to add" ), 1, QStringLiteral( "INPUT" ), false, 0, 10000000 );
+  auto interval = std::make_unique<QgsProcessingParameterDistance>( u"INTERVAL"_s, QObject::tr( "Interval between vertices to add" ), 1, u"INPUT"_s, false, 0, 10000000 );
   interval->setIsDynamic( true );
-  interval->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Interval" ), QObject::tr( "Interval" ), QgsPropertyDefinition::DoublePositive ) );
-  interval->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  interval->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Interval"_s, QObject::tr( "Interval" ), QgsPropertyDefinition::DoublePositive ) );
+  interval->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( interval.release() );
 }
 
@@ -103,11 +103,11 @@ QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const Qg
 bool QgsDensifyGeometriesByIntervalAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mInterval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
+  mInterval = parameterAsDouble( parameters, u"INTERVAL"_s, context );
 
-  mDynamicInterval = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "INTERVAL" ) );
+  mDynamicInterval = QgsProcessingParameters::isDynamic( parameters, u"INTERVAL"_s );
   if ( mDynamicInterval )
-    mIntervalProperty = parameters.value( QStringLiteral( "INTERVAL" ) ).value<QgsProperty>();
+    mIntervalProperty = parameters.value( u"INTERVAL"_s ).value<QgsProperty>();
 
   return true;
 }

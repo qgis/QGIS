@@ -141,6 +141,18 @@ class FieldsPyculator(QgisAlgorithm):
     def displayName(self):
         return self.tr("Advanced Python field calculator")
 
+    def shortDescription(self):
+        return self.tr(
+            "Adds a new attribute to a vector layer, with values calculated "
+            "by applying a Python expression to each feature."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm adds a new attribute to a vector layer, with values calculated "
+            "by applying an expression to each feature. The expression is defined as a Python function."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

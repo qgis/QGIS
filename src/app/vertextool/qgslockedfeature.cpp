@@ -230,7 +230,7 @@ void QgsLockedFeature::createVertexMap()
 {
   if ( !mGeometry )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Loading feature" ), 2 );
+    QgsDebugMsgLevel( u"Loading feature"_s, 2 );
     updateGeometry( nullptr );
   }
 

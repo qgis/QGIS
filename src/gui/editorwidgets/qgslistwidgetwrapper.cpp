@@ -82,7 +82,7 @@ QVariant QgsListWidgetWrapper::value() const
   if ( !mWidget )
     return QgsVariantUtils::createNullVariant( type );
   const QVariantList list = mWidget->list();
-  if ( list.size() == 0 && config( QStringLiteral( "EmptyIsNull" ) ).toBool() )
+  if ( list.size() == 0 && config( u"EmptyIsNull"_s ).toBool() )
   {
     return QVariant();
   }

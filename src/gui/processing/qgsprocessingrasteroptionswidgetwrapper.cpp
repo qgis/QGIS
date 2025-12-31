@@ -35,7 +35,7 @@ QgsProcessingRasterOptionsWidgetWrapper::QgsProcessingRasterOptionsWidgetWrapper
 
 QString QgsProcessingRasterOptionsWidgetWrapper::parameterType() const
 {
-  return QStringLiteral( "rasteroptions" );
+  return u"rasteroptions"_s;
 }
 
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterOptionsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )

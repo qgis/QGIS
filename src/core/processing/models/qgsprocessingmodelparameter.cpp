@@ -33,14 +33,14 @@ QgsProcessingModelParameter *QgsProcessingModelParameter::clone() const
 QVariant QgsProcessingModelParameter::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "name" ), mParameterName );
+  map.insert( u"name"_s, mParameterName );
   saveCommonProperties( map );
   return map;
 }
 
 bool QgsProcessingModelParameter::loadVariant( const QVariantMap &map )
 {
-  mParameterName = map.value( QStringLiteral( "name" ) ).toString();
+  mParameterName = map.value( u"name"_s ).toString();
   restoreCommonProperties( map );
   return true;
 }

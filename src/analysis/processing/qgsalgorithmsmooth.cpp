@@ -21,7 +21,7 @@
 
 QString QgsSmoothAlgorithm::name() const
 {
-  return QStringLiteral( "smoothgeometry" );
+  return u"smoothgeometry"_s;
 }
 
 QString QgsSmoothAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsSmoothAlgorithm::group() const
 
 QString QgsSmoothAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSmoothAlgorithm::outputName() const
@@ -84,41 +84,41 @@ QList<int> QgsSmoothAlgorithm::inputLayerTypes() const
 
 void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
 {
-  auto iterations = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ITERATIONS" ), QObject::tr( "Iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10 );
+  auto iterations = std::make_unique<QgsProcessingParameterNumber>( u"ITERATIONS"_s, QObject::tr( "Iterations" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10 );
   iterations->setIsDynamic( true );
-  iterations->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ITERATIONS" ), QObject::tr( "Iterations" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
-  iterations->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  iterations->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ITERATIONS"_s, QObject::tr( "Iterations" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
+  iterations->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( iterations.release() );
 
-  auto offset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 0.5 );
+  auto offset = std::make_unique<QgsProcessingParameterNumber>( u"OFFSET"_s, QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.25, false, 0.0, 0.5 );
   offset->setIsDynamic( true );
-  offset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsPropertyDefinition::Double0To1 ) );
-  offset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  offset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"OFFSET"_s, QObject::tr( "Offset" ), QgsPropertyDefinition::Double0To1 ) );
+  offset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( offset.release() );
 
-  auto maxAngle = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX_ANGLE" ), QObject::tr( "Maximum node angle to smooth" ), Qgis::ProcessingNumberParameterType::Double, 180.0, false, 0.0, 180.0 );
+  auto maxAngle = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ANGLE"_s, QObject::tr( "Maximum node angle to smooth" ), Qgis::ProcessingNumberParameterType::Double, 180.0, false, 0.0, 180.0 );
   maxAngle->setIsDynamic( true );
-  maxAngle->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MAX_ANGLE" ), QObject::tr( "Maximum node angle to smooth" ), QgsPropertyDefinition::Rotation ) );
-  maxAngle->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  maxAngle->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MAX_ANGLE"_s, QObject::tr( "Maximum node angle to smooth" ), QgsPropertyDefinition::Rotation ) );
+  maxAngle->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( maxAngle.release() );
 }
 
 bool QgsSmoothAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mIterations = parameterAsInt( parameters, QStringLiteral( "ITERATIONS" ), context );
-  mDynamicIterations = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ITERATIONS" ) );
+  mIterations = parameterAsInt( parameters, u"ITERATIONS"_s, context );
+  mDynamicIterations = QgsProcessingParameters::isDynamic( parameters, u"ITERATIONS"_s );
   if ( mDynamicIterations )
-    mIterationsProperty = parameters.value( QStringLiteral( "ITERATIONS" ) ).value<QgsProperty>();
+    mIterationsProperty = parameters.value( u"ITERATIONS"_s ).value<QgsProperty>();
 
-  mOffset = parameterAsDouble( parameters, QStringLiteral( "OFFSET" ), context );
-  mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "OFFSET" ) );
+  mOffset = parameterAsDouble( parameters, u"OFFSET"_s, context );
+  mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, u"OFFSET"_s );
   if ( mDynamicOffset )
-    mOffsetProperty = parameters.value( QStringLiteral( "OFFSET" ) ).value<QgsProperty>();
+    mOffsetProperty = parameters.value( u"OFFSET"_s ).value<QgsProperty>();
 
-  mMaxAngle = parameterAsDouble( parameters, QStringLiteral( "MAX_ANGLE" ), context );
-  mDynamicMaxAngle = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MAX_ANGLE" ) );
+  mMaxAngle = parameterAsDouble( parameters, u"MAX_ANGLE"_s, context );
+  mDynamicMaxAngle = QgsProcessingParameters::isDynamic( parameters, u"MAX_ANGLE"_s );
   if ( mDynamicMaxAngle )
-    mMaxAngleProperty = parameters.value( QStringLiteral( "MAX_ANGLE" ) ).value<QgsProperty>();
+    mMaxAngleProperty = parameters.value( u"MAX_ANGLE"_s ).value<QgsProperty>();
 
   return true;
 }

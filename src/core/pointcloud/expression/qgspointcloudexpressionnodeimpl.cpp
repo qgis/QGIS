@@ -54,7 +54,7 @@ QString QgsPointCloudExpressionNode::NodeList::dump() const
   bool first = true;
   for ( QgsPointCloudExpressionNode *n : mList )
   {
-    if ( !first ) msg += QLatin1String( ", " );
+    if ( !first ) msg += ", "_L1;
     else first = false;
     msg += n->dump();
   }
@@ -92,9 +92,9 @@ bool QgsPointCloudExpressionNodeUnaryOperator::prepareNode( QgsPointCloudExpress
 QString QgsPointCloudExpressionNodeUnaryOperator::dump() const
 {
   if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
-    return QStringLiteral( "%1 ( %2 )" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+    return u"%1 ( %2 )"_s.arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
   else
-    return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+    return u"%1 %2"_s.arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QSet<QString> QgsPointCloudExpressionNodeUnaryOperator::referencedAttributes() const
@@ -147,9 +147,9 @@ bool QgsPointCloudExpressionNodeUnaryOperator::convert( const QgsExpressionNodeU
 QString QgsPointCloudExpressionNodeUnaryOperator::toPdal() const
 {
   if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
-    return UNARY_OPERATOR_TEXT[mOp] == QLatin1String( "NOT" ) ? QStringLiteral( "!(%1)" ).arg( mOperand->toPdal() ) : QStringLiteral( "-(%1)" ).arg( mOperand->dump() );
+    return UNARY_OPERATOR_TEXT[mOp] == "NOT"_L1 ? u"!(%1)"_s.arg( mOperand->toPdal() ) : u"-(%1)"_s.arg( mOperand->dump() );
   else
-    return UNARY_OPERATOR_TEXT[mOp] == QLatin1String( "NOT" ) ? QStringLiteral( "!%1" ).arg( mOperand->toPdal() ) : QStringLiteral( "-%1" ).arg( mOperand->dump() );
+    return UNARY_OPERATOR_TEXT[mOp] == "NOT"_L1 ? u"!%1"_s.arg( mOperand->toPdal() ) : u"-%1"_s.arg( mOperand->dump() );
 }
 
 //
@@ -315,15 +315,15 @@ QString QgsPointCloudExpressionNodeBinaryOperator::dump() const
   QString fmt;
   if ( leftAssociative() )
   {
-    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
   else
   {
-    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
 
   return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
@@ -532,33 +532,33 @@ QString QgsPointCloudExpressionNodeBinaryOperator::toPdal() const
   QString fmt;
   if ( leftAssociative() )
   {
-    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
   else
   {
-    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
 
   QString opText = BINARY_OPERATOR_TEXT[mOp];
-  if ( opText == QLatin1String( "AND" ) )
+  if ( opText == "AND"_L1 )
   {
-    opText = QStringLiteral( "&&" );
+    opText = u"&&"_s;
   }
-  else if ( opText == QLatin1String( "OR" ) )
+  else if ( opText == "OR"_L1 )
   {
-    opText = QStringLiteral( "||" );
+    opText = u"||"_s;
   }
-  else if ( opText == QLatin1String( "<>" ) )
+  else if ( opText == "<>"_L1 )
   {
-    opText = QStringLiteral( "!=" );
+    opText = u"!="_s;
   }
-  else if ( opText == QLatin1String( "=" ) )
+  else if ( opText == "="_L1 )
   {
-    opText = QStringLiteral( "==" );
+    opText = u"=="_s;
   }
   return fmt.arg( mOpLeft->toPdal(), opText, rdump );
 }
@@ -633,7 +633,7 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeInOperator
 
 QString QgsPointCloudExpressionNodeInOperator::dump() const
 {
-  return QStringLiteral( "%1 %2 IN (%3)" ).arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
+  return u"%1 %2 IN (%3)"_s.arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
 }
 
 QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeInOperator::clone() const
@@ -663,9 +663,9 @@ QString QgsPointCloudExpressionNodeInOperator::toPdal() const
   QStringList values;
   for ( QgsPointCloudExpressionNode *n : mList->list() )
   {
-    values << QStringLiteral( "(%1 %2 %3)" ).arg( mNode->toPdal(), mNotIn ? "!=" : "==", n->toPdal() );
+    values << u"(%1 %2 %3)"_s.arg( mNode->toPdal(), mNotIn ? "!=" : "==", n->toPdal() );
   }
-  return QStringLiteral( "(%1)" ).arg( values.join( mNotIn ? QStringLiteral( " && " ) : QStringLiteral( " || " ) ) );
+  return u"(%1)"_s.arg( values.join( mNotIn ? u" && "_s : u" || "_s ) );
 }
 
 //
@@ -747,11 +747,11 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
 
   double val = mAttribute->convertValueToDouble( data + offset );
 
-  if ( mAttribute->name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
+  if ( mAttribute->name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().x() + mBlock->offset().x();
-  if ( mAttribute->name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
+  if ( mAttribute->name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().y() + mBlock->offset().y();
-  if ( mAttribute->name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+  if ( mAttribute->name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().z() + mBlock->offset().z();
 
   return val; // calculate the pointIndex's point respective attribute

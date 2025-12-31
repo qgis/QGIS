@@ -45,7 +45,7 @@ class TestQgsInvertedPolygon : public QgsTest
 
   public:
     TestQgsInvertedPolygon()
-      : QgsTest( QStringLiteral( "Inverted Polygon Renderer Tests" ), QStringLiteral( "symbol_invertedpolygon" ) ) {}
+      : QgsTest( u"Inverted Polygon Renderer Tests"_s, u"symbol_invertedpolygon"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -86,7 +86,7 @@ void TestQgsInvertedPolygon::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys_overlapping.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
@@ -131,7 +131,7 @@ void TestQgsInvertedPolygon::preprocess()
 
 void TestQgsInvertedPolygon::projectionTest()
 {
-  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ) );
+  mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:2154"_s ) );
   const QgsRectangle extent( QgsPointXY( -8639421, 8382691 ), QgsPointXY( -3969110, 12570905 ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
@@ -142,10 +142,10 @@ void TestQgsInvertedPolygon::projectionTest()
 
 void TestQgsInvertedPolygon::projectionWithSimplificationTest()
 {
-  auto polyLayer = std::make_unique<QgsVectorLayer>( testDataPath( "polys.shp" ), QStringLiteral( "polys" ) );
+  auto polyLayer = std::make_unique<QgsVectorLayer>( testDataPath( "polys.shp" ), u"polys"_s );
   QVERIFY( polyLayer->isValid() );
   QgsMapSettings mapSettings;
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << polyLayer.get() );
   mapSettings.setOutputDpi( 96 );
 
@@ -164,7 +164,7 @@ void TestQgsInvertedPolygon::projectionWithSimplificationTest()
   simplifyMethod.setThreshold( 0.1f );
   mapSettings.setSimplifyMethod( simplifyMethod );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "inverted_polys_projection_simplification" ), QStringLiteral( "inverted_polys_projection_simplification" ), mapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"inverted_polys_projection_simplification"_s, u"inverted_polys_projection_simplification"_s, mapSettings );
 }
 
 void TestQgsInvertedPolygon::curvedPolygons()
@@ -223,7 +223,7 @@ bool TestQgsInvertedPolygon::imageCheck( const QString &testType, const QgsRecta
   }
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "symbol_invertedpolygon" ) );
+  myChecker.setControlPathPrefix( u"symbol_invertedpolygon"_s );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

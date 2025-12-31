@@ -53,73 +53,73 @@ QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
 
 void QgsXyzSourceWidget::setSourceUri( const QString &uri )
 {
-  mSourceParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), uri );
+  mSourceParts = QgsProviderRegistry::instance()->decodeUri( u"wms"_s, uri );
 
-  mEditUrl->setText( mSourceParts.value( QStringLiteral( "url" ) ).toString() );
-  mCheckBoxZMin->setChecked( mSourceParts.value( QStringLiteral( "zmin" ) ).isValid() );
-  mSpinZMin->setValue( mCheckBoxZMin->isChecked() ? mSourceParts.value( QStringLiteral( "zmin" ) ).toInt() : 0 );
-  mCheckBoxZMax->setChecked( mSourceParts.value( QStringLiteral( "zmax" ) ).isValid() );
-  mSpinZMax->setValue( mCheckBoxZMax->isChecked() ? mSourceParts.value( QStringLiteral( "zmax" ) ).toInt() : 18 );
-  mAuthSettings->setUsername( mSourceParts.value( QStringLiteral( "username" ) ).toString() );
-  mAuthSettings->setPassword( mSourceParts.value( QStringLiteral( "password" ) ).toString() );
-  mEditReferer->setText( mSourceParts.value( QStringLiteral( "http-header:referer" ) ).toString() );
+  mEditUrl->setText( mSourceParts.value( u"url"_s ).toString() );
+  mCheckBoxZMin->setChecked( mSourceParts.value( u"zmin"_s ).isValid() );
+  mSpinZMin->setValue( mCheckBoxZMin->isChecked() ? mSourceParts.value( u"zmin"_s ).toInt() : 0 );
+  mCheckBoxZMax->setChecked( mSourceParts.value( u"zmax"_s ).isValid() );
+  mSpinZMax->setValue( mCheckBoxZMax->isChecked() ? mSourceParts.value( u"zmax"_s ).toInt() : 18 );
+  mAuthSettings->setUsername( mSourceParts.value( u"username"_s ).toString() );
+  mAuthSettings->setPassword( mSourceParts.value( u"password"_s ).toString() );
+  mEditReferer->setText( mSourceParts.value( u"http-header:referer"_s ).toString() );
 
   int index = 0; // default is "unknown"
-  if ( mSourceParts.value( QStringLiteral( "tilePixelRatio" ) ).toInt() == 2. )
+  if ( mSourceParts.value( u"tilePixelRatio"_s ).toInt() == 2. )
     index = 2; // high-res
-  else if ( mSourceParts.value( QStringLiteral( "tilePixelRatio" ) ).toInt() == 1. )
+  else if ( mSourceParts.value( u"tilePixelRatio"_s ).toInt() == 1. )
     index = 1; // normal-res
   mComboTileResolution->setCurrentIndex( index );
 
-  mAuthSettings->setConfigId( mSourceParts.value( QStringLiteral( "authcfg" ) ).toString() );
+  mAuthSettings->setConfigId( mSourceParts.value( u"authcfg"_s ).toString() );
 
-  setInterpretation( mSourceParts.value( QStringLiteral( "interpretation" ) ).toString() );
+  setInterpretation( mSourceParts.value( u"interpretation"_s ).toString() );
 }
 
 QString QgsXyzSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
 
-  parts.insert( QStringLiteral( "url" ), mEditUrl->text() );
+  parts.insert( u"url"_s, mEditUrl->text() );
   if ( mCheckBoxZMin->isChecked() )
-    parts.insert( QStringLiteral( "zmin" ), mSpinZMin->value() );
+    parts.insert( u"zmin"_s, mSpinZMin->value() );
   else
-    parts.remove( QStringLiteral( "zmin" ) );
+    parts.remove( u"zmin"_s );
   if ( mCheckBoxZMax->isChecked() )
-    parts.insert( QStringLiteral( "zmax" ), mSpinZMax->value() );
+    parts.insert( u"zmax"_s, mSpinZMax->value() );
   else
-    parts.remove( QStringLiteral( "zmax" ) );
+    parts.remove( u"zmax"_s );
 
   if ( !mAuthSettings->username().isEmpty() )
-    parts.insert( QStringLiteral( "username" ), mAuthSettings->username() );
+    parts.insert( u"username"_s, mAuthSettings->username() );
   else
-    parts.remove( QStringLiteral( "username" ) );
+    parts.remove( u"username"_s );
   if ( !mAuthSettings->password().isEmpty() )
-    parts.insert( QStringLiteral( "password" ), mAuthSettings->password() );
+    parts.insert( u"password"_s, mAuthSettings->password() );
   else
-    parts.remove( QStringLiteral( "password" ) );
+    parts.remove( u"password"_s );
 
   if ( !mEditReferer->text().isEmpty() )
-    parts.insert( QStringLiteral( "referer" ), mEditReferer->text() );
+    parts.insert( u"referer"_s, mEditReferer->text() );
   else
-    parts.remove( QStringLiteral( "referer" ) );
+    parts.remove( u"referer"_s );
 
   if ( mComboTileResolution->currentIndex() > 0 )
-    parts.insert( QStringLiteral( "tilePixelRatio" ), mComboTileResolution->currentIndex() );
+    parts.insert( u"tilePixelRatio"_s, mComboTileResolution->currentIndex() );
   else
-    parts.remove( QStringLiteral( "tilePixelRatio" ) );
+    parts.remove( u"tilePixelRatio"_s );
 
   if ( !mAuthSettings->configId().isEmpty() )
-    parts.insert( QStringLiteral( "authcfg" ), mAuthSettings->configId() );
+    parts.insert( u"authcfg"_s, mAuthSettings->configId() );
   else
-    parts.remove( QStringLiteral( "authcfg" ) );
+    parts.remove( u"authcfg"_s );
 
   if ( !mInterpretationCombo->interpretation().isEmpty() )
-    parts.insert( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
+    parts.insert( u"interpretation"_s, mInterpretationCombo->interpretation() );
   else
-    parts.remove( QStringLiteral( "interpretation" ) );
+    parts.remove( u"interpretation"_s );
 
-  return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
+  return QgsProviderRegistry::instance()->encodeUri( u"wms"_s, parts );
 }
 
 void QgsXyzSourceWidget::setUrl( const QString &url )

@@ -30,7 +30,7 @@ bool QgsAuthorizationSettings::setAuthorization( QNetworkRequest &request ) cons
   }
   else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + u"%1:%2"_s.arg( mUserName, mPassword ).toUtf8().toBase64() );
   }
 
   mHttpHeaders.updateNetworkRequest( request );

@@ -44,6 +44,7 @@ Creates a new QgsBlurEffect effect from a properties string map.
     virtual QString type() const;
     virtual QVariantMap properties() const;
 
+
     virtual void readProperties( const QVariantMap &props );
 
     virtual QgsBlurEffect *clone() const /Factory/;

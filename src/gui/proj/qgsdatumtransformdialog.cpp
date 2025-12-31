@@ -98,11 +98,11 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   if ( !sourceCrs.isValid() )
     sourceCrs = QgsProject::instance()->crs();
   if ( !sourceCrs.isValid() )
-    sourceCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    sourceCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   if ( !destinationCrs.isValid() )
     destinationCrs = QgsProject::instance()->crs();
   if ( !destinationCrs.isValid() )
-    destinationCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    destinationCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
 
   mSourceProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
   mDestinationProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
@@ -127,7 +127,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mCoordinateOperationsWidget->setDestinationCrs( destinationCrs );
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+    QgsHelp::openHelp( u"working_with_projections/working_with_projections.html"_s );
   } );
 
   connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationChanged, this, &QgsDatumTransformDialog::operationChanged );
@@ -155,7 +155,7 @@ void QgsDatumTransformDialog::accept()
   if ( mCoordinateOperationsWidget->makeDefaultSelected() && mCoordinateOperationsWidget->hasSelection() )
   {
     QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "/Projections" ) );
+    settings.beginGroup( u"/Projections"_s );
 
     const TransformInfo dt = selectedDatumTransform();
 
@@ -171,10 +171,10 @@ void QgsDatumTransformDialog::accept()
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
     Q_NOWARN_DEPRECATED_POP
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_srcTransform" ), sourceDatumProj );
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_destTransform" ), destinationDatumProj );
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_coordinateOp" ), dt.proj );
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_allowFallback" ), dt.allowFallback );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_srcTransform"_s, sourceDatumProj );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_destTransform"_s, destinationDatumProj );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_coordinateOp"_s, dt.proj );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_allowFallback"_s, dt.allowFallback );
   }
   QDialog::accept();
 }
@@ -191,7 +191,7 @@ bool QgsDatumTransformDialog::shouldAskUserForSelection() const
 {
   if ( mCoordinateOperationsWidget->availableOperations().count() > 1 )
   {
-    return QgsSettings().value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool();
+    return QgsSettings().value( u"/projections/promptWhenMultipleTransformsExist"_s, false, QgsSettings::App ).toBool();
   }
   // TODO: show if transform grids are required, but missing
   return false;
@@ -240,7 +240,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::selectedDatumTra
 
 bool QgsDatumTransformDialog::gridShiftTransformation( const QString &itemText ) const
 {
-  return !itemText.isEmpty() && !itemText.contains( QLatin1String( "towgs84" ), Qt::CaseInsensitive );
+  return !itemText.isEmpty() && !itemText.contains( "towgs84"_L1, Qt::CaseInsensitive );
 }
 
 void QgsDatumTransformDialog::operationChanged()

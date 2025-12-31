@@ -83,54 +83,54 @@ class TestQgsPostgresProvider : public QObject
 
 void TestQgsPostgresProvider::decodeHstore()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\"" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\""_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "1" )] = "2";
-  expected[QStringLiteral( "a" )] = "b, \"c'";
-  expected[QStringLiteral( "backslash" )] = "\\";
+  expected[u"1"_s] = "2";
+  expected[u"a"_s] = "b, \"c'";
+  expected[u"backslash"_s] = "\\";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::decodeHstoreNoQuote()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "1=>2, a=>b c" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"1=>2, a=>b c"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "1" )] = "2";
-  expected[QStringLiteral( "a" )] = "b c";
+  expected[u"1"_s] = "2";
+  expected[u"a"_s] = "b c";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::decodeArray2StringList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QStringList expected;
-  expected << QStringLiteral( "1" ) << QStringLiteral( "2" ) << QStringLiteral( "a\\1" ) << QStringLiteral( "\\" ) << QStringLiteral( "b, \"c'" );
+  expected << u"1"_s << u"2"_s << u"a\\1"_s << u"\\"_s << u"b, \"c'"_s;
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toStringList(), expected );
 }
 
 void TestQgsPostgresProvider::decodeArray2StringListNoQuote()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{1,2, a ,b, c}" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{1,2, a ,b, c}"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QStringList expected;
-  expected << QStringLiteral( "1" ) << QStringLiteral( "2" ) << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" );
+  expected << u"1"_s << u"2"_s << u"a"_s << u"b"_s << u"c"_s;
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toStringList(), expected );
 }
 
 void TestQgsPostgresProvider::decodeArray2IntList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{1, 2, 3,-5,10}" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{1, 2, 3,-5,10}"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -141,7 +141,7 @@ void TestQgsPostgresProvider::decodeArray2IntList()
 
 void TestQgsPostgresProvider::decode2DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}" ), QStringLiteral( "_text" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}"_s, u"_text"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -152,7 +152,7 @@ void TestQgsPostgresProvider::decode2DimensionArray()
 
 void TestQgsPostgresProvider::decode3DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{{{0,1},{1,2}},{{3,4},{5,6}}}" ), QStringLiteral( "_integer" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{{{0,1},{1,2}},{{3,4},{5,6}}}"_s, u"_integer"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -163,7 +163,7 @@ void TestQgsPostgresProvider::decode3DimensionArray()
 
 void TestQgsPostgresProvider::decodeJsonList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "[1,2,3]" ), QStringLiteral( "json" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"[1,2,3]"_s, u"json"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantList );
 
   QVariantList expected;
@@ -176,7 +176,7 @@ void TestQgsPostgresProvider::decodeJsonList()
 
 void TestQgsPostgresProvider::decodeJsonbList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "[1,2,3]" ), QStringLiteral( "jsonb" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"[1,2,3]"_s, u"jsonb"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantList );
 
   QVariantList expected;
@@ -189,24 +189,24 @@ void TestQgsPostgresProvider::decodeJsonbList()
 
 void TestQgsPostgresProvider::decodeJsonMap()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "json" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"{\"a\":1,\"b\":2}"_s, u"json"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "a" )] = "1";
-  expected[QStringLiteral( "b" )] = "2";
+  expected[u"a"_s] = "1";
+  expected[u"b"_s] = "2";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::decodeJsonbMap()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "jsonb" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"{\"a\":1,\"b\":2}"_s, u"jsonb"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "a" )] = "1";
-  expected[QStringLiteral( "b" )] = "2";
+  expected[u"a"_s] = "1";
+  expected[u"b"_s] = "2";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
@@ -215,19 +215,19 @@ void TestQgsPostgresProvider::testDecodeDateTimes()
 {
   QVariant decoded;
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, QStringLiteral( "2020-06-08 18:30:35.496438+02" ), QStringLiteral( "timestamptz" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, u"2020-06-08 18:30:35.496438+02"_s, u"timestamptz"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QDateTime );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, QStringLiteral( "18:29:27.569401+02" ), QStringLiteral( "timetz" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, u"18:29:27.569401+02"_s, u"timetz"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QTime );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDate, QMetaType::Type::UnknownType, QStringLiteral( "2020-06-08" ), QStringLiteral( "date" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDate, QMetaType::Type::UnknownType, u"2020-06-08"_s, u"date"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QDate );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, QStringLiteral( "2020-06-08 18:30:35.496438" ), QStringLiteral( "timestamp" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, u"2020-06-08 18:30:35.496438"_s, u"timestamp"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QDateTime );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, QStringLiteral( "18:29:27.569401" ), QStringLiteral( "time" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, u"18:29:27.569401"_s, u"time"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QTime );
 }
 

@@ -678,6 +678,11 @@ def read_line():
             f"OVR: {CONTEXT.is_override_or_make_private} CLSS: {CONTEXT.actual_class}/{len(CONTEXT.classname)} :: {new_line}"
         )
 
+    # SIP doesn't like Qt 6.4 u""_s, ""_L1 or ''_L1 literals
+    new_line = re.sub(r'u("(?:(?:\\.|[^"\\])*)")_s', r"QStringLiteral( \1 )", new_line)
+    new_line = re.sub(r'("(?:(?:\\.|[^"\\])*)")_L1', r"QLatin1String( \1 )", new_line)
+    new_line = re.sub(r"('(?:(?:\\.|[^'\\])*)')_L1", r"QLatin1Char( \1 )", new_line)
+
     new_line = replace_macros(new_line)
     return new_line
 
@@ -1985,6 +1990,20 @@ def try_skip_forward_decl():
         else:
             dbg_info("skipping forward declaration")
             return True
+
+
+def try_skip_unwanted_cpp_lines() -> bool:
+    # Skip unwanted cpp lines
+
+    # skip "using ParentClass::virtualMethod;" lines
+    match = re.match(
+        r"^\s*using\s+.*::.*;\s*$",
+        CONTEXT.current_line,
+    )
+    if match:
+        dbg_info("skipping using ParentClass::virtualMethod; line")
+        return True
+    return False
 
 
 def try_skip_friend_decl():
@@ -3552,6 +3571,8 @@ def process_input():
             continue
         check_end_of_typeheadercode()
         if try_skip_forward_decl():
+            continue
+        if try_skip_unwanted_cpp_lines():
             continue
         if try_skip_friend_decl():
             continue

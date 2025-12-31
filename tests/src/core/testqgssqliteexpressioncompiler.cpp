@@ -53,9 +53,9 @@ QgsExpression TestQgsSQLiteExpressionCompiler::makeExpression( const int length 
   QStringList expString;
   for ( int i = 0; i < length; ++i )
   {
-    expString.append( QStringLiteral( "(\"Z\" >= %1) AND (\"Bottom\" <= %2)" ).arg( i ).arg( i + 1 ) );
+    expString.append( u"(\"Z\" >= %1) AND (\"Bottom\" <= %2)"_s.arg( i ).arg( i + 1 ) );
   }
-  const QgsExpression exp( expString.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' ) );
+  const QgsExpression exp( expString.join( ") OR ("_L1 ).prepend( '(' ).append( ')' ) );
   return exp;
 }
 
@@ -71,7 +71,7 @@ void TestQgsSQLiteExpressionCompiler::initTestCase()
   QgsApplication::createDatabase();
   QgsApplication::showSettings();
   //create a point layer that will be used in all tests...
-  mPointsLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=Z:integer&field=Bottom:integer&field=Name:string" ), QStringLiteral( "test mem layer" ), QStringLiteral( "memory" ) );
+  mPointsLayer = new QgsVectorLayer( u"Point?crs=epsg:4326&field=Z:integer&field=Bottom:integer&field=Name:string"_s, u"test mem layer"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( mPointsLayer );
 }
 
@@ -100,19 +100,19 @@ void TestQgsSQLiteExpressionCompiler::testCompiler()
   QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Complete );
   // Check that parenthesis matches
   QCOMPARE( compiler.result().count( '(' ), compiler.result().count( ')' ) );
-  QCOMPARE( compiler.result(), QStringLiteral( "((((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))) OR ((\"Z\" >= 2) AND (\"Bottom\" <= 3)))" ) );
+  QCOMPARE( compiler.result(), u"((((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))) OR ((\"Z\" >= 2) AND (\"Bottom\" <= 3)))"_s );
 
-  const QgsExpression ilike( QStringLiteral( "'a' ilike 'A'" ) );
+  const QgsExpression ilike( u"'a' ilike 'A'"_s );
   QCOMPARE( compiler.compile( &ilike ), QgsSqlExpressionCompiler::Result::Complete );
-  QCOMPARE( compiler.result(), QStringLiteral( "lower('a') LIKE lower('A') ESCAPE '\\'" ) );
+  QCOMPARE( compiler.result(), u"lower('a') LIKE lower('A') ESCAPE '\\'"_s );
 
-  const QgsExpression nilike( QStringLiteral( "'a' not ilike 'A'" ) );
+  const QgsExpression nilike( u"'a' not ilike 'A'"_s );
   QCOMPARE( compiler.compile( &nilike ), QgsSqlExpressionCompiler::Result::Complete );
-  QCOMPARE( compiler.result(), QStringLiteral( "lower('a') NOT LIKE lower('A') ESCAPE '\\'" ) );
+  QCOMPARE( compiler.result(), u"lower('a') NOT LIKE lower('A') ESCAPE '\\'"_s );
 
-  const QgsExpression nbetween( QStringLiteral( "'b' between 'a' and 'c'" ) );
+  const QgsExpression nbetween( u"'b' between 'a' and 'c'"_s );
   QCOMPARE( compiler.compile( &nbetween ), QgsSqlExpressionCompiler::Result::Complete );
-  QCOMPARE( compiler.result(), QStringLiteral( "'b' BETWEEN 'a' AND 'c'" ) );
+  QCOMPARE( compiler.result(), u"'b' BETWEEN 'a' AND 'c'"_s );
 }
 
 void TestQgsSQLiteExpressionCompiler::testPreparedCachedNodes()
@@ -120,11 +120,11 @@ void TestQgsSQLiteExpressionCompiler::testPreparedCachedNodes()
   // test that expression compilation of an expression which has precalculated static values for nodes will take advantage of these values
 
   QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mPointsLayer->fields(), false );
-  QgsExpression exp( QStringLiteral( "\"Z\" = (1 + 2) OR \"z\" < (@static_var + 5)" ) );
+  QgsExpression exp( u"\"Z\" = (1 + 2) OR \"z\" < (@static_var + 5)"_s );
 
   QgsExpressionContext context;
   auto scope = std::make_unique<QgsExpressionContextScope>();
-  scope->setVariable( QStringLiteral( "static_var" ), 10, true );
+  scope->setVariable( u"static_var"_s, 10, true );
   context.appendScope( scope.release() );
   // not possible to compile due to use of a variable
   QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Fail );
@@ -133,7 +133,7 @@ void TestQgsSQLiteExpressionCompiler::testPreparedCachedNodes()
   exp.prepare( &context );
   // should now succeed -- the variable node was identified as a static value and replaced by a pre-computed value
   QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Complete );
-  QCOMPARE( compiler.result(), QStringLiteral( "((\"Z\" = 3) OR (\"Z\" < 15))" ) );
+  QCOMPARE( compiler.result(), u"((\"Z\" = 3) OR (\"Z\" < 15))"_s );
 
   // let's try again, denying the compiler the ability to use pre-computed values
   QgsSQLiteExpressionCompiler compiler2 = QgsSQLiteExpressionCompiler( mPointsLayer->fields(), true );
@@ -147,17 +147,17 @@ void TestQgsSQLiteExpressionCompiler::testPlusWithStrings_data()
   QTest::addColumn<bool>( "success" );
   QTest::addColumn<QString>( "compiledExpression" );
 
-  QTest::newRow( "plus with strings" ) << QStringLiteral( "'a' + 'b'" ) << false << QString();
-  QTest::newRow( "plus with refs" ) << QStringLiteral( "\"Z\" + \"Bottom\"" ) << true << QStringLiteral( "(\"Z\" + \"Bottom\")" );
-  QTest::newRow( "plus with mixed" ) << QStringLiteral( "\"Z\" + \"Name\"" ) << false << QString();
-  QTest::newRow( "plus with mixed literal" ) << QStringLiteral( "\"Z\" + 1.234" ) << true << QStringLiteral( "(\"Z\" + 1.234)" );
-  QTest::newRow( "plus with mixed literal 2" ) << QStringLiteral( "1.234 + \"Z\"" ) << true << QStringLiteral( "(1.234 + \"Z\")" );
-  QTest::newRow( "plus with mixed literal 3" ) << QStringLiteral( "1.234 + 1.234" ) << true << QStringLiteral( "(1.234 + 1.234)" );
-  QTest::newRow( "plus with mixed literal 4" ) << QStringLiteral( "1.234 + 'a'" ) << false << QString();
-  QTest::newRow( "plus with mixed literal 5" ) << QStringLiteral( "\"Z\" + 1234" ) << true << QStringLiteral( "(\"Z\" + 1234)" );
-  QTest::newRow( "plus with mixed literal 6" ) << QStringLiteral( "\"Z\" = 1234" ) << true << QStringLiteral( "(\"Z\" = 1234)" );
-  QTest::newRow( "plus with mixed literal 7" ) << QStringLiteral( "\"Z\" = ( 1 + 2 ) / 3" ) << true << QStringLiteral( "(\"Z\" = ((1 + 2) / CAST((3) AS REAL)))" );
-  QTest::newRow( "plus with mixed literal 8" ) << QStringLiteral( "Z = 1000/11+10" ) << true << QStringLiteral( "(\"Z\" = ((1000 / CAST((11) AS REAL)) + 10))" );
+  QTest::newRow( "plus with strings" ) << u"'a' + 'b'"_s << false << QString();
+  QTest::newRow( "plus with refs" ) << u"\"Z\" + \"Bottom\""_s << true << u"(\"Z\" + \"Bottom\")"_s;
+  QTest::newRow( "plus with mixed" ) << u"\"Z\" + \"Name\""_s << false << QString();
+  QTest::newRow( "plus with mixed literal" ) << u"\"Z\" + 1.234"_s << true << u"(\"Z\" + 1.234)"_s;
+  QTest::newRow( "plus with mixed literal 2" ) << u"1.234 + \"Z\""_s << true << u"(1.234 + \"Z\")"_s;
+  QTest::newRow( "plus with mixed literal 3" ) << u"1.234 + 1.234"_s << true << u"(1.234 + 1.234)"_s;
+  QTest::newRow( "plus with mixed literal 4" ) << u"1.234 + 'a'"_s << false << QString();
+  QTest::newRow( "plus with mixed literal 5" ) << u"\"Z\" + 1234"_s << true << u"(\"Z\" + 1234)"_s;
+  QTest::newRow( "plus with mixed literal 6" ) << u"\"Z\" = 1234"_s << true << u"(\"Z\" = 1234)"_s;
+  QTest::newRow( "plus with mixed literal 7" ) << u"\"Z\" = ( 1 + 2 ) / 3"_s << true << u"(\"Z\" = ((1 + 2) / CAST((3) AS REAL)))"_s;
+  QTest::newRow( "plus with mixed literal 8" ) << u"Z = 1000/11+10"_s << true << u"(\"Z\" = ((1000 / CAST((11) AS REAL)) + 10))"_s;
 }
 
 void TestQgsSQLiteExpressionCompiler::testPlusWithStrings()

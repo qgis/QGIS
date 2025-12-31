@@ -17,6 +17,11 @@
 
 #include "qgswinnative.h"
 
+#include <Dbt.h>
+#include <memory>
+#include <type_traits>
+#include <wintoastlib.h>
+
 #include <QAbstractEventDispatcher>
 #include <QCoreApplication>
 #include <QDebug>
@@ -25,19 +30,9 @@
 #include <QString>
 #include <QWindow>
 
-#include "moc_qgswinnative.cpp"
+using namespace Qt::StringLiterals;
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <QtWinExtras/QWinTaskbarButton>
-#include <QtWinExtras/QWinTaskbarProgress>
-#include <QtWinExtras/QWinJumpList>
-#include <QtWinExtras/QWinJumpListItem>
-#include <QtWinExtras/QWinJumpListCategory>
-#endif
-#include "wintoastlib.h"
-#include <Dbt.h>
-#include <memory>
-#include <type_traits>
+#include "moc_qgswinnative.cpp"
 
 #ifdef UNICODE
 #define _T( x ) L##x
@@ -65,15 +60,6 @@ QgsNative::Capabilities QgsWinNative::capabilities() const
 void QgsWinNative::initializeMainWindow( QWindow *window, const QString &applicationName, const QString &organizationName, const QString &version )
 {
   mWindow = window;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  if ( mTaskButton )
-    return; // already initialized!
-
-  mTaskButton = new QWinTaskbarButton( window );
-  mTaskButton->setWindow( window );
-  mTaskProgress = mTaskButton->progress();
-  mTaskProgress->setVisible( false );
-#endif
 
   QString appName = qgetenv( "QGIS_WIN_APP_NAME" );
   if ( appName.isEmpty() )
@@ -140,47 +126,6 @@ void QgsWinNative::showFileProperties( const QString &path )
   }
 }
 
-void QgsWinNative::showUndefinedApplicationProgress()
-{
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  mTaskProgress->setMaximum( 0 );
-  mTaskProgress->show();
-#endif
-}
-
-void QgsWinNative::setApplicationProgress( double progress )
-{
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  mTaskProgress->setMaximum( 100 );
-  mTaskProgress->show();
-  mTaskProgress->setValue( static_cast<int>( std::round( progress ) ) );
-#endif
-}
-
-void QgsWinNative::hideApplicationProgress()
-{
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  mTaskProgress->hide();
-#endif
-}
-
-void QgsWinNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentProjectProperties> &recentProjects )
-{
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QWinJumpList jumplist;
-  jumplist.recent()->clear();
-  for ( const RecentProjectProperties &recentProject : recentProjects )
-  {
-    QString name = recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName();
-    QWinJumpListItem *newProject = new QWinJumpListItem( QWinJumpListItem::Link );
-    newProject->setTitle( name );
-    newProject->setFilePath( QDir::toNativeSeparators( QCoreApplication::applicationFilePath() ) );
-    newProject->setArguments( QStringList( recentProject.path ) );
-    jumplist.recent()->addItem( newProject );
-  }
-#endif
-}
-
 class NotificationHandler : public WinToastLib::IWinToastHandler
 {
   public:
@@ -227,8 +172,8 @@ bool QgsWinNative::openTerminalAtPath( const QString &path )
   const bool isWow64 = qEnvironmentVariableIsSet( "PROCESSOR_ARCHITEW6432" );
   QString windir = qgetenv( "WINDIR" );
   if ( windir.isEmpty() )
-    windir = QStringLiteral( "C:\\Windows" );
-  const QString term = QStringLiteral( "%1\\%2\\cmd.exe" ).arg( windir, isWow64 ? QStringLiteral( "Sysnative" ) : QStringLiteral( "System32" ) );
+    windir = u"C:\\Windows"_s;
+  const QString term = u"%1\\%2\\cmd.exe"_s.arg( windir, isWow64 ? u"Sysnative"_s : u"System32"_s );
 
   QProcess process;
   process.setProgram( term );
@@ -242,11 +187,7 @@ bool QgsWinNative::openTerminalAtPath( const QString &path )
   return process.startDetached( &pid );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, long * )
-#else
 bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, qintptr * )
-#endif
 {
   static const QByteArray sWindowsGenericMSG { "windows_generic_MSG" };
   if ( !message || eventType != sWindowsGenericMSG )
@@ -295,7 +236,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
 
       for ( const QString &drive : drives )
       {
-        emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
+        emit usbStorageNotification( u"%1:/"_s.arg( drive ), wParam == DBT_DEVICEARRIVAL );
       }
       return false;
     }

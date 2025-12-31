@@ -88,62 +88,62 @@ void TestQgsServerQueryStringParameter::cleanup()
 
 void TestQgsServerQueryStringParameter::testArguments()
 {
-  QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ) };
+  QgsServerQueryStringParameter p { u"parameter1"_s };
   QgsServerRequest request;
   const QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
   // Test string (default)
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=123"_s );
   QCOMPARE( p.value( ctx ).toString(), QString( "123" ) );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QString );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=a%20string"_s );
   QCOMPARE( p.value( ctx ).toString(), QString( "a string" ) );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QString );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/" ) );
+  request.setUrl( u"http://www.qgis.org/api/"_s );
   QCOMPARE( p.value( ctx ).toString(), QString() );
 
   // Test required
   p.mRequired = true;
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/" ) );
+  request.setUrl( u"http://www.qgis.org/api/"_s );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
   // Test int
   p.mType = QgsServerQueryStringParameter::Type::Integer;
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=123"_s );
   QCOMPARE( p.value( ctx ).toInt(), 123 );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::LongLong );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=a%20string"_s );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
   // Test double
   p.mType = QgsServerQueryStringParameter::Type::Double;
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=123"_s );
   QCOMPARE( p.value( ctx ).toDouble(), 123.0 );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::Double );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123.456" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=123.456"_s );
   QCOMPARE( p.value( ctx ).toDouble(), 123.456 );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::Double );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20string" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=a%20string"_s );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
   QCOMPARE( QString::fromStdString( p.data()["schema"]["type"] ), QString( "number" ) );
 
   // Test list
   p.mType = QgsServerQueryStringParameter::Type::List;
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123,a%20value" ) );
-  QCOMPARE( p.value( ctx ).toStringList(), QStringList() << QStringLiteral( "123" ) << QStringLiteral( "a value" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=123,a%20value"_s );
+  QCOMPARE( p.value( ctx ).toStringList(), QStringList() << u"123"_s << u"a value"_s );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QStringList );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20value" ) );
-  QCOMPARE( p.value( ctx ).toStringList(), QStringList() << QStringLiteral( "a value" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=a%20value"_s );
+  QCOMPARE( p.value( ctx ).toStringList(), QStringList() << u"a value"_s );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QStringList );
 }
 
 void TestQgsServerQueryStringParameter::testCustomValidators()
 {
-  QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer };
+  QgsServerQueryStringParameter p { u"parameter1"_s, true, QgsServerQueryStringParameter::Type::Integer };
   QgsServerRequest request;
   const QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=123" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=123"_s );
   QCOMPARE( p.value( ctx ).toInt(), 123 );
 
   // Test a range validator that increments the value
@@ -156,7 +156,7 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
   p.setCustomValidator( validator );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=501"_s );
   QCOMPARE( p.value( ctx ).toInt(), 502 );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::LongLong );
 }
@@ -164,16 +164,16 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
 void TestQgsServerQueryStringParameter::testDefaultValues()
 {
   // Set a default AND required, verify it's ignored
-  const QgsServerQueryStringParameter p { QStringLiteral( "parameter1" ), true, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
+  const QgsServerQueryStringParameter p { u"parameter1"_s, true, QgsServerQueryStringParameter::Type::Integer, u"Paramerer 1"_s, 10 };
   QgsServerRequest request;
   const QgsServerApiContext ctx { "/wfs3", &request, nullptr, nullptr, nullptr };
 
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/" ) );
+  request.setUrl( u"http://www.qgis.org/api/"_s );
   QVERIFY_EXCEPTION_THROWN( p.value( ctx ), QgsServerApiBadRequestException );
 
-  const QgsServerQueryStringParameter p2 { QStringLiteral( "parameter1" ), false, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Paramerer 1" ), 10 };
+  const QgsServerQueryStringParameter p2 { u"parameter1"_s, false, QgsServerQueryStringParameter::Type::Integer, u"Paramerer 1"_s, 10 };
   QCOMPARE( p2.value( ctx ).toInt(), 10 );
-  request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
+  request.setUrl( u"http://www.qgis.org/api/?parameter1=501"_s );
   QCOMPARE( p2.value( ctx ).toInt(), 501 );
 }
 
@@ -181,7 +181,7 @@ void TestQgsServerQueryStringParameter::testParseInput()
 {
   // Request with layers "a", "b", "c" and "äös + %&#"
   QByteArray data( "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=a%2Cb%2Cc%2C%C3%A4%C3%B6s+%2B+%25%26%23" );
-  QgsBufferServerRequest request( QStringLiteral( "http://localhost/wms/test" ), QgsServerRequest::PostMethod, QgsServerRequest::Headers(), &data );
+  QgsBufferServerRequest request( u"http://localhost/wms/test"_s, QgsServerRequest::PostMethod, QgsServerRequest::Headers(), &data );
   QgsBufferServerResponse response;
 
   QgsRequestHandler requestHandler( request, response );
@@ -189,10 +189,10 @@ void TestQgsServerQueryStringParameter::testParseInput()
 
   const QgsServerParameters params = request.serverParameters();
   QMap<QString, QString> paramsMap = params.toMap();
-  QCOMPARE( paramsMap["SERVICE"], QStringLiteral( "WMS" ) );
-  QCOMPARE( paramsMap["VERSION"], QStringLiteral( "1.3.0" ) );
-  QCOMPARE( paramsMap["REQUEST"], QStringLiteral( "GetMap" ) );
-  QCOMPARE( paramsMap["LAYERS"], QStringLiteral( "a,b,c,äös + %&#" ) );
+  QCOMPARE( paramsMap["SERVICE"], u"WMS"_s );
+  QCOMPARE( paramsMap["VERSION"], u"1.3.0"_s );
+  QCOMPARE( paramsMap["REQUEST"], u"GetMap"_s );
+  QCOMPARE( paramsMap["LAYERS"], u"a,b,c,äös + %&#"_s );
 }
 
 

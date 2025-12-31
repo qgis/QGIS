@@ -27,7 +27,7 @@ set(TS_FILES qgis_ar.ts qgis_az.ts qgis_bg.ts qgis_bs.ts qgis_ca.ts qgis_cs.ts q
 
 ADD_TRANSLATION_FILES (QM_FILES ${TS_FILES})
 
-# TODO QGIS 4.0: remove configure and call directly script
+# TODO QGIS 5.0: remove configure and call directly script
 configure_file(${CMAKE_SOURCE_DIR}/scripts/ts2appinfo.py.in ${CMAKE_BINARY_DIR}/ts2appinfo.py)
 
 if (UNIX AND NOT APPLE AND PYQT_FOUND)

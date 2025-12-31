@@ -34,7 +34,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
 {
   // add a label to show current scale
   mLabel = new QLabel();
-  mLabel->setObjectName( QStringLiteral( "mScaleLabel" ) );
+  mLabel->setObjectName( u"mScaleLabel"_s );
   mLabel->setMinimumWidth( 10 );
   //mScaleLabel->setMaximumHeight( 20 );
   mLabel->setMargin( 3 );
@@ -44,7 +44,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mLabel->setToolTip( tr( "Current map scale" ) );
 
   mScale = new QgsScaleComboBox();
-  mScale->setObjectName( QStringLiteral( "mScaleEdit" ) );
+  mScale->setObjectName( u"mScaleEdit"_s );
   // seems setFont() change font only for popup not for line edit,
   // so we need to set font for it separately
   mScale->setMinimumWidth( 10 );

@@ -71,7 +71,7 @@ struct StatsProcessor
         QgsPointCloudBlockRequest *request = mIndex.asyncNodeData( nodeId, mRequest );
         if ( request == nullptr )
         {
-          QgsDebugError( QStringLiteral( "Unable to calculate statistics for node %1: Got nullptr async request" ).arg( nodeId.toString() ) );
+          QgsDebugError( u"Unable to calculate statistics for node %1: Got nullptr async request"_s.arg( nodeId.toString() ) );
           return QgsPointCloudStatistics();
         }
         QEventLoop loop;
@@ -120,17 +120,17 @@ struct StatsProcessor
         int attributeOffset = 0;
         attributesCollection.find( attribute.name(), attributeOffset );
         attributeOffsetVector.push_back( attributeOffset );
-        if ( attribute.name() == QLatin1String( "ScannerChannel" ) ||
-             attribute.name() == QLatin1String( "ReturnNumber" ) ||
-             attribute.name() == QLatin1String( "NumberOfReturns" ) ||
-             attribute.name() == QLatin1String( "ScanDirectionFlag" ) ||
-             attribute.name() == QLatin1String( "Classification" ) ||
-             attribute.name() == QLatin1String( "EdgeOfFlightLine" ) ||
-             attribute.name() == QLatin1String( "PointSourceId" ) ||
-             attribute.name() == QLatin1String( "Synthetic" ) ||
-             attribute.name() == QLatin1String( "KeyPoint" ) ||
-             attribute.name() == QLatin1String( "Withheld" ) ||
-             attribute.name() == QLatin1String( "Overlap" ) )
+        if ( attribute.name() == "ScannerChannel"_L1 ||
+             attribute.name() == "ReturnNumber"_L1 ||
+             attribute.name() == "NumberOfReturns"_L1 ||
+             attribute.name() == "ScanDirectionFlag"_L1 ||
+             attribute.name() == "Classification"_L1 ||
+             attribute.name() == "EdgeOfFlightLine"_L1 ||
+             attribute.name() == "PointSourceId"_L1 ||
+             attribute.name() == "Synthetic"_L1 ||
+             attribute.name() == "KeyPoint"_L1 ||
+             attribute.name() == "Withheld"_L1 ||
+             attribute.name() == "Overlap"_L1 )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }

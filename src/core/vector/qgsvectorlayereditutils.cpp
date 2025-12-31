@@ -253,7 +253,7 @@ void QgsVectorLayerEditUtils::addTopologicalPointsToLayers( const QgsGeometry &g
         }
         catch ( QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "Bounding box transformation failed, skipping topological points for layer %1" ).arg( vlayer->id() ) );
+          QgsDebugError( u"Bounding box transformation failed, skipping topological points for layer %1"_s.arg( vlayer->id() ) );
           continue;
         }
       }
@@ -278,7 +278,7 @@ void QgsVectorLayerEditUtils::addTopologicalPointsToLayers( const QgsGeometry &g
         }
         catch ( QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "transformation to vectorLayer coordinate failed" ) );
+          QgsDebugError( u"transformation to vectorLayer coordinate failed"_s );
         }
       }
       else
@@ -404,7 +404,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   else
   {
     geometry = f.geometry();
-    if ( ring->orientation() != geometry.polygonOrientation() )
+    if ( mLayer->geometryType() == Qgis::GeometryType::Polygon && ring->orientation() != geometry.polygonOrientation() )
     {
       ring = ring->reversed();
     }
@@ -424,7 +424,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   return errorCode;
 }
 
-// TODO QGIS 4.0 -- this should return Qgis::GeometryOperationResult
+// TODO QGIS 5.0 -- this should return Qgis::GeometryOperationResult
 int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
   if ( !mLayer->isSpatial() )

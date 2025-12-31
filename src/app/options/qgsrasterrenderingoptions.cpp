@@ -34,78 +34,78 @@ QgsRasterRenderingOptionsWidget::QgsRasterRenderingOptionsWidget( QWidget *paren
   setupUi( this );
 
   QgsSettings settings;
-  spnRed->setValue( settings.value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt() );
+  spnRed->setValue( settings.value( u"/Raster/defaultRedBand"_s, 1 ).toInt() );
   spnRed->setClearValue( 1 );
-  spnGreen->setValue( settings.value( QStringLiteral( "/Raster/defaultGreenBand" ), 2 ).toInt() );
+  spnGreen->setValue( settings.value( u"/Raster/defaultGreenBand"_s, 2 ).toInt() );
   spnGreen->setClearValue( 2 );
-  spnBlue->setValue( settings.value( QStringLiteral( "/Raster/defaultBlueBand" ), 3 ).toInt() );
+  spnBlue->setValue( settings.value( u"/Raster/defaultBlueBand"_s, 3 ).toInt() );
   spnBlue->setClearValue( 3 );
 
-  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest Neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), QStringLiteral( "bilinear" ) );
-  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), QStringLiteral( "cubic" ) );
+  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest Neighbour" ), u"nearest neighbour"_s );
+  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), u"bilinear"_s );
+  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), u"cubic"_s );
 
-  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest Neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), QStringLiteral( "bilinear" ) );
-  mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), QStringLiteral( "cubic" ) );
+  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest Neighbour" ), u"nearest neighbour"_s );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear (2x2 Kernel)" ), u"bilinear"_s );
+  mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic (4x4 Kernel)" ), u"cubic"_s );
 
-  QString zoomedInResampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+  QString zoomedInResampling = settings.value( u"/Raster/defaultZoomedInResampling"_s, u"nearest neighbour"_s ).toString();
   mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
-  QString zoomedOutResampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
+  QString zoomedOutResampling = settings.value( u"/Raster/defaultZoomedOutResampling"_s, u"nearest neighbour"_s ).toString();
   mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
 
   spnOversampling->setValue( QgsRasterLayer::settingsRasterDefaultOversampling->value() );
   spnOversampling->setClearValue( 2.0 );
   mCbEarlyResampling->setChecked( QgsRasterLayer::settingsRasterDefaultEarlyResampling->value() );
 
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM ) );
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ), QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, u"singleBand"_s, QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, u"multiBandSingleByte"_s, QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, u"multiBandMultiByte"_s, QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM ) );
 
-  initMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, QStringLiteral( "singleBand" ), QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS ) );
-  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ), QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS ) );
-  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ), QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
+  initMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, u"singleBand"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS ) );
+  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, u"multiBandSingleByte"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS ) );
+  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, u"multiBandMultiByte"_s, QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
 
-  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
+  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( u"/Raster/cumulativeCutLower"_s, QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
   mRasterCumulativeCutLowerDoubleSpinBox->setClearValue( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER * 100 );
-  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
+  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( u"/Raster/cumulativeCutUpper"_s, QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
   mRasterCumulativeCutUpperDoubleSpinBox->setClearValue( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER * 100 );
 
-  spnThreeBandStdDev->setValue( settings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
+  spnThreeBandStdDev->setValue( settings.value( u"/Raster/defaultStandardDeviation"_s, QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
   spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
 }
 
 QString QgsRasterRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#raster-rendering-options" );
+  return u"introduction/qgis_configuration.html#raster-rendering-options"_s;
 }
 
 void QgsRasterRenderingOptionsWidget::apply()
 {
   QgsSettings settings;
 
-  settings.setValue( QStringLiteral( "/Raster/defaultRedBand" ), spnRed->value() );
-  settings.setValue( QStringLiteral( "/Raster/defaultGreenBand" ), spnGreen->value() );
-  settings.setValue( QStringLiteral( "/Raster/defaultBlueBand" ), spnBlue->value() );
+  settings.setValue( u"/Raster/defaultRedBand"_s, spnRed->value() );
+  settings.setValue( u"/Raster/defaultGreenBand"_s, spnGreen->value() );
+  settings.setValue( u"/Raster/defaultBlueBand"_s, spnBlue->value() );
 
-  settings.setValue( QStringLiteral( "/Raster/defaultZoomedInResampling" ), mZoomedInResamplingComboBox->currentData().toString() );
-  settings.setValue( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), mZoomedOutResamplingComboBox->currentData().toString() );
+  settings.setValue( u"/Raster/defaultZoomedInResampling"_s, mZoomedInResamplingComboBox->currentData().toString() );
+  settings.setValue( u"/Raster/defaultZoomedOutResampling"_s, mZoomedOutResamplingComboBox->currentData().toString() );
 
   QgsRasterLayer::settingsRasterDefaultOversampling->setValue( spnOversampling->value() );
   QgsRasterLayer::settingsRasterDefaultEarlyResampling->setValue( mCbEarlyResampling->isChecked() );
 
-  saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ) );
-  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
-  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ) );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, u"singleBand"_s );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, u"multiBandSingleByte"_s );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, u"multiBandMultiByte"_s );
 
-  saveMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, QStringLiteral( "singleBand" ) );
-  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
-  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ) );
+  saveMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, u"singleBand"_s );
+  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, u"multiBandSingleByte"_s );
+  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, u"multiBandMultiByte"_s );
 
-  settings.setValue( QStringLiteral( "/Raster/cumulativeCutLower" ), mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
-  settings.setValue( QStringLiteral( "/Raster/cumulativeCutUpper" ), mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
+  settings.setValue( u"/Raster/cumulativeCutLower"_s, mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  settings.setValue( u"/Raster/cumulativeCutUpper"_s, mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
-  settings.setValue( QStringLiteral( "/Raster/defaultStandardDeviation" ), spnThreeBandStdDev->value() );
+  settings.setValue( u"/Raster/defaultStandardDeviation"_s, spnThreeBandStdDev->value() );
 }
 
 void QgsRasterRenderingOptionsWidget::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
@@ -154,13 +154,13 @@ void QgsRasterRenderingOptionsWidget::saveMinMaxLimits( QComboBox *cbox, const Q
 // QgsRasterRenderingOptionsFactory
 //
 QgsRasterRenderingOptionsFactory::QgsRasterRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Raster" ), QIcon(), QStringLiteral( "raster" ) )
+  : QgsOptionsWidgetFactory( tr( "Raster" ), QIcon(), u"raster"_s )
 {
 }
 
 QIcon QgsRasterRenderingOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconRaster.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsRasterRenderingOptionsFactory::createWidget( QWidget *parent ) const
@@ -170,5 +170,5 @@ QgsOptionsPageWidget *QgsRasterRenderingOptionsFactory::createWidget( QWidget *p
 
 QStringList QgsRasterRenderingOptionsFactory::path() const
 {
-  return { QStringLiteral( "rendering" ) };
+  return { u"rendering"_s };
 }

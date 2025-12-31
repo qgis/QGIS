@@ -36,7 +36,7 @@ class TestQgs3DExporter : public QgsTest
 
   public:
     TestQgs3DExporter()
-      : QgsTest( QStringLiteral( "3D Exporter Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Exporter Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -128,12 +128,12 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedOb
   QTextStream fileStream( &file );
 
   // check the generated obj file
-  QGSCOMPARELONGSTR( testName.toStdString().c_str(), QStringLiteral( "%1.obj" ).arg( testName ), fileStream.readAll().toUtf8() );
+  QGSCOMPARELONGSTR( testName.toStdString().c_str(), u"%1.obj"_s.arg( testName ), fileStream.readAll().toUtf8() );
 }
 
 void TestQgs3DExporter::test3DSceneExporter()
 {
-  QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( QStringLiteral( "/3d/polygons.gpkg.gz" ) ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( u"/3d/polygons.gpkg.gz"_s ), u"polygons"_s, u"ogr"_s );
   QVERIFY( layerPoly->isValid() );
 
   const QgsRectangle fullExtent = layerPoly->extent();
@@ -173,7 +173,7 @@ void TestQgs3DExporter::test3DSceneExporter()
   const int nbFaces = 165;
   const int nbFeat = 3;
 
-  do3DSceneExport( QStringLiteral( "scene_export" ), 1, nbFeat, nbFaces, scene, layerPoly, &engine );
+  do3DSceneExport( u"scene_export"_s, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -181,7 +181,7 @@ void TestQgs3DExporter::test3DSceneExporter()
 
 void TestQgs3DExporter::test3DSceneExporterBig()
 {
-  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( QStringLiteral( "/3d/dtm.tif" ) ), QStringLiteral( "dtm" ), QStringLiteral( "gdal" ) );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( u"/3d/dtm.tif"_s ), u"dtm"_s, u"gdal"_s );
   QVERIFY( layerDtm->isValid() );
 
   const QgsRectangle fullExtent = layerDtm->extent();
@@ -222,7 +222,7 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   const int nbFaces = 19869;
   const int nbFeat = 401;
 
-  do3DSceneExport( QStringLiteral( "big_scene_export" ), 1, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
+  do3DSceneExport( u"big_scene_export"_s, 1, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -230,7 +230,7 @@ void TestQgs3DExporter::test3DSceneExporterBig()
 
 void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
 {
-  QgsRasterLayer *layerRgb = new QgsRasterLayer( testDataPath( QStringLiteral( "/3d/rgb.tif" ) ), QStringLiteral( "rgb" ), QStringLiteral( "gdal" ) );
+  QgsRasterLayer *layerRgb = new QgsRasterLayer( testDataPath( u"/3d/rgb.tif"_s ), u"rgb"_s, u"gdal"_s );
   QVERIFY( layerRgb->isValid() );
 
   const QgsRectangle fullExtent = layerRgb->extent();
@@ -270,7 +270,7 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
 
-  do3DSceneExport( QStringLiteral( "flat_terrain_scene_export" ), 2, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
+  do3DSceneExport( u"flat_terrain_scene_export"_s, 2, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
 
   delete scene;
   mapSettings.setLayers( {} );

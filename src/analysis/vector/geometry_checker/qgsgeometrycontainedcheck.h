@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Within" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    static QString factoryId() { return u"QgsGeometryContainedCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 };
 

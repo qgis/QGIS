@@ -62,7 +62,7 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
-  QUrl url( sharedData->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
+  QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
   return sendPUT( url, "application/geo+json", jsonFeature.toUtf8(), extraHeaders );
 }
 

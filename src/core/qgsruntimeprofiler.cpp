@@ -343,11 +343,11 @@ bool QgsRuntimeProfiler::groupIsActive( const QString &group ) const
 
 QString QgsRuntimeProfiler::translateGroupName( const QString &group )
 {
-  if ( group == QLatin1String( "startup" ) )
+  if ( group == "startup"_L1 )
     return tr( "Startup" );
-  else if ( group == QLatin1String( "projectload" ) )
+  else if ( group == "projectload"_L1 )
     return tr( "Project Load" );
-  else if ( group == QLatin1String( "rendering" ) )
+  else if ( group == "rendering"_L1 )
     return tr( "Map Render" );
   return QString();
 }
@@ -654,7 +654,7 @@ void QgsRuntimeProfiler::extractModelAsText( QStringList &lines, const QString &
       QModelIndex cellIndex = index( r, c, parent );
       cells << data( cellIndex ).toString();
     }
-    lines << QStringLiteral( "%1 %2" ).arg( QStringLiteral( "-" ).repeated( level + 1 ), cells.join( QLatin1String( ": " ) ) );
+    lines << u"%1 %2"_s.arg( u"-"_s.repeated( level + 1 ), cells.join( ": "_L1 ) );
     extractModelAsText( lines, group, rowIndex, level + 1 );
   }
 }
@@ -671,7 +671,7 @@ QString QgsRuntimeProfiler::asText( const QString &group )
     lines << ( !groupName.isEmpty() ? groupName : g );
     extractModelAsText( lines, g );
   }
-  return lines.join( QLatin1String( "\r\n" ) );
+  return lines.join( "\r\n"_L1 );
 }
 
 

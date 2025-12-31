@@ -220,12 +220,12 @@ QSet<QString> QgsTextMaskSettings::referencedFields( const QgsRenderContext & ) 
 
 void QgsTextMaskSettings::readXml( const QDomElement &elem )
 {
-  const QDomElement textMaskElem = elem.firstChildElement( QStringLiteral( "text-mask" ) );
-  d->enabled = textMaskElem.attribute( QStringLiteral( "maskEnabled" ), QStringLiteral( "0" ) ).toInt();
-  d->type = static_cast<QgsTextMaskSettings::MaskType>( textMaskElem.attribute( QStringLiteral( "maskType" ), QStringLiteral( "0" ) ).toInt() );
-  if ( textMaskElem.hasAttribute( QStringLiteral( "maskSize2" ) ) )
+  const QDomElement textMaskElem = elem.firstChildElement( u"text-mask"_s );
+  d->enabled = textMaskElem.attribute( u"maskEnabled"_s, u"0"_s ).toInt();
+  d->type = static_cast<QgsTextMaskSettings::MaskType>( textMaskElem.attribute( u"maskType"_s, u"0"_s ).toInt() );
+  if ( textMaskElem.hasAttribute( u"maskSize2"_s ) )
   {
-    d->size = textMaskElem.attribute( QStringLiteral( "maskSize2" ), QStringLiteral( "1.5" ) ).toDouble();
+    d->size = textMaskElem.attribute( u"maskSize2"_s, u"1.5"_s ).toDouble();
   }
   else
   {
@@ -235,37 +235,37 @@ void QgsTextMaskSettings::readXml( const QDomElement &elem )
     // 0 value in older projects, we instead assume "0" as a mistake and reset it to 1.5.
     // when the project is saved the newer maskSize2 attribute will be used and we know that a "0" value
     // WAS an explicit user choice.
-    d->size = textMaskElem.attribute( QStringLiteral( "maskSize" ) ).toDouble();
+    d->size = textMaskElem.attribute( u"maskSize"_s ).toDouble();
     if ( d->size == 0 )
       d->size = 1.5;
   }
-  d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textMaskElem.attribute( QStringLiteral( "maskSizeUnits" ) ) );
-  d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textMaskElem.attribute( QStringLiteral( "maskSizeMapUnitScale" ) ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( textMaskElem.attribute( QStringLiteral( "maskJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
-  d->opacity = textMaskElem.attribute( QStringLiteral( "maskOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
-  const QDomElement effectElem = textMaskElem.firstChildElement( QStringLiteral( "effect" ) );
+  d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textMaskElem.attribute( u"maskSizeUnits"_s ) );
+  d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textMaskElem.attribute( u"maskSizeMapUnitScale"_s ) );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( textMaskElem.attribute( u"maskJoinStyle"_s, QString::number( Qt::RoundJoin ) ).toUInt() );
+  d->opacity = textMaskElem.attribute( u"maskOpacity"_s, u"1.0"_s ).toDouble();
+  const QDomElement effectElem = textMaskElem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
     setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
   else
     setPaintEffect( nullptr );
-  d->maskedSymbolLayers = stringToSymbolLayerReferenceList( textMaskElem.attribute( QStringLiteral( "maskedSymbolLayers" ) ) );
+  d->maskedSymbolLayers = stringToSymbolLayerReferenceList( textMaskElem.attribute( u"maskedSymbolLayers"_s ) );
 }
 
 QDomElement QgsTextMaskSettings::writeXml( QDomDocument &doc ) const
 {
-  QDomElement textMaskElem = doc.createElement( QStringLiteral( "text-mask" ) );
-  textMaskElem.setAttribute( QStringLiteral( "maskEnabled" ), d->enabled );
-  textMaskElem.setAttribute( QStringLiteral( "maskType" ), d->type );
-  textMaskElem.setAttribute( QStringLiteral( "maskSize" ), d->size );
+  QDomElement textMaskElem = doc.createElement( u"text-mask"_s );
+  textMaskElem.setAttribute( u"maskEnabled"_s, d->enabled );
+  textMaskElem.setAttribute( u"maskType"_s, d->type );
+  textMaskElem.setAttribute( u"maskSize"_s, d->size );
   // deliberate -- see comment in readXml
-  textMaskElem.setAttribute( QStringLiteral( "maskSize2" ), d->size );
-  textMaskElem.setAttribute( QStringLiteral( "maskSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
-  textMaskElem.setAttribute( QStringLiteral( "maskSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  textMaskElem.setAttribute( QStringLiteral( "maskJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
-  textMaskElem.setAttribute( QStringLiteral( "maskOpacity" ), d->opacity );
+  textMaskElem.setAttribute( u"maskSize2"_s, d->size );
+  textMaskElem.setAttribute( u"maskSizeUnits"_s, QgsUnitTypes::encodeUnit( d->sizeUnit ) );
+  textMaskElem.setAttribute( u"maskSizeMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
+  textMaskElem.setAttribute( u"maskJoinStyle"_s, static_cast< unsigned int >( d->joinStyle ) );
+  textMaskElem.setAttribute( u"maskOpacity"_s, d->opacity );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, textMaskElem );
-  textMaskElem.setAttribute( QStringLiteral( "maskedSymbolLayers" ), symbolLayerReferenceListToString( d->maskedSymbolLayers ) );
+  textMaskElem.setAttribute( u"maskedSymbolLayers"_s, symbolLayerReferenceListToString( d->maskedSymbolLayers ) );
   return textMaskElem;
 }
 

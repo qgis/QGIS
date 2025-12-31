@@ -28,7 +28,7 @@
 
 QString QgsPackageAlgorithm::name() const
 {
-  return QStringLiteral( "package" );
+  return u"package"_s;
 }
 
 QString QgsPackageAlgorithm::displayName() const
@@ -48,30 +48,30 @@ QString QgsPackageAlgorithm::group() const
 
 QString QgsPackageAlgorithm::groupId() const
 {
-  return QStringLiteral( "database" );
+  return u"database"_s;
 }
 
 void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
-  QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) );
-  outputParameter->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "dontconfirmoverwrite" ), true } } ) } } ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
+  QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) );
+  outputParameter->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"dontconfirmoverwrite"_s, true } } ) } } ) );
   addParameter( outputParameter );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing GeoPackage" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_STYLES" ), QObject::tr( "Save layer styles into GeoPackage" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_METADATA" ), QObject::tr( "Save layer metadata into GeoPackage" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Save only selected features" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "EXPORT_RELATED_LAYERS" ), QObject::tr( "Export related layers following relations defined in the project" ), false ) );
-  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true );
+  addParameter( new QgsProcessingParameterBoolean( u"OVERWRITE"_s, QObject::tr( "Overwrite existing GeoPackage" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"SAVE_STYLES"_s, QObject::tr( "Save layer styles into GeoPackage" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"SAVE_METADATA"_s, QObject::tr( "Save layer metadata into GeoPackage" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"SELECTED_FEATURES_ONLY"_s, QObject::tr( "Save only selected features" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"EXPORT_RELATED_LAYERS"_s, QObject::tr( "Export related layers following relations defined in the project" ), false ) );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
   addParameter( extentParam.release() );
 
-  auto crsParam = std::make_unique< QgsProcessingParameterCrs >( QStringLiteral( "CRS" ), QObject::tr( "Destination CRS" ), QVariant(), true );
+  auto crsParam = std::make_unique< QgsProcessingParameterCrs >( u"CRS"_s, QObject::tr( "Destination CRS" ), QVariant(), true );
   crsParam->setFlags( crsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   crsParam->setHelp( QObject::tr( "If set, all layers will be transformed to the destination CRS during packaging." ) );
   addParameter( std::move( crsParam ) );
 
-  addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within new package" ) ) );
+  addOutput( new QgsProcessingOutputMultipleLayers( u"OUTPUT_LAYERS"_s, QObject::tr( "Layers within new package" ) ) );
 }
 
 QString QgsPackageAlgorithm::shortHelpString() const
@@ -91,7 +91,7 @@ QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
 
 bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
@@ -105,20 +105,20 @@ bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
     feedback->reportError( QObject::tr( "No layers selected, geopackage will be empty" ), false );
   }
 
-  mDestinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  mDestinationCrs = parameterAsCrs( parameters, u"CRS"_s, context );
 
   return true;
 }
 
 QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
-  const bool saveStyles = parameterAsBoolean( parameters, QStringLiteral( "SAVE_STYLES" ), context );
-  const bool saveMetadata = parameterAsBoolean( parameters, QStringLiteral( "SAVE_METADATA" ), context );
-  const bool selectedFeaturesOnly = parameterAsBoolean( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
-  const bool exportRelatedLayers = parameterAsBoolean( parameters, QStringLiteral( "EXPORT_RELATED_LAYERS" ), context );
-  const QString packagePath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const bool overwrite = parameterAsBoolean( parameters, u"OVERWRITE"_s, context );
+  const bool saveStyles = parameterAsBoolean( parameters, u"SAVE_STYLES"_s, context );
+  const bool saveMetadata = parameterAsBoolean( parameters, u"SAVE_METADATA"_s, context );
+  const bool selectedFeaturesOnly = parameterAsBoolean( parameters, u"SELECTED_FEATURES_ONLY"_s, context );
+  const bool exportRelatedLayers = parameterAsBoolean( parameters, u"EXPORT_RELATED_LAYERS"_s, context );
+  const QString packagePath = parameterAsString( parameters, u"OUTPUT"_s, context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
 
   if ( packagePath.isEmpty() )
     throw QgsProcessingException( QObject::tr( "No output file specified." ) );
@@ -321,7 +321,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       throw QgsProcessingException( QObject::tr( "Opening database %1 failed (OGR error: %2)" ).arg( packagePath, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
 
-  const bool validExtent = parameters.value( QStringLiteral( "EXTENT" ) ).isValid();
+  const bool validExtent = parameters.value( u"EXTENT"_s ).isValid();
 
   bool errored = false;
 
@@ -363,13 +363,13 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
             feedback->pushWarning( QObject::tr( "No spatial index exists for layer %1, performance will be severely degraded" ).arg( vectorLayer->name() ) );
           }
 
-          extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mDestinationCrs.isValid() ? mDestinationCrs : layer->crs() );
+          extent = parameterAsExtent( parameters, u"EXTENT"_s, context, mDestinationCrs.isValid() ? mDestinationCrs : layer->crs() );
         }
 
         if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, saveMetadata, selectedFeaturesOnly, extent ) )
           errored = true;
         else
-          outputLayers.append( QStringLiteral( "%1|layername=%2" ).arg( packagePath, layer->name() ) );
+          outputLayers.append( u"%1|layername=%2"_s.arg( packagePath, layer->name() ) );
         break;
       }
 
@@ -429,15 +429,15 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     throw QgsProcessingException( QObject::tr( "Error obtained while packaging one or more layers." ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), packagePath );
-  outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
+  outputs.insert( u"OUTPUT"_s, packagePath );
+  outputs.insert( u"OUTPUT_LAYERS"_s, outputLayers );
   return outputs;
 }
 
 bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent )
 {
   QgsVectorFileWriter::SaveVectorOptions options;
-  options.driverName = QStringLiteral( "GPKG" );
+  options.driverName = u"GPKG"_s;
   options.layerName = layer->name();
   options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
   options.fileEncoding = context.defaultEncoding();
@@ -458,7 +458,7 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   // let this be completely recreated since many layer sources have fid fields which are
   // not compatible with gpkg requirements
   const QgsFields fields = layer->fields();
-  const int fidIndex = fields.lookupField( QStringLiteral( "fid" ) );
+  const int fidIndex = fields.lookupField( u"fid"_s );
 
   options.attributes = fields.allAttributesList();
   if ( fidIndex >= 0 )
@@ -498,11 +498,11 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   {
     if ( saveStyles )
     {
-      auto res = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( newFilename, newLayer ) );
+      auto res = std::make_unique<QgsVectorLayer>( u"%1|layername=%2"_s.arg( newFilename, newLayer ) );
       if ( res->isValid() )
       {
         QString errorMsg;
-        QDomDocument doc( QStringLiteral( "qgis" ) );
+        QDomDocument doc( u"qgis"_s );
         const QgsReadWriteContext context;
         layer->exportNamedStyle( doc, errorMsg, context );
         if ( !errorMsg.isEmpty() )
@@ -519,10 +519,10 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
           {
             QgsSettings settings;
             // this is not nice -- but needed to avoid an "overwrite" prompt messagebox from the provider! This api needs a rework to avoid this.
-            const QVariant prevOverwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
-            settings.setValue( QStringLiteral( "qgis/overwriteStyle" ), true );
+            const QVariant prevOverwriteStyle = settings.value( u"qgis/overwriteStyle"_s );
+            settings.setValue( u"qgis/overwriteStyle"_s, true );
             QgsMapLayer::SaveStyleResults saveStyleResults = res->saveStyleToDatabaseV2( newLayer, QString(), true, QString(), errorMsg );
-            settings.setValue( QStringLiteral( "qgis/overwriteStyle" ), prevOverwriteStyle );
+            settings.setValue( u"qgis/overwriteStyle"_s, prevOverwriteStyle );
             if ( saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed )
                  || saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed ) )
             {
