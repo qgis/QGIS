@@ -48,23 +48,23 @@ void QgsHighlightMaterial::init()
   technique->graphicsApiFilter()->setMinorVersion( 3 );
 
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
-  filterKey->setValue( QStringLiteral( "forward" ) );
+  filterKey->setName( u"renderingStyle"_s );
+  filterKey->setValue( u"forward"_s );
   technique->addFilterKey( filterKey );
 
   Qt3DRender::QRenderPass *pass = new Qt3DRender::QRenderPass;
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/singlecolor.frag" ) ) ) );
+  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
   pass->setShaderProgram( shaderProgram );
 
   const QgsSettings settings;
-  const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  Qt3DRender::QParameter *colorParam = new Qt3DRender::QParameter( QStringLiteral( "color" ), color );
+  const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  Qt3DRender::QParameter *colorParam = new Qt3DRender::QParameter( u"color"_s, color );
   pass->addParameter( colorParam );
-  const float alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
-  Qt3DRender::QParameter *opacityParam = new Qt3DRender::QParameter( QStringLiteral( "opacity" ), alpha );
+  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
+  Qt3DRender::QParameter *opacityParam = new Qt3DRender::QParameter( u"opacity"_s, alpha );
   pass->addParameter( opacityParam );
 
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;

@@ -86,21 +86,21 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
         }
         catch ( QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "Could not reproject identified feature to 3d view crs" ) );
+          QgsDebugError( u"Could not reproject identified feature to 3d view crs"_s );
           return;
         }
         feature.setGeometry( geom );
         exprContext.setFeature( feature );
       }
 
-      if ( renderer->type() == QLatin1String( "vector" ) )
+      if ( renderer->type() == "vector"_L1 )
       {
         if ( !mHighlightHandlers.contains( layer ) )
         {
           QgsVectorLayer3DRenderer *renderer3d = static_cast<QgsVectorLayer3DRenderer *>( renderer );
 
           // We only support polygon 3d symbol for now
-          if ( !renderer3d || !renderer3d->symbol() || renderer3d->symbol()->type() != QLatin1String( "polygon" ) )
+          if ( !renderer3d || !renderer3d->symbol() || renderer3d->symbol()->type() != "polygon"_L1 )
           {
             return;
           }
@@ -108,7 +108,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
           std::unique_ptr<QgsFeature3DHandler> handler( QgsApplication::symbol3DRegistry()->createHandlerForSymbol( vLayer, renderer3d->symbol() ) );
           if ( !handler )
           {
-            QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + renderer3d->symbol()->type() );
+            QgsDebugError( u"Unknown 3D symbol type for vector layer: "_s + renderer3d->symbol()->type() );
             return;
           }
 
@@ -117,7 +117,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
           const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
           if ( !handler->prepare( renderContext, attributeNames, renderContext.origin() ) )
           {
-            QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+            QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
             return;
           }
 
@@ -126,7 +126,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
 
         mHighlightHandlers[layer]->processFeature( feature, renderContext );
       }
-      else if ( renderer->type() == QLatin1String( "rulebased" ) )
+      else if ( renderer->type() == "rulebased"_L1 )
       {
         QgsRuleBased3DRenderer *ruleBasedRenderer = static_cast<QgsRuleBased3DRenderer *>( renderer );
         QgsRuleBased3DRenderer::Rule *rootRule = ruleBasedRenderer->rootRule();
@@ -154,7 +154,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
           for ( auto it = mHighlightHandlers.constBegin(); it != mHighlightHandlers.constEnd(); ++it )
           {
             Qgs3DMapSceneEntity *entity = new Qgs3DMapSceneEntity( mScene->mapSettings(), nullptr );
-            entity->setObjectName( QStringLiteral( "%1_highlight" ).arg( it.key()->name() ) );
+            entity->setObjectName( u"%1_highlight"_s.arg( it.key()->name() ) );
             QgsFeature3DHandler *handler = it.value();
             handler->finalize( entity, renderContext );
 
@@ -164,7 +164,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
           for ( auto rulesIt = mHighlightRuleBasedHandlers.constBegin(); rulesIt != mHighlightRuleBasedHandlers.constEnd(); ++rulesIt )
           {
             Qgs3DMapSceneEntity *entity = new Qgs3DMapSceneEntity( mScene->mapSettings(), nullptr );
-            entity->setObjectName( QStringLiteral( "%1_highlight" ).arg( rulesIt.key()->name() ) );
+            entity->setObjectName( u"%1_highlight"_s.arg( rulesIt.key()->name() ) );
 
             for ( auto handlersIt = rulesIt.value().constBegin(); handlersIt != rulesIt.value().constEnd(); ++handlersIt )
             {
@@ -191,7 +191,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
         QgsRubberBand3D *band = new QgsRubberBand3D( *mScene->mapSettings(), mScene->engine(), mScene->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
 
         const QgsSettings settings;
-        const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+        const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
         band->setColor( color );
         band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
         if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
