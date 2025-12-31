@@ -92,19 +92,19 @@ void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
 
 QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextScope() const
 {
-  auto scope = std::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
-  scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
-  scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
-  scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
-  scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameDuration.originalDuration(), true );
-  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), static_cast< int >( mFrameDuration.originalUnit() ), true );
-  scope->setVariable( QStringLiteral( "frame_timestep_units" ), QgsUnitTypes::toString( mFrameDuration.originalUnit() ), true );
-  scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
-  scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
-  scope->setVariable( QStringLiteral( "animation_interval" ), QgsInterval( mTemporalExtents.end() - mTemporalExtents.begin() ), true );
-  scope->setVariable( QStringLiteral( "total_frame_count" ), totalFrameCount() );
+  auto scope = std::make_unique< QgsExpressionContextScope >( u"temporal"_s );
+  scope->setVariable( u"frame_rate"_s, mFramesPerSecond, true );
+  scope->setVariable( u"frame_number"_s, mCurrentFrameNumber, true );
+  scope->setVariable( u"frame_duration"_s, mFrameDuration, true );
+  scope->setVariable( u"frame_timestep"_s, mFrameDuration.originalDuration(), true );
+  scope->setVariable( u"frame_timestep_unit"_s, static_cast< int >( mFrameDuration.originalUnit() ), true );
+  scope->setVariable( u"frame_timestep_units"_s, QgsUnitTypes::toString( mFrameDuration.originalUnit() ), true );
+  scope->setVariable( u"animation_start_time"_s, mTemporalExtents.begin(), true );
+  scope->setVariable( u"animation_end_time"_s, mTemporalExtents.end(), true );
+  scope->setVariable( u"animation_interval"_s, QgsInterval( mTemporalExtents.end() - mTemporalExtents.begin() ), true );
+  scope->setVariable( u"total_frame_count"_s, totalFrameCount() );
 
-  scope->addHiddenVariable( QStringLiteral( "frame_timestep_unit" ) );
+  scope->addHiddenVariable( u"frame_timestep_unit"_s );
 
   return scope.release();
 }

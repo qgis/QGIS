@@ -384,7 +384,7 @@ struct QgsWmsLayerProperty
    */
     QString preferredAvailableCrs() const
     {
-      static QSet<QString> sSkipList { QStringLiteral( "EPSG:900913" ) };
+      static QSet<QString> sSkipList { u"EPSG:900913"_s };
       for ( const QString &candidate : crs )
       {
         if ( sSkipList.contains( candidate ) )

@@ -12,6 +12,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -1664,7 +1665,7 @@ The development version
     {
       UseAllLabels,
       UsePartialCandidates,
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels,
       DrawLabelRectOnly,
       DrawCandidates,
@@ -3742,7 +3743,7 @@ WKT string that represents a geographic coord system
 
 .. deprecated:: 3.44
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
  static QString geoProj4();
@@ -3751,7 +3752,7 @@ PROJ4 string that represents a geographic coord system.
 
 .. deprecated:: 3.44
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
 };

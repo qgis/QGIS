@@ -49,10 +49,6 @@
 
 #include "moc_qgsframegraph.cpp"
 
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-
 const QString QgsFrameGraph::FORWARD_RENDERVIEW = "forward";
 const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";
 const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";

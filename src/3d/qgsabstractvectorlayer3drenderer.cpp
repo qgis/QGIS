@@ -21,19 +21,19 @@ void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
 {
   QDomDocument doc = elem.ownerDocument();
 
-  QDomElement elemTiling = doc.createElement( QStringLiteral( "vector-layer-3d-tiling" ) );
-  elemTiling.setAttribute( QStringLiteral( "zoom-levels-count" ), mZoomLevelsCount );
-  elemTiling.setAttribute( QStringLiteral( "show-bounding-boxes" ), mShowBoundingBoxes ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  QDomElement elemTiling = doc.createElement( u"vector-layer-3d-tiling"_s );
+  elemTiling.setAttribute( u"zoom-levels-count"_s, mZoomLevelsCount );
+  elemTiling.setAttribute( u"show-bounding-boxes"_s, mShowBoundingBoxes ? u"1"_s : u"0"_s );
   elem.appendChild( elemTiling );
 }
 
 void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
 {
-  const QDomElement elemTiling = elem.firstChildElement( QStringLiteral( "vector-layer-3d-tiling" ) );
+  const QDomElement elemTiling = elem.firstChildElement( u"vector-layer-3d-tiling"_s );
   if ( !elemTiling.isNull() )
   {
-    mZoomLevelsCount = elemTiling.attribute( QStringLiteral( "zoom-levels-count" ) ).toInt();
-    mShowBoundingBoxes = elemTiling.attribute( QStringLiteral( "show-bounding-boxes" ) ).toInt();
+    mZoomLevelsCount = elemTiling.attribute( u"zoom-levels-count"_s ).toInt();
+    mShowBoundingBoxes = elemTiling.attribute( u"show-bounding-boxes"_s ).toInt();
   }
 }
 
@@ -62,14 +62,14 @@ void QgsAbstractVectorLayer3DRenderer::copyBaseProperties( QgsAbstractVectorLaye
 void QgsAbstractVectorLayer3DRenderer::writeXmlBaseProperties( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  elem.setAttribute( u"layer"_s, mLayerRef.layerId );
   mTilingSettings.writeXml( elem );
 }
 
 void QgsAbstractVectorLayer3DRenderer::readXmlBaseProperties( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mLayerRef = QgsMapLayerRef( elem.attribute( u"layer"_s ) );
   mTilingSettings.readXml( elem );
 }
 

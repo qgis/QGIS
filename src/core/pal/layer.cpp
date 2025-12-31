@@ -200,7 +200,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
       if ( !geom )
       {
-        QgsDebugError( QStringLiteral( "Obstacle geometry passed to PAL labeling engine could not be converted to GEOS! %1" ).arg( ( *it )->asWkt() ) );
+        QgsDebugError( u"Obstacle geometry passed to PAL labeling engine could not be converted to GEOS! %1"_s.arg( ( *it )->asWkt() ) );
         continue;
       }
 
@@ -208,7 +208,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       if ( GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         // this shouldn't happen -- we have already checked this while registering the feature
-        QgsDebugError( QStringLiteral( "Obstacle geometry passed to PAL labeling engine is not valid! %1" ).arg( ( *it )->asWkt() ) );
+        QgsDebugError( u"Obstacle geometry passed to PAL labeling engine is not valid! %1"_s.arg( ( *it )->asWkt() ) );
         continue;
       }
 

@@ -23,7 +23,7 @@
 
 QString QgsPromoteToMultipartAlgorithm::name() const
 {
-  return QStringLiteral( "promotetomulti" );
+  return u"promotetomulti"_s;
 }
 
 QString QgsPromoteToMultipartAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsPromoteToMultipartAlgorithm::group() const
 
 QString QgsPromoteToMultipartAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsPromoteToMultipartAlgorithm::outputName() const
@@ -55,9 +55,9 @@ QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
                       "multipart. Input features which are already multipart features will remain unchanged." )
-         + QStringLiteral( "\n\n" ) + QObject::tr( "This algorithm can be used to force geometries to multipart types in order to be compatible with data providers "
-                                                   "with strict singlepart/multipart compatibility checks." )
-         + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
+         + u"\n\n"_s + QObject::tr( "This algorithm can be used to force geometries to multipart types in order to be compatible with data providers "
+                                    "with strict singlepart/multipart compatibility checks." )
+         + u"\n\n"_s + QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
 }
 
 QString QgsPromoteToMultipartAlgorithm::shortDescription() const

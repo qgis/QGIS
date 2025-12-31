@@ -69,12 +69,12 @@ void QgsStacObjectDetailsDialog::setContentFromStacAsset( const QString &assetId
 void QgsStacObjectDetailsDialog::setContent( QString bodyHtml, QString thumbnailHtml )
 {
   const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
-  QString html = QStringLiteral( "<html>\n<head>\n" );
-  html += QStringLiteral( "<style type=\"text/css\">%1</style>\n" ).arg( myStyle );
-  html += QStringLiteral( "%1\n" ).arg( thumbnailHtml );
-  html += QLatin1String( "</head>\n<body>\n" );
-  html += QStringLiteral( "%1\n" ).arg( bodyHtml );
-  html += QLatin1String( "</body>\n</html>\n" );
+  QString html = u"<html>\n<head>\n"_s;
+  html += u"<style type=\"text/css\">%1</style>\n"_s.arg( myStyle );
+  html += u"%1\n"_s.arg( thumbnailHtml );
+  html += "</head>\n<body>\n"_L1;
+  html += u"%1\n"_s.arg( bodyHtml );
+  html += "</body>\n</html>\n"_L1;
   mWebView->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
   connect( mWebView, &QgsWebView::linkClicked, this, []( const QUrl &url ) {
     QDesktopServices::openUrl( url );
@@ -89,7 +89,7 @@ void QgsStacObjectDetailsDialog::setAuthcfg( const QString &authcfg )
 
 bool QgsStacObjectDetailsDialog::isThumbnailAsset( const QgsStacAsset *stacAsset )
 {
-  return stacAsset->roles().contains( QLatin1String( "thumbnail" ) );
+  return stacAsset->roles().contains( "thumbnail"_L1 );
 }
 
 QString QgsStacObjectDetailsDialog::thumbnailHtmlContent( const QgsStacAsset *stacAsset )
@@ -104,7 +104,7 @@ QString QgsStacObjectDetailsDialog::thumbnailHtmlContent( const QgsStacAsset *st
       uri = connectionItems.first();
     }
   }
-  return QStringLiteral( "<img src=\"%1\" border=1><br>" ).arg( uri );
+  return u"<img src=\"%1\" border=1><br>"_s.arg( uri );
 }
 
 ///@endcond

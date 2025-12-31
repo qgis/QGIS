@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
 
     ~QgsLayoutPageCollection() override;
 
-    QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
+    QString stringType() const override { return u"LayoutPageCollection"_s; }
     QgsLayout *layout() override;
 
     /**

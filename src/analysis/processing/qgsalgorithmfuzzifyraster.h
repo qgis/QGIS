@@ -79,8 +79,8 @@ class QgsFuzzifyRasterLinearMembershipAlgorithm : public QgsFuzzifyRasterAlgorit
 {
   public:
     QgsFuzzifyRasterLinearMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFuzzifyLinear.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFuzzifyLinear.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -103,8 +103,8 @@ class QgsFuzzifyRasterPowerMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
 {
   public:
     QgsFuzzifyRasterPowerMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFuzzifyPower.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFuzzifyPower.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -128,8 +128,8 @@ class QgsFuzzifyRasterLargeMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
 {
   public:
     QgsFuzzifyRasterLargeMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFuzzifyLarge.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFuzzifyLarge.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -152,8 +152,8 @@ class QgsFuzzifyRasterSmallMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
 {
   public:
     QgsFuzzifyRasterSmallMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFuzzifySmall.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFuzzifySmall.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -176,8 +176,8 @@ class QgsFuzzifyRasterGaussianMembershipAlgorithm : public QgsFuzzifyRasterAlgor
 {
   public:
     QgsFuzzifyRasterGaussianMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFuzzifyGaussian.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFuzzifyGaussian.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -200,8 +200,8 @@ class QgsFuzzifyRasterNearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithm
 {
   public:
     QgsFuzzifyRasterNearMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFuzzifyNear.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFuzzifyNear.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

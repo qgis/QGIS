@@ -68,11 +68,11 @@ void TestQgsFieldCalculator::testLengthCalculations()
   //test length calculation respects ellipsoid and project distance units
 
   //create a temporary layer
-  auto tempLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( QStringLiteral( "pk" ), 1 );
-  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
+  f1.setAttribute( u"pk"_s, 1 );
+  f1.setAttribute( u"col1"_s, 0.0 );
   QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
   const QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 );
@@ -80,9 +80,9 @@ void TestQgsFieldCalculator::testLengthCalculations()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( u"WGS84"_s );
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Meters );
 
   // run length calculation
@@ -92,7 +92,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   // this next part is fragile, and may need to be modified if the dialog changes:
   calc->mUpdateExistingGroupBox->setChecked( true );
   calc->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc->builder->setExpressionText( QStringLiteral( "$length" ) );
+  calc->builder->setExpressionText( u"$length"_s );
   calc->accept();
 
   tempLayer->commitChanges();
@@ -110,7 +110,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   auto calc2 = std::make_unique<QgsFieldCalculator>( tempLayer.get() );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc2->builder->setExpressionText( QStringLiteral( "$length" ) );
+  calc2->builder->setExpressionText( u"$length"_s );
   calc2->accept();
   tempLayer->commitChanges();
   // check result
@@ -125,11 +125,11 @@ void TestQgsFieldCalculator::testAreaCalculations()
   //test area calculation respects ellipsoid and project area units
 
   //create a temporary layer
-  auto tempLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3111&field=pk:int&field=col1:double"_s, u"vl"_s, u"memory"_s );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( QStringLiteral( "pk" ), 1 );
-  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
+  f1.setAttribute( u"pk"_s, 1 );
+  f1.setAttribute( u"col1"_s, 0.0 );
 
   QgsPolylineXY polygonRing3111;
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
@@ -140,9 +140,9 @@ void TestQgsFieldCalculator::testAreaCalculations()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( u"EPSG:3111"_s );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setEllipsoid( u"WGS84"_s );
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMeters );
 
   // run area calculation
@@ -152,7 +152,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   // this next part is fragile, and may need to be modified if the dialog changes:
   calc->mUpdateExistingGroupBox->setChecked( true );
   calc->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc->builder->setExpressionText( QStringLiteral( "$area" ) );
+  calc->builder->setExpressionText( u"$area"_s );
   calc->accept();
 
   tempLayer->commitChanges();
@@ -170,7 +170,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   auto calc2 = std::make_unique<QgsFieldCalculator>( tempLayer.get() );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
-  calc2->builder->setExpressionText( QStringLiteral( "$area" ) );
+  calc2->builder->setExpressionText( u"$area"_s );
   calc2->accept();
   tempLayer->commitChanges();
   // check result

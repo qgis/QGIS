@@ -669,15 +669,15 @@ void TestQgsMultiPoint::cast()
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
   mp.clear();
-  mp.fromWkt( QStringLiteral( "MultiPointZ(PointZ(0 1 1))" ) );
+  mp.fromWkt( u"MultiPointZ(PointZ(0 1 1))"_s );
   QVERIFY( QgsMultiPoint::cast( &mp ) );
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
-  mp.fromWkt( QStringLiteral( "MultiPointM(PointM(0 1 1))" ) );
+  mp.fromWkt( u"MultiPointM(PointM(0 1 1))"_s );
   QVERIFY( QgsMultiPoint::cast( &mp ) );
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
-  mp.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
+  mp.fromWkt( u"MultiPointZM(PointZM(0 1 1 2))"_s );
   QVERIFY( QgsMultiPoint::cast( &mp ) );
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
 }
@@ -835,17 +835,17 @@ void TestQgsMultiPoint::exportImport()
   QDomDocument doc( "gml" );
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,10</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">10,0</coordinates></Point></pointMember></MultiPoint>" ) );
+  QString expectedSimpleGML2( u"<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,10</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">10,0</coordinates></Point></pointMember></MultiPoint>"_s );
   QString res = elemToString( exportC.asGml2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
-  QString expectedGML2empty( QStringLiteral( "<MultiPoint xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<MultiPoint xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsMultiPoint().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0 10</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">10 0</pos></Point></pointMember></MultiPoint>" ) );
+  QString expectedSimpleGML3( u"<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0 10</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">10 0</pos></Point></pointMember></MultiPoint>"_s );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
-  QString expectedGML3empty( QStringLiteral( "<MultiPoint xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<MultiPoint xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsMultiPoint().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON
@@ -863,19 +863,19 @@ void TestQgsMultiPoint::exportImport()
   QCOMPARE( res, expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2prec3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,11.111</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,0.667</coordinates></Point></pointMember></MultiPoint>" ) );
+  QString expectedGML2prec3( u"<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,11.111</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,0.667</coordinates></Point></pointMember></MultiPoint>"_s );
   res = elemToString( exportFloat.asGml2( doc, 3 ) );
   QGSCOMPAREGML( res, expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3prec3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1.111 11.111</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1.333 0.667</pos></Point></pointMember></MultiPoint>" ) );
+  QString expectedGML3prec3( u"<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1.111 11.111</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1.333 0.667</pos></Point></pointMember></MultiPoint>"_s );
   res = elemToString( exportFloat.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
 
   //asKML
-  QString expectedKml( QStringLiteral( "<MultiGeometry><Point><coordinates>0,10</coordinates></Point><Point><coordinates>10,0</coordinates></Point></MultiGeometry>" ) );
+  QString expectedKml( u"<MultiGeometry><Point><coordinates>0,10</coordinates></Point><Point><coordinates>10,0</coordinates></Point></MultiGeometry>"_s );
   QCOMPARE( exportC.asKml(), expectedKml );
-  QString expectedKmlPrec3( QStringLiteral( "<MultiGeometry><Point><coordinates>1.111,11.111</coordinates></Point><Point><coordinates>1.333,0.667</coordinates></Point></MultiGeometry>" ) );
+  QString expectedKmlPrec3( u"<MultiGeometry><Point><coordinates>1.111,11.111</coordinates></Point><Point><coordinates>1.333,0.667</coordinates></Point></MultiGeometry>"_s );
   QCOMPARE( exportFloat.asKml( 3 ), expectedKmlPrec3 );
 
   QgsMultiPoint exportZ;
@@ -947,7 +947,7 @@ void TestQgsMultiPoint::filterVertices()
   mp.addGeometry( new QgsPoint( Qgis::WkbType::PointZM, 11, 0, 4, 8 ) );
   mp.filterVertices( filter );
 
-  QCOMPARE( mp.asWkt( 2 ), QStringLiteral( "MultiPoint ZM ((3 0 4 8),(1 0 4 8))" ) );
+  QCOMPARE( mp.asWkt( 2 ), u"MultiPoint ZM ((3 0 4 8),(1 0 4 8))"_s );
 }
 
 void TestQgsMultiPoint::vertexIterator()

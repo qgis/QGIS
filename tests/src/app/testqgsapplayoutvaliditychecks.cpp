@@ -111,7 +111,7 @@ void TestQgsLayoutValidityChecks::testNorthArrowValidity()
 
   QgsLayoutItemPicture *picture = new QgsLayoutItemPicture( &l );
   // we identify this as a north arrow based on the default picture path pointing to the default north arrow
-  picture->setPicturePath( QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ) );
+  picture->setPicturePath( u":/images/north_arrows/layout_default_north_arrow.svg"_s );
 
   l.addItem( picture );
 
@@ -136,8 +136,8 @@ void TestQgsLayoutValidityChecks::testNorthArrowValidity()
   QCOMPARE( res.size(), 0 );
 
   // test with ID check
-  picture->setPicturePath( QStringLiteral( "a" ) );
-  picture->setId( QStringLiteral( "north arrow 2" ) );
+  picture->setPicturePath( u"a"_s );
+  picture->setId( u"north arrow 2"_s );
   picture->setLinkedMap( nullptr );
 
   QgsLayoutNorthArrowValidityCheck check3;
@@ -147,7 +147,7 @@ void TestQgsLayoutValidityChecks::testNorthArrowValidity()
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
   // no longer looks like a north arrow
-  picture->setId( QStringLiteral( "a" ) );
+  picture->setId( u"a"_s );
   QgsLayoutNorthArrowValidityCheck check4;
   QVERIFY( check4.prepareCheck( &context, &f ) );
   res = check4.runCheck( &context, &f );
@@ -172,7 +172,7 @@ void TestQgsLayoutValidityChecks::testOverviewValidity()
   QCOMPARE( res.size(), 0 );
 
   // overview not linked to map
-  map1->overviews()->addOverview( new QgsLayoutItemMapOverview( QStringLiteral( "blah" ), map1 ) );
+  map1->overviews()->addOverview( new QgsLayoutItemMapOverview( u"blah"_s, map1 ) );
   QgsLayoutOverviewValidityCheck check2;
   QVERIFY( check2.prepareCheck( &context, &f ) );
   res = check2.runCheck( &context, &f );
@@ -195,14 +195,14 @@ void TestQgsLayoutValidityChecks::testOverviewValidity()
   res = check4.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
 
-  map1->overviews()->addOverview( new QgsLayoutItemMapOverview( QStringLiteral( "blah2" ), map1 ) );
+  map1->overviews()->addOverview( new QgsLayoutItemMapOverview( u"blah2"_s, map1 ) );
   QgsLayoutOverviewValidityCheck check5;
   QVERIFY( check5.prepareCheck( &context, &f ) );
   res = check5.runCheck( &context, &f );
   QCOMPARE( res.size(), 1 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
-  map1->overviews()->addOverview( new QgsLayoutItemMapOverview( QStringLiteral( "blah3" ), map1 ) );
+  map1->overviews()->addOverview( new QgsLayoutItemMapOverview( u"blah3"_s, map1 ) );
   QgsLayoutOverviewValidityCheck check6;
   QVERIFY( check6.prepareCheck( &context, &f ) );
   res = check6.runCheck( &context, &f );
@@ -223,7 +223,7 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
   QgsFeedback f;
 
   // invalid picture source
-  picture->setPicturePath( QStringLiteral( "blaaaaaaaaaaaaaaaaah" ) );
+  picture->setPicturePath( u"blaaaaaaaaaaaaaaaaah"_s );
   QgsLayoutPictureSourceValidityCheck check;
   QVERIFY( check.prepareCheck( &context, &f ) );
   QList<QgsValidityCheckResult> res = check.runCheck( &context, &f );
@@ -244,7 +244,7 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
 
   QgsLayoutItemPicture *picture2 = new QgsLayoutItemPicture( &l );
   l.addItem( picture2 );
-  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'d:/bad' || 'robot'" ) ) );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( u"'d:/bad' || 'robot'"_s ) );
   l.refresh();
 
   QgsLayoutPictureSourceValidityCheck check4;
@@ -253,14 +253,14 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
   QCOMPARE( res.size(), 1 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
-  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "''" ) ) );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( u"''"_s ) );
   l.refresh();
   QgsLayoutPictureSourceValidityCheck check5;
   QVERIFY( check5.prepareCheck( &context, &f ) );
   res = check5.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
 
-  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( QStringLiteral( TEST_DATA_DIR ) + "/sam' || 'ple_svg.svg" ) ) );
+  picture2->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( u"'%1'"_s.arg( QStringLiteral( TEST_DATA_DIR ) + "/sam' || 'ple_svg.svg" ) ) );
   l.refresh();
   QgsLayoutPictureSourceValidityCheck check6;
   QVERIFY( check6.prepareCheck( &context, &f ) );

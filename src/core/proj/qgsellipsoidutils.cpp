@@ -204,7 +204,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   // Format is "PARAMETER:<semi-major axis>:<semi minor axis>
   // Numbers must be with (optional) decimal point and no other separators (C locale)
   // Distances in meters.  Flattening is calculated.
-  if ( ellipsoid.startsWith( QLatin1String( "PARAMETER" ) ) )
+  if ( ellipsoid.startsWith( "PARAMETER"_L1 ) )
   {
     QStringList paramList = ellipsoid.split( ':' );
     bool semiMajorOk, semiMinorOk;
@@ -216,7 +216,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
       params.semiMinor = semiMinor;
       params.inverseFlattening = semiMajor / ( semiMajor - semiMinor );
       params.useCustomParameters = true;
-      params.crs.createFromProj( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs +type=crs" ).arg( params.semiMajor, 0, 'g', 17 ).arg( params.semiMinor, 0, 'g', 17 ) );
+      params.crs.createFromProj( u"+proj=longlat +a=%1 +b=%2 +no_defs +type=crs"_s.arg( params.semiMajor, 0, 'g', 17 ).arg( params.semiMinor, 0, 'g', 17 ) );
     }
     else
     {
@@ -270,9 +270,9 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
           {
             EllipsoidDefinition def;
             QString name = QString( proj_get_name( ellipsoid.get() ) );
-            def.acronym = QStringLiteral( "%1:%2" ).arg( authority, code );
+            def.acronym = u"%1:%2"_s.arg( authority, code );
             name.replace( '_', ' ' );
-            def.description = QStringLiteral( "%1 (%2:%3)" ).arg( name, authority, code );
+            def.description = u"%1 (%2:%3)"_s.arg( name, authority, code );
 
             def.celestialBodyName = proj_get_celestial_body_name( context, ellipsoid.get() );
 
@@ -284,11 +284,11 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
               def.parameters.semiMinor = semiMinor;
               def.parameters.inverseFlattening = invFlattening;
               if ( !semiMinorComputed )
-                def.parameters.crs.createFromProj( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ), false );
+                def.parameters.crs.createFromProj( u"+proj=longlat +a=%1 +b=%2 +no_defs +type=crs"_s.arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.semiMinor, 0, 'g', 17 ), false );
               else if ( !qgsDoubleNear( def.parameters.inverseFlattening, 0.0 ) )
-                def.parameters.crs.createFromProj( QStringLiteral( "+proj=longlat +a=%1 +rf=%2 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ), false );
+                def.parameters.crs.createFromProj( u"+proj=longlat +a=%1 +rf=%2 +no_defs +type=crs"_s.arg( def.parameters.semiMajor, 0, 'g', 17 ).arg( def.parameters.inverseFlattening, 0, 'g', 17 ), false );
               else
-                def.parameters.crs.createFromProj( QStringLiteral( "+proj=longlat +a=%1 +no_defs +type=crs" ).arg( def.parameters.semiMajor, 0, 'g', 17 ), false );
+                def.parameters.crs.createFromProj( u"+proj=longlat +a=%1 +no_defs +type=crs"_s.arg( def.parameters.semiMajor, 0, 'g', 17 ), false );
             }
             else
             {

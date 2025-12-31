@@ -99,17 +99,17 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
+    QString msgIcon( u"/mIconInfo.svg"_s );
     switch ( mLevel )
     {
       case Qgis::MessageLevel::Critical:
-        msgIcon = QStringLiteral( "/mIconCritical.svg" );
+        msgIcon = u"/mIconCritical.svg"_s;
         break;
       case Qgis::MessageLevel::Warning:
-        msgIcon = QStringLiteral( "/mIconWarning.svg" );
+        msgIcon = u"/mIconWarning.svg"_s;
         break;
       case Qgis::MessageLevel::Success:
-        msgIcon = QStringLiteral( "/mIconSuccess.svg" );
+        msgIcon = u"/mIconSuccess.svg"_s;
         break;
       default:
         break;
@@ -126,27 +126,27 @@ void QgsMessageBarItem::writeContent()
   {
     mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
                                   "QLabel,QTextEdit { color: black; } " );
-    contentStyleSheet = QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style>" );
+    contentStyleSheet = u"<style> a, a:visited, a:hover { color:#268300; } </style>"_s;
   }
   else if ( mLevel == Qgis::MessageLevel::Critical )
   {
     mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
                                   "QLabel,QTextEdit { color: white; } " );
-    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#4e0001; }</style>" );
+    contentStyleSheet = u"<style>a, a:visited, a:hover { color:#4e0001; }</style>"_s;
   }
   else if ( mLevel == Qgis::MessageLevel::Warning )
   {
     mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
                                   "QLabel,QTextEdit { color: black; } " );
-    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#945a00; }</style>" );
+    contentStyleSheet = u"<style>a, a:visited, a:hover { color:#945a00; }</style>"_s;
   }
   else if ( mLevel == Qgis::MessageLevel::Info )
   {
     mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
                                   "QLabel,QTextEdit { color: #2554a1; } " );
-    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>" );
+    contentStyleSheet = u"<style>a, a:visited, a:hover { color:#3bb2fe; }</style>"_s;
   }
-  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
+  mStyleSheet += "QLabel#mItemCount { font-style: italic; }"_L1;
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
@@ -162,7 +162,7 @@ void QgsMessageBarItem::writeContent()
     if ( !mTextBrowser )
     {
       mTextBrowser = new QTextBrowser( this );
-      mTextBrowser->setObjectName( QStringLiteral( "textEdit" ) );
+      mTextBrowser->setObjectName( u"textEdit"_s );
       mTextBrowser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
       mTextBrowser->setReadOnly( true );
       mTextBrowser->setOpenLinks( false );
@@ -182,9 +182,9 @@ void QgsMessageBarItem::writeContent()
     {
       // add ':' to end of title
       QString t = mTitle.trimmed();
-      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( QLatin1String( ": " ) ) )
-        t += QLatin1String( ": " );
-      content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
+      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( ": "_L1 ) )
+        t += ": "_L1;
+      content.prepend( u"<b>"_s + t + " </b>" );
     }
     content.prepend( contentStyleSheet );
     mTextBrowser->setText( content );

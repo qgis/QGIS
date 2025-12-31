@@ -84,9 +84,9 @@ class CORE_EXPORT QgsAuthMethodMetadata
      * Class factory to return a pointer to a newly created QgsDataProvider object
      * \since QGIS 3.22
      */
-    virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 4 = 0
+    virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 5 = 0
 
-    //virtual QStringList supportedDataProviders() const; // TODO QGIS 4 = 0;
+    //virtual QStringList supportedDataProviders() const; // TODO QGIS 5 = 0;
 
   private:
 

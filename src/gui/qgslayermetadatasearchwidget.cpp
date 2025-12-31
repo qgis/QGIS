@@ -48,8 +48,8 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mMetadataTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
   mExtentFilterComboBox->addItem( QString() );
-  mExtentFilterComboBox->addItem( QStringLiteral( "Map Canvas Extent" ) );
-  mExtentFilterComboBox->addItem( QStringLiteral( "Current Project Extent" ) );
+  mExtentFilterComboBox->addItem( u"Map Canvas Extent"_s );
+  mExtentFilterComboBox->addItem( u"Current Project Extent"_s );
   mExtentFilterComboBox->setCurrentIndex( 0 );
   mExtentFilterComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
   mExtentFilterComboBox->adjustSize();
@@ -60,7 +60,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Polygon ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Polygon ), static_cast<int>( Qgis::GeometryType::Polygon ) );
   // Note: unknown geometry is mapped to null and missing from the combo
   mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( Qgis::GeometryType::Null ), QgsWkbTypes::geometryDisplayString( Qgis::GeometryType::Null ), static_cast<int>( Qgis::GeometryType::Null ) );
-  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) ), tr( "Raster" ), QVariant() );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( u"mIconRaster.svg"_s ), tr( "Raster" ), QVariant() );
   mGeometryTypeComboBox->setCurrentIndex( 0 );
   mGeometryTypeComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
   mGeometryTypeComboBox->adjustSize();
@@ -69,12 +69,12 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     if ( mIsLoading )
     {
       mAbortPushButton->setText( tr( "Abort" ) );
-      mAbortPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mTaskCancel.svg" ) ) );
+      mAbortPushButton->setIcon( QgsApplication::getThemeIcon( u"mTaskCancel.svg"_s ) );
     }
     else
     {
       mAbortPushButton->setText( tr( "Refresh" ) );
-      mAbortPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+      mAbortPushButton->setIcon( QgsApplication::getThemeIcon( u"mActionRefresh.svg"_s ) );
     }
   };
 
@@ -202,13 +202,13 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
       if ( layerName.isEmpty() )
       {
         QVariantMap components = QgsProviderRegistry::instance()->decodeUri( metadataResult.dataProviderName(), metadataResult.uri() );
-        if ( components.contains( QStringLiteral( "layerName" ) ) )
+        if ( components.contains( u"layerName"_s ) )
         {
-          layerName = components.value( QStringLiteral( "layerName" ) ).toString();
+          layerName = components.value( u"layerName"_s ).toString();
         }
-        else if ( components.contains( QStringLiteral( "table" ) ) )
+        else if ( components.contains( u"table"_s ) )
         {
-          layerName = components.value( QStringLiteral( "table" ) ).toString();
+          layerName = components.value( u"table"_s ).toString();
         }
         else
         {
@@ -267,7 +267,7 @@ void QgsLayerMetadataSearchWidget::showEvent( QShowEvent *event )
 
 void QgsLayerMetadataSearchWidget::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-layer-metadata-search-panel" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#the-layer-metadata-search-panel"_s );
 }
 
 void QgsLayerMetadataSearchWidget::refreshInternal()

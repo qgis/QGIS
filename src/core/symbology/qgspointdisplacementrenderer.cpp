@@ -32,7 +32,7 @@
 #include <QPainter>
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
-  : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )
+  : QgsPointDistanceRenderer( u"pointDisplacement"_s, labelAttributeName )
   , mCircleColor( QColor( 125, 125, 125 ) )
 {
   mCenterSymbol = std::make_unique<QgsMarkerSymbol>( );
@@ -169,33 +169,33 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext &context )
 QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbologyElem, const QgsReadWriteContext &context )
 {
   QgsPointDisplacementRenderer *r = new QgsPointDisplacementRenderer();
-  r->setLabelAttributeName( symbologyElem.attribute( QStringLiteral( "labelAttributeName" ) ) );
+  r->setLabelAttributeName( symbologyElem.attribute( u"labelAttributeName"_s ) );
   QFont labelFont;
-  if ( !QgsFontUtils::setFromXmlChildNode( labelFont, symbologyElem, QStringLiteral( "labelFontProperties" ) ) )
+  if ( !QgsFontUtils::setFromXmlChildNode( labelFont, symbologyElem, u"labelFontProperties"_s ) )
   {
-    labelFont.fromString( symbologyElem.attribute( QStringLiteral( "labelFont" ), QString() ) );
+    labelFont.fromString( symbologyElem.attribute( u"labelFont"_s, QString() ) );
   }
   r->setLabelFont( labelFont );
-  r->setPlacement( static_cast< Placement >( symbologyElem.attribute( QStringLiteral( "placement" ), QStringLiteral( "0" ) ).toInt() ) );
-  r->setCircleWidth( symbologyElem.attribute( QStringLiteral( "circleWidth" ), QStringLiteral( "0.4" ) ).toDouble() );
-  r->setCircleColor( QgsColorUtils::colorFromString( symbologyElem.attribute( QStringLiteral( "circleColor" ), QString() ) ) );
-  r->setLabelColor( QgsColorUtils::colorFromString( symbologyElem.attribute( QStringLiteral( "labelColor" ), QString() ) ) );
-  r->setCircleRadiusAddition( symbologyElem.attribute( QStringLiteral( "circleRadiusAddition" ), QStringLiteral( "0.0" ) ).toDouble() );
-  r->setLabelDistanceFactor( symbologyElem.attribute( QStringLiteral( "labelDistanceFactor" ), QStringLiteral( "0.5" ) ).toDouble() );
-  r->setMinimumLabelScale( symbologyElem.attribute( QStringLiteral( "maxLabelScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble() );
-  r->setTolerance( symbologyElem.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "0.00001" ) ).toDouble() );
-  r->setToleranceUnit( QgsUnitTypes::decodeRenderUnit( symbologyElem.attribute( QStringLiteral( "toleranceUnit" ), QStringLiteral( "MapUnit" ) ) ) );
-  r->setToleranceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( symbologyElem.attribute( QStringLiteral( "toleranceUnitScale" ) ) ) );
+  r->setPlacement( static_cast< Placement >( symbologyElem.attribute( u"placement"_s, u"0"_s ).toInt() ) );
+  r->setCircleWidth( symbologyElem.attribute( u"circleWidth"_s, u"0.4"_s ).toDouble() );
+  r->setCircleColor( QgsColorUtils::colorFromString( symbologyElem.attribute( u"circleColor"_s, QString() ) ) );
+  r->setLabelColor( QgsColorUtils::colorFromString( symbologyElem.attribute( u"labelColor"_s, QString() ) ) );
+  r->setCircleRadiusAddition( symbologyElem.attribute( u"circleRadiusAddition"_s, u"0.0"_s ).toDouble() );
+  r->setLabelDistanceFactor( symbologyElem.attribute( u"labelDistanceFactor"_s, u"0.5"_s ).toDouble() );
+  r->setMinimumLabelScale( symbologyElem.attribute( u"maxLabelScaleDenominator"_s, u"-1"_s ).toDouble() );
+  r->setTolerance( symbologyElem.attribute( u"tolerance"_s, u"0.00001"_s ).toDouble() );
+  r->setToleranceUnit( QgsUnitTypes::decodeRenderUnit( symbologyElem.attribute( u"toleranceUnit"_s, u"MapUnit"_s ) ) );
+  r->setToleranceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( symbologyElem.attribute( u"toleranceUnitScale"_s ) ) );
 
   //look for an embedded renderer <renderer-v2>
-  QDomElement embeddedRendererElem = symbologyElem.firstChildElement( QStringLiteral( "renderer-v2" ) );
+  QDomElement embeddedRendererElem = symbologyElem.firstChildElement( u"renderer-v2"_s );
   if ( !embeddedRendererElem.isNull() )
   {
     r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem, context ) );
   }
 
   //center symbol
-  const QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement centerSymbolElem = symbologyElem.firstChildElement( u"symbol"_s );
   if ( !centerSymbolElem.isNull() )
   {
     r->setCenterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem, context ).release() );
@@ -211,19 +211,19 @@ QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol()
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
-  rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointDisplacement" ) );
-  rendererElement.setAttribute( QStringLiteral( "labelAttributeName" ), mLabelAttributeName );
-  rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFontProperties" ) ) );
-  rendererElement.setAttribute( QStringLiteral( "circleWidth" ), QString::number( mCircleWidth ) );
-  rendererElement.setAttribute( QStringLiteral( "circleColor" ), QgsColorUtils::colorToString( mCircleColor ) );
-  rendererElement.setAttribute( QStringLiteral( "labelColor" ), QgsColorUtils::colorToString( mLabelColor ) );
-  rendererElement.setAttribute( QStringLiteral( "circleRadiusAddition" ), QString::number( mCircleRadiusAddition ) );
-  rendererElement.setAttribute( QStringLiteral( "labelDistanceFactor" ), QString::number( mLabelDistanceFactor ) );
-  rendererElement.setAttribute( QStringLiteral( "placement" ), static_cast< int >( mPlacement ) );
-  rendererElement.setAttribute( QStringLiteral( "maxLabelScaleDenominator" ), QString::number( mMinLabelScale ) );
-  rendererElement.setAttribute( QStringLiteral( "tolerance" ), QString::number( mTolerance ) );
-  rendererElement.setAttribute( QStringLiteral( "toleranceUnit" ), QgsUnitTypes::encodeUnit( mToleranceUnit ) );
-  rendererElement.setAttribute( QStringLiteral( "toleranceUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mToleranceMapUnitScale ) );
+  rendererElement.setAttribute( u"type"_s, u"pointDisplacement"_s );
+  rendererElement.setAttribute( u"labelAttributeName"_s, mLabelAttributeName );
+  rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, u"labelFontProperties"_s ) );
+  rendererElement.setAttribute( u"circleWidth"_s, QString::number( mCircleWidth ) );
+  rendererElement.setAttribute( u"circleColor"_s, QgsColorUtils::colorToString( mCircleColor ) );
+  rendererElement.setAttribute( u"labelColor"_s, QgsColorUtils::colorToString( mLabelColor ) );
+  rendererElement.setAttribute( u"circleRadiusAddition"_s, QString::number( mCircleRadiusAddition ) );
+  rendererElement.setAttribute( u"labelDistanceFactor"_s, QString::number( mLabelDistanceFactor ) );
+  rendererElement.setAttribute( u"placement"_s, static_cast< int >( mPlacement ) );
+  rendererElement.setAttribute( u"maxLabelScaleDenominator"_s, QString::number( mMinLabelScale ) );
+  rendererElement.setAttribute( u"tolerance"_s, QString::number( mTolerance ) );
+  rendererElement.setAttribute( u"toleranceUnit"_s, QgsUnitTypes::encodeUnit( mToleranceUnit ) );
+  rendererElement.setAttribute( u"toleranceUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mToleranceMapUnitScale ) );
 
   if ( mRenderer )
   {
@@ -232,7 +232,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsRead
   }
   if ( mCenterSymbol )
   {
-    const QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.get(), doc, context );
+    const QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( u"centerSymbol"_s, mCenterSymbol.get(), doc, context );
     rendererElement.appendChild( centerSymbolElem );
   }
 
@@ -257,7 +257,7 @@ bool QgsPointDisplacementRenderer::accept( QgsStyleEntityVisitorInterface *visit
   if ( mCenterSymbol )
   {
     QgsStyleSymbolEntity entity( mCenterSymbol.get() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "center" ), QObject::tr( "Center Symbol" ) ) ) )
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"center"_s, QObject::tr( "Center Symbol" ) ) ) )
       return false;
   }
 
@@ -482,21 +482,21 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
 
 QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  if ( renderer->type() == QLatin1String( "pointDisplacement" ) )
+  if ( renderer->type() == "pointDisplacement"_L1 )
   {
     return dynamic_cast<QgsPointDisplacementRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
-            renderer->type() == QLatin1String( "categorizedSymbol" ) ||
-            renderer->type() == QLatin1String( "graduatedSymbol" ) ||
-            renderer->type() == QLatin1String( "RuleRenderer" ) )
+  else if ( renderer->type() == "singleSymbol"_L1 ||
+            renderer->type() == "categorizedSymbol"_L1 ||
+            renderer->type() == "graduatedSymbol"_L1 ||
+            renderer->type() == "RuleRenderer"_L1 )
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
     renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
-  else if ( renderer->type() == QLatin1String( "pointCluster" ) )
+  else if ( renderer->type() == "pointCluster"_L1 )
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
     const QgsPointClusterRenderer *clusterRenderer = static_cast< const QgsPointClusterRenderer * >( renderer );

@@ -242,7 +242,7 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
       {
         mOriginalStyleSheet = lineEdit()->styleSheet();
       }
-      lineEdit()->setStyleSheet( QStringLiteral( "QLineEdit { font-style: italic; color: grey; }" ) );
+      lineEdit()->setStyleSheet( u"QLineEdit { font-style: italic; color: grey; }"_s );
     }
     else
     {

@@ -188,7 +188,7 @@ void QgsQuickMapCanvasMap::renderJobFinished()
   const QgsMapRendererJob::Errors errors = mJob->errors();
   for ( const QgsMapRendererJob::Error &error : errors )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "%1 :: %2" ).arg( error.layerID, error.message ), tr( "Rendering" ) );
+    QgsMessageLog::logMessage( u"%1 :: %2"_s.arg( error.layerID, error.message ), tr( "Rendering" ) );
   }
 
   // take labeling results before emitting renderComplete, so labeling map tools
@@ -566,8 +566,8 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
 
     if ( invalidateLabels )
     {
-      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
-      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+      mCache->clearCacheImage( u"_labels_"_s );
+      mCache->clearCacheImage( u"_preview_labels_"_s );
     }
   }
 }
@@ -612,8 +612,8 @@ void QgsQuickMapCanvasMap::clearElevationCache()
 
     if ( invalidateLabels )
     {
-      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
-      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+      mCache->clearCacheImage( u"_labels_"_s );
+      mCache->clearCacheImage( u"_preview_labels_"_s );
     }
   }
 }

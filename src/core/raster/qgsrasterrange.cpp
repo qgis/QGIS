@@ -67,12 +67,12 @@ bool QgsRasterRange::overlaps( const QgsRasterRange &other ) const
 
 QString QgsRasterRange::asText() const
 {
-  const QString minText = std::isnan( mMin ) ? QStringLiteral( "-%1" ).arg( QChar( 0x221e ) ) : QString::number( mMin );
+  const QString minText = std::isnan( mMin ) ? u"-%1"_s.arg( QChar( 0x221e ) ) : QString::number( mMin );
   const QString maxText = std::isnan( mMax ) ? QChar( 0x221e ) : QString::number( mMax );
   const QString operator1 = ( mType == IncludeMinAndMax || mType == IncludeMin ) ? QChar( 0x2264 ) : '<';
   const QString operator2 = ( mType == IncludeMinAndMax || mType == IncludeMax ) ? QChar( 0x2264 ) : '<';
 
-  return QStringLiteral( "%1 %2 x %3 %4" ).arg( minText, operator1, operator2, maxText );
+  return u"%1 %2 x %3 %4"_s.arg( minText, operator1, operator2, maxText );
 }
 
 

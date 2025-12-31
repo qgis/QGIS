@@ -44,7 +44,7 @@ class TestQgsProcessingCheckGeometry : public QgsTest
 
   public:
     TestQgsProcessingCheckGeometry()
-      : QgsTest( QStringLiteral( "Processing Algorithms Check Geometry" ) ) {}
+      : QgsTest( u"Processing Algorithms Check Geometry"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -112,34 +112,34 @@ void TestQgsProcessingCheckGeometry::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
 
   //create a line layer that will be used in tests
-  mLineLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  mLineLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), u"lines"_s, u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLineLayer );
   QVERIFY( mLineLayer->isValid() );
 
   //create a poly layer that will be used in tests
-  mPolygonLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  mPolygonLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), u"polygons"_s, u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
   QVERIFY( mPolygonLayer->isValid() );
 
   //create a point layer that will be used in tests
-  mPointLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "point_layer.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  mPointLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "point_layer.shp" ), u"points"_s, u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointLayer );
   QVERIFY( mPointLayer->isValid() );
 
   //create a multipoint layer that will be used in tests
-  mMultiPointLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "multipoint_layer.gpkg" ), QStringLiteral( "multipoints" ), QStringLiteral( "ogr" ) );
+  mMultiPointLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "multipoint_layer.gpkg" ), u"multipoints"_s, u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMultiPointLayer );
   QVERIFY( mMultiPointLayer->isValid() );
@@ -172,15 +172,15 @@ void TestQgsProcessingCheckGeometry::angleAlg()
   layerToTest->selectByIds( QgsFeatureIds() << 0 << 1 );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryangle" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryangle"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layerToTest->id(), withSelection ) ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), QVariant::fromValue( uniqueIdFieldName ) );
-  parameters.insert( QStringLiteral( "MIN_ANGLE" ), 15 );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layerToTest->id(), withSelection ) ) );
+  parameters.insert( u"UNIQUE_ID"_s, QVariant::fromValue( uniqueIdFieldName ) );
+  parameters.insert( u"MIN_ANGLE"_s, 15 );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -191,7 +191,7 @@ void TestQgsProcessingCheckGeometry::angleAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( errorsLayer->featureCount(), expectedErrorCount );
 }
@@ -199,16 +199,16 @@ void TestQgsProcessingCheckGeometry::angleAlg()
 void TestQgsProcessingCheckGeometry::areaAlg()
 {
   std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryarea" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryarea"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "AREATHRESHOLD" ), 0.04 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"AREATHRESHOLD"_s, 0.04 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -218,8 +218,8 @@ void TestQgsProcessingCheckGeometry::areaAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 8 );
@@ -229,15 +229,15 @@ void TestQgsProcessingCheckGeometry::areaAlg()
 void TestQgsProcessingCheckGeometry::holeAlg()
 {
   const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryhole" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryhole"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -247,8 +247,8 @@ void TestQgsProcessingCheckGeometry::holeAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 1 );
@@ -258,18 +258,18 @@ void TestQgsProcessingCheckGeometry::holeAlg()
 void TestQgsProcessingCheckGeometry::missingVertexAlg()
 {
   const std::unique_ptr<QgsProcessingAlgorithm> alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrymissingvertex" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrymissingvertex"_s )
   );
   QVERIFY( alg != nullptr );
 
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
-  QgsVectorLayer *missingVertexLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "missing_vertex.gpkg" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *missingVertexLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "missing_vertex.gpkg" ), u"polygons"_s, u"ogr"_s );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( missingVertexLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( missingVertexLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -279,8 +279,8 @@ void TestQgsProcessingCheckGeometry::missingVertexAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 5 );
@@ -302,16 +302,16 @@ void TestQgsProcessingCheckGeometry::containedAlg()
   QFETCH( int, expectedErrorCount );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrycontained" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrycontained"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
-  parameters.insert( QStringLiteral( "POLYGONS" ), QList<QVariant>() << QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), QStringLiteral( "id" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layerToTest ) );
+  parameters.insert( u"POLYGONS"_s, QList<QVariant>() << QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, u"id"_s );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -321,8 +321,8 @@ void TestQgsProcessingCheckGeometry::containedAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
@@ -332,15 +332,15 @@ void TestQgsProcessingCheckGeometry::containedAlg()
 void TestQgsProcessingCheckGeometry::degeneratePolygonAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrydegeneratepolygon" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrydegeneratepolygon"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -350,8 +350,8 @@ void TestQgsProcessingCheckGeometry::degeneratePolygonAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 1 );
@@ -372,16 +372,16 @@ void TestQgsProcessingCheckGeometry::segmentLengthAlg()
   QFETCH( int, expectedErrorCount );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrysegmentlength" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrysegmentlength"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "MIN_SEGMENT_LENGTH" ), 0.03 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layerToTest ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"MIN_SEGMENT_LENGTH"_s, 0.03 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -391,8 +391,8 @@ void TestQgsProcessingCheckGeometry::segmentLengthAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
@@ -412,15 +412,15 @@ void TestQgsProcessingCheckGeometry::selfIntersectionAlg()
   QFETCH( QgsVectorLayer *, layerToTest );
   QFETCH( int, expectedErrorCount );
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryselfintersection" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryselfintersection"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layerToTest ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -430,8 +430,8 @@ void TestQgsProcessingCheckGeometry::selfIntersectionAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
@@ -441,15 +441,15 @@ void TestQgsProcessingCheckGeometry::selfIntersectionAlg()
 void TestQgsProcessingCheckGeometry::dangleAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrydangle" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrydangle"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mLineLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mLineLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -459,8 +459,8 @@ void TestQgsProcessingCheckGeometry::dangleAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 6 );
@@ -481,15 +481,15 @@ void TestQgsProcessingCheckGeometry::duplicateNodesAlg()
   QFETCH( int, expectedErrorCount );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryduplicatenodes" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryduplicatenodes"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layerToTest ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -499,8 +499,8 @@ void TestQgsProcessingCheckGeometry::duplicateNodesAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
@@ -510,20 +510,20 @@ void TestQgsProcessingCheckGeometry::duplicateNodesAlg()
 void TestQgsProcessingCheckGeometry::followBoundariesAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryfollowboundaries" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryfollowboundaries"_s )
   );
   QVERIFY( alg != nullptr );
 
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
-  QgsVectorLayer *polygonLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "follow_subj.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
-  QgsVectorLayer *refLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "follow_ref.shp" ), QStringLiteral( "ref_polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "follow_subj.shp" ), u"polygons"_s, u"ogr"_s );
+  QgsVectorLayer *refLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "follow_ref.shp" ), u"ref_polygons"_s, u"ogr"_s );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "REF_LAYER" ), QVariant::fromValue( refLayer ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"REF_LAYER"_s, QVariant::fromValue( refLayer ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -533,8 +533,8 @@ void TestQgsProcessingCheckGeometry::followBoundariesAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 2 );
@@ -544,16 +544,16 @@ void TestQgsProcessingCheckGeometry::followBoundariesAlg()
 void TestQgsProcessingCheckGeometry::overlapAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryoverlap" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryoverlap"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "MIN_OVERLAP_AREA" ), 0.01 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"MIN_OVERLAP_AREA"_s, 0.01 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -563,8 +563,8 @@ void TestQgsProcessingCheckGeometry::overlapAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 2 );
@@ -585,15 +585,15 @@ void TestQgsProcessingCheckGeometry::selfContactAlg()
   QFETCH( int, expectedErrorCount );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryselfcontact" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryselfcontact"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layerToTest ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -603,8 +603,8 @@ void TestQgsProcessingCheckGeometry::selfContactAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
@@ -614,17 +614,17 @@ void TestQgsProcessingCheckGeometry::selfContactAlg()
 void TestQgsProcessingCheckGeometry::sliverPolygonAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrysliverpolygon" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrysliverpolygon"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "MAX_AREA" ), 0.04 );
-  parameters.insert( QStringLiteral( "THRESHOLD" ), 20 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"MAX_AREA"_s, 0.04 );
+  parameters.insert( u"THRESHOLD"_s, 20 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -634,8 +634,8 @@ void TestQgsProcessingCheckGeometry::sliverPolygonAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 2 );
@@ -645,26 +645,26 @@ void TestQgsProcessingCheckGeometry::sliverPolygonAlg()
 void TestQgsProcessingCheckGeometry::gapAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrygap" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrygap"_s )
   );
   QVERIFY( alg != nullptr );
 
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
-  QgsVectorLayer *gapLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "gap_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *gapLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "gap_layer.shp" ), u"polygons"_s, u"ogr"_s );
 
-  auto allowedGapsLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  auto allowedGapsLayer = std::make_unique< QgsVectorLayer >( u"Polygon?crs=epsg:4326"_s, u"allowedGaps"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( allowedGapsLayer.get() );
   QgsFeature allowedGap;
 
   // First test: without allowed gaps
   {
     QVariantMap parameters;
-    parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( gapLayer ) );
-    parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-    parameters.insert( QStringLiteral( "GAP_THRESHOLD" ), 0.01 );
-    parameters.insert( QStringLiteral( "NEIGHBORS" ), QgsProcessing::TEMPORARY_OUTPUT );
-    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-    parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"INPUT"_s, QVariant::fromValue( gapLayer ) );
+    parameters.insert( u"UNIQUE_ID"_s, "id" );
+    parameters.insert( u"GAP_THRESHOLD"_s, 0.01 );
+    parameters.insert( u"NEIGHBORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
     bool ok = false;
     QgsProcessingFeedback feedback;
@@ -675,9 +675,9 @@ void TestQgsProcessingCheckGeometry::gapAlg()
     results = alg->run( parameters, *context, &feedback, &ok );
     QVERIFY( ok );
 
-    std::unique_ptr<QgsVectorLayer> neighborsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NEIGHBORS" ) ).toString() ) ) );
-    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> neighborsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"NEIGHBORS"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
     QVERIFY( neighborsLayer->isValid() );
     QVERIFY( outputLayer->isValid() );
     QVERIFY( errorsLayer->isValid() );
@@ -698,14 +698,14 @@ void TestQgsProcessingCheckGeometry::gapAlg()
     QVERIFY( allowedGapsLayer->commitChanges() );
 
     QVariantMap parameters;
-    parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( gapLayer ) );
-    parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-    parameters.insert( QStringLiteral( "GAP_THRESHOLD" ), 0.01 );
-    parameters.insert( QStringLiteral( "ALLOWED_GAPS_LAYER" ), QVariant::fromValue( allowedGapsLayer.get() ) );
-    parameters.insert( QStringLiteral( "ALLOWED_GAPS_BUFFER" ), 0.01 );
-    parameters.insert( QStringLiteral( "NEIGHBORS" ), QgsProcessing::TEMPORARY_OUTPUT );
-    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-    parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"INPUT"_s, QVariant::fromValue( gapLayer ) );
+    parameters.insert( u"UNIQUE_ID"_s, "id" );
+    parameters.insert( u"GAP_THRESHOLD"_s, 0.01 );
+    parameters.insert( u"ALLOWED_GAPS_LAYER"_s, QVariant::fromValue( allowedGapsLayer.get() ) );
+    parameters.insert( u"ALLOWED_GAPS_BUFFER"_s, 0.01 );
+    parameters.insert( u"NEIGHBORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+    parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
     bool ok = false;
     QgsProcessingFeedback feedback;
@@ -716,9 +716,9 @@ void TestQgsProcessingCheckGeometry::gapAlg()
     results = alg->run( parameters, *context, &feedback, &ok );
     QVERIFY( ok );
 
-    std::unique_ptr<QgsVectorLayer> neighborsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NEIGHBORS" ) ).toString() ) ) );
-    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> neighborsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"NEIGHBORS"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+    std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
     QVERIFY( neighborsLayer->isValid() );
     QVERIFY( outputLayer->isValid() );
     QVERIFY( errorsLayer->isValid() );
@@ -731,15 +731,15 @@ void TestQgsProcessingCheckGeometry::gapAlg()
 void TestQgsProcessingCheckGeometry::pointInPolygonAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrypointinpolygon" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrypointinpolygon"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPointLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "POLYGONS" ), QVariantList() << QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPointLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"POLYGONS"_s, QVariantList() << QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -749,7 +749,7 @@ void TestQgsProcessingCheckGeometry::pointInPolygonAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( errorsLayer->featureCount(), 6 );
 }
@@ -757,15 +757,15 @@ void TestQgsProcessingCheckGeometry::pointInPolygonAlg()
 void TestQgsProcessingCheckGeometry::pointCoveredByLineAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrypointcoveredbyline" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrypointcoveredbyline"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPointLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "LINES" ), QVariantList() << QVariant::fromValue( mLineLayer ) );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPointLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"LINES"_s, QVariantList() << QVariant::fromValue( mLineLayer ) );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -775,7 +775,7 @@ void TestQgsProcessingCheckGeometry::pointCoveredByLineAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( errorsLayer->featureCount(), 6 );
 }
@@ -783,16 +783,16 @@ void TestQgsProcessingCheckGeometry::pointCoveredByLineAlg()
 void TestQgsProcessingCheckGeometry::lineLayerIntersectionAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrylinelayerintersection" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrylinelayerintersection"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mLineLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "CHECK_LAYER" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mLineLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"CHECK_LAYER"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -802,8 +802,8 @@ void TestQgsProcessingCheckGeometry::lineLayerIntersectionAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 5 );
@@ -813,15 +813,15 @@ void TestQgsProcessingCheckGeometry::lineLayerIntersectionAlg()
 void TestQgsProcessingCheckGeometry::lineIntersectionAlg()
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrylineintersection" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrylineintersection"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mLineLayer ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mLineLayer ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -831,8 +831,8 @@ void TestQgsProcessingCheckGeometry::lineIntersectionAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 1 );
@@ -853,15 +853,15 @@ void TestQgsProcessingCheckGeometry::multipartAlg()
   QFETCH( QgsVectorLayer *, layerToTest );
   QFETCH( int, expectedErrorCount );
   std::unique_ptr< QgsProcessingAlgorithm > alg(
-    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrymultipart" ) )
+    QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrymultipart"_s )
   );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layerToTest ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "id" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layerToTest ) );
+  parameters.insert( u"UNIQUE_ID"_s, "id" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
@@ -871,8 +871,8 @@ void TestQgsProcessingCheckGeometry::multipartAlg()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( u"ERRORS"_s ).toString() ) ) );
   QVERIFY( outputLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), expectedErrorCount );
@@ -881,56 +881,56 @@ void TestQgsProcessingCheckGeometry::multipartAlg()
 
 void TestQgsProcessingCheckGeometry::duplicatedId()
 {
-  auto polygonLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=fid:string" ), QStringLiteral( "poly" ), QStringLiteral( "memory" ) );
+  auto polygonLayer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:4326&field=pk:int&field=fid:string"_s, u"poly"_s, u"memory"_s );
   QVERIFY( polygonLayer->isValid() );
 
   QgsFeature f;
-  f.setAttributes( QgsAttributes() << 1 << QLatin1String( "1" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((-0.439 0.995, 0.24 1.079, 0.112 1.031, 0.336 0.576, -0.285 0.573, -0.439 0.995)))" ) ) );
+  f.setAttributes( QgsAttributes() << 1 << "1"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPolygon (((-0.439 0.995, 0.24 1.079, 0.112 1.031, 0.336 0.576, -0.285 0.573, -0.439 0.995)))"_s ) );
   polygonLayer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "2" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((-0.439 0.995, 0.24 1.079, 0.112 1.031, 0.336 0.576, -0.285 0.573, -0.439 0.995)))" ) ) );
+  f.setAttributes( QgsAttributes() << 2 << "2"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPolygon (((-0.439 0.995, 0.24 1.079, 0.112 1.031, 0.336 0.576, -0.285 0.573, -0.439 0.995)))"_s ) );
   polygonLayer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 3 << QLatin1String( "1" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((-0.439 0.995, 0.24 1.079, 0.112 1.031, 0.336 0.576, -0.285 0.573, -0.439 0.995)))" ) ) );
+  f.setAttributes( QgsAttributes() << 3 << "1"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPolygon (((-0.439 0.995, 0.24 1.079, 0.112 1.031, 0.336 0.576, -0.285 0.573, -0.439 0.995)))"_s ) );
   polygonLayer->dataProvider()->addFeature( f );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << polygonLayer.get() );
 
-  auto lineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=pk:int&field=fid:string" ), QStringLiteral( "line" ), QStringLiteral( "memory" ) );
+  auto lineLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=pk:int&field=fid:string"_s, u"line"_s, u"memory"_s );
   QVERIFY( lineLayer->isValid() );
 
-  f.setAttributes( QgsAttributes() << 1 << QLatin1String( "1" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (0 0, 10 15)" ) ) );
+  f.setAttributes( QgsAttributes() << 1 << "1"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (0 0, 10 15)"_s ) );
   lineLayer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "2" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (4 2, 0 20)" ) ) );
+  f.setAttributes( QgsAttributes() << 2 << "2"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (4 2, 0 20)"_s ) );
   lineLayer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 3 << QLatin1String( "1" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (1 1, 5 3)" ) ) );
+  f.setAttributes( QgsAttributes() << 3 << "1"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (1 1, 5 3)"_s ) );
   lineLayer->dataProvider()->addFeature( f );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer.get() );
 
-  auto pointLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fid:string" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
+  auto pointLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=fid:string"_s, u"point"_s, u"memory"_s );
   QVERIFY( pointLayer->isValid() );
 
-  f.setAttributes( QgsAttributes() << 1 << QLatin1String( "1" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (1 1)" ) ) );
+  f.setAttributes( QgsAttributes() << 1 << "1"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (1 1)"_s ) );
   pointLayer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "2" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0.5 0.5)" ) ) );
+  f.setAttributes( QgsAttributes() << 2 << "2"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (0.5 0.5)"_s ) );
   pointLayer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 3 << QLatin1String( "1" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (1 1)" ) ) );
+  f.setAttributes( QgsAttributes() << 3 << "1"_L1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (1 1)"_s ) );
   pointLayer->dataProvider()->addFeature( f );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << pointLayer.get() );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryangle" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryangle"_s ) );
   QVERIFY( alg != nullptr );
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), QStringLiteral( "fid" ) );
-  parameters.insert( QStringLiteral( "MIN_ANGLE" ), 15 );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, u"fid"_s );
+  parameters.insert( u"MIN_ANGLE"_s, 15 );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   bool ok = false;
   DummyFeedback feedback;
   const std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
@@ -938,263 +938,263 @@ void TestQgsProcessingCheckGeometry::duplicatedId()
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryarea" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryarea"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "AREATHRESHOLD" ), 0.04 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"AREATHRESHOLD"_s, 0.04 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryhole" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryhole"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrymissingvertex" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrymissingvertex"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrycontained" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrycontained"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "POLYGONS" ), QList<QVariant>() << QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), QStringLiteral( "fid" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"POLYGONS"_s, QList<QVariant>() << QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, u"fid"_s );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrydegeneratepolygon" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrydegeneratepolygon"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrysegmentlength" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrysegmentlength"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "MIN_SEGMENT_LENGTH" ), 0.03 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"MIN_SEGMENT_LENGTH"_s, 0.03 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryselfintersection" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryselfintersection"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrydangle" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrydangle"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( lineLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryduplicatenodes" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryduplicatenodes"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
-  feedback.clear();
-
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryfollowboundaries" ) ) );
-  QVERIFY( alg != nullptr );
-  parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "REF_LAYER" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
-  ok = false;
-  results = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryoverlap" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryfollowboundaries"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "MIN_OVERLAP_AREA" ), 0.01 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"REF_LAYER"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometryselfcontact" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryoverlap"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"MIN_OVERLAP_AREA"_s, 0.01 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrysliverpolygon" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometryselfcontact"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "MAX_AREA" ), 0.04 );
-  parameters.insert( QStringLiteral( "THRESHOLD" ), 20 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrygap" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrysliverpolygon"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "GAP_THRESHOLD" ), 0.01 );
-  parameters.insert( QStringLiteral( "NEIGHBORS" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"MAX_AREA"_s, 0.04 );
+  parameters.insert( u"THRESHOLD"_s, 20 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrypointinpolygon" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrygap"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( pointLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "POLYGONS" ), QVariantList() << QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"GAP_THRESHOLD"_s, 0.01 );
+  parameters.insert( u"NEIGHBORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrypointcoveredbyline" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrypointinpolygon"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( pointLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "LINES" ), QVariantList() << QVariant::fromValue( lineLayer->id() ) );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( pointLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"POLYGONS"_s, QVariantList() << QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrylinelayerintersection" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrypointcoveredbyline"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "CHECK_LAYER" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( pointLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"LINES"_s, QVariantList() << QVariant::fromValue( lineLayer->id() ) );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrylineintersection" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrylinelayerintersection"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( lineLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"CHECK_LAYER"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrymultipart" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrylineintersection"_s ) );
   QVERIFY( alg != nullptr );
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer->id() ) );
-  parameters.insert( QStringLiteral( "UNIQUE_ID" ), "fid" );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( lineLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors().contains( QStringLiteral( "Field 'fid' contains non-unique values and can not be used as unique ID." ) ) );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
+  feedback.clear();
+
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkgeometrymultipart"_s ) );
+  QVERIFY( alg != nullptr );
+  parameters.clear();
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer->id() ) );
+  parameters.insert( u"UNIQUE_ID"_s, "fid" );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERRORS"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( feedback.errors().contains( u"Field 'fid' contains non-unique values and can not be used as unique ID."_s ) );
   feedback.clear();
 }
 

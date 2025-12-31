@@ -33,12 +33,12 @@ namespace QgsWms
   void writeGetSchemaExtension( QgsServerResponse &response )
   {
     const QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
-    const QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
-    QString schema_str = QStringLiteral( "<?xml version='1.0'?>" );
+    const QFileInfo xsdFileInfo( resourcesDir, u"schemaExtension.xsd"_s );
+    QString schema_str = u"<?xml version='1.0'?>"_s;
 
     if ( !xsdFileInfo.exists() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( u"Error, xsd file 'schemaExtension.xsd' does not exist"_s, u"Server"_s, Qgis::MessageLevel::Critical );
     }
     else
     {
@@ -51,10 +51,10 @@ namespace QgsWms
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' not readable" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+        QgsMessageLog::logMessage( u"Error, xsd file 'schemaExtension.xsd' not readable"_s, u"Server"_s, Qgis::MessageLevel::Critical );
       }
     }
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.setHeader( u"Content-Type"_s, u"text/xml; charset=utf-8"_s );
     response.write( schema_str );
   }
 

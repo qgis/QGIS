@@ -54,11 +54,11 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mSingleColorBtn->setColor( QColor( 0, 0, 255 ) ); // default color
 
   mRenderingStyleComboBox->addItem( tr( "No Rendering" ), QString() );
-  mRenderingStyleComboBox->addItem( tr( "Follow 2D Symbology" ), QStringLiteral( "2D" ) );
-  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlecolor.svg" ) ), tr( "Single Color" ), QStringLiteral( "single-color" ) );
-  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) ), tr( "Attribute by Ramp" ), QStringLiteral( "color-ramp" ) );
-  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/multibandcolor.svg" ) ), tr( "RGB" ), QStringLiteral( "rgb" ) );
-  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/paletted.svg" ) ), tr( "Classification" ), QStringLiteral( "classification" ) );
+  mRenderingStyleComboBox->addItem( tr( "Follow 2D Symbology" ), u"2D"_s );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( u"styleicons/singlecolor.svg"_s ), tr( "Single Color" ), u"single-color"_s );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( u"styleicons/singlebandpseudocolor.svg"_s ), tr( "Attribute by Ramp" ), u"color-ramp"_s );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( u"styleicons/multibandcolor.svg"_s ), tr( "RGB" ), u"rgb"_s );
+  mRenderingStyleComboBox->addItem( QgsApplication::getThemeIcon( u"styleicons/paletted.svg"_s ), tr( "Classification" ), u"classification"_s );
 
   connect( mRedMinLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mRedMinLineEdit_textChanged );
   connect( mRedMaxLineEdit, &QLineEdit::textChanged, this, &QgsPointCloud3DSymbolWidget::mRedMaxLineEdit_textChanged );
@@ -198,13 +198,13 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
 
   mRenderingStyleComboBox->setCurrentIndex( mRenderingStyleComboBox->findData( symbol->symbolType() ) );
 
-  if ( symbol->symbolType() == QLatin1String( "single-color" ) )
+  if ( symbol->symbolType() == "single-color"_L1 )
   {
     mStackedWidget->setCurrentIndex( 2 );
     QgsSingleColorPointCloud3DSymbol *symb = qgis::down_cast<QgsSingleColorPointCloud3DSymbol *>( symbol );
     mSingleColorBtn->setColor( symb->singleColor() );
   }
-  else if ( symbol->symbolType() == QLatin1String( "color-ramp" ) )
+  else if ( symbol->symbolType() == "color-ramp"_L1 )
   {
     mStackedWidget->setCurrentIndex( 3 );
     QgsColorRampPointCloud3DSymbol *symb = qgis::down_cast<QgsColorRampPointCloud3DSymbol *>( symbol );
@@ -220,7 +220,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( symb->colorRampShaderMin(), symb->colorRampShaderMax() );
     mBlockSetMinMaxFromLayer = false;
   }
-  else if ( symbol->symbolType() == QLatin1String( "rgb" ) )
+  else if ( symbol->symbolType() == "rgb"_L1 )
   {
     mStackedWidget->setCurrentIndex( 4 );
 
@@ -235,7 +235,7 @@ void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
     setMinMaxValue( symb->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
     mDisableMinMaxWidgetRefresh--;
   }
-  else if ( symbol->symbolType() == QLatin1String( "classification" ) )
+  else if ( symbol->symbolType() == "classification"_L1 )
   {
     mStackedWidget->setCurrentIndex( 5 );
     QgsClassificationPointCloud3DSymbol *symb = qgis::down_cast<QgsClassificationPointCloud3DSymbol *>( symbol );
@@ -260,19 +260,19 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
   QgsPointCloud3DSymbol *retSymb = nullptr;
   const QString symbolType = mRenderingStyleComboBox->currentData().toString();
 
-  if ( symbolType == QLatin1String( "2D" ) )
+  if ( symbolType == "2D"_L1 )
   {
     // we still need to return some symbol since it carries needed settings like the point size
     // any symbol type is ok, it will be replaced with the proper one, converted from the 2D renderer
     retSymb = new QgsSingleColorPointCloud3DSymbol;
   }
-  else if ( symbolType == QLatin1String( "single-color" ) )
+  else if ( symbolType == "single-color"_L1 )
   {
     QgsSingleColorPointCloud3DSymbol *symb = new QgsSingleColorPointCloud3DSymbol;
     symb->setSingleColor( mSingleColorBtn->color() );
     retSymb = symb;
   }
-  else if ( symbolType == QLatin1String( "color-ramp" ) )
+  else if ( symbolType == "color-ramp"_L1 )
   {
     QgsColorRampPointCloud3DSymbol *symb = new QgsColorRampPointCloud3DSymbol;
     symb->setAttribute( mRenderingParameterComboBox->currentText() );
@@ -280,7 +280,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     symb->setColorRampShaderMinMax( mColorRampShaderMinEdit->value(), mColorRampShaderMaxEdit->value() );
     retSymb = symb;
   }
-  else if ( symbolType == QLatin1String( "rgb" ) )
+  else if ( symbolType == "rgb"_L1 )
   {
     QgsRgbPointCloud3DSymbol *symb = new QgsRgbPointCloud3DSymbol;
     symb->setRedAttribute( mRedAttributeComboBox->currentAttribute() );
@@ -289,7 +289,7 @@ QgsPointCloud3DSymbol *QgsPointCloud3DSymbolWidget::symbol() const
     setCustomMinMaxValues( symb );
     retSymb = symb;
   }
-  else if ( symbolType == QLatin1String( "classification" ) )
+  else if ( symbolType == "classification"_L1 )
   {
     QgsClassificationPointCloud3DSymbol *symb = new QgsClassificationPointCloud3DSymbol;
     symb->setAttribute( mClassifiedRendererWidget->attribute() );
@@ -457,11 +457,11 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     const QString newSymbolType = mRenderingStyleComboBox->currentData().toString();
 
     mLayer->setSync3DRendererTo2DRenderer( false );
-    if ( newSymbolType == QLatin1String( "2D" ) )
+    if ( newSymbolType == "2D"_L1 )
     {
       mLayer->setSync3DRendererTo2DRenderer( true );
     }
-    else if ( newSymbolType == QLatin1String( "color-ramp" ) && mLayer->renderer()->type() == QLatin1String( "ramp" ) )
+    else if ( newSymbolType == "color-ramp"_L1 && mLayer->renderer()->type() == "ramp"_L1 )
     {
       const QgsPointCloudAttributeByRampRenderer *renderer2d = qgis::down_cast<const QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
       mBlockChangedSignals++;
@@ -472,7 +472,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( renderer2d->minimum(), renderer2d->maximum() );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "rgb" ) && mLayer->renderer()->type() == QLatin1String( "rgb" ) )
+    else if ( newSymbolType == "rgb"_L1 && mLayer->renderer()->type() == "rgb"_L1 )
     {
       const QgsPointCloudRgbRenderer *renderer2d = qgis::down_cast<const QgsPointCloudRgbRenderer *>( mLayer->renderer() );
       mBlockChangedSignals++;
@@ -490,11 +490,11 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       }
       else
       {
-        if ( mRedAttributeComboBox->findText( QStringLiteral( "Red" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Green" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Blue" ) ) > -1 )
+        if ( mRedAttributeComboBox->findText( u"Red"_s ) > -1 && mRedAttributeComboBox->findText( u"Green"_s ) > -1 && mRedAttributeComboBox->findText( u"Blue"_s ) > -1 )
         {
-          mRedAttributeComboBox->setAttribute( QStringLiteral( "Red" ) );
-          mGreenAttributeComboBox->setAttribute( QStringLiteral( "Green" ) );
-          mBlueAttributeComboBox->setAttribute( QStringLiteral( "Blue" ) );
+          mRedAttributeComboBox->setAttribute( u"Red"_s );
+          mGreenAttributeComboBox->setAttribute( u"Green"_s );
+          mBlueAttributeComboBox->setAttribute( u"Blue"_s );
         }
         else
         {
@@ -510,7 +510,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       ( void ) ( renderer2d );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "classification" ) && mLayer->renderer()->type() == QLatin1String( "classified" ) )
+    else if ( newSymbolType == "classification"_L1 && mLayer->renderer()->type() == "classified"_L1 )
     {
       mClassifiedRendererWidget->setFromRenderer( mLayer->renderer() );
     }
@@ -535,7 +535,7 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
     mProviderMin = stats.minimum( mRenderingParameterComboBox->currentAttribute() );
     mProviderMax = stats.maximum( mRenderingParameterComboBox->currentAttribute() );
 
-    if ( mRenderingParameterComboBox->currentAttribute() == QLatin1String( "Z" ) )
+    if ( mRenderingParameterComboBox->currentAttribute() == "Z"_L1 )
     {
       const double zScale = static_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() )->zScale();
       const double zOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() )->zOffset();

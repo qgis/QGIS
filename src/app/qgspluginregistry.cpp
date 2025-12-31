@@ -133,18 +133,18 @@ void QgsPluginRegistry::addPlugin( const QString &key, const QgsPluginMetadata &
 
 void QgsPluginRegistry::dump()
 {
-  QgsDebugMsgLevel( QStringLiteral( "PLUGINS IN REGISTRY: key -> (name, library)" ), 1 );
+  QgsDebugMsgLevel( u"PLUGINS IN REGISTRY: key -> (name, library)"_s, 1 );
   for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
-    QgsDebugMsgLevel( QStringLiteral( "PLUGIN: %1 -> (%2, %3)" ).arg( it.key(), it->name(), it->library() ), 1 );
+    QgsDebugMsgLevel( u"PLUGIN: %1 -> (%2, %3)"_s.arg( it.key(), it->name(), it->library() ), 1 );
   }
 
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ), 1 );
+    QgsDebugMsgLevel( u"PYTHON PLUGINS IN REGISTRY:"_s, 1 );
     const auto constListActivePlugins = mPythonUtils->listActivePlugins();
     for ( const QString &pluginName : constListActivePlugins )
     {
@@ -221,7 +221,7 @@ bool QgsPluginRegistry::checkQgisVersion( const QString &minVersion, const QStri
 
   // Parse qgisMaxVersion. Must be in form x.y.z or just x.y
   int maxVerMajor, maxVerMinor, maxVerBugfix = 99;
-  if ( maxVersion.isEmpty() || maxVersion == QLatin1String( "__error__" ) )
+  if ( maxVersion.isEmpty() || maxVersion == "__error__"_L1 )
   {
     maxVerMajor = minVerMajor;
     maxVerMinor = 99;
@@ -265,9 +265,9 @@ bool QgsPluginRegistry::checkQgisVersion( const QString &minVersion, const QStri
   };
 
   // build XxYyZz strings with trailing zeroes if needed
-  const QString minVer = QStringLiteral( "%1%2%3" ).arg( minVerMajor, 2, 10, QChar( '0' ) ).arg( minVerMinor, 2, 10, QChar( '0' ) ).arg( minVerBugfix, 2, 10, QChar( '0' ) );
-  const QString maxVer = QStringLiteral( "%1%2%3" ).arg( maxVerMajor, 2, 10, QChar( '0' ) ).arg( maxVerMinor, 2, 10, QChar( '0' ) ).arg( maxVerBugfix, 2, 10, QChar( '0' ) );
-  const QString curVer = QStringLiteral( "%1%2%3" ).arg( qgisMajor, 2, 10, QChar( '0' ) ).arg( qgisMinor, 2, 10, QChar( '0' ) ).arg( qgisBugfix, 2, 10, QChar( '0' ) );
+  const QString minVer = u"%1%2%3"_s.arg( minVerMajor, 2, 10, QChar( '0' ) ).arg( minVerMinor, 2, 10, QChar( '0' ) ).arg( minVerBugfix, 2, 10, QChar( '0' ) );
+  const QString maxVer = u"%1%2%3"_s.arg( maxVerMajor, 2, 10, QChar( '0' ) ).arg( maxVerMinor, 2, 10, QChar( '0' ) ).arg( maxVerBugfix, 2, 10, QChar( '0' ) );
+  const QString curVer = u"%1%2%3"_s.arg( qgisMajor, 2, 10, QChar( '0' ) ).arg( qgisMinor, 2, 10, QChar( '0' ) ).arg( qgisBugfix, 2, 10, QChar( '0' ) );
 
   // compare
   return ( minVer <= curVer && maxVer >= curVer );
@@ -302,7 +302,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
 
     // TODO: test success
 
-    const QString pluginName = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "name" ) );
+    const QString pluginName = mPythonUtils->getPluginMetadata( packageName, u"name"_s );
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
@@ -371,25 +371,25 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
           {
-            QgsDebugMsgLevel( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ), 2 );
+            QgsDebugMsgLevel( u"plugin object name: %1"_s.arg( o->objectName() ), 2 );
             if ( o->objectName().isEmpty() )
             {
 #ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
-              QgsDebugMsgLevel( QStringLiteral( "object name to %1" ).arg( baseName ), 2 );
-              o->setObjectName( QStringLiteral( "qgis_plugin_%1" ).arg( baseName ) );
-              QgsDebugMsgLevel( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ), 2 );
+              QgsDebugMsgLevel( u"object name to %1"_s.arg( baseName ), 2 );
+              o->setObjectName( u"qgis_plugin_%1"_s.arg( baseName ) );
+              QgsDebugMsgLevel( u"plugin object name now: %1"_s.arg( o->objectName() ), 2 );
             }
 
             if ( !o->parent() )
             {
-              QgsDebugMsgLevel( QStringLiteral( "setting plugin parent" ), 2 );
+              QgsDebugMsgLevel( u"setting plugin parent"_s, 2 );
               o->setParent( QgisApp::instance() );
             }
             else
             {
-              QgsDebugMsgLevel( QStringLiteral( "plugin parent already set" ), 2 );
+              QgsDebugMsgLevel( u"plugin parent already set"_s, 2 );
             }
           }
 
@@ -483,7 +483,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 #elif ANDROID
   QString pluginExt = "*plugin.so";
 #else
-  const QString pluginExt = QStringLiteral( "*.so" );
+  const QString pluginExt = u"*.so"_s;
 #endif
 
   // check all libs in the current plugin directory and get name and descriptions
@@ -498,7 +498,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 
       bool pluginCrashedPreviously = false;
       const QString baseName = QFileInfo( myFullPath ).baseName();
-      const QVariant lastRun = mySettings.value( QStringLiteral( "Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
+      const QVariant lastRun = mySettings.value( u"Plugins/watchDogTimestamp/%1"_s.arg( baseName ) );
       if ( lastRun.isValid() )
       {
         if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
@@ -533,7 +533,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, true );
           loadCppPlugin( myFullPath );
-          settings.remove( QStringLiteral( "/Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
+          settings.remove( u"/Plugins/watchDogTimestamp/%1"_s.arg( baseName ) );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
         QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, watchdogMsg]() {
@@ -548,9 +548,9 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
       {
-        mySettings.setValue( QStringLiteral( "Plugins/watchDogTimestamp/%1" ).arg( baseName ), QDateTime::currentDateTime().toSecsSinceEpoch() );
+        mySettings.setValue( u"Plugins/watchDogTimestamp/%1"_s.arg( baseName ), QDateTime::currentDateTime().toSecsSinceEpoch() );
         loadCppPlugin( myFullPath );
-        mySettings.remove( QStringLiteral( "/Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
+        mySettings.remove( u"/Plugins/watchDogTimestamp/%1"_s.arg( baseName ) );
       }
     }
   }
@@ -560,14 +560,14 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   {
     // check for python plugins system-wide
     const QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsgLevel( QStringLiteral( "Loading python plugins" ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "Python plugins will be loaded in the following order: " ) + pluginList.join( "," ), 2 );
+    QgsDebugMsgLevel( u"Loading python plugins"_s, 2 );
+    QgsDebugMsgLevel( u"Python plugins will be loaded in the following order: "_s + pluginList.join( "," ), 2 );
 
     QStringList corePlugins = QStringList();
-    corePlugins << QStringLiteral( "db_manager" );
-    corePlugins << QStringLiteral( "processing" );
-    corePlugins << QStringLiteral( "MetaSearch" );
-    corePlugins << QStringLiteral( "grassprovider" );
+    corePlugins << u"db_manager"_s;
+    corePlugins << u"processing"_s;
+    corePlugins << u"MetaSearch"_s;
+    corePlugins << u"grassprovider"_s;
 
     // make the required core plugins enabled by default:
     const auto constCorePlugins = corePlugins;
@@ -598,7 +598,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       // end - temporary fix for issue #5879, more below
 
       bool pluginCrashedPreviously = false;
-      const QVariant lastRun = mySettings.value( QStringLiteral( "/PythonPlugins/watchDogTimestamp/%1" ).arg( packageName ) );
+      const QVariant lastRun = mySettings.value( u"/PythonPlugins/watchDogTimestamp/%1"_s.arg( packageName ) );
       if ( lastRun.isValid() )
       {
         if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
@@ -666,13 +666,13 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     // start - temporary fix for issue #5879, more above
     if ( QgsApplication::isRunningFromBuildDir() )
     {
-      QgsApplication::setPkgDataPath( QgsApplication::buildOutputPath() + QStringLiteral( "/data" ) );
+      QgsApplication::setPkgDataPath( QgsApplication::buildOutputPath() + u"/data"_s );
     }
     // end - temporary fix for issue #5879
   }
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "Plugin loading completed" ), 2 );
+  QgsDebugMsgLevel( u"Plugin loading completed"_s, 2 );
 }
 
 
@@ -706,13 +706,13 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 
   // get information from the plugin
   // if there are some problems, don't continue with metadata retrieval
-  pluginName = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "name" ) );
-  description = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "description" ) );
-  version = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "version" ) );
+  pluginName = mPythonUtils->getPluginMetadata( packageName, u"name"_s );
+  description = mPythonUtils->getPluginMetadata( packageName, u"description"_s );
+  version = mPythonUtils->getPluginMetadata( packageName, u"version"_s );
   // for Python plugins category still optional, by default used "Plugins" category
   //category = mPythonUtils->getPluginMetadata( packageName, "category" );
 
-  if ( pluginName == QLatin1String( "__error__" ) || description == QLatin1String( "__error__" ) || version == QLatin1String( "__error__" ) )
+  if ( pluginName == "__error__"_L1 || description == "__error__"_L1 || version == "__error__"_L1 )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error when reading metadata of plugin %1" ).arg( packageName ), QObject::tr( "Plugins" ) );
     return false;
@@ -729,8 +729,8 @@ bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) c
 {
 #ifdef WITH_BINDINGS
   bool supportsQgis4 = true;
-  const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "supportsQt6" ) ).trimmed();
-  if ( supportsQt6.compare( QLatin1String( "YES" ), Qt::CaseInsensitive ) != 0 && supportsQt6.compare( QLatin1String( "TRUE" ), Qt::CaseInsensitive ) != 0 )
+  const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, u"supportsQt6"_s ).trimmed();
+  if ( supportsQt6.compare( "YES"_L1, Qt::CaseInsensitive ) != 0 && supportsQt6.compare( "TRUE"_L1, Qt::CaseInsensitive ) != 0 )
   {
     if ( !getenv( "QGIS_DISABLE_SUPPORTS_QT6_CHECK" ) )
     {
@@ -738,14 +738,14 @@ bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) c
     }
     supportsQgis4 = false;
   }
-  const QString minVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMinimumVersion" ) );
+  const QString minVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMinimumVersion"_s );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
-  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
-  if ( maxVersion == QLatin1String( "__error__" ) && minVersion.startsWith( QLatin1String( "3." ) ) && supportsQgis4 )
+  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMaximumVersion"_s );
+  if ( maxVersion == "__error__"_L1 && minVersion.startsWith( "3."_L1 ) && supportsQgis4 )
   {
-    maxVersion = QLatin1String( "4.99.0" );
+    maxVersion = "4.99.0"_L1;
   }
-  return minVersion != QLatin1String( "__error__" ) && checkQgisVersion( minVersion, maxVersion );
+  return minVersion != "__error__"_L1 && checkQgisVersion( minVersion, maxVersion );
 #else
   Q_UNUSED( packageName )
   return false;

@@ -51,6 +51,6 @@ void QgsAttributeEditorQmlElement::loadConfiguration( const QDomElement &element
 
 QString QgsAttributeEditorQmlElement::typeIdentifier() const
 {
-  return QStringLiteral( "attributeEditorQmlElement" );
+  return u"attributeEditorQmlElement"_s;
 }
 

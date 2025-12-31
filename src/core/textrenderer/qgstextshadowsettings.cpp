@@ -244,156 +244,156 @@ void QgsTextShadowSettings::setBlendMode( QPainter::CompositionMode mode )
 
 void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
 {
-  d->enabled = layer->customProperty( QStringLiteral( "labeling/shadowDraw" ), QVariant( false ) ).toBool();
-  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( QStringLiteral( "labeling/shadowUnder" ), QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
-  d->offsetAngle = layer->customProperty( QStringLiteral( "labeling/shadowOffsetAngle" ), QVariant( 135 ) ).toInt();
-  d->offsetDist = layer->customProperty( QStringLiteral( "labeling/shadowOffsetDist" ), QVariant( 1.0 ) ).toDouble();
+  d->enabled = layer->customProperty( u"labeling/shadowDraw"_s, QVariant( false ) ).toBool();
+  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( u"labeling/shadowUnder"_s, QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->offsetAngle = layer->customProperty( u"labeling/shadowOffsetAngle"_s, QVariant( 135 ) ).toInt();
+  d->offsetDist = layer->customProperty( u"labeling/shadowOffsetDist"_s, QVariant( 1.0 ) ).toDouble();
 
-  if ( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnit" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/shadowOffsetUnit"_s ).toString().isEmpty() )
   {
-    d->offsetUnits = QgsTextRendererUtils::convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnits" ), 0 ).toUInt() );
+    d->offsetUnits = QgsTextRendererUtils::convertFromOldLabelUnit( layer->customProperty( u"labeling/shadowOffsetUnits"_s, 0 ).toUInt() );
   }
   else
   {
-    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shadowOffsetUnit" ) ).toString() );
+    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( u"labeling/shadowOffsetUnit"_s ).toString() );
   }
-  if ( layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitScale" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/shadowOffsetMapUnitScale"_s ).toString().isEmpty() )
   {
     //fallback to older property
-    const double oldMin = layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitMinScale" ), 0.0 ).toDouble();
+    const double oldMin = layer->customProperty( u"labeling/shadowOffsetMapUnitMinScale"_s, 0.0 ).toDouble();
     d->offsetMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    const double oldMax = layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitMaxScale" ), 0.0 ).toDouble();
+    const double oldMax = layer->customProperty( u"labeling/shadowOffsetMapUnitMaxScale"_s, 0.0 ).toDouble();
     d->offsetMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
   {
-    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shadowOffsetMapUnitScale" ) ).toString() );
+    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/shadowOffsetMapUnitScale"_s ).toString() );
   }
-  d->offsetGlobal = layer->customProperty( QStringLiteral( "labeling/shadowOffsetGlobal" ), QVariant( true ) ).toBool();
-  d->radius = layer->customProperty( QStringLiteral( "labeling/shadowRadius" ), QVariant( 1.5 ) ).toDouble();
+  d->offsetGlobal = layer->customProperty( u"labeling/shadowOffsetGlobal"_s, QVariant( true ) ).toBool();
+  d->radius = layer->customProperty( u"labeling/shadowRadius"_s, QVariant( 1.5 ) ).toDouble();
 
-  if ( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnit" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/shadowRadiusUnit"_s ).toString().isEmpty() )
   {
-    d->radiusUnits = QgsTextRendererUtils::convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnits" ), 0 ).toUInt() );
+    d->radiusUnits = QgsTextRendererUtils::convertFromOldLabelUnit( layer->customProperty( u"labeling/shadowRadiusUnits"_s, 0 ).toUInt() );
   }
   else
   {
-    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/shadowRadiusUnit" ) ).toString() );
+    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( u"labeling/shadowRadiusUnit"_s ).toString() );
   }
-  if ( layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitScale" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/shadowRadiusMapUnitScale"_s ).toString().isEmpty() )
   {
     //fallback to older property
-    const double oldMin = layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitMinScale" ), 0.0 ).toDouble();
+    const double oldMin = layer->customProperty( u"labeling/shadowRadiusMapUnitMinScale"_s, 0.0 ).toDouble();
     d->radiusMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    const double oldMax = layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitMaxScale" ), 0.0 ).toDouble();
+    const double oldMax = layer->customProperty( u"labeling/shadowRadiusMapUnitMaxScale"_s, 0.0 ).toDouble();
     d->radiusMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
   {
-    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shadowRadiusMapUnitScale" ) ).toString() );
+    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/shadowRadiusMapUnitScale"_s ).toString() );
   }
-  d->radiusAlphaOnly = layer->customProperty( QStringLiteral( "labeling/shadowRadiusAlphaOnly" ), QVariant( false ) ).toBool();
+  d->radiusAlphaOnly = layer->customProperty( u"labeling/shadowRadiusAlphaOnly"_s, QVariant( false ) ).toBool();
 
-  if ( layer->customProperty( QStringLiteral( "labeling/shadowOpacity" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/shadowOpacity"_s ).toString().isEmpty() )
   {
-    d->opacity = ( 1 - layer->customProperty( QStringLiteral( "labeling/shadowTransparency" ) ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - layer->customProperty( u"labeling/shadowTransparency"_s ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( layer->customProperty( QStringLiteral( "labeling/shadowOpacity" ) ).toDouble() );
+    d->opacity = ( layer->customProperty( u"labeling/shadowOpacity"_s ).toDouble() );
   }
-  d->scale = layer->customProperty( QStringLiteral( "labeling/shadowScale" ), QVariant( 100 ) ).toInt();
-  d->color = QgsTextRendererUtils::readColor( layer, QStringLiteral( "labeling/shadowColor" ), Qt::black, false );
+  d->scale = layer->customProperty( u"labeling/shadowScale"_s, QVariant( 100 ) ).toInt();
+  d->color = QgsTextRendererUtils::readColor( layer, u"labeling/shadowColor"_s, Qt::black, false );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/shadowBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
 
 void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
-  const QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
-  d->enabled = shadowElem.attribute( QStringLiteral( "shadowDraw" ), QStringLiteral( "0" ) ).toInt();
-  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest;
-  d->offsetAngle = shadowElem.attribute( QStringLiteral( "shadowOffsetAngle" ), QStringLiteral( "135" ) ).toInt();
-  d->offsetDist = shadowElem.attribute( QStringLiteral( "shadowOffsetDist" ), QStringLiteral( "1" ) ).toDouble();
+  const QDomElement shadowElem = elem.firstChildElement( u"shadow"_s );
+  d->enabled = shadowElem.attribute( u"shadowDraw"_s, u"0"_s ).toInt();
+  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( u"shadowUnder"_s, QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->offsetAngle = shadowElem.attribute( u"shadowOffsetAngle"_s, u"135"_s ).toInt();
+  d->offsetDist = shadowElem.attribute( u"shadowOffsetDist"_s, u"1"_s ).toDouble();
 
-  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOffsetUnit" ) ) )
+  if ( !shadowElem.hasAttribute( u"shadowOffsetUnit"_s ) )
   {
-    d->offsetUnits = QgsTextRendererUtils::convertFromOldLabelUnit( shadowElem.attribute( QStringLiteral( "shadowOffsetUnits" ) ).toUInt() );
+    d->offsetUnits = QgsTextRendererUtils::convertFromOldLabelUnit( shadowElem.attribute( u"shadowOffsetUnits"_s ).toUInt() );
   }
   else
   {
-    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( QStringLiteral( "shadowOffsetUnit" ) ) );
+    d->offsetUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( u"shadowOffsetUnit"_s ) );
   }
 
-  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOffsetMapUnitScale" ) ) )
+  if ( !shadowElem.hasAttribute( u"shadowOffsetMapUnitScale"_s ) )
   {
     //fallback to older property
-    const double oldMin = shadowElem.attribute( QStringLiteral( "shadowOffsetMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMin = shadowElem.attribute( u"shadowOffsetMapUnitMinScale"_s, u"0"_s ).toDouble();
     d->offsetMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    const double oldMax = shadowElem.attribute( QStringLiteral( "shadowOffsetMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMax = shadowElem.attribute( u"shadowOffsetMapUnitMaxScale"_s, u"0"_s ).toDouble();
     d->offsetMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
   {
-    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( QStringLiteral( "shadowOffsetMapUnitScale" ) ) );
+    d->offsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( u"shadowOffsetMapUnitScale"_s ) );
   }
-  d->offsetGlobal = shadowElem.attribute( QStringLiteral( "shadowOffsetGlobal" ), QStringLiteral( "1" ) ).toInt();
-  d->radius = shadowElem.attribute( QStringLiteral( "shadowRadius" ), QStringLiteral( "1.5" ) ).toDouble();
+  d->offsetGlobal = shadowElem.attribute( u"shadowOffsetGlobal"_s, u"1"_s ).toInt();
+  d->radius = shadowElem.attribute( u"shadowRadius"_s, u"1.5"_s ).toDouble();
 
-  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowRadiusUnit" ) ) )
+  if ( !shadowElem.hasAttribute( u"shadowRadiusUnit"_s ) )
   {
-    d->radiusUnits = QgsTextRendererUtils::convertFromOldLabelUnit( shadowElem.attribute( QStringLiteral( "shadowRadiusUnits" ) ).toUInt() );
+    d->radiusUnits = QgsTextRendererUtils::convertFromOldLabelUnit( shadowElem.attribute( u"shadowRadiusUnits"_s ).toUInt() );
   }
   else
   {
-    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( QStringLiteral( "shadowRadiusUnit" ) ) );
+    d->radiusUnits = QgsUnitTypes::decodeRenderUnit( shadowElem.attribute( u"shadowRadiusUnit"_s ) );
   }
-  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowRadiusMapUnitScale" ) ) )
+  if ( !shadowElem.hasAttribute( u"shadowRadiusMapUnitScale"_s ) )
   {
     //fallback to older property
-    const double oldMin = shadowElem.attribute( QStringLiteral( "shadowRadiusMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMin = shadowElem.attribute( u"shadowRadiusMapUnitMinScale"_s, u"0"_s ).toDouble();
     d->radiusMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    const double oldMax = shadowElem.attribute( QStringLiteral( "shadowRadiusMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMax = shadowElem.attribute( u"shadowRadiusMapUnitMaxScale"_s, u"0"_s ).toDouble();
     d->radiusMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
   {
-    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( QStringLiteral( "shadowRadiusMapUnitScale" ) ) );
+    d->radiusMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( shadowElem.attribute( u"shadowRadiusMapUnitScale"_s ) );
   }
-  d->radiusAlphaOnly = shadowElem.attribute( QStringLiteral( "shadowRadiusAlphaOnly" ), QStringLiteral( "0" ) ).toInt();
+  d->radiusAlphaOnly = shadowElem.attribute( u"shadowRadiusAlphaOnly"_s, u"0"_s ).toInt();
 
-  if ( !shadowElem.hasAttribute( QStringLiteral( "shadowOpacity" ) ) )
+  if ( !shadowElem.hasAttribute( u"shadowOpacity"_s ) )
   {
-    d->opacity = ( 1 - shadowElem.attribute( QStringLiteral( "shadowTransparency" ) ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - shadowElem.attribute( u"shadowTransparency"_s ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( shadowElem.attribute( QStringLiteral( "shadowOpacity" ) ).toDouble() );
+    d->opacity = ( shadowElem.attribute( u"shadowOpacity"_s ).toDouble() );
   }
-  d->scale = shadowElem.attribute( QStringLiteral( "shadowScale" ), QStringLiteral( "100" ) ).toInt();
-  d->color = QgsColorUtils::colorFromString( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( Qt::black ) ) );
+  d->scale = shadowElem.attribute( u"shadowScale"_s, u"100"_s ).toInt();
+  d->color = QgsColorUtils::colorFromString( shadowElem.attribute( u"shadowColor"_s, QgsColorUtils::colorToString( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
+                   static_cast< Qgis::BlendMode >( shadowElem.attribute( u"shadowBlendMode"_s, QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
 
 QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
 {
-  QDomElement shadowElem = doc.createElement( QStringLiteral( "shadow" ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowDraw" ), d->enabled );
-  shadowElem.setAttribute( QStringLiteral( "shadowUnder" ), static_cast< unsigned int >( d->shadowUnder ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowOffsetAngle" ), d->offsetAngle );
-  shadowElem.setAttribute( QStringLiteral( "shadowOffsetDist" ), d->offsetDist );
-  shadowElem.setAttribute( QStringLiteral( "shadowOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowOffsetGlobal" ), d->offsetGlobal );
-  shadowElem.setAttribute( QStringLiteral( "shadowRadius" ), d->radius );
-  shadowElem.setAttribute( QStringLiteral( "shadowRadiusUnit" ), QgsUnitTypes::encodeUnit( d->radiusUnits ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowRadiusMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowRadiusAlphaOnly" ), d->radiusAlphaOnly );
-  shadowElem.setAttribute( QStringLiteral( "shadowOpacity" ), d->opacity );
-  shadowElem.setAttribute( QStringLiteral( "shadowScale" ), d->scale );
-  shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( d->color ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
+  QDomElement shadowElem = doc.createElement( u"shadow"_s );
+  shadowElem.setAttribute( u"shadowDraw"_s, d->enabled );
+  shadowElem.setAttribute( u"shadowUnder"_s, static_cast< unsigned int >( d->shadowUnder ) );
+  shadowElem.setAttribute( u"shadowOffsetAngle"_s, d->offsetAngle );
+  shadowElem.setAttribute( u"shadowOffsetDist"_s, d->offsetDist );
+  shadowElem.setAttribute( u"shadowOffsetUnit"_s, QgsUnitTypes::encodeUnit( d->offsetUnits ) );
+  shadowElem.setAttribute( u"shadowOffsetMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
+  shadowElem.setAttribute( u"shadowOffsetGlobal"_s, d->offsetGlobal );
+  shadowElem.setAttribute( u"shadowRadius"_s, d->radius );
+  shadowElem.setAttribute( u"shadowRadiusUnit"_s, QgsUnitTypes::encodeUnit( d->radiusUnits ) );
+  shadowElem.setAttribute( u"shadowRadiusMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
+  shadowElem.setAttribute( u"shadowRadiusAlphaOnly"_s, d->radiusAlphaOnly );
+  shadowElem.setAttribute( u"shadowOpacity"_s, d->opacity );
+  shadowElem.setAttribute( u"shadowScale"_s, d->scale );
+  shadowElem.setAttribute( u"shadowColor"_s, QgsColorUtils::colorToString( d->color ) );
+  shadowElem.setAttribute( u"shadowBlendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   return shadowElem;
 }
 

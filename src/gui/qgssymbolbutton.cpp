@@ -559,7 +559,7 @@ void QgsSymbolButton::prepareMenu()
     QList<QgsColorScheme *>::iterator it = schemeList.begin();
     for ( ; it != schemeList.end(); ++it )
     {
-      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, QStringLiteral( "symbology" ), this );
+      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, u"symbology"_s, this );
       colorAction->setBaseColor( mSymbol->color() );
       mMenu->addAction( colorAction );
       connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsSymbolButton::setColor );
@@ -708,7 +708,7 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
-  setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width ) );
+  setToolTip( u"<img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width ) );
 }
 
 bool QgsSymbolButton::colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha )

@@ -141,9 +141,9 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( mRubberBand )
   {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
-    settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
-    settings.setEnumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), item->sizeWithUnits().units() );
+    settings.setValue( u"LayoutDesigner/lastItemWidth"_s, item->sizeWithUnits().width() );
+    settings.setValue( u"LayoutDesigner/lastItemHeight"_s, item->sizeWithUnits().height() );
+    settings.setEnumValue( u"LayoutDesigner/lastSizeUnit"_s, item->sizeWithUnits().units() );
   }
 
   QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item, mCustomProperties );

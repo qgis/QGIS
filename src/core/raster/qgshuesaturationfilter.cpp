@@ -30,7 +30,7 @@ QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface *input )
 
 QgsHueSaturationFilter *QgsHueSaturationFilter::clone() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered hue/saturation filter" ), 4 );
+  QgsDebugMsgLevel( u"Entered hue/saturation filter"_s, 4 );
   QgsHueSaturationFilter *filter = new QgsHueSaturationFilter( nullptr );
   filter->setInvertColors( mInvertColors );
   filter->setSaturation( mSaturation );
@@ -73,45 +73,45 @@ Qgis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
 
 bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
 
   // Hue/saturation filter can only work with single band ARGB32_Premultiplied
   if ( !input )
   {
-    QgsDebugError( QStringLiteral( "No input" ) );
+    QgsDebugError( u"No input"_s );
     return false;
   }
 
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
+    QgsDebugMsgLevel( u"OK"_s, 4 );
     mInput = input;
     return true;
   }
 
   if ( input->bandCount() < 1 )
   {
-    QgsDebugError( QStringLiteral( "No input band" ) );
+    QgsDebugError( u"No input band"_s );
     return false;
   }
 
   if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
        input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
-    QgsDebugError( QStringLiteral( "Unknown input data type" ) );
+    QgsDebugError( u"Unknown input data type"_s );
     return false;
   }
 
   mInput = input;
-  QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
+  QgsDebugMsgLevel( u"OK"_s, 4 );
   return true;
 }
 
 QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
-  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
+  QgsDebugMsgLevel( u"width = %1 height = %2 extent = %3"_s.arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
   if ( !mInput )
   {
@@ -123,13 +123,13 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( u"No raster data!"_s );
     return nullptr;
   }
 
   if ( !mInvertColors && mSaturation == 0 && mGrayscaleMode == GrayscaleOff && !mColorizeOn )
   {
-    QgsDebugMsgLevel( QStringLiteral( "No hue/saturation change." ), 4 );
+    QgsDebugMsgLevel( u"No hue/saturation change."_s, 4 );
     return inputBlock.release();
   }
 
@@ -359,16 +359,16 @@ void QgsHueSaturationFilter::writeXml( QDomDocument &doc, QDomElement &parentEle
     return;
   }
 
-  QDomElement filterElem = doc.createElement( QStringLiteral( "huesaturation" ) );
+  QDomElement filterElem = doc.createElement( u"huesaturation"_s );
 
-  filterElem.setAttribute( QStringLiteral( "saturation" ), QString::number( mSaturation ) );
-  filterElem.setAttribute( QStringLiteral( "grayscaleMode" ), QString::number( mGrayscaleMode ) );
-  filterElem.setAttribute( QStringLiteral( "invertColors" ), QString::number( mInvertColors ) );
-  filterElem.setAttribute( QStringLiteral( "colorizeOn" ), QString::number( mColorizeOn ) );
-  filterElem.setAttribute( QStringLiteral( "colorizeRed" ), QString::number( mColorizeColor.red() ) );
-  filterElem.setAttribute( QStringLiteral( "colorizeGreen" ), QString::number( mColorizeColor.green() ) );
-  filterElem.setAttribute( QStringLiteral( "colorizeBlue" ), QString::number( mColorizeColor.blue() ) );
-  filterElem.setAttribute( QStringLiteral( "colorizeStrength" ), QString::number( mColorizeStrength ) );
+  filterElem.setAttribute( u"saturation"_s, QString::number( mSaturation ) );
+  filterElem.setAttribute( u"grayscaleMode"_s, QString::number( mGrayscaleMode ) );
+  filterElem.setAttribute( u"invertColors"_s, QString::number( mInvertColors ) );
+  filterElem.setAttribute( u"colorizeOn"_s, QString::number( mColorizeOn ) );
+  filterElem.setAttribute( u"colorizeRed"_s, QString::number( mColorizeColor.red() ) );
+  filterElem.setAttribute( u"colorizeGreen"_s, QString::number( mColorizeColor.green() ) );
+  filterElem.setAttribute( u"colorizeBlue"_s, QString::number( mColorizeColor.blue() ) );
+  filterElem.setAttribute( u"colorizeStrength"_s, QString::number( mColorizeStrength ) );
 
   parentElem.appendChild( filterElem );
 }
@@ -380,15 +380,15 @@ void QgsHueSaturationFilter::readXml( const QDomElement &filterElem )
     return;
   }
 
-  setSaturation( filterElem.attribute( QStringLiteral( "saturation" ), QStringLiteral( "0" ) ).toInt() );
-  mGrayscaleMode = static_cast< QgsHueSaturationFilter::GrayscaleMode >( filterElem.attribute( QStringLiteral( "grayscaleMode" ), QStringLiteral( "0" ) ).toInt() );
-  mInvertColors = static_cast< bool >( filterElem.attribute( QStringLiteral( "invertColors" ), QStringLiteral( "0" ) ).toInt() );
+  setSaturation( filterElem.attribute( u"saturation"_s, u"0"_s ).toInt() );
+  mGrayscaleMode = static_cast< QgsHueSaturationFilter::GrayscaleMode >( filterElem.attribute( u"grayscaleMode"_s, u"0"_s ).toInt() );
+  mInvertColors = static_cast< bool >( filterElem.attribute( u"invertColors"_s, u"0"_s ).toInt() );
 
-  mColorizeOn = static_cast< bool >( filterElem.attribute( QStringLiteral( "colorizeOn" ), QStringLiteral( "0" ) ).toInt() );
-  int mColorizeRed = filterElem.attribute( QStringLiteral( "colorizeRed" ), QStringLiteral( "255" ) ).toInt();
-  int mColorizeGreen = filterElem.attribute( QStringLiteral( "colorizeGreen" ), QStringLiteral( "128" ) ).toInt();
-  int mColorizeBlue = filterElem.attribute( QStringLiteral( "colorizeBlue" ), QStringLiteral( "128" ) ).toInt();
+  mColorizeOn = static_cast< bool >( filterElem.attribute( u"colorizeOn"_s, u"0"_s ).toInt() );
+  int mColorizeRed = filterElem.attribute( u"colorizeRed"_s, u"255"_s ).toInt();
+  int mColorizeGreen = filterElem.attribute( u"colorizeGreen"_s, u"128"_s ).toInt();
+  int mColorizeBlue = filterElem.attribute( u"colorizeBlue"_s, u"128"_s ).toInt();
   setColorizeColor( QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue ) );
-  mColorizeStrength = filterElem.attribute( QStringLiteral( "colorizeStrength" ), QStringLiteral( "100" ) ).toInt();
+  mColorizeStrength = filterElem.attribute( u"colorizeStrength"_s, u"100"_s ).toInt();
 
 }

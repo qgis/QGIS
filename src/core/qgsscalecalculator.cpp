@@ -47,13 +47,13 @@ double QgsScaleCalculator::dpi() const
 
 void QgsScaleCalculator::setMapUnits( Qgis::DistanceUnit mapUnits )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Map units set to %1" ).arg( qgsEnumValueToKey( mapUnits ) ), 3 );
+  QgsDebugMsgLevel( u"Map units set to %1"_s.arg( qgsEnumValueToKey( mapUnits ) ), 3 );
   mMapUnits = mapUnits;
 }
 
 Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "Map units returned as %1" ).arg( qgsEnumValueToKey( mMapUnits ) ), 4 );
+  QgsDebugMsgLevel( u"Map units returned as %1"_s.arg( qgsEnumValueToKey( mMapUnits ) ), 4 );
   return mMapUnits;
 }
 
@@ -61,7 +61,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
 {
   if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
-    QgsDebugError( QStringLiteral( "Can't calculate scale from the input values" ) );
+    QgsDebugError( u"Can't calculate scale from the input values"_s );
     return 0;
   }
 
@@ -70,7 +70,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
   calculateMetrics( mapExtent, delta, conversionFactor );
 
   const double scale = ( delta * conversionFactor ) / ( static_cast< double >( canvasWidth ) / mDpi );
-  QgsDebugMsgLevel( QStringLiteral( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ), 4 );
+  QgsDebugMsgLevel( u"scale = %1 conversionFactor = %2"_s.arg( scale ).arg( conversionFactor ), 4 );
   return scale;
 }
 
@@ -78,7 +78,7 @@ QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, do
 {
   if ( qgsDoubleNear( scale, 0.0 ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
-    QgsDebugError( QStringLiteral( "Can't calculate image size from the input values" ) );
+    QgsDebugError( u"Can't calculate image size from the input values"_s );
     return QSizeF();
   }
   double conversionFactor = 0;
@@ -89,7 +89,7 @@ QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, do
   const double deltaHeight = ( mapExtent.yMaximum() - mapExtent.yMinimum() ) * delta / ( mapExtent.xMaximum() - mapExtent.xMinimum() );
   const double imageHeight = ( deltaHeight * conversionFactor ) / ( static_cast< double >( scale ) ) * mDpi;
 
-  QgsDebugMsgLevel( QStringLiteral( "imageWidth = %1 imageHeight = %2 conversionFactor = %3" )
+  QgsDebugMsgLevel( u"imageWidth = %1 imageHeight = %2 conversionFactor = %3"_s
                     .arg( imageWidth ).arg( imageHeight ).arg( conversionFactor ), 4 );
 
   return QSizeF( imageWidth, imageHeight );

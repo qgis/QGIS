@@ -171,8 +171,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mArrangementCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignRight );
   connect( mArrangementCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::arrangementChanged );
-  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
-  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( u"/mIconArrangeSymbolsLeft.svg"_s ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( u"/mIconArrangeSymbolsRight.svg"_s ) );
 
   mSpaceBelowGroupHeadingSpinBox->setClearValue( 0 );
   mGroupSideSpinBox->setClearValue( 0 );
@@ -208,7 +208,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mRasterStrokeColorButton->setAllowOpacity( true );
-  mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
+  mRasterStrokeColorButton->setContext( u"composer "_s );
 
   mMapComboBox->setCurrentLayout( legend->layout() );
   mMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
@@ -1122,7 +1122,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
   const auto constCustomProperties = nodeLayer->customProperties();
   for ( const QString &key : constCustomProperties )
   {
-    if ( key.startsWith( QLatin1String( "legend/" ) ) )
+    if ( key.startsWith( "legend/"_L1 ) )
       nodeLayer->removeCustomProperty( key );
   }
 
@@ -1154,7 +1154,7 @@ void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
     if ( !QgsLayerTree::isLayer( currentNode ) )
       continue;
 
-    currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+    currentNode->setCustomProperty( u"showFeatureCount"_s, checked ? 1 : 0 );
   }
   mLegend->updateFilterByMap();
   mLegend->adjustBoxSize();
@@ -1219,7 +1219,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QString currentExpression;
   if ( layerNode->labelExpression().isEmpty() )
-    currentExpression = QStringLiteral( "@symbol_label" );
+    currentExpression = u"@symbol_label"_s;
   else
     currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
@@ -1234,7 +1234,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
       if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
       {
         legendContext.appendScope( symbolNode->createSymbolScope() );
-        highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
+        highlighted << u"symbol_label"_s << u"symbol_id"_s << u"symbol_count"_s;
       }
     }
   }
@@ -1247,7 +1247,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   limitedLayerScope->setFields( QgsFields() );
   legendContext.appendScope( limitedLayerScope );
 
-  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
+  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, u"generic"_s, legendContext );
   if ( expressiondialog.exec() )
   {
     layerNode->setLabelExpression( expressiondialog.expressionText() );
@@ -1428,7 +1428,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
   if ( !vl )
     return;
 
-  mCountToolButton->setChecked( currentNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
+  mCountToolButton->setChecked( currentNode->customProperty( u"showFeatureCount"_s, 0 ).toInt() );
   mCountToolButton->setEnabled( true );
   mLayerExpressionButton->setEnabled( true );
 
@@ -1574,17 +1574,17 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   else if ( mLayer )
   {
     currentLabel = mLayer->name();
-    QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
+    QVariant v = mLayer->customProperty( u"legend/title-label"_s );
     if ( !QgsVariantUtils::isNull( v ) )
       currentLabel = v.toString();
-    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( u"legend/column-break"_s ).toInt() );
 
     mColumnSplitBehaviorComboBox->setCurrentIndex( mColumnSplitBehaviorComboBox->findData( mLayer->legendSplitBehavior() ) );
   }
   else
   {
     currentLabel = QgsLayerTree::toGroup( mNode )->name();
-    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( u"legend/column-break"_s ).toInt() );
   }
 
   mWidthSpinBox->setClearValue( 0, tr( "Default" ) );
@@ -1764,7 +1764,7 @@ void QgsLayoutLegendNodeWidget::labelChanged()
   }
   else if ( mLayer )
   {
-    mLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), label );
+    mLayer->setCustomProperty( u"legend/title-label"_s, label );
 
     // force update of label of the legend node with embedded icon (a bit clumsy i know)
     if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
@@ -1820,9 +1820,9 @@ void QgsLayoutLegendNodeWidget::insertExpression()
     context.appendScope( QgsExpressionContextUtils::layerScope( mLayer->layer() ) );
   }
 
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "legend_title" ) << QStringLiteral( "legend_column_count" ) << QStringLiteral( "legend_split_layers" ) << QStringLiteral( "legend_wrap_string" ) << QStringLiteral( "legend_filter_by_map" ) << QStringLiteral( "legend_filter_out_atlas" ) );
+  context.setHighlightedVariables( QStringList() << u"legend_title"_s << u"legend_column_count"_s << u"legend_split_layers"_s << u"legend_wrap_string"_s << u"legend_filter_by_map"_s << u"legend_filter_out_atlas"_s );
 
-  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -1931,11 +1931,11 @@ void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
   }
   else if ( mLayer )
   {
-    mLayer->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+    mLayer->setCustomProperty( u"legend/column-break"_s, QString( checked ? '1' : '0' ) );
   }
   else if ( mNode )
   {
-    mNode->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+    mNode->setCustomProperty( u"legend/column-break"_s, QString( checked ? '1' : '0' ) );
   }
 
   mLegend->adjustBoxSize();

@@ -86,7 +86,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
-    mRasterPath = mIsOgcApi ? QStringLiteral( "OGCAPI:%1" ).arg( path ) : path;
+    mRasterPath = mIsOgcApi ? u"OGCAPI:%1"_s.arg( path ) : path;
     emit enableButtons( !mRasterPath.isEmpty() );
     fillOpenOptions();
   } );
@@ -98,7 +98,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
   connect( mCredentialsWidget, &QgsGdalCredentialOptionsWidget::optionsChanged, this, &QgsGdalSourceSelect::credentialOptionsChanged );
 
-  mAuthSettingsProtocol->setDataprovider( QStringLiteral( "gdal" ) );
+  mAuthSettingsProtocol->setDataprovider( u"gdal"_s );
 }
 
 void QgsGdalSourceSelect::setProtocolWidgetsVisibility()
@@ -149,7 +149,7 @@ void QgsGdalSourceSelect::radioSrcOgcApi_toggled( bool checked )
     emit enableButtons( !vectorPath.isEmpty() );
     if ( mRasterPath.isEmpty() )
     {
-      mRasterPath = QStringLiteral( "OGCAPI:" );
+      mRasterPath = u"OGCAPI:"_s;
     }
     fillOpenOptions();
   }
@@ -204,11 +204,11 @@ void QgsGdalSourceSelect::addButtonClicked()
 
   for ( const QString &originalSource : std::as_const( mDataSources ) )
   {
-    QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), originalSource );
+    QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"gdal"_s, originalSource );
 
-    const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
-    const QString scheme = QUrl( parts.value( QStringLiteral( "path" ) ).toString() ).scheme();
-    const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) );
+    const QString vsiPrefix = parts.value( u"vsiPrefix"_s ).toString();
+    const QString scheme = QUrl( parts.value( u"path"_s ).toString() ).scheme();
+    const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( "http"_L1 ) || scheme == "ftp"_L1 );
     if ( isRemoteNonVsiCurlUrl )
     {
       if ( promoteToVsiCurlStatus == PromoteToVsiCurlStatus::NotAsked )
@@ -228,11 +228,11 @@ void QgsGdalSourceSelect::addButtonClicked()
 
       if ( promoteToVsiCurlStatus == PromoteToVsiCurlStatus::AutoPromote )
       {
-        parts.insert( QStringLiteral( "vsiPrefix" ), QStringLiteral( "/vsicurl/" ) );
+        parts.insert( u"vsiPrefix"_s, u"/vsicurl/"_s );
       }
     }
 
-    sources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+    sources << QgsProviderRegistry::instance()->encodeUri( u"gdal"_s, parts );
   }
 
   emit addRasterLayers( sources );
@@ -242,14 +242,14 @@ bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
 {
   mDataSources.clear();
   mDataSources.append( uri );
-  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
-  const QString layerName { decodedUri.value( QStringLiteral( "layerName" ) ).toString() };
-  mFileWidget->setFilePath( decodedUri.value( QStringLiteral( "path" ), QString() ).toString() );
-  QVariantMap openOptions = decodedUri.value( QStringLiteral( "openOptions" ) ).toMap();
+  const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( u"gdal"_s, uri );
+  const QString layerName { decodedUri.value( u"layerName"_s ).toString() };
+  mFileWidget->setFilePath( decodedUri.value( u"path"_s, QString() ).toString() );
+  QVariantMap openOptions = decodedUri.value( u"openOptions"_s ).toMap();
   // layerName becomes TABLE in some driver opening options (e.g. GPKG)
   if ( !layerName.isEmpty() )
   {
-    openOptions.insert( QStringLiteral( "TABLE" ), layerName );
+    openOptions.insert( u"TABLE"_s, layerName );
   }
 
   if ( !openOptions.isEmpty() )
@@ -335,7 +335,7 @@ void QgsGdalSourceSelect::computeDataSources()
     }
     if ( !value.isEmpty() )
     {
-      openOptions << QStringLiteral( "%1=%2" ).arg( control->objectName(), value );
+      openOptions << u"%1=%2"_s.arg( control->objectName(), value );
     }
   }
 
@@ -347,9 +347,9 @@ void QgsGdalSourceSelect::computeDataSources()
     {
       QVariantMap parts;
       if ( !openOptions.isEmpty() )
-        parts.insert( QStringLiteral( "openOptions" ), openOptions );
-      parts.insert( QStringLiteral( "path" ), filePath );
-      mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+        parts.insert( u"openOptions"_s, openOptions );
+      parts.insert( u"path"_s, filePath );
+      mDataSources << QgsProviderRegistry::instance()->encodeUri( u"gdal"_s, parts );
     }
   }
   else if ( radioSrcProtocol->isChecked() )
@@ -367,7 +367,7 @@ void QgsGdalSourceSelect::computeDataSources()
     QString uri;
     if ( cloudType )
     {
-      uri = QStringLiteral( "%1/%2" ).arg( mBucket->text(), mKey->text() );
+      uri = u"%1/%2"_s.arg( mBucket->text(), mKey->text() );
     }
     else
     {
@@ -376,11 +376,11 @@ void QgsGdalSourceSelect::computeDataSources()
 
     QVariantMap parts;
     if ( !openOptions.isEmpty() )
-      parts.insert( QStringLiteral( "openOptions" ), openOptions );
+      parts.insert( u"openOptions"_s, openOptions );
     if ( !credentialOptions.isEmpty() )
-      parts.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
-    parts.insert( QStringLiteral( "path" ), QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() ) );
-    mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+      parts.insert( u"credentialOptions"_s, credentialOptions );
+    parts.insert( u"path"_s, QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() ) );
+    mDataSources << QgsProviderRegistry::instance()->encodeUri( u"gdal"_s, parts );
   }
 }
 
@@ -407,7 +407,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
   const QString firstDataSource = mDataSources.at( 0 );
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( firstDataSource );
   const QString scheme = QUrl( firstDataSource ).scheme();
-  const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) );
+  const bool isRemoteNonVsiCurlUrl = vsiPrefix.isEmpty() && ( scheme.startsWith( "http"_L1 ) || scheme == "ftp"_L1 );
   if ( isRemoteNonVsiCurlUrl )
   {
     // it can be very expensive to determine open options for non /vsicurl/ http uris -- it may require a full download of the remote dataset,
@@ -416,20 +416,20 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
   }
 
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), firstDataSource );
-  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
-  parts.remove( QStringLiteral( "credentialOptions" ) );
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"gdal"_s, firstDataSource );
+  const QVariantMap credentialOptions = parts.value( u"credentialOptions"_s ).toMap();
+  parts.remove( u"credentialOptions"_s );
   if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
   {
-    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
-    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
+    const thread_local QRegularExpression bucketRx( u"^(.*)/"_s );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( u"path"_s ).toString() );
     if ( bucketMatch.hasMatch() )
     {
       QgsGdalUtils::applyVsiCredentialOptions( vsiPrefix, bucketMatch.captured( 1 ), credentialOptions );
     }
   }
 
-  const QString gdalUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+  const QString gdalUri = QgsProviderRegistry::instance()->encodeUri( u"gdal"_s, parts );
   GDALDriverH hDriver;
   hDriver = GDALIdentifyDriverEx( gdalUri.toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
   if ( !hDriver )
@@ -456,7 +456,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
   {
     // Exclude options that are not of raster scope
     if ( !option.scope.isEmpty()
-         && option.scope.compare( QLatin1String( "raster" ), Qt::CaseInsensitive ) != 0 )
+         && option.scope.compare( "raster"_L1, Qt::CaseInsensitive ) != 0 )
       continue;
 
     QWidget *control = QgsGdalGuiUtils::createWidgetForOption( option, nullptr, true );
@@ -464,15 +464,15 @@ void QgsGdalSourceSelect::fillOpenOptions()
       continue;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 8, 0 )
-    if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0
-         && option.name == QLatin1String( "MODE" ) && option.options.contains( QLatin1String( "INTERPOLATED" ) ) )
+    if ( QString( GDALGetDriverShortName( hDriver ) ).compare( "BAG"_L1 ) == 0
+         && option.name == "MODE"_L1 && option.options.contains( "INTERPOLATED"_L1 ) )
     {
       gdal::dataset_unique_ptr hSrcDS( GDALOpen( gdalUri.toUtf8().constData(), GA_ReadOnly ) );
-      if ( hSrcDS && QString { GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
+      if ( hSrcDS && QString { GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == "TRUE"_L1 )
       {
         if ( QComboBox *combo = qobject_cast<QComboBox *>( control ) )
         {
-          combo->setCurrentIndex( combo->findText( QLatin1String( "INTERPOLATED" ) ) );
+          combo->setCurrentIndex( combo->findText( "INTERPOLATED"_L1 ) );
         }
       }
     }
@@ -483,7 +483,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
 
     QLabel *label = new QLabel( option.name );
     if ( !option.description.isEmpty() )
-      label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option.description ) );
+      label->setToolTip( u"<p>%1</p>"_s.arg( option.description ) );
 
     mOpenOptionsLayout->addRow( label, control );
   }
@@ -507,7 +507,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
 
 void QgsGdalSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-layer-from-a-file"_s );
 }
 
 void QgsGdalSourceSelect::updateProtocolOptions()

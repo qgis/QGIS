@@ -136,30 +136,30 @@ emitted.
 Returns ``True`` if this item is equal to an ``other`` item.
 %End
 
- virtual QWidget *paramWidget() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
+ virtual QWidget *paramWidget() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.40
 
-   Is unused and will be removed in QGIS 4.0.
+   Is unused and will be removed in QGIS 5.0.
 %End
 
- virtual bool acceptDrop() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
+ virtual bool acceptDrop() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 5.0."/;
 %Docstring
 Returns ``True`` if the item accepts drag & dropped layers - e.g. for
 import.
 
 .. deprecated:: 3.40
 
-   Is unused and will be removed in QGIS 4.0.
+   Is unused and will be removed in QGIS 5.0.
 %End
 
- virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
+ virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) /Deprecated="Since 3.40. Is unused and will be removed in QGIS 5.0."/;
 %Docstring
 Tries to process the ``data`` dropped on this item.
 
 .. deprecated:: 3.40
 
-   Is unused and will be removed in QGIS 4.0.
+   Is unused and will be removed in QGIS 5.0.
 %End
 
 

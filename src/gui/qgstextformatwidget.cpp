@@ -82,39 +82,39 @@ void QgsTextFormatWidget::initWidget()
   mGeometryGeneratorGroupBox->setCollapsed( true );
 
   mTextItem = new QListWidgetItem( tr( "Text" ), mLabelingOptionsListWidget );
-  mTextItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labeltext.svg" ) ) );
+  mTextItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labeltext.svg"_s ) );
   mTextItem->setToolTip( tr( "Text style" ) );
 
   mFormattingItem = new QListWidgetItem( tr( "Formatting" ), mLabelingOptionsListWidget );
-  mFormattingItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelformatting.svg" ) ) );
+  mFormattingItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelformatting.svg"_s ) );
   mFormattingItem->setToolTip( tr( "Formatting" ) );
 
   mBufferItem = new QListWidgetItem( tr( "Buffer" ), mLabelingOptionsListWidget );
-  mBufferItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelbuffer.svg" ) ) );
+  mBufferItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelbuffer.svg"_s ) );
   mBufferItem->setToolTip( tr( "Buffer" ) );
 
   mMaskItem = new QListWidgetItem( tr( "Mask" ), mLabelingOptionsListWidget );
-  mMaskItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelmask.svg" ) ) );
+  mMaskItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelmask.svg"_s ) );
   mMaskItem->setToolTip( tr( "Mask" ) );
 
   mBackgroundItem = new QListWidgetItem( tr( "Background" ), mLabelingOptionsListWidget );
-  mBackgroundItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelbackground.svg" ) ) );
+  mBackgroundItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelbackground.svg"_s ) );
   mBackgroundItem->setToolTip( tr( "Background" ) );
 
   mShadowItem = new QListWidgetItem( tr( "Shadow" ), mLabelingOptionsListWidget );
-  mShadowItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelshadow.svg" ) ) );
+  mShadowItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelshadow.svg"_s ) );
   mShadowItem->setToolTip( tr( "Shadow" ) );
 
   mCalloutItem = new QListWidgetItem( tr( "Callouts" ), mLabelingOptionsListWidget );
-  mCalloutItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelcallout.svg" ) ) );
+  mCalloutItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelcallout.svg"_s ) );
   mCalloutItem->setToolTip( tr( "Callouts" ) );
 
   mPlacementItem = new QListWidgetItem( tr( "Placement" ), mLabelingOptionsListWidget );
-  mPlacementItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelplacement.svg" ) ) );
+  mPlacementItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/labelplacement.svg"_s ) );
   mPlacementItem->setToolTip( tr( "Placement" ) );
 
   mRenderingItem = new QListWidgetItem( tr( "Rendering" ), mLabelingOptionsListWidget );
-  mRenderingItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/render.svg" ) ) );
+  mRenderingItem->setIcon( QgsApplication::getThemeIcon( u"propertyicons/render.svg"_s ) );
   mRenderingItem->setToolTip( tr( "Rendering" ) );
 
 #if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
@@ -231,8 +231,8 @@ void QgsTextFormatWidget::initWidget()
   mPointOffsetBelowLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetBelow->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetBelowRight->setIconSize( QSize( iconSize32, iconSize18 ) );
-  mLabelMinScale->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ).pixmap( QSize( iconSize24, iconSize24 ) ) );
-  mLabelMaxScale->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ).pixmap( QSize( iconSize24, iconSize24 ) ) );
+  mLabelMinScale->setPixmap( QgsApplication::getThemeIcon( u"/mActionZoomOut.svg"_s ).pixmap( QSize( iconSize24, iconSize24 ) ) );
+  mLabelMaxScale->setPixmap( QgsApplication::getThemeIcon( u"/mActionZoomIn.svg"_s ).pixmap( QSize( iconSize24, iconSize24 ) ) );
 
   const int buttonSize = QgsGuiUtils::scaleIconSize( 24 );
   mFontUnderlineBtn->setMinimumSize( buttonSize, buttonSize );
@@ -343,20 +343,20 @@ void QgsTextFormatWidget::initWidget()
 
   // color buttons
   mPreviewBackgroundBtn->setColorDialogTitle( tr( "Select Fill Color" ) );
-  mPreviewBackgroundBtn->setContext( QStringLiteral( "labeling" ) );
+  mPreviewBackgroundBtn->setContext( u"labeling"_s );
   mPreviewBackgroundBtn->setColor( QColor( 255, 255, 255 ) );
   btnTextColor->setColorDialogTitle( tr( "Select Text Color" ) );
-  btnTextColor->setContext( QStringLiteral( "labeling" ) );
+  btnTextColor->setContext( u"labeling"_s );
   btnTextColor->setDefaultColor( Qt::black );
   btnBufferColor->setColorDialogTitle( tr( "Select Buffer Color" ) );
-  btnBufferColor->setContext( QStringLiteral( "labeling" ) );
+  btnBufferColor->setContext( u"labeling"_s );
   btnBufferColor->setDefaultColor( Qt::white );
   mShapeStrokeColorBtn->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  mShapeStrokeColorBtn->setContext( QStringLiteral( "labeling" ) );
+  mShapeStrokeColorBtn->setContext( u"labeling"_s );
   mShapeFillColorBtn->setColorDialogTitle( tr( "Select Fill Color" ) );
-  mShapeFillColorBtn->setContext( QStringLiteral( "labeling" ) );
+  mShapeFillColorBtn->setContext( u"labeling"_s );
   mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
-  mShadowColorBtn->setContext( QStringLiteral( "labeling" ) );
+  mShadowColorBtn->setContext( u"labeling"_s );
   mShadowColorBtn->setDefaultColor( Qt::black );
 
   mFontColorDDBtn->registerLinkedWidget( btnTextColor );
@@ -407,7 +407,7 @@ void QgsTextFormatWidget::initWidget()
   const auto groupBoxes = findChildren<QgsCollapsibleGroupBox *>();
   for ( QgsCollapsibleGroupBox *grpbox : groupBoxes )
   {
-    grpbox->setSettingGroup( QStringLiteral( "mAdvLabelingDlg" ) );
+    grpbox->setSettingGroup( u"mAdvLabelingDlg"_s );
   }
 
   connect( groupBox_mPreview, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsTextFormatWidget::collapseSample );
@@ -421,7 +421,7 @@ void QgsTextFormatWidget::initWidget()
   QSizePolicy policy( mLabelingOptionsListFrame->sizePolicy() );
   policy.setHorizontalStretch( 0 );
   mLabelingOptionsListFrame->setSizePolicy( policy );
-  if ( !settings.contains( QStringLiteral( "/Windows/Labeling/OptionsSplitState" ) ) )
+  if ( !settings.contains( u"/Windows/Labeling/OptionsSplitState"_s ) )
   {
     // set left list widget width on initial showing
     QList<int> splitsizes;
@@ -433,10 +433,10 @@ void QgsTextFormatWidget::initWidget()
   connect( mLabelStackedWidget, &QStackedWidget::currentChanged, this, &QgsTextFormatWidget::optionsStackedWidget_CurrentChanged );
 
   // restore dialog, splitters and current tab
-  mFontPreviewSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/FontPreviewSplitState" ) ).toByteArray() );
-  mLabelingOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
+  mFontPreviewSplitter->restoreState( settings.value( u"Windows/Labeling/FontPreviewSplitState"_s ).toByteArray() );
+  mLabelingOptionsSplitter->restoreState( settings.value( u"Windows/Labeling/OptionsSplitState"_s ).toByteArray() );
 
-  mLabelingOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/Labeling/Tab" ), 0 ).toInt() );
+  mLabelingOptionsListWidget->setCurrentRow( settings.value( u"Windows/Labeling/Tab"_s, 0 ).toInt() );
 
   mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   connect( mBufferEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
@@ -828,7 +828,7 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets )
     }
     else
     {
-      QgsLogger::warning( QStringLiteral( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
+      QgsLogger::warning( u"Could not create connection for widget %1"_s.arg( widget->objectName() ) );
     }
   }
 }
@@ -1101,7 +1101,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     QString txtPrepend = tr( "Chosen font" );
     if ( !format.resolvedFontFamily().isEmpty() )
     {
-      txtPrepend = QStringLiteral( "'%1'" ).arg( format.resolvedFontFamily() );
+      txtPrepend = u"'%1'"_s.arg( format.resolvedFontFamily() );
     }
     mFontMissingLabel->setText( missingTxt.arg( txtPrepend ) );
 
@@ -1193,8 +1193,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 QgsTextFormatWidget::~QgsTextFormatWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Labeling/FontPreviewSplitState" ), mFontPreviewSplitter->saveState() );
-  settings.setValue( QStringLiteral( "Windows/Labeling/OptionsSplitState" ), mLabelingOptionsSplitter->saveState() );
+  settings.setValue( u"Windows/Labeling/FontPreviewSplitState"_s, mFontPreviewSplitter->saveState() );
+  settings.setValue( u"Windows/Labeling/OptionsSplitState"_s, mLabelingOptionsSplitter->saveState() );
 
   int prevIndex = mLabelingOptionsListWidget->currentRow();
   if ( mWidgetMode == Text )
@@ -1208,7 +1208,7 @@ QgsTextFormatWidget::~QgsTextFormatWidget()
     }
   }
 
-  settings.setValue( QStringLiteral( "Windows/Labeling/Tab" ), prevIndex );
+  settings.setValue( u"Windows/Labeling/Tab"_s, prevIndex );
 }
 
 QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) const
@@ -1490,7 +1490,7 @@ void QgsTextFormatWidget::setPreviewBackground( const QColor &color )
 {
   mPreviewBackgroundColor = color;
 
-  scrollArea_mPreview->widget()->setStyleSheet( QStringLiteral( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ), QString::number( color.green() ), QString::number( color.blue() ) ) );
+  scrollArea_mPreview->widget()->setStyleSheet( u"background: rgb(%1, %2, %3);"_s.arg( QString::number( color.red() ), QString::number( color.green() ), QString::number( color.blue() ) ) );
 }
 
 void QgsTextFormatWidget::changeBufferColor( const QColor &color )
@@ -1639,7 +1639,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
         helperText = tr( "Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature." );
       break;
   }
-  mPlacementModeDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
+  mPlacementModeDescriptionLabel->setText( u"<i>%1</i>"_s.arg( helperText ) );
 }
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
@@ -1924,7 +1924,7 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
 
   QString resolvedPath;
   bool validSVG = true;
-  if ( !svgPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  if ( !svgPath.startsWith( "base64:"_L1, Qt::CaseInsensitive ) )
   {
     resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
     validSVG = QFileInfo::exists( resolvedPath );
@@ -1936,7 +1936,7 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
   }
 
   // draw red text for path field if invalid (path can't be resolved)
-  mShapeSVGPathLineEdit->setStyleSheet( !validSVG ? QStringLiteral( "QLineEdit{ color: rgb(225, 0, 0); }" ) : QString() );
+  mShapeSVGPathLineEdit->setStyleSheet( !validSVG ? u"QLineEdit{ color: rgb(225, 0, 0); }"_s : QString() );
   mShapeSVGPathLineEdit->setToolTip( !validSVG ? tr( "File not found" ) : resolvedPath );
 
   QColor fill, stroke;
@@ -2087,7 +2087,7 @@ void QgsTextFormatWidget::overlapModeChanged()
       break;
   }
 
-  mOverlapModeDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( description ) );
+  mOverlapModeDescriptionLabel->setText( u"<i>%1</i>"_s.arg( description ) );
 }
 
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
@@ -2203,7 +2203,7 @@ void QgsTextFormatWidget::mPreviewTextEdit_textChanged( const QString &text )
 
 void QgsTextFormatWidget::mPreviewTextBtn_clicked()
 {
-  mPreviewTextEdit->setText( QStringLiteral( "Lorem Ipsum" ) );
+  mPreviewTextEdit->setText( u"Lorem Ipsum"_s );
   updatePreview();
 }
 
@@ -2391,7 +2391,7 @@ QgsTextFormat QgsTextFormatDialog::format() const
 
 void QgsTextFormatDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#formatting-the-label-text" ) );
+  QgsHelp::openHelp( u"style_library/label_settings.html#formatting-the-label-text"_s );
 }
 
 void QgsTextFormatDialog::setContext( const QgsSymbolWidgetContext &context )

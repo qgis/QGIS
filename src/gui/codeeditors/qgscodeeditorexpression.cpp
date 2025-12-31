@@ -45,7 +45,7 @@ Qgis::ScriptLanguageCapabilities QgsCodeEditorExpression::languageCapabilities()
 
 void QgsCodeEditorExpression::toggleComment()
 {
-  toggleLineComments( QStringLiteral( "--" ) );
+  toggleLineComments( u"--"_s );
 }
 
 void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &context )
@@ -60,9 +60,9 @@ void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &
 
   // always show feature variables in autocomplete -- they may not be available in the context
   // at time of showing an expression builder, but they'll generally be available at evaluation time.
-  mVariables << QStringLiteral( "@feature" );
-  mVariables << QStringLiteral( "@id" );
-  mVariables << QStringLiteral( "@geometry" );
+  mVariables << u"@feature"_s;
+  mVariables << u"@id"_s;
+  mVariables << u"@geometry"_s;
 
   mContextFunctions = context.functionNames();
 

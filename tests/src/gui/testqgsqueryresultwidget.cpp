@@ -49,7 +49,7 @@ class TestQgsQueryResultWidget : public QObject
 
 QgsAbstractDatabaseProviderConnection *TestQgsQueryResultWidget::makeConn()
 {
-  return static_cast<QgsAbstractDatabaseProviderConnection *>( QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) )->createConnection( qgetenv( "QGIS_PGTEST_DB" ), QVariantMap() ) );
+  return static_cast<QgsAbstractDatabaseProviderConnection *>( QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s )->createConnection( qgetenv( "QGIS_PGTEST_DB" ), QVariantMap() ) );
 }
 
 void TestQgsQueryResultWidget::initTestCase()
@@ -57,14 +57,14 @@ void TestQgsQueryResultWidget::initTestCase()
   QgsApplication::initQgis();
   mConn.reset( makeConn() );
   // Prepare data for fetching test
-  mConn->execSql( QStringLiteral( "DROP TABLE IF EXISTS qgis_test.random_big_data" ) );
-  mConn->execSql( QStringLiteral( "SELECT * INTO qgis_test.random_big_data FROM generate_series(1,100000) AS id, md5(random()::text) AS descr" ) );
+  mConn->execSql( u"DROP TABLE IF EXISTS qgis_test.random_big_data"_s );
+  mConn->execSql( u"SELECT * INTO qgis_test.random_big_data FROM generate_series(1,100000) AS id, md5(random()::text) AS descr"_s );
 }
 
 void TestQgsQueryResultWidget::cleanupTestCase()
 {
   mConn.reset( makeConn() );
-  mConn->execSql( QStringLiteral( "DROP TABLE IF EXISTS qgis_test.random_big_data" ) );
+  mConn->execSql( u"DROP TABLE IF EXISTS qgis_test.random_big_data"_s );
 }
 
 void TestQgsQueryResultWidget::init()
@@ -80,7 +80,7 @@ void TestQgsQueryResultWidget::testWidgetCrash()
 {
   // Make a copy
   mConn.reset( makeConn() );
-  auto res = new QgsAbstractDatabaseProviderConnection::QueryResult( mConn->execSql( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) ) );
+  auto res = new QgsAbstractDatabaseProviderConnection::QueryResult( mConn->execSql( u"SELECT * FROM qgis_test.random_big_data"_s ) );
   auto model = new QgsQueryResultModel( *res );
   bool exited { false };
   QTimer::singleShot( 1, model, [&] { delete res; } );
@@ -98,7 +98,7 @@ void TestQgsQueryResultWidget::testWidgetCrash()
   auto d = std::make_unique<QDialog>();
   QVBoxLayout *l = new QVBoxLayout();
   QgsQueryResultWidget *w = new QgsQueryResultWidget( d.get(), makeConn() );
-  w->setQuery( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) );
+  w->setQuery( u"SELECT * FROM qgis_test.random_big_data"_s );
   l->addWidget( w );
   d->setLayout( l );
   w->executeQuery();
@@ -114,7 +114,7 @@ void TestQgsQueryResultWidget::testWidget()
   auto d = std::make_unique<QDialog>();
   QVBoxLayout *l = new QVBoxLayout();
   QgsQueryResultWidget *w = new QgsQueryResultWidget( d.get(), makeConn() );
-  w->setQuery( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) );
+  w->setQuery( u"SELECT * FROM qgis_test.random_big_data"_s );
   l->addWidget( w );
   d->setLayout( l );
   // Uncomment for interactive testing:
@@ -141,9 +141,9 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   connect( w->mQueryWidget->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [&] { exited = true; } );
   while ( !exited )
     QgsApplication::processEvents();
-  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( QStringLiteral( "qgis_test" ) ) );
-  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( QStringLiteral( "random_big_data" ) ) );
-  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( QStringLiteral( "descr" ) ) );
+  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( u"qgis_test"_s ) );
+  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( u"random_big_data"_s ) );
+  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( u"descr"_s ) );
 
   // Test feedback interrupt
   w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );

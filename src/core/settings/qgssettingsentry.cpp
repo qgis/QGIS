@@ -30,7 +30,7 @@ QgsSettingsEntryBase::QgsSettingsEntryBase( const QString &key, QgsSettingsTreeN
   , mDescription( description )
   , mOptions( options )
 {
-  mKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parent ? parent->completeKey() : QString(), key ) );
+  mKey = QDir::cleanPath( u"%1/%2"_s.arg( parent ? parent->completeKey() : QString(), key ) );
 
   if ( parent )
   {
@@ -67,7 +67,7 @@ QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStr
   if ( dynamicKeyPartList.isEmpty() )
   {
     if ( hasDynamicKey() )
-      QgsDebugError( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( completeKey ) );
+      QgsDebugError( u"Settings '%1' have a dynamic key but the dynamic key part was not provided"_s.arg( completeKey ) );
 
     return completeKey;
   }
@@ -75,13 +75,13 @@ QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStr
   {
     if ( !hasDynamicKey() )
     {
-      QgsDebugError( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( completeKey ) );
+      QgsDebugError( u"Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored"_s.arg( completeKey ) );
       return completeKey;
     }
 
     for ( int i = 0; i < dynamicKeyPartList.size(); i++ )
     {
-      completeKey.replace( QStringLiteral( "%" ).append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
+      completeKey.replace( u"%"_s.append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
   return completeKey;
@@ -97,8 +97,8 @@ bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
       return key == definitionKey();
   }
 
-  const thread_local QRegularExpression digitRx( QStringLiteral( "%\\d+" ) );
-  const QRegularExpression regularExpression( definitionKey().replace( digitRx, QStringLiteral( ".*" ) ) );
+  const thread_local QRegularExpression digitRx( u"%\\d+"_s );
+  const QRegularExpression regularExpression( definitionKey().replace( digitRx, u".*"_s ) );
   const QRegularExpressionMatch regularExpressionMatch = regularExpression.match( key );
   return regularExpressionMatch.hasMatch();
 }
@@ -110,7 +110,7 @@ QString QgsSettingsEntryBase::definitionKey() const
 
 bool QgsSettingsEntryBase::hasDynamicKey() const
 {
-  const thread_local QRegularExpression regularExpression( QStringLiteral( "%\\d+" ) );
+  const thread_local QRegularExpression regularExpression( u"%\\d+"_s );
   return mKey.contains( regularExpression );
 }
 
@@ -272,5 +272,5 @@ void QgsSettingsEntryBase::copyValueToKeyIfChanged( const QString &key, const QS
 
 QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const
 {
-  return key( dynamicKeyPartList ) + QStringLiteral( "_formervalue" );
+  return key( dynamicKeyPartList ) + u"_formervalue"_s;
 }

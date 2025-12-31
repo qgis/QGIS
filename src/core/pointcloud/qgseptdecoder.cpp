@@ -95,8 +95,8 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
   const bool hasFilterRect = !filterRect.isEmpty();
   if ( hasFilterRect )
   {
-    attributeX = requestedAttributes.find( QLatin1String( "X" ), xAttributeOffset );
-    attributeY = requestedAttributes.find( QLatin1String( "Y" ), yAttributeOffset );
+    attributeX = requestedAttributes.find( "X"_L1, xAttributeOffset );
+    attributeY = requestedAttributes.find( "Y"_L1, yAttributeOffset );
     filterRect.setXMinimum( ( filterRect.xMinimum() - offset.x() ) / scale.x() );
     filterRect.setXMaximum( ( filterRect.xMaximum() - offset.x() ) / scale.x() );
     filterRect.setYMinimum( ( filterRect.yMinimum() - offset.y() ) / scale.y() );

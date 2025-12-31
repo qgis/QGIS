@@ -34,8 +34,8 @@ class QgsConcaveHullAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsConcaveHullAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmConcaveHull.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmConcaveHull.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmConcaveHull.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmConcaveHull.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

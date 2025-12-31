@@ -136,34 +136,34 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
     }
   };
 
-  QDomElement annotationsElem = element.firstChildElement( QStringLiteral( "Annotations" ) );
+  QDomElement annotationsElem = element.firstChildElement( u"Annotations"_s );
 
-  QDomElement annotationElement = annotationsElem.firstChildElement( QStringLiteral( "Annotation" ) );
+  QDomElement annotationElement = annotationsElem.firstChildElement( u"Annotation"_s );
   while ( ! annotationElement.isNull() )
   {
     createAnnotationFromElement( annotationElement );
-    annotationElement = annotationElement.nextSiblingElement( QStringLiteral( "Annotation" ) );
+    annotationElement = annotationElement.nextSiblingElement( u"Annotation"_s );
   }
 
   // restore old (pre 3.0) project annotations
   if ( annotationElement.isNull() )
   {
-    QDomNodeList oldItemList = element.elementsByTagName( QStringLiteral( "TextAnnotationItem" ) );
+    QDomNodeList oldItemList = element.elementsByTagName( u"TextAnnotationItem"_s );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
       createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
-    oldItemList = element.elementsByTagName( QStringLiteral( "FormAnnotationItem" ) );
+    oldItemList = element.elementsByTagName( u"FormAnnotationItem"_s );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
       createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
-    oldItemList = element.elementsByTagName( QStringLiteral( "HtmlAnnotationItem" ) );
+    oldItemList = element.elementsByTagName( u"HtmlAnnotationItem"_s );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
       createAnnotationFromElement( oldItemList.at( i ).toElement() );
     }
-    oldItemList = element.elementsByTagName( QStringLiteral( "SVGAnnotationItem" ) );
+    oldItemList = element.elementsByTagName( u"SVGAnnotationItem"_s );
     for ( int i = 0; i < oldItemList.size(); ++i )
     {
       createAnnotationFromElement( oldItemList.at( i ).toElement() );
@@ -188,7 +188,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
+        QgsDebugError( u"Error transforming annotation position"_s );
         return false;
       }
 
@@ -221,7 +221,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
+      QgsDebugError( u"Error transforming annotation position"_s );
     }
 
     auto item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG,
@@ -266,7 +266,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
+      QgsDebugError( u"Error transforming annotation position"_s );
     }
 
     auto item = std::make_unique< QgsAnnotationRectangleTextItem >( text->document()->toHtml(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
@@ -312,7 +312,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
 
 QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement annotationsElem = doc.createElement( QStringLiteral( "Annotations" ) );
+  QDomElement annotationsElem = doc.createElement( u"Annotations"_s );
   QListIterator<QgsAnnotation *> i( mAnnotations );
   // save lowermost annotation (at end of list) first
   i.toBack();
@@ -336,7 +336,7 @@ bool QgsAnnotationManager::accept( QgsStyleEntityVisitorInterface *visitor ) con
     return true;
 
   // NOTE: if visitEnter returns false it means "don't visit any annotations", not "abort all further visitations"
-  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, QStringLiteral( "annotations" ), tr( "Annotations" ) ) ) )
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, u"annotations"_s, tr( "Annotations" ) ) ) )
     return true;
 
   for ( QgsAnnotation *a : mAnnotations )
@@ -345,7 +345,7 @@ bool QgsAnnotationManager::accept( QgsStyleEntityVisitorInterface *visitor ) con
       return false;
   }
 
-  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, QStringLiteral( "annotations" ), tr( "Annotations" ) ) ) )
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotations, u"annotations"_s, tr( "Annotations" ) ) ) )
     return false;
 
   return true;

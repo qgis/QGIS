@@ -48,11 +48,11 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::Ge
   switch ( type )
   {
     case Qgis::GeometryType::Point:
-      return createSymbol( QStringLiteral( "point" ) );
+      return createSymbol( u"point"_s );
     case Qgis::GeometryType::Line:
-      return createSymbol( QStringLiteral( "line" ) );
+      return createSymbol( u"line"_s );
     case Qgis::GeometryType::Polygon:
-      return createSymbol( QStringLiteral( "polygon" ) );
+      return createSymbol( u"polygon"_s );
     default:
       return nullptr;
   }

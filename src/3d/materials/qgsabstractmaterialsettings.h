@@ -111,11 +111,11 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 {
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == QLatin1String( "gooch" ) )
+    if ( sipCpp->type() == "gooch"_L1 )
     {
       sipType = sipType_QgsGoochMaterialSettings;
     }
-    else if ( sipCpp->type() == QLatin1String( "phong" ) )
+    else if ( sipCpp->type() == "phong"_L1 )
     {
       sipType = sipType_QgsPhongMaterialSettings;
     }

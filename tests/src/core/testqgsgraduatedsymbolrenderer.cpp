@@ -227,55 +227,55 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
 
   QgsMarkerSymbol ms;
   ms.setColor( QColor( 255, 0, 0 ) );
-  const QgsRendererRange r1( 1.1, 3.2, ms.clone(), QStringLiteral( "r1" ) );
+  const QgsRendererRange r1( 1.1, 3.2, ms.clone(), u"r1"_s );
   renderer.addClass( r1 );
 
   QVERIFY( !renderer.rangeForValue( 1 ) );
   QVERIFY( !renderer.rangeForValue( 12 ) );
   QVERIFY( !renderer.rangeForValue( -1 ) );
-  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), u"r1"_s );
   QVERIFY( !renderer.symbolForValue( 1 ) );
-  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), u"#ff0000"_s );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
   QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
 
   ms.setColor( QColor( 255, 255, 0 ) );
-  const QgsRendererRange r2( 3.2, 3.3, ms.clone(), QStringLiteral( "r2" ) );
+  const QgsRendererRange r2( 3.2, 3.3, ms.clone(), u"r2"_s );
   renderer.addClass( r2 );
 
   QVERIFY( !renderer.rangeForValue( 1 ) );
   QVERIFY( !renderer.rangeForValue( 12 ) );
   QVERIFY( !renderer.rangeForValue( -1 ) );
-  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), QStringLiteral( "r2" ) );
-  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), QStringLiteral( "r2" ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), u"r2"_s );
+  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), u"r2"_s );
   QVERIFY( !renderer.symbolForValue( 1 ) );
-  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
-  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), u"#ff0000"_s );
+  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), u"#ffff00"_s );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
   QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
   QCOMPARE( renderer.legendKeyForValue( 3.25 ), r2.uuid() );
 
   // disabled range
   ms.setColor( QColor( 255, 0, 255 ) );
-  const QgsRendererRange r3( 3.3, 3.6, ms.clone(), QStringLiteral( "r3" ), false );
+  const QgsRendererRange r3( 3.3, 3.6, ms.clone(), u"r3"_s, false );
   renderer.addClass( r3 );
   QVERIFY( !renderer.rangeForValue( 1 ) );
   QVERIFY( !renderer.rangeForValue( 12 ) );
   QVERIFY( !renderer.rangeForValue( -1 ) );
-  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), QStringLiteral( "r2" ) );
-  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), QStringLiteral( "r2" ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), u"r2"_s );
+  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), u"r2"_s );
   QVERIFY( !renderer.rangeForValue( 3.5 ) );
   QVERIFY( !renderer.symbolForValue( 1 ) );
-  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
-  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), u"#ff0000"_s );
+  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), u"#ffff00"_s );
   QVERIFY( !renderer.symbolForValue( 3.5 ) );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
   QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
@@ -284,22 +284,22 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
 
   // zero width range
   ms.setColor( QColor( 0, 255, 255 ) );
-  const QgsRendererRange r4( 3.7, 3.7, ms.clone(), QStringLiteral( "r4" ) );
+  const QgsRendererRange r4( 3.7, 3.7, ms.clone(), u"r4"_s );
   renderer.addClass( r4 );
   QVERIFY( !renderer.rangeForValue( 1 ) );
   QVERIFY( !renderer.rangeForValue( 12 ) );
   QVERIFY( !renderer.rangeForValue( -1 ) );
-  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), QStringLiteral( "r2" ) );
-  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), QStringLiteral( "r2" ) );
-  QCOMPARE( renderer.rangeForValue( 3.7 )->label(), QStringLiteral( "r4" ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 2.1 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.2 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.25 )->label(), u"r2"_s );
+  QCOMPARE( renderer.rangeForValue( 3.3 )->label(), u"r2"_s );
+  QCOMPARE( renderer.rangeForValue( 3.7 )->label(), u"r4"_s );
   QVERIFY( !renderer.rangeForValue( 3.5 ) );
   QVERIFY( !renderer.symbolForValue( 1 ) );
-  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
-  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
-  QCOMPARE( renderer.symbolForValue( 3.7 )->color().name(), QStringLiteral( "#00ffff" ) );
+  QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), u"#ff0000"_s );
+  QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), u"#ffff00"_s );
+  QCOMPARE( renderer.symbolForValue( 3.7 )->color().name(), u"#00ffff"_s );
   QVERIFY( !renderer.symbolForValue( 3.5 ) );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
   QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
@@ -308,8 +308,8 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QVERIFY( renderer.legendKeyForValue( 3.5 ).isEmpty() );
 
   // test values which fall just outside ranges, e.g. due to double precision (refs https://github.com/qgis/QGIS/issues/27420)
-  QCOMPARE( renderer.rangeForValue( 1.1 - std::numeric_limits<double>::epsilon() * 2 )->label(), QStringLiteral( "r1" ) );
-  QCOMPARE( renderer.rangeForValue( 3.7 + std::numeric_limits<double>::epsilon() * 2 )->label(), QStringLiteral( "r4" ) );
+  QCOMPARE( renderer.rangeForValue( 1.1 - std::numeric_limits<double>::epsilon() * 2 )->label(), u"r1"_s );
+  QCOMPARE( renderer.rangeForValue( 3.7 + std::numeric_limits<double>::epsilon() * 2 )->label(), u"r4"_s );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )

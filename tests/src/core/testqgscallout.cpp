@@ -55,20 +55,20 @@ class DummyCallout : public QgsCallout
       : mProp1( prop1 )
       , mProp2( prop2 )
     {}
-    QString type() const override { return QStringLiteral( "Dummy" ); }
+    QString type() const override { return u"Dummy"_s; }
     QgsCallout *clone() const override { return new DummyCallout( mProp1, mProp2 ); }
-    static QgsCallout *create( const QVariantMap &props, const QgsReadWriteContext & ) { return new DummyCallout( props[QStringLiteral( "testProp" )].toString(), props[QStringLiteral( "testProp2" )].toString() ); }
+    static QgsCallout *create( const QVariantMap &props, const QgsReadWriteContext & ) { return new DummyCallout( props[u"testProp"_s].toString(), props[u"testProp2"_s].toString() ); }
     QVariantMap properties( const QgsReadWriteContext & ) const override
     {
       QVariantMap props;
-      props[QStringLiteral( "testProp" )] = mProp1;
-      props[QStringLiteral( "testProp2" )] = mProp2;
+      props[u"testProp"_s] = mProp1;
+      props[u"testProp2"_s] = mProp2;
       return props;
     }
     void readProperties( const QVariantMap &props, const QgsReadWriteContext & ) override
     {
-      mProp1 = props[QStringLiteral( "testProp" )].toString();
-      mProp2 = props[QStringLiteral( "testProp2" )].toString();
+      mProp1 = props[u"testProp"_s].toString();
+      mProp2 = props[u"testProp2"_s].toString();
     }
 
     QString prop1() { return mProp1; }
@@ -86,7 +86,7 @@ class DummyCallout : public QgsCallout
 class TestSimpleCalloutUnder : public QgsSimpleLineCallout
 {
   public:
-    QString type() const override { return QStringLiteral( "SimpleUnder" ); }
+    QString type() const override { return u"SimpleUnder"_s; }
     TestSimpleCalloutUnder *clone() const override { return new TestSimpleCalloutUnder( *this ); }
     QVariantMap properties( const QgsReadWriteContext & ) const override
     {
@@ -109,7 +109,7 @@ class TestQgsCallout : public QgsTest
 
   public:
     TestQgsCallout()
-      : QgsTest( QStringLiteral( "Callout Tests" ), QStringLiteral( "callouts" ) ) {}
+      : QgsTest( u"Callout Tests"_s, u"callouts"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -189,7 +189,7 @@ void TestQgsCallout::initTestCase()
   QgsApplication::initQgis();
 
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create ) );
+  registry->addCalloutType( new QgsCalloutMetadata( u"Dummy"_s, u"Dummy callout"_s, QIcon(), DummyCallout::create ) );
 
   const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
@@ -203,7 +203,7 @@ void TestQgsCallout::cleanupTestCase()
 void TestQgsCallout::init()
 {
   const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
-  vl = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  vl = new QgsVectorLayer( filename, u"points"_s, u"ogr"_s );
   QVERIFY( vl->isValid() );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
@@ -222,42 +222,42 @@ void TestQgsCallout::cleanup()
 
 void TestQgsCallout::saveRestore()
 {
-  DummyCallout *callout = new DummyCallout( QStringLiteral( "a" ), QStringLiteral( "b" ) );
+  DummyCallout *callout = new DummyCallout( u"a"_s, u"b"_s );
 
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   QDomDocument doc( documentType );
 
   //test writing with no node
-  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement rootNode = doc.createElement( u"qgis"_s );
   QDomElement noNode;
   QCOMPARE( callout->saveProperties( doc, noNode, QgsReadWriteContext() ), false );
 
   //test writing with node
-  QDomElement calloutParentElem = doc.createElement( QStringLiteral( "parent" ) );
+  QDomElement calloutParentElem = doc.createElement( u"parent"_s );
   rootNode.appendChild( calloutParentElem );
   QVERIFY( callout->saveProperties( doc, calloutParentElem, QgsReadWriteContext() ) );
 
   //check if callout node was written
-  const QDomNodeList evalNodeList = calloutParentElem.elementsByTagName( QStringLiteral( "callout" ) );
+  const QDomNodeList evalNodeList = calloutParentElem.elementsByTagName( u"callout"_s );
   QCOMPARE( evalNodeList.count(), 1 );
 
   const QDomElement calloutElem = evalNodeList.at( 0 ).toElement();
   QCOMPARE( calloutElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
-  std::unique_ptr<QgsCallout> restoredCallout( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() ) );
+  std::unique_ptr<QgsCallout> restoredCallout( QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, noNode, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading bad node
-  const QDomElement badCalloutElem = doc.createElement( QStringLiteral( "parent" ) );
-  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), badCalloutElem, QgsReadWriteContext() ) );
+  const QDomElement badCalloutElem = doc.createElement( u"parent"_s );
+  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, badCalloutElem, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading node
-  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), calloutElem, QgsReadWriteContext() ) );
+  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( u"Dummy"_s, calloutElem, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
   DummyCallout *restoredDummyCallout = dynamic_cast<DummyCallout *>( restoredCallout.get() );
   QVERIFY( restoredDummyCallout );
@@ -291,14 +291,14 @@ void TestQgsCallout::calloutsInLabeling()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -354,14 +354,14 @@ void TestQgsCallout::calloutsBlend()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -407,14 +407,14 @@ void TestQgsCallout::calloutsWithRotation()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -446,14 +446,14 @@ void TestQgsCallout::calloutsInLayout()
   l.pageCollection()->addPage( page.release() );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 5;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -505,14 +505,14 @@ void TestQgsCallout::calloutsDisabled()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -556,14 +556,14 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -571,7 +571,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::CalloutDraw, QgsProperty::fromExpression( QStringLiteral( "Class = 'Jet'" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::CalloutDraw, QgsProperty::fromExpression( u"Class = 'Jet'"_s ) );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
@@ -608,21 +608,21 @@ void TestQgsCallout::calloutDataDefinedSymbol()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 'green' else 'blue' end" ) ) );
+  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"case when Class='Jet' then 'green' else 'blue' end"_s ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -660,21 +660,21 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "@symbol_color" ) ) );
+  callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"@symbol_color"_s ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -712,14 +712,14 @@ void TestQgsCallout::calloutMinimumDistance()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelDistance, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 20 else 5 end" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelDistance, QgsProperty::fromExpression( u"case when Class='Jet' then 20 else 5 end"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -764,21 +764,21 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::MinimumCalloutLength, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 30 else 10 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::MinimumCalloutLength, QgsProperty::fromExpression( u"case when Class='Jet' then 30 else 10 end"_s ) );
 
   settings.setCallout( callout );
 
@@ -817,14 +817,14 @@ void TestQgsCallout::calloutOffsetFromAnchor()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -869,21 +869,21 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( u"case when Class='Jet' then 2 else 6 end"_s ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -921,14 +921,14 @@ void TestQgsCallout::calloutOffsetFromLabel()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -974,22 +974,22 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( u"case when Class='Jet' then 2 else 6 end"_s ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromLabel, QgsProperty::fromExpression( u"case when Class='Jet' then 3 else 4 end"_s ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -1027,14 +1027,14 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1095,14 +1095,14 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1163,14 +1163,14 @@ void TestQgsCallout::calloutLabelAnchorTop()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1231,14 +1231,14 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1299,14 +1299,14 @@ void TestQgsCallout::calloutLabelAnchorBottom()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1367,14 +1367,14 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1435,14 +1435,14 @@ void TestQgsCallout::calloutLabelAnchorLeft()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1503,14 +1503,14 @@ void TestQgsCallout::calloutLabelAnchorRight()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1571,14 +1571,14 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1639,14 +1639,14 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1654,7 +1654,7 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
   callout->setLabelAnchorPoint( QgsCallout::LabelCentroid );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::LabelAnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'TL'" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::LabelAnchorPointPosition, QgsProperty::fromExpression( u"'TL'"_s ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -1693,16 +1693,16 @@ void TestQgsCallout::calloutBehindLabel()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"case when $id = 1 then %1 end"_s.arg( mapSettings.extent().center().x() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"case when $id = 1 then %1 end"_s.arg( mapSettings.extent().center().y() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( u"100 - $id"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
@@ -1749,16 +1749,16 @@ void TestQgsCallout::calloutBehindIndividualLabels()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"case when $id = 1 then %1 end"_s.arg( mapSettings.extent().center().x() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"case when $id = 1 then %1 end"_s.arg( mapSettings.extent().center().y() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( u"100 - $id"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
@@ -1785,7 +1785,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 
 void TestQgsCallout::calloutNoDrawToAllParts()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -1794,11 +1794,11 @@ void TestQgsCallout::calloutNoDrawToAllParts()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000000, 190084 5000000 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000060, 190084 5000060 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -1820,15 +1820,15 @@ void TestQgsCallout::calloutNoDrawToAllParts()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1853,7 +1853,7 @@ void TestQgsCallout::calloutNoDrawToAllParts()
 
 void TestQgsCallout::calloutDrawToAllParts()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -1862,11 +1862,11 @@ void TestQgsCallout::calloutDrawToAllParts()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000000, 190084 5000000 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000060, 190084 5000060 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -1888,15 +1888,15 @@ void TestQgsCallout::calloutDrawToAllParts()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -1922,7 +1922,7 @@ void TestQgsCallout::calloutDrawToAllParts()
 
 void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -1931,11 +1931,11 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000000, 190084 5000000 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000060, 190084 5000060 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -1957,22 +1957,22 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( u"\"id\"=1"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -1991,14 +1991,14 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 
 void TestQgsCallout::calloutPointOnExterior()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -2020,15 +2020,15 @@ void TestQgsCallout::calloutPointOnExterior()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2054,14 +2054,14 @@ void TestQgsCallout::calloutPointOnExterior()
 
 void TestQgsCallout::calloutDataDefinedAnchorPoint()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -2083,22 +2083,22 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::AnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::AnchorPointPosition, QgsProperty::fromExpression( u"'centroid'"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -2117,20 +2117,20 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
 
 void TestQgsCallout::calloutDataDefinedDestination()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   mapSettings.setExtent( QgsRectangle( -15.543214, 42.611493, -15.537179, 42.614680 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2147,23 +2147,23 @@ void TestQgsCallout::calloutDataDefinedDestination()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( u"190004.33"_s ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( u"5000096.84"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -2182,20 +2182,20 @@ void TestQgsCallout::calloutDataDefinedDestination()
 
 void TestQgsCallout::calloutDataDefinedOrigin()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   mapSettings.setExtent( QgsRectangle( -15.543214, 42.611493, -15.537179, 42.614680 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2212,23 +2212,23 @@ void TestQgsCallout::calloutDataDefinedOrigin()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( u"189959.47"_s ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( u"4999948.34"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -2267,14 +2267,14 @@ void TestQgsCallout::manhattan()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2320,14 +2320,14 @@ void TestQgsCallout::manhattanRotated()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2352,7 +2352,7 @@ void TestQgsCallout::manhattanRotated()
 
 void TestQgsCallout::manhattanNoDrawToAllParts()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -2361,11 +2361,11 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000000, 190084 5000000 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000060, 190084 5000060 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -2387,15 +2387,15 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2420,7 +2420,7 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
 
 void TestQgsCallout::manhattanDrawToAllParts()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -2429,11 +2429,11 @@ void TestQgsCallout::manhattanDrawToAllParts()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000000, 190084 5000000 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000060, 190084 5000060 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -2455,15 +2455,15 @@ void TestQgsCallout::manhattanDrawToAllParts()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2489,7 +2489,7 @@ void TestQgsCallout::manhattanDrawToAllParts()
 
 void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
@@ -2498,11 +2498,11 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 190040 << 5000030 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000000, 190084 5000000 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000000, 190084 5000000 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 2 << 190040 << 5000050 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190084 5000060 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"MultiPoint (190030 5000060, 190084 5000060 )"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
@@ -2524,22 +2524,22 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( u"\"id\"=1"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -2558,20 +2558,20 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 
 void TestQgsCallout::manhattanDataDefinedDestination()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   mapSettings.setExtent( QgsRectangle( -15.543214, 42.611493, -15.537179, 42.614680 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2588,23 +2588,23 @@ void TestQgsCallout::manhattanDataDefinedDestination()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( u"190004.33"_s ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( u"5000096.84"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -2623,20 +2623,20 @@ void TestQgsCallout::manhattanDataDefinedDestination()
 
 void TestQgsCallout::manhattanDataDefinedOrigin()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 189950 << 5000000 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((190000 4999900, 190100 5000100, 190100 5000100, 190000 5000100, 190000 4999900 ))"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   mapSettings.setExtent( QgsRectangle( -15.543214, 42.611493, -15.537179, 42.614680 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2653,23 +2653,23 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( u"189959.47"_s ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( u"4999948.34"_s ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -2688,12 +2688,12 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -2737,7 +2737,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2754,15 +2754,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2788,12 +2788,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -2837,7 +2837,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2854,15 +2854,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2888,12 +2888,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -2937,7 +2937,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -2954,15 +2954,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -2988,12 +2988,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3037,7 +3037,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3054,15 +3054,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3088,12 +3088,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3137,7 +3137,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3154,15 +3154,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.fieldName = u"'XXXX'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3188,12 +3188,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3237,7 +3237,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3254,15 +3254,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.fieldName = u"'XXXX'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3288,12 +3288,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3337,7 +3337,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3354,15 +3354,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.fieldName = u"'XXXX'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3388,12 +3388,12 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3437,7 +3437,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3454,15 +3454,15 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.fieldName = u"'XXXX'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3488,18 +3488,18 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 
 void TestQgsCallout::curvedAutoHorizontalLines()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000148 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180180 << 5000148 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000167 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000170)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000170)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180180 << 5000167 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3507,7 +3507,7 @@ void TestQgsCallout::curvedAutoHorizontalLines()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3524,15 +3524,15 @@ void TestQgsCallout::curvedAutoHorizontalLines()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.fieldName = u"'XXXX'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 20 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3557,18 +3557,18 @@ void TestQgsCallout::curvedAutoHorizontalLines()
 
 void TestQgsCallout::curvedAutoVerticalLines()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180110 << 5000180 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180120 5000160)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180120 5000160)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180110 << 5000140 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   f.setAttributes( QgsAttributes() << 1 << 180175 << 5000180 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180180 5000160)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180180 5000160)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180175 << 5000140 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3576,7 +3576,7 @@ void TestQgsCallout::curvedAutoVerticalLines()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3593,15 +3593,15 @@ void TestQgsCallout::curvedAutoVerticalLines()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'XXXX'" );
+  settings.fieldName = u"'XXXX'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 20 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3626,12 +3626,12 @@ void TestQgsCallout::curvedAutoVerticalLines()
 
 void TestQgsCallout::curvedClockwise()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3675,7 +3675,7 @@ void TestQgsCallout::curvedClockwise()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3692,15 +3692,15 @@ void TestQgsCallout::curvedClockwise()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3726,12 +3726,12 @@ void TestQgsCallout::curvedClockwise()
 
 void TestQgsCallout::curvedCounterClockwise()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3775,7 +3775,7 @@ void TestQgsCallout::curvedCounterClockwise()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3792,15 +3792,15 @@ void TestQgsCallout::curvedCounterClockwise()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3826,12 +3826,12 @@ void TestQgsCallout::curvedCounterClockwise()
 
 void TestQgsCallout::curvedCurvature()
 {
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << 180120 << 5000160 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (180150 5000150)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (180150 5000150)"_s ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   f.setAttributes( QgsAttributes() << 2 << 180120 << 5000170 );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
@@ -3875,7 +3875,7 @@ void TestQgsCallout::curvedCurvature()
   const QSize size( 640, 640 );
   QgsMapSettings mapSettings;
   mapSettings.setOutputSize( size );
-  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mapSettings.setExtent( QgsRectangle( 180100, 5000100, 180200, 5000200 ) );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
@@ -3892,15 +3892,15 @@ void TestQgsCallout::curvedCurvature()
   context.setCoordinateTransform( QgsCoordinateTransform( vl2->crs(), mapSettings.destinationCrs(), QgsProject::instance()->transformContext() ) );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"labelx"_s ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"labely"_s ) );
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3947,14 +3947,14 @@ void TestQgsCallout::balloonCallout()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 7;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -3999,14 +3999,14 @@ void TestQgsCallout::balloonCalloutMargin()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -4052,14 +4052,14 @@ void TestQgsCallout::balloonCalloutWedgeWidth()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -4105,14 +4105,14 @@ void TestQgsCallout::balloonCalloutCornerRadius()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 20 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -4158,14 +4158,14 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 7;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 
@@ -4175,10 +4175,10 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
   callout->setOffsetFromAnchor( 1 );
 
   QVariantMap props;
-  props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
-  props[QStringLiteral( "size" )] = 5;
-  props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
-  props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
+  props[u"name"_s] = u"circle"_s;
+  props[u"size"_s] = 5;
+  props[u"color"_s] = u"200,255,200"_s;
+  props[u"outline_style"_s] = u"no"_s;
   callout->setMarkerSymbol(
     QgsMarkerSymbol::createSimple( props ).release()
   );
@@ -4210,7 +4210,7 @@ void TestQgsCallout::blendMode()
   callout->setBlendMode( QPainter::CompositionMode_SourceOver );
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
-  callout->dataDefinedProperties().setProperty( QgsCallout::Property::BlendMode, QStringLiteral( "multiply" ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::BlendMode, u"multiply"_s );
   QCOMPARE( callout->containsAdvancedEffects(), true );
 }
 

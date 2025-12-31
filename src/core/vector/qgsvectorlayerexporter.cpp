@@ -132,10 +132,10 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   QMap<QString, QVariant> modifiedOptions( options );
 
-  if ( providerKey == QLatin1String( "ogr" ) &&
-       options.contains( QStringLiteral( "driverName" ) ) &&
-       ( options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) == 0 ||
-         options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "SQLite" ), Qt::CaseInsensitive ) == 0 ) )
+  if ( providerKey == "ogr"_L1 &&
+       options.contains( u"driverName"_s ) &&
+       ( options[ u"driverName"_s ].toString().compare( "GPKG"_L1, Qt::CaseInsensitive ) == 0 ||
+         options[ u"driverName"_s ].toString().compare( "SQLite"_L1, Qt::CaseInsensitive ) == 0 ) )
   {
     if ( geometryType != Qgis::WkbType::NoGeometry )
     {
@@ -143,22 +143,22 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
       // layer creation since this would slow down inserts. Defer its creation
       // to end of exportLayer() or destruction of this object.
       QStringList modifiedLayerOptions;
-      if ( options.contains( QStringLiteral( "layerOptions" ) ) )
+      if ( options.contains( u"layerOptions"_s ) )
       {
-        const QStringList layerOptions = options.value( QStringLiteral( "layerOptions" ) ).toStringList();
+        const QStringList layerOptions = options.value( u"layerOptions"_s ).toStringList();
         for ( const QString &layerOption : layerOptions )
         {
-          if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=YES" ), Qt::CaseInsensitive ) == 0 ||
-               layerOption.compare( QLatin1String( "SPATIAL_INDEX=ON" ), Qt::CaseInsensitive ) == 0 ||
-               layerOption.compare( QLatin1String( "SPATIAL_INDEX=TRUE" ), Qt::CaseInsensitive ) == 0 ||
-               layerOption.compare( QLatin1String( "SPATIAL_INDEX=1" ), Qt::CaseInsensitive ) == 0 )
+          if ( layerOption.compare( "SPATIAL_INDEX=YES"_L1, Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( "SPATIAL_INDEX=ON"_L1, Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( "SPATIAL_INDEX=TRUE"_L1, Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( "SPATIAL_INDEX=1"_L1, Qt::CaseInsensitive ) == 0 )
           {
             // do nothing
           }
-          else if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=NO" ), Qt::CaseInsensitive ) == 0 ||
-                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=OFF" ), Qt::CaseInsensitive ) == 0 ||
-                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=FALSE" ), Qt::CaseInsensitive ) == 0 ||
-                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=0" ), Qt::CaseInsensitive ) == 0 )
+          else if ( layerOption.compare( "SPATIAL_INDEX=NO"_L1, Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( "SPATIAL_INDEX=OFF"_L1, Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( "SPATIAL_INDEX=FALSE"_L1, Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( "SPATIAL_INDEX=0"_L1, Qt::CaseInsensitive ) == 0 )
           {
             mCreateSpatialIndex = false;
           }
@@ -168,8 +168,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
           }
         }
       }
-      modifiedLayerOptions << QStringLiteral( "SPATIAL_INDEX=FALSE" );
-      modifiedOptions[ QStringLiteral( "layerOptions" ) ] = modifiedLayerOptions;
+      modifiedLayerOptions << u"SPATIAL_INDEX=FALSE"_s;
+      modifiedOptions[ u"layerOptions"_s ] = modifiedLayerOptions;
     }
   }
 
@@ -195,13 +195,13 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   mAttributeCount++;
 
-  QgsDebugMsgLevel( QStringLiteral( "Created empty layer" ), 2 );
+  QgsDebugMsgLevel( u"Created empty layer"_s, 2 );
 
   // Oracle specific HACK: we cannot guess the geometry type when there is no rows, so we need
   // to force it in the uri
-  if ( providerKey == QLatin1String( "oracle" ) )
+  if ( providerKey == "oracle"_L1 )
   {
-    uriUpdated += QStringLiteral( " type=%1" ).arg( QgsWkbTypes::displayString( geometryType ) );
+    uriUpdated += u" type=%1"_s.arg( QgsWkbTypes::displayString( geometryType ) );
   }
 
   const QgsDataProvider::ProviderOptions providerOptions;
@@ -220,10 +220,10 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   // that will be filled by ogr with unique values.
 
   // HACK sorry
-  const QString path = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri ).value( QStringLiteral( "path" ) ).toString();
-  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
+  const QString path = QgsProviderRegistry::instance()->decodeUri( u"ogr"_s, uri ).value( u"path"_s ).toString();
+  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( ".gpkg"_L1, Qt::CaseInsensitive ) )
   {
-    const QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
+    const QString fidName = options.value( u"FID"_s, u"FID"_s ).toString();
     const int fidIdx = fields.lookupField( fidName );
     if ( fidIdx != -1 )
     {
@@ -291,7 +291,7 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
     if ( dstIdx < 0 )
       continue;
 
-    QgsDebugMsgLevel( QStringLiteral( "moving field from pos %1 to %2" ).arg( i ).arg( dstIdx ), 3 );
+    QgsDebugMsgLevel( u"moving field from pos %1 to %2"_s.arg( i ).arg( dstIdx ), 3 );
     newFeat.setAttribute( dstIdx, attrs.at( i ) );
   }
 
@@ -392,8 +392,8 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   }
 
   QMap<QString, QVariant> providerOptions = _providerOptions;
-  const bool overwrite = providerOptions.take( QStringLiteral( "overwrite" ) ).toBool();
-  const bool forceSinglePartGeom = providerOptions.take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
+  const bool overwrite = providerOptions.take( u"overwrite"_s ).toBool();
+  const bool forceSinglePartGeom = providerOptions.take( u"forceSinglePartGeometryType"_s ).toBool();
 
   QgsFields outputFields;
   bool useFieldMapping = false;
@@ -477,7 +477,7 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
     }
     catch ( QgsCsException &e )
     {
-      QgsDebugError( QStringLiteral( "Could not transform filter extent: %1" ).arg( e.what() ) );
+      QgsDebugError( u"Could not transform filter extent: %1"_s.arg( e.what() ) );
     }
   }
 

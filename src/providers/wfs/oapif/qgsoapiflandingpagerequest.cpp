@@ -66,7 +66,7 @@ void QgsOapifLandingPageRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing GetLandingPage response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing GetLandingPage response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
@@ -88,35 +88,35 @@ void QgsOapifLandingPageRequest::processReply()
 
     const auto links = QgsOAPIFJson::parseLinks( j );
     QStringList apiTypes;
-    apiTypes << QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" );
+    apiTypes << u"application/vnd.oai.openapi+json;version=3.0"_s;
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
-    apiTypes << QStringLiteral( "application/openapi+json;version=3.0" );
+    apiTypes << u"application/openapi+json;version=3.0"_s;
 #endif
-    mApiUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "service-desc" ), apiTypes );
+    mApiUrl = QgsOAPIFJson::findLink( links, u"service-desc"_s, apiTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
     if ( mApiUrl.isEmpty() )
     {
-      mApiUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "service" ), apiTypes );
+      mApiUrl = QgsOAPIFJson::findLink( links, u"service"_s, apiTypes );
     }
 #endif
 #ifndef REMOVE_SUPPORT_QGIS_SERVER_3_10_0_WRONG_SERVICE_DESC
     if ( mApiUrl.isEmpty() )
     {
-      mApiUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "service_desc" ), apiTypes );
+      mApiUrl = QgsOAPIFJson::findLink( links, u"service_desc"_s, apiTypes );
     }
 #endif
 
     QStringList collectionsTypes;
-    collectionsTypes << QStringLiteral( "application/json" );
-    mCollectionsUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "data" ), collectionsTypes );
+    collectionsTypes << u"application/json"_s;
+    mCollectionsUrl = QgsOAPIFJson::findLink( links, u"data"_s, collectionsTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
     if ( mCollectionsUrl.isEmpty() )
     {
-      mCollectionsUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "collections" ), apiTypes );
+      mCollectionsUrl = QgsOAPIFJson::findLink( links, u"collections"_s, apiTypes );
     }
 #endif
 
-    mConformanceUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "conformance" ) );
+    mConformanceUrl = QgsOAPIFJson::findLink( links, u"conformance"_s );
   }
   catch ( const json::parse_error &ex )
   {

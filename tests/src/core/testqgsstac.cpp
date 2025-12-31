@@ -74,7 +74,7 @@ void TestQgsStac::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  mDataDir = QStringLiteral( "%1/stac/" ).arg( TEST_DATA_DIR );
+  mDataDir = u"%1/stac/"_s.arg( TEST_DATA_DIR );
 }
 
 void TestQgsStac::cleanupTestCase()
@@ -84,58 +84,58 @@ void TestQgsStac::cleanupTestCase()
 
 void TestQgsStac::testParseLocalCatalog()
 {
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"catalog.json"_s ) );
   QgsStacController c;
   std::unique_ptr< QgsStacCatalog > cat = c.fetchStacObject< QgsStacCatalog >( url.toString() );
   QVERIFY( cat );
   QCOMPARE( cat->type(), Qgis::StacObjectType::Catalog );
 
   QVERIFY( cat );
-  QCOMPARE( cat->id(), QLatin1String( "examples" ) );
-  QCOMPARE( cat->stacVersion(), QLatin1String( "1.0.0" ) );
-  QCOMPARE( cat->title(), QLatin1String( "Example Catalog" ) );
-  QCOMPARE( cat->description(), QLatin1String( "This catalog is a simple demonstration of an example catalog that is used to organize a hierarchy of collections and their items." ) );
+  QCOMPARE( cat->id(), "examples"_L1 );
+  QCOMPARE( cat->stacVersion(), "1.0.0"_L1 );
+  QCOMPARE( cat->title(), "Example Catalog"_L1 );
+  QCOMPARE( cat->description(), "This catalog is a simple demonstration of an example catalog that is used to organize a hierarchy of collections and their items."_L1 );
   QVERIFY( cat->stacExtensions().isEmpty() );
 
   // check that relative links are correctly resolved into absolute links
   const QVector<QgsStacLink> links = cat->links();
   QCOMPARE( links.size(), 6 );
   const QString basePath = url.adjusted( QUrl::RemoveFilename ).toString();
-  QCOMPARE( links.at( 0 ).href(), QStringLiteral( "%1catalog.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 1 ).href(), QStringLiteral( "%1extensions-collection/collection.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1collection-only/collection.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 3 ).href(), QStringLiteral( "%1collection-only/collection-with-schemas.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 4 ).href(), QStringLiteral( "%1collectionless-item.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 5 ).href(), QStringLiteral( "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/catalog.json" ) );
+  QCOMPARE( links.at( 0 ).href(), u"%1catalog.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 1 ).href(), u"%1extensions-collection/collection.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 2 ).href(), u"%1collection-only/collection.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 3 ).href(), u"%1collection-only/collection-with-schemas.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 4 ).href(), u"%1collectionless-item.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 5 ).href(), u"https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/catalog.json"_s );
 }
 
 void TestQgsStac::testParseLocalCollection()
 {
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"collection.json"_s ) );
   QgsStacController c;
   std::unique_ptr< QgsStacCollection > col = c.fetchStacObject< QgsStacCollection >( url.toString() );
   QVERIFY( col );
   QCOMPARE( col->type(), Qgis::StacObjectType::Collection );
 
   QVERIFY( col );
-  QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
-  QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
-  QCOMPARE( col->title(), QLatin1String( "Simple Example Collection" ) );
-  QCOMPARE( col->description(), QLatin1String( "A simple collection demonstrating core catalog fields with links to a couple of items" ) );
+  QCOMPARE( col->id(), "simple-collection"_L1 );
+  QCOMPARE( col->stacVersion(), "1.0.0"_L1 );
+  QCOMPARE( col->title(), "Simple Example Collection"_L1 );
+  QCOMPARE( col->description(), "A simple collection demonstrating core catalog fields with links to a couple of items"_L1 );
 
   // check that relative links are correctly resolved into absolute links
   const QVector<QgsStacLink> links = col->links();
   QCOMPARE( links.size(), 5 );
   const QString basePath = url.adjusted( QUrl::RemoveFilename ).toString();
-  QCOMPARE( links.at( 0 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 1 ).href(), QStringLiteral( "%1simple-item.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1core-item.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 3 ).href(), QStringLiteral( "%1extended-item.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 4 ).href(), QStringLiteral( "https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/collection.json" ) );
+  QCOMPARE( links.at( 0 ).href(), u"%1collection.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 1 ).href(), u"%1simple-item.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 2 ).href(), u"%1core-item.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 3 ).href(), u"%1extended-item.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 4 ).href(), u"https://raw.githubusercontent.com/radiantearth/stac-spec/v1.0.0/examples/collection.json"_s );
 
   QCOMPARE( col->providers().size(), 1 );
   QCOMPARE( col->stacExtensions().size(), 3 );
-  QCOMPARE( col->license(), QLatin1String( "CC-BY-4.0" ) );
+  QCOMPARE( col->license(), "CC-BY-4.0"_L1 );
 
   // extent
   QgsStacExtent ext( col->extent() );
@@ -146,72 +146,72 @@ void TestQgsStac::testParseLocalCollection()
   QCOMPARE( ext.spatialExtent().yMaximum(), 1.3690476620161975 );
 
   QVERIFY( !ext.hasDetailedTemporalExtents() );
-  QCOMPARE( ext.temporalExtent().begin(), QDateTime::fromString( QStringLiteral( "2020-12-11T22:38:32.125Z" ), Qt::ISODateWithMs ) );
-  QCOMPARE( ext.temporalExtent().end(), QDateTime::fromString( QStringLiteral( "2020-12-14T18:02:31.437Z" ), Qt::ISODateWithMs ) );
+  QCOMPARE( ext.temporalExtent().begin(), QDateTime::fromString( u"2020-12-11T22:38:32.125Z"_s, Qt::ISODateWithMs ) );
+  QCOMPARE( ext.temporalExtent().end(), QDateTime::fromString( u"2020-12-14T18:02:31.437Z"_s, Qt::ISODateWithMs ) );
 
   // summaries
   QVariantMap sum( col->summaries() );
   QCOMPARE( sum.size(), 9 );
-  QCOMPARE( sum.value( QStringLiteral( "platform" ) ).toStringList(), QStringList() << QLatin1String( "cool_sat1" ) << QLatin1String( "cool_sat2" ) );
+  QCOMPARE( sum.value( u"platform"_s ).toStringList(), QStringList() << "cool_sat1"_L1 << "cool_sat2"_L1 );
 
   QCOMPARE( col->assets().size(), 1 );
 
-  QgsStacAsset asset = col->assets().value( QStringLiteral( "geoparquet-file" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
-  QCOMPARE( asset.formatName(), QStringLiteral( "Parquet" ) );
-  QCOMPARE( asset.uri().layerType, QStringLiteral( "vector" ) );
+  QgsStacAsset asset = col->assets().value( u"geoparquet-file"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QCOMPARE( asset.formatName(), u"Parquet"_s );
+  QCOMPARE( asset.uri().layerType, u"vector"_s );
   QVERIFY( asset.isDownloadable() );
   QVERIFY( asset.isCloudOptimized() );
 }
 
 void TestQgsStac::testParseLocalItem()
 {
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"core-item.json"_s ) );
   QgsStacController c;
   std::unique_ptr< QgsStacItem > item = c.fetchStacObject< QgsStacItem >( url.toString() );
   QVERIFY( item );
   QCOMPARE( item->type(), Qgis::StacObjectType::Item );
 
   QVERIFY( item );
-  QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
-  QCOMPARE( item->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( item->id(), "20201211_223832_CS2"_L1 );
+  QCOMPARE( item->stacVersion(), "1.0.0"_L1 );
   QCOMPARE( item->stacExtensions().size(), 0 );
-  QCOMPARE( item->title(), QStringLiteral( "Core Item" ) );
-  QCOMPARE( item->description(), QStringLiteral( "A sample STAC Item that includes examples of all common metadata" ) );
+  QCOMPARE( item->title(), u"Core Item"_s );
+  QCOMPARE( item->description(), u"A sample STAC Item that includes examples of all common metadata"_s );
 
   const QgsMimeDataUtils::UriList uris = item->uris();
   QCOMPARE( uris.size(), 4 );
-  QCOMPARE( uris.at( 0 ).uri, QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "20201211_223832_CS2_analytic.tif" ) ) );
-  QCOMPARE( uris.at( 0 ).name, QStringLiteral( "4-Band Analytic" ) );
-  QCOMPARE( uris.at( 1 ).uri, QStringLiteral( "/vsicurl/https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet" ) );
-  QCOMPARE( uris.at( 1 ).name, QStringLiteral( "GeoParquet File" ) );
-  QCOMPARE( uris.at( 2 ).uri, QStringLiteral( "/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif" ) );
-  QCOMPARE( uris.at( 2 ).name, QStringLiteral( "3-Band Visual" ) );
-  QCOMPARE( uris.at( 3 ).uri, QStringLiteral( "ZARR:\"/vsicurl/https://objectstore.eodc.eu:2222/e05ab01a9d56408d82ac32d69a5aae2a:202505-s02msil2a/22/products/cpm_v256/S2B_MSIL2A_20250522T125039_N0511_R095_T26TML_20250522T133252.zarr\"" ) );
-  QCOMPARE( uris.at( 3 ).name, QStringLiteral( "Example Zarr Store" ) );
+  QCOMPARE( uris.at( 0 ).uri, u"file://%1%2"_s.arg( mDataDir, u"20201211_223832_CS2_analytic.tif"_s ) );
+  QCOMPARE( uris.at( 0 ).name, u"4-Band Analytic"_s );
+  QCOMPARE( uris.at( 1 ).uri, u"/vsicurl/https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet"_s );
+  QCOMPARE( uris.at( 1 ).name, u"GeoParquet File"_s );
+  QCOMPARE( uris.at( 2 ).uri, u"/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif"_s );
+  QCOMPARE( uris.at( 2 ).name, u"3-Band Visual"_s );
+  QCOMPARE( uris.at( 3 ).uri, u"ZARR:\"/vsicurl/https://objectstore.eodc.eu:2222/e05ab01a9d56408d82ac32d69a5aae2a:202505-s02msil2a/22/products/cpm_v256/S2B_MSIL2A_20250522T125039_N0511_R095_T26TML_20250522T133252.zarr\""_s );
+  QCOMPARE( uris.at( 3 ).name, u"Example Zarr Store"_s );
 
   // check that relative links are correctly resolved into absolute links
   const QVector<QgsStacLink> links = item->links();
   QCOMPARE( links.size(), 4 );
   const QString basePath = url.adjusted( QUrl::RemoveFilename ).toString();
-  QCOMPARE( links.at( 0 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 1 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
-  QCOMPARE( links.at( 3 ).href(), QStringLiteral( "http://remotedata.io/catalog/20201211_223832_CS2/index.html" ) );
+  QCOMPARE( links.at( 0 ).href(), u"%1collection.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 1 ).href(), u"%1collection.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 2 ).href(), u"%1collection.json"_s.arg( basePath ) );
+  QCOMPARE( links.at( 3 ).href(), u"http://remotedata.io/catalog/20201211_223832_CS2/index.html"_s );
 
   QCOMPARE( item->assets().size(), 8 );
-  QgsStacAsset asset = item->assets().value( QStringLiteral( "analytic" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
-  QCOMPARE( asset.href(), basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
+  QgsStacAsset asset = item->assets().value( u"analytic"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QCOMPARE( asset.href(), basePath + u"20201211_223832_CS2_analytic.tif"_s );
   QVERIFY( asset.isCloudOptimized() );
-  QCOMPARE( asset.formatName(), QStringLiteral( "COG" ) );
+  QCOMPARE( asset.formatName(), u"COG"_s );
   QVERIFY( asset.isDownloadable() );
 
   QgsMimeDataUtils::Uri uri = asset.uri();
-  QCOMPARE( uri.uri, basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
-  QCOMPARE( uri.name, QStringLiteral( "4-Band Analytic" ) );
-  QCOMPARE( uri.layerType, QStringLiteral( "raster" ) );
+  QCOMPARE( uri.uri, basePath + u"20201211_223832_CS2_analytic.tif"_s );
+  QCOMPARE( uri.name, u"4-Band Analytic"_s );
+  QCOMPARE( uri.layerType, u"raster"_s );
 
-  asset = item->assets().value( QStringLiteral( "thumbnail" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
-  QCOMPARE( asset.href(), QStringLiteral( "https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.jpg" ) );
+  asset = item->assets().value( u"thumbnail"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QCOMPARE( asset.href(), u"https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.jpg"_s );
   QVERIFY( !asset.isCloudOptimized() );
   uri = asset.uri();
   QVERIFY( !uri.isValid() );
@@ -220,7 +220,7 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( asset.isDownloadable() );
 
   // normal geotiff is not cloud optimized
-  asset = item->assets().value( QStringLiteral( "udm" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  asset = item->assets().value( u"udm"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
   QVERIFY( !asset.isCloudOptimized() );
   QCOMPARE( asset.formatName(), QString() );
   uri = asset.uri();
@@ -230,34 +230,34 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( asset.isDownloadable() );
 
   // Zarr recognised as cloud optimized
-  asset = item->assets().value( QStringLiteral( "zarr-store" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  asset = item->assets().value( u"zarr-store"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
   QVERIFY( asset.isCloudOptimized() );
-  QCOMPARE( asset.formatName(), QStringLiteral( "Zarr" ) );
-  QCOMPARE( asset.uri().layerType, QStringLiteral( "raster" ) );
+  QCOMPARE( asset.formatName(), u"Zarr"_s );
+  QCOMPARE( asset.uri().layerType, u"raster"_s );
   QVERIFY( !asset.isDownloadable() );
 
   // GeoParquet recognised as cloud optimized
-  asset = item->assets().value( QStringLiteral( "geoparquet-file" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  asset = item->assets().value( u"geoparquet-file"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
   QVERIFY( asset.isCloudOptimized() );
-  QCOMPARE( asset.formatName(), QStringLiteral( "Parquet" ) );
-  QCOMPARE( asset.uri().layerType, QStringLiteral( "vector" ) );
+  QCOMPARE( asset.formatName(), u"Parquet"_s );
+  QCOMPARE( asset.uri().layerType, u"vector"_s );
   QVERIFY( asset.isDownloadable() );
 }
 
 void TestQgsStac::testParseLocalItemCollection()
 {
-  const QString fileName = mDataDir + QStringLiteral( "itemcollection-sample-full.json" );
+  const QString fileName = mDataDir + u"itemcollection-sample-full.json"_s;
   QgsStacController c;
-  std::unique_ptr< QgsStacItemCollection > ic = c.fetchItemCollection( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacItemCollection > ic = c.fetchItemCollection( u"file://%1"_s.arg( fileName ) );
   QVERIFY( ic );
   QCOMPARE( ic->numberReturned(), 1 );
   QCOMPARE( ic->numberMatched(), 10 );
-  QCOMPARE( ic->rootUrl().toString(), QLatin1String( "http://stac.example.com/" ) );
+  QCOMPARE( ic->rootUrl().toString(), "http://stac.example.com/"_L1 );
 
   QVector<QgsStacItem *> items = ic->items();
   QCOMPARE( items.size(), 1 );
-  QCOMPARE( items.first()->id(), QLatin1String( "cs3-20160503_132131_05" ) );
-  QCOMPARE( items.first()->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( items.first()->id(), "cs3-20160503_132131_05"_L1 );
+  QCOMPARE( items.first()->stacVersion(), "1.0.0"_L1 );
   QCOMPARE( items.first()->links().size(), 3 );
   QCOMPARE( items.first()->stacExtensions().size(), 0 );
   QCOMPARE( items.first()->assets().size(), 2 );
@@ -265,22 +265,22 @@ void TestQgsStac::testParseLocalItemCollection()
 
 void TestQgsStac::testParseLocalCollections()
 {
-  const QString fileName = mDataDir + QStringLiteral( "collectioncollection-sample-full.json" );
+  const QString fileName = mDataDir + u"collectioncollection-sample-full.json"_s;
   QgsStacController c;
-  std::unique_ptr< QgsStacCollectionList > cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacCollectionList > cols = c.fetchCollections( u"file://%1"_s.arg( fileName ) );
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
-  QCOMPARE( cols->rootUrl().toString(), QLatin1String( "http://stac.example.com/" ) );
-  QCOMPARE( cols->url().toString(), QLatin1String( "http://stac.example.com/collections?page=2" ) );
-  QCOMPARE( cols->nextUrl().toString(), QLatin1String( "http://stac.example.com/collections?page=3" ) );
-  QCOMPARE( cols->prevUrl().toString(), QLatin1String( "http://stac.example.com/collections?page=1" ) );
+  QCOMPARE( cols->rootUrl().toString(), "http://stac.example.com/"_L1 );
+  QCOMPARE( cols->url().toString(), "http://stac.example.com/collections?page=2"_L1 );
+  QCOMPARE( cols->nextUrl().toString(), "http://stac.example.com/collections?page=3"_L1 );
+  QCOMPARE( cols->prevUrl().toString(), "http://stac.example.com/collections?page=1"_L1 );
 
   QCOMPARE( cols->collections().size(), 1 );
 
   QgsStacCollection *col = cols->collections().first();
-  QCOMPARE( col->id(), QStringLiteral( "simple-collection" ) );
-  QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( col->id(), u"simple-collection"_s );
+  QCOMPARE( col->stacVersion(), "1.0.0"_L1 );
   QCOMPARE( col->links().size(), 3 );
   QCOMPARE( col->stacExtensions().size(), 0 );
 }
@@ -291,7 +291,7 @@ void TestQgsStac::testFetchStacObjectAsync()
   QSignalSpy spy( &c, &QgsStacController::finishedStacObjectRequest );
 
   // Catalog
-  QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "catalog.json" ) ) );
+  QUrl url( u"file://%1%2"_s.arg( mDataDir, u"catalog.json"_s ) );
   int id = c.fetchStacObjectAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -312,7 +312,7 @@ void TestQgsStac::testFetchStacObjectAsync()
 
   // Collection
   spy.clear();
-  url.setUrl( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collection.json" ) ) );
+  url.setUrl( u"file://%1%2"_s.arg( mDataDir, u"collection.json"_s ) );
   id = c.fetchStacObjectAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -333,7 +333,7 @@ void TestQgsStac::testFetchStacObjectAsync()
 
   // Item
   spy.clear();
-  url.setUrl( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "core-item.json" ) ) );
+  url.setUrl( u"file://%1%2"_s.arg( mDataDir, u"core-item.json"_s ) );
   id = c.fetchStacObjectAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -358,7 +358,7 @@ void TestQgsStac::testFetchItemCollectionAsync()
   QSignalSpy spy( &c, &QgsStacController::finishedItemCollectionRequest );
 
   // Catalog
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "itemcollection-sample-full.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"itemcollection-sample-full.json"_s ) );
   const int id = c.fetchItemCollectionAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -372,12 +372,12 @@ void TestQgsStac::testFetchItemCollectionAsync()
   QVERIFY( ic );
   QCOMPARE( ic->numberReturned(), 1 );
   QCOMPARE( ic->numberMatched(), 10 );
-  QCOMPARE( ic->rootUrl().toString(), QLatin1String( "http://stac.example.com/" ) );
+  QCOMPARE( ic->rootUrl().toString(), "http://stac.example.com/"_L1 );
 
   QVector<QgsStacItem *> items = ic->items();
   QCOMPARE( items.size(), 1 );
-  QCOMPARE( items.first()->id(), QLatin1String( "cs3-20160503_132131_05" ) );
-  QCOMPARE( items.first()->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( items.first()->id(), "cs3-20160503_132131_05"_L1 );
+  QCOMPARE( items.first()->stacVersion(), "1.0.0"_L1 );
   QCOMPARE( items.first()->links().size(), 3 );
   QCOMPARE( items.first()->stacExtensions().size(), 0 );
   QCOMPARE( items.first()->assets().size(), 2 );
@@ -393,7 +393,7 @@ void TestQgsStac::testFetchCollectionsAsync()
   QSignalSpy spy( &c, &QgsStacController::finishedCollectionsRequest );
 
   // Catalog
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collectioncollection-sample-full.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"collectioncollection-sample-full.json"_s ) );
   const int id = c.fetchCollectionsAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -407,16 +407,16 @@ void TestQgsStac::testFetchCollectionsAsync()
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
-  QCOMPARE( cols->rootUrl().toString(), QLatin1String( "http://stac.example.com/" ) );
-  QCOMPARE( cols->url().toString(), QLatin1String( "http://stac.example.com/collections?page=2" ) );
-  QCOMPARE( cols->nextUrl().toString(), QLatin1String( "http://stac.example.com/collections?page=3" ) );
-  QCOMPARE( cols->prevUrl().toString(), QLatin1String( "http://stac.example.com/collections?page=1" ) );
+  QCOMPARE( cols->rootUrl().toString(), "http://stac.example.com/"_L1 );
+  QCOMPARE( cols->url().toString(), "http://stac.example.com/collections?page=2"_L1 );
+  QCOMPARE( cols->nextUrl().toString(), "http://stac.example.com/collections?page=3"_L1 );
+  QCOMPARE( cols->prevUrl().toString(), "http://stac.example.com/collections?page=1"_L1 );
 
   QCOMPARE( cols->collections().size(), 1 );
 
   QgsStacCollection *col = cols->collections().first();
-  QCOMPARE( col->id(), QStringLiteral( "simple-collection" ) );
-  QCOMPARE( col->stacVersion(), QLatin1String( "1.0.0" ) );
+  QCOMPARE( col->id(), u"simple-collection"_s );
+  QCOMPARE( col->stacVersion(), "1.0.0"_L1 );
   QCOMPARE( col->links().size(), 3 );
   QCOMPARE( col->stacExtensions().size(), 0 );
 }
@@ -427,7 +427,7 @@ void TestQgsStac::testFetchStacObjectAsyncInvalid()
   QSignalSpy spy( &c, &QgsStacController::finishedStacObjectRequest );
 
   // this is not a stac object (catalog, collection or item)
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collectioncollection-sample-full.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"collectioncollection-sample-full.json"_s ) );
   const int id = c.fetchStacObjectAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -447,7 +447,7 @@ void TestQgsStac::testFetchItemCollectionAsyncInvalid()
   QSignalSpy spy( &c, &QgsStacController::finishedItemCollectionRequest );
 
   // This is not an item collection
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "collectioncollection-sample-full.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"collectioncollection-sample-full.json"_s ) );
   const int id = c.fetchItemCollectionAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -467,7 +467,7 @@ void TestQgsStac::testFetchCollectionsAsyncInvalid()
   QSignalSpy spy( &c, &QgsStacController::finishedCollectionsRequest );
 
   // This is not a collections collection
-  const QUrl url( QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "itemcollection-sample-full.json" ) ) );
+  const QUrl url( u"file://%1%2"_s.arg( mDataDir, u"itemcollection-sample-full.json"_s ) );
   const int id = c.fetchCollectionsAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -487,7 +487,7 @@ void TestQgsStac::testFetchStacObjectAsyncUnavailable()
   QSignalSpy spy( &c, &QgsStacController::finishedStacObjectRequest );
 
   // Unreachable link
-  const QUrl url( QStringLiteral( "https://localhost/42.json" ) );
+  const QUrl url( u"https://localhost/42.json"_s );
   const int id = c.fetchStacObjectAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -507,7 +507,7 @@ void TestQgsStac::testFetchItemCollectionAsyncUnavailable()
   QSignalSpy spy( &c, &QgsStacController::finishedItemCollectionRequest );
 
   // Unreachable link
-  const QUrl url( QStringLiteral( "https://localhost/42.json" ) );
+  const QUrl url( u"https://localhost/42.json"_s );
   const int id = c.fetchItemCollectionAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );
@@ -527,7 +527,7 @@ void TestQgsStac::testFetchCollectionsAsyncUnavailable()
   QSignalSpy spy( &c, &QgsStacController::finishedCollectionsRequest );
 
   // Unreachable link
-  const QUrl url( QStringLiteral( "https://localhost/42.json" ) );
+  const QUrl url( u"https://localhost/42.json"_s );
   const int id = c.fetchCollectionsAsync( url.toString() );
   QVERIFY( id > -1 );
   spy.wait( 100 );

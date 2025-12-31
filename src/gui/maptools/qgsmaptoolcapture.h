@@ -188,7 +188,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
   public slots:
 
@@ -212,7 +212,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void updateExtraSnapLayer();
 
   protected:
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Converts a map point to layer coordinates
@@ -225,7 +225,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Converts a point to map coordinates and layer coordinates
@@ -239,7 +239,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Fetches the original point from the source layer if it has the same
@@ -296,11 +296,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QVector<QgsPointXY> points() const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 rename it to points()
+    // TODO QGIS 5.0 rename it to points()
 
     /**
      * List of digitized points
@@ -313,7 +313,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Set the points on which to work
      *
      * \param pointList A list of points
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED void setPoints( const QVector<QgsPointXY> &pointList ) SIP_DEPRECATED;
 

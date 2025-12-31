@@ -19,14 +19,14 @@ QgsPropertiesDefinition QgsAbstractMaterialSettings::sPropertyDefinitions;
 
 void QgsAbstractMaterialSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  const QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDataDefinedProperties = element.firstChildElement( u"data-defined-properties"_s );
   if ( !elemDataDefinedProperties.isNull() )
     mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
 }
 
 void QgsAbstractMaterialSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
 {
-  QDomElement elemDataDefinedProperties = element.ownerDocument().createElement( QStringLiteral( "data-defined-properties" ) );
+  QDomElement elemDataDefinedProperties = element.ownerDocument().createElement( u"data-defined-properties"_s );
   mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
   element.appendChild( elemDataDefinedProperties );
 }
@@ -63,7 +63,7 @@ void QgsAbstractMaterialSettings::initPropertyDefinitions() const
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  const QString origin = QStringLiteral( "material3d" );
+  const QString origin = u"material3d"_s;
 
   sPropertyDefinitions = QgsPropertiesDefinition {
     { static_cast<int>( Property::Diffuse ), QgsPropertyDefinition( "diffuse", QObject::tr( "Diffuse" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },

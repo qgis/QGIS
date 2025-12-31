@@ -32,12 +32,12 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
     const QString sep = sSeps.at( bits.length() );
     if ( current.startsWith( '"' ) )
     {
-      const thread_local QRegularExpression re( QStringLiteral( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
+      const thread_local QRegularExpression re( u"^\"((?:\\\\.|[^\"\\\\])*)\".*"_s );
       const QRegularExpressionMatch match = re.match( current );
       bits << QString();
       if ( match.hasMatch() )
       {
-        bits[bits.length() - 1] = match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+        bits[bits.length() - 1] = match.captured( 1 ).replace( "\\\""_L1, "\""_L1 ).replace( "\\\\"_L1, "\\"_L1 );
         i += match.captured( 1 ).length() + 2;
         while ( i < string.length() && string.at( i ).isSpace() )
           ++i;

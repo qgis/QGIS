@@ -125,14 +125,14 @@ QSizeF QgsHtmlAnnotation::minimumFrameSize() const
 
 void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "HtmlAnnotationItem" ) );
+  QDomElement formAnnotationElem = doc.createElement( u"HtmlAnnotationItem"_s );
   if ( !mHtmlFile.isEmpty() )
   {
-    formAnnotationElem.setAttribute( QStringLiteral( "htmlfile" ), sourceFile() );
+    formAnnotationElem.setAttribute( u"htmlfile"_s, sourceFile() );
   }
   else
   {
-    formAnnotationElem.setAttribute( QStringLiteral( "htmlsource" ), mHtmlSource );
+    formAnnotationElem.setAttribute( u"htmlsource"_s, mHtmlSource );
   }
 
   _writeXml( formAnnotationElem, doc, context );
@@ -141,28 +141,28 @@ void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  const QDomElement annotationElem = itemElem.firstChildElement( u"AnnotationItem"_s );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );
   }
 
   // upgrade old layer
-  if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
+  if ( !mapLayer() && itemElem.hasAttribute( u"vectorLayer"_s ) )
   {
-    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) ); // skip-keyword-check
+    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( u"vectorLayer"_s ) ) ); // skip-keyword-check
   }
 
   if ( mWebPage )
   {
-    mHtmlFile = itemElem.attribute( QStringLiteral( "htmlfile" ), QString() );
+    mHtmlFile = itemElem.attribute( u"htmlfile"_s, QString() );
     if ( !mHtmlFile.isEmpty() )
     {
       setSourceFile( mHtmlFile );
     }
     else
     {
-      setHtmlSource( itemElem.attribute( QStringLiteral( "htmlsource" ), QString() ) );
+      setHtmlSource( itemElem.attribute( u"htmlsource"_s, QString() ) );
     }
   }
 }
@@ -189,5 +189,5 @@ void QgsHtmlAnnotation::setAssociatedFeature( const QgsFeature &feature )
 void QgsHtmlAnnotation::javascript()
 {
   QWebFrame *frame = mWebPage->mainFrame();
-  frame->addToJavaScriptWindowObject( QStringLiteral( "layer" ), mapLayer() );
+  frame->addToJavaScriptWindowObject( u"layer"_s, mapLayer() );
 }

@@ -48,17 +48,17 @@ QgsOgrFileSourceWidget::QgsOgrFileSourceWidget( QWidget *parent )
 
 void QgsOgrFileSourceWidget::setSourceUri( const QString &uri )
 {
-  mSourceParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri );
+  mSourceParts = QgsProviderRegistry::instance()->decodeUri( u"ogr"_s, uri );
 
-  mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
+  mFileWidget->setFilePath( mSourceParts.value( u"path"_s ).toString() );
   mIsValid = true;
 }
 
 QString QgsOgrFileSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
-  parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
-  return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts );
+  parts.insert( u"path"_s, mFileWidget->filePath() );
+  return QgsProviderRegistry::instance()->encodeUri( u"ogr"_s, parts );
 }
 
 void QgsOgrFileSourceWidget::validate()

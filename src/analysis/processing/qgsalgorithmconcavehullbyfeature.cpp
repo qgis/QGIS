@@ -23,7 +23,7 @@
 
 QString QgsConcaveHullByFeatureAlgorithm::name() const
 {
-  return QStringLiteral( "concavehullbyfeature" );
+  return u"concavehullbyfeature"_s;
 }
 
 QString QgsConcaveHullByFeatureAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsConcaveHullByFeatureAlgorithm::group() const
 
 QString QgsConcaveHullByFeatureAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsConcaveHullByFeatureAlgorithm::outputName() const
@@ -53,9 +53,9 @@ QString QgsConcaveHullByFeatureAlgorithm::outputName() const
 
 QString QgsConcaveHullByFeatureAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the concave hull for each feature in an input layer." ) + QStringLiteral( "\n\n" )
-         + QObject::tr( "A concave hull is a polygon which contains all the points of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." ) + QStringLiteral( "\n\n" )
-         + QObject::tr( "It is frequently used to convert a multi-point into a polygonal area which contains all the points from the input geometry." ) + QStringLiteral( "\n\n" )
+  return QObject::tr( "This algorithm calculates the concave hull for each feature in an input layer." ) + u"\n\n"_s
+         + QObject::tr( "A concave hull is a polygon which contains all the points of the input geometries, but is a better approximation than the convex hull to the area occupied by the input." ) + u"\n\n"_s
+         + QObject::tr( "It is frequently used to convert a multi-point into a polygonal area which contains all the points from the input geometry." ) + u"\n\n"_s
          + QObject::tr( "See the 'Concave hull (by layer)' algorithm for a concave hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
@@ -71,8 +71,8 @@ QgsConcaveHullByFeatureAlgorithm *QgsConcaveHullByFeatureAlgorithm::createInstan
 
 void QgsConcaveHullByFeatureAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ALPHA" ), QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "HOLES" ), QObject::tr( "Allow holes" ), true ) );
+  addParameter( new QgsProcessingParameterNumber( u"ALPHA"_s, QObject::tr( "Threshold (0-1, where 1 is equivalent with Convex Hull)" ), Qgis::ProcessingNumberParameterType::Double, 0.3, false, 0, 1 ) );
+  addParameter( new QgsProcessingParameterBoolean( u"HOLES"_s, QObject::tr( "Allow holes" ), true ) );
 }
 
 QList<int> QgsConcaveHullByFeatureAlgorithm::inputLayerTypes() const
@@ -83,8 +83,8 @@ QList<int> QgsConcaveHullByFeatureAlgorithm::inputLayerTypes() const
 QgsFields QgsConcaveHullByFeatureAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
@@ -93,8 +93,8 @@ bool QgsConcaveHullByFeatureAlgorithm::prepareAlgorithm( const QVariantMap &para
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
   throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS build based on GEOS 3.11 or later" ) );
 #endif
-  mPercentage = parameterAsDouble( parameters, QStringLiteral( "ALPHA" ), context );
-  mAllowHoles = parameterAsBool( parameters, QStringLiteral( "HOLES" ), context );
+  mPercentage = parameterAsDouble( parameters, u"ALPHA"_s, context );
+  mAllowHoles = parameterAsBool( parameters, u"HOLES"_s, context );
   return true;
 }
 

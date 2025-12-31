@@ -38,12 +38,12 @@
 
 QString QgsGeoPackageDataItemProvider::name()
 {
-  return QStringLiteral( "GPKG" );
+  return u"GPKG"_s;
 }
 
 QString QgsGeoPackageDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "ogr" );
+  return u"ogr"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsGeoPackageDataItemProvider::capabilities() const
@@ -56,26 +56,26 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
   QgsDebugMsgLevel( "path = " + path, 2 );
   if ( path.isEmpty() )
   {
-    return new QgsGeoPackageRootItem( parentItem, QStringLiteral( "GeoPackage" ), QStringLiteral( "gpkg:" ) );
+    return new QgsGeoPackageRootItem( parentItem, u"GeoPackage"_s, u"gpkg:"_s );
   }
   return nullptr;
 }
 
 QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GPKG" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"GPKG"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mGeoPackage.svg" );
+  mIconName = u"mGeoPackage.svg"_s;
   populate();
 }
 
 QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  const QStringList connList( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
+  const QStringList connList( QgsOgrDbConnection::connectionList( u"GPKG"_s ) );
   for ( const QString &connName : connList )
   {
-    const QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
+    const QgsOgrDbConnection connection( connName, u"GPKG"_s );
     QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), mPath + '/' + connection.path() );
 
     connections.append( conn );
@@ -90,16 +90,16 @@ void QgsGeoPackageRootItem::onConnectionsChanged()
 
 void QgsGeoPackageRootItem::newConnection()
 {
-  if ( QgsOgrProviderUtils::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
+  if ( QgsOgrProviderUtils::createConnection( u"GeoPackage"_s,  u"GeoPackage Database (*.gpkg)"_s,  u"GPKG"_s ) )
   {
     refreshConnections();
   }
 }
 
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
+  : QgsDataCollectionItem( parent, name, path, u"GPKG"_s )
 {
-  mToolTip = QString( path ).remove( QLatin1String( "gpkg:/" ) );
+  mToolTip = QString( path ).remove( "gpkg:/"_L1 );
   mCapabilities |= Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
 }
 
@@ -108,7 +108,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  const QString path = mPath.remove( QLatin1String( "gpkg:/" ) );
+  const QString path = mPath.remove( "gpkg:/"_L1 );
   const QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path );
   for ( const QgsProviderSublayerDetails &sublayer : sublayers )
   {
@@ -171,7 +171,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     }
   }
 
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
   if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
   {
@@ -188,7 +188,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
     if ( !fieldDomains.empty() || !domainError.isEmpty() )
     {
-      auto domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, QStringLiteral( "ogr" ) );
+      auto domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, u"ogr"_s );
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
@@ -209,7 +209,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
     if ( !relations.empty() || !relationError.isEmpty() )
     {
-      auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), u"ogr"_s );
       // force this item to appear last by setting a maximum string value for the sort key
       relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
       children.append( relationsItem.release() );
@@ -252,7 +252,7 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 
 bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, QString &errCause )
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path(), QVariantMap() ) ) );
   if ( conn )
   {
@@ -276,7 +276,7 @@ bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, Q
 
 bool QgsGeoPackageCollectionItem::deleteVectorLayer( const QString &layerName, QString &errCause )
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path(), QVariantMap() ) ) );
   if ( conn )
   {
@@ -305,22 +305,22 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 
 void QgsGeoPackageCollectionItem::addConnection()
 {
-  QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
+  QgsOgrDbConnection connection( mName, u"GPKG"_s );
   connection.setPath( mPath );
   connection.save();
-  mParent->refreshConnections( QStringLiteral( "GPKG" ) );
+  mParent->refreshConnections( u"GPKG"_s );
 }
 
 void QgsGeoPackageCollectionItem::deleteConnection()
 {
   QgsOgrDbConnection::deleteConnection( name() );
-  mParent->refreshConnections( QStringLiteral( "GPKG" ) );
+  mParent->refreshConnections( u"GPKG"_s );
 }
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )
 {
   const QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
   if ( conn )
   {
@@ -373,7 +373,7 @@ QStringList QgsGeoPackageAbstractLayerItem::tableNames() const
 {
   QStringList names;
   // note: not using providerKey() because GPKG methods are implemented in OGR
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   QgsGeoPackageProviderConnection *conn { static_cast<QgsGeoPackageProviderConnection *>( md->findConnection( parent()->name() ) ) };
   if ( conn )
   {
@@ -407,7 +407,7 @@ QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
 }
 
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType )
-  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
+  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, u"ogr"_s )
 {
   mCapabilities |= ( Qgis::BrowserItemCapability::Rename | Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
   setState( Qgis::BrowserItemState::NotPopulated );
@@ -417,19 +417,19 @@ QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent,
 QVector<QgsDataItem *> QgsGeoPackageVectorLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this, collection()->path() + QStringLiteral( "/columns/ " ), collection()->path(), providerKey(), QString(), name() ) );
+  children.push_back( new QgsFieldsItem( this, collection()->path() + u"/columns/ "_s, collection()->path(), providerKey(), QString(), name() ) );
   return children;
 }
 
 
 QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri )
-  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "gdal" ) )
+  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, u"gdal"_s )
 {
 }
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
   const QString tableName = name();
   if ( conn->tableExists( QString(), tableName ) )
@@ -456,7 +456,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 
 bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
   const QString tableName = name();
   if ( conn )
@@ -494,8 +494,8 @@ bool QgsGeoPackageCollectionItem::hasDragEnabled() const
 QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri collectionUri;
-  collectionUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
-  collectionUri.layerType = QStringLiteral( "collection" );
+  collectionUri.uri = path().replace( "gpkg:/"_L1, QString() );
+  collectionUri.layerType = u"collection"_s;
 
   if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
   {

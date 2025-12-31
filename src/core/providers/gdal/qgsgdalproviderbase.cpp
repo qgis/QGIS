@@ -52,14 +52,14 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   //Invalid band number, segfault prevention
   if ( 0 >= bandNumber )
   {
-    QgsDebugError( QStringLiteral( "Invalid parameter" ) );
+    QgsDebugError( u"Invalid parameter"_s );
     return ct;
   }
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
   if ( ! myGdalBand )
   {
-    QgsDebugError( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
+    QgsDebugError( u"Could not get raster band %1"_s.arg( bandNumber ) );
     return ct;
   }
 
@@ -67,7 +67,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
   if ( myGdalColorTable )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Color table found" ), 2 );
+    QgsDebugMsgLevel( u"Color table found"_s, 2 );
 
     // load category labels
     char **categoryNames = GDALGetRasterCategoryNames( myGdalBand );
@@ -139,7 +139,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "Color interpretation type not supported yet" ), 2 );
+          QgsDebugMsgLevel( u"Color interpretation type not supported yet"_s, 2 );
           return ct;
         }
       }
@@ -151,7 +151,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     return ct;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Color table loaded successfully" ), 2 );
+  QgsDebugMsgLevel( u"Color table loaded successfully"_s, 2 );
   return ct;
 }
 
@@ -299,8 +299,8 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOpenFlags )
 {
   QVariantMap parts = decodeGdalUri( uri );
-  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
-  parts.remove( QStringLiteral( "openOptions" ) );
+  const QStringList openOptions = parts.value( u"openOptions"_s ).toStringList();
+  parts.remove( u"openOptions"_s );
 
   char **papszOpenOptions = nullptr;
   for ( const QString &option : openOptions )
@@ -309,15 +309,15 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
                                      option.toUtf8().constData() );
   }
 
-  const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
-  const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+  const QString vsiPrefix = parts.value( u"vsiPrefix"_s ).toString();
+  const QString vsiSuffix = parts.value( u"vsiSuffix"_s ).toString();
 
-  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
-  parts.remove( QStringLiteral( "credentialOptions" ) );
+  const QVariantMap credentialOptions = parts.value( u"credentialOptions"_s ).toMap();
+  parts.remove( u"credentialOptions"_s );
   if ( !credentialOptions.isEmpty() && !vsiPrefix.isEmpty() )
   {
-    const thread_local QRegularExpression bucketRx( QStringLiteral( "^(.*)/" ) );
-    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( QStringLiteral( "path" ) ).toString() );
+    const thread_local QRegularExpression bucketRx( u"^(.*)/"_s );
+    const QRegularExpressionMatch bucketMatch = bucketRx.match( parts.value( u"path"_s ).toString() );
     if ( bucketMatch.hasMatch() )
     {
       QgsGdalUtils::applyVsiCredentialOptions( vsiPrefix, bucketMatch.captured( 1 ), credentialOptions );
@@ -349,7 +349,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
         {
           const QString tmpPath = papszSiblingFiles[i];
           const QString suffix = QFileInfo( tmpPath ).completeSuffix();
-          if ( suffix.endsWith( QLatin1String( "aux.xml" ), Qt::CaseInsensitive ) )
+          if ( suffix.endsWith( "aux.xml"_L1, Qt::CaseInsensitive ) )
             continue;
 
           if ( !filename.isEmpty() )
@@ -363,7 +363,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
 
         if ( !foundMultipleCandidates )
         {
-          parts.insert( QStringLiteral( "vsiSuffix" ), filename );
+          parts.insert( u"vsiSuffix"_s, filename );
           // try again with suffix
           gdalUri = encodeGdalUri( parts );
           hDS = GDALOpenEx( gdalUri.toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
@@ -438,7 +438,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   {
     path = path.mid( vsiPrefix.count() );
 
-    const thread_local QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.tar\\.gz|\\.tgz)([\\\\/][^|]+)" ) );
+    const thread_local QRegularExpression vsiRegex( u"(?:\\.zip|\\.tar|\\.tar\\.gz|\\.tgz)([\\\\/][^|]+)"_s );
     const QRegularExpressionMatch match = vsiRegex.match( path );
     if ( match.hasMatch() )
     {
@@ -454,7 +454,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   if ( path.indexOf( ':' ) != -1 )
   {
     QStringList parts = path.split( ':' );
-    if ( parts[0].toLower() == QLatin1String( "gpkg" ) )
+    if ( parts[0].toLower() == "gpkg"_L1 )
     {
       parts.removeFirst();
       // Handle windows paths - which has an extra colon - and unix paths
@@ -469,7 +469,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
 
   if ( path.contains( '|' ) )
   {
-    const thread_local QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+    const thread_local QRegularExpression openOptionRegex( u"\\|option:([^|]*)"_s );
     while ( true )
     {
       const QRegularExpressionMatch match = openOptionRegex.match( path );
@@ -484,8 +484,8 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
       }
     }
 
-    const thread_local QRegularExpression credentialOptionRegex( QStringLiteral( "\\|credential:([^|]*)" ) );
-    const thread_local QRegularExpression credentialOptionKeyValueRegex( QStringLiteral( "(.*?)=(.*)" ) );
+    const thread_local QRegularExpression credentialOptionRegex( u"\\|credential:([^|]*)"_s );
+    const thread_local QRegularExpression credentialOptionKeyValueRegex( u"(.*?)=(.*)"_s );
     while ( true )
     {
       const QRegularExpressionMatch match = credentialOptionRegex.match( path );
@@ -506,28 +506,28 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   }
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
-  uriComponents.insert( QStringLiteral( "layerName" ), layerName );
+  uriComponents.insert( u"path"_s, path );
+  uriComponents.insert( u"layerName"_s, layerName );
   if ( !openOptions.isEmpty() )
-    uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+    uriComponents.insert( u"openOptions"_s, openOptions );
   if ( !credentialOptions.isEmpty() )
-    uriComponents.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
+    uriComponents.insert( u"credentialOptions"_s, credentialOptions );
   if ( !vsiPrefix.isEmpty() )
-    uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
+    uriComponents.insert( u"vsiPrefix"_s, vsiPrefix );
   if ( !vsiSuffix.isEmpty() )
-    uriComponents.insert( QStringLiteral( "vsiSuffix" ), vsiSuffix );
+    uriComponents.insert( u"vsiSuffix"_s, vsiSuffix );
   if ( !authcfg.isEmpty() )
-    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+    uriComponents.insert( u"authcfg"_s, authcfg );
   return uriComponents;
 }
 
 QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
 {
-  const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
-  const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-  const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
+  const QString vsiPrefix = parts.value( u"vsiPrefix"_s ).toString();
+  const QString vsiSuffix = parts.value( u"vsiSuffix"_s ).toString();
+  const QString path = parts.value( u"path"_s ).toString();
+  const QString layerName = parts.value( u"layerName"_s ).toString();
+  const QString authcfg = parts.value( u"authcfg"_s ).toString();
 
   QString uri = vsiPrefix + path;
   if ( !vsiSuffix.isEmpty() && !vsiSuffix.startsWith( '/' ) )
@@ -535,30 +535,30 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
   else
     uri += vsiSuffix;
 
-  if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
-    uri = QStringLiteral( "GPKG:%1:%2" ).arg( uri, layerName );
+  if ( !layerName.isEmpty() && uri.endsWith( "gpkg"_L1 ) )
+    uri = u"GPKG:%1:%2"_s.arg( uri, layerName );
   else if ( !layerName.isEmpty() )
-    uri = uri + QStringLiteral( "|%1" ).arg( layerName );
+    uri = uri + u"|%1"_s.arg( layerName );
 
-  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  const QStringList openOptions = parts.value( u"openOptions"_s ).toStringList();
 
   for ( const QString &openOption : openOptions )
   {
-    uri += QLatin1String( "|option:" );
+    uri += "|option:"_L1;
     uri += openOption;
   }
 
-  const QVariantMap credentialOptions = parts.value( QStringLiteral( "credentialOptions" ) ).toMap();
+  const QVariantMap credentialOptions = parts.value( u"credentialOptions"_s ).toMap();
   for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
   {
     if ( !it.value().toString().isEmpty() )
     {
-      uri += QStringLiteral( "|credential:%1=%2" ).arg( it.key(), it.value().toString() );
+      uri += u"|credential:%1=%2"_s.arg( it.key(), it.value().toString() );
     }
   }
 
   if ( !authcfg.isEmpty() )
-    uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+    uri += u" authcfg='%1'"_s.arg( authcfg );
 
   return uri;
 }

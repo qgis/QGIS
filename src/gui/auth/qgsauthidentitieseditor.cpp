@@ -64,7 +64,7 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     btnGroupByOrg->setChecked( false );
-    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( u"identitiessortby"_s, QVariant( false ) );
     if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -181,11 +181,11 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
 
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( identype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -203,7 +203,7 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugError( QStringLiteral( "Certificate identity does not exist in database" ) );
+    QgsDebugError( u"Certificate identity does not exist in database"_s );
     return;
   }
 
@@ -294,7 +294,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
+    QgsDebugMsgLevel( u"Current tree widget item not set"_s, 2 );
     return;
   }
 
@@ -308,7 +308,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugError( QStringLiteral( "Certificate identity does not exist in database" ) );
+    QgsDebugError( u"Certificate identity does not exist in database"_s );
     return;
   }
 
@@ -346,7 +346,7 @@ void QgsAuthIdentitiesEditor::btnInfoIdentity_clicked()
 
 void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( u"identitiessortby"_s, QVariant( checked ) ) )
   {
     authMessageLog( QObject::tr( "Could not store sort by preference." ), QObject::tr( "Authentication Identities" ), Qgis::MessageLevel::Warning );
   }
@@ -375,5 +375,5 @@ QgsMessageBar *QgsAuthIdentitiesEditor::messageBar()
 int QgsAuthIdentitiesEditor::messageTimeout()
 {
   const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( u"qgis/messageTimeout"_s, 5 ).toInt();
 }

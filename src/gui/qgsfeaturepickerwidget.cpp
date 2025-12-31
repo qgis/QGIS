@@ -35,13 +35,13 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   layout->addWidget( mComboBox );
 
   mPreviousButton = new QToolButton( this );
-  mPreviousButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ) );
+  mPreviousButton->setIcon( QgsApplication::getThemeIcon( u"/mActionArrowLeft.svg"_s ) );
   mPreviousButton->setEnabled( false );
   mPreviousButton->setVisible( mShowBrowserButtons );
   layout->addWidget( mPreviousButton );
 
   mNextButton = new QToolButton( this );
-  mNextButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ) );
+  mNextButton->setIcon( QgsApplication::getThemeIcon( u"/mActionArrowRight.svg"_s ) );
   mNextButton->setEnabled( false );
   mNextButton->setVisible( mShowBrowserButtons );
   layout->addWidget( mNextButton );

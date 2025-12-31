@@ -88,7 +88,7 @@ int QgsImageCacheEntry::dataSize() const
 
 void QgsImageCacheEntry::dump() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "path: %1, size %2x%3" ).arg( path ).arg( size.width() ).arg( size.height() ), 3 );
+  QgsDebugMsgLevel( u"path: %1, size %2x%3"_s.arg( path ).arg( size.width() ).arg( size.height() ), 3 );
 }
 
 ///@endcond
@@ -98,7 +98,7 @@ QgsImageCache::QgsImageCache( QObject *parent )
 {
   mTemporaryDir = std::make_unique<QTemporaryDir>( );
 
-  const int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
+  const int bytes = QgsSettings().value( u"/qgis/maxImageCacheSize"_s, 0 ).toInt();
   if ( bytes > 0 )
   {
     mMaxCacheSize = bytes;
@@ -117,9 +117,9 @@ QgsImageCache::QgsImageCache( QObject *parent )
     }
   }
 
-  mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+  mMissingSvg = u"<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>"_s.toLatin1();
 
-  const QString downloadingSvgPath = QgsApplication::defaultThemePath() + QStringLiteral( "downloading_svg.svg" );
+  const QString downloadingSvgPath = QgsApplication::defaultThemePath() + u"downloading_svg.svg"_s;
   if ( QFile::exists( downloadingSvgPath ) )
   {
     QFile file( downloadingSvgPath );
@@ -131,7 +131,7 @@ QgsImageCache::QgsImageCache( QObject *parent )
 
   if ( mFetchingSvg.isEmpty() )
   {
-    mFetchingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
+    mFetchingSvg = u"<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>"_s.toLatin1();
   }
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
@@ -160,7 +160,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
   const auto extractedAnimationIt = mExtractedAnimationPaths.constFind( file );
   if ( extractedAnimationIt != mExtractedAnimationPaths.constEnd() )
   {
-    file = QDir( extractedAnimationIt.value() ).filePath( QStringLiteral( "frame_%1.png" ).arg( frameNumber ) );
+    file = QDir( extractedAnimationIt.value() ).filePath( u"frame_%1.png"_s.arg( frameNumber ) );
     frameNumber = -1;
   }
 
@@ -168,9 +168,9 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
 
   QString base64String;
   QString mimeType;
-  if ( parseBase64DataUrl( file, &mimeType, &base64String ) && mimeType.startsWith( QLatin1String( "image/" ) ) )
+  if ( parseBase64DataUrl( file, &mimeType, &base64String ) && mimeType.startsWith( "image/"_L1 ) )
   {
-    file = QStringLiteral( "base64:%1" ).arg( base64String );
+    file = u"base64:%1"_s.arg( base64String );
   }
 
   QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity, targetDpi, frameNumber ) );
@@ -318,9 +318,9 @@ void QgsImageCache::prepareAnimation( const QString &path )
   {
     const QString basePart = QFileInfo( path ).baseName();
     int id = 1;
-    filePath = mTemporaryDir->filePath( QStringLiteral( "%1_%2" ).arg( basePart ).arg( id ) );
+    filePath = mTemporaryDir->filePath( u"%1_%2"_s.arg( basePart ).arg( id ) );
     while ( QFile::exists( filePath ) )
-      filePath = mTemporaryDir->filePath( QStringLiteral( "%1_%2" ).arg( basePart ).arg( ++id ) );
+      filePath = mTemporaryDir->filePath( u"%1_%2"_s.arg( basePart ).arg( ++id ) );
 
     reader = std::make_unique< QImageReader >( path );
   }
@@ -358,7 +358,7 @@ void QgsImageCache::prepareAnimation( const QString &path )
 
     mImageDelays[ path ].append( reader->nextImageDelay() );
 
-    const QString framePath = frameDirectory.filePath( QStringLiteral( "frame_%1.png" ).arg( frameNumber++ ) );
+    const QString framePath = frameDirectory.filePath( u"frame_%1.png"_s.arg( frameNumber++ ) );
     frame.save( framePath, "PNG" );
   }
 
@@ -551,7 +551,7 @@ int QgsImageSizeCacheEntry::dataSize() const
 
 void QgsImageSizeCacheEntry::dump() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "path: %1" ).arg( path ), 3 );
+  QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 );
 }
 
 bool QgsImageSizeCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
@@ -590,9 +590,9 @@ QSize QgsImageSizeCache::originalSize( const QString &f, bool blocking )
 
   QString base64String;
   QString mimeType;
-  if ( parseBase64DataUrl( file, &mimeType, &base64String ) && mimeType.startsWith( QLatin1String( "image/" ) ) )
+  if ( parseBase64DataUrl( file, &mimeType, &base64String ) && mimeType.startsWith( "image/"_L1 ) )
   {
-    file = QStringLiteral( "base64:%1" ).arg( base64String );
+    file = u"base64:%1"_s.arg( base64String );
   }
 
   QgsImageSizeCacheEntry *currentEntry = findExistingEntry( new QgsImageSizeCacheEntry( file ) );

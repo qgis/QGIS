@@ -25,38 +25,38 @@
 
 QgsPageSizeRegistry::QgsPageSizeRegistry()
 {
-  add( QgsPageSize( QStringLiteral( "A6" ), QgsLayoutSize( 105, 148 ), QObject::tr( "A6" ) ) );
-  add( QgsPageSize( QStringLiteral( "A5" ), QgsLayoutSize( 148, 210 ), QObject::tr( "A5" ) ) );
-  add( QgsPageSize( QStringLiteral( "A4" ), QgsLayoutSize( 210, 297 ), QObject::tr( "A4" ) ) );
-  add( QgsPageSize( QStringLiteral( "A3" ), QgsLayoutSize( 297, 420 ), QObject::tr( "A3" ) ) );
-  add( QgsPageSize( QStringLiteral( "A2" ), QgsLayoutSize( 420, 594 ), QObject::tr( "A2" ) ) );
-  add( QgsPageSize( QStringLiteral( "A1" ), QgsLayoutSize( 594, 841 ), QObject::tr( "A1" ) ) );
-  add( QgsPageSize( QStringLiteral( "A0" ), QgsLayoutSize( 841, 1189 ), QObject::tr( "A0" ) ) );
-  add( QgsPageSize( QStringLiteral( "B6" ), QgsLayoutSize( 125, 176 ), QObject::tr( "B6" ) ) );
-  add( QgsPageSize( QStringLiteral( "B5" ), QgsLayoutSize( 176, 250 ), QObject::tr( "B5" ) ) );
-  add( QgsPageSize( QStringLiteral( "B4" ), QgsLayoutSize( 250, 353 ), QObject::tr( "B4" ) ) );
-  add( QgsPageSize( QStringLiteral( "B3" ), QgsLayoutSize( 353, 500 ), QObject::tr( "B3" ) ) );
-  add( QgsPageSize( QStringLiteral( "B2" ), QgsLayoutSize( 500, 707 ), QObject::tr( "B2" ) ) );
-  add( QgsPageSize( QStringLiteral( "B1" ), QgsLayoutSize( 707, 1000 ), QObject::tr( "B1" ) ) );
-  add( QgsPageSize( QStringLiteral( "B0" ), QgsLayoutSize( 1000, 1414 ), QObject::tr( "B0" ) ) );
-  add( QgsPageSize( QStringLiteral( "Legal" ), QgsLayoutSize( 215.9, 355.6 ), QObject::tr( "Legal" ) ) );
-  add( QgsPageSize( QStringLiteral( "Letter" ), QgsLayoutSize( 215.9, 279.4 ), QObject::tr( "Letter" ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI A" ), QgsLayoutSize( 215.9, 279.4 ), QObject::tr( "ANSI A" ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI B" ), QgsLayoutSize( 279.4, 431.8 ), QObject::tr( "ANSI B" ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI C" ), QgsLayoutSize( 431.8, 558.8 ), QObject::tr( "ANSI C" ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI D" ), QgsLayoutSize( 558.8, 863.6 ), QObject::tr( "ANSI D" ) ) );
-  add( QgsPageSize( QStringLiteral( "ANSI E" ), QgsLayoutSize( 863.6, 1117.6 ), QObject::tr( "ANSI E" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch A" ), QgsLayoutSize( 228.6, 304.8 ), QObject::tr( "Arch A" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch B" ), QgsLayoutSize( 304.8, 457.2 ), QObject::tr( "Arch B" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch C" ), QgsLayoutSize( 457.2, 609.6 ), QObject::tr( "Arch C" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch D" ), QgsLayoutSize( 609.6, 914.4 ), QObject::tr( "Arch D" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E" ), QgsLayoutSize( 914.4, 1219.2 ), QObject::tr( "Arch E" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E1" ), QgsLayoutSize( 762, 1066.8 ), QObject::tr( "Arch E1" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E2" ), QgsLayoutSize( 660, 965 ), QObject::tr( "Arch E2" ) ) );
-  add( QgsPageSize( QStringLiteral( "Arch E3" ), QgsLayoutSize( 686, 991 ), QObject::tr( "Arch E3" ) ) );
-  add( QgsPageSize( QStringLiteral( "1920x1080" ), QgsLayoutSize( 1080, 1920, Qgis::LayoutUnit::Pixels ), QObject::tr( "1920×1080 (16:9)" ) ) );
-  add( QgsPageSize( QStringLiteral( "1280x800" ), QgsLayoutSize( 800, 1280, Qgis::LayoutUnit::Pixels ), QObject::tr( "1280×800 (16:10)" ) ) );
-  add( QgsPageSize( QStringLiteral( "1024x768" ), QgsLayoutSize( 768, 1024, Qgis::LayoutUnit::Pixels ), QObject::tr( "1024×768 (4:3)" ) ) );
+  add( QgsPageSize( u"A6"_s, QgsLayoutSize( 105, 148 ), QObject::tr( "A6" ) ) );
+  add( QgsPageSize( u"A5"_s, QgsLayoutSize( 148, 210 ), QObject::tr( "A5" ) ) );
+  add( QgsPageSize( u"A4"_s, QgsLayoutSize( 210, 297 ), QObject::tr( "A4" ) ) );
+  add( QgsPageSize( u"A3"_s, QgsLayoutSize( 297, 420 ), QObject::tr( "A3" ) ) );
+  add( QgsPageSize( u"A2"_s, QgsLayoutSize( 420, 594 ), QObject::tr( "A2" ) ) );
+  add( QgsPageSize( u"A1"_s, QgsLayoutSize( 594, 841 ), QObject::tr( "A1" ) ) );
+  add( QgsPageSize( u"A0"_s, QgsLayoutSize( 841, 1189 ), QObject::tr( "A0" ) ) );
+  add( QgsPageSize( u"B6"_s, QgsLayoutSize( 125, 176 ), QObject::tr( "B6" ) ) );
+  add( QgsPageSize( u"B5"_s, QgsLayoutSize( 176, 250 ), QObject::tr( "B5" ) ) );
+  add( QgsPageSize( u"B4"_s, QgsLayoutSize( 250, 353 ), QObject::tr( "B4" ) ) );
+  add( QgsPageSize( u"B3"_s, QgsLayoutSize( 353, 500 ), QObject::tr( "B3" ) ) );
+  add( QgsPageSize( u"B2"_s, QgsLayoutSize( 500, 707 ), QObject::tr( "B2" ) ) );
+  add( QgsPageSize( u"B1"_s, QgsLayoutSize( 707, 1000 ), QObject::tr( "B1" ) ) );
+  add( QgsPageSize( u"B0"_s, QgsLayoutSize( 1000, 1414 ), QObject::tr( "B0" ) ) );
+  add( QgsPageSize( u"Legal"_s, QgsLayoutSize( 215.9, 355.6 ), QObject::tr( "Legal" ) ) );
+  add( QgsPageSize( u"Letter"_s, QgsLayoutSize( 215.9, 279.4 ), QObject::tr( "Letter" ) ) );
+  add( QgsPageSize( u"ANSI A"_s, QgsLayoutSize( 215.9, 279.4 ), QObject::tr( "ANSI A" ) ) );
+  add( QgsPageSize( u"ANSI B"_s, QgsLayoutSize( 279.4, 431.8 ), QObject::tr( "ANSI B" ) ) );
+  add( QgsPageSize( u"ANSI C"_s, QgsLayoutSize( 431.8, 558.8 ), QObject::tr( "ANSI C" ) ) );
+  add( QgsPageSize( u"ANSI D"_s, QgsLayoutSize( 558.8, 863.6 ), QObject::tr( "ANSI D" ) ) );
+  add( QgsPageSize( u"ANSI E"_s, QgsLayoutSize( 863.6, 1117.6 ), QObject::tr( "ANSI E" ) ) );
+  add( QgsPageSize( u"Arch A"_s, QgsLayoutSize( 228.6, 304.8 ), QObject::tr( "Arch A" ) ) );
+  add( QgsPageSize( u"Arch B"_s, QgsLayoutSize( 304.8, 457.2 ), QObject::tr( "Arch B" ) ) );
+  add( QgsPageSize( u"Arch C"_s, QgsLayoutSize( 457.2, 609.6 ), QObject::tr( "Arch C" ) ) );
+  add( QgsPageSize( u"Arch D"_s, QgsLayoutSize( 609.6, 914.4 ), QObject::tr( "Arch D" ) ) );
+  add( QgsPageSize( u"Arch E"_s, QgsLayoutSize( 914.4, 1219.2 ), QObject::tr( "Arch E" ) ) );
+  add( QgsPageSize( u"Arch E1"_s, QgsLayoutSize( 762, 1066.8 ), QObject::tr( "Arch E1" ) ) );
+  add( QgsPageSize( u"Arch E2"_s, QgsLayoutSize( 660, 965 ), QObject::tr( "Arch E2" ) ) );
+  add( QgsPageSize( u"Arch E3"_s, QgsLayoutSize( 686, 991 ), QObject::tr( "Arch E3" ) ) );
+  add( QgsPageSize( u"1920x1080"_s, QgsLayoutSize( 1080, 1920, Qgis::LayoutUnit::Pixels ), QObject::tr( "1920×1080 (16:9)" ) ) );
+  add( QgsPageSize( u"1280x800"_s, QgsLayoutSize( 800, 1280, Qgis::LayoutUnit::Pixels ), QObject::tr( "1280×800 (16:10)" ) ) );
+  add( QgsPageSize( u"1024x768"_s, QgsLayoutSize( 768, 1024, Qgis::LayoutUnit::Pixels ), QObject::tr( "1024×768 (4:3)" ) ) );
 }
 
 void QgsPageSizeRegistry::add( const QgsPageSize &size )

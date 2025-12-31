@@ -29,6 +29,7 @@
 #include <QString>
 
 #ifndef SIP_RUN
+using namespace Qt::StringLiterals;
 using namespace nlohmann;
 #endif
 
@@ -86,7 +87,7 @@ class SERVER_EXPORT QgsOgcServiceException
 #endif
   public:
     //! Construction
-    QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(), int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
+    QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(), int responseCode = 200, const QString &version = u"1.3.0"_s );
 
     //! Returns the exception message
     QString message() const { return mMessage; }
@@ -147,7 +148,7 @@ class SERVER_EXPORT QgsServerApiException : public QgsServerException
 {
   public:
     //! Construction
-    QgsServerApiException( const QString &code, const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 200 )
+    QgsServerApiException( const QString &code, const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 200 )
       : QgsServerException( message, responseCode )
       , mCode( code )
       , mMimeType( mimeType )
@@ -187,8 +188,8 @@ class SERVER_EXPORT QgsServerApiInternalServerError : public QgsServerApiExcepti
 {
   public:
     //! Construction
-    QgsServerApiInternalServerError( const QString &message = QStringLiteral( "Internal server error" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
-      : QgsServerApiException( QStringLiteral( "Internal server error" ), message, mimeType, responseCode )
+    QgsServerApiInternalServerError( const QString &message = u"Internal server error"_s, const QString &mimeType = u"application/json"_s, int responseCode = 500 )
+      : QgsServerApiException( u"Internal server error"_s, message, mimeType, responseCode )
     {
     }
 };
@@ -208,8 +209,8 @@ class SERVER_EXPORT QgsServerApiNotFoundError : public QgsServerApiException
 {
   public:
     //! Construction
-    QgsServerApiNotFoundError( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 404 )
-      : QgsServerApiException( QStringLiteral( "API not found error" ), message, mimeType, responseCode )
+    QgsServerApiNotFoundError( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 404 )
+      : QgsServerApiException( u"API not found error"_s, message, mimeType, responseCode )
     {
     }
 };
@@ -229,8 +230,8 @@ class SERVER_EXPORT QgsServerApiBadRequestException : public QgsServerApiExcepti
 {
   public:
     //! Construction
-    QgsServerApiBadRequestException( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 400 )
-      : QgsServerApiException( QStringLiteral( "Bad request error" ), message, mimeType, responseCode )
+    QgsServerApiBadRequestException( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 400 )
+      : QgsServerApiException( u"Bad request error"_s, message, mimeType, responseCode )
     {
     }
 };
@@ -250,8 +251,8 @@ class SERVER_EXPORT QgsServerApiPermissionDeniedException : public QgsServerApiE
 {
   public:
     //! Construction
-    QgsServerApiPermissionDeniedException( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 403 )
-      : QgsServerApiException( QStringLiteral( "Forbidden" ), message, mimeType, responseCode )
+    QgsServerApiPermissionDeniedException( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 403 )
+      : QgsServerApiException( u"Forbidden"_s, message, mimeType, responseCode )
     {
     }
 };
@@ -270,8 +271,8 @@ class SERVER_EXPORT QgsServerApiImproperlyConfiguredException : public QgsServer
 {
   public:
     //! Construction
-    QgsServerApiImproperlyConfiguredException( const QString &message, const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
-      : QgsServerApiException( QStringLiteral( "Improperly configured error" ), message, mimeType, responseCode )
+    QgsServerApiImproperlyConfiguredException( const QString &message, const QString &mimeType = u"application/json"_s, int responseCode = 500 )
+      : QgsServerApiException( u"Improperly configured error"_s, message, mimeType, responseCode )
     {
     }
 };
@@ -291,8 +292,8 @@ class SERVER_EXPORT QgsServerApiNotImplementedException : public QgsServerApiExc
 {
   public:
     //! Construction
-    QgsServerApiNotImplementedException( const QString &message = QStringLiteral( "Requested method is not implemented" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 500 )
-      : QgsServerApiException( QStringLiteral( "Not implemented error" ), message, mimeType, responseCode )
+    QgsServerApiNotImplementedException( const QString &message = u"Requested method is not implemented"_s, const QString &mimeType = u"application/json"_s, int responseCode = 500 )
+      : QgsServerApiException( u"Not implemented error"_s, message, mimeType, responseCode )
     {
     }
 };
@@ -311,8 +312,8 @@ class SERVER_EXPORT QgsServerApiInvalidMimeTypeException : public QgsServerApiEx
 {
   public:
     //! Construction
-    QgsServerApiInvalidMimeTypeException( const QString &message = QStringLiteral( "The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource" ), const QString &mimeType = QStringLiteral( "application/json" ), int responseCode = 406 )
-      : QgsServerApiException( QStringLiteral( "Invalid mime-type" ), message, mimeType, responseCode )
+    QgsServerApiInvalidMimeTypeException( const QString &message = u"The Accept header submitted in the request did not support any of the media types supported by the server for the requested resource"_s, const QString &mimeType = u"application/json"_s, int responseCode = 406 )
+      : QgsServerApiException( u"Invalid mime-type"_s, message, mimeType, responseCode )
     {
     }
 };

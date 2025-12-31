@@ -57,8 +57,8 @@ namespace QgsWms
     context.setParameters( parameters );
     context.setSocketFeedback( response.feedback() );
 
-    const QString infoFormat = request.parameters().value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
-    response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
+    const QString infoFormat = request.parameters().value( u"INFO_FORMAT"_s, u"text/plain"_s );
+    response.setHeader( u"Content-Type"_s, infoFormat + u"; charset=utf-8"_s );
 
     QgsRenderer renderer( context );
     response.write( renderer.getFeatureInfo( parameters.version() ) );

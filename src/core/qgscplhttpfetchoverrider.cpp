@@ -59,7 +59,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
   {
     if ( CSLFetchNameValue( papszOptions, pszOption ) )
     {
-      QgsDebugError( QStringLiteral( "Option %1 not handled" ).arg( pszOption ) );
+      QgsDebugError( u"Option %1 not handled"_s.arg( pszOption ) );
       return nullptr;
     }
   }
@@ -121,7 +121,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Invalid CUSTOMREQUEST = %1 when POSTFIELDS is defined" ).arg( pszCustomRequest ) );
+      QgsDebugError( u"Invalid CUSTOMREQUEST = %1 when POSTFIELDS is defined"_s.arg( pszCustomRequest ) );
       return nullptr;
     }
   }
@@ -141,7 +141,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Invalid CUSTOMREQUEST = %1 when POSTFIELDS is not defined" ).arg( pszCustomRequest ) );
+      QgsDebugError( u"Invalid CUSTOMREQUEST = %1 when POSTFIELDS is not defined"_s.arg( pszCustomRequest ) );
       return nullptr;
     }
   }

@@ -623,7 +623,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 
   protected:
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
 
     /**
      * This method does nothing anymore, the loading is automatic

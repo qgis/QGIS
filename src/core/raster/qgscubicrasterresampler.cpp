@@ -42,7 +42,7 @@ Q_NOWARN_DEPRECATED_POP
 
 QString QgsCubicRasterResampler::type() const
 {
-  return QStringLiteral( "cubic" );
+  return u"cubic"_s;
 }
 
 int QgsCubicRasterResampler::tileBufferPixels() const

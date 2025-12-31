@@ -68,7 +68,7 @@ class TestQgs3DUtils : public QgsTest
     Q_OBJECT
   public:
     TestQgs3DUtils()
-      : QgsTest( QStringLiteral( "3D Utils" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"3D Utils"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

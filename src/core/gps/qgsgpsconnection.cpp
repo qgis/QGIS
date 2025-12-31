@@ -25,31 +25,31 @@
 
 #include "moc_qgsgpsconnection.cpp"
 
-const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *QgsGpsConnection::settingsGpsConnectionType = new QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettingsTree::sTreeGps, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
+const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *QgsGpsConnection::settingsGpsConnectionType = new QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( u"gps-connection-type"_s, QgsSettingsTree::sTreeGps, Qgis::GpsConnectionType::Automatic, u"GPS connection type"_s ) SIP_SKIP;
 
-const QgsSettingsEntryEnumFlag<Qt::TimeSpec> *QgsGpsConnection::settingsGpsTimeStampSpecification = new QgsSettingsEntryEnumFlag<Qt::TimeSpec>( QStringLiteral( "timestamp-time-spec" ), QgsSettingsTree::sTreeGps, Qt::TimeSpec::LocalTime, QStringLiteral( "GPS time stamp specification" ) ) SIP_SKIP;
+const QgsSettingsEntryEnumFlag<Qt::TimeSpec> *QgsGpsConnection::settingsGpsTimeStampSpecification = new QgsSettingsEntryEnumFlag<Qt::TimeSpec>( u"timestamp-time-spec"_s, QgsSettingsTree::sTreeGps, Qt::TimeSpec::LocalTime, u"GPS time stamp specification"_s ) SIP_SKIP;
 
-const QgsSettingsEntryString *QgsGpsConnection::settingsGpsdHostName = new QgsSettingsEntryString( QStringLiteral( "gpsd-host-name" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPSD connection host name" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsdHostName = new QgsSettingsEntryString( u"gpsd-host-name"_s, QgsSettingsTree::sTreeGps, QString(), u"GPSD connection host name"_s ) SIP_SKIP;
 
-const QgsSettingsEntryInteger *QgsGpsConnection::settingsGpsdPortNumber = new QgsSettingsEntryInteger( QStringLiteral( "gpsd-port" ), QgsSettingsTree::sTreeGps, 2947, QStringLiteral( "GPSD port number" ) ) SIP_SKIP;
+const QgsSettingsEntryInteger *QgsGpsConnection::settingsGpsdPortNumber = new QgsSettingsEntryInteger( u"gpsd-port"_s, QgsSettingsTree::sTreeGps, 2947, u"GPSD port number"_s ) SIP_SKIP;
 
-const QgsSettingsEntryString *QgsGpsConnection::settingsGpsdDeviceName = new QgsSettingsEntryString( QStringLiteral( "gpsd-device-name" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPSD connection device name" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsdDeviceName = new QgsSettingsEntryString( u"gpsd-device-name"_s, QgsSettingsTree::sTreeGps, QString(), u"GPSD connection device name"_s ) SIP_SKIP;
 
-const QgsSettingsEntryString *QgsGpsConnection::settingsGpsSerialDevice = new QgsSettingsEntryString( QStringLiteral( "gpsd-serial-device" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPS serial device name" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsSerialDevice = new QgsSettingsEntryString( u"gpsd-serial-device"_s, QgsSettingsTree::sTreeGps, QString(), u"GPS serial device name"_s ) SIP_SKIP;
 
-const QgsSettingsEntryInteger *QgsGpsConnection::settingGpsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisition-interval" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "GPS track point acquisition interval" ) ) SIP_SKIP;
+const QgsSettingsEntryInteger *QgsGpsConnection::settingGpsAcquisitionInterval = new QgsSettingsEntryInteger( u"acquisition-interval"_s, QgsSettingsTree::sTreeGps, 0, u"GPS track point acquisition interval"_s ) SIP_SKIP;
 
-const QgsSettingsEntryDouble *QgsGpsConnection::settingGpsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distance-threshold" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "GPS track point distance threshold" ) ) SIP_SKIP;
+const QgsSettingsEntryDouble *QgsGpsConnection::settingGpsDistanceThreshold = new QgsSettingsEntryDouble( u"distance-threshold"_s, QgsSettingsTree::sTreeGps, 0, u"GPS track point distance threshold"_s ) SIP_SKIP;
 
-const QgsSettingsEntryBool *QgsGpsConnection::settingGpsBearingFromTravelDirection = new QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettingsTree::sTreeGps, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
+const QgsSettingsEntryBool *QgsGpsConnection::settingGpsBearingFromTravelDirection = new QgsSettingsEntryBool( u"calculate-bearing-from-travel"_s, QgsSettingsTree::sTreeGps, false, u"Calculate GPS bearing from travel direction"_s ) SIP_SKIP;
 
-const QgsSettingsEntryBool *QgsGpsConnection::settingGpsApplyLeapSecondsCorrection = new QgsSettingsEntryBool( QStringLiteral( "apply-leap-seconds-correction" ), QgsSettingsTree::sTreeGps, true, QStringLiteral( "Whether leap seconds corrections should be applied to GPS timestamps" ) ) SIP_SKIP;
+const QgsSettingsEntryBool *QgsGpsConnection::settingGpsApplyLeapSecondsCorrection = new QgsSettingsEntryBool( u"apply-leap-seconds-correction"_s, QgsSettingsTree::sTreeGps, true, u"Whether leap seconds corrections should be applied to GPS timestamps"_s ) SIP_SKIP;
 
-const QgsSettingsEntryInteger *QgsGpsConnection::settingGpsLeapSeconds = new QgsSettingsEntryInteger( QStringLiteral( "leap-seconds" ), QgsSettingsTree::sTreeGps, 18, QStringLiteral( "Leap seconds correction amount (in seconds)" ) ) SIP_SKIP;
+const QgsSettingsEntryInteger *QgsGpsConnection::settingGpsLeapSeconds = new QgsSettingsEntryInteger( u"leap-seconds"_s, QgsSettingsTree::sTreeGps, 18, u"Leap seconds correction amount (in seconds)"_s ) SIP_SKIP;
 
-const QgsSettingsEntryString *QgsGpsConnection::settingsGpsTimeStampTimeZone = new QgsSettingsEntryString( QStringLiteral( "timestamp-time-zone" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "GPS time stamp time zone" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsGpsConnection::settingsGpsTimeStampTimeZone = new QgsSettingsEntryString( u"timestamp-time-zone"_s, QgsSettingsTree::sTreeGps, QString(), u"GPS time stamp time zone"_s ) SIP_SKIP;
 
-const QgsSettingsEntryInteger *QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc = new QgsSettingsEntryInteger( QStringLiteral( "timestamp-offset-from-utc" ), QgsSettingsTree::sTreeGps, 0, QStringLiteral( "GPS time stamp offset from UTC (in seconds)" ) ) SIP_SKIP;
+const QgsSettingsEntryInteger *QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc = new QgsSettingsEntryInteger( u"timestamp-offset-from-utc"_s, QgsSettingsTree::sTreeGps, 0, u"GPS time stamp offset from UTC (in seconds)"_s ) SIP_SKIP;
 
 QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
   : QObject( nullptr )

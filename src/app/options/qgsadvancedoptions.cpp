@@ -25,8 +25,8 @@
 //
 // QgsAdvancedSettingsWidget
 //
-const QgsSettingsEntryBool *QgsAdvancedSettingsWidget::settingsUseNewTreeWidget = new QgsSettingsEntryBool( QStringLiteral( "use-new-widget" ), sTreeSettings, true, QStringLiteral( "Use new settings widget" ) );
-const QgsSettingsEntryBool *QgsAdvancedSettingsWidget::settingsShowWarning = new QgsSettingsEntryBool( QStringLiteral( "show-warning" ), sTreeSettings, true, QStringLiteral( "Show warning before opening the settings tree" ) );
+const QgsSettingsEntryBool *QgsAdvancedSettingsWidget::settingsUseNewTreeWidget = new QgsSettingsEntryBool( u"use-new-widget"_s, sTreeSettings, true, u"Use new settings widget"_s );
+const QgsSettingsEntryBool *QgsAdvancedSettingsWidget::settingsShowWarning = new QgsSettingsEntryBool( u"show-warning"_s, sTreeSettings, true, u"Show warning before opening the settings tree"_s );
 
 
 QgsAdvancedSettingsWidget::QgsAdvancedSettingsWidget( QWidget *parent )
@@ -65,7 +65,7 @@ QgsAdvancedSettingsWidget::~QgsAdvancedSettingsWidget()
 
 QString QgsAdvancedSettingsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#optionsadvanced" );
+  return u"introduction/qgis_configuration.html#optionsadvanced"_s;
 }
 
 void QgsAdvancedSettingsWidget::apply()
@@ -99,13 +99,13 @@ void QgsAdvancedSettingsWidget::createSettingsTreeWidget( bool newWidget, bool o
 // QgsAdvancedSettingsOptionsFactory
 //
 QgsAdvancedSettingsOptionsFactory::QgsAdvancedSettingsOptionsFactory()
-  : QgsOptionsWidgetFactory( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QIcon(), QStringLiteral( "advanced" ) )
+  : QgsOptionsWidgetFactory( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QIcon(), u"advanced"_s )
 {
 }
 
 QIcon QgsAdvancedSettingsOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsAdvancedSettingsOptionsFactory::createWidget( QWidget *parent ) const

@@ -63,7 +63,7 @@ void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, c
   const QVariantMap config = configuration( context );
   const QDomElement configElement = QgsXmlUtils::writeVariant( config, document );
   element.appendChild( configElement );
-  element.setAttribute( QStringLiteral( "id" ), id() );
+  element.setAttribute( u"id"_s, id() );
 }
 
 bool QgsNumericFormat::operator==( const QgsNumericFormat &other ) const

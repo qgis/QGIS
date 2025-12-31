@@ -78,27 +78,27 @@ namespace QgsWcs
 #endif
 
     //wcs:WCS_Capabilities element
-    QDomElement coveDescElement = doc.createElement( QStringLiteral( "CoverageDescription" ) /*wcs:CoverageDescription*/ );
-    coveDescElement.setAttribute( QStringLiteral( "xmlns" ), WCS_NAMESPACE );
-    coveDescElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-    coveDescElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WCS_NAMESPACE + " http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd" );
-    coveDescElement.setAttribute( QStringLiteral( "xmlns:gml" ), GML_NAMESPACE );
-    coveDescElement.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-    coveDescElement.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
-    coveDescElement.setAttribute( QStringLiteral( "updateSequence" ), QStringLiteral( "0" ) );
+    QDomElement coveDescElement = doc.createElement( u"CoverageDescription"_s /*wcs:CoverageDescription*/ );
+    coveDescElement.setAttribute( u"xmlns"_s, WCS_NAMESPACE );
+    coveDescElement.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
+    coveDescElement.setAttribute( u"xsi:schemaLocation"_s, WCS_NAMESPACE + " http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd" );
+    coveDescElement.setAttribute( u"xmlns:gml"_s, GML_NAMESPACE );
+    coveDescElement.setAttribute( u"xmlns:xlink"_s, u"http://www.w3.org/1999/xlink"_s );
+    coveDescElement.setAttribute( u"version"_s, u"1.0.0"_s );
+    coveDescElement.setAttribute( u"updateSequence"_s, u"0"_s );
     doc.appendChild( coveDescElement );
 
     //defining coverage name
     QString coveNames;
     //read COVERAGE
-    const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
+    const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( u"COVERAGE"_s );
     if ( cove_name_it != parameters.constEnd() )
     {
       coveNames = cove_name_it.value();
     }
     if ( coveNames.isEmpty() )
     {
-      const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
+      const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( u"IDENTIFIER"_s );
       if ( cove_name_it != parameters.constEnd() )
       {
         coveNames = cove_name_it.value();

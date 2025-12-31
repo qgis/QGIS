@@ -66,7 +66,7 @@
 
 QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent, QScreen *screen )
   : QAbstractItemModel( parent )
-  , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
+  , mMimeFormat( u"application/x-qgsgraduatedsymbolrendererv2model"_s )
   , mScreen( screen )
 {
 }
@@ -338,7 +338,7 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
     to = mRenderer->ranges().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsgLevel( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ), 2 );
+    QgsDebugMsgLevel( u"move %1 to %2"_s.arg( rows[i] ).arg( to ), 2 );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t )

@@ -30,6 +30,8 @@
 #include <QString>
 #include <QWindow>
 
+using namespace Qt::StringLiterals;
+
 #include "moc_qgswinnative.cpp"
 
 #ifdef UNICODE
@@ -170,8 +172,8 @@ bool QgsWinNative::openTerminalAtPath( const QString &path )
   const bool isWow64 = qEnvironmentVariableIsSet( "PROCESSOR_ARCHITEW6432" );
   QString windir = qgetenv( "WINDIR" );
   if ( windir.isEmpty() )
-    windir = QStringLiteral( "C:\\Windows" );
-  const QString term = QStringLiteral( "%1\\%2\\cmd.exe" ).arg( windir, isWow64 ? QStringLiteral( "Sysnative" ) : QStringLiteral( "System32" ) );
+    windir = u"C:\\Windows"_s;
+  const QString term = u"%1\\%2\\cmd.exe"_s.arg( windir, isWow64 ? u"Sysnative"_s : u"System32"_s );
 
   QProcess process;
   process.setProgram( term );
@@ -234,7 +236,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
 
       for ( const QString &drive : drives )
       {
-        emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
+        emit usbStorageNotification( u"%1:/"_s.arg( drive ), wParam == DBT_DEVICEARRIVAL );
       }
       return false;
     }

@@ -38,7 +38,7 @@ class TestNineCellFilters : public QgsTest
 
   public:
     TestNineCellFilters()
-      : QgsTest( QStringLiteral( "Nine Cell Filter Tests" ) )
+      : QgsTest( u"Nine Cell Filter Tests"_s )
     {}
 
     QString SRC_FILE;
@@ -70,12 +70,12 @@ class TestNineCellFilters : public QgsTest
 
     static QString referenceFile( const QString &name )
     {
-      return QStringLiteral( "%1/analysis/%2.tif" ).arg( TEST_DATA_DIR, name );
+      return u"%1/analysis/%2.tif"_s.arg( TEST_DATA_DIR, name );
     }
 
     static QString tempFile( const QString &name )
     {
-      return QStringLiteral( "%1/ninecellfilterstest-%2.tif" ).arg( QDir::tempPath(), name );
+      return u"%1/ninecellfilterstest-%2.tif"_s.arg( QDir::tempPath(), name );
     }
 };
 
@@ -84,7 +84,7 @@ void TestNineCellFilters::init()
 {
 #ifdef HAVE_OPENCL
   // Reset to default in case some tests mess it up
-  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( u"resources/opencl_programs"_s ) );
 #endif
 }
 
@@ -136,45 +136,45 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 
 void TestNineCellFilters::testSlope()
 {
-  _testAlg<QgsSlopeFilter>( QStringLiteral( "slope" ) );
+  _testAlg<QgsSlopeFilter>( u"slope"_s );
 }
 
 void TestNineCellFilters::testAspect()
 {
-  _testAlg<QgsAspectFilter>( QStringLiteral( "aspect" ) );
+  _testAlg<QgsAspectFilter>( u"aspect"_s );
 }
 
 #ifdef HAVE_OPENCL
 void TestNineCellFilters::testSlopeCl()
 {
-  _testAlg<QgsSlopeFilter>( QStringLiteral( "slope" ), true );
+  _testAlg<QgsSlopeFilter>( u"slope"_s, true );
 }
 
 void TestNineCellFilters::testAspectCl()
 {
-  _testAlg<QgsAspectFilter>( QStringLiteral( "aspect" ), true );
+  _testAlg<QgsAspectFilter>( u"aspect"_s, true );
 }
 
 void TestNineCellFilters::testHillshadeCl()
 {
-  _testAlg<QgsHillshadeFilter>( QStringLiteral( "hillshade" ), true );
+  _testAlg<QgsHillshadeFilter>( u"hillshade"_s, true );
 }
 
 void TestNineCellFilters::testRuggednessCl()
 {
-  _testAlg<QgsRuggednessFilter>( QStringLiteral( "ruggedness" ), true );
+  _testAlg<QgsRuggednessFilter>( u"ruggedness"_s, true );
 }
 
 #endif
 
 void TestNineCellFilters::testHillshade()
 {
-  _testAlg<QgsHillshadeFilter>( QStringLiteral( "hillshade" ) );
+  _testAlg<QgsHillshadeFilter>( u"hillshade"_s );
 }
 
 void TestNineCellFilters::testRuggedness()
 {
-  _testAlg<QgsRuggednessFilter>( QStringLiteral( "ruggedness" ) );
+  _testAlg<QgsRuggednessFilter>( u"ruggedness"_s );
 }
 
 void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAlignRaster::RasterInfo &ref )
@@ -218,14 +218,14 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAl
 
 void TestNineCellFilters::testTotalCurvature()
 {
-  _testAlg<QgsTotalCurvatureFilter>( QStringLiteral( "totalcurvature" ) );
+  _testAlg<QgsTotalCurvatureFilter>( u"totalcurvature"_s );
 }
 
 void TestNineCellFilters::testCreationOptions()
 {
-  QString tmpFile( tempFile( QStringLiteral( "createopts" ) ) );
+  QString tmpFile( tempFile( u"createopts"_s ) );
 
-  QString worldFileName = tmpFile.replace( QLatin1String( ".tif" ), QLatin1String( ".tfw" ) );
+  QString worldFileName = tmpFile.replace( ".tif"_L1, ".tfw"_L1 );
   QFile worldFile( worldFileName );
   QVERIFY( !worldFile.exists() );
 
@@ -239,14 +239,14 @@ void TestNineCellFilters::testCreationOptions()
 
 void TestNineCellFilters::testNoDataValue()
 {
-  QString tmpFile( tempFile( QStringLiteral( "nodata" ) ) );
+  QString tmpFile( tempFile( u"nodata"_s ) );
 
   QgsAspectFilter ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
   ninecellFilter.setOutputNodataValue( -5555.0 );
   QCOMPARE( static_cast<int>( ninecellFilter.processRaster() ), 0 );
 
   //open output file and check results
-  const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpFile, QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpFile, u"raster"_s, u"gdal"_s );
   QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
   QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -5555.0 );
 }

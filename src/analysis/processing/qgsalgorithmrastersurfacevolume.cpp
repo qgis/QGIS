@@ -26,7 +26,7 @@
 
 QString QgsRasterSurfaceVolumeAlgorithm::name() const
 {
-  return QStringLiteral( "rastersurfacevolume" );
+  return u"rastersurfacevolume"_s;
 }
 
 QString QgsRasterSurfaceVolumeAlgorithm::displayName() const
@@ -46,22 +46,22 @@ QString QgsRasterSurfaceVolumeAlgorithm::group() const
 
 QString QgsRasterSurfaceVolumeAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 void QgsRasterSurfaceVolumeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "LEVEL" ), QObject::tr( "Base level" ), Qgis::ProcessingNumberParameterType::Double, 0 ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Count Only Above Base Level" ) << QObject::tr( "Count Only Below Base Level" ) << QObject::tr( "Subtract Volumes Below Base Level" ) << QObject::tr( "Add Volumes Below Base Level" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterNumber( u"LEVEL"_s, QObject::tr( "Base level" ), Qgis::ProcessingNumberParameterType::Double, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Count Only Above Base Level" ) << QObject::tr( "Count Only Below Base Level" ) << QObject::tr( "Subtract Volumes Below Base Level" ) << QObject::tr( "Add Volumes Below Base Level" ) ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Surface volume report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_TABLE" ), QObject::tr( "Surface volume table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Surface volume report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT_TABLE"_s, QObject::tr( "Surface volume table" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false ) );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "VOLUME" ), QObject::tr( "Volume" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "PIXEL_COUNT" ), QObject::tr( "Pixel count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "AREA" ), QObject::tr( "Area" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"VOLUME"_s, QObject::tr( "Volume" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"PIXEL_COUNT"_s, QObject::tr( "Pixel count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"AREA"_s, QObject::tr( "Area" ) ) );
 }
 
 QString QgsRasterSurfaceVolumeAlgorithm::shortHelpString() const
@@ -93,13 +93,13 @@ QgsRasterSurfaceVolumeAlgorithm *QgsRasterSurfaceVolumeAlgorithm::createInstance
 
 bool QgsRasterSurfaceVolumeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
+  const int band = parameterAsInt( parameters, u"BAND"_s, context );
 
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
@@ -113,27 +113,27 @@ bool QgsRasterSurfaceVolumeAlgorithm::prepareAlgorithm( const QVariantMap &param
   mRasterUnitsPerPixelY = layer->rasterUnitsPerPixelY();
   mSource = layer->source();
 
-  mLevel = parameterAsDouble( parameters, QStringLiteral( "LEVEL" ), context );
-  mMethod = static_cast<Method>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  mLevel = parameterAsDouble( parameters, u"LEVEL"_s, context );
+  mMethod = static_cast<Method>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
   return true;
 }
 
 QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT_HTML_FILE"_s, context );
   QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
 
   QString tableDest;
   std::unique_ptr<QgsFeatureSink> sink;
-  if ( parameters.contains( QStringLiteral( "OUTPUT_TABLE" ) ) && parameters.value( QStringLiteral( "OUTPUT_TABLE" ) ).isValid() )
+  if ( parameters.contains( u"OUTPUT_TABLE"_s ) && parameters.value( u"OUTPUT_TABLE"_s ).isValid() )
   {
     QgsFields outFields;
-    outFields.append( QgsField( QStringLiteral( "volume" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QMetaType::Type::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "pixel_count" ), QMetaType::Type::LongLong ) );
-    sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT_TABLE" ), context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
+    outFields.append( QgsField( u"volume"_s, QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( areaUnit.replace( u"²"_s, "2"_L1 ), QMetaType::Type::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( u"pixel_count"_s, QMetaType::Type::LongLong ) );
+    sink.reset( parameterAsSink( parameters, u"OUTPUT_TABLE"_s, context, tableDest, outFields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
     if ( !sink )
-      throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
+      throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT_TABLE"_s ) );
   }
 
   double volume = 0;
@@ -213,13 +213,13 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
       const QString encodedAreaUnit = QgsStringUtils::ampersandEncode( areaUnit );
 
       QTextStream out( &file );
-      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
-      out << QStringLiteral( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( mBand );
+      out << u"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n"_s;
+      out << u"<p>%1: %2 (%3 %4)</p>\n"_s.arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( mBand );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Volume" ), QString::number( volume, 'g', 16 ) );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Pixel count" ) ).arg( count );
       out << QObject::tr( "<p>%1: %2 %3</p>\n" ).arg( QObject::tr( "Area" ), QString::number( area, 'g', 16 ), encodedAreaUnit );
-      out << QStringLiteral( "</body></html>" );
-      outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputFile );
+      out << u"</body></html>"_s;
+      outputs.insert( u"OUTPUT_HTML_FILE"_s, outputFile );
     }
   }
 
@@ -228,13 +228,13 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
     QgsFeature f;
     f.setAttributes( QgsAttributes() << volume << area << count );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT_TABLE"_s ) );
     sink->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
+    outputs.insert( u"OUTPUT_TABLE"_s, tableDest );
   }
-  outputs.insert( QStringLiteral( "VOLUME" ), volume );
-  outputs.insert( QStringLiteral( "AREA" ), area );
-  outputs.insert( QStringLiteral( "PIXEL_COUNT" ), count );
+  outputs.insert( u"VOLUME"_s, volume );
+  outputs.insert( u"AREA"_s, area );
+  outputs.insert( u"PIXEL_COUNT"_s, count );
   return outputs;
 }
 

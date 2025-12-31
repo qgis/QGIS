@@ -131,7 +131,7 @@ class CORE_EXPORT QgsHttpHeaders
      *
      * \param el DOM element
      * \return TRUE if the update succeed
-     * \deprecated QGIS 3.42. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.42. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED bool updateDomElement( QDomElement &el ) const SIP_DEPRECATED;
 

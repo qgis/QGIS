@@ -40,7 +40,7 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   mMenu->addAction( mClearExpressionAction );
 
   setCheckable( true );
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionFilter.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"/mIconExpressionFilter.svg"_s ) );
   setPopupMode( QToolButton::MenuButtonPopup );
 
   setMenu( mMenu );
@@ -68,7 +68,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
   {
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   }
-  QgsExpressionBuilderDialog dlg( mLayer, mExpression, nullptr, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, mExpression, nullptr, u"generic"_s, context );
   if ( dlg.exec() )
   {
     setExpressionText( dlg.expressionText() );

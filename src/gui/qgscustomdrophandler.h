@@ -80,7 +80,7 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
      */
     virtual bool canHandleMimeData( const QMimeData *data );
 
-    // TODO QGIS 4.0 - return bool
+    // TODO QGIS 5.0 - return bool
 
     /**
      * Called when the specified mime \a data has been dropped onto QGIS.

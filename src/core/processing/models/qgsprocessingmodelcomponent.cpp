@@ -108,34 +108,34 @@ void QgsProcessingModelComponent::setComment( const QgsProcessingModelComment & 
 
 void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
 {
-  map.insert( QStringLiteral( "component_pos_x" ), mPosition.x() );
-  map.insert( QStringLiteral( "component_pos_y" ), mPosition.y() );
-  map.insert( QStringLiteral( "component_description" ), mDescription );
-  map.insert( QStringLiteral( "component_width" ), mSize.width() );
-  map.insert( QStringLiteral( "component_height" ), mSize.height() );
-  map.insert( QStringLiteral( "parameters_collapsed" ), mTopEdgeLinksCollapsed );
-  map.insert( QStringLiteral( "outputs_collapsed" ), mBottomEdgeLinksCollapsed );
-  map.insert( QStringLiteral( "color" ), mColor.isValid() ? QgsColorUtils::colorToString( mColor ) : QString() );
+  map.insert( u"component_pos_x"_s, mPosition.x() );
+  map.insert( u"component_pos_y"_s, mPosition.y() );
+  map.insert( u"component_description"_s, mDescription );
+  map.insert( u"component_width"_s, mSize.width() );
+  map.insert( u"component_height"_s, mSize.height() );
+  map.insert( u"parameters_collapsed"_s, mTopEdgeLinksCollapsed );
+  map.insert( u"outputs_collapsed"_s, mBottomEdgeLinksCollapsed );
+  map.insert( u"color"_s, mColor.isValid() ? QgsColorUtils::colorToString( mColor ) : QString() );
   const QgsProcessingModelComment *thisComment = comment();
   if ( thisComment )
-    map.insert( QStringLiteral( "comment" ), thisComment->toVariant() );
+    map.insert( u"comment"_s, thisComment->toVariant() );
 }
 
 void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &map )
 {
   QPointF pos;
-  pos.setX( map.value( QStringLiteral( "component_pos_x" ) ).toDouble() );
-  pos.setY( map.value( QStringLiteral( "component_pos_y" ) ).toDouble() );
+  pos.setX( map.value( u"component_pos_x"_s ).toDouble() );
+  pos.setY( map.value( u"component_pos_y"_s ).toDouble() );
   mPosition = pos;
-  mDescription = map.value( QStringLiteral( "component_description" ) ).toString();
-  mSize.setWidth( map.value( QStringLiteral( "component_width" ), QString::number( DEFAULT_COMPONENT_WIDTH ) ).toDouble() );
-  mSize.setHeight( map.value( QStringLiteral( "component_height" ), QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
-  mColor = map.value( QStringLiteral( "color" ) ).toString().isEmpty() ? QColor() : QgsColorUtils::colorFromString( map.value( QStringLiteral( "color" ) ).toString() );
-  mTopEdgeLinksCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
-  mBottomEdgeLinksCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
+  mDescription = map.value( u"component_description"_s ).toString();
+  mSize.setWidth( map.value( u"component_width"_s, QString::number( DEFAULT_COMPONENT_WIDTH ) ).toDouble() );
+  mSize.setHeight( map.value( u"component_height"_s, QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
+  mColor = map.value( u"color"_s ).toString().isEmpty() ? QColor() : QgsColorUtils::colorFromString( map.value( u"color"_s ).toString() );
+  mTopEdgeLinksCollapsed = map.value( u"parameters_collapsed"_s ).toBool();
+  mBottomEdgeLinksCollapsed = map.value( u"outputs_collapsed"_s ).toBool();
   QgsProcessingModelComment *thisComment = comment();
   if ( thisComment )
-    thisComment->loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
+    thisComment->loadVariant( map.value( u"comment"_s ).toMap() );
 }
 
 void QgsProcessingModelComponent::copyNonDefinitionProperties( const QgsProcessingModelComponent &other )

@@ -41,8 +41,8 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsLineDensityAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineDensity.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmLineDensity.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmLineDensity.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmLineDensity.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

@@ -35,8 +35,8 @@ class QgsExportGeometryAttributesAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsExportGeometryAttributesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmAddGeometryAttributes.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmAddGeometryAttributes.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmAddGeometryAttributes.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmAddGeometryAttributes.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

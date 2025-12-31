@@ -524,7 +524,7 @@ void QgsMapToolRotateFeature::createRotationWidget()
 
   deleteRotationWidget();
 
-  mRotationWidget = new QgsAngleMagnetWidget( QStringLiteral( "Rotation:" ) );
+  mRotationWidget = new QgsAngleMagnetWidget( u"Rotation:"_s );
   QgisApp::instance()->addUserInputWidget( mRotationWidget );
   mRotationWidget->setFocus( Qt::TabFocusReason );
 

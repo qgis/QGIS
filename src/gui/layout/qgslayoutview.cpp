@@ -58,7 +58,7 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   // we don't want to use QGraphicsScene::setBackgroundBrush because we want to keep
   // a transparent background for exports, and it's only a cosmetic thing for the view only
   // ALSO - only set it on the viewport - we don't want scrollbars/etc affected by this
-  viewport()->setStyleSheet( QStringLiteral( "background-color:#d7d7d7;" ) );
+  viewport()->setStyleSheet( u"background-color:#d7d7d7;"_s );
 
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
@@ -320,7 +320,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
 
   QgsReadWriteContext context;
   QDomDocument doc;
-  QDomElement documentElement = doc.createElement( QStringLiteral( "LayoutItemClipboard" ) );
+  QDomElement documentElement = doc.createElement( u"LayoutItemClipboard"_s );
   if ( operation == ClipboardCut )
     currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
 
@@ -358,37 +358,37 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
   }
 
   //remove the UUIDs since we don't want any duplicate UUID
-  QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  QDomNodeList itemsNodes = doc.elementsByTagName( u"LayoutItem"_s );
   for ( int i = 0; i < itemsNodes.count(); ++i )
   {
     QDomNode itemNode = itemsNodes.at( i );
     if ( itemNode.isElement() )
     {
-      itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
-      itemNode.toElement().removeAttribute( QStringLiteral( "groupUuid" ) );
+      itemNode.toElement().removeAttribute( u"uuid"_s );
+      itemNode.toElement().removeAttribute( u"groupUuid"_s );
     }
   }
-  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( u"LayoutMultiFrame"_s );
   for ( int i = 0; i < multiFrameNodes.count(); ++i )
   {
     QDomNode multiFrameNode = multiFrameNodes.at( i );
     if ( multiFrameNode.isElement() )
     {
-      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
-      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      multiFrameNode.toElement().removeAttribute( u"uuid"_s );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( u"childFrame"_s );
       for ( int j = 0; j < frameNodes.count(); ++j )
       {
         QDomNode itemNode = frameNodes.at( j );
         if ( itemNode.isElement() )
         {
-          itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+          itemNode.toElement().removeAttribute( u"uuid"_s );
         }
       }
     }
   }
 
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
+  mimeData->setData( u"text/xml"_s, doc.toByteArray() );
   QClipboard *clipboard = QApplication::clipboard();
   clipboard->setMimeData( mimeData );
 }
@@ -405,10 +405,10 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode 
   if ( !mimeData )
     return {};
 
-  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
+  if ( doc.setContent( mimeData->data( u"text/xml"_s ) ) )
   {
     QDomElement docElem = doc.documentElement();
-    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    if ( docElem.tagName() == "LayoutItemClipboard"_L1 )
     {
       QPointF pt;
       switch ( mode )
@@ -450,10 +450,10 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
   if ( !mimeData )
     return {};
 
-  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
+  if ( doc.setContent( mimeData->data( u"text/xml"_s ) ) )
   {
     QDomElement docElem = doc.documentElement();
-    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    if ( docElem.tagName() == "LayoutItemClipboard"_L1 )
     {
       currentLayout()->undoStack()->beginMacro( tr( "Paste Items" ) );
       currentLayout()->undoStack()->beginCommand( currentLayout(), tr( "Paste Items" ) );
@@ -473,10 +473,10 @@ bool QgsLayoutView::hasItemsInClipboard() const
   if ( !mimeData )
     return false;
 
-  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
+  if ( doc.setContent( mimeData->data( u"text/xml"_s ) ) )
   {
     QDomElement docElem = doc.documentElement();
-    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    if ( docElem.tagName() == "LayoutItemClipboard"_L1 )
       return true;
   }
   return false;
@@ -1214,8 +1214,8 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps

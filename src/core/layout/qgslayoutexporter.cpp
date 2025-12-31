@@ -154,10 +154,10 @@ class LayoutItemHider
 
 ///@endcond PRIVATE
 
-const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingImage = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-image" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported image file with the default viewer after exporting a print layout" ) );
-const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingPdf = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-pdf" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported PDF file with the default viewer after exporting a print layout" ) );
-const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingSvg = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-svg" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported SVG file with the default viewer after exporting a print layout" ) );
-const QgsSettingsEntryInteger *QgsLayoutExporter::settingImageQuality = new QgsSettingsEntryInteger( QStringLiteral( "image-quality" ), QgsSettingsTree::sTreeLayout, 90, QObject::tr( "Image quality for lossy formats (e.g. JPEG)" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingImage = new QgsSettingsEntryBool( u"open-after-exporting-image"_s, QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported image file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingPdf = new QgsSettingsEntryBool( u"open-after-exporting-pdf"_s, QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported PDF file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingSvg = new QgsSettingsEntryBool( u"open-after-exporting-svg"_s, QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported SVG file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryInteger *QgsLayoutExporter::settingImageQuality = new QgsSettingsEntryInteger( u"image-quality"_s, QgsSettingsTree::sTreeLayout, 90, QObject::tr( "Image quality for lossy formats (e.g. JPEG)" ) );
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
@@ -226,7 +226,7 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
     // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
     // this can happen e.g. as a result of data defined page sizes
     // see https://github.com/qgis/QGIS/issues/26422
-    QgsMessageLog::logMessage( QObject::tr( "Ignoring custom image size because aspect ratio %1 does not match paper ratio %2" ).arg( QString::number( imageAspectRatio, 'g', 3 ), QString::number( paperAspectRatio, 'g', 3 ) ), QStringLiteral( "Layout" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( QObject::tr( "Ignoring custom image size because aspect ratio %1 does not match paper ratio %2" ).arg( QString::number( imageAspectRatio, 'g', 3 ), QString::number( paperAspectRatio, 'g', 3 ) ), u"Layout"_s, Qgis::MessageLevel::Warning );
     imageSize = QSize();
   }
 
@@ -635,7 +635,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         mutuallyExclusiveGroups.insert( layerDetail.mapTheme );
       }
 
-      component.sourcePdfPath = settings.writeGeoPdf ? geospatialPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) ) : baseDir.filePath( QStringLiteral( "%1_%2.pdf" ).arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
+      component.sourcePdfPath = settings.writeGeoPdf ? geospatialPdfExporter->generateTemporaryFilepath( u"layer_%1.pdf"_s.arg( layerId ) ) : baseDir.filePath( u"%1_%2.pdf"_s.arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
       pdfComponents << component;
       QPdfWriter printer = QPdfWriter( component.sourcePdfPath );
       preparePrintAsPdf( mLayout, &printer, component.sourcePdfPath );
@@ -653,7 +653,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     };
     auto getExportGroupNameFunc = []( QgsLayoutItem * item )->QString
     {
-      return item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+      return item->customProperty( u"pdfExportGroup"_s ).toString();
     };
     result = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
     if ( result != Success )
@@ -898,7 +898,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
       return Canceled;
     }
 
-    QString filePath = iterator->filePath( baseFilePath, QStringLiteral( "pdf" ) );
+    QString filePath = iterator->filePath( baseFilePath, u"pdf"_s );
 
     QgsLayoutExporter exporter( iterator->layout() );
     ExportResult result = exporter.exportToPdf( filePath, settings );
@@ -1264,7 +1264,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
       return Canceled;
     }
 
-    QString filePath = iterator->filePath( baseFilePath, QStringLiteral( "svg" ) );
+    QString filePath = iterator->filePath( baseFilePath, u"svg"_s );
 
     QgsLayoutExporter exporter( iterator->layout() );
     ExportResult result = exporter.exportToSvg( filePath, settings );
@@ -1347,8 +1347,8 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
 
       // There is no way to actually get the color space registry identifier or even
       // the registry it comes from.
-      outputIntent.setOutputConditionIdentifier( QStringLiteral( "Unknown identifier" ) );
-      outputIntent.setRegistryName( QStringLiteral( "Unknown registry" ) );
+      outputIntent.setOutputConditionIdentifier( u"Unknown identifier"_s );
+      outputIntent.setRegistryName( u"Unknown registry"_s );
       device->setOutputIntent( outputIntent );
 
       // PDF/X-4 standard allows PDF to be printing ready and is only possible if a color space has been set
@@ -1545,15 +1545,15 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
     {
       svg = QDomDocument( doc.doctype() );
       svg.appendChild( svg.importNode( doc.firstChild(), false ) );
-      svgDocRoot = svg.importNode( doc.elementsByTagName( QStringLiteral( "svg" ) ).at( 0 ), false );
-      svgDocRoot.toElement().setAttribute( QStringLiteral( "xmlns:inkscape" ), QStringLiteral( "http://www.inkscape.org/namespaces/inkscape" ) );
+      svgDocRoot = svg.importNode( doc.elementsByTagName( u"svg"_s ).at( 0 ), false );
+      svgDocRoot.toElement().setAttribute( u"xmlns:inkscape"_s, u"http://www.inkscape.org/namespaces/inkscape"_s );
       svg.appendChild( svgDocRoot );
     }
-    QDomNode mainGroup = svg.importNode( doc.elementsByTagName( QStringLiteral( "g" ) ).at( 0 ), true );
-    mainGroup.toElement().setAttribute( QStringLiteral( "id" ), layerName );
-    mainGroup.toElement().setAttribute( QStringLiteral( "inkscape:label" ), layerName );
-    mainGroup.toElement().setAttribute( QStringLiteral( "inkscape:groupmode" ), QStringLiteral( "layer" ) );
-    QDomNode defs = svg.importNode( doc.elementsByTagName( QStringLiteral( "defs" ) ).at( 0 ), true );
+    QDomNode mainGroup = svg.importNode( doc.elementsByTagName( u"g"_s ).at( 0 ), true );
+    mainGroup.toElement().setAttribute( u"id"_s, layerName );
+    mainGroup.toElement().setAttribute( u"inkscape:label"_s, layerName );
+    mainGroup.toElement().setAttribute( u"inkscape:groupmode"_s, u"layer"_s );
+    QDomNode defs = svg.importNode( doc.elementsByTagName( u"defs"_s ).at( 0 ), true );
     svgDocRoot.appendChild( defs );
     svgDocRoot.appendChild( mainGroup );
   }
@@ -1563,14 +1563,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
 void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
 {
   const QgsProjectMetadata &metadata = mLayout->project()->metadata();
-  QDomElement metadataElement = svg.createElement( QStringLiteral( "metadata" ) );
-  QDomElement rdfElement = svg.createElement( QStringLiteral( "rdf:RDF" ) );
-  rdfElement.setAttribute( QStringLiteral( "xmlns:rdf" ), QStringLiteral( "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ) );
-  rdfElement.setAttribute( QStringLiteral( "xmlns:rdfs" ), QStringLiteral( "http://www.w3.org/2000/01/rdf-schema#" ) );
-  rdfElement.setAttribute( QStringLiteral( "xmlns:dc" ), QStringLiteral( "http://purl.org/dc/elements/1.1/" ) );
-  QDomElement descriptionElement = svg.createElement( QStringLiteral( "rdf:Description" ) );
-  QDomElement workElement = svg.createElement( QStringLiteral( "cc:Work" ) );
-  workElement.setAttribute( QStringLiteral( "rdf:about" ), QString() );
+  QDomElement metadataElement = svg.createElement( u"metadata"_s );
+  QDomElement rdfElement = svg.createElement( u"rdf:RDF"_s );
+  rdfElement.setAttribute( u"xmlns:rdf"_s, u"http://www.w3.org/1999/02/22-rdf-syntax-ns#"_s );
+  rdfElement.setAttribute( u"xmlns:rdfs"_s, u"http://www.w3.org/2000/01/rdf-schema#"_s );
+  rdfElement.setAttribute( u"xmlns:dc"_s, u"http://purl.org/dc/elements/1.1/"_s );
+  QDomElement descriptionElement = svg.createElement( u"rdf:Description"_s );
+  QDomElement workElement = svg.createElement( u"cc:Work"_s );
+  workElement.setAttribute( u"rdf:about"_s, QString() );
 
   auto addTextNode = [&workElement, &descriptionElement, &svg]( const QString & tag, const QString & value )
   {
@@ -1584,18 +1584,18 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
     descriptionElement.setAttribute( tag, value );
   };
 
-  addTextNode( QStringLiteral( "dc:format" ), QStringLiteral( "image/svg+xml" ) );
-  addTextNode( QStringLiteral( "dc:title" ), metadata.title() );
-  addTextNode( QStringLiteral( "dc:date" ), metadata.creationDateTime().toString( Qt::ISODate ) );
-  addTextNode( QStringLiteral( "dc:identifier" ), metadata.identifier() );
-  addTextNode( QStringLiteral( "dc:description" ), metadata.abstract() );
+  addTextNode( u"dc:format"_s, u"image/svg+xml"_s );
+  addTextNode( u"dc:title"_s, metadata.title() );
+  addTextNode( u"dc:date"_s, metadata.creationDateTime().toString( Qt::ISODate ) );
+  addTextNode( u"dc:identifier"_s, metadata.identifier() );
+  addTextNode( u"dc:description"_s, metadata.abstract() );
 
   auto addAgentNode = [&workElement, &descriptionElement, &svg]( const QString & tag, const QString & value )
   {
     // inkscape compatible
     QDomElement inkscapeElement = svg.createElement( tag );
-    QDomElement agentElement = svg.createElement( QStringLiteral( "cc:Agent" ) );
-    QDomElement titleElement = svg.createElement( QStringLiteral( "dc:title" ) );
+    QDomElement agentElement = svg.createElement( u"cc:Agent"_s );
+    QDomElement titleElement = svg.createElement( u"dc:title"_s );
     QDomText t = svg.createTextNode( value );
     titleElement.appendChild( t );
     agentElement.appendChild( titleElement );
@@ -1603,8 +1603,8 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
     workElement.appendChild( inkscapeElement );
 
     // svg spec compatible
-    QDomElement bagElement = svg.createElement( QStringLiteral( "rdf:Bag" ) );
-    QDomElement liElement = svg.createElement( QStringLiteral( "rdf:li" ) );
+    QDomElement bagElement = svg.createElement( u"rdf:Bag"_s );
+    QDomElement liElement = svg.createElement( u"rdf:li"_s );
     t = svg.createTextNode( value );
     liElement.appendChild( t );
     bagElement.appendChild( liElement );
@@ -1614,20 +1614,20 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
     descriptionElement.appendChild( element );
   };
 
-  addAgentNode( QStringLiteral( "dc:creator" ), metadata.author() );
-  addAgentNode( QStringLiteral( "dc:publisher" ), getCreator() );
+  addAgentNode( u"dc:creator"_s, metadata.author() );
+  addAgentNode( u"dc:publisher"_s, getCreator() );
 
   // keywords
   {
-    QDomElement element = svg.createElement( QStringLiteral( "dc:subject" ) );
-    QDomElement bagElement = svg.createElement( QStringLiteral( "rdf:Bag" ) );
+    QDomElement element = svg.createElement( u"dc:subject"_s );
+    QDomElement bagElement = svg.createElement( u"rdf:Bag"_s );
     QgsAbstractMetadataBase::KeywordMap keywords = metadata.keywords();
     for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
     {
       const QStringList words = it.value();
       for ( const QString &keyword : words )
       {
-        QDomElement liElement = svg.createElement( QStringLiteral( "rdf:li" ) );
+        QDomElement liElement = svg.createElement( u"rdf:li"_s );
         QDomText t = svg.createTextNode( keyword );
         liElement.appendChild( t );
         bagElement.appendChild( liElement );
@@ -1642,7 +1642,7 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
   rdfElement.appendChild( workElement );
   metadataElement.appendChild( rdfElement );
   svg.documentElement().appendChild( metadataElement );
-  svg.documentElement().setAttribute( QStringLiteral( "xmlns:cc" ), QStringLiteral( "http://creativecommons.org/ns#" ) );
+  svg.documentElement().setAttribute( u"xmlns:cc"_s, u"http://creativecommons.org/ns#"_s );
 }
 
 std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const
@@ -1787,7 +1787,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
 #if QT_FEATURE_timezone > 0
       if ( creationDateTime.isValid() )
       {
-        creationDateString = QStringLiteral( "D:%1" ).arg( mLayout->project()->metadata().creationDateTime().toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+        creationDateString = u"D:%1"_s.arg( mLayout->project()->metadata().creationDateTime().toString( u"yyyyMMddHHmmss"_s ) );
         if ( creationDateTime.timeZone().isValid() )
         {
           int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
@@ -1795,11 +1795,11 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
           offsetFromUtc = std::abs( offsetFromUtc );
           int offsetHours = offsetFromUtc / 3600;
           int offsetMins = ( offsetFromUtc % 3600 ) / 60;
-          creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+          creationDateString += u"%1'%2'"_s.arg( offsetHours ).arg( offsetMins );
         }
       }
 #else
-      QgsDebugError( QStringLiteral( "Qt is built without timezone support, skipping timezone for pdf export" ) );
+      QgsDebugError( u"Qt is built without timezone support, skipping timezone for pdf export"_s );
 #endif
       GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
@@ -1814,7 +1814,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
       QStringList allKeywords;
       for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
       {
-        allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
+        allKeywords.append( u"%1: %2"_s.arg( it.key(), it.value().join( ',' ) ) );
       }
       const QString keywordString = allKeywords.join( ';' );
       GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toUtf8().constData(), nullptr );
@@ -1863,7 +1863,7 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
           currentLayerItemTypes.append( QObject::tr( "Other" ) );
       }
     }
-    return currentLayerItemTypes.join( QLatin1String( ", " ) );
+    return currentLayerItemTypes.join( ", "_L1 );
   }
   return QObject::tr( "Layer %1" ).arg( layerId );
 }
@@ -2255,7 +2255,7 @@ void QgsLayoutExporter::captureLabelingResults()
 bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata, int quality )
 {
   QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
-  if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
+  if ( imageFormat.compare( "tiff"_L1, Qt::CaseInsensitive ) == 0 || imageFormat.compare( "tif"_L1, Qt::CaseInsensitive ) == 0 )
   {
     w.setCompression( 1 ); //use LZW compression
   }
@@ -2265,29 +2265,29 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
 
   if ( projectForMetadata )
   {
-    w.setText( QStringLiteral( "Author" ), projectForMetadata->metadata().author() );
+    w.setText( u"Author"_s, projectForMetadata->metadata().author() );
     const QString creator = getCreator();
-    w.setText( QStringLiteral( "Creator" ), creator );
-    w.setText( QStringLiteral( "Producer" ), creator );
-    w.setText( QStringLiteral( "Subject" ), projectForMetadata->metadata().abstract() );
-    w.setText( QStringLiteral( "Created" ), projectForMetadata->metadata().creationDateTime().toString( Qt::ISODate ) );
-    w.setText( QStringLiteral( "Title" ), projectForMetadata->metadata().title() );
+    w.setText( u"Creator"_s, creator );
+    w.setText( u"Producer"_s, creator );
+    w.setText( u"Subject"_s, projectForMetadata->metadata().abstract() );
+    w.setText( u"Created"_s, projectForMetadata->metadata().creationDateTime().toString( Qt::ISODate ) );
+    w.setText( u"Title"_s, projectForMetadata->metadata().title() );
 
     const QgsAbstractMetadataBase::KeywordMap keywords = projectForMetadata->metadata().keywords();
     QStringList allKeywords;
     for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
     {
-      allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
+      allKeywords.append( u"%1: %2"_s.arg( it.key(), it.value().join( ',' ) ) );
     }
     const QString keywordString = allKeywords.join( ';' );
-    w.setText( QStringLiteral( "Keywords" ), keywordString );
+    w.setText( u"Keywords"_s, keywordString );
   }
   return w.write( image );
 }
 
 QString QgsLayoutExporter::getCreator()
 {
-  return QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+  return u"QGIS %1"_s.arg( Qgis::version() );
 }
 
 void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout )

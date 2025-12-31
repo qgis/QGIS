@@ -61,32 +61,32 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
     if ( activeDecorations.isEmpty() )
       activeDecorations = decoration->displayName().toLower();
     else
-      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->displayName().toLower() );
+      activeDecorations += u", %1"_s.arg( decoration->displayName().toLower() );
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
   const QgsSettings settings;
 
-  const QString templateText = settings.value( QStringLiteral( "ExportAnimation/fileNameTemplate" ), QStringLiteral( "%1####.png" ).arg( QgsProject::instance()->baseName() ), QgsSettings::App ).toString();
+  const QString templateText = settings.value( u"ExportAnimation/fileNameTemplate"_s, u"%1####.png"_s.arg( QgsProject::instance()->baseName() ), QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  const thread_local QRegularExpression rx( QStringLiteral( "^\\w+#+\\.{1}\\w+$" ) ); //e.g. anyprefix#####.png
+  const thread_local QRegularExpression rx( u"^\\w+#+\\.{1}\\w+$"_s ); //e.g. anyprefix#####.png
   QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
   connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "ExportAnimation/fileNameTemplate" ), mTemplateLineEdit->text() );
+    settings.setValue( u"ExportAnimation/fileNameTemplate"_s, mTemplateLineEdit->text() );
   } );
 
   mOutputDirFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mOutputDirFileWidget->setDialogTitle( tr( "Select Directory for Animation Frames" ) );
   mOutputDirFileWidget->lineEdit()->setShowClearButton( false );
-  mOutputDirFileWidget->setDefaultRoot( settings.value( QStringLiteral( "ExportAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
-  mOutputDirFileWidget->setFilePath( settings.value( QStringLiteral( "ExportAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
+  mOutputDirFileWidget->setDefaultRoot( settings.value( u"ExportAnimation/lastDir"_s, QString(), QgsSettings::App ).toString() );
+  mOutputDirFileWidget->setFilePath( settings.value( u"ExportAnimation/lastDir"_s, QString(), QgsSettings::App ).toString() );
 
   connect( mOutputDirFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "ExportAnimation/lastDir" ), mOutputDirFileWidget->filePath(), QgsSettings::App );
+    settings.setValue( u"ExportAnimation/lastDir"_s, mOutputDirFileWidget->filePath(), QgsSettings::App );
   } );
 
   for ( const Qgis::TemporalUnit u :
@@ -125,7 +125,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsAnimationExportDialog::setToProjectTime );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#maptimecontrol" ) );
+    QgsHelp::openHelp( u"map_views/map_view.html#maptimecontrol"_s );
   } );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, [this] {
@@ -246,8 +246,8 @@ void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
 {
   const QgsSettings settings;
 
-  mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
-  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, settings.value( u"qgis/enable_anti_aliasing"_s, true ).toBool() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, false );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );

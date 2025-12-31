@@ -33,7 +33,7 @@
 #include "moc_qgstiledscenelayerproperties.cpp"
 
 QgsTiledSceneLayerProperties::QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( layer, canvas, QStringLiteral( "QgsTiledSceneLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( layer, canvas, u"QgsTiledSceneLayerProperties"_s, parent, flags )
   , mLayer( layer )
 {
   setupUi( this );
@@ -72,9 +72,9 @@ QgsTiledSceneLayerProperties::QgsTiledSceneLayerProperties( QgsTiledSceneLayer *
   syncToLayer();
 
   QgsSettings settings;
-  if ( !settings.contains( QStringLiteral( "/Windows/TiledSceneLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/TiledSceneLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/TiledSceneLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Information ) );
+    settings.setValue( u"Windows/TiledSceneLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -102,10 +102,10 @@ QgsTiledSceneLayerProperties::QgsTiledSceneLayerProperties( QgsTiledSceneLayer *
 
   //Add help page references
 #if 0 // TODO
-  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#information-properties" ) );
-  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#source-properties" ) );
-  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#rendering-properties" ) );
-  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#metadata-properties" ) );
+  mOptsPage_Information->setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#information-properties"_s );
+  mOptsPage_Source->setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#source-properties"_s );
+  mOptsPage_Rendering->setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#rendering-properties"_s );
+  mOptsPage_Metadata->setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#metadata-properties"_s );
 #endif
 
   mBackupCrs = mLayer->crs();
@@ -146,7 +146,7 @@ void QgsTiledSceneLayerProperties::syncToLayer()
 
   // information Tab
   QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  myStyle.append( u"body { margin: 10px; }\n "_s );
   mInformationTextBrowser->clear();
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
@@ -180,7 +180,7 @@ void QgsTiledSceneLayerProperties::showHelp()
 #if 0 // TODO
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_point_clouds/point_clouds.html" ) );
+    QgsHelp::openHelp( u"working_with_point_clouds/point_clouds.html"_s );
   }
 #endif
 }

@@ -158,7 +158,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
       }
     }
 
-    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
 
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
     for ( ; changeIt != changes.constEnd(); ++changeIt )

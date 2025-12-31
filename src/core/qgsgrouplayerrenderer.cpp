@@ -46,7 +46,7 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming extent of %1 to destination CRS" ).arg( childLayer->id() ) );
+      QgsDebugError( u"Error transforming extent of %1 to destination CRS"_s.arg( childLayer->id() ) );
       continue;
     }
 

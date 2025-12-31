@@ -67,15 +67,15 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -84,7 +84,7 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "layer point Z" ), QStringLiteral( "memory" ) );
+  mLayerPointZ = new QgsVectorLayer( u"PointZ?crs=EPSG:27700"_s, u"layer point Z"_s, u"memory"_s );
   QVERIFY( mLayerPointZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZ );
 
@@ -97,7 +97,7 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   QCOMPARE( mLayerPointZ->featureCount(), ( long ) 1 );
 
   // make layer for snapping
-  mLayerPointZSnap = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "Snap point" ), QStringLiteral( "memory" ) );
+  mLayerPointZSnap = new QgsVectorLayer( u"PointZ?crs=EPSG:27700"_s, u"Snap point"_s, u"memory"_s );
   QVERIFY( mLayerPointZSnap->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZSnap );
 
@@ -110,7 +110,7 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   QCOMPARE( mLayerPointZSnap->featureCount(), ( long ) 1 );
 
   // make line layer for snapping
-  mLayerLineZSnap = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "Snap line" ), QStringLiteral( "memory" ) );
+  mLayerLineZSnap = new QgsVectorLayer( u"LineStringZ?crs=EPSG:27700"_s, u"Snap line"_s, u"memory"_s );
   QVERIFY( mLayerLineZSnap->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZSnap );
 

@@ -75,8 +75,8 @@ void TestQgsCoordinateTransform::copy()
   const QgsCoordinateTransform uninitializedCopy( uninitialized );
   QVERIFY( !uninitializedCopy.isValid() );
 
-  const QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:3111" ) );
-  const QgsCoordinateReferenceSystem destination( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem source( u"EPSG:3111"_s );
+  const QgsCoordinateReferenceSystem destination( u"EPSG:4326"_s );
 
   const QgsCoordinateTransform original( source, destination, QgsProject::instance() );
   QVERIFY( original.isValid() );
@@ -87,7 +87,7 @@ void TestQgsCoordinateTransform::copy()
   QCOMPARE( copy.destinationCrs().authid(), original.destinationCrs().authid() );
 
   // force detachement of copy
-  const QgsCoordinateReferenceSystem newDest( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem newDest( u"EPSG:3857"_s );
   copy.setDestinationCrs( newDest );
   QVERIFY( copy.isValid() );
   QCOMPARE( copy.destinationCrs().authid(), QString( "EPSG:3857" ) );
@@ -101,8 +101,8 @@ void TestQgsCoordinateTransform::assignment()
   uninitializedCopy = uninitialized;
   QVERIFY( !uninitializedCopy.isValid() );
 
-  const QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:3111" ) );
-  const QgsCoordinateReferenceSystem destination( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem source( u"EPSG:3111"_s );
+  const QgsCoordinateReferenceSystem destination( u"EPSG:4326"_s );
 
   const QgsCoordinateTransform original( source, destination, QgsProject::instance() );
   QVERIFY( original.isValid() );
@@ -114,11 +114,11 @@ void TestQgsCoordinateTransform::assignment()
   QCOMPARE( copy.destinationCrs().authid(), original.destinationCrs().authid() );
 
   // force detachement of copy
-  const QgsCoordinateReferenceSystem newDest( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem newDest( u"EPSG:3857"_s );
   copy.setDestinationCrs( newDest );
   QVERIFY( copy.isValid() );
-  QCOMPARE( copy.destinationCrs().authid(), QStringLiteral( "EPSG:3857" ) );
-  QCOMPARE( original.destinationCrs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( copy.destinationCrs().authid(), u"EPSG:3857"_s );
+  QCOMPARE( original.destinationCrs().authid(), u"EPSG:4326"_s );
 
   // test assigning back to invalid
   copy = uninitialized;
@@ -132,32 +132,32 @@ void TestQgsCoordinateTransform::equality()
   QgsCoordinateTransform t2;
   QVERIFY( t1 == t2 );
 
-  t1 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  t1 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
   // same source and destination
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 == t2 );
   QVERIFY( t2 == t1 );
   // different source
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3113"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
   // different destination
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateTransformContext() );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
   // different source and destination
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateTransformContext() );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3113"_s ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
   // source/destination swapped
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateTransformContext() );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
 
   // same source and dest, different settings
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
   t1.setBallparkTransformsAreAppropriate( true );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
@@ -165,12 +165,12 @@ void TestQgsCoordinateTransform::equality()
   QVERIFY( t1 == t2 );
 
   // explicit coordinate operation
-  t1 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
-  t1.setCoordinateOperation( QStringLiteral( "+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
-  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  t1 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
+  t1.setCoordinateOperation( u"+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
+  t2 = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateTransformContext() );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
-  t2.setCoordinateOperation( QStringLiteral( "+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+  t2.setCoordinateOperation( u"+proj=pipeline +step +inv +proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84"_s );
   QVERIFY( t1 != t2 );
   QVERIFY( t2 != t1 );
   t2.setCoordinateOperation( t1.coordinateOperation() );
@@ -182,8 +182,8 @@ void TestQgsCoordinateTransform::isValid()
   const QgsCoordinateTransform tr;
   QVERIFY( !tr.isValid() );
 
-  const QgsCoordinateReferenceSystem srs1( QStringLiteral( "EPSG:3994" ) );
-  const QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs1( u"EPSG:3994"_s );
+  const QgsCoordinateReferenceSystem srs2( u"EPSG:4326"_s );
 
   // valid source, invalid destination
   const QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem(), QgsProject::instance() );
@@ -213,8 +213,8 @@ void TestQgsCoordinateTransform::isShortCircuited()
   //invalid transform shortcircuits
   QVERIFY( tr.isShortCircuited() );
 
-  const QgsCoordinateReferenceSystem srs1( QStringLiteral( "EPSG:3994" ) );
-  const QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs1( u"EPSG:3994"_s );
+  const QgsCoordinateReferenceSystem srs2( u"EPSG:4326"_s );
 
   // valid source, invalid destination
   const QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem(), QgsProject::instance() );
@@ -241,31 +241,31 @@ void TestQgsCoordinateTransform::contextShared()
 {
   //test implicit sharing of QgsCoordinateTransformContext
   QgsCoordinateTransformContext original;
-  original.addCoordinateOperation( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj" ) );
+  original.addCoordinateOperation( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3113"_s ), u"proj"_s );
 
   QgsCoordinateTransformContext copy( original );
   QMap<QPair<QString, QString>, QString> expected;
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj" ) );
+  expected.insert( qMakePair( u"EPSG:3111"_s, u"EPSG:3113"_s ), u"proj"_s );
   QCOMPARE( original.coordinateOperations(), expected );
   QCOMPARE( copy.coordinateOperations(), expected );
 
   // trigger detach
-  copy.addCoordinateOperation( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
+  copy.addCoordinateOperation( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3113"_s ), u"proj2"_s );
   QCOMPARE( original.coordinateOperations(), expected );
 
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
+  expected.insert( qMakePair( u"EPSG:3111"_s, u"EPSG:3113"_s ), u"proj2"_s );
   QCOMPARE( copy.coordinateOperations(), expected );
 
   // copy via assignment
   QgsCoordinateTransformContext copy2;
   copy2 = original;
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj" ) );
+  expected.insert( qMakePair( u"EPSG:3111"_s, u"EPSG:3113"_s ), u"proj"_s );
   QCOMPARE( original.coordinateOperations(), expected );
   QCOMPARE( copy2.coordinateOperations(), expected );
 
-  copy2.addCoordinateOperation( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
+  copy2.addCoordinateOperation( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ), QgsCoordinateReferenceSystem( u"EPSG:3113"_s ), u"proj2"_s );
   QCOMPARE( original.coordinateOperations(), expected );
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QStringLiteral( "proj2" ) );
+  expected.insert( qMakePair( u"EPSG:3111"_s, u"EPSG:3113"_s ), u"proj2"_s );
   QCOMPARE( copy2.coordinateOperations(), expected );
 }
 
@@ -289,8 +289,8 @@ void TestQgsCoordinateTransform::scaleFactor()
 
 void TestQgsCoordinateTransform::constructorFlags()
 {
-  const QgsCoordinateReferenceSystem srs1( QStringLiteral( "EPSG:3994" ) );
-  const QgsCoordinateReferenceSystem srs2( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs1( u"EPSG:3994"_s );
+  const QgsCoordinateReferenceSystem srs2( u"EPSG:4326"_s );
 
   // no flags
   QgsCoordinateTransform tr( srs1, srs2, QgsProject::instance() );
@@ -313,7 +313,7 @@ void TestQgsCoordinateTransform::constructorFlags()
   QVERIFY( !tr4.isShortCircuited() );
   QVERIFY( tr4.mIgnoreImpossible );
 
-  QgsCoordinateTransform tr5( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ), QgsProject::instance(), Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
+  QgsCoordinateTransform tr5( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"ESRI:104903"_s ), QgsProject::instance(), Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
   QVERIFY( !tr5.mBallparkTransformsAreAppropriate );
   // crses are from two different celestial bodies, the transform is impossible and should be short-circuited
   QVERIFY( tr5.isShortCircuited() );
@@ -557,43 +557,43 @@ void TestQgsCoordinateTransform::dynamicToDynamicErrorHandler()
   } );
 
   // no warnings -- no coordinate epoch set (although we should consider a different warning in this situation!!)
-  QgsCoordinateReferenceSystem src( QStringLiteral( "EPSG:9000" ) );
-  QgsCoordinateReferenceSystem dest( QStringLiteral( "EPSG:9000" ) );
+  QgsCoordinateReferenceSystem src( u"EPSG:9000"_s );
+  QgsCoordinateReferenceSystem dest( u"EPSG:9000"_s );
   QgsCoordinateTransform t( src, dest, QgsCoordinateTransformContext() );
   QCOMPARE( counter, 0 );
 
   // no warnings, static to static
-  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) );
-  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) );
+  src = QgsCoordinateReferenceSystem( u"EPSG:7844"_s );
+  dest = QgsCoordinateReferenceSystem( u"EPSG:3111"_s );
   t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
   QCOMPARE( counter, 0 );
 
   // no warnings, static to dynamic
-  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) );
-  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src = QgsCoordinateReferenceSystem( u"EPSG:7844"_s );
+  dest = QgsCoordinateReferenceSystem( u"EPSG:9000"_s );
   dest.setCoordinateEpoch( 2030 );
   t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
   QCOMPARE( counter, 0 );
 
   // no warnings, dynamic to static
-  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src = QgsCoordinateReferenceSystem( u"EPSG:9000"_s );
   src.setCoordinateEpoch( 2030 );
-  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) );
+  dest = QgsCoordinateReferenceSystem( u"EPSG:7844"_s );
   t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
   QCOMPARE( counter, 0 );
 
   // no warnings, same dynamic CRS to same dynamic CRS with same epoch
-  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src = QgsCoordinateReferenceSystem( u"EPSG:9000"_s );
   src.setCoordinateEpoch( 2030 );
-  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  dest = QgsCoordinateReferenceSystem( u"EPSG:9000"_s );
   dest.setCoordinateEpoch( 2030 );
   t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
   QCOMPARE( counter, 0 );
 
   // yes warnings, dynamic CRS to dynamic CRS with different epoch
-  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src = QgsCoordinateReferenceSystem( u"EPSG:9000"_s );
   src.setCoordinateEpoch( 2030 );
-  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  dest = QgsCoordinateReferenceSystem( u"EPSG:9000"_s );
   dest.setCoordinateEpoch( 2025 );
   t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
   QCOMPARE( counter, 1 );
@@ -604,8 +604,8 @@ void TestQgsCoordinateTransform::dynamicToDynamicErrorHandler()
 void TestQgsCoordinateTransform::transformBoundingBox()
 {
   //test transforming a bounding box which crosses the 180 degree longitude line
-  const QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  const QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  const QgsCoordinateReferenceSystem destSrs( u"EPSG:4326"_s );
 
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
   const QgsRectangle crossingRect( 6374985, -3626584, 7021195, -3272435 );
@@ -617,7 +617,7 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QGSCOMPARENEAR( resultRect.yMaximum(), -36.3951, 0.001 );
 
   // test transforming a bounding box, resulting in an invalid transform - exception must be thrown
-  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), QgsProject::instance() );
+  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), QgsProject::instance() );
   const QgsRectangle rect( -99999999999, 99999999999, -99999999998, 99999999998 );
   bool errorObtained = false;
   try
@@ -645,7 +645,7 @@ void TestQgsCoordinateTransform::transformLKS()
   const QgsCoordinateTransform Lks2Wgs( LKS92, WGS84, QgsProject::instance() );
   QVERIFY( Lks2Wgs.isValid() );
 
-  QPolygonF sPoly = QgsGeometry::fromWkt( QStringLiteral( "Polygon (( 725865.850 198519.947, 363511.181 263208.769, 717694.697 333650.333, 725865.850 198519.947 ))" ) ).asQPolygonF();
+  QPolygonF sPoly = QgsGeometry::fromWkt( u"Polygon (( 725865.850 198519.947, 363511.181 263208.769, 717694.697 333650.333, 725865.850 198519.947 ))"_s ).asQPolygonF();
 
   Lks2Balt.transformPolygon( sPoly, Qgis::TransformDirection::Forward );
 
@@ -660,7 +660,7 @@ void TestQgsCoordinateTransform::transformLKS()
 void TestQgsCoordinateTransform::transformContextNormalize()
 {
   // coordinate operation for WGS84 to 27700
-  const QString coordOperation = QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=airy +step +proj=pop +v_3 +step +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy" );
+  const QString coordOperation = u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=446.448 +y=-125.157 +z=542.06 +rx=0.15 +ry=0.247 +rz=0.842 +s=-20.489 +convention=position_vector +step +inv +proj=cart +ellps=airy +step +proj=pop +v_3 +step +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy"_s;
   QgsCoordinateTransformContext context;
   context.addCoordinateOperation( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 27700 ), coordOperation );
 
@@ -746,13 +746,13 @@ void TestQgsCoordinateTransform::testDeprecated4240to4326()
   // see https://github.com/qgis/QGIS/issues/33121
 
   QgsCoordinateTransformContext context;
-  const QgsCoordinateReferenceSystem src( QStringLiteral( "EPSG:4240" ) );
-  const QgsCoordinateReferenceSystem dest( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem src( u"EPSG:4240"_s );
+  const QgsCoordinateReferenceSystem dest( u"EPSG:4326"_s );
 
   // first use default transform
   const QgsCoordinateTransform defaultTransform( src, dest, context );
   QCOMPARE( defaultTransform.coordinateOperation(), QString() );
-  QCOMPARE( defaultTransform.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+  QCOMPARE( defaultTransform.instantiatedCoordinateOperationDetails().proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"_s );
   QVERIFY( defaultTransform.isValid() );
 
   const QgsPointXY p( 102.5, 7.5 );
@@ -769,7 +769,7 @@ void TestQgsCoordinateTransform::testDeprecated4240to4326()
   QVERIFY( defaultTransformRev.isValid() );
   QCOMPARE( defaultTransformRev.coordinateOperation(), QString() );
   QgsDebugMsgLevel( defaultTransformRev.instantiatedCoordinateOperationDetails().proj, 1 );
-  QCOMPARE( defaultTransformRev.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=evrst30 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+  QCOMPARE( defaultTransformRev.instantiatedCoordinateOperationDetails().proj, u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=evrst30 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"_s );
 
   p2 = defaultTransformRev.transform( QgsPointXY( 102.494938, 7.502624 ) );
   QGSCOMPARENEAR( p2.x(), 102.5, 0.000001 );
@@ -780,7 +780,7 @@ void TestQgsCoordinateTransform::testDeprecated4240to4326()
   QGSCOMPARENEAR( p3.y(), 7.502624, 0.000001 );
 
   // now force use of deprecated transform
-  const QString deprecatedProj = QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=209 +y=818 +z=290 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" );
+  const QString deprecatedProj = u"+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=evrst30 +step +proj=helmert +x=209 +y=818 +z=290 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg"_s;
   context.addCoordinateOperation( src, dest, deprecatedProj );
 
   const QgsCoordinateTransform deprecatedTransform( src, dest, context );
@@ -815,8 +815,8 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
 {
   // test custom proj string
   // refs https://github.com/qgis/QGIS/issues/32928
-  const QgsCoordinateReferenceSystem ss( QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=longlat +ellps=GRS80 +towgs84=1,2,3,4,5,6,7 +no_defs" ) ) );
-  const QgsCoordinateReferenceSystem dd( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem ss( QgsCoordinateReferenceSystem::fromProj( u"+proj=longlat +ellps=GRS80 +towgs84=1,2,3,4,5,6,7 +no_defs"_s ) );
+  const QgsCoordinateReferenceSystem dd( u"EPSG:4326"_s );
   const QgsCoordinateTransform ct( ss, dd, QgsCoordinateTransformContext() );
   QVERIFY( ct.isValid() );
   QgsDebugMsgLevel( ct.instantiatedCoordinateOperationDetails().proj, 1 );
@@ -832,13 +832,13 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
 
 void TestQgsCoordinateTransform::testTransformationIsPossible()
 {
-  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) );
-  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem() ) );
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) ) );
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateReferenceSystem() ) );
   QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem() ) );
 
-  QVERIFY( QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+  QVERIFY( QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) ) );
   // crses from two different celestial bodies => transformation is not possible
-  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ) ) );
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"ESRI:104903"_s ) ) );
 }
 
 

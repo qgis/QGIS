@@ -46,7 +46,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
     sipCpp = new QgsSettingsEntryGroup( *a0, false );
     sipIsErr = sipCpp->isValid() ? 0 : 1;
     if ( sipIsErr )
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Settings do not share the same base definition key for this group. This will lead to unpredictable results."_s.toUtf8().constData() );
     % End
 #endif
 

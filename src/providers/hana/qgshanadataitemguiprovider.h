@@ -28,7 +28,7 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "SAP HANA" ); }
+    QString name() override { return u"SAP HANA"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
