@@ -731,6 +731,10 @@ void QgsBaseNetworkRequest::replyFinished()
                             .arg( exception.attribute( u"exceptionCode"_s, tr( "missing" ) ), exception.firstChildElement( u"ExceptionText"_s ).text() );
         }
       }
+      else if ( !replyContent.isEmpty() )
+      {
+        mErrorMessage += tr( "\nServer response: %1" ).arg( replyContent );
+      }
       mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
       logMessageIfEnabled();
       mResponse.clear();
