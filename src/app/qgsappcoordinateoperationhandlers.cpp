@@ -138,7 +138,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )
@@ -224,7 +224,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )

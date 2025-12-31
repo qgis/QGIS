@@ -129,9 +129,9 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
 
             case 1:
             {
-              if ( crsNode->record().authName == QLatin1String( "CUSTOM" ) )
+              if ( crsNode->record().authName == "CUSTOM"_L1 )
                 return QString();
-              return QStringLiteral( "%1:%2" ).arg( crsNode->record().authName, crsNode->record().authId );
+              return u"%1:%2"_s.arg( crsNode->record().authName, crsNode->record().authId );
             }
 
             default:
@@ -144,7 +144,7 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
 
         case static_cast<int>( CustomRole::AuthId ):
           if ( !crsNode->record().authId.isEmpty() )
-            return QStringLiteral( "%1:%2" ).arg( crsNode->record().authName, crsNode->record().authId );
+            return u"%1:%2"_s.arg( crsNode->record().authName, crsNode->record().authId );
           else
             return QVariant();
 
@@ -263,7 +263,7 @@ void QgsCoordinateReferenceSystemModel::rebuild()
   for ( const QgsCoordinateReferenceSystemRegistry::UserCrsDetails &details : userCrsList )
   {
     QgsCrsDbRecord userRecord;
-    userRecord.authName = QStringLiteral( "USER" );
+    userRecord.authName = u"USER"_s;
     userRecord.authId = QString::number( details.id );
     userRecord.description = details.name;
 
@@ -278,19 +278,19 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
   const QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> userCrsList = QgsApplication::coordinateReferenceSystemRegistry()->userCrsList();
   for ( const QgsCoordinateReferenceSystemRegistry::UserCrsDetails &details : userCrsList )
   {
-    if ( QStringLiteral( "USER:%1" ).arg( details.id ) == id )
+    if ( u"USER:%1"_s.arg( details.id ) == id )
     {
       QgsCrsDbRecord userRecord;
-      userRecord.authName = QStringLiteral( "USER" );
+      userRecord.authName = u"USER"_s;
       userRecord.authId = QString::number( details.id );
       userRecord.description = details.name;
 
-      QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "USER" ) );
+      QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( u"USER"_s );
       if ( !group )
       {
         auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
           tr( "User-defined" ),
-          QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "USER" )
+          QgsApplication::getThemeIcon( u"/user.svg"_s ), u"USER"_s
         );
         beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
         group = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( mRootNode->addChildNode( std::move( newGroup ) ) );
@@ -315,7 +315,7 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
 
 void QgsCoordinateReferenceSystemModel::userCrsRemoved( long id )
 {
-  QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "USER" ) );
+  QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( u"USER"_s );
   if ( group )
   {
     for ( int row = 0; row < group->children().size(); ++row )
@@ -337,14 +337,14 @@ void QgsCoordinateReferenceSystemModel::userCrsRemoved( long id )
 
 void QgsCoordinateReferenceSystemModel::userCrsChanged( const QString &id )
 {
-  QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "USER" ) );
+  QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( u"USER"_s );
   if ( group )
   {
     for ( int row = 0; row < group->children().size(); ++row )
     {
       if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
       {
-        if ( QStringLiteral( "USER:%1" ).arg( crsNode->record().authId ) == id )
+        if ( u"USER:%1"_s.arg( crsNode->record().authId ) == id )
         {
           // treat a change as a remove + add operation
           const QModelIndex parentIndex = node2index( group );
@@ -368,16 +368,16 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   QString groupName;
   QString groupId;
   QIcon groupIcon;
-  if ( record.authName == QLatin1String( "USER" ) )
+  if ( record.authName == "USER"_L1 )
   {
     groupName = tr( "User-defined" );
-    groupId = QStringLiteral( "USER" );
-    groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) );
+    groupId = u"USER"_s;
+    groupIcon = QgsApplication::getThemeIcon( u"/user.svg"_s );
   }
-  else if ( record.authName == QLatin1String( "CUSTOM" ) )
+  else if ( record.authName == "CUSTOM"_L1 )
   {
     // the group is guaranteed to exist at this point
-    groupId = QStringLiteral( "CUSTOM" );
+    groupId = u"CUSTOM"_s;
   }
   else
   {
@@ -388,20 +388,20 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
         break;
       case Qgis::CrsType::Geodetic:
         groupName = tr( "Geodetic" );
-        groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconProjectionEnabled.svg" ) );
+        groupIcon = QgsApplication::getThemeIcon( u"/mIconProjectionEnabled.svg"_s );
         break;
       case Qgis::CrsType::Geocentric:
         groupName = tr( "Geocentric" );
-        groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconProjectionEnabled.svg" ) );
+        groupIcon = QgsApplication::getThemeIcon( u"/mIconProjectionEnabled.svg"_s );
         break;
       case Qgis::CrsType::Geographic2d:
         groupName = tr( "Geographic (2D)" );
-        groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconProjectionEnabled.svg" ) );
+        groupIcon = QgsApplication::getThemeIcon( u"/mIconProjectionEnabled.svg"_s );
         break;
 
       case Qgis::CrsType::Geographic3d:
         groupName = tr( "Geographic (3D)" );
-        groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconProjectionEnabled.svg" ) );
+        groupIcon = QgsApplication::getThemeIcon( u"/mIconProjectionEnabled.svg"_s );
         break;
 
       case Qgis::CrsType::Vertical:
@@ -411,7 +411,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
       case Qgis::CrsType::Projected:
       case Qgis::CrsType::DerivedProjected:
         groupName = tr( "Projected" );
-        groupIcon = QgsApplication::getThemeIcon( QStringLiteral( "/transformed.svg" ) );
+        groupIcon = QgsApplication::getThemeIcon( u"/transformed.svg"_s );
         break;
 
       case Qgis::CrsType::Compound:
@@ -447,7 +447,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     parentNode = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
   }
 
-  if ( ( record.authName != QLatin1String( "USER" ) && record.authName != QLatin1String( "CUSTOM" ) ) && ( record.type == Qgis::CrsType::Projected || record.type == Qgis::CrsType::DerivedProjected ) )
+  if ( ( record.authName != "USER"_L1 && record.authName != "CUSTOM"_L1 ) && ( record.type == Qgis::CrsType::Projected || record.type == Qgis::CrsType::DerivedProjected ) )
   {
     QString projectionName = QgsCoordinateReferenceSystemUtils::translateProjection( record.projectionAcronym );
     if ( projectionName.isEmpty() )
@@ -472,16 +472,16 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
 QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinateReferenceSystem &crs )
 {
   QgsCrsDbRecord userRecord;
-  userRecord.authName = QStringLiteral( "CUSTOM" );
+  userRecord.authName = u"CUSTOM"_s;
   userRecord.description = crs.description().isEmpty() ? tr( "Custom CRS" ) : crs.description();
   userRecord.type = crs.type();
 
-  QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "CUSTOM" ) );
+  QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( u"CUSTOM"_s );
   if ( !group )
   {
     auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
       tr( "Custom" ),
-      QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "CUSTOM" )
+      QgsApplication::getThemeIcon( u"/user.svg"_s ), u"CUSTOM"_s
     );
     beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
     group = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( mRootNode->addChildNode( std::move( newGroup ) ) );
@@ -757,14 +757,14 @@ bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, 
     // both are groups -- ensure USER group comes last, and CUSTOM group comes first
     const QString leftGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
     const QString rightGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
-    if ( leftGroupId == QLatin1String( "USER" ) )
+    if ( leftGroupId == "USER"_L1 )
       return false;
-    if ( rightGroupId == QLatin1String( "USER" ) )
+    if ( rightGroupId == "USER"_L1 )
       return true;
 
-    if ( leftGroupId == QLatin1String( "CUSTOM" ) )
+    if ( leftGroupId == "CUSTOM"_L1 )
       return true;
-    if ( rightGroupId == QLatin1String( "CUSTOM" ) )
+    if ( rightGroupId == "CUSTOM"_L1 )
       return false;
   }
 

@@ -182,12 +182,12 @@ void QgsRelationReferenceSearchWidgetWrapper::setExpression( const QString &expr
   QString str;
   if ( exp == nullValue )
   {
-    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = u"%1 IS NULL"_s.arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
-    str = QStringLiteral( "%1 = '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+    str = u"%1 = '%3'"_s
+            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
   }
   mExpression = str;
 }
@@ -207,30 +207,30 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setEmbedForm( false );
   mWidget->setReadOnlySelector( false );
-  mWidget->setAllowMapIdentification( config( QStringLiteral( "MapIdentification" ), false ).toBool() );
+  mWidget->setAllowMapIdentification( config( u"MapIdentification"_s, false ).toBool() );
   mWidget->setAllowAddFeatures( false );
   mWidget->setOpenFormButtonVisible( false );
 
-  const bool fetchLimitActive = config( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
+  const bool fetchLimitActive = config( u"FetchLimitActive"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
   if ( fetchLimitActive )
   {
-    mWidget->setFetchLimit( config( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
+    mWidget->setFetchLimit( config( u"FetchLimitNumber"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ) ).toInt() );
   }
 
-  if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
+  if ( config( u"FilterFields"_s, QVariant() ).isValid() )
   {
-    mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
-    mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
-    mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
+    mWidget->setFilterFields( config( u"FilterFields"_s ).toStringList() );
+    mWidget->setChainFilters( config( u"ChainFilters"_s ).toBool() );
+    mWidget->setFilterExpression( config( u"FilterExpression"_s ).toString() );
   }
-  mWidget->setOrderExpression( config( QStringLiteral( "OrderExpression" ) ).toString() );
-  mWidget->setSortOrder( config( QStringLiteral( "OrderDescending" ), false ).toBool() ? Qt::DescendingOrder : Qt::AscendingOrder );
+  mWidget->setOrderExpression( config( u"OrderExpression"_s ).toString() );
+  mWidget->setSortOrder( config( u"OrderDescending"_s, false ).toBool() ? Qt::DescendingOrder : Qt::AscendingOrder );
 
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( u"Relation"_s ).toString() );
   // if no relation is given from the config, fetch one if there is only one available
   if ( !relation.isValid() && !layer()->referencingRelations( mFieldIdx ).isEmpty() && layer()->referencingRelations( mFieldIdx ).count() == 1 )
     relation = layer()->referencingRelations( mFieldIdx )[0];
-  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+  mWidget->setRelation( relation, config( u"AllowNULL"_s ).toBool() );
 
   mWidget->showIndeterminateState();
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValuesChanged );

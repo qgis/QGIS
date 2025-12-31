@@ -34,7 +34,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &name, const QString &source, const QString &provider )
   : QgsLayerTreeNode( NodeLayer, true )
   , mRef( layerId, name, source, provider )
-  , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
+  , mLayerName( name.isEmpty() ? u"(?)"_s : name )
 {
 }
 
@@ -105,19 +105,19 @@ void QgsLayerTreeLayer::setName( const QString &n )
 
 QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
-  if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
+  if ( element.tagName() != "layer-tree-layer"_L1 )
     return nullptr;
 
-  const QString layerID = element.attribute( QStringLiteral( "id" ) );
-  const QString layerName = element.attribute( QStringLiteral( "name" ) );
+  const QString layerID = element.attribute( u"id"_s );
+  const QString layerName = element.attribute( u"name"_s );
 
-  const QString providerKey = element.attribute( QStringLiteral( "providerKey" ) );
-  const QString sourceRaw = element.attribute( QStringLiteral( "source" ) );
+  const QString providerKey = element.attribute( u"providerKey"_s );
+  const QString sourceRaw = element.attribute( u"source"_s );
   const QString source = providerKey.isEmpty() ? sourceRaw : QgsProviderRegistry::instance()->relativeToAbsoluteUri( providerKey, sourceRaw, context );
 
-  const Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
-  const bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
-  const QString labelExpression = element.attribute( QStringLiteral( "legend_exp" ) );
+  const Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( u"checked"_s ) );
+  const bool isExpanded = ( element.attribute( u"expanded"_s, u"1"_s ) == "1"_L1 );
+  const QString labelExpression = element.attribute( u"legend_exp"_s );
 
   // needs to have the layer reference resolved later
   QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName, source, providerKey );
@@ -128,7 +128,7 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
   nodeLayer->setExpanded( isExpanded );
   nodeLayer->setLabelExpression( labelExpression );
 
-  const QDomElement patchElem = element.firstChildElement( QStringLiteral( "patch" ) );
+  const QDomElement patchElem = element.firstChildElement( u"patch"_s );
   if ( !patchElem.isNull() )
   {
     QgsLegendPatchShape patch;
@@ -136,9 +136,9 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
     nodeLayer->setPatchShape( patch );
   }
 
-  nodeLayer->setPatchSize( QgsSymbolLayerUtils::decodeSize( element.attribute( QStringLiteral( "patch_size" ) ) ) );
+  nodeLayer->setPatchSize( QgsSymbolLayerUtils::decodeSize( element.attribute( u"patch_size"_s ) ) );
 
-  nodeLayer->setLegendSplitBehavior( static_cast< LegendNodesSplitBehavior >( element.attribute( QStringLiteral( "legend_split_behavior" ), QStringLiteral( "0" ) ).toInt() ) );
+  nodeLayer->setLegendSplitBehavior( static_cast< LegendNodesSplitBehavior >( element.attribute( u"legend_split_behavior"_s, u"0"_s ).toInt() ) );
 
   return nodeLayer;
 }
@@ -154,31 +154,31 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsPr
 void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWriteContext &context )
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
-  elem.setAttribute( QStringLiteral( "id" ), layerId() );
-  elem.setAttribute( QStringLiteral( "name" ), name() );
+  QDomElement elem = doc.createElement( u"layer-tree-layer"_s );
+  elem.setAttribute( u"id"_s, layerId() );
+  elem.setAttribute( u"name"_s, name() );
 
   if ( mRef )
   {
     const QString providerKey = mRef->dataProvider() ? mRef->dataProvider()->name() : QString();
     const QString source = providerKey.isEmpty() ? mRef->publicSource() : QgsProviderRegistry::instance()->absoluteToRelativeUri( providerKey, mRef->publicSource(), context );
-    elem.setAttribute( QStringLiteral( "source" ), source );
-    elem.setAttribute( QStringLiteral( "providerKey" ), providerKey );
+    elem.setAttribute( u"source"_s, source );
+    elem.setAttribute( u"providerKey"_s, providerKey );
   }
 
-  elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
-  elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
-  elem.setAttribute( QStringLiteral( "legend_exp" ), mLabelExpression );
+  elem.setAttribute( u"checked"_s, mChecked ? u"Qt::Checked"_s : u"Qt::Unchecked"_s );
+  elem.setAttribute( u"expanded"_s, mExpanded ? "1" : "0" );
+  elem.setAttribute( u"legend_exp"_s, mLabelExpression );
 
   if ( !mPatchShape.isNull() )
   {
-    QDomElement patchElem = doc.createElement( QStringLiteral( "patch" ) );
+    QDomElement patchElem = doc.createElement( u"patch"_s );
     mPatchShape.writeXml( patchElem, doc, context );
     elem.appendChild( patchElem );
   }
-  elem.setAttribute( QStringLiteral( "patch_size" ), QgsSymbolLayerUtils::encodeSize( mPatchSize ) );
+  elem.setAttribute( u"patch_size"_s, QgsSymbolLayerUtils::encodeSize( mPatchSize ) );
 
-  elem.setAttribute( QStringLiteral( "legend_split_behavior" ), mSplitBehavior );
+  elem.setAttribute( u"legend_split_behavior"_s, mSplitBehavior );
 
   writeCommonXml( elem );
 
@@ -187,7 +187,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
 
 QString QgsLayerTreeLayer::dump() const
 {
-  return QStringLiteral( "LAYER: %1 checked=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
+  return u"LAYER: %1 checked=%2 expanded=%3 id=%4\n"_s.arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
 }
 
 QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const

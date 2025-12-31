@@ -19,9 +19,9 @@
 
 #include "moc_qgsogrdbconnection.cpp"
 
-const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( QStringLiteral( "providers/ogr/%1/connections/%2/path" ), QString(), QString() );
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( u"providers/ogr/%1/connections/%2/path"_s, QString(), QString() );
 
-const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionSelected = new QgsSettingsEntryString( QStringLiteral( "providers/ogr/%1/connections/selected" ), QString() );
+const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionSelected = new QgsSettingsEntryString( u"providers/ogr/%1/connections/selected"_s, QString() );
 
 ///@cond PRIVATE
 
@@ -58,13 +58,13 @@ void QgsOgrDbConnection::save( )
 
 bool QgsOgrDbConnection::allowProjectsInDatabase()
 {
-  return mSettingsKey == QLatin1String( "GPKG" );
+  return mSettingsKey == "GPKG"_L1;
 }
 
 const QStringList QgsOgrDbConnection::connectionList( const QString &driverName )
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "providers/ogr/%1/connections" ).arg( driverName ) );
+  settings.beginGroup( u"providers/ogr/%1/connections"_s.arg( driverName ) );
   return settings.childGroups();
 }
 
@@ -80,7 +80,7 @@ void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const Q
 
 void QgsOgrDbConnection::deleteConnection( const QString &connName )
 {
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s );
   providerMetadata->deleteConnection( connName );
 }
 

@@ -32,7 +32,7 @@ QgsBatchNominatimGeocodeAlgorithm::QgsBatchNominatimGeocodeAlgorithm()
 
 QString QgsBatchNominatimGeocodeAlgorithm::name() const
 {
-  return QStringLiteral( "batchnominatimgeocoder" );
+  return u"batchnominatimgeocoder"_s;
 }
 
 QString QgsBatchNominatimGeocodeAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QStringList QgsBatchNominatimGeocodeAlgorithm::tags() const
 
 QgsCoordinateReferenceSystem QgsBatchNominatimGeocodeAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
 {
-  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   return mOutputCrs;
 }
 

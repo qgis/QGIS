@@ -36,7 +36,7 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeStoredQueries = QgsSettingsTree::sTreeDatabase->createNamedListNode( QStringLiteral( "stored-queries" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeStoredQueries = QgsSettingsTree::sTreeDatabase->createNamedListNode( u"stored-queries"_s );
     static const QgsSettingsEntryString *settingQueryName;
     static const QgsSettingsEntryString *settingQueryDefinition;
     ///@endcond

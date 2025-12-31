@@ -16,9 +16,16 @@
 #include "qgsoapiffeaturedownloaderimpl.h"
 
 #include "qgsfeaturedownloader.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgml.h"
+#include "qgsmessagelog.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifshareddata.h"
 #include "qgsoapifutils.h"
+#include "qgssettings.h"
 #include "qgsvectordataprovider.h"
 #include "qgswfsutils.h"
 
@@ -27,13 +34,14 @@
 #include "moc_qgsoapiffeaturedownloaderimpl.cpp"
 
 QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
-  : QgsFeatureDownloaderImpl( shared, downloader ), mShared( shared )
+  : QgsBaseNetworkRequest( shared->mURI.auth(), tr( "OAPIF" ) ), QgsFeatureDownloaderImpl( shared, downloader ), mShared( shared )
 {
   QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread );
 }
 
 QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()
 {
+  stop();
 }
 
 void QgsOapifFeatureDownloaderImpl::createProgressTask()
@@ -46,6 +54,8 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
 {
   QEventLoop loop;
   connect( this, &QgsOapifFeatureDownloaderImpl::doStop, &loop, &QEventLoop::quit );
+  connect( this, &QgsBaseNetworkRequest::downloadFinished, &loop, &QEventLoop::quit );
+  connect( this, &QgsBaseNetworkRequest::downloadProgress, &loop, &QEventLoop::quit );
 
   const bool useProgressDialog = ( !mShared->mHideProgressDialog && maxFeatures != 1 );
 
@@ -63,12 +73,6 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     maxTotalFeatures = mShared->mMaxFeatures;
   }
 
-  long long totalDownloadedFeatureCount = 0;
-  bool interrupted = false;
-  bool success = true;
-  QString errorMessage;
-  QString url;
-
   long long maxFeaturesThisRequest = maxTotalFeatures;
   if ( mShared->mPageSize > 0 )
   {
@@ -81,12 +85,13 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       maxFeaturesThisRequest = mShared->mPageSize;
     }
   }
-  url = mShared->mItemsUrl;
-  bool hasQueryParam = url.indexOf( QLatin1Char( '?' ) ) > 0;
-  if ( maxFeaturesThisRequest > 0 )
+
+  QString url = ( !mShared->mBulkDownloadGmlUrl.isEmpty() ) ? mShared->mBulkDownloadGmlUrl : mShared->mItemsUrl;
+  bool hasQueryParam = url.indexOf( '?'_L1 ) > 0;
+  if ( maxFeaturesThisRequest > 0 && mShared->mBulkDownloadGmlUrl.isEmpty() )
   {
-    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
-    url += QStringLiteral( "limit=%1" ).arg( maxFeaturesThisRequest );
+    url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
+    url += u"limit=%1"_s.arg( maxFeaturesThisRequest );
     hasQueryParam = true;
   }
 
@@ -94,18 +99,18 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   // mServerExpression comes from the translation of a getFeatures() expression
   if ( !mShared->mServerFilter.isEmpty() )
   {
-    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+    url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
     if ( !mShared->mServerExpression.isEmpty() )
     {
       // Combine mServerFilter and mServerExpression
-      QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
-      QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
-      Q_ASSERT( components1[0].startsWith( QLatin1String( "filter=" ) ) );
-      Q_ASSERT( components2[0].startsWith( QLatin1String( "filter=" ) ) );
-      url += QLatin1String( "filter=" );
+      QStringList components1 = mShared->mServerFilter.split( '&'_L1 );
+      QStringList components2 = mShared->mServerExpression.split( '&'_L1 );
+      Q_ASSERT( components1[0].startsWith( "filter="_L1 ) );
+      Q_ASSERT( components2[0].startsWith( "filter="_L1 ) );
+      url += "filter="_L1;
       url += '(';
       url += components1[0].mid( static_cast<int>( strlen( "filter=" ) ) );
-      url += QLatin1String( ") AND (" );
+      url += ") AND ("_L1;
       url += components2[0].mid( static_cast<int>( strlen( "filter=" ) ) );
       url += ')';
       // Add components1 extra parameters: filter-lang and filter-crs
@@ -132,7 +137,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   }
   else if ( !mShared->mServerExpression.isEmpty() )
   {
-    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+    url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
     url += mShared->mServerExpression;
     hasQueryParam = true;
   }
@@ -160,24 +165,263 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
 
     if ( !rect.isNull() )
     {
-      url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
-      url += QStringLiteral( "bbox=%1,%2,%3,%4" )
+      url += ( hasQueryParam ? '&'_L1 : '?'_L1 );
+      url += u"bbox=%1,%2,%3,%4"_s
                .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
 
       if ( mShared->mSourceCrs
            != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
-        url += QStringLiteral( "&bbox-crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
+        url += u"&bbox-crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
     }
   }
 
   if ( mShared->mSourceCrs
        != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
-    url += QStringLiteral( "&crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
+    url += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
+
+  url = mShared->appendExtraQueryParameters( url );
+
+  if ( mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
+  {
+    runGmlDownload( loop, url, serializeFeatures, maxTotalFeatures, useProgressDialog );
+  }
+  else
+  {
+    runGenericDownload( loop, url, serializeFeatures, maxTotalFeatures, useProgressDialog );
+  }
+}
+
+void QgsOapifFeatureDownloaderImpl::runGmlDownload( QEventLoop &loop, QString url, bool serializeFeatures, long long maxTotalFeatures, bool useProgressDialog )
+{
+  QgsGmlStreamingParser::AxisOrientationLogic axisOrientationLogic( QgsGmlStreamingParser::Honour_EPSG_if_urn );
+  if ( mShared->mURI.ignoreAxisOrientation() )
+  {
+    axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
+  }
+
+  if ( mShared->mBulkDownloadGmlUrl.isEmpty() )
+    mFakeResponseHasHeaders = true;
+
+  bool interrupted = false;
+  bool success = false;
+  QgsSettings s;
+  const int maxRetry = s.value( u"qgis/defaultTileMaxRetry"_s, "3" ).toInt();
+  int retryIter = 0;
+  long long totalDownloadedFeatureCount = 0;
+  long long lastValidTotalDownloadedFeatureCount = 0;
 
   while ( !url.isEmpty() )
   {
-    url = mShared->appendExtraQueryParameters( url );
+    success = true;
+    sendGET( url, mShared->mFeatureFormat, false, /* synchronous */
+             true,                                /* forceRefresh */
+             false /* cache */ );
 
+    QgsGmlStreamingParser gmlParser( mShared->mURI.typeName(), mShared->mGeometryAttribute, mShared->mFields, axisOrientationLogic, mShared->mURI.invertAxisOrientation() );
+    if ( !mShared->mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
+    {
+      gmlParser.setFieldsXPath( mShared->mFieldNameToXPathAndIsNestedContentMap, mShared->mNamespacePrefixToURIMap );
+    }
+
+    QString nextUrl;
+    bool bytesStillAvailableInReply = false;
+    // Loop until there is no data coming from the current request
+    while ( true )
+    {
+      if ( !bytesStillAvailableInReply )
+      {
+        loop.exec( QEventLoop::ExcludeUserInputEvents );
+      }
+      if ( mStop )
+      {
+        interrupted = true;
+        success = false;
+        break;
+      }
+
+      QByteArray data;
+      bool finished = false;
+      if ( mReply )
+      {
+        // Limit the number of bytes to process at once, to avoid the GML parser to
+        // create too many objects.
+        constexpr int CHUNK_SIZE = 10 * 1024 * 1024;
+        data = mReply->read( CHUNK_SIZE );
+        bytesStillAvailableInReply = mReply->bytesAvailable() > 0;
+      }
+      else
+      {
+        data = mResponse;
+        finished = true;
+      }
+
+      if ( nextUrl.isEmpty() )
+      {
+        nextUrl = QgsOAPIFGetNextLinkFromResponseHeader( mResponseHeaders, mShared->mFeatureFormat );
+        if ( !nextUrl.isEmpty() )
+          nextUrl = mShared->appendExtraQueryParameters( nextUrl );
+      }
+
+      // Parse the received chunk of data
+      QString gmlProcessErrorMsg;
+      if ( !gmlParser.processData( data, finished, gmlProcessErrorMsg ) )
+      {
+        success = false;
+        // Only add an error message if no general networking related error has been
+        // previously reported by QgsWfsRequest logic.
+        // We indeed make processData() run even if an error has been reported,
+        // so that we have a chance to parse XML errors (isException() case below)
+        if ( mErrorCode == NoError )
+        {
+          mErrorMessage = tr( "Error when parsing GetFeature response" ) + " : " + gmlProcessErrorMsg;
+          QgsMessageLog::logMessage( mErrorMessage, tr( "OAPIF" ) );
+        }
+        break;
+      }
+      else if ( gmlParser.isException() )
+      {
+        // Only process the exception report if we get the full error response.
+        if ( !finished )
+          continue;
+        success = false;
+
+        mErrorMessage = tr( "Server generated an exception in GetFeature response" ) + ": " + gmlParser.exceptionText();
+        QgsMessageLog::logMessage( mErrorMessage, tr( "OAPI" ) );
+
+        break;
+      }
+      // Test error code only after having let a chance to the parser to process the ExceptionReport
+      else if ( mErrorCode != NoError )
+      {
+        success = false;
+        break;
+      }
+
+      if ( totalDownloadedFeatureCount == 0 && useProgressDialog && !mResponseHeaders.empty() && !mTimer && mNumberMatched < 0 )
+      {
+        for ( const auto &headerKeyValue : mResponseHeaders )
+        {
+          if ( headerKeyValue.first.compare( QByteArray( "OGC-NumberMatched" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+          {
+            bool ok = false;
+            const long long val = QString::fromUtf8( headerKeyValue.second ).toLongLong( &ok );
+            if ( ok )
+            {
+              mNumberMatched = val;
+
+              CREATE_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
+            }
+          }
+        }
+      }
+
+
+      QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList = gmlParser.getAndStealReadyFeatures();
+
+      totalDownloadedFeatureCount += featurePtrList.size();
+
+      if ( !mStop )
+      {
+        emit updateProgress( totalDownloadedFeatureCount );
+      }
+
+      if ( featurePtrList.size() != 0 )
+      {
+        QVector<QgsFeatureUniqueIdPair> featureList;
+        for ( int i = 0; i < featurePtrList.size(); i++ )
+        {
+          QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair = featurePtrList[i];
+          QgsFeature &f = *( featPair.first );
+          QString gmlId( featPair.second );
+          if ( gmlId.isEmpty() )
+          {
+            // Should normally not happen on sane WFS sources, but can happen with
+            // Geomedia
+            gmlId = QgsBackgroundCachedSharedData::getMD5( f );
+            if ( !mShared->mHasWarnedAboutMissingFeatureId )
+            {
+              QgsDebugError( u"Server returns features without fid/gml:id. Computing a fake one using feature attributes"_s );
+              mShared->mHasWarnedAboutMissingFeatureId = true;
+            }
+          }
+
+          // Coerce geometry type if needed
+          if ( f.hasGeometry() && QgsWkbTypes::flatType( f.geometry().wkbType() ) != QgsWkbTypes::flatType( mShared->mWKBType ) )
+          {
+            QVector< QgsGeometry > coercedGeoms = f.geometry().coerceToType( mShared->mWKBType );
+            if ( coercedGeoms.size() == 1 )
+              f.setGeometry( coercedGeoms[0] );
+          }
+
+          featureList.push_back( QgsFeatureUniqueIdPair( f, gmlId ) );
+          delete featPair.first;
+          if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featurePtrList.size() )
+          {
+            // We call it directly to avoid asynchronous signal notification, and
+            // as serializeFeatures() can modify the featureList to remove features
+            // that have already been cached, so as to avoid to notify them several
+            // times to subscribers
+            if ( serializeFeatures )
+              mShared->serializeFeatures( featureList );
+
+            if ( !featureList.isEmpty() )
+            {
+              emitFeatureReceived( featureList );
+              emitFeatureReceived( featureList.size() );
+            }
+
+            featureList.clear();
+          }
+        }
+      }
+
+      if ( maxTotalFeatures > 0 && totalDownloadedFeatureCount >= maxTotalFeatures )
+      {
+        url.clear();
+        break;
+      }
+      if ( finished )
+      {
+        break;
+      }
+    }
+
+    if ( mStop )
+      break;
+
+    if ( !success )
+    {
+      if ( ++retryIter <= maxRetry )
+      {
+        QgsMessageLog::logMessage( tr( "Retrying request %1: %2/%3" ).arg( url ).arg( retryIter ).arg( maxRetry ), tr( "OAPIF" ) );
+        totalDownloadedFeatureCount = lastValidTotalDownloadedFeatureCount;
+        continue;
+      }
+
+      break;
+    }
+
+    url = nextUrl;
+    retryIter = 0;
+    lastValidTotalDownloadedFeatureCount = totalDownloadedFeatureCount;
+  }
+
+  endOfRun( serializeFeatures, success, totalDownloadedFeatureCount, false /* truncatedResponse */, interrupted, mErrorMessage );
+
+  // explicitly abort here so that mReply is destroyed within the right thread
+  // otherwise will deadlock because deleteLayer() will not have a valid thread to post
+  abort();
+}
+
+void QgsOapifFeatureDownloaderImpl::runGenericDownload( QEventLoop &loop, QString url, bool serializeFeatures, long long maxTotalFeatures, bool useProgressDialog )
+{
+  long long totalDownloadedFeatureCount = 0;
+  bool interrupted = false;
+  bool success = true;
+  QString errorMessage;
+
+  while ( !url.isEmpty() )
+  {
     if ( maxTotalFeatures > 0 && totalDownloadedFeatureCount >= maxTotalFeatures )
     {
       break;
@@ -203,7 +447,10 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     {
       break;
     }
+
     url = itemsRequest.nextUrl();
+    if ( !url.isEmpty() )
+      url = mShared->appendExtraQueryParameters( url );
 
     // Consider if we should display a progress dialog
     // We can only do that if we know how many features will be downloaded
@@ -297,4 +544,9 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   }
 
   endOfRun( serializeFeatures, success, totalDownloadedFeatureCount, false /* truncatedResponse */, interrupted, errorMessage );
+}
+
+QString QgsOapifFeatureDownloaderImpl::errorMessageWithReason( const QString &reason )
+{
+  return tr( "Download of features failed: %1" ).arg( reason );
 }

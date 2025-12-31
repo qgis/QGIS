@@ -31,7 +31,7 @@ QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
 
 QgsAbstractProviderConnection *QgsConnectionRegistry::createConnection( const QString &id )
 {
-  const QRegularExpressionMatch m = QRegularExpression( QStringLiteral( "(.*?)\\://(.*)" ) ).match( id );
+  const QRegularExpressionMatch m = QRegularExpression( u"(.*?)\\://(.*)"_s ).match( id );
   if ( !m.hasMatch() )
     throw QgsProviderConnectionException( QObject::tr( "Invalid connection id" ) );
 

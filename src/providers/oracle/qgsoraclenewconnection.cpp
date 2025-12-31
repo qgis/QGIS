@@ -49,7 +49,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   connect( txtHost, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
   connect( txtPort, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
 
-  mAuthSettings->setDataprovider( QStringLiteral( "oracle" ) );
+  mAuthSettings->setDataprovider( u"oracle"_s );
   mAuthSettings->showStoreCheckboxes( true );
 
   if ( !connName.isEmpty() )
@@ -58,10 +58,10 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     // populate the fields with the stored setting parameters
     QgsSettings settings;
 
-    QString key = QStringLiteral( "/Oracle/connections/" ) + connName;
-    txtDatabase->setText( settings.value( key + QStringLiteral( "/database" ) ).toString() );
-    txtHost->setText( settings.value( key + QStringLiteral( "/host" ) ).toString() );
-    QString port = settings.value( key + QStringLiteral( "/port" ) ).toString();
+    QString key = u"/Oracle/connections/"_s + connName;
+    txtDatabase->setText( settings.value( key + u"/database"_s ).toString() );
+    txtHost->setText( settings.value( key + u"/host"_s ).toString() );
+    QString port = settings.value( key + u"/port"_s ).toString();
 
     // User can set database without host and port, meaning he is using a service (tnsnames.ora)
     // if he sets host, port has to be set also (and vice versa)
@@ -69,40 +69,40 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     if ( port.length() == 0
          && ( !txtHost->text().isEmpty() || txtDatabase->text().isEmpty() ) )
     {
-      port = QStringLiteral( "1521" );
+      port = u"1521"_s;
     }
     txtPort->setText( port );
 
-    txtOptions->setText( settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
-    txtWorkspace->setText( settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
-    txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
-    cb_userTablesOnly->setChecked( settings.value( key + QStringLiteral( "/userTablesOnly" ), false ).toBool() );
-    cb_geometryColumnsOnly->setChecked( settings.value( key + QStringLiteral( "/geometryColumnsOnly" ), true ).toBool() );
-    cb_allowGeometrylessTables->setChecked( settings.value( key + QStringLiteral( "/allowGeometrylessTables" ), false ).toBool() );
-    cb_useEstimatedMetadata->setChecked( settings.value( key + QStringLiteral( "/estimatedMetadata" ), false ).toBool() );
-    cb_onlyExistingTypes->setChecked( settings.value( key + QStringLiteral( "/onlyExistingTypes" ), true ).toBool() );
-    cb_includeGeoAttributes->setChecked( settings.value( key + QStringLiteral( "/includeGeoAttributes" ), false ).toBool() );
+    txtOptions->setText( settings.value( key + u"/dboptions"_s ).toString() );
+    txtWorkspace->setText( settings.value( key + u"/dbworkspace"_s ).toString() );
+    txtSchema->setText( settings.value( key + u"/schema"_s ).toString() );
+    cb_userTablesOnly->setChecked( settings.value( key + u"/userTablesOnly"_s, false ).toBool() );
+    cb_geometryColumnsOnly->setChecked( settings.value( key + u"/geometryColumnsOnly"_s, true ).toBool() );
+    cb_allowGeometrylessTables->setChecked( settings.value( key + u"/allowGeometrylessTables"_s, false ).toBool() );
+    cb_useEstimatedMetadata->setChecked( settings.value( key + u"/estimatedMetadata"_s, false ).toBool() );
+    cb_onlyExistingTypes->setChecked( settings.value( key + u"/onlyExistingTypes"_s, true ).toBool() );
+    cb_includeGeoAttributes->setChecked( settings.value( key + u"/includeGeoAttributes"_s, false ).toBool() );
     cb_projectsInDatabase->setChecked( settings.value( key + "/projectsInDatabase", false ).toBool() );
 
-    if ( settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + u"/saveUsername"_s ).toString() == "true"_L1 )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettings->setStoreUsernameChecked( true );
     }
 
-    if ( settings.value( key + QStringLiteral( "/savePassword" ) ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + u"/savePassword"_s ).toString() == "true"_L1 )
     {
       mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
       mAuthSettings->setStorePasswordChecked( true );
     }
 
     // Old save setting
-    if ( settings.contains( key + QStringLiteral( "/save" ) ) )
+    if ( settings.contains( key + u"/save"_s ) )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
-      if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
+      if ( settings.value( key + "/save" ).toString() == "true"_L1 )
         mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
 
       mAuthSettings->setStorePasswordChecked( true );
@@ -113,14 +113,14 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]+"_s ), txtName ) );
 }
 
 void QgsOracleNewConnection::accept()
 {
   QgsSettings settings;
-  QString baseKey = QStringLiteral( "/Oracle/connections/" );
-  settings.setValue( baseKey + QStringLiteral( "selected" ), txtName->text() );
+  QString baseKey = u"/Oracle/connections/"_s;
+  settings.setValue( baseKey + u"selected"_s, txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
@@ -129,7 +129,7 @@ void QgsOracleNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) && ( settings.contains( baseKey + txtName->text() + QStringLiteral( "/service" ) ) || settings.contains( baseKey + txtName->text() + QStringLiteral( "/host" ) ) ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) && ( settings.contains( baseKey + txtName->text() + u"/service"_s ) || settings.contains( baseKey + txtName->text() + u"/host"_s ) ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -145,37 +145,37 @@ void QgsOracleNewConnection::accept()
   // but there are still used when QgsOracleConn::connUri is called to generate uri
   // so don't remove them
   baseKey += txtName->text();
-  settings.setValue( baseKey + QStringLiteral( "/database" ), txtDatabase->text() );
-  settings.setValue( baseKey + QStringLiteral( "/host" ), txtHost->text() );
-  settings.setValue( baseKey + QStringLiteral( "/port" ), txtPort->text() );
-  settings.setValue( baseKey + QStringLiteral( "/username" ), mAuthSettings->storeUsernameIsChecked() ? mAuthSettings->username() : QString() );
-  settings.setValue( baseKey + QStringLiteral( "/password" ), mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? mAuthSettings->password() : QString() );
-  settings.setValue( baseKey + QStringLiteral( "/authcfg" ), mAuthSettings->configId() );
-  settings.setValue( baseKey + QStringLiteral( "/userTablesOnly" ), cb_userTablesOnly->isChecked() );
-  settings.setValue( baseKey + QStringLiteral( "/geometryColumnsOnly" ), cb_geometryColumnsOnly->isChecked() );
-  settings.setValue( baseKey + QStringLiteral( "/allowGeometrylessTables" ), cb_allowGeometrylessTables->isChecked() );
-  settings.setValue( baseKey + QStringLiteral( "/estimatedMetadata" ), cb_useEstimatedMetadata->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/onlyExistingTypes" ), cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/includeGeoAttributes" ), cb_includeGeoAttributes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/projectsInDatabase" ), cb_projectsInDatabase->isChecked() );
-  settings.setValue( baseKey + QStringLiteral( "/saveUsername" ), mAuthSettings->storeUsernameIsChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/savePassword" ), mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  settings.setValue( baseKey + QStringLiteral( "/dboptions" ), txtOptions->text() );
-  settings.setValue( baseKey + QStringLiteral( "/dbworkspace" ), txtWorkspace->text() );
-  settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
+  settings.setValue( baseKey + u"/database"_s, txtDatabase->text() );
+  settings.setValue( baseKey + u"/host"_s, txtHost->text() );
+  settings.setValue( baseKey + u"/port"_s, txtPort->text() );
+  settings.setValue( baseKey + u"/username"_s, mAuthSettings->storeUsernameIsChecked() ? mAuthSettings->username() : QString() );
+  settings.setValue( baseKey + u"/password"_s, mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? mAuthSettings->password() : QString() );
+  settings.setValue( baseKey + u"/authcfg"_s, mAuthSettings->configId() );
+  settings.setValue( baseKey + u"/userTablesOnly"_s, cb_userTablesOnly->isChecked() );
+  settings.setValue( baseKey + u"/geometryColumnsOnly"_s, cb_geometryColumnsOnly->isChecked() );
+  settings.setValue( baseKey + u"/allowGeometrylessTables"_s, cb_allowGeometrylessTables->isChecked() );
+  settings.setValue( baseKey + u"/estimatedMetadata"_s, cb_useEstimatedMetadata->isChecked() ? u"true"_s : u"false"_s );
+  settings.setValue( baseKey + u"/onlyExistingTypes"_s, cb_onlyExistingTypes->isChecked() ? u"true"_s : u"false"_s );
+  settings.setValue( baseKey + u"/includeGeoAttributes"_s, cb_includeGeoAttributes->isChecked() ? u"true"_s : u"false"_s );
+  settings.setValue( baseKey + u"/projectsInDatabase"_s, cb_projectsInDatabase->isChecked() );
+  settings.setValue( baseKey + u"/saveUsername"_s, mAuthSettings->storeUsernameIsChecked() ? u"true"_s : u"false"_s );
+  settings.setValue( baseKey + u"/savePassword"_s, mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? u"true"_s : u"false"_s );
+  settings.setValue( baseKey + u"/dboptions"_s, txtOptions->text() );
+  settings.setValue( baseKey + u"/dbworkspace"_s, txtWorkspace->text() );
+  settings.setValue( baseKey + u"/schema"_s, txtSchema->text() );
 
   QVariantMap configuration;
-  configuration.insert( QStringLiteral( "userTablesOnly" ), cb_userTablesOnly->isChecked() );
-  configuration.insert( QStringLiteral( "geometryColumnsOnly" ), cb_geometryColumnsOnly->isChecked() );
-  configuration.insert( QStringLiteral( "allowGeometrylessTables" ), cb_allowGeometrylessTables->isChecked() );
-  configuration.insert( QStringLiteral( "onlyExistingTypes" ), cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  configuration.insert( QStringLiteral( "saveUsername" ), mAuthSettings->storeUsernameIsChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  configuration.insert( QStringLiteral( "savePassword" ), mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  configuration.insert( QStringLiteral( "includeGeoAttributes" ), cb_includeGeoAttributes->isChecked() );
-  configuration.insert( QStringLiteral( "schema" ), txtSchema->text() );
-  configuration.insert( QStringLiteral( "projectsInDatabase" ), cb_projectsInDatabase->isChecked() );
+  configuration.insert( u"userTablesOnly"_s, cb_userTablesOnly->isChecked() );
+  configuration.insert( u"geometryColumnsOnly"_s, cb_geometryColumnsOnly->isChecked() );
+  configuration.insert( u"allowGeometrylessTables"_s, cb_allowGeometrylessTables->isChecked() );
+  configuration.insert( u"onlyExistingTypes"_s, cb_onlyExistingTypes->isChecked() ? u"true"_s : u"false"_s );
+  configuration.insert( u"saveUsername"_s, mAuthSettings->storeUsernameIsChecked() ? u"true"_s : u"false"_s );
+  configuration.insert( u"savePassword"_s, mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ? u"true"_s : u"false"_s );
+  configuration.insert( u"includeGeoAttributes"_s, cb_includeGeoAttributes->isChecked() );
+  configuration.insert( u"schema"_s, txtSchema->text() );
+  configuration.insert( u"projectsInDatabase"_s, cb_projectsInDatabase->isChecked() );
 
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"oracle"_s );
   QgsOracleProviderConnection *providerConnection = static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
   providerConnection->setUri( QgsOracleConn::connUri( txtName->text() ).uri( false ) );
   providerConnection->setConfiguration( configuration );
@@ -189,9 +189,9 @@ void QgsOracleNewConnection::testConnection()
   QgsDataSourceUri uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), mAuthSettings->username(), mAuthSettings->password(), QgsDataSourceUri::SslPrefer /* meaningless for oracle */, mAuthSettings->configId() );
   if ( !txtOptions->text().isEmpty() )
-    uri.setParam( QStringLiteral( "dboptions" ), txtOptions->text() );
+    uri.setParam( u"dboptions"_s, txtOptions->text() );
   if ( !txtWorkspace->text().isEmpty() )
-    uri.setParam( QStringLiteral( "dbworkspace" ), txtWorkspace->text() );
+    uri.setParam( u"dbworkspace"_s, txtWorkspace->text() );
 
   QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( uri ) );
 
@@ -210,7 +210,7 @@ void QgsOracleNewConnection::testConnection()
 
 void QgsOracleNewConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#connecting-to-oracle-spatial"_s );
 }
 
 void QgsOracleNewConnection::updateOkButtonState()

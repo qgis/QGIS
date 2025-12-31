@@ -36,48 +36,48 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
   mHeightSpinBox->setClearValue( 600 );
   const QgsSettings settings;
 
-  const QString templateText = settings.value( QStringLiteral( "Export3DAnimation/fileNameTemplate" ), QStringLiteral( "%1####.jpg" ).arg( QgsProject::instance()->baseName() ), QgsSettings::App ).toString();
+  const QString templateText = settings.value( u"Export3DAnimation/fileNameTemplate"_s, u"%1####.jpg"_s.arg( QgsProject::instance()->baseName() ), QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  const thread_local QRegularExpression rx( QStringLiteral( "^\\w+#+\\.{1}\\w+$" ) ); //e.g. anyprefix#####.png
+  const thread_local QRegularExpression rx( u"^\\w+#+\\.{1}\\w+$"_s ); //e.g. anyprefix#####.png
   QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
   connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Export3DAnimation/fileNameTemplate" ), mTemplateLineEdit->text() );
+    settings.setValue( u"Export3DAnimation/fileNameTemplate"_s, mTemplateLineEdit->text() );
   } );
 
   mOutputDirFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mOutputDirFileWidget->setDialogTitle( tr( "Select directory for 3D animation frames" ) );
   mOutputDirFileWidget->lineEdit()->setShowClearButton( false );
-  mOutputDirFileWidget->setDefaultRoot( settings.value( QStringLiteral( "Export3DAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
-  mOutputDirFileWidget->setFilePath( settings.value( QStringLiteral( "Export3DAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
+  mOutputDirFileWidget->setDefaultRoot( settings.value( u"Export3DAnimation/lastDir"_s, QString(), QgsSettings::App ).toString() );
+  mOutputDirFileWidget->setFilePath( settings.value( u"Export3DAnimation/lastDir"_s, QString(), QgsSettings::App ).toString() );
 
   connect( mOutputDirFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Export3DAnimation/lastDir" ), mOutputDirFileWidget->filePath(), QgsSettings::App );
+    settings.setValue( u"Export3DAnimation/lastDir"_s, mOutputDirFileWidget->filePath(), QgsSettings::App );
   } );
 
-  mFpsSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/fps" ), 30 ).toInt() );
+  mFpsSpinBox->setValue( settings.value( u"Export3DAnimation/fps"_s, 30 ).toInt() );
   connect( mFpsSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Export3DAnimation/fps" ), mFpsSpinBox->value() );
+    settings.setValue( u"Export3DAnimation/fps"_s, mFpsSpinBox->value() );
   } );
 
-  mWidthSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/width" ), 800 ).toInt() );
+  mWidthSpinBox->setValue( settings.value( u"Export3DAnimation/width"_s, 800 ).toInt() );
   connect( mWidthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Export3DAnimation/width" ), mWidthSpinBox->value() );
+    settings.setValue( u"Export3DAnimation/width"_s, mWidthSpinBox->value() );
   } );
 
-  mHeightSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/height" ), 600 ).toInt() );
+  mHeightSpinBox->setValue( settings.value( u"Export3DAnimation/height"_s, 600 ).toInt() );
   connect( mHeightSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Export3DAnimation/height" ), mHeightSpinBox->value() );
+    settings.setValue( u"Export3DAnimation/height"_s, mHeightSpinBox->value() );
   } );
 
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#create-animation" ) );
+    QgsHelp::openHelp( u"map_views/3d_map_view.html#create-animation"_s );
   } );
 
   QgsGui::enableAutoGeometryRestore( this );

@@ -17,8 +17,6 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
-set (BUILD_WITH_QT6 TRUE CACHE BOOL "Enable Qt6 support")
-
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
 
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
@@ -129,16 +127,16 @@ if (USE_CCACHE)
     # Detect if we have ccache >= 4.8 which accepts passing configuration settings when invoking the compiler
     string(FIND "${CCACHE_HELP}" "ccache [KEY=VALUE ...] compiler" ccache_key_value_found_index)
     if (fpch_defines_found_index EQUAL -1 OR time_macros_found_index EQUAL -1 OR
-        (BUILD_WITH_QT6 AND (include_file_mtime_found_index EQUAL -1 OR include_file_ctime_found_index EQUAL -1)))
+        (include_file_mtime_found_index EQUAL -1 OR include_file_ctime_found_index EQUAL -1))
         set(CCACHE_SLOPPINESS_REQUIRED "pch_defines,time_macros")
-        if (BUILD_WITH_QT6 AND (include_file_mtime_found_index EQUAL -1 OR include_file_ctime_found_index EQUAL -1))
+        if (include_file_mtime_found_index EQUAL -1 OR include_file_ctime_found_index EQUAL -1)
           string(APPEND CCACHE_SLOPPINESS_REQUIRED ",include_file_mtime,include_file_ctime")
         endif()
     else()
         set(CCACHE_SLOPPINESS_REQUIRED "")
     endif()
 
-    if (BUILD_WITH_QT6 AND CMAKE_CXX_COMPILER STREQUAL "/usr/bin/c++" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT "${CCACHE_COMPILER_TYPE}" STREQUAL "gcc")
+    if (CMAKE_CXX_COMPILER STREQUAL "/usr/bin/c++" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT "${CCACHE_COMPILER_TYPE}" STREQUAL "gcc")
         # Cf https://github.com/ccache/ccache/discussions/959
         set(CCACHE_COMPILER_TYPE_GCC_REQUIRED ON)
     else()
@@ -250,6 +248,7 @@ if(WITH_CORE)
   endif()
 
   set (WITH_SFCGAL FALSE CACHE BOOL "Determines whether SFCGAL geometry support should be built")
+  set (WITH_GEOGRAPHICLIB FALSE CACHE BOOL "Determines whether GeographicLib support should be built")
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
@@ -505,6 +504,18 @@ if(WITH_CORE)
     endif()
   endif()
 
+  if (WITH_GEOGRAPHICLIB)
+    if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+      # Workaround for https://bugs.launchpad.net/ubuntu/+source/geographiclib/+bug/1805173
+      list(APPEND CMAKE_MODULE_PATH /usr/share/cmake/geographiclib)
+    endif()
+    find_package(GeographicLib REQUIRED)
+    message(STATUS "Found GeographicLib: ${GeographicLib_VERSION}")
+    add_definitions(-DWITH_GEOGRAPHICLIB)
+  else()
+    message(STATUS "GeographicLib support DISABLED.")
+  endif()
+
   if (WITH_POSTGRESQL)
     find_package(Postgres) # PostgreSQL provider
   endif()
@@ -525,14 +536,6 @@ if(WITH_CORE)
   if (POSTGRES_FOUND)
     # following variable is used in qgsconfig.h
     set (HAVE_POSTGRESQL TRUE)
-  endif()
-
-  set (WITH_QTWEBKIT FALSE CACHE BOOL "Enable QtWebkit support")
-  if (WITH_QTWEBKIT)
-    add_definitions(-DWITH_QTWEBKIT)
-    message(STATUS "Qt WebKit support enabled")
-  else()
-    message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
   set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy (recommended)")
@@ -574,21 +577,10 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  if (BUILD_WITH_QT6)
-    set(QT_VERSION_MAJOR 6)
-    set(QT_MIN_VERSION 6.6.0)
-    set(QT_VERSION_BASE "Qt6")
-    set(QT_VERSION_BASE_LOWER "qt6")
-  else()
-    message(WARNING "Qt5 is no longer officially supported -- this build may be broken or buggy!")
-    set(QT_VERSION_MAJOR 5)
-    set(QT_MIN_VERSION 5.15.2)
-    set(QT_VERSION_BASE "Qt5")
-    set(QT_VERSION_BASE_LOWER "qt5")
-    set(HAS_KDE_QT5_PDF_TRANSFORM_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the PDF brush transform fix")
-    set(HAS_KDE_QT5_SMALL_CAPS_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont::SmallCaps fix")
-    set(HAS_KDE_QT5_FONT_STRETCH_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont stretch fix")
-  endif()
+  set(QT_VERSION_MAJOR 6)
+  set(QT_MIN_VERSION 6.6.0)
+  set(QT_VERSION_BASE "Qt6")
+  set(QT_VERSION_BASE_LOWER "qt6")
 
   # Use QtSerialPort optionally for GPS
   set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether QtSerialPort should be tried for GPS positioning")
@@ -608,9 +600,6 @@ if(WITH_CORE)
 
   set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
   if (WITH_PDF4QT)
-    if(NOT BUILD_WITH_QT6)
-      message(FATAL_ERROR "PDF4Qt requires a Qt 6 build")
-    endif()
     set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
     message(STATUS "PDF4Qt enabled")
   else()
@@ -621,11 +610,9 @@ if(WITH_CORE)
   if(WITH_QTPOSITIONING)
     find_package(${QT_VERSION_BASE} COMPONENTS Positioning REQUIRED)
   endif()
-  if (BUILD_WITH_QT6)
-    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
-    if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
-      find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
-    endif()
+  find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+  if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+    find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
   endif()
 
   if (NOT IOS)
@@ -639,13 +626,6 @@ if(WITH_CORE)
     set (HAVE_QTPRINTER TRUE)
   endif()
 
-  if (WITH_QTWEBKIT)
-    if(BUILD_WITH_QT6)
-      message(FATAL_ERROR "Qt WebKit support cannot be enabled on Qt 6 builds")
-    endif()
-    find_package(Qt5WebKit REQUIRED)
-    find_package(Qt5WebKitWidgets REQUIRED)
-  endif()
   if (WITH_3D)
     find_package(${QT_VERSION_BASE} COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
@@ -653,13 +633,7 @@ if(WITH_CORE)
 
   set (WITH_QTWEBENGINE TRUE CACHE BOOL "Enable QtWebEngine support")
   if (WITH_QTWEBENGINE)
-    if(BUILD_WITH_QT6)
-      find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
-    else()
-      # QWebEnginePage is only available in widgets module in Qt5
-      find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
-    endif()
-
+    find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
     message(STATUS "QtWebEngine support enabled")
     set(HAVE_WEBENGINE TRUE)  # used in qgsconfig.h
   else()
@@ -673,23 +647,12 @@ if(WITH_CORE)
   execute_process(COMMAND ${QMAKE_EXECUTABLE} -query QT_INSTALL_PLUGINS RESULT_VARIABLE return_code OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
   set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
-  if (BUILD_WITH_QT6)
-    message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
-  else()
-    message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
-  endif()
+  message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
+
   if (WITH_QUICK)
     find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Android" AND NOT BUILD_WITH_QT6)
-      find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
-    endif()
-
     # following variable is used in qgsconfig.h
     set (HAVE_QUICK TRUE)
-  endif()
-
-  if(WITH_QTWEBKIT)
-    set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
   endif()
 
   # search for QScintilla2 (C++ lib) and Qwt
@@ -713,11 +676,8 @@ if(WITH_CORE)
   endif()
 
   # Password helper
-  if(BUILD_WITH_QT6)
-    find_package(Qt6Keychain CONFIG REQUIRED)
-  else()
-    find_package(Qt5Keychain CONFIG REQUIRED)
-  endif()
+  find_package(Qt6Keychain CONFIG REQUIRED)
+
   # Master password hash and authentication encryption
   if(WITH_AUTH)
     find_package(QCA REQUIRED)
@@ -949,14 +909,9 @@ if(MSVC)
   add_definitions(-DNOMINMAX)
 endif()
 
-if(BUILD_WITH_QT6)
-  # Qt deprecated warnings are too noisy for now -- we have a LOT of QVariant::Type usage
-  # in order to maintain Qt5 compatibility
-  add_definitions(-DQT_NO_DEPRECATED_WARNINGS)
-else()
-  # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
-  add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
-endif()
+# Qt deprecated warnings are too noisy for now -- we have a LOT of QVariant::Type usage
+# in order to maintain Qt5 compatibility
+add_definitions(-DQT_NO_DEPRECATED_WARNINGS)
 
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
@@ -1217,25 +1172,15 @@ if (WITH_CORE AND WITH_BINDINGS)
   set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
   set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 
-  # python support: check for interpreter, sip, pyqt5
+  # python support: check for interpreter, sip, pyqt6
   find_package(SIP REQUIRED)
-  if(BUILD_WITH_QT6)
-    find_package(PyQt6 REQUIRED)
-    set(PYQT_FOUND ${PYQT6_FOUND})
-    set(PYQT_SIP_FLAGS ${PYQT6_SIP_FLAGS})
-    set(PYQT_SIP_DIR ${PYQT6_SIP_DIR})
-    set(PYQT_SIP_IMPORT ${PYQT6_SIP_IMPORT})
-    set(PYQT_VERSION_STR ${PYQT6_VERSION_STR})
-    set(PYQT_MOD_DIR ${PYQT6_MOD_DIR})
-  else()
-    find_package(PyQt5 REQUIRED)
-    set(PYQT_FOUND ${PYQT5_FOUND})
-    set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
-    set(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
-    set(PYQT_SIP_IMPORT ${PYQT5_SIP_IMPORT})
-    set(PYQT_VERSION_STR ${PYQT5_VERSION_STR})
-    set(PYQT_MOD_DIR ${PYQT5_MOD_DIR})
-  endif()
+  find_package(PyQt6 REQUIRED)
+  set(PYQT_FOUND ${PYQT6_FOUND})
+  set(PYQT_SIP_FLAGS ${PYQT6_SIP_FLAGS})
+  set(PYQT_SIP_DIR ${PYQT6_SIP_DIR})
+  set(PYQT_SIP_IMPORT ${PYQT6_SIP_IMPORT})
+  set(PYQT_VERSION_STR ${PYQT6_VERSION_STR})
+  set(PYQT_MOD_DIR ${PYQT6_MOD_DIR})
   separate_arguments(PYQT_SIP_FLAGS) # convert space separated values to a list
 
   find_package(Qsci REQUIRED)

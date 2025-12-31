@@ -31,32 +31,32 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
 {
   setScaleToTileZoomMethod( Qgis::ScaleToTileZoomLevelMethod::Esri );
 
-  const QVariantMap tileInfo = json.value( QStringLiteral( "tileInfo" ) ).toMap();
+  const QVariantMap tileInfo = json.value( u"tileInfo"_s ).toMap();
 
-  const QVariantMap origin = tileInfo.value( QStringLiteral( "origin" ) ).toMap();
-  const double originX = origin.value( QStringLiteral( "x" ) ).toDouble();
-  const double originY = origin.value( QStringLiteral( "y" ) ).toDouble();
+  const QVariantMap origin = tileInfo.value( u"origin"_s ).toMap();
+  const double originX = origin.value( u"x"_s ).toDouble();
+  const double originY = origin.value( u"y"_s ).toDouble();
 
-  const int rows = tileInfo.value( QStringLiteral( "rows" ), QStringLiteral( "512" ) ).toInt();
-  const int cols = tileInfo.value( QStringLiteral( "cols" ), QStringLiteral( "512" ) ).toInt();
+  const int rows = tileInfo.value( u"rows"_s, u"512"_s ).toInt();
+  const int cols = tileInfo.value( u"cols"_s, u"512"_s ).toInt();
   if ( rows != cols )
   {
-    QgsDebugError( QStringLiteral( "row/col size mismatch: %1 vs %2 - tile misalignment may occur" ).arg( rows ).arg( cols ) );
+    QgsDebugError( u"row/col size mismatch: %1 vs %2 - tile misalignment may occur"_s.arg( rows ).arg( cols ) );
   }
 
-  const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( tileInfo.value( QStringLiteral( "spatialReference" ) ).toMap() );
+  const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( tileInfo.value( u"spatialReference"_s ).toMap() );
 
-  const QVariantList lodList = tileInfo.value( QStringLiteral( "lods" ) ).toList();
+  const QVariantList lodList = tileInfo.value( u"lods"_s ).toList();
   bool foundLevel0 = false;
   double z0Dimension = 0;
 
   for ( const QVariant &lod : lodList )
   {
     const QVariantMap lodMap = lod.toMap();
-    const int level = lodMap.value( QStringLiteral( "level" ) ).toInt();
+    const int level = lodMap.value( u"level"_s ).toInt();
     if ( level == 0 )
     {
-      z0Dimension = lodMap.value( QStringLiteral( "resolution" ) ).toDouble() * rows;
+      z0Dimension = lodMap.value( u"resolution"_s ).toDouble() * rows;
       foundLevel0 = true;
       break;
     }
@@ -68,7 +68,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
   for ( const QVariant &lod : lodList )
   {
     const QVariantMap lodMap = lod.toMap();
-    const int level = lodMap.value( QStringLiteral( "level" ) ).toInt();
+    const int level = lodMap.value( u"level"_s ).toInt();
 
     // TODO -- we shouldn't be using z0Dimension here, but rather the actual dimension and properties of
     // this exact LOD
@@ -77,13 +77,13 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
                          crs,
                          QgsPointXY( originX, originY ),
                          z0Dimension );
-    tm.setScale( lodMap.value( QStringLiteral( "scale" ) ).toDouble() );
+    tm.setScale( lodMap.value( u"scale"_s ).toDouble() );
     addMatrix( tm );
   }
 
   setRootMatrix( QgsTileMatrix::fromCustomDef( 0, crs, QgsPointXY( originX, originY ), z0Dimension, 1, 1 ) );
 
-  const QVariantList tileMap = rootTileMap.value( QStringLiteral( "index" ) ).toList();
+  const QVariantList tileMap = rootTileMap.value( u"index"_s ).toList();
   if ( !tileMap.isEmpty() )
   {
     // QUESTION: why do things this way?
@@ -169,7 +169,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
 
           if ( !ok )
           {
-            QgsDebugError( QStringLiteral( "Found tile index node with unsupported value: %1" ).arg( childNode.toString() ) );
+            QgsDebugError( u"Found tile index node with unsupported value: %1"_s.arg( childNode.toString() ) );
           }
           else if ( nodeInt == 0 )
           {

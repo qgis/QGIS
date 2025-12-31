@@ -18,7 +18,7 @@
 
 QString QgsFallbackNumericFormat::id() const
 {
-  return QStringLiteral( "default" );
+  return u"default"_s;
 }
 
 QString QgsFallbackNumericFormat::visibleName() const

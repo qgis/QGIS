@@ -50,6 +50,9 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
     //! Returns application level error
     ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
+    //! Return geometry column name
+    QString geometryColumnName() const { return mGeometryAttribute; }
+
     //! Return fields.
     const QgsFields &fields() const { return mFields; }
 
@@ -90,6 +93,8 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
     const QString mFeatureFormat;
 
     bool mComputeBbox = false;
+
+    QString mGeometryAttribute;
 
     QgsFields mFields;
 

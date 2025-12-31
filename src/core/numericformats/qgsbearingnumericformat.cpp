@@ -24,7 +24,7 @@ QgsBearingNumericFormat::QgsBearingNumericFormat()
 
 QString QgsBearingNumericFormat::id() const
 {
-  return QStringLiteral( "bearing" );
+  return u"bearing"_s;
 }
 
 QString QgsBearingNumericFormat::visibleName() const
@@ -54,7 +54,7 @@ QString QgsBearingNumericFormat::formatDouble( double value, const QgsNumericFor
 
       QString res = QgsBasicNumericFormat::formatDouble( std::fabs( value ), context );
 
-      if ( res != QLatin1String( "0" ) && res != QLatin1String( "180" ) )
+      if ( res != "0"_L1 && res != "180"_L1 )
         // TODO also test for 0.000, 180.000, etc
         res += QChar( 176 ) + ( value < 0 ? QObject::tr( "W" ) : QObject::tr( "E" ) );
       else
@@ -93,14 +93,14 @@ QgsNumericFormat *QgsBearingNumericFormat::create( const QVariantMap &configurat
 {
   auto res = std::make_unique< QgsBearingNumericFormat >();
   res->setConfiguration( configuration, context );
-  res->mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( QStringLiteral( "direction_format" ), 0 ).toInt() );
+  res->mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( u"direction_format"_s, 0 ).toInt() );
   return res.release();
 }
 
 QVariantMap QgsBearingNumericFormat::configuration( const QgsReadWriteContext &context ) const
 {
   QVariantMap res = QgsBasicNumericFormat::configuration( context );
-  res.insert( QStringLiteral( "direction_format" ), static_cast< int >( mDirectionFormat ) );
+  res.insert( u"direction_format"_s, static_cast< int >( mDirectionFormat ) );
   return res;
 }
 
@@ -117,5 +117,5 @@ void QgsBearingNumericFormat::setDirectionFormat( FormatDirectionOption directio
 void QgsBearingNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context )
 {
   QgsBasicNumericFormat::setConfiguration( configuration, context );
-  mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( QStringLiteral( "direction_format" ), 0 ).toInt() );
+  mDirectionFormat = static_cast< FormatDirectionOption >( configuration.value( u"direction_format"_s, 0 ).toInt() );
 }

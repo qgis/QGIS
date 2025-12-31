@@ -40,19 +40,19 @@ void QgsMeshSimplificationSettings::setReductionFactor( double value )
 QDomElement QgsMeshSimplificationSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
-  QDomElement elem = doc.createElement( QStringLiteral( "mesh-simplify-settings" ) );
-  elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elem.setAttribute( QStringLiteral( "reduction-factor" ), mReductionFactor );
-  elem.setAttribute( QStringLiteral( "mesh-resolution" ), mMeshResolution );
+  QDomElement elem = doc.createElement( u"mesh-simplify-settings"_s );
+  elem.setAttribute( u"enabled"_s, mEnabled ? u"1"_s : u"0"_s );
+  elem.setAttribute( u"reduction-factor"_s, mReductionFactor );
+  elem.setAttribute( u"mesh-resolution"_s, mMeshResolution );
   return elem;
 }
 
 void QgsMeshSimplificationSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
-  mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
-  mReductionFactor = elem.attribute( QStringLiteral( "reduction-factor" ) ).toDouble();
-  mMeshResolution = elem.attribute( QStringLiteral( "mesh-resolution" ) ).toInt();
+  mEnabled = elem.attribute( u"enabled"_s ).toInt();
+  mReductionFactor = elem.attribute( u"reduction-factor"_s ).toDouble();
+  mMeshResolution = elem.attribute( u"mesh-resolution"_s ).toInt();
 }
 
 int QgsMeshSimplificationSettings::meshResolution() const

@@ -143,7 +143,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 
     QString name = transform.name;
     if ( !transform.authority.isEmpty() && !transform.code.isEmpty() )
-      name += QStringLiteral( " %1 %2:%3" ).arg( QString( QChar( 0x2013 ) ), transform.authority, transform.code );
+      name += u" %1 %2:%3"_s.arg( QString( QChar( 0x2013 ) ), transform.authority, transform.code );
     item->setText( name );
 
     if ( row == 0 ) // highlight first (preferred) operation
@@ -203,9 +203,9 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       if ( gridMessages.count() > 1 )
       {
         for ( int k = 0; k < gridMessages.count(); ++k )
-          gridMessages[k] = QStringLiteral( "<li>%1</li>" ).arg( gridMessages.at( k ) );
+          gridMessages[k] = u"<li>%1</li>"_s.arg( gridMessages.at( k ) );
 
-        missingMessage = QStringLiteral( "<ul>%1</ul" ).arg( gridMessages.join( QString() ) );
+        missingMessage = u"<ul>%1</ul"_s.arg( gridMessages.join( QString() ) );
       }
       else if ( !gridMessages.empty() )
       {
@@ -224,14 +224,14 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       QString text;
       if ( !singleOpDetails.scope.isEmpty() )
       {
-        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), formatScope( singleOpDetails.scope ) );
+        text += u"<b>%1</b>: %2"_s.arg( tr( "Scope" ), formatScope( singleOpDetails.scope ) );
         lastSingleOpScope = singleOpDetails.scope;
       }
       if ( !singleOpDetails.remarks.isEmpty() )
       {
         if ( !text.isEmpty() )
-          text += QLatin1String( "<br>" );
-        text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), singleOpDetails.remarks );
+          text += "<br>"_L1;
+        text += u"<b>%1</b>: %2"_s.arg( tr( "Remarks" ), singleOpDetails.remarks );
         lastSingleOpRemarks = singleOpDetails.remarks;
       }
       if ( !singleOpDetails.areaOfUse.isEmpty() )
@@ -241,7 +241,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       }
       if ( !singleOpDetails.authority.isEmpty() && !singleOpDetails.code.isEmpty() )
       {
-        const QString identifier = QStringLiteral( "%1:%2" ).arg( singleOpDetails.authority, singleOpDetails.code );
+        const QString identifier = u"%1:%2"_s.arg( singleOpDetails.authority, singleOpDetails.code );
         if ( !authorityCodes.contains( identifier ) )
           authorityCodes << identifier;
       }
@@ -255,13 +255,13 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     QString text;
     if ( !transform.scope.isEmpty() && transform.scope != lastSingleOpScope )
     {
-      text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), transform.scope );
+      text += u"<b>%1</b>: %2"_s.arg( tr( "Scope" ), transform.scope );
     }
     if ( !transform.remarks.isEmpty() && transform.remarks != lastSingleOpRemarks )
     {
       if ( !text.isEmpty() )
-        text += QLatin1String( "<br>" );
-      text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), transform.remarks );
+        text += "<br>"_L1;
+      text += u"<b>%1</b>: %2"_s.arg( tr( "Remarks" ), transform.remarks );
     }
     if ( !text.isEmpty() )
     {
@@ -271,14 +271,14 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     if ( opText.count() > 1 )
     {
       for ( int k = 0; k < opText.count(); ++k )
-        opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
+        opText[k] = u"<li>%1</li>"_s.arg( opText.at( k ) );
     }
 
     if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
       areasOfUse << transform.areaOfUse;
     item->setData( BoundsRole, transform.bounds );
 
-    const QString id = !transform.authority.isEmpty() && !transform.code.isEmpty() ? QStringLiteral( "%1:%2" ).arg( transform.authority, transform.code ) : QString();
+    const QString id = !transform.authority.isEmpty() && !transform.code.isEmpty() ? u"%1:%2"_s.arg( transform.authority, transform.code ) : QString();
     if ( !id.isEmpty() && !authorityCodes.contains( id ) )
       authorityCodes << id;
 
@@ -286,12 +286,12 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
     const QColor codeColor( static_cast<int>( active.red() * 0.6 + disabled.red() * 0.4 ), static_cast<int>( active.green() * 0.6 + disabled.green() * 0.4 ), static_cast<int>( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
-    const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
-                                  + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
-                                  + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QLatin1String( ", " ) ) ) : QString() )
-                                  + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QLatin1String( ", " ) ) ) : QString() )
-                                  + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
-                                  + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
+    const QString toolTipString = u"<b>%1</b>"_s.arg( transform.name )
+                                  + ( !opText.empty() ? ( opText.count() == 1 ? u"<p>%1</p>"_s.arg( opText.at( 0 ) ) : u"<ul>%1</ul>"_s.arg( opText.join( QString() ) ) ) : QString() )
+                                  + ( !areasOfUse.empty() ? u"<p><b>%1</b>: %2</p>"_s.arg( tr( "Area of use" ), areasOfUse.join( ", "_L1 ) ) : QString() )
+                                  + ( !authorityCodes.empty() ? u"<p><b>%1</b>: %2</p>"_s.arg( tr( "Identifiers" ), authorityCodes.join( ", "_L1 ) ) : QString() )
+                                  + ( !missingMessage.isEmpty() ? u"<p><b style=\"color: red\">%1</b></p>"_s.arg( missingMessage ) : QString() )
+                                  + u"<p><code style=\"color: %1\">%2</code></p>"_s.arg( codeColor.name(), transform.proj );
 
     item->setToolTip( toolTipString );
     mCoordinateOperationTableWidget->setRowCount( row + 1 );
@@ -310,7 +310,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     // area of use column
     item = std::make_unique<QTableWidgetItem>();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-    item->setText( areasOfUse.join( QLatin1String( ", " ) ) );
+    item->setText( areasOfUse.join( ", "_L1 ) );
     item->setToolTip( toolTipString );
     if ( !transform.isAvailable )
     {
@@ -332,11 +332,11 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 QgsCoordinateOperationWidget::~QgsCoordinateOperationWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), mHideDeprecatedCheckBox->isChecked() );
+  settings.setValue( u"Windows/DatumTransformDialog/hideDeprecated"_s, mHideDeprecatedCheckBox->isChecked() );
 
   for ( int i = 0; i < 2; i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mCoordinateOperationTableWidget->columnWidth( i ) );
+    settings.setValue( u"Windows/DatumTransformDialog/columnWidths/%1"_s.arg( i ), mCoordinateOperationTableWidget->columnWidth( i ) );
   }
 }
 
@@ -361,10 +361,10 @@ QString QgsCoordinateOperationWidget::formatScope( const QString &s )
 {
   QString scope = s;
 
-  const thread_local QRegularExpression reGNSS( QStringLiteral( "\\bGNSS\\b" ) );
+  const thread_local QRegularExpression reGNSS( u"\\bGNSS\\b"_s );
   scope.replace( reGNSS, QObject::tr( "GNSS (Global Navigation Satellite System)" ) );
 
-  const thread_local QRegularExpression reCORS( QStringLiteral( "\\bCORS\\b" ) );
+  const thread_local QRegularExpression reCORS( u"\\bCORS\\b"_s );
   scope.replace( reCORS, QObject::tr( "CORS (Continually Operating Reference Station)" ) );
 
   return scope;
@@ -439,7 +439,7 @@ void QgsCoordinateOperationWidget::setShowFallbackOption( bool visible )
 
 bool QgsCoordinateOperationWidget::gridShiftTransformation( const QString &itemText ) const
 {
-  return !itemText.isEmpty() && !itemText.contains( QLatin1String( "towgs84" ), Qt::CaseInsensitive );
+  return !itemText.isEmpty() && !itemText.contains( "towgs84"_L1, Qt::CaseInsensitive );
 }
 
 bool QgsCoordinateOperationWidget::testGridShiftFileAvailability( QTableWidgetItem *item ) const

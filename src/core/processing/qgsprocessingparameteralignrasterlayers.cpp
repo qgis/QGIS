@@ -78,14 +78,14 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
       {
         const QVariantMap layerMap = variantLayer.toMap();
 
-        if ( !layerMap.contains( QStringLiteral( "inputFile" ) ) && !layerMap.contains( QStringLiteral( "outputFile" ) ) )
+        if ( !layerMap.contains( u"inputFile"_s ) && !layerMap.contains( u"outputFile"_s ) )
           return false;
 
         if ( !context )
           return true;
 
         QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer * >(
-                                        QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "inputFile" ) ).toString(), *context )
+                                        QgsProcessingUtils::mapLayerFromString( layerMap.value( u"inputFile"_s ).toString(), *context )
                                       );
         if ( !rasterLayer )
           return false;
@@ -124,12 +124,12 @@ QString QgsProcessingParameterAlignRasterLayers::valueAsPythonString( const QVar
   for ( const QgsAlignRasterData::RasterItem &item : items )
   {
     QStringList layerDefParts;
-    layerDefParts << QStringLiteral( "'inputFile': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( item.inputFilename ) );
-    layerDefParts << QStringLiteral( "'outputFile': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( item.outputFilename ) );
-    layerDefParts << QStringLiteral( "'resampleMethod': " ) + QgsProcessingUtils::variantToPythonLiteral( static_cast<int>( item.resampleMethod ) );
-    layerDefParts << QStringLiteral( "'rescale': " ) + QgsProcessingUtils::variantToPythonLiteral( item.rescaleValues );
+    layerDefParts << u"'inputFile': "_s + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( item.inputFilename ) );
+    layerDefParts << u"'outputFile': "_s + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( item.outputFilename ) );
+    layerDefParts << u"'resampleMethod': "_s + QgsProcessingUtils::variantToPythonLiteral( static_cast<int>( item.resampleMethod ) );
+    layerDefParts << u"'rescale': "_s + QgsProcessingUtils::variantToPythonLiteral( item.rescaleValues );
 
-    const QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
+    const QString layerDef = u"{%1}"_s.arg( layerDefParts.join( ',' ) );
     parts << layerDef;
   }
   return parts.join( ',' ).prepend( '[' ).append( ']' );
@@ -141,7 +141,7 @@ QString QgsProcessingParameterAlignRasterLayers::asPythonString( QgsProcessing::
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterAlignRasterLayers('%1', %2)" )
+      QString code = u"QgsProcessingParameterAlignRasterLayers('%1', %2)"_s
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
@@ -215,7 +215,7 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
 
 QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantMapAsItem( const QVariantMap &layerVariantMap, QgsProcessingContext &context )
 {
-  const QVariant layerVariant = layerVariantMap[ QStringLiteral( "inputFile" ) ];
+  const QVariant layerVariant = layerVariantMap[ u"inputFile"_s ];
 
   QgsRasterLayer *inputLayer = nullptr;
   if ( ( inputLayer = qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )
@@ -232,18 +232,18 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
     return item;
   }
 
-  QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[ QStringLiteral( "outputFile" ) ].toString() );
-  item.resampleMethod = static_cast<Qgis::GdalResampleAlgorithm>( layerVariantMap.value( QStringLiteral( "resampleMethod" ), 0 ).toInt() );
-  item.rescaleValues = layerVariantMap.value( QStringLiteral( "rescale" ), false ).toBool();
+  QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[ u"outputFile"_s ].toString() );
+  item.resampleMethod = static_cast<Qgis::GdalResampleAlgorithm>( layerVariantMap.value( u"resampleMethod"_s, 0 ).toInt() );
+  item.rescaleValues = layerVariantMap.value( u"rescale"_s, false ).toBool();
   return item;
 }
 
 QVariantMap QgsProcessingParameterAlignRasterLayers::itemAsVariantMap( const QgsAlignRasterData::RasterItem &item )
 {
   QVariantMap vm;
-  vm[ QStringLiteral( "inputFile" )] = item.inputFilename;
-  vm[ QStringLiteral( "outputFile" ) ] = item.outputFilename;
-  vm[ QStringLiteral( "resampleMethod" ) ] = static_cast<int>( item.resampleMethod );
-  vm[ QStringLiteral( "rescale" ) ] = item.rescaleValues;
+  vm[ u"inputFile"_s] = item.inputFilename;
+  vm[ u"outputFile"_s ] = item.outputFilename;
+  vm[ u"resampleMethod"_s ] = static_cast<int>( item.resampleMethod );
+  vm[ u"rescale"_s ] = item.rescaleValues;
   return vm;
 }

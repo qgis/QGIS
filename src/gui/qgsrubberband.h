@@ -374,8 +374,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     int numberOfVertices() const;
 
-    // TODO QGIS 4: rename i to geometryIndex, j to vertexIndex
-    // TODO QGIS 4: reorder parameters to geom, ring, ring
+    // TODO QGIS 5: rename i to geometryIndex, j to vertexIndex
+    // TODO QGIS 5: reorder parameters to geom, ring, ring
 
     /**
      * Returns a vertex
@@ -417,6 +417,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   protected:
+    using QgsMapCanvasItem::paint;
+
     /**
      * Paints the rubber band in response to an update event.
      *  \param p The QPainter object

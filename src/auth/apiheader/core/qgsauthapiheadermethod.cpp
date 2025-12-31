@@ -31,8 +31,8 @@
 #include <QMutexLocker>
 #include <QUuid>
 
-const QString QgsAuthApiHeaderMethod::AUTH_METHOD_KEY = QStringLiteral( "APIHeader" );
-const QString QgsAuthApiHeaderMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "API Header" );
+const QString QgsAuthApiHeaderMethod::AUTH_METHOD_KEY = u"APIHeader"_s;
+const QString QgsAuthApiHeaderMethod::AUTH_METHOD_DESCRIPTION = u"API Header"_s;
 const QString QgsAuthApiHeaderMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "API Header" );
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthApiHeaderMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
@@ -42,8 +42,8 @@ QgsAuthApiHeaderMethod::QgsAuthApiHeaderMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << QStringLiteral( "ows" ) << QStringLiteral( "wfs" ) // convert to lowercase
-                                  << QStringLiteral( "wcs" ) << QStringLiteral( "wms" ) );
+  setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
+                                  << u"wcs"_s << u"wms"_s );
 }
 
 QString QgsAuthApiHeaderMethod::key() const
@@ -67,7 +67,7 @@ bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, con
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
@@ -79,15 +79,15 @@ bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, con
     const QString headerKey = i.key();
     const QString headerValue = i.value();
 
-    QgsDebugMsgLevel( QStringLiteral( "HTTP Header: %1=%2" ).arg( headerKey ).arg( headerValue ), 2 );
+    QgsDebugMsgLevel( u"HTTP Header: %1=%2"_s.arg( headerKey ).arg( headerValue ), 2 );
 
     if ( !headerKey.isEmpty() )
     {
-      request.setRawHeader( QStringLiteral( "%1" ).arg( headerKey ).toLocal8Bit(), QStringLiteral( "%1" ).arg( headerValue ).toLocal8Bit() );
+      request.setRawHeader( u"%1"_s.arg( headerKey ).toLocal8Bit(), u"%1"_s.arg( headerValue ).toLocal8Bit() );
     }
     else
     {
-      QgsDebugError( QStringLiteral( "The header key was empty, we shouldn't have empty header keys at this point" ) );
+      QgsDebugError( u"The header key was empty, we shouldn't have empty header keys at this point"_s );
     }
   }
 
@@ -114,14 +114,14 @@ QgsAuthMethodConfig QgsAuthApiHeaderMethod::getMethodConfig( const QString &auth
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     config = sAuthConfigCache.value( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return config;
   }
 
   // else build basic bundle
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, config, fullconfig ) )
   {
-    QgsDebugError( QStringLiteral( "Retrieve config FAILED for authcfg: %1" ).arg( authcfg ) );
+    QgsDebugError( u"Retrieve config FAILED for authcfg: %1"_s.arg( authcfg ) );
     return QgsAuthMethodConfig();
   }
 
@@ -134,7 +134,7 @@ QgsAuthMethodConfig QgsAuthApiHeaderMethod::getMethodConfig( const QString &auth
 void QgsAuthApiHeaderMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &config )
 {
   const QMutexLocker locker( &mMutex );
-  QgsDebugMsgLevel( QStringLiteral( "Putting token config for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Putting token config for authcfg: %1"_s.arg( authcfg ), 2 );
   sAuthConfigCache.insert( authcfg, config );
 }
 
@@ -144,7 +144,7 @@ void QgsAuthApiHeaderMethod::removeMethodConfig( const QString &authcfg )
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     sAuthConfigCache.remove( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Removed token config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Removed token config for authcfg: %1"_s.arg( authcfg ), 2 );
   }
 }
 

@@ -28,32 +28,32 @@
 
 #include "moc_qgsappgpslogging.cpp"
 
-const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
+const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( u"last-log-folder"_s, QgsSettingsTree::sTreeGps, QString(), u"Last used folder for GPS log files"_s );
 
-const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog = new QgsSettingsEntryString( QStringLiteral( "last-gpkg-log" ), QgsSettingsTree::sTreeGps, QString(), QStringLiteral( "Last used Geopackage/Spatialite file for logging GPS locations" ) );
+const QgsSettingsEntryString *QgsAppGpsLogging::settingLastGpkgLog = new QgsSettingsEntryString( u"last-gpkg-log"_s, QgsSettingsTree::sTreeGps, QString(), u"Last used Geopackage/Spatialite file for logging GPS locations"_s );
 
 const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> QgsAppGpsLogging::sPointFields {
-  { Qgis::GpsInformationComponent::Timestamp, { QMetaType::Type::QDateTime, QStringLiteral( "timestamp" ) } },
-  { Qgis::GpsInformationComponent::Altitude, { QMetaType::Type::Double, QStringLiteral( "altitude" ) } },
-  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QMetaType::Type::Double, QStringLiteral( "altitude_wgs84" ) } },
-  { Qgis::GpsInformationComponent::GroundSpeed, { QMetaType::Type::Double, QStringLiteral( "ground_speed" ) } },
-  { Qgis::GpsInformationComponent::Bearing, { QMetaType::Type::Double, QStringLiteral( "bearing" ) } },
-  { Qgis::GpsInformationComponent::Pdop, { QMetaType::Type::Double, QStringLiteral( "pdop" ) } },
-  { Qgis::GpsInformationComponent::Hdop, { QMetaType::Type::Double, QStringLiteral( "hdop" ) } },
-  { Qgis::GpsInformationComponent::Vdop, { QMetaType::Type::Double, QStringLiteral( "vdop" ) } },
-  { Qgis::GpsInformationComponent::HorizontalAccuracy, { QMetaType::Type::Double, QStringLiteral( "horizontal_accuracy" ) } },
-  { Qgis::GpsInformationComponent::VerticalAccuracy, { QMetaType::Type::Double, QStringLiteral( "vertical_accuracy" ) } },
-  { Qgis::GpsInformationComponent::HvAccuracy, { QMetaType::Type::Double, QStringLiteral( "hv_accuracy" ) } },
-  { Qgis::GpsInformationComponent::SatellitesUsed, { QMetaType::Type::Double, QStringLiteral( "satellites_used" ) } },
-  { Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint, { QMetaType::Type::Double, QStringLiteral( "distance_since_previous" ) } },
-  { Qgis::GpsInformationComponent::TrackTimeSinceLastPoint, { QMetaType::Type::Double, QStringLiteral( "time_since_previous" ) } },
+  { Qgis::GpsInformationComponent::Timestamp, { QMetaType::Type::QDateTime, u"timestamp"_s } },
+  { Qgis::GpsInformationComponent::Altitude, { QMetaType::Type::Double, u"altitude"_s } },
+  { Qgis::GpsInformationComponent::EllipsoidAltitude, { QMetaType::Type::Double, u"altitude_wgs84"_s } },
+  { Qgis::GpsInformationComponent::GroundSpeed, { QMetaType::Type::Double, u"ground_speed"_s } },
+  { Qgis::GpsInformationComponent::Bearing, { QMetaType::Type::Double, u"bearing"_s } },
+  { Qgis::GpsInformationComponent::Pdop, { QMetaType::Type::Double, u"pdop"_s } },
+  { Qgis::GpsInformationComponent::Hdop, { QMetaType::Type::Double, u"hdop"_s } },
+  { Qgis::GpsInformationComponent::Vdop, { QMetaType::Type::Double, u"vdop"_s } },
+  { Qgis::GpsInformationComponent::HorizontalAccuracy, { QMetaType::Type::Double, u"horizontal_accuracy"_s } },
+  { Qgis::GpsInformationComponent::VerticalAccuracy, { QMetaType::Type::Double, u"vertical_accuracy"_s } },
+  { Qgis::GpsInformationComponent::HvAccuracy, { QMetaType::Type::Double, u"hv_accuracy"_s } },
+  { Qgis::GpsInformationComponent::SatellitesUsed, { QMetaType::Type::Double, u"satellites_used"_s } },
+  { Qgis::GpsInformationComponent::TrackDistanceSinceLastPoint, { QMetaType::Type::Double, u"distance_since_previous"_s } },
+  { Qgis::GpsInformationComponent::TrackTimeSinceLastPoint, { QMetaType::Type::Double, u"time_since_previous"_s } },
 };
 
 const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> QgsAppGpsLogging::sTrackFields {
-  { Qgis::GpsInformationComponent::TrackStartTime, { QMetaType::Type::QDateTime, QStringLiteral( "start_time" ) } },
-  { Qgis::GpsInformationComponent::TrackEndTime, { QMetaType::Type::QDateTime, QStringLiteral( "end_time" ) } },
-  { Qgis::GpsInformationComponent::TotalTrackLength, { QMetaType::Type::Double, QStringLiteral( "track_length" ) } },
-  { Qgis::GpsInformationComponent::TrackDistanceFromStart, { QMetaType::Type::Double, QStringLiteral( "distance_from_start" ) } },
+  { Qgis::GpsInformationComponent::TrackStartTime, { QMetaType::Type::QDateTime, u"start_time"_s } },
+  { Qgis::GpsInformationComponent::TrackEndTime, { QMetaType::Type::QDateTime, u"end_time"_s } },
+  { Qgis::GpsInformationComponent::TotalTrackLength, { QMetaType::Type::Double, u"track_length"_s } },
+  { Qgis::GpsInformationComponent::TrackDistanceFromStart, { QMetaType::Type::Double, u"distance_from_start"_s } },
 };
 
 
@@ -227,10 +227,10 @@ void QgsAppGpsLogging::createGpkgLogger()
   mGpkgLogger->setWriteToEditBuffer( false );
 
   QVariantMap uriParts;
-  uriParts.insert( QStringLiteral( "path" ), mGpkgLogFile );
-  uriParts.insert( QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) );
+  uriParts.insert( u"path"_s, mGpkgLogFile );
+  uriParts.insert( u"layerName"_s, u"gps_points"_s );
 
-  mGpkgPointsLayer = std::make_unique<QgsVectorLayer>( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), uriParts ) );
+  mGpkgPointsLayer = std::make_unique<QgsVectorLayer>( QgsProviderRegistry::instance()->encodeUri( u"ogr"_s, uriParts ) );
   if ( mGpkgPointsLayer->isValid() )
   {
     for ( const auto &it : sPointFields )
@@ -258,8 +258,8 @@ void QgsAppGpsLogging::createGpkgLogger()
     return;
   }
 
-  uriParts.insert( QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) );
-  mGpkgTracksLayer = std::make_unique<QgsVectorLayer>( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), uriParts ) );
+  uriParts.insert( u"layerName"_s, u"gps_tracks"_s );
+  mGpkgTracksLayer = std::make_unique<QgsVectorLayer>( QgsProviderRegistry::instance()->encodeUri( u"ogr"_s, uriParts ) );
   if ( mGpkgTracksLayer->isValid() )
   {
     for ( const auto &it : sTrackFields )
@@ -292,7 +292,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
 {
   const QFileInfo fi( mGpkgLogFile );
 
-  if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+  if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) )
   {
     QString error;
 
@@ -313,7 +313,7 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
     bool createPointLayer = true;
     if ( !newFile )
     {
-      auto testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) } } ), QString(), QStringLiteral( "ogr" ) );
+      auto testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { u"path"_s, mGpkgLogFile }, { u"layerName"_s, u"gps_points"_s } } ), QString(), u"ogr"_s );
       if ( testLayer->isValid() )
       {
         createPointLayer = false;
@@ -322,9 +322,9 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
 
     QMap<int, int> unusedMap;
     QVariantMap options;
-    options.insert( QStringLiteral( "driverName" ), QgsVectorFileWriter::driverForExtension( fi.suffix() ) );
-    options.insert( QStringLiteral( "update" ), true );
-    options.insert( QStringLiteral( "layerName" ), QStringLiteral( "gps_points" ) );
+    options.insert( u"driverName"_s, QgsVectorFileWriter::driverForExtension( fi.suffix() ) );
+    options.insert( u"update"_s, true );
+    options.insert( u"layerName"_s, u"gps_points"_s );
     if ( createPointLayer )
     {
       QgsFields pointFields;
@@ -349,13 +349,13 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
       }
     }
 
-    options.insert( QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) );
+    options.insert( u"layerName"_s, u"gps_tracks"_s );
 
     // does gps_tracks layer already exist?
     bool createTracksLayer = true;
     if ( !newFile )
     {
-      auto testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { QStringLiteral( "path" ), mGpkgLogFile }, { QStringLiteral( "layerName" ), QStringLiteral( "gps_tracks" ) } } ), QString(), QStringLiteral( "ogr" ) );
+      auto testLayer = std::make_unique<QgsVectorLayer>( ogrMetadata->encodeUri( { { u"path"_s, mGpkgLogFile }, { u"layerName"_s, u"gps_tracks"_s } } ), QString(), u"ogr"_s );
       if ( testLayer->isValid() )
       {
         createTracksLayer = false;

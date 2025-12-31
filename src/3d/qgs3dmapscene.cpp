@@ -164,22 +164,22 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
       QgsAbstract3DRenderer *renderer = layer->renderer3D();
       if ( renderer )
       {
-        if ( renderer->type() == QLatin1String( "vector" ) )
+        if ( renderer->type() == "vector"_L1 )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast<const QgsPoint3DSymbol *>( static_cast<QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol && pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
+          if ( pointSymbol && pointSymbol->shapeProperty( u"model"_s ).toString() == url )
           {
             removeLayerEntity( layer );
             addLayerEntity( layer );
           }
         }
-        else if ( renderer->type() == QLatin1String( "rulebased" ) )
+        else if ( renderer->type() == "rulebased"_L1 )
         {
           const QgsRuleBased3DRenderer::RuleList rules = static_cast<QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
           for ( const QgsRuleBased3DRenderer::Rule *rule : rules )
           {
             const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
-            if ( pointSymbol && pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
+            if ( pointSymbol && pointSymbol->shapeProperty( u"model"_s ).toString() == url )
             {
               removeLayerEntity( layer );
               addLayerEntity( layer );
@@ -338,7 +338,7 @@ void Qgs3DMapScene::onCameraChanged()
   if ( mSceneOriginShiftEnabled && mEngine->camera()->position().length() > ORIGIN_SHIFT_THRESHOLD )
   {
     const QgsVector3D newOrigin = mMap.origin() + QgsVector3D( mEngine->camera()->position() );
-    QgsDebugMsgLevel( QStringLiteral( "Rebasing scene origin from %1 to %2" ).arg( mMap.origin().toString( 1 ), newOrigin.toString( 1 ) ), 2 );
+    QgsDebugMsgLevel( u"Rebasing scene origin from %1 to %2"_s.arg( mMap.origin().toString( 1 ), newOrigin.toString( 1 ) ), 2 );
     mMap.setOrigin( newOrigin );
   }
 }
@@ -351,7 +351,7 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
     return false;
   }
 
-  QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), forceUpdate ? QStringLiteral( "Force update scene" ) : QStringLiteral( "Update scene" ) );
+  QgsEventTracing::ScopedEvent traceEvent( u"3D"_s, forceUpdate ? u"Force update scene"_s : u"Update scene"_s );
 
   Qgs3DMapSceneEntity::SceneContext sceneContext;
   Qt3DRender::QCamera *camera = mEngine->camera();
@@ -490,7 +490,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
 void Qgs3DMapScene::onFrameTriggered( float dt )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::EventType::Instant, QStringLiteral( "3D" ), QStringLiteral( "Frame begins" ) );
+  QgsEventTracing::addEvent( QgsEventTracing::EventType::Instant, u"3D"_s, u"Frame begins"_s );
 
   mCameraController->frameTriggered( dt );
 
@@ -735,10 +735,10 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer classes are not available.
-    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
+    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
-      if ( renderer->type() == QLatin1String( "vector" ) )
+      if ( renderer->type() == "vector"_L1 )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( vlayer->geometryType() == Qgis::GeometryType::Point )
@@ -750,7 +750,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
           }
         }
       }
-      else if ( renderer->type() == QLatin1String( "rulebased" ) )
+      else if ( renderer->type() == "rulebased"_L1 )
       {
         const QgsRuleBased3DRenderer::RuleList rules = static_cast<QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
         for ( auto rule : rules )
@@ -764,7 +764,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         }
       }
     }
-    else if ( layer->type() == Qgis::LayerType::Mesh && renderer->type() == QLatin1String( "mesh" ) )
+    else if ( layer->type() == Qgis::LayerType::Mesh && renderer->type() == "mesh"_L1 )
     {
       QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
       meshRenderer->setLayer( static_cast<QgsMeshLayer *>( layer ) );
@@ -775,17 +775,17 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
     }
-    else if ( layer->type() == Qgis::LayerType::PointCloud && renderer->type() == QLatin1String( "pointcloud" ) )
+    else if ( layer->type() == Qgis::LayerType::PointCloud && renderer->type() == "pointcloud"_L1 )
     {
       QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
       pointCloudRenderer->setLayer( static_cast<QgsPointCloudLayer *>( layer ) );
     }
-    else if ( layer->type() == Qgis::LayerType::TiledScene && renderer->type() == QLatin1String( "tiledscene" ) )
+    else if ( layer->type() == Qgis::LayerType::TiledScene && renderer->type() == "tiledscene"_L1 )
     {
       QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
     }
-    else if ( layer->type() == Qgis::LayerType::Annotation && renderer->type() == QLatin1String( "annotation" ) )
+    else if ( layer->type() == Qgis::LayerType::Annotation && renderer->type() == "annotation"_L1 )
     {
       auto annotationLayerRenderer = qgis::down_cast<QgsAnnotationLayer3DRenderer *>( renderer );
       annotationLayerRenderer->setLayer( qobject_cast<QgsAnnotationLayer *>( layer ) );
@@ -1069,8 +1069,8 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
       case QgsSkyboxEntity::DistinctTexturesSkybox:
         faces = skyboxSettings.cubeMapFacesPaths();
         mSkybox = new QgsCubeFacesSkyboxEntity(
-          faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
-          faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
+          faces[u"posX"_s], faces[u"posY"_s], faces[u"posZ"_s],
+          faces[u"negX"_s], faces[u"negY"_s], faces[u"negZ"_s],
           this
         );
         break;
@@ -1392,7 +1392,7 @@ void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
 {
   if ( clipPlaneEquations.size() > mMaxClipPlanes )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapScene::enableClipping: it is not possible to use more than %1 clipping planes." ).arg( mMaxClipPlanes ), 2 );
+    QgsDebugMsgLevel( u"Qgs3DMapScene::enableClipping: it is not possible to use more than %1 clipping planes."_s.arg( mMaxClipPlanes ), 2 );
   }
   mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 

@@ -68,7 +68,7 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 void Qgs3DMeasureDialog::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/3DMeasure/geometry" ), saveGeometry() );
+  settings.setValue( u"Windows/3DMeasure/geometry"_s, saveGeometry() );
   const QString &key = "/Windows/3DMeasure/h";
   settings.setValue( key, height() );
 }
@@ -76,8 +76,8 @@ void Qgs3DMeasureDialog::saveWindowLocation()
 void Qgs3DMeasureDialog::restorePosition()
 {
   const QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
-  const int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
+  restoreGeometry( settings.value( u"Windows/3DMeasure/geometry"_s ).toByteArray() );
+  const int wh = settings.value( u"Windows/3DMeasure/h"_s, 200 ).toInt();
   resize( width(), wh );
 }
 
@@ -175,10 +175,10 @@ void Qgs3DMeasureDialog::updateSettings()
 {
   const QgsSettings settings;
 
-  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, "3" ).toInt();
   mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
   mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
-    settings.value( QStringLiteral( "qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString()
+    settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString()
   );
   setupTableHeader();
   mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
@@ -200,18 +200,18 @@ double Qgs3DMeasureDialog::convertLength( double length, Qgis::DistanceUnit toUn
 QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
   return QgsUnitTypes::formatDistance( distance, mDecimalPlaces, mDisplayedDistanceUnit, baseUnit );
 }
 
 void Qgs3DMeasureDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#measuring" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#measuring"_s );
 }
 
 void Qgs3DMeasureDialog::openConfigTab()
 {
-  QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
+  QgisApp::instance()->showOptionsDialog( this, u"mOptionsPageMapTools"_s );
 }
 
 void Qgs3DMeasureDialog::setupTableHeader()

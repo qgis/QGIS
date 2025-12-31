@@ -833,6 +833,11 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
+    /**
+     * Copies all common properties of this layer to another templated symbol layer \a destLayer.
+     */
+    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
+
   protected:
 
     /**
@@ -868,22 +873,20 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false ) = 0;
 
     /**
-     * Copies all common properties of this layer to another templated symbol layer.
-     */
-    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
-
-    /**
      * Sets all common symbol properties in the \a destLayer, using the settings
      * serialized in the \a properties map.
      */
     static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 
+  protected:
+    int mRingIndex = 0; // current ring index while rendering
 
   private:
 
     void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
     void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
     void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
     /**
@@ -900,7 +903,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * \see setOffsetAlongLineUnit
      */
     void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context,
-                                      Qgis::MarkerLinePlacement placement, const QList<QPair<double, double>> &blankSegments );
+                                      Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
 
 
     static void collectOffsetPoints( const QVector< QPointF> &points,
@@ -928,7 +931,6 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QPointF mFinalVertex;
     bool mCurrentFeatureIsSelected = false;
     double mFeatureSymbolOpacity = 1;
-    int mRingIndex = 0; // current ring index while rendering
 
     friend class TestQgsMarkerLineSymbol;
 

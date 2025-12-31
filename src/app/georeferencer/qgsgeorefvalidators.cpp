@@ -29,7 +29,7 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 {
   Q_UNUSED( pos )
 
-  const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d*" ) ) );
+  const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern( u"-?\\d*"_s ) );
   if ( rx.match( input ).hasMatch() )
   {
     return Acceptable;
@@ -48,16 +48,16 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 
   if ( !input.contains( ' ' ) )
   {
-    const thread_local QRegularExpression rx2( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d*(\\.|,)(\\d+)?" ) ) );
+    const thread_local QRegularExpression rx2( QRegularExpression::anchoredPattern( u"-?\\d*(\\.|,)(\\d+)?"_s ) );
     if ( rx2.match( input ).hasMatch() )
       return Acceptable;
   }
   else
   {
-    const thread_local QRegularExpression rx3( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" ) ) );
+    const thread_local QRegularExpression rx3( QRegularExpression::anchoredPattern( u"-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?"_s ) );
     if ( rx3.match( input ).hasMatch() )
     {
-      const thread_local QRegularExpression rx4( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d{1,3}\\s60" ) ) );
+      const thread_local QRegularExpression rx4( QRegularExpression::anchoredPattern( u"-?\\d{1,3}\\s60"_s ) );
       if ( rx4.match( input ).hasMatch() )
       {
         const int in = input.left( input.indexOf( ' ' ) ).toInt();
@@ -68,7 +68,7 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
         return Acceptable;
       }
 
-      const thread_local QRegularExpression rx5( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d{1,3}\\s\\d{1,2}\\s60" ) ) );
+      const thread_local QRegularExpression rx5( QRegularExpression::anchoredPattern( u"-?\\d{1,3}\\s\\d{1,2}\\s60"_s ) );
       if ( rx5.match( input ).hasMatch() )
       {
         const int min = input.split( ' ' ).at( 1 ).toInt() + 1;

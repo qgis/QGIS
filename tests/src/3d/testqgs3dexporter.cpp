@@ -36,7 +36,7 @@ class TestQgs3DExporter : public QgsTest
 
   public:
     TestQgs3DExporter()
-      : QgsTest( QStringLiteral( "3D Exporter Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Exporter Tests"_s, u"3d"_s )
     {}
 
   private slots:

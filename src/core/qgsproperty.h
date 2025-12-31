@@ -540,28 +540,28 @@ class CORE_EXPORT QgsProperty
     switch ( sipCpp->propertyType() )
     {
       case Qgis::PropertyType::Static:
-        typeString = QStringLiteral( "static" );
+        typeString = u"static"_s;
         definitionString = sipCpp->staticValue().toString();
         break;
 
       case Qgis::PropertyType::Field:
-        typeString = QStringLiteral( "field" );
+        typeString = u"field"_s;
         definitionString = sipCpp->field();
         break;
 
       case Qgis::PropertyType::Expression:
-        typeString = QStringLiteral( "expression" );
+        typeString = u"expression"_s;
         definitionString = sipCpp->expressionString();
         break;
 
       case Qgis::PropertyType::Invalid:
-        typeString = QStringLiteral( "invalid" );
+        typeString = u"invalid"_s;
         break;
     }
 
-    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? QStringLiteral( "INACTIVE " ) : QString(),
+    QString str = u"<QgsProperty: %1%2%3>"_s.arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? u"INACTIVE "_s : QString(),
                   typeString,
-                  definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
+                  definitionString.isEmpty() ? QString() : u" (%1)"_s.arg( definitionString ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

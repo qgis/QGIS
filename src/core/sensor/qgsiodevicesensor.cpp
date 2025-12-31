@@ -72,7 +72,7 @@ QgsTcpSocketSensor *QgsTcpSocketSensor::create( QObject *parent )
 
 QString QgsTcpSocketSensor::type() const
 {
-  return QLatin1String( "tcp_socket" );
+  return "tcp_socket"_L1;
 }
 
 QString QgsTcpSocketSensor::hostName() const
@@ -159,16 +159,16 @@ void QgsTcpSocketSensor::socketStateChanged( const QAbstractSocket::SocketState 
 
 bool QgsTcpSocketSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const
 {
-  element.setAttribute( QStringLiteral( "hostName" ), mHostName );
-  element.setAttribute( QStringLiteral( "port" ), QString::number( mPort ) );
+  element.setAttribute( u"hostName"_s, mHostName );
+  element.setAttribute( u"port"_s, QString::number( mPort ) );
 
   return true;
 }
 
 bool QgsTcpSocketSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
-  mHostName = element.attribute( QStringLiteral( "hostName" ) );
-  mPort = element.attribute( QStringLiteral( "port" ) ).toInt();
+  mHostName = element.attribute( u"hostName"_s );
+  mPort = element.attribute( u"port"_s ).toInt();
 
   return true;
 }
@@ -216,7 +216,7 @@ QgsUdpSocketSensor *QgsUdpSocketSensor::create( QObject *parent )
 
 QString QgsUdpSocketSensor::type() const
 {
-  return QLatin1String( "udp_socket" );
+  return "udp_socket"_L1;
 }
 
 QString QgsUdpSocketSensor::hostName() const
@@ -307,16 +307,16 @@ void QgsUdpSocketSensor::socketStateChanged( const QAbstractSocket::SocketState 
 
 bool QgsUdpSocketSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const
 {
-  element.setAttribute( QStringLiteral( "hostName" ), mHostName );
-  element.setAttribute( QStringLiteral( "port" ), QString::number( mPort ) );
+  element.setAttribute( u"hostName"_s, mHostName );
+  element.setAttribute( u"port"_s, QString::number( mPort ) );
 
   return true;
 }
 
 bool QgsUdpSocketSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
-  mHostName = element.attribute( QStringLiteral( "hostName" ) );
-  mPort = element.attribute( QStringLiteral( "port" ) ).toInt();
+  mHostName = element.attribute( u"hostName"_s );
+  mPort = element.attribute( u"port"_s ).toInt();
 
   return true;
 }
@@ -340,7 +340,7 @@ QgsSerialPortSensor *QgsSerialPortSensor::create( QObject *parent )
 
 QString QgsSerialPortSensor::type() const
 {
-  return QLatin1String( "serial_port" );
+  return "serial_port"_L1;
 }
 
 QString QgsSerialPortSensor::portName() const
@@ -469,17 +469,17 @@ void QgsSerialPortSensor::handleError( QSerialPort::SerialPortError error )
 
 bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const
 {
-  element.setAttribute( QStringLiteral( "portName" ), mPortName );
-  element.setAttribute( QStringLiteral( "baudRate" ), static_cast<int>( mBaudRate ) );
-  element.setAttribute( QStringLiteral( "delimiter" ), QString( mDelimiter ) );
+  element.setAttribute( u"portName"_s, mPortName );
+  element.setAttribute( u"baudRate"_s, static_cast<int>( mBaudRate ) );
+  element.setAttribute( u"delimiter"_s, QString( mDelimiter ) );
   return true;
 }
 
 bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
-  mPortName = element.attribute( QStringLiteral( "portName" ) );
-  mBaudRate = static_cast< QSerialPort::BaudRate >( element.attribute( QStringLiteral( "baudRate" ) ).toInt() );
-  mDelimiter = element.attribute( QStringLiteral( "delimiter" ) ).toLocal8Bit();
+  mPortName = element.attribute( u"portName"_s );
+  mBaudRate = static_cast< QSerialPort::BaudRate >( element.attribute( u"baudRate"_s ).toInt() );
+  mDelimiter = element.attribute( u"delimiter"_s ).toLocal8Bit();
   return true;
 }
 #endif

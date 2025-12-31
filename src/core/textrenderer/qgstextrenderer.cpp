@@ -286,11 +286,11 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
     characterHeight = graphemeFontMetrics.height() / fontScale;
 
     qreal wordSpaceFix = qreal( 0.0 );
-    if ( graphemes[i] == QLatin1String( " " ) )
+    if ( graphemes[i] == " "_L1 )
     {
       // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
       int nxt = i + 1;
-      wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
+      wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != " "_L1 ) ? wordSpacing : qreal( 0.0 );
     }
 
     // this workaround only works for clusters with a single character. Not sure how it should be handled
@@ -981,7 +981,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
     p = context.painter();
   }
 
-  //QgsDebugMsgLevel( QStringLiteral( "Background label rotation: %1" ).arg( component.rotation() ), 4 );
+  //QgsDebugMsgLevel( u"Background label rotation: %1"_s.arg( component.rotation() ), 4 );
 
   // shared calculations between shapes and SVG
 
@@ -1119,10 +1119,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
       if ( background.type() == QgsTextBackgroundSettings::ShapeSVG )
       {
         QVariantMap map; // for SVG symbology marker
-        map[QStringLiteral( "name" )] = background.svgFile().trimmed();
-        map[QStringLiteral( "size" )] = QString::number( sizeOut );
-        map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Pixels );
-        map[QStringLiteral( "angle" )] = QString::number( 0.0 ); // angle is handled by this local painter
+        map[u"name"_s] = background.svgFile().trimmed();
+        map[u"size"_s] = QString::number( sizeOut );
+        map[u"size_unit"_s] = QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Pixels );
+        map[u"angle"_s] = QString::number( 0.0 ); // angle is handled by this local painter
 
         // offset is handled by this local painter
         // TODO: see why the marker renderer doesn't seem to translate offset *after* applying rotation
@@ -1130,19 +1130,19 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         //map["offset_unit"] = QgsUnitTypes::encodeUnit(
         //                       tmpLyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::MapUnit : QgsUnitTypes::MM );
 
-        map[QStringLiteral( "fill" )] = background.fillColor().name();
-        map[QStringLiteral( "outline" )] = background.strokeColor().name();
-        map[QStringLiteral( "outline-width" )] = QString::number( background.strokeWidth() );
-        map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( background.strokeWidthUnit() );
+        map[u"fill"_s] = background.fillColor().name();
+        map[u"outline"_s] = background.strokeColor().name();
+        map[u"outline-width"_s] = QString::number( background.strokeWidth() );
+        map[u"outline_width_unit"_s] = QgsUnitTypes::encodeUnit( background.strokeWidthUnit() );
 
         if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowShape )
         {
           QgsTextShadowSettings shadow = format.shadow();
           // configure SVG shadow specs
           QVariantMap shdwmap( map );
-          shdwmap[QStringLiteral( "fill" )] = shadow.color().name();
-          shdwmap[QStringLiteral( "outline" )] = shadow.color().name();
-          shdwmap[QStringLiteral( "size" )] = QString::number( sizeOut );
+          shdwmap[u"fill"_s] = shadow.color().name();
+          shdwmap[u"outline"_s] = shadow.color().name();
+          shdwmap[u"size"_s] = QString::number( sizeOut );
 
           // store SVG's drawing in QPicture for drop shadow call
           QPicture svgPict;
@@ -1454,7 +1454,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
     //       when this shadow function is used for something other than labels
 
     // it's 0-->cw-->360 for labels
-    //QgsDebugMsgLevel( QStringLiteral( "Shadow aggregated label rotation (degrees): %1" ).arg( component.rotation() + component.rotationOffset() ), 4 );
+    //QgsDebugMsgLevel( u"Shadow aggregated label rotation (degrees): %1"_s.arg( component.rotation() + component.rotationOffset() ), 4 );
     angleRad -= ( component.rotation * M_PI / 180 + component.rotationOffset * M_PI / 180 );
   }
 

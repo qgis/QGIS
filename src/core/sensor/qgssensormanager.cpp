@@ -164,16 +164,16 @@ bool QgsSensorManager::readXml( const QDomElement &element, const QDomDocument &
   clear();
 
   QDomElement sensorsElem = element;
-  if ( element.tagName() != QLatin1String( "Sensors" ) )
+  if ( element.tagName() != "Sensors"_L1 )
   {
-    sensorsElem = element.firstChildElement( QStringLiteral( "Sensors" ) );
+    sensorsElem = element.firstChildElement( u"Sensors"_s );
   }
 
-  QDomNodeList sensorNodes = element.elementsByTagName( QStringLiteral( "Sensor" ) );
+  QDomNodeList sensorNodes = element.elementsByTagName( u"Sensor"_s );
   for ( int i = 0; i < sensorNodes.size(); ++i )
   {
     const QDomElement sensorElement = sensorNodes.at( i ).toElement();
-    const QString sensorType = sensorElement.attribute( QStringLiteral( "type" ) );
+    const QString sensorType = sensorElement.attribute( u"type"_s );
     QgsAbstractSensor *sensor = QgsApplication::sensorRegistry()->createSensor( sensorType, this );
     if ( !sensor )
     {
@@ -189,7 +189,7 @@ bool QgsSensorManager::readXml( const QDomElement &element, const QDomDocument &
 
 QDomElement QgsSensorManager::writeXml( QDomDocument &document ) const
 {
-  QDomElement sensorsElem = document.createElement( QStringLiteral( "Sensors" ) );
+  QDomElement sensorsElem = document.createElement( u"Sensors"_s );
 
   for ( const QgsAbstractSensor *sensor : mSensors )
   {

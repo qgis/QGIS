@@ -343,19 +343,19 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   Q_UNUSED( context )
   // TODO add support for raster layers with multi-temporal properties.
 
-  const QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
+  const QDomElement temporalNode = element.firstChildElement( u"temporal"_s );
 
-  setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
+  setIsActive( temporalNode.attribute( u"enabled"_s, u"0"_s ).toInt() );
 
-  mMode = static_cast< Qgis::RasterTemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
-  mBandNumber = temporalNode.attribute( QStringLiteral( "bandNumber" ), QStringLiteral( "1" ) ).toInt();
-  mIntervalHandlingMethod = static_cast< Qgis::TemporalIntervalMatchMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
+  mMode = static_cast< Qgis::RasterTemporalMode >( temporalNode.attribute( u"mode"_s, u"0"_s ). toInt() );
+  mBandNumber = temporalNode.attribute( u"bandNumber"_s, u"1"_s ).toInt();
+  mIntervalHandlingMethod = static_cast< Qgis::TemporalIntervalMatchMethod >( temporalNode.attribute( u"fetchMode"_s, u"0"_s ). toInt() );
 
   switch ( mMode )
   {
     case Qgis::RasterTemporalMode::FixedDateTime:
     {
-      const QDomNode instantElement = temporalNode.namedItem( QStringLiteral( "fixedInstant" ) );
+      const QDomNode instantElement = temporalNode.namedItem( u"fixedInstant"_s );
       const QDateTime date = QDateTime::fromString( instantElement.toElement().text(), Qt::ISODate );
 
       const QgsDateTimeRange range = QgsDateTimeRange( date, date );
@@ -365,10 +365,10 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
 
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     {
-      const QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
+      const QDomNode rangeElement = temporalNode.namedItem( u"fixedRange"_s );
 
-      const QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
-      const QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+      const QDomNode begin = rangeElement.namedItem( u"start"_s );
+      const QDomNode end = rangeElement.namedItem( u"end"_s );
 
       const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
       const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
@@ -382,15 +382,15 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
     {
       mRangePerBand.clear();
 
-      const QDomNodeList ranges = temporalNode.firstChildElement( QStringLiteral( "ranges" ) ).childNodes();
+      const QDomNodeList ranges = temporalNode.firstChildElement( u"ranges"_s ).childNodes();
       for ( int i = 0; i < ranges.size(); ++i )
       {
         const QDomElement rangeElement = ranges.at( i ).toElement();
-        const int band = rangeElement.attribute( QStringLiteral( "band" ) ).toInt();
-        const QDateTime begin = QDateTime::fromString( rangeElement.attribute( QStringLiteral( "begin" ) ), Qt::ISODate );
-        const QDateTime end = QDateTime::fromString( rangeElement.attribute( QStringLiteral( "end" ) ), Qt::ISODate );
-        const bool includeBeginning = rangeElement.attribute( QStringLiteral( "includeBeginning" ) ).toInt();
-        const bool includeEnd = rangeElement.attribute( QStringLiteral( "includeEnd" ) ).toInt();
+        const int band = rangeElement.attribute( u"band"_s ).toInt();
+        const QDateTime begin = QDateTime::fromString( rangeElement.attribute( u"begin"_s ), Qt::ISODate );
+        const QDateTime end = QDateTime::fromString( rangeElement.attribute( u"end"_s ), Qt::ISODate );
+        const bool includeBeginning = rangeElement.attribute( u"includeBeginning"_s ).toInt();
+        const bool includeEnd = rangeElement.attribute( u"includeEnd"_s ).toInt();
         mRangePerBand.insert( band, QgsDateTimeRange( begin, end, includeBeginning, includeEnd ) );
       }
       break;
@@ -398,10 +398,10 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
 
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     {
-      mTemporalRepresentationOffset = QDateTime::fromString( temporalNode.attribute( QStringLiteral( "temporalRepresentationOffset" ) ), Qt::ISODate );
-      mAccumulatePixels = temporalNode.attribute( QStringLiteral( "accumulate" ), QStringLiteral( "0" ) ).toInt();
-      mTemporalRepresentationScale = QgsInterval( temporalNode.attribute( QStringLiteral( "temporalRepresentationScale" ), QStringLiteral( "1" ) ).toDouble(),
-                                     static_cast< Qgis::TemporalUnit >( temporalNode.attribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QStringLiteral( "4" ) ).toInt() ) );
+      mTemporalRepresentationOffset = QDateTime::fromString( temporalNode.attribute( u"temporalRepresentationOffset"_s ), Qt::ISODate );
+      mAccumulatePixels = temporalNode.attribute( u"accumulate"_s, u"0"_s ).toInt();
+      mTemporalRepresentationScale = QgsInterval( temporalNode.attribute( u"temporalRepresentationScale"_s, u"1"_s ).toDouble(),
+                                     static_cast< Qgis::TemporalUnit >( temporalNode.attribute( u"temporalRepresentationScaleUnit"_s, u"4"_s ).toInt() ) );
       break;
     }
 
@@ -419,17 +419,17 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   if ( element.isNull() )
     return QDomElement();
 
-  QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
-  temporalElement.setAttribute( QStringLiteral( "enabled" ), isActive() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( static_cast< int >( mMode ) ) );
-  temporalElement.setAttribute( QStringLiteral( "bandNumber" ), QString::number( mBandNumber ) );
-  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( static_cast< int >( mIntervalHandlingMethod ) ) );
+  QDomElement temporalElement = document.createElement( u"temporal"_s );
+  temporalElement.setAttribute( u"enabled"_s, isActive() ? u"1"_s : u"0"_s );
+  temporalElement.setAttribute( u"mode"_s, QString::number( static_cast< int >( mMode ) ) );
+  temporalElement.setAttribute( u"bandNumber"_s, QString::number( mBandNumber ) );
+  temporalElement.setAttribute( u"fetchMode"_s, QString::number( static_cast< int >( mIntervalHandlingMethod ) ) );
 
   switch ( mMode )
   {
     case Qgis::RasterTemporalMode::FixedDateTime:
     {
-      QDomElement instantElement = document.createElement( QStringLiteral( "fixedInstant" ) );
+      QDomElement instantElement = document.createElement( u"fixedInstant"_s );
       const QDomText instantText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
       instantElement.appendChild( instantText );
 
@@ -440,10 +440,10 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     {
 
-      QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
+      QDomElement rangeElement = document.createElement( u"fixedRange"_s );
 
-      QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
-      QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
+      QDomElement startElement = document.createElement( u"start"_s );
+      QDomElement endElement = document.createElement( u"end"_s );
 
       const QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
       const QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
@@ -458,15 +458,15 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
     case Qgis::RasterTemporalMode::FixedRangePerBand:
     {
-      QDomElement ranges = document.createElement( QStringLiteral( "ranges" ) );
+      QDomElement ranges = document.createElement( u"ranges"_s );
       for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
       {
-        QDomElement range = document.createElement( QStringLiteral( "range" ) );
-        range.setAttribute( QStringLiteral( "band" ), it.key() );
-        range.setAttribute( QStringLiteral( "begin" ), it.value().begin().toString( Qt::ISODate ) );
-        range.setAttribute( QStringLiteral( "end" ), it.value().end().toString( Qt::ISODate ) );
-        range.setAttribute( QStringLiteral( "includeBeginning" ), it.value().includeBeginning() ? "1" : "0" );
-        range.setAttribute( QStringLiteral( "includeEnd" ), it.value().includeEnd() ? "1" : "0" );
+        QDomElement range = document.createElement( u"range"_s );
+        range.setAttribute( u"band"_s, it.key() );
+        range.setAttribute( u"begin"_s, it.value().begin().toString( Qt::ISODate ) );
+        range.setAttribute( u"end"_s, it.value().end().toString( Qt::ISODate ) );
+        range.setAttribute( u"includeBeginning"_s, it.value().includeBeginning() ? "1" : "0" );
+        range.setAttribute( u"includeEnd"_s, it.value().includeEnd() ? "1" : "0" );
         ranges.appendChild( range );
       }
       temporalElement.appendChild( ranges );
@@ -475,10 +475,10 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     {
-      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationOffset" ), mTemporalRepresentationOffset.toString( Qt::ISODate ) );
-      temporalElement.setAttribute( QStringLiteral( "accumulate" ), mAccumulatePixels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScale" ), QString::number( mTemporalRepresentationScale.originalDuration() ) );
-      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QString::number( static_cast< int >( mTemporalRepresentationScale.originalUnit() ) ) );
+      temporalElement.setAttribute( u"temporalRepresentationOffset"_s, mTemporalRepresentationOffset.toString( Qt::ISODate ) );
+      temporalElement.setAttribute( u"accumulate"_s, mAccumulatePixels ? u"1"_s : u"0"_s );
+      temporalElement.setAttribute( u"temporalRepresentationScale"_s, QString::number( mTemporalRepresentationScale.originalDuration() ) );
+      temporalElement.setAttribute( u"temporalRepresentationScaleUnit"_s, QString::number( static_cast< int >( mTemporalRepresentationScale.originalUnit() ) ) );
       break;
     }
 

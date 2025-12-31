@@ -62,7 +62,7 @@ int QgsLayoutItemPolyline::type() const
 
 QIcon QgsLayoutItemPolyline::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolyline.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemPolyline.svg"_s );
 }
 
 bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
@@ -103,9 +103,9 @@ bool QgsLayoutItemPolyline::_removeNode( const int index )
 void QgsLayoutItemPolyline::createDefaultPolylineStyleSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"0.3"_s );
+  properties.insert( u"capstyle"_s, u"square"_s );
 
   mPolylineStyleSymbol = QgsLineSymbol::createSimple( properties );
   refreshSymbol();
@@ -447,31 +447,31 @@ bool QgsLayoutItemPolyline::writePropertiesToElement( QDomElement &elmt, QDomDoc
   const QString startMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mStartMarkerFile, context.pathResolver() );
   const QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, context.pathResolver() );
 
-  elmt.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
-  elmt.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsColorUtils::colorToString( mArrowHeadFillColor ) );
-  elmt.setAttribute( QStringLiteral( "arrowHeadOutlineColor" ), QgsColorUtils::colorToString( mArrowHeadStrokeColor ) );
-  elmt.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mArrowHeadStrokeWidth ) );
-  elmt.setAttribute( QStringLiteral( "markerMode" ), mEndMarker );
-  elmt.setAttribute( QStringLiteral( "startMarkerMode" ), mStartMarker );
-  elmt.setAttribute( QStringLiteral( "startMarkerFile" ), startMarkerPath );
-  elmt.setAttribute( QStringLiteral( "endMarkerFile" ), endMarkerPath );
+  elmt.setAttribute( u"arrowHeadWidth"_s, QString::number( mArrowHeadWidth ) );
+  elmt.setAttribute( u"arrowHeadFillColor"_s, QgsColorUtils::colorToString( mArrowHeadFillColor ) );
+  elmt.setAttribute( u"arrowHeadOutlineColor"_s, QgsColorUtils::colorToString( mArrowHeadStrokeColor ) );
+  elmt.setAttribute( u"outlineWidth"_s, QString::number( mArrowHeadStrokeWidth ) );
+  elmt.setAttribute( u"markerMode"_s, mEndMarker );
+  elmt.setAttribute( u"startMarkerMode"_s, mStartMarker );
+  elmt.setAttribute( u"startMarkerFile"_s, startMarkerPath );
+  elmt.setAttribute( u"endMarkerFile"_s, endMarkerPath );
 
   return true;
 }
 
 bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  mArrowHeadWidth = elmt.attribute( QStringLiteral( "arrowHeadWidth" ), QStringLiteral( "2.0" ) ).toDouble();
-  mArrowHeadFillColor = QgsColorUtils::colorFromString( elmt.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );
-  mArrowHeadStrokeColor = QgsColorUtils::colorFromString( elmt.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
-  mArrowHeadStrokeWidth = elmt.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
+  mArrowHeadWidth = elmt.attribute( u"arrowHeadWidth"_s, u"2.0"_s ).toDouble();
+  mArrowHeadFillColor = QgsColorUtils::colorFromString( elmt.attribute( u"arrowHeadFillColor"_s, u"0,0,0,255"_s ) );
+  mArrowHeadStrokeColor = QgsColorUtils::colorFromString( elmt.attribute( u"arrowHeadOutlineColor"_s, u"0,0,0,255"_s ) );
+  mArrowHeadStrokeWidth = elmt.attribute( u"outlineWidth"_s, u"1.0"_s ).toDouble();
   // relative paths to absolute
-  const QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QString() );
-  const QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QString() );
+  const QString startMarkerPath = elmt.attribute( u"startMarkerFile"_s, QString() );
+  const QString endMarkerPath = elmt.attribute( u"endMarkerFile"_s, QString() );
   setStartSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( startMarkerPath, context.pathResolver() ) );
   setEndSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, context.pathResolver() ) );
-  mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
-  mStartMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "startMarkerMode" ), QStringLiteral( "0" ) ).toInt() );
+  mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( u"markerMode"_s, u"0"_s ).toInt() );
+  mStartMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( u"startMarkerMode"_s, u"0"_s ).toInt() );
 
   QgsLayoutNodesItem::readPropertiesFromElement( elmt, doc, context );
 

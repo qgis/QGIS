@@ -21,7 +21,7 @@
 
 QString QgsRemoveNullGeometryAlgorithm::name() const
 {
-  return QStringLiteral( "removenullgeometries" );
+  return u"removenullgeometries"_s;
 }
 
 QString QgsRemoveNullGeometryAlgorithm::displayName() const
@@ -41,16 +41,16 @@ QString QgsRemoveNullGeometryAlgorithm::group() const
 
 QString QgsRemoveNullGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 void QgsRemoveNullGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REMOVE_EMPTY" ), QObject::tr( "Also remove empty geometries" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"REMOVE_EMPTY"_s, QObject::tr( "Also remove empty geometries" ), false ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Non null geometries" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
-  QgsProcessingParameterFeatureSink *nullOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "NULL_OUTPUT" ), QObject::tr( "Null geometries" ), Qgis::ProcessingSourceType::Vector, QVariant(), true );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Non null geometries" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
+  QgsProcessingParameterFeatureSink *nullOutput = new QgsProcessingParameterFeatureSink( u"NULL_OUTPUT"_s, QObject::tr( "Null geometries" ), Qgis::ProcessingSourceType::Vector, QVariant(), true );
   nullOutput->setCreateByDefault( false );
   addParameter( nullOutput );
 }
@@ -77,17 +77,17 @@ QgsRemoveNullGeometryAlgorithm *QgsRemoveNullGeometryAlgorithm::createInstance()
 
 QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const bool removeEmpty = parameterAsBoolean( parameters, QStringLiteral( "REMOVE_EMPTY" ), context );
+  const bool removeEmpty = parameterAsBoolean( parameters, u"REMOVE_EMPTY"_s, context );
 
   QString nonNullSinkId;
-  std::unique_ptr<QgsFeatureSink> nonNullSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, nonNullSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> nonNullSink( parameterAsSink( parameters, u"OUTPUT"_s, context, nonNullSinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
 
   QString nullSinkId;
-  std::unique_ptr<QgsFeatureSink> nullSink( parameterAsSink( parameters, QStringLiteral( "NULL_OUTPUT" ), context, nullSinkId, source->fields() ) );
+  std::unique_ptr<QgsFeatureSink> nullSink( parameterAsSink( parameters, u"NULL_OUTPUT"_s, context, nullSinkId, source->fields() ) );
 
   const long count = source->featureCount();
 
@@ -106,12 +106,12 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
     if ( ( ( !removeEmpty && f.hasGeometry() ) || ( removeEmpty && !f.geometry().isEmpty() ) ) && nonNullSink )
     {
       if ( !nonNullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( nonNullSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( nonNullSink.get(), parameters, u"OUTPUT"_s ) );
     }
     else if ( ( ( !removeEmpty && !f.hasGeometry() ) || ( removeEmpty && f.geometry().isEmpty() ) ) && nullSink )
     {
       if ( !nullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( nullSink.get(), parameters, QStringLiteral( "NULL_OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( nullSink.get(), parameters, u"NULL_OUTPUT"_s ) );
     }
 
     feedback->setProgress( current * step );
@@ -122,12 +122,12 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
   if ( nonNullSink )
   {
     nonNullSink->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT" ), nonNullSinkId );
+    outputs.insert( u"OUTPUT"_s, nonNullSinkId );
   }
   if ( nullSink )
   {
     nullSink->finalize();
-    outputs.insert( QStringLiteral( "NULL_OUTPUT" ), nullSinkId );
+    outputs.insert( u"NULL_OUTPUT"_s, nullSinkId );
   }
   return outputs;
 }

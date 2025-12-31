@@ -100,7 +100,7 @@ void TestQObjectUniquePtr::testOperatorArrow()
   QObject *o = new QObject();
   o->setObjectName( "Teddy" );
   const QObjectUniquePtr<QObject> obj( o );
-  QCOMPARE( obj->objectName(), QStringLiteral( "Teddy" ) );
+  QCOMPARE( obj->objectName(), u"Teddy"_s );
 }
 
 void TestQObjectUniquePtr::testDeleteLater()

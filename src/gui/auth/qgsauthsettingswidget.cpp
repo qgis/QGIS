@@ -174,10 +174,10 @@ bool QgsAuthSettingsWidget::configurationTabIsSelected()
 bool QgsAuthSettingsWidget::convertToEncrypted()
 {
   tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
-  QgsAuthMethodConfig config( QStringLiteral( "Basic" ) );
+  QgsAuthMethodConfig config( u"Basic"_s );
   config.setName( tr( "Converted config %1" ).arg( QDateTime::currentDateTime().toString() ) );
-  config.setConfig( QStringLiteral( "username" ), txtUserName->text() );
-  config.setConfig( QStringLiteral( "password" ), txtPassword->text() );
+  config.setConfig( u"username"_s, txtUserName->text() );
+  config.setConfig( u"password"_s, txtPassword->text() );
   if ( !QgsApplication::authManager()->storeAuthenticationConfig( config ) )
   {
     mAuthConfigSelect->showMessage( tr( "Couldn't create a Basic authentication configuration!" ) );

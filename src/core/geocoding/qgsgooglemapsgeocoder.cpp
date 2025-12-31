@@ -40,7 +40,7 @@ QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QStri
   : QgsGeocoderInterface()
   , mApiKey( apiKey )
   , mRegion( regionBias )
-  , mEndpoint( QStringLiteral( "https://maps.googleapis.com/maps/api/geocode/json" ) )
+  , mEndpoint( u"https://maps.googleapis.com/maps/api/geocode/json"_s )
 {
 
 }
@@ -53,18 +53,18 @@ QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const
 QgsFields QgsGoogleMapsGeocoder::appendedFields() const
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "location_type" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "formatted_address" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "place_id" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( u"location_type"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"formatted_address"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"place_id"_s, QMetaType::Type::QString ) );
 
   // add more?
-  fields.append( QgsField( QStringLiteral( "street_number" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "route" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "locality" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "administrative_area_level_2" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "administrative_area_level_1" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "country" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "postal_code" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( u"street_number"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"route"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"locality"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"administrative_area_level_2"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"administrative_area_level_1"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"country"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"postal_code"_s, QMetaType::Type::QString ) );
   return fields;
 }
 
@@ -79,7 +79,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   if ( !context.areaOfInterest().isEmpty() )
   {
     QgsGeometry g = context.areaOfInterest();
-    const QgsCoordinateTransform ct( context.areaOfInterestCrs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context.transformContext() );
+    const QgsCoordinateTransform ct( context.areaOfInterestCrs(), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), context.transformContext() );
     try
     {
       g.transform( ct );
@@ -102,7 +102,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   locker.unlock();
 
   QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGoogleMapsGeocoder" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsGoogleMapsGeocoder"_s );
 
   QgsBlockingNetworkRequest newReq;
   const QgsBlockingNetworkRequest::ErrorCode errorCode = newReq.get( request, false, feedback );
@@ -119,30 +119,30 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( err.errorString() );
   }
   const QVariantMap res = doc.object().toVariantMap();
-  const QString status = res.value( QStringLiteral( "status" ) ).toString();
-  if ( status.isEmpty() || !res.contains( QStringLiteral( "results" ) ) )
+  const QString status = res.value( u"status"_s ).toString();
+  if ( status.isEmpty() || !res.contains( u"results"_s ) )
   {
     return QList<QgsGeocoderResult>();
   }
 
-  if ( res.contains( QLatin1String( "error_message" ) ) )
+  if ( res.contains( "error_message"_L1 ) )
   {
-    return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( QStringLiteral( "error_message" ) ).toString() );
+    return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( u"error_message"_s ).toString() );
   }
 
-  if ( status == QLatin1String( "REQUEST_DENIED" ) || status == QLatin1String( "OVER_QUERY_LIMIT" ) )
+  if ( status == "REQUEST_DENIED"_L1 || status == "OVER_QUERY_LIMIT"_L1 )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( QObject::tr( "Request denied -- the API key was rejected" ) );
   }
-  if ( status != QLatin1String( "OK" ) && status != QLatin1String( "ZERO_RESULTS" ) )
+  if ( status != "OK"_L1 && status != "ZERO_RESULTS"_L1 )
   {
-    return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( QStringLiteral( "status" ) ).toString() );
+    return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( res.value( u"status"_s ).toString() );
   }
 
   // all good!
   locker.changeMode( QgsReadWriteLocker::Write );
 
-  const QVariantList results = res.value( QStringLiteral( "results" ) ).toList();
+  const QVariantList results = res.value( u"results"_s ).toList();
   if ( results.empty() )
   {
     sCachedResultsGM()->insert( url, QList<QgsGeocoderResult>() );
@@ -166,30 +166,30 @@ QUrl QgsGoogleMapsGeocoder::requestUrl( const QString &address, const QgsRectang
   QUrlQuery query;
   if ( !bounds.isNull() )
   {
-    query.addQueryItem( QStringLiteral( "bounds" ), QStringLiteral( "%1,%2|%3,%4" ).arg( bounds.yMinimum() )
+    query.addQueryItem( u"bounds"_s, u"%1,%2|%3,%4"_s.arg( bounds.yMinimum() )
                         .arg( bounds.xMinimum() )
                         .arg( bounds.yMaximum() )
                         .arg( bounds.yMinimum() ) );
   }
   if ( !mRegion.isEmpty() )
   {
-    query.addQueryItem( QStringLiteral( "region" ), mRegion.toLower() );
+    query.addQueryItem( u"region"_s, mRegion.toLower() );
   }
-  query.addQueryItem( QStringLiteral( "sensor" ), QStringLiteral( "false" ) );
-  query.addQueryItem( QStringLiteral( "address" ), address );
-  query.addQueryItem( QStringLiteral( "key" ), mApiKey );
+  query.addQueryItem( u"sensor"_s, u"false"_s );
+  query.addQueryItem( u"address"_s, address );
+  query.addQueryItem( u"key"_s, mApiKey );
   res.setQuery( query );
 
 
-  if ( res.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  if ( res.toString().contains( "fake_qgis_http_endpoint"_L1 ) )
   {
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString = res.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
-    modifiedUrlString.replace( QLatin1String( "fake_qgis_http_endpoint/" ), QLatin1String( "fake_qgis_http_endpoint_" ) );
-    QgsDebugMsgLevel( QStringLiteral( "Get %1" ).arg( modifiedUrlString ), 2 );
-    modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
+    modifiedUrlString.replace( "fake_qgis_http_endpoint/"_L1, "fake_qgis_http_endpoint_"_L1 );
+    QgsDebugMsgLevel( u"Get %1"_s.arg( modifiedUrlString ), 2 );
+    modifiedUrlString = modifiedUrlString.mid( u"http://"_s.size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
     if ( modifiedUrlString.size() > 150 )
     {
@@ -197,16 +197,16 @@ QUrl QgsGoogleMapsGeocoder::requestUrl( const QString &address, const QgsRectang
     }
     else
     {
-      args.replace( QLatin1String( "?" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "&" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "<" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( ">" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "'" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "\"" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( " " ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( ":" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-      args.replace( QLatin1String( "\n" ), QLatin1String( "_" ) );
+      args.replace( "?"_L1, "_"_L1 );
+      args.replace( "&"_L1, "_"_L1 );
+      args.replace( "<"_L1, "_"_L1 );
+      args.replace( ">"_L1, "_"_L1 );
+      args.replace( "'"_L1, "_"_L1 );
+      args.replace( "\""_L1, "_"_L1 );
+      args.replace( " "_L1, "_"_L1 );
+      args.replace( ":"_L1, "_"_L1 );
+      args.replace( "/"_L1, "_"_L1 );
+      args.replace( "\n"_L1, "_"_L1 );
     }
 #ifdef Q_OS_WIN
     // Passing "urls" like "http://c:/path" to QUrl 'eats' the : after c,
@@ -217,7 +217,7 @@ QUrl QgsGoogleMapsGeocoder::requestUrl( const QString &address, const QgsRectang
     }
 #endif
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
-    QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 2 );
+    QgsDebugMsgLevel( u"Get %1 (after laundering)"_s.arg( modifiedUrlString ), 2 );
     res = QUrl::fromLocalFile( modifiedUrlString );
   }
 
@@ -226,61 +226,61 @@ QUrl QgsGoogleMapsGeocoder::requestUrl( const QString &address, const QgsRectang
 
 QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json ) const
 {
-  const QVariantMap geometry = json.value( QStringLiteral( "geometry" ) ).toMap();
-  const QVariantMap location = geometry.value( QStringLiteral( "location" ) ).toMap();
-  const double latitude = location.value( QStringLiteral( "lat" ) ).toDouble();
-  const double longitude = location.value( QStringLiteral( "lng" ) ).toDouble();
+  const QVariantMap geometry = json.value( u"geometry"_s ).toMap();
+  const QVariantMap location = geometry.value( u"location"_s ).toMap();
+  const double latitude = location.value( u"lat"_s ).toDouble();
+  const double longitude = location.value( u"lng"_s ).toDouble();
 
   const QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( longitude, latitude ) );
 
-  QgsGeocoderResult res( json.value( QStringLiteral( "formatted_address" ) ).toString(),
+  QgsGeocoderResult res( json.value( u"formatted_address"_s ).toString(),
                          geom,
-                         QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+                         QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
 
   QVariantMap attributes;
 
-  if ( json.contains( QStringLiteral( "formatted_address" ) ) )
-    attributes.insert( QStringLiteral( "formatted_address" ), json.value( QStringLiteral( "formatted_address" ) ).toString() );
-  if ( json.contains( QStringLiteral( "place_id" ) ) )
-    attributes.insert( QStringLiteral( "place_id" ), json.value( QStringLiteral( "place_id" ) ).toString() );
-  if ( geometry.contains( QStringLiteral( "location_type" ) ) )
-    attributes.insert( QStringLiteral( "location_type" ), geometry.value( QStringLiteral( "location_type" ) ).toString() );
+  if ( json.contains( u"formatted_address"_s ) )
+    attributes.insert( u"formatted_address"_s, json.value( u"formatted_address"_s ).toString() );
+  if ( json.contains( u"place_id"_s ) )
+    attributes.insert( u"place_id"_s, json.value( u"place_id"_s ).toString() );
+  if ( geometry.contains( u"location_type"_s ) )
+    attributes.insert( u"location_type"_s, geometry.value( u"location_type"_s ).toString() );
 
-  const QVariantList components = json.value( QStringLiteral( "address_components" ) ).toList();
+  const QVariantList components = json.value( u"address_components"_s ).toList();
   for ( const QVariant &component : components )
   {
     const QVariantMap componentMap = component.toMap();
-    const QStringList types = componentMap.value( QStringLiteral( "types" ) ).toStringList();
+    const QStringList types = componentMap.value( u"types"_s ).toStringList();
 
     for ( const QString &t :
           {
-            QStringLiteral( "street_number" ),
-            QStringLiteral( "route" ),
-            QStringLiteral( "locality" ),
-            QStringLiteral( "administrative_area_level_2" ),
-            QStringLiteral( "administrative_area_level_1" ),
-            QStringLiteral( "country" ),
-            QStringLiteral( "postal_code" )
+            u"street_number"_s,
+            u"route"_s,
+            u"locality"_s,
+            u"administrative_area_level_2"_s,
+            u"administrative_area_level_1"_s,
+            u"country"_s,
+            u"postal_code"_s
           } )
     {
       if ( types.contains( t ) )
       {
-        attributes.insert( t, componentMap.value( QStringLiteral( "long_name" ) ).toString() );
-        if ( t == QLatin1String( "administrative_area_level_1" ) )
-          res.setGroup( componentMap.value( QStringLiteral( "long_name" ) ).toString() );
+        attributes.insert( t, componentMap.value( u"long_name"_s ).toString() );
+        if ( t == "administrative_area_level_1"_L1 )
+          res.setGroup( componentMap.value( u"long_name"_s ).toString() );
       }
     }
   }
 
-  if ( geometry.contains( QStringLiteral( "viewport" ) ) )
+  if ( geometry.contains( u"viewport"_s ) )
   {
-    const QVariantMap viewport = geometry.value( QStringLiteral( "viewport" ) ).toMap();
-    const QVariantMap northEast = viewport.value( QStringLiteral( "northeast" ) ).toMap();
-    const QVariantMap southWest = viewport.value( QStringLiteral( "southwest" ) ).toMap();
-    res.setViewport( QgsRectangle( southWest.value( QStringLiteral( "lng" ) ).toDouble(),
-                                   southWest.value( QStringLiteral( "lat" ) ).toDouble(),
-                                   northEast.value( QStringLiteral( "lng" ) ).toDouble(),
-                                   northEast.value( QStringLiteral( "lat" ) ).toDouble()
+    const QVariantMap viewport = geometry.value( u"viewport"_s ).toMap();
+    const QVariantMap northEast = viewport.value( u"northeast"_s ).toMap();
+    const QVariantMap southWest = viewport.value( u"southwest"_s ).toMap();
+    res.setViewport( QgsRectangle( southWest.value( u"lng"_s ).toDouble(),
+                                   southWest.value( u"lat"_s ).toDouble(),
+                                   northEast.value( u"lng"_s ).toDouble(),
+                                   northEast.value( u"lat"_s ).toDouble()
                                  ) );
   }
 

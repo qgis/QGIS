@@ -25,7 +25,7 @@
 //
 
 QgsAnnotationLayer3DRendererMetadata::QgsAnnotationLayer3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( QStringLiteral( "annotation" ) )
+  : Qgs3DRendererAbstractMetadata( u"annotation"_s )
 {
 }
 
@@ -44,7 +44,7 @@ QgsAbstract3DRenderer *QgsAnnotationLayer3DRendererMetadata::createRenderer( QDo
 QgsAnnotationLayer3DRenderer::QgsAnnotationLayer3DRenderer()
 {
   mTextFormat = QgsStyle::defaultStyle()->defaultTextFormat();
-  mTextFormat.setNamedStyle( QStringLiteral( "Bold" ) );
+  mTextFormat.setNamedStyle( u"Bold"_s );
   mTextFormat.setSize( 20 );
 }
 
@@ -157,11 +157,11 @@ void QgsAnnotationLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
-  elem.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mAltClamping ) );
-  elem.setAttribute( QStringLiteral( "offset" ), mZOffset );
+  elem.setAttribute( u"layer"_s, mLayerRef.layerId );
+  elem.setAttribute( u"clamping"_s, qgsEnumValueToKey( mAltClamping ) );
+  elem.setAttribute( u"offset"_s, mZOffset );
   if ( mShowCalloutLines )
-    elem.setAttribute( QStringLiteral( "callouts" ), QStringLiteral( "1" ) );
+    elem.setAttribute( u"callouts"_s, u"1"_s );
 
   if ( mTextFormat.isValid() )
   {
@@ -171,13 +171,13 @@ void QgsAnnotationLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 
 void QgsAnnotationLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
-  mAltClamping = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Relative );
-  mZOffset = elem.attribute( QStringLiteral( "offset" ), QString::number( DEFAULT_Z_OFFSET ) ).toDouble();
-  mShowCalloutLines = elem.attribute( QStringLiteral( "callouts" ), QStringLiteral( "0" ) ).toInt();
-  if ( !elem.firstChildElement( QStringLiteral( "text-style" ) ).isNull() )
+  mLayerRef = QgsMapLayerRef( elem.attribute( u"layer"_s ) );
+  mAltClamping = qgsEnumKeyToValue( elem.attribute( u"clamping"_s ), Qgis::AltitudeClamping::Relative );
+  mZOffset = elem.attribute( u"offset"_s, QString::number( DEFAULT_Z_OFFSET ) ).toDouble();
+  mShowCalloutLines = elem.attribute( u"callouts"_s, u"0"_s ).toInt();
+  if ( !elem.firstChildElement( u"text-style"_s ).isNull() )
   {
     mTextFormat = QgsTextFormat();
-    mTextFormat.readXml( elem.firstChildElement( QStringLiteral( "text-style" ) ), context );
+    mTextFormat.readXml( elem.firstChildElement( u"text-style"_s ), context );
   }
 }

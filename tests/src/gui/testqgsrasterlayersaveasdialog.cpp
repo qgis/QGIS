@@ -70,20 +70,20 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString rasterPath { dataDir + "/landsat.tif" };
 
-  QgsRasterLayer rl( rasterPath, QStringLiteral( "my_raster" ) );
+  QgsRasterLayer rl( rasterPath, u"my_raster"_s );
   QVERIFY( rl.isValid() );
 
   QgsRasterLayerSaveAsDialog d( &rl, rl.dataProvider(), rl.extent(), rl.crs(), rl.crs() );
-  d.mFormatComboBox->setCurrentIndex( d.mFormatComboBox->findData( QStringLiteral( "GPKG" ) ) );
+  d.mFormatComboBox->setCurrentIndex( d.mFormatComboBox->findData( u"GPKG"_s ) );
   QCOMPARE( d.mFormatComboBox->currentData().toString(), QString( "GPKG" ) );
   QVERIFY( !d.outputLayerExists() );
   d.mFilename->setFilePath( fileName );
-  d.mLayerName->setText( QStringLiteral( "my_imported_raster" ) );
+  d.mLayerName->setText( u"my_imported_raster"_s );
   QVERIFY( !d.outputLayerExists() );
 
   // Write the raster into the destination file
   const auto pipe { *rl.pipe() };
-  const auto rasterUri { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
+  const auto rasterUri { u"GPKG:%1:%2"_s.arg( d.outputFileName() ).arg( d.outputLayerName() ) };
   auto fileWriter { QgsRasterFileWriter( d.outputFileName() ) };
   fileWriter.setCreationOptions( d.creationOptions() );
   fileWriter.setOutputFormat( d.outputFormat() );
@@ -94,24 +94,24 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   fileWriter.setPyramidsConfigOptions( d.pyramidsConfigOptions() );
   fileWriter.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs(), rl.transformContext() );
   {
-    QVERIFY( QgsRasterLayer( rasterUri, QStringLiteral( "my_raster2" ) ).isValid() );
+    QVERIFY( QgsRasterLayer( rasterUri, u"my_raster2"_s ).isValid() );
   }
   QVERIFY( d.outputLayerExists() );
   // Now try to save with the same name of the existing vector layer
-  d.mLayerName->setText( QStringLiteral( "test_vector_layer" ) );
+  d.mLayerName->setText( u"test_vector_layer"_s );
   QVERIFY( d.outputLayerExists() );
   auto fileWriter2 { QgsRasterFileWriter( d.outputFileName() ) };
   fileWriter2.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs(), rl.transformContext() );
   {
-    const auto rasterUri2 { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
-    QVERIFY( !QgsRasterLayer( rasterUri2, QStringLiteral( "my_raster2" ) ).isValid() );
+    const auto rasterUri2 { u"GPKG:%1:%2"_s.arg( d.outputFileName() ).arg( d.outputLayerName() ) };
+    QVERIFY( !QgsRasterLayer( rasterUri2, u"my_raster2"_s ).isValid() );
   }
 }
 
 QString TestQgsRasterLayerSaveAsDialog::prepareDb()
 {
   // Preparation: make a test gpk DB with a vector layer in it
-  QTemporaryFile tmpFile( QDir::tempPath() + QStringLiteral( "/test_qgsrasterlayersavesdialog_XXXXXX.gpkg" ) );
+  QTemporaryFile tmpFile( QDir::tempPath() + u"/test_qgsrasterlayersavesdialog_XXXXXX.gpkg"_s );
   tmpFile.setAutoRemove( false );
   if ( !tmpFile.open() )
   {
@@ -119,20 +119,20 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
     return QString();
   }
   const QString fileName( tmpFile.fileName() );
-  QgsVectorLayer vl( QStringLiteral( "Point?field=firstfield:string(1024)" ), "test_vector_layer", "memory" );
+  QgsVectorLayer vl( u"Point?field=firstfield:string(1024)"_s, "test_vector_layer", "memory" );
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
-  saveOptions.fileEncoding = QStringLiteral( "UTF-8" );
+  saveOptions.fileEncoding = u"UTF-8"_s;
   const std::unique_ptr<QgsVectorFileWriter> writer( QgsVectorFileWriter::create( fileName, vl.fields(), Qgis::WkbType::Point, vl.crs(), QgsCoordinateTransformContext(), saveOptions ) );
 
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"point(9 45)"_s ) );
   vl.startEditing();
   vl.addFeature( f );
   QgsVectorFileWriter::SaveVectorOptions options;
-  options.driverName = QStringLiteral( "GPKG" );
-  options.layerName = QStringLiteral( "test_vector_layer" );
+  options.driverName = u"GPKG"_s;
+  options.layerName = u"test_vector_layer"_s;
   QString errorMessage;
   QgsVectorFileWriter::writeAsVectorFormatV3(
     &vl,
@@ -143,7 +143,7 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
     nullptr,
     nullptr
   );
-  const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
+  const QgsVectorLayer vl2( u"%1|layername=test_vector_layer"_s.arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );
   return tmpFile.fileName();
 }
@@ -154,11 +154,11 @@ void TestQgsRasterLayerSaveAsDialog::filenameWhenNoExtension()
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString rasterPath { dataDir + "/landsat.tif" };
 
-  QgsRasterLayer rl( rasterPath, QStringLiteral( "my_raster" ) );
+  QgsRasterLayer rl( rasterPath, u"my_raster"_s );
   QVERIFY( rl.isValid() );
 
   QgsRasterLayerSaveAsDialog d( &rl, rl.dataProvider(), rl.extent(), rl.crs(), rl.crs() );
-  d.mFormatComboBox->setCurrentIndex( d.mFormatComboBox->findData( QStringLiteral( "ENVI" ) ) );
+  d.mFormatComboBox->setCurrentIndex( d.mFormatComboBox->findData( u"ENVI"_s ) );
   QCOMPARE( d.mFormatComboBox->currentData().toString(), QString( "ENVI" ) );
 
   const QString filename = "filename_without_extension";

@@ -40,10 +40,10 @@
 
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsDataCollectionItem( parent, name, path, u"MSSQL"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Collapse;
-  mIconName = QStringLiteral( "mIconConnect.svg" );
+  mIconName = u"mIconConnect.svg"_s;
 }
 
 QgsMssqlConnectionItem::~QgsMssqlConnectionItem()
@@ -58,12 +58,12 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   mService = settings.value( key + "/service" ).toString();
   mHost = settings.value( key + "/host" ).toString();
   mDatabase = settings.value( key + "/database" ).toString();
-  if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+  if ( settings.value( key + "/saveUsername" ).toString() == "true"_L1 )
   {
     mUsername = settings.value( key + "/username" ).toString();
   }
 
-  if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+  if ( settings.value( key + "/savePassword" ).toString() == "true"_L1 )
   {
     mPassword = settings.value( key + "/password" ).toString();
   }
@@ -86,7 +86,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   if ( !mService.isEmpty() )
     mConnectionUri += " service='" + mService + '\'';
   if ( mUseEstimatedMetadata )
-    mConnectionUri += QLatin1String( " estimatedmetadata=true" );
+    mConnectionUri += " estimatedmetadata=true"_L1;
 }
 
 void QgsMssqlConnectionItem::stop()
@@ -193,7 +193,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 
       if ( !layer.geometryColName.isNull() )
       {
-        if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
+        if ( type == "GEOMETRY"_L1 || type.isNull() || srid.isEmpty() )
         {
           if ( !mColumnTypeThread )
           {
@@ -290,7 +290,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 
   if ( !schemaItem )
   {
-    QgsDebugError( QStringLiteral( "schema item for %1 not found." ).arg( layerProperty.schemaName ) );
+    QgsDebugError( u"schema item for %1 not found."_s.arg( layerProperty.schemaName ) );
     return;
   }
 
@@ -310,7 +310,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
     Qgis::WkbType wkbType = QgsMssqlUtils::wkbTypeFromGeometryType( typeList[i] );
     if ( wkbType == Qgis::WkbType::Unknown )
     {
-      QgsDebugError( QStringLiteral( "unsupported geometry type:%1" ).arg( typeList[i] ) );
+      QgsDebugError( u"unsupported geometry type:%1"_s.arg( typeList[i] ) );
       continue;
     }
 
@@ -341,7 +341,7 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
 
 // ---------------------------------------------------------------------------
 QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsMssqlLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "mssql" ) )
+  : QgsLayerItem( parent, name, path, QString(), layerType, u"mssql"_s )
   , mLayerProperty( layerProperty )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete;
@@ -367,7 +367,7 @@ QString QgsMssqlLayerItem::createUri()
 
   if ( !connItem )
   {
-    QgsDebugError( QStringLiteral( "connection item not found." ) );
+    QgsDebugError( u"connection item not found."_s );
     return QString();
   }
 
@@ -377,23 +377,23 @@ QString QgsMssqlLayerItem::createUri()
   uri.setWkbType( QgsMssqlUtils::wkbTypeFromGeometryType( mLayerProperty.type ) );
   uri.setUseEstimatedMetadata( QgsMssqlConnection::useEstimatedMetadata( connItem->name() ) );
   mDisableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connItem->name() );
-  uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), mDisableInvalidGeometryHandling ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  uri.setParam( u"disableInvalidGeometryHandling"_s, mDisableInvalidGeometryHandling ? u"1"_s : u"0"_s );
   if ( QgsMssqlConnection::geometryColumnsOnly( connItem->name() ) )
   {
-    uri.setParam( QStringLiteral( "extentInGeometryColumns" ), QgsMssqlConnection::extentInGeometryColumns( connItem->name() ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    uri.setParam( u"extentInGeometryColumns"_s, QgsMssqlConnection::extentInGeometryColumns( connItem->name() ) ? u"1"_s : u"0"_s );
   }
   if ( mLayerProperty.isView )
-    uri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), QgsMssqlConnection::primaryKeyInGeometryColumns( connItem->name() ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    uri.setParam( u"primaryKeyInGeometryColumns"_s, QgsMssqlConnection::primaryKeyInGeometryColumns( connItem->name() ) ? u"1"_s : u"0"_s );
 
-  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
+  QgsDebugMsgLevel( u"layer uri: %1"_s.arg( uri.uri() ), 3 );
   return uri.uri();
 }
 
 // ---------------------------------------------------------------------------
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, u"MSSQL"_s )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mIconName = u"mIconDbSchema.svg"_s;
   //not fertile, since children are created by QgsMssqlConnectionItem
   mCapabilities &= ~Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile );
 }
@@ -439,7 +439,7 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
       layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:
-      if ( layerProperty.type == QLatin1String( "NONE" ) && layerProperty.geometryColName.isEmpty() )
+      if ( layerProperty.type == "NONE"_L1 && layerProperty.geometryColName.isEmpty() )
       {
         layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );
@@ -478,15 +478,15 @@ void QgsMssqlSchemaItem::refresh()
 QVector<QgsDataItem *> QgsMssqlLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  children.push_back( new QgsFieldsItem( this, uri() + u"/columns/ "_s, createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
   return children;
 }
 
 // ---------------------------------------------------------------------------
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "MSSQL" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"MSSQL"_s )
 {
-  mIconName = QStringLiteral( "mIconMssql.svg" );
+  mIconName = u"mIconMssql.svg"_s;
   populate();
 }
 
@@ -494,7 +494,7 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
+  settings.beginGroup( u"/MSSQL/connections"_s );
   const auto constChildGroups = settings.childGroups();
   for ( const QString &connName : constChildGroups )
   {
@@ -519,12 +519,12 @@ void QgsMssqlRootItem::onConnectionsChanged()
 
 QString QgsMssqlDataItemProvider::name()
 {
-  return QStringLiteral( "MSSQL" );
+  return u"MSSQL"_s;
 }
 
 QString QgsMssqlDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "mssql" );
+  return u"mssql"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsMssqlDataItemProvider::capabilities() const
@@ -535,7 +535,7 @@ Qgis::DataItemProviderCapabilities QgsMssqlDataItemProvider::capabilities() cons
 QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )
-  return new QgsMssqlRootItem( parentItem, QObject::tr( "MS SQL Server" ), QStringLiteral( "mssql:" ) );
+  return new QgsMssqlRootItem( parentItem, QObject::tr( "MS SQL Server" ), u"mssql:"_s );
 }
 
 

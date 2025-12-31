@@ -91,7 +91,7 @@ QRectF QgsGraphicsViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 
 void QgsGraphicsViewMouseHandles::rotateItem( QGraphicsItem *, double, double, double )
 {
-  QgsDebugError( QStringLiteral( "Rotation is not implemented for this class" ) );
+  QgsDebugError( u"Rotation is not implemented for this class"_s );
 }
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )

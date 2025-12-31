@@ -58,8 +58,8 @@ bool QgsPaintEffect::saveProperties( QDomDocument &doc, QDomElement &element ) c
   {
     return false;
   }
-  QDomElement effectElement = doc.createElement( QStringLiteral( "effect" ) );
-  effectElement.setAttribute( QStringLiteral( "type" ), type() );
+  QDomElement effectElement = doc.createElement( u"effect"_s );
+  effectElement.setAttribute( u"type"_s, type() );
   QgsSymbolLayerUtils::saveProperties( properties(), doc, effectElement );
   element.appendChild( effectElement );
   return true;
@@ -235,24 +235,24 @@ QgsDrawSourceEffect *QgsDrawSourceEffect::clone() const
 QVariantMap QgsDrawSourceEffect::properties() const
 {
   QVariantMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
-  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
-  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
+  props.insert( u"enabled"_s, mEnabled ? "1" : "0" );
+  props.insert( u"draw_mode"_s, QString::number( int( mDrawMode ) ) );
+  props.insert( u"blend_mode"_s, QString::number( int( mBlendMode ) ) );
+  props.insert( u"opacity"_s, QString::number( mOpacity ) );
   return props;
 }
 
 void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( u"blend_mode"_s ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  if ( props.contains( QStringLiteral( "transparency" ) ) )
+  if ( props.contains( u"transparency"_s ) )
   {
-    const double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    const double transparency = props.value( u"transparency"_s ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = 1.0 - transparency;
@@ -260,14 +260,14 @@ void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
   }
   else
   {
-    const double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    const double opacity = props.value( u"opacity"_s ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = opacity;
     }
   }
-  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mEnabled = props.value( u"enabled"_s, u"1"_s ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( u"draw_mode"_s, u"2"_s ).toInt() );
 }
 
 

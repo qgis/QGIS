@@ -57,10 +57,10 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
   mListAvailable->setModel( modelAvailable );
 
   // populate used
-  const int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
+  const int widgetsCount = layer->customProperty( u"embeddedWidgets/count"_s, 0 ).toInt();
   for ( int i = 0; i < widgetsCount; ++i )
   {
-    const QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+    const QString providerId = layer->customProperty( u"embeddedWidgets/%1/id"_s.arg( i ) ).toString();
     if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
     {
       QStandardItem *item = new QStandardItem( provider->name() );
@@ -106,18 +106,18 @@ void QgsLayerTreeEmbeddedConfigWidget::applyToLayer()
     return;
 
   // clear old properties
-  const int widgetsCount = mLayer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
+  const int widgetsCount = mLayer->customProperty( u"embeddedWidgets/count"_s, 0 ).toInt();
   for ( int i = 0; i < widgetsCount; ++i )
   {
-    mLayer->removeCustomProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) );
+    mLayer->removeCustomProperty( u"embeddedWidgets/%1/id"_s.arg( i ) );
   }
 
   // setup new properties
   const int newCount = mListUsed->model()->rowCount();
-  mLayer->setCustomProperty( QStringLiteral( "embeddedWidgets/count" ), newCount );
+  mLayer->setCustomProperty( u"embeddedWidgets/count"_s, newCount );
   for ( int i = 0; i < newCount; ++i )
   {
     const QString providerId = mListUsed->model()->data( mListUsed->model()->index( i, 0 ), Qt::UserRole + 1 ).toString();
-    mLayer->setCustomProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ), providerId );
+    mLayer->setCustomProperty( u"embeddedWidgets/%1/id"_s.arg( i ), providerId );
   }
 }

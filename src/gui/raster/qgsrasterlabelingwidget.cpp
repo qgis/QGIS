@@ -31,8 +31,8 @@ QgsRasterLabelingWidget::QgsRasterLabelingWidget( QgsRasterLayer *layer, QgsMapC
 {
   setupUi( this );
 
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingNone.svg" ) ), tr( "No Labels" ), QStringLiteral( "none" ) );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Label with Pixel Values" ), QStringLiteral( "simple" ) );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingNone.svg"_s ), tr( "No Labels" ), u"none"_s );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Label with Pixel Values" ), u"simple"_s );
 
   connect( mLabelModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterLabelingWidget::labelModeChanged );
   setLayer( layer );
@@ -103,7 +103,7 @@ void QgsRasterLabelingWidget::adaptToLayer()
 void QgsRasterLabelingWidget::writeSettingsToLayer()
 {
   const QString mode = mLabelModeComboBox->currentData().toString();
-  if ( mode == QLatin1String( "simple" ) )
+  if ( mode == "simple"_L1 )
   {
     auto labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
     if ( QgsRasterLabelSettingsWidget *settingsWidget = qobject_cast<QgsRasterLabelSettingsWidget *>( mWidget ) )
@@ -139,7 +139,7 @@ void QgsRasterLabelingWidget::labelModeChanged( int index )
     return;
 
   const QString mode = mLabelModeComboBox->currentData().toString();
-  if ( mode == QLatin1String( "simple" ) )
+  if ( mode == "simple"_L1 )
   {
     QgsSymbolWidgetContext context;
     context.setMapCanvas( mMapCanvas );

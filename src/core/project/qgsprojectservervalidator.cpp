@@ -74,7 +74,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
         if ( layer->type() == Qgis::LayerType::Vector )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );
-          if ( vl->dataProvider() && vl->dataProvider()->encoding() == QLatin1String( "System" ) )
+          if ( vl->dataProvider() && vl->dataProvider()->encoding() == "System"_L1 )
             encodingMessages << layer->name();
         }
         layerNames << treeLayer->name();
@@ -87,7 +87,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
 bool QgsProjectServerValidator::isOnlyMaptipEnabled( QgsProject *project )
 {
   return project->readBoolEntry(
-           QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ),
+           u"WMSHTMLFeatureInfoUseOnlyMaptip"_s,
            QString(),
            false
          );
@@ -131,23 +131,23 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   if ( !duplicateNames.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( QLatin1String( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( ", "_L1 ) );
   }
 
   if ( !regExpMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( QLatin1String( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( ", "_L1 ) );
   }
 
   if ( !encodingMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( QLatin1String( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( ", "_L1 ) );
   }
 
   // Determine the root layername
-  QString rootLayerName = project->readEntry( QStringLiteral( "WMSRootName" ), QStringLiteral( "/" ), "" );
+  QString rootLayerName = project->readEntry( u"WMSRootName"_s, u"/"_s, "" );
   if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
   {
     rootLayerName = project->title();
@@ -178,7 +178,7 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
     if ( !emptyLayers.isEmpty() )
     {
       result = false;
-      QString details = emptyLayers.join( QLatin1String( ", " ) ).toHtmlEscaped();
+      QString details = emptyLayers.join( ", "_L1 ).toHtmlEscaped();
       results << ValidationResult(
                 QgsProjectServerValidator::OnlyMaptipTrueButEmptyMaptip,
                 details );

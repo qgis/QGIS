@@ -70,7 +70,7 @@ void QgsLayoutChartSeriesDetailsWidget::mFilterButton_clicked()
     return;
 
   const QgsExpressionContext context = mVectorLayer->createExpressionContext();
-  QgsExpressionBuilderDialog expressionBuilderDialog( mVectorLayer.data(), mFilterLineEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog expressionBuilderDialog( mVectorLayer.data(), mFilterLineEdit->text(), this, u"generic"_s, context );
   expressionBuilderDialog.setWindowTitle( tr( "Expression Based Filter" ) );
 
   if ( expressionBuilderDialog.exec() == QDialog::Accepted )

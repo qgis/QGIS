@@ -123,49 +123,49 @@ void TestQgsServerWmsParameters::version_negotiation()
 
   query.addQueryItem( "VERSION", "1.3.0" );
   QgsWms::QgsWmsParameters parameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+  QCOMPARE( parameters.version(), u"1.3.0"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "1.1.1" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+  QCOMPARE( parameters.version(), u"1.1.1"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "1.1.0" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+  QCOMPARE( parameters.version(), u"1.1.1"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+  QCOMPARE( parameters.version(), u"1.3.0"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "33.33.33" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+  QCOMPARE( parameters.version(), u"1.3.0"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "1.1.1" );
   query.addQueryItem( "REQUEST", "GetProjectSettings" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+  QCOMPARE( parameters.version(), u"1.3.0"_s );
 
   query.clear();
   query.addQueryItem( "REQUEST", "GetProjectSettings" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+  QCOMPARE( parameters.version(), u"1.3.0"_s );
 
   query.clear();
   query.addQueryItem( "WMTVER", "1.1.1" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.1.1" ) );
+  QCOMPARE( parameters.version(), u"1.1.1"_s );
 
   query.clear();
   query.addQueryItem( "WMTVER", "1.1.1" );
   query.addQueryItem( "VERSION", "1.3.0" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.version(), QStringLiteral( "1.3.0" ) );
+  QCOMPARE( parameters.version(), u"1.3.0"_s );
 }
 
 void TestQgsServerWmsParameters::get_capabilities_version()
@@ -175,19 +175,19 @@ void TestQgsServerWmsParameters::get_capabilities_version()
   query.addQueryItem( "VERSION", "1.3.0" );
   query.addQueryItem( "REQUEST", "capabilities" );
   QgsWms::QgsWmsParameters parameters( query );
-  QCOMPARE( parameters.request(), QStringLiteral( "capabilities" ) );
+  QCOMPARE( parameters.request(), u"capabilities"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "1.1.1" );
   query.addQueryItem( "REQUEST", "capabilities" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
+  QCOMPARE( parameters.request(), u"GetCapabilities"_s );
 
   query.clear();
   query.addQueryItem( "VERSION", "1.1.0" );
   query.addQueryItem( "REQUEST", "capabilities" );
   parameters = QgsWms::QgsWmsParameters( query );
-  QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
+  QCOMPARE( parameters.request(), u"GetCapabilities"_s );
 }
 
 void TestQgsServerWmsParameters::prefixed_layers()
@@ -197,7 +197,7 @@ void TestQgsServerWmsParameters::prefixed_layers()
   query.addQueryItem( "LAYERS", "a,b" );
 
   QgsWms::QgsWmsParameters parameters1( query );
-  QCOMPARE( parameters1.allLayersNickname(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QCOMPARE( parameters1.allLayersNickname(), QStringList() << u"a"_s << u"b"_s );
 
   query.addQueryItem( "map0:LAYERS", "b,c" );
   query.addQueryItem( "map1:LAYERS", "c,d" );
@@ -206,12 +206,12 @@ void TestQgsServerWmsParameters::prefixed_layers()
 
   const QList<QgsWms::QgsWmsParametersLayer> params = parameters.layersParameters();
 
-  QCOMPARE( params.at( 0 ).mNickname, QStringLiteral( "a" ) );
-  QCOMPARE( params.at( 1 ).mNickname, QStringLiteral( "b" ) );
-  QCOMPARE( params.at( 2 ).mNickname, QStringLiteral( "c" ) );
-  QCOMPARE( params.at( 3 ).mNickname, QStringLiteral( "d" ) );
+  QCOMPARE( params.at( 0 ).mNickname, u"a"_s );
+  QCOMPARE( params.at( 1 ).mNickname, u"b"_s );
+  QCOMPARE( params.at( 2 ).mNickname, u"c"_s );
+  QCOMPARE( params.at( 3 ).mNickname, u"d"_s );
 
-  QCOMPARE( parameters.allLayersNickname(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) );
+  QCOMPARE( parameters.allLayersNickname(), QStringList() << u"a"_s << u"b"_s << u"c"_s << u"d"_s );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )

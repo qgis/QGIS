@@ -50,7 +50,7 @@ QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( cons
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
+    QgsDebugError( u"Simplification method type (%1) is not recognised"_s.arg( methodType ) );
     return nullptr;
   }
 }

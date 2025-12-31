@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsHillshadeFilter : public QgsDerivativeFilter
 
     const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "hillshade" );
+      return u"hillshade"_s;
     }
 #endif
 

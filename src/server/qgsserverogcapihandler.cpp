@@ -79,7 +79,7 @@ QList<QgsServerOgcApi::ContentType> QgsServerOgcApiHandler::contentTypes() const
 void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   Q_UNUSED( context )
-  throw QgsServerApiNotImplementedException( QStringLiteral( "Subclasses must implement handleRequest" ) );
+  throw QgsServerApiNotImplementedException( u"Subclasses must implement handleRequest"_s );
 }
 
 QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) const
@@ -98,7 +98,7 @@ QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) co
     }
   }
   // Log level info because this is not completely unexpected
-  QgsMessageLog::logMessage( QStringLiteral( "Content type for accept %1 not found!" ).arg( accept ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( u"Content type for accept %1 not found!"_s.arg( accept ), u"Server"_s, Qgis::MessageLevel::Info );
 
   return QString();
 }
@@ -185,7 +185,7 @@ void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &co
     data["timeStamp"] = time.toString( Qt::DateFormat::ISODate ).toStdString();
   }
   context.response()->setStatusCode( 200 );
-  context.response()->setHeader( QStringLiteral( "Content-Type" ), contentType );
+  context.response()->setHeader( u"Content-Type"_s, contentType );
 #ifdef QGISDEBUG
   context.response()->write( data.dump( 2 ) );
 #else
@@ -227,15 +227,15 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiCont
 {
   if ( !context.project() )
   {
-    throw QgsServerApiImproperlyConfiguredException( QStringLiteral( "Project is invalid or undefined" ) );
+    throw QgsServerApiImproperlyConfiguredException( u"Project is invalid or undefined"_s );
   }
   // Check collectionId
   const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
   if ( !match.hasMatch() )
   {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Collection was not found" ) );
+    throw QgsServerApiNotFoundError( u"Collection was not found"_s );
   }
-  const QString collectionId { match.captured( QStringLiteral( "collectionId" ) ) };
+  const QString collectionId { match.captured( u"collectionId"_s ) };
   // May throw if not found
   return layerFromCollectionId( context, collectionId );
 }
@@ -243,37 +243,37 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromContext( const QgsServerApiCont
 const QString QgsServerOgcApiHandler::staticPath( const QgsServerApiContext &context ) const
 {
   // resources/server/api + /static
-  return context.serverInterface()->serverSettings()->apiResourcesDirectory() + QStringLiteral( "/ogc/static" );
+  return context.serverInterface()->serverSettings()->apiResourcesDirectory() + u"/ogc/static"_s;
 }
 
 const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &context ) const
 {
   // resources/server/api + /ogc/templates/ + operationId + .html
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += QLatin1String( "/ogc/templates" );
+  path += "/ogc/templates"_L1;
   path += context.apiRootPath();
   path += '/';
   path += QString::fromStdString( operationId() );
-  path += QLatin1String( ".html" );
+  path += ".html"_L1;
   return path;
 }
 
 
 void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiContext &context ) const
 {
-  context.response()->setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/html" ) );
+  context.response()->setHeader( u"Content-Type"_s, u"text/html"_s );
   auto path { templatePath( context ) };
   if ( !QFile::exists( path ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Template not found error: %1" ).arg( path ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-    throw QgsServerApiBadRequestException( QStringLiteral( "Template not found: %1" ).arg( QFileInfo( path ).fileName() ) );
+    QgsMessageLog::logMessage( u"Template not found error: %1"_s.arg( path ), u"Server"_s, Qgis::MessageLevel::Critical );
+    throw QgsServerApiBadRequestException( u"Template not found: %1"_s.arg( QFileInfo( path ).fileName() ) );
   }
 
   QFile f( path );
   if ( !f.open( QFile::ReadOnly | QFile::Text ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Could not open template file: %1" ).arg( path ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-    throw QgsServerApiInternalServerError( QStringLiteral( "Could not open template file: %1" ).arg( QFileInfo( path ).fileName() ) );
+    QgsMessageLog::logMessage( u"Could not open template file: %1"_s.arg( path ), u"Server"_s, Qgis::MessageLevel::Critical );
+    throw QgsServerApiInternalServerError( u"Could not open template file: %1"_s.arg( QFileInfo( path ).fileName() ) );
   }
 
   try
@@ -361,7 +361,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     // Replace newlines with <br>
     env.add_callback( "nl2br", 1, []( Arguments &args ) {
       QString text { QString::fromStdString( args.at( 0 )->get<std::string>() ) };
-      return text.replace( '\n', QLatin1String( "<br>" ) ).toStdString();
+      return text.replace( '\n', "<br>"_L1 ).toStdString();
     } );
 
 
@@ -441,8 +441,8 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
   }
   catch ( std::exception &e )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error parsing template file: %1 - %2" ).arg( path, e.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
-    throw QgsServerApiInternalServerError( QStringLiteral( "Error parsing template file: %1" ).arg( e.what() ) );
+    QgsMessageLog::logMessage( u"Error parsing template file: %1 - %2"_s.arg( path, e.what() ), u"Server"_s, Qgis::MessageLevel::Critical );
+    throw QgsServerApiInternalServerError( u"Error parsing template file: %1"_s.arg( e.what() ) );
   }
 }
 
@@ -465,11 +465,11 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"The client requested an unsupported extension: %1"_s.arg( extension ), u"Server"_s, Qgis::MessageLevel::Warning );
     }
   }
   // ... then "Accept"
-  const QString accept { request->header( QStringLiteral( "Accept" ) ) };
+  const QString accept { request->header( u"Accept"_s ) };
   if ( !found && !accept.isEmpty() )
   {
     const QString ctFromAccept { contentTypeForAccept( accept ) };
@@ -490,7 +490,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"The client requested an unsupported content type in Accept header: %1"_s.arg( accept ), u"Server"_s, Qgis::MessageLevel::Warning );
     }
   }
   // Validation: check if the requested content type (or an alias) is supported by the handler
@@ -514,8 +514,8 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
 
     if ( !found )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsServerOgcApi::contentTypeToString( result ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-      throw QgsServerApiBadRequestException( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsServerOgcApi::contentTypeToString( result ) ) );
+      QgsMessageLog::logMessage( u"Unsupported Content-Type: %1"_s.arg( QgsServerOgcApi::contentTypeToString( result ) ), u"Server"_s, Qgis::MessageLevel::Info );
+      throw QgsServerApiBadRequestException( u"Unsupported Content-Type: %1"_s.arg( QgsServerOgcApi::contentTypeToString( result ) ) );
     }
   }
   return result;
@@ -545,7 +545,7 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
   const auto constItems { query.queryItems() };
   for ( const auto &i : constItems )
   {
-    if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    if ( i.first.compare( u"MAP"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
       qi.push_back( i );
     }
@@ -567,7 +567,7 @@ QgsVectorLayer *QgsServerOgcApiHandler::layerFromCollectionId( const QgsServerAp
   const auto mapLayers { context.project()->mapLayersByShortName<QgsVectorLayer *>( collectionId ) };
   if ( mapLayers.count() != 1 )
   {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Collection with given id (%1) was not found or multiple matches were found" ).arg( collectionId ) );
+    throw QgsServerApiNotFoundError( u"Collection with given id (%1) was not found or multiple matches were found"_s.arg( collectionId ) );
   }
   return mapLayers.first();
 }

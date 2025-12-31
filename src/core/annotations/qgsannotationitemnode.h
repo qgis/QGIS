@@ -47,7 +47,7 @@ class CORE_EXPORT QgsAnnotationItemNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
+    QString str = u"<QgsAnnotationItemNode: %1 - %2 (%3, %4)>"_s.arg( sipCpp->id().vertex )
                   .arg( qgsEnumValueToKey( sipCpp->type() ) )
                   .arg( sipCpp->point().x() )
                   .arg( sipCpp->point().y() );

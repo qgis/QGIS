@@ -29,64 +29,64 @@
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {
   // init registry with known symbol layers
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleLine" ), QObject::tr( "Simple Line" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"SimpleLine"_s, QObject::tr( "Simple Line" ), Qgis::SymbolType::Line,
                       QgsSimpleLineSymbolLayer::create, QgsSimpleLineSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "MarkerLine" ), QObject::tr( "Marker Line" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"MarkerLine"_s, QObject::tr( "Marker Line" ), Qgis::SymbolType::Line,
                       QgsMarkerLineSymbolLayer::create, QgsMarkerLineSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "HashLine" ), QObject::tr( "Hashed Line" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"HashLine"_s, QObject::tr( "Hashed Line" ), Qgis::SymbolType::Line,
                       QgsHashedLineSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "ArrowLine" ), QObject::tr( "Arrow" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"ArrowLine"_s, QObject::tr( "Arrow" ), Qgis::SymbolType::Line,
                       QgsArrowSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "InterpolatedLine" ), QObject::tr( "Interpolated Line" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"InterpolatedLine"_s, QObject::tr( "Interpolated Line" ), Qgis::SymbolType::Line,
                       QgsInterpolatedLineSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterLine" ), QObject::tr( "Raster Line" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"RasterLine"_s, QObject::tr( "Raster Line" ), Qgis::SymbolType::Line,
                       QgsRasterLineSymbolLayer::create, nullptr, QgsRasterLineSymbolLayer::resolvePaths ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "Lineburst" ), QObject::tr( "Lineburst" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"Lineburst"_s, QObject::tr( "Lineburst" ), Qgis::SymbolType::Line,
                       QgsLineburstSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FilledLine" ), QObject::tr( "Filled Line" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"FilledLine"_s, QObject::tr( "Filled Line" ), Qgis::SymbolType::Line,
                       QgsFilledLineSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "LinearReferencing" ), QObject::tr( "Linear Referencing" ), Qgis::SymbolType::Line,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"LinearReferencing"_s, QObject::tr( "Linear Referencing" ), Qgis::SymbolType::Line,
                       QgsLinearReferencingSymbolLayer::create ) );
 
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleMarker" ), QObject::tr( "Simple Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"SimpleMarker"_s, QObject::tr( "Simple Marker" ), Qgis::SymbolType::Marker,
                       QgsSimpleMarkerSymbolLayer::create, QgsSimpleMarkerSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FilledMarker" ), QObject::tr( "Filled Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"FilledMarker"_s, QObject::tr( "Filled Marker" ), Qgis::SymbolType::Marker,
                       QgsFilledMarkerSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SvgMarker" ), QObject::tr( "SVG Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"SvgMarker"_s, QObject::tr( "SVG Marker" ), Qgis::SymbolType::Marker,
                       QgsSvgMarkerSymbolLayer::create, QgsSvgMarkerSymbolLayer::createFromSld, QgsSvgMarkerSymbolLayer::resolvePaths ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterMarker" ), QObject::tr( "Raster Image Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"RasterMarker"_s, QObject::tr( "Raster Image Marker" ), Qgis::SymbolType::Marker,
                       QgsRasterMarkerSymbolLayer::create, QgsRasterMarkerSymbolLayer::createFromSld, QgsRasterFillSymbolLayer::resolvePaths ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "AnimatedMarker" ), QObject::tr( "Animated Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"AnimatedMarker"_s, QObject::tr( "Animated Marker" ), Qgis::SymbolType::Marker,
                       QgsAnimatedMarkerSymbolLayer::create, nullptr, QgsAnimatedMarkerSymbolLayer::resolvePaths ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FontMarker" ), QObject::tr( "Font Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"FontMarker"_s, QObject::tr( "Font Marker" ), Qgis::SymbolType::Marker,
                       QgsFontMarkerSymbolLayer::create, QgsFontMarkerSymbolLayer::createFromSld, nullptr, nullptr, QgsFontMarkerSymbolLayer::resolveFonts ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "EllipseMarker" ), QObject::tr( "Ellipse Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"EllipseMarker"_s, QObject::tr( "Ellipse Marker" ), Qgis::SymbolType::Marker,
                       QgsEllipseSymbolLayer::create, QgsEllipseSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "VectorField" ), QObject::tr( "Vector Field Marker" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"VectorField"_s, QObject::tr( "Vector Field Marker" ), Qgis::SymbolType::Marker,
                       QgsVectorFieldSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "MaskMarker" ), QObject::tr( "Mask" ), Qgis::SymbolType::Marker,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"MaskMarker"_s, QObject::tr( "Mask" ), Qgis::SymbolType::Marker,
                       QgsMaskMarkerSymbolLayer::create ) );
 
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleFill" ), QObject::tr( "Simple Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"SimpleFill"_s, QObject::tr( "Simple Fill" ), Qgis::SymbolType::Fill,
                       QgsSimpleFillSymbolLayer::create, QgsSimpleFillSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "GradientFill" ), QObject::tr( "Gradient Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"GradientFill"_s, QObject::tr( "Gradient Fill" ), Qgis::SymbolType::Fill,
                       QgsGradientFillSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "ShapeburstFill" ), QObject::tr( "Shapeburst Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"ShapeburstFill"_s, QObject::tr( "Shapeburst Fill" ), Qgis::SymbolType::Fill,
                       QgsShapeburstFillSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterFill" ), QObject::tr( "Raster Image Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"RasterFill"_s, QObject::tr( "Raster Image Fill" ), Qgis::SymbolType::Fill,
                       QgsRasterFillSymbolLayer::create, QgsRasterFillSymbolLayer::createFromSld, QgsRasterFillSymbolLayer::resolvePaths ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SVGFill" ), QObject::tr( "SVG Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"SVGFill"_s, QObject::tr( "SVG Fill" ), Qgis::SymbolType::Fill,
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld, QgsSVGFillSymbolLayer::resolvePaths ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "CentroidFill" ), QObject::tr( "Centroid Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"CentroidFill"_s, QObject::tr( "Centroid Fill" ), Qgis::SymbolType::Fill,
                       QgsCentroidFillSymbolLayer::create, QgsCentroidFillSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RandomMarkerFill" ), QObject::tr( "Random Marker Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"RandomMarkerFill"_s, QObject::tr( "Random Marker Fill" ), Qgis::SymbolType::Fill,
                       QgsRandomMarkerFillSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "LinePatternFill" ), QObject::tr( "Line Pattern Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"LinePatternFill"_s, QObject::tr( "Line Pattern Fill" ), Qgis::SymbolType::Fill,
                       QgsLinePatternFillSymbolLayer::create, QgsLinePatternFillSymbolLayer::createFromSld ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "PointPatternFill" ), QObject::tr( "Point Pattern Fill" ), Qgis::SymbolType::Fill,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"PointPatternFill"_s, QObject::tr( "Point Pattern Fill" ), Qgis::SymbolType::Fill,
                       QgsPointPatternFillSymbolLayer::create, QgsPointPatternFillSymbolLayer::createFromSld ) );
 
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "GeometryGenerator" ), QObject::tr( "Geometry Generator" ), Qgis::SymbolType::Hybrid,
+  addSymbolLayerType( new QgsSymbolLayerMetadata( u"GeometryGenerator"_s, QObject::tr( "Geometry Generator" ), Qgis::SymbolType::Hybrid,
                       QgsGeometryGeneratorSymbolLayer::create ) );
 }
 

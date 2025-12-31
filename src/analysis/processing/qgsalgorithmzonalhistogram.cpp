@@ -24,7 +24,7 @@
 
 QString QgsZonalHistogramAlgorithm::name() const
 {
-  return QStringLiteral( "zonalhistogram" );
+  return u"zonalhistogram"_s;
 }
 
 QString QgsZonalHistogramAlgorithm::displayName() const
@@ -44,19 +44,19 @@ QString QgsZonalHistogramAlgorithm::group() const
 
 QString QgsZonalHistogramAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 void QgsZonalHistogramAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT_RASTER"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "HISTO_" ), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), u"HISTO_"_s, false, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output zones" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output zones" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsZonalHistogramAlgorithm::shortHelpString() const
@@ -76,11 +76,11 @@ QgsZonalHistogramAlgorithm *QgsZonalHistogramAlgorithm::createInstance() const
 
 bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
-  mRasterBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  mRasterBand = parameterAsInt( parameters, u"RASTER_BAND"_s, context );
   mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( mRasterBand );
   mNodataValue = layer->dataProvider()->sourceNoDataValue( mRasterBand );
   mRasterInterface.reset( layer->dataProvider()->clone() );
@@ -111,9 +111,9 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsFeatureSource> zones( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
+  std::unique_ptr<QgsFeatureSource> zones( parameterAsSource( parameters, u"INPUT_VECTOR"_s, context ) );
   if ( !zones )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_VECTOR"_s ) );
 
   const long count = zones->featureCount();
   const double step = count > 0 ? 100.0 / count : 1;
@@ -181,18 +181,18 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
 
   std::sort( uniqueValues.begin(), uniqueValues.end() );
 
-  const QString fieldPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
+  const QString fieldPrefix = parameterAsString( parameters, u"COLUMN_PREFIX"_s, context );
   QgsFields newFields;
   for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
   {
-    newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, mHasNoDataValue && *it == mNodataValue ? QStringLiteral( "NODATA" ) : QString::number( *it ) ), QMetaType::Type::LongLong, QString(), -1, 0 ) );
+    newFields.append( QgsField( u"%1%2"_s.arg( fieldPrefix, mHasNoDataValue && *it == mNodataValue ? u"NODATA"_s : QString::number( *it ) ), QMetaType::Type::LongLong, QString(), -1, 0 ) );
   }
   const QgsFields fields = QgsProcessingUtils::combineFields( zones->fields(), newFields );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, zones->wkbType(), zones->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, zones->wkbType(), zones->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   it = zones->getFeatures( QgsFeatureRequest() );
   while ( it.nextFeature( f ) )
@@ -209,13 +209,13 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
     outputFeature.setAttributes( attributes );
 
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

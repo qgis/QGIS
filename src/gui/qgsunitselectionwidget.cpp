@@ -313,5 +313,5 @@ void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsMapUnitScaleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#unit-selector" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#unit-selector"_s );
 }

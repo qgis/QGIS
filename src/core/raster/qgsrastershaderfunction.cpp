@@ -24,7 +24,7 @@ QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double ma
   , mMinimumValue( minimumValue )
   , mMinimumMaximumRange( mMaximumValue - mMinimumValue )
 {
-  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
+  QgsDebugMsgLevel( u"entered."_s, 4 );
 }
 
 void QgsRasterShaderFunction::setMaximumValue( double value )

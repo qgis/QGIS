@@ -17,7 +17,7 @@ Presents a choice of sublayers.
 
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
 %TypeHeaderCode
@@ -60,7 +60,7 @@ Presents a choice of sublayers.
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
 
- QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) /Deprecated="Since 3.40. Will be removed in QGIS 5.0."/;
 %Docstring
 Construct a new QgsSublayersDialog object - a dialog to select which sub
 layers to be imported from a data source (e.g. from geopackage or
@@ -74,7 +74,7 @@ zipfile)
 
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
     ~QgsSublayersDialog();

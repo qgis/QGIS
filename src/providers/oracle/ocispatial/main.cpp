@@ -49,13 +49,15 @@
 
 #include "moc_main.cpp"
 
+using namespace Qt::StringLiterals;
+
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
 {
 }
 
 QSqlDriver *QOCISpatialDriverPlugin::create( const QString &name )
 {
-  if ( name == QLatin1String( "QOCISPATIAL" ) || name == QLatin1String( "QOCISPATIAL8" ) )
+  if ( name == "QOCISPATIAL"_L1 || name == "QOCISPATIAL8"_L1 )
   {
     QOCISpatialDriver *driver = new QOCISpatialDriver();
     return driver;

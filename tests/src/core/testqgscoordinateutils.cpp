@@ -59,32 +59,32 @@ void TestQgsCoordinateUtils::testDegreeWithSuffix()
   bool isEasting = false;
   double value = 0.0;
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "1.234W" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"1.234W"_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QCOMPARE( isEasting, true );
   QCOMPARE( value, -1.234 );
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "-1.234 w" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"-1.234 w"_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QCOMPARE( isEasting, true );
   QCOMPARE( value, -1.234 );
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "1.234s" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"1.234s"_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QCOMPARE( isEasting, false );
   QCOMPARE( value, -1.234 );
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "1.234N" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"1.234N"_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QCOMPARE( isEasting, false );
   QCOMPARE( value, 1.234 );
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "1.234 e" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"1.234 e"_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QCOMPARE( isEasting, true );
   QCOMPARE( value, 1.234 );
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "bad string" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"bad string"_s, &ok, &isEasting );
   QCOMPARE( ok, false );
   QCOMPARE( value, 0.0 );
 }
@@ -97,11 +97,11 @@ void TestQgsCoordinateUtils::testLocale()
 
   QLocale::setDefault( QLocale::French );
 
-  value = QgsCoordinateUtils::dmsToDecimal( QStringLiteral( "6°26'55,7\"" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::dmsToDecimal( u"6°26'55,7\""_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QGSCOMPARENEAR( value, 6.448805, 0.000001 );
 
-  value = QgsCoordinateUtils::degreeToDecimal( QStringLiteral( "104,34936E" ), &ok, &isEasting );
+  value = QgsCoordinateUtils::degreeToDecimal( u"104,34936E"_s, &ok, &isEasting );
   QCOMPARE( ok, true );
   QCOMPARE( value, 104.34936 );
 

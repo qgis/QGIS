@@ -40,6 +40,7 @@ namespace MDAL
       ~DriverSWW( ) override = default;
       DriverSWW *create() override;
 
+      using Driver::load;
       std::unique_ptr< Mesh > load( const std::string &resultsFile, const std::string &meshName = "" ) override;
       bool canReadMesh( const std::string &uri ) override;
 

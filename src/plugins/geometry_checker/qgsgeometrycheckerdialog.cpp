@@ -107,5 +107,5 @@ void QgsGeometryCheckerDialog::closeEvent( QCloseEvent *ev )
 
 void QgsGeometryCheckerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_geometry_checker.html" ) );
+  QgsHelp::openHelp( u"plugins/core_plugins/plugins_geometry_checker.html"_s );
 }

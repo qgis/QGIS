@@ -49,122 +49,122 @@ QgsEllipseSymbolLayer::~QgsEllipseSymbolLayer() = default;
 QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
 {
   QgsEllipseSymbolLayer *layer = new QgsEllipseSymbolLayer();
-  if ( properties.contains( QStringLiteral( "symbol_name" ) ) )
+  if ( properties.contains( u"symbol_name"_s ) )
   {
-    layer->setShape( decodeShape( properties[ QStringLiteral( "symbol_name" )].toString() ) );
+    layer->setShape( decodeShape( properties[ u"symbol_name"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "size" ) ) )
+  if ( properties.contains( u"size"_s ) )
   {
-    layer->setSize( properties[QStringLiteral( "size" )].toDouble() );
+    layer->setSize( properties[u"size"_s].toDouble() );
   }
-  if ( properties.contains( QStringLiteral( "size_unit" ) ) )
+  if ( properties.contains( u"size_unit"_s ) )
   {
-    layer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "size_unit" )].toString() ) );
+    layer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties[u"size_unit"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "size_map_unit_scale" ) ) )
+  if ( properties.contains( u"size_map_unit_scale"_s ) )
   {
-    layer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "size_map_unit_scale" )].toString() ) );
+    layer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"size_map_unit_scale"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "symbol_width" ) ) )
+  if ( properties.contains( u"symbol_width"_s ) )
   {
-    layer->setSymbolWidth( properties[QStringLiteral( "symbol_width" )].toDouble() );
+    layer->setSymbolWidth( properties[u"symbol_width"_s].toDouble() );
   }
-  if ( properties.contains( QStringLiteral( "symbol_width_unit" ) ) )
+  if ( properties.contains( u"symbol_width_unit"_s ) )
   {
-    layer->setSymbolWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "symbol_width_unit" )].toString() ) );
+    layer->setSymbolWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[u"symbol_width_unit"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "symbol_width_map_unit_scale" ) ) )
+  if ( properties.contains( u"symbol_width_map_unit_scale"_s ) )
   {
-    layer->setSymbolWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "symbol_width_map_unit_scale" )].toString() ) );
+    layer->setSymbolWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"symbol_width_map_unit_scale"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "symbol_height" ) ) )
+  if ( properties.contains( u"symbol_height"_s ) )
   {
-    layer->setSymbolHeight( properties[QStringLiteral( "symbol_height" )].toDouble() );
+    layer->setSymbolHeight( properties[u"symbol_height"_s].toDouble() );
   }
-  if ( properties.contains( QStringLiteral( "symbol_height_unit" ) ) )
+  if ( properties.contains( u"symbol_height_unit"_s ) )
   {
-    layer->setSymbolHeightUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "symbol_height_unit" )].toString() ) );
+    layer->setSymbolHeightUnit( QgsUnitTypes::decodeRenderUnit( properties[u"symbol_height_unit"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "symbol_height_map_unit_scale" ) ) )
+  if ( properties.contains( u"symbol_height_map_unit_scale"_s ) )
   {
-    layer->setSymbolHeightMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "symbol_height_map_unit_scale" )].toString() ) );
+    layer->setSymbolHeightMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"symbol_height_map_unit_scale"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "angle" ) ) )
+  if ( properties.contains( u"angle"_s ) )
   {
-    layer->setAngle( properties[QStringLiteral( "angle" )].toDouble() );
+    layer->setAngle( properties[u"angle"_s].toDouble() );
   }
-  if ( properties.contains( QStringLiteral( "outline_style" ) ) )
+  if ( properties.contains( u"outline_style"_s ) )
   {
-    layer->setStrokeStyle( QgsSymbolLayerUtils::decodePenStyle( properties[QStringLiteral( "outline_style" )].toString() ) );
+    layer->setStrokeStyle( QgsSymbolLayerUtils::decodePenStyle( properties[u"outline_style"_s].toString() ) );
   }
-  else if ( properties.contains( QStringLiteral( "line_style" ) ) )
+  else if ( properties.contains( u"line_style"_s ) )
   {
-    layer->setStrokeStyle( QgsSymbolLayerUtils::decodePenStyle( properties[QStringLiteral( "line_style" )].toString() ) );
+    layer->setStrokeStyle( QgsSymbolLayerUtils::decodePenStyle( properties[u"line_style"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "joinstyle" ) ) )
+  if ( properties.contains( u"joinstyle"_s ) )
   {
-    layer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[QStringLiteral( "joinstyle" )].toString() ) );
+    layer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( properties[u"joinstyle"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "cap_style" ) ) )
+  if ( properties.contains( u"cap_style"_s ) )
   {
-    layer->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[QStringLiteral( "cap_style" )].toString() ) );
+    layer->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( properties[u"cap_style"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "outline_width" ) ) )
+  if ( properties.contains( u"outline_width"_s ) )
   {
-    layer->setStrokeWidth( properties[QStringLiteral( "outline_width" )].toDouble() );
+    layer->setStrokeWidth( properties[u"outline_width"_s].toDouble() );
   }
-  else if ( properties.contains( QStringLiteral( "line_width" ) ) )
+  else if ( properties.contains( u"line_width"_s ) )
   {
-    layer->setStrokeWidth( properties[QStringLiteral( "line_width" )].toDouble() );
+    layer->setStrokeWidth( properties[u"line_width"_s].toDouble() );
   }
-  if ( properties.contains( QStringLiteral( "outline_width_unit" ) ) )
+  if ( properties.contains( u"outline_width_unit"_s ) )
   {
-    layer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "outline_width_unit" )].toString() ) );
+    layer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[u"outline_width_unit"_s].toString() ) );
   }
-  else if ( properties.contains( QStringLiteral( "line_width_unit" ) ) )
+  else if ( properties.contains( u"line_width_unit"_s ) )
   {
-    layer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "line_width_unit" )].toString() ) );
+    layer->setStrokeWidthUnit( QgsUnitTypes::decodeRenderUnit( properties[u"line_width_unit"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "outline_width_map_unit_scale" ) ) )
+  if ( properties.contains( u"outline_width_map_unit_scale"_s ) )
   {
-    layer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "outline_width_map_unit_scale" )].toString() ) );
+    layer->setStrokeWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"outline_width_map_unit_scale"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "fill_color" ) ) )
+  if ( properties.contains( u"fill_color"_s ) )
   {
     //pre 2.5 projects used "fill_color"
-    layer->setFillColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "fill_color" )].toString() ) );
+    layer->setFillColor( QgsColorUtils::colorFromString( properties[u"fill_color"_s].toString() ) );
   }
-  else if ( properties.contains( QStringLiteral( "color" ) ) )
+  else if ( properties.contains( u"color"_s ) )
   {
-    layer->setFillColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "color" )].toString() ) );
+    layer->setFillColor( QgsColorUtils::colorFromString( properties[u"color"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "outline_color" ) ) )
+  if ( properties.contains( u"outline_color"_s ) )
   {
-    layer->setStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "outline_color" )].toString() ) );
+    layer->setStrokeColor( QgsColorUtils::colorFromString( properties[u"outline_color"_s].toString() ) );
   }
-  else if ( properties.contains( QStringLiteral( "line_color" ) ) )
+  else if ( properties.contains( u"line_color"_s ) )
   {
-    layer->setStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "line_color" )].toString() ) );
+    layer->setStrokeColor( QgsColorUtils::colorFromString( properties[u"line_color"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "offset" ) ) )
+  if ( properties.contains( u"offset"_s ) )
   {
-    layer->setOffset( QgsSymbolLayerUtils::decodePoint( properties[QStringLiteral( "offset" )].toString() ) );
+    layer->setOffset( QgsSymbolLayerUtils::decodePoint( properties[u"offset"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "offset_unit" ) ) )
+  if ( properties.contains( u"offset_unit"_s ) )
   {
-    layer->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "offset_unit" )].toString() ) );
+    layer->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties[u"offset_unit"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+  if ( properties.contains( u"offset_map_unit_scale"_s ) )
   {
-    layer->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "offset_map_unit_scale" )].toString() ) );
+    layer->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"offset_map_unit_scale"_s].toString() ) );
   }
-  if ( properties.contains( QStringLiteral( "horizontal_anchor_point" ) ) )
+  if ( properties.contains( u"horizontal_anchor_point"_s ) )
   {
-    layer->setHorizontalAnchorPoint( static_cast< Qgis::HorizontalAnchorPoint >( properties[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
+    layer->setHorizontalAnchorPoint( static_cast< Qgis::HorizontalAnchorPoint >( properties[ u"horizontal_anchor_point"_s].toInt() ) );
   }
-  if ( properties.contains( QStringLiteral( "vertical_anchor_point" ) ) )
+  if ( properties.contains( u"vertical_anchor_point"_s ) )
   {
-    layer->setVerticalAnchorPoint( static_cast< Qgis::VerticalAnchorPoint >( properties[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
+    layer->setVerticalAnchorPoint( static_cast< Qgis::VerticalAnchorPoint >( properties[ u"vertical_anchor_point"_s].toInt() ) );
   }
 
   //data defined properties
@@ -347,7 +347,7 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &
 
 QString QgsEllipseSymbolLayer::layerType() const
 {
-  return QStringLiteral( "EllipseMarker" );
+  return u"EllipseMarker"_s;
 }
 
 Qgis::SymbolLayerFlags QgsEllipseSymbolLayer::flags() const
@@ -428,14 +428,14 @@ void QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
 
 bool QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
-  QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
+  QDomElement symbolizerElem = doc.createElement( u"se:PointSymbolizer"_s );
   const QVariantMap props = context.extraProperties();
-  if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
-    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
+  if ( !props.value( u"uom"_s, QString() ).toString().isEmpty() )
+    symbolizerElem.setAttribute( u"uom"_s, props.value( u"uom"_s, QString() ).toString() );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( u"geom"_s, QString() ).toString(), context );
 
   return writeSldMarker( doc, symbolizerElem, context );
 }
@@ -450,7 +450,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
 bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   // <Graphic>
-  QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
+  QDomElement graphicElem = doc.createElement( u"se:Graphic"_s );
   element.appendChild( graphicElem );
 
   const QVariantMap props = context.extraProperties();
@@ -461,7 +461,7 @@ bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   // <Rotation>
   const QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::Property::Angle );
 
-  QString angleFunc = props.value( QStringLiteral( "angle" ), QString() ).toString();
+  QString angleFunc = props.value( u"angle"_s, QString() ).toString();
   if ( angleFunc.isEmpty() )  // symbol has no angle set
   {
     if ( ddRotation && ddRotation.isActive() )
@@ -475,7 +475,7 @@ bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   {
     // the symbol has an angle and the symbol layer have a rotation
     // property set
-    angleFunc = QStringLiteral( "%1 + %2" ).arg( angleFunc, ddRotation.asExpression() );
+    angleFunc = u"%1 + %2"_s.arg( angleFunc, ddRotation.asExpression() );
   }
   else if ( !qgsDoubleNear( mAngle, 0.0 ) )
   {
@@ -485,7 +485,7 @@ bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
     if ( !ok )
     {
       // its a string (probably a property name or a function)
-      angleFunc = QStringLiteral( "%1 + %2" ).arg( angleFunc ).arg( mAngle );
+      angleFunc = u"%1 + %2"_s.arg( angleFunc ).arg( mAngle );
     }
     else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
     {
@@ -501,20 +501,20 @@ bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
 
   // store w/h factor in a <VendorOption>
   const double widthHeightFactor = mSymbolWidth / mSymbolHeight;
-  const QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "widthHeightFactor" ), QString::number( widthHeightFactor ) );
+  const QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, u"widthHeightFactor"_s, QString::number( widthHeightFactor ) );
   graphicElem.appendChild( factorElem );
   return true;
 }
 
 QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
+  QgsDebugMsgLevel( u"Entered."_s, 4 );
 
-  QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
+  QDomElement graphicElem = element.firstChildElement( u"Graphic"_s );
   if ( graphicElem.isNull() )
     return nullptr;
 
-  QString name = QStringLiteral( "circle" );
+  QString name = u"circle"_s;
   QColor fillColor, strokeColor;
   double strokeWidth, size;
   double widthHeightFactor = 1.0;
@@ -523,7 +523,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( graphicElem );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
-    if ( it.key() == QLatin1String( "widthHeightFactor" ) )
+    if ( it.key() == "widthHeightFactor"_L1 )
     {
       bool ok;
       const double v = it.value().toDouble( &ok );
@@ -536,7 +536,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
     return nullptr;
 
   double scaleFactor = 1.0;
-  const QString uom = element.attribute( QStringLiteral( "uom" ) );
+  const QString uom = element.attribute( u"uom"_s );
   Qgis::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
   size = size * scaleFactor;
   strokeWidth = strokeWidth * scaleFactor;
@@ -567,30 +567,30 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
 QVariantMap QgsEllipseSymbolLayer::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "symbol_name" )] = encodeShape( mShape );
-  map[QStringLiteral( "symbol_width" )] = QString::number( mSymbolWidth );
-  map[QStringLiteral( "symbol_width_unit" )] = QgsUnitTypes::encodeUnit( mSymbolWidthUnit );
-  map[QStringLiteral( "symbol_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSymbolWidthMapUnitScale );
-  map[QStringLiteral( "symbol_height" )] = QString::number( mSymbolHeight );
-  map[QStringLiteral( "symbol_height_unit" )] = QgsUnitTypes::encodeUnit( mSymbolHeightUnit );
-  map[QStringLiteral( "symbol_height_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSymbolHeightMapUnitScale );
-  map[QStringLiteral( "angle" )] = QString::number( mAngle );
-  map[QStringLiteral( "outline_style" )] = QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle );
-  map[QStringLiteral( "outline_width" )] = QString::number( mStrokeWidth );
-  map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
-  map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
-  map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
-  map[QStringLiteral( "cap_style" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
-  map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mColor );
-  map[QStringLiteral( "outline_color" )] = QgsColorUtils::colorToString( mStrokeColor );
-  map[QStringLiteral( "offset" )] = QgsSymbolLayerUtils::encodePoint( mOffset );
-  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
-  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map[QStringLiteral( "size" )] = QString::number( mSize );
-  map[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
-  map[QStringLiteral( "size_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
-  map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( static_cast< int >( mHorizontalAnchorPoint ) );
-  map[QStringLiteral( "vertical_anchor_point" )] = QString::number( static_cast< int >( mVerticalAnchorPoint ) );
+  map[u"symbol_name"_s] = encodeShape( mShape );
+  map[u"symbol_width"_s] = QString::number( mSymbolWidth );
+  map[u"symbol_width_unit"_s] = QgsUnitTypes::encodeUnit( mSymbolWidthUnit );
+  map[u"symbol_width_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mSymbolWidthMapUnitScale );
+  map[u"symbol_height"_s] = QString::number( mSymbolHeight );
+  map[u"symbol_height_unit"_s] = QgsUnitTypes::encodeUnit( mSymbolHeightUnit );
+  map[u"symbol_height_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mSymbolHeightMapUnitScale );
+  map[u"angle"_s] = QString::number( mAngle );
+  map[u"outline_style"_s] = QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle );
+  map[u"outline_width"_s] = QString::number( mStrokeWidth );
+  map[u"outline_width_unit"_s] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
+  map[u"outline_width_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
+  map[u"joinstyle"_s] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[u"cap_style"_s] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
+  map[u"color"_s] = QgsColorUtils::colorToString( mColor );
+  map[u"outline_color"_s] = QgsColorUtils::colorToString( mStrokeColor );
+  map[u"offset"_s] = QgsSymbolLayerUtils::encodePoint( mOffset );
+  map[u"offset_unit"_s] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[u"offset_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map[u"size"_s] = QString::number( mSize );
+  map[u"size_unit"_s] = QgsUnitTypes::encodeUnit( mSizeUnit );
+  map[u"size_map_unit_scale"_s] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
+  map[u"horizontal_anchor_point"_s] = QString::number( static_cast< int >( mHorizontalAnchorPoint ) );
+  map[u"vertical_anchor_point"_s] = QString::number( static_cast< int >( mVerticalAnchorPoint ) );
   return map;
 }
 
@@ -901,7 +901,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
     const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) && exprVal.toString() == QLatin1String( "no" ) )
+    if ( !QgsVariantUtils::isNull( exprVal ) && exprVal.toString() == "no"_L1 )
     {
       penWidth = 0.0;
     }
@@ -1043,9 +1043,9 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
         line << line.at( 0 );
 
         if ( mBrush.style() != Qt::NoBrush )
-          e.writePolygon( QgsRingSequence() << line, layerName, QStringLiteral( "SOLID" ), fc );
+          e.writePolygon( QgsRingSequence() << line, layerName, u"SOLID"_s, fc );
         if ( mPen.style() != Qt::NoPen )
-          e.writePolyline( line, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+          e.writePolyline( line, layerName, u"CONTINUOUS"_s, oc, strokeWidth );
       }
       return true;
     }
@@ -1060,9 +1060,9 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
       p << p[0];
 
       if ( mBrush.style() != Qt::NoBrush )
-        e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );
+        e.writePolygon( QgsRingSequence() << p, layerName, u"SOLID"_s, fc );
       if ( mPen.style() != Qt::NoPen )
-        e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+        e.writePolyline( p, layerName, u"CONTINUOUS"_s, oc, strokeWidth );
       return true;
     }
     case Cross:
@@ -1072,11 +1072,11 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
         e.writePolyline( QgsPointSequence()
                          << QgsPoint( t.map( QPointF( -halfWidth, 0 ) ) )
                          << QgsPoint( t.map( QPointF( halfWidth, 0 ) ) ),
-                         layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+                         layerName, u"CONTINUOUS"_s, oc, strokeWidth );
         e.writePolyline( QgsPointSequence()
                          << QgsPoint( t.map( QPointF( 0, halfHeight ) ) )
                          << QgsPoint( t.map( QPointF( 0, -halfHeight ) ) ),
-                         layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+                         layerName, u"CONTINUOUS"_s, oc, strokeWidth );
         return true;
       }
       break;
@@ -1090,9 +1090,9 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
         << QgsPoint( t.map( QPointF( 0, halfHeight ) ) );
       p << p[0];
       if ( mBrush.style() != Qt::NoBrush )
-        e.writePolygon( QgsRingSequence() << p, layerName, QStringLiteral( "SOLID" ), fc );
+        e.writePolygon( QgsRingSequence() << p, layerName, u"SOLID"_s, fc );
       if ( mPen.style() != Qt::NoPen )
-        e.writePolyline( p, layerName, QStringLiteral( "CONTINUOUS" ), oc, strokeWidth );
+        e.writePolyline( p, layerName, u"CONTINUOUS"_s, oc, strokeWidth );
       return true;
     }
 
@@ -1120,37 +1120,37 @@ QgsEllipseSymbolLayer::Shape QgsEllipseSymbolLayer::decodeShape( const QString &
     *ok = true;
   const QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned == QLatin1String( "circle" ) )
+  if ( cleaned == "circle"_L1 )
     return Circle;
-  else if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
+  else if ( cleaned == "square"_L1 || cleaned == "rectangle"_L1 )
     return Rectangle;
-  else if ( cleaned == QLatin1String( "diamond" ) )
+  else if ( cleaned == "diamond"_L1 )
     return Diamond;
-  else if ( cleaned == QLatin1String( "cross" ) )
+  else if ( cleaned == "cross"_L1 )
     return Cross;
-  else if ( cleaned == QLatin1String( "arrow" ) )
+  else if ( cleaned == "arrow"_L1 )
     return Arrow;
-  else if ( cleaned == QLatin1String( "half_arc" ) )
+  else if ( cleaned == "half_arc"_L1 )
     return HalfArc;
-  else if ( cleaned == QLatin1String( "triangle" ) )
+  else if ( cleaned == "triangle"_L1 )
     return Triangle;
-  else if ( cleaned == QLatin1String( "right_half_triangle" ) )
+  else if ( cleaned == "right_half_triangle"_L1 )
     return RightHalfTriangle;
-  else if ( cleaned == QLatin1String( "left_half_triangle" ) )
+  else if ( cleaned == "left_half_triangle"_L1 )
     return LeftHalfTriangle;
-  else if ( cleaned == QLatin1String( "semi_circle" ) )
+  else if ( cleaned == "semi_circle"_L1 )
     return SemiCircle;
-  else if ( cleaned == QLatin1String( "third_circle" ) )
+  else if ( cleaned == "third_circle"_L1 )
     return ThirdCircle;
-  else if ( cleaned == QLatin1String( "quarter_circle" ) )
+  else if ( cleaned == "quarter_circle"_L1 )
     return QuarterCircle;
-  else if ( cleaned == QLatin1String( "pentagon" ) )
+  else if ( cleaned == "pentagon"_L1 )
     return Pentagon;
-  else if ( cleaned == QLatin1String( "hexagon" ) )
+  else if ( cleaned == "hexagon"_L1 )
     return Hexagon;
-  else if ( cleaned == QLatin1String( "octagon" ) )
+  else if ( cleaned == "octagon"_L1 )
     return Octagon;
-  else if ( cleaned == QLatin1String( "star" ) )
+  else if ( cleaned == "star"_L1 )
     return Star;  if ( ok )
     *ok = false;
   return Circle;
@@ -1161,37 +1161,37 @@ QString QgsEllipseSymbolLayer::encodeShape( QgsEllipseSymbolLayer::Shape shape )
   switch ( shape )
   {
     case Circle:
-      return QStringLiteral( "circle" );
+      return u"circle"_s;
     case Rectangle:
-      return QStringLiteral( "rectangle" );
+      return u"rectangle"_s;
     case Diamond:
-      return QStringLiteral( "diamond" );
+      return u"diamond"_s;
     case Cross:
-      return QStringLiteral( "cross" );
+      return u"cross"_s;
     case Arrow:
-      return QStringLiteral( "arrow" );
+      return u"arrow"_s;
     case HalfArc:
-      return QStringLiteral( "half_arc" );
+      return u"half_arc"_s;
     case Triangle:
-      return QStringLiteral( "triangle" );
+      return u"triangle"_s;
     case RightHalfTriangle:
-      return QStringLiteral( "right_half_triangle" );
+      return u"right_half_triangle"_s;
     case LeftHalfTriangle:
-      return QStringLiteral( "left_half_triangle" );
+      return u"left_half_triangle"_s;
     case SemiCircle:
-      return QStringLiteral( "semi_circle" );
+      return u"semi_circle"_s;
     case ThirdCircle:
-      return QStringLiteral( "third_circle" );
+      return u"third_circle"_s;
     case QuarterCircle:
-      return QStringLiteral( "quarter_circle" );
+      return u"quarter_circle"_s;
     case Pentagon:
-      return QStringLiteral( "pentagon" );
+      return u"pentagon"_s;
     case Hexagon:
-      return QStringLiteral( "hexagon" );
+      return u"hexagon"_s;
     case Octagon:
-      return QStringLiteral( "octagon" );
+      return u"octagon"_s;
     case Star:
-      return QStringLiteral( "star" );
+      return u"star"_s;
   }
   return QString();
 }

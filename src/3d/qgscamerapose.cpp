@@ -22,26 +22,26 @@
 
 QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elemCamera = doc.createElement( QStringLiteral( "camera-pose" ) );
-  elemCamera.setAttribute( QStringLiteral( "x" ), mCenterPoint.x() );
-  elemCamera.setAttribute( QStringLiteral( "y" ), mCenterPoint.y() );
-  elemCamera.setAttribute( QStringLiteral( "z" ), mCenterPoint.z() );
-  elemCamera.setAttribute( QStringLiteral( "dist" ), mDistanceFromCenterPoint );
-  elemCamera.setAttribute( QStringLiteral( "pitch" ), mPitchAngle );
-  elemCamera.setAttribute( QStringLiteral( "heading" ), mHeadingAngle );
+  QDomElement elemCamera = doc.createElement( u"camera-pose"_s );
+  elemCamera.setAttribute( u"x"_s, mCenterPoint.x() );
+  elemCamera.setAttribute( u"y"_s, mCenterPoint.y() );
+  elemCamera.setAttribute( u"z"_s, mCenterPoint.z() );
+  elemCamera.setAttribute( u"dist"_s, mDistanceFromCenterPoint );
+  elemCamera.setAttribute( u"pitch"_s, mPitchAngle );
+  elemCamera.setAttribute( u"heading"_s, mHeadingAngle );
   return elemCamera;
 }
 
 void QgsCameraPose::readXml( const QDomElement &elem )
 {
-  const double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
-  const double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
-  const double z = elem.attribute( QStringLiteral( "z" ) ).toDouble();
+  const double x = elem.attribute( u"x"_s ).toDouble();
+  const double y = elem.attribute( u"y"_s ).toDouble();
+  const double z = elem.attribute( u"z"_s ).toDouble();
   mCenterPoint = QgsVector3D( x, y, z );
 
-  mDistanceFromCenterPoint = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
-  mPitchAngle = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
-  mHeadingAngle = elem.attribute( QStringLiteral( "heading" ) ).toFloat();
+  mDistanceFromCenterPoint = elem.attribute( u"dist"_s ).toFloat();
+  mPitchAngle = elem.attribute( u"pitch"_s ).toFloat();
+  mHeadingAngle = elem.attribute( u"heading"_s ).toFloat();
 }
 
 void QgsCameraPose::setCenterPoint( const QgsVector3D &point )

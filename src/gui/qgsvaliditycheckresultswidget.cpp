@@ -79,10 +79,10 @@ QVariant QgsValidityCheckResultsModel::data( const QModelIndex &index, int role 
       switch ( res.type )
       {
         case QgsValidityCheckResult::Critical:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mIconCritical.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mIconCritical.svg"_s );
 
         case QgsValidityCheckResult::Warning:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s );
       }
       break;
 

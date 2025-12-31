@@ -23,7 +23,7 @@
 
 QString QgsAddTableFieldAlgorithm::name() const
 {
-  return QStringLiteral( "addfieldtoattributestable" );
+  return u"addfieldtoattributestable"_s;
 }
 
 QString QgsAddTableFieldAlgorithm::displayName() const
@@ -55,7 +55,7 @@ QString QgsAddTableFieldAlgorithm::group() const
 
 QString QgsAddTableFieldAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return u"vectortable"_s;
 }
 
 QString QgsAddTableFieldAlgorithm::outputName() const
@@ -80,7 +80,7 @@ QgsAddTableFieldAlgorithm *QgsAddTableFieldAlgorithm::createInstance() const
 
 void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ) ) );
+  addParameter( new QgsProcessingParameterString( u"FIELD_NAME"_s, QObject::tr( "Field name" ) ) );
 
   QStringList typeStrings;
   QVariantList icons;
@@ -105,17 +105,17 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
     icons << QgsFields::iconForFieldType( type.first, type.second );
   }
 
-  auto fieldTypes = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ), typeStrings, false, 0 );
+  auto fieldTypes = std::make_unique<QgsProcessingParameterEnum>( u"FIELD_TYPE"_s, QObject::tr( "Field type" ), typeStrings, false, 0 );
   fieldTypes->setMetadata(
-    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
+    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"icons"_s, icons } } ) } } )
     }
   );
   addParameter( fieldTypes.release() );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( u"FIELD_LENGTH"_s, QObject::tr( "Field length" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );
+  addParameter( new QgsProcessingParameterNumber( u"FIELD_PRECISION"_s, QObject::tr( "Field precision" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 10 ) );
 
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_ALIAS" ), QObject::tr( "Field alias" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_COMMENT" ), QObject::tr( "Field comment" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"FIELD_ALIAS"_s, QObject::tr( "Field alias" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"FIELD_COMMENT"_s, QObject::tr( "Field comment" ), QVariant(), false, true ) );
 }
 
 QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -127,13 +127,13 @@ QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields 
 
 bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  const QString name = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
-  const int type = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
-  const int length = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
-  const int precision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
-  const QString alias = parameterAsString( parameters, QStringLiteral( "FIELD_ALIAS" ), context );
-  const QString comment = parameterAsString( parameters, QStringLiteral( "FIELD_COMMENT" ), context );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
+  const QString name = parameterAsString( parameters, u"FIELD_NAME"_s, context );
+  const int type = parameterAsInt( parameters, u"FIELD_TYPE"_s, context );
+  const int length = parameterAsInt( parameters, u"FIELD_LENGTH"_s, context );
+  const int precision = parameterAsInt( parameters, u"FIELD_PRECISION"_s, context );
+  const QString alias = parameterAsString( parameters, u"FIELD_ALIAS"_s, context );
+  const QString comment = parameterAsString( parameters, u"FIELD_COMMENT"_s, context );
 
   if ( source->fields().lookupField( name ) >= 0 )
   {

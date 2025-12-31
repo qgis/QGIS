@@ -84,11 +84,11 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
 
   mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
   mGridColorButton->setAllowOpacity( true );
-  mGridColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridColorButton->setContext( u"composer"_s );
   mGridColorButton->setDefaultColor( Qt::black );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
+  mBackgroundColorButton->setContext( u"composer"_s );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No Background" ) );
 
@@ -128,11 +128,11 @@ QgsExpressionContext QgsLayoutManualTableWidget::createExpressionContext() const
     context = mTable->createExpressionContext();
 
   auto cellScope = std::make_unique<QgsExpressionContextScope>();
-  cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
-  cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
+  cellScope->setVariable( u"row_number"_s, 1, true );
+  cellScope->setVariable( u"column_number"_s, 1, true );
   context.appendScope( cellScope.release() );
 
-  context.setHighlightedVariables( { QStringLiteral( "row_number" ), QStringLiteral( "column_number" ) } );
+  context.setHighlightedVariables( { u"row_number"_s, u"column_number"_s } );
 
   return context;
 }

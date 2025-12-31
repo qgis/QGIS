@@ -134,25 +134,25 @@ QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QStrin
 QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == QLatin1String( "geom_from_wkt" ) )
+  if ( fnName == "geom_from_wkt"_L1 )
   {
     args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
-  else if ( fnName == QLatin1String( "geom_from_gml" ) )
+  else if ( fnName == "geom_from_gml"_L1 )
   {
     args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
-  else if ( fnName == QLatin1String( "x" ) || fnName == QLatin1String( "y" ) )
+  else if ( fnName == "x"_L1 || fnName == "y"_L1 )
   {
-    args = QStringList( QStringLiteral( "ST_Centroid(%1)" ).arg( args[0] ) );
+    args = QStringList( u"ST_Centroid(%1)"_s.arg( args[0] ) );
   }
-  else if ( fnName == QLatin1String( "buffer" ) && args.length() == 2 )
+  else if ( fnName == "buffer"_L1 && args.length() == 2 )
   {
-    args << QStringLiteral( "8" );
+    args << u"8"_s;
   }
-  else if ( fnName == QLatin1String( "round" ) )
+  else if ( fnName == "round"_L1 )
   {
-    args[0] = QStringLiteral( "(%1)::numeric" ).arg( args[0] );
+    args[0] = u"(%1)::numeric"_s.arg( args[0] );
   }
   // x and y functions have to be adapted
   return args;
@@ -160,17 +160,17 @@ QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const Q
 
 QString QgsPostgresExpressionCompiler::castToReal( const QString &value ) const
 {
-  return QStringLiteral( "((%1)::real)" ).arg( value );
+  return u"((%1)::real)"_s.arg( value );
 }
 
 QString QgsPostgresExpressionCompiler::castToInt( const QString &value ) const
 {
-  return QStringLiteral( "((%1)::int)" ).arg( value );
+  return u"((%1)::int)"_s.arg( value );
 }
 
 QString QgsPostgresExpressionCompiler::castToText( const QString &value ) const
 {
-  return QStringLiteral( "((%1)::text)" ).arg( value );
+  return u"((%1)::text)"_s.arg( value );
 }
 
 QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
@@ -186,7 +186,7 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
 
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
-      if ( fd->name() == QLatin1String( "$geometry" ) )
+      if ( fd->name() == "$geometry"_L1 )
       {
         result = quotedIdentifier( mGeometryColumn );
         return Complete;
@@ -200,27 +200,27 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
        */
       else if ( fd->name() == "$area" )
       {
-        result = QStringLiteral( "ST_Area(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        result = u"ST_Area(%1)"_s.arg( quotedIdentifier( mGeometryColumn ) );
         return Complete;
       }
       else if ( fd->name() == "$length" )
       {
-        result = QStringLiteral( "ST_Length(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        result = u"ST_Length(%1)"_s.arg( quotedIdentifier( mGeometryColumn ) );
         return Complete;
       }
       else if ( fd->name() == "$perimeter" )
       {
-        result = QStringLiteral( "ST_Perimeter(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        result = u"ST_Perimeter(%1)"_s.arg( quotedIdentifier( mGeometryColumn ) );
         return Complete;
       }
       else if ( fd->name() == "$x" )
       {
-        result = QStringLiteral( "ST_X(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        result = u"ST_X(%1)"_s.arg( quotedIdentifier( mGeometryColumn ) );
         return Complete;
       }
       else if ( fd->name() == "$y" )
       {
-        result = QStringLiteral( "ST_Y(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+        result = u"ST_Y(%1)"_s.arg( quotedIdentifier( mGeometryColumn ) );
         return Complete;
       }
 #endif

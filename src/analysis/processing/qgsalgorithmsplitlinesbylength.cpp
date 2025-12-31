@@ -27,7 +27,7 @@
 
 QString QgsSplitLinesByLengthAlgorithm::name() const
 {
-  return QStringLiteral( "splitlinesbylength" );
+  return u"splitlinesbylength"_s;
 }
 
 QString QgsSplitLinesByLengthAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QString QgsSplitLinesByLengthAlgorithm::group() const
 
 QString QgsSplitLinesByLengthAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSplitLinesByLengthAlgorithm::shortHelpString() const
@@ -84,19 +84,19 @@ QgsSplitLinesByLengthAlgorithm *QgsSplitLinesByLengthAlgorithm::createInstance()
 
 void QgsSplitLinesByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  auto length = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "LENGTH" ), QObject::tr( "Maximum line length" ), 10, QStringLiteral( "INPUT" ), false, 0 );
+  auto length = std::make_unique<QgsProcessingParameterDistance>( u"LENGTH"_s, QObject::tr( "Maximum line length" ), 10, u"INPUT"_s, false, 0 );
   length->setIsDynamic( true );
-  length->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "LENGTH" ), QObject::tr( "Maximum length" ), QgsPropertyDefinition::DoublePositive ) );
-  length->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  length->setDynamicPropertyDefinition( QgsPropertyDefinition( u"LENGTH"_s, QObject::tr( "Maximum length" ), QgsPropertyDefinition::DoublePositive ) );
+  length->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( length.release() );
 }
 
 bool QgsSplitLinesByLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mLength = parameterAsDouble( parameters, QStringLiteral( "LENGTH" ), context );
-  mDynamicLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "LENGTH" ) );
+  mLength = parameterAsDouble( parameters, u"LENGTH"_s, context );
+  mDynamicLength = QgsProcessingParameters::isDynamic( parameters, u"LENGTH"_s );
   if ( mDynamicLength )
-    mLengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value<QgsProperty>();
+    mLengthProperty = parameters.value( u"LENGTH"_s ).value<QgsProperty>();
 
   return true;
 }

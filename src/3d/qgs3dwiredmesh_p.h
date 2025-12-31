@@ -28,12 +28,7 @@
 //
 
 #include <QVector3D>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QBuffer>
-#else
 #include <Qt3DCore/QBuffer>
-#endif
 #include <Qt3DRender/QGeometryRenderer>
 
 class QgsAABB;
@@ -68,15 +63,9 @@ class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
     void setVertices( const QList<QgsAABB> &bboxes );
 
   private:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QGeometry *mGeom = nullptr;
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-#else
     Qt3DCore::QGeometry *mGeom = nullptr;
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
-#endif
 };
 
 /// @endcond

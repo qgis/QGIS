@@ -31,7 +31,7 @@
 
 QString QgsLayoutAtlasToImageAlgorithm::name() const
 {
-  return QStringLiteral( "atlaslayouttoimage" );
+  return u"atlaslayouttoimage"_s;
 }
 
 QString QgsLayoutAtlasToImageAlgorithm::displayName() const
@@ -51,7 +51,7 @@ QString QgsLayoutAtlasToImageAlgorithm::group() const
 
 QString QgsLayoutAtlasToImageAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 QString QgsLayoutAtlasToImageAlgorithm::shortDescription() const
@@ -69,18 +69,18 @@ QString QgsLayoutAtlasToImageAlgorithm::shortHelpString() const
 
 void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Atlas layout" ) ) );
+  addParameter( new QgsProcessingParameterLayout( u"LAYOUT"_s, QObject::tr( "Atlas layout" ) ) );
 
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ), QList<int>(), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"COVERAGE_LAYER"_s, QObject::tr( "Coverage layer" ), QList<int>(), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterExpression( u"FILTER_EXPRESSION"_s, QObject::tr( "Filter expression" ), QString(), u"COVERAGE_LAYER"_s, true ) );
+  addParameter( new QgsProcessingParameterExpression( u"SORTBY_EXPRESSION"_s, QObject::tr( "Sort expression" ), QString(), u"COVERAGE_LAYER"_s, true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"SORTBY_REVERSE"_s, QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false ) );
 
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QStringLiteral( "'output_'||@atlas_featurenumber" ), QStringLiteral( "COVERAGE_LAYER" ) ) );
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "FOLDER" ), QObject::tr( "Output folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
+  addParameter( new QgsProcessingParameterExpression( u"FILENAME_EXPRESSION"_s, QObject::tr( "Output filename expression" ), u"'output_'||@atlas_featurenumber"_s, u"COVERAGE_LAYER"_s ) );
+  addParameter( new QgsProcessingParameterFile( u"FOLDER"_s, QObject::tr( "Output folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );
 
 
-  auto layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
+  auto layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( u"LAYERS"_s, QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
@@ -92,23 +92,23 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
       continue;
     imageFormats << QString( format );
   }
-  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( QLatin1String( "png" ) ) );
+  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( u"EXTENSION"_s, QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( "png"_L1 ) );
   extensionParam->setFlags( extensionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extensionParam.release() );
 
-  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( u"DPI"_s, QObject::tr( "DPI (leave blank for default layout DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  auto appendGeorefParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Generate world file" ), true );
+  auto appendGeorefParam = std::make_unique<QgsProcessingParameterBoolean>( u"GEOREFERENCE"_s, QObject::tr( "Generate world file" ), true );
   appendGeorefParam->setFlags( appendGeorefParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( appendGeorefParam.release() );
 
-  auto exportRDFParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
+  auto exportRDFParam = std::make_unique<QgsProcessingParameterBoolean>( u"INCLUDE_METADATA"_s, QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
   exportRDFParam->setFlags( exportRDFParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( exportRDFParam.release() );
 
-  auto antialias = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true );
+  auto antialias = std::make_unique<QgsProcessingParameterBoolean>( u"ANTIALIAS"_s, QObject::tr( "Enable antialiasing" ), true );
   antialias->setFlags( antialias->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialias.release() );
 }
@@ -126,21 +126,21 @@ QgsLayoutAtlasToImageAlgorithm *QgsLayoutAtlasToImageAlgorithm::createInstance()
 QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // this needs to be done in main thread, layouts are not thread safe
-  QgsPrintLayout *l = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
+  QgsPrintLayout *l = parameterAsLayout( parameters, u"LAYOUT"_s, context );
   if ( !l )
-    throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( QStringLiteral( "LAYOUT" ) ).toString() ) );
+    throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( u"LAYOUT"_s ).toString() ) );
 
   std::unique_ptr<QgsPrintLayout> layout( l->clone() );
   QgsLayoutAtlas *atlas = layout->atlas();
 
   QString expression, error;
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "COVERAGE_LAYER" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"COVERAGE_LAYER"_s, context );
   if ( layer )
   {
     atlas->setEnabled( true );
     atlas->setCoverageLayer( layer );
 
-    expression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context );
+    expression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context );
     atlas->setFilterExpression( expression, error );
     atlas->setFilterFeatures( !expression.isEmpty() && error.isEmpty() );
     if ( !expression.isEmpty() && !error.isEmpty() )
@@ -149,10 +149,10 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     }
     error.clear();
 
-    expression = parameterAsString( parameters, QStringLiteral( "SORTBY_EXPRESSION" ), context );
+    expression = parameterAsString( parameters, u"SORTBY_EXPRESSION"_s, context );
     if ( !expression.isEmpty() )
     {
-      const bool sortByReverse = parameterAsBool( parameters, QStringLiteral( "SORTBY_REVERSE" ), context );
+      const bool sortByReverse = parameterAsBool( parameters, u"SORTBY_REVERSE"_s, context );
       atlas->setSortFeatures( true );
       atlas->setSortExpression( expression );
       atlas->setSortAscending( !sortByReverse );
@@ -167,15 +167,15 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Layout being export doesn't have an enabled atlas" ) );
   }
 
-  expression = parameterAsString( parameters, QStringLiteral( "FILENAME_EXPRESSION" ), context );
+  expression = parameterAsString( parameters, u"FILENAME_EXPRESSION"_s, context );
   atlas->setFilenameExpression( expression, error );
   if ( !error.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "Error setting atlas filename expression" ) );
   }
 
-  const QString directory = parameterAsFileOutput( parameters, QStringLiteral( "FOLDER" ), context );
-  const QString fileName = QDir( directory ).filePath( QStringLiteral( "atlas" ) );
+  const QString directory = parameterAsFileOutput( parameters, u"FOLDER"_s, context );
+  const QString fileName = QDir( directory ).filePath( u"atlas"_s );
 
   QStringList imageFormats;
   const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
@@ -185,27 +185,27 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
       continue;
     imageFormats << QString( format );
   }
-  const int idx = parameterAsEnum( parameters, QStringLiteral( "EXTENSION" ), context );
+  const int idx = parameterAsEnum( parameters, u"EXTENSION"_s, context );
   const QString extension = '.' + imageFormats.at( idx );
 
   QgsLayoutExporter::ImageExportSettings settings;
 
-  if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )
+  if ( parameters.value( u"DPI"_s ).isValid() )
   {
-    settings.dpi = parameterAsDouble( parameters, QStringLiteral( "DPI" ), context );
+    settings.dpi = parameterAsDouble( parameters, u"DPI"_s, context );
   }
 
-  settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
-  settings.generateWorldFile = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
+  settings.exportMetadata = parameterAsBool( parameters, u"INCLUDE_METADATA"_s, context );
+  settings.generateWorldFile = parameterAsBool( parameters, u"GEOREFERENCE"_s, context );
 
-  if ( parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context ) )
+  if ( parameterAsBool( parameters, u"ANTIALIAS"_s, context ) )
     settings.flags = settings.flags | Qgis::LayoutRenderFlag::Antialiasing;
   else
     settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::Antialiasing );
 
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
   if ( layers.size() > 0 )
   {
     const QList<QGraphicsItem *> items = layout->items();
@@ -258,7 +258,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   feedback->setProgress( 100 );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "FOLDER" ), directory );
+  outputs.insert( u"FOLDER"_s, directory );
   return outputs;
 }
 

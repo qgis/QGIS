@@ -68,7 +68,7 @@ class CORE_EXPORT QgsTextRenderer
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
-    // TODO QGIS 4.0 -- remove drawAsOutlines from below methods!
+    // TODO QGIS 5.0 -- remove drawAsOutlines from below methods!
 
     /**
      * Draws text within a rectangle using the specified settings.

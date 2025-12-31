@@ -66,10 +66,10 @@ namespace QgsWfs
   QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, QStringList &serverFids, const QgsProject *project = nullptr, const QgsMapLayer *layer = nullptr );
 
   // Define namespaces used in WFS documents
-  const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );
-  const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
-  const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );
-  const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" );
+  const QString WFS_NAMESPACE = u"http://www.opengis.net/wfs"_s;
+  const QString GML_NAMESPACE = u"http://www.opengis.net/gml"_s;
+  const QString OGC_NAMESPACE = u"http://www.opengis.net/ogc"_s;
+  const QString QGS_NAMESPACE = u"http://www.qgis.org/gml"_s;
 
 } // namespace QgsWfs
 

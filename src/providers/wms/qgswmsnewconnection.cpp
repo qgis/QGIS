@@ -27,7 +27,7 @@
 #include "moc_qgswmsnewconnection.cpp"
 
 QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
-  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), connName )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName )
 {
   connect( wmsFormatDetectButton(), &QPushButton::clicked, this, &QgsWmsNewConnection::detectFormat );
   initWmsSpecificSettings();
@@ -66,7 +66,7 @@ void QgsWmsNewConnection::detectFormat()
   QString currentFormat { wmsPreferredFormatCombo()->currentData().toString() };
   if ( currentFormat.isEmpty() )
   {
-    currentFormat = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
+    currentFormat = QgsSettings().value( u"qgis/lastWmsImageEncoding"_s, "image/png" ).toString();
   }
 
   wmsPreferredFormatCombo()->clear();
@@ -91,7 +91,7 @@ void QgsWmsNewConnection::detectFormat()
 
 void QgsWmsNewConnection::initWmsSpecificSettings()
 {
-  QStringList detailsParameters = { QStringLiteral( "wms" ), originalConnectionName() };
+  QStringList detailsParameters = { u"wms"_s, originalConnectionName() };
   QString imageFormat = QgsOwsConnection::settingsDefaultImageFormat->value( detailsParameters );
 
   wmsPreferredFormatCombo()->clear();
@@ -99,7 +99,7 @@ void QgsWmsNewConnection::initWmsSpecificSettings()
   if ( imageFormat.isEmpty() )
   {
     // Read from global default setting
-    imageFormat = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), QStringLiteral( "image/png" ) ).toString();
+    imageFormat = QgsSettings().value( u"qgis/lastWmsImageEncoding"_s, u"image/png"_s ).toString();
   }
 
 

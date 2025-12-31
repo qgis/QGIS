@@ -69,7 +69,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
     QAction *actionDelete = new QAction( wcsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [wcsConnectionItems, context] {
-      QgsDataItemGuiProviderUtils::deleteConnections( wcsConnectionItems, []( const QString &connectionName ) { QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), connectionName ); }, context );
+      QgsDataItemGuiProviderUtils::deleteConnections( wcsConnectionItems, []( const QString &connectionName ) { QgsOwsConnection::deleteConnection( u"WCS"_s, connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
@@ -77,7 +77,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( QgsApplication::instance()->activeWindow(), QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewHttpConnection nc( QgsApplication::instance()->activeWindow(), QgsNewHttpConnection::ConnectionWcs, u"WCS"_s, QString(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
@@ -87,7 +87,7 @@ void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, u"WCS"_s, item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
@@ -99,12 +99,12 @@ void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWcsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wcs" ) } );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { u"wcs"_s } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QStringList detailsParameters { QStringLiteral( "wcs" ), connectionName };
-  const QStringList newDetailsParameters { QStringLiteral( "wcs" ), newConnectionName };
+  const QStringList detailsParameters { u"wcs"_s, connectionName };
+  const QStringList newDetailsParameters { u"wcs"_s, newConnectionName };
 
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 

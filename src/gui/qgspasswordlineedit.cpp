@@ -24,15 +24,15 @@
 QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent, bool passwordVisible )
   : QLineEdit( parent )
 {
-  mShowPasswordIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) );
-  mHidePasswordIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) );
+  mShowPasswordIcon = QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s );
+  mHidePasswordIcon = QgsApplication::getThemeIcon( u"/mActionHideAllLayers.svg"_s );
 
   mActionShowHidePassword = addAction( mShowPasswordIcon, QLineEdit::TrailingPosition );
   mActionShowHidePassword->setCheckable( true );
 
   if ( mLockIconVisible )
   {
-    mActionLock = addAction( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ), QLineEdit::LeadingPosition );
+    mActionLock = addAction( QgsApplication::getThemeIcon( u"/lockedGray.svg"_s ), QLineEdit::LeadingPosition );
   }
 
   setPasswordVisibility( passwordVisible );
@@ -67,7 +67,7 @@ void QgsPasswordLineEdit::setShowLockIcon( bool visible )
   {
     if ( !mActionLock )
     {
-      mActionLock = addAction( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ), QLineEdit::LeadingPosition );
+      mActionLock = addAction( QgsApplication::getThemeIcon( u"/lockedGray.svg"_s ), QLineEdit::LeadingPosition );
     }
   }
   else

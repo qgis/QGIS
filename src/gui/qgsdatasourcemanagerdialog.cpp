@@ -57,7 +57,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( ui->mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsDataSourceManagerDialog::setCurrentPage );
 
   // BROWSER Add the browser widget to the first stacked widget page
-  mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), mBrowserModel, this );
+  mBrowserWidget = new QgsBrowserDockWidget( u"Browser"_s, mBrowserModel, this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   mBrowserWidget->setTitleBarWidget( new QWidget( mBrowserWidget ) );
 
@@ -68,13 +68,13 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   browserWidgetWrapper->layout()->addWidget( browserButtonBox );
 
   connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-browser-panel" ) );
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html#the-browser-panel"_s );
   } );
   connect( browserButtonBox, &QDialogButtonBox::rejected, this, &QgsDataSourceManagerDialog::reject );
 
   ui->mOptionsStackedWidget->addWidget( browserWidgetWrapper );
-  mPageProviderKeys.append( QStringLiteral( "browser" ) );
-  mPageProviderNames.append( QStringLiteral( "browser" ) );
+  mPageProviderKeys.append( u"browser"_s );
+  mPageProviderNames.append( u"browser"_s );
 
   // Forward all browser signals
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgsDataSourceManagerDialog::handleDropUriList );
@@ -89,7 +89,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
     QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
     if ( !dlg )
     {
-      QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), u"DataSourceManager"_s, Qgis::MessageLevel::Critical );
       continue;
     }
     addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon(), provider->toolTip() );
@@ -101,7 +101,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
       QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
       if ( !dlg )
       {
-        QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::MessageLevel::Critical );
+        QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), u"DataSourceManager"_s, Qgis::MessageLevel::Critical );
         return;
       }
       addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon(), provider->toolTip() );

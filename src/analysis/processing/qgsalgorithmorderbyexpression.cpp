@@ -24,7 +24,7 @@
 
 QString QgsOrderByExpressionAlgorithm::name() const
 {
-  return QStringLiteral( "orderbyexpression" );
+  return u"orderbyexpression"_s;
 }
 
 QString QgsOrderByExpressionAlgorithm::displayName() const
@@ -44,17 +44,17 @@ QString QgsOrderByExpressionAlgorithm::group() const
 
 QString QgsOrderByExpressionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 void QgsOrderByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ASCENDING" ), QObject::tr( "Sort ascending" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NULLS_FIRST" ), QObject::tr( "Sort nulls first" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"EXPRESSION"_s, QObject::tr( "Expression" ), QVariant(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterBoolean( u"ASCENDING"_s, QObject::tr( "Sort ascending" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"NULLS_FIRST"_s, QObject::tr( "Sort nulls first" ), false ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Ordered" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Ordered" ) ) );
 }
 
 QString QgsOrderByExpressionAlgorithm::shortHelpString() const
@@ -82,19 +82,19 @@ QgsOrderByExpressionAlgorithm *QgsOrderByExpressionAlgorithm::createInstance() c
 
 QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
+  const QString expressionString = parameterAsExpression( parameters, u"EXPRESSION"_s, context );
 
-  const bool ascending = parameterAsBoolean( parameters, QStringLiteral( "ASCENDING" ), context );
-  const bool nullsFirst = parameterAsBoolean( parameters, QStringLiteral( "NULLS_FIRST" ), context );
+  const bool ascending = parameterAsBoolean( parameters, u"ASCENDING"_s, context );
+  const bool nullsFirst = parameterAsBoolean( parameters, u"NULLS_FIRST"_s, context );
 
   QString sinkId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, sinkId, source->fields(), source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const long count = source->featureCount();
   const double step = count > 0 ? 100.0 / count : 1;
@@ -112,7 +112,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
       break;
     }
     if ( !sink->addFeature( inFeature ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     feedback->setProgress( current * step );
     current++;
   }
@@ -120,7 +120,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );
+  outputs.insert( u"OUTPUT"_s, sinkId );
   return outputs;
 }
 

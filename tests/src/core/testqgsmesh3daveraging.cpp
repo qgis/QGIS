@@ -30,7 +30,7 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsMesh3dAveragingMethod derived classes
  */
-class TestQgsMesh3dAveraging : public QObject
+class TestQgsMesh3DAveraging : public QObject
 {
     Q_OBJECT
   private slots:
@@ -72,7 +72,7 @@ class TestQgsMesh3dAveraging : public QObject
     QgsMesh3DDataBlock vectorBlock;
 };
 
-void TestQgsMesh3dAveraging::compare( const QgsMesh3DAveragingMethod *method, double expected, bool valid )
+void TestQgsMesh3DAveraging::compare( const QgsMesh3DAveragingMethod *method, double expected, bool valid )
 {
   const QgsMeshDataBlock block = method->calculate( scalarBlock );
   if ( !valid )
@@ -105,7 +105,7 @@ void TestQgsMesh3dAveraging::compare( const QgsMesh3DAveragingMethod *method, do
 }
 
 //runs before all tests
-void TestQgsMesh3dAveraging::initTestCase()
+void TestQgsMesh3DAveraging::initTestCase()
 {
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
@@ -134,11 +134,11 @@ void TestQgsMesh3dAveraging::initTestCase()
   vectorBlock.setValid( true );
 }
 //runs after all tests
-void TestQgsMesh3dAveraging::cleanupTestCase()
+void TestQgsMesh3DAveraging::cleanupTestCase()
 {
 }
 
-void TestQgsMesh3dAveraging::testMeshSingleLevelFromTopAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshSingleLevelFromTopAveragingMethod_data()
 {
   QTest::addColumn<int>( "level" );
   QTest::addColumn<double>( "expected" );
@@ -151,7 +151,7 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromTopAveragingMethod_data()
   QTest::newRow( "outside" ) << 111 << std::numeric_limits<double>::quiet_NaN();
 }
 
-void TestQgsMesh3dAveraging::testMeshSingleLevelFromTopAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshSingleLevelFromTopAveragingMethod()
 {
   QFETCH( int, level );
   QFETCH( double, expected );
@@ -174,7 +174,7 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromTopAveragingMethod()
   vectorBlock.setVerticalLevels( verticalLevels );
 }
 
-void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshSingleLevelFromBottomAveragingMethod_data()
 {
   QTest::addColumn<int>( "level" );
   QTest::addColumn<double>( "expected" );
@@ -187,7 +187,7 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod_data()
   QTest::newRow( "outside" ) << 111 << std::numeric_limits<double>::quiet_NaN();
 }
 
-void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshSingleLevelFromBottomAveragingMethod()
 {
   QFETCH( int, level );
   QFETCH( double, expected );
@@ -210,7 +210,7 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod()
   vectorBlock.setVerticalLevels( verticalLevels );
 }
 
-void TestQgsMesh3dAveraging::testMeshMultiLevelsFromTopAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshMultiLevelsFromTopAveragingMethod_data()
 {
   QTest::addColumn<int>( "startLevel" );
   QTest::addColumn<int>( "endLevel" );
@@ -227,7 +227,7 @@ void TestQgsMesh3dAveraging::testMeshMultiLevelsFromTopAveragingMethod_data()
   QTest::newRow( "reverted" ) << 111 << 1 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
-void TestQgsMesh3dAveraging::testMeshMultiLevelsFromTopAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshMultiLevelsFromTopAveragingMethod()
 {
   QFETCH( int, startLevel );
   QFETCH( int, endLevel );
@@ -237,7 +237,7 @@ void TestQgsMesh3dAveraging::testMeshMultiLevelsFromTopAveragingMethod()
   compare( &method, expected, startLevel >= 1 && endLevel >= 1 );
 }
 
-void TestQgsMesh3dAveraging::testMeshMultiLevelsFromBottomAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshMultiLevelsFromBottomAveragingMethod_data()
 {
   QTest::addColumn<int>( "startLevel" );
   QTest::addColumn<int>( "endLevel" );
@@ -254,7 +254,7 @@ void TestQgsMesh3dAveraging::testMeshMultiLevelsFromBottomAveragingMethod_data()
   QTest::newRow( "reverted" ) << 111 << 1 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
-void TestQgsMesh3dAveraging::testMeshMultiLevelsFromBottomAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshMultiLevelsFromBottomAveragingMethod()
 {
   QFETCH( int, startLevel );
   QFETCH( int, endLevel );
@@ -264,7 +264,7 @@ void TestQgsMesh3dAveraging::testMeshMultiLevelsFromBottomAveragingMethod()
   compare( &method, expected, startLevel >= 1 && endLevel >= 1 );
 }
 
-void TestQgsMesh3dAveraging::testMeshSigmaAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshSigmaAveragingMethod_data()
 {
   QTest::addColumn<double>( "startParam" );
   QTest::addColumn<double>( "endParam" );
@@ -276,7 +276,7 @@ void TestQgsMesh3dAveraging::testMeshSigmaAveragingMethod_data()
   QTest::newRow( "full" ) << 0.0 << 1.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
-void TestQgsMesh3dAveraging::testMeshSigmaAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshSigmaAveragingMethod()
 {
   QFETCH( double, startParam );
   QFETCH( double, endParam );
@@ -286,7 +286,7 @@ void TestQgsMesh3dAveraging::testMeshSigmaAveragingMethod()
   compare( &method, expected, startParam >= 0 && endParam <= 1 );
 }
 
-void TestQgsMesh3dAveraging::testMeshDepthAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshDepthAveragingMethod_data()
 {
   QTest::addColumn<double>( "startParam" );
   QTest::addColumn<double>( "endParam" );
@@ -298,7 +298,7 @@ void TestQgsMesh3dAveraging::testMeshDepthAveragingMethod_data()
   QTest::newRow( "full" ) << 0.0 << 10.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
-void TestQgsMesh3dAveraging::testMeshDepthAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshDepthAveragingMethod()
 {
   QFETCH( double, startParam );
   QFETCH( double, endParam );
@@ -308,7 +308,7 @@ void TestQgsMesh3dAveraging::testMeshDepthAveragingMethod()
   compare( &method, expected, startParam >= 0 );
 }
 
-void TestQgsMesh3dAveraging::testMeshHeightAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshHeightAveragingMethod_data()
 {
   QTest::addColumn<double>( "startParam" );
   QTest::addColumn<double>( "endParam" );
@@ -320,7 +320,7 @@ void TestQgsMesh3dAveraging::testMeshHeightAveragingMethod_data()
   QTest::newRow( "full" ) << 0.0 << 10.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
-void TestQgsMesh3dAveraging::testMeshHeightAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshHeightAveragingMethod()
 {
   QFETCH( double, startParam );
   QFETCH( double, endParam );
@@ -330,7 +330,7 @@ void TestQgsMesh3dAveraging::testMeshHeightAveragingMethod()
   compare( &method, expected, startParam >= 0 );
 }
 
-void TestQgsMesh3dAveraging::testMeshElevationAveragingMethod_data()
+void TestQgsMesh3DAveraging::testMeshElevationAveragingMethod_data()
 {
   QTest::addColumn<double>( "startParam" );
   QTest::addColumn<double>( "endParam" );
@@ -342,7 +342,7 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethod_data()
   QTest::newRow( "full" ) << 0.0 << -10.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
-void TestQgsMesh3dAveraging::testMeshElevationAveragingMethod()
+void TestQgsMesh3DAveraging::testMeshElevationAveragingMethod()
 {
   QFETCH( double, startParam );
   QFETCH( double, endParam );
@@ -352,7 +352,7 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethod()
   compare( &method, expected, startParam <= 0 );
 }
 
-void TestQgsMesh3dAveraging::testMeshElevationAveragingMethodVariableMesh()
+void TestQgsMesh3DAveraging::testMeshElevationAveragingMethodVariableMesh()
 {
   // Test the situation when the number of vertical levels is different for
   // each face and also that for face 1 the vertical levels are outside of
@@ -381,5 +381,5 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethodVariableMesh()
   QCOMPARE( block.value( 2 ).scalar(), ( 200 + 300 + 400 + 500 ) / 4.0 );
 }
 
-QGSTEST_MAIN( TestQgsMesh3dAveraging )
+QGSTEST_MAIN( TestQgsMesh3DAveraging )
 #include "testqgsmesh3daveraging.moc"

@@ -16,42 +16,26 @@
 #include "qgsline3dsymbol_p.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsgeos.h"
 #include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
-#include "qgstessellatedpolygongeometry.h"
-#include "qgstessellator.h"
-
-//#include "qgsterraingenerator.h"
-#include "qgs3dutils.h"
-
-#include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
-#include "qgsgeos.h"
-#include "qgssimplelinematerialsettings.h"
-#include "qgspolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
-#include "qgsmessagelog.h"
+#include "qgspolygon.h"
+#include "qgssimplelinematerialsettings.h"
+#include "qgstessellatedpolygongeometry.h"
+#include "qgstessellator.h"
+#include "qgsvectorlayer.h"
 
-#include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QPhongMaterial>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
+#include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QGeometryRenderer>
 
 /// @cond PRIVATE
@@ -403,7 +387,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   // geometry renderer
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
-  Qt3DQGeometry *geometry = lineVertexData.createGeometry( entity );
+  Qt3DCore::QGeometry *geometry = lineVertexData.createGeometry( entity );
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) )
     mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, lineVertexData.vertices.size(), lineVertexData.materialDataDefined );

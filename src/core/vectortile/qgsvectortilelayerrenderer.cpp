@@ -77,14 +77,14 @@ QgsVectorTileLayerRenderer::~QgsVectorTileLayerRenderer() = default;
 
 bool QgsVectorTileLayerRenderer::render()
 {
-  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {
-    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ), layerId() );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, u"rendering"_s, layerId() );
     if ( mPreparationTime > 0 )
-      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, u"rendering"_s );
   }
 
   QgsRenderContext &ctx = *renderContext();
@@ -95,7 +95,7 @@ bool QgsVectorTileLayerRenderer::render()
   std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
   if ( mEnableProfile )
   {
-    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), u"rendering"_s );
   }
 
   mDataProvider->moveToThread( QThread::currentThread() );
@@ -136,23 +136,23 @@ bool QgsVectorTileLayerRenderer::render()
     }
     catch ( QgsCsException &cs )
     {
-      QgsDebugError( QStringLiteral( "Could not transform map extent to layer extent -- cannot calculate valid extent for vector tiles, aborting: %1" ).arg( cs.what() ) );
+      QgsDebugError( u"Could not transform map extent to layer extent -- cannot calculate valid extent for vector tiles, aborting: %1"_s.arg( cs.what() ) );
       return false;
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + extent.toString( -1 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( tileRenderScale ), 2 );
+  QgsDebugMsgLevel( u"Vector tiles rendering extent: "_s + extent.toString( -1 ), 2 );
+  QgsDebugMsgLevel( u"Vector tiles map scale 1 : %1"_s.arg( tileRenderScale ), 2 );
 
   mTileZoomToFetch = mTileMatrixSet.scaleToZoomLevel( tileRenderScale );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoomToFetch ), 2 );
+  QgsDebugMsgLevel( u"Vector tiles zoom level: %1"_s.arg( mTileZoomToFetch ), 2 );
   mTileZoomToRender = mTileMatrixSet.scaleToZoomLevel( tileRenderScale, false );
-  QgsDebugMsgLevel( QStringLiteral( "Render zoom level: %1" ).arg( mTileZoomToRender ), 2 );
+  QgsDebugMsgLevel( u"Render zoom level: %1"_s.arg( mTileZoomToRender ), 2 );
 
   mTileMatrix = mTileMatrixSet.tileMatrix( mTileZoomToFetch );
 
   mTileRange = mTileMatrix.tileRangeFromExtent( extent );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4 (%5 tiles total)" )
+  QgsDebugMsgLevel( u"Vector tiles range X: %1 - %2  Y: %3 - %4 (%5 tiles total)"_s
                     .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
                     .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ).arg( mTileRange.count() ), 2 );
 
@@ -161,7 +161,7 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( !mTileRange.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Vector tiles - outside of range" ), 2 );
+    QgsDebugMsgLevel( u"Vector tiles - outside of range"_s, 2 );
     return true;   // nothing to do
   }
 
@@ -169,7 +169,7 @@ bool QgsVectorTileLayerRenderer::render()
   std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
   if ( mEnableProfile )
   {
-    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), u"rendering"_s );
   }
 
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
@@ -179,15 +179,15 @@ bool QgsVectorTileLayerRenderer::render()
     QElapsedTimer tFetch;
     tFetch.start();
     rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mDataProvider.get(), mTileMatrixSet, viewCenter, mTileRange, mTileZoomToFetch, mFeedback.get() );
-    QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
+    QgsDebugMsgLevel( u"Tile fetching time: %1"_s.arg( tFetch.elapsed() / 1000. ), 2 );
+    QgsDebugMsgLevel( u"Fetched tiles: %1"_s.arg( rawTiles.count() ), 2 );
   }
   else
   {
     asyncLoader = std::make_unique<QgsVectorTileLoader>( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
+      QgsDebugMsgLevel( u"Got tile asynchronously: "_s + rawTile.id.toString(), 2 );
       if ( !rawTile.data.isEmpty() )
         decodeAndDrawTile( rawTile );
     } );
@@ -198,8 +198,8 @@ bool QgsVectorTileLayerRenderer::render()
 
   // add @zoom_level and @vector_tile_zoom variables which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
-  scope->setVariable( QStringLiteral( "zoom_level" ), mTileZoomToRender, true );
-  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), mTileMatrixSet.scaleToZoom( tileRenderScale ), true );
+  scope->setVariable( u"zoom_level"_s, mTileZoomToRender, true );
+  scope->setVariable( u"vector_tile_zoom"_s, mTileMatrixSet.scaleToZoom( tileRenderScale ), true );
   const QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoomToRender, mTileRange );
@@ -271,9 +271,9 @@ bool QgsVectorTileLayerRenderer::render()
 
   mRenderer->stopRender( ctx );
 
-  QgsDebugMsgLevel( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ), 2 );
+  QgsDebugMsgLevel( u"Total time for decoding: %1"_s.arg( mTotalDecodeTime / 1000. ), 2 );
+  QgsDebugMsgLevel( u"Drawing time: %1"_s.arg( mTotalDrawTime / 1000. ), 2 );
+  QgsDebugMsgLevel( u"Total time: %1"_s.arg( tTotal.elapsed() / 1000. ), 2 );
 
   return !ctx.renderingStopped();
 }
@@ -303,7 +303,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 {
   QgsRenderContext &ctx = *renderContext();
 
-  QgsDebugMsgLevel( QStringLiteral( "Drawing tile " ) + rawTile.id.toString(), 2 );
+  QgsDebugMsgLevel( u"Drawing tile "_s + rawTile.id.toString(), 2 );
 
   QElapsedTimer tLoad;
   tLoad.start();
@@ -312,7 +312,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   QgsVectorTileMVTDecoder decoder( mTileMatrixSet );
   if ( !decoder.decode( rawTile ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString(), 2 );
+    QgsDebugMsgLevel( u"Failed to parse raw tile data! "_s + rawTile.id.toString(), 2 );
     return;
   }
 
@@ -333,7 +333,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Failed to generate tile polygon " ) + rawTile.id.toString(), 2 );
+    QgsDebugMsgLevel( u"Failed to generate tile polygon "_s + rawTile.id.toString(), 2 );
     return;
   }
 

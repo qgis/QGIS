@@ -79,7 +79,7 @@ QString QgsGeometryIsValidCheck::factoryDescription()
 
 QString QgsGeometryIsValidCheck::factoryId()
 {
-  return QStringLiteral( "QgsIsValidCheck" );
+  return u"QgsIsValidCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryIsValidCheck::factoryFlags()

@@ -86,7 +86,7 @@ void QgsTiledSceneChunkLoader::start()
     if ( !isGlobe && hasLargeBounds( tile, boundsTransform ) )
       return;
 
-    QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
+    QString uri = tile.resources().value( u"content"_s ).toString();
     if ( uri.isEmpty() )
     {
       // nothing to show for this tile
@@ -109,11 +109,11 @@ void QgsTiledSceneChunkLoader::start()
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = mZValueScale;
     entityTransform.zValueOffset = mZValueOffset;
-    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
-    const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
+    const QString &format = tile.metadata().value( u"contentFormat"_s ).value<QString>();
     QStringList errors;
-    if ( format == QLatin1String( "quantizedmesh" ) )
+    if ( format == "quantizedmesh"_L1 )
     {
       try
       {
@@ -124,10 +124,10 @@ void QgsTiledSceneChunkLoader::start()
       }
       catch ( QgsQuantizedMeshParsingException &ex )
       {
-        errors.append( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
+        errors.append( u"Failed to parse tile from '%1'"_s.arg( uri ) );
       }
     }
-    else if ( format == QLatin1String( "cesiumtiles" ) )
+    else if ( format == "cesiumtiles"_L1 )
     {
       const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
       if ( tileContent.gltf.isEmpty() )
@@ -135,7 +135,7 @@ void QgsTiledSceneChunkLoader::start()
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
       mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
     }
-    else if ( format == QLatin1String( "draco" ) )
+    else if ( format == "draco"_L1 )
     {
       QgsGltfUtils::I3SNodeContext i3sContext;
       i3sContext.initFromTile( tile, mFactory.mLayerCrs, mFactory.mBoundsTransform.sourceCrs(), mFactory.mRenderContext.transformContext() );
@@ -263,7 +263,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
     // XXX: This check doesn't work for Quantized Mesh layers and possibly some
     // Cesium 3D tiles as well. For now this hack is in place to make sure both
     // work in practice.
-    if ( t.metadata()["contentFormat"] == QStringLiteral( "cesiumtiles" )
+    if ( t.metadata()["contentFormat"] == u"cesiumtiles"_s
          && mRenderContext.crs().type() != Qgis::CrsType::Geocentric
          && hasLargeBounds( t, mBoundsTransform ) )
     {
@@ -402,7 +402,7 @@ int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
 QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context );
-  QgsDebugMsgLevel( QStringLiteral( "Ray cast on tiled scene layer" ), 2 );
+  QgsDebugMsgLevel( u"Ray cast on tiled scene layer"_s, 2 );
 #ifdef QGISDEBUG
   int nodeUsed = 0;
   int nodesAll = 0;
@@ -460,10 +460,10 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     QVariantMap vm;
     QgsTiledSceneTile tile = mIndex.getTile( minNode->tileId().uniqueId );
     // at this point this is mostly for debugging - we may want to change/rename what's returned here
-    vm[QStringLiteral( "node_id" )] = tile.id();
-    vm[QStringLiteral( "node_error" )] = tile.geometricError();
-    vm[QStringLiteral( "node_content" )] = tile.resources().value( QStringLiteral( "content" ) );
-    vm[QStringLiteral( "triangle_index" )] = minTriangleIndex;
+    vm[u"node_id"_s] = tile.id();
+    vm[u"node_error"_s] = tile.geometricError();
+    vm[u"node_content"_s] = tile.resources().value( u"content"_s );
+    vm[u"triangle_index"_s] = minTriangleIndex;
 
     QgsRayCastHit hit;
     hit.setDistance( minDist );
@@ -472,7 +472,7 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     result.append( hit );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
+  QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ), 2 );
   return result;
 }
 

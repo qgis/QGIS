@@ -26,7 +26,7 @@
 
 QString QgsCalculateVectorOverlapsAlgorithm::name() const
 {
-  return QStringLiteral( "calculatevectoroverlaps" );
+  return u"calculatevectoroverlaps"_s;
 }
 
 QString QgsCalculateVectorOverlapsAlgorithm::displayName() const
@@ -46,28 +46,28 @@ QString QgsCalculateVectorOverlapsAlgorithm::group() const
 
 QString QgsCalculateVectorOverlapsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 void QgsCalculateVectorOverlapsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Overlay layers" ), Qgis::ProcessingSourceType::VectorPolygon ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Overlay layers" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Overlap" ) ) );
 
-  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "GRID_SIZE" ), QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( u"GRID_SIZE"_s, QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }
 
 QIcon QgsCalculateVectorOverlapsAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmClip.svg" ) );
+  return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmClip.svg"_s );
 }
 
 QString QgsCalculateVectorOverlapsAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmClip.svg" ) );
+  return QgsApplication::iconPath( u"/algorithms/mAlgorithmClip.svg"_s );
 }
 
 QString QgsCalculateVectorOverlapsAlgorithm::shortHelpString() const
@@ -96,13 +96,13 @@ QgsCalculateVectorOverlapsAlgorithm *QgsCalculateVectorOverlapsAlgorithm::create
 
 bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !mSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   mOutputFields = mSource->fields();
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
   mOverlayerSources.reserve( layers.size() );
   mLayerNames.reserve( layers.size() );
   for ( QgsMapLayer *layer : layers )
@@ -112,8 +112,8 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
       mLayerNames << layer->name();
       mOverlayerSources.emplace_back( std::make_unique<QgsVectorLayerFeatureSource>( vl ) );
       QgsFields newFields;
-      newFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QMetaType::Type::Double ) );
-      newFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QMetaType::Type::Double ) );
+      newFields.append( QgsField( u"%1_area"_s.arg( vl->name() ), QMetaType::Type::Double ) );
+      newFields.append( QgsField( u"%1_pc"_s.arg( vl->name() ), QMetaType::Type::Double ) );
       mOutputFields = QgsProcessingUtils::combineFields( mOutputFields, newFields );
     }
   }
@@ -128,9 +128,9 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString destId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mOutputFields, mOutputType, mCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, destId, mOutputFields, mOutputType, mCrs ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   // build a spatial index for each constraint layer for speed. We also store input constraint geometries here,
   // to avoid refetching and projecting them later
@@ -149,9 +149,9 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   da.setEllipsoid( context.ellipsoid() );
 
   QgsGeometryParameters geometryParameters;
-  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  if ( parameters.value( u"GRID_SIZE"_s ).isValid() )
   {
-    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+    geometryParameters.setGridSize( parameterAsDouble( parameters, u"GRID_SIZE"_s, context ) );
   }
 
   // loop through input
@@ -242,7 +242,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
 
     feature.setAttributes( outAttributes );
     if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
     i++;
     feedback->setProgress( i * step );
@@ -251,7 +251,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), destId );
+  outputs.insert( u"OUTPUT"_s, destId );
   return outputs;
 }
 

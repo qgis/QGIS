@@ -603,9 +603,9 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns the preferred raster format to use for raster outputs.
      *
-     * This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
-     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * This method returns a file format to use when creating raster outputs (e.g. "GTiff"). Generally,
+     * it is preferable to use the format associated with a particular parameter, which can be retrieved through
+     * QgsProcessingParameterRasterDestination::defaultFileFormat(). However, in some cases, a specific parameter
      * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
      * and which creates multiple output layers in that folder). In this case, the format returned by this
      * function should be used when creating these outputs.
@@ -616,6 +616,8 @@ class CORE_EXPORT QgsProcessingContext
      * \see setPreferredRasterFormat()
      * \see preferredVectorFormat()
      *
+     * \note Since QGIS 4.0, this method returns a GDAL format name. In prior versions, this was a file extension.
+     *
      * \since QGIS 3.10
      */
     QString preferredRasterFormat() const SIP_HOLDGIL { return mPreferredRasterFormat; }
@@ -623,15 +625,17 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Sets the preferred raster \a format to use for raster outputs.
      *
-     * This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
-     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * This method sets a file format to use when creating raster outputs (e.g. "GTiff"). Generally,
+     * it is preferable to use the format associated with a particular parameter, which can be retrieved through
+     * QgsProcessingParameterRasterDestination::defaultFileFormat(). However, in some cases, a specific parameter
      * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
      * and which creates multiple output layers in that folder). In this case, the format set by this
      * function will be used when creating these outputs.
      *
      * \see preferredRasterFormat()
      * \see setPreferredVectorFormat()
+     *
+     * \note Since QGIS 4.0, this method expects a GDAL format name. In prior versions, this was a file extension.
      *
      * \since QGIS 3.10
      */

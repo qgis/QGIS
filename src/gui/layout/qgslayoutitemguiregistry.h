@@ -100,7 +100,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Returns an icon representing creation of the layout item type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( u"/mActionAddBasicRectangle.svg"_s ); }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not

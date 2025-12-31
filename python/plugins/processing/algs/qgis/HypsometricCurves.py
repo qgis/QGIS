@@ -103,6 +103,17 @@ class HypsometricCurves(QgisAlgorithm):
     def displayName(self):
         return self.tr("Hypsometric curves")
 
+    def shortDescription(self):
+        return self.tr(
+            "Computes hypsometric curves for an input Digital Elevation Model (DEM) as table files."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm computes hypsometric curves for an input Digital Elevation Model (DEM). "
+            "Curves are produced as table files in an output folder specified by the user."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             import numpy

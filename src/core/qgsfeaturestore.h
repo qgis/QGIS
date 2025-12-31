@@ -63,6 +63,8 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**

@@ -87,7 +87,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
 
 QString QgsLine3DSymbolWidget::symbolType() const
 {
-  return QStringLiteral( "line" );
+  return u"line"_s;
 }
 
 void QgsLine3DSymbolWidget::updateGuiState()
