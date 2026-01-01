@@ -15,6 +15,8 @@
 
 #include "qgsauthorizationsettings.h"
 
+#include "qgslogger.h"
+
 QgsAuthorizationSettings::QgsAuthorizationSettings( const QString &userName, const QString &password, const QgsHttpHeaders &httpHeaders, const QString &authcfg )
   : mUserName( userName )
   , mPassword( password )
@@ -26,7 +28,12 @@ bool QgsAuthorizationSettings::setAuthorization( QNetworkRequest &request ) cons
 {
   if ( !mAuthCfg.isEmpty() ) // must be non-empty value
   {
+#ifdef HAVE_AUTH
     return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
+#else
+    QgsDebugError( u"Auth manager is not available - cannot update network request for authcfg: %1"_s.arg( mAuthCfg ) );
+    return false;
+#endif
   }
   else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
   {

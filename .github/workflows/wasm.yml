@@ -1,0 +1,109 @@
+name: 🦊 Web Assembly (WASM)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      VCPKG_HOST_TRIPLET: x64-linux-release
+      VCPKG_TARGET_TRIPLET: wasm32-emscripten-release
+    steps:
+      - name: ♻️ Check disk space
+        run: df . -h
+
+      - name: 🧹 Reclaim disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android/
+          sudo rm -rf /opt/*
+
+      - name: ♻️ Check disk space
+        run: df . -h
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: 🐩 Install CMake and Ninja
+        uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # latest
+        with:
+          # Pin to specific version to avoid rebuilding too often
+          # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
+          cmakeVersion: 3.30.4
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: 🎡 Setup vcpkg
+        id: setup-vcpkg
+        uses: ./.github/actions/setup-vcpkg
+
+      - name: Set up Emscripten
+        uses: actions/checkout@v6
+        with:
+          repository: emscripten-core/emsdk
+          fetch-depth: 0
+          ref: 4.0.22
+          path: emsdk
+
+      - name: Install and activate Emscripten
+        run: |
+          cd emsdk
+          ./emsdk install 4.0.22
+          ./emsdk activate 4.0.22
+          echo "EMSDK=$(pwd)" >> "$GITHUB_ENV"
+
+      - name: 🔨 Prepare build env
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gperf autopoint '^libxcb.*-dev' libx11-xcb-dev libsm-dev libegl1-mesa libegl1-mesa-dev libgl1-mesa-dev libglu1-mesa-dev mesa-common-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxrandr-dev libxxf86vm-dev autoconf-archive libgstreamer-gl1.0-0 libgstreamer-plugins-base1.0-0 libfuse2 libpulse-dev libcups2-dev nasm python3-tk
+
+      - name: Configure QGIS build for WASM
+        run: |
+          cmake -S . -B build \
+          -GNinja \
+          -DWITH_GUI=OFF \
+          -DWITH_DESKTOP=OFF \
+          -DWITH_BINDINGS=OFF \
+          -DWITH_3D=OFF \
+          -DWITH_OPENCL=OFF \
+          -DWITH_VCPKG=ON \
+          -DVCPKG_TARGET_TRIPLET=${VCPKG_TARGET_TRIPLET} \
+          -DVCPKG_HOST_TRIPLET=${VCPKG_HOST_TRIPLET} \
+          -DVCPKG_INSTALL_OPTIONS="" \
+          -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake \
+          -DWITH_EXIV2=OFF \
+          -DWITH_PDAL=OFF \
+          -DWITH_DRACO=OFF \
+          -DWITH_QTSERIALPORT=OFF \
+          -DWITH_QTPOSITIONING=OFF \
+          -DWITH_QTWEBENGINE=OFF \
+          -DWITH_AUTH=OFF \
+          -DQT_HOST_PATH=$(pwd)/build/vcpkg_installed/${VCPKG_HOST_TRIPLET} \
+          -DQT_HOST_PATH_CMAKE_DIR:PATH=$(pwd)/build/vcpkg_installed/${VCPKG_HOST_TRIPLET}/share \
+          -DWITH_SPATIALITE=OFF \
+          -DFORCE_STATIC_LIBS=ON \
+          -DNATIVE_CRSSYNC_BIN=/bin/true \
+          -DENABLE_TESTS=ON \
+          -DWITH_ANALYSIS=OFF \
+          -DWITH_QGIS_PROCESS=OFF \
+          -DCMAKE_EXE_LINKER_FLAGS_INIT="-s INITIAL_MEMORY=64MB -s ALLOW_MEMORY_GROWTH=1" \
+          -DNUGET_USERNAME=${{ github.actor }} \
+          -DNUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+          -DNUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build QGIS for WASM 
+        run: |
+          cmake --build build --target qgis_bench

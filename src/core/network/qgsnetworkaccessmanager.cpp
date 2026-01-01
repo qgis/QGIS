@@ -434,6 +434,45 @@ void QgsNetworkAccessManager::onReplyDownloadProgress( qint64 bytesReceived, qin
   }
 }
 
+int QgsNetworkAccessManager::getRequestId( QNetworkReply *reply )
+{
+  return reply->property( "requestId" ).toInt();
+}
+
+void QgsNetworkAccessManager::pauseTimeout( QNetworkReply *reply )
+{
+  Q_ASSERT( reply->manager() == this );
+
+  QTimer *timer = reply->findChild<QTimer *>( u"timeoutTimer"_s );
+  if ( timer && timer->isActive() )
+  {
+    timer->stop();
+  }
+}
+
+void QgsNetworkAccessManager::restartTimeout( QNetworkReply *reply )
+{
+  Q_ASSERT( reply->manager() == this );
+  // restart reply timeout
+  QTimer *timer = reply->findChild<QTimer *>( u"timeoutTimer"_s );
+  if ( timer )
+  {
+    Q_ASSERT( !timer->isActive() );
+    QgsDebugMsgLevel( u"Restarting network reply timeout"_s, 2 );
+    timer->setSingleShot( true );
+    timer->start( timeout() );
+  }
+}
+
+void QgsNetworkAccessManager::afterAuthRequestHandled( QNetworkReply *reply )
+{
+  if ( reply->manager() == this )
+  {
+    restartTimeout( reply );
+    emit authRequestHandled( reply );
+  }
+}
+
 #ifndef QT_NO_SSL
 void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
 {
@@ -469,45 +508,6 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
     restartTimeout( reply );
     emit sslErrorsHandled( reply );
   }
-}
-
-void QgsNetworkAccessManager::afterAuthRequestHandled( QNetworkReply *reply )
-{
-  if ( reply->manager() == this )
-  {
-    restartTimeout( reply );
-    emit authRequestHandled( reply );
-  }
-}
-
-void QgsNetworkAccessManager::pauseTimeout( QNetworkReply *reply )
-{
-  Q_ASSERT( reply->manager() == this );
-
-  QTimer *timer = reply->findChild<QTimer *>( u"timeoutTimer"_s );
-  if ( timer && timer->isActive() )
-  {
-    timer->stop();
-  }
-}
-
-void QgsNetworkAccessManager::restartTimeout( QNetworkReply *reply )
-{
-  Q_ASSERT( reply->manager() == this );
-  // restart reply timeout
-  QTimer *timer = reply->findChild<QTimer *>( u"timeoutTimer"_s );
-  if ( timer )
-  {
-    Q_ASSERT( !timer->isActive() );
-    QgsDebugMsgLevel( u"Restarting network reply timeout"_s, 2 );
-    timer->setSingleShot( true );
-    timer->start( timeout() );
-  }
-}
-
-int QgsNetworkAccessManager::getRequestId( QNetworkReply *reply )
-{
-  return reply->property( "requestId" ).toInt();
 }
 
 void QgsNetworkAccessManager::handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
@@ -748,10 +748,14 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     const QString authcfg = settings.value( u"proxy/authcfg"_s, "" ).toString();
     if ( !authcfg.isEmpty( ) )
     {
+#ifdef HAVE_AUTH
       QgsDebugMsgLevel( u"setting proxy from stored authentication configuration %1"_s.arg( authcfg ), 2 );
       // Never crash! Never.
       if ( QgsAuthManager *authManager = QgsApplication::authManager() )
         authManager->updateNetworkProxy( proxy, authcfg );
+#else
+      QgsDebugError( u"Auth manager is not available - cannot update network proxy for authcfg: %1"_s.arg( authcfg ) );
+#endif
     }
   }
 
