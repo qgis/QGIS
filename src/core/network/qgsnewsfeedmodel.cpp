@@ -131,7 +131,6 @@ int QgsNewsFeedModel::columnCount( const QModelIndex & ) const
 
 void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
 {
-  qDebug() << "onEntryAdded" << entry.title;
   beginInsertRows( QModelIndex(), mEntries.count(), mEntries.count() );
   mEntries.append( entry );
   endInsertRows();

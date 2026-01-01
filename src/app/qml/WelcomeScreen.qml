@@ -22,7 +22,7 @@ Item {
     anchors.left: parent.left
     anchors.leftMargin: 30
     width: parent.width - 60
-    height: parent.height - (updateBar.visible ? updateBar.height - 10 : 0) - 80
+    height: parent.height - (qgisUpdateBar.visible ? qgisUpdateBar.height - 10 : 0) - 80
     radius: 10
     color: "#252a34"
     clip: true
@@ -99,8 +99,8 @@ Item {
             }
             
             BusyIndicator {
-              width: 22
-              height: 22
+              Layout.preferredWidth: 28
+              Layout.preferredHeight: 28
               running: newsFeedParser.isFetching
             }
 
@@ -126,7 +126,7 @@ Item {
                 x: newsSwitch.checked ? 10 : 30
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("News")
-                font.pointSize: Application.font.pointSize * 0.6
+                font.pointSize: Application.font.pointSize * 0.8
                 font.bold: true
                 color: newsSwitch.checked ? "#ffffff" : "#666666"
               }
@@ -183,7 +183,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 16
                 text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                font.pointSize: Application.font.pointSize * 0.6
+                font.pointSize: Application.font.pointSize * 0.8
                 color: "black"
                 wrapMode: Text.WordWrap
                 lineHeight: 1.3
@@ -212,7 +212,7 @@ Item {
                 Text {
                   Layout.fillWidth: true
                   text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
-                  font.pointSize: Application.font.pointSize * 0.6
+                  font.pointSize: Application.font.pointSize * 0.8
                   color: "black"
                   wrapMode: Text.WordWrap
                 }
@@ -229,7 +229,7 @@ Item {
                     id: enableNewsText
                     anchors.centerIn: parent
                     text: qsTr("Enable news feed")
-                    font.pointSize: Application.font.pointSize * 0.6
+                    font.pointSize: Application.font.pointSize * 0.8
                     color: "black"
                   }
 
@@ -478,17 +478,17 @@ Item {
       anchors.bottomMargin: 0
 
       onSupportClicked: {
-        Qt.openUrlExternally("https://qgis.org/funding/donate/")
+        Qt.openUrlExternally("https://www.qgis.org/funding/donate/")
       }
 
       onWebsiteClicked: {
-        Qt.openUrlExternally("https://qgis.org")
+        Qt.openUrlExternally("https://www.qgis.org/")
       }
     }
   }
 
   UpdateNotificationBar {
-    id: updateBar
+    id: qgisUpdateBar
     width: parent.width - 60
     height: 50
     radius: 16
@@ -509,14 +509,19 @@ Item {
     }
 
     onInstallClicked: {
-      console.log("Install updates clicked")
-    }
-
-    onCloseClicked: {
-      updateBar.visible = false
+      Qt.openUrlExternally("https://download.qgis.org/")
     }
   }
   
+  Connections {
+    target: welcomeScreenController
+    
+    function onNewVersionAvailable(versionString) {
+      qgisUpdateBar.message = qsTr("QGIS %1 is out!").arg(versionString);
+      qgisUpdateBar.visible = true;
+    }
+  }
+
   Component.onCompleted: {
     if (newsFeedParser.enabled) {
       newsFeedParser.fetch();

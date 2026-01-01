@@ -5,11 +5,10 @@ import QtQuick.Controls
 Rectangle {
   id: root
 
-  property string message: "An update to the QuickOSM plugin is available"
-  property string buttonText: "Install updates"
+  property string message: ""
+  property string buttonText: qsTr("Install update")
 
   signal installClicked
-  signal closeClicked
 
   RowLayout {
     anchors.fill: parent
@@ -30,7 +29,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenterOffset: 1
         text: "!"
-        font.pointSize: Application.font.pointSize * 0.6
+        font.pointSize: Application.font.pointSize * 0.8
         font.bold: true
         color: "#f0e64a"
       }
@@ -40,7 +39,7 @@ Rectangle {
       Layout.fillWidth: true
       Layout.alignment: Qt.AlignVCenter
       text: root.message
-      font.pointSize: Application.font.pointSize * 0.6
+      font.pointSize: Application.font.pointSize * 0.8
       color: "#ffffff"
       elide: Text.ElideRight
     }
@@ -57,7 +56,7 @@ Rectangle {
         id: installButtonText
         anchors.centerIn: parent
         text: root.buttonText
-        font.pointSize: Application.font.pointSize * 0.6
+        font.pointSize: Application.font.pointSize * 0.8
         font.bold: true
         color: "#ffffff"
       }
@@ -69,19 +68,6 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
         onClicked: root.installClicked()
       }
-    }
-
-    RoundButton {
-      Layout.minimumWidth: 16
-      Layout.minimumHeight: 16
-      Layout.alignment: Qt.AlignVCenter
-
-      flat: true
-      icon.source: "../images/close.svg"
-      icon.width: 16
-      icon.height: 16
-      icon.color: "#ffffff"
-      onClicked: root.closeClicked()
     }
   }
 }
