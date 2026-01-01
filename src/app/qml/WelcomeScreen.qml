@@ -340,6 +340,7 @@ Item {
               title: Title || ""
               subtitle: ProjectNativePath || ProjectPath || ""
               imageSource: PreviewImagePath || ""
+              isPinned: Pinned
               isSelected: recentProjectsListView.currentIndex === index
               radius: 10
 

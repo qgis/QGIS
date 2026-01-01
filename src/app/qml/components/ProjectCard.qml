@@ -13,6 +13,7 @@ Item {
   property string title: ""
   property string subtitle: ""
   property string imageSource: ""
+  property bool isPinned: false
   property bool isSelected: false
   property bool isPressed: false
 
@@ -61,6 +62,24 @@ Item {
       }
     }
     
+    Image {
+      anchors.top: parent.top
+      anchors.topMargin: 15
+      anchors.right: parent.right
+      anchors.rightMargin: 15
+      source: "qrc:/images/themes/default/pin.svg"
+      width: 24
+      height: 24
+      layer.enabled: true
+      opacity: root.isPinned ? 1 : 0
+      Behavior on opacity  {
+        PropertyAnimation {
+          duration: 500
+          easing.type: Easing.OutQuart
+        }
+      }
+    }
+    
     Ripple {
       clip: true
       width: imageContainer.width
@@ -78,6 +97,7 @@ Item {
 
     Text {
       Layout.fillWidth: true
+      Layout.rightMargin: 20
       text: root.title
       font.pointSize: Application.font.pointSize
       font.bold: true
