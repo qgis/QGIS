@@ -37,6 +37,7 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
       TitleRole = Qt::UserRole + 1,
       PathRole,
       NativePathRole,
+      ExistsRole,
       CrsRole,
       PinnedRole,
       AnonymisedNativePathRole,
@@ -65,11 +66,23 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    void pinProject( const QModelIndex &index );
-    void unpinProject( const QModelIndex &index );
-    void removeProject( const QModelIndex &index );
-    void recheckProject( const QModelIndex &index );
-    void clear( bool clearPinned = false );
+    Q_INVOKABLE void clear( bool clearPinned = false );
+
+    Q_INVOKABLE void openProject( int row );
+
+    Q_INVOKABLE void pinProject( int row );
+
+    Q_INVOKABLE void unpinProject( int row );
+
+    Q_INVOKABLE void removeProject( int row );
+
+    Q_INVOKABLE void recheckProject( int row );
+
+  signals:
+    void projectRemoved( int row );
+    void projectPinned( int row );
+    void projectUnpinned( int row );
+    void projectsCleared( bool clearPinned );
 
   private:
     QList<RecentProjectData> mRecentProjects;
