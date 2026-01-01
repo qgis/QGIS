@@ -18,6 +18,8 @@
 #include "qgswelcomescreen.h"
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include <QAbstractButton>
 #include <QMessageBox>
@@ -60,7 +62,7 @@ void QgsWelcomeScreenController::clearRecentProjects()
 }
 
 
-QgsWelcomeScreen::QgsWelcomeScreen( QWidget *parent )
+QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
 {
   setAttribute( Qt::WA_AlwaysStackOnTop );
@@ -77,6 +79,7 @@ QgsWelcomeScreen::QgsWelcomeScreen( QWidget *parent )
 
   mNewsFeedParser = new QgsNewsFeedParser( QUrl( QStringLiteral( FEED_URL ) ), QString(), this );
   mNewsFeedModel = new QgsNewsFeedProxyModel( mNewsFeedParser, this );
+
   mWelcomeScreenController = new QgsWelcomeScreenController( this );
 
   rootContext()->setContextProperty( QStringLiteral( "recentProjectsModel" ), mRecentProjectsModel );
@@ -91,6 +94,15 @@ QgsWelcomeScreen::QgsWelcomeScreen( QWidget *parent )
   if ( parent )
   {
     parent->installEventFilter( this );
+  }
+
+  QgsSettings settings;
+  mVersionInfo = new QgsVersionInfo();
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool()
+       && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
+  {
+    connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
+    mVersionInfo->checkVersion();
   }
 }
 
@@ -110,7 +122,7 @@ void QgsWelcomeScreen::refreshGeometry()
 {
   if ( QWidget *parentWidget = qobject_cast<QWidget *>( parent() ) )
   {
-    setGeometry( 20, 20, parentWidget->width() - 40, parentWidget->height() - 40 );
+    setGeometry( 20, 40, parentWidget->width() - 40, parentWidget->height() - 80 );
   }
 }
 
@@ -144,5 +156,25 @@ void QgsWelcomeScreen::clearRecentProjects()
     const bool clearPinned = ( answer == QMessageBox::YesToAll );
     mRecentProjectsModel->clear( clearPinned );
     emit projectsCleared( clearPinned );
+  }
+}
+void QgsWelcomeScreen::versionInfoReceived()
+{
+  if ( !mWelcomeScreenController )
+  {
+    return;
+  }
+
+  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
+  Q_ASSERT( versionInfo );
+
+  if ( versionInfo->newVersionAvailable() )
+  {
+    const QString latestVersionCode = QString::number( versionInfo->latestVersionCode() );
+    int major = latestVersionCode.mid( 0, latestVersionCode.size() - 4 ).toInt();
+    int minor = latestVersionCode.mid( latestVersionCode.size() - 4, 2 ).toInt();
+    int patch = latestVersionCode.mid( latestVersionCode.size() - 2, 2 ).toInt();
+
+    emit mWelcomeScreenController->newVersionAvailable( QStringLiteral( "%1.%2.%3" ).arg( major ).arg( minor ).arg( patch ) );
   }
 }

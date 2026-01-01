@@ -22,6 +22,7 @@
 #include "qgsnewsfeedparser.h"
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgstemplateprojectsmodel.h"
+#include "qgsversioninfo.h"
 
 #include <QDialog>
 #include <QQuickWidget>
@@ -42,6 +43,9 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void clearRecentProjects();
 
+  signals:
+    void newVersionAvailable( const QString &versionString );
+
   private:
     QgsWelcomeScreen *mWelcomeScreen = nullptr;
 };
@@ -52,7 +56,7 @@ class QgsWelcomeScreen : public QQuickWidget
     Q_OBJECT
 
   public:
-    QgsWelcomeScreen( QWidget *parent = nullptr );
+    QgsWelcomeScreen( bool skipVersionCheck = false, QWidget *parent = nullptr );
     ~QgsWelcomeScreen() = default;
 
     /**
@@ -87,6 +91,9 @@ class QgsWelcomeScreen : public QQuickWidget
     void projectUnpinned( int row );
     void projectsCleared( bool clearPinned );
 
+  private slots:
+    void versionInfoReceived();
+
   private:
     void refreshGeometry();
 
@@ -97,6 +104,8 @@ class QgsWelcomeScreen : public QQuickWidget
 
     QgsNewsFeedParser *mNewsFeedParser = nullptr;
     QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
+
+    QgsVersionInfo *mVersionInfo = nullptr;
 };
 
 #endif // QGSWELCOMESCREEN_H
