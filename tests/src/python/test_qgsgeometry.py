@@ -3502,6 +3502,44 @@ class TestQgsGeometry(QgisTestCase):
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
+        # geometry collection
+        collectionwkt = "GeometryCollection( Point(0 1), Point(0 2), Point(0 3), LineString(0 0, 1 1, 2 2), Polygon((0 0, 1 1, 1 2, 2 2, 0 0)) )"
+        collection = QgsGeometry.fromWkt(collectionwkt)
+
+        assert not collection.deleteVertices(
+            [-1]
+        ), "Delete vertices -1 unexpectedly succeeded"
+        assert not collection.deleteVertices(
+            [100]
+        ), "Delete vertices 100 unexpectedly succeeded"
+
+        # test deletion of point in collection
+        assert collection.deleteVertices([1]), "Delete vertices [1] failed"
+        expwkt = "GeometryCollection( Point (0 1), Point (0 3), LineString (0 0, 1 1, 2 2), Polygon ((0 0, 1 1, 1 2, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of vertex in linestring in collection
+        collection = QgsGeometry.fromWkt(collectionwkt)
+        assert collection.deleteVertices([5]), "Delete vertices [5] failed"
+        expwkt = "GeometryCollection( Point (0 1), Point (0 2), Point (0 3), LineString (0 0, 1 1), Polygon ((0 0, 1 1, 1 2, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of vertex in polygon in collection
+        collection = QgsGeometry.fromWkt(collectionwkt)
+        assert collection.deleteVertices([8]), "Delete vertices [8] failed"
+        expwkt = "GeometryCollection( Point (0 1), Point (0 2), Point (0 3), LineString (0 0, 1 1, 2 2), Polygon ((0 0, 1 1, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of multiple vertices in different geometries in collection
+        collection = QgsGeometry.fromWkt(collectionwkt)
+        assert collection.deleteVertices([0, 4, 7]), "Delete vertices [0, 4, 7] failed"
+        expwkt = "GeometryCollection( Point (0 2), Point (0 3), LineString (0 0, 2 2), Polygon((0 0, 1 2, 2 2, 0 0)) )"
+        wkt = collection.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
     def testInsertVertex(self):
         linestring = QgsGeometry.fromWkt("LineString(1 0, 2 0)")
 

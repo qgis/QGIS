@@ -700,6 +700,12 @@ bool QgsGeometryCollection::deleteVertices( const QList<QgsVertexId> &positions 
       return false;
     }
 
+    if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
+    {
+      removeGeometry( part );
+      continue;
+    }
+
     // quit if any vertex on any part fails to be deleted
     if ( !geom->deleteVertices( partVertices ) )
     {
