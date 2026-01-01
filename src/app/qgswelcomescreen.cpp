@@ -61,6 +61,11 @@ void QgsWelcomeScreenController::clearRecentProjects()
   }
 }
 
+void QgsWelcomeScreenController::showPluginManager()
+{
+  QgisApp::instance()->showPluginManager( 3 ); // 3 == PLUGMAN_TAB_UPGRADEABLE
+}
+
 
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
@@ -104,6 +109,8 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
     mVersionInfo->checkVersion();
   }
+
+  connect( QgisApp::instance(), &QgisApp::pluginUpdatesAvailable, this, &QgsWelcomeScreen::pluginUpdatesAvailableReceived );
 }
 
 bool QgsWelcomeScreen::eventFilter( QObject *object, QEvent *event )
@@ -177,4 +184,14 @@ void QgsWelcomeScreen::versionInfoReceived()
 
     emit mWelcomeScreenController->newVersionAvailable( QStringLiteral( "%1.%2.%3" ).arg( major ).arg( minor ).arg( patch ) );
   }
+}
+
+void QgsWelcomeScreen::pluginUpdatesAvailableReceived( const QStringList &plugins )
+{
+  if ( !mWelcomeScreenController )
+  {
+    return;
+  }
+
+  emit mWelcomeScreenController->pluginUpdatesAvailable( plugins );
 }

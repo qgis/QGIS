@@ -43,8 +43,11 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void clearRecentProjects();
 
+    Q_INVOKABLE void showPluginManager();
+
   signals:
     void newVersionAvailable( const QString &versionString );
+    void pluginUpdatesAvailable( const QStringList &plugins );
 
   private:
     QgsWelcomeScreen *mWelcomeScreen = nullptr;
@@ -93,6 +96,7 @@ class QgsWelcomeScreen : public QQuickWidget
 
   private slots:
     void versionInfoReceived();
+    void pluginUpdatesAvailableReceived( const QStringList &plugins );
 
   private:
     void refreshGeometry();
