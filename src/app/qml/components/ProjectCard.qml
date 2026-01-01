@@ -16,7 +16,7 @@ Item {
   property bool isSelected: false
   property bool isPressed: false
 
-  signal clicked
+  signal clicked(MouseEvent mouse)
 
   Item {
     id: imageContainer
@@ -79,7 +79,7 @@ Item {
     Text {
       Layout.fillWidth: true
       text: root.title
-      font.pointSize: 12
+      font.pointSize: Application.font.pointSize
       font.bold: true
       color: "#2d3748"
       wrapMode: Text.WordWrap
@@ -91,7 +91,7 @@ Item {
       Layout.preferredWidth: parent.width / 3 * 2
       Layout.fillHeight: true
       text: root.subtitle
-      font.pointSize: 11
+      font.pointSize: Application.font.pointSize * 0.9
       color: "#4a5568"
       wrapMode: Text.WordWrap
       elide: Text.ElideRight
@@ -102,7 +102,11 @@ Item {
   MouseArea {
     id: mouseArea
     anchors.fill: parent
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
     cursorShape: Qt.PointingHandCursor
-    onClicked: root.clicked()
+    
+    onClicked: (mouse) => {
+      root.clicked(mouse);
+    } 
   }
 }

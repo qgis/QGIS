@@ -22,8 +22,8 @@ Item {
     Text {
       text: root.supportText
       Layout.fillWidth: true
-      font.pointSize: 10
-      font.weight: Font.Bold
+      font.pointSize: Application.font.pointSize * 0.8
+      font.bold: true
       color: "#f9fafb"
       wrapMode: Text.WordWrap
       maximumLineCount: 2

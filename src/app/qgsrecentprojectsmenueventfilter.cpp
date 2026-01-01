@@ -64,37 +64,29 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
     return QObject::eventFilter( obj, event );
 
   const QModelIndex modelIndex = mWelcomeScreen->recentProjectsModel()->index( actionIndex, 0 );
-  const bool pinned = mWelcomeScreen->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinnedRole ).toBool();
-  QString path = mWelcomeScreen->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PathRole ).toString();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
-  if ( storage )
-  {
-    path = storage->filePath( path );
-  }
 
   QMenu subMenu;
+  const bool pinned = mWelcomeScreen->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinnedRole ).toBool();
   if ( pinned )
   {
     QAction *unpin = subMenu.addAction( tr( "Unpin from List" ) );
-    connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->unpinProject( actionIndex ); } );
+    connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->unpinProject( actionIndex ); } );
   }
   else
   {
     QAction *pin = subMenu.addAction( tr( "Pin to List" ) );
-    connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->pinProject( actionIndex ); } );
+    connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->pinProject( actionIndex ); } );
   }
 
+  const QString path = mWelcomeScreen->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::NativePathRole ).toString();
   if ( !path.isEmpty() )
   {
     QAction *openFolderAction = subMenu.addAction( tr( "Open Directory…" ) );
-    connect( openFolderAction, &QAction::triggered, this, [path] {
-      const QgsFocusKeeper focusKeeper;
-      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
-    } );
+    connect( openFolderAction, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->openProject( actionIndex ); } );
   }
 
   QAction *remove = subMenu.addAction( tr( "Remove from List" ) );
-  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->removeProject( actionIndex ); } );
+  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->removeProject( actionIndex ); } );
   subMenu.exec( menu->mapToGlobal( mouseEvent->pos() ) );
   return true;
 }

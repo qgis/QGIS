@@ -305,7 +305,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     {
       QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
       connect( rescanAction, &QAction::triggered, this, [this, index] {
-        mRecentProjectsModel->recheckProject( index );
+        mRecentProjectsModel->recheckProject( index.row() );
       } );
       menu->addAction( rescanAction );
 
@@ -465,19 +465,19 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
 
 void QgsWelcomePage::removeProject( int row )
 {
-  mRecentProjectsModel->removeProject( mRecentProjectsModel->index( row ) );
+  mRecentProjectsModel->removeProject( row );
   emit projectRemoved( row );
 }
 
 void QgsWelcomePage::pinProject( int row )
 {
-  mRecentProjectsModel->pinProject( mRecentProjectsModel->index( row ) );
+  mRecentProjectsModel->pinProject( row );
   emit projectPinned( row );
 }
 
 void QgsWelcomePage::unpinProject( int row )
 {
-  mRecentProjectsModel->unpinProject( mRecentProjectsModel->index( row ) );
+  mRecentProjectsModel->unpinProject( row );
   emit projectUnpinned( row );
 }
 
