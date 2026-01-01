@@ -879,15 +879,15 @@ class CORE_EXPORT QgsGeometry
     bool deleteVertex( int atVertex );
 
     /**
-     * Deletes vertices at the given positions
-     * (first number is index 0)
-     * \returns FALSE if a position does not correspond to a valid vertex
-     * on this geometry (including if this geometry is a Point),
-     * or if the number of remaining vertices in the linestring
-     * would be less than two.
-     * It is up to the caller to distinguish between
-     * these error conditions.  (Or maybe we add another method to this
-     * object to help make the distinction?)
+     * Deletes vertices at the given positions (first number is index 0)
+     *
+     * For Point geometries, this clears the geometry.
+     * For MultiPoint geometries, this removes point geometries at the specified indices.
+     * For other geometry types, this removes the vertices at the specified indices.
+     * If after removal of the vertices the geometry would become invalid (e.g. a LineString with less than 2 vertices),
+     * the geometry is cleared instead.
+     * \returns FALSE if any of the given atVertices does not correspond to a valid vertex
+     * on this geometry or if any vertices fail to be deleted
      * \see deleteVertex()
      * \since QGIS 4.0
      */
