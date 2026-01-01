@@ -215,7 +215,6 @@ void QgsNewsFeedParser::fetch()
     }
 
     // queue up the handling
-    qDebug() << "fetched!" << task->contentAsString();
     QMetaObject::invokeMethod( this, "onFetch", Qt::QueuedConnection, Q_ARG( QString, task->contentAsString() ) );
   } );
 
