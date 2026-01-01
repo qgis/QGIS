@@ -922,7 +922,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
   return success;
 }
 
-bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
+bool QgsCompoundCurve::deleteVertices( const QList<QgsVertexId> &positions )
 {
   // we create a list of vertices to delete for each curve
   QMap<int, QList<QgsVertexId >> curveVertices;

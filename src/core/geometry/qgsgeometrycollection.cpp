@@ -679,7 +679,7 @@ bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
   return success;
 }
 
-bool QgsGeometryCollection::deleteVertices( QList<QgsVertexId> positions )
+bool QgsGeometryCollection::deleteVertices( const QList<QgsVertexId> &positions )
 {
   QMap<int, QList<QgsVertexId >> partVertices;
   for ( QgsVertexId pos : positions )

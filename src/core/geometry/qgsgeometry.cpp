@@ -677,16 +677,19 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
-bool QgsGeometry::deleteVertices( const QList<int> atVertices )
+bool QgsGeometry::deleteVertices( const QList<int> &atVertices )
 {
   if ( !d->geometry )
   {
     return false;
   }
 
-  //if it is a point, set the geometry to nullptr
+  // if it is a point, set the geometry to nullptr
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
   {
+    if ( atVertices.size() != 1 && !atVertices.contains( 0 ) )
+      return false;
+
     reset( nullptr );
     return true;
   }
@@ -695,13 +698,10 @@ bool QgsGeometry::deleteVertices( const QList<int> atVertices )
   for ( int vertex : atVertices )
   {
     QgsVertexId id;
-    if ( vertexIdFromVertexNr( vertex, id ) )
-    {
-      vertexIds.append( id );
-      continue;
-    }
+    if ( !vertexIdFromVertexNr( vertex, id ) )
+      return false;
 
-    return false;
+    vertexIds.append( id );
   }
 
   // create a copy of the original geometry to restore it in case of failure

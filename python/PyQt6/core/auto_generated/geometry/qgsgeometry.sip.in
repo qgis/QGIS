@@ -809,7 +809,7 @@ is index 0)
          object to help make the distinction?)
 %End
 
-    bool deleteVertices( const QList<int> atVertices );
+    bool deleteVertices( const QList<int> &atVertices );
 %Docstring
 Deletes vertices at the given positions (first number is index 0)
 

@@ -290,7 +290,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
-    bool deleteVertices( QList<QgsVertexId> positions ) override;
+    bool deleteVertices( const QList<QgsVertexId> &positions ) override;
 
     double length() const override SIP_HOLDGIL;
     double area() const override SIP_HOLDGIL;

@@ -467,7 +467,7 @@ bool QgsPoint::deleteVertex( QgsVertexId position )
   return false;
 }
 
-bool QgsPoint::deleteVertices( QList<QgsVertexId> positions )
+bool QgsPoint::deleteVertices( const QList<QgsVertexId> &positions )
 {
   Q_UNUSED( positions )
   return false;

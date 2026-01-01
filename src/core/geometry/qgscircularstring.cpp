@@ -1314,7 +1314,7 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
-bool QgsCircularString::deleteVertices( QList<QgsVertexId> positions )
+bool QgsCircularString::deleteVertices( const QList<QgsVertexId> &positions )
 {
   if ( positions.empty() )
   {
@@ -1323,27 +1323,29 @@ bool QgsCircularString::deleteVertices( QList<QgsVertexId> positions )
 
   int nVertices = this->numPoints();
 
-  std::sort( positions.begin(), positions.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  QList<QgsVertexId> vertices = positions;
+
+  std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId & a, const QgsVertexId & b )
   {
     return a.vertex < b.vertex;
   }
            );
 
   // remove adjacent vertices as deleting one will also delete the other
-  for ( size_t i = positions.size() - 1; i >= 1; i-- )
+  for ( size_t i = vertices.size() - 1; i >= 1; i-- )
   {
-    int vertexNr = positions[i].vertex;
-    int prevVertexNr = positions[i - 1].vertex;
+    int vertexNr = vertices[i].vertex;
+    int prevVertexNr = vertices[i - 1].vertex;
 
     if ( vertexNr - 1 == prevVertexNr )
     {
       if ( vertexNr < nVertices - 2 )
       {
-        positions.removeAt( i );
+        vertices.removeAt( i );
       }
       else
       {
-        positions.removeAt( i - 1 );
+        vertices.removeAt( i - 1 );
       }
 
       nVertices -= 2;
@@ -1356,7 +1358,7 @@ bool QgsCircularString::deleteVertices( QList<QgsVertexId> positions )
 
   nVertices = this->numPoints();
 
-  QListIterator<QgsVertexId> positionsIt( positions );
+  QListIterator<QgsVertexId> positionsIt( vertices );
   positionsIt.toBack();
   while ( positionsIt.hasPrevious() )
   {
