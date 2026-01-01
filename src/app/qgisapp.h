@@ -1517,6 +1517,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a url in the users configured browser
     void openURL( QString url, bool useQgisDocDirectory = true );
 
+    //! Opens the plugin manager (since QGIS 4.0)
+    void showPluginManager( int tabIndex = -1 );
+
   protected:
     void showEvent( QShowEvent *event ) override;
 
@@ -1635,9 +1638,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void decreaseGamma();
 
-
-    //! plugin manager
-    void showPluginManager();
     //! load Python support if possible
     void loadPythonSupport();
 
@@ -2310,6 +2310,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Emitted when the active layer is changed.
      */
     void activeLayerChanged( QgsMapLayer *layer );
+
+    /**
+     * Emitted when the plugin updates are available.
+     *
+     * \since QGIS 4.0
+     */
+    void pluginUpdatesAvailable( const QStringList &plugins );
 
   private:
     void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );

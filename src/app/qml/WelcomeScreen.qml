@@ -15,501 +15,520 @@ Item {
   Material.accent: "#93b023"
   Material.foreground: "#ffffff"
 
-  Rectangle {
-    id: mainCard
-    anchors.top: parent.top
-    anchors.topMargin: 30
-    anchors.left: parent.left
-    anchors.leftMargin: 30
-    width: parent.width - 60
-    height: parent.height - (qgisUpdateBar.visible ? qgisUpdateBar.height - 10 : 0) - 80
-    radius: 10
-    color: "#252a34"
-    clip: true
+  ColumnLayout {
+    anchors.fill: parent
+    anchors.margins: 20
 
-    layer.enabled: true
-    layer.effect: MultiEffect {
-      shadowEnabled: true
-      shadowColor: "#80000000"
-      shadowBlur: 1.0
-      shadowVerticalOffset: 8
-      shadowHorizontalOffset: 0
-    }
+    Rectangle {
+      id: mainCard
+      Layout.fillWidth: true
+      Layout.fillHeight: true
+      radius: 10
+      color: "#252a34"
+      clip: true
 
-    RowLayout {
-      anchors {
-        top: parent.top
-        bottom: footer.top
-        left: parent.left
-        right: parent.right
-        bottomMargin: 8
+      layer.enabled: true
+      layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: "#80000000"
+        shadowBlur: 1.0
+        shadowVerticalOffset: 8
+        shadowHorizontalOffset: 0
       }
-      spacing: 0
 
-      ColumnLayout {
-        Layout.maximumWidth: parent.width * 0.48
-        Layout.fillHeight: true
-        Layout.topMargin: 28
-        Layout.leftMargin: 28
-        Layout.rightMargin: 28
-        spacing: 10
-
-        Column {
-          Layout.fillWidth: true
-          spacing: 16
-
-          Image {
-            source: "images/qgis.svg"
-            height: 50
-            width: 160
-            sourceSize: Qt.size(50, 160)
-            fillMode: Image.PreserveAspectFit
-          }
-
-          Text {
-            text: qsTr("Spatial without Compromise")
-            font.pointSize: Application.font.pointSize
-            font.bold: true
-
-            color: "#e0e9ed"
-          }
+      RowLayout {
+        anchors {
+          top: parent.top
+          bottom: footer.top
+          left: parent.left
+          right: parent.right
+          bottomMargin: 8
         }
+        spacing: 0
 
-        Rectangle {
-          Layout.fillWidth: true
-          Layout.preferredHeight: 1
-          color: "#566775"
-        }
-
-        Column {
-          Layout.fillWidth: true
+        ColumnLayout {
+          Layout.maximumWidth: parent.width * 0.48
           Layout.fillHeight: true
-          spacing: 12
+          Layout.topMargin: 28
+          Layout.leftMargin: 28
+          Layout.rightMargin: 28
+          spacing: 10
 
-          RowLayout {
-            width: parent.width
-            spacing: 12
+          Column {
+            Layout.fillWidth: true
+            spacing: 16
+
+            Image {
+              source: "images/qgis.svg"
+              height: 50
+              width: 160
+              sourceSize: Qt.size(50, 160)
+              fillMode: Image.PreserveAspectFit
+            }
 
             Text {
-              text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
-              font.pointSize: Application.font.pointSize * 1.3
+              text: qsTr("Spatial without Compromise")
+              font.pointSize: Application.font.pointSize
               font.bold: true
-              color: "#ffffff"
-              Layout.fillWidth: true
+
+              color: "#e0e9ed"
             }
-            
-            BusyIndicator {
-              Layout.preferredWidth: 28
-              Layout.preferredHeight: 28
-              running: newsFeedParser.isFetching
-            }
+          }
 
-            Rectangle {
-              id: newsSwitchBackground
-              width: 70
-              height: 28
-              radius: 14
-
-              gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop {
-                  position: 0.0
-                  color: newsSwitch.checked ? "#589632" : "#333333"
-                }
-                GradientStop {
-                  position: 1.0
-                  color: newsSwitch.checked ? "#93b023" : "#ffffff"
-                }
-              }
-
-              Text {
-                x: newsSwitch.checked ? 10 : 30
-                anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("News")
-                font.pointSize: Application.font.pointSize * 0.8
-                font.bold: true
-                color: newsSwitch.checked ? "#ffffff" : "#666666"
-              }
-
-              Rectangle {
-                id: switchHandle
-                width: 22
-                height: 22
-                radius: 11
-                color: "#ffffff"
-                anchors.verticalCenter: parent.verticalCenter
-                x: newsSwitch.checked ? parent.width - width - 3 : 3
-
-                Behavior on x {
-                  NumberAnimation {
-                    duration: 150
-                  }
-                }
-              }
-
-              MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                  newsFeedParser.enabled = !newsFeedParser.enabled
-                  if (newsFeedParser.enabled && newsListView.count == 0) {
-                    newsFeedParser.fetch();
-                  }
-                }
-              }
-
-              Switch {
-                id: newsSwitch
-                visible: false
-                checked: newsFeedParser.enabled
-              }
-            }
+          Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: "#566775"
           }
 
           Column {
-            width: parent.width
-            height: parent.height - 50
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             spacing: 12
-            visible: !newsSwitch.checked
 
-            Rectangle {
+            RowLayout {
               width: parent.width
-              height: welcomeDescription1.implicitHeight * 1.25
-              radius: 10
-              color: "#ffffff"
+              spacing: 12
 
               Text {
-                id: welcomeDescription1
-                anchors.fill: parent
-                anchors.margins: 16
-                text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                font.pointSize: Application.font.pointSize * 0.8
-                color: "black"
-                wrapMode: Text.WordWrap
-                lineHeight: 1.3
+                text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
+                font.pointSize: Application.font.pointSize * 1.3
+                font.bold: true
+                color: "#ffffff"
+                Layout.fillWidth: true
               }
-            }
 
-            Rectangle {
-              width: parent.width
-              height: stayUpdateLayout.implicitHeight * 1.25
-              radius: 10
-              color: "#ffffff"
+              BusyIndicator {
+                Layout.preferredWidth: 28
+                Layout.preferredHeight: 28
+                running: newsFeedParser.isFetching
+              }
 
-              ColumnLayout {
-                id: stayUpdateLayout
-                anchors.fill: parent
-                anchors.margins: 16
-                spacing: 10
+              Rectangle {
+                id: newsSwitchBackground
+                width: 70
+                height: 28
+                radius: 14
 
-                Text {
-                  text: qsTr("Stay up to date!")
-                  font.pointSize: Application.font.pointSize
-                  font.bold: true
-                  color: "black"
+                gradient: Gradient {
+                  orientation: Gradient.Horizontal
+                  GradientStop {
+                    position: 0.0
+                    color: newsSwitch.checked ? "#589632" : "#333333"
+                  }
+                  GradientStop {
+                    position: 1.0
+                    color: newsSwitch.checked ? "#93b023" : "#ffffff"
+                  }
                 }
 
                 Text {
-                  Layout.fillWidth: true
-                  text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
+                  x: newsSwitch.checked ? 10 : 30
+                  anchors.verticalCenter: parent.verticalCenter
+                  text: qsTr("News")
                   font.pointSize: Application.font.pointSize * 0.8
-                  color: "black"
-                  wrapMode: Text.WordWrap
+                  font.bold: true
+                  color: newsSwitch.checked ? "#ffffff" : "#666666"
                 }
 
                 Rectangle {
-                  width: enableNewsText.implicitWidth + 24
-                  height: 25
-                  radius: 10
-                  color: "transparent"
-                  border.width: 1
-                  border.color: "#93b023"
+                  id: switchHandle
+                  width: 22
+                  height: 22
+                  radius: 11
+                  color: "#ffffff"
+                  anchors.verticalCenter: parent.verticalCenter
+                  x: newsSwitch.checked ? parent.width - width - 3 : 3
+
+                  Behavior on x {
+                    NumberAnimation {
+                      duration: 150
+                    }
+                  }
+                }
+
+                MouseArea {
+                  anchors.fill: parent
+                  cursorShape: Qt.PointingHandCursor
+                  onClicked: {
+                    newsFeedParser.enabled = !newsFeedParser.enabled
+                    if (newsFeedParser.enabled && newsListView.count == 0) {
+                      newsFeedParser.fetch();
+                    }
+                  }
+                }
+
+                Switch {
+                  id: newsSwitch
+                  visible: false
+                  checked: newsFeedParser.enabled
+                }
+              }
+            }
+
+            Column {
+              width: parent.width
+              height: parent.height - 50
+              spacing: 12
+              visible: !newsSwitch.checked
+
+              Rectangle {
+                width: parent.width
+                height: welcomeDescription1.implicitHeight * 1.25
+                radius: 10
+                color: "#ffffff"
+
+                Text {
+                  id: welcomeDescription1
+                  anchors.fill: parent
+                  anchors.margins: 16
+                  text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
+                  font.pointSize: Application.font.pointSize * 0.8
+                  color: "black"
+                  wrapMode: Text.WordWrap
+                  lineHeight: 1.3
+                }
+              }
+
+              Rectangle {
+                width: parent.width
+                height: stayUpdateLayout.implicitHeight * 1.25
+                radius: 10
+                color: "#ffffff"
+
+                ColumnLayout {
+                  id: stayUpdateLayout
+                  anchors.fill: parent
+                  anchors.margins: 16
+                  spacing: 10
 
                   Text {
-                    id: enableNewsText
-                    anchors.centerIn: parent
-                    text: qsTr("Enable news feed")
-                    font.pointSize: Application.font.pointSize * 0.8
+                    text: qsTr("Stay up to date!")
+                    font.pointSize: Application.font.pointSize
+                    font.bold: true
                     color: "black"
                   }
 
-                  MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    hoverEnabled: true
-                    onClicked: newsSwitch.checked = true
+                  Text {
+                    Layout.fillWidth: true
+                    text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
+                    font.pointSize: Application.font.pointSize * 0.8
+                    color: "black"
+                    wrapMode: Text.WordWrap
+                  }
+
+                  Rectangle {
+                    width: enableNewsText.implicitWidth + 24
+                    height: 25
+                    radius: 10
+                    color: "transparent"
+                    border.width: 1
+                    border.color: "#93b023"
+
+                    Text {
+                      id: enableNewsText
+                      anchors.centerIn: parent
+                      text: qsTr("Enable news feed")
+                      font.pointSize: Application.font.pointSize * 0.8
+                      color: "black"
+                    }
+
+                    MouseArea {
+                      anchors.fill: parent
+                      cursorShape: Qt.PointingHandCursor
+                      hoverEnabled: true
+                      onClicked: newsSwitch.checked = true
+                    }
                   }
                 }
+              }
+            }
+
+            Item {
+              width: parent.width
+              height: parent.height - 50
+
+              ListView {
+                id: newsListView
+                anchors.fill: parent
+                spacing: 12
+                clip: true
+                visible: newsSwitch.checked
+
+                model: newsFeedModel
+
+                delegate: NewsCard {
+                  width: newsListView.width
+                  title: Title
+                  description: Content
+                  showCloseButton: true
+
+                  onReadMoreClicked: {
+                    Qt.openUrlExternally(Link);
+                  }
+                }
+
+                ScrollBar.vertical: newsScrollBar
+              }
+
+              ScrollBar {
+                id: newsScrollBar
+                policy: ScrollBar.AsNeeded
+                anchors.left: parent.right
+                anchors.leftMargin: 10
+                height: parent.height
+                visible: newsSwitch.checked
+              }
+            }
+          }
+        }
+
+        ColumnLayout {
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          Layout.topMargin: 28
+          Layout.leftMargin: 28
+          Layout.rightMargin: 28
+          spacing: 8
+
+          Item {
+            Layout.fillWidth: true
+            Layout.preferredHeight: tabBar.implicitHeight
+
+            Rectangle {
+              width: parent.width
+              height: 1
+              color: "#566775"
+              anchors.bottom: parent.bottom
+            }
+
+            TabBar {
+              id: tabBar
+              background: Item {
+                anchors.fill: parent
+              }
+
+              TabButton {
+                text: qsTr("Recent")
+                font.pointSize: Application.font.pointSize * 1.1
+                font.bold: true
+              }
+              TabButton {
+                text: qsTr("Templates")
+                width: implicitWidth
+                font.pointSize: Application.font.pointSize * 1.1
+                font.bold: true
               }
             }
           }
 
           Item {
-            width: parent.width
-            height: parent.height - 50
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             ListView {
-              id: newsListView
+              id: recentProjectsListView
               anchors.fill: parent
-              spacing: 12
+              spacing: 8
               clip: true
-              visible: newsSwitch.checked
+              visible: tabBar.currentIndex === 0
 
-              model: newsFeedModel
+              model: recentProjectsModel
 
-              delegate: NewsCard {
-                width: newsListView.width
-                title: Title
-                description: Content
-                showCloseButton: true
+              delegate: ProjectCard {
+                width: recentProjectsListView.width
+                title: Title || ""
+                subtitle: ProjectNativePath || ProjectPath || ""
+                imageSource: PreviewImagePath || ""
+                isPinned: Pinned
+                isSelected: recentProjectsListView.currentIndex === index
+                radius: 10
 
-                onReadMoreClicked: {
-                  Qt.openUrlExternally(Link);
+                onClicked: (mouse) => {
+                             if (mouse.button == Qt.LeftButton) {
+                               welcomeScreenController.openProject(ProjectPath);
+                             } else if (mouse.button == Qt.RightButton) {
+                               recentProjectsMenu.projectIndex = index;
+                               recentProjectsMenu.projectPinned = Pinned;
+                               recentProjectsMenu.projectExists = Exists;
+                               recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
+                               recentProjectsMenu.popup(mouse.x, mouse.y);
+                             }
+                           }
+              }
+
+              ScrollBar.vertical: recentScrollBar
+
+              Menu {
+                id: recentProjectsMenu
+
+                property int projectIndex: 0
+                property bool projectPinned: false
+                property bool projectExists: false
+                property bool projectHasNativePath: false
+
+                MenuItem {
+                  text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
+                  onClicked: {
+                    if (recentProjectsMenu.projectPinned) {
+                      recentProjectsModel.unpinProject(recentProjectsMenu.projectIndex);
+                    } else {
+                      recentProjectsModel.pinProject(recentProjectsMenu.projectIndex);
+                    }
+                  }
+                }
+                MenuItem {
+                  text: qsTr("Refresh")
+                  enabled: !recentProjectsMenu.projectExists
+                  visible: enabled
+                  height: enabled ? implicitHeight : 0
+                  onClicked: {
+                    recentProjectsModel.recheckProject(recentProjectsMenu.projectIndex);
+                  }
+                }
+                MenuItem {
+                  text: qsTr("Open Directory…")
+                  enabled: recentProjectsMenu.projectExists && recentProjectsMenu.projectHasNativePath
+                  visible: enabled
+                  height: enabled ? implicitHeight : 0
+                  onClicked: {
+                    recentProjectsModel.openProject(recentProjectsMenu.projectIndex);
+                  }
+                }
+                MenuItem {
+                  text: qsTr("Remove from List")
+                  onClicked: {
+                    recentProjectsModel.removeProject(recentProjectsMenu.projectIndex);
+                  }
+                }
+                MenuSeparator {}
+                MenuItem {
+                  text: qsTr("Clear List")
+                  onClicked: {
+                    recentProjectsModel.clear();
+                  }
+                }
+              }
+            }
+
+            ListView {
+              id: templatesListView
+              anchors.fill: parent
+              spacing: 8
+              clip: true
+              visible: tabBar.currentIndex === 1
+
+              model: templateProjectsModel
+
+              delegate: ProjectCard {
+                width: templatesListView.width
+                title: Title || ""
+                subtitle: TemplateNativePath || "" //#spellok
+                imageSource: PreviewImagePath || ""
+                isSelected: templatesListView.currentIndex === index
+                radius: 10
+
+                onClicked: {
+                  welcomeScreenController.createProjectFromTemplate(TemplateNativePath || "") //#spellok
                 }
               }
 
-              ScrollBar.vertical: newsScrollBar
+              ScrollBar.vertical: templatesScrollBar
             }
 
             ScrollBar {
-              id: newsScrollBar
+              id: recentScrollBar
               policy: ScrollBar.AsNeeded
               anchors.left: parent.right
               anchors.leftMargin: 10
               height: parent.height
-              visible: newsSwitch.checked
+              visible: tabBar.currentIndex === 0
+            }
+
+            ScrollBar {
+              id: templatesScrollBar
+              policy: ScrollBar.AsNeeded
+              anchors.left: parent.right
+              anchors.leftMargin: 10
+              height: parent.height
+              visible: tabBar.currentIndex === 1
             }
           }
         }
       }
 
-      ColumnLayout {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        Layout.topMargin: 28
-        Layout.leftMargin: 28
-        Layout.rightMargin: 28
-        spacing: 8
+      Rectangle {
+        width: parent.width
+        height: 1
+        color: "#566775"
+        anchors {
+          bottom: footer.top
+          left: parent.left
+          right: parent.right
+          leftMargin: 28
+          rightMargin: 28
+        }
+      }
 
-        Item {
-          Layout.fillWidth: true
-          Layout.preferredHeight: tabBar.implicitHeight
+      FooterBar {
+        id: footer
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
 
-          Rectangle {
-            width: parent.width
-            height: 1
-            color: "#566775"
-            anchors.bottom: parent.bottom
-          }
-
-          TabBar {
-            id: tabBar
-            background: Item {
-              anchors.fill: parent
-            }
-
-            TabButton {
-              text: qsTr("Recent")
-              font.pointSize: Application.font.pointSize * 1.1
-              font.bold: true
-            }
-            TabButton {
-              text: qsTr("Templates")
-              width: implicitWidth
-              font.pointSize: Application.font.pointSize * 1.1
-              font.bold: true
-            }
-          }
+        onSupportClicked: {
+          Qt.openUrlExternally("https://www.qgis.org/funding/donate/")
         }
 
-        Item {
-          Layout.fillWidth: true
-          Layout.fillHeight: true
-
-          ListView {
-            id: recentProjectsListView
-            anchors.fill: parent
-            spacing: 8
-            clip: true
-            visible: tabBar.currentIndex === 0
-
-            model: recentProjectsModel
-
-            delegate: ProjectCard {
-              width: recentProjectsListView.width
-              title: Title || ""
-              subtitle: ProjectNativePath || ProjectPath || ""
-              imageSource: PreviewImagePath || ""
-              isPinned: Pinned
-              isSelected: recentProjectsListView.currentIndex === index
-              radius: 10
-
-              onClicked: (mouse) => {
-                if (mouse.button == Qt.LeftButton) {
-                  welcomeScreenController.openProject(ProjectPath);
-                } else if (mouse.button == Qt.RightButton) {
-                  recentProjectsMenu.projectIndex = index;
-                  recentProjectsMenu.projectPinned = Pinned;
-                  recentProjectsMenu.projectExists = Exists;
-                  recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
-                  recentProjectsMenu.popup(mouse.x, mouse.y);
-                }
-              }
-            }
-
-            ScrollBar.vertical: recentScrollBar
-            
-            Menu {
-              id: recentProjectsMenu
-              
-              property int projectIndex: 0
-              property bool projectPinned: false
-              property bool projectExists: false
-              property bool projectHasNativePath: false
-              
-              MenuItem {
-                text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
-                onClicked: {
-                  if (recentProjectsMenu.projectPinned) {
-                    recentProjectsModel.unpinProject(recentProjectsMenu.projectIndex);
-                  } else {
-                    recentProjectsModel.pinProject(recentProjectsMenu.projectIndex);
-                  }
-                }
-              }
-              MenuItem {
-                text: qsTr("Refresh")
-                enabled: !recentProjectsMenu.projectExists
-                visible: enabled
-                height: enabled ? implicitHeight : 0
-                onClicked: {
-                  recentProjectsModel.recheckProject(recentProjectsMenu.projectIndex);
-                }
-              }
-              MenuItem {
-                text: qsTr("Open Directory…")
-                enabled: recentProjectsMenu.projectExists && recentProjectsMenu.projectHasNativePath
-                visible: enabled
-                height: enabled ? implicitHeight : 0
-                onClicked: {
-                  recentProjectsModel.openProject(recentProjectsMenu.projectIndex);
-                }
-              }
-              MenuItem {
-                text: qsTr("Remove from List")
-                onClicked: {
-                  recentProjectsModel.removeProject(recentProjectsMenu.projectIndex);                
-                }
-              }
-              MenuSeparator {}
-              MenuItem {
-                text: qsTr("Clear List")
-                onClicked: {
-                  recentProjectsModel.clear();
-                }
-              }
-            }
-          }
-
-          ListView {
-            id: templatesListView
-            anchors.fill: parent
-            spacing: 8
-            clip: true
-            visible: tabBar.currentIndex === 1
-
-            model: templateProjectsModel
-
-            delegate: ProjectCard {
-              width: templatesListView.width
-              title: Title || ""
-              subtitle: TemplateNativePath || "" //#spellok
-              imageSource: PreviewImagePath || ""
-              isSelected: templatesListView.currentIndex === index
-              radius: 10
-
-              onClicked: {
-                welcomeScreenController.createProjectFromTemplate(TemplateNativePath || "") //#spellok
-              }
-            }
-
-            ScrollBar.vertical: templatesScrollBar
-          }
-
-          ScrollBar {
-            id: recentScrollBar
-            policy: ScrollBar.AsNeeded
-            anchors.left: parent.right
-            anchors.leftMargin: 10
-            height: parent.height
-            visible: tabBar.currentIndex === 0
-          }
-
-          ScrollBar {
-            id: templatesScrollBar
-            policy: ScrollBar.AsNeeded
-            anchors.left: parent.right
-            anchors.leftMargin: 10
-            height: parent.height
-            visible: tabBar.currentIndex === 1
-          }
+        onWebsiteClicked: {
+          Qt.openUrlExternally("https://www.qgis.org/")
         }
       }
     }
 
-    Rectangle {
-      width: parent.width
-      height: 1
-      color: "#566775"
-      anchors {
-        bottom: footer.top
-        left: parent.left
-        right: parent.right
-        leftMargin: 28
-        rightMargin: 28
+    UpdateNotificationBar {
+      id: pluginsUpdateBar
+      Layout.fillWidth: true
+      Layout.preferredHeight: 50
+      radius: 16
+      visible: false
+      color: mainCard.color
+
+      layer.enabled: true
+      layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: "#80000000"
+        shadowBlur: 1.0
+        shadowVerticalOffset: 8
+        shadowHorizontalOffset: 0
+      }
+
+      onInstallClicked: {
+        welcomeScreenController.showPluginManager();
       }
     }
 
-    FooterBar {
-      id: footer
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.bottom: parent.bottom
-      anchors.bottomMargin: 0
+    UpdateNotificationBar {
+      id: qgisUpdateBar
+      Layout.fillWidth: true
+      Layout.preferredHeight: 50
+      radius: 16
+      visible: false
+      color: mainCard.color
 
-      onSupportClicked: {
-        Qt.openUrlExternally("https://www.qgis.org/funding/donate/")
+      layer.enabled: true
+      layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: "#80000000"
+        shadowBlur: 1.0
+        shadowVerticalOffset: 8
+        shadowHorizontalOffset: 0
       }
 
-      onWebsiteClicked: {
-        Qt.openUrlExternally("https://www.qgis.org/")
+      onInstallClicked: {
+        Qt.openUrlExternally("https://download.qgis.org/")
       }
-    }
-  }
-
-  UpdateNotificationBar {
-    id: qgisUpdateBar
-    width: parent.width - 60
-    height: 50
-    radius: 16
-    anchors.left: parent.left
-    anchors.leftMargin: 30
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: 30
-    visible: false
-    color: mainCard.color
-
-    layer.enabled: true
-    layer.effect: MultiEffect {
-      shadowEnabled: true
-      shadowColor: "#80000000"
-      shadowBlur: 1.0
-      shadowVerticalOffset: 8
-      shadowHorizontalOffset: 0
-    }
-
-    onInstallClicked: {
-      Qt.openUrlExternally("https://download.qgis.org/")
     }
   }
   
@@ -519,6 +538,11 @@ Item {
     function onNewVersionAvailable(versionString) {
       qgisUpdateBar.message = qsTr("QGIS %1 is out!").arg(versionString);
       qgisUpdateBar.visible = true;
+    }
+    
+    function onPluginUpdatesAvailable(plugins) {
+      pluginsUpdateBar.message = qsTr("The following plugin(s) have available updates: %1", "", plugins.length).arg(plugins.join(", "));
+      pluginsUpdateBar.visible = true;
     }
   }
 
