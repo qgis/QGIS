@@ -443,7 +443,7 @@ void QgsNetworkAccessManager::pauseTimeout( QNetworkReply *reply )
 {
   Q_ASSERT( reply->manager() == this );
 
-  QTimer *timer = reply->findChild<QTimer *>( u"timeoutTimer"_s ) );
+  QTimer *timer = reply->findChild<QTimer *>( u"timeoutTimer"_s );
   if ( timer && timer->isActive() )
   {
     timer->stop();
@@ -748,6 +748,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
     const QString authcfg = settings.value( u"proxy/authcfg"_s, "" ).toString();
     if ( !authcfg.isEmpty( ) )
     {
+#ifdef HAVE_AUTH
       QgsDebugMsgLevel( u"setting proxy from stored authentication configuration %1"_s.arg( authcfg ), 2 );
       // Never crash! Never.
       if ( QgsAuthManager *authManager = QgsApplication::authManager() )

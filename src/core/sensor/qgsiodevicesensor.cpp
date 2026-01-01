@@ -252,7 +252,7 @@ void QgsUdpSocketSensor::handleConnect()
   Q_UNUSED( mHostName )
   Q_UNUSED( mPort )
   setStatus( Qgis::DeviceConnectionStatus::Disconnected );
-  QgsDebugError( QStringLiteral( "Qt is built without network interface support, cannot use UDP sockets." ) );
+  QgsDebugError( u"Qt is built without network interface support, cannot use UDP sockets."_s );
 #else
   if ( mHostName.isEmpty() || mPort == 0 )
   {

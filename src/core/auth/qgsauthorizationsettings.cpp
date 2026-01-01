@@ -31,7 +31,7 @@ bool QgsAuthorizationSettings::setAuthorization( QNetworkRequest &request ) cons
 #ifdef HAVE_AUTH
     return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
 #else
-    QgsDebugError( QStringLiteral( "Auth manager is not available - cannot update network request for authcfg: %1" ).arg( mAuthCfg ) );
+    QgsDebugError( u"Auth manager is not available - cannot update network request for authcfg: %1"_s.arg( mAuthCfg ) );
     return false;
 #endif
   }
