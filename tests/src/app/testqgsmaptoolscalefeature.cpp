@@ -69,15 +69,15 @@ void TestQgsMapToolScaleFeature::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -86,15 +86,15 @@ void TestQgsMapToolScaleFeature::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerBase = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946" ), QStringLiteral( "baselayer" ), QStringLiteral( "memory" ) );
+  mLayerBase = new QgsVectorLayer( u"Polygon?crs=EPSG:3946"_s, u"baselayer"_s, u"memory"_s );
   QVERIFY( mLayerBase->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  const QString wkt1 = QStringLiteral( "Polygon ((-2 -2, -2 -1, -1 -1, -1 -2, -2 -2))" );
+  const QString wkt1 = u"Polygon ((-2 -2, -2 -1, -1 -1, -1 -2, -2 -2))"_s;
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  const QString wkt2 = QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" );
+  const QString wkt2 = u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s;
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -141,16 +141,16 @@ void TestQgsMapToolScaleFeature::testScaleFeature()
   utils.mouseMove( -2.5, -0.5 );
   utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s );
 
   //scale down
   utils.mouseClick( 1.1, 0.8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 1.35, 1.85 );
   utils.mouseClick( 1.35, 1.85, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))"_s );
 
   mLayerBase->undoStack()->undo();
   mLayerBase->undoStack()->undo();
@@ -168,8 +168,8 @@ void TestQgsMapToolScaleFeature::testScaleFeatureWithAnchor()
   utils.mouseMove( -2.5, -0.5 );
   utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.54 -2.18, -2.54 -1, -1.36 -1, -1.36 -2.18, -2.54 -2.18))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.54 -2.18, -2.54 -1, -1.36 -1, -1.36 -2.18, -2.54 -2.18))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -189,8 +189,8 @@ void TestQgsMapToolScaleFeature::testCancelManualAnchor()
   utils.mouseMove( -2.5, -0.5 );
   utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -208,8 +208,8 @@ void TestQgsMapToolScaleFeature::testScaleFeatureWithAnchorSetAfterStart()
   utils.mouseMove( -2.5, -0.5 );
   utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-14 -6, -14 -1, -9 -1, -9 -6, -14 -6))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-14 -6, -14 -1, -9 -1, -9 -6, -14 -6))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -224,8 +224,8 @@ void TestQgsMapToolScaleFeature::testScaleSelectedFeatures()
   utils.mouseMove( -2.5, -0.5 );
   utils.mouseClick( -2.5, -0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.54 -2.18, -2.54 -1, -1.36 -1, -1.36 -2.18, -2.54 -2.18))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.12 1.12, 1.12 6.07, 2.3 6.07, 2.3 1.12, 1.12 1.12))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.54 -2.18, -2.54 -1, -1.36 -1, -1.36 -2.18, -2.54 -2.18))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.12 1.12, 1.12 6.07, 2.3 6.07, 2.3 1.12, 1.12 1.12))"_s );
 
   mLayerBase->removeSelection();
   mLayerBase->undoStack()->undo();
@@ -252,8 +252,8 @@ void TestQgsMapToolScaleFeature::testScaleFeatureManualAnchorSnapping()
   utils.mouseMove( 1.2, 0.9 );
   utils.mouseClick( 1.2, 0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2 -2, -2 0.95, 0.95 0.95, 0.95 -2, -2 -2))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2 -2, -2 0.95, 0.95 0.95, 0.95 -2, -2 -2))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s );
 
   mLayerBase->undoStack()->undo();
 
@@ -295,7 +295,7 @@ void TestQgsMapToolScaleFeature::testAvoidIntersectionsAndTopoEdit()
 
 void TestQgsMapToolScaleFeature::testScaleFeatureDifferentCrs()
 {
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   TestQgsMapToolUtils utils( mScaleTool );
 
   //scale up
@@ -303,20 +303,20 @@ void TestQgsMapToolScaleFeature::testScaleFeatureDifferentCrs()
   utils.mouseMove( -8.82188215592444536, 2.09095048559432861 );
   utils.mouseClick( -8.82188215592444536, 2.09095048559432861, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))"_s );
 
   //scale down
   utils.mouseClick( -8.82185881943214234, 2.09096315856551129, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( -8.82185818217576667, 2.09097065484482636 );
   utils.mouseClick( -8.82185818217576667, 2.09097065484482636, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))"_s );
 
   mLayerBase->undoStack()->undo();
   mLayerBase->undoStack()->undo();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToolScaleFeature )

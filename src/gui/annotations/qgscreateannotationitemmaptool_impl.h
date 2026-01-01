@@ -180,7 +180,7 @@ class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizi
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreePicture = QgsCreateAnnotationItemMapToolInterface::sTreeAnnotationTools->createChildNode( QStringLiteral( "picture-item" ) );
+    static inline QgsSettingsTreeNode *sTreePicture = QgsCreateAnnotationItemMapToolInterface::sTreeAnnotationTools->createChildNode( u"picture-item"_s );
     static const QgsSettingsEntryString *settingLastSourceFolder;
 
     //! Constructor

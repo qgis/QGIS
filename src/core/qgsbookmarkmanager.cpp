@@ -44,11 +44,11 @@ void QgsBookmark::setId( const QString &id )
 QgsBookmark QgsBookmark::fromXml( const QDomElement &element, const QDomDocument & )
 {
   QgsBookmark b;
-  b.setId( element.attribute( QStringLiteral( "id" ) ) );
-  b.setName( element.attribute( QStringLiteral( "name" ) ) );
-  b.setGroup( element.attribute( QStringLiteral( "group" ) ) );
-  const QgsRectangle e = QgsRectangle::fromWkt( element.attribute( QStringLiteral( "extent" ) ) );
-  b.setRotation( element.attribute( QStringLiteral( "rotation" ) ).toDouble() );
+  b.setId( element.attribute( u"id"_s ) );
+  b.setName( element.attribute( u"name"_s ) );
+  b.setGroup( element.attribute( u"group"_s ) );
+  const QgsRectangle e = QgsRectangle::fromWkt( element.attribute( u"extent"_s ) );
+  b.setRotation( element.attribute( u"rotation"_s ).toDouble() );
   QgsCoordinateReferenceSystem crs;
   crs.readXml( element );
   b.setExtent( QgsReferencedRectangle( e, crs ) );
@@ -57,12 +57,12 @@ QgsBookmark QgsBookmark::fromXml( const QDomElement &element, const QDomDocument
 
 QDomElement QgsBookmark::writeXml( QDomDocument &doc ) const
 {
-  QDomElement bookmarkElem = doc.createElement( QStringLiteral( "Bookmark" ) );
-  bookmarkElem.setAttribute( QStringLiteral( "id" ), mId );
-  bookmarkElem.setAttribute( QStringLiteral( "name" ), mName );
-  bookmarkElem.setAttribute( QStringLiteral( "group" ), mGroup );
-  bookmarkElem.setAttribute( QStringLiteral( "extent" ), mExtent.asWktPolygon() );
-  bookmarkElem.setAttribute( QStringLiteral( "rotation" ), mRotation );
+  QDomElement bookmarkElem = doc.createElement( u"Bookmark"_s );
+  bookmarkElem.setAttribute( u"id"_s, mId );
+  bookmarkElem.setAttribute( u"name"_s, mName );
+  bookmarkElem.setAttribute( u"group"_s, mGroup );
+  bookmarkElem.setAttribute( u"extent"_s, mExtent.asWktPolygon() );
+  bookmarkElem.setAttribute( u"rotation"_s, mRotation );
   mExtent.crs().writeXml( bookmarkElem, doc );
   return bookmarkElem;
 }
@@ -301,25 +301,25 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
   clear();
 
   QDomElement bookmarksElem = element;
-  if ( element.tagName() != QLatin1String( "Bookmarks" ) )
+  if ( element.tagName() != "Bookmarks"_L1 )
   {
-    bookmarksElem = element.firstChildElement( QStringLiteral( "Bookmarks" ) );
+    bookmarksElem = element.firstChildElement( u"Bookmarks"_s );
   }
   bool result = true;
   if ( mProject && bookmarksElem.isNull() )
   {
     // handle legacy projects
-    const int count = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
+    const int count = mProject->readNumEntry( u"Bookmarks"_s, u"/count"_s );
     for ( int i = 0; i < count; ++i )
     {
-      const double minX = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( i ) );
-      const double minY = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( i ) );
-      const double maxX = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( i ) );
-      const double maxY = mProject->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( i ) );
-      const long srid = mProject->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( i ) );
+      const double minX = mProject->readDoubleEntry( u"Bookmarks"_s, u"/Row-%1/MinX"_s.arg( i ) );
+      const double minY = mProject->readDoubleEntry( u"Bookmarks"_s, u"/Row-%1/MinY"_s.arg( i ) );
+      const double maxX = mProject->readDoubleEntry( u"Bookmarks"_s, u"/Row-%1/MaxX"_s.arg( i ) );
+      const double maxY = mProject->readDoubleEntry( u"Bookmarks"_s, u"/Row-%1/MaxY"_s.arg( i ) );
+      const long srid = mProject->readNumEntry( u"Bookmarks"_s, u"/Row-%1/SRID"_s.arg( i ) );
       QgsBookmark b;
-      b.setId( QStringLiteral( "bookmark_%1" ).arg( i ) );
-      b.setName( mProject->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( i ) ) );
+      b.setId( u"bookmark_%1"_s.arg( i ) );
+      b.setName( mProject->readEntry( u"Bookmarks"_s, u"/Row-%1/Name"_s.arg( i ) ) );
       b.setExtent( QgsReferencedRectangle( QgsRectangle( minX, minY, maxX, maxY ), QgsCoordinateReferenceSystem::fromSrsId( srid ) ) );
 
       bool added = false;
@@ -330,7 +330,7 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
   }
 
   //restore each
-  QDomNodeList bookmarkNodes = element.elementsByTagName( QStringLiteral( "Bookmark" ) );
+  QDomNodeList bookmarkNodes = element.elementsByTagName( u"Bookmark"_s );
   for ( int i = 0; i < bookmarkNodes.size(); ++i )
   {
     QgsBookmark b = QgsBookmark::fromXml( bookmarkNodes.at( i ).toElement(), doc );
@@ -344,7 +344,7 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
 
 QDomElement QgsBookmarkManager::writeXml( QDomDocument &doc ) const
 {
-  QDomElement bookmarksElem = doc.createElement( QStringLiteral( "Bookmarks" ) );
+  QDomElement bookmarksElem = doc.createElement( u"Bookmarks"_s );
 
   for ( const QgsBookmark &b : mBookmarks )
   {
@@ -369,19 +369,19 @@ bool QgsBookmarkManager::moveBookmark( const QString &id, QgsBookmarkManager *de
 bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const QgsBookmarkManager *> &managers, const QString &group )
 {
   // note - we don't use the other writeXml implementation, to maintain older format compatibility
-  QDomDocument doc( QStringLiteral( "qgis_bookmarks" ) );
-  QDomElement root = doc.createElement( QStringLiteral( "qgis_bookmarks" ) );
+  QDomDocument doc( u"qgis_bookmarks"_s );
+  QDomElement root = doc.createElement( u"qgis_bookmarks"_s );
   doc.appendChild( root );
 
   QList<QString> headerList;
   headerList
-      << QStringLiteral( "project" )
-      << QStringLiteral( "xmin" )
-      << QStringLiteral( "ymin" )
-      << QStringLiteral( "xmax" )
-      << QStringLiteral( "ymax" )
-      << QStringLiteral( "rotation" )
-      << QStringLiteral( "sr_id" );
+      << u"project"_s
+      << u"xmin"_s
+      << u"ymin"_s
+      << u"xmax"_s
+      << u"ymax"_s
+      << u"rotation"_s
+      << u"sr_id"_s;
 
   for ( const QgsBookmarkManager *manager : managers )
   {
@@ -391,39 +391,39 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
       if ( !group.isEmpty() && b.group() != group )
         continue;
 
-      QDomElement bookmark = doc.createElement( QStringLiteral( "bookmark" ) );
+      QDomElement bookmark = doc.createElement( u"bookmark"_s );
       root.appendChild( bookmark );
 
-      QDomElement id = doc.createElement( QStringLiteral( "id" ) );
+      QDomElement id = doc.createElement( u"id"_s );
       id.appendChild( doc.createTextNode( b.id() ) );
       bookmark.appendChild( id );
 
-      QDomElement name = doc.createElement( QStringLiteral( "name" ) );
+      QDomElement name = doc.createElement( u"name"_s );
       name.appendChild( doc.createTextNode( b.name() ) );
       bookmark.appendChild( name );
 
-      QDomElement group = doc.createElement( QStringLiteral( "project" ) );
+      QDomElement group = doc.createElement( u"project"_s );
       group.appendChild( doc.createTextNode( b.group() ) );
       bookmark.appendChild( group );
 
-      QDomElement xMin = doc.createElement( QStringLiteral( "xmin" ) );
+      QDomElement xMin = doc.createElement( u"xmin"_s );
       xMin.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().xMinimum() ) ) );
       bookmark.appendChild( xMin );
-      QDomElement yMin = doc.createElement( QStringLiteral( "ymin" ) );
+      QDomElement yMin = doc.createElement( u"ymin"_s );
       yMin.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().yMinimum() ) ) );
       bookmark.appendChild( yMin );
-      QDomElement xMax = doc.createElement( QStringLiteral( "xmax" ) );
+      QDomElement xMax = doc.createElement( u"xmax"_s );
       xMax.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().xMaximum() ) ) );
       bookmark.appendChild( xMax );
-      QDomElement yMax = doc.createElement( QStringLiteral( "ymax" ) );
+      QDomElement yMax = doc.createElement( u"ymax"_s );
       yMax.appendChild( doc.createTextNode( qgsDoubleToString( b.extent().yMaximum() ) ) );
       bookmark.appendChild( yMax );
 
-      QDomElement rotation = doc.createElement( QStringLiteral( "rotation" ) );
+      QDomElement rotation = doc.createElement( u"rotation"_s );
       rotation.appendChild( doc.createTextNode( qgsDoubleToString( b.rotation() ) ) );
       bookmark.appendChild( rotation );
 
-      QDomElement crs = doc.createElement( QStringLiteral( "sr_id" ) );
+      QDomElement crs = doc.createElement( u"sr_id"_s );
       crs.appendChild( doc.createTextNode( QString::number( b.extent().crs().srsid() ) ) );
       bookmark.appendChild( crs );
     }
@@ -464,20 +464,20 @@ bool QgsBookmarkManager::importFromFile( const QString &path )
   f.close();
 
   QDomElement docElem = doc.documentElement();
-  QDomNodeList nodeList = docElem.elementsByTagName( QStringLiteral( "bookmark" ) );
+  QDomNodeList nodeList = docElem.elementsByTagName( u"bookmark"_s );
 
   bool res = true;
   for ( int i = 0; i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
-    QDomElement name = bookmark.firstChildElement( QStringLiteral( "name" ) );
-    QDomElement prjname = bookmark.firstChildElement( QStringLiteral( "project" ) );
-    QDomElement xmin = bookmark.firstChildElement( QStringLiteral( "xmin" ) );
-    QDomElement ymin = bookmark.firstChildElement( QStringLiteral( "ymin" ) );
-    QDomElement xmax = bookmark.firstChildElement( QStringLiteral( "xmax" ) );
-    QDomElement ymax = bookmark.firstChildElement( QStringLiteral( "ymax" ) );
-    QDomElement rotation = bookmark.firstChildElement( QStringLiteral( "rotation" ) );
-    QDomElement srid = bookmark.firstChildElement( QStringLiteral( "sr_id" ) );
+    QDomElement name = bookmark.firstChildElement( u"name"_s );
+    QDomElement prjname = bookmark.firstChildElement( u"project"_s );
+    QDomElement xmin = bookmark.firstChildElement( u"xmin"_s );
+    QDomElement ymin = bookmark.firstChildElement( u"ymin"_s );
+    QDomElement xmax = bookmark.firstChildElement( u"xmax"_s );
+    QDomElement ymax = bookmark.firstChildElement( u"ymax"_s );
+    QDomElement rotation = bookmark.firstChildElement( u"rotation"_s );
+    QDomElement srid = bookmark.firstChildElement( u"sr_id"_s );
 
     bool ok = false;
     QgsBookmark b;
@@ -538,7 +538,7 @@ void QgsBookmarkManager::initialize( const QString &filePath )
       return;
     }
 
-    sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks" ), result );
+    sqlite3_statement_unique_ptr preparedStatement = database.prepare( u"SELECT name,xmin,ymin,xmax,ymax,projection_srid FROM tbl_bookmarks"_s, result );
     if ( result == SQLITE_OK )
     {
       while ( preparedStatement.step() == SQLITE_ROW )

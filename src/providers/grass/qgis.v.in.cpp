@@ -146,7 +146,7 @@ int main( int argc, char **argv )
   // global finalName, tmpName are used by checkStream()
   sFinalName = QString( mapOption->answer );
   QDateTime now = QDateTime::currentDateTime();
-  sTmpName = QStringLiteral( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( QStringLiteral( "yyyyMMddhhmmss" ) ) );
+  sTmpName = u"qgis_import_tmp_%1_%2"_s.arg( mapOption->answer, now.toString( u"yyyyMMddhhmmss"_s ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;

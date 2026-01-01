@@ -133,12 +133,12 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
 
   if ( !rows.isEmpty() )
   {
-    const QString text = QStringLiteral( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(), mStatisticsTable->horizontalHeaderItem( 1 )->text(), rows.join( QLatin1Char( '\n' ) ) );
-    QString html = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
-    html.replace( QLatin1String( "\t" ), QLatin1String( "</td><td>" ) ).replace( QLatin1String( "\n" ), QLatin1String( "</td></tr><tr><td>" ) );
+    const QString text = u"%1\t%2\n%3"_s.arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(), mStatisticsTable->horizontalHeaderItem( 1 )->text(), rows.join( QLatin1Char( '\n' ) ) );
+    QString html = u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>"_s.arg( text );
+    html.replace( "\t"_L1, "</td><td>"_L1 ).replace( "\n"_L1, "</td></tr><tr><td>"_L1 );
 
     QgsClipboard clipboard;
-    clipboard.setData( QStringLiteral( "text/html" ), html.toUtf8(), text );
+    clipboard.setData( u"text/html"_s, html.toUtf8(), text );
   }
 }
 
@@ -437,24 +437,24 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
   switch ( mFieldType )
   {
     case DataType::Numeric:
-      settingsKey = QStringLiteral( "numeric" );
+      settingsKey = u"numeric"_s;
       break;
     case DataType::String:
-      settingsKey = QStringLiteral( "string" );
+      settingsKey = u"string"_s;
       break;
     case DataType::DateTime:
-      settingsKey = QStringLiteral( "datetime" );
+      settingsKey = u"datetime"_s;
       break;
   }
 
   QgsSettings settings;
   if ( stat >= 0 )
   {
-    settings.setValue( QStringLiteral( "StatisticalSummaryDock/%1_%2" ).arg( settingsKey ).arg( stat ), checked );
+    settings.setValue( u"StatisticalSummaryDock/%1_%2"_s.arg( settingsKey ).arg( stat ), checked );
   }
   else if ( stat == MISSING_VALUES )
   {
-    settings.setValue( QStringLiteral( "StatisticalSummaryDock/numeric_missing_values" ), checked );
+    settings.setValue( u"StatisticalSummaryDock/numeric_missing_values"_s, checked );
   }
 
   refreshStatistics();
@@ -547,7 +547,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       {
         QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_%1" ).arg( static_cast<int>( stat ) ), true ).toBool();
+        const bool checked = settings.value( u"StatisticalSummaryDock/numeric_%1"_s.arg( static_cast<int>( stat ) ), true ).toBool();
         action->setChecked( checked );
         action->setData( static_cast<int>( stat ) );
         mStatsActions.insert( static_cast<int>( stat ), action );
@@ -558,7 +558,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       //count of null values statistic
       QAction *nullCountAction = new QAction( tr( "Missing (null) values" ), mStatisticsMenu );
       nullCountAction->setCheckable( true );
-      const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_missing_values" ), true ).toBool();
+      const bool checked = settings.value( u"StatisticalSummaryDock/numeric_missing_values"_s, true ).toBool();
       nullCountAction->setChecked( checked );
       nullCountAction->setData( MISSING_VALUES );
       mStatsActions.insert( MISSING_VALUES, nullCountAction );
@@ -574,7 +574,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       {
         QAction *action = new QAction( QgsStringStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/string_%1" ).arg( static_cast<int>( stat ) ), true ).toBool();
+        const bool checked = settings.value( u"StatisticalSummaryDock/string_%1"_s.arg( static_cast<int>( stat ) ), true ).toBool();
         action->setChecked( checked );
         action->setData( static_cast<int>( stat ) );
         mStatsActions.insert( static_cast<int>( stat ), action );
@@ -590,7 +590,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       {
         QAction *action = new QAction( QgsDateTimeStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/datetime_%1" ).arg( static_cast<int>( stat ) ), true ).toBool();
+        const bool checked = settings.value( u"StatisticalSummaryDock/datetime_%1"_s.arg( static_cast<int>( stat ) ), true ).toBool();
         action->setChecked( checked );
         action->setData( static_cast<int>( stat ) );
         mStatsActions.insert( static_cast<int>( stat ), action );

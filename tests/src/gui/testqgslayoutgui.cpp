@@ -85,7 +85,7 @@ void TestQgsLayoutGui::itemTypeComboBox()
 
   QCOMPARE( cb->count(), 1 );
   QCOMPARE( cb2->count(), 0 );
-  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
+  QCOMPARE( cb->itemText( 0 ), u"item 1"_s );
   QCOMPARE( cb->item( 0 ), item1 );
   QCOMPARE( cb->currentItem(), item1 );
   QVERIFY( !cb2->currentItem() );
@@ -102,9 +102,9 @@ void TestQgsLayoutGui::itemTypeComboBox()
 
   QCOMPARE( cb->count(), 2 );
   QCOMPARE( cb2->count(), 1 );
-  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
-  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 2" ) );
-  QCOMPARE( cb2->itemText( 0 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->itemText( 0 ), u"item 1"_s );
+  QCOMPARE( cb->itemText( 1 ), u"item 2"_s );
+  QCOMPARE( cb2->itemText( 0 ), u"item 2"_s );
   QCOMPARE( cb->item( 0 ), item1 );
   QCOMPARE( cb->item( 1 ), item2 );
   QCOMPARE( cb2->item( 0 ), item2 );
@@ -122,10 +122,10 @@ void TestQgsLayoutGui::itemTypeComboBox()
 
   QCOMPARE( cb->count(), 3 );
   QCOMPARE( cb2->count(), 1 );
-  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
-  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 2" ) );
-  QCOMPARE( cb->itemText( 2 ), QStringLiteral( "item 3" ) );
-  QCOMPARE( cb2->itemText( 0 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->itemText( 0 ), u"item 1"_s );
+  QCOMPARE( cb->itemText( 1 ), u"item 2"_s );
+  QCOMPARE( cb->itemText( 2 ), u"item 3"_s );
+  QCOMPARE( cb2->itemText( 0 ), u"item 2"_s );
   QCOMPARE( cb->item( 0 ), item1 );
   QCOMPARE( cb->item( 1 ), item2 );
   QCOMPARE( cb->item( 2 ), item3 );
@@ -136,13 +136,13 @@ void TestQgsLayoutGui::itemTypeComboBox()
   QCOMPARE( spy2.count(), expectedSpy2Count );
 
   item3->setId( "a" );
-  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "a" ) );
-  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 1" ) );
-  QCOMPARE( cb->itemText( 2 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->itemText( 0 ), u"a"_s );
+  QCOMPARE( cb->itemText( 1 ), u"item 1"_s );
+  QCOMPARE( cb->itemText( 2 ), u"item 2"_s );
   item3->setId( "item 3" );
-  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
-  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 2" ) );
-  QCOMPARE( cb->itemText( 2 ), QStringLiteral( "item 3" ) );
+  QCOMPARE( cb->itemText( 0 ), u"item 1"_s );
+  QCOMPARE( cb->itemText( 1 ), u"item 2"_s );
+  QCOMPARE( cb->itemText( 2 ), u"item 3"_s );
 
   //manually change item
   cb->setItem( item3 );
@@ -244,11 +244,11 @@ void TestQgsLayoutGui::testElevationProfileWidgetLegacy()
 {
   QgsProject project;
   QgsLayout layout( &project );
-  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl1"_s, u"memory"_s );
   qobject_cast< QgsVectorLayerElevationProperties * >( vl1->elevationProperties() )->setZOffset( 5 );
-  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl2"_s, u"memory"_s );
   qobject_cast< QgsVectorLayerElevationProperties * >( vl2->elevationProperties() )->setZOffset( 5 );
-  QgsVectorLayer *vl3 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl3 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl3"_s, u"memory"_s );
   qobject_cast< QgsVectorLayerElevationProperties * >( vl3->elevationProperties() )->setZOffset( 5 );
   project.addMapLayers( { vl1, vl2, vl3 } );
 
@@ -259,19 +259,19 @@ void TestQgsLayoutGui::testElevationProfileWidgetLegacy()
 
   QCOMPARE( widget.mLayerTree->children().size(), 3 );
   // in widget's layer tree the layers should be in order v1->vl3 from bottom to top
-  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), QStringLiteral( "vl3" ) );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), u"vl3"_s );
   QVERIFY( widget.mLayerTree->children().at( 0 )->isItemVisibilityCheckedRecursive() );
-  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), QStringLiteral( "vl2" ) );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), u"vl2"_s );
   QVERIFY( widget.mLayerTree->children().at( 1 )->isItemVisibilityCheckedRecursive() );
-  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), QStringLiteral( "vl1" ) );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), u"vl1"_s );
   QVERIFY( widget.mLayerTree->children().at( 2 )->isItemVisibilityCheckedRecursive() );
 
   // uncheck a layer
   widget.mLayerTree->children().at( 1 )->setItemVisibilityChecked( false );
   QCOMPARE( profile.layers().size(), 2 );
   // layers should be in order of rendering, ie vl1 before vl3 as vl3 is rendered on top
-  QCOMPARE( profile.layers().at( 0 )->name(), QStringLiteral( "vl1" ) );
-  QCOMPARE( profile.layers().at( 1 )->name(), QStringLiteral( "vl3" ) );
+  QCOMPARE( profile.layers().at( 0 )->name(), u"vl1"_s );
+  QCOMPARE( profile.layers().at( 1 )->name(), u"vl3"_s );
 
   QgsElevationProfileCanvas canvas;
   // layers will be rendered from v1->vl3 from bottom to top
@@ -280,27 +280,27 @@ void TestQgsLayoutGui::testElevationProfileWidgetLegacy()
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.layers().size(), 3 );
   // layers should be in order of rendering, ie vl1 before vl3 as vl3 is rendered on top
-  QCOMPARE( profile.layers().at( 0 )->name(), QStringLiteral( "vl1" ) );
-  QCOMPARE( profile.layers().at( 1 )->name(), QStringLiteral( "vl2" ) );
-  QCOMPARE( profile.layers().at( 2 )->name(), QStringLiteral( "vl3" ) );
+  QCOMPARE( profile.layers().at( 0 )->name(), u"vl1"_s );
+  QCOMPARE( profile.layers().at( 1 )->name(), u"vl2"_s );
+  QCOMPARE( profile.layers().at( 2 )->name(), u"vl3"_s );
 
   canvas.setLayers( { vl3, vl2, vl1 } );
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.layers().size(), 3 );
-  QCOMPARE( profile.layers().at( 0 )->name(), QStringLiteral( "vl3" ) );
-  QCOMPARE( profile.layers().at( 1 )->name(), QStringLiteral( "vl2" ) );
-  QCOMPARE( profile.layers().at( 2 )->name(), QStringLiteral( "vl1" ) );
+  QCOMPARE( profile.layers().at( 0 )->name(), u"vl3"_s );
+  QCOMPARE( profile.layers().at( 1 )->name(), u"vl2"_s );
+  QCOMPARE( profile.layers().at( 2 )->name(), u"vl1"_s );
 }
 
 void TestQgsLayoutGui::testElevationProfileWidget()
 {
   QgsProject project;
   QgsLayout layout( &project );
-  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl1"_s, u"memory"_s );
   qobject_cast< QgsVectorLayerElevationProperties * >( vl1->elevationProperties() )->setZOffset( 5 );
-  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl2"_s, u"memory"_s );
   qobject_cast< QgsVectorLayerElevationProperties * >( vl2->elevationProperties() )->setZOffset( 5 );
-  QgsVectorLayer *vl3 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl3 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl3"_s, u"memory"_s );
   qobject_cast< QgsVectorLayerElevationProperties * >( vl3->elevationProperties() )->setZOffset( 5 );
   project.addMapLayers( { vl1, vl2, vl3 } );
 
@@ -311,19 +311,19 @@ void TestQgsLayoutGui::testElevationProfileWidget()
 
   QCOMPARE( widget.mLayerTree->children().size(), 3 );
   // in widget's layer tree the sources should be in the same order v1->vl3 than the layout item profile
-  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), QStringLiteral( "vl1" ) );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), u"vl1"_s );
   QVERIFY( widget.mLayerTree->children().at( 0 )->isItemVisibilityCheckedRecursive() );
-  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), QStringLiteral( "vl2" ) );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), u"vl2"_s );
   QVERIFY( widget.mLayerTree->children().at( 1 )->isItemVisibilityCheckedRecursive() );
-  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), QStringLiteral( "vl3" ) );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), u"vl3"_s );
   QVERIFY( widget.mLayerTree->children().at( 2 )->isItemVisibilityCheckedRecursive() );
 
   // uncheck a layer
   widget.mLayerTree->children().at( 1 )->setItemVisibilityChecked( false );
   QCOMPARE( profile.sources().size(), 2 );
   // sources should be in opposite order of rendering, ie vl1 before vl3 as vl1 is rendered on top
-  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), QStringLiteral( "vl1" ) );
-  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), QStringLiteral( "vl3" ) );
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), u"vl1"_s );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), u"vl3"_s );
 
   QgsElevationProfileCanvas canvas;
   // sources will be rendered from vl3->vl1 from bottom to top
@@ -332,16 +332,16 @@ void TestQgsLayoutGui::testElevationProfileWidget()
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.sources().size(), 3 );
   // sources should be in opposite order of rendering, ie vl1 before vl3 as vl1 is rendered on top
-  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), QStringLiteral( "vl1" ) );
-  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), QStringLiteral( "vl2" ) );
-  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), QStringLiteral( "vl3" ) );
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), u"vl1"_s );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), u"vl2"_s );
+  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), u"vl3"_s );
 
   canvas.setSources( { vl3, vl2, vl1 } );
   widget.copySettingsFromProfileCanvas( &canvas );
   QCOMPARE( profile.sources().size(), 3 );
-  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), QStringLiteral( "vl3" ) );
-  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), QStringLiteral( "vl2" ) );
-  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), QStringLiteral( "vl1" ) );
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), u"vl3"_s );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), u"vl2"_s );
+  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), u"vl1"_s );
 }
 
 QTEST_MAIN( TestQgsLayoutGui )

@@ -52,9 +52,9 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorClipping, context, QString(), &ok ).trimmed();
     if ( ok )
     {
-      if ( value.compare( QLatin1String( "visible" ), Qt::CaseInsensitive ) == 0 )
+      if ( value.compare( "visible"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
-      else if ( value.compare( QLatin1String( "entire" ), Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "entire"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorClipping = AnchorClipping::UseEntireLine;
     }
   }
@@ -65,9 +65,9 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorType, context, QString(), &ok ).trimmed();
     if ( ok )
     {
-      if ( value.compare( QLatin1String( "hint" ), Qt::CaseInsensitive ) == 0 )
+      if ( value.compare( "hint"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorType = AnchorType::HintOnly;
-      else if ( value.compare( QLatin1String( "strict" ), Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "strict"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorType = AnchorType::Strict;
     }
   }
@@ -78,13 +78,13 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorTextPoint, context, QString(), &ok ).trimmed();
     if ( ok )
     {
-      if ( value.compare( QLatin1String( "follow" ), Qt::CaseInsensitive ) == 0 )
+      if ( value.compare( "follow"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
-      else if ( value.compare( QLatin1String( "start" ), Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "start"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorTextPoint = AnchorTextPoint::StartOfText;
-      else if ( value.compare( QLatin1String( "center" ), Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "center"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorTextPoint = AnchorTextPoint::CenterOfText;
-      else if ( value.compare( QLatin1String( "end" ), Qt::CaseInsensitive ) == 0 )
+      else if ( value.compare( "end"_L1, Qt::CaseInsensitive ) == 0 )
         mAnchorTextPoint = AnchorTextPoint::EndOfText;
     }
   }

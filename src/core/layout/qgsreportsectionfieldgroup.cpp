@@ -36,7 +36,7 @@ QString QgsReportSectionFieldGroup::description() const
 
 QIcon QgsReportSectionFieldGroup::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s );
 }
 
 QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
@@ -180,22 +180,22 @@ void QgsReportSectionFieldGroup::reloadSettings()
 
 bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "headerVisibility" ), static_cast< int >( mHeaderVisibility ) );
-  element.setAttribute( QStringLiteral( "footerVisibility" ), static_cast< int >( mFooterVisibility ) );
-  element.setAttribute( QStringLiteral( "field" ), mField );
-  element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"headerVisibility"_s, static_cast< int >( mHeaderVisibility ) );
+  element.setAttribute( u"footerVisibility"_s, static_cast< int >( mFooterVisibility ) );
+  element.setAttribute( u"field"_s, mField );
+  element.setAttribute( u"ascending"_s, mSortAscending ? u"1"_s : u"0"_s );
+  element.setAttribute( u"bodyEnabled"_s, mBodyEnabled ? u"1"_s : u"0"_s );
   if ( mCoverageLayer )
   {
-    element.setAttribute( QStringLiteral( "coverageLayer" ), mCoverageLayer.layerId );
-    element.setAttribute( QStringLiteral( "coverageLayerName" ), mCoverageLayer.name );
-    element.setAttribute( QStringLiteral( "coverageLayerSource" ), mCoverageLayer.source );
-    element.setAttribute( QStringLiteral( "coverageLayerProvider" ), mCoverageLayer.provider );
+    element.setAttribute( u"coverageLayer"_s, mCoverageLayer.layerId );
+    element.setAttribute( u"coverageLayerName"_s, mCoverageLayer.name );
+    element.setAttribute( u"coverageLayerSource"_s, mCoverageLayer.source );
+    element.setAttribute( u"coverageLayerProvider"_s, mCoverageLayer.provider );
   }
 
   if ( mBody )
   {
-    QDomElement bodyElement = doc.createElement( QStringLiteral( "body" ) );
+    QDomElement bodyElement = doc.createElement( u"body"_s );
     bodyElement.appendChild( mBody->writeXml( doc, context ) );
     element.appendChild( bodyElement );
   }
@@ -204,19 +204,19 @@ bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element,
 
 bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  mHeaderVisibility = static_cast< SectionVisibility >( element.attribute( QStringLiteral( "headerVisibility" ) ).toInt() );
-  mFooterVisibility = static_cast< SectionVisibility >( element.attribute( QStringLiteral( "footerVisibility" ) ).toInt() );
-  mField = element.attribute( QStringLiteral( "field" ) );
-  mSortAscending = element.attribute( QStringLiteral( "ascending" ) ).toInt();
-  mBodyEnabled = element.attribute( QStringLiteral( "bodyEnabled" ) ).toInt();
-  QString layerId = element.attribute( QStringLiteral( "coverageLayer" ) );
-  QString layerName = element.attribute( QStringLiteral( "coverageLayerName" ) );
-  QString layerSource = element.attribute( QStringLiteral( "coverageLayerSource" ) );
-  QString layerProvider = element.attribute( QStringLiteral( "coverageLayerProvider" ) );
+  mHeaderVisibility = static_cast< SectionVisibility >( element.attribute( u"headerVisibility"_s ).toInt() );
+  mFooterVisibility = static_cast< SectionVisibility >( element.attribute( u"footerVisibility"_s ).toInt() );
+  mField = element.attribute( u"field"_s );
+  mSortAscending = element.attribute( u"ascending"_s ).toInt();
+  mBodyEnabled = element.attribute( u"bodyEnabled"_s ).toInt();
+  QString layerId = element.attribute( u"coverageLayer"_s );
+  QString layerName = element.attribute( u"coverageLayerName"_s );
+  QString layerSource = element.attribute( u"coverageLayerSource"_s );
+  QString layerProvider = element.attribute( u"coverageLayerProvider"_s );
   mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mCoverageLayer.resolveWeakly( project() );
 
-  const QDomElement bodyElement = element.firstChildElement( QStringLiteral( "body" ) );
+  const QDomElement bodyElement = element.firstChildElement( u"body"_s );
   if ( !bodyElement.isNull() )
   {
     const QDomElement bodyLayoutElem = bodyElement.firstChild().toElement();
@@ -255,7 +255,7 @@ QgsFeatureRequest QgsReportSectionFieldGroup::buildFeatureRequest() const
   }
   if ( !filterParts.empty() )
   {
-    QString filterString = QStringLiteral( "(%1)" ).arg( filterParts.join( QLatin1String( ") AND (" ) ) );
+    QString filterString = u"(%1)"_s.arg( filterParts.join( ") AND ("_L1 ) );
     request.setFilterExpression( filterString );
   }
 

@@ -101,7 +101,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
           const QList<QgsLayerMetadataProviderResult> metadata = mResult.metadata();
           const QgsLayerMetadataProviderResult &md { metadata.at( index.row() ) };
           if ( md.layerType() == Qgis::LayerType::Raster )
-            return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+            return QgsApplication::getThemeIcon( u"mIconRaster.svg"_s );
           return QgsIconUtils::iconForGeometryType( md.geometryType() == Qgis::GeometryType::Unknown ? Qgis::GeometryType::Null : md.geometryType() );
         }
         break;

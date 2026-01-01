@@ -36,8 +36,8 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
 
   public:
 
-    static const inline QString SENSORTHINGS_PROVIDER_KEY = QStringLiteral( "sensorthings" );
-    static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = QStringLiteral( "OGC SensorThings API data provider" );
+    static const inline QString SENSORTHINGS_PROVIDER_KEY = u"sensorthings"_s;
+    static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = u"OGC SensorThings API data provider"_s;
 
     QgsSensorThingsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 

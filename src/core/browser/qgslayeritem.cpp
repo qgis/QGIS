@@ -194,31 +194,31 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
   switch ( layerType )
   {
     case Qgis::BrowserLayerType::Point:
-      return QStringLiteral( "/mIconPointLayer.svg" );
+      return u"/mIconPointLayer.svg"_s;
     case Qgis::BrowserLayerType::Line:
-      return QStringLiteral( "/mIconLineLayer.svg" );
+      return u"/mIconLineLayer.svg"_s;
     case Qgis::BrowserLayerType::Polygon:
-      return QStringLiteral( "/mIconPolygonLayer.svg" );
+      return u"/mIconPolygonLayer.svg"_s;
     case Qgis::BrowserLayerType::Vector :
-      return QStringLiteral( "/mIconGeometryCollectionLayer.svg" );
+      return u"/mIconGeometryCollectionLayer.svg"_s;
     case Qgis::BrowserLayerType::TableLayer:
     case Qgis::BrowserLayerType::Table:
-      return QStringLiteral( "/mIconTableLayer.svg" );
+      return u"/mIconTableLayer.svg"_s;
     case Qgis::BrowserLayerType::Raster:
-      return QStringLiteral( "/mIconRaster.svg" );
+      return u"/mIconRaster.svg"_s;
     case Qgis::BrowserLayerType::Mesh:
-      return QStringLiteral( "/mIconMeshLayer.svg" );
+      return u"/mIconMeshLayer.svg"_s;
     case Qgis::BrowserLayerType::PointCloud:
-      return QStringLiteral( "/mIconPointCloudLayer.svg" );
+      return u"/mIconPointCloudLayer.svg"_s;
     case Qgis::BrowserLayerType::VectorTile:
-      return QStringLiteral( "/mIconVectorTileLayer.svg" );
+      return u"/mIconVectorTileLayer.svg"_s;
     case Qgis::BrowserLayerType::TiledScene:
-      return QStringLiteral( "/mIconTiledSceneLayer.svg" );
+      return u"/mIconTiledSceneLayer.svg"_s;
 
     case Qgis::BrowserLayerType::NoType:
     case Qgis::BrowserLayerType::Database:
     case Qgis::BrowserLayerType::Plugin:
-      return QStringLiteral( "/mIconLayer.png" );
+      return u"/mIconLayer.png"_s;
   }
   BUILTIN_UNREACHABLE
 }

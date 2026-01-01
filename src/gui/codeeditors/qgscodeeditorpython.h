@@ -55,7 +55,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
+    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( u"python"_s );
     static const QgsSettingsEntryString *settingCodeFormatter;
     static const QgsSettingsEntryInteger *settingMaxLineLength;
     static const QgsSettingsEntryBool *settingSortImports;

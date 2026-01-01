@@ -38,7 +38,7 @@ QgsProcessingRasterCalculatorExpressionLineEdit::QgsProcessingRasterCalculatorEx
 
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
   connect( mButton, &QAbstractButton::clicked, this, &QgsProcessingRasterCalculatorExpressionLineEdit::editExpression );
 
   QHBoxLayout *layout = new QHBoxLayout();
@@ -171,7 +171,7 @@ QString QgsProcessingRasterCalculatorExpressionDialog::quoteBandEntry( const QSt
 {
   // '"' -> '\\"'
   QString quotedName = layerName;
-  quotedName.replace( '\"', QLatin1String( "\\\"" ) );
+  quotedName.replace( '\"', "\\\""_L1 );
   quotedName.append( '\"' );
   quotedName.prepend( '\"' );
   return quotedName;
@@ -179,147 +179,147 @@ QString QgsProcessingRasterCalculatorExpressionDialog::quoteBandEntry( const QSt
 
 void QgsProcessingRasterCalculatorExpressionDialog::mLayersList_itemDoubleClicked( QListWidgetItem *item )
 {
-  mExpressionTextEdit->insertPlainText( quoteBandEntry( QStringLiteral( "%1@1" ).arg( item->text() ) ) );
+  mExpressionTextEdit->insertPlainText( quoteBandEntry( u"%1@1"_s.arg( item->text() ) ) );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnPlus_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " + " ) );
+  mExpressionTextEdit->insertPlainText( u" + "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnMinus_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " - " ) );
+  mExpressionTextEdit->insertPlainText( u" - "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnMultiply_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " * " ) );
+  mExpressionTextEdit->insertPlainText( u" * "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnDivide_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " / " ) );
+  mExpressionTextEdit->insertPlainText( u" / "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnPower_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ^ " ) );
+  mExpressionTextEdit->insertPlainText( u" ^ "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnSqrt_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " sqrt ( " ) );
+  mExpressionTextEdit->insertPlainText( u" sqrt ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnOpenBracket_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ( " ) );
+  mExpressionTextEdit->insertPlainText( u" ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnCloseBracket_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ) " ) );
+  mExpressionTextEdit->insertPlainText( u" ) "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnGreater_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " > " ) );
+  mExpressionTextEdit->insertPlainText( u" > "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnGreaterEqual_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " >= " ) );
+  mExpressionTextEdit->insertPlainText( u" >= "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnLess_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " < " ) );
+  mExpressionTextEdit->insertPlainText( u" < "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnLessEqual_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " <= " ) );
+  mExpressionTextEdit->insertPlainText( u" <= "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnEqual_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " = " ) );
+  mExpressionTextEdit->insertPlainText( u" = "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnNotEqual_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " != " ) );
+  mExpressionTextEdit->insertPlainText( u" != "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnAnd_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " AND " ) );
+  mExpressionTextEdit->insertPlainText( u" AND "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnOr_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " OR " ) );
+  mExpressionTextEdit->insertPlainText( u" OR "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnIf_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " if ( " ) );
+  mExpressionTextEdit->insertPlainText( u" if ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnMin_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " MIN ( " ) );
+  mExpressionTextEdit->insertPlainText( u" MIN ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnMax_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " MAX ( " ) );
+  mExpressionTextEdit->insertPlainText( u" MAX ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnAbs_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ABS ( " ) );
+  mExpressionTextEdit->insertPlainText( u" ABS ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnSin_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " sin ( " ) );
+  mExpressionTextEdit->insertPlainText( u" sin ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnCos_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " cos ( " ) );
+  mExpressionTextEdit->insertPlainText( u" cos ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnTan_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " tan ( " ) );
+  mExpressionTextEdit->insertPlainText( u" tan ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnLog_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " log10 ( " ) );
+  mExpressionTextEdit->insertPlainText( u" log10 ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnAsin_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " asin ( " ) );
+  mExpressionTextEdit->insertPlainText( u" asin ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnAcos_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " acos ( " ) );
+  mExpressionTextEdit->insertPlainText( u" acos ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnAtan_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " atan ( " ) );
+  mExpressionTextEdit->insertPlainText( u" atan ( "_s );
 }
 
 void QgsProcessingRasterCalculatorExpressionDialog::mBtnLn_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " ln ( " ) );
+  mExpressionTextEdit->insertPlainText( u" ln ( "_s );
 }
 
 ///@endcond

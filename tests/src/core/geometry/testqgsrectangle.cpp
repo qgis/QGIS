@@ -85,7 +85,7 @@ void TestQgsRectangle::isNull()
 
 void TestQgsRectangle::fromWkt()
 {
-  QgsRectangle rect = QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 0))" ) );
+  QgsRectangle rect = QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1,0 0))"_s );
   QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
@@ -94,7 +94,7 @@ void TestQgsRectangle::fromWkt()
 
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
-  rect = QgsRectangle::fromWkt( QStringLiteral( "POLYGONZ((0 0 2,1 0 2,1 1 2,0 1 2,0 0 2))" ) );
+  rect = QgsRectangle::fromWkt( u"POLYGONZ((0 0 2,1 0 2,1 1 2,0 1 2,0 0 2))"_s );
   QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
@@ -104,7 +104,7 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
   // this is ok, a single rectangular polygon in a multipolygon object
-  rect = QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))" ) );
+  rect = QgsRectangle::fromWkt( u"MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))"_s );
   QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
@@ -113,7 +113,7 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
   // this is ok, a single rectangular polygon in a collection
-  rect = QgsRectangle::fromWkt( QStringLiteral( "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0))))" ) );
+  rect = QgsRectangle::fromWkt( u"GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0))))"_s );
   QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
@@ -121,15 +121,15 @@ void TestQgsRectangle::fromWkt()
   QCOMPARE( rect.yMaximum(), 1.0 );
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "xxx" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING ()" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON()" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING (0 0,1 0,1 1,0 1,0 0)" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0)),((1 1, 1 2, 2 2, 2 1)))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0), (10 10,13 10,13 13,10 13,10 10)))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"xxx"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"LINESTRING ()"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"MULTIPOLYGON()"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"LINESTRING (0 0,1 0,1 1,0 1,0 0)"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0)),((1 1, 1 2, 2 2, 2 1)))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0), (10 10,13 10,13 13,10 13,10 10)))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1,0 1))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1,0 1))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1))"_s ).isNull() );
 }
 
 void TestQgsRectangle::constructor()
@@ -379,10 +379,10 @@ void TestQgsRectangle::asVariant()
 
 void TestQgsRectangle::referenced()
 {
-  QgsReferencedRectangle rect1 = QgsReferencedRectangle( QgsRectangle( 10.0, 20.0, 110.0, 220.0 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
-  QCOMPARE( rect1.crs().authid(), QStringLiteral( "EPSG:3111" ) );
-  rect1.setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
-  QCOMPARE( rect1.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QgsReferencedRectangle rect1 = QgsReferencedRectangle( QgsRectangle( 10.0, 20.0, 110.0, 220.0 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) );
+  QCOMPARE( rect1.crs().authid(), u"EPSG:3111"_s );
+  rect1.setCrs( QgsCoordinateReferenceSystem( u"EPSG:28356"_s ) );
+  QCOMPARE( rect1.crs().authid(), u"EPSG:28356"_s );
 
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( rect1 );
@@ -398,7 +398,7 @@ void TestQgsRectangle::referenced()
   QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );
   QCOMPARE( rect2.height(), rect1.height() );
   QCOMPARE( rect2.width(), rect1.width() );
-  QCOMPARE( rect2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QCOMPARE( rect2.crs().authid(), u"EPSG:28356"_s );
 }
 
 void TestQgsRectangle::setNull()

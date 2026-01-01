@@ -49,20 +49,20 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   : QgsLayerItem( parent, title.isEmpty() ? featureType : title, parent->path() + '/' + name, QString(), Qgis::BrowserLayerType::Vector, providerKey )
 {
   const QgsSettings settings;
-  const bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
+  const bool useCurrentViewExtent = settings.value( u"Windows/WFSSourceSelect/FeatureCurrentViewExtent"_s, true ).toBool();
 
-  const QStringList detailsParameters = { QStringLiteral( "wfs" ), parent->name() };
+  const QStringList detailsParameters = { u"wfs"_s, parent->name() };
   QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
   if ( featureFormat.isEmpty() )
   {
     // Read from global default setting
-    featureFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+    featureFormat = QgsSettings().value( u"qgis/lastFeatureFormatEncoding"_s, QString() ).toString();
   }
 
   mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent, featureFormat );
   setState( Qgis::BrowserItemState::Populated );
-  mIconName = QStringLiteral( "mIconWfs.svg" );
-  mBaseUri = uri.param( QStringLiteral( "url" ) );
+  mIconName = u"mIconWfs.svg"_s;
+  mBaseUri = uri.param( u"url"_s );
 }
 
 //
@@ -70,10 +70,10 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
 //
 
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WFS" ) )
+  : QgsDataCollectionItem( parent, name, path, u"WFS"_s )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconConnect.svg" );
+  mIconName = u"mIconConnect.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
@@ -119,7 +119,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
   const bool synchronous = true;
   const bool forceRefresh = false;
   const auto version = QgsWFSDataSourceURI( mUri ).version();
-  if ( version == QLatin1String( "OGC_API_FEATURES" ) )
+  if ( version == "OGC_API_FEATURES"_L1 )
   {
     return createChildrenOapif();
   }
@@ -179,10 +179,10 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 //
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WFS" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"WFS"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconWfs.svg" );
+  mIconName = u"mIconWfs.svg"_s;
   populate();
 }
 
@@ -224,12 +224,12 @@ void QgsWfsRootItem::onConnectionsChanged()
 
 QString QgsWfsDataItemProvider::name()
 {
-  return QStringLiteral( "WFS" );
+  return u"WFS"_s;
 }
 
 QString QgsWfsDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "WFS" );
+  return u"WFS"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsWfsDataItemProvider::capabilities() const
@@ -242,17 +242,17 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
   QgsDebugMsgLevel( "WFS path = " + path, 4 );
   if ( path.isEmpty() )
   {
-    return new QgsWfsRootItem( parentItem, QObject::tr( "WFS / OGC API - Features" ), QStringLiteral( "wfs:" ) );
+    return new QgsWfsRootItem( parentItem, QObject::tr( "WFS / OGC API - Features" ), u"wfs:"_s );
   }
 
   // path schema: wfs:/connection name (used by OWS)
-  if ( path.startsWith( QLatin1String( "wfs:/" ) ) )
+  if ( path.startsWith( "wfs:/"_L1 ) )
   {
     const QString connectionName = path.split( '/' ).last();
     if ( QgsWfsConnection::connectionList().contains( connectionName ) )
     {
       const QgsWfsConnection connection( connectionName );
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri( false ) );
+      return new QgsWfsConnectionItem( parentItem, u"WFS"_s, path, connection.uri().uri( false ) );
     }
   }
 

@@ -55,9 +55,9 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 {
   if ( mInit )
   {
-    mSettings->setValue( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
-    mSettings->setValue( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
-    mSettings->setValue( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
+    mSettings->setValue( u"/Windows/%1/geometry"_s.arg( mOptsKey ), saveGeometry() );
+    mSettings->setValue( u"/Windows/%1/splitState"_s.arg( mOptsKey ), mOptSplitter->saveState() );
+    mSettings->setValue( u"/Windows/%1/tab"_s.arg( mOptsKey ), mOptStackedWidget->currentIndex() );
   }
 
   if ( mDelSettings ) // local settings obj to delete
@@ -95,8 +95,8 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
-  mOptListWidget = findChild<QListWidget *>( QStringLiteral( "mOptionsListWidget" ) );
-  mOptTreeView = findChild<QTreeView *>( QStringLiteral( "mOptionsTreeView" ) );
+  mOptListWidget = findChild<QListWidget *>( u"mOptionsListWidget"_s );
+  mOptTreeView = findChild<QTreeView *>( u"mOptionsTreeView"_s );
   if ( mOptTreeView )
   {
     mOptTreeModel = qobject_cast<QStandardItemModel *>( mOptTreeView->model() );
@@ -106,12 +106,12 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
     mOptTreeView->expandAll();
   }
 
-  QFrame *optionsFrame = findChild<QFrame *>( QStringLiteral( "mOptionsFrame" ) );
-  mOptStackedWidget = findChild<QStackedWidget *>( QStringLiteral( "mOptionsStackedWidget" ) );
-  mOptSplitter = findChild<QSplitter *>( QStringLiteral( "mOptionsSplitter" ) );
-  mOptButtonBox = findChild<QDialogButtonBox *>( QStringLiteral( "buttonBox" ) );
-  QFrame *buttonBoxFrame = findChild<QFrame *>( QStringLiteral( "mButtonBoxFrame" ) );
-  mSearchLineEdit = findChild<QgsFilterLineEdit *>( QStringLiteral( "mSearchLineEdit" ) );
+  QFrame *optionsFrame = findChild<QFrame *>( u"mOptionsFrame"_s );
+  mOptStackedWidget = findChild<QStackedWidget *>( u"mOptionsStackedWidget"_s );
+  mOptSplitter = findChild<QSplitter *>( u"mOptionsSplitter"_s );
+  mOptButtonBox = findChild<QDialogButtonBox *>( u"buttonBox"_s );
+  QFrame *buttonBoxFrame = findChild<QFrame *>( u"mButtonBoxFrame"_s );
+  mSearchLineEdit = findChild<QgsFilterLineEdit *>( u"mSearchLineEdit"_s );
 
   if ( ( !mOptListWidget && !mOptTreeView ) || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
@@ -122,7 +122,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   int iconSize = 16;
   if ( mOptListWidget )
   {
-    int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
+    int size = QgsGuiUtils::scaleIconSize( mSettings->value( u"/IconSize"_s, 24 ).toInt() );
     // buffer size to match displayed icon size in toolbars, and expected geometry restore
     // newWidth (above) may need adjusted if you adjust iconBuffer here
     const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
@@ -130,7 +130,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   }
   else if ( mOptTreeView )
   {
-    iconSize = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 16 ).toInt() );
+    iconSize = QgsGuiUtils::scaleIconSize( mSettings->value( u"/IconSize"_s, 16 ).toInt() );
     mOptTreeView->header()->setVisible( false );
   }
   optView->setIconSize( QSize( iconSize, iconSize ) );
@@ -224,20 +224,20 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   }
   updateWindowTitle();
 
-  restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+  restoreGeometry( mSettings->value( u"/Windows/%1/geometry"_s.arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
   QAbstractItemView *optView = mOptListWidget ? static_cast<QAbstractItemView *>( mOptListWidget ) : static_cast<QAbstractItemView *>( mOptTreeView );
   if ( optView )
   {
     optView->setMaximumWidth(
-      QgsVariantUtils::isNull( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ) ) ? 150 : 16777215
+      QgsVariantUtils::isNull( mSettings->value( u"/Windows/%1/splitState"_s.arg( mOptsKey ) ) ) ? 150 : 16777215
     );
     // get rid of annoying outer focus rect on Mac
     optView->setAttribute( Qt::WA_MacShowFocusRect, false );
   }
 
-  mOptSplitter->restoreState( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+  mOptSplitter->restoreState( mSettings->value( u"/Windows/%1/splitState"_s.arg( mOptsKey ) ).toByteArray() );
 
   restoreLastPage();
 
@@ -253,7 +253,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
 void QgsOptionsDialogBase::restoreLastPage()
 {
-  int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
+  int curIndx = mSettings->value( u"/Windows/%1/tab"_s.arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
   if ( mOptStackedWidget->count() < curIndx + 1
@@ -691,7 +691,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       }
       if ( shw && shw->isValid() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( widget->objectName() ), 4 );
+        QgsDebugMsgLevel( u"Registering: %1"_s.arg( widget->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else
@@ -751,7 +751,7 @@ void QgsOptionsDialogBase::updateWindowTitle()
                                                                                     : QString();
   if ( !itemText.isEmpty() )
   {
-    setWindowTitle( QStringLiteral( "%1 %2 %3" )
+    setWindowTitle( u"%1 %2 %3"_s
                       .arg( mDialogTitle )
                       .arg( QChar( 0x2014 ) ) // em-dash unicode
                       .arg( itemText ) );

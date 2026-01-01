@@ -42,13 +42,13 @@ QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
   switch ( format )
   {
     case ExportFormat::Gpkg:
-      return QStringLiteral( "GPKG" );
+      return u"GPKG"_s;
     case ExportFormat::Dxf:
-      return QStringLiteral( "DXF" );
+      return u"DXF"_s;
     case ExportFormat::Shp:
-      return QStringLiteral( "ESRI Shapefile" );
+      return u"ESRI Shapefile"_s;
     case ExportFormat::Csv:
-      return QStringLiteral( "CSV" );
+      return u"CSV"_s;
     case ExportFormat::Memory:
     case ExportFormat::Las:
       break;
@@ -63,7 +63,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
   , mTargetCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
   bool ok;
-  mPointRecordFormat = layer->dataProvider()->originalMetadata().value( QStringLiteral( "dataformat_id" ) ).toInt( &ok );
+  mPointRecordFormat = layer->dataProvider()->originalMetadata().value( u"dataformat_id"_s ).toInt( &ok );
   if ( !ok )
     mPointRecordFormat = 3;
 
@@ -124,8 +124,8 @@ void QgsPointCloudLayerExporter::setFilterGeometry( QgsMapLayer *layer, bool sel
   }
   catch ( const QgsCsException &cse )
   {
-    QgsDebugError( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
-    QgsDebugError( QStringLiteral( "FilterGeometry will be ignored." ) );
+    QgsDebugError( u"Error transforming union of filter layer: %1"_s.arg( cse.what() ) );
+    QgsDebugError( u"FilterGeometry will be ignored."_s );
     return;
   }
   setFilterGeometry( unaryUnion.constGet() );
@@ -139,9 +139,9 @@ void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // Don't add x, y, z or duplicate attributes
-    if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) &&
-         attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) &&
-         attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) &&
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) &&
+         attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) &&
+         attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) &&
          attributeList.contains( attribute.name() ) &&
          ! mRequestedAttributes.contains( attribute.name() ) )
     {
@@ -168,9 +168,9 @@ const QgsPointCloudAttributeCollection QgsPointCloudLayerExporter::requestedAttr
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // For this collection we also need x, y, z apart from the requested attributes
-    if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) ||
-         attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) ||
-         attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) ||
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) ||
+         attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) ||
+         attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) ||
          mRequestedAttributes.contains( attribute.name(), Qt::CaseInsensitive ) )
     {
       requestAttributes.push_back( attribute );
@@ -202,7 +202,7 @@ void QgsPointCloudLayerExporter::prepareExport()
 #ifdef QGISDEBUG
     if ( QApplication::instance()->thread() != QThread::currentThread() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "prepareExport() should better be called from the main thread!" ), 2 );
+      QgsDebugMsgLevel( u"prepareExport() should better be called from the main thread!"_s, 2 );
     }
 #endif
 
@@ -221,7 +221,7 @@ void QgsPointCloudLayerExporter::doExport()
     }
     catch ( const QgsCsException &cse )
     {
-      QgsDebugError( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ) );
+      QgsDebugError( u"Error transforming extent: %1"_s.arg( cse.what() ) );
     }
   }
 
@@ -252,15 +252,15 @@ void QgsPointCloudLayerExporter::doExport()
       catch ( std::runtime_error &e )
       {
         setLastError( QString::fromLatin1( e.what() ) );
-        QgsDebugError( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
+        QgsDebugError( u"PDAL has thrown an exception: {}"_s.arg( e.what() ) );
       }
 #endif
       break;
     }
 
     case ExportFormat::Csv:
-      layerCreationOptions << QStringLiteral( "GEOMETRY=AS_XYZ" )
-                           << QStringLiteral( "SEPARATOR=COMMA" ); // just in case ogr changes the default lco
+      layerCreationOptions << u"GEOMETRY=AS_XYZ"_s
+                           << u"SEPARATOR=COMMA"_s; // just in case ogr changes the default lco
       [[fallthrough]];
     case ExportFormat::Gpkg:
     case ExportFormat::Dxf:
@@ -298,14 +298,14 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
     case ExportFormat::Las:
     {
       const QFileInfo fileInfo( mFilename );
-      return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
+      return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), u"pdal"_s );
     }
 
     case ExportFormat::Gpkg:
     {
       QString uri( mFilename );
       uri += "|layername=" + mName;
-      return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
+      return new QgsVectorLayer( uri, mName, u"ogr"_s );
     }
 
     case ExportFormat::Dxf:
@@ -313,7 +313,7 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
     case ExportFormat::Csv:
     {
       const QFileInfo fileInfo( mFilename );
-      return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), u"ogr"_s );
     }
   }
   BUILTIN_UNREACHABLE
@@ -374,9 +374,9 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     const QgsVector3D scale = block->scale();
     const QgsVector3D offset = block->offset();
     int xOffset = 0, yOffset = 0, zOffset = 0;
-    const QgsPointCloudAttribute::DataType xType = attributesCollection.find( QStringLiteral( "X" ), xOffset )->type();
-    const QgsPointCloudAttribute::DataType yType = attributesCollection.find( QStringLiteral( "Y" ), yOffset )->type();
-    const QgsPointCloudAttribute::DataType zType = attributesCollection.find( QStringLiteral( "Z" ), zOffset )->type();
+    const QgsPointCloudAttribute::DataType xType = attributesCollection.find( u"X"_s, xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = attributesCollection.find( u"Y"_s, yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = attributesCollection.find( u"Z"_s, zOffset )->type();
     for ( int i = 0; i < count; ++i )
     {
 
@@ -420,7 +420,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       }
       catch ( const QgsCsException &cse )
       {
-        QgsDebugError( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
+        QgsDebugError( u"Error transforming point: %1"_s.arg( cse.what() ) );
       }
     }
     handleNode();
@@ -534,7 +534,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
 
   mOptions.add( "filename", mParent->mFilename.toStdString() );
   mOptions.add( "a_srs", mParent->mTargetCrs.toWkt().toStdString() );
-  mOptions.add( "minor_version", QStringLiteral( "4" ).toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
+  mOptions.add( "minor_version", u"4"_s.toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
   mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
   if ( mParent->mTransform->isShortCircuited() )
   {
@@ -593,41 +593,41 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   mView->setField( pdal::Dimension::Id::Z, pointNumber, z );
 
 
-  mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[ QStringLiteral( "Classification" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ QStringLiteral( "Intensity" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[ QStringLiteral( "ReturnNumber" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ QStringLiteral( "NumberOfReturns" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ QStringLiteral( "ScanDirectionFlag" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ QStringLiteral( "EdgeOfFlightLine" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ QStringLiteral( "ScanAngleRank" ) ].toFloat() );
-  mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ QStringLiteral( "UserData" ) ].toInt() );
-  mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ QStringLiteral( "PointSourceId" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[ u"Classification"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ u"Intensity"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[ u"ReturnNumber"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ u"NumberOfReturns"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ u"ScanDirectionFlag"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ u"EdgeOfFlightLine"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ u"ScanAngleRank"_s ].toFloat() );
+  mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ u"UserData"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ u"PointSourceId"_s ].toInt() );
 
   if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
   {
-    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ QStringLiteral( "ScannerChannel" ) ].toInt() );
-    const int classificationFlags = ( map[ QStringLiteral( "Synthetic" ) ].toInt() & 0x01 ) << 0 |
-                                    ( map[ QStringLiteral( "KeyPoint" ) ].toInt() & 0x01 ) << 1 |
-                                    ( map[ QStringLiteral( "Withheld" ) ].toInt() & 0x01 ) << 2 |
-                                    ( map[ QStringLiteral( "Overlap" ) ].toInt() & 0x01 ) << 3;
+    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ u"ScannerChannel"_s ].toInt() );
+    const int classificationFlags = ( map[ u"Synthetic"_s ].toInt() & 0x01 ) << 0 |
+                                    ( map[ u"KeyPoint"_s ].toInt() & 0x01 ) << 1 |
+                                    ( map[ u"Withheld"_s ].toInt() & 0x01 ) << 2 |
+                                    ( map[ u"Overlap"_s ].toInt() & 0x01 ) << 3;
     mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, classificationFlags );
   }
 
   if ( mPointFormat != 0 && mPointFormat != 2 )
   {
-    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ QStringLiteral( "GpsTime" ) ].toDouble() );
+    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ u"GpsTime"_s ].toDouble() );
   }
 
   if ( mPointFormat == 2 || mPointFormat == 3 || mPointFormat == 5 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 10 )
   {
-    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[ QStringLiteral( "Red" ) ].toInt() );
-    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[ QStringLiteral( "Green" ) ].toInt() );
-    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ QStringLiteral( "Blue" ) ].toInt() );
+    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[ u"Red"_s ].toInt() );
+    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[ u"Green"_s ].toInt() );
+    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ u"Blue"_s ].toInt() );
   }
 
   if ( mPointFormat == 8 || mPointFormat == 10 )
   {
-    mView->setField( pdal::Dimension::Id::Infrared, pointNumber, map[ QStringLiteral( "Infrared" ) ].toInt() );
+    mView->setField( pdal::Dimension::Id::Infrared, pointNumber, map[ u"Infrared"_s ].toInt() );
   }
 }
 

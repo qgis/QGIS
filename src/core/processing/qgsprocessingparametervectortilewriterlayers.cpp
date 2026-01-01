@@ -73,17 +73,17 @@ QString QgsProcessingParameterVectorTileWriterLayers::valueAsPythonString( const
   for ( const QgsVectorTileWriter::Layer &layer : layers )
   {
     QStringList layerDefParts;
-    layerDefParts << QStringLiteral( "'layer': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer.layer()->source() ) );
+    layerDefParts << u"'layer': "_s + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer.layer()->source() ) );
     if ( !layer.filterExpression().isEmpty() )
-      layerDefParts << QStringLiteral( "'filterExpression': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.filterExpression() );
+      layerDefParts << u"'filterExpression': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.filterExpression() );
     if ( !layer.layerName().isEmpty() )
-      layerDefParts << QStringLiteral( "'layerName': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.layerName() );
+      layerDefParts << u"'layerName': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.layerName() );
     if ( layer.minZoom() >= 0 )
-      layerDefParts << QStringLiteral( "'minZoom': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.minZoom() );
+      layerDefParts << u"'minZoom': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.minZoom() );
     if ( layer.maxZoom() >= 0 )
-      layerDefParts << QStringLiteral( "'maxZoom': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.maxZoom() );
+      layerDefParts << u"'maxZoom': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.maxZoom() );
 
-    const QString layerDef = QStringLiteral( "{ %1 }" ).arg( layerDefParts.join( ',' ) );
+    const QString layerDef = u"{ %1 }"_s.arg( layerDefParts.join( ',' ) );
     parts << layerDef;
   }
   return parts.join( ',' ).prepend( '[' ).append( ']' );
@@ -95,7 +95,7 @@ QString QgsProcessingParameterVectorTileWriterLayers::asPythonString( QgsProcess
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers('%1', %2)" )
+      QString code = u"QgsProcessingParameterVectorTileWriterLayers('%1', %2)"_s
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }

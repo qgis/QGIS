@@ -17,7 +17,13 @@
 
 #include "qgs3dutils.h"
 #include "qgsabstractrenderview.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgsdebugtextureentity.h"
+#include "qgsdebugtexturerenderview.h"
+#include "qgsdepthentity.h"
+#include "qgsdepthrenderview.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgsforwardrenderview.h"
 #include "qgsframegraphutils.h"
 #include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
@@ -25,30 +31,18 @@
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
+#include <Qt3DRender/QAbstractTexture>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QTechnique>
 
 #include "moc_qgsframegraph.cpp"
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QColorMask>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QNoDepthMask>
-#include <Qt3DRender/QBlendEquationArguments>
-#include <Qt3DRender/QAbstractTexture>
-#include <Qt3DRender/QNoDraw>
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
-#include "qgsdepthrenderview.h"
-#include "qgsdepthentity.h"
-#include "qgsdebugtexturerenderview.h"
-#include "qgsdebugtextureentity.h"
-#include "qgsambientocclusionrenderview.h"
 
 const QString QgsFrameGraph::FORWARD_RENDERVIEW = "forward";
 const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";

@@ -70,30 +70,30 @@ QStringList TestQgsQueryBuilder::getModelItemDisplayStrings( QStandardItemModel 
 
 void TestQgsQueryBuilder::testFillValues()
 {
-  QgsVectorLayer vl( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"test"_s, u"memory"_s );
 
   QgsFeature feat1( vl.fields() );
-  feat1.setAttribute( QStringLiteral( "intarray" ), QVariantList() << 1 );
-  feat1.setAttribute( QStringLiteral( "strarray" ), QVariantList() << QStringLiteral( "testA" ) );
-  feat1.setAttribute( QStringLiteral( "intf" ), 0 );
+  feat1.setAttribute( u"intarray"_s, QVariantList() << 1 );
+  feat1.setAttribute( u"strarray"_s, QVariantList() << u"testA"_s );
+  feat1.setAttribute( u"intf"_s, 0 );
   vl.dataProvider()->addFeature( feat1 );
 
   QgsFeature feat2( vl.fields() );
-  feat2.setAttribute( QStringLiteral( "intarray" ), QVariantList() << 2 << 3 );
-  feat2.setAttribute( QStringLiteral( "strarray" ), QVariantList() << QVariant() );
-  feat2.setAttribute( QStringLiteral( "intf" ), 42 );
+  feat2.setAttribute( u"intarray"_s, QVariantList() << 2 << 3 );
+  feat2.setAttribute( u"strarray"_s, QVariantList() << QVariant() );
+  feat2.setAttribute( u"intf"_s, 42 );
   vl.dataProvider()->addFeature( feat2 );
 
   QgsFeature feat3( vl.fields() );
-  feat3.setAttribute( QStringLiteral( "intarray" ), QVariantList() << QVariant() );
-  feat3.setAttribute( QStringLiteral( "strarray" ), QVariantList() << QStringLiteral( "testB" ) << QStringLiteral( "testC" ) );
-  feat3.setAttribute( QStringLiteral( "intf" ), 42 );
+  feat3.setAttribute( u"intarray"_s, QVariantList() << QVariant() );
+  feat3.setAttribute( u"strarray"_s, QVariantList() << u"testB"_s << u"testC"_s );
+  feat3.setAttribute( u"intf"_s, 42 );
   vl.dataProvider()->addFeature( feat3 );
 
   QgsFeature feat4( vl.fields() );
-  feat4.setAttribute( QStringLiteral( "intarray" ), QVariantList() << 4 << 5 << 6 );
-  feat4.setAttribute( QStringLiteral( "strarray" ), QVariantList() << QVariant() );
-  feat4.setAttribute( QStringLiteral( "intf" ), QVariant() );
+  feat4.setAttribute( u"intarray"_s, QVariantList() << 4 << 5 << 6 );
+  feat4.setAttribute( u"strarray"_s, QVariantList() << QVariant() );
+  feat4.setAttribute( u"intf"_s, QVariant() );
   vl.dataProvider()->addFeature( feat4 );
 
   QgsQueryBuilder queryBuilder( &vl );

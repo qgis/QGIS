@@ -1036,14 +1036,14 @@ void TestQgsTriangulatedSurface::testExport()
   QString result;
 
   // GML document for compare
-  QDomDocument doc( QStringLiteral( "gml" ) );
+  QDomDocument doc( u"gml"_s );
 
   // Z
   // as GML3 with one triangle
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ), QgsPoint( Qgis::WkbType::PointZ, 1, 0, 11 ), QgsPoint( Qgis::WkbType::PointZ, 2, 0, 12 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
+  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1051,7 +1051,7 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 10, 10 ), QgsPoint( Qgis::WkbType::PointZ, 11, 10, 11 ), QgsPoint( Qgis::WkbType::PointZ, 12, 10, 12 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
+  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1061,7 +1061,7 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 1, 0, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 2, 0, 12, 3 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
+  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1069,12 +1069,12 @@ void TestQgsTriangulatedSurface::testExport()
   triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 12, 10, 12, 3 ) );
   exportPolygon.addPatch( triangle.clone() );
 
-  expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
+  expectedSimpleGML3 = QString( u"<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>"_s );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
   // empty
-  QString expectedGML3empty( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<TriangulatedSurface xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsTriangulatedSurface().asGml3( doc ) ), expectedGML3empty );
 }
 
@@ -1088,23 +1088,23 @@ void TestQgsTriangulatedSurface::testCast()
   QVERIFY( QgsSurface::cast( &pCast ) );
 
   QgsTriangulatedSurface pCast2;
-  pCast2.fromWkt( QStringLiteral( "TINZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
+  pCast2.fromWkt( u"TINZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))"_s );
   QVERIFY( QgsTriangulatedSurface::cast( &pCast2 ) );
   QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
   QVERIFY( QgsSurface::cast( &pCast ) );
 
-  pCast2.fromWkt( QStringLiteral( "TINM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
+  pCast2.fromWkt( u"TINM((0 0 1, 0 1 2, 1 0 3, 0 0 1))"_s );
   QVERIFY( QgsTriangulatedSurface::cast( &pCast2 ) );
   QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
   QVERIFY( QgsSurface::cast( &pCast ) );
 
-  pCast2.fromWkt( QStringLiteral( "TINZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
+  pCast2.fromWkt( u"TINZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))"_s );
   QVERIFY( QgsTriangulatedSurface::cast( &pCast2 ) );
   QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
   QVERIFY( QgsSurface::cast( &pCast ) );
 
-  QVERIFY( !pCast2.fromWkt( QStringLiteral( "TINZ((0 0 0, 0 1 1, 1 0 2, 2 0 2, 0 0 0))" ) ) );
-  QVERIFY( !pCast2.fromWkt( QStringLiteral( "TINZ((111111))" ) ) );
+  QVERIFY( !pCast2.fromWkt( u"TINZ((0 0 0, 0 1 1, 1 0 2, 2 0 2, 0 0 0))"_s ) );
+  QVERIFY( !pCast2.fromWkt( u"TINZ((111111))"_s ) );
 }
 
 

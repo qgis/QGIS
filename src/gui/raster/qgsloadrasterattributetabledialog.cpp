@@ -39,7 +39,7 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   mRasterBand->setLayer( mRasterLayer );
 
-  mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+  mDbfPathWidget->setFilter( u"VAT DBF Files (*.vat.dbf)"_s );
 
   updateButtons();
 

@@ -38,7 +38,7 @@ QgsAnnotationPolygonItem::~QgsAnnotationPolygonItem() = default;
 
 QString QgsAnnotationPolygonItem::type() const
 {
-  return QStringLiteral( "polygon" );
+  return u"polygon"_s;
 }
 
 void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * )
@@ -91,8 +91,8 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
 
 bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "wkt" ), mPolygon->asWkt() );
-  element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
+  element.setAttribute( u"wkt"_s, mPolygon->asWkt() );
+  element.appendChild( QgsSymbolLayerUtils::saveSymbol( u"lineSymbol"_s, mSymbol.get(), document, context ) );
 
   writeCommonProperties( element, document, context );
   return true;
@@ -212,12 +212,12 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 
 bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
+  const QString wkt = element.attribute( u"wkt"_s );
   const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
   if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) )
     mPolygon.reset( polygon->clone() );
 
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( u"symbol"_s );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ).release() );
 

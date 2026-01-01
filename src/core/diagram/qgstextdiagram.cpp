@@ -20,7 +20,7 @@
 
 #include <QPainter>
 
-const QString QgsTextDiagram::DIAGRAM_NAME_TEXT = QStringLiteral( "Text" );
+const QString QgsTextDiagram::DIAGRAM_NAME_TEXT = u"Text"_s;
 
 QgsTextDiagram::QgsTextDiagram()
 {

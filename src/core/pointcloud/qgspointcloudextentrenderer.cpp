@@ -40,7 +40,7 @@ QgsPointCloudExtentRenderer::~QgsPointCloudExtentRenderer() = default;
 
 QString QgsPointCloudExtentRenderer::type() const
 {
-  return QStringLiteral( "extent" );
+  return u"extent"_s;
 }
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
@@ -59,7 +59,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element
 {
   auto r = std::make_unique< QgsPointCloudExtentRenderer >();
 
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( u"symbol"_s );
   if ( !symbolElem.isNull() )
   {
     r->mFillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );
@@ -152,9 +152,9 @@ void QgsPointCloudExtentRenderer::renderLabel( const QRectF &extent, const QStri
 
 QDomElement QgsPointCloudExtentRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
+  QDomElement rendererElem = doc.createElement( u"renderer"_s );
 
-  rendererElem.setAttribute( QStringLiteral( "type" ), type() );
+  rendererElem.setAttribute( u"type"_s, type() );
 
   const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFillSymbol.get(), doc, context );
   rendererElem.appendChild( symbolElem );
@@ -179,7 +179,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudExtentRenderer::createLegendNo
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  const QgsLegendSymbolItem extentItem( mFillSymbol.get(), QStringLiteral( "extent" ), QStringLiteral( "extent" ) );
+  const QgsLegendSymbolItem extentItem( mFillSymbol.get(), u"extent"_s, u"extent"_s );
   QgsSymbolLegendNode *node = new QgsSymbolLegendNode( nodeLayer, extentItem );
   node->setEmbeddedInParent( true );
   nodes << node;

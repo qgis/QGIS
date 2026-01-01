@@ -39,6 +39,8 @@
 #include <DbgHelp.h>
 #endif
 
+using namespace Qt::StringLiterals;
+
 
 ///@cond PRIVATE
 
@@ -835,12 +837,12 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
-  return moduleName.contains( QLatin1String( "qgis" ), Qt::CaseInsensitive );
+  return moduleName.contains( "qgis"_L1, Qt::CaseInsensitive );
 }
 
 bool QgsStackTrace::StackLine::isValid() const
 {
-  return !( fileName.contains( QLatin1String( "exe_common" ), Qt::CaseInsensitive ) || fileName.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) || lineNumber.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) );
+  return !( fileName.contains( "exe_common"_L1, Qt::CaseInsensitive ) || fileName.contains( "unknown"_L1, Qt::CaseInsensitive ) || lineNumber.contains( "unknown"_L1, Qt::CaseInsensitive ) );
 }
 
 ///@endcond

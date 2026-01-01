@@ -588,7 +588,7 @@ bool QgsTracer::initGraph()
 
     mHasTopologyProblem = true;
 
-    QgsDebugError( QStringLiteral( "Tracer Noding Exception: %1" ).arg( e.what() ) );
+    QgsDebugError( u"Tracer Noding Exception: %1"_s.arg( e.what() ) );
   }
 #endif
 
@@ -604,7 +604,7 @@ bool QgsTracer::initGraph()
   Q_UNUSED( timeNoding )
   Q_UNUSED( timeNodingCall )
   Q_UNUSED( timeMake )
-  QgsDebugMsgLevel( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
+  QgsDebugMsgLevel( u"tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms"_s
                     .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ), 2 );
 
   return true;
@@ -782,7 +782,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   Q_UNUSED( tPrep )
   Q_UNUSED( tPath )
-  QgsDebugMsgLevel( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ), 2 );
+  QgsDebugMsgLevel( u"path timing: prep %1 ms, path %2 ms"_s.arg( tPrep ).arg( tPath ), 2 );
 
   if ( points.size() > 2 && !mIntersections.isEmpty() )
   {
@@ -808,7 +808,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
     }
     noInts.append( points.last() );
     points = noInts;
-    QgsDebugMsgLevel( QStringLiteral( "intersection point removal timing: %1 ms" ).arg( t2.elapsed() - tPath ), 2 );
+    QgsDebugMsgLevel( u"intersection point removal timing: %1 ms"_s.arg( t2.elapsed() - tPath ), 2 );
   }
 
   resetGraph( *mGraph );

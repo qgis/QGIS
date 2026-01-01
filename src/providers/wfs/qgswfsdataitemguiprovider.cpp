@@ -101,12 +101,12 @@ void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wfs" ) } );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { u"wfs"_s } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QStringList detailsParameters { QStringLiteral( "wfs" ), connectionName };
-  const QStringList newDetailsParameters { QStringLiteral( "wfs" ), newConnectionName };
+  const QStringList detailsParameters { u"wfs"_s, connectionName };
+  const QStringList newDetailsParameters { u"wfs"_s, newConnectionName };
 
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 

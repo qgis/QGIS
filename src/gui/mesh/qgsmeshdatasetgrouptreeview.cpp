@@ -334,10 +334,10 @@ bool QgsMeshDatasetGroupProxyModel::filterAcceptsRow( int source_row, const QMod
 
 QgsMeshDatasetGroupTreeItemDelegate::QgsMeshDatasetGroupTreeItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-  , mScalarSelectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontours.svg" ) )
-  , mScalarDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshcontoursoff.svg" ) )
-  , mVectorSelectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshvectors.svg" ) )
-  , mVectorDeselectedPixmap( QStringLiteral( ":/images/themes/default/propertyicons/meshvectorsoff.svg" ) )
+  , mScalarSelectedPixmap( u":/images/themes/default/propertyicons/meshcontours.svg"_s )
+  , mScalarDeselectedPixmap( u":/images/themes/default/propertyicons/meshcontoursoff.svg"_s )
+  , mVectorSelectedPixmap( u":/images/themes/default/propertyicons/meshvectors.svg"_s )
+  , mVectorDeselectedPixmap( u":/images/themes/default/propertyicons/meshvectorsoff.svg"_s )
 {
 }
 
@@ -616,7 +616,7 @@ void QgsMeshDatasetGroupTreeView::removeCurrentItem()
         if ( item )
         {
           varList.append( item->name() );
-          varList.append( QStringLiteral( "\n" ) );
+          varList.append( u"\n"_s );
         }
       }
       QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can't be removed because other dataset groups depend on it:\n%1" ).arg( varList ) );
@@ -731,15 +731,15 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
   QgsSettings settings;
   QString filter;
   if ( !fileSuffix.isEmpty() )
-    filter = QStringLiteral( "%1 (*.%2)" ).arg( driver ).arg( fileSuffix );
-  const QString exportFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
+    filter = u"%1 (*.%2)"_s.arg( driver ).arg( fileSuffix );
+  const QString exportFileDir = settings.value( u"lastMeshDatasetDir"_s, QDir::homePath(), QgsSettings::App ).toString();
   const QString saveFileName = QFileDialog::getSaveFileName( nullptr, QObject::tr( "Save Mesh Datasets" ), exportFileDir, filter );
 
   if ( saveFileName.isEmpty() )
     return;
 
   const QFileInfo openFileInfo( saveFileName );
-  settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
+  settings.setValue( u"lastMeshDatasetDir"_s, openFileInfo.absolutePath(), QgsSettings::App );
 
 
   if ( mMeshLayer->saveDataset( saveFileName, datasetGroup, driver ) )

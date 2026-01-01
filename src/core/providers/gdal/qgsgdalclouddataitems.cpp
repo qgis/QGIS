@@ -29,10 +29,10 @@
 //
 
 QgsGdalCloudRootItem::QgsGdalCloudRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "cloud" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"cloud"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconCloud.svg" );
+  mIconName = u"mIconCloud.svg"_s;
   populate();
 }
 
@@ -78,7 +78,7 @@ QgsGdalCloudProviderItem::QgsGdalCloudProviderItem( QgsDataItem *parent, const Q
   : QgsDataCollectionItem( parent, handler.name, handler.identifier, handler.identifier )
   , mVsiHandler( handler )
 {
-  mIconName = QStringLiteral( "mIconCloud.svg" );
+  mIconName = u"mIconCloud.svg"_s;
 }
 
 QVector<QgsDataItem *> QgsGdalCloudProviderItem::createChildren()
@@ -105,7 +105,7 @@ QgsGdalCloudConnectionItem::QgsGdalCloudConnectionItem( QgsDataItem *parent, con
   : QgsDataCollectionItem( parent, name, path )
   , mConnName( name )
 {
-  mIconName = QStringLiteral( "mIconConnect.svg" );
+  mIconName = u"mIconConnect.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Fertile;
 }
 
@@ -126,7 +126,7 @@ QVector<QgsDataItem *> QgsGdalCloudConnectionItem::createChildren()
   QVariantMap extraUriParts;
   if ( !connectionData.credentialOptions.isEmpty() )
   {
-    extraUriParts.insert( QStringLiteral( "credentialOptions" ), connectionData.credentialOptions );
+    extraUriParts.insert( u"credentialOptions"_s, connectionData.credentialOptions );
   }
 
   for ( const QgsGdalCloudProviderConnection::DirectoryObject &object : objects )
@@ -140,9 +140,9 @@ QVector<QgsDataItem *> QgsGdalCloudConnectionItem::createChildren()
     }
     else if ( object.isFile )
     {
-      const QString filePath = QStringLiteral( "/%1/%2/%3" ).arg( connectionData.vsiHandler, connectionData.container, subPath );
+      const QString filePath = u"/%1/%2/%3"_s.arg( connectionData.vsiHandler, connectionData.container, subPath );
       // QgsFileBasedDataItemProvider uses paths for item uris by default, so we need to specify that the credentialOptions should be appended to the layer URIs
-      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { QStringLiteral( "gdal" ), QStringLiteral( "ogr" )}, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
+      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { u"gdal"_s, u"ogr"_s}, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
       {
         item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ReadOnly );
         children.append( item );
@@ -162,7 +162,7 @@ QgsGdalCloudDirectoryItem::QgsGdalCloudDirectoryItem( QgsDataItem *parent, QStri
   , mConnName( connectionName )
   , mDirectory( directory )
 {
-  mIconName = QStringLiteral( "mIconFolder.svg" );
+  mIconName = u"mIconFolder.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Fertile;
 }
 
@@ -178,7 +178,7 @@ QVector<QgsDataItem *> QgsGdalCloudDirectoryItem::createChildren()
   QVariantMap extraUriParts;
   if ( !connectionData.credentialOptions.isEmpty() )
   {
-    extraUriParts.insert( QStringLiteral( "credentialOptions" ), connectionData.credentialOptions );
+    extraUriParts.insert( u"credentialOptions"_s, connectionData.credentialOptions );
   }
 
   for ( const QgsGdalCloudProviderConnection::DirectoryObject &object : std::as_const( objects ) )
@@ -192,9 +192,9 @@ QVector<QgsDataItem *> QgsGdalCloudDirectoryItem::createChildren()
     }
     else if ( object.isFile )
     {
-      const QString filePath = QStringLiteral( "/%1/%2/%3" ).arg( connectionData.vsiHandler, connectionData.container, subPath );
+      const QString filePath = u"/%1/%2/%3"_s.arg( connectionData.vsiHandler, connectionData.container, subPath );
       // QgsFileBasedDataItemProvider uses paths for item uris by default, so we need to specify that the credentialOptions should be appended to the layer URIs
-      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { QStringLiteral( "gdal" ), QStringLiteral( "ogr" )}, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
+      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { u"gdal"_s, u"ogr"_s}, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
       {
         item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ReadOnly );
         children.append( item );
@@ -211,12 +211,12 @@ QVector<QgsDataItem *> QgsGdalCloudDirectoryItem::createChildren()
 
 QString QgsGdalCloudDataItemProvider::name()
 {
-  return QStringLiteral( "GDAL Cloud" );
+  return u"GDAL Cloud"_s;
 }
 
 QString QgsGdalCloudDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "cloud" );
+  return u"cloud"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsGdalCloudDataItemProvider::capabilities() const
@@ -227,7 +227,7 @@ Qgis::DataItemProviderCapabilities QgsGdalCloudDataItemProvider::capabilities() 
 QgsDataItem *QgsGdalCloudDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsGdalCloudRootItem( parentItem, QObject::tr( "Cloud" ), QStringLiteral( "cloud:" ) );
+    return new QgsGdalCloudRootItem( parentItem, QObject::tr( "Cloud" ), u"cloud:"_s );
 
   return nullptr;
 }

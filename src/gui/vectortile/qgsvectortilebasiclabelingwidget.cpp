@@ -231,7 +231,7 @@ Qt::DropActions QgsVectorTileBasicLabelingListModel::supportedDropActions() cons
 QStringList QgsVectorTileBasicLabelingListModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/vnd.text.list" );
+  types << u"application/vnd.text.list"_s;
   return types;
 }
 
@@ -252,14 +252,14 @@ QMimeData *QgsVectorTileBasicLabelingListModel::mimeData( const QModelIndexList 
     const QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
 
     QDomDocument doc;
-    QDomElement rootElem = doc.createElement( QStringLiteral( "vector_tile_basic_labeling_style_mime" ) );
+    QDomElement rootElem = doc.createElement( u"vector_tile_basic_labeling_style_mime"_s );
     style.writeXml( rootElem, QgsReadWriteContext() );
     doc.appendChild( rootElem );
 
     stream << doc.toString( -1 );
   }
 
-  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
+  mimeData->setData( u"application/vnd.text.list"_s, encodedData );
   return mimeData;
 }
 
@@ -270,13 +270,13 @@ bool QgsVectorTileBasicLabelingListModel::dropMimeData( const QMimeData *data, Q
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
+  if ( !data->hasFormat( u"application/vnd.text.list"_s ) )
     return false;
 
   if ( parent.column() > 0 )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
+  QByteArray encodedData = data->data( u"application/vnd.text.list"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -295,7 +295,7 @@ bool QgsVectorTileBasicLabelingListModel::dropMimeData( const QMimeData *data, Q
     if ( !doc.setContent( text ) )
       continue;
     const QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != QLatin1String( "vector_tile_basic_labeling_style_mime" ) )
+    if ( rootElem.tagName() != "vector_tile_basic_labeling_style_mime"_L1 )
       continue;
 
     QgsVectorTileBasicLabelingStyle style;
@@ -333,8 +333,8 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   connect( btnEditRule, &QPushButton::clicked, this, &QgsVectorTileBasicLabelingWidget::editStyle );
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicLabelingWidget::removeStyle );
 
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingNone.svg" ) ), tr( "No Labels" ) );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingRuleBased.svg" ) ), tr( "Rule-based Labeling" ) );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingNone.svg"_s ), tr( "No Labels" ) );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingRuleBased.svg"_s ), tr( "Rule-based Labeling" ) );
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorTileBasicLabelingWidget::labelModeChanged );
 
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicLabelingWidget::editStyleAtIndex );
@@ -384,7 +384,7 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
 
   mVTLayer = layer;
 
-  if ( mVTLayer && mVTLayer->labeling() && mVTLayer->labeling()->type() == QLatin1String( "basic" ) )
+  if ( mVTLayer && mVTLayer->labeling() && mVTLayer->labeling()->type() == "basic"_L1 )
   {
     mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( mVTLayer->labeling()->clone() ) );
     whileBlocking( mLabelModeComboBox )->setCurrentIndex( mVTLayer->labelsEnabled() ? 1 : 0 );
@@ -434,13 +434,13 @@ void QgsVectorTileBasicLabelingWidget::addStyle( Qgis::GeometryType geomType )
   switch ( geomType )
   {
     case Qgis::GeometryType::Point:
-      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Point'" ) );
+      style.setFilterExpression( u"geometry_type(@geometry)='Point'"_s );
       break;
     case Qgis::GeometryType::Line:
-      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Line'" ) );
+      style.setFilterExpression( u"geometry_type(@geometry)='Line'"_s );
       break;
     case Qgis::GeometryType::Polygon:
-      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Polygon'" ) );
+      style.setFilterExpression( u"geometry_type(@geometry)='Polygon'"_s );
       break;
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:

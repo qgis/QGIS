@@ -24,7 +24,7 @@
 
 QString QgsRemovePartsByLengthAlgorithm::name() const
 {
-  return QStringLiteral( "removepartsbylength" );
+  return u"removepartsbylength"_s;
 }
 
 QString QgsRemovePartsByLengthAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsRemovePartsByLengthAlgorithm::group() const
 
 QString QgsRemovePartsByLengthAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRemovePartsByLengthAlgorithm::outputName() const
@@ -91,19 +91,19 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByLengthAlgorithm::sourceFlags(
 
 void QgsRemovePartsByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  auto minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minLength = std::make_unique< QgsProcessingParameterDistance >( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with lengths less than" ), 0.0, u"INPUT"_s, false, 0 );
   minLength->setIsDynamic( true );
-  minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
-  minLength->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
+  minLength->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( minLength.release() );
 }
 
 bool QgsRemovePartsByLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMinLength = parameterAsDouble( parameters, QStringLiteral( "MIN_LENGTH" ), context );
-  mDynamicMinLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN_LENGTH" ) );
+  mMinLength = parameterAsDouble( parameters, u"MIN_LENGTH"_s, context );
+  mDynamicMinLength = QgsProcessingParameters::isDynamic( parameters, u"MIN_LENGTH"_s );
   if ( mDynamicMinLength )
-    mMinLengthProperty = parameters.value( QStringLiteral( "MIN_LENGTH" ) ).value< QgsProperty >();
+    mMinLengthProperty = parameters.value( u"MIN_LENGTH"_s ).value< QgsProperty >();
 
   return true;
 }

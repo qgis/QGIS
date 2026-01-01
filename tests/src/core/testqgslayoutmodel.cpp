@@ -36,7 +36,7 @@ class TestQgsLayoutModel : public QgsTest
 
   public:
     TestQgsLayoutModel()
-      : QgsTest( QStringLiteral( "Layout model test" ) ) {}
+      : QgsTest( u"Layout model test"_s ) {}
 
   private slots:
     void initTestCase();               // will be called before the first testfunction is executed.
@@ -108,19 +108,19 @@ void TestQgsLayoutModel::addItems()
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 0 );
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "item1" ) );
+  item1->setId( u"item1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "item2" ) );
+  item2->setId( u"item2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "item3" ) );
+  item3->setId( u"item3"_s );
   //check that these items have been added to the model
   QCOMPARE( layout.itemsModel()->rowCount(), 4 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "item3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "item2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "item1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"item3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"item2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"item1"_s );
   //and the scene list
   QCOMPARE( layout.itemsModel()->mItemsInScene.size(), 3 );
 }
@@ -168,9 +168,9 @@ void TestQgsLayoutModel::addLayoutItemDirectly()
 {
   //create some items not attached to the layout
   QgsLayoutItemMap *bottomItem = new QgsLayoutItemMap( nullptr );
-  bottomItem->setId( QStringLiteral( "bottom" ) );
+  bottomItem->setId( u"bottom"_s );
   QgsLayoutItemMap *topItem = new QgsLayoutItemMap( nullptr );
-  topItem->setId( QStringLiteral( "top" ) );
+  topItem->setId( u"top"_s );
 
   QgsLayout layout( QgsProject::instance() );
   layout.addItem( bottomItem );
@@ -180,14 +180,14 @@ void TestQgsLayoutModel::addLayoutItemDirectly()
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 1 );
   QCOMPARE( layout.itemsModel()->rowCount(), 2 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "bottom" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"bottom"_s );
 
   layout.itemsModel()->addItemAtTop( topItem );
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 2 );
   QCOMPARE( layout.itemsModel()->rowCount(), 3 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "top" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "bottom" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"top"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"bottom"_s );
 
   QCOMPARE( layout.itemsModel()->zOrderList().at( 0 ), topItem );
   QCOMPARE( layout.itemsModel()->zOrderList().at( 1 ), bottomItem );
@@ -208,13 +208,13 @@ void TestQgsLayoutModel::rebuildZList()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
@@ -224,9 +224,9 @@ void TestQgsLayoutModel::rebuildZList()
   //check that these items have been added to the model
   QCOMPARE( layout.itemsModel()->rowCount(), 4 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //check z list
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 3 );
@@ -248,19 +248,19 @@ void TestQgsLayoutModel::removeItem()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
 
   item1 = new QgsLayoutItemMap( nullptr );
-  item1->setId( QStringLiteral( "map1" ) );
+  item1->setId( u"map1"_s );
   item2 = new QgsLayoutItemMap( nullptr );
   layout.addItem( item1 );
 
@@ -269,7 +269,7 @@ void TestQgsLayoutModel::removeItem()
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 1 );
   QCOMPARE( layout.itemsModel()->rowCount(), 2 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "map1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"map1"_s );
 
   //also check scene list (this item is treated by the model as belonging to the scene)
   QCOMPARE( layout.itemsModel()->mItemsInScene.size(), 1 );
@@ -280,14 +280,14 @@ void TestQgsLayoutModel::removeItem()
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 1 );
   QCOMPARE( layout.itemsModel()->rowCount(), 2 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "map1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"map1"_s );
 
   //try removing an item not in the model
   layout.itemsModel()->removeItem( item2 );
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 1 );
   QCOMPARE( layout.itemsModel()->rowCount(), 2 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "map1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"map1"_s );
 
   //remove the item which is in the model
   layout.itemsModel()->removeItem( item1 );
@@ -308,13 +308,13 @@ void TestQgsLayoutModel::reorderUp()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
@@ -327,9 +327,9 @@ void TestQgsLayoutModel::reorderUp()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 1 ), item2 );
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reordering some bad items
   QVERIFY( !layout.itemsModel()->reorderItemUp( nullptr ) );
@@ -340,9 +340,9 @@ void TestQgsLayoutModel::reorderUp()
   QVERIFY( !layout.itemsModel()->reorderItemUp( item3 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reorder a good item, should succeed
   QVERIFY( layout.itemsModel()->reorderItemUp( item2 ) );
@@ -359,9 +359,9 @@ void TestQgsLayoutModel::reorderUp()
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 2 ), item1 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   delete label;
 }
@@ -373,13 +373,13 @@ void TestQgsLayoutModel::reorderDown()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
@@ -392,9 +392,9 @@ void TestQgsLayoutModel::reorderDown()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 1 ), item2 );
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reordering some bad items
   QVERIFY( !layout.itemsModel()->reorderItemDown( nullptr ) );
@@ -405,9 +405,9 @@ void TestQgsLayoutModel::reorderDown()
   QVERIFY( !layout.itemsModel()->reorderItemDown( item1 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reorder a good item, should succeed
   QVERIFY( layout.itemsModel()->reorderItemDown( item2 ) );
@@ -423,9 +423,9 @@ void TestQgsLayoutModel::reorderDown()
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 1 ), item1 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 2 ), item2 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
 
   delete label;
 }
@@ -437,13 +437,13 @@ void TestQgsLayoutModel::reorderTop()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
@@ -457,9 +457,9 @@ void TestQgsLayoutModel::reorderTop()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reordering some bad items
   QVERIFY( !layout.itemsModel()->reorderItemToTop( nullptr ) );
@@ -470,9 +470,9 @@ void TestQgsLayoutModel::reorderTop()
   QVERIFY( !layout.itemsModel()->reorderItemToTop( item3 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reorder a good item, should succeed
   QVERIFY( layout.itemsModel()->reorderItemToTop( item1 ) );
@@ -489,9 +489,9 @@ void TestQgsLayoutModel::reorderTop()
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 2 ), item2 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
 
   delete label;
 }
@@ -503,13 +503,13 @@ void TestQgsLayoutModel::reorderBottom()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
@@ -523,9 +523,9 @@ void TestQgsLayoutModel::reorderBottom()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reordering some bad items
   QVERIFY( !layout.itemsModel()->reorderItemToBottom( nullptr ) );
@@ -536,9 +536,9 @@ void TestQgsLayoutModel::reorderBottom()
   QVERIFY( !layout.itemsModel()->reorderItemToBottom( item1 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try reorder a good item, should succeed
   QVERIFY( layout.itemsModel()->reorderItemToBottom( item3 ) );
@@ -555,9 +555,9 @@ void TestQgsLayoutModel::reorderBottom()
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 2 ), item3 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
 
   delete label;
 }
@@ -569,13 +569,13 @@ void TestQgsLayoutModel::moveItem()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   // start with an empty model
   layout.itemsModel()->clear();
@@ -589,31 +589,31 @@ void TestQgsLayoutModel::moveItem()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   QgsLayoutModel *model = layout.itemsModel();
   std::unique_ptr<QMimeData> mimedata( model->mimeData( QModelIndexList() << model->index( 2, 2 ) ) ); // get i2
   model->dropMimeData( mimedata.get(), Qt::MoveAction, 1, 2, QModelIndex() );                          // move i2 at the top
 
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   mimedata.reset( model->mimeData( QModelIndexList() << model->index( 1, 2 ) ) ); // get i2
   model->dropMimeData( mimedata.get(), Qt::MoveAction, -1, -1, QModelIndex() );   // move i2 at the bottom
 
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
 
   mimedata.reset( model->mimeData( QModelIndexList() << model->index( 3, 2 ) ) ); // get i2
   model->dropMimeData( mimedata.get(), Qt::MoveAction, 2, 2, QModelIndex() );     // move i2 between i3 and i1
 
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 }
 
 void TestQgsLayoutModel::findItemAbove()
@@ -699,13 +699,13 @@ void TestQgsLayoutModel::setItemRemoved()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   layout.itemsModel()->clear();
   layout.itemsModel()->rebuildZList();
@@ -718,9 +718,9 @@ void TestQgsLayoutModel::setItemRemoved()
   QCOMPARE( layout.itemsModel()->mItemsInScene.size(), 3 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try marking some bad items as removed
   layout.itemsModel()->setItemRemoved( nullptr );
@@ -729,9 +729,9 @@ void TestQgsLayoutModel::setItemRemoved()
   QVERIFY( !label->scene() );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i3"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //try using a good item
   layout.itemsModel()->setItemRemoved( item3 );
@@ -750,8 +750,8 @@ void TestQgsLayoutModel::setItemRemoved()
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 1 ), item1 );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   delete label;
   delete item3;
@@ -764,13 +764,13 @@ void TestQgsLayoutModel::rebuildZListWithRemoved()
   //some items in layout
   QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item1 );
-  item1->setId( QStringLiteral( "i1" ) );
+  item1->setId( u"i1"_s );
   QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item2 );
-  item2->setId( QStringLiteral( "i2" ) );
+  item2->setId( u"i2"_s );
   QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
   layout.addLayoutItem( item3 );
-  item3->setId( QStringLiteral( "i3" ) );
+  item3->setId( u"i3"_s );
 
   layout.itemsModel()->setItemRemoved( item3 );
 
@@ -783,8 +783,8 @@ void TestQgsLayoutModel::rebuildZListWithRemoved()
   //check that only items in the scene are shown by the model
   QCOMPARE( layout.itemsModel()->rowCount(), 3 );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
-  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i2"_s );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), u"i1"_s );
 
   //check z list
   QCOMPARE( layout.itemsModel()->zOrderListSize(), 2 );
@@ -1015,46 +1015,46 @@ void TestQgsLayoutModel::proxy()
   QgsLayoutProxyModel *proxy = new QgsLayoutProxyModel( layout );
   // add some items to composition
   QgsLayoutItemMap *item1 = new QgsLayoutItemMap( layout );
-  item1->setId( QStringLiteral( "c" ) );
+  item1->setId( u"c"_s );
   layout->addLayoutItem( item1 );
   QgsLayoutItemMap *item2 = new QgsLayoutItemMap( layout );
-  item2->setId( QStringLiteral( "b" ) );
+  item2->setId( u"b"_s );
   layout->addLayoutItem( item2 );
   QgsLayoutItemLabel *item3 = new QgsLayoutItemLabel( layout );
-  item3->setId( QStringLiteral( "a" ) );
+  item3->setId( u"a"_s );
   layout->addLayoutItem( item3 );
   QgsLayoutItemShape *item4 = new QgsLayoutItemShape( layout );
-  item4->setId( QStringLiteral( "d" ) );
+  item4->setId( u"d"_s );
   layout->addLayoutItem( item4 );
   QgsLayoutItemShape *item5 = new QgsLayoutItemShape( layout );
-  item5->setId( QStringLiteral( "e" ) );
+  item5->setId( u"e"_s );
   layout->addLayoutItem( item5 );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
-  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
-  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
-  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
-  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
-  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), u"a"_s );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), u"b"_s );
+  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), u"c"_s );
+  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), u"d"_s );
+  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), u"e"_s );
 
   proxy->setAllowEmptyItem( true );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 6 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
-  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
-  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
-  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
-  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
-  QCOMPARE( proxy->data( proxy->index( 5, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), u"a"_s );
+  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), u"b"_s );
+  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), u"c"_s );
+  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), u"d"_s );
+  QCOMPARE( proxy->data( proxy->index( 5, 2, QModelIndex() ) ).toString(), u"e"_s );
 
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutMap );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
-  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
-  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), u"b"_s );
+  QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), u"c"_s );
 
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutLabel );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 2 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
-  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), u"a"_s );
 
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutScaleBar );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 1 );
@@ -1065,8 +1065,8 @@ void TestQgsLayoutModel::proxy()
   QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
   proxy->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 2 );
-  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
-  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), u"d"_s );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), u"e"_s );
   proxy->setItemFlags( QgsLayoutItem::Flags() );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
 }

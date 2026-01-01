@@ -126,7 +126,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
     else // Invalid ctor arguments
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Invalid type in constructor arguments."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -654,7 +654,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+    QString str = u"<QgsPoint: %1>"_s.arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

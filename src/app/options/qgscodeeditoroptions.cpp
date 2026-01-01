@@ -89,7 +89,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   const QStringList ids = QgsGui::codeEditorColorSchemeRegistry()->schemes();
   for ( const QString &id : ids )
   {
-    if ( id == QLatin1String( "default" ) )
+    if ( id == "default"_L1 )
       continue;
 
     const QString name = QgsGui::codeEditorColorSchemeRegistry()->scheme( id ).name();
@@ -103,22 +103,22 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     mColorSchemeComboBox->addItem( name, themeNameToId.value( name ) );
   }
 
-  mColorSchemeComboBox->addItem( tr( "Custom" ), QStringLiteral( "custom" ) );
+  mColorSchemeComboBox->addItem( tr( "Custom" ), u"custom"_s );
 
   QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "codeEditor/overrideColors" ), false, QgsSettings::Gui ).toBool() )
+  if ( !settings.value( u"codeEditor/overrideColors"_s, false, QgsSettings::Gui ).toBool() )
   {
-    const QString theme = settings.value( QStringLiteral( "codeEditor/colorScheme" ), QString(), QgsSettings::Gui ).toString();
+    const QString theme = settings.value( u"codeEditor/colorScheme"_s, QString(), QgsSettings::Gui ).toString();
     mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( theme ) );
   }
   else
   {
-    mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( QStringLiteral( "custom" ) ) );
+    mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( u"custom"_s ) );
   }
 
   connect( mColorSchemeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     const QString theme = mColorSchemeComboBox->currentData().toString();
-    if ( theme != QLatin1String( "custom" ) )
+    if ( theme != "custom"_L1 )
     {
       mBlockCustomColorChange = true;
       for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
@@ -138,7 +138,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
       if ( mBlockCustomColorChange )
         return;
 
-      mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( QStringLiteral( "custom" ) ) );
+      mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( u"custom"_s ) );
       updatePreview();
     } );
   }
@@ -147,7 +147,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   const QFont font = QgsCodeEditor::getMonospaceFont();
   mFontComboBox->setCurrentFont( font );
   mSizeSpin->setValue( font.pointSize() );
-  mOverrideFontGroupBox->setChecked( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() );
+  mOverrideFontGroupBox->setChecked( !settings.value( u"codeEditor/fontfamily"_s, QString(), QgsSettings::Gui ).toString().isEmpty() );
 
   connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     updatePreview();
@@ -367,18 +367,18 @@ echo Done.
   mListLanguage->setCurrentRow( 0 );
   mPreviewStackedWidget->setCurrentIndex( 0 );
 
-  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/CodeEditorOptions/splitterState" ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"Windows/CodeEditorOptions/splitterState"_s ).toByteArray() );
 }
 
 QgsCodeEditorOptionsWidget::~QgsCodeEditorOptionsWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/CodeEditorOptions/splitterState" ), mSplitter->saveState() );
+  settings.setValue( u"Windows/CodeEditorOptions/splitterState"_s, mSplitter->saveState() );
 }
 
 QString QgsCodeEditorOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#code-editor-options" );
+  return u"introduction/qgis_configuration.html#code-editor-options"_s;
 }
 
 void QgsCodeEditorOptionsWidget::apply()
@@ -386,11 +386,11 @@ void QgsCodeEditorOptionsWidget::apply()
   const QString theme = mColorSchemeComboBox->currentData().toString();
 
   QgsSettings settings;
-  const bool customTheme = theme == QLatin1String( "custom" );
-  settings.setValue( QStringLiteral( "codeEditor/overrideColors" ), customTheme, QgsSettings::Gui );
+  const bool customTheme = theme == "custom"_L1;
+  settings.setValue( u"codeEditor/overrideColors"_s, customTheme, QgsSettings::Gui );
   if ( !customTheme )
   {
-    settings.setValue( QStringLiteral( "codeEditor/colorScheme" ), theme, QgsSettings::Gui );
+    settings.setValue( u"codeEditor/colorScheme"_s, theme, QgsSettings::Gui );
   }
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
   {
@@ -399,13 +399,13 @@ void QgsCodeEditorOptionsWidget::apply()
 
   if ( mOverrideFontGroupBox->isChecked() )
   {
-    settings.setValue( QStringLiteral( "codeEditor/fontfamily" ), mFontComboBox->currentFont().family(), QgsSettings::Gui );
-    settings.setValue( QStringLiteral( "codeEditor/fontsize" ), mSizeSpin->value(), QgsSettings::Gui );
+    settings.setValue( u"codeEditor/fontfamily"_s, mFontComboBox->currentFont().family(), QgsSettings::Gui );
+    settings.setValue( u"codeEditor/fontsize"_s, mSizeSpin->value(), QgsSettings::Gui );
   }
   else
   {
-    settings.remove( QStringLiteral( "codeEditor/fontfamily" ), QgsSettings::Gui );
-    settings.remove( QStringLiteral( "codeEditor/fontsize" ), QgsSettings::Gui );
+    settings.remove( u"codeEditor/fontfamily"_s, QgsSettings::Gui );
+    settings.remove( u"codeEditor/fontsize"_s, QgsSettings::Gui );
   }
 }
 
@@ -415,7 +415,7 @@ void QgsCodeEditorOptionsWidget::updatePreview()
 
 
   QMap<QgsCodeEditorColorScheme::ColorRole, QColor> colors;
-  if ( theme == QLatin1String( "custom" ) )
+  if ( theme == "custom"_L1 )
   {
     for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
     {
@@ -447,13 +447,13 @@ void QgsCodeEditorOptionsWidget::updatePreview()
 // QgsCodeEditorOptionsFactory
 //
 QgsCodeEditorOptionsFactory::QgsCodeEditorOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon(), QStringLiteral( "code_editor" ) )
+  : QgsOptionsWidgetFactory( tr( "Code Editor" ), QIcon(), u"code_editor"_s )
 {
 }
 
 QIcon QgsCodeEditorOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconCodeEditor.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconCodeEditor.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsCodeEditorOptionsFactory::createWidget( QWidget *parent ) const
@@ -463,10 +463,10 @@ QgsOptionsPageWidget *QgsCodeEditorOptionsFactory::createWidget( QWidget *parent
 
 QStringList QgsCodeEditorOptionsFactory::path() const
 {
-  return { QStringLiteral( "ide" ) };
+  return { u"ide"_s };
 }
 
 QString QgsCodeEditorOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "consoleOptions" );
+  return u"consoleOptions"_s;
 }

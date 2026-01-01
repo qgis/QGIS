@@ -58,9 +58,9 @@ QColor QgsServerParameterDefinition::toColor( bool &ok ) const
   if ( !cStr.isEmpty() )
   {
     // support hexadecimal notation to define colors
-    if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
+    if ( cStr.startsWith( "0x"_L1, Qt::CaseInsensitive ) )
     {
-      cStr.replace( 0, 2, QStringLiteral( "#" ) );
+      cStr.replace( 0, 2, u"#"_s );
     }
 
     color = QColor( cStr );
@@ -147,7 +147,7 @@ QStringList QgsServerParameterDefinition::toOgcFilterList() const
       filters.append( "" );
       pos += 2;
     }
-    else if ( filter[pos] == '<' && pos + 7 < filter.size() && filter.mid( pos + 1, 6 ).compare( QLatin1String( "Filter" ) ) == 0 )
+    else if ( filter[pos] == '<' && pos + 7 < filter.size() && filter.mid( pos + 1, 6 ).compare( "Filter"_L1 ) == 0 )
     {
       // Single OGC filter
       filters.append( filter.mid( pos ) );
@@ -169,7 +169,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
   const QString filter = toString();
 
   auto isOgcFilter = [filter]() {
-    return filter.contains( QStringLiteral( "<Filter>" ) ) || filter.contains( QStringLiteral( "()" ) );
+    return filter.contains( u"<Filter>"_s ) || filter.contains( u"()"_s );
   };
 
   while ( pos < filter.size() )
@@ -217,9 +217,9 @@ QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char de
     if ( !cStr.isEmpty() )
     {
       // support hexadecimal notation to define colors
-      if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
+      if ( cStr.startsWith( "0x"_L1, Qt::CaseInsensitive ) )
       {
-        cStr.replace( 0, 2, QStringLiteral( "#" ) );
+        cStr.replace( 0, 2, u"#"_s );
       }
 
       const QColor color = QColor( cStr );
@@ -344,7 +344,7 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
     ok = false;
     QgsMessageLog::logMessage(
       QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( newReq.errorMessage(), url.toString() ),
-      QStringLiteral( "Server" )
+      u"Server"_s
     );
     return QString();
   }
@@ -414,7 +414,7 @@ bool QgsServerParameterDefinition::isValid() const
 
 void QgsServerParameterDefinition::raiseError( const QString &msg )
 {
-  throw QgsBadRequestException( QStringLiteral( "Invalid Parameter" ), msg );
+  throw QgsBadRequestException( u"Invalid Parameter"_s, msg );
 }
 
 //
@@ -435,7 +435,7 @@ QString QgsServerParameter::name( const QgsServerParameter::Name name )
 {
   if ( name == QgsServerParameter::VERSION_SERVICE )
   {
-    return QStringLiteral( "VERSION" );
+    return u"VERSION"_s;
   }
   else
   {
@@ -446,7 +446,7 @@ QString QgsServerParameter::name( const QgsServerParameter::Name name )
 
 QgsServerParameter::Name QgsServerParameter::name( const QString &name )
 {
-  if ( name.compare( QLatin1String( "VERSION" ) ) == 0 )
+  if ( name.compare( "VERSION"_L1 ) == 0 )
   {
     return QgsServerParameter::VERSION_SERVICE;
   }
@@ -556,8 +556,8 @@ QString QgsServerParameters::service() const
   if ( serviceValue.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    if ( request() == QLatin1String( "GetMap" )
-         || request() == QLatin1String( "GetFeatureInfo" ) )
+    if ( request() == "GetMap"_L1
+         || request() == "GetFeatureInfo"_L1 )
     {
       serviceValue = "WMS";
     }
@@ -615,7 +615,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
 {
   // clean query string first
   QUrlQuery cleanQuery( query );
-  cleanQuery.setQuery( query.query().replace( '+', QLatin1String( "%20" ) ) );
+  cleanQuery.setQuery( query.query().replace( '+', "%20"_L1 ) );
 
   // load parameters
   const auto constQueryItems( cleanQuery.queryItems( QUrl::FullyDecoded ) );
@@ -630,7 +630,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
         mParameters[name].raiseError();
       }
     }
-    else if ( item.first.compare( QLatin1String( "VERSION" ), Qt::CaseInsensitive ) == 0 )
+    else if ( item.first.compare( "VERSION"_L1, Qt::CaseInsensitive ) == 0 )
     {
       const QgsServerParameter::Name name = QgsServerParameter::VERSION_SERVICE;
       mParameters[name].mValue = item.second;

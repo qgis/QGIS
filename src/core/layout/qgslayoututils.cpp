@@ -395,12 +395,12 @@ QRectF QgsLayoutUtils::largestRotatedRectWithinBounds( const QRectF &originalRec
 QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QString &string, bool &ok )
 {
   QString s = string.trimmed();
-  if ( s.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
+  if ( s.compare( "Portrait"_L1, Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsLayoutItemPage::Portrait;
   }
-  else if ( s.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
+  else if ( s.compare( "Landscape"_L1, Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsLayoutItemPage::Landscape;

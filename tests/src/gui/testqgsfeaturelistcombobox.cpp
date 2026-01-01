@@ -63,9 +63,9 @@ void TestQgsFeatureListComboBox::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST-FEATURELIST-COMBOBOX" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST-FEATURELIST-COMBOBOX"_s );
 }
 
 void TestQgsFeatureListComboBox::cleanupTestCase()
@@ -76,41 +76,41 @@ void TestQgsFeatureListComboBox::cleanupTestCase()
 void TestQgsFeatureListComboBox::init()
 {
   // create layer
-  mLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
-  mLayer->setDisplayExpression( QStringLiteral( "pk" ) );
+  mLayer = std::make_unique<QgsVectorLayer>( u"LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string"_s, u"vl2"_s, u"memory"_s );
+  mLayer->setDisplayExpression( u"pk"_s );
 
   // add features
   mLayer->startEditing();
 
   QgsFeature ft1( mLayer->fields() );
-  ft1.setAttribute( QStringLiteral( "pk" ), 10 );
-  ft1.setAttribute( QStringLiteral( "material" ), "iron" );
-  ft1.setAttribute( QStringLiteral( "diameter" ), 120 );
-  ft1.setAttribute( QStringLiteral( "raccord" ), "brides" );
+  ft1.setAttribute( u"pk"_s, 10 );
+  ft1.setAttribute( u"material"_s, "iron" );
+  ft1.setAttribute( u"diameter"_s, 120 );
+  ft1.setAttribute( u"raccord"_s, "brides" );
   mLayer->addFeature( ft1 );
 
   QgsFeature ft2( mLayer->fields() );
-  ft2.setAttribute( QStringLiteral( "pk" ), 11 );
-  ft2.setAttribute( QStringLiteral( "material" ), "iron" );
-  ft2.setAttribute( QStringLiteral( "diameter" ), 120 );
-  ft2.setAttribute( QStringLiteral( "raccord" ), "sleeve" );
+  ft2.setAttribute( u"pk"_s, 11 );
+  ft2.setAttribute( u"material"_s, "iron" );
+  ft2.setAttribute( u"diameter"_s, 120 );
+  ft2.setAttribute( u"raccord"_s, "sleeve" );
   mLayer->addFeature( ft2 );
 
   QgsFeature ft3( mLayer->fields() );
-  ft3.setAttribute( QStringLiteral( "pk" ), 12 );
-  ft3.setAttribute( QStringLiteral( "material" ), "steel" );
-  ft3.setAttribute( QStringLiteral( "diameter" ), 120 );
-  ft3.setAttribute( QStringLiteral( "raccord" ), "collar" );
+  ft3.setAttribute( u"pk"_s, 12 );
+  ft3.setAttribute( u"material"_s, "steel" );
+  ft3.setAttribute( u"diameter"_s, 120 );
+  ft3.setAttribute( u"raccord"_s, "collar" );
   mLayer->addFeature( ft3 );
 
   QgsFeatureList flist;
   for ( int i = 13; i < 40; i++ )
   {
     QgsFeature f( mLayer->fields() );
-    f.setAttribute( QStringLiteral( "pk" ), i );
-    f.setAttribute( QStringLiteral( "material" ), QStringLiteral( "material_%1" ).arg( i ) );
-    f.setAttribute( QStringLiteral( "diameter" ), i );
-    f.setAttribute( QStringLiteral( "raccord" ), QStringLiteral( "raccord_%1" ).arg( i ) );
+    f.setAttribute( u"pk"_s, i );
+    f.setAttribute( u"material"_s, u"material_%1"_s.arg( i ) );
+    f.setAttribute( u"diameter"_s, i );
+    f.setAttribute( u"raccord"_s, u"raccord_%1"_s.arg( i ) );
     flist << f;
   }
   mLayer->addFeatures( flist );
@@ -148,7 +148,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
   spy.wait();
 
-  QCOMPARE( cb.identifierValue().toString(), QStringLiteral( "iron" ) );
+  QCOMPARE( cb.identifierValue().toString(), u"iron"_s );
 
   Q_NOWARN_DEPRECATED_POP
 }
@@ -157,7 +157,7 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 {
   auto cb = std::make_unique<QgsFeatureListComboBox>();
 
-  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  QgsApplication::setNullRepresentation( u"nope"_s );
 
   QVERIFY( cb->identifierValues().isEmpty() );
 
@@ -211,45 +211,45 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
 {
   QFETCH( bool, allowNull );
 
-  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  QgsApplication::setNullRepresentation( u"nope"_s );
   auto cb = std::make_unique<QgsFeatureListComboBox>();
 
   QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
 
   cb->setSourceLayer( mLayer.get() );
   cb->setAllowNull( allowNull );
-  cb->setIdentifierFields( { QStringLiteral( "raccord" ) } );
-  cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
+  cb->setIdentifierFields( { u"raccord"_s } );
+  cb->setDisplayExpression( u"\"raccord\""_s );
 
   //check if everything is fine:
   spy.wait();
   QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
-  QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QStringLiteral( "brides" ) );
+  QCOMPARE( cb->currentText(), allowNull ? u"nope"_s : u"brides"_s );
 
   //check if text correct, selected and if the clear button disappeared:
   cb->mLineEdit->clearValue();
   QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
-  QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QString() );
-  QCOMPARE( cb->lineEdit()->selectedText(), allowNull ? QStringLiteral( "nope" ) : QString() );
+  QCOMPARE( cb->currentText(), allowNull ? u"nope"_s : QString() );
+  QCOMPARE( cb->lineEdit()->selectedText(), allowNull ? u"nope"_s : QString() );
   QVERIFY( !cb->mLineEdit->mClearAction );
 
   //check if text is selected after receiving focus
   cb->setFocus();
   QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
-  QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QString() );
-  QCOMPARE( cb->lineEdit()->selectedText(), allowNull ? QStringLiteral( "nope" ) : QString() );
+  QCOMPARE( cb->currentText(), allowNull ? u"nope"_s : QString() );
+  QCOMPARE( cb->lineEdit()->selectedText(), allowNull ? u"nope"_s : QString() );
   QVERIFY( !cb->mLineEdit->mClearAction );
 
   //check with another entry, clear button needs to be there then:
-  QTest::keyClicks( cb.get(), QStringLiteral( "sleeve" ) );
+  QTest::keyClicks( cb.get(), u"sleeve"_s );
   spy.wait();
-  QCOMPARE( cb->currentText(), QStringLiteral( "sleeve" ) );
+  QCOMPARE( cb->currentText(), u"sleeve"_s );
   QVERIFY( cb->mLineEdit->mClearAction );
 }
 
 void TestQgsFeatureListComboBox::nullRepresentation()
 {
-  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  QgsApplication::setNullRepresentation( u"nope"_s );
   auto cb = std::make_unique<QgsFeatureListComboBox>();
 
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
@@ -260,7 +260,7 @@ void TestQgsFeatureListComboBox::nullRepresentation()
   cb->setSourceLayer( mLayer.get() );
 
   loop.exec();
-  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->lineEdit()->text(), u"nope"_s );
   QCOMPARE( cb->nullIndex(), 0 );
 }
 
@@ -275,7 +275,7 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
   QEventLoop loop;
   connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
 
-  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  QgsApplication::setNullRepresentation( u"nope"_s );
 
   QVERIFY( cb->identifierValues().isEmpty() );
 
@@ -285,7 +285,7 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
   cb->setIdentifierValues( QVariantList() << 42 );
 
   loop.exec();
-  QCOMPARE( cb->currentText(), QStringLiteral( "(42)" ) );
+  QCOMPARE( cb->currentText(), u"(42)"_s );
 }
 
 void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
@@ -298,14 +298,14 @@ void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
   model->setFetchLimit( 20 );
   model->setAllowNull( false );
   cb->setSourceLayer( mLayer.get() );
-  cb->setIdentifierFields( { QStringLiteral( "pk" ) } );
+  cb->setIdentifierFields( { u"pk"_s } );
   spy.wait();
   QCOMPARE( model->mEntries.count(), 20 );
   for ( int i = 0; i < 20; i++ )
     QCOMPARE( model->mEntries.at( i ).identifierFields.at( 0 ).toInt(), i + 10 );
   cb->setIdentifierValues( { 33 } );
   spy.wait();
-  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "33" ) );
+  QCOMPARE( cb->lineEdit()->text(), u"33"_s );
   QCOMPARE( model->mEntries.count(), 21 );
   QCOMPARE( model->mEntries.at( 0 ).identifierFields.at( 0 ).toInt(), 33 );
 }

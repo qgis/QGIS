@@ -115,7 +115,7 @@ void QgsElevationShadingRendererSettingsWidget::onChanged()
 QgsElevationShadingRendererSettingsWidgetFactory::QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mShadingRenderer.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"mShadingRenderer.svg"_s ) );
   setTitle( tr( "Shading Renderer" ) );
 }
 

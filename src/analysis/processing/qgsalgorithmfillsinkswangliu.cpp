@@ -25,7 +25,7 @@
 
 QString QgsFillSinksWangLiuAlgorithm::name() const
 {
-  return QStringLiteral( "fillsinkswangliu" );
+  return u"fillsinkswangliu"_s;
 }
 
 QString QgsFillSinksWangLiuAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsFillSinksWangLiuAlgorithm::group() const
 
 QString QgsFillSinksWangLiuAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasterterrainanalysis" );
+  return u"rasterterrainanalysis"_s;
 }
 
 QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
@@ -68,28 +68,28 @@ QString QgsFillSinksWangLiuAlgorithm::shortDescription() const
 
 void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
-  auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MIN_SLOPE" ), QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0 );
+  auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"MIN_SLOPE"_s, QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0 );
   minSlopeParam->setHelp( QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." ) );
   addParameter( minSlopeParam.release() );
 
-  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
 
-  auto outputFilledDem = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_FILLED_DEM" ), QObject::tr( "Output layer (filled DEM)" ), QVariant(), true, true );
+  auto outputFilledDem = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT_FILLED_DEM"_s, QObject::tr( "Output layer (filled DEM)" ), QVariant(), true, true );
   outputFilledDem->setHelp( QObject::tr( "Depression-free digital elevation model." ) );
   addParameter( outputFilledDem.release() );
 
-  auto outputFlowDirections = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), QObject::tr( "Output layer (flow directions)" ), QVariant(), true, false );
+  auto outputFlowDirections = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT_FLOW_DIRECTIONS"_s, QObject::tr( "Output layer (flow directions)" ), QVariant(), true, false );
   outputFlowDirections->setHelp( QObject::tr( "Computed flow directions, 0=N, 1=NE, 2=E, ... 7=NW." ) );
   addParameter( outputFlowDirections.release() );
 
-  auto outputWatershedBasins = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_WATERSHED_BASINS" ), QObject::tr( "Output layer (watershed basins)" ), QVariant(), true, false );
+  auto outputWatershedBasins = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT_WATERSHED_BASINS"_s, QObject::tr( "Output layer (watershed basins)" ), QVariant(), true, false );
   outputWatershedBasins->setHelp( QObject::tr( "Delineated watershed basin." ) );
   addParameter( outputWatershedBasins.release() );
 }
@@ -101,13 +101,13 @@ QgsFillSinksWangLiuAlgorithm *QgsFillSinksWangLiuAlgorithm::createInstance() con
 
 bool QgsFillSinksWangLiuAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  const int band = parameterAsInt( parameters, u"BAND"_s, context );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
@@ -184,21 +184,21 @@ typedef std::priority_queue< CFillSinks_WL_Node, nodeVector, CompareGreater > Pr
 
 QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  const QString createOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
 
-  const QString filledDemOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_FILLED_DEM" ), context );
-  const QString flowDirectionsOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), context );
-  const QString watershedBasinsOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_WATERSHED_BASINS" ), context );
+  const QString filledDemOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_FILLED_DEM"_s, context );
+  const QString flowDirectionsOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_FLOW_DIRECTIONS"_s, context );
+  const QString watershedBasinsOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_WATERSHED_BASINS"_s, context );
 
   std::unique_ptr<QgsRasterFileWriter> filledDemWriter;
   std::unique_ptr<QgsRasterDataProvider> filledDemDestProvider;
 
   if ( !filledDemOutputFile.isEmpty() )
   {
-    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_FILLED_DEM" ), context );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT_FILLED_DEM"_s, context );
 
     filledDemWriter = std::make_unique<QgsRasterFileWriter>( filledDemOutputFile );
-    filledDemWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
+    filledDemWriter->setOutputProviderKey( u"gdal"_s );
     if ( !createOptions.isEmpty() )
     {
       filledDemWriter->setCreationOptions( createOptions.split( '|' ) );
@@ -221,10 +221,10 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
 
   if ( !flowDirectionsOutputFile.isEmpty() )
   {
-    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), context );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT_FLOW_DIRECTIONS"_s, context );
 
     flowDirectionsWriter = std::make_unique<QgsRasterFileWriter>( flowDirectionsOutputFile );
-    flowDirectionsWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
+    flowDirectionsWriter->setOutputProviderKey( u"gdal"_s );
     flowDirectionsWriter->setOutputFormat( outputFormat );
 
     flowDirectionsDestProvider.reset( flowDirectionsWriter->createOneBandRaster( Qgis::DataType::Byte, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
@@ -243,10 +243,10 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
 
   if ( !watershedBasinsOutputFile.isEmpty() )
   {
-    const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT_WATERSHED_BASINS" ), context );
+    const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT_WATERSHED_BASINS"_s, context );
 
     watershedBasinsWriter = std::make_unique<QgsRasterFileWriter>( watershedBasinsOutputFile );
-    watershedBasinsWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
+    watershedBasinsWriter->setOutputProviderKey( u"gdal"_s );
     watershedBasinsWriter->setOutputFormat( outputFormat );
 
     watershedBasinsDestProvider.reset( watershedBasinsWriter->createOneBandRaster( Qgis::DataType::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
@@ -281,7 +281,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
   auto seedData = std::make_unique<QgsRasterBlock>( Qgis::DataType::Byte, mLayerWidth, mLayerHeight );
   seedData->fill( 0 );
 
-  double minSlope = parameterAsDouble( parameters, QStringLiteral( "MIN_SLOPE" ), context );
+  double minSlope = parameterAsDouble( parameters, u"MIN_SLOPE"_s, context );
   double mindiff[8];
   bool preserve = false;
   if ( minSlope > 0.0 )
@@ -414,7 +414,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
       throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( filledDemDestProvider->error().summary() ) );
     }
     filledDemDestProvider->setEditable( false );
-    outputs.insert( QStringLiteral( "OUTPUT_FILLED_DEM" ), filledDemOutputFile );
+    outputs.insert( u"OUTPUT_FILLED_DEM"_s, filledDemOutputFile );
   }
   if ( flowDirectionsDestProvider )
   {
@@ -423,7 +423,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
       throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( flowDirectionsDestProvider->error().summary() ) );
     }
     flowDirectionsDestProvider->setEditable( false );
-    outputs.insert( QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), flowDirectionsOutputFile );
+    outputs.insert( u"OUTPUT_FLOW_DIRECTIONS"_s, flowDirectionsOutputFile );
   }
   if ( watershedBasinsDestProvider )
   {
@@ -432,7 +432,7 @@ QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &p
       throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( watershedBasinsDestProvider->error().summary() ) );
     }
     watershedBasinsDestProvider->setEditable( false );
-    outputs.insert( QStringLiteral( "OUTPUT_WATERSHED_BASINS" ), watershedBasinsOutputFile );
+    outputs.insert( u"OUTPUT_WATERSHED_BASINS"_s, watershedBasinsOutputFile );
   }
 
   return outputs;

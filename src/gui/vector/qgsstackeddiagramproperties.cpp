@@ -367,7 +367,7 @@ bool QgsStackedDiagramPropertiesDialog::isAllowedToEditDiagramLayerSettings() co
 
 void QgsStackedDiagramPropertiesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#diagrams-properties"_s );
 }
 
 ////
@@ -404,7 +404,7 @@ Qt::DropActions QgsStackedDiagramPropertiesModel::supportedDropActions() const
 QStringList QgsStackedDiagramPropertiesModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/vnd.text.list" );
+  types << u"application/vnd.text.list"_s;
   return types;
 }
 
@@ -429,14 +429,14 @@ QMimeData *QgsStackedDiagramPropertiesModel::mimeData( const QModelIndexList &in
     {
       QDomDocument doc;
 
-      QDomElement rootElem = doc.createElement( QStringLiteral( "diagram_mime" ) );
+      QDomElement rootElem = doc.createElement( u"diagram_mime"_s );
       diagram->writeXml( rootElem, doc, QgsReadWriteContext() );
       doc.appendChild( rootElem );
       stream << doc.toString( -1 );
     }
   }
 
-  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
+  mimeData->setData( u"application/vnd.text.list"_s, encodedData );
   return mimeData;
 }
 
@@ -448,10 +448,10 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
+  if ( !data->hasFormat( u"application/vnd.text.list"_s ) )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
+  QByteArray encodedData = data->data( u"application/vnd.text.list"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -470,22 +470,22 @@ bool QgsStackedDiagramPropertiesModel::dropMimeData( const QMimeData *data, Qt::
     if ( !doc.setContent( text ) )
       continue;
     const QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != QLatin1String( "diagram_mime" ) || !rootElem.hasChildNodes() )
+    if ( rootElem.tagName() != "diagram_mime"_L1 || !rootElem.hasChildNodes() )
       continue;
     const QDomElement childElem = rootElem.firstChild().toElement();
 
     QgsDiagramRenderer *diagram = nullptr;
-    if ( childElem.nodeName() == QLatin1String( "SingleCategoryDiagramRenderer" ) )
+    if ( childElem.nodeName() == "SingleCategoryDiagramRenderer"_L1 )
     {
       diagram = new QgsSingleCategoryDiagramRenderer();
       diagram->readXml( childElem, QgsReadWriteContext() );
     }
-    else if ( childElem.nodeName() == QLatin1String( "LinearlyInterpolatedDiagramRenderer" ) )
+    else if ( childElem.nodeName() == "LinearlyInterpolatedDiagramRenderer"_L1 )
     {
       diagram = new QgsLinearlyInterpolatedDiagramRenderer();
       diagram->readXml( childElem, QgsReadWriteContext() );
     }
-    else if ( childElem.nodeName() == QLatin1String( "StackedDiagramRenderer" ) )
+    else if ( childElem.nodeName() == "StackedDiagramRenderer"_L1 )
     {
       diagram = new QgsStackedDiagramRenderer();
       diagram->readXml( childElem, QgsReadWriteContext() );

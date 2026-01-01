@@ -21,7 +21,7 @@
 
 QString QgsUniqueValuesAlgorithm::name() const
 {
-  return QStringLiteral( "listuniquevalues" );
+  return u"listuniquevalues"_s;
 }
 
 QString QgsUniqueValuesAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsUniqueValuesAlgorithm::group() const
 
 QString QgsUniqueValuesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsUniqueValuesAlgorithm::shortHelpString() const
@@ -61,22 +61,22 @@ QgsUniqueValuesAlgorithm *QgsUniqueValuesAlgorithm::createInstance() const
 
 void QgsUniqueValuesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS" ), QObject::tr( "Target field(s)" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Unique values" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "HTML report" ), QObject::tr( "HTML files (*.html *.htm)" ), QVariant(), true ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_VALUES" ), QObject::tr( "Total unique values" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "UNIQUE_VALUES" ), QObject::tr( "Unique values" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELDS"_s, QObject::tr( "Target field(s)" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Unique values" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "HTML report" ), QObject::tr( "HTML files (*.html *.htm)" ), QVariant(), true ) );
+  addOutput( new QgsProcessingOutputNumber( u"TOTAL_VALUES"_s, QObject::tr( "Total unique values" ) ) );
+  addOutput( new QgsProcessingOutputString( u"UNIQUE_VALUES"_s, QObject::tr( "Unique values" ) ) );
 }
 
 QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QStringList fieldNames = parameterAsStrings( parameters, QStringLiteral( "FIELDS" ), context );
-  const QString outputHtml = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+  const QStringList fieldNames = parameterAsStrings( parameters, u"FIELDS"_s, context );
+  const QString outputHtml = parameterAsFileOutput( parameters, u"OUTPUT_HTML_FILE"_s, context );
 
   QgsFields fields;
   QList<int> fieldIndices;
@@ -94,10 +94,10 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
   if ( !sink )
   {
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
   }
 
   QSet<QgsAttributes> values;
@@ -139,7 +139,7 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "TOTAL_VALUES" ), values.size() );
+  outputs.insert( u"TOTAL_VALUES"_s, values.size() );
 
   QStringList valueList;
   for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
@@ -151,7 +151,7 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
     }
     valueList.append( s.join( ',' ) );
   }
-  outputs.insert( QStringLiteral( "UNIQUE_VALUES" ), valueList.join( ';' ) );
+  outputs.insert( u"UNIQUE_VALUES"_s, valueList.join( ';' ) );
 
   if ( sink )
   {
@@ -163,10 +163,10 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
       QgsFeature f;
       f.setAttributes( *it );
       if ( !sink->addFeature( f, QgsFeatureSink::Flag::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
     sink->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+    outputs.insert( u"OUTPUT"_s, dest );
   }
 
   if ( !outputHtml.isEmpty() )
@@ -175,17 +175,17 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
+      out << u"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n"_s;
       out << QObject::tr( "<p>Total unique values: %1</p>" ).arg( values.size() );
       out << QObject::tr( "<p>Unique values:</p>" );
-      out << QStringLiteral( "<ul>" );
+      out << u"<ul>"_s;
       for ( auto &v : std::as_const( valueList ) )
       {
-        out << QStringLiteral( "<li>%1</li>" ).arg( v );
+        out << u"<li>%1</li>"_s.arg( v );
       }
-      out << QStringLiteral( "</ul></body></html>" );
+      out << u"</ul></body></html>"_s;
 
-      outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputHtml );
+      outputs.insert( u"OUTPUT_HTML_FILE"_s, outputHtml );
     }
   }
 

@@ -61,7 +61,7 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
   const auto constEntryList = QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
   for ( const QString &path : constEntryList )
   {
-    if ( path == QLatin1String( "selections" ) )
+    if ( path == "selections"_L1 )
       continue;
     QgsDebugMsgLevel( "path= " + path, 2 );
     dirItem = new QgsCptCityDirectoryItem( nullptr, QFileInfo( path ).baseName(), path );
@@ -75,7 +75,7 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
   QgsCptCitySelectionItem *selItem = nullptr;
   const QDir seldir( mBaseDir + '/' + "selections" );
   QgsDebugMsgLevel( "populating selection from " + seldir.path(), 2 );
-  const QStringList fileList = seldir.entryList( QStringList() << QStringLiteral( "*.xml" ), QDir::Files );
+  const QStringList fileList = seldir.entryList( QStringList() << u"*.xml"_s, QDir::Files );
   for ( const QString &selfile : fileList )
   {
     QgsDebugMsgLevel( "file= " + seldir.path() + '/' + selfile, 2 );
@@ -137,10 +137,10 @@ QString QgsCptCityArchive::defaultBaseDir()
   const QgsSettings settings;
 
   // use CptCity/baseDir setting if set, default is user dir
-  baseDir = settings.value( QStringLiteral( "CptCity/baseDir" ),
+  baseDir = settings.value( u"CptCity/baseDir"_s,
                             QString( QgsApplication::pkgDataPath() + "/resources" ) ).toString();
   // sub-dir defaults to cpt-city
-  archiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
+  archiveName = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
 
   return baseDir + '/' + archiveName;
 }
@@ -169,13 +169,13 @@ QString QgsCptCityArchive::findFileName( const QString &target, const QString &s
 
 QString QgsCptCityArchive::copyingFileName( const QString &path ) const
 {
-  return QgsCptCityArchive::findFileName( QStringLiteral( "COPYING.xml" ),
+  return QgsCptCityArchive::findFileName( u"COPYING.xml"_s,
                                           baseDir() + '/' + path, baseDir() );
 }
 
 QString QgsCptCityArchive::descFileName( const QString &path ) const
 {
-  return QgsCptCityArchive::findFileName( QStringLiteral( "DESC.xml" ),
+  return QgsCptCityArchive::findFileName( u"DESC.xml"_s,
                                           baseDir() + '/' + path, baseDir() );
 }
 
@@ -203,7 +203,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   }
 
   // parse the document
-  QDomDocument doc( QStringLiteral( "license" ) );
+  QDomDocument doc( u"license"_s );
   if ( !doc.setContent( &f ) )
   {
     f.close();
@@ -214,17 +214,17 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
 
   // get root element
   const QDomElement docElem = doc.documentElement();
-  if ( docElem.tagName() != QLatin1String( "copying" ) )
+  if ( docElem.tagName() != "copying"_L1 )
   {
     QgsDebugError( "Incorrect root tag: " + docElem.tagName() );
     return copyingMap;
   }
 
   // load author information
-  const QDomElement authorsElement = docElem.firstChildElement( QStringLiteral( "authors" ) );
+  const QDomElement authorsElement = docElem.firstChildElement( u"authors"_s );
   if ( authorsElement.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "authors tag missing" ), 2 );
+    QgsDebugMsgLevel( u"authors tag missing"_s, 2 );
   }
   else
   {
@@ -232,47 +232,47 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
     QStringList authors;
     while ( ! e.isNull() )
     {
-      if ( e.tagName() == QLatin1String( "author" ) )
+      if ( e.tagName() == "author"_L1 )
       {
-        if ( ! e.firstChildElement( QStringLiteral( "name" ) ).isNull() )
-          authors << e.firstChildElement( QStringLiteral( "name" ) ).text().simplified();
+        if ( ! e.firstChildElement( u"name"_s ).isNull() )
+          authors << e.firstChildElement( u"name"_s ).text().simplified();
         // org???
       }
       e = e.nextSiblingElement();
     }
-    copyingMap[ QStringLiteral( "authors" )] = authors.join( QLatin1String( ", " ) );
+    copyingMap[ u"authors"_s] = authors.join( ", "_L1 );
   }
 
   // load license information
-  const QDomElement licenseElement = docElem.firstChildElement( QStringLiteral( "license" ) );
+  const QDomElement licenseElement = docElem.firstChildElement( u"license"_s );
   if ( licenseElement.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "license tag missing" ), 2 );
+    QgsDebugMsgLevel( u"license tag missing"_s, 2 );
   }
   else
   {
-    QDomElement e = licenseElement.firstChildElement( QStringLiteral( "informal" ) );
+    QDomElement e = licenseElement.firstChildElement( u"informal"_s );
     if ( ! e.isNull() )
-      copyingMap[ QStringLiteral( "license/informal" )] = e.text().simplified();
-    e = licenseElement.firstChildElement( QStringLiteral( "year" ) );
+      copyingMap[ u"license/informal"_s] = e.text().simplified();
+    e = licenseElement.firstChildElement( u"year"_s );
     if ( ! e.isNull() )
-      copyingMap[ QStringLiteral( "license/year" )] = e.text().simplified();
-    e = licenseElement.firstChildElement( QStringLiteral( "text" ) );
-    if ( ! e.isNull() && e.attribute( QStringLiteral( "href" ) ) != QString() )
-      copyingMap[ QStringLiteral( "license/url" )] = e.attribute( QStringLiteral( "href" ) );
+      copyingMap[ u"license/year"_s] = e.text().simplified();
+    e = licenseElement.firstChildElement( u"text"_s );
+    if ( ! e.isNull() && e.attribute( u"href"_s ) != QString() )
+      copyingMap[ u"license/url"_s] = e.attribute( u"href"_s );
   }
 
   // load src information
-  const QDomElement element = docElem.firstChildElement( QStringLiteral( "src" ) );
+  const QDomElement element = docElem.firstChildElement( u"src"_s );
   if ( element.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "src tag missing" ), 2 );
+    QgsDebugMsgLevel( u"src tag missing"_s, 2 );
   }
   else
   {
-    const QDomElement e = element.firstChildElement( QStringLiteral( "link" ) );
-    if ( ! e.isNull() && e.attribute( QStringLiteral( "href" ) ) != QString() )
-      copyingMap[ QStringLiteral( "src/link" )] = e.attribute( QStringLiteral( "href" ) );
+    const QDomElement e = element.firstChildElement( u"link"_s );
+    if ( ! e.isNull() && e.attribute( u"href"_s ) != QString() )
+      copyingMap[ u"src/link"_s] = e.attribute( u"href"_s );
   }
 
   // save copyingMap for further access
@@ -295,7 +295,7 @@ QgsStringMap QgsCptCityArchive::description( const QString &fileName )
 
   // parse the document
   QString errMsg;
-  QDomDocument doc( QStringLiteral( "description" ) );
+  QDomDocument doc( u"description"_s );
   if ( !doc.setContent( &f, &errMsg ) )
   {
     f.close();
@@ -306,25 +306,25 @@ QgsStringMap QgsCptCityArchive::description( const QString &fileName )
 
   // read description
   const QDomElement docElem = doc.documentElement();
-  if ( docElem.tagName() != QLatin1String( "description" ) )
+  if ( docElem.tagName() != "description"_L1 )
   {
     QgsDebugError( "Incorrect root tag: " + docElem.tagName() );
     return descMap;
   }
   // should we make sure the <dir> tag is OK?
 
-  QDomElement e = docElem.firstChildElement( QStringLiteral( "name" ) );
+  QDomElement e = docElem.firstChildElement( u"name"_s );
   if ( e.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "name tag missing" ), 2 );
+    QgsDebugMsgLevel( u"name tag missing"_s, 2 );
   }
-  descMap[ QStringLiteral( "name" )] = e.text().simplified();
-  e = docElem.firstChildElement( QStringLiteral( "full" ) );
+  descMap[ u"name"_s] = e.text().simplified();
+  e = docElem.firstChildElement( u"full"_s );
   if ( e.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "full tag missing" ), 2 );
+    QgsDebugMsgLevel( u"full tag missing"_s, 2 );
   }
-  descMap[ QStringLiteral( "full" )] = e.text().simplified();
+  descMap[ u"full"_s] = e.text().simplified();
 
   return descMap;
 }
@@ -342,7 +342,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   }
 
   // parse the document
-  QDomDocument doc( QStringLiteral( "gradient" ) );
+  QDomDocument doc( u"gradient"_s );
   if ( !doc.setContent( &f ) )
   {
     f.close();
@@ -353,23 +353,23 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
 
   const QDomElement docElem = doc.documentElement();
 
-  if ( docElem.tagName() != QLatin1String( "svg" ) )
+  if ( docElem.tagName() != "svg"_L1 )
   {
     QgsDebugError( "Incorrect root tag: " + docElem.tagName() );
     return colorMap;
   }
 
   // load color ramp from first linearGradient node
-  QDomElement rampsElement = docElem.firstChildElement( QStringLiteral( "linearGradient" ) );
+  QDomElement rampsElement = docElem.firstChildElement( u"linearGradient"_s );
   if ( rampsElement.isNull() )
   {
-    const QDomNodeList nodeList = docElem.elementsByTagName( QStringLiteral( "linearGradient" ) );
+    const QDomNodeList nodeList = docElem.elementsByTagName( u"linearGradient"_s );
     if ( ! nodeList.isEmpty() )
       rampsElement = nodeList.at( 0 ).toElement();
   }
   if ( rampsElement.isNull() )
   {
-    QgsDebugError( QStringLiteral( "linearGradient tag missing" ) );
+    QgsDebugError( u"linearGradient tag missing"_s );
     return colorMap;
   }
 
@@ -378,13 +378,13 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
 
   while ( !e.isNull() )
   {
-    if ( e.tagName() == QLatin1String( "stop" ) )
+    if ( e.tagName() == "stop"_L1 )
     {
       //todo integrate this into symbollayerutils, keep here for now...
       double offset;
-      QString offsetStr = e.attribute( QStringLiteral( "offset" ) ); // offset="50.00%" | offset="0.5"
-      const QString colorStr = e.attribute( QStringLiteral( "stop-color" ), QString() ); // stop-color="rgb(222,235,247)"
-      const QString opacityStr = e.attribute( QStringLiteral( "stop-opacity" ), QStringLiteral( "1.0" ) ); // stop-opacity="1.0000"
+      QString offsetStr = e.attribute( u"offset"_s ); // offset="50.00%" | offset="0.5"
+      const QString colorStr = e.attribute( u"stop-color"_s, QString() ); // stop-color="rgb(222,235,247)"
+      const QString opacityStr = e.attribute( u"stop-opacity"_s, u"1.0"_s ); // stop-opacity="1.0000"
       if ( offsetStr.endsWith( '%' ) )
         offset = offsetStr.remove( offsetStr.size() - 1, 1 ).toDouble() / 100.0;
       else
@@ -412,7 +412,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       }
       else
       {
-        QgsDebugError( QStringLiteral( "at offset=%1 invalid color \"%2\"" ).arg( offset ).arg( colorStr ) );
+        QgsDebugError( u"at offset=%1 invalid color \"%2\""_s.arg( offset ).arg( colorStr ) );
       }
     }
     else
@@ -435,7 +435,7 @@ bool QgsCptCityArchive::isEmpty() const
 QgsCptCityArchive *QgsCptCityArchive::defaultArchive()
 {
   const QgsSettings settings;
-  *sDefaultArchiveName() = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
+  *sDefaultArchiveName() = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
   if ( sArchiveRegistry()->contains( *sDefaultArchiveName() ) )
     return sArchiveRegistry()->value( *sDefaultArchiveName() );
   else
@@ -455,10 +455,10 @@ void QgsCptCityArchive::initDefaultArchive()
 {
   const QgsSettings settings;
   // use CptCity/baseDir setting if set, default is user dir
-  const QString baseDir = settings.value( QStringLiteral( "CptCity/baseDir" ),
+  const QString baseDir = settings.value( u"CptCity/baseDir"_s,
                                           QString( QgsApplication::pkgDataPath() + "/resources" ) ).toString();
   // sub-dir defaults to
-  const QString defArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
+  const QString defArchiveName = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
 
   if ( ! sArchiveRegistry()->contains( defArchiveName ) )
     initArchive( defArchiveName, baseDir + '/' + defArchiveName );
@@ -471,16 +471,16 @@ void QgsCptCityArchive::initArchives( bool loadAll )
   const QgsSettings settings;
 
   // use CptCity/baseDir setting if set, default is user dir
-  baseDir = settings.value( QStringLiteral( "CptCity/baseDir" ),
+  baseDir = settings.value( u"CptCity/baseDir"_s,
                             QString( QgsApplication::pkgDataPath() + "/resources" ) ).toString();
   // sub-dir defaults to
-  defArchiveName = settings.value( QStringLiteral( "CptCity/archiveName" ), DEFAULT_CPTCITY_ARCHIVE ).toString();
+  defArchiveName = settings.value( u"CptCity/archiveName"_s, DEFAULT_CPTCITY_ARCHIVE ).toString();
 
   QgsDebugMsgLevel( "baseDir= " + baseDir + " defArchiveName= " + defArchiveName, 2 );
   if ( loadAll )
   {
     const QDir dir( baseDir );
-    const QStringList fileList = dir.entryList( QStringList() << QStringLiteral( "cpt-city*" ), QDir::Dirs );
+    const QStringList fileList = dir.entryList( QStringList() << u"cpt-city*"_s, QDir::Dirs );
     for ( const QString &entry : fileList )
     {
       if ( QFile::exists( baseDir + '/' + entry + "/VERSION.xml" ) )
@@ -499,7 +499,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
       QgsCptCityArchive::initArchive( it.key(), it.value() );
     else
     {
-      QgsDebugError( QStringLiteral( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
+      QgsDebugError( u"not loading archive [%1] because dir %2 does not exist "_s.arg( it.key(), it.value() ) );
     }
   }
   *sDefaultArchiveName() = defArchiveName;
@@ -581,7 +581,7 @@ bool QgsCptCityDataItem::hasChildren()
 
 void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem *child, bool refresh )
 {
-  QgsDebugMsgLevel( QStringLiteral( "add child #%1 - %2 - %3" ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ), 2 );
+  QgsDebugMsgLevel( u"add child #%1 - %2 - %3"_s.arg( mChildren.size() ).arg( child->mName ).arg( child->mType ), 2 );
 
   int i;
   if ( type() == ColorRamp )
@@ -855,7 +855,7 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   {
     QgsCptCityCollectionItem *collectionItem = qobject_cast<QgsCptCityCollectionItem *>( childItem );
     QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childItem );
-    QgsDebugMsgLevel( QStringLiteral( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
+    QgsDebugMsgLevel( u"child path= %1 coll= %2 ramp = %3"_s.arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
       collectionItem->populate();
@@ -880,7 +880,7 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   const auto constDeleteItems = deleteItems;
   for ( QgsCptCityDataItem *deleteItem : constDeleteItems )
   {
-    QgsDebugError( QStringLiteral( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
+    QgsDebugError( u"item %1 is invalid, will be deleted"_s.arg( deleteItem->path() ) );
     const int i = mChildren.indexOf( deleteItem );
     if ( i != -1 )
       mChildren.remove( i );
@@ -908,8 +908,8 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem *parent,
   const QString fileName = QgsCptCityArchive::defaultBaseDir() + '/' +
                            mPath + '/' + "DESC.xml";
   const QgsStringMap descMap = QgsCptCityArchive::description( fileName );
-  if ( descMap.contains( QStringLiteral( "name" ) ) )
-    mInfo = descMap.value( QStringLiteral( "name" ) );
+  if ( descMap.contains( u"name"_s ) )
+    mInfo = descMap.value( u"name"_s );
 
   // populate();
 }
@@ -945,7 +945,7 @@ QVector<QgsCptCityDataItem *> QgsCptCityDirectoryItem::createChildren()
       children << childItem;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "name= %1 path= %2 found %3 children" ).arg( mName, mPath ).arg( children.count() ), 2 );
+  QgsDebugMsgLevel( u"name= %1 path= %2 found %3 children"_s.arg( mName, mPath ).arg( children.count() ), 2 );
 
   return children;
 }
@@ -961,7 +961,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
   bool prevAdd, curAdd;
 
   const QDir dir( QgsCptCityArchive::defaultBaseDir() + '/' + mPath );
-  schemeNamesAll = dir.entryList( QStringList( QStringLiteral( "*.svg" ) ), QDir::Files, QDir::Name );
+  schemeNamesAll = dir.entryList( QStringList( u"*.svg"_s ), QDir::Files, QDir::Name );
 
   // TODO detect if there are duplicate names with different variant counts, combine in 1
   for ( int i = 0; i < schemeNamesAll.count(); i++ )
@@ -993,7 +993,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
 
     curSep = curName.right( 1 );
-    if ( curSep == QLatin1String( "-" ) || curSep == QLatin1String( "_" ) )
+    if ( curSep == "-"_L1 || curSep == "_"_L1 )
     {
       curName.chop( 1 );
       curVariant = curSep + curVariant;
@@ -1006,7 +1006,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     prevAdd = false;
     curAdd = false;
     if ( curName.isEmpty() )
-      curName = QStringLiteral( "__empty__" );
+      curName = u"__empty__"_s;
     // if current is a variant of last, don't add previous and append current variant
     if ( curName == prevName )
     {
@@ -1119,7 +1119,7 @@ QgsCptCityDataItem *QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem *paren
   const QStringList dirEntries = dirItem->dirEntries();
   QMap< QString, QStringList > rampsMap = dirItem->rampsMap();
 
-  QgsDebugMsgLevel( QStringLiteral( "item has %1 dirs and %2 ramps" ).arg( dirEntries.count() ).arg( rampsMap.count() ), 2 );
+  QgsDebugMsgLevel( u"item has %1 dirs and %2 ramps"_s.arg( dirEntries.count() ).arg( rampsMap.count() ), 2 );
 
   // return item if has at least one subdir
   if ( !dirEntries.isEmpty() )
@@ -1204,7 +1204,7 @@ QVector<QgsCptCityDataItem *> QgsCptCitySelectionItem::createChildren()
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "path= %1 inserted %2 children" ).arg( mPath ).arg( children.count() ), 2 );
+  QgsDebugMsgLevel( u"path= %1 inserted %2 children"_s.arg( mPath ).arg( children.count() ), 2 );
 
   return children;
 }
@@ -1224,7 +1224,7 @@ void QgsCptCitySelectionItem::parseXml()
 
   // parse the document
   QString errMsg;
-  QDomDocument doc( QStringLiteral( "selection" ) );
+  QDomDocument doc( u"selection"_s );
   if ( !doc.setContent( &f, &errMsg ) )
   {
     f.close();
@@ -1235,25 +1235,25 @@ void QgsCptCitySelectionItem::parseXml()
 
   // read description
   const QDomElement docElem = doc.documentElement();
-  if ( docElem.tagName() != QLatin1String( "selection" ) )
+  if ( docElem.tagName() != "selection"_L1 )
   {
     QgsDebugError( "Incorrect root tag: " + docElem.tagName() );
     return;
   }
-  QDomElement e = docElem.firstChildElement( QStringLiteral( "name" ) );
+  QDomElement e = docElem.firstChildElement( u"name"_s );
   if ( ! e.isNull() && ! e.text().isNull() )
     mName = e.text();
-  mInfo = docElem.firstChildElement( QStringLiteral( "synopsis" ) ).text().simplified();
+  mInfo = docElem.firstChildElement( u"synopsis"_s ).text().simplified();
 
   // get archives
-  const QDomElement collectsElem = docElem.firstChildElement( QStringLiteral( "seealsocollects" ) );
-  e = collectsElem.firstChildElement( QStringLiteral( "collect" ) );
+  const QDomElement collectsElem = docElem.firstChildElement( u"seealsocollects"_s );
+  e = collectsElem.firstChildElement( u"collect"_s );
   while ( ! e.isNull() )
   {
-    if ( ! e.attribute( QStringLiteral( "dir" ) ).isNull() )
+    if ( ! e.attribute( u"dir"_s ).isNull() )
     {
       // TODO parse description and use that, instead of default archive name
-      const QString dir = e.attribute( QStringLiteral( "dir" ) ) + '/';
+      const QString dir = e.attribute( u"dir"_s ) + '/';
       if ( QFile::exists( QgsCptCityArchive::defaultBaseDir() + '/' + dir ) )
       {
         mSelectionsList << dir;
@@ -1262,18 +1262,18 @@ void QgsCptCitySelectionItem::parseXml()
     e = e.nextSiblingElement();
   }
   // get individual gradients
-  const QDomElement gradientsElem = docElem.firstChildElement( QStringLiteral( "gradients" ) );
-  e = gradientsElem.firstChildElement( QStringLiteral( "gradient" ) );
+  const QDomElement gradientsElem = docElem.firstChildElement( u"gradients"_s );
+  e = gradientsElem.firstChildElement( u"gradient"_s );
   while ( ! e.isNull() )
   {
-    if ( ! e.attribute( QStringLiteral( "dir" ) ).isNull() )
+    if ( ! e.attribute( u"dir"_s ).isNull() )
     {
       // QgsDebugMsgLevel( "add " + e.attribute( "dir" ) + '/' + e.attribute( "file" ) + " to " + selname, 2 );
       // TODO parse description and save elsewhere
-      const QString dir = e.attribute( QStringLiteral( "dir" ) );
+      const QString dir = e.attribute( u"dir"_s );
       if ( QFile::exists( QgsCptCityArchive::defaultBaseDir() + '/' + dir ) )
       {
-        mSelectionsList << dir + '/' + e.attribute( QStringLiteral( "file" ) );
+        mSelectionsList << dir + '/' + e.attribute( u"file"_s );
       }
     }
     e = e.nextSiblingElement();
@@ -1329,7 +1329,7 @@ QgsCptCityBrowserModel::QgsCptCityBrowserModel( QObject *parent,
   , mViewType( viewType )
 {
   Q_ASSERT( mArchive );
-  QgsDebugMsgLevel( QLatin1String( "archiveName = " ) + archive->archiveName() + " viewType=" + QString::number( static_cast< int >( viewType ) ), 2 );
+  QgsDebugMsgLevel( "archiveName = "_L1 + archive->archiveName() + " viewType=" + QString::number( static_cast< int >( viewType ) ), 2 );
   // keep iconsize for now, but not effectively used
   mIconSize = QSize( 100, 15 );
   addRootItems();
@@ -1350,7 +1350,7 @@ void QgsCptCityBrowserModel::addRootItems()
   {
     mRootItems = mArchive->selectionItems();
   }
-  QgsDebugMsgLevel( QStringLiteral( "added %1 root items" ).arg( mRootItems.size() ), 2 );
+  QgsDebugMsgLevel( u"added %1 root items"_s.arg( mRootItems.size() ), 2 );
 }
 
 void QgsCptCityBrowserModel::removeRootItems()
@@ -1635,9 +1635,9 @@ void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int f
   const QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( QStringLiteral( "valid" ), 2 );
+  QgsDebugMsgLevel( u"valid"_s, 2 );
   beginInsertRows( idx, first, last );
-  QgsDebugMsgLevel( QStringLiteral( "end" ), 2 );
+  QgsDebugMsgLevel( u"end"_s, 2 );
 }
 void QgsCptCityBrowserModel::endInsertItems()
 {

@@ -56,7 +56,7 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
 
 void QgsColorSchemeRegistry::initStyleScheme()
 {
-  const QString stylePalette = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/palettes/new_layer_colors.gpl" );
+  const QString stylePalette = QgsApplication::pkgDataPath() + u"/resources/palettes/new_layer_colors.gpl"_s;
   if ( QFileInfo::exists( stylePalette ) )
   {
     QgsUserColorScheme *scheme = new QgsUserColorScheme( stylePalette );
@@ -75,7 +75,7 @@ void QgsColorSchemeRegistry::addUserSchemes()
     return;
   }
 
-  const QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( QStringLiteral( "*.gpl" ) ), QDir::Files );
+  const QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( u"*.gpl"_s ), QDir::Files );
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {

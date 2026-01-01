@@ -58,26 +58,26 @@ QStringList QgsStacAsset::roles() const
 bool QgsStacAsset::isCloudOptimized() const
 {
   const QString format = formatName();
-  return format == QLatin1String( "COG" ) ||
-         format == QLatin1String( "COPC" ) ||
-         format == QLatin1String( "EPT" ) ||
-         format == QLatin1String( "Zarr" ) ||
-         format == QLatin1String( "Parquet" );
+  return format == "COG"_L1 ||
+         format == "COPC"_L1 ||
+         format == "EPT"_L1 ||
+         format == "Zarr"_L1 ||
+         format == "Parquet"_L1;
 }
 
 QString QgsStacAsset::formatName() const
 {
-  if ( mMediaType == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-       mMediaType == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
-    return QStringLiteral( "COG" );
-  else if ( mMediaType == QLatin1String( "application/vnd.laszip+copc" ) )
-    return QStringLiteral( "COPC" );
-  else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
-    return QStringLiteral( "EPT" );
-  else if ( mMediaType == QLatin1String( "application/vnd+zarr" ) )
-    return QStringLiteral( "Zarr" );
-  else if ( mMediaType == QLatin1String( "application/vnd.apache.parquet" ) )
-    return QStringLiteral( "Parquet" );
+  if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 ||
+       mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
+    return u"COG"_s;
+  else if ( mMediaType == "application/vnd.laszip+copc"_L1 )
+    return u"COPC"_s;
+  else if ( mHref.endsWith( "/ept.json"_L1 ) )
+    return u"EPT"_s;
+  else if ( mMediaType == "application/vnd+zarr"_L1 )
+    return u"Zarr"_s;
+  else if ( mMediaType == "application/vnd.apache.parquet"_L1 )
+    return u"Parquet"_s;
   return QString();
 }
 
@@ -86,77 +86,77 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if ( formatName() == QLatin1String( "COG" ) )
+  if ( formatName() == "COG"_L1 )
   {
-    uri.layerType = QStringLiteral( "raster" );
-    uri.providerKey = QStringLiteral( "gdal" );
-    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    uri.layerType = u"raster"_s;
+    uri.providerKey = u"gdal"_s;
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
+         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+      uri.uri = u"/vsicurl/%1"_s.arg( href() );
       if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+        uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
     }
-    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    else if ( href().startsWith( "s3://"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
+      uri.uri = u"/vsis3/%1"_s.arg( href().mid( 5 ) );
     }
     else
     {
       uri.uri = href();
     }
   }
-  else if ( formatName() == QLatin1String( "COPC" ) )
+  else if ( formatName() == "COPC"_L1 )
   {
-    uri.layerType = QStringLiteral( "pointcloud" );
-    uri.providerKey = QStringLiteral( "copc" );
+    uri.layerType = u"pointcloud"_s;
+    uri.providerKey = u"copc"_s;
     uri.uri = href();
     if ( !authcfg.isEmpty() )
-      uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+      uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
   }
-  else if ( formatName() == QLatin1String( "EPT" ) )
+  else if ( formatName() == "EPT"_L1 )
   {
-    uri.layerType = QStringLiteral( "pointcloud" );
-    uri.providerKey = QStringLiteral( "ept" );
+    uri.layerType = u"pointcloud"_s;
+    uri.providerKey = u"ept"_s;
     uri.uri = href();
     if ( !authcfg.isEmpty() )
-      uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+      uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
   }
-  else if ( formatName() == QLatin1String( "Zarr" ) )
+  else if ( formatName() == "Zarr"_L1 )
   {
-    uri.layerType = QStringLiteral( "raster" );
-    uri.providerKey = QStringLiteral( "gdal" );
-    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    uri.layerType = u"raster"_s;
+    uri.providerKey = u"gdal"_s;
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
+         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "ZARR:\"/vsicurl/%1\"" ).arg( href() );
+      uri.uri = u"ZARR:\"/vsicurl/%1\""_s.arg( href() );
       if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+        uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
     }
-    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    else if ( href().startsWith( "s3://"_L1, Qt::CaseInsensitive ) )
     {
       // Remove the s3:// protocol prefix for compatibility with GDAL's /vsis3
-      uri.uri = QStringLiteral( "ZARR:\"/vsis3/%1\"" ).arg( href().mid( 5 ) );
+      uri.uri = u"ZARR:\"/vsis3/%1\""_s.arg( href().mid( 5 ) );
     }
     else
     {
       uri.uri = href();
     }
   }
-  else if ( formatName() == QLatin1String( "Parquet" ) )
+  else if ( formatName() == "Parquet"_L1 )
   {
-    uri.layerType = QStringLiteral( "vector" );
-    uri.providerKey = QStringLiteral( "ogr" );
-    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    uri.layerType = u"vector"_s;
+    uri.providerKey = u"ogr"_s;
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
+         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+      uri.uri = u"/vsicurl/%1"_s.arg( href() );
       if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
+        uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
     }
-    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    else if ( href().startsWith( "s3://"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
+      uri.uri = u"/vsis3/%1"_s.arg( href().mid( 5 ) );
     }
     else
     {
@@ -175,15 +175,15 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 
 QString QgsStacAsset::toHtml( const QString &assetId ) const
 {
-  QString html = QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Asset" ) );
-  html += QLatin1String( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), assetId );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), title() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), description() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), href() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), mediaType() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), roles().join( ',' ) );
-  html += QLatin1String( "</table><br/>\n" );
+  QString html = u"<h1>%1</h1>\n<hr>\n"_s.arg( "Asset"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"id"_s, assetId );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, title() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"description"_s, description() );
+  html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, href() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"type"_s, mediaType() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"roles"_s, roles().join( ',' ) );
+  html += "</table><br/>\n"_L1;
   return html;
 }
 
@@ -196,7 +196,7 @@ bool QgsStacAsset::isDownloadable() const
    * - succeed but download an HTML directory listing response, or
    * - something else that does not meet the user's needs.
    */
-  if ( formatName() == QLatin1String( "Zarr" ) )
+  if ( formatName() == "Zarr"_L1 )
   {
     return false;
   }

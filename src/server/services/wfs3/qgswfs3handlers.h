@@ -86,7 +86,7 @@ class QgsWfs3APIHandler : public QgsWfs3AbstractItemsHandler
     std::string summary() const override { return "The API description"; }
     std::string description() const override { return "The formal documentation of this API according to the OpenAPI specification, version 3.0. I.e., this document."; }
     std::string linkTitle() const override { return "API description"; }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::service_desc; }
     json schema( const QgsServerApiContext &context ) const override;
 
@@ -108,7 +108,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     // QgsServerOgcApiHandler interface
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string summary() const override
     {
       return "WFS 3.0 Landing Page";
@@ -142,7 +142,7 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
       return "List all requirements classes specified in a standard (e.g., WFS 3.0 "
              "Part 1: Core) that the server conforms to.";
     }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string linkTitle() const override { return "WFS 3.0 conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
@@ -167,7 +167,7 @@ class QgsWfs3CollectionsHandler : public QgsWfs3AbstractItemsHandler
     {
       return "Metadata about the feature collections shared by this API.";
     }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string description() const override
     {
       return "Describe the feature collections in the dataset "
@@ -193,7 +193,7 @@ class QgsWfs3DescribeCollectionHandler : public QgsWfs3AbstractItemsHandler
     std::string summary() const override { return "Describe the feature collection with ID {collectionId}."; }
     std::string description() const override { return "Metadata about a feature collection."; }
     std::string linkTitle() const override { return "Feature collection"; }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
 };
@@ -219,7 +219,7 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
              "or GeoJSON (.json).";
     }
     std::string linkTitle() const override { return "Retrieve the features of the collection"; }
-    QStringList tags() const override { return { QStringLiteral( "Features" ) }; }
+    QStringList tags() const override { return { u"Features"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const override;
     json schema( const QgsServerApiContext &context ) const override;
@@ -240,7 +240,7 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
     std::string description() const override { return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)."; }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }
     std::string linkTitle() const override { return "Retrieve a feature"; }
-    QStringList tags() const override { return { QStringLiteral( "Features" ) }; }
+    QStringList tags() const override { return { u"Features"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
 };

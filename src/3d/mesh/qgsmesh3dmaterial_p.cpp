@@ -151,8 +151,8 @@ void QgsMesh3DMaterial::configure()
   mTechnique->graphicsApiFilter()->setMajorVersion( 3 );
   mTechnique->graphicsApiFilter()->setMinorVersion( 3 );
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey();
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
-  filterKey->setValue( QStringLiteral( "forward" ) );
+  filterKey->setName( u"renderingStyle"_s );
+  filterKey->setValue( u"forward"_s );
   mTechnique->addFilterKey( filterKey );
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
@@ -163,11 +163,11 @@ void QgsMesh3DMaterial::configure()
   renderPass->addRenderState( cullingFace );
 
   //Load shader programs
-  const QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
+  const QUrl urlVert( u"qrc:/shaders/mesh/mesh.vert"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-  const QUrl urlGeom( QStringLiteral( "qrc:/shaders/mesh/mesh.geom" ) );
+  const QUrl urlGeom( u"qrc:/shaders/mesh/mesh.geom"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Geometry, Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
-  const QUrl urlFrag( QStringLiteral( "qrc:/shaders/mesh/mesh.frag" ) );
+  const QUrl urlFrag( u"qrc:/shaders/mesh/mesh.frag"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
 
   renderPass->setShaderProgram( shaderProgram );
@@ -254,7 +254,7 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
 
   Qt3DRender::QTexture2D *arrowTexture = new Qt3DRender::QTexture2D( this );
   Qt3DRender::QTextureImage *arrowTextureImage = new Qt3DRender::QTextureImage();
-  arrowTextureImage->setSource( QStringLiteral( "qrc:/textures/arrow.png" ) );
+  arrowTextureImage->setSource( u"qrc:/textures/arrow.png"_s );
   arrowTexture->addTextureImage( arrowTextureImage );
   arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
   arrowTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );

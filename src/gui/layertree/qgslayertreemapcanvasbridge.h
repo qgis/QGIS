@@ -66,7 +66,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      * Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
      * \deprecated QGIS 3.40. Use setOverviewCanvas() instead.
      */
-    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) SIP_DEPRECATED; // TODO QGIS 4.0 remove
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) SIP_DEPRECATED; // TODO QGIS 5.0 remove
     //%MethodCode
     sipCpp->setOverviewCanvas( a0 );
     //%End

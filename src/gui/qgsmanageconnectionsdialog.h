@@ -52,7 +52,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       Oracle,
       HANA,
       XyzTiles,
-      ArcgisMapServer, // TODO QGIS 4: remove
+      ArcgisMapServer, // TODO QGIS 5: remove
       ArcgisFeatureServer,
       VectorTile,
       TiledScene,   //!< Tiled scene connection \since QGIS 3.34

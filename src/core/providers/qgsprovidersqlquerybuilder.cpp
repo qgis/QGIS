@@ -23,9 +23,9 @@ QgsProviderSqlQueryBuilder::~QgsProviderSqlQueryBuilder() = default;
 QString QgsProviderSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const
 {
   if ( schema.isEmpty() )
-    return QStringLiteral( "SELECT * FROM %1 LIMIT %2" ).arg( quoteIdentifier( name ) ).arg( limit );
+    return u"SELECT * FROM %1 LIMIT %2"_s.arg( quoteIdentifier( name ) ).arg( limit );
   else
-    return QStringLiteral( "SELECT * FROM %1.%2 LIMIT %3" ).arg( quoteIdentifier( schema ), quoteIdentifier( name ) ).arg( limit );
+    return u"SELECT * FROM %1.%2 LIMIT %3"_s.arg( quoteIdentifier( schema ), quoteIdentifier( name ) ).arg( limit );
 }
 
 QString QgsProviderSqlQueryBuilder::quoteIdentifier( const QString &identifier ) const

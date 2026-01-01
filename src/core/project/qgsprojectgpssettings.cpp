@@ -56,25 +56,25 @@ void QgsProjectGpsSettings::reset()
 
 bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mAutoAddTrackVertices = element.attribute( QStringLiteral( "autoAddTrackVertices" ), "0" ).toInt();
-  mAutoCommitFeatures = element.attribute( QStringLiteral( "autoCommitFeatures" ), "0" ).toInt();
-  mDestinationFollowsActiveLayer = element.attribute( QStringLiteral( "destinationFollowsActiveLayer" ), "1" ).toInt();
+  mAutoAddTrackVertices = element.attribute( u"autoAddTrackVertices"_s, "0" ).toInt();
+  mAutoCommitFeatures = element.attribute( u"autoCommitFeatures"_s, "0" ).toInt();
+  mDestinationFollowsActiveLayer = element.attribute( u"destinationFollowsActiveLayer"_s, "1" ).toInt();
 
-  const QString layerId = element.attribute( QStringLiteral( "destinationLayer" ) );
-  const QString layerName = element.attribute( QStringLiteral( "destinationLayerName" ) );
-  const QString layerSource = element.attribute( QStringLiteral( "destinationLayerSource" ) );
-  const QString layerProvider = element.attribute( QStringLiteral( "destinationLayerProvider" ) );
+  const QString layerId = element.attribute( u"destinationLayer"_s );
+  const QString layerName = element.attribute( u"destinationLayerName"_s );
+  const QString layerSource = element.attribute( u"destinationLayerSource"_s );
+  const QString layerProvider = element.attribute( u"destinationLayerProvider"_s );
 
   mDestinationLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
 
   mDestinationTimestampFields.clear();
   {
-    const QDomElement timeStampElement = element.firstChildElement( QStringLiteral( "timeStampFields" ) );
+    const QDomElement timeStampElement = element.firstChildElement( u"timeStampFields"_s );
     QDomElement layerElement = timeStampElement.firstChildElement();
     while ( !layerElement.isNull() )
     {
-      const QString layerId = layerElement.attribute( QStringLiteral( "destinationLayer" ) );
-      const QString field = layerElement.attribute( QStringLiteral( "field" ) );
+      const QString layerId = layerElement.attribute( u"destinationLayer"_s );
+      const QString field = layerElement.attribute( u"field"_s );
       mDestinationTimestampFields[ layerId ] = field;
       layerElement = layerElement.nextSiblingElement();
     }
@@ -90,26 +90,26 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
 
 QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  QDomElement element = doc.createElement( QStringLiteral( "ProjectGpsSettings" ) );
+  QDomElement element = doc.createElement( u"ProjectGpsSettings"_s );
 
-  element.setAttribute( QStringLiteral( "autoAddTrackVertices" ),  mAutoAddTrackVertices ? 1 : 0 );
-  element.setAttribute( QStringLiteral( "autoCommitFeatures" ),  mAutoCommitFeatures ? 1 : 0 );
-  element.setAttribute( QStringLiteral( "destinationFollowsActiveLayer" ),  mDestinationFollowsActiveLayer ? 1 : 0 );
+  element.setAttribute( u"autoAddTrackVertices"_s,  mAutoAddTrackVertices ? 1 : 0 );
+  element.setAttribute( u"autoCommitFeatures"_s,  mAutoCommitFeatures ? 1 : 0 );
+  element.setAttribute( u"destinationFollowsActiveLayer"_s,  mDestinationFollowsActiveLayer ? 1 : 0 );
 
   if ( mDestinationLayer )
   {
-    element.setAttribute( QStringLiteral( "destinationLayer" ), mDestinationLayer.layerId );
-    element.setAttribute( QStringLiteral( "destinationLayerName" ), mDestinationLayer.name );
-    element.setAttribute( QStringLiteral( "destinationLayerSource" ), mDestinationLayer.source );
-    element.setAttribute( QStringLiteral( "destinationLayerProvider" ), mDestinationLayer.provider );
+    element.setAttribute( u"destinationLayer"_s, mDestinationLayer.layerId );
+    element.setAttribute( u"destinationLayerName"_s, mDestinationLayer.name );
+    element.setAttribute( u"destinationLayerSource"_s, mDestinationLayer.source );
+    element.setAttribute( u"destinationLayerProvider"_s, mDestinationLayer.provider );
   }
   else
   {
-    element.setAttribute( QStringLiteral( "destinationLayer" ), QString() );
+    element.setAttribute( u"destinationLayer"_s, QString() );
   }
 
   {
-    QDomElement timeStampElement = doc.createElement( QStringLiteral( "timeStampFields" ) );
+    QDomElement timeStampElement = doc.createElement( u"timeStampFields"_s );
     for ( auto it = mDestinationTimestampFields.constBegin(); it != mDestinationTimestampFields.constEnd(); ++it )
     {
       const QString layerId = it.key();
@@ -120,9 +120,9 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
           continue;
       }
 
-      QDomElement layerElement = doc.createElement( QStringLiteral( "field" ) );
-      layerElement.setAttribute( QStringLiteral( "destinationLayer" ), layerId );
-      layerElement.setAttribute( QStringLiteral( "field" ), it.value() );
+      QDomElement layerElement = doc.createElement( u"field"_s );
+      layerElement.setAttribute( u"destinationLayer"_s, layerId );
+      layerElement.setAttribute( u"field"_s, it.value() );
       timeStampElement.appendChild( layerElement );
     }
     element.appendChild( timeStampElement );

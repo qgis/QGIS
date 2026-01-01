@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeCustomNode: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsLayerTreeCustomNode: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -44,7 +44,7 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
 
   mPlayButton = new QPushButton( this );
   mPlayButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-  mPlayButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPlay.svg" ) ) );
+  mPlayButton->setIcon( QgsApplication::getThemeIcon( u"/mActionPlay.svg"_s ) );
   mPlayButton->setCheckable( true );
   controlsLayout->addWidget( mPlayButton );
 
@@ -56,9 +56,9 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   mDurationLabel = new QLabel( this );
   mDurationLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
   mDurationLabel->setAlignment( Qt::AlignHCenter );
-  mDurationLabel->setText( QStringLiteral( "-" ) );
+  mDurationLabel->setText( u"-"_s );
   QFontMetrics fm( mDurationLabel->font() );
-  mDurationLabel->setMinimumWidth( fm.boundingRect( QStringLiteral( "00:00:00" ) ).width() );
+  mDurationLabel->setMinimumWidth( fm.boundingRect( u"00:00:00"_s ).width() );
   controlsLayout->addWidget( mDurationLabel );
 
   QWidget *controls = new QWidget();
@@ -160,7 +160,7 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
       seconds -= hours * 3600;
       const int minutes = std::floor( seconds / 60 );
       seconds -= minutes * 60;
-      mDurationLabel->setText( QStringLiteral( "%1:%2:%3" ).arg( QString::number( hours ), 2, '0' ).arg( QString::number( minutes ), 2, '0' ).arg( QString::number( seconds ), 2, '0' ) );
+      mDurationLabel->setText( u"%1:%2:%3"_s.arg( QString::number( hours ), 2, '0' ).arg( QString::number( minutes ), 2, '0' ).arg( QString::number( seconds ), 2, '0' ) );
       break;
     }
 
@@ -188,7 +188,7 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
     case QMediaPlayer::NoMedia:
     {
       setControlsEnabled( false );
-      mDurationLabel->setText( QStringLiteral( "-" ) );
+      mDurationLabel->setText( u"-"_s );
       break;
     }
   }

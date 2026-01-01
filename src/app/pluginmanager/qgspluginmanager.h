@@ -55,7 +55,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
+    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( u"plugin-manager"_s );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
     static const QgsSettingsEntryBool *settingsAllowExperimental;
@@ -63,7 +63,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     static const QgsSettingsEntryVariant *settingsCheckOnStartLastDate;
     static const QgsSettingsEntryStringList *settingsSeenPlugins;
 
-    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( QStringLiteral( "UI" ) );
+    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( u"UI"_s );
     static const QgsSettingsEntryString *settingsLastZipDirectory;
     static const QgsSettingsEntryBool *settingsShowInstallFromZipWarning;
 

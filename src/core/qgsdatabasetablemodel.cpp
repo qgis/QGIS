@@ -98,7 +98,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
     case Qt::ToolTipRole:
     case Qt::EditRole:
     {
-      return mSchema.isEmpty() && !table.schema().isEmpty() ? QStringLiteral( "%1.%2" ).arg( table.schema(), table.tableName() ) : table.tableName();
+      return mSchema.isEmpty() && !table.schema().isEmpty() ? u"%1.%2"_s.arg( table.schema(), table.tableName() ) : table.tableName();
     }
 
     case static_cast< int >( CustomRole::TableName ):

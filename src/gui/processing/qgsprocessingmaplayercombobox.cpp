@@ -62,7 +62,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == Qgis::ProcessingMode::Standard )
   {
     mIterateButton = new QToolButton();
-    mIterateButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconIterate.svg" ) ) );
+    mIterateButton->setIcon( QgsApplication::getThemeIcon( u"mIconIterate.svg"_s ) );
     mIterateButton->setToolTip( tr( "Iterate over this layer, creating a separate output for every feature in the layer" ) );
     mIterateButton->setCheckable( true );
     mIterateButton->setAutoRaise( true );
@@ -78,7 +78,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     mSettingsButton = new QToolButton();
-    mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+    mSettingsButton->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
     mSettingsButton->setToolTip( tr( "Advanced options" ) );
 
     // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
@@ -93,7 +93,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
   {
     mSettingsButton = new QToolButton();
-    mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+    mSettingsButton->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
     mSettingsButton->setToolTip( tr( "Advanced options" ) );
     mSettingsButton->setEnabled( false ); // Only WMS layers will access raster advanced options for now
 
@@ -213,7 +213,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   }
 
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_CRS_DEF" ), true ).toBool() )
+  if ( settings.value( u"Processing/Configuration/SHOW_CRS_DEF"_s, true ).toBool() )
     mCombo->setShowCrs( true );
 
   if ( filters )
@@ -223,7 +223,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   // see https://github.com/qgis/QGIS/issues/55890
   if ( mayBeRaster && ( !mParameter->provider() || !mParameter->provider()->flags().testFlag( Qgis::ProcessingProviderFlag::CompatibleWithVirtualRaster ) ) )
   {
-    mCombo->setExcludedProviders( mCombo->excludedProviders() << QStringLiteral( "virtualraster" ) );
+    mCombo->setExcludedProviders( mCombo->excludedProviders() << u"virtualraster"_s );
   }
 
   if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -473,7 +473,7 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
   {
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName()
            || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
-         && u.layerType == QLatin1String( "vector" ) )
+         && u.layerType == "vector"_L1 )
     {
       QList<int> dataTypes = mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast<QgsProcessingParameterFeatureSource *>( mParameter.get() )->dataTypes()
                                                                                                    : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes()
@@ -506,13 +506,13 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
           break;
       }
       if ( acceptable )
-        return u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri;
+        return u.providerKey != "ogr"_L1 ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri;
     }
     else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
-              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+              && u.layerType == "raster"_L1 && u.providerKey == "gdal"_L1 )
       return u.uri;
     else if ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName()
-              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+              && u.layerType == "mesh"_L1 && u.providerKey == "mdal"_L1 )
       return u.uri;
     else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
     {
@@ -522,7 +522,7 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
         return u.uri;
       }
 
-      if ( u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+      if ( u.layerType == "vector"_L1 && u.providerKey == "ogr"_L1 )
       {
         switch ( QgsWkbTypes::geometryType( u.wkbType ) )
         {
@@ -548,10 +548,10 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
             return u.uri;
         }
       }
-      else if ( u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" )
+      else if ( u.layerType == "raster"_L1 && u.providerKey == "gdal"_L1
                 && dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Raster ) ) )
         return u.uri;
-      else if ( u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" )
+      else if ( u.layerType == "mesh"_L1 && u.providerKey == "mdal"_L1
                 && dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) )
         return u.uri;
     }
@@ -748,8 +748,8 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
     path = initialValue;
   else if ( QFileInfo::exists( QFileInfo( initialValue ).path() ) && QFileInfo( initialValue ).path() != '.' )
     path = QFileInfo( initialValue ).path();
-  else if ( settings.contains( QStringLiteral( "/Processing/LastInputPath" ) ) )
-    path = settings.value( QStringLiteral( "/Processing/LastInputPath" ) ).toString();
+  else if ( settings.contains( u"/Processing/LastInputPath"_s ) )
+    path = settings.value( u"/Processing/LastInputPath"_s ).toString();
 
   QString filter;
   if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter.get() ) )
@@ -761,7 +761,7 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
   if ( filename.isEmpty() )
     return;
 
-  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( filename ).path() );
+  settings.setValue( u"/Processing/LastInputPath"_s, QFileInfo( filename ).path() );
   QgsProcessingContext context;
   setValue( filename, context );
 }
@@ -782,7 +782,7 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
       QgsProcessingContext context;
       if ( widget->uri().uri.isEmpty() )
         setValue( QVariant(), context );
-      else if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+      else if ( widget->uri().providerKey == "ogr"_L1 )
         setValue( widget->uri().uri, context );
       else
         setValue( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), context );

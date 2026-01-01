@@ -31,7 +31,7 @@ QString QgsWriteVectorTilesBaseAlgorithm::group() const
 
 QString QgsWriteVectorTilesBaseAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortiles" );
+  return u"vectortiles"_s;
 }
 
 QString QgsWriteVectorTilesBaseAlgorithm::shortHelpString() const
@@ -46,21 +46,21 @@ QString QgsWriteVectorTilesBaseAlgorithm::shortDescription() const
 
 void QgsWriteVectorTilesBaseAlgorithm::addBaseParameters()
 {
-  addParameter( new QgsProcessingParameterVectorTileWriterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
+  addParameter( new QgsProcessingParameterVectorTileWriterLayers( u"LAYERS"_s, QObject::tr( "Input layers" ) ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_ZOOM" ), QObject::tr( "Minimum zoom level" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 24 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level" ), Qgis::ProcessingNumberParameterType::Integer, 3, false, 0, 24 ) );
+  addParameter( new QgsProcessingParameterNumber( u"MIN_ZOOM"_s, QObject::tr( "Minimum zoom level" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 24 ) );
+  addParameter( new QgsProcessingParameterNumber( u"MAX_ZOOM"_s, QObject::tr( "Maximum zoom level" ), Qgis::ProcessingNumberParameterType::Integer, 3, false, 0, 24 ) );
 
   // optional extent
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Extent" ), QVariant(), true ) );
 }
 
 QVariantMap QgsWriteVectorTilesBaseAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const int minZoom = parameterAsInt( parameters, QStringLiteral( "MIN_ZOOM" ), context );
-  const int maxZoom = parameterAsInt( parameters, QStringLiteral( "MAX_ZOOM" ), context );
+  const int minZoom = parameterAsInt( parameters, u"MIN_ZOOM"_s, context );
+  const int maxZoom = parameterAsInt( parameters, u"MAX_ZOOM"_s, context );
 
-  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
+  const QVariant layersVariant = parameters.value( parameterDefinition( u"LAYERS"_s )->name() );
   const QList<QgsVectorTileWriter::Layer> layers = QgsProcessingParameterVectorTileWriterLayers::parameterAsLayers( layersVariant, context );
 
   for ( const QgsVectorTileWriter::Layer &layer : layers )
@@ -78,9 +78,9 @@ QVariantMap QgsWriteVectorTilesBaseAlgorithm::processAlgorithm( const QVariantMa
   writer.setLayers( layers );
   writer.setTransformContext( context.transformContext() );
 
-  if ( parameters.contains( QStringLiteral( "EXTENT" ) ) )
+  if ( parameters.contains( u"EXTENT"_s ) )
   {
-    const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+    const QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context, QgsCoordinateReferenceSystem( "EPSG:3857" ) );
     writer.setExtent( extent );
   }
 
@@ -98,7 +98,7 @@ QVariantMap QgsWriteVectorTilesBaseAlgorithm::processAlgorithm( const QVariantMa
 
 QString QgsWriteVectorTilesXyzAlgorithm::name() const
 {
-  return QStringLiteral( "writevectortiles_xyz" );
+  return u"writevectortiles_xyz"_s;
 }
 
 QString QgsWriteVectorTilesXyzAlgorithm::displayName() const
@@ -118,24 +118,24 @@ QgsProcessingAlgorithm *QgsWriteVectorTilesXyzAlgorithm::createInstance() const
 
 void QgsWriteVectorTilesXyzAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIRECTORY" ), QObject::tr( "Output directory" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "XYZ_TEMPLATE" ), QObject::tr( "File template" ), QStringLiteral( "{z}/{x}/{y}.pbf" ) ) );
+  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Output directory" ) ) );
+  addParameter( new QgsProcessingParameterString( u"XYZ_TEMPLATE"_s, QObject::tr( "File template" ), u"{z}/{x}/{y}.pbf"_s ) );
 
   addBaseParameters();
 }
 
 void QgsWriteVectorTilesXyzAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
 {
-  const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_DIRECTORY" ), context );
-  const QString xyzTemplate = parameterAsString( parameters, QStringLiteral( "XYZ_TEMPLATE" ), context );
+  const QString outputDir = parameterAsString( parameters, u"OUTPUT_DIRECTORY"_s, context );
+  const QString xyzTemplate = parameterAsString( parameters, u"XYZ_TEMPLATE"_s, context );
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( outputDir + "/" + xyzTemplate ).toString() );
+  dsUri.setParam( u"type"_s, u"xyz"_s );
+  dsUri.setParam( u"url"_s, QUrl::fromLocalFile( outputDir + "/" + xyzTemplate ).toString() );
   const QString uri = dsUri.encodedUri();
 
   writer.setDestinationUri( uri );
 
-  outputs.insert( QStringLiteral( "OUTPUT_DIRECTORY" ), outputDir );
+  outputs.insert( u"OUTPUT_DIRECTORY"_s, outputDir );
 }
 
 //
@@ -144,7 +144,7 @@ void QgsWriteVectorTilesXyzAlgorithm::prepareWriter( QgsVectorTileWriter &writer
 
 QString QgsWriteVectorTilesMbtilesAlgorithm::name() const
 {
-  return QStringLiteral( "writevectortiles_mbtiles" );
+  return u"writevectortiles_mbtiles"_s;
 }
 
 QString QgsWriteVectorTilesMbtilesAlgorithm::displayName() const
@@ -164,38 +164,38 @@ QgsProcessingAlgorithm *QgsWriteVectorTilesMbtilesAlgorithm::createInstance() co
 
 void QgsWriteVectorTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorTileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination MBTiles" ) ) );
+  addParameter( new QgsProcessingParameterVectorTileDestination( u"OUTPUT"_s, QObject::tr( "Destination MBTiles" ) ) );
 
   addBaseParameters();
 
   // optional metadata for MBTiles
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_NAME" ), QObject::tr( "Metadata: Name" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_DESCRIPTION" ), QObject::tr( "Metadata: Description" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_ATTRIBUTION" ), QObject::tr( "Metadata: Attribution" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_VERSION" ), QObject::tr( "Metadata: Version" ), QVariant(), false, true ) );
-  auto metaTypeParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "META_TYPE" ), QObject::tr( "Metadata: Type" ), QVariant(), false, true );
-  metaTypeParam->setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "value_hints" ), QStringList() << QStringLiteral( "overlay" ) << QStringLiteral( "baselayer" ) } } ) }
+  addParameter( new QgsProcessingParameterString( u"META_NAME"_s, QObject::tr( "Metadata: Name" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"META_DESCRIPTION"_s, QObject::tr( "Metadata: Description" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"META_ATTRIBUTION"_s, QObject::tr( "Metadata: Attribution" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"META_VERSION"_s, QObject::tr( "Metadata: Version" ), QVariant(), false, true ) );
+  auto metaTypeParam = std::make_unique<QgsProcessingParameterString>( u"META_TYPE"_s, QObject::tr( "Metadata: Type" ), QVariant(), false, true );
+  metaTypeParam->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << u"overlay"_s << u"baselayer"_s } } ) }
   } );
   addParameter( metaTypeParam.release() );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_CENTER" ), QObject::tr( "Metadata: Center" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"META_CENTER"_s, QObject::tr( "Metadata: Center" ), QVariant(), false, true ) );
 }
 
 void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
 {
-  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
-  dsUri.setParam( QStringLiteral( "url" ), outputFile );
+  dsUri.setParam( u"type"_s, u"mbtiles"_s );
+  dsUri.setParam( u"url"_s, outputFile );
   const QString uri = dsUri.encodedUri();
 
   writer.setDestinationUri( uri );
 
-  const QString metaName = parameterAsString( parameters, QStringLiteral( "META_NAME" ), context );
-  const QString metaDescription = parameterAsString( parameters, QStringLiteral( "META_DESCRIPTION" ), context );
-  const QString metaAttribution = parameterAsString( parameters, QStringLiteral( "META_ATTRIBUTION" ), context );
-  const QString metaVersion = parameterAsString( parameters, QStringLiteral( "META_VERSION" ), context );
-  const QString metaType = parameterAsString( parameters, QStringLiteral( "META_TYPE" ), context );
-  const QString metaCenter = parameterAsString( parameters, QStringLiteral( "META_CENTER" ), context );
+  const QString metaName = parameterAsString( parameters, u"META_NAME"_s, context );
+  const QString metaDescription = parameterAsString( parameters, u"META_DESCRIPTION"_s, context );
+  const QString metaAttribution = parameterAsString( parameters, u"META_ATTRIBUTION"_s, context );
+  const QString metaVersion = parameterAsString( parameters, u"META_VERSION"_s, context );
+  const QString metaType = parameterAsString( parameters, u"META_TYPE"_s, context );
+  const QString metaCenter = parameterAsString( parameters, u"META_CENTER"_s, context );
 
   QVariantMap meta;
   if ( !metaName.isEmpty() )
@@ -213,7 +213,7 @@ void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &wr
 
   writer.setMetadata( meta );
 
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
 }
 
 

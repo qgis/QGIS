@@ -50,12 +50,12 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 
   panoramicTextureImageSource->setSource( skyboxSettings.panoramicTexturePath() );
   QMap<QString, QString> cubeMapFaces = skyboxSettings.cubeMapFacesPaths();
-  posXImageSource->setSource( cubeMapFaces[QStringLiteral( "posX" )] );
-  posYImageSource->setSource( cubeMapFaces[QStringLiteral( "posY" )] );
-  posZImageSource->setSource( cubeMapFaces[QStringLiteral( "posZ" )] );
-  negXImageSource->setSource( cubeMapFaces[QStringLiteral( "negX" )] );
-  negYImageSource->setSource( cubeMapFaces[QStringLiteral( "negY" )] );
-  negZImageSource->setSource( cubeMapFaces[QStringLiteral( "negZ" )] );
+  posXImageSource->setSource( cubeMapFaces[u"posX"_s] );
+  posYImageSource->setSource( cubeMapFaces[u"posY"_s] );
+  posZImageSource->setSource( cubeMapFaces[u"posZ"_s] );
+  negXImageSource->setSource( cubeMapFaces[u"negX"_s] );
+  negYImageSource->setSource( cubeMapFaces[u"negY"_s] );
+  negZImageSource->setSource( cubeMapFaces[u"negZ"_s] );
 }
 
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
@@ -63,12 +63,12 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   QgsSkyboxSettings settings;
   settings.setSkyboxType( static_cast<QgsSkyboxEntity::SkyboxType>( skyboxTypeComboBox->currentIndex() ) );
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
-  settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
-  settings.setCubeMapFace( QStringLiteral( "posY" ), posYImageSource->source() );
-  settings.setCubeMapFace( QStringLiteral( "posZ" ), posZImageSource->source() );
-  settings.setCubeMapFace( QStringLiteral( "negX" ), negXImageSource->source() );
-  settings.setCubeMapFace( QStringLiteral( "negY" ), negYImageSource->source() );
-  settings.setCubeMapFace( QStringLiteral( "negZ" ), negZImageSource->source() );
+  settings.setCubeMapFace( u"posX"_s, posXImageSource->source() );
+  settings.setCubeMapFace( u"posY"_s, posYImageSource->source() );
+  settings.setCubeMapFace( u"posZ"_s, posZImageSource->source() );
+  settings.setCubeMapFace( u"negX"_s, negXImageSource->source() );
+  settings.setCubeMapFace( u"negY"_s, negYImageSource->source() );
+  settings.setCubeMapFace( u"negZ"_s, negZImageSource->source() );
   return settings;
 }
 

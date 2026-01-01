@@ -48,7 +48,7 @@ class TestQgsVirtualLayerProvider : public QgsTest
 
   public:
     TestQgsVirtualLayerProvider()
-      : QgsTest( QStringLiteral( "Virtual Layer Provider Tests" ) ) {}
+      : QgsTest( u"Virtual Layer Provider Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

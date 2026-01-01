@@ -44,12 +44,12 @@ QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas,
   setupUi( this );
 
   // Initialize stacked diagram controls
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) ), tr( "No Diagrams" ), ModeNone );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) ), tr( "Pie Chart" ), ModePie );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) ), tr( "Text Diagram" ), ModeText );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) ), tr( "Histogram" ), ModeHistogram );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) ), tr( "Stacked Bars" ), ModeStackedBar );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-diagram.svg" ) ), tr( "Stacked Diagram" ), ModeStacked );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"diagramNone.svg"_s ), tr( "No Diagrams" ), ModeNone );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"pie-chart.svg"_s ), tr( "Pie Chart" ), ModePie );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"text.svg"_s ), tr( "Text Diagram" ), ModeText );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"histogram.svg"_s ), tr( "Histogram" ), ModeHistogram );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"stacked-bar.svg"_s ), tr( "Stacked Bars" ), ModeStackedBar );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"stacked-diagram.svg"_s ), tr( "Stacked Diagram" ), ModeStacked );
 
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsDiagramWidget::showEngineConfigDialog );
 

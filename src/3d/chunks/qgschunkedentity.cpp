@@ -214,7 +214,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-  QgsDebugMsgLevel( QStringLiteral( "update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms" ).arg( mActiveNodes.count() ).arg( enabled ).arg( disabled ).arg( mFrustumCulled ).arg( mChunkLoaderQueue->count() ).arg( mReplacementQueue->count() ).arg( unloaded ).arg( t.elapsed() ), 2 );
+  QgsDebugMsgLevel( u"update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms"_s.arg( mActiveNodes.count() ).arg( enabled ).arg( disabled ).arg( mFrustumCulled ).arg( mChunkLoaderQueue->count() ).arg( mReplacementQueue->count() ).arg( unloaded ).arg( t.elapsed() ), 2 );
 }
 
 
@@ -227,7 +227,7 @@ int QgsChunkedEntity::unloadNodes()
     return 0;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Going to unload nodes to free GPU memory (used: %1 MB, limit: %2 MB)" ).arg( usedGpuMemory ).arg( mGpuMemoryLimit ), 2 );
+  QgsDebugMsgLevel( u"Going to unload nodes to free GPU memory (used: %1 MB, limit: %2 MB)"_s.arg( usedGpuMemory ).arg( mGpuMemoryLimit ), 2 );
 
   int unloaded = 0;
 
@@ -259,7 +259,7 @@ int QgsChunkedEntity::unloadNodes()
   if ( usedGpuMemory > mGpuMemoryLimit )
   {
     setHasReachedGpuMemoryLimit( true );
-    QgsDebugMsgLevel( QStringLiteral( "Unable to unload enough nodes to free GPU memory (used: %1 MB, limit: %2 MB)" ).arg( usedGpuMemory ).arg( mGpuMemoryLimit ), 2 );
+    QgsDebugMsgLevel( u"Unable to unload enough nodes to free GPU memory (used: %1 MB, limit: %2 MB)"_s.arg( usedGpuMemory ).arg( mGpuMemoryLimit ), 2 );
   }
 
   return unloaded;
@@ -383,7 +383,7 @@ void QgsChunkedEntity::pruneLoaderQueue( const SceneContext &sceneContext )
 
   if ( !toRemoveFromLoaderQueue.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Pruned %1 chunks in loading queue" ).arg( toRemoveFromLoaderQueue.count() ), 2 );
+    QgsDebugMsgLevel( u"Pruned %1 chunks in loading queue"_s.arg( toRemoveFromLoaderQueue.count() ), 2 );
   }
 }
 
@@ -479,7 +479,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
     }
     bool becomesActive = false;
 
-    // QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileId().x ).arg( node->tileId().y ).arg( node->tileId().z ).arg( mTau ).arg( screenSpaceError( node, sceneContext ) ), 2 );
+    // QgsDebugMsgLevel( u"%1|%2|%3  %4  %5"_s.arg( node->tileId().x ).arg( node->tileId().y ).arg( node->tileId().z ).arg( mTau ).arg( screenSpaceError( node, sceneContext ) ), 2 );
     if ( node->childCount() == 0 )
     {
       // there's no children available for this node, so regardless of whether it has an acceptable error
@@ -629,8 +629,8 @@ void QgsChunkedEntity::onActiveJobFinished()
     Q_ASSERT( loader );
     Q_ASSERT( node->loader() == loader );
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load "_s + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load"_s, node->tileId().text() );
 
     QgsEventTracing::ScopedEvent e( "3D", QString( "create" ) );
     // mark as loaded + create entity
@@ -677,7 +677,7 @@ void QgsChunkedEntity::onActiveJobFinished()
       emit newEntityCreated( newEntity );
     }
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Update"_s, node->tileId().text() );
     node->setUpdated();
   }
 
@@ -711,8 +711,8 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
 {
   if ( node->state() == QgsChunkNode::QueuedForLoad )
   {
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Load"_s, node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Load "_s + node->tileId().text(), node->tileId().text() );
 
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
     connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
@@ -722,7 +722,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
   }
   else if ( node->state() == QgsChunkNode::QueuedForUpdate )
   {
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Update"_s, node->tileId().text() );
 
     node->setUpdating();
     connect( node->updater(), &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
@@ -748,15 +748,15 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
     // return node back to skeleton
     node->cancelLoading();
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Load" ), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load "_s + node->tileId().text(), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Load"_s, node->tileId().text() );
   }
   else if ( node->state() == QgsChunkNode::Updating )
   {
     // return node back to loaded state
     node->cancelUpdating();
 
-    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Update" ), node->tileId().text() );
+    QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Update"_s, node->tileId().text() );
   }
   else
   {

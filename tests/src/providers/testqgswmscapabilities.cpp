@@ -78,7 +78,7 @@ class TestQgsWmsCapabilities : public QObject
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl.size(), 1 );
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl[0].onlineResource.xlinkHref, QString( "http://www.example.com/fb.png" ) );
 
-      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << QStringLiteral( "EPSG:2056" ) );
+      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << u"EPSG:2056"_s );
     }
 
     void guessCrs()
@@ -94,7 +94,7 @@ class TestQgsWmsCapabilities : public QObject
       QVERIFY( capabilities.parseResponse( content, config ) );
       QCOMPARE( capabilities.supportedLayers().size(), 5 );
 
-      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), QStringLiteral( "EPSG:3857" ) );
+      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), u"EPSG:3857"_s );
     }
 
     void wmstSettings()
@@ -122,7 +122,7 @@ class TestQgsWmsCapabilities : public QObject
         QCOMPARE( resolution.toString(), resolutionText );
       }
 
-      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D" ) );
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( u"2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D"_s );
       settings.setTimeDimensionExtent( extent );
 
       QDateTime start = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
@@ -147,7 +147,7 @@ class TestQgsWmsCapabilities : public QObject
 
       QCOMPARE( secondClosest, secondExpected );
 
-      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H" ) );
+      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( u"2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H"_s );
       settings.setTimeDimensionExtent( secondExtent );
 
       QDateTime thirdClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 5, 0, 0 ), Qt::UTC ) );
@@ -191,12 +191,12 @@ class TestQgsWmsCapabilities : public QObject
       QgsWmsLayerProperty prop;
       cap.parseLayer( doc.documentElement(), prop );
 
-      QCOMPARE( prop.name, QStringLiteral( "danger_index" ) );
+      QCOMPARE( prop.name, u"danger_index"_s );
       QCOMPARE( prop.dimensions.size(), 1 );
-      QCOMPARE( prop.dimensions.at( 0 ).name, QStringLiteral( "time" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, QStringLiteral( "2019-01-01" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).extent, QStringLiteral( "2018-01-01/2019-12-31" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).name, u"time"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, u"2019-01-01"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).extent, u"2018-01-01/2019-12-31"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).units, u"ISO8601"_s );
     }
 
     void wmstListOfTimeExtents()
@@ -204,7 +204,7 @@ class TestQgsWmsCapabilities : public QObject
       // test parsing a fixed list of time extents
       QgsWmsSettings settings;
 
-      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z" ) );
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( u"1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z"_s );
       settings.setTimeDimensionExtent( extent );
 
       QCOMPARE( extent.datesResolutionList.size(), 8 );
@@ -558,8 +558,8 @@ class TestQgsWmsCapabilities : public QObject
 
       QCOMPARE( capabilities.supportedTileLayers().size(), 1 );
       const QgsWmtsTileLayer tileLayer = capabilities.supportedTileLayers().at( 0 );
-      QCOMPARE( tileLayer.title, QStringLiteral( "ETa Scaled" ) );
-      QCOMPARE( tileLayer.timeDimensionIdentifier, QStringLiteral( "time" ) );
+      QCOMPARE( tileLayer.title, u"ETa Scaled"_s );
+      QCOMPARE( tileLayer.timeDimensionIdentifier, u"time"_s );
 
       QCOMPARE( tileLayer.allTimeRanges, QList<QgsDateTimeRange>( {
                                            QgsDateTimeRange( QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ) ),
@@ -570,7 +570,7 @@ class TestQgsWmsCapabilities : public QObject
       QCOMPARE( tileLayer.temporalExtent, QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ) );
       QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
       QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
-      QCOMPARE( tileLayer.defaultTimeDimensionValue, QStringLiteral( "current" ) );
+      QCOMPARE( tileLayer.defaultTimeDimensionValue, u"current"_s );
     }
 
     void wmtsTimeDimensionValue_data()

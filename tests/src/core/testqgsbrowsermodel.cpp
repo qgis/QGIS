@@ -56,9 +56,9 @@ void TestQgsBrowserModel::initTestCase()
   QgsApplication::showSettings();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsBrowserModel::cleanupTestCase()
@@ -79,7 +79,7 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( !model.dataItem( QModelIndex() ) );
 
   // add a root child
-  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ), QStringLiteral( "providerKeyRoot1" ) );
+  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, u"Test"_s, u"root1"_s, u"providerKeyRoot1"_s );
   QVERIFY( !model.findItem( rootItem1 ).isValid() );
   model.setupItemConnections( rootItem1 );
   model.mRootItems.append( rootItem1 );
@@ -97,14 +97,14 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( model.hasChildren( root1Index ) );
   rootItem1->setState( Qgis::BrowserItemState::Populated );
   QVERIFY( !model.hasChildren( root1Index ) );
-  QCOMPARE( model.data( root1Index ).toString(), QStringLiteral( "Test" ) );
-  QCOMPARE( model.data( root1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "root1" ) );
-  QCOMPARE( model.data( root1Index, static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) ).toString(), QStringLiteral( "providerKeyRoot1" ) );
+  QCOMPARE( model.data( root1Index ).toString(), u"Test"_s );
+  QCOMPARE( model.data( root1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), u"root1"_s );
+  QCOMPARE( model.data( root1Index, static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) ).toString(), u"providerKeyRoot1"_s );
   QCOMPARE( model.dataItem( root1Index ), rootItem1 );
   QCOMPARE( model.findItem( rootItem1 ), root1Index );
 
   // second root item
-  QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test2" ), QStringLiteral( "root2" ) );
+  QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, u"Test2"_s, u"root2"_s );
   model.setupItemConnections( rootItem2 );
   model.mRootItems.append( rootItem2 );
 
@@ -114,14 +114,14 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( root2Index.isValid() );
   QCOMPARE( model.rowCount( root2Index ), 0 );
   QCOMPARE( model.columnCount( root2Index ), 1 );
-  QCOMPARE( model.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
-  QCOMPARE( model.data( root2Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "root2" ) );
+  QCOMPARE( model.data( root2Index ).toString(), u"Test2"_s );
+  QCOMPARE( model.data( root2Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), u"root2"_s );
   QVERIFY( model.data( root2Index, static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) ).toString().isEmpty() );
   QCOMPARE( model.dataItem( root2Index ), rootItem2 );
   QCOMPARE( model.findItem( rootItem2 ), root2Index );
 
   // child item
-  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QStringLiteral( "providerKeyChild1" ) );
+  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, u"Child1"_s, u"child1"_s, u"providerKeyChild1"_s );
   model.setupItemConnections( childItem1 );
   rootItem1->addChild( childItem1 );
 
@@ -131,9 +131,9 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.columnCount( root1Index ), 1 );
   QVERIFY( model.hasChildren( root1Index ) );
   QModelIndex child1Index = model.index( 0, 0, root1Index );
-  QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
-  QCOMPARE( model.data( child1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "child1" ) );
-  QCOMPARE( model.data( child1Index, static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) ).toString(), QStringLiteral( "providerKeyChild1" ) );
+  QCOMPARE( model.data( child1Index ).toString(), u"Child1"_s );
+  QCOMPARE( model.data( child1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), u"child1"_s );
+  QCOMPARE( model.data( child1Index, static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) ).toString(), u"providerKeyChild1"_s );
   QCOMPARE( model.dataItem( child1Index ), childItem1 );
   QCOMPARE( model.findItem( childItem1 ), child1Index );
   QCOMPARE( model.findItem( childItem1, rootItem1 ), child1Index );
@@ -142,14 +142,14 @@ void TestQgsBrowserModel::testModel()
 
 
   // more children
-  QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child2" ), QStringLiteral( "child2" ) );
+  QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, u"Child2"_s, u"child2"_s );
   rootItem1->addChildItem( childItem2, true );
 
-  QgsDataCollectionItem *childItem3 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child3" ), QStringLiteral( "child3" ) );
+  QgsDataCollectionItem *childItem3 = new QgsDataCollectionItem( nullptr, u"Child3"_s, u"child3"_s );
   childItem2->addChildItem( childItem3, true );
   QCOMPARE( childItem2->rowCount(), 1 );
 
-  QgsDataCollectionItem *childItem4 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child4" ), QStringLiteral( "child4" ) );
+  QgsDataCollectionItem *childItem4 = new QgsDataCollectionItem( nullptr, u"Child4"_s, u"child4"_s );
   rootItem2->addChildItem( childItem4, true );
 
   QCOMPARE( model.rowCount(), 2 );
@@ -157,16 +157,16 @@ void TestQgsBrowserModel::testModel()
   root2Index = model.index( 1, 0 );
   QCOMPARE( model.rowCount( root1Index ), 2 );
   child1Index = model.index( 0, 0, root1Index );
-  QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
+  QCOMPARE( model.data( child1Index ).toString(), u"Child1"_s );
   const QModelIndex child2Index = model.index( 1, 0, root1Index );
-  QCOMPARE( model.data( child2Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( model.data( child2Index ).toString(), u"Child2"_s );
   QCOMPARE( model.rowCount( child1Index ), 0 );
   QCOMPARE( model.dataItem( child2Index ), childItem2 );
   QCOMPARE( childItem2->rowCount(), 1 );
   QCOMPARE( model.rowCount( child2Index ), 1 );
-  QCOMPARE( model.data( model.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( model.data( model.index( 0, 0, child2Index ) ).toString(), u"Child3"_s );
   QCOMPARE( model.rowCount( root2Index ), 1 );
-  QCOMPARE( model.data( model.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+  QCOMPARE( model.data( model.index( 0, 0, root2Index ) ).toString(), u"Child4"_s );
 }
 
 void TestQgsBrowserModel::driveItems()
@@ -177,22 +177,22 @@ void TestQgsBrowserModel::driveItems()
 
   model.initialize();
   QVERIFY( !model.driveItems().empty() );
-  QVERIFY( model.driveItems().contains( QStringLiteral( "/" ) ) );
-  QgsDirectoryItem *rootItem = model.driveItems().value( QStringLiteral( "/" ) );
+  QVERIFY( model.driveItems().contains( u"/"_s ) );
+  QgsDirectoryItem *rootItem = model.driveItems().value( u"/"_s );
   QVERIFY( rootItem );
-  QCOMPARE( rootItem->path(), QStringLiteral( "/" ) );
+  QCOMPARE( rootItem->path(), u"/"_s );
 }
 
 
 class TestDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "test" ); }
+    QString name() override { return u"test"_s; }
     Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       if ( path.isEmpty() )
-        return new QgsDataItem( Qgis::BrowserItemType::Custom, parentItem, QStringLiteral( "test-root-item" ), path );
+        return new QgsDataItem( Qgis::BrowserItemType::Custom, parentItem, u"test-root-item"_s, path );
       return nullptr;
     }
 };
@@ -202,7 +202,7 @@ static int testRootItemCount( QgsBrowserModel &model )
   int count = 0;
   for ( int i = 0; i < model.rowCount(); ++i )
   {
-    if ( model.data( model.index( i, 0 ) ).toString() == QLatin1String( "test-root-item" ) )
+    if ( model.data( model.index( i, 0 ) ).toString() == "test-root-item"_L1 )
       ++count;
   }
   return count;

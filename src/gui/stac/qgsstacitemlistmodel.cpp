@@ -55,7 +55,7 @@ QVariant QgsStacItemListModel::data( const QModelIndex &index, int role ) const
       const QMap<QString, QgsStacAsset> assets = mItems.at( index.row() )->assets();
       for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
       {
-        if ( it->roles().contains( QLatin1String( "thumbnail" ) ) )
+        if ( it->roles().contains( "thumbnail"_L1 ) )
         {
           return mThumbnails[it->href()];
         }
@@ -151,7 +151,7 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items, const 
     const QMap<QString, QgsStacAsset> assets = item->assets();
     for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
     {
-      if ( it->roles().contains( QLatin1String( "thumbnail" ) ) )
+      if ( it->roles().contains( "thumbnail"_L1 ) )
       {
         const QString href = it->href();
         QgsNetworkContentFetcher *f = new QgsNetworkContentFetcher();
@@ -251,8 +251,8 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     iconSize /= w->devicePixelRatioF();
   }
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-weight:bold;'>%2</span><br>%3<br><br><i>%4</i></div>" )
-                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( QLatin1String( ", " ) ) ) );
+  doc.setHtml( u"<div style='font-size:%1px'><span style='font-weight:bold;'>%2</span><br>%3<br><br><i>%4</i></div>"_s
+                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( ", "_L1 ) ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )

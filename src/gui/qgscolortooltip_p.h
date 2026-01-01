@@ -72,7 +72,7 @@ class QgsColorTooltip
       QBuffer buffer( &data );
       icon.save( &buffer, "PNG", 100 );
 
-      QString info = QStringLiteral( "<b>HEX</b> %1<br>" ).arg( color.name() );
+      QString info = u"<b>HEX</b> %1<br>"_s.arg( color.name() );
 
       if ( color.spec() == QColor::Spec::Cmyk )
       {
@@ -82,7 +82,7 @@ class QgsColorTooltip
         const double black = color.blackF() * 100.;
         const double alpha = color.alphaF() * 100.;
 
-        info += QStringLiteral( "<b>CMYKA</b> %1,%2,%3,%4,%5<p>" )
+        info += u"<b>CMYKA</b> %1,%2,%3,%4,%5<p>"_s
                   .arg( cyan, 0, 'f', 2 )
                   .arg( magenta, 0, 'f', 2 )
                   .arg( yellow, 0, 'f', 2 )
@@ -103,7 +103,7 @@ class QgsColorTooltip
                   .arg( value );
       }
 
-      info += QStringLiteral( "<img src='data:image/png;base64, %1'>" ).arg( QString( data.toBase64() ) );
+      info += u"<img src='data:image/png;base64, %1'>"_s.arg( QString( data.toBase64() ) );
 
       return info;
     }

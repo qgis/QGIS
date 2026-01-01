@@ -33,7 +33,7 @@ namespace QgsWms
 {
   QString implementationVersion()
   {
-    return QStringLiteral( "1.3.0" );
+    return u"1.3.0"_s;
   }
 
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
@@ -45,13 +45,13 @@ namespace QgsWms
     if ( href.isEmpty() )
     {
       static const QSet<QString> sFilter {
-        QStringLiteral( "REQUEST" ),
-        QStringLiteral( "VERSION" ),
-        QStringLiteral( "SERVICE" ),
-        QStringLiteral( "LAYERS" ),
-        QStringLiteral( "STYLES" ),
-        QStringLiteral( "SLD_VERSION" ),
-        QStringLiteral( "_DC" )
+        u"REQUEST"_s,
+        u"VERSION"_s,
+        u"SERVICE"_s,
+        u"LAYERS"_s,
+        u"STYLES"_s,
+        u"SLD_VERSION"_s,
+        u"_DC"_s
       };
 
       href = request.originalUrl();
@@ -73,30 +73,30 @@ namespace QgsWms
 
   ImageOutputFormat parseImageFormat( const QString &format )
   {
-    if ( format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 )
+    if ( format.compare( "png"_L1, Qt::CaseInsensitive ) == 0 || format.compare( "image/png"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return ImageOutputFormat::PNG;
     }
-    else if ( format.compare( QLatin1String( "jpg " ), Qt::CaseInsensitive ) == 0 || format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format.compare( "jpg "_L1, Qt::CaseInsensitive ) == 0 || format.compare( "image/jpeg"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return ImageOutputFormat::JPEG;
     }
-    else if ( format.compare( QLatin1String( "webp" ), Qt::CaseInsensitive ) == 0 || format.compare( QLatin1String( "image/webp" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format.compare( "webp"_L1, Qt::CaseInsensitive ) == 0 || format.compare( "image/webp"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return ImageOutputFormat::WEBP;
     }
     else
     {
       // lookup for png with mode
-      const thread_local QRegularExpression modeExpr = QRegularExpression( QStringLiteral( "image/png\\s*;\\s*mode=([^;]+)" ), QRegularExpression::CaseInsensitiveOption );
+      const thread_local QRegularExpression modeExpr = QRegularExpression( u"image/png\\s*;\\s*mode=([^;]+)"_s, QRegularExpression::CaseInsensitiveOption );
 
       const QRegularExpressionMatch match = modeExpr.match( format );
       const QString mode = match.captured( 1 );
-      if ( mode.compare( QLatin1String( "16bit" ), Qt::CaseInsensitive ) == 0 )
+      if ( mode.compare( "16bit"_L1, Qt::CaseInsensitive ) == 0 )
         return ImageOutputFormat::PNG16;
-      if ( mode.compare( QLatin1String( "8bit" ), Qt::CaseInsensitive ) == 0 )
+      if ( mode.compare( "8bit"_L1, Qt::CaseInsensitive ) == 0 )
         return ImageOutputFormat::PNG8;
-      if ( mode.compare( QLatin1String( "1bit" ), Qt::CaseInsensitive ) == 0 )
+      if ( mode.compare( "1bit"_L1, Qt::CaseInsensitive ) == 0 )
         return ImageOutputFormat::PNG1;
     }
 
@@ -114,8 +114,8 @@ namespace QgsWms
     {
       case ImageOutputFormat::PNG:
         result = img;
-        contentType = QStringLiteral( "image/png" );
-        saveFormat = QStringLiteral( "PNG" );
+        contentType = u"image/png"_s;
+        saveFormat = u"PNG"_s;
         break;
       case ImageOutputFormat::PNG8:
       {
@@ -128,32 +128,32 @@ namespace QgsWms
         medianCut( colorTable, 256, img256 );
         result = img256.convertToFormat( QImage::Format_Indexed8, colorTable, Qt::ColorOnly | Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
-        contentType = QStringLiteral( "image/png" );
-        saveFormat = QStringLiteral( "PNG" );
+        contentType = u"image/png"_s;
+        saveFormat = u"PNG"_s;
         break;
       case ImageOutputFormat::PNG16:
         result = img.convertToFormat( QImage::Format_ARGB4444_Premultiplied );
-        contentType = QStringLiteral( "image/png" );
-        saveFormat = QStringLiteral( "PNG" );
+        contentType = u"image/png"_s;
+        saveFormat = u"PNG"_s;
         break;
       case ImageOutputFormat::PNG1:
         result = img.convertToFormat( QImage::Format_Mono, Qt::MonoOnly | Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
-        contentType = QStringLiteral( "image/png" );
-        saveFormat = QStringLiteral( "PNG" );
+        contentType = u"image/png"_s;
+        saveFormat = u"PNG"_s;
         break;
       case ImageOutputFormat::JPEG:
         result = img;
-        contentType = QStringLiteral( "image/jpeg" );
-        saveFormat = QStringLiteral( "JPEG" );
+        contentType = u"image/jpeg"_s;
+        saveFormat = u"JPEG"_s;
         break;
       case ImageOutputFormat::WEBP:
         result = img;
-        contentType = QStringLiteral( "image/webp" );
-        saveFormat = QStringLiteral( "WEBP" );
+        contentType = u"image/webp"_s;
+        saveFormat = u"WEBP"_s;
         break;
       case ImageOutputFormat::Unknown:
-        QgsMessageLog::logMessage( QStringLiteral( "Unsupported format string %1" ).arg( formatStr ) );
-        saveFormat = QStringLiteral( "Unknown" );
+        QgsMessageLog::logMessage( u"Unsupported format string %1"_s.arg( formatStr ) );
+        saveFormat = u"Unknown"_s;
         break;
     }
 
@@ -164,7 +164,7 @@ namespace QgsWms
     if ( outputFormat != ImageOutputFormat::Unknown )
     {
       response.setHeader( "Content-Type", contentType );
-      if ( saveFormat == QLatin1String( "JPEG" ) || saveFormat == QLatin1String( "WEBP" ) )
+      if ( saveFormat == "JPEG"_L1 || saveFormat == "WEBP"_L1 )
       {
         result.save( response.io(), qPrintable( saveFormat ), imageQuality );
       }

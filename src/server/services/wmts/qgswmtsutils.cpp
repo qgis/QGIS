@@ -47,7 +47,7 @@ namespace QgsWmts
 
   QString implementationVersion()
   {
-    return QStringLiteral( "1.0.0" );
+    return u"1.0.0"_s;
   }
 
 
@@ -237,15 +237,15 @@ namespace QgsWmts
     QList<tileMatrixSetDef> tmsList;
 
     bool gridsDefined = false;
-    const QStringList wmtsGridList = project->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "CRS" ), QStringList(), &gridsDefined );
+    const QStringList wmtsGridList = project->readListEntry( u"WMTSGrids"_s, u"CRS"_s, QStringList(), &gridsDefined );
     if ( gridsDefined )
     {
       if ( !tms_ref.isEmpty() && !wmtsGridList.contains( tms_ref ) )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+        throw QgsRequestNotWellFormedException( u"TileMatrixSet is unknown"_s );
       }
 
-      const QStringList wmtsGridConfigList = project->readListEntry( QStringLiteral( "WMTSGrids" ), QStringLiteral( "Config" ) );
+      const QStringList wmtsGridConfigList = project->readListEntry( u"WMTSGrids"_s, u"Config"_s );
       for ( const QString &c : wmtsGridConfigList )
       {
         QStringList config = c.split( ',' );
@@ -341,7 +341,7 @@ namespace QgsWmts
       return tmsList;
     }
 
-    double minScale = project->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), -1.0 );
+    double minScale = project->readNumEntry( u"WMTSMinScale"_s, u"/"_s, -1.0 );
     if ( minScale == -1.0 )
     {
       minScale = getProjectMinScale( project );
@@ -350,7 +350,7 @@ namespace QgsWmts
     const QStringList crsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
     if ( !tms_ref.isEmpty() && !crsList.contains( tms_ref ) )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+      throw QgsRequestNotWellFormedException( u"TileMatrixSet is unknown"_s );
     }
     for ( const QString &crsStr : crsList )
     {
@@ -378,7 +378,7 @@ namespace QgsWmts
 #endif
 
     // WMTS Project configuration
-    const bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
+    const bool wmtsProject = project->readBoolEntry( u"WMTSLayers"_s, u"Project"_s );
 
     // Root Layer name
     QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
@@ -412,12 +412,12 @@ namespace QgsWmts
       }
 
       // Formats
-      const bool wmtsPngProject = project->readBoolEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Project" ) );
+      const bool wmtsPngProject = project->readBoolEntry( u"WMTSPngLayers"_s, u"Project"_s );
       if ( wmtsPngProject )
-        pLayer.formats << QStringLiteral( "image/png" );
-      const bool wmtsJpegProject = project->readBoolEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Project" ) );
+        pLayer.formats << u"image/png"_s;
+      const bool wmtsJpegProject = project->readBoolEntry( u"WMTSJpegLayers"_s, u"Project"_s );
       if ( wmtsJpegProject )
-        pLayer.formats << QStringLiteral( "image/jpeg" );
+        pLayer.formats << u"image/jpeg"_s;
 
       // Project is not queryable in WMS
       //pLayer.queryable = ( nonIdentifiableLayers.count() != project->count() );
@@ -426,13 +426,13 @@ namespace QgsWmts
       wmtsLayers.append( pLayer );
     }
 
-    const QStringList wmtsGroupNameList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
+    const QStringList wmtsGroupNameList = project->readListEntry( u"WMTSLayers"_s, u"Group"_s );
     if ( !wmtsGroupNameList.isEmpty() )
     {
       QgsLayerTreeGroup *treeRoot = project->layerTreeRoot();
 
-      const QStringList wmtsPngGroupNameList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
-      const QStringList wmtsJpegGroupNameList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
+      const QStringList wmtsPngGroupNameList = project->readListEntry( u"WMTSPngLayers"_s, u"Group"_s );
+      const QStringList wmtsJpegGroupNameList = project->readListEntry( u"WMTSJpegLayers"_s, u"Group"_s );
 
       for ( const QString &gName : wmtsGroupNameList )
       {
@@ -501,17 +501,17 @@ namespace QgsWmts
 
         // Formats
         if ( wmtsPngGroupNameList.contains( gName ) )
-          pLayer.formats << QStringLiteral( "image/png" );
+          pLayer.formats << u"image/png"_s;
         if ( wmtsJpegGroupNameList.contains( gName ) )
-          pLayer.formats << QStringLiteral( "image/jpeg" );
+          pLayer.formats << u"image/jpeg"_s;
 
         wmtsLayers.append( pLayer );
       }
     }
 
-    const QStringList wmtsLayerIdList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
-    const QStringList wmtsPngLayerIdList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
-    const QStringList wmtsJpegLayerIdList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
+    const QStringList wmtsLayerIdList = project->readListEntry( u"WMTSLayers"_s, u"Layer"_s );
+    const QStringList wmtsPngLayerIdList = project->readListEntry( u"WMTSPngLayers"_s, u"Layer"_s );
+    const QStringList wmtsJpegLayerIdList = project->readListEntry( u"WMTSJpegLayers"_s, u"Layer"_s );
 
     for ( const QString &lId : wmtsLayerIdList )
     {
@@ -550,9 +550,9 @@ namespace QgsWmts
 
       // Formats
       if ( wmtsPngLayerIdList.contains( lId ) )
-        pLayer.formats << QStringLiteral( "image/png" );
+        pLayer.formats << u"image/png"_s;
       if ( wmtsJpegLayerIdList.contains( lId ) )
-        pLayer.formats << QStringLiteral( "image/jpeg" );
+        pLayer.formats << u"image/jpeg"_s;
 
       pLayer.queryable = ( l->flags().testFlag( QgsMapLayer::Identifiable ) );
 
@@ -579,7 +579,7 @@ namespace QgsWmts
     QMap<int, tileMatrixLimitDef> tileMatrixLimits;
 
     QgsRectangle rect( layer.wgs84BoundingRect );
-    if ( tms.ref != QLatin1String( "EPSG:4326" ) )
+    if ( tms.ref != "EPSG:4326"_L1 )
     {
       const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
       const QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
@@ -636,12 +636,12 @@ namespace QgsWmts
     //read Layer
     if ( layer.isEmpty() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "Layer is mandatory" ) );
+      throw QgsRequestNotWellFormedException( u"Layer is mandatory"_s );
     }
     //check layer value
-    const bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
-    const QStringList wmtsGroupNameList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
-    const QStringList wmtsLayerIdList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
+    const bool wmtsProject = project->readBoolEntry( u"WMTSLayers"_s, u"Project"_s );
+    const QStringList wmtsGroupNameList = project->readListEntry( u"WMTSLayers"_s, u"Group"_s );
+    const QStringList wmtsLayerIdList = project->readListEntry( u"WMTSLayers"_s, u"Layer"_s );
     QStringList wmtsLayerIds;
     if ( wmtsProject )
     {
@@ -703,13 +703,13 @@ namespace QgsWmts
     if ( !wmtsLayerIds.contains( layer ) )
     {
       const QString msg = QObject::tr( "Layer '%1' not found" ).arg( layer );
-      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
+      throw QgsBadRequestException( u"LayerNotDefined"_s, msg );
     }
 
     //defining Format
     QString format;
 
-    const bool isFeatureInfo { request.compare( QStringLiteral( "getfeatureinfo" ), Qt::CaseInsensitive ) == 0 };
+    const bool isFeatureInfo { request.compare( u"getfeatureinfo"_s, Qt::CaseInsensitive ) == 0 };
 
     // If this is a getfeatureinfo request, we must check INFOFORMAT instead of format
     if ( isFeatureInfo )
@@ -728,11 +728,11 @@ namespace QgsWmts
     {
       if ( isFeatureInfo )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "InfoFormat is mandatory" ) );
+        throw QgsRequestNotWellFormedException( u"InfoFormat is mandatory"_s );
       }
       else
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "Format is mandatory" ) );
+        throw QgsRequestNotWellFormedException( u"Format is mandatory"_s );
       }
     }
 
@@ -741,19 +741,19 @@ namespace QgsWmts
     //read TileMatrixSet
     if ( tms_ref.isEmpty() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is mandatory" ) );
+      throw QgsRequestNotWellFormedException( u"TileMatrixSet is mandatory"_s );
     }
 
     // verifying TileMatrixSet value
     QList<tileMatrixSetDef> tmsList = getTileMatrixSetList( project, tms_ref );
     if ( tmsList.isEmpty() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+      throw QgsRequestNotWellFormedException( u"TileMatrixSet is unknown"_s );
     }
     const tileMatrixSetDef tms = tmsList[0];
     if ( tms.ref != tms_ref )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+      throw QgsRequestNotWellFormedException( u"TileMatrixSet is unknown"_s );
     }
 
     //defining TileMatrix idx
@@ -761,7 +761,7 @@ namespace QgsWmts
     //read TileMatrix
     if ( tm_idx < 0 || tm_idx >= tms.tileMatrixList.size() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is unknown" ) );
+      throw QgsRequestNotWellFormedException( u"TileMatrix is unknown"_s );
     }
     const tileMatrixDef tm = tms.tileMatrixList.at( tm_idx );
 
@@ -770,7 +770,7 @@ namespace QgsWmts
     //read TileRow
     if ( tr < 0 || tm.row <= tr )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileRow is unknown" ) );
+      throw QgsRequestNotWellFormedException( u"TileRow is unknown"_s );
     }
 
     //defining TileCol
@@ -778,7 +778,7 @@ namespace QgsWmts
     //read TileCol
     if ( tc < 0 || tm.col <= tc )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileCol is unknown" ) );
+      throw QgsRequestNotWellFormedException( u"TileCol is unknown"_s );
     }
 
     const double res = tm.resolution;
@@ -797,19 +797,19 @@ namespace QgsWmts
     }
 
     QUrlQuery query;
-    if ( !params.value( QStringLiteral( "MAP" ) ).isEmpty() )
+    if ( !params.value( u"MAP"_s ).isEmpty() )
     {
-      query.addQueryItem( QgsServerParameter::name( QgsServerParameter::MAP ), params.value( QStringLiteral( "MAP" ) ) );
+      query.addQueryItem( QgsServerParameter::name( QgsServerParameter::MAP ), params.value( u"MAP"_s ) );
     }
-    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::SERVICE ), QStringLiteral( "WMS" ) );
-    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::VERSION_SERVICE ), QStringLiteral( "1.3.0" ) );
+    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::SERVICE ), u"WMS"_s );
+    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::VERSION_SERVICE ), u"1.3.0"_s );
     query.addQueryItem( QgsServerParameter::name( QgsServerParameter::REQUEST ), request );
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::LAYERS ), layer );
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::STYLES ), QString() );
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::CRS ), tms.ref );
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::BBOX ), bbox );
-    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::WIDTH ), QStringLiteral( "256" ) );
-    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::HEIGHT ), QStringLiteral( "256" ) );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::WIDTH ), u"256"_s );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::HEIGHT ), u"256"_s );
     if ( isFeatureInfo )
     {
       query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::INFO_FORMAT ), format );
@@ -820,10 +820,10 @@ namespace QgsWmts
     }
     if ( params.format() == QgsWmtsParameters::Format::PNG )
     {
-      query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TRANSPARENT ), QStringLiteral( "true" ) );
+      query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TRANSPARENT ), u"true"_s );
     }
-    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::DPI ), QStringLiteral( "96" ) );
-    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TILED ), QStringLiteral( "true" ) );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::DPI ), u"96"_s );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TILED ), u"true"_s );
 
     return query;
   }
@@ -840,7 +840,7 @@ namespace QgsWmts
       // some references for resolution
       // https://github.com/mapserver/mapcache/blob/master/lib/configuration.c#L94
       tileMatrixInfo tmi3857;
-      tmi3857.ref = QStringLiteral( "EPSG:3857" );
+      tmi3857.ref = u"EPSG:3857"_s;
       tmi3857.extent = QgsRectangle( -20037508.3427892480, -20037508.3427892480, 20037508.3427892480, 20037508.3427892480 );
       tmi3857.resolution = 156543.0339280410;
       tmi3857.scaleDenominator = 559082264.0287179;
@@ -851,7 +851,7 @@ namespace QgsWmts
       // some references for resolution
       // https://github.com/mapserver/mapcache/blob/master/lib/configuration.c#L73
       tileMatrixInfo tmi4326;
-      tmi4326.ref = QStringLiteral( "EPSG:4326" );
+      tmi4326.ref = u"EPSG:4326"_s;
       tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
       tmi4326.resolution = 0.703125000000000;
       tmi4326.scaleDenominator = 279541132.0143588675418869;

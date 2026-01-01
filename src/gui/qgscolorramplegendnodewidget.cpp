@@ -178,7 +178,7 @@ QgsColorRampLegendNodeDialog::QgsColorRampLegendNodeDialog( const QgsColorRampLe
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-legend-settings" ) );
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-legend-settings"_s );
   } );
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
   vLayout->addWidget( mButtonBox );

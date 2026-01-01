@@ -133,12 +133,12 @@ QStringList QgsMeshVirtualDatasetGroup::datasetGroupNamesDependentOn() const
 QDomElement QgsMeshVirtualDatasetGroup::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
-  QDomElement elemDataset = doc.createElement( QStringLiteral( "mesh-dataset" ) );
-  elemDataset.setAttribute( QStringLiteral( "source-type" ), QStringLiteral( "virtual" ) );
-  elemDataset.setAttribute( QStringLiteral( "name" ), name() );
-  elemDataset.setAttribute( QStringLiteral( "formula" ), mFormula );
-  elemDataset.setAttribute( QStringLiteral( "start-time" ), mStartTime );
-  elemDataset.setAttribute( QStringLiteral( "end-time" ), mEndTime );
+  QDomElement elemDataset = doc.createElement( u"mesh-dataset"_s );
+  elemDataset.setAttribute( u"source-type"_s, u"virtual"_s );
+  elemDataset.setAttribute( u"name"_s, name() );
+  elemDataset.setAttribute( u"formula"_s, mFormula );
+  elemDataset.setAttribute( u"start-time"_s, mStartTime );
+  elemDataset.setAttribute( u"end-time"_s, mEndTime );
 
   return elemDataset;
 }

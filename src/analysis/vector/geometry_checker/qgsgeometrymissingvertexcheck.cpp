@@ -42,7 +42,7 @@ QgsGeometryCheck::Result QgsGeometryMissingVertexCheck::collectErrors( const QMa
   QgsFeaturePool *featurePool = featurePools.value( featureIds.firstKey() );
   if ( !featurePool )
   {
-    QgsDebugError( QStringLiteral( "Could not retrieve feature pool for %1" ).arg( featureIds.firstKey() ) );
+    QgsDebugError( u"Could not retrieve feature pool for %1"_s.arg( featureIds.firstKey() ) );
     return QgsGeometryCheck::Result::Canceled;
   }
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
@@ -266,7 +266,7 @@ QString QgsGeometryMissingVertexCheck::factoryDescription()
 
 QString QgsGeometryMissingVertexCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryMissingVertexCheck" );
+  return u"QgsGeometryMissingVertexCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryMissingVertexCheck::factoryFlags()
@@ -308,7 +308,7 @@ void QgsGeometryMissingVertexCheckError::setInvolvedFeatures( const QMap<QString
 QIcon QgsGeometryMissingVertexCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/MissingVertex.svg" ) );
+    return QgsApplication::getThemeIcon( u"/checks/MissingVertex.svg"_s );
 }

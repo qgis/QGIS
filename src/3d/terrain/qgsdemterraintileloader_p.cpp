@@ -172,7 +172,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
 {
   provider->moveToThread( QThread::currentThread() );
 
-  QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "DEM" ) );
+  QgsEventTracing::ScopedEvent e( u"3D"_s, u"DEM"_s );
 
   // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;
@@ -229,7 +229,7 @@ static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRec
 
 int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), nodeId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"DEM"_s, nodeId.text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
   QgsRectangle extent = mTilingScheme.tileToExtent( nodeId );
@@ -333,7 +333,7 @@ void QgsDemHeightMapGenerator::onFutureFinished()
   mJobs.remove( fw );
   fw->deleteLater();
 
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), jobData.tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"DEM"_s, jobData.tileId.text() );
 
   QByteArray data = jobData.future.result();
   emit heightMapReady( jobData.jobId, data );

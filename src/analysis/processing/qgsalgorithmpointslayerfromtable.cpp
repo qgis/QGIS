@@ -23,7 +23,7 @@
 
 QString QgsPointsLayerFromTableAlgorithm::name() const
 {
-  return QStringLiteral( "createpointslayerfromtable" );
+  return u"createpointslayerfromtable"_s;
 }
 
 QString QgsPointsLayerFromTableAlgorithm::displayName() const
@@ -43,13 +43,13 @@ QString QgsPointsLayerFromTableAlgorithm::group() const
 
 QString QgsPointsLayerFromTableAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 QString QgsPointsLayerFromTableAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm generates a point layer based on the coordinates from an input table." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The table must contain a field with the X coordinate of each point and another "
                         "one with the Y coordinate, as well as optional fields with Z and M values. A CRS "
                         "for the output layer has to be specified, and the coordinates in the table are "
@@ -74,34 +74,34 @@ QgsPointsLayerFromTableAlgorithm *QgsPointsLayerFromTableAlgorithm::createInstan
 
 void QgsPointsLayerFromTableAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "XFIELD" ), QObject::tr( "X field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "YFIELD" ), QObject::tr( "Y field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "ZFIELD" ), QObject::tr( "Z field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "MFIELD" ), QObject::tr( "M field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterField( u"XFIELD"_s, QObject::tr( "X field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any ) );
+  addParameter( new QgsProcessingParameterField( u"YFIELD"_s, QObject::tr( "Y field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any ) );
+  addParameter( new QgsProcessingParameterField( u"ZFIELD"_s, QObject::tr( "Z field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterField( u"MFIELD"_s, QObject::tr( "M field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterCrs( u"TARGET_CRS"_s, QObject::tr( "Target CRS" ), u"EPSG:4326"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Points from table" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Points from table" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> featureSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !featureSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   const QgsFields fields = featureSource->fields();
-  const QString xFieldName = parameterAsString( parameters, QStringLiteral( "XFIELD" ), context );
+  const QString xFieldName = parameterAsString( parameters, u"XFIELD"_s, context );
   const int xFieldIndex = fields.lookupField( xFieldName );
   if ( xFieldIndex < 0 )
     throw QgsProcessingException( QObject::tr( "X field “%1” does not exist" ).arg( xFieldName ) );
 
-  const QString yFieldName = parameterAsString( parameters, QStringLiteral( "YFIELD" ), context );
+  const QString yFieldName = parameterAsString( parameters, u"YFIELD"_s, context );
   const int yFieldIndex = fields.lookupField( yFieldName );
   if ( yFieldIndex < 0 )
     throw QgsProcessingException( QObject::tr( "Y field “%1” does not exist" ).arg( yFieldName ) );
 
-  QString fieldName = parameterAsString( parameters, QStringLiteral( "ZFIELD" ), context );
+  QString fieldName = parameterAsString( parameters, u"ZFIELD"_s, context );
   int zFieldIndex = -1;
   if ( !fieldName.isEmpty() )
   {
@@ -110,7 +110,7 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
       throw QgsProcessingException( QObject::tr( "Z field “%1” does not exist" ).arg( fieldName ) );
   }
 
-  fieldName = parameterAsString( parameters, QStringLiteral( "MFIELD" ), context );
+  fieldName = parameterAsString( parameters, u"MFIELD"_s, context );
   int mFieldIndex = -1;
   if ( !fieldName.isEmpty() )
   {
@@ -125,12 +125,12 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
   if ( mFieldIndex >= 0 )
     outputWkbType = QgsWkbTypes::addM( outputWkbType );
 
-  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"TARGET_CRS"_s, context );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, outputWkbType, crs, QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, outputWkbType, crs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
 
@@ -168,7 +168,7 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
     }
 
     if ( !sink->addFeature( f ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     feedback->setProgress( current * step );
     current++;
   }
@@ -176,7 +176,7 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

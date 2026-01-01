@@ -93,7 +93,7 @@ void QgsPointCloud3DRenderContext::updateExtent()
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason. Let's use an empty extent to skip filtering.
-      QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
+      QgsDebugError( u"Transformation of extent failed!"_s );
       mLayerExtent = QgsRectangle();
     }
   }
@@ -102,7 +102,7 @@ void QgsPointCloud3DRenderContext::updateExtent()
 
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( QStringLiteral( "pointcloud" ) )
+  : Qgs3DRendererAbstractMetadata( u"pointcloud"_s )
 {
 }
 
@@ -133,7 +133,7 @@ QgsPointCloudLayer *QgsPointCloudLayer3DRenderer::layer() const
 
 QString QgsPointCloudLayer3DRenderer::type() const
 {
-  return QStringLiteral( "pointcloud" );
+  return u"pointcloud"_s;
 }
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
@@ -183,16 +183,16 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
-  elem.setAttribute( QStringLiteral( "max-screen-error" ), maximumScreenError() );
-  elem.setAttribute( QStringLiteral( "show-bounding-boxes" ), showBoundingBoxes() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elem.setAttribute( QStringLiteral( "point-budget" ), mPointBudget );
-  elem.setAttribute( QStringLiteral( "zoom-out-behavior" ), qgsEnumValueToKey( mZoomOutBehavior ) );
+  elem.setAttribute( u"layer"_s, mLayerRef.layerId );
+  elem.setAttribute( u"max-screen-error"_s, maximumScreenError() );
+  elem.setAttribute( u"show-bounding-boxes"_s, showBoundingBoxes() ? u"1"_s : u"0"_s );
+  elem.setAttribute( u"point-budget"_s, mPointBudget );
+  elem.setAttribute( u"zoom-out-behavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
 
-  QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
+  QDomElement elemSymbol = doc.createElement( u"symbol"_s );
   if ( mSymbol )
   {
-    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->symbolType() );
+    elemSymbol.setAttribute( u"type"_s, mSymbol->symbolType() );
     mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
@@ -200,23 +200,23 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 
 void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mLayerRef = QgsMapLayerRef( elem.attribute( u"layer"_s ) );
 
-  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( u"symbol"_s );
 
-  const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
-  mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
-  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "3.0" ) ).toDouble();
-  mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "5000000" ) ).toInt();
-  mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "zoom-out-behavior" ) ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
+  const QString symbolType = elemSymbol.attribute( u"type"_s );
+  mShowBoundingBoxes = elem.attribute( u"show-bounding-boxes"_s, u"0"_s ).toInt();
+  mMaximumScreenError = elem.attribute( u"max-screen-error"_s, u"3.0"_s ).toDouble();
+  mPointBudget = elem.attribute( u"point-budget"_s, u"5000000"_s ).toInt();
+  mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( u"zoom-out-behavior"_s ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
 
-  if ( symbolType == QLatin1String( "single-color" ) )
+  if ( symbolType == "single-color"_L1 )
     mSymbol = std::make_unique<QgsSingleColorPointCloud3DSymbol>();
-  else if ( symbolType == QLatin1String( "color-ramp" ) )
+  else if ( symbolType == "color-ramp"_L1 )
     mSymbol = std::make_unique<QgsColorRampPointCloud3DSymbol>();
-  else if ( symbolType == QLatin1String( "rgb" ) )
+  else if ( symbolType == "rgb"_L1 )
     mSymbol = std::make_unique<QgsRgbPointCloud3DSymbol>();
-  else if ( symbolType == QLatin1String( "classification" ) )
+  else if ( symbolType == "classification"_L1 )
     mSymbol = std::make_unique<QgsClassificationPointCloud3DSymbol>();
   else
     mSymbol.reset();

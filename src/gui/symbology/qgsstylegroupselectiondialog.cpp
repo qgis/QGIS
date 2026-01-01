@@ -98,27 +98,27 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
 
   for ( const QModelIndex &index : deselectedItems )
   {
-    if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tagssheader" ) )
+    if ( index.data( Qt::UserRole + 2 ).toString() == "tagssheader"_L1 )
     {
       // Ignore: it's the group header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "favorites" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "favorites"_L1 )
     {
       emit favoritesDeselected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "all"_L1 )
     {
       emit allDeselected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroupsheader" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroupsheader"_L1 )
     {
       // Ignore: it's the smartgroups header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroup" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroup"_L1 )
     {
       emit smartgroupDeselected( index.data().toString() );
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tag" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "tag"_L1 )
     {
       // It's a tag
       emit tagDeselected( index.data().toString() );
@@ -127,27 +127,27 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
   const auto constSelectedItems = selectedItems;
   for ( const QModelIndex &index : constSelectedItems )
   {
-    if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tagssheader" ) )
+    if ( index.data( Qt::UserRole + 2 ).toString() == "tagssheader"_L1 )
     {
       // Ignore: it's the group header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "favorites" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "favorites"_L1 )
     {
       emit favoritesSelected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "all"_L1 )
     {
       emit allSelected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroupsheader" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroupsheader"_L1 )
     {
       // Ignore: it's the smartgroups header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroup" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroup"_L1 )
     {
       emit smartgroupSelected( index.data().toString() );
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tag" ) )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == "tag"_L1 )
     {
       // It's a tag
       emit tagSelected( index.data().toString() );

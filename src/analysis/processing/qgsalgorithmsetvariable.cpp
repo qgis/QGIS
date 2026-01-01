@@ -23,7 +23,7 @@
 
 QString QgsSetProjectVariableAlgorithm::name() const
 {
-  return QStringLiteral( "setprojectvariable" );
+  return u"setprojectvariable"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsSetProjectVariableAlgorithm::flags() const
@@ -50,7 +50,7 @@ QString QgsSetProjectVariableAlgorithm::group() const
 
 QString QgsSetProjectVariableAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsSetProjectVariableAlgorithm::shortDescription() const
@@ -71,8 +71,8 @@ QgsSetProjectVariableAlgorithm *QgsSetProjectVariableAlgorithm::createInstance()
 bool QgsSetProjectVariableAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // this is all nice and quick, we can (and should) do it in the main thread without issue
-  const QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
-  const QString value = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
+  const QString name = parameterAsString( parameters, u"NAME"_s, context );
+  const QString value = parameterAsString( parameters, u"VALUE"_s, context );
 
   if ( name.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Variable name cannot be empty" ) );
@@ -85,8 +85,8 @@ bool QgsSetProjectVariableAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 void QgsSetProjectVariableAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "NAME" ), QObject::tr( "Variable name" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "VALUE" ), QObject::tr( "Variable value" ) ) );
+  addParameter( new QgsProcessingParameterString( u"NAME"_s, QObject::tr( "Variable name" ) ) );
+  addParameter( new QgsProcessingParameterString( u"VALUE"_s, QObject::tr( "Variable value" ) ) );
 }
 
 QVariantMap QgsSetProjectVariableAlgorithm::processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )

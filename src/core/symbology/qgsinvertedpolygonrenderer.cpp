@@ -30,7 +30,7 @@
 #include <QDomElement>
 
 QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer *subRenderer )
-  : QgsMergedFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ), subRenderer )
+  : QgsMergedFeatureRenderer( u"invertedPolygonRenderer"_s, subRenderer )
 {
   if ( !subRenderer )
   {
@@ -43,7 +43,7 @@ QString QgsInvertedPolygonRenderer::dump() const
 {
   if ( !mSubRenderer )
   {
-    return QStringLiteral( "INVERTED: NULL" );
+    return u"INVERTED: NULL"_s;
   }
   return "INVERTED [" + mSubRenderer->dump() + ']';
 }
@@ -68,13 +68,13 @@ QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, co
 {
   QgsInvertedPolygonRenderer *r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
-  QDomElement embeddedRendererElem = element.firstChildElement( QStringLiteral( "renderer-v2" ) );
+  QDomElement embeddedRendererElem = element.firstChildElement( u"renderer-v2"_s );
   if ( !embeddedRendererElem.isNull() )
   {
     QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
     r->setEmbeddedRenderer( renderer );
   }
-  r->setPreprocessingEnabled( element.attribute( QStringLiteral( "preprocessing" ), QStringLiteral( "0" ) ).toInt() == 1 );
+  r->setPreprocessingEnabled( element.attribute( u"preprocessing"_s, u"0"_s ).toInt() == 1 );
   return r;
 }
 
@@ -83,8 +83,8 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
   // clazy:skip
 
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invertedPolygonRenderer" ) );
-  rendererElem.setAttribute( QStringLiteral( "preprocessing" ), preprocessingEnabled() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  rendererElem.setAttribute( u"type"_s, u"invertedPolygonRenderer"_s );
+  rendererElem.setAttribute( u"preprocessing"_s, preprocessingEnabled() ? u"1"_s : u"0"_s );
 
   if ( mSubRenderer )
   {
@@ -99,20 +99,20 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
 
 QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer ) // cppcheck-suppress duplInheritedMember
 {
-  if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
+  if ( renderer->type() == "invertedPolygonRenderer"_L1 )
   {
     return dynamic_cast<QgsInvertedPolygonRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
-            renderer->type() == QLatin1String( "categorizedSymbol" ) ||
-            renderer->type() == QLatin1String( "graduatedSymbol" ) ||
-            renderer->type() == QLatin1String( "RuleRenderer" ) )
+  else if ( renderer->type() == "singleSymbol"_L1 ||
+            renderer->type() == "categorizedSymbol"_L1 ||
+            renderer->type() == "graduatedSymbol"_L1 ||
+            renderer->type() == "RuleRenderer"_L1 )
   {
     auto res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->clone() );
     renderer->copyRendererData( res.get() );
     return res.release();
   }
-  else if ( renderer->type() == QLatin1String( "mergedFeatureRenderer" ) )
+  else if ( renderer->type() == "mergedFeatureRenderer"_L1 )
   {
     auto res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
     renderer->copyRendererData( res.get() );

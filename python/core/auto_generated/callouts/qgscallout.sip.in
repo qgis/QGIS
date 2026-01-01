@@ -294,7 +294,7 @@ information about how a callout is being rendered.
 
     bool enabled() const;
 %Docstring
-Returns ``True`` if the the callout is enabled.
+Returns ``True`` if the callout is enabled.
 
 .. seealso:: :py:func:`setEnabled`
 %End

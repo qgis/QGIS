@@ -29,26 +29,26 @@ QString QgsVectorizeAlgorithmBase::group() const
 
 QString QgsVectorizeAlgorithmBase::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 void QgsVectorizeAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QStringLiteral( "VALUE" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT_RASTER"_s ) );
+  addParameter( new QgsProcessingParameterString( u"FIELD_NAME"_s, QObject::tr( "Field name" ), u"VALUE"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputType() ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, outputName(), outputType() ) );
 }
 
 bool QgsVectorizeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
 
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  mBand = parameterAsInt( parameters, u"RASTER_BAND"_s, context );
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for RASTER_BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
@@ -64,14 +64,14 @@ bool QgsVectorizeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters,
 
 QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD_NAME"_s, context );
   QgsFields fields;
   fields.append( QgsField( fieldName, QMetaType::Type::Double, QString(), 20, 8 ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, sinkType(), mCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, sinkType(), mCrs ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
 
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
@@ -118,7 +118,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
           f.setGeometry( pixelRectGeometry );
           f.setAttributes( QgsAttributes() << value );
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         }
         currentX += mRasterUnitsPerPixelX;
       }
@@ -129,7 +129,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 
@@ -139,7 +139,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
 
 QString QgsRasterPixelsToPolygonsAlgorithm::name() const
 {
-  return QStringLiteral( "pixelstopolygons" );
+  return u"pixelstopolygons"_s;
 }
 
 QString QgsRasterPixelsToPolygonsAlgorithm::displayName() const
@@ -198,7 +198,7 @@ QgsGeometry QgsRasterPixelsToPolygonsAlgorithm::createGeometryForPixel( double c
 
 QString QgsRasterPixelsToPointsAlgorithm::name() const
 {
-  return QStringLiteral( "pixelstopoints" );
+  return u"pixelstopoints"_s;
 }
 
 QString QgsRasterPixelsToPointsAlgorithm::displayName() const

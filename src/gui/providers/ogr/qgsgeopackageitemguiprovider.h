@@ -36,7 +36,7 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
   public:
     QgsGeoPackageItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "geopackage_items" ); }
+    QString name() override { return u"geopackage_items"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

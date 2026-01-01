@@ -76,19 +76,19 @@ void TestQgsMapToolAddFeatureLineZMCRS::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   mCanvas->show();
 
   // Create capture layer in EPSG:3857
-  mCaptureLayer = new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=EPSG:3857" ), QStringLiteral( "Line Capture Layer" ), QStringLiteral( "memory" ) );
+  mCaptureLayer = new QgsVectorLayer( u"LineStringZM?crs=EPSG:3857"_s, u"Line Capture Layer"_s, u"memory"_s );
   QVERIFY( mCaptureLayer->isValid() );
   QgsProject::instance()->addMapLayers( { mCaptureLayer } );
 
   // Create snapping layer in EPSG:3946
-  mSnappingLayer = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:3946" ), QStringLiteral( "Snapping Points" ), QStringLiteral( "memory" ) );
+  mSnappingLayer = new QgsVectorLayer( u"PointZM?crs=EPSG:3946"_s, u"Snapping Points"_s, u"memory"_s );
   QVERIFY( mSnappingLayer->isValid() );
 
   // Add a snapping point with ZM values

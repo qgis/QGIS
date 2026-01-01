@@ -117,7 +117,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   QToolButton *btnLayers = new QToolButton( this );
   btnLayers->setAutoRaise( true );
   btnLayers->setToolTip( tr( "Set Map Extent to Layer Extent" ) );
-  btnLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLayers.svg" ) ) );
+  btnLayers->setIcon( QgsApplication::getThemeIcon( u"/mActionLayers.svg"_s ) );
   btnLayers->setPopupMode( QToolButton::InstantPopup );
   btnLayers->setMenu( mLayersMenu );
 
@@ -128,7 +128,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   QToolButton *btnBookmarks = new QToolButton( this );
   btnBookmarks->setAutoRaise( true );
   btnBookmarks->setToolTip( tr( "Set Map Extent to Bookmark Extent" ) );
-  btnBookmarks->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
+  btnBookmarks->setIcon( QgsApplication::getThemeIcon( u"/mActionShowBookmarks.svg"_s ) );
   btnBookmarks->setPopupMode( QToolButton::InstantPopup );
   btnBookmarks->setMenu( mBookmarkMenu );
 
@@ -169,7 +169,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   // keep layers from preset button
   QMenu *menuKeepLayers = new QMenu( this );
   mLayerListFromPresetButton->setMenu( menuKeepLayers );
-  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
   connect( menuKeepLayers, &QMenu::aboutToShow, this, &QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu );
 
@@ -1615,7 +1615,7 @@ void QgsLayoutMapWidget::mOverviewListWidget_itemChanged( QListWidgetItem *item 
     return;
   }
 
-  mMapItem->beginCommand( QStringLiteral( "Rename Overview" ) );
+  mMapItem->beginCommand( u"Rename Overview"_s );
   overview->setName( item->text() );
   mMapItem->endCommand();
   if ( item->isSelected() )

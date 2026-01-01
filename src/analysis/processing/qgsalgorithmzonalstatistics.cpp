@@ -25,7 +25,7 @@
 
 QString QgsZonalStatisticsAlgorithm::name() const
 {
-  return QStringLiteral( "zonalstatistics" );
+  return u"zonalstatistics"_s;
 }
 
 QString QgsZonalStatisticsAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QString QgsZonalStatisticsAlgorithm::group() const
 
 QString QgsZonalStatisticsAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsZonalStatisticsAlgorithm::shortDescription() const
@@ -80,23 +80,23 @@ void QgsZonalStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
     statChoices << QgsZonalStatistics::displayName( stat );
   }
 
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Raster band" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "_" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Raster band" ), 1, u"INPUT_RASTER"_s ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterString( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), u"_"_s ) );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTICS" ), QObject::tr( "Statistics to calculate" ), statChoices, true, QVariantList() << 0 << 1 << 2 ) );
+  addParameter( new QgsProcessingParameterEnum( u"STATISTICS"_s, QObject::tr( "Statistics to calculate" ), statChoices, true, QVariantList() << 0 << 1 << 2 ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Zonal statistics" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"INPUT_VECTOR"_s, QObject::tr( "Zonal statistics" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
+  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
   if ( !rasterLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  mBand = parameterAsInt( parameters, u"RASTER_BAND"_s, context );
   if ( mBand < 1 || mBand > rasterLayer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( rasterLayer->bandCount() ) );
 
@@ -105,9 +105,9 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mPixelSizeX = rasterLayer->rasterUnitsPerPixelX();
   mPixelSizeY = rasterLayer->rasterUnitsPerPixelY();
 
-  mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
+  mPrefix = parameterAsString( parameters, u"COLUMN_PREFIX"_s, context );
 
-  const QList<int> stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
+  const QList<int> stats = parameterAsEnums( parameters, u"STATISTICS"_s, context );
   mStats = Qgis::ZonalStatistics();
   for ( const int s : stats )
   {
@@ -119,7 +119,7 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsZonalStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT_VECTOR" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT_VECTOR"_s, context );
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid zones layer" ) );
 
@@ -128,7 +128,7 @@ QVariantMap QgsZonalStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   zs.calculateStatistics( feedback );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "INPUT_VECTOR" ), layer->id() );
+  outputs.insert( u"INPUT_VECTOR"_s, layer->id() );
   return outputs;
 }
 

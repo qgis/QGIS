@@ -128,7 +128,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
 
   const QgsSettings settings;
-  splitter->restoreState( settings.value( QStringLiteral( "/Processing/dialogBaseSplitter" ), QByteArray() ).toByteArray() );
+  splitter->restoreState( settings.value( u"/Processing/dialogBaseSplitter"_s, QByteArray() ).toByteArray() );
   mSplitterState = splitter->saveState();
   splitterChanged( 0, 0 );
 
@@ -152,7 +152,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedButton->setMenu( mAdvancedMenu );
 
       mContextSettingsAction = new QAction( tr( "Algorithm Settings…" ), mAdvancedMenu );
-      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
       mAdvancedMenu->addAction( mContextSettingsAction );
 
       connect( mContextSettingsAction, &QAction::triggered, this, [this] {
@@ -182,7 +182,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedMenu->addSeparator();
 
       QAction *copyAsPythonCommand = new QAction( tr( "Copy as Python Command" ), mAdvancedMenu );
-      copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
+      copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( u"mIconPythonFile.svg"_s ) );
 
       mAdvancedMenu->addAction( copyAsPythonCommand );
       connect( copyAsPythonCommand, &QAction::triggered, this, [this] {
@@ -205,7 +205,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       } );
 
       mCopyAsQgisProcessCommand = new QAction( tr( "Copy as qgis_process Command" ), mAdvancedMenu );
-      mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
+      mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ) );
       mAdvancedMenu->addAction( mCopyAsQgisProcessCommand );
 
       connect( mCopyAsQgisProcessCommand, &QAction::triggered, this, [this] {
@@ -238,7 +238,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedMenu->addSeparator();
 
       QAction *copyAsJson = new QAction( tr( "Copy as JSON" ), mAdvancedMenu );
-      copyAsJson->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
+      copyAsJson->setIcon( QgsApplication::getThemeIcon( u"mActionEditCopy.svg"_s ) );
 
       mAdvancedMenu->addAction( copyAsJson );
       connect( copyAsJson, &QAction::triggered, this, [this] {
@@ -263,7 +263,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       } );
 
       mPasteJsonAction = new QAction( tr( "Paste Settings" ), mAdvancedMenu );
-      mPasteJsonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditPaste.svg" ) ) );
+      mPasteJsonAction->setIcon( QgsApplication::getThemeIcon( u"mActionEditPaste.svg"_s ) );
 
       mAdvancedMenu->addAction( mPasteJsonAction );
       connect( mPasteJsonAction, &QAction::triggered, this, [this] {
@@ -271,7 +271,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
         if ( text.isEmpty() )
           return;
 
-        const QVariantMap parameterValues = QgsJsonUtils::parseJson( text ).toMap().value( QStringLiteral( "inputs" ) ).toMap();
+        const QVariantMap parameterValues = QgsJsonUtils::parseJson( text ).toMap().value( u"inputs"_s ).toMap();
         if ( parameterValues.isEmpty() )
           return;
 
@@ -331,13 +331,13 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   {
     title = mAlgorithm->group().isEmpty()
               ? QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase )
-              : QStringLiteral( "%1 - %2" ).arg( QgsStringUtils::capitalize( mAlgorithm->group(), Qgis::Capitalization::TitleCase ), QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase ) );
+              : u"%1 - %2"_s.arg( QgsStringUtils::capitalize( mAlgorithm->group(), Qgis::Capitalization::TitleCase ), QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase ) );
   }
   else
   {
     title = mAlgorithm->group().isEmpty()
               ? mAlgorithm->displayName()
-              : QStringLiteral( "%1 - %2" ).arg( mAlgorithm->group(), mAlgorithm->displayName() );
+              : u"%1 - %2"_s.arg( mAlgorithm->group(), mAlgorithm->displayName() );
   }
 
   setWindowTitle( title );
@@ -495,7 +495,7 @@ void QgsProcessingAlgorithmDialogBase::openHelp()
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() && mAlgorithm->provider() )
   {
-    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), QStringLiteral( "%1%2" ).arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) ) );
+    algHelp = QgsHelp::helpUrl( u"processing_algs/%1/%2.html#%3"_s.arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), u"%1%2"_s.arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) ) );
   }
 
   if ( !algHelp.isEmpty() )
@@ -636,21 +636,21 @@ void QgsProcessingAlgorithmDialogBase::pushFormattedMessage( const QString &html
 
 void QgsProcessingAlgorithmDialogBase::pushCommandInfo( const QString &command )
 {
-  txtLog->append( QStringLiteral( "<code>%1<code>" ).arg( formatStringForLog( command.toHtmlEscaped() ) ) );
+  txtLog->append( u"<code>%1<code>"_s.arg( formatStringForLog( command.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
 {
-  txtLog->append( QStringLiteral( "<span style=\"color:#777\">%1</span>" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
+  txtLog->append( u"<span style=\"color:#777\">%1</span>"_s.arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
 {
-  txtLog->append( QStringLiteral( "<code style=\"color:#777\">%1</code>" ).arg( formatStringForLog( info.toHtmlEscaped() ) ) );
+  txtLog->append( u"<code style=\"color:#777\">%1</code>"_s.arg( formatStringForLog( info.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
@@ -680,11 +680,11 @@ void QgsProcessingAlgorithmDialogBase::clearLog()
 void QgsProcessingAlgorithmDialogBase::saveLog()
 {
   QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"/Processing/lastUsedLogDirectory"_s, QDir::homePath() ).toString();
 
   QString filter;
-  const QString txtExt = tr( "Text files" ) + QStringLiteral( " (*.txt *.TXT)" );
-  const QString htmlExt = tr( "HTML files" ) + QStringLiteral( " (*.html *.HTML)" );
+  const QString txtExt = tr( "Text files" ) + u" (*.txt *.TXT)"_s;
+  const QString htmlExt = tr( "HTML files" ) + u" (*.html *.HTML)"_s;
 
   const QString path = QFileDialog::getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, txtExt + ";;" + htmlExt, &filter );
   // return dialog focus on Mac
@@ -695,7 +695,7 @@ void QgsProcessingAlgorithmDialogBase::saveLog()
     return;
   }
 
-  settings.setValue( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QFileInfo( path ).path() );
+  settings.setValue( u"/Processing/lastUsedLogDirectory"_s, QFileInfo( path ).path() );
 
   LogFormat format = FormatPlainText;
   if ( filter == htmlExt )
@@ -723,7 +723,7 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
   if ( !mHelpCollapsed )
   {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Processing/dialogBaseSplitter" ), splitter->saveState() );
+    settings.setValue( u"/Processing/dialogBaseSplitter"_s, splitter->saveState() );
   }
 
   QDialog::closeEvent( e );
@@ -768,13 +768,13 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
     QString help;
     for ( const QString &paragraph : paragraphs )
     {
-      help += QStringLiteral( "<p>%1</p>" ).arg( paragraph );
+      help += u"<p>%1</p>"_s.arg( paragraph );
     }
-    result = QStringLiteral( "<h2>%1</h2>%2" ).arg( algorithm->displayName(), help );
+    result = u"<h2>%1</h2>%2"_s.arg( algorithm->displayName(), help );
   }
   else if ( !algorithm->shortDescription().isEmpty() )
   {
-    result = QStringLiteral( "<h2>%1</h2><p>%2</p>" ).arg( algorithm->displayName(), algorithm->shortDescription() );
+    result = u"<h2>%1</h2><p>%2</p>"_s.arg( algorithm->displayName(), algorithm->shortDescription() );
   }
 
   if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
@@ -787,15 +787,15 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
         flags << QgsProcessing::documentationFlagToString( flag );
       }
     }
-    result += QStringLiteral( "<ul><li><i>%1</i></li></ul>" ).arg( flags.join( QLatin1String( "</i></li><li><i>" ) ) );
+    result += u"<ul><li><i>%1</i></li></ul>"_s.arg( flags.join( "</i></li><li><i>"_L1 ) );
   }
   if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::SecurityRisk )
   {
-    result += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks." ) );
+    result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks." ) );
   }
   if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
   {
-    result += QStringLiteral( "<p><b>%1</b></p>" ).arg( tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." ) );
+    result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." ) );
   }
 
   return result;
@@ -897,7 +897,7 @@ void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTas
 QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &string )
 {
   QString s = string;
-  s.replace( '\n', QLatin1String( "<br>" ) );
+  s.replace( '\n', "<br>"_L1 );
   return s;
 }
 
@@ -934,13 +934,13 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
   // note -- we have to wrap the message in a span block, or QTextEdit::append sometimes gets confused
   // and varies between treating it as a HTML string or a plain text string! (see https://github.com/qgis/QGIS/issues/37934)
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
-    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( tr( "Message log truncated" ) ) );
+    txtLog->append( u"<span style=\"color:red\">%1</span>"_s.arg( tr( "Message log truncated" ) ) );
   else if ( isError || isWarning )
-    txtLog->append( QStringLiteral( "<span style=\"color:%1\">%2</span>" ).arg( isError ? QStringLiteral( "red" ) : QStringLiteral( "#b85a20" ), escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
+    txtLog->append( u"<span style=\"color:%1\">%2</span>"_s.arg( isError ? u"red"_s : u"#b85a20"_s, escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
   else if ( escapeHtml )
-    txtLog->append( QStringLiteral( "<span>%1</span" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
+    txtLog->append( u"<span>%1</span"_s.arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   else
-    txtLog->append( QStringLiteral( "<span>%1</span>" ).arg( formatStringForLog( message ) ) );
+    txtLog->append( u"<span>%1</span>"_s.arg( formatStringForLog( message ) ) );
   scrollToBottomOfLog();
   processEvents();
 }

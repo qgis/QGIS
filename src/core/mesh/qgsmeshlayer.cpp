@@ -743,15 +743,15 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( meta.extraOptions().contains( QStringLiteral( "classification" ) ) )
+  if ( meta.extraOptions().contains( u"classification"_s ) )
   {
     QgsColorRampShader colorRampShader = scalarSettings.colorRampShader();
     QgsColorRamp *colorRamp = colorRampShader.sourceColorRamp();
-    const QStringList classes = meta.extraOptions()[QStringLiteral( "classification" )].split( QStringLiteral( ";;" ) );
+    const QStringList classes = meta.extraOptions()[u"classification"_s].split( u";;"_s );
 
     QString units;
-    if ( meta.extraOptions().contains( QStringLiteral( "units" ) ) )
-      units = meta.extraOptions()[ QStringLiteral( "units" )];
+    if ( meta.extraOptions().contains( u"units"_s ) )
+      units = meta.extraOptions()[ u"units"_s];
 
     QVector<QVector<double>> bounds;
     for ( const QString &classe : classes )
@@ -1535,13 +1535,13 @@ QList<int> QgsMeshLayer::selectVerticesByExpression( QgsExpression expression )
   QgsExpressionContext context;
   std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
   context.appendScope( expScope.release() );
-  context.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( *mNativeMesh ) );
+  context.lastScope()->setVariable( u"_native_mesh"_s, QVariant::fromValue( *mNativeMesh ) );
 
   expression.prepare( &context );
 
   for ( int i = 0; i < mNativeMesh->vertexCount(); ++i )
   {
-    context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), i, false );
+    context.lastScope()->setVariable( u"_mesh_vertex_index"_s, i, false );
 
     if ( expression.evaluate( &context ).toBool() )
       ret.append( i );
@@ -1568,13 +1568,13 @@ QList<int> QgsMeshLayer::selectFacesByExpression( QgsExpression expression )
   QgsExpressionContext context;
   std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
   context.appendScope( expScope.release() );
-  context.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( *mNativeMesh ) );
+  context.lastScope()->setVariable( u"_native_mesh"_s, QVariant::fromValue( *mNativeMesh ) );
 
   expression.prepare( &context );
 
   for ( int i = 0; i < mNativeMesh->faceCount(); ++i )
   {
-    context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), i, false );
+    context.lastScope()->setVariable( u"_mesh_face_index"_s, i, false );
 
     if ( expression.evaluate( &context ).toBool() )
       ret.append( i );
@@ -1632,7 +1632,7 @@ void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplificationSet
 
 static QgsColorRamp *_createDefaultColorRamp()
 {
-  QgsColorRamp *ramp = QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Plasma" ) );
+  QgsColorRamp *ramp = QgsStyle::defaultStyle()->colorRamp( u"Plasma"_s );
   if ( ramp )
     return ramp;
 
@@ -1842,10 +1842,10 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   QDomElement nameToIndexElem = elem.firstChildElement( "name-to-global-index" );
   while ( !nameToIndexElem.isNull() )
   {
-    const QString name = nameToIndexElem.attribute( QStringLiteral( "name" ) );
-    int globalIndex = nameToIndexElem.attribute( QStringLiteral( "global-index" ) ).toInt();
+    const QString name = nameToIndexElem.attribute( u"name"_s );
+    int globalIndex = nameToIndexElem.attribute( u"global-index"_s ).toInt();
     groupNameToGlobalIndex.insert( name, globalIndex );
-    nameToIndexElem = nameToIndexElem.nextSiblingElement( QStringLiteral( "name-to-global-index" ) );
+    nameToIndexElem = nameToIndexElem.nextSiblingElement( u"name-to-global-index"_s );
   }
 
   mRendererSettings = accordSymbologyWithGroupName( rendererSettings, groupNameToGlobalIndex );
@@ -1857,7 +1857,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
     mSimplificationSettings.readXml( elemSimplifySettings, context );
 
   // get and set the blend mode if it exists
-  const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+  const QDomNode blendModeNode = node.namedItem( u"blendMode"_s );
   if ( !blendModeNode.isNull() )
   {
     const QDomElement e = blendModeNode.toElement();
@@ -1869,11 +1869,11 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   {
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
 
-    QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
+    QDomElement labelingElement = node.firstChildElement( u"labeling"_s );
     if ( !labelingElement.isNull() )
     {
       QgsAbstractMeshLayerLabeling *labeling = QgsAbstractMeshLayerLabeling::create( labelingElement, context );
-      mLabelsEnabled = node.toElement().attribute( QStringLiteral( "labelsEnabled" ), QStringLiteral( "0" ) ).toInt();
+      mLabelsEnabled = node.toElement().attribute( u"labelsEnabled"_s, u"0"_s ).toInt();
       setLabeling( labeling );
     }
   }
@@ -1881,7 +1881,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   // get and set the layer transparency
   if ( categories.testFlag( Rendering ) )
   {
-    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( u"layerOpacity"_s );
     if ( !layerOpacityNode.isNull() )
     {
       const QDomElement e = layerOpacityNode.toElement();
@@ -1893,7 +1893,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   {
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
-    const QDomElement legendElem = node.firstChildElement( QStringLiteral( "legend" ) );
+    const QDomElement legendElem = node.firstChildElement( u"legend"_s );
     if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
     {
       l->readXml( legendElem, context );
@@ -1922,9 +1922,9 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   // we store the relation between name and indexes to be able to retrieve the consistency between name and symbology
   for ( int index : groupIndexes )
   {
-    QDomElement elemNameToIndex = doc.createElement( QStringLiteral( "name-to-global-index" ) );
-    elemNameToIndex.setAttribute( QStringLiteral( "name" ), mDatasetGroupStore->groupName( index ) );
-    elemNameToIndex.setAttribute( QStringLiteral( "global-index" ), index );
+    QDomElement elemNameToIndex = doc.createElement( u"name-to-global-index"_s );
+    elemNameToIndex.setAttribute( u"name"_s, mDatasetGroupStore->groupName( index ) );
+    elemNameToIndex.setAttribute( u"global-index"_s, index );
     elem.appendChild( elemNameToIndex );
   }
 
@@ -1932,7 +1932,7 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   elem.appendChild( elemSimplifySettings );
 
   // add blend mode node
-  QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );
+  QDomElement blendModeElement  = doc.createElement( u"blendMode"_s );
   const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
   blendModeElement.appendChild( blendModeText );
   node.appendChild( blendModeElement );
@@ -1944,13 +1944,13 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
       QDomElement labelingElement = mLabeling->save( doc, context );
       elem.appendChild( labelingElement );
     }
-    elem.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    elem.setAttribute( u"labelsEnabled"_s, mLabelsEnabled ? u"1"_s : u"0"_s );
   }
 
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomElement layerOpacityElem  = doc.createElement( u"layerOpacity"_s );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
@@ -1998,10 +1998,10 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsMeshLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
+  QgsDebugMsgLevel( u"Datasource in QgsMeshLayer::readXml: %1"_s.arg( mDataSource.toLocal8Bit().data() ), 3 );
 
   //process provider key
-  const QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );
+  const QDomNode pkeyNode = layer_node.namedItem( u"provider"_s );
 
   if ( pkeyNode.isNull() )
   {
@@ -2021,23 +2021,23 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   const QgsDataProvider::ProviderOptions providerOptions;
   Qgis::DataProviderReadFlags flags = providerReadFlags( layer_node, mReadFlags );
 
-  const QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
+  const QDomElement elemExtraDatasets = layer_node.firstChildElement( u"extra-datasets"_s );
   if ( !elemExtraDatasets.isNull() )
   {
-    QDomElement elemUri = elemExtraDatasets.firstChildElement( QStringLiteral( "uri" ) );
+    QDomElement elemUri = elemExtraDatasets.firstChildElement( u"uri"_s );
     while ( !elemUri.isNull() )
     {
       const QString uri = context.pathResolver().readPath( elemUri.text() );
       mExtraDatasetUri.append( uri );
-      elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
+      elemUri = elemUri.nextSiblingElement( u"uri"_s );
     }
   }
 
-  if ( pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
-    mTemporalUnit = static_cast<Qgis::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() );
+  if ( pkeyNode.toElement().hasAttribute( u"time-unit"_s ) )
+    mTemporalUnit = static_cast<Qgis::TemporalUnit>( pkeyNode.toElement().attribute( u"time-unit"_s ).toInt() );
 
   // read dataset group store
-  const QDomElement elemDatasetGroupsStore = layer_node.firstChildElement( QStringLiteral( "mesh-dataset-groups-store" ) );
+  const QDomElement elemDatasetGroupsStore = layer_node.firstChildElement( u"mesh-dataset-groups-store"_s );
   if ( elemDatasetGroupsStore.isNull() )
     resetDatasetGroupTreeItem();
   else
@@ -2052,14 +2052,14 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
 
   // read static dataset
-  const QDomElement elemStaticDataset = layer_node.firstChildElement( QStringLiteral( "static-active-dataset" ) );
-  if ( elemStaticDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
+  const QDomElement elemStaticDataset = layer_node.firstChildElement( u"static-active-dataset"_s );
+  if ( elemStaticDataset.hasAttribute( u"scalar"_s ) )
   {
-    mStaticScalarDatasetIndex = elemStaticDataset.attribute( QStringLiteral( "scalar" ) ).toInt();
+    mStaticScalarDatasetIndex = elemStaticDataset.attribute( u"scalar"_s ).toInt();
   }
-  if ( elemStaticDataset.hasAttribute( QStringLiteral( "vector" ) ) )
+  if ( elemStaticDataset.hasAttribute( u"vector"_s ) )
   {
-    mStaticVectorDatasetIndex = elemStaticDataset.attribute( QStringLiteral( "vector" ) ).toInt();
+    mStaticVectorDatasetIndex = elemStaticDataset.attribute( u"vector"_s ).toInt();
   }
 
   return isValid(); // should be true if read successfully
@@ -2072,38 +2072,38 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   // first get the layer element so that we can append the type attribute
   QDomElement mapLayerNode = layer_node.toElement();
 
-  if ( mapLayerNode.isNull() || ( QLatin1String( "maplayer" ) != mapLayerNode.nodeName() ) )
+  if ( mapLayerNode.isNull() || ( "maplayer"_L1 != mapLayerNode.nodeName() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
+    QgsDebugMsgLevel( u"can't find <maplayer>"_s, 2 );
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) );
+  mapLayerNode.setAttribute( u"type"_s, QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) );
 
   // add provider node
   if ( mDataProvider )
   {
-    QDomElement provider  = document.createElement( QStringLiteral( "provider" ) );
+    QDomElement provider  = document.createElement( u"provider"_s );
     const QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
-    provider.setAttribute( QStringLiteral( "time-unit" ), static_cast< int >( mDataProvider->temporalCapabilities()->temporalUnit() ) );
+    provider.setAttribute( u"time-unit"_s, static_cast< int >( mDataProvider->temporalCapabilities()->temporalUnit() ) );
 
     const QStringList extraDatasetUris = mDataProvider->extraDatasets();
-    QDomElement elemExtraDatasets = document.createElement( QStringLiteral( "extra-datasets" ) );
+    QDomElement elemExtraDatasets = document.createElement( u"extra-datasets"_s );
     for ( const QString &uri : extraDatasetUris )
     {
       const QString path = context.pathResolver().writePath( uri );
-      QDomElement elemUri = document.createElement( QStringLiteral( "uri" ) );
+      QDomElement elemUri = document.createElement( u"uri"_s );
       elemUri.appendChild( document.createTextNode( path ) );
       elemExtraDatasets.appendChild( elemUri );
     }
     layer_node.appendChild( elemExtraDatasets );
   }
 
-  QDomElement elemStaticDataset = document.createElement( QStringLiteral( "static-active-dataset" ) );
-  elemStaticDataset.setAttribute( QStringLiteral( "scalar" ), mStaticScalarDatasetIndex );
-  elemStaticDataset.setAttribute( QStringLiteral( "vector" ), mStaticVectorDatasetIndex );
+  QDomElement elemStaticDataset = document.createElement( u"static-active-dataset"_s );
+  elemStaticDataset.setAttribute( u"scalar"_s, mStaticScalarDatasetIndex );
+  elemStaticDataset.setAttribute( u"vector"_s, mStaticVectorDatasetIndex );
   layer_node.appendChild( elemStaticDataset );
 
   // write dataset group store if not in edting mode
@@ -2160,16 +2160,16 @@ QString QgsMeshLayer::htmlMetadata() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsLayerMetadataFormatter htmlFormatter( metadata() );
-  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
+  QString myMetadata = u"<html>\n<body>\n"_s;
 
   myMetadata += generalHtmlMetadata();
 
   // Begin Provider section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
+  myMetadata += u"<h1>"_s + tr( "Information from provider" ) + u"</h1>\n<hr>\n"_s;
+  myMetadata += "<table class=\"list-view\">\n"_L1;
 
   // Extent
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Extent" ) + u"</td><td>"_s + extent().toString() + u"</td></tr>\n"_s;
 
   // feature count
   QLocale locale = QLocale();
@@ -2177,64 +2177,64 @@ QString QgsMeshLayer::htmlMetadata() const
 
   if ( const QgsMeshDataProvider *provider = dataProvider() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Vertex count" ) + QStringLiteral( "</td><td>" )
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Vertex count" ) + u"</td><td>"_s
                   + ( locale.toString( static_cast<qlonglong>( meshVertexCount() ) ) )
-                  + QStringLiteral( "</td></tr>\n" );
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Face count" ) + QStringLiteral( "</td><td>" )
+                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Face count" ) + u"</td><td>"_s
                   + ( locale.toString( static_cast<qlonglong>( meshFaceCount() ) ) )
-                  + QStringLiteral( "</td></tr>\n" );
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Edge count" ) + QStringLiteral( "</td><td>" )
+                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Edge count" ) + u"</td><td>"_s
                   + ( locale.toString( static_cast<qlonglong>( meshEdgeCount() ) ) )
-                  + QStringLiteral( "</td></tr>\n" );
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Dataset groups count" ) + QStringLiteral( "</td><td>" )
+                  + u"</td></tr>\n"_s;
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Dataset groups count" ) + u"</td><td>"_s
                   + ( locale.toString( static_cast<qlonglong>( datasetGroupCount() ) ) )
-                  + QStringLiteral( "</td></tr>\n" );
+                  + u"</td></tr>\n"_s;
     myMetadata += provider->htmlMetadata();
   }
 
   // End Provider section
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata += "</table>\n<br><br>"_L1;
 
   // CRS
   myMetadata += crsHtmlMetadata();
 
   // identification section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Identification" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.identificationSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // extent section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Extent" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.extentSectionHtml( isSpatial() );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the Access section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Access" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.accessSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the contacts section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Contacts" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.contactsSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the links section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Links" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.linksSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the history section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "History" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.historySectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   myMetadata += customPropertyHtmlMetadata();
 
-  myMetadata += QLatin1String( "\n</body>\n</html>\n" );
+  myMetadata += "\n</body>\n</html>\n"_L1;
   return myMetadata;
 }
 
@@ -2262,25 +2262,25 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   else
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
-    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+    if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), u"projectload"_s );
 
     mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
   }
 
   if ( !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );
+    QgsDebugMsgLevel( u"Unable to get mesh data provider"_s, 2 );
     return false;
   }
 
   mDataProvider->setParent( this );
-  QgsDebugMsgLevel( QStringLiteral( "Instantiated the mesh data provider plugin" ), 2 );
+  QgsDebugMsgLevel( u"Instantiated the mesh data provider plugin"_s, 2 );
 
   setValid( mDataProvider->isValid() );
   if ( !isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Invalid mesh provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
+    QgsDebugMsgLevel( u"Invalid mesh provider plugin %1"_s.arg( QString( mDataSource.toUtf8() ) ), 2 );
     return false;
   }
 
@@ -2295,10 +2295,10 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
 
   setCrs( mDataProvider->crs() );
 
-  if ( provider == QLatin1String( "mesh_memory" ) )
+  if ( provider == "mesh_memory"_L1 )
   {
     // required so that source differs between memory layers
-    mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
+    mDataSource = mDataSource + u"&uid=%1"_s.arg( QUuid::createUuid().toString() );
   }
 
   // set default style if required by flags or if the dataset group does not has a style yet
@@ -2362,7 +2362,7 @@ bool QgsMeshLayer::datasetsPathUnique( const QString &path )
 {
   if ( ! mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );
+    QgsDebugMsgLevel( u"Unable to get mesh data provider"_s, 2 );
     return false;
   }
 

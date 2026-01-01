@@ -210,7 +210,7 @@ bool QgsGeometryAngleCheck::factoryIsCompatible( QgsVectorLayer *layer )
 
 QString QgsGeometryAngleCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryAngleCheck" );
+  return u"QgsGeometryAngleCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometryAngleCheck::factoryCheckType()

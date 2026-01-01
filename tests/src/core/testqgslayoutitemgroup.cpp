@@ -33,7 +33,7 @@ class TestQgsLayoutItemGroup : public QgsTest
 
   public:
     TestQgsLayoutItemGroup()
-      : QgsTest( QStringLiteral( "Layout Group Item" ) ) {}
+      : QgsTest( u"Layout Group Item"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -59,10 +59,10 @@ class TestQgsLayoutItemGroup : public QgsTest
 void TestQgsLayoutItemGroup::dumpUndoStack( const QUndoStack &us, QString prefix ) const
 {
   if ( !prefix.isEmpty() )
-    prefix += QLatin1String( ": " );
+    prefix += ": "_L1;
   for ( int i = 0; i < us.count(); ++i )
   {
-    QgsDebugMsgLevel( QStringLiteral( "%4US %1: %2%3" ).arg( i ).arg( i >= us.index() ? "-" : "", us.text( i ), prefix ), 1 );
+    QgsDebugMsgLevel( u"%4US %1: %2%3"_s.arg( i ).arg( i >= us.index() ? "-" : "", us.text( i ), prefix ), 1 );
   }
 }
 
@@ -566,13 +566,13 @@ void TestQgsLayoutItemGroup::undoRedo()
   //test for crash when undo/redoing with groups
   // Set initial condition
   QUndoStack *us = l.undoStack()->stack();
-  QgsDebugMsgLevel( QStringLiteral( "clearing" ), 1 );
+  QgsDebugMsgLevel( u"clearing"_s, 1 );
   us->clear();
-  QgsDebugMsgLevel( QStringLiteral( "clearing completed" ), 1 );
+  QgsDebugMsgLevel( u"clearing completed"_s, 1 );
   QList<QgsLayoutItem *> items;
   l.layoutItems( items );
   QCOMPARE( items.size(), 0 );
-  QgsDebugMsgLevel( QStringLiteral( "clear stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"clear stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
 
   //create some items
   item1 = new QgsLayoutItemShape( &l );
@@ -592,7 +592,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   //  QCOMPARE( spyPolygonAdded.count(), ++shapesAdded );
   l.layoutItems( items );
   QCOMPARE( items.size(), 2 ); // 2 shapes
-  QgsDebugMsgLevel( QStringLiteral( "addedItems stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"addedItems stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
   QCOMPARE( item1->pos(), QPointF( 50, 90 ) );
   QCOMPARE( item2->pos(), QPointF( 2, 3 ) );
   //dumpUndoStack(*us, "after initial items addition");
@@ -614,12 +614,12 @@ void TestQgsLayoutItemGroup::undoRedo()
   //dumpUndoStack(*us, "after initial items addition");
 
   //move group
-  QgsDebugMsgLevel( QStringLiteral( "moving group" ), 1 );
+  QgsDebugMsgLevel( u"moving group"_s, 1 );
   group->attemptMove( QgsLayoutPoint( 10.0, 20.0 ) );
   // QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   // QCOMPARE( spyGroupAdded.count(), groupsAdded );
   // QCOMPARE( spyItemRemoved.count(), itemsRemoved );
-  QgsDebugMsgLevel( QStringLiteral( "groupItems stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"groupItems stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
   QCOMPARE( group->items().size(), 2 );
   l.layoutItems( items );
   QCOMPARE( items.size(), 3 ); // 2 shapes, 1 group
@@ -629,7 +629,7 @@ void TestQgsLayoutItemGroup::undoRedo()
 
   //ungroup
   QPointer<QgsLayoutItemGroup> pGroup( group ); // for testing deletion
-  QgsDebugMsgLevel( QStringLiteral( "ungrouping" ), 1 );
+  QgsDebugMsgLevel( u"ungrouping"_s, 1 );
   l.ungroupItems( group );
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
@@ -647,7 +647,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   // US 2: Remove item group
 
   //undo (groups again) -- crashed here before #11371 got fixed
-  QgsDebugMsgLevel( QStringLiteral( "undo ungrouping" ), 1 );
+  QgsDebugMsgLevel( u"undo ungrouping"_s, 1 );
   us->undo();
   //  QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   // QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
@@ -672,7 +672,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   // US 2: -Remove item group
 
   //remove group
-  QgsDebugMsgLevel( QStringLiteral( "remove group" ), 1 );
+  QgsDebugMsgLevel( u"remove group"_s, 1 );
   l.removeLayoutItem( group );
   // QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   //QCOMPARE( spyGroupAdded.count(), groupsAdded );
@@ -686,14 +686,14 @@ void TestQgsLayoutItemGroup::undoRedo()
 
   l.layoutItems( items );
   QCOMPARE( items.size(), 0 ); // nothing
-  QgsDebugMsgLevel( QStringLiteral( "remove stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"remove stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
   //dumpUndoStack(*us, "after remove group");
   // US 0: Items grouped
   // US 1: move group
   // US 2: Remove item group
 
   //undo remove group
-  QgsDebugMsgLevel( QStringLiteral( "undo remove group" ), 1 );
+  QgsDebugMsgLevel( u"undo remove group"_s, 1 );
   us->undo();
   //shapesAdded += 2;
   //QCOMPARE( spyPolygonAdded.count(), shapesAdded );
@@ -709,14 +709,14 @@ void TestQgsLayoutItemGroup::undoRedo()
   QCOMPARE( item1->parentGroup(), group );
   item2 = dynamic_cast<QgsLayoutItemShape *>( l.itemByUuid( item2Uuid ) );
   QCOMPARE( item2->parentGroup(), group );
-  QgsDebugMsgLevel( QStringLiteral( "undo stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"undo stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
   //dumpUndoStack(*us, "after undo remove group");
   // US 0: Items grouped
   // US 1: move group
   // US 2: -Remove item group
 
   //undo move group
-  QgsDebugMsgLevel( QStringLiteral( "undo move group" ), 1 );
+  QgsDebugMsgLevel( u"undo move group"_s, 1 );
   us->undo();
   // QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   // QCOMPARE( spyGroupAdded.count(), groupsAdded );
@@ -737,7 +737,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   //undo group
   pGroup = group;
 
-  QgsDebugMsgLevel( QStringLiteral( "undo group" ), 1 );
+  QgsDebugMsgLevel( u"undo group"_s, 1 );
   us->undo();
   //QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   //QCOMPARE( spyGroupAdded.count(), groupsAdded );
@@ -757,7 +757,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   // US 2: -Remove item group
 
   //redo group
-  QgsDebugMsgLevel( QStringLiteral( "redo group" ), 1 );
+  QgsDebugMsgLevel( u"redo group"_s, 1 );
   us->redo();
   //QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   //QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
@@ -774,7 +774,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   // US 2: -Remove item group
 
   //redo move group
-  QgsDebugMsgLevel( QStringLiteral( "redo move group" ), 1 );
+  QgsDebugMsgLevel( u"redo move group"_s, 1 );
   us->redo();
   //QCOMPARE( spyPolygonAdded.count(), shapesAdded );
   //QCOMPARE( spyGroupAdded.count(), groupsAdded );
@@ -795,7 +795,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   // US 2: -Remove item group
 
   //redo remove group
-  QgsDebugMsgLevel( QStringLiteral( "redo remove group" ), 1 );
+  QgsDebugMsgLevel( u"redo remove group"_s, 1 );
   pGroup = group;
   pItem1 = item1;
   pItem2 = item2;
@@ -811,7 +811,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   QVERIFY( !pItem1 );
   QVERIFY( !pItem2 );
 
-  QgsDebugMsgLevel( QStringLiteral( "undo stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"undo stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
   //dumpUndoStack(*us, "after redo remove group");
   // US 0: Items grouped
   // US 1: move group
@@ -820,7 +820,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   //unwind the whole stack
   us->clear();
 
-  QgsDebugMsgLevel( QStringLiteral( "clear stack count:%1 index:%2" ).arg( us->count() ).arg( us->index() ), 1 );
+  QgsDebugMsgLevel( u"clear stack count:%1 index:%2"_s.arg( us->count() ).arg( us->index() ), 1 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutItemGroup )

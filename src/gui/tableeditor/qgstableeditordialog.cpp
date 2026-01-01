@@ -68,10 +68,10 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
       emit tableChanged();
   } );
 
-  const int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
+  const int minDockWidth( fontMetrics().boundingRect( u"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"_s ).width() );
 
   mPropertiesDock = new QgsDockWidget( tr( "Cell Contents" ), this );
-  mPropertiesDock->setObjectName( QStringLiteral( "FormattingDock" ) );
+  mPropertiesDock->setObjectName( u"FormattingDock"_s );
   mPropertiesStack = new QgsPanelWidgetStack();
   mPropertiesDock->setWidget( mPropertiesStack );
   mPropertiesDock->setMinimumWidth( minDockWidth );
@@ -141,10 +141,10 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   // restore the toolbar and dock widgets positions using Qt settings API
   const QgsSettings settings;
 
-  const QByteArray state = settings.value( QStringLiteral( "LayoutDesigner/tableEditorState" ), QByteArray(), QgsSettings::App ).toByteArray();
+  const QByteArray state = settings.value( u"LayoutDesigner/tableEditorState"_s, QByteArray(), QgsSettings::App ).toByteArray();
   if ( !state.isEmpty() && !restoreState( state ) )
   {
-    QgsDebugError( QStringLiteral( "restore of table editor dialog UI state failed" ) );
+    QgsDebugError( u"restore of table editor dialog UI state failed"_s );
   }
 }
 
@@ -152,7 +152,7 @@ void QgsTableEditorDialog::closeEvent( QCloseEvent * )
 {
   QgsSettings settings;
   // store the toolbar/dock widget settings using Qt settings API
-  settings.setValue( QStringLiteral( "LayoutDesigner/tableEditorState" ), saveState(), QgsSettings::App );
+  settings.setValue( u"LayoutDesigner/tableEditorState"_s, saveState(), QgsSettings::App );
 }
 
 QgsMapLayer *QgsTableEditorDialog::layer() const

@@ -50,8 +50,8 @@ class QgsSelectWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
   public:
     QgsSelectWithinDistanceAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSelectDistance.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSelectDistance.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSelectDistance.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSelectDistance.svg"_s ); }
     QString name() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString displayName() const override;

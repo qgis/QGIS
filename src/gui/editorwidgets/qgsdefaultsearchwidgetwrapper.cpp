@@ -29,7 +29,7 @@
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mCaseString( QStringLiteral( "LIKE" ) )
+  , mCaseString( u"LIKE"_s )
 {
 }
 
@@ -42,11 +42,11 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 {
   if ( caseSensitiveCheckState == Qt::Checked )
   {
-    mCaseString = QStringLiteral( "LIKE" );
+    mCaseString = u"LIKE"_s;
   }
   else
   {
-    mCaseString = QStringLiteral( "ILIKE" );
+    mCaseString = u"ILIKE"_s;
   }
   // need to update also the line edit
   setExpression( mLineEdit->text() );
@@ -62,7 +62,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
   QString str;
   if ( expression == nullValue )
   {
-    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = u"%1 IS NULL"_s.arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
@@ -79,8 +79,8 @@ void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
         exp = QString::number( doubleValue );
       }
     }
-    str = QStringLiteral( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ), isNumeric ? QStringLiteral( "=" ) : mCaseString, isNumeric ? exp.replace( '\'', QLatin1String( "''" ) ) : '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
+    str = u"%1 %2 '%3'"_s
+            .arg( QgsExpression::quotedColumnRef( fieldName ), isNumeric ? u"="_s : mCaseString, isNumeric ? exp.replace( '\'', "''"_L1 ) : '%' + exp.replace( '\'', "''"_L1 ) + '%' ); // escape quotes
   }
   mExpression = str;
 }
@@ -227,8 +227,8 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
           return fieldName + ( ( flags & EqualTo ) ? "=" : "<>" )
                  + QgsExpression::quotedString( mLineEdit->text() );
         else
-          return QStringLiteral( "lower(%1)" ).arg( fieldName )
-                 + ( ( flags & EqualTo ) ? "=" : "<>" ) + QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
+          return u"lower(%1)"_s.arg( fieldName )
+                 + ( ( flags & EqualTo ) ? "=" : "<>" ) + u"lower(%1)"_s.arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
       else if ( flags & Contains || flags & DoesNotContain || flags & StartsWith || flags & EndsWith )
       {
@@ -292,7 +292,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
 
   if ( fldType == QMetaType::Type::QString )
   {
-    mCheckbox = new QCheckBox( QStringLiteral( "Case sensitive" ) );
+    mCheckbox = new QCheckBox( u"Case sensitive"_s );
     mContainer->layout()->addWidget( mCheckbox );
     connect( mCheckbox, &QCheckBox::stateChanged, this, &QgsDefaultSearchWidgetWrapper::setCaseString );
     mCheckbox->setChecked( Qt::Unchecked );
@@ -302,7 +302,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
   connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsDefaultSearchWidgetWrapper::filterChanged );
   connect( mLineEdit, &QLineEdit::textEdited, this, &QgsSearchWidgetWrapper::valueChanged );
 
-  mCaseString = QStringLiteral( "ILIKE" );
+  mCaseString = u"ILIKE"_s;
 }
 
 bool QgsDefaultSearchWidgetWrapper::valid() const

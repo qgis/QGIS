@@ -23,7 +23,7 @@
 
 QString QgsFilterAlgorithm::name() const
 {
-  return QStringLiteral( "filter" );
+  return u"filter"_s;
 }
 
 QString QgsFilterAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsFilterAlgorithm::group() const
 
 QString QgsFilterAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsFilterAlgorithm::flags() const
@@ -73,30 +73,30 @@ QgsFilterAlgorithm::~QgsFilterAlgorithm()
 
 void QgsFilterAlgorithm::initAlgorithm( const QVariantMap &configuration )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  const QVariantList outputs = configuration.value( QStringLiteral( "outputs" ) ).toList();
+  const QVariantList outputs = configuration.value( u"outputs"_s ).toList();
   for ( const QVariant &output : outputs )
   {
     const QVariantMap outputDef = output.toMap();
-    const QString name = QStringLiteral( "OUTPUT_%1" ).arg( outputDef.value( QStringLiteral( "name" ) ).toString() );
-    QgsProcessingParameterFeatureSink *outputParam = new QgsProcessingParameterFeatureSink( name, outputDef.value( QStringLiteral( "name" ) ).toString() );
+    const QString name = u"OUTPUT_%1"_s.arg( outputDef.value( u"name"_s ).toString() );
+    QgsProcessingParameterFeatureSink *outputParam = new QgsProcessingParameterFeatureSink( name, outputDef.value( u"name"_s ).toString() );
     Qgis::ProcessingParameterFlags flags;
     flags |= Qgis::ProcessingParameterFlag::Hidden;
-    if ( outputDef.value( QStringLiteral( "isModelOutput" ) ).toBool() )
+    if ( outputDef.value( u"isModelOutput"_s ).toBool() )
       flags |= Qgis::ProcessingParameterFlag::IsModelOutput;
     outputParam->setFlags( flags );
     addParameter( outputParam );
-    mOutputs.append( new Output( name, outputDef.value( QStringLiteral( "expression" ) ).toString() ) );
+    mOutputs.append( new Output( name, outputDef.value( u"expression"_s ).toString() ) );
   }
 }
 
 
 QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   for ( Output *output : std::as_const( mOutputs ) )
