@@ -68,7 +68,7 @@ only of triangle patches.
 
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual bool deleteVertices( QList<QgsVertexId> positions );
+    virtual bool deleteVertices( const QList<QgsVertexId> &positions );
 
 
     void setTriangles( const QVector<QgsTriangle *> &triangles /Transfer/ );

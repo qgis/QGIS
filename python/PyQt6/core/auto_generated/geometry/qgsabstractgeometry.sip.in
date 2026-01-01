@@ -519,15 +519,20 @@ Deletes a vertex within the geometry
 .. seealso:: :py:func:`moveVertex`
 %End
 
-    virtual bool deleteVertices( QList<QgsVertexId> positions ) = 0;
+    virtual bool deleteVertices( const QList<QgsVertexId> &positions ) = 0;
 %Docstring
-Deletes vertices within the geometry
+Deletes vertices within the geometry If a vertex cannot be deleted, the
+method returns ``False`` and the geometry may be left in a partially
+modified and invalid state
 
 :param positions: list of vertex ids for vertices to delete
 
-:return: ``True`` if delete was successful
+:return: ``True`` if all requested vertices were deleted, ``False`` if a
+         single vertex could not be deleted
 
 .. seealso:: :py:func:`deleteVertex`
+
+.. versionadded:: 4.0
 %End
 
     virtual double length() const;

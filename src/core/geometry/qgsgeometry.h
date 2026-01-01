@@ -891,7 +891,7 @@ class CORE_EXPORT QgsGeometry
      * \see deleteVertex()
      * \since QGIS 4.0
      */
-    bool deleteVertices( const QList<int> atVertices );
+    bool deleteVertices( const QList<int> &atVertices );
 
     /**
      * Converts the vertex at the given position from/to circular

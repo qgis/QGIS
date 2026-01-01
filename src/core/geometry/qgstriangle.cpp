@@ -262,7 +262,7 @@ bool QgsTriangle::deleteVertex( QgsVertexId position )
   return false;
 }
 
-bool QgsTriangle::deleteVertices( QList<QgsVertexId> positions )
+bool QgsTriangle::deleteVertices( const QList<QgsVertexId> &positions )
 {
   Q_UNUSED( positions )
   return false;

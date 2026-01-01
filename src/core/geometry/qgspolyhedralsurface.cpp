@@ -760,7 +760,7 @@ bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
   return success;
 }
 
-bool QgsPolyhedralSurface::deleteVertices( QList<QgsVertexId> positions )
+bool QgsPolyhedralSurface::deleteVertices( const QList<QgsVertexId> &positions )
 {
   QMap<int, QList<QgsVertexId >> partVertices;
   for ( QgsVertexId pos : positions )
