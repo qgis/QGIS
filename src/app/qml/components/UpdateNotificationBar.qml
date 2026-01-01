@@ -30,7 +30,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenterOffset: 1
         text: "!"
-        font.pointSize: 9
+        font.pointSize: Application.font.pointSize * 0.6
         font.bold: true
         color: "#f0e64a"
       }
@@ -40,7 +40,7 @@ Rectangle {
       Layout.fillWidth: true
       Layout.alignment: Qt.AlignVCenter
       text: root.message
-      font.pointSize: 9
+      font.pointSize: Application.font.pointSize * 0.6
       color: "#ffffff"
       elide: Text.ElideRight
     }
@@ -57,7 +57,7 @@ Rectangle {
         id: installButtonText
         anchors.centerIn: parent
         text: root.buttonText
-        font.pointSize: 9
+        font.pointSize: Application.font.pointSize * 0.6
         font.bold: true
         color: "#ffffff"
       }

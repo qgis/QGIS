@@ -26,16 +26,24 @@
 #include <QDialog>
 #include <QQuickWidget>
 
+class QgsWelcomeScreen;
+
+
 class QgsWelcomeScreenController : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsWelcomeScreenController( QObject *parent = nullptr );
+    QgsWelcomeScreenController( QgsWelcomeScreen *welcomeScreen = nullptr );
 
     Q_INVOKABLE void openProject( const QString &path );
 
     Q_INVOKABLE void createProjectFromTemplate( const QString &path );
+
+    Q_INVOKABLE void clearRecentProjects();
+
+  private:
+    QgsWelcomeScreen *mWelcomeScreen = nullptr;
 };
 
 
@@ -71,9 +79,6 @@ class QgsWelcomeScreen : public QQuickWidget
     bool eventFilter( QObject *object, QEvent *event ) override;
 
   public slots:
-    void removeProject( int row );
-    void pinProject( int row );
-    void unpinProject( int row );
     void clearRecentProjects();
 
   signals:

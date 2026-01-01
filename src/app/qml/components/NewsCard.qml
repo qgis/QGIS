@@ -35,7 +35,7 @@ Rectangle {
     Text {
       Layout.fillWidth: true
       text: root.title
-      font.pointSize: 11
+      font.pointSize: Application.font.pointSize
       font.bold: true
       color: "#1a365d"
       wrapMode: Text.WordWrap
@@ -47,7 +47,7 @@ Rectangle {
       Layout.fillWidth: true
       Layout.fillHeight: true
       text: root.description
-      font.pointSize: 9
+      font.pointSize: Application.font.pointSize * 0.6
       color: "#4a5568"
       wrapMode: Text.WordWrap
       elide: Text.ElideRight
@@ -57,7 +57,7 @@ Rectangle {
 
     Text {
       text: root.linkText
-      font.pointSize: 9
+      font.pointSize: Application.font.pointSize * 0.6
       font.underline: mouseArea.containsMouse
       color: "#2b6cb0"
 

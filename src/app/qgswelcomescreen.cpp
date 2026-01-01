@@ -28,14 +28,14 @@
 #define FEED_URL "https://feed.qgis.org/"
 
 
-QgsWelcomeScreenController::QgsWelcomeScreenController( QObject *parent )
-  : QObject( parent )
+QgsWelcomeScreenController::QgsWelcomeScreenController( QgsWelcomeScreen *welcomeScreen )
+  : QObject( welcomeScreen )
+  , mWelcomeScreen( welcomeScreen )
 {
 }
 
 void QgsWelcomeScreenController::openProject( const QString &path )
 {
-  qDebug() << "QgsWelcomeScreenController::openProject" << path;
   QgisApp::instance()->openProject( path );
 }
 
@@ -51,6 +51,14 @@ void QgsWelcomeScreenController::createProjectFromTemplate( const QString &path 
   }
 }
 
+void QgsWelcomeScreenController::clearRecentProjects()
+{
+  if ( mWelcomeScreen )
+  {
+    mWelcomeScreen->clearRecentProjects();
+  }
+}
+
 
 QgsWelcomeScreen::QgsWelcomeScreen( QWidget *parent )
   : QQuickWidget( parent )
@@ -60,6 +68,11 @@ QgsWelcomeScreen::QgsWelcomeScreen( QWidget *parent )
   setClearColor( Qt::transparent );
 
   mRecentProjectsModel = new QgsRecentProjectItemsModel( this );
+  connect( mRecentProjectsModel, &QgsRecentProjectItemsModel::projectPinned, this, &QgsWelcomeScreen::projectPinned );
+  connect( mRecentProjectsModel, &QgsRecentProjectItemsModel::projectUnpinned, this, &QgsWelcomeScreen::projectUnpinned );
+  connect( mRecentProjectsModel, &QgsRecentProjectItemsModel::projectRemoved, this, &QgsWelcomeScreen::projectRemoved );
+  connect( mRecentProjectsModel, &QgsRecentProjectItemsModel::projectsCleared, this, &QgsWelcomeScreen::projectsCleared );
+
   mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
 
   mNewsFeedParser = new QgsNewsFeedParser( QUrl( QStringLiteral( FEED_URL ) ), QString(), this );
@@ -119,24 +132,6 @@ QgsRecentProjectItemsModel *QgsWelcomeScreen::recentProjectsModel()
 QgsTemplateProjectsModel *QgsWelcomeScreen::templateProjectsModel()
 {
   return mTemplateProjectsModel;
-}
-
-void QgsWelcomeScreen::removeProject( int row )
-{
-  mRecentProjectsModel->removeProject( mRecentProjectsModel->index( row ) );
-  emit projectRemoved( row );
-}
-
-void QgsWelcomeScreen::pinProject( int row )
-{
-  mRecentProjectsModel->pinProject( mRecentProjectsModel->index( row ) );
-  emit projectPinned( row );
-}
-
-void QgsWelcomeScreen::unpinProject( int row )
-{
-  mRecentProjectsModel->unpinProject( mRecentProjectsModel->index( row ) );
-  emit projectUnpinned( row );
 }
 
 void QgsWelcomeScreen::clearRecentProjects()

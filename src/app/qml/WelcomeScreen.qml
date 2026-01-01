@@ -68,7 +68,7 @@ Item {
 
           Text {
             text: qsTr("Spatial without Compromise")
-            font.pointSize: 12
+            font.pointSize: Application.font.pointSize
             font.bold: true
 
             color: "#e0e9ed"
@@ -92,7 +92,7 @@ Item {
 
             Text {
               text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
-              font.pointSize: 16
+              font.pointSize: Application.font.pointSize * 1.3
               font.bold: true
               color: "#ffffff"
               Layout.fillWidth: true
@@ -126,7 +126,7 @@ Item {
                 x: newsSwitch.checked ? 10 : 30
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("News")
-                font.pointSize: 8
+                font.pointSize: Application.font.pointSize * 0.6
                 font.bold: true
                 color: newsSwitch.checked ? "#ffffff" : "#666666"
               }
@@ -183,7 +183,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 16
                 text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                font.pointSize: 9
+                font.pointSize: Application.font.pointSize * 0.6
                 color: "black"
                 wrapMode: Text.WordWrap
                 lineHeight: 1.3
@@ -204,7 +204,7 @@ Item {
 
                 Text {
                   text: qsTr("Stay up to date!")
-                  font.pointSize: 11
+                  font.pointSize: Application.font.pointSize
                   font.bold: true
                   color: "black"
                 }
@@ -212,7 +212,7 @@ Item {
                 Text {
                   Layout.fillWidth: true
                   text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
-                  font.pointSize: 9
+                  font.pointSize: Application.font.pointSize * 0.6
                   color: "black"
                   wrapMode: Text.WordWrap
                 }
@@ -229,7 +229,7 @@ Item {
                     id: enableNewsText
                     anchors.centerIn: parent
                     text: qsTr("Enable news feed")
-                    font.pointSize: 9
+                    font.pointSize: Application.font.pointSize * 0.6
                     color: "black"
                   }
 
@@ -310,13 +310,13 @@ Item {
 
             TabButton {
               text: qsTr("Recent")
-              font.pointSize: 13
+              font.pointSize: Application.font.pointSize * 1.1
               font.bold: true
             }
             TabButton {
               text: qsTr("Templates")
               width: implicitWidth
-              font.pointSize: 13
+              font.pointSize: Application.font.pointSize * 1.1
               font.bold: true
             }
           }
@@ -343,12 +343,71 @@ Item {
               isSelected: recentProjectsListView.currentIndex === index
               radius: 10
 
-              onClicked: {
-                welcomeScreenController.openProject(ProjectPath);
+              onClicked: (mouse) => {
+                if (mouse.button == Qt.LeftButton) {
+                  welcomeScreenController.openProject(ProjectPath);
+                } else if (mouse.button == Qt.RightButton) {
+                  recentProjectsMenu.projectIndex = index;
+                  recentProjectsMenu.projectPinned = Pinned;
+                  recentProjectsMenu.projectExists = Exists;
+                  recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
+                  recentProjectsMenu.popup(mouse.x, mouse.y);
+                }
               }
             }
 
             ScrollBar.vertical: recentScrollBar
+            
+            Menu {
+              id: recentProjectsMenu
+              
+              property int projectIndex: 0
+              property bool projectPinned: false
+              property bool projectExists: false
+              property bool projectHasNativePath: false
+              
+              MenuItem {
+                text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
+                onClicked: {
+                  if (recentProjectsMenu.projectPinned) {
+                    recentProjectsModel.unpinProject(recentProjectsMenu.projectIndex);
+                  } else {
+                    recentProjectsModel.pinProject(recentProjectsMenu.projectIndex);
+                  }
+                }
+              }
+              MenuItem {
+                text: qsTr("Refresh")
+                enabled: !recentProjectsMenu.projectExists
+                visible: enabled
+                height: enabled ? implicitHeight : 0
+                onClicked: {
+                  recentProjectsModel.recheckProject(recentProjectsMenu.projectIndex);
+                }
+              }
+              MenuItem {
+                text: qsTr("Open Directory…")
+                enabled: recentProjectsMenu.projectExists && recentProjectsMenu.projectHasNativePath
+                visible: enabled
+                height: enabled ? implicitHeight : 0
+                onClicked: {
+                  recentProjectsModel.openProject(recentProjectsMenu.projectIndex);
+                }
+              }
+              MenuItem {
+                text: qsTr("Remove from List")
+                onClicked: {
+                  recentProjectsModel.removeProject(recentProjectsMenu.projectIndex);                
+                }
+              }
+              MenuSeparator {}
+              MenuItem {
+                text: qsTr("Clear List")
+                onClicked: {
+                  recentProjectsModel.clear();
+                }
+              }
+            }
           }
 
           ListView {
@@ -363,13 +422,13 @@ Item {
             delegate: ProjectCard {
               width: templatesListView.width
               title: Title || ""
-              subtitle: TemplateNativePath || ""
+              subtitle: TemplateNativePath || "" //#spellok
               imageSource: PreviewImagePath || ""
               isSelected: templatesListView.currentIndex === index
               radius: 10
 
               onClicked: {
-                welcomeScreenController.createProjectFromTemplate(TemplateNativePath || "")
+                welcomeScreenController.createProjectFromTemplate(TemplateNativePath || "") //#spellok
               }
             }
 
