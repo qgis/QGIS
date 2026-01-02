@@ -27,6 +27,7 @@ from qgis.core import (
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
     QgsFeatureRequest,
+    QgsProcessingParameterString,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -39,6 +40,7 @@ class PolarPlot(QgisAlgorithm):
     OUTPUT = "OUTPUT"
     NAME_FIELD = "NAME_FIELD"
     VALUE_FIELD = "VALUE_FIELD"
+    TITLE = "TITLE"
 
     def group(self):
         return self.tr("Plots")
@@ -69,11 +71,13 @@ class PolarPlot(QgisAlgorithm):
                 type=QgsProcessingParameterField.DataType.Numeric,
             )
         )
-
         self.addParameter(
             QgsProcessingParameterFileDestination(
                 self.OUTPUT, self.tr("Polar bar plot"), self.tr("HTML files (*.html)")
             )
+        )
+        self.addParameter(
+            QgsProcessingParameterString(self.TITLE, self.tr("Title"), optional=True)
         )
 
     def name(self):
@@ -126,6 +130,10 @@ class PolarPlot(QgisAlgorithm):
 
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
+        title = self.parameterAsString(parameters, self.TITLE, context)
+
+        if title.strip() == "":
+            title = None
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
@@ -156,6 +164,11 @@ class PolarPlot(QgisAlgorithm):
             )
         ]
 
-        plt.offline.plot(data, filename=output, auto_open=False)
+        fig = go.Figure(
+            data=data,
+            layout_title_text=title,
+        )
+
+        fig.write_html(output)
 
         return {self.OUTPUT: output}
