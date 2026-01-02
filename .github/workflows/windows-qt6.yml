@@ -36,6 +36,7 @@ jobs:
           fetch-depth: 2
 
       - name: 🔨 Uninstall system cmake
+        if: matrix.os == 'windows-2022'
         shell: bash
         run: |
           choco uninstall cmake.install
