@@ -9,6 +9,9 @@ import "components"
 Item {
   id: welcomeScreen
 
+  property bool narrowLayout: height < 350 || width < 420
+
+  visible: height >= 300 && width >= 360
   width: 1100
   height: 720
 
@@ -36,7 +39,7 @@ Item {
         shadowHorizontalOffset: 0
       }
 
-      RowLayout {
+      GridLayout {
         anchors {
           fill: parent
           topMargin: 28
@@ -44,253 +47,47 @@ Item {
           rightMargin: 28
           bottomMargin: 8
         }
-        spacing: 10
+        columns: welcomeScreen.narrowLayout ? 1 : 2
+        columnSpacing: 16
+        rowSpacing: 10
 
-        ColumnLayout {
-          Layout.maximumWidth: parent.width * 0.55
-          Layout.fillHeight: true
+        Column {
+          Layout.maximumWidth: welcomeScreen.narrowLayout ? parent.width : parent.width * 0.52
+          Layout.fillWidth: true
+          Layout.alignment: Qt.AlignTop
           spacing: 10
 
-          Column {
-            Layout.fillWidth: true
-            spacing: 10
-
-            Image {
-              source: "images/qgis.svg"
-              height: 50
-              width: 160
-              sourceSize: Qt.size(50, 160)
-              fillMode: Image.PreserveAspectFit
-            }
-
-            Text {
-              width: parent.width
-              text: qsTr("Spatial without Compromise")
-              font.pointSize: Application.font.pointSize
-              font.bold: true
-              wrapMode: Text.WordWrap
-
-              color: "#e0e9ed"
-            }
-            
-            Rectangle {
-              width: parent.width
-              height: 1
-              color: "#566775"
-            }
+          Image {
+            source: "images/qgis.svg"
+            height: welcomeScreen.narrowLayout ? 35 : 50
+            width: 160
+            sourceSize: Qt.size(50, 160)
+            fillMode: Image.PreserveAspectFit
+            horizontalAlignment: Image.AlignLeft
           }
 
-          ColumnLayout {
-            id: welcomeNewsLayout
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 12
+          Text {
+            width: parent.width
+            text: qsTr("Spatial without Compromise")
+            font.pointSize: Application.font.pointSize
+            font.bold: true
+            wrapMode: Text.WordWrap
 
-            RowLayout {
-              Layout.fillWidth: true
-              spacing: 6
-
-              Text {
-                Layout.fillWidth: true
-                text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
-                font.pointSize: Application.font.pointSize * 1.3
-                font.bold: true
-                color: "#ffffff"
-                elide: Text.ElideRight
-              }
-
-              BusyIndicator {
-                Layout.preferredWidth: 28
-                Layout.preferredHeight: 28
-                running: newsFeedParser.isFetching
-              }
-
-              Rectangle {
-                id: newsSwitchBackground
-                width: 70
-                height: 28
-                radius: 14
-
-                gradient: Gradient {
-                  orientation: Gradient.Horizontal
-                  GradientStop {
-                    position: 0.0
-                    color: newsSwitch.checked ? "#589632" : "#333333"
-                  }
-                  GradientStop {
-                    position: 1.0
-                    color: newsSwitch.checked ? "#93b023" : "#ffffff"
-                  }
-                }
-
-                Text {
-                  x: newsSwitch.checked ? 10 : 30
-                  anchors.verticalCenter: parent.verticalCenter
-                  text: qsTr("News")
-                  font.pointSize: Application.font.pointSize * 0.8
-                  font.bold: true
-                  color: newsSwitch.checked ? "#ffffff" : "#666666"
-                }
-
-                Rectangle {
-                  id: switchHandle
-                  width: 22
-                  height: 22
-                  radius: 11
-                  color: "#ffffff"
-                  anchors.verticalCenter: parent.verticalCenter
-                  x: newsSwitch.checked ? parent.width - width - 3 : 3
-
-                  Behavior on x {
-                    NumberAnimation {
-                      duration: 150
-                    }
-                  }
-                }
-
-                MouseArea {
-                  anchors.fill: parent
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: {
-                    newsFeedParser.enabled = !newsFeedParser.enabled
-                    if (newsFeedParser.enabled && newsListView.count == 0) {
-                      newsFeedParser.fetch();
-                    }
-                  }
-                }
-
-                Switch {
-                  id: newsSwitch
-                  visible: false
-                  checked: newsFeedParser.enabled
-                }
-              }
-            }
-
-            ScrollView {
-              Layout.fillWidth: true
-              Layout.fillHeight: true
-              contentWidth: welcomeNewsLayout.width
-              contentHeight: welcomeLayout.height
-              clip: true
-            
-              ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-              }
-              
-              ColumnLayout {
-                id: welcomeLayout
-                visible: !newsSwitch.checked
-                width: welcomeNewsLayout.width
-                spacing: 12
-              
-                Rectangle {
-                  Layout.preferredWidth: parent.width
-                  Layout.preferredHeight: welcomeDescription.contentHeight + 32
-                  radius: 10
-                  color: "#ffffff"
-              
-                  Text {
-                    id: welcomeDescription
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                    font.pointSize: Application.font.pointSize * 0.8
-                    color: "black"
-                    wrapMode: Text.WordWrap
-                    lineHeight: 1.3
-                  }
-                }
-              
-                Rectangle {
-                  Layout.preferredWidth: parent.width
-                  Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
-                  radius: 10
-                  color: "#ffffff"
-              
-                  ColumnLayout {
-                    id: stayUpdateLayout
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 10
-              
-                    Text {
-                      text: qsTr("Stay up to date!")
-                      font.pointSize: Application.font.pointSize
-                      font.bold: true
-                      color: "black"
-                    }
-              
-                    Text {
-                      Layout.fillWidth: true
-                      text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
-                      font.pointSize: Application.font.pointSize * 0.8
-                      color: "black"
-                      wrapMode: Text.WordWrap
-                    }
-              
-                    Rectangle {
-                      width: enableNewsText.implicitWidth + 24
-                      height: 25
-                      radius: 10
-                      color: "transparent"
-                      border.width: 1
-                      border.color: "#93b023"
-              
-                      Text {
-                        id: enableNewsText
-                        anchors.centerIn: parent
-                        text: qsTr("Enable news feed")
-                        font.pointSize: Application.font.pointSize * 0.8
-                        color: "black"
-                      }
-              
-                      MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        hoverEnabled: true
-                        onClicked: newsSwitch.checked = true
-                      }
-                    }
-                  }
-                }
-              }
-            }
-
-            ListView {
-              id: newsListView
-              Layout.fillWidth: true
-              Layout.fillHeight: true
-              spacing: 12
-              clip: true
-              visible: newsSwitch.checked
-
-              model: newsFeedModel
-
-              delegate: NewsCard {
-                width: newsListView.width
-                title: Title
-                description: Content
-                showCloseButton: true
-
-                onReadMoreClicked: {
-                  Qt.openUrlExternally(Link);
-                }
-              }
-
-              ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
-              }
-            }
+            color: "#e0e9ed"
+          }
+          
+          Rectangle {
+            width: parent.width
+            height: 1
+            color: "#566775"
           }
         }
+
 
         ColumnLayout {
           Layout.fillWidth: true
           Layout.fillHeight: true
+          Layout.rowSpan: 2
           spacing: 8
 
           Item {
@@ -440,6 +237,215 @@ Item {
               ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
               }
+            }
+          }
+        }
+
+        ColumnLayout {
+          id: welcomeNewsLayout
+          Layout.maximumWidth: parent.width * 0.52
+          Layout.fillWidth: true
+          Layout.fillHeight: true
+          spacing: 12
+          visible: !welcomeScreen.narrowLayout
+
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: 6
+
+            Text {
+              Layout.fillWidth: true
+              text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
+              font.pointSize: Application.font.pointSize * 1.3
+              font.bold: true
+              color: "#ffffff"
+              elide: Text.ElideRight
+            }
+
+            BusyIndicator {
+              Layout.preferredWidth: 28
+              Layout.preferredHeight: 28
+              running: newsFeedParser.isFetching
+            }
+
+            Rectangle {
+              id: newsSwitchBackground
+              width: 70
+              height: 28
+              radius: 14
+
+              gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop {
+                  position: 0.0
+                  color: newsSwitch.checked ? "#589632" : "#333333"
+                }
+                GradientStop {
+                  position: 1.0
+                  color: newsSwitch.checked ? "#93b023" : "#ffffff"
+                }
+              }
+
+              Text {
+                x: newsSwitch.checked ? 10 : 30
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("News")
+                font.pointSize: Application.font.pointSize * 0.8
+                font.bold: true
+                color: newsSwitch.checked ? "#ffffff" : "#666666"
+              }
+
+              Rectangle {
+                id: switchHandle
+                width: 22
+                height: 22
+                radius: 11
+                color: "#ffffff"
+                anchors.verticalCenter: parent.verticalCenter
+                x: newsSwitch.checked ? parent.width - width - 3 : 3
+
+                Behavior on x {
+                  NumberAnimation {
+                    duration: 150
+                  }
+                }
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                  newsFeedParser.enabled = !newsFeedParser.enabled
+                  if (newsFeedParser.enabled && newsListView.count == 0) {
+                    newsFeedParser.fetch();
+                  }
+                }
+              }
+
+              Switch {
+                id: newsSwitch
+                visible: false
+                checked: newsFeedParser.enabled
+              }
+            }
+          }
+
+          ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            contentWidth: welcomeNewsLayout.width
+            contentHeight: welcomeLayout.height
+            clip: true
+          
+            ScrollBar.vertical: ScrollBar {
+              policy: ScrollBar.AsNeeded
+              anchors.top: parent.top
+              anchors.bottom: parent.bottom
+              anchors.right: parent.right
+            }
+            
+            ColumnLayout {
+              id: welcomeLayout
+              visible: !newsSwitch.checked
+              width: welcomeNewsLayout.width
+              spacing: 12
+            
+              Rectangle {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: welcomeDescription.contentHeight + 32
+                radius: 10
+                color: "#ffffff"
+            
+                Text {
+                  id: welcomeDescription
+                  anchors.fill: parent
+                  anchors.margins: 16
+                  text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
+                  font.pointSize: Application.font.pointSize * 0.8
+                  color: "black"
+                  wrapMode: Text.WordWrap
+                  lineHeight: 1.3
+                }
+              }
+            
+              Rectangle {
+                Layout.preferredWidth: parent.width
+                Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
+                radius: 10
+                color: "#ffffff"
+            
+                ColumnLayout {
+                  id: stayUpdateLayout
+                  anchors.fill: parent
+                  anchors.margins: 16
+                  spacing: 10
+            
+                  Text {
+                    text: qsTr("Stay up to date!")
+                    font.pointSize: Application.font.pointSize
+                    font.bold: true
+                    color: "black"
+                  }
+            
+                  Text {
+                    Layout.fillWidth: true
+                    text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
+                    font.pointSize: Application.font.pointSize * 0.8
+                    color: "black"
+                    wrapMode: Text.WordWrap
+                  }
+            
+                  Rectangle {
+                    width: enableNewsText.implicitWidth + 24
+                    height: 25
+                    radius: 10
+                    color: "transparent"
+                    border.width: 1
+                    border.color: "#93b023"
+            
+                    Text {
+                      id: enableNewsText
+                      anchors.centerIn: parent
+                      text: qsTr("Enable news feed")
+                      font.pointSize: Application.font.pointSize * 0.8
+                      color: "black"
+                    }
+            
+                    MouseArea {
+                      anchors.fill: parent
+                      cursorShape: Qt.PointingHandCursor
+                      hoverEnabled: true
+                      onClicked: newsSwitch.checked = true
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          ListView {
+            id: newsListView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 12
+            clip: true
+            visible: newsSwitch.checked
+
+            model: newsFeedModel
+
+            delegate: NewsCard {
+              width: newsListView.width
+              title: Title
+              description: Content
+              showCloseButton: true
+
+              onReadMoreClicked: {
+                Qt.openUrlExternally(Link);
+              }
+            }
+
+            ScrollBar.vertical: ScrollBar {
+              policy: ScrollBar.AsNeeded
             }
           }
         }
