@@ -26,6 +26,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
+    QgsFeatureRequest,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -36,6 +37,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 class PolarPlot(QgisAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
+    NAME_FIELD = "NAME_FIELD"
     VALUE_FIELD = "VALUE_FIELD"
 
     def group(self):
@@ -50,6 +52,14 @@ class PolarPlot(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.NAME_FIELD,
+                self.tr("Category name field"),
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Any,
+            )
         )
         self.addParameter(
             QgsProcessingParameterField(
@@ -114,18 +124,35 @@ class PolarPlot(QgisAlgorithm):
                 self.invalidSourceError(parameters, self.INPUT)
             )
 
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         values = vector.values(source, valuefieldname)
 
+        # Load a vector of categories
+        category_index = source.fields().lookupField(namefieldname)
+        categories = vector.convert_nulls(
+            [
+                i[namefieldname]
+                for i in source.getFeatures(
+                    QgsFeatureRequest()
+                    .setFlags(QgsFeatureRequest.Flag.NoGeometry)
+                    .setSubsetOfAttributes([category_index])
+                )
+            ],
+            "<NULL>",
+        )
+        # Sum up values by category
+        category_sums = { category: 0 for category in set(categories) }
+        for idx in range(len(categories)):
+            category_sums[categories[idx]] += values[valuefieldname][idx]
+
         data = [
             go.Barpolar(
-                r=values[valuefieldname],
-                theta=np.degrees(
-                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))
-                ),
+                r=list(category_sums.values()),
+                theta=list(category_sums.keys()),
             )
         ]
 
