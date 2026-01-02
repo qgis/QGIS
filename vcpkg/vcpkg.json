@@ -17,8 +17,7 @@
           "gdal",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
-          "vcpkg-tool-rust",
-          "pybind11"
+          "vcpkg-tool-rust"
         ]
       }
     ],
