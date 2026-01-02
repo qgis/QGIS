@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-**
+      - winarm
   pull_request:
   release:
     types: ['published']
@@ -18,8 +19,15 @@ permissions:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-2022
+            triplet: x64-windows-release
+          - os: windows-11-arm
+            triplet: arm64-windows-release
     name: build (windows)
-    runs-on: windows-2022
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: 🐣 Checkout
@@ -78,8 +86,8 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release \
                 -D WITH_VCPKG=ON \
                 -D CREATE_ZIP=ON \
-                -D VCPKG_TARGET_TRIPLET=x64-windows-release \
-                -D VCPKG_HOST_TRIPLET=x64-windows-release \
+                -D VCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
+                -D VCPKG_HOST_TRIPLET=${{ matrix.triplet }} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
