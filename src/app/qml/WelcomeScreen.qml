@@ -38,25 +38,22 @@ Item {
 
       RowLayout {
         anchors {
-          top: parent.top
-          bottom: footer.top
-          left: parent.left
-          right: parent.right
+          fill: parent
+          topMargin: 28
+          leftMargin: 28
+          rightMargin: 28
           bottomMargin: 8
         }
-        spacing: 0
+        spacing: 10
 
         ColumnLayout {
-          Layout.maximumWidth: parent.width * 0.48
+          Layout.maximumWidth: parent.width * 0.55
           Layout.fillHeight: true
-          Layout.topMargin: 28
-          Layout.leftMargin: 28
-          Layout.rightMargin: 28
           spacing: 10
 
           Column {
             Layout.fillWidth: true
-            spacing: 16
+            spacing: 10
 
             Image {
               source: "images/qgis.svg"
@@ -67,35 +64,39 @@ Item {
             }
 
             Text {
+              width: parent.width
               text: qsTr("Spatial without Compromise")
               font.pointSize: Application.font.pointSize
               font.bold: true
+              wrapMode: Text.WordWrap
 
               color: "#e0e9ed"
             }
+            
+            Rectangle {
+              width: parent.width
+              height: 1
+              color: "#566775"
+            }
           }
 
-          Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 1
-            color: "#566775"
-          }
-
-          Column {
+          ColumnLayout {
+            id: welcomeNewsLayout
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 12
 
             RowLayout {
-              width: parent.width
-              spacing: 12
+              Layout.fillWidth: true
+              spacing: 6
 
               Text {
+                Layout.fillWidth: true
                 text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
                 font.pointSize: Application.font.pointSize * 1.3
                 font.bold: true
                 color: "#ffffff"
-                Layout.fillWidth: true
+                elide: Text.ElideRight
               }
 
               BusyIndicator {
@@ -166,118 +167,122 @@ Item {
               }
             }
 
-            Column {
-              width: parent.width
-              height: parent.height - 50
-              spacing: 12
-              visible: !newsSwitch.checked
-
-              Rectangle {
-                width: parent.width
-                height: welcomeDescription1.implicitHeight * 1.25
-                radius: 10
-                color: "#ffffff"
-
-                Text {
-                  id: welcomeDescription1
-                  anchors.fill: parent
-                  anchors.margins: 16
-                  text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                  font.pointSize: Application.font.pointSize * 0.8
-                  color: "black"
-                  wrapMode: Text.WordWrap
-                  lineHeight: 1.3
-                }
+            ScrollView {
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              contentWidth: welcomeNewsLayout.width
+              contentHeight: welcomeLayout.height
+              clip: true
+            
+              ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
               }
-
-              Rectangle {
-                width: parent.width
-                height: stayUpdateLayout.implicitHeight * 1.25
-                radius: 10
-                color: "#ffffff"
-
-                ColumnLayout {
-                  id: stayUpdateLayout
-                  anchors.fill: parent
-                  anchors.margins: 16
-                  spacing: 10
-
+              
+              ColumnLayout {
+                id: welcomeLayout
+                visible: !newsSwitch.checked
+                width: welcomeNewsLayout.width
+                spacing: 12
+              
+                Rectangle {
+                  Layout.preferredWidth: parent.width
+                  Layout.preferredHeight: welcomeDescription.contentHeight + 32
+                  radius: 10
+                  color: "#ffffff"
+              
                   Text {
-                    text: qsTr("Stay up to date!")
-                    font.pointSize: Application.font.pointSize
-                    font.bold: true
-                    color: "black"
-                  }
-
-                  Text {
-                    Layout.fillWidth: true
-                    text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
+                    id: welcomeDescription
+                    anchors.fill: parent
+                    anchors.margins: 16
+                    text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
                     font.pointSize: Application.font.pointSize * 0.8
                     color: "black"
                     wrapMode: Text.WordWrap
+                    lineHeight: 1.3
                   }
-
-                  Rectangle {
-                    width: enableNewsText.implicitWidth + 24
-                    height: 25
-                    radius: 10
-                    color: "transparent"
-                    border.width: 1
-                    border.color: "#93b023"
-
+                }
+              
+                Rectangle {
+                  Layout.preferredWidth: parent.width
+                  Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
+                  radius: 10
+                  color: "#ffffff"
+              
+                  ColumnLayout {
+                    id: stayUpdateLayout
+                    anchors.fill: parent
+                    anchors.margins: 16
+                    spacing: 10
+              
                     Text {
-                      id: enableNewsText
-                      anchors.centerIn: parent
-                      text: qsTr("Enable news feed")
-                      font.pointSize: Application.font.pointSize * 0.8
+                      text: qsTr("Stay up to date!")
+                      font.pointSize: Application.font.pointSize
+                      font.bold: true
                       color: "black"
                     }
-
-                    MouseArea {
-                      anchors.fill: parent
-                      cursorShape: Qt.PointingHandCursor
-                      hoverEnabled: true
-                      onClicked: newsSwitch.checked = true
+              
+                    Text {
+                      Layout.fillWidth: true
+                      text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
+                      font.pointSize: Application.font.pointSize * 0.8
+                      color: "black"
+                      wrapMode: Text.WordWrap
+                    }
+              
+                    Rectangle {
+                      width: enableNewsText.implicitWidth + 24
+                      height: 25
+                      radius: 10
+                      color: "transparent"
+                      border.width: 1
+                      border.color: "#93b023"
+              
+                      Text {
+                        id: enableNewsText
+                        anchors.centerIn: parent
+                        text: qsTr("Enable news feed")
+                        font.pointSize: Application.font.pointSize * 0.8
+                        color: "black"
+                      }
+              
+                      MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        hoverEnabled: true
+                        onClicked: newsSwitch.checked = true
+                      }
                     }
                   }
                 }
               }
             }
 
-            Item {
-              width: parent.width
-              height: parent.height - 50
+            ListView {
+              id: newsListView
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              spacing: 12
+              clip: true
+              visible: newsSwitch.checked
 
-              ListView {
-                id: newsListView
-                anchors.fill: parent
-                spacing: 12
-                clip: true
-                visible: newsSwitch.checked
+              model: newsFeedModel
 
-                model: newsFeedModel
+              delegate: NewsCard {
+                width: newsListView.width
+                title: Title
+                description: Content
+                showCloseButton: true
 
-                delegate: NewsCard {
-                  width: newsListView.width
-                  title: Title
-                  description: Content
-                  showCloseButton: true
-
-                  onReadMoreClicked: {
-                    Qt.openUrlExternally(Link);
-                  }
+                onReadMoreClicked: {
+                  Qt.openUrlExternally(Link);
                 }
-
-                ScrollBar.vertical: newsScrollBar
               }
 
-              ScrollBar {
-                id: newsScrollBar
+              ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
-                anchors.left: parent.right
-                anchors.leftMargin: 10
-                height: parent.height
-                visible: newsSwitch.checked
               }
             }
           }
@@ -286,9 +291,6 @@ Item {
         ColumnLayout {
           Layout.fillWidth: true
           Layout.fillHeight: true
-          Layout.topMargin: 28
-          Layout.leftMargin: 28
-          Layout.rightMargin: 28
           spacing: 8
 
           Item {
@@ -357,7 +359,9 @@ Item {
                            }
               }
 
-              ScrollBar.vertical: recentScrollBar
+              ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+              }
 
               Menu {
                 id: recentProjectsMenu
@@ -433,25 +437,9 @@ Item {
                 }
               }
 
-              ScrollBar.vertical: templatesScrollBar
-            }
-
-            ScrollBar {
-              id: recentScrollBar
-              policy: ScrollBar.AsNeeded
-              anchors.left: parent.right
-              anchors.leftMargin: 10
-              height: parent.height
-              visible: tabBar.currentIndex === 0
-            }
-
-            ScrollBar {
-              id: templatesScrollBar
-              policy: ScrollBar.AsNeeded
-              anchors.left: parent.right
-              anchors.leftMargin: 10
-              height: parent.height
-              visible: tabBar.currentIndex === 1
+              ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+              }
             }
           }
         }
@@ -472,10 +460,14 @@ Item {
 
       FooterBar {
         id: footer
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
+        anchors {
+          left: parent.left
+          leftMargin: 28
+          right: parent.right
+          rightMargin: 28
+          bottom: parent.bottom
+          bottomMargin: 0
+        }
 
         onSupportClicked: {
           Qt.openUrlExternally("https://www.qgis.org/funding/donate/")

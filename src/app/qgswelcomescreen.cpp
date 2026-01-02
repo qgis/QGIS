@@ -129,7 +129,7 @@ void QgsWelcomeScreen::refreshGeometry()
 {
   if ( QWidget *parentWidget = qobject_cast<QWidget *>( parent() ) )
   {
-    setGeometry( 20, 40, parentWidget->width() - 40, parentWidget->height() - 80 );
+    setGeometry( 20, 20, parentWidget->width() - 40, parentWidget->height() - 40 );
   }
 }
 
