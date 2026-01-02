@@ -143,7 +143,7 @@ class PolarPlot(QgisAlgorithm):
             "<NULL>",
         )
         # Sum up values by category
-        category_sums = { category: 0 for category in set(categories) }
+        category_sums = {category: 0 for category in set(categories)}
         for idx in range(len(categories)):
             category_sums[categories[idx]] += values[valuefieldname][idx]
 
