@@ -31,7 +31,7 @@
 #include "qgspoint.h"
 #include "qgsvector3d.h"
 
-#include <QtGui/qmatrix4x4.h>
+#include <QMatrix4x4>
 
 class QgsGeometry;
 class QgsSfcgalGeometry;
