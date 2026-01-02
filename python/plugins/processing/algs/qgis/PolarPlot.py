@@ -62,7 +62,7 @@ class PolarPlot(QgisAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterFileDestination(
-                self.OUTPUT, self.tr("Polar plot"), self.tr("HTML files (*.html)")
+                self.OUTPUT, self.tr("Polar bar plot"), self.tr("HTML files (*.html)")
             )
         )
 
@@ -70,16 +70,16 @@ class PolarPlot(QgisAlgorithm):
         return "polarplot"
 
     def displayName(self):
-        return self.tr("Polar plot")
+        return self.tr("Polar bar plot")
 
     def shortDescription(self):
         return self.tr(
-            "Generates a polar plot based on the value of an input vector layer."
+            "Generates a polar bar plot based on the value of an input vector layer."
         )
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm generates a polar plot based on the value of an input vector layer."
+            "This algorithm generates a polar bar plot based on the value of an input vector layer."
         )
 
     def processAlgorithm(self, parameters, context, feedback):
