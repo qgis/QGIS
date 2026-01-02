@@ -91,9 +91,9 @@ jobs:
                 -D VCPKG_HOST_TRIPLET=${{ matrix.triplet }} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
-                -D WITH_BINDINGS=ON \
+                -D WITH_BINDINGS=OFF \
                 -D WITH_GEOGRAPHICLIB=OFF \
-                -D WITH_SFCGAL=ON \
+                -D WITH_SFCGAL=OFF \
                 -D ENABLE_TESTS=OFF \
                 -D USE_CCACHE=ON \
                 -D ENABLE_UNITY_BUILDS=OFF \
@@ -101,7 +101,7 @@ jobs:
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D USE_CCACHE=ON \
                 -D WITH_QTWEBENGINE=OFF \
-                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src --allow-unsupported" \
+                -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
