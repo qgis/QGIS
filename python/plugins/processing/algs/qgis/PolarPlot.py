@@ -88,12 +88,12 @@ class PolarPlot(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Generates a polar bar plot based on the value of an input vector layer."
+            "Creates a polar bar plot based on values grouped by a category field."
         )
 
     def shortHelpString(self):
         return self.tr(
-            "This algorithm generates a polar bar plot based on the value of an input vector layer."
+            "This algorithm creates a polar bar plot based on values grouped by a category field."
         )
 
     def processAlgorithm(self, parameters, context, feedback):
