@@ -2,25 +2,21 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
-Item {
+Rectangle {
   id: root
-  implicitHeight: 60
-
-  property string supportText: qsTr("QGIS is a community project that relies on sustaining memberships and donations to fund many of our improvements and activities.")
-
+  
   signal supportClicked
   signal websiteClicked
+  
+  implicitHeight: 60
+  color: "#252a34"
 
   RowLayout {
-    anchors {
-      fill: parent
-      leftMargin: 28
-      rightMargin: 28
-    }
+    anchors.fill: parent
     spacing: 8
 
     Text {
-      text: root.supportText
+      text: qsTr("QGIS is a community project that relies on sustaining memberships and donations to fund many of our improvements and activities.")
       Layout.fillWidth: true
       font.pointSize: Application.font.pointSize * 0.8
       font.bold: true
