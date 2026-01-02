@@ -112,16 +112,6 @@ class PolarPlot(QgisAlgorithm):
                 )
             )
 
-        try:
-            import numpy as np
-        except ImportError:
-            raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "PolarPlot",
-                    "This algorithm requires the Python “numpy” library. Please install this library and try again.",
-                )
-            )
-
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(
