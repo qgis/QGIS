@@ -520,9 +520,11 @@ qt_add_qml_module(qgis_app
     RESOURCE_PREFIX
         /qt/qml/
     RESOURCES
-        qml/images/qgis.svg
-        qml/images/love.svg
+        qml/images/basemap.jpg
+        qml/images/blank.jpg
         qml/images/close.svg
+        qml/images/love.svg
+        qml/images/qgis.svg
 )
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")

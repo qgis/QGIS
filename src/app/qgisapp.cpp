@@ -1004,7 +1004,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   QColor splashTextColor = Qgis::releaseName() == "Master"_L1 ? QColor( 93, 153, 51 ) : Qt::black;
 
-  QQuickStyle::setStyle( QStringLiteral( "Material" ) );
+  QQuickStyle::setStyle( u"Material"_s );
 
   startProfile( tr( "Create user profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
@@ -2021,6 +2021,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   }
 
   startProfile( tr( "Welcome screen" ) );
+  QgsWelcomeScreen::registerTypes();
+
   mWelcomeScreen = new QgsWelcomeScreen( options.testFlag( AppOption::SkipVersionCheck ), this->centralWidget() );
   connect( mWelcomeScreen, &QgsWelcomeScreen::projectRemoved, this, [this]( int row ) {
     mRecentProjects.removeAt( row );
@@ -5971,6 +5973,26 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   mNonEditMapTool = mMapTools->mapTool( QgsAppMapTools::Pan ); // signals are not yet setup to catch this
 
   prj->setDirty( false );
+  return true;
+}
+
+bool QgisApp::fileNewWithBasemap()
+{
+  if ( checkTasksDependOnProject() )
+    return false;
+
+  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+  {
+    return false; //cancel pressed
+  }
+
+  [[maybe_unused]] QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+  QgsProject::instance()->clear();
+
+  QgsRasterLayer *basemapLayer = new QgsRasterLayer( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
+  QgsProject::instance()->setCrs( basemapLayer->crs() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << basemapLayer );
+
   return true;
 }
 
