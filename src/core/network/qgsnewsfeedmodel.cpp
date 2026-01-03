@@ -82,6 +82,7 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
 QHash<int, QByteArray> QgsNewsFeedModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
+  roles[static_cast< int >( CustomRole::Key )] = "Key";
   roles[static_cast< int >( CustomRole::Title )] = "Title";
   roles[static_cast< int >( CustomRole::Content )] = "Content";
   roles[static_cast< int >( CustomRole::ImageUrl )] = "ImageUrl";
