@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "1c3ef0209e78dceceeca3c4d18f93540a19c37bc",
+        "baseline": "3c72dc8024704288fa43cb5fbcdf60e6e554c340",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -118,11 +118,21 @@
             "python"
           ]
         },
+        "py-adbc-postgresql",
+        "py-adbc-sqlite",
         "py-attrs",
         "py-autopep8",
         "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
+        {
+          "name": "py-geopandas",
+          "features": [
+            "fiona",
+            "arrow"
+          ]
+        },
+        "py-scipy",
         "py-isort",
         "py-jinja2",
         {
