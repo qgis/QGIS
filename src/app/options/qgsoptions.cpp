@@ -61,7 +61,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgstolerance.h"
 #include "qgsunittypes.h"
-#include "qgswelcomepage.h"
+#include "qgswelcomescreen.h"
 
 #include <QString>
 
@@ -759,7 +759,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
   cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
-  cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
+  cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( u"/qgis/dockAttributeTable"_s, false ).toBool() );
@@ -1634,7 +1634,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/showLegendClassifiers"_s, cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
   mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
-  mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
+  mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
   mSettings->setValue( u"/qgis/checkVersion"_s, cbxCheckVersion->isChecked() );
   mSettings->setValue( u"/qgis/dockAttributeTable"_s, cbxAttributeTableDocked->isChecked() );
