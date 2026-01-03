@@ -1434,6 +1434,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new file from a template project
     bool fileNewFromTemplate( const QString &fileName );
 
+    //! Create a new file with a basemap added
+    bool fileNewWithBasemap();
+
     //! Show the spatial bookmark manager panel
     void showBookmarkManager( bool show );
 

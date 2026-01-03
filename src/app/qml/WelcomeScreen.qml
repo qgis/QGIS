@@ -4,6 +4,8 @@ import QtQuick.Controls
 import QtQuick.Effects
 import QtQuick.Controls.Material
 
+import org.qgis.app
+
 import "components"
 
 Item {
@@ -227,13 +229,32 @@ Item {
               delegate: ProjectCard {
                 width: templatesListView.width - 12
                 title: Title || ""
-                subtitle: TemplateNativePath || "" //#spellok
-                imageSource: PreviewImagePath || ""
+                subtitle: Crs || ""
+                imageSource: {
+                  switch (Type) {
+                    case TemplateProjectsModel.TemplateType.Blank:
+                      return "../images/blank.jpg";
+                    case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                      return "../images/basemap.jpg";
+                    default:
+                      return PreviewImagePath || "";
+                  }
+                }
                 isSelected: templatesListView.currentIndex === index
                 radius: 6
 
                 onClicked: {
-                  welcomeScreenController.createProjectFromTemplate(TemplateNativePath || "") //#spellok
+                  switch (Type) {
+                    case TemplateProjectsModel.TemplateType.Blank:
+                      welcomeScreenController.createBlankProject(); //#spellok
+                      return;
+                    case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                      welcomeScreenController.createProjectFromBasemap();
+                      return;
+                    default:
+                      welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                      return;
+                  }
                 }
               }
 
