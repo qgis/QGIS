@@ -168,6 +168,7 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     {
       QString path = storage->filePath( projectData.path );
       if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
+      {
         projectData.exists = false;
       }
       else
