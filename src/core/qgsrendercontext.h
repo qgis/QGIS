@@ -165,7 +165,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     QPainter *maskPainter( int id = 0 ) { return mMaskPainter.value( id, nullptr ); }
 
-    // TODO QGIS 4 : remove the V2 from method name
+    // TODO QGIS 5 : remove the V2 from method name
 
     /**
      * When rendering a map layer in a second pass (for selective masking),

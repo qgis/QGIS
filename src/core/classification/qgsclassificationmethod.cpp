@@ -42,7 +42,7 @@ QList<double> QgsClassificationMethod::rangesToBreaks( const QList<QgsClassifica
 QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, int codeComplexity )
   : mFlags( properties )
   , mCodeComplexity( codeComplexity )
-  , mLabelFormat( QStringLiteral( "%1 - %2" ) )
+  , mLabelFormat( u"%1 - %2"_s )
 {
 }
 
@@ -62,38 +62,38 @@ void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
 
 std::unique_ptr< QgsClassificationMethod > QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QString methodId = element.attribute( QStringLiteral( "id" ) );
+  const QString methodId = element.attribute( u"id"_s );
   std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
 
   // symmetric
-  QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
+  QDomElement symmetricModeElem = element.firstChildElement( u"symmetricMode"_s );
   if ( !symmetricModeElem.isNull() )
   {
-    bool symmetricEnabled = symmetricModeElem.attribute( QStringLiteral( "enabled" ) ).toInt() == 1;
-    double symmetricPoint = symmetricModeElem.attribute( QStringLiteral( "symmetrypoint" ) ).toDouble();
-    bool astride = symmetricModeElem.attribute( QStringLiteral( "astride" ) ).toInt() == 1;
+    bool symmetricEnabled = symmetricModeElem.attribute( u"enabled"_s ).toInt() == 1;
+    double symmetricPoint = symmetricModeElem.attribute( u"symmetrypoint"_s ).toDouble();
+    bool astride = symmetricModeElem.attribute( u"astride"_s ).toInt() == 1;
     method->setSymmetricMode( symmetricEnabled, symmetricPoint, astride );
   }
 
   // label format
-  QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelFormat" ) );
+  QDomElement labelFormatElem = element.firstChildElement( u"labelFormat"_s );
   if ( !labelFormatElem.isNull() )
   {
-    QString format = labelFormatElem.attribute( QStringLiteral( "format" ), "%1" + QStringLiteral( " - " ) + "%2" );
-    int precision = labelFormatElem.attribute( QStringLiteral( "labelprecision" ), QStringLiteral( "4" ) ).toInt();
-    bool trimTrailingZeroes = labelFormatElem.attribute( QStringLiteral( "trimtrailingzeroes" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
+    QString format = labelFormatElem.attribute( u"format"_s, "%1" + u" - "_s + "%2" );
+    int precision = labelFormatElem.attribute( u"labelprecision"_s, u"4"_s ).toInt();
+    bool trimTrailingZeroes = labelFormatElem.attribute( u"trimtrailingzeroes"_s, u"false"_s ) == "true"_L1;
     method->setLabelFormat( format );
     method->setLabelPrecision( precision );
     method->setLabelTrimTrailingZeroes( trimTrailingZeroes );
   }
 
   // parameters (processing parameters)
-  QDomElement parametersElem = element.firstChildElement( QStringLiteral( "parameters" ) );
+  QDomElement parametersElem = element.firstChildElement( u"parameters"_s );
   const QVariantMap parameterValues = QgsXmlUtils::readVariant( parametersElem.firstChildElement() ).toMap();
   method->setParameterValues( parameterValues );
 
   // Read specific properties from the implementation
-  QDomElement extraElem = element.firstChildElement( QStringLiteral( "extraInformation" ) );
+  QDomElement extraElem = element.firstChildElement( u"extraInformation"_s );
   if ( !extraElem.isNull() )
     method->readXml( extraElem, context );
 
@@ -102,31 +102,31 @@ std::unique_ptr< QgsClassificationMethod > QgsClassificationMethod::create( cons
 
 QDomElement QgsClassificationMethod::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement methodElem = doc.createElement( QStringLiteral( "classificationMethod" ) );
+  QDomElement methodElem = doc.createElement( u"classificationMethod"_s );
 
-  methodElem.setAttribute( QStringLiteral( "id" ), id() );
+  methodElem.setAttribute( u"id"_s, id() );
 
   // symmetric
-  QDomElement symmetricModeElem = doc.createElement( QStringLiteral( "symmetricMode" ) );
-  symmetricModeElem.setAttribute( QStringLiteral( "enabled" ), symmetricModeEnabled() ? 1 : 0 );
-  symmetricModeElem.setAttribute( QStringLiteral( "symmetrypoint" ), symmetryPoint() );
-  symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mSymmetryAstride ? 1 : 0 );
+  QDomElement symmetricModeElem = doc.createElement( u"symmetricMode"_s );
+  symmetricModeElem.setAttribute( u"enabled"_s, symmetricModeEnabled() ? 1 : 0 );
+  symmetricModeElem.setAttribute( u"symmetrypoint"_s, symmetryPoint() );
+  symmetricModeElem.setAttribute( u"astride"_s, mSymmetryAstride ? 1 : 0 );
   methodElem.appendChild( symmetricModeElem );
 
   // label format
-  QDomElement labelFormatElem = doc.createElement( QStringLiteral( "labelFormat" ) );
-  labelFormatElem.setAttribute( QStringLiteral( "format" ), labelFormat() );
-  labelFormatElem.setAttribute( QStringLiteral( "labelprecision" ), labelPrecision() );
-  labelFormatElem.setAttribute( QStringLiteral( "trimtrailingzeroes" ), labelTrimTrailingZeroes() ? 1 : 0 );
+  QDomElement labelFormatElem = doc.createElement( u"labelFormat"_s );
+  labelFormatElem.setAttribute( u"format"_s, labelFormat() );
+  labelFormatElem.setAttribute( u"labelprecision"_s, labelPrecision() );
+  labelFormatElem.setAttribute( u"trimtrailingzeroes"_s, labelTrimTrailingZeroes() ? 1 : 0 );
   methodElem.appendChild( labelFormatElem );
 
   // parameters (processing parameters)
-  QDomElement parametersElem = doc.createElement( QStringLiteral( "parameters" ) );
+  QDomElement parametersElem = doc.createElement( u"parameters"_s );
   parametersElem.appendChild( QgsXmlUtils::writeVariant( mParameterValues, doc ) );
   methodElem.appendChild( parametersElem );
 
   // extra information
-  QDomElement extraElem = doc.createElement( QStringLiteral( "extraInformation" ) );
+  QDomElement extraElem = doc.createElement( u"extraInformation"_s );
   writeXml( extraElem, context );
   methodElem.appendChild( extraElem );
 
@@ -172,9 +172,9 @@ QString QgsClassificationMethod::formatNumber( double value ) const
   else
   {
     QString valueStr = QLocale().toString( value * mLabelNumberScale, 'f', 0 );
-    if ( valueStr == QLatin1String( "-0" ) )
+    if ( valueStr == "-0"_L1 )
       valueStr = '0';
-    if ( valueStr != QLatin1String( "0" ) )
+    if ( valueStr != "0"_L1 )
       valueStr = valueStr + mLabelNumberSuffix;
     return valueStr;
   }
@@ -192,7 +192,7 @@ const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefini
     if ( def->name() == parameterName )
       return def;
   }
-  QgsMessageLog::logMessage( QStringLiteral( "No parameter definition found for %1 in %2 method." ).arg( parameterName ).arg( name() ) );
+  QgsMessageLog::logMessage( u"No parameter definition found for %1 in %2 method."_s.arg( parameterName ).arg( name() ) );
   return nullptr;
 }
 
@@ -276,7 +276,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
 {
   if ( valuesRequired() )
   {
-    QgsDebugError( QStringLiteral( "The classification method %1 tries to calculate classes without values while they are required." ).arg( name() ) );
+    QgsDebugError( u"The classification method %1 tries to calculate classes without values while they are required."_s.arg( name() ) );
   }
 
   // get the breaks
@@ -357,5 +357,5 @@ QString QgsClassificationMethod::labelForRange( const double lowerValue, const d
   const QString lowerLabel = valueToLabel( lowerValue );
   const QString upperLabel = valueToLabel( upperValue );
 
-  return labelFormat().replace( QLatin1String( "%1" ), lowerLabel ).replace( QLatin1String( "%2" ), upperLabel );
+  return labelFormat().replace( "%1"_L1, lowerLabel ).replace( "%2"_L1, upperLabel );
 }

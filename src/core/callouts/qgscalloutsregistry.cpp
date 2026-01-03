@@ -50,10 +50,10 @@ QgsCalloutWidget *QgsCalloutMetadata::createCalloutWidget( QgsMapLayer *vl )
 QgsCalloutRegistry::QgsCalloutRegistry()
 {
   // init registry with known callouts
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "simple" ), QObject::tr( "Simple lines" ), QgsApplication::getThemeIcon( QStringLiteral( "labelingCalloutSimple.svg" ) ), QgsSimpleLineCallout::create ) );
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "manhattan" ), QObject::tr( "Manhattan lines" ), QgsApplication::getThemeIcon( QStringLiteral( "labelingCalloutManhattan.svg" ) ), QgsManhattanLineCallout::create ) );
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "curved" ), QObject::tr( "Curved lines" ), QgsApplication::getThemeIcon( QStringLiteral( "labelingCalloutCurved.svg" ) ), QgsCurvedLineCallout::create ) );
-  addCalloutType( new QgsCalloutMetadata( QStringLiteral( "balloon" ), QObject::tr( "Balloons" ), QgsApplication::getThemeIcon( QStringLiteral( "labelingCalloutManhattan.svg" ) ), QgsBalloonCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( u"simple"_s, QObject::tr( "Simple lines" ), QgsApplication::getThemeIcon( u"labelingCalloutSimple.svg"_s ), QgsSimpleLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( u"manhattan"_s, QObject::tr( "Manhattan lines" ), QgsApplication::getThemeIcon( u"labelingCalloutManhattan.svg"_s ), QgsManhattanLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( u"curved"_s, QObject::tr( "Curved lines" ), QgsApplication::getThemeIcon( u"labelingCalloutCurved.svg"_s ), QgsCurvedLineCallout::create ) );
+  addCalloutType( new QgsCalloutMetadata( u"balloon"_s, QObject::tr( "Balloons" ), QgsApplication::getThemeIcon( u"labelingCalloutManhattan.svg"_s ), QgsBalloonCallout::create ) );
 }
 
 QgsCalloutRegistry::~QgsCalloutRegistry()

@@ -26,7 +26,7 @@
 
 QString QgsSteppedLineScaleBarRenderer::id() const
 {
-  return QStringLiteral( "stepped" );
+  return u"stepped"_s;
 }
 
 QString QgsSteppedLineScaleBarRenderer::visibleName() const

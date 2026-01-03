@@ -146,7 +146,7 @@ void QgsActionMenu::triggerAction()
       context.setFeature( mFeature );
 
       QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"action_scope"_s, mActionScope, true ) );
       context << actionScope;
       act.run( context );
       break;

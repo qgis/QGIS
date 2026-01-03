@@ -99,7 +99,7 @@ struct CORE_EXPORT QgsVertexId
 #ifdef SIP_RUN
   SIP_PYOBJECT __repr__();
   % MethodCode
-  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3 %4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( qgsEnumValueToKey( sipCpp->type ) );
+  QString str = u"<QgsVertexId: %1,%2,%3 %4>"_s.arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( qgsEnumValueToKey( sipCpp->type ) );
   sipRes = PyUnicode_FromString( str.toUtf8().data() );
   % End
 #endif

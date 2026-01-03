@@ -30,10 +30,10 @@
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( typeIdentifier() );
-  elem.setAttribute( QStringLiteral( "name" ), mName );
-  elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
-  elem.setAttribute( QStringLiteral( "horizontalStretch" ), mHorizontalStretch );
-  elem.setAttribute( QStringLiteral( "verticalStretch" ), mVerticalStretch );
+  elem.setAttribute( u"name"_s, mName );
+  elem.setAttribute( u"showLabel"_s, mShowLabel );
+  elem.setAttribute( u"horizontalStretch"_s, mHorizontalStretch );
+  elem.setAttribute( u"verticalStretch"_s, mVerticalStretch );
   elem.appendChild( mLabelStyle.writeXml( doc ) );
   saveConfiguration( elem, doc );
   return elem;
@@ -63,54 +63,54 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
 {
   QgsAttributeEditorElement *newElement = nullptr;
 
-  const QString name = element.attribute( QStringLiteral( "name" ) );
+  const QString name = element.attribute( u"name"_s );
 
-  if ( element.tagName() == QLatin1String( "attributeEditorContainer" ) )
+  if ( element.tagName() == "attributeEditorContainer"_L1 )
   {
-    newElement = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ),
+    newElement = new QgsAttributeEditorContainer( context.projectTranslator()->translate( u"project:layers:%1:formcontainers"_s.arg( layerId ),
         name ), parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorField" ) )
+  else if ( element.tagName() == "attributeEditorField"_L1 )
   {
     const int idx = fields.lookupField( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorRelation" ) )
+  else if ( element.tagName() == "attributeEditorRelation"_L1 )
   {
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
-    newElement = new QgsAttributeEditorRelation( element.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
+    newElement = new QgsAttributeEditorRelation( element.attribute( u"relation"_s, u"[None]"_s ), parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorQmlElement" ) )
+  else if ( element.tagName() == "attributeEditorQmlElement"_L1 )
   {
-    newElement = new QgsAttributeEditorQmlElement( element.attribute( QStringLiteral( "name" ) ), parent );
+    newElement = new QgsAttributeEditorQmlElement( element.attribute( u"name"_s ), parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorHtmlElement" ) )
+  else if ( element.tagName() == "attributeEditorHtmlElement"_L1 )
   {
-    newElement = new QgsAttributeEditorHtmlElement( element.attribute( QStringLiteral( "name" ) ), parent );
+    newElement = new QgsAttributeEditorHtmlElement( element.attribute( u"name"_s ), parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorTextElement" ) )
+  else if ( element.tagName() == "attributeEditorTextElement"_L1 )
   {
-    newElement = new QgsAttributeEditorTextElement( element.attribute( QStringLiteral( "name" ) ), parent );
+    newElement = new QgsAttributeEditorTextElement( element.attribute( u"name"_s ), parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorSpacerElement" ) )
+  else if ( element.tagName() == "attributeEditorSpacerElement"_L1 )
   {
-    newElement = new QgsAttributeEditorSpacerElement( element.attribute( QStringLiteral( "name" ) ), parent );
+    newElement = new QgsAttributeEditorSpacerElement( element.attribute( u"name"_s ), parent );
   }
-  else if ( element.tagName() == QLatin1String( "attributeEditorAction" ) )
+  else if ( element.tagName() == "attributeEditorAction"_L1 )
   {
-    newElement = new QgsAttributeEditorAction( QUuid( element.attribute( QStringLiteral( "name" ) ) ), parent );
+    newElement = new QgsAttributeEditorAction( QUuid( element.attribute( u"name"_s ) ), parent );
   }
 
   if ( newElement )
   {
-    if ( element.hasAttribute( QStringLiteral( "showLabel" ) ) )
-      newElement->setShowLabel( element.attribute( QStringLiteral( "showLabel" ) ).toInt() );
+    if ( element.hasAttribute( u"showLabel"_s ) )
+      newElement->setShowLabel( element.attribute( u"showLabel"_s ).toInt() );
     else
       newElement->setShowLabel( true );
 
-    newElement->setHorizontalStretch( element.attribute( QStringLiteral( "horizontalStretch" ), QStringLiteral( "0" ) ).toInt() );
-    newElement->setVerticalStretch( element.attribute( QStringLiteral( "verticalStretch" ), QStringLiteral( "0" ) ).toInt() );
+    newElement->setHorizontalStretch( element.attribute( u"horizontalStretch"_s, u"0"_s ).toInt() );
+    newElement->setVerticalStretch( element.attribute( u"verticalStretch"_s, u"0"_s ).toInt() );
 
     // Label font and color
     LabelStyle style;
@@ -126,41 +126,41 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
 
 void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 {
-  QDomElement element { node.firstChildElement( QStringLiteral( "labelStyle" ) ) };
+  QDomElement element { node.firstChildElement( u"labelStyle"_s ) };
 
   if ( ! element.isNull() )
   {
 
     // Label font and color
-    if ( element.hasAttribute( QStringLiteral( "labelColor" ) ) )
+    if ( element.hasAttribute( u"labelColor"_s ) )
     {
-      color = QgsColorUtils::colorFromString( element.attribute( QStringLiteral( "labelColor" ) ) );
+      color = QgsColorUtils::colorFromString( element.attribute( u"labelColor"_s ) );
     }
 
     QFont newFont;
-    QgsFontUtils::setFromXmlChildNode( newFont, element, QStringLiteral( "labelFont" ) );
+    QgsFontUtils::setFromXmlChildNode( newFont, element, u"labelFont"_s );
 
     font = newFont;
 
-    if ( element.hasAttribute( QStringLiteral( "overrideLabelColor" ) ) )
+    if ( element.hasAttribute( u"overrideLabelColor"_s ) )
     {
-      overrideColor = element.attribute( QStringLiteral( "overrideLabelColor" ) ) == QChar( '1' );
+      overrideColor = element.attribute( u"overrideLabelColor"_s ) == QChar( '1' );
     }
 
-    if ( element.hasAttribute( QStringLiteral( "overrideLabelFont" ) ) )
+    if ( element.hasAttribute( u"overrideLabelFont"_s ) )
     {
-      overrideFont = element.attribute( QStringLiteral( "overrideLabelFont" ) ) == QChar( '1' );
+      overrideFont = element.attribute( u"overrideLabelFont"_s ) == QChar( '1' );
     }
   }
 }
 
 QDomElement QgsAttributeEditorElement::LabelStyle::writeXml( QDomDocument &document ) const
 {
-  QDomElement elem {  document.createElement( QStringLiteral( "labelStyle" ) ) };
-  elem.setAttribute( QStringLiteral( "labelColor" ), QgsColorUtils::colorToString( color ) );
-  elem.appendChild( QgsFontUtils::toXmlElement( font, document, QStringLiteral( "labelFont" ) ) );
-  elem.setAttribute( QStringLiteral( "overrideLabelColor" ), overrideColor ? QChar( '1' ) : QChar( '0' ) );
-  elem.setAttribute( QStringLiteral( "overrideLabelFont" ), overrideFont ? QChar( '1' ) : QChar( '0' ) );
+  QDomElement elem {  document.createElement( u"labelStyle"_s ) };
+  elem.setAttribute( u"labelColor"_s, QgsColorUtils::colorToString( color ) );
+  elem.appendChild( QgsFontUtils::toXmlElement( font, document, u"labelFont"_s ) );
+  elem.setAttribute( u"overrideLabelColor"_s, overrideColor ? QChar( '1' ) : QChar( '0' ) );
+  elem.setAttribute( u"overrideLabelFont"_s, overrideFont ? QChar( '1' ) : QChar( '0' ) );
   return elem;
 }
 

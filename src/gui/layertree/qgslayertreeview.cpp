@@ -157,18 +157,18 @@ void QgsLayerTreeViewBase::updateExpandedStateToNode( const QModelIndex &index )
   else if ( QgsLayerTreeModelLegendNode *node = index2legendNode( index ) )
   {
     const QString ruleKey = node->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
-    QStringList lst = node->layerNode()->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
+    QStringList lst = node->layerNode()->customProperty( u"expandedLegendNodes"_s ).toStringList();
     const bool expanded = isExpanded( index );
     const bool isInList = lst.contains( ruleKey );
     if ( expanded && !isInList )
     {
       lst.append( ruleKey );
-      node->layerNode()->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
+      node->layerNode()->setCustomProperty( u"expandedLegendNodes"_s, lst );
     }
     else if ( !expanded && isInList )
     {
       lst.removeAll( ruleKey );
-      node->layerNode()->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
+      node->layerNode()->setCustomProperty( u"expandedLegendNodes"_s, lst );
     }
   }
 }
@@ -423,7 +423,7 @@ static void expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, Q
         lst << parentKey;
     }
   }
-  nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
+  nodeLayer->setCustomProperty( u"expandedLegendNodes"_s, lst );
 }
 
 static void expandAllNodes( QgsLayerTreeGroup *parent, bool expanded, QgsLayerTreeModel *model )
@@ -579,11 +579,11 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( parentNode );
     if ( QgsMapLayer *layer = nodeLayer->layer() )
     {
-      const int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
+      const int widgetsCount = layer->customProperty( u"embeddedWidgets/count"_s, 0 ).toInt();
       QList<QgsLayerTreeModelLegendNode *> legendNodes = layerModel->layerLegendNodes( nodeLayer, true );
       for ( int i = 0; i < widgetsCount; ++i )
       {
-        const QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+        const QString providerId = layer->customProperty( u"embeddedWidgets/%1/id"_s.arg( i ) ).toString();
         if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           const QModelIndex index = legendNode2index( legendNodes[i] );
@@ -614,7 +614,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
   if ( QgsLayerTree::isLayer( parentNode ) )
   {
     // if ShowLegendAsTree flag is enabled in model, we may need to expand some legend nodes
-    const QStringList expandedNodeKeys = parentNode->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
+    const QStringList expandedNodeKeys = parentNode->customProperty( u"expandedLegendNodes"_s ).toStringList();
     if ( expandedNodeKeys.isEmpty() )
       return;
 
@@ -683,10 +683,10 @@ void QgsLayerTreeView::onCurrentChanged()
 void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
-  if ( key != QLatin1String( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) || !layerModel )
+  if ( key != "expandedLegendNodes"_L1 || !QgsLayerTree::isLayer( node ) || !layerModel )
     return;
 
-  const QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
+  const QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( u"expandedLegendNodes"_s ).toStringList() );
 
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerModel->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
@@ -725,7 +725,7 @@ QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNod
 ///@cond PRIVATE
 QStringList QgsLayerTreeView::viewOnlyCustomProperties()
 {
-  return QStringList() << QStringLiteral( "expandedLegendNodes" );
+  return QStringList() << u"expandedLegendNodes"_s;
 }
 ///@endcond
 
@@ -837,10 +837,10 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
     // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     {
       event->accept();
       return;
@@ -851,10 +851,10 @@ void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
     // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     {
       event->accept();
       return;
@@ -865,10 +865,10 @@ void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 
 void QgsLayerTreeView::dropEvent( QDropEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
     // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     {
       event->accept();
 

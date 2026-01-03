@@ -38,8 +38,8 @@
 #endif
 #include <QMutexLocker>
 
-const QString QgsAuthPkcs12Method::AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
-const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI PKCS#12 authentication" );
+const QString QgsAuthPkcs12Method::AUTH_METHOD_KEY = u"PKI-PKCS#12"_s;
+const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = u"PKI PKCS#12 authentication"_s;
 const QString QgsAuthPkcs12Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "PKI PKCS#12 authentication" );
 
 #ifndef QT_NO_SSL
@@ -51,8 +51,8 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList() << QStringLiteral( "ows" ) << QStringLiteral( "wfs" ) // convert to lowercase
-                                  << QStringLiteral( "wcs" ) << QStringLiteral( "wms" ) << QStringLiteral( "postgres" ) );
+  setDataProviders( QStringList() << u"ows"_s << u"wfs"_s // convert to lowercase
+                                  << u"wcs"_s << u"wms"_s << u"postgres"_s );
 }
 
 QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
@@ -85,22 +85,22 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   const QMutexLocker locker( &mMutex );
 
   // TODO: is this too restrictive, to intercept only HTTPS connections?
-  if ( request.url().scheme().toLower() != QLatin1String( "https" ) )
+  if ( request.url().scheme().toLower() != "https"_L1 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Update request SSL config SKIPPED for authcfg %1: not HTTPS" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Update request SSL config SKIPPED for authcfg %1: not HTTPS"_s.arg( authcfg ), 2 );
     return true;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Update request SSL config: HTTPS connection for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Update request SSL config: HTTPS connection for authcfg: %1"_s.arg( authcfg ), 2 );
 
   QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update request SSL config FAILED for authcfg: %1: PKI bundle invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request SSL config FAILED for authcfg: %1: PKI bundle invalid"_s.arg( authcfg ) );
     return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Update request SSL config: PKI bundle valid for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Update request SSL config: PKI bundle valid for authcfg: %1"_s.arg( authcfg ), 2 );
 
   QSslConfiguration sslConfig = request.sslConfiguration();
   //QSslConfiguration sslConfig( QSslConfiguration::defaultConfiguration() );
@@ -109,9 +109,9 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
   // add extra CAs from the bundle, QNAM will prepend the trusted CAs in createRequest()
-  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
+  if ( pkibundle->config().config( u"addcas"_s, u"false"_s ) == "true"_L1 )
   {
-    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
+    if ( pkibundle->config().config( u"addrootca"_s, u"false"_s ) == "true"_L1 )
     {
       sslConfig.setCaCertificates( pkibundle->caChain() );
     }
@@ -135,18 +135,18 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
 
-  QgsDebugMsgLevel( QStringLiteral( "Update URI items for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Update URI items for authcfg: %1"_s.arg( authcfg ), 2 );
 
   QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update URI items FAILED: PKI bundle invalid" ) );
+    QgsDebugError( u"Update URI items FAILED: PKI bundle invalid"_s );
     return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Update URI items: PKI bundle valid" ), 2 );
+  QgsDebugMsgLevel( u"Update URI items: PKI bundle valid"_s, 2 );
 
-  const QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
+  const QString pkiTempFileBase = u"tmppki_%1.pem"_s;
 
   // save client cert to temp file
   const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
@@ -170,9 +170,9 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // add extra CAs from the bundle
   QList<QSslCertificate> cas;
-  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
+  if ( pkibundle->config().config( u"addcas"_s, u"false"_s ) == "true"_L1 )
   {
-    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
+    if ( pkibundle->config().config( u"addrootca"_s, u"false"_s ) == "true"_L1 )
     {
       cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(), pkibundle->caChain() );
     }
@@ -266,14 +266,14 @@ void QgsAuthPkcs12Method::clearCachedConfig( const QString &authcfg )
 void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
   const QMutexLocker locker( &mMutex );
-  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
+  if ( mconfig.hasConfig( u"oldconfigstyle"_s ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Updating old style auth method config" ), 2 );
+    QgsDebugMsgLevel( u"Updating old style auth method config"_s, 2 );
 
-    const QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
-    mconfig.setConfig( QStringLiteral( "bundlepath" ), conflist.at( 0 ) );
-    mconfig.setConfig( QStringLiteral( "bundlepass" ), conflist.at( 1 ) );
-    mconfig.removeConfig( QStringLiteral( "oldconfigstyle" ) );
+    const QStringList conflist = mconfig.config( u"oldconfigstyle"_s ).split( u"|||"_s );
+    mconfig.setConfig( u"bundlepath"_s, conflist.at( 0 ) );
+    mconfig.setConfig( u"bundlepass"_s, conflist.at( 1 ) );
+    mconfig.removeConfig( u"oldconfigstyle"_s );
   }
 
   // TODO: add updates as method version() increases due to config storage changes
@@ -291,7 +291,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
     bundle = sPkiConfigBundleCache.value( authcfg );
     if ( bundle )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Retrieved PKI bundle for authcfg %1" ).arg( authcfg ), 2 );
+      QgsDebugMsgLevel( u"Retrieved PKI bundle for authcfg %1"_s.arg( authcfg ), 2 );
       return bundle;
     }
   }
@@ -301,15 +301,15 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
 
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, true ) )
   {
-    QgsDebugError( QStringLiteral( "PKI bundle for authcfg %1: FAILED to retrieve config" ).arg( authcfg ) );
+    QgsDebugError( u"PKI bundle for authcfg %1: FAILED to retrieve config"_s.arg( authcfg ) );
     return bundle;
   }
 
-  const QStringList bundlelist = QgsAuthCertUtils::pkcs12BundleToPem( mconfig.config( QStringLiteral( "bundlepath" ) ), mconfig.config( QStringLiteral( "bundlepass" ) ), false );
+  const QStringList bundlelist = QgsAuthCertUtils::pkcs12BundleToPem( mconfig.config( u"bundlepath"_s ), mconfig.config( u"bundlepass"_s ), false );
 
   if ( bundlelist.isEmpty() || bundlelist.size() < 2 )
   {
-    QgsDebugError( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, PKCS#12 bundle parsing failed" ).arg( authcfg ) );
+    QgsDebugError( u"PKI bundle for authcfg %1: insert FAILED, PKCS#12 bundle parsing failed"_s.arg( authcfg ) );
     return bundle;
   }
 
@@ -318,26 +318,26 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   const QSslCertificate clientcert( bundlelist.at( 0 ).toLatin1() );
   if ( !QgsAuthCertUtils::certIsViable( clientcert ) )
   {
-    QgsDebugError( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, client cert is not viable" ).arg( authcfg ) );
+    QgsDebugError( u"PKI bundle for authcfg %1: insert FAILED, client cert is not viable"_s.arg( authcfg ) );
     return bundle;
   }
 
   // !!! DON'T LEAVE THESE UNCOMMENTED !!!
-  // QgsDebugMsgLevel( QStringLiteral( "PKI bundle key for authcfg: \n%1" ).arg( bundlelist.at( 1 ) ), 2 );
-  // QgsDebugMsgLevel( QStringLiteral( "PKI bundle key pass for authcfg: \n%1" )
-  //              .arg( !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ) : QString() ), 2 );
+  // QgsDebugMsgLevel( u"PKI bundle key for authcfg: \n%1"_s.arg( bundlelist.at( 1 ) ), 2 );
+  // QgsDebugMsgLevel( u"PKI bundle key pass for authcfg: \n%1"_s
+  //              .arg( !mconfig.config( u"bundlepass"_s ).isNull() ? mconfig.config( u"bundlepass"_s ) : QString() ), 2 );
 
   // init key
-  const QSslKey clientkey( bundlelist.at( 1 ).toLatin1(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ).toUtf8() : QByteArray() );
+  const QSslKey clientkey( bundlelist.at( 1 ).toLatin1(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, !mconfig.config( u"bundlepass"_s ).isNull() ? mconfig.config( u"bundlepass"_s ).toUtf8() : QByteArray() );
 
 
   if ( clientkey.isNull() )
   {
-    QgsDebugError( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, cert key is null" ).arg( authcfg ) );
+    QgsDebugError( u"PKI bundle for authcfg %1: insert FAILED, cert key is null"_s.arg( authcfg ) );
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey, QgsAuthCertUtils::pkcs12BundleCas( mconfig.config( QStringLiteral( "bundlepath" ) ), mconfig.config( QStringLiteral( "bundlepass" ) ) ) );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey, QgsAuthCertUtils::pkcs12BundleCas( mconfig.config( u"bundlepath"_s ), mconfig.config( u"bundlepass"_s ) ) );
 
   locker.unlock();
   // cache bundle
@@ -349,7 +349,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
 void QgsAuthPkcs12Method::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
   const QMutexLocker locker( &mMutex );
-  QgsDebugMsgLevel( QStringLiteral( "Putting PKI bundle for authcfg %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Putting PKI bundle for authcfg %1"_s.arg( authcfg ), 2 );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
@@ -361,7 +361,7 @@ void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
     QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
     pkibundle = nullptr;
-    QgsDebugMsgLevel( QStringLiteral( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Removed PKI bundle for authcfg: %1"_s.arg( authcfg ), 2 );
   }
 }
 #endif

@@ -21,7 +21,7 @@
 
 QString QgsRenameLayerAlgorithm::name() const
 {
-  return QStringLiteral( "renamelayer" );
+  return u"renamelayer"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsRenameLayerAlgorithm::flags() const
@@ -46,7 +46,7 @@ QString QgsRenameLayerAlgorithm::group() const
 
 QString QgsRenameLayerAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsRenameLayerAlgorithm::shortHelpString() const
@@ -66,15 +66,15 @@ QgsRenameLayerAlgorithm *QgsRenameLayerAlgorithm::createInstance() const
 
 void QgsRenameLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "NAME" ), QObject::tr( "New name" ) ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterString( u"NAME"_s, QObject::tr( "New name" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Layer" ) ) );
 }
 
 QVariantMap QgsRenameLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
+  const QString name = parameterAsString( parameters, u"NAME"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -82,14 +82,14 @@ QVariantMap QgsRenameLayerAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( name.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Invalid (empty) layer name" ) );
 
-  const bool parameterWasLayerName = parameters.value( QStringLiteral( "INPUT" ) ).toString() == layer->name();
+  const bool parameterWasLayerName = parameters.value( u"INPUT"_s ).toString() == layer->name();
 
   layer->setName( name );
   QVariantMap results;
   if ( parameterWasLayerName )
-    results.insert( QStringLiteral( "OUTPUT" ), name );
+    results.insert( u"OUTPUT"_s, name );
   else
-    results.insert( QStringLiteral( "OUTPUT" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+    results.insert( u"OUTPUT"_s, parameters.value( u"INPUT"_s ) );
 
   return results;
 }

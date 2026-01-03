@@ -27,25 +27,25 @@ QgsCombineStylesAlgorithm::~QgsCombineStylesAlgorithm() = default;
 
 void QgsCombineStylesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input databases" ), Qgis::ProcessingSourceType::File ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"INPUT"_s, QObject::tr( "Input databases" ), Qgis::ProcessingSourceType::File ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );
 
   const QStringList options = QStringList()
                               << QObject::tr( "Symbols" )
                               << QObject::tr( "Color ramps" )
                               << QObject::tr( "Text formats" )
                               << QObject::tr( "Label settings" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OBJECTS" ), QObject::tr( "Objects to combine" ), options, true, QVariantList() << 0 << 1 << 2 << 3 ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "SYMBOLS" ), QObject::tr( "Symbol count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COLORRAMPS" ), QObject::tr( "Color ramp count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TEXTFORMATS" ), QObject::tr( "Text format count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "LABELSETTINGS" ), QObject::tr( "Label settings count" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"OBJECTS"_s, QObject::tr( "Objects to combine" ), options, true, QVariantList() << 0 << 1 << 2 << 3 ) );
+  addOutput( new QgsProcessingOutputNumber( u"SYMBOLS"_s, QObject::tr( "Symbol count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"COLORRAMPS"_s, QObject::tr( "Color ramp count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"TEXTFORMATS"_s, QObject::tr( "Text format count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"LABELSETTINGS"_s, QObject::tr( "Label settings count" ) ) );
 }
 
 QString QgsCombineStylesAlgorithm::name() const
 {
-  return QStringLiteral( "combinestyles" );
+  return u"combinestyles"_s;
 }
 
 QString QgsCombineStylesAlgorithm::displayName() const
@@ -65,7 +65,7 @@ QString QgsCombineStylesAlgorithm::group() const
 
 QString QgsCombineStylesAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 QString QgsCombineStylesAlgorithm::shortHelpString() const
@@ -86,10 +86,10 @@ QgsCombineStylesAlgorithm *QgsCombineStylesAlgorithm::createInstance() const
 
 QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QStringList inputs = parameterAsFileList( parameters, QStringLiteral( "INPUT" ), context );
+  const QStringList inputs = parameterAsFileList( parameters, u"INPUT"_s, context );
 
   QList<QgsStyle::StyleEntity> objects;
-  const QList<int> selectedObjects = parameterAsEnums( parameters, QStringLiteral( "OBJECTS" ), context );
+  const QList<int> selectedObjects = parameterAsEnums( parameters, u"OBJECTS"_s, context );
   if ( selectedObjects.contains( 0 ) )
     objects << QgsStyle::SymbolEntity;
   if ( selectedObjects.contains( 1 ) )
@@ -115,7 +115,7 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
         break;
 
       i++;
-      candidate = sourceName + QStringLiteral( " (%1)" ).arg( i );
+      candidate = sourceName + u" (%1)"_s.arg( i );
     }
 
     usedNames[type].insert( candidate );
@@ -191,18 +191,18 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
     feedback->pushInfo( QObject::tr( "Writing output file" ) );
   }
 
-  const QString file = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString file = parameterAsString( parameters, u"OUTPUT"_s, context );
   if ( !style.exportXml( file ) )
   {
     throw QgsProcessingException( QObject::tr( "Error saving style database as %1" ).arg( file ) );
   }
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), file );
-  results.insert( QStringLiteral( "SYMBOLS" ), style.symbolCount() );
-  results.insert( QStringLiteral( "COLORRAMPS" ), style.colorRampCount() );
-  results.insert( QStringLiteral( "TEXTFORMATS" ), style.textFormatCount() );
-  results.insert( QStringLiteral( "LABELSETTINGS" ), style.labelSettingsCount() );
+  results.insert( u"OUTPUT"_s, file );
+  results.insert( u"SYMBOLS"_s, style.symbolCount() );
+  results.insert( u"COLORRAMPS"_s, style.colorRampCount() );
+  results.insert( u"TEXTFORMATS"_s, style.textFormatCount() );
+  results.insert( u"LABELSETTINGS"_s, style.labelSettingsCount() );
   return results;
 }
 

@@ -68,13 +68,13 @@ void QgsTableCell::setNumericFormat( QgsNumericFormat *format )
 QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "content" ), mContent );
-  res.insert( QStringLiteral( "background" ), mBackgroundColor );
-  res.insert( QStringLiteral( "foreground" ), mForegroundColor );
+  res.insert( u"content"_s, mContent );
+  res.insert( u"background"_s, mBackgroundColor );
+  res.insert( u"foreground"_s, mForegroundColor );
   if ( mFormat )
   {
-    res.insert( QStringLiteral( "format_type" ), mFormat->id() );
-    res.insert( QStringLiteral( "format" ), mFormat->configuration( context ) );
+    res.insert( u"format_type"_s, mFormat->id() );
+    res.insert( u"format"_s, mFormat->configuration( context ) );
   }
 
   if ( mTextFormat.isValid() )
@@ -82,28 +82,28 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
     QDomDocument textDoc;
     const QDomElement textElem = mTextFormat.writeXml( textDoc, context );
     textDoc.appendChild( textElem );
-    res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
+    res.insert( u"text_format"_s, textDoc.toString() );
   }
 
-  res.insert( QStringLiteral( "halign" ), static_cast< int >( mHAlign ) );
-  res.insert( QStringLiteral( "valign" ), static_cast< int >( mVAlign ) );
+  res.insert( u"halign"_s, static_cast< int >( mHAlign ) );
+  res.insert( u"valign"_s, static_cast< int >( mVAlign ) );
   if ( mRowSpan > 1 )
-    res.insert( QStringLiteral( "row_span" ), mRowSpan );
+    res.insert( u"row_span"_s, mRowSpan );
   if ( mColumnSpan > 1 )
-    res.insert( QStringLiteral( "column_span" ), mColumnSpan );
+    res.insert( u"column_span"_s, mColumnSpan );
 
   return res;
 }
 
 void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
-  mContent = properties.value( QStringLiteral( "content" ) );
-  mBackgroundColor = properties.value( QStringLiteral( "background" ) ).value< QColor >();
-  mForegroundColor = properties.value( QStringLiteral( "foreground" ) ).value< QColor >();
+  mContent = properties.value( u"content"_s );
+  mBackgroundColor = properties.value( u"background"_s ).value< QColor >();
+  mForegroundColor = properties.value( u"foreground"_s ).value< QColor >();
 
   QDomDocument doc;
   QDomElement elem;
-  const QString textXml = properties.value( QStringLiteral( "text_format" ) ).toString();
+  const QString textXml = properties.value( u"text_format"_s ).toString();
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
@@ -115,11 +115,11 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
     mTextFormat = QgsTextFormat();
   }
 
-  if ( properties.contains( QStringLiteral( "format_type" ) ) )
+  if ( properties.contains( u"format_type"_s ) )
   {
 
-    mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( QStringLiteral( "format_type" ) ).toString(),
-                   properties.value( QStringLiteral( "format" ) ).toMap(),
+    mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( u"format_type"_s ).toString(),
+                   properties.value( u"format"_s ).toMap(),
                    context ) );
   }
   else
@@ -127,11 +127,11 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
     mFormat.reset();
   }
 
-  mHAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "halign" ), Qt::AlignLeft ).toInt() );
-  mVAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "valign" ), Qt::AlignVCenter ).toInt() );
+  mHAlign = static_cast< Qt::Alignment >( properties.value( u"halign"_s, Qt::AlignLeft ).toInt() );
+  mVAlign = static_cast< Qt::Alignment >( properties.value( u"valign"_s, Qt::AlignVCenter ).toInt() );
 
-  mRowSpan = properties.value( QStringLiteral( "row_span" ), 1 ).toInt();
-  mColumnSpan = properties.value( QStringLiteral( "column_span" ), 1 ).toInt();
+  mRowSpan = properties.value( u"row_span"_s, 1 ).toInt();
+  mColumnSpan = properties.value( u"column_span"_s, 1 ).toInt();
 }
 
 Qt::Alignment QgsTableCell::horizontalAlignment() const

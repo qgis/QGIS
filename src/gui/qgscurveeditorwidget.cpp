@@ -78,7 +78,7 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTrans
   grid->attach( mPlot );
 
   mPlotCurve = new QwtPlotCurve();
-  mPlotCurve->setTitle( QStringLiteral( "Curve" ) );
+  mPlotCurve->setTitle( u"Curve"_s );
   mPlotCurve->setPen( QPen( QColor( 30, 30, 30 ), 0.0 ) ),
     mPlotCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mPlotCurve->attach( mPlot );

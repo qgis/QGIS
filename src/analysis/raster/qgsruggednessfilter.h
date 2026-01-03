@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter : public QgsNineCellFilter
 
     const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "ruggedness" );
+      return u"ruggedness"_s;
     }
 #endif
 };

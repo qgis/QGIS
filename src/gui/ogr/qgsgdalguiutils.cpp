@@ -42,91 +42,91 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
   }
 
   //todo:add default ports for all kind of databases
-  if ( connectionType == QLatin1String( "ESRI Personal GeoDatabase" ) )
+  if ( connectionType == "ESRI Personal GeoDatabase"_L1 )
   {
     uri = "PGeo:" + database;
   }
-  else if ( connectionType == QLatin1String( "ESRI ArcSDE" ) )
+  else if ( connectionType == "ESRI ArcSDE"_L1 )
   {
     if ( port.isEmpty() )
-      port = QStringLiteral( "5151" );
+      port = u"5151"_s;
 
     uri = "SDE:" + host + ",PORT:" + port + ',' + database + ',' + username + ',' + password;
   }
-  else if ( connectionType == QLatin1String( "Informix DataBlade" ) )
+  else if ( connectionType == "Informix DataBlade"_L1 )
   {
     //not tested
     uri = "IDB:dbname=" + database;
 
     if ( !host.isEmpty() )
-      uri += QStringLiteral( " server=%1" ).arg( host );
+      uri += u" server=%1"_s.arg( host );
 
     if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( " user=%1" ).arg( username );
+      uri += u" user=%1"_s.arg( username );
 
       if ( !password.isEmpty() )
-        uri += QStringLiteral( " pass=%1" ).arg( password );
+        uri += u" pass=%1"_s.arg( password );
     }
   }
-  else if ( connectionType == QLatin1String( "Ingres" ) )
+  else if ( connectionType == "Ingres"_L1 )
   {
     //not tested
     uri = "@driver=ingres,dbname=" + database;
     if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( ",userid=%1" ).arg( username );
+      uri += u",userid=%1"_s.arg( username );
 
       if ( !password.isEmpty() )
-        uri += QStringLiteral( ",password=%1" ).arg( password );
+        uri += u",password=%1"_s.arg( password );
     }
   }
-  else if ( connectionType == QLatin1String( "MySQL" ) )
+  else if ( connectionType == "MySQL"_L1 )
   {
     uri = "MySQL:" + database;
 
     if ( !host.isEmpty() )
     {
-      uri += QStringLiteral( ",host=%1" ).arg( host );
+      uri += u",host=%1"_s.arg( host );
 
       if ( !port.isEmpty() )
-        uri += QStringLiteral( ",port=%1" ).arg( port );
+        uri += u",port=%1"_s.arg( port );
     }
 
     if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( ",user=%1" ).arg( username );
+      uri += u",user=%1"_s.arg( username );
 
       if ( !password.isEmpty() )
-        uri += QStringLiteral( ",password=%1" ).arg( password );
+        uri += u",password=%1"_s.arg( password );
     }
   }
-  else if ( connectionType == QLatin1String( "MSSQL" ) )
+  else if ( connectionType == "MSSQL"_L1 )
   {
-    uri = QStringLiteral( "MSSQL:" );
+    uri = u"MSSQL:"_s;
 
     if ( !host.isEmpty() )
     {
-      uri += QStringLiteral( ";server=%1" ).arg( host );
+      uri += u";server=%1"_s.arg( host );
 
       if ( !port.isEmpty() )
-        uri += QStringLiteral( ",%1" ).arg( port );
+        uri += u",%1"_s.arg( port );
     }
 
     if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( ";uid=%1" ).arg( username );
+      uri += u";uid=%1"_s.arg( username );
 
       if ( !password.isEmpty() )
-        uri += QStringLiteral( ";pwd=%1" ).arg( password );
+        uri += u";pwd=%1"_s.arg( password );
     }
     else
-      uri += QLatin1String( ";trusted_connection=yes" );
+      uri += ";trusted_connection=yes"_L1;
 
     if ( !database.isEmpty() )
-      uri += QStringLiteral( ";database=%1" ).arg( database );
+      uri += u";database=%1"_s.arg( database );
   }
-  else if ( connectionType == QLatin1String( "Oracle Spatial" ) )
+  else if ( connectionType == "Oracle Spatial"_L1 )
   {
     uri = "OCI:" + username;
 
@@ -156,7 +156,7 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
       }
     }
   }
-  else if ( connectionType == QLatin1String( "ODBC" ) )
+  else if ( connectionType == "ODBC"_L1 )
   {
     if ( !username.isEmpty() )
     {
@@ -174,27 +174,27 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
       uri = "ODBC:" + database;
     }
   }
-  else if ( connectionType == QLatin1String( "OGDI Vectors" ) )
+  else if ( connectionType == "OGDI Vectors"_L1 )
   {
   }
-  else if ( connectionType == QLatin1String( "PostgreSQL" ) )
+  else if ( connectionType == "PostgreSQL"_L1 )
   {
     uri = "PG:dbname='" + database + '\'';
 
     if ( !host.isEmpty() )
     {
-      uri += QStringLiteral( " host='%1'" ).arg( host );
+      uri += u" host='%1'"_s.arg( host );
 
       if ( !port.isEmpty() )
-        uri += QStringLiteral( " port='%1'" ).arg( port );
+        uri += u" port='%1'"_s.arg( port );
     }
 
     if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( " user='%1'" ).arg( username );
+      uri += u" user='%1'"_s.arg( username );
 
       if ( !password.isEmpty() )
-        uri += QStringLiteral( " password='%1'" ).arg( password );
+        uri += u" password='%1'"_s.arg( password );
     }
 
     uri += ' ';
@@ -204,13 +204,13 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
   {
     if ( !expandAuthConfig )
     {
-      uri += QStringLiteral( " authcfg='%1'" ).arg( configId );
+      uri += u" authcfg='%1'"_s.arg( configId );
     }
     else
     {
       QStringList connectionItems;
       connectionItems << uri;
-      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, u"ogr"_s ) )
       {
         uri = connectionItems.join( QString() );
       }
@@ -225,57 +225,57 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
 {
   QString uri = url;
   QString prefix;
-  if ( type == QLatin1String( "vsicurl" ) )
+  if ( type == "vsicurl"_L1 )
   {
-    prefix = QStringLiteral( "/vsicurl/" );
+    prefix = u"/vsicurl/"_s;
     if ( !uri.startsWith( prefix ) )
     {
       // If no protocol is provided in the URL, default to HTTP
-      if ( !uri.startsWith( QLatin1String( "http://" ) ) && !uri.startsWith( QLatin1String( "https://" ) ) && !uri.startsWith( QLatin1String( "ftp://" ) ) )
+      if ( !uri.startsWith( "http://"_L1 ) && !uri.startsWith( "https://"_L1 ) && !uri.startsWith( "ftp://"_L1 ) )
       {
-        uri.prepend( QStringLiteral( "http://" ) );
+        uri.prepend( u"http://"_s );
       }
       uri.prepend( prefix );
     }
   }
-  else if ( type == QLatin1String( "vsis3" )
-            || type == QLatin1String( "vsigs" )
-            || type == QLatin1String( "vsiaz" )
-            || type == QLatin1String( "vsiadls" )
-            || type == QLatin1String( "vsioss" )
-            || type == QLatin1String( "vsiswift" )
-            || type == QLatin1String( "vsihdfs" ) )
+  else if ( type == "vsis3"_L1
+            || type == "vsigs"_L1
+            || type == "vsiaz"_L1
+            || type == "vsiadls"_L1
+            || type == "vsioss"_L1
+            || type == "vsiswift"_L1
+            || type == "vsihdfs"_L1 )
   {
-    prefix = QStringLiteral( "/%1/" ).arg( type );
+    prefix = u"/%1/"_s.arg( type );
     if ( !uri.startsWith( prefix ) )
     {
       uri.prepend( prefix );
     }
   }
   // catching both GeoJSON and GeoJSONSeq
-  else if ( type.startsWith( QLatin1String( "GeoJSON" ) ) )
+  else if ( type.startsWith( "GeoJSON"_L1 ) )
   {
     // no change needed for now
   }
-  else if ( type == QLatin1String( "CouchDB" ) )
+  else if ( type == "CouchDB"_L1 )
   {
-    prefix = QStringLiteral( "couchdb:" );
+    prefix = u"couchdb:"_s;
     if ( !uri.startsWith( prefix ) )
     {
       uri.prepend( prefix );
     }
   }
-  else if ( type == QLatin1String( "DODS/OPeNDAP" ) )
+  else if ( type == "DODS/OPeNDAP"_L1 )
   {
-    prefix = QStringLiteral( "DODS:" );
+    prefix = u"DODS:"_s;
     if ( !uri.startsWith( prefix ) )
     {
       uri.prepend( prefix );
     }
   }
-  else if ( type == QLatin1String( "WFS3" ) )
+  else if ( type == "WFS3"_L1 )
   {
-    prefix = QStringLiteral( "WFS3:" );
+    prefix = u"WFS3:"_s;
     if ( !uri.startsWith( prefix ) )
     {
       uri.prepend( prefix );
@@ -289,19 +289,19 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
     {
       QStringList connectionItems;
       connectionItems << uri;
-      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, u"ogr"_s ) )
       {
         uri = connectionItems.join( QString() );
       }
     }
     else
     {
-      uri += QStringLiteral( " authcfg='%1'" ).arg( configId );
+      uri += u" authcfg='%1'"_s.arg( configId );
     }
   }
   else if ( !( username.isEmpty() || password.isEmpty() ) )
   {
-    uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+    uri.replace( "://"_L1, u"://%1:%2@"_s.arg( username, password ) );
   }
   return uri;
 }

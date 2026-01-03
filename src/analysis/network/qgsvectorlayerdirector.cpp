@@ -68,7 +68,7 @@ QgsVectorLayerDirector::QgsVectorLayerDirector( QgsFeatureSource *source, int di
 
 QString QgsVectorLayerDirector::name() const
 {
-  return QStringLiteral( "Vector line" );
+  return u"Vector line"_s;
 }
 
 QgsAttributeList QgsVectorLayerDirector::requiredAttributes() const
@@ -385,7 +385,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
               catch ( QgsCsException & )
               {
                 // TODO report errors to user
-                QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+                QgsDebugError( u"An error occurred while calculating length"_s );
               }
 
               QVector<QVariant> prop;

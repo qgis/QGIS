@@ -1106,7 +1106,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   if ( linesToProcess.empty() )
   {
     QgsGeometry g;
-    g.mLastError = QStringLiteral( "Input geometry was not a curve type geometry" );
+    g.mLastError = u"Input geometry was not a curve type geometry"_s;
     return g;
   }
 

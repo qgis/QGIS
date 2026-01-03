@@ -22,7 +22,7 @@
 
 #include "moc_qgswfsconnection.cpp"
 
-static const QString SERVICE_WFS = QStringLiteral( "WFS" );
+static const QString SERVICE_WFS = u"WFS"_s;
 
 
 QgsWfsConnection::QgsWfsConnection( const QString &connName )
@@ -59,13 +59,13 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   if ( settingsWfsForceInitialGetFeature->exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE, settingsWfsForceInitialGetFeature->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    mUri.setParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE, settingsWfsForceInitialGetFeature->value( detailsParameters ) ? u"true"_s : u"false"_s );
   }
 
   if ( settingsPreferCoordinatesForWfsT11->exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES, settingsPreferCoordinatesForWfsT11->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES, settingsPreferCoordinatesForWfsT11->value( detailsParameters ) ? u"true"_s : u"false"_s );
   }
 
   if ( settingsPreferredHttpMethod->exists( detailsParameters ) )
@@ -78,7 +78,7 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
         break;
 
       case Qgis::HttpMethod::Post:
-        mUri.setParam( QgsWFSConstants::URI_PARAM_HTTPMETHOD, QStringLiteral( "post" ) );
+        mUri.setParam( QgsWFSConstants::URI_PARAM_HTTPMETHOD, u"post"_s );
         break;
 
       case Qgis::HttpMethod::Head:
@@ -93,13 +93,13 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE ); // setParam allow for duplicates!
     const QString featureMode = settingsWfsFeatureMode->value( detailsParameters );
-    if ( featureMode != QLatin1String( "default" ) )
+    if ( featureMode != "default"_L1 )
     {
       mUri.setParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE, featureMode );
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );
+  QgsDebugMsgLevel( u"WFS full uri: '%1'."_s.arg( QString( mUri.uri() ) ), 4 );
 }
 
 QStringList QgsWfsConnection::connectionList()

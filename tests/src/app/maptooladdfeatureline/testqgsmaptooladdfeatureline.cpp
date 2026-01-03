@@ -115,9 +115,9 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   QgsSettings settings;
   settings.clear();
 
@@ -125,10 +125,10 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   // make testing layers
-  mLayerLine = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine = new QgsVectorLayer( u"CompoundCurve?crs=EPSG:27700"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine );
 
@@ -146,7 +146,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   // make testing layers for tracing curves
-  mLayerLineCurved = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "curved layer line" ), QStringLiteral( "memory" ) );
+  mLayerLineCurved = new QgsVectorLayer( u"CompoundCurve?crs=EPSG:27700"_s, u"curved layer line"_s, u"memory"_s );
   QVERIFY( mLayerLineCurved->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineCurved );
 
@@ -162,7 +162,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
 
   // make testing layers for tracing curves with offset
-  mLayerLineCurvedOffset = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "curved layer line" ), QStringLiteral( "memory" ) );
+  mLayerLineCurvedOffset = new QgsVectorLayer( u"CompoundCurve?crs=EPSG:27700"_s, u"curved layer line"_s, u"memory"_s );
   QVERIFY( mLayerLineCurvedOffset->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineCurvedOffset );
 
@@ -178,7 +178,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCOMPARE( mLayerLineCurvedOffset->undoStack()->index(), 1 );
 
   // make testing layers
-  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayerLineZ = new QgsVectorLayer( u"LineStringZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayerLineZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
 
@@ -191,7 +191,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerLineZ->addFeature( lineF2 );
   QCOMPARE( mLayerLineZ->featureCount(), ( long ) 1 );
 
-  mLayerCloseLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line Closed" ), QStringLiteral( "memory" ) );
+  mLayerCloseLine = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line Closed"_s, u"memory"_s );
   QVERIFY( mLayerCloseLine->isValid() );
   mLayerCloseLine->startEditing();
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCloseLine );
@@ -205,7 +205,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
   // make 2D layer for snapping with a 3D layer
-  mLayerLine2D = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine2D = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerLine2D->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine2D );
 
@@ -217,24 +217,24 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCOMPARE( mLayerLine2D->featureCount(), ( long ) 1 );
 
   // make testing layers
-  mLayerSelfSnapLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerSelfSnapLine = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerSelfSnapLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerSelfSnapLine );
   mLayerSelfSnapLine->startEditing();
 
   // make layers with different CRS
-  mLayerCRS3946Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerCRS3946Line = new QgsVectorLayer( u"LineString?crs=EPSG:3946"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerCRS3946Line->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3946Line );
   mLayerCRS3946Line->startEditing();
 
-  mLayerCRS3945Line = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3945" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerCRS3945Line = new QgsVectorLayer( u"LineString?crs=EPSG:3945"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerCRS3945Line->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCRS3945Line );
   mLayerCRS3945Line->startEditing();
 
   // make layers with overlapping features to test topo editing
-  mLayerTopo1 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line topo1" ), QStringLiteral( "memory" ) );
+  mLayerTopo1 = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line topo1"_s, u"memory"_s );
   QVERIFY( mLayerTopo1->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo1 );
   mLayerTopo1->startEditing();
@@ -249,7 +249,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   // just one added feature
   QCOMPARE( mLayerTopo1->undoStack()->index(), 1 );
 
-  mLayerTopo2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line topo2" ), QStringLiteral( "memory" ) );
+  mLayerTopo2 = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line topo2"_s, u"memory"_s );
   QVERIFY( mLayerTopo2->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo2 );
   mLayerTopo2->startEditing();
@@ -264,7 +264,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   // just one added feature
   QCOMPARE( mLayerTopo2->undoStack()->index(), 1 );
 
-  mLayerTopo3 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line topo3" ), QStringLiteral( "memory" ) );
+  mLayerTopo3 = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line topo3"_s, u"memory"_s );
   QVERIFY( mLayerTopo3->isValid() );
   mLayerTopo3->startEditing();
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo3 );
@@ -345,7 +345,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   // as here, QCOMPARE with QgsGeometry uses isGeosEqual() and geos does not support curve (need to convert curve to line string), test with wkt string
-  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 1, 3 2, 4 2),(4 2, 4 3))" ) );
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().asWkt(), u"CompoundCurve (CircularString (1 1, 3 2, 4 2),(4 2, 4 3))"_s );
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
@@ -367,7 +367,7 @@ void TestQgsMapToolAddFeatureLine::testTracing()
   utils.mouseClick( 3, 2, Qt::LeftButton );
 
   // be sure it doesn't create an extra curve
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((1 1, 2 1, 3 2))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((1 1, 2 1, 3 2))"_s );
 
   utils.mouseClick( 3, 2, Qt::RightButton );
 
@@ -406,7 +406,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
-  QgsVectorLayer *lineLayer3857 = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *lineLayer3857 = new QgsVectorLayer( u"CompoundCurve?crs=EPSG:3857"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( lineLayer3857->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer3857 );
 
@@ -425,14 +425,14 @@ void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
   utils.mouseClick( 3, 2, Qt::LeftButton );
 
   // be sure it doesn't create an extra curve
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( -3 ), QStringLiteral( "CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( -3 ), u"CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))"_s );
 
   utils.mouseClick( 3, 2, Qt::RightButton );
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
-  QCOMPARE( lineLayer3857->getFeature( newFid ).geometry().asWkt( -3 ), QStringLiteral( "CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))" ) );
+  QCOMPARE( lineLayer3857->getFeature( newFid ).geometry().asWkt( -3 ), u"CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))"_s );
 
   lineLayer3857->undoStack()->undo();
 
@@ -450,7 +450,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
   const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
-  QCOMPARE( lineLayer3857->getFeature( newFid2 ).geometry().asWkt( -3 ), QStringLiteral( "CompoundCurve ((-841000 6406000, -841000 6406000),(-841000 6406000, -841000 6406000, -841000 6406000),(-841000 6406000, -841000 6406000))" ) );
+  QCOMPARE( lineLayer3857->getFeature( newFid2 ).geometry().asWkt( -3 ), u"CompoundCurve ((-841000 6406000, -841000 6406000),(-841000 6406000, -841000 6406000, -841000 6406000),(-841000 6406000, -841000 6406000))"_s );
 
   mEnableTracingAction->setChecked( false );
   mCanvas->setCurrentLayer( mLayerLine );
@@ -737,7 +737,7 @@ void TestQgsMapToolAddFeatureLine::testLineString()
   utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
 
   // check capture curve initially
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt(), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5, 7.25 6.5, 7.5 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt(), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5, 7.25 6.5, 7.5 6.5))"_s );
 
   utils.mouseClick( 8, 6.5, Qt::RightButton );
 
@@ -773,7 +773,7 @@ void TestQgsMapToolAddFeatureLine::testCompoundCurve()
   utils.mouseClick( 7.7, 6.0, Qt::LeftButton );
 
   // check capture curve initially
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5, 7.5 6, 7.7 6))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5, 7.5 6, 7.7 6))"_s );
 
   utils.mouseClick( 8, 6.5, Qt::RightButton );
 
@@ -822,7 +822,7 @@ void TestQgsMapToolAddFeatureLine::testStream()
   utils.mouseMove( 7.1, 4.9 );
 
   // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))"_s );
   utils.mouseClick( 7.0, 5.0, Qt::RightButton );
   mCaptureTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
 
@@ -869,50 +869,50 @@ void TestQgsMapToolAddFeatureLine::testUndo()
   utils.mouseMove( 7.1, 4.9 );
 
   // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5, 7.09 4.91))"_s );
 
   // now lets try undoing...
   utils.keyClick( Qt::Key_Backspace );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09, 7.2 5))"_s );
   // simulate auto repeating undo from a held-down backspace key
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5, 7.3 5.09))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.41 5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
   // we've now finished undoing the streamed digitizing section, so undo should pause until the user releases the backspace key and then re-presses it
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), false );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91, 7.59 6.3))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), false );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5, 7.5 6.91))"_s );
   // simulate holding down another key
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59, 7.3 6.5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7, 7.2 6.59))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.09 6.7))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
   // should get "stuck" here again
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5))"_s );
   // release and repress
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), false );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5))"_s );
   utils.keyClick( Qt::Key_Backspace, Qt::KeyboardModifiers(), true );
 
   utils.mouseClick( 7.0, 5.0, Qt::RightButton );
@@ -956,7 +956,7 @@ void TestQgsMapToolAddFeatureLine::testStreamTolerance()
   utils.mouseMove( 7.1, 4.9 );
 
   // check capture curve initially -- the streamed sections MUST become their own curve in the geometry, and not be compined with the straight line segments!
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.2 6.59, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.3 5.09, 7.09 4.91))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), u"CompoundCurve ((5 6.5, 6.25 6.5, 6.75 6.5),(6.75 6.5, 7 6.59, 7.2 6.59, 7.5 6.91, 7.59 6.3),(7.59 6.3, 7.5 5),(7.5 5, 7.3 5.09, 7.09 4.91))"_s );
   utils.mouseClick( 7.0, 5.0, Qt::RightButton );
   mCaptureTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
 
@@ -990,7 +990,7 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingDifferentCanvasCrs(
   const QgsFeatureId baseGeomFid = utils.newFeatureId( oldFeatures );
   QgsGeometry geom = mLayerCRS3946Line->getFeature( baseGeomFid ).geometry();
   geom.transform( transform, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (0 0, 10 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (0 0, 10 10)"_s );
 
   oldFeatures = utils.existingFeatureIds();
 
@@ -1021,12 +1021,12 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingDifferentCanvasCrs(
   const QgsFeatureId newFid = utils.newFeatureId( oldFeatures );
   geom = mLayerCRS3946Line->getFeature( newFid ).geometry();
   geom.transform( transform, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (10 0, 5 5, 0 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (10 0, 5 5, 0 10)"_s );
 
   // the base line should have one more vertex
   geom = mLayerCRS3946Line->getFeature( baseGeomFid ).geometry();
   geom.transform( transform, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (0 0, 5 5, 10 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (0 0, 5 5, 10 10)"_s );
 
   mLayerCRS3945Line->rollBack();
   snapConfig.project()->setTopologicalEditing( topologicalEditing );
@@ -1056,7 +1056,7 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWIthDiffLayerWithDi
   const QgsFeatureId base3945GeomFid = utils.newFeatureId( oldFeatures );
   QgsGeometry geom = mLayerCRS3945Line->getFeature( base3945GeomFid ).geometry();
   geom.transform( transformFrom3945, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (10 0, 10 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (10 0, 10 10)"_s );
 
   oldFeatures = utils.existingFeatureIds();
 
@@ -1075,7 +1075,7 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWIthDiffLayerWithDi
   const QgsFeatureId base3946GeomFid = utils.newFeatureId( oldFeatures );
   geom = mLayerCRS3946Line->getFeature( base3946GeomFid ).geometry();
   geom.transform( transformFrom3946, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (20 0, 20 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (20 0, 20 10)"_s );
 
   oldFeatures = utils.existingFeatureIds();
 
@@ -1108,16 +1108,16 @@ void TestQgsMapToolAddFeatureLine::testWithTopologicalEditingWIthDiffLayerWithDi
   const QgsFeatureId newFid = utils.newFeatureId( oldFeatures );
   geom = mLayerCRS3946Line->getFeature( newFid ).geometry();
   geom.transform( transformFrom3946, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (0 5, 10 5, 20 5, 30 5)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (0 5, 10 5, 20 5, 30 5)"_s );
 
   // check that there is one more vertex on the base lines
   geom = mLayerCRS3945Line->getFeature( base3945GeomFid ).geometry();
   geom.transform( transformFrom3945, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (10 0, 10 5, 10 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (10 0, 10 5, 10 10)"_s );
 
   geom = mLayerCRS3946Line->getFeature( base3946GeomFid ).geometry();
   geom.transform( transformFrom3946, Qgis::TransformDirection::Forward );
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "LineString (20 0, 20 5, 20 10)" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"LineString (20 0, 20 5, 20 10)"_s );
 
   mLayerCRS3945Line->rollBack();
   mLayerCRS3946Line->rollBack();

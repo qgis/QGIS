@@ -150,11 +150,11 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), u"%1 map units"_s.arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), u"%1 pixels"_s.arg( scaleBarWidthUnits ), QFont() );
   }
 
   if ( frameEnabled() )

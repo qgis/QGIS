@@ -18,27 +18,16 @@
 
 #include "qgsfeatureid.h"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QGeometry>
-#else
 #include <Qt3DCore/QGeometry>
-#endif
 
 class Qgs3DSceneExporter;
 class QgsPolygon;
 class QgsPointXY;
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-namespace Qt3DRender
-{
-  class QBuffer;
-}
-#else
 namespace Qt3DCore
 {
   class QBuffer;
 }
-#endif
 
 #define SIP_NO_FILE
 
@@ -52,11 +41,7 @@ namespace Qt3DCore
  * \note Not available in Python bindings
  *
  */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
-#else
 class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
-#endif
 {
     Q_OBJECT
   public:
@@ -108,17 +93,10 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
     friend class Qgs3DSceneExporter;
 
   private:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QAttribute *mNormalAttribute = nullptr;
-    Qt3DRender::QAttribute *mTextureCoordsAttribute = nullptr;
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-#else
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mNormalAttribute = nullptr;
     Qt3DCore::QAttribute *mTextureCoordsAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
-#endif
 
     QVector<QgsFeatureId> mTriangleIndexFids;
     QVector<uint> mTriangleIndexStartingIndices;

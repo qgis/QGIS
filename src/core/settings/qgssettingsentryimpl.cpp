@@ -29,7 +29,7 @@ bool QgsSettingsEntryString::checkValuePrivate( const QString &value ) const
 {
   if ( value.length() < mMinLength )
   {
-    QgsDebugError( QStringLiteral( "Can't set value for settings. String length '%1' is shorter than minimum length '%2'." )
+    QgsDebugError( u"Can't set value for settings. String length '%1' is shorter than minimum length '%2'."_s
                    .arg( value.length() )
                    .arg( mMinLength ) );
     return false;
@@ -38,7 +38,7 @@ bool QgsSettingsEntryString::checkValuePrivate( const QString &value ) const
   if ( mMaxLength >= 0
        && value.length() > mMaxLength )
   {
-    QgsDebugError( QStringLiteral( "Can't set value for settings. String length '%1' is longer than maximum length '%2'." )
+    QgsDebugError( u"Can't set value for settings. String length '%1' is longer than maximum length '%2'."_s
                    .arg( value.length() )
                    .arg( mMinLength ) );
     return false;
@@ -237,7 +237,7 @@ bool QgsSettingsEntryColor::checkValuePrivate( const QColor &value ) const
 {
   if ( !mAllowAlpha && value.alpha() != 255 )
   {
-    QgsDebugError( QStringLiteral( "Setting %1 doesn't allow transparency and the given color has transparency." ).arg( definitionKey() ) );
+    QgsDebugError( u"Setting %1 doesn't allow transparency and the given color has transparency."_s.arg( definitionKey() ) );
     return false;
   }
 

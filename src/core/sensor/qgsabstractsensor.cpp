@@ -94,10 +94,10 @@ bool QgsAbstractSensor::readPropertiesFromElement( const QDomElement &, const QD
 
 bool QgsAbstractSensor::writeXml( QDomElement &parentElement, QDomDocument &document ) const
 {
-  QDomElement element = document.createElement( QStringLiteral( "Sensor" ) );
-  element.setAttribute( QStringLiteral( "id" ), id() );
-  element.setAttribute( QStringLiteral( "type" ), type() );
-  element.setAttribute( QStringLiteral( "name" ), name() );
+  QDomElement element = document.createElement( u"Sensor"_s );
+  element.setAttribute( u"id"_s, id() );
+  element.setAttribute( u"type"_s, type() );
+  element.setAttribute( u"name"_s, name() );
 
   writePropertiesToElement( element, document );
   parentElement.appendChild( element );
@@ -107,13 +107,13 @@ bool QgsAbstractSensor::writeXml( QDomElement &parentElement, QDomDocument &docu
 
 bool QgsAbstractSensor::readXml( const QDomElement &element, const QDomDocument &document )
 {
-  if ( element.nodeName() != QLatin1String( "Sensor" ) )
+  if ( element.nodeName() != "Sensor"_L1 )
   {
     return false;
   }
 
-  mId = element.attribute( QStringLiteral( "id" ), QUuid::createUuid().toString() );
-  mName = element.attribute( QStringLiteral( "name" ) );
+  mId = element.attribute( u"id"_s, QUuid::createUuid().toString() );
+  mName = element.attribute( u"name"_s );
   readPropertiesFromElement( element, document );
 
   return true;

@@ -99,22 +99,22 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
   {
     case QgsExpressionNode::NodeType::ntFunction:
     {
-      error = QStringLiteral( "Functions are not supported in point cloud expressions" );
+      error = u"Functions are not supported in point cloud expressions"_s;
       return nullptr;
     }
     case QgsExpressionNode::NodeType::ntBetweenOperator:
     {
-      error = QStringLiteral( "Between predicate is not supported in point cloud expressions" );
+      error = u"Between predicate is not supported in point cloud expressions"_s;
       return nullptr;
     }
     case QgsExpressionNode::NodeType::ntCondition:
     {
-      error = QStringLiteral( "Conditional Statements are not supported in point cloud expressions" );
+      error = u"Conditional Statements are not supported in point cloud expressions"_s;
       return nullptr;
     }
     case QgsExpressionNode::NodeType::ntIndexOperator:
     {
-      error = QStringLiteral( "Index operators are not supported in point cloud expressions" );
+      error = u"Index operators are not supported in point cloud expressions"_s;
       return nullptr;
     }
     case QgsExpressionNode::NodeType::ntLiteral:
@@ -124,7 +124,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       const double value = n->value().toDouble( &ok );
       if ( !ok )
       {
-        error = QStringLiteral( "Literal %1 cannot be converted to double" ).arg( n->value().toString() );
+        error = u"Literal %1 cannot be converted to double"_s.arg( n->value().toString() );
         return nullptr;
       }
       return new QgsPointCloudExpressionNodeLiteral( value );
@@ -135,7 +135,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op;
       if ( !QgsPointCloudExpressionNodeBinaryOperator::convert( n->op(), op ) )
       {
-        error = QStringLiteral( "Unsupported binary operator %1" ).arg( n->text() );
+        error = u"Unsupported binary operator %1"_s.arg( n->text() );
         return nullptr;
       }
       QgsPointCloudExpressionNode *opLeft = convert( n->opLeft(), error );
@@ -185,7 +185,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op;
       if ( !QgsPointCloudExpressionNodeUnaryOperator::convert( n->op(), op ) )
       {
-        error = QStringLiteral( "Unsupported unary operator %1" ).arg( n->text() );
+        error = u"Unsupported unary operator %1"_s.arg( n->text() );
         return nullptr;
       }
       QgsPointCloudExpressionNode *operand = convert( n->operand(), error );

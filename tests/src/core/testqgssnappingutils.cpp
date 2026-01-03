@@ -65,8 +65,8 @@ class TestQgsSnappingUtils : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( QStringLiteral( "Polygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-      const int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+      mVL = new QgsVectorLayer( u"Polygon?field=fld:int"_s, u"x"_s, u"memory"_s );
+      const int idx = mVL->fields().indexFromName( u"fld"_s );
       QVERIFY( idx != -1 );
       f1.initAttributes( 1 );
       f2.initAttributes( 1 );
@@ -143,9 +143,9 @@ class TestQgsSnappingUtils : public QObject
     void testSnapInvisible()
     {
       QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
-      renderer->setClassAttribute( QStringLiteral( "fld" ) );
+      renderer->setClassAttribute( u"fld"_s );
       renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
-      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ), QStringLiteral( "2" ) ) );
+      renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ), u"2"_s ) );
       mVL->setRenderer( renderer );
 
       //create legend with symbology nodes for categorized renderer
@@ -271,7 +271,7 @@ class TestQgsSnappingUtils : public QObject
       //         \/
       //         /\    .
       // (0,0)  x  x (1,0)
-      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( u"LineString"_s, u"x"_s, u"memory"_s );
       QgsPolylineXY polyline1, polyline2;
       polyline1 << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
       polyline2 << QgsPointXY( 1, 0 ) << QgsPointXY( 0, 1 );
@@ -319,7 +319,7 @@ class TestQgsSnappingUtils : public QObject
     void testSnapOnIntersectionCurveZ()
     {
       // testing with a layer with curve and Z
-      auto vCurveZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      auto vCurveZ = std::make_unique<QgsVectorLayer>( u"CircularStringZ"_s, u"x"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f1.setGeometry( f1g );
@@ -362,7 +362,7 @@ class TestQgsSnappingUtils : public QObject
     }
     void testSnapOnIntersectionMultiGeom()
     {
-      auto vMulti = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineStringZ" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
+      auto vMulti = std::make_unique<QgsVectorLayer>( u"MultiLineStringZ"_s, u"m"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineStringZ ((0 0 0, 0 5 5), (5 0 10, 5 5 10))" );
       f1.setGeometry( f1g );
@@ -403,7 +403,7 @@ class TestQgsSnappingUtils : public QObject
     }
     void testSnapOnCentroidAndMiddleSegment()
     {
-      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( u"LineString"_s, u"m"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
       f1.setGeometry( f1g );
@@ -440,7 +440,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnLineEndpoints()
     {
-      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( u"LineString"_s, u"m"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0)" );
       f1.setGeometry( f1g );
@@ -489,7 +489,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnLineEndpointsMultiLine()
     {
-      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( u"MultiLineString"_s, u"m"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiLineString ((0 0, 0 5, 5 5, 5 0), (0 -0.1, 0 -5, 5 -0.5))" );
       f1.setGeometry( f1g );
@@ -557,7 +557,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnPolygonEndpoints()
     {
-      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( u"Polygon"_s, u"m"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "Polygon ((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2))" );
       f1.setGeometry( f1g );
@@ -608,7 +608,7 @@ class TestQgsSnappingUtils : public QObject
 
     void testSnapOnMultiPolygonEndpoints()
     {
-      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) );
+      auto vSnapCentroidMiddle = std::make_unique<QgsVectorLayer>( u"MultiPolygon"_s, u"m"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "MultiPolygon (((1 0, 0 5, 5 5, 5 0, 1 0),(3 2, 3.5 2, 3.5 3, 3 2)), ((10 0, 10 5, 15 5, 15 0, 10 0),(13 2, 13.5 2, 13.5 3, 13 2)) )" );
       f1.setGeometry( f1g );
@@ -786,7 +786,7 @@ class TestQgsSnappingUtils : public QObject
       u.setConfig( snappingConfig );
 
       // additional vector layer
-      QgsVectorLayer *extraVL = new QgsVectorLayer( QStringLiteral( "Point?field=fId:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *extraVL = new QgsVectorLayer( u"Point?field=fId:int"_s, u"x"_s, u"memory"_s );
       extraVL->startEditing();
 
       // we start with one point: (5, 5) (at 50, 50 on screen)
@@ -825,8 +825,8 @@ class TestQgsSnappingUtils : public QObject
 
     void testLocatorsCleaning()
     {
-      auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-      const int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( u"Polygon?field=fld:int"_s, u"x"_s, u"memory"_s );
+      const int idx = mVL->fields().indexFromName( u"fld"_s );
       QVERIFY( idx != -1 );
       f1.initAttributes( 1 );
       f2.initAttributes( 1 );

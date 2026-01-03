@@ -41,22 +41,22 @@ void QgsExpressionFieldBuffer::updateExpression( int index, const QString &exp )
 
 void QgsExpressionFieldBuffer::writeXml( QDomNode &layerNode, QDomDocument &document ) const
 {
-  QDomElement expressionFieldsElem = document.createElement( QStringLiteral( "expressionfields" ) );
+  QDomElement expressionFieldsElem = document.createElement( u"expressionfields"_s );
   layerNode.appendChild( expressionFieldsElem );
 
   const auto constMExpressions = mExpressions;
   for ( const ExpressionField &fld : constMExpressions )
   {
-    QDomElement fldElem = document.createElement( QStringLiteral( "field" ) );
+    QDomElement fldElem = document.createElement( u"field"_s );
 
-    fldElem.setAttribute( QStringLiteral( "expression" ), fld.cachedExpression.expression() );
-    fldElem.setAttribute( QStringLiteral( "name" ), fld.field.name() );
-    fldElem.setAttribute( QStringLiteral( "precision" ), fld.field.precision() );
-    fldElem.setAttribute( QStringLiteral( "comment" ), fld.field.comment() );
-    fldElem.setAttribute( QStringLiteral( "length" ), fld.field.length() );
-    fldElem.setAttribute( QStringLiteral( "type" ), fld.field.type() );
-    fldElem.setAttribute( QStringLiteral( "subType" ), fld.field.subType() );
-    fldElem.setAttribute( QStringLiteral( "typeName" ), fld.field.typeName() );
+    fldElem.setAttribute( u"expression"_s, fld.cachedExpression.expression() );
+    fldElem.setAttribute( u"name"_s, fld.field.name() );
+    fldElem.setAttribute( u"precision"_s, fld.field.precision() );
+    fldElem.setAttribute( u"comment"_s, fld.field.comment() );
+    fldElem.setAttribute( u"length"_s, fld.field.length() );
+    fldElem.setAttribute( u"type"_s, fld.field.type() );
+    fldElem.setAttribute( u"subType"_s, fld.field.subType() );
+    fldElem.setAttribute( u"typeName"_s, fld.field.typeName() );
 
     expressionFieldsElem.appendChild( fldElem );
   }
@@ -66,23 +66,23 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode &layerNode )
 {
   mExpressions.clear();
 
-  const QDomElement expressionFieldsElem = layerNode.firstChildElement( QStringLiteral( "expressionfields" ) );
+  const QDomElement expressionFieldsElem = layerNode.firstChildElement( u"expressionfields"_s );
 
   if ( !expressionFieldsElem.isNull() )
   {
-    const QDomNodeList fields = expressionFieldsElem.elementsByTagName( QStringLiteral( "field" ) );
+    const QDomNodeList fields = expressionFieldsElem.elementsByTagName( u"field"_s );
 
     for ( int i = 0; i < fields.size(); ++i )
     {
       const QDomElement field = fields.at( i ).toElement();
-      const QString exp = field.attribute( QStringLiteral( "expression" ) );
-      const QString name = field.attribute( QStringLiteral( "name" ) );
-      const QString comment = field.attribute( QStringLiteral( "comment" ) );
-      const int precision = field.attribute( QStringLiteral( "precision" ) ).toInt();
-      const int length = field.attribute( QStringLiteral( "length" ) ).toInt();
-      const QMetaType::Type type = static_cast< QMetaType::Type >( field.attribute( QStringLiteral( "type" ) ).toInt() );
-      const QMetaType::Type subType = static_cast< QMetaType::Type >( field.attribute( QStringLiteral( "subType" ), QStringLiteral( "0" ) ).toInt() );
-      const QString typeName = field.attribute( QStringLiteral( "typeName" ) );
+      const QString exp = field.attribute( u"expression"_s );
+      const QString name = field.attribute( u"name"_s );
+      const QString comment = field.attribute( u"comment"_s );
+      const int precision = field.attribute( u"precision"_s ).toInt();
+      const int length = field.attribute( u"length"_s ).toInt();
+      const QMetaType::Type type = static_cast< QMetaType::Type >( field.attribute( u"type"_s ).toInt() );
+      const QMetaType::Type subType = static_cast< QMetaType::Type >( field.attribute( u"subType"_s, u"0"_s ).toInt() );
+      const QString typeName = field.attribute( u"typeName"_s );
 
       mExpressions.append( ExpressionField( exp, QgsField( name, type, typeName, length, precision, comment, subType ) ) );
     }

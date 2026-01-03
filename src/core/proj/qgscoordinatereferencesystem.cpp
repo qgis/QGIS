@@ -169,7 +169,7 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
       continue;
     }
 
-    QString sql = QStringLiteral( "select srs_id from tbl_srs" );
+    QString sql = u"select srs_id from tbl_srs"_s;
     int rc;
     statement = database.prepare( sql, rc );
     while ( true )
@@ -261,7 +261,7 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::createCompoundCrs( co
     for ( const QString &rawError : std::as_const( errors ) )
     {
       QString formattedError = rawError;
-      formattedError.replace( QLatin1String( "proj_create_compound_crs: " ), QString() );
+      formattedError.replace( "proj_create_compound_crs: "_L1, QString() );
       formattedErrorList.append( formattedError );
     }
     error = formattedErrorList.join( '\n' );
@@ -310,11 +310,11 @@ bool QgsCoordinateReferenceSystem::createFromId( const long id, CrsType type )
       Q_NOWARN_DEPRECATED_POP
       break;
     case EpsgCrsId:
-      result = createFromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( id ) );
+      result = createFromOgcWmsCrs( u"EPSG:%1"_s.arg( id ) );
       break;
     default:
       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
-      QgsDebugError( QStringLiteral( "Unexpected case reached!" ) );
+      QgsDebugError( u"Unexpected case reached!"_s );
   };
   return result;
 }
@@ -338,30 +338,30 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   locker.unlock();
 
   bool result = false;
-  const thread_local QRegularExpression reCrsId( QStringLiteral( "^(epsg|esri|osgeo|ignf|ogc|nkg|zangi|iau_2015|iau2000|postgis|internal|user)\\:(\\w+)$" ), QRegularExpression::CaseInsensitiveOption );
+  const thread_local QRegularExpression reCrsId( u"^(epsg|esri|osgeo|ignf|ogc|nkg|zangi|iau_2015|iau2000|postgis|internal|user)\\:(\\w+)$"_s, QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch match = reCrsId.match( definition );
   if ( match.capturedStart() == 0 )
   {
     QString authName = match.captured( 1 ).toLower();
-    if ( authName == QLatin1String( "epsg" ) )
+    if ( authName == "epsg"_L1 )
     {
       result = createFromOgcWmsCrs( definition );
     }
-    else if ( authName == QLatin1String( "postgis" ) )
+    else if ( authName == "postgis"_L1 )
     {
       const long id = match.captured( 2 ).toLong();
       Q_NOWARN_DEPRECATED_PUSH
       result = createFromSrid( id );
       Q_NOWARN_DEPRECATED_POP
     }
-    else if ( authName == QLatin1String( "esri" )
-              || authName == QLatin1String( "osgeo" )
-              || authName == QLatin1String( "ignf" )
-              || authName == QLatin1String( "zangi" )
-              || authName == QLatin1String( "iau2000" )
-              || authName == QLatin1String( "ogc" )
-              || authName == QLatin1String( "nkg" )
-              || authName == QLatin1String( "iau_2015" )
+    else if ( authName == "esri"_L1
+              || authName == "osgeo"_L1
+              || authName == "ignf"_L1
+              || authName == "zangi"_L1
+              || authName == "iau2000"_L1
+              || authName == "ogc"_L1
+              || authName == "nkg"_L1
+              || authName == "iau_2015"_L1
             )
     {
       result = createFromOgcWmsCrs( definition );
@@ -376,11 +376,11 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   }
   else
   {
-    const thread_local QRegularExpression reCrsStr( QStringLiteral( "^(?:(wkt|proj4|proj)\\:)?(.+)$" ), QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression reCrsStr( u"^(?:(wkt|proj4|proj)\\:)?(.+)$"_s, QRegularExpression::CaseInsensitiveOption );
     match = reCrsStr.match( definition );
     if ( match.capturedStart() == 0 )
     {
-      if ( match.captured( 1 ).startsWith( QLatin1String( "proj" ), Qt::CaseInsensitive ) )
+      if ( match.captured( 1 ).startsWith( "proj"_L1, Qt::CaseInsensitive ) )
       {
         result = createFromProj( match.captured( 2 ) );
       }
@@ -425,13 +425,13 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
   {
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configNew );
     if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
-      QgsLogger::warning( QStringLiteral( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2" )
+      QgsLogger::warning( u"GDAL_FIX_ESRI_WKT could not be set to %1 : %2"_s
                           .arg( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) );
-    QgsDebugMsgLevel( QStringLiteral( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ), 4 );
+    QgsDebugMsgLevel( u"set GDAL_FIX_ESRI_WKT : %1"_s.arg( configNew ), 4 );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ), 4 );
+    QgsDebugMsgLevel( u"GDAL_FIX_ESRI_WKT was already set : %1"_s.arg( configNew ), 4 );
   }
 }
 
@@ -460,9 +460,9 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   const QgsOgcCrsUtils::CRSFlavor crsFlavor = QgsOgcCrsUtils::parseCrsName( crs, authority, code );
   const QString authorityLower = authority.toLower();
   if ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::AUTH_CODE &&
-       ( authorityLower == QLatin1String( "user" ) ||
-         authorityLower == QLatin1String( "custom" ) ||
-         authorityLower == QLatin1String( "qgis" ) ) )
+       ( authorityLower == "user"_L1 ||
+         authorityLower == "custom"_L1 ||
+         authorityLower == "qgis"_L1 ) )
   {
     if ( createFromSrsId( code.toInt() ) )
     {
@@ -496,7 +496,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     }
   }
 
-  if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), wmsCrs.toLower() ) )
+  if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), u"lower(auth_name||':'||auth_id)"_s, wmsCrs.toLower() ) )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     if ( !sDisableOgcCache )
@@ -505,26 +505,26 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   }
 
   // NAD27
-  if ( wmsCrs.compare( QLatin1String( "CRS:27" ), Qt::CaseInsensitive ) == 0 ||
-       wmsCrs.compare( QLatin1String( "OGC:CRS27" ), Qt::CaseInsensitive ) == 0 )
+  if ( wmsCrs.compare( "CRS:27"_L1, Qt::CaseInsensitive ) == 0 ||
+       wmsCrs.compare( "OGC:CRS27"_L1, Qt::CaseInsensitive ) == 0 )
   {
     // TODO: verify same axis orientation
-    return createFromOgcWmsCrs( QStringLiteral( "EPSG:4267" ) );
+    return createFromOgcWmsCrs( u"EPSG:4267"_s );
   }
 
   // NAD83
-  if ( wmsCrs.compare( QLatin1String( "CRS:83" ), Qt::CaseInsensitive ) == 0 ||
-       wmsCrs.compare( QLatin1String( "OGC:CRS83" ), Qt::CaseInsensitive ) == 0 )
+  if ( wmsCrs.compare( "CRS:83"_L1, Qt::CaseInsensitive ) == 0 ||
+       wmsCrs.compare( "OGC:CRS83"_L1, Qt::CaseInsensitive ) == 0 )
   {
     // TODO: verify same axis orientation
-    return createFromOgcWmsCrs( QStringLiteral( "EPSG:4269" ) );
+    return createFromOgcWmsCrs( u"EPSG:4269"_s );
   }
 
   // WGS84
-  if ( wmsCrs.compare( QLatin1String( "CRS:84" ), Qt::CaseInsensitive ) == 0 ||
-       wmsCrs.compare( QLatin1String( "OGC:CRS84" ), Qt::CaseInsensitive ) == 0 )
+  if ( wmsCrs.compare( "CRS:84"_L1, Qt::CaseInsensitive ) == 0 ||
+       wmsCrs.compare( "OGC:CRS84"_L1, Qt::CaseInsensitive ) == 0 )
   {
-    if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), QStringLiteral( "epsg:4326" ) ) )
+    if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), u"lower(auth_name||':'||auth_id)"_s, u"epsg:4326"_s ) )
     {
       d->mAxisInverted = false;
       d->mAxisInvertedDirty = false;
@@ -584,7 +584,7 @@ bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
   for ( auto it = sAuthIdToQgisSrsIdMap.constBegin(); it != sAuthIdToQgisSrsIdMap.constEnd(); ++it )
   {
-    if ( it.value().endsWith( QStringLiteral( ",%1" ).arg( id ) ) )
+    if ( it.value().endsWith( u",%1"_s.arg( id ) ) )
     {
       const QStringList parts = it.key().split( ':' );
       const QString auth = parts.at( 0 );
@@ -600,7 +600,7 @@ bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
     }
   }
 
-  bool result = loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "srid" ), QString::number( id ) );
+  bool result = loadFromDatabase( QgsApplication::srsDatabaseFilePath(), u"srid"_s, QString::number( id ) );
 
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableSrIdCache )
@@ -644,7 +644,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
 
   bool result = loadFromDatabase( id < Qgis::USER_CRS_START_ID ? QgsApplication::srsDatabaseFilePath() :
                                   QgsApplication::qgisUserDatabaseFilePath(),
-                                  QStringLiteral( "srs_id" ), QString::number( id ) );
+                                  u"srs_id"_s, QString::number( id ) );
 
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableSrsIdCache )
@@ -711,9 +711,9 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
     if ( d->mSrsId >= Qgis::USER_CRS_START_ID && ( d->mAuthId.isEmpty() || d->mAuthId == QChar( ':' ) ) )
     {
-      d->mAuthId = QStringLiteral( "USER:%1" ).arg( d->mSrsId );
+      d->mAuthId = u"USER:%1"_s.arg( d->mSrsId );
     }
-    else if ( !d->mAuthId.startsWith( QLatin1String( "USER:" ), Qt::CaseInsensitive ) )
+    else if ( !d->mAuthId.startsWith( "USER:"_L1, Qt::CaseInsensitive ) )
     {
       QStringList parts = d->mAuthId.split( ':' );
       QString auth = parts.at( 0 );
@@ -874,45 +874,45 @@ QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
 
   const thread_local QMap< Qgis::CrsAxisDirection, QString > mapping =
   {
-    { Qgis::CrsAxisDirection::North, QStringLiteral( "north" ) },
-    { Qgis::CrsAxisDirection::NorthNorthEast, QStringLiteral( "northNorthEast" ) },
-    { Qgis::CrsAxisDirection::NorthEast, QStringLiteral( "northEast" ) },
-    { Qgis::CrsAxisDirection::EastNorthEast, QStringLiteral( "eastNorthEast" ) },
-    { Qgis::CrsAxisDirection::East, QStringLiteral( "east" ) },
-    { Qgis::CrsAxisDirection::EastSouthEast, QStringLiteral( "eastSouthEast" ) },
-    { Qgis::CrsAxisDirection::SouthEast, QStringLiteral( "southEast" ) },
-    { Qgis::CrsAxisDirection::SouthSouthEast, QStringLiteral( "southSouthEast" ) },
-    { Qgis::CrsAxisDirection::South, QStringLiteral( "south" ) },
-    { Qgis::CrsAxisDirection::SouthSouthWest, QStringLiteral( "southSouthWest" ) },
-    { Qgis::CrsAxisDirection::SouthWest, QStringLiteral( "southWest" ) },
-    { Qgis::CrsAxisDirection::WestSouthWest, QStringLiteral( "westSouthWest" ) },
-    { Qgis::CrsAxisDirection::West, QStringLiteral( "west" ) },
-    { Qgis::CrsAxisDirection::WestNorthWest, QStringLiteral( "westNorthWest" ) },
-    { Qgis::CrsAxisDirection::NorthWest, QStringLiteral( "northWest" ) },
-    { Qgis::CrsAxisDirection::NorthNorthWest, QStringLiteral( "northNorthWest" ) },
-    { Qgis::CrsAxisDirection::GeocentricX, QStringLiteral( "geocentricX" ) },
-    { Qgis::CrsAxisDirection::GeocentricY, QStringLiteral( "geocentricY" ) },
-    { Qgis::CrsAxisDirection::GeocentricZ, QStringLiteral( "geocentricZ" ) },
-    { Qgis::CrsAxisDirection::Up, QStringLiteral( "up" ) },
-    { Qgis::CrsAxisDirection::Down, QStringLiteral( "down" ) },
-    { Qgis::CrsAxisDirection::Forward, QStringLiteral( "forward" ) },
-    { Qgis::CrsAxisDirection::Aft, QStringLiteral( "aft" ) },
-    { Qgis::CrsAxisDirection::Port, QStringLiteral( "port" ) },
-    { Qgis::CrsAxisDirection::Starboard, QStringLiteral( "starboard" ) },
-    { Qgis::CrsAxisDirection::Clockwise, QStringLiteral( "clockwise" ) },
-    { Qgis::CrsAxisDirection::CounterClockwise, QStringLiteral( "counterClockwise" ) },
-    { Qgis::CrsAxisDirection::ColumnPositive, QStringLiteral( "columnPositive" ) },
-    { Qgis::CrsAxisDirection::ColumnNegative, QStringLiteral( "columnNegative" ) },
-    { Qgis::CrsAxisDirection::RowPositive, QStringLiteral( "rowPositive" ) },
-    { Qgis::CrsAxisDirection::RowNegative, QStringLiteral( "rowNegative" ) },
-    { Qgis::CrsAxisDirection::DisplayRight, QStringLiteral( "displayRight" ) },
-    { Qgis::CrsAxisDirection::DisplayLeft, QStringLiteral( "displayLeft" ) },
-    { Qgis::CrsAxisDirection::DisplayUp, QStringLiteral( "displayUp" ) },
-    { Qgis::CrsAxisDirection::DisplayDown, QStringLiteral( "displayDown" ) },
-    { Qgis::CrsAxisDirection::Future, QStringLiteral( "future" ) },
-    { Qgis::CrsAxisDirection::Past, QStringLiteral( "past" ) },
-    { Qgis::CrsAxisDirection::Towards, QStringLiteral( "towards" ) },
-    { Qgis::CrsAxisDirection::AwayFrom, QStringLiteral( "awayFrom" ) },
+    { Qgis::CrsAxisDirection::North, u"north"_s },
+    { Qgis::CrsAxisDirection::NorthNorthEast, u"northNorthEast"_s },
+    { Qgis::CrsAxisDirection::NorthEast, u"northEast"_s },
+    { Qgis::CrsAxisDirection::EastNorthEast, u"eastNorthEast"_s },
+    { Qgis::CrsAxisDirection::East, u"east"_s },
+    { Qgis::CrsAxisDirection::EastSouthEast, u"eastSouthEast"_s },
+    { Qgis::CrsAxisDirection::SouthEast, u"southEast"_s },
+    { Qgis::CrsAxisDirection::SouthSouthEast, u"southSouthEast"_s },
+    { Qgis::CrsAxisDirection::South, u"south"_s },
+    { Qgis::CrsAxisDirection::SouthSouthWest, u"southSouthWest"_s },
+    { Qgis::CrsAxisDirection::SouthWest, u"southWest"_s },
+    { Qgis::CrsAxisDirection::WestSouthWest, u"westSouthWest"_s },
+    { Qgis::CrsAxisDirection::West, u"west"_s },
+    { Qgis::CrsAxisDirection::WestNorthWest, u"westNorthWest"_s },
+    { Qgis::CrsAxisDirection::NorthWest, u"northWest"_s },
+    { Qgis::CrsAxisDirection::NorthNorthWest, u"northNorthWest"_s },
+    { Qgis::CrsAxisDirection::GeocentricX, u"geocentricX"_s },
+    { Qgis::CrsAxisDirection::GeocentricY, u"geocentricY"_s },
+    { Qgis::CrsAxisDirection::GeocentricZ, u"geocentricZ"_s },
+    { Qgis::CrsAxisDirection::Up, u"up"_s },
+    { Qgis::CrsAxisDirection::Down, u"down"_s },
+    { Qgis::CrsAxisDirection::Forward, u"forward"_s },
+    { Qgis::CrsAxisDirection::Aft, u"aft"_s },
+    { Qgis::CrsAxisDirection::Port, u"port"_s },
+    { Qgis::CrsAxisDirection::Starboard, u"starboard"_s },
+    { Qgis::CrsAxisDirection::Clockwise, u"clockwise"_s },
+    { Qgis::CrsAxisDirection::CounterClockwise, u"counterClockwise"_s },
+    { Qgis::CrsAxisDirection::ColumnPositive, u"columnPositive"_s },
+    { Qgis::CrsAxisDirection::ColumnNegative, u"columnNegative"_s },
+    { Qgis::CrsAxisDirection::RowPositive, u"rowPositive"_s },
+    { Qgis::CrsAxisDirection::RowNegative, u"rowNegative"_s },
+    { Qgis::CrsAxisDirection::DisplayRight, u"displayRight"_s },
+    { Qgis::CrsAxisDirection::DisplayLeft, u"displayLeft"_s },
+    { Qgis::CrsAxisDirection::DisplayUp, u"displayUp"_s },
+    { Qgis::CrsAxisDirection::DisplayDown, u"displayDown"_s },
+    { Qgis::CrsAxisDirection::Future, u"future"_s },
+    { Qgis::CrsAxisDirection::Past, u"past"_s },
+    { Qgis::CrsAxisDirection::Towards, u"towards"_s },
+    { Qgis::CrsAxisDirection::AwayFrom, u"awayFrom"_s },
   };
 
   QList< Qgis::CrsAxisDirection > res;
@@ -934,7 +934,7 @@ QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
                              nullptr
                            );
       // get first word of direction only
-      const thread_local QRegularExpression rx( QStringLiteral( "([^\\s]+).*" ) );
+      const thread_local QRegularExpression rx( u"([^\\s]+).*"_s );
       const QRegularExpressionMatch match = rx.match( QString( outDirection ) );
       if ( !match.hasMatch() )
         continue;
@@ -994,7 +994,7 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
   d->mWktPreferred.clear();
   if ( wkt.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "theWkt is uninitialized, operation failed" ), 4 );
+    QgsDebugMsgLevel( u"theWkt is uninitialized, operation failed"_s, 4 );
     return d->mIsValid;
   }
 
@@ -1002,7 +1002,7 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
   QgsCoordinateReferenceSystem::RecordMap record = getRecord( "select * from tbl_srs where wkt=" + QgsSqliteUtils::quotedString( wkt ) + " order by deprecated" );
   if ( !record.empty() )
   {
-    long srsId = record[QStringLiteral( "srs_id" )].toLong();
+    long srsId = record[u"srs_id"_s].toLong();
     if ( srsId > 0 )
     {
       createFromSrsId( srsId );
@@ -1081,7 +1081,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
   QString myProj4String = projString.trimmed();
-  myProj4String.remove( QStringLiteral( "+type=crs" ) );
+  myProj4String.remove( u"+type=crs"_s );
   myProj4String = myProj4String.trimmed();
 
   d->mIsValid = false;
@@ -1090,7 +1090,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
   if ( identify )
   {
     // first, try to use proj to do this for us...
-    const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+    const QString projCrsString = myProj4String + ( myProj4String.contains( u"+type=crs"_s ) ? QString() : u" +type=crs"_s );
     QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), projCrsString.toLatin1().constData() ) );
     if ( crs )
     {
@@ -1098,7 +1098,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
       QString authCode;
       if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode, QgsProjUtils::FlagMatchBoundCrsToUnderlyingSourceCrs ) )
       {
-        const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+        const QString authid = u"%1:%2"_s.arg( authName, authCode );
         if ( createFromOgcWmsCrs( authid ) )
         {
           locker.changeMode( QgsReadWriteLocker::Write );
@@ -1114,7 +1114,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     long id = 0;
     if ( !myRecord.empty() )
     {
-      id = myRecord[QStringLiteral( "srs_id" )].toLong();
+      id = myRecord[u"srs_id"_s].toLong();
       if ( id >= Qgis::USER_CRS_START_ID )
       {
         createFromSrsId( id );
@@ -1186,7 +1186,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
     if ( statement.step() != SQLITE_DONE )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
+      QgsDebugMsgLevel( u"Multiple records found in srs.db"_s, 4 );
       //be less fussy on proj 6 -- the db has MANY more entries!
     }
   }
@@ -1202,7 +1202,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() )
     {
-      QgsDebugError( QStringLiteral( "user qgis.db not found" ) );
+      QgsDebugError( u"user qgis.db not found"_s );
       return myMap;
     }
 
@@ -1228,7 +1228,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
       if ( statement.step() != SQLITE_DONE )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
+        QgsDebugMsgLevel( u"Multiple records found in srs.db"_s, 4 );
         myMap.clear();
       }
     }
@@ -1275,7 +1275,7 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( Qgis::CrsIdentifie
   if ( !authid().isEmpty() )
   {
     if ( type != Qgis::CrsIdentifierType::ShortString && !description().isEmpty() )
-      id = QStringLiteral( "%1 - %2" ).arg( authid(), description() );
+      id = u"%1 - %2"_s.arg( authid(), description() );
     else
       id = authid();
   }
@@ -1291,7 +1291,7 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( Qgis::CrsIdentifie
     id = QObject::tr( "Custom CRS: %1" ).arg( type == Qgis::CrsIdentifierType::MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
          : toProj() );
   if ( !id.isEmpty() && !std::isnan( d->mCoordinateEpoch ) )
-    id += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( d->mCoordinateEpoch, 3 ) );
+    id += u" @ %1"_s.arg( qgsDoubleToString( d->mCoordinateEpoch, 3 ) );
 
   return id;
 }
@@ -1320,14 +1320,14 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
         const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
         const QString ellipsoidAuthCode( proj_get_id_code( ellipsoid.get(), 0 ) );
         if ( !ellipsoidAuthName.isEmpty() && !ellipsoidAuthCode.isEmpty() )
-          d->mEllipsoidAcronym = QStringLiteral( "%1:%2" ).arg( ellipsoidAuthName, ellipsoidAuthCode );
+          d->mEllipsoidAcronym = u"%1:%2"_s.arg( ellipsoidAuthName, ellipsoidAuthCode );
         else
         {
           double semiMajor, semiMinor, invFlattening;
           int semiMinorComputed = 0;
           if ( proj_ellipsoid_get_parameters( QgsProjContext::get(), ellipsoid.get(), &semiMajor, &semiMinor, &semiMinorComputed, &invFlattening ) )
           {
-            d->mEllipsoidAcronym = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ),
+            d->mEllipsoidAcronym = u"PARAMETER:%1:%2"_s.arg( qgsDoubleToString( semiMajor ),
                                    qgsDoubleToString( semiMinor ) );
           }
           else
@@ -1373,9 +1373,9 @@ std::string QgsCoordinateReferenceSystem::toJsonString( bool multiline, int inde
 
   if ( PJ *obj = d->threadLocalProjObject() )
   {
-    const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
-    const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
-    const QByteArray schemaOption = QStringLiteral( "SCHEMA=%1" ).arg( schema ).toLocal8Bit();
+    const QByteArray multiLineOption = u"MULTILINE=%1"_s.arg( multiline ? u"YES"_s : u"NO"_s ).toLocal8Bit();
+    const QByteArray indentatationWidthOption = u"INDENTATION_WIDTH=%1"_s.arg( multiline ? QString::number( indentationWidth ) : u"0"_s ).toLocal8Bit();
+    const QByteArray schemaOption = u"SCHEMA=%1"_s.arg( schema ).toLocal8Bit();
     const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), schemaOption.constData(), nullptr};
 
     const char *json = proj_as_projjson( QgsProjContext::get(), obj, options );
@@ -1548,7 +1548,7 @@ QgsProjectionFactors QgsCoordinateReferenceSystem::factors( const QgsPoint &poin
 
   // we have to make a transformation object corresponding to the crs
   QString projString = toProj();
-  projString.replace( QLatin1String( "+type=crs" ), QString() );
+  projString.replace( "+type=crs"_L1, QString() );
 
   QgsProjUtils::proj_pj_unique_ptr transformation( proj_create( QgsProjContext::get(), projString.toUtf8().constData() ) );
   if ( !transformation )
@@ -1590,7 +1590,7 @@ QgsProjOperation QgsCoordinateReferenceSystem::operation() const
 
   // we have to make a transformation object corresponding to the crs
   QString projString = toProj();
-  projString.replace( QLatin1String( "+type=crs" ), QString() );
+  projString.replace( "+type=crs"_L1, QString() );
   if ( projString.isEmpty() )
     return QgsProjOperation();
 
@@ -1649,20 +1649,20 @@ QString QgsCoordinateReferenceSystem::toOgcUri() const
   const auto parts { authid().split( ':' ) };
   if ( parts.length() == 2 )
   {
-    if ( parts[0] == QLatin1String( "EPSG" ) )
-      return  QStringLiteral( "http://www.opengis.net/def/crs/EPSG/0/%1" ).arg( parts[1] ) ;
-    else if ( parts[0] == QLatin1String( "OGC" ) )
+    if ( parts[0] == "EPSG"_L1 )
+      return  u"http://www.opengis.net/def/crs/EPSG/0/%1"_s.arg( parts[1] ) ;
+    else if ( parts[0] == "OGC"_L1 )
     {
-      return  QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/%1" ).arg( parts[1] ) ;
+      return  u"http://www.opengis.net/def/crs/OGC/1.3/%1"_s.arg( parts[1] ) ;
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI %1: (not OGC or EPSG)" ).arg( authid() ), QStringLiteral( "CRS" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( u"Error converting published CRS to URI %1: (not OGC or EPSG)"_s.arg( authid() ), u"CRS"_s, Qgis::MessageLevel::Critical );
     }
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI: %1" ).arg( authid() ), QStringLiteral( "CRS" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( u"Error converting published CRS to URI: %1"_s.arg( authid() ), u"CRS"_s, Qgis::MessageLevel::Critical );
   }
   return QString();
 }
@@ -1672,20 +1672,20 @@ QString QgsCoordinateReferenceSystem::toOgcUrn() const
   const auto parts { authid().split( ':' ) };
   if ( parts.length() == 2 )
   {
-    if ( parts[0] == QLatin1String( "EPSG" ) )
-      return  QStringLiteral( "urn:ogc:def:crs:EPSG::%1" ).arg( parts[1] );
-    else if ( parts[0] == QLatin1String( "OGC" ) )
+    if ( parts[0] == "EPSG"_L1 )
+      return  u"urn:ogc:def:crs:EPSG::%1"_s.arg( parts[1] );
+    else if ( parts[0] == "OGC"_L1 )
     {
-      return  QStringLiteral( "urn:ogc:def:crs:OGC:1.3:%1" ).arg( parts[1] );
+      return  u"urn:ogc:def:crs:OGC:1.3:%1"_s.arg( parts[1] );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URN %1: (not OGC or EPSG)" ).arg( authid() ), QStringLiteral( "CRS" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( u"Error converting published CRS to URN %1: (not OGC or EPSG)"_s.arg( authid() ), u"CRS"_s, Qgis::MessageLevel::Critical );
     }
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URN: %1" ).arg( authid() ), QStringLiteral( "CRS" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( u"Error converting published CRS to URN: %1"_s.arg( authid() ), u"CRS"_s, Qgis::MessageLevel::Critical );
   }
   return QString();
 }
@@ -1719,7 +1719,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   QgsLocaleNumC l;
   QString trimmed = proj4String.trimmed();
 
-  trimmed += QLatin1String( " +type=crs" );
+  trimmed += " +type=crs"_L1;
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
@@ -1730,7 +1730,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   {
 #ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
-    QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_context_errno_string( ctx, errNo ) ) );
+    QgsDebugError( u"proj string rejected: %1"_s.arg( proj_context_errno_string( ctx, errNo ) ) );
 #endif
     d->mIsValid = false;
   }
@@ -1758,8 +1758,8 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
   res = d->hasPj();
   if ( !res )
   {
-    QgsDebugMsgLevel( QStringLiteral( "\n---------------------------------------------------------------" ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ), 2 );
+    QgsDebugMsgLevel( u"\n---------------------------------------------------------------"_s, 2 );
+    QgsDebugMsgLevel( u"This CRS could *** NOT *** be set from the supplied Wkt "_s, 2 );
     QgsDebugMsgLevel( "INPUT: " + wkt, 2 );
     for ( auto iter = warnings; iter && *iter; ++iter )
     {
@@ -1769,7 +1769,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     {
       QgsDebugMsgLevel( *iter, 2 );
     }
-    QgsDebugMsgLevel( QStringLiteral( "---------------------------------------------------------------\n" ), 2 );
+    QgsDebugMsgLevel( u"---------------------------------------------------------------\n"_s, 2 );
   }
   proj_string_list_destroy( warnings );
   proj_string_list_destroy( grammarErrors );
@@ -1869,112 +1869,112 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 
     // proj unit names are freeform -- they differ from authority to authority :(
     // see https://lists.osgeo.org/pipermail/proj/2019-April/008444.html
-    if ( unitName.compare( QLatin1String( "degree" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "degree minute second" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "degree minute second hemisphere" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "degree minute" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "degree hemisphere" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "degree minute hemisphere" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "hemisphere degree" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "hemisphere degree minute" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "hemisphere degree minute second" ), Qt::CaseInsensitive ) == 0 ||
-         unitName.compare( QLatin1String( "degree (supplier to define representation)" ), Qt::CaseInsensitive ) == 0 )
+    if ( unitName.compare( "degree"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "degree minute second"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "degree minute second hemisphere"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "degree minute"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "degree hemisphere"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "degree minute hemisphere"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "hemisphere degree"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "hemisphere degree minute"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "hemisphere degree minute second"_L1, Qt::CaseInsensitive ) == 0 ||
+         unitName.compare( "degree (supplier to define representation)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Degrees;
-    else if ( unitName.compare( QLatin1String( "metre" ), Qt::CaseInsensitive ) == 0
-              || unitName.compare( QLatin1String( "m" ), Qt::CaseInsensitive ) == 0
-              || unitName.compare( QLatin1String( "meter" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "metre"_L1, Qt::CaseInsensitive ) == 0
+              || unitName.compare( 'm'_L1, Qt::CaseInsensitive ) == 0
+              || unitName.compare( "meter"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Meters;
-    else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "US survey foot"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetUSSurvey;
-    else if ( unitName.compare( QLatin1String( "foot" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "foot"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Feet;
-    else if ( unitName.compare( QLatin1String( "British yard (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British yard (Sears 1922)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsBritishSears1922;
-    else if ( unitName.compare( QLatin1String( "British yard (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British yard (Sears 1922 truncated)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsBritishSears1922Truncated;
-    else if ( unitName.compare( QLatin1String( "British foot (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British foot (Sears 1922)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetBritishSears1922;
-    else if ( unitName.compare( QLatin1String( "British foot (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British foot (Sears 1922 truncated)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetBritishSears1922Truncated;
-    else if ( unitName.compare( QLatin1String( "British chain (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British chain (Sears 1922)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsBritishSears1922;
-    else if ( unitName.compare( QLatin1String( "British chain (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British chain (Sears 1922 truncated)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsBritishSears1922Truncated;
-    else if ( unitName.compare( QLatin1String( "British link (Sears 1922)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British link (Sears 1922)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksBritishSears1922;
-    else if ( unitName.compare( QLatin1String( "British link (Sears 1922 truncated)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British link (Sears 1922 truncated)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksBritishSears1922Truncated;
-    else if ( unitName.compare( QLatin1String( "British yard (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British yard (Benoit 1895 A)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsBritishBenoit1895A;
-    else if ( unitName.compare( QLatin1String( "British foot (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British foot (Benoit 1895 A)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetBritishBenoit1895A;
-    else if ( unitName.compare( QLatin1String( "British chain (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British chain (Benoit 1895 A)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsBritishBenoit1895A;
-    else if ( unitName.compare( QLatin1String( "British link (Benoit 1895 A)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British link (Benoit 1895 A)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksBritishBenoit1895A;
-    else if ( unitName.compare( QLatin1String( "British yard (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British yard (Benoit 1895 B)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsBritishBenoit1895B;
-    else if ( unitName.compare( QLatin1String( "British foot (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British foot (Benoit 1895 B)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetBritishBenoit1895B;
-    else if ( unitName.compare( QLatin1String( "British chain (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British chain (Benoit 1895 B)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsBritishBenoit1895B;
-    else if ( unitName.compare( QLatin1String( "British link (Benoit 1895 B)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British link (Benoit 1895 B)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksBritishBenoit1895B;
-    else if ( unitName.compare( QLatin1String( "British foot (1865)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British foot (1865)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetBritish1865;
-    else if ( unitName.compare( QLatin1String( "British foot (1936)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "British foot (1936)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetBritish1936;
-    else if ( unitName.compare( QLatin1String( "Indian foot" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian foot"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetIndian;
-    else if ( unitName.compare( QLatin1String( "Indian foot (1937)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian foot (1937)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetIndian1937;
-    else if ( unitName.compare( QLatin1String( "Indian foot (1962)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian foot (1962)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetIndian1962;
-    else if ( unitName.compare( QLatin1String( "Indian foot (1975)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian foot (1975)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetIndian1975;
-    else if ( unitName.compare( QLatin1String( "Indian yard" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian yard"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsIndian;
-    else if ( unitName.compare( QLatin1String( "Indian yard (1937)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian yard (1937)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsIndian1937;
-    else if ( unitName.compare( QLatin1String( "Indian yard (1962)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian yard (1962)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsIndian1962;
-    else if ( unitName.compare( QLatin1String( "Indian yard (1975)" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Indian yard (1975)"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsIndian1975;
-    else if ( unitName.compare( QLatin1String( "Gold Coast foot" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Gold Coast foot"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetGoldCoast;
-    else if ( unitName.compare( QLatin1String( "Clarke's foot" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Clarke's foot"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::FeetClarkes;
-    else if ( unitName.compare( QLatin1String( "Clarke's yard" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Clarke's yard"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::YardsClarkes;
-    else if ( unitName.compare( QLatin1String( "Clarke's chain" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Clarke's chain"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsClarkes;
-    else if ( unitName.compare( QLatin1String( "Clarke's link" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Clarke's link"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksClarkes;
-    else if ( unitName.compare( QLatin1String( "kilometre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
+    else if ( unitName.compare( "kilometre"_L1, Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = Qgis::DistanceUnit::Kilometers;
-    else if ( unitName.compare( QLatin1String( "centimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
+    else if ( unitName.compare( "centimetre"_L1, Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = Qgis::DistanceUnit::Centimeters;
-    else if ( unitName.compare( QLatin1String( "millimetre" ), Qt::CaseInsensitive ) == 0 )  //#spellok
+    else if ( unitName.compare( "millimetre"_L1, Qt::CaseInsensitive ) == 0 )  //#spellok
       d->mMapUnits = Qgis::DistanceUnit::Millimeters;
-    else if ( unitName.compare( QLatin1String( "Statute mile" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "Statute mile"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Miles;
-    else if ( unitName.compare( QLatin1String( "nautical mile" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "nautical mile"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::NauticalMiles;
-    else if ( unitName.compare( QLatin1String( "yard" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "yard"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Yards;
-    else if ( unitName.compare( QLatin1String( "fathom" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "fathom"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::Fathoms;
-    else if ( unitName.compare( QLatin1String( "US survey chain" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "US survey chain"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsUSSurvey;
-    else if ( unitName.compare( QLatin1String( "chain" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "chain"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::ChainsInternational;
-    else if ( unitName.compare( QLatin1String( "link" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "link"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksInternational;
-    else if ( unitName.compare( QLatin1String( "US survey link" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "US survey link"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::LinksUSSurvey;
-    else if ( unitName.compare( QLatin1String( "US survey mile" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "US survey mile"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::MilesUSSurvey;
-    else if ( unitName.compare( QLatin1String( "German legal metre" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( "German legal metre"_L1, Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = Qgis::DistanceUnit::MetersGermanLegal;
     // TODO - maybe more values to handle here?
     else
@@ -2131,8 +2131,8 @@ QString QgsCoordinateReferenceSystem::toWkt( Qgis::CrsWktVariant variant, bool m
         break;
     }
 
-    const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
-    const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+    const QByteArray multiLineOption = u"MULTILINE=%1"_s.arg( multiline ? u"YES"_s : u"NO"_s ).toLocal8Bit();
+    const QByteArray indentatationWidthOption = u"INDENTATION_WIDTH=%1"_s.arg( multiline ? QString::number( indentationWidth ) : u"0"_s ).toLocal8Bit();
     const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
     QString res = proj_as_wkt( QgsProjContext::get(), obj, type, options );
 
@@ -2151,20 +2151,20 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 {
   d.detach();
   bool result = true;
-  QDomNode srsNode = node.namedItem( QStringLiteral( "spatialrefsys" ) );
+  QDomNode srsNode = node.namedItem( u"spatialrefsys"_s );
 
   if ( ! srsNode.isNull() )
   {
     bool initialized = false;
 
     bool ok = false;
-    long srsid = srsNode.namedItem( QStringLiteral( "srsid" ) ).toElement().text().toLong( &ok );
+    long srsid = srsNode.namedItem( u"srsid"_s ).toElement().text().toLong( &ok );
 
     QDomNode node;
 
     if ( ok && srsid > 0 && srsid < Qgis::USER_CRS_START_ID )
     {
-      node = srsNode.namedItem( QStringLiteral( "authid" ) );
+      node = srsNode.namedItem( u"authid"_s );
       if ( !node.isNull() )
       {
         createFromOgcWmsCrs( node.toElement().text() );
@@ -2176,7 +2176,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       if ( !initialized )
       {
-        node = srsNode.namedItem( QStringLiteral( "epsg" ) );
+        node = srsNode.namedItem( u"epsg"_s );
         if ( !node.isNull() )
         {
           operator=( QgsCoordinateReferenceSystem::fromEpsgId( node.toElement().text().toLong() ) );
@@ -2195,15 +2195,15 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       // this way if the stored CRS doesn't match anything available locally (i.e. from Proj's db
       // or the user's custom CRS list), then we will correctly show the CRS with its original
       // name (instead of just "custom crs")
-      const QString description = srsNode.namedItem( QStringLiteral( "description" ) ).toElement().text();
+      const QString description = srsNode.namedItem( u"description"_s ).toElement().text();
 
-      const QString wkt = srsNode.namedItem( QStringLiteral( "wkt" ) ).toElement().text();
+      const QString wkt = srsNode.namedItem( u"wkt"_s ).toElement().text();
       initialized = createFromWktInternal( wkt, description );
     }
 
     if ( !initialized )
     {
-      node = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      node = srsNode.namedItem( u"proj4"_s );
       const QString proj4 = node.toElement().text();
       initialized = createFromProj( proj4 );
     }
@@ -2211,31 +2211,31 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     if ( !initialized )
     {
       // Setting from elements one by one
-      node = srsNode.namedItem( QStringLiteral( "proj4" ) );
+      node = srsNode.namedItem( u"proj4"_s );
       const QString proj4 = node.toElement().text();
       if ( !proj4.trimmed().isEmpty() )
         setProjString( node.toElement().text() );
 
-      node = srsNode.namedItem( QStringLiteral( "srsid" ) );
+      node = srsNode.namedItem( u"srsid"_s );
       d->mSrsId = node.toElement().text().toLong();
 
-      node = srsNode.namedItem( QStringLiteral( "srid" ) );
+      node = srsNode.namedItem( u"srid"_s );
       d->mSRID = node.toElement().text().toLong();
 
-      node = srsNode.namedItem( QStringLiteral( "authid" ) );
+      node = srsNode.namedItem( u"authid"_s );
       d->mAuthId = node.toElement().text();
 
-      node = srsNode.namedItem( QStringLiteral( "description" ) );
+      node = srsNode.namedItem( u"description"_s );
       d->mDescription = node.toElement().text();
 
-      node = srsNode.namedItem( QStringLiteral( "projectionacronym" ) );
+      node = srsNode.namedItem( u"projectionacronym"_s );
       d->mProjectionAcronym = node.toElement().text();
 
-      node = srsNode.namedItem( QStringLiteral( "ellipsoidacronym" ) );
+      node = srsNode.namedItem( u"ellipsoidacronym"_s );
       d->mEllipsoidAcronym = node.toElement().text();
 
-      node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
-      d->mIsGeographic = node.toElement().text() == QLatin1String( "true" );
+      node = srsNode.namedItem( u"geographicflag"_s );
+      d->mIsGeographic = node.toElement().text() == "true"_L1;
 
       d->mWktPreferred.clear();
 
@@ -2243,7 +2243,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       setMapUnits();
     }
 
-    const QString epoch = srsNode.toElement().attribute( QStringLiteral( "coordinateEpoch" ) );
+    const QString epoch = srsNode.toElement().attribute( u"coordinateEpoch"_s );
     if ( !epoch.isEmpty() )
     {
       bool epochOk = false;
@@ -2256,7 +2256,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       d->mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
     }
 
-    mNativeFormat = qgsEnumKeyToValue<Qgis::CrsDefinitionFormat>( srsNode.toElement().attribute( QStringLiteral( "nativeFormat" ) ), Qgis::CrsDefinitionFormat::Wkt );
+    mNativeFormat = qgsEnumKeyToValue<Qgis::CrsDefinitionFormat>( srsNode.toElement().attribute( u"nativeFormat"_s ), Qgis::CrsDefinitionFormat::Wkt );
   }
   else
   {
@@ -2270,52 +2270,52 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
   QDomElement layerNode = node.toElement();
-  QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
+  QDomElement srsElement = doc.createElement( u"spatialrefsys"_s );
 
-  srsElement.setAttribute( QStringLiteral( "nativeFormat" ), qgsEnumValueToKey<Qgis::CrsDefinitionFormat>( mNativeFormat ) );
+  srsElement.setAttribute( u"nativeFormat"_s, qgsEnumValueToKey<Qgis::CrsDefinitionFormat>( mNativeFormat ) );
 
   if ( std::isfinite( d->mCoordinateEpoch ) )
   {
-    srsElement.setAttribute( QStringLiteral( "coordinateEpoch" ), d->mCoordinateEpoch );
+    srsElement.setAttribute( u"coordinateEpoch"_s, d->mCoordinateEpoch );
   }
 
-  QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
+  QDomElement wktElement = doc.createElement( u"wkt"_s );
   wktElement.appendChild( doc.createTextNode( toWkt( Qgis::CrsWktVariant::Preferred ) ) );
   srsElement.appendChild( wktElement );
 
-  QDomElement proj4Element = doc.createElement( QStringLiteral( "proj4" ) );
+  QDomElement proj4Element = doc.createElement( u"proj4"_s );
   proj4Element.appendChild( doc.createTextNode( toProj() ) );
   srsElement.appendChild( proj4Element );
 
-  QDomElement srsIdElement = doc.createElement( QStringLiteral( "srsid" ) );
+  QDomElement srsIdElement = doc.createElement( u"srsid"_s );
   srsIdElement.appendChild( doc.createTextNode( QString::number( srsid() ) ) );
   srsElement.appendChild( srsIdElement );
 
-  QDomElement sridElement = doc.createElement( QStringLiteral( "srid" ) );
+  QDomElement sridElement = doc.createElement( u"srid"_s );
   sridElement.appendChild( doc.createTextNode( QString::number( postgisSrid() ) ) );
   srsElement.appendChild( sridElement );
 
-  QDomElement authidElement = doc.createElement( QStringLiteral( "authid" ) );
+  QDomElement authidElement = doc.createElement( u"authid"_s );
   authidElement.appendChild( doc.createTextNode( authid() ) );
   srsElement.appendChild( authidElement );
 
-  QDomElement descriptionElement = doc.createElement( QStringLiteral( "description" ) );
+  QDomElement descriptionElement = doc.createElement( u"description"_s );
   descriptionElement.appendChild( doc.createTextNode( description() ) );
   srsElement.appendChild( descriptionElement );
 
-  QDomElement projectionAcronymElement = doc.createElement( QStringLiteral( "projectionacronym" ) );
+  QDomElement projectionAcronymElement = doc.createElement( u"projectionacronym"_s );
   projectionAcronymElement.appendChild( doc.createTextNode( projectionAcronym() ) );
   srsElement.appendChild( projectionAcronymElement );
 
-  QDomElement ellipsoidAcronymElement = doc.createElement( QStringLiteral( "ellipsoidacronym" ) );
+  QDomElement ellipsoidAcronymElement = doc.createElement( u"ellipsoidacronym"_s );
   ellipsoidAcronymElement.appendChild( doc.createTextNode( ellipsoidAcronym() ) );
   srsElement.appendChild( ellipsoidAcronymElement );
 
-  QDomElement geographicFlagElement = doc.createElement( QStringLiteral( "geographicflag" ) );
-  QString geoFlagText = QStringLiteral( "false" );
+  QDomElement geographicFlagElement = doc.createElement( u"geographicflag"_s );
+  QString geoFlagText = u"false"_s;
   if ( isGeographic() )
   {
-    geoFlagText = QStringLiteral( "true" );
+    geoFlagText = u"true"_s;
   }
 
   geographicFlagElement.appendChild( doc.createTextNode( geoFlagText ) );
@@ -2337,7 +2337,7 @@ QString QgsCoordinateReferenceSystem::projFromSrsId( const int srsId )
 {
   QString myDatabaseFileName;
   QString myProjString;
-  QString mySql = QStringLiteral( "select parameters from tbl_srs where srs_id = %1 order by deprecated" ).arg( srsId );
+  QString mySql = u"select parameters from tbl_srs where srs_id = %1 order by deprecated"_s.arg( srsId );
 
   //
   // Determine if this is a user projection or a system on
@@ -2350,7 +2350,7 @@ QString QgsCoordinateReferenceSystem::projFromSrsId( const int srsId )
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() ) //its unlikely that this condition will ever be reached
     {
-      QgsDebugError( QStringLiteral( "users qgis.db not found" ) );
+      QgsDebugError( u"users qgis.db not found"_s );
       return QString();
     }
   }
@@ -2416,7 +2416,7 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 
 void QgsCoordinateReferenceSystem::debugPrint()
 {
-  QgsDebugMsgLevel( QStringLiteral( "***SpatialRefSystem***" ), 1 );
+  QgsDebugMsgLevel( u"***SpatialRefSystem***"_s, 1 );
   QgsDebugMsgLevel( "* Valid : " + ( d->mIsValid ? QString( "true" ) : QString( "false" ) ), 1 );
   QgsDebugMsgLevel( "* SrsId : " + QString::number( d->mSrsId ), 1 );
   QgsDebugMsgLevel( "* Proj4 : " + toProj(), 1 );
@@ -2424,15 +2424,15 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsgLevel( "* Desc. : " + d->mDescription, 1 );
   if ( mapUnits() == Qgis::DistanceUnit::Meters )
   {
-    QgsDebugMsgLevel( QStringLiteral( "* Units : meters" ), 1 );
+    QgsDebugMsgLevel( u"* Units : meters"_s, 1 );
   }
   else if ( mapUnits() == Qgis::DistanceUnit::Feet )
   {
-    QgsDebugMsgLevel( QStringLiteral( "* Units : feet" ), 1 );
+    QgsDebugMsgLevel( u"* Units : feet"_s, 1 );
   }
   else if ( mapUnits() == Qgis::DistanceUnit::Degrees )
   {
-    QgsDebugMsgLevel( QStringLiteral( "* Units : degrees" ), 1 );
+    QgsDebugMsgLevel( u"* Units : degrees"_s, 1 );
   }
 }
 
@@ -2471,11 +2471,11 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   myResult = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugError( u"Can't open database: %1"_s.arg( database.errorMessage() ) );
     return 0;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = QStringLiteral( "select count(*) from tbl_srs" );
+  QString mySql = u"select count(*) from tbl_srs"_s;
   statement = database.prepare( mySql, myResult );
   if ( myResult == SQLITE_OK )
   {
@@ -2521,7 +2521,7 @@ bool testIsGeographic( PJ *crs )
         const char *unitCategory = nullptr;
         if ( proj_uom_get_info_from_database( pjContext, outUnitAuthName, outUnitAuthCode, nullptr, nullptr, &unitCategory ) )
         {
-          isGeographic = QString( unitCategory ).compare( QLatin1String( "angular" ), Qt::CaseInsensitive ) == 0;
+          isGeographic = QString( unitCategory ).compare( "angular"_L1, Qt::CaseInsensitive ) == 0;
         }
       }
     }
@@ -2531,11 +2531,11 @@ bool testIsGeographic( PJ *crs )
 
 void getOperationAndEllipsoidFromProjString( const QString &proj, QString &operation, QString &ellipsoid )
 {
-  thread_local const QRegularExpression projRegExp( QStringLiteral( "\\+proj=(\\S+)" ) );
+  thread_local const QRegularExpression projRegExp( u"\\+proj=(\\S+)"_s );
   const QRegularExpressionMatch projMatch = projRegExp.match( proj );
   if ( !projMatch.hasMatch() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no +proj argument found [%2]" ).arg( proj ), 2 );
+    QgsDebugMsgLevel( u"no +proj argument found [%2]"_s.arg( proj ), 2 );
     return;
   }
   operation = projMatch.captured( 1 );
@@ -2576,14 +2576,14 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   crs = QgsProjUtils::unboundCrs( crs.get() );
 
   QString proj4 = getFullProjString( crs.get() );
-  proj4.replace( QLatin1String( "+type=crs" ), QString() );
+  proj4.replace( "+type=crs"_L1, QString() );
   proj4 = proj4.trimmed();
 
   d->mIsValid = true;
   d->mProj4 = proj4;
   d->mWktPreferred.clear();
   d->mDescription = QString( proj_get_name( crs.get() ) );
-  d->mAuthId = QStringLiteral( "%1:%2" ).arg( auth, code );
+  d->mAuthId = u"%1:%2"_s.arg( auth, code );
   d->mIsGeographic = testIsGeographic( crs.get() );
   d->mAxisInvertedDirty = true;
   QString operation;
@@ -2593,7 +2593,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   d->mEllipsoidAcronym.clear();
   d->setPj( std::move( crs ) );
 
-  const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( auth, code ).toUpper() );
+  const QString dbVals = sAuthIdToQgisSrsIdMap.value( u"%1:%2"_s.arg( auth, code ).toUpper() );
   if ( !dbVals.isEmpty() )
   {
     const QStringList parts = dbVals.split( ',' );
@@ -2630,7 +2630,7 @@ QList<long> QgsCoordinateReferenceSystem::userSrsIds()
     return results;
   }
 
-  QString sql = QStringLiteral( "select srs_id from tbl_srs where srs_id >= %1" ).arg( Qgis::USER_CRS_START_ID );
+  QString sql = u"select srs_id from tbl_srs where srs_id >= %1"_s.arg( Qgis::USER_CRS_START_ID );
   int rc;
   statement = database.prepare( sql, rc );
   while ( true )
@@ -2682,11 +2682,11 @@ static void sync_db_proj_logger( void * /* user_data */, int level, const char *
 #endif
   if ( level == PJ_LOG_ERROR )
   {
-    QgsDebugMsgLevel( QStringLiteral( "PROJ: %1" ).arg( message ), 2 );
+    QgsDebugMsgLevel( u"PROJ: %1"_s.arg( message ), 2 );
   }
   else if ( level == PJ_LOG_DEBUG )
   {
-    QgsDebugMsgLevel( QStringLiteral( "PROJ: %1" ).arg( message ), 3 );
+    QgsDebugMsgLevel( u"PROJ: %1"_s.arg( message ), 3 );
   }
 }
 
@@ -2697,18 +2697,18 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
-  QgsDebugMsgLevel( QStringLiteral( "Load srs db from: %1" ).arg( QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() ), 4 );
+  QgsDebugMsgLevel( u"Load srs db from: %1"_s.arg( QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() ), 4 );
 
   sqlite3_database_unique_ptr database;
   if ( database.open( dbFilePath ) != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Could not open database: %1 (%2)\n" ).arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
+    QgsDebugError( u"Could not open database: %1 (%2)\n"_s.arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
     return -1;
   }
 
   if ( sqlite3_exec( database.get(), "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Could not begin transaction: %1 (%2)\n" ).arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
+    QgsDebugError( u"Could not begin transaction: %1 (%2)\n"_s.arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
     return -1;
   }
 
@@ -2722,20 +2722,20 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     createdTypeColumn = true;
     if ( sqlite3_exec( database.get(), "CREATE INDEX srs_type ON tbl_srs(srs_type)", nullptr, nullptr, nullptr ) != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "Could not create index for srs_type" ) );
+      QgsDebugError( u"Could not create index for srs_type"_s );
       return -1;
     }
   }
 
   if ( sqlite3_exec( database.get(), "create table tbl_info (proj_major INT, proj_minor INT, proj_patch INT)", nullptr, nullptr, nullptr ) == SQLITE_OK )
   {
-    QString sql = QStringLiteral( "INSERT INTO tbl_info(proj_major, proj_minor, proj_patch) VALUES (%1, %2,%3)" )
+    QString sql = u"INSERT INTO tbl_info(proj_major, proj_minor, proj_patch) VALUES (%1, %2,%3)"_s
                   .arg( QString::number( PROJ_VERSION_MAJOR ),
                         QString::number( PROJ_VERSION_MINOR ),
                         QString::number( PROJ_VERSION_PATCH ) );
     if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+      QgsDebugError( u"Could not execute: %1 [%2/%3]\n"_s.arg(
                        sql,
                        database.errorMessage(),
                        errMsg ? errMsg : "(unknown error)" ) );
@@ -2747,11 +2747,11 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   else
   {
     // retrieve last update details
-    QString sql = QStringLiteral( "SELECT proj_major, proj_minor, proj_patch FROM tbl_info" );
+    QString sql = u"SELECT proj_major, proj_minor, proj_patch FROM tbl_info"_s;
     statement = database.prepare( sql, result );
     if ( result != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "Could not prepare: %1 [%2]\n" ).arg( sql, database.errorMessage() ) );
+      QgsDebugError( u"Could not prepare: %1 [%2]\n"_s.arg( sql, database.errorMessage() ) );
       return -1;
     }
     if ( statement.step() == SQLITE_ROW )
@@ -2765,7 +2765,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Could not retrieve previous CRS sync PROJ version number" ) );
+      QgsDebugError( u"Could not retrieve previous CRS sync PROJ version number"_s );
       return -1;
     }
   }
@@ -2781,7 +2781,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   for ( auto authIter = authorities; authIter && *authIter; ++authIter )
   {
     const QString authority( *authIter );
-    QgsDebugMsgLevel( QStringLiteral( "Loading authority '%1'" ).arg( authority ), 2 );
+    QgsDebugMsgLevel( u"Loading authority '%1'"_s.arg( authority ), 2 );
     PROJ_STRING_LIST codes = proj_get_codes_from_database( pjContext, *authIter, PJ_TYPE_CRS, true );
 
     QStringList allCodes;
@@ -2790,11 +2790,11 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     {
       const QString code( *codesIter );
       allCodes << QgsSqliteUtils::quotedString( code );
-      QgsDebugMsgLevel( QStringLiteral( "Loading code '%1'" ).arg( code ), 4 );
+      QgsDebugMsgLevel( u"Loading code '%1'"_s.arg( code ), 4 );
       QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( pjContext, *authIter, *codesIter, PJ_CATEGORY_CRS, false, nullptr ) );
       if ( !crs )
       {
-        QgsDebugError( QStringLiteral( "Could not load '%1:%2'" ).arg( authority, code ) );
+        QgsDebugError( u"Could not load '%1:%2'"_s.arg( authority, code ) );
         continue;
       }
 
@@ -2882,12 +2882,12 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       crs = QgsProjUtils::unboundCrs( crs.get() );
 
       QString proj4 = getFullProjString( crs.get() );
-      proj4.replace( QLatin1String( "+type=crs" ), QString() );
+      proj4.replace( "+type=crs"_L1, QString() );
       proj4 = proj4.trimmed();
 
       if ( proj4.isEmpty() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "No proj4 for '%1:%2'" ).arg( authority, code ), 2 );
+        QgsDebugMsgLevel( u"No proj4 for '%1:%2'"_s.arg( authority, code ), 2 );
         // satisfy not null constraint
         proj4 = "";
       }
@@ -2900,18 +2900,18 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       const QString translatedOperation = QgsCoordinateReferenceSystemUtils::translateProjection( operation );
       if ( translatedOperation.isEmpty() && !operation.isEmpty() )
       {
-        std::cout << QStringLiteral( "Operation needs translation in QgsCoordinateReferenceSystemUtils::translateProjection: %1" ).arg( operation ).toLocal8Bit().constData() << std::endl;
+        std::cout << u"Operation needs translation in QgsCoordinateReferenceSystemUtils::translateProjection: %1"_s.arg( operation ).toLocal8Bit().constData() << std::endl;
         qFatal( "aborted" );
       }
 
       const bool deprecated = proj_is_deprecated( crs.get() );
       const QString name( proj_get_name( crs.get() ) );
 
-      QString sql = QStringLiteral( "SELECT parameters,description,deprecated,srs_type,projection_acronym FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'" ).arg( authority, code );
+      QString sql = u"SELECT parameters,description,deprecated,srs_type,projection_acronym FROM tbl_srs WHERE auth_name='%1' AND auth_id='%2'"_s.arg( authority, code );
       statement = database.prepare( sql, result );
       if ( result != SQLITE_OK )
       {
-        QgsDebugError( QStringLiteral( "Could not prepare: %1 [%2]\n" ).arg( sql, database.errorMessage() ) );
+        QgsDebugError( u"Could not prepare: %1 [%2]\n"_s.arg( sql, database.errorMessage() ) );
         continue;
       }
 
@@ -2934,7 +2934,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         if ( proj4 != dbSrsProj4 || name != dbSrsDesc || deprecated != dbSrsDeprecated || dbSrsType != srsTypeString || dbOperation != operation )
         {
           errMsg = nullptr;
-          sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3, srs_type=%4,projection_acronym=%5 WHERE auth_name=%6 AND auth_id=%7" )
+          sql = u"UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3, srs_type=%4,projection_acronym=%5 WHERE auth_name=%6 AND auth_id=%7"_s
                 .arg( QgsSqliteUtils::quotedString( proj4 ) )
                 .arg( QgsSqliteUtils::quotedString( name ) )
                 .arg( deprecated ? 1 : 0 )
@@ -2944,7 +2944,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
           if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
           {
-            QgsDebugError( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+            QgsDebugError( u"Could not execute: %1 [%2/%3]\n"_s.arg(
                              sql,
                              database.errorMessage(),
                              errMsg ? errMsg : "(unknown error)" ) );
@@ -2963,7 +2963,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         const bool isGeographic = testIsGeographic( crs.get() );
 
         // work out srid and srsid
-        const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( authority, code ) );
+        const QString dbVals = sAuthIdToQgisSrsIdMap.value( u"%1:%2"_s.arg( authority, code ) );
         QString srsId;
         QString srId;
         if ( !dbVals.isEmpty() )
@@ -2985,7 +2985,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
         if ( !srsId.isEmpty() )
         {
-          sql = QStringLiteral( "INSERT INTO tbl_srs(srs_id, description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%1, %2,%3,%4,%5,%6,%7,%8,%9,%10,%11)" )
+          sql = u"INSERT INTO tbl_srs(srs_id, description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%1, %2,%3,%4,%5,%6,%7,%8,%9,%10,%11)"_s
                 .arg( srsId )
                 .arg( QgsSqliteUtils::quotedString( name ),
                       QgsSqliteUtils::quotedString( operation ),
@@ -3000,7 +3000,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         }
         else
         {
-          sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%1,%2,%3,%4,%5,%6,%7,%8,%9,%10)" )
+          sql = u"INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated,srs_type) VALUES (%1,%2,%3,%4,%5,%6,%7,%8,%9,%10)"_s
                 .arg( QgsSqliteUtils::quotedString( name ),
                       QgsSqliteUtils::quotedString( operation ),
                       QgsSqliteUtils::quotedString( ellps ),
@@ -3034,7 +3034,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
     proj_string_list_destroy( codes );
 
-    const QString sql = QStringLiteral( "DELETE FROM tbl_srs WHERE auth_name='%1' AND NOT auth_id IN (%2)" ).arg( authority, allCodes.join( ',' ) );
+    const QString sql = u"DELETE FROM tbl_srs WHERE auth_name='%1' AND NOT auth_id IN (%2)"_s.arg( authority, allCodes.join( ',' ) );
     if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr ) == SQLITE_OK )
     {
       deleted = sqlite3_changes( database.get() );
@@ -3050,13 +3050,13 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
   proj_string_list_destroy( authorities );
 
-  QString sql = QStringLiteral( "UPDATE tbl_info set proj_major=%1,proj_minor=%2,proj_patch=%3" )
+  QString sql = u"UPDATE tbl_info set proj_major=%1,proj_minor=%2,proj_patch=%3"_s
                 .arg( QString::number( PROJ_VERSION_MAJOR ),
                       QString::number( PROJ_VERSION_MINOR ),
                       QString::number( PROJ_VERSION_PATCH ) );
   if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+    QgsDebugError( u"Could not execute: %1 [%2/%3]\n"_s.arg(
                      sql,
                      database.errorMessage(),
                      errMsg ? errMsg : "(unknown error)" ) );
@@ -3067,7 +3067,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   if ( sqlite3_exec( database.get(), "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Could not commit transaction: %1 [%2]\n" ).arg(
+    QgsDebugError( u"Could not commit transaction: %1 [%2]\n"_s.arg(
                      QgsApplication::srsDatabaseFilePath(),
                      sqlite3_errmsg( database.get() ) )
                  );
@@ -3075,7 +3075,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
 
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( inserted ).arg( updated ).arg( deleted ).arg( errors ), 4 );
+  QgsDebugMsgLevel( u"CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)"_s.arg( inserted ).arg( updated ).arg( deleted ).arg( errors ), 4 );
 #else
   Q_UNUSED( deleted )
 #endif
@@ -3285,7 +3285,7 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   else if ( PJ *obj = d->threadLocalProjObject() )
   {
     QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( QgsProjContext::get(), obj ) );
-    return geoCrs ? QStringLiteral( "%1:%2" ).arg( proj_get_id_auth_name( geoCrs.get(), 0 ), proj_get_id_code( geoCrs.get(), 0 ) ) : QString();
+    return geoCrs ? u"%1:%2"_s.arg( proj_get_id_auth_name( geoCrs.get(), 0 ), proj_get_id_code( geoCrs.get(), 0 ) ) : QString();
   }
   else
   {
@@ -3348,7 +3348,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
     // maybe we can directly grab the auth name and code from the crs
     const QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
     const QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
-    if ( !authName.isEmpty() && !authCode.isEmpty() && createFromOgcWmsCrs( QStringLiteral( "%1:%2" ).arg( authName, authCode ) ) )
+    if ( !authName.isEmpty() && !authCode.isEmpty() && createFromOgcWmsCrs( u"%1:%2"_s.arg( authName, authCode ) ) )
     {
       return d->mIsValid;
     }

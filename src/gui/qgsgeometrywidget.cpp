@@ -38,7 +38,7 @@ QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
 
   mLineEdit = new QLineEdit();
   mLineEdit->setReadOnly( true );
-  mLineEdit->setStyleSheet( QStringLiteral( "font-style: italic;" ) );
+  mLineEdit->setStyleSheet( u"font-style: italic;"_s );
 
   // make text appear in disabled text color, as it's not directly editable
   QPalette palette = mLineEdit->palette();
@@ -48,14 +48,14 @@ QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
   mLineEdit->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
 
   mButton = new QToolButton();
-  mButton->setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
+  mButton->setStyleSheet( u"QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }"_s );
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mButton->setIconSize( QSize( iconSize, iconSize ) );
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
   mButton->setFixedSize( 2 * static_cast<int>( 1.25 * iconSize / 2.0 ), 2 * static_cast<int>( iconSize * 1.1 / 2.0 ) );
 
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOffsetCurve.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOffsetCurve.svg"_s ) );
 
   layout->addWidget( mLineEdit, 1 );
   layout->addWidget( mButton );
@@ -222,7 +222,7 @@ void QgsGeometryWidget::fetchGeomFromClipboard()
   if ( !features.isEmpty() && features.at( 0 ).hasGeometry() )
   {
     // assume EPSG:4326 for GeoJSON
-    mPastedGeom = QgsReferencedGeometry( features.at( 0 ).geometry(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+    mPastedGeom = QgsReferencedGeometry( features.at( 0 ).geometry(), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
     return;
   }
 }
@@ -263,7 +263,7 @@ void QgsGeometryWidget::updateLineEdit()
 
     if ( mGeometry.crs().isValid() )
     {
-      mLineEdit->setText( QStringLiteral( "%1 [%2]" ).arg( wkt, mGeometry.crs().userFriendlyIdentifier() ) );
+      mLineEdit->setText( u"%1 [%2]"_s.arg( wkt, mGeometry.crs().userFriendlyIdentifier() ) );
     }
     else
     {

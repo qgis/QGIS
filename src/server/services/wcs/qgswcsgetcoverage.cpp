@@ -56,14 +56,14 @@ namespace QgsWcs
     //defining coverage name
     QString coveName;
     //read COVERAGE
-    const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
+    const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( u"COVERAGE"_s );
     if ( cove_name_it != parameters.constEnd() )
     {
       coveName = cove_name_it.value();
     }
     if ( coveName.isEmpty() )
     {
-      const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
+      const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( u"IDENTIFIER"_s );
       if ( cove_name_it != parameters.constEnd() )
       {
         coveName = cove_name_it.value();
@@ -72,7 +72,7 @@ namespace QgsWcs
 
     if ( coveName.isEmpty() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "COVERAGE is mandatory" ) );
+      throw QgsRequestNotWellFormedException( u"COVERAGE is mandatory"_s );
     }
 
     //get the raster layer
@@ -99,7 +99,7 @@ namespace QgsWcs
       QString name = layer->name();
       if ( !layer->serverProperties()->shortName().isEmpty() )
         name = layer->serverProperties()->shortName();
-      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      name = name.replace( " "_L1, "_"_L1 );
 
       if ( name == coveName )
       {
@@ -109,7 +109,7 @@ namespace QgsWcs
     }
     if ( !rLayer )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "The layer for the COVERAGE '%1' is not found" ).arg( coveName ) );
+      throw QgsRequestNotWellFormedException( u"The layer for the COVERAGE '%1' is not found"_s.arg( coveName ) );
     }
 
     double minx = 0.0, miny = 0.0, maxx = 0.0, maxy = 0.0;
@@ -119,7 +119,7 @@ namespace QgsWcs
     QString crs;
 
     // read BBOX
-    const QgsRectangle bbox = parseBbox( parameters.value( QStringLiteral( "BBOX" ) ) );
+    const QgsRectangle bbox = parseBbox( parameters.value( u"BBOX"_s ) );
     if ( !bbox.isEmpty() )
     {
       minx = bbox.xMinimum();
@@ -129,18 +129,18 @@ namespace QgsWcs
     }
     else
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "The BBOX is mandatory and has to be xx.xxx,yy.yyy,xx.xxx,yy.yyy" ) );
+      throw QgsRequestNotWellFormedException( u"The BBOX is mandatory and has to be xx.xxx,yy.yyy,xx.xxx,yy.yyy"_s );
     }
 
     // read WIDTH
     bool conversionSuccess = false;
-    width = parameters.value( QStringLiteral( "WIDTH" ), QStringLiteral( "0" ) ).toInt( &conversionSuccess );
+    width = parameters.value( u"WIDTH"_s, u"0"_s ).toInt( &conversionSuccess );
     if ( !conversionSuccess )
     {
       width = 0;
     }
     // read HEIGHT
-    height = parameters.value( QStringLiteral( "HEIGHT" ), QStringLiteral( "0" ) ).toInt( &conversionSuccess );
+    height = parameters.value( u"HEIGHT"_s, u"0"_s ).toInt( &conversionSuccess );
     if ( !conversionSuccess )
     {
       height = 0;
@@ -148,19 +148,19 @@ namespace QgsWcs
 
     if ( width < 0 || height < 0 )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "The WIDTH and HEIGHT are mandatory and have to be integer" ) );
+      throw QgsRequestNotWellFormedException( u"The WIDTH and HEIGHT are mandatory and have to be integer"_s );
     }
 
-    crs = parameters.value( QStringLiteral( "CRS" ) );
+    crs = parameters.value( u"CRS"_s );
     if ( crs.isEmpty() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "The CRS is mandatory" ) );
+      throw QgsRequestNotWellFormedException( u"The CRS is mandatory"_s );
     }
 
     const QgsCoordinateReferenceSystem requestCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !requestCRS.isValid() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "Invalid CRS" ) );
+      throw QgsRequestNotWellFormedException( u"Invalid CRS"_s );
     }
 
     QgsRectangle rect( minx, miny, maxx, maxy );
@@ -174,7 +174,7 @@ namespace QgsWcs
 
     // RESPONSE_CRS
     QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
-    crs = parameters.value( QStringLiteral( "RESPONSE_CRS" ) );
+    crs = parameters.value( u"RESPONSE_CRS"_s );
     if ( !crs.isEmpty() )
     {
       responseCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
@@ -187,7 +187,7 @@ namespace QgsWcs
     QTemporaryFile tempFile;
     if ( !tempFile.open() )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot open temporary file" ) );
+      throw QgsRequestNotWellFormedException( u"Cannot open temporary file"_s );
     }
     QgsRasterFileWriter fileWriter( tempFile.fileName() );
 
@@ -195,7 +195,7 @@ namespace QgsWcs
     QgsRasterPipe pipe;
     if ( !pipe.set( rLayer->dataProvider()->clone() ) )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe provider" ) );
+      throw QgsRequestNotWellFormedException( u"Cannot set pipe provider"_s );
     }
 
     // add projector if necessary
@@ -205,14 +205,14 @@ namespace QgsWcs
       projector->setCrs( rLayer->crs(), responseCRS, rLayer->transformContext() );
       if ( !pipe.insert( 2, projector ) )
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot set pipe projector" ) );
+        throw QgsRequestNotWellFormedException( u"Cannot set pipe projector"_s );
       }
     }
 
     const Qgis::RasterFileWriterResult err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->transformContext() );
     if ( err != Qgis::RasterFileWriterResult::Success )
     {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( qgsEnumValueToKey( err ) ) );
+      throw QgsRequestNotWellFormedException( u"Cannot write raster error code: %1"_s.arg( qgsEnumValueToKey( err ) ) );
     }
     return tempFile.readAll();
   }

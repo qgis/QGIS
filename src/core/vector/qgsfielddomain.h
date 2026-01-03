@@ -213,7 +213,7 @@ class CORE_EXPORT QgsCodedValue
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCodedValue: %1 (%2)>" ).arg( sipCpp->code().toString(), sipCpp->value() );
+    QString str = u"<QgsCodedValue: %1 (%2)>"_s.arg( sipCpp->code().toString(), sipCpp->value() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCodedFieldDomain: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsCodedFieldDomain: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -433,11 +433,11 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRangeFieldDomain: %1 %2%3, %4%5>" ).arg( sipCpp->name(),
-                  sipCpp->minimumIsInclusive() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
+    QString str = u"<QgsRangeFieldDomain: %1 %2%3, %4%5>"_s.arg( sipCpp->name(),
+                  sipCpp->minimumIsInclusive() ? u"["_s : u"("_s,
                   sipCpp->minimum().toString(),
                   sipCpp->maximum().toString(),
-                  sipCpp->maximumIsInclusive() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+                  sipCpp->maximumIsInclusive() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -521,7 +521,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsGlobFieldDomain: %1 '%2'>" ).arg( sipCpp->name(), sipCpp->glob() );
+    QString str = u"<QgsGlobFieldDomain: %1 '%2'>"_s.arg( sipCpp->name(), sipCpp->glob() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

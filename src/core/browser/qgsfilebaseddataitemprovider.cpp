@@ -56,21 +56,21 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
   if ( mDetails.type() == Qgis::LayerType::Vector )
   {
     // sqlite gets special handling because it delegates to the dedicated spatialite provider
-    if ( mDetails.driverName() == QLatin1String( "SQLite" ) )
+    if ( mDetails.driverName() == "SQLite"_L1 )
     {
       children.push_back( new QgsFieldsItem( this,
-                                             path() + QStringLiteral( "/columns/ " ),
-                                             QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QLatin1String( R"(\")" ) ) ),
-                                             QStringLiteral( "spatialite" ), QString(), name() ) );
+                                             path() + u"/columns/ "_s,
+                                             QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', R"(\")"_L1 ) ),
+                                             u"spatialite"_s, QString(), name() ) );
     }
-    else if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+    else if ( mDetails.providerKey() == "ogr"_L1 )
     {
       // otherwise we use the default OGR database connection approach, which is the generic way to handle this
       // for all OGR layer types
       children.push_back( new QgsFieldsItem( this,
-                                             path() + QStringLiteral( "/columns/ " ),
+                                             path() + u"/columns/ "_s,
                                              path(),
-                                             QStringLiteral( "ogr" ), QString(), name() ) );
+                                             u"ogr"_s, QString(), name() ) );
 
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
       if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
@@ -88,7 +88,7 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
 
         if ( !relations.empty() || !relationError.isEmpty() )
         {
-          auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ), QString(), mDetails.name() );
+          auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), u"ogr"_s, QString(), mDetails.name() );
           // force this item to appear last by setting a maximum string value for the sort key
           relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
           children.append( relationsItem.release() );
@@ -112,12 +112,12 @@ QgsAbstractDatabaseProviderConnection *QgsProviderSublayerItem::databaseConnecti
       return connection;
   }
 
-  if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+  if ( mDetails.providerKey() == "ogr"_L1 )
   {
-    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) )
     {
       QVariantMap parts;
-      parts.insert( QStringLiteral( "path" ), path() );
+      parts.insert( u"path"_s, path() );
       return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
     }
   }
@@ -188,7 +188,7 @@ QgsFileDataCollectionGroupItem::QgsFileDataCollectionGroupItem( QgsDataItem *par
   : QgsDataCollectionItem( parent, groupName, path )
 {
   mCapabilities = Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
-  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mIconName = u"mIconDbSchema.svg"_s;
 }
 
 void QgsFileDataCollectionGroupItem::appendSublayer( const QgsProviderSublayerDetails &sublayer )
@@ -229,7 +229,7 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
 
   if ( QgsGdalUtils::vsiHandlerType( QgsGdalUtils::vsiPrefixForPath( path ) ) == Qgis::VsiHandlerType::Archive )
   {
-    mIconName = QStringLiteral( "/mIconZip.svg" );
+    mIconName = u"/mIconZip.svg"_s;
   }
 }
 
@@ -349,7 +349,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
     if ( !fieldDomains.empty() || !domainError.isEmpty() )
     {
-      auto domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", conn->uri(), QStringLiteral( "ogr" ) );
+      auto domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", conn->uri(), u"ogr"_s );
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
@@ -370,7 +370,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
     if ( !relations.empty() || !relationError.isEmpty() )
     {
-      auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      auto relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), u"ogr"_s );
       // force this item to appear last by setting a maximum string value for the sort key
       relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
       children.append( relationsItem.release() );
@@ -414,8 +414,8 @@ bool QgsFileDataCollectionItem::canAddVectorLayers() const
 
   // explicitly blocklist some drivers which we don't want to expose drop support for
   const QString driverName = GDALGetDriverShortName( hDriver );
-  if ( driverName == QLatin1String( "PDF" )
-       || driverName == QLatin1String( "DXF" ) )
+  if ( driverName == "PDF"_L1
+       || driverName == "DXF"_L1 )
   {
     mCachedSupportsDrop = false;
     return mCachedSupportsDrop;
@@ -445,7 +445,7 @@ QgsMimeDataUtils::UriList QgsFileDataCollectionItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri collectionUri;
   collectionUri.uri = path();
-  collectionUri.layerType = QStringLiteral( "collection" );
+  collectionUri.layerType = u"collection"_s;
   collectionUri.filePath = path();
   return { collectionUri };
 }
@@ -465,13 +465,13 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
 
   if ( ! hDriver )
   {
-    QgsDebugMsgLevel( QStringLiteral( "GDALIdentifyDriverEx error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
+    QgsDebugMsgLevel( u"GDALIdentifyDriverEx error # %1 : %2 on %3"_s.arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
     return nullptr;
   }
 
   const QString driverName = GDALGetDriverShortName( hDriver );
-  if ( driverName == QLatin1String( "PDF" )
-       || driverName == QLatin1String( "DXF" ) )
+  if ( driverName == "PDF"_L1
+       || driverName == "DXF"_L1 )
   {
     // unwanted drivers -- it's slow to create connections for these, and we don't really want
     // to expose database capabilities for them (even though they kind of are database formats)
@@ -479,10 +479,10 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   }
 
   QgsAbstractDatabaseProviderConnection *conn = nullptr;
-  if ( driverName == QLatin1String( "SQLite" ) )
+  if ( driverName == "SQLite"_L1 )
   {
     // sqlite gets special handling, as we delegate to the native spatialite provider
-    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) )
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s ) )
     {
       QgsDataSourceUri uri;
       uri.setDatabase( path( ) );
@@ -492,10 +492,10 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   else
   {
     // for all other vector types we use the generic OGR provider
-    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s ) )
     {
       QVariantMap parts;
-      parts.insert( QStringLiteral( "path" ), path() );
+      parts.insert( u"path"_s, path() );
       conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
     }
   }
@@ -551,7 +551,7 @@ QList<QgsProviderSublayerDetails> QgsFileDataCollectionItem::sublayers() const
 
 QString QgsFileBasedDataItemProvider::name()
 {
-  return QStringLiteral( "files" );
+  return u"files"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsFileBasedDataItemProvider::capabilities() const
@@ -579,14 +579,14 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
   const QString name = info.fileName();
 
   // special handling for some suffixes
-  if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+  if ( suffix.compare( "gpkg"_L1, Qt::CaseInsensitive ) == 0 )
   {
     // Geopackage is special -- it gets a dedicated collection item type
     QgsGeoPackageCollectionItem *item = new QgsGeoPackageCollectionItem( parentItem, name, path );
     item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
     return item;
   }
-  else if ( suffix == QLatin1String( "txt" ) )
+  else if ( suffix == "txt"_L1 )
   {
     // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
     // and are predominantly just noise in the browser
@@ -594,27 +594,27 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
   }
   // If a .tab exists, then the corresponding .map/.dat is very likely a
   // side-car file of the .tab
-  else if ( suffix == QLatin1String( "map" ) || suffix == QLatin1String( "dat" ) )
+  else if ( suffix == "map"_L1 || suffix == "dat"_L1 )
   {
     if ( QFile::exists( QDir( info.path() ).filePath( info.baseName() + ".tab" ) ) || QFile::exists( QDir( info.path() ).filePath( info.baseName() + ".TAB" ) ) )
       return nullptr;
   }
   // .dbf and .shx should only appear if .shp is not present
-  else if ( suffix == QLatin1String( "dbf" ) || suffix == QLatin1String( "shx" ) )
+  else if ( suffix == "dbf"_L1 || suffix == "shx"_L1 )
   {
     if ( QFile::exists( QDir( info.path() ).filePath( info.baseName() + ".shp" ) ) || QFile::exists( QDir( info.path() ).filePath( info.baseName() + ".SHP" ) ) )
       return nullptr;
   }
   // skip QGIS style xml files
-  else if ( suffix == QLatin1String( "xml" ) && QgsStyle::isXmlStyleFile( path ) )
+  else if ( suffix == "xml"_L1 && QgsStyle::isXmlStyleFile( path ) )
   {
     return nullptr;
   }
   // GDAL 3.1 Shapefile driver directly handles .shp.zip files
-  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
+  else if ( path.endsWith( ".shp.zip"_L1, Qt::CaseInsensitive ) &&
             GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
   {
-    suffix = QStringLiteral( "shp.zip" );
+    suffix = u"shp.zip"_s;
   }
 
   // hide blocklisted URIs, such as .aux.xml files
@@ -624,9 +624,9 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
   QgsSettings settings;
 
   // should we fast scan only?
-  if ( ( settings.value( QStringLiteral( "qgis/scanItemsInBrowser2" ),
-                         "extension" ).toString() == QLatin1String( "extension" ) ) ||
-       ( parentItem && settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
+  if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s,
+                         "extension" ).toString() == "extension"_L1 ) ||
+       ( parentItem && settings.value( u"qgis/scanItemsFastScanUris"_s,
                                        QStringList() ).toStringList().contains( parentItem->path() ) ) )
   {
     queryFlags |= Qgis::SublayerQueryFlag::FastScan;

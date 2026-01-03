@@ -31,7 +31,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "PostGIS" ); }
+    QString name() override { return u"PostGIS"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

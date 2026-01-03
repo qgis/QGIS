@@ -298,7 +298,7 @@ void QgsVectorLayerJoinBuffer::createJoinCaches()
 
 void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
-  QDomElement vectorJoinsElem = document.createElement( QStringLiteral( "vectorjoins" ) );
+  QDomElement vectorJoinsElem = document.createElement( u"vectorjoins"_s );
   layer_node.appendChild( vectorJoinsElem );
   QList< QgsVectorLayerJoinInfo >::const_iterator joinIt = mVectorJoins.constBegin();
   for ( ; joinIt != mVectorJoins.constEnd(); ++joinIt )
@@ -306,29 +306,29 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
     if ( isAuxiliaryJoin( *joinIt ) )
       continue;
 
-    QDomElement joinElem = document.createElement( QStringLiteral( "join" ) );
+    QDomElement joinElem = document.createElement( u"join"_s );
 
-    joinElem.setAttribute( QStringLiteral( "targetFieldName" ), joinIt->targetFieldName() );
+    joinElem.setAttribute( u"targetFieldName"_s, joinIt->targetFieldName() );
 
-    joinElem.setAttribute( QStringLiteral( "joinLayerId" ), joinIt->joinLayerId() );
-    joinElem.setAttribute( QStringLiteral( "joinFieldName" ), joinIt->joinFieldName() );
+    joinElem.setAttribute( u"joinLayerId"_s, joinIt->joinLayerId() );
+    joinElem.setAttribute( u"joinFieldName"_s, joinIt->joinFieldName() );
 
-    joinElem.setAttribute( QStringLiteral( "memoryCache" ), joinIt->isUsingMemoryCache() );
-    joinElem.setAttribute( QStringLiteral( "dynamicForm" ), joinIt->isDynamicFormEnabled() );
-    joinElem.setAttribute( QStringLiteral( "editable" ), joinIt->isEditable() );
-    joinElem.setAttribute( QStringLiteral( "upsertOnEdit" ), joinIt->hasUpsertOnEdit() );
-    joinElem.setAttribute( QStringLiteral( "cascadedDelete" ), joinIt->hasCascadedDelete() );
+    joinElem.setAttribute( u"memoryCache"_s, joinIt->isUsingMemoryCache() );
+    joinElem.setAttribute( u"dynamicForm"_s, joinIt->isDynamicFormEnabled() );
+    joinElem.setAttribute( u"editable"_s, joinIt->isEditable() );
+    joinElem.setAttribute( u"upsertOnEdit"_s, joinIt->hasUpsertOnEdit() );
+    joinElem.setAttribute( u"cascadedDelete"_s, joinIt->hasCascadedDelete() );
 
     if ( joinIt->hasSubset() )
     {
-      QDomElement subsetElem = document.createElement( QStringLiteral( "joinFieldsSubset" ) );
+      QDomElement subsetElem = document.createElement( u"joinFieldsSubset"_s );
       const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinIt );
 
       const auto constSubsetNames = subsetNames;
       for ( const QString &fieldName : constSubsetNames )
       {
-        QDomElement fieldElem = document.createElement( QStringLiteral( "field" ) );
-        fieldElem.setAttribute( QStringLiteral( "name" ), fieldName );
+        QDomElement fieldElem = document.createElement( u"field"_s );
+        fieldElem.setAttribute( u"name"_s, fieldName );
         subsetElem.appendChild( fieldElem );
       }
 
@@ -337,8 +337,8 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
 
     if ( !joinIt->prefix().isNull() )
     {
-      joinElem.setAttribute( QStringLiteral( "customPrefix" ), joinIt->prefix() );
-      joinElem.setAttribute( QStringLiteral( "hasCustomPrefix" ), 1 );
+      joinElem.setAttribute( u"customPrefix"_s, joinIt->prefix() );
+      joinElem.setAttribute( u"hasCustomPrefix"_s, 1 );
     }
 
     vectorJoinsElem.appendChild( joinElem );
@@ -348,37 +348,37 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
 void QgsVectorLayerJoinBuffer::readXml( const QDomNode &layer_node )
 {
   mVectorJoins.clear();
-  QDomElement vectorJoinsElem = layer_node.firstChildElement( QStringLiteral( "vectorjoins" ) );
+  QDomElement vectorJoinsElem = layer_node.firstChildElement( u"vectorjoins"_s );
   if ( !vectorJoinsElem.isNull() )
   {
-    QDomNodeList joinList = vectorJoinsElem.elementsByTagName( QStringLiteral( "join" ) );
+    QDomNodeList joinList = vectorJoinsElem.elementsByTagName( u"join"_s );
     for ( int i = 0; i < joinList.size(); ++i )
     {
       QDomElement infoElem = joinList.at( i ).toElement();
       QgsVectorLayerJoinInfo info;
-      info.setJoinFieldName( infoElem.attribute( QStringLiteral( "joinFieldName" ) ) );
+      info.setJoinFieldName( infoElem.attribute( u"joinFieldName"_s ) );
       // read layer ID - to turn it into layer object, caller will need to call resolveReferences() later
-      info.setJoinLayerId( infoElem.attribute( QStringLiteral( "joinLayerId" ) ) );
-      info.setTargetFieldName( infoElem.attribute( QStringLiteral( "targetFieldName" ) ) );
-      info.setUsingMemoryCache( infoElem.attribute( QStringLiteral( "memoryCache" ) ).toInt() );
-      info.setDynamicFormEnabled( infoElem.attribute( QStringLiteral( "dynamicForm" ) ).toInt() );
-      info.setEditable( infoElem.attribute( QStringLiteral( "editable" ) ).toInt() );
-      info.setUpsertOnEdit( infoElem.attribute( QStringLiteral( "upsertOnEdit" ) ).toInt() );
-      info.setCascadedDelete( infoElem.attribute( QStringLiteral( "cascadedDelete" ) ).toInt() );
+      info.setJoinLayerId( infoElem.attribute( u"joinLayerId"_s ) );
+      info.setTargetFieldName( infoElem.attribute( u"targetFieldName"_s ) );
+      info.setUsingMemoryCache( infoElem.attribute( u"memoryCache"_s ).toInt() );
+      info.setDynamicFormEnabled( infoElem.attribute( u"dynamicForm"_s ).toInt() );
+      info.setEditable( infoElem.attribute( u"editable"_s ).toInt() );
+      info.setUpsertOnEdit( infoElem.attribute( u"upsertOnEdit"_s ).toInt() );
+      info.setCascadedDelete( infoElem.attribute( u"cascadedDelete"_s ).toInt() );
 
-      QDomElement subsetElem = infoElem.firstChildElement( QStringLiteral( "joinFieldsSubset" ) );
+      QDomElement subsetElem = infoElem.firstChildElement( u"joinFieldsSubset"_s );
       if ( !subsetElem.isNull() )
       {
         QStringList *fieldNames = new QStringList;
-        QDomNodeList fieldNodes = infoElem.elementsByTagName( QStringLiteral( "field" ) );
+        QDomNodeList fieldNodes = infoElem.elementsByTagName( u"field"_s );
         fieldNames->reserve( fieldNodes.count() );
         for ( int i = 0; i < fieldNodes.count(); ++i )
-          *fieldNames << fieldNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
+          *fieldNames << fieldNodes.at( i ).toElement().attribute( u"name"_s );
         info.setJoinFieldNamesSubset( fieldNames );
       }
 
-      if ( infoElem.attribute( QStringLiteral( "hasCustomPrefix" ) ).toInt() )
-        info.setPrefix( infoElem.attribute( QStringLiteral( "customPrefix" ) ) );
+      if ( infoElem.attribute( u"hasCustomPrefix"_s ).toInt() )
+        info.setPrefix( infoElem.attribute( u"customPrefix"_s ) );
       else
         info.setPrefix( QString() );
 

@@ -31,7 +31,7 @@
 
 #include "moc_qgsmaptoolshapecircularstringradius.cpp"
 
-const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = QStringLiteral( "circular-string-by-radius" );
+const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = u"circular-string-by-radius"_s;
 
 QString QgsMapToolShapeCircularStringRadiusMetadata::id() const
 {
@@ -45,7 +45,7 @@ QString QgsMapToolShapeCircularStringRadiusMetadata::name() const
 
 QIcon QgsMapToolShapeCircularStringRadiusMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircularStringRadius.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircularStringRadius.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircularStringRadiusMetadata::category() const

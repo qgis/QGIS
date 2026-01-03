@@ -24,7 +24,7 @@
 #include <QDomElement>
 
 QgsRasterSingleColorRenderer::QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color )
-  : QgsRasterRenderer( input, QStringLiteral( "singlecolor" ) )
+  : QgsRasterRenderer( input, u"singlecolor"_s )
   , mInputBand( band )
   , mColor( color )
 {
@@ -49,8 +49,8 @@ QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem
     return nullptr;
   }
 
-  const QColor color = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ), QStringLiteral( "0,0,0" ) ) );
-  const int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
+  const QColor color = QgsColorUtils::colorFromString( elem.attribute( u"color"_s, u"0,0,0"_s ) );
+  const int band = elem.attribute( u"band"_s, u"1"_s ).toInt();
   QgsRasterSingleColorRenderer *r = new QgsRasterSingleColorRenderer( input, band, color );
   r->readXml( elem );
 
@@ -59,7 +59,7 @@ QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem
 
 QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
+  QgsDebugMsgLevel( u"width = %1 height = %2"_s.arg( width ).arg( height ), 4 );
 
   auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput || mInputBand == -1 )
@@ -70,7 +70,7 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
   const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( u"No raster data!"_s );
     return outputBlock.release();
   }
 
@@ -151,11 +151,11 @@ void QgsRasterSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &par
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  QDomElement rasterRendererElem = doc.createElement( u"rasterrenderer"_s );
   _writeXml( doc, rasterRendererElem );
 
-  rasterRendererElem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mInputBand );
+  rasterRendererElem.setAttribute( u"color"_s, QgsColorUtils::colorToString( mColor ) );
+  rasterRendererElem.setAttribute( u"band"_s, mInputBand );
 
   parentElem.appendChild( rasterRendererElem );
 }

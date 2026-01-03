@@ -81,14 +81,14 @@ QgsHanaNewConnection::QgsHanaNewConnection(
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #endif
 
-  cbxCryptoProvider->addItem( QStringLiteral( "openssl" ), QStringLiteral( "openssl" ) );
-  cbxCryptoProvider->addItem( QStringLiteral( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
-  cbxCryptoProvider->addItem( QStringLiteral( "sapcrypto" ), QStringLiteral( "sapcrypto" ) );
-  cbxCryptoProvider->addItem( QStringLiteral( "mscrypto" ), QStringLiteral( "mscrypto" ) );
+  cbxCryptoProvider->addItem( u"openssl"_s, u"openssl"_s );
+  cbxCryptoProvider->addItem( u"commoncrypto"_s, u"commoncrypto"_s );
+  cbxCryptoProvider->addItem( u"sapcrypto"_s, u"sapcrypto"_s );
+  cbxCryptoProvider->addItem( u"mscrypto"_s, u"mscrypto"_s );
 
   cmbDsn->addItems( QgsHanaDriver::instance()->dataSources() );
 
-  mAuthSettings->setDataprovider( QStringLiteral( "hana" ) );
+  mAuthSettings->setDataprovider( u"hana"_s );
   mAuthSettings->showStoreCheckboxes( true );
 
   if ( connName.isEmpty() )
@@ -102,7 +102,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
     updateControlsFromSettings( settings );
   }
 
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]*" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]*"_s ), txtName ) );
 
   chkEnableSSL_clicked();
   chkEnableProxy_clicked();
@@ -206,13 +206,13 @@ void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
   {
     txtIdentifier->setMaxLength( 2 );
     txtIdentifier->setValidator( new QIntValidator( 0, 99, this ) );
-    txtIdentifier->setText( QStringLiteral( "00" ) );
+    txtIdentifier->setText( u"00"_s );
   }
   else
   {
     txtIdentifier->setMaxLength( 5 );
     txtIdentifier->setValidator( new QIntValidator( 1, 65535, this ) );
-    txtIdentifier->setText( QStringLiteral( "00000" ) );
+    txtIdentifier->setText( u"00000"_s );
   }
 }
 
@@ -337,7 +337,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
       else
       {
         rbtnMultipleContainers->setChecked( true );
-        if ( settings.database() == QLatin1String( "SYSTEMDB" ) )
+        if ( settings.database() == "SYSTEMDB"_L1 )
           rbtnSystemDatabase->setChecked( true );
         else
           txtTenantDatabaseName->setText( settings.database() );
@@ -487,7 +487,7 @@ QString QgsHanaNewConnection::getDatabaseName() const
     if ( rbtnTenantDatabase->isChecked() )
       return QString( txtTenantDatabaseName->text() );
     else
-      return QStringLiteral( "SYSTEMDB" );
+      return u"SYSTEMDB"_s;
   }
   else
     return QString();
@@ -495,5 +495,5 @@ QString QgsHanaNewConnection::getDatabaseName() const
 
 void QgsHanaNewConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#creating-a-stored-connection"_s );
 }

@@ -62,7 +62,7 @@ QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsPro
   commentLayout->addWidget( bbox );
   setLayout( commentLayout );
   setWindowTitle( tr( "Group Box Properties" ) );
-  setObjectName( QStringLiteral( "QgsModelGroupBoxDefinitionWidget" ) );
+  setObjectName( u"QgsModelGroupBoxDefinitionWidget"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
   mCommentEdit->setFocus();

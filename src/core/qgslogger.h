@@ -29,6 +29,8 @@
 #include <QString>
 #include <QTime>
 
+using namespace Qt::StringLiterals;
+
 class QFile;
 
 #ifndef SIP_RUN
@@ -177,11 +179,11 @@ class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
       , _func( func )
       , _line( line )
     {
-      QgsLogger::debug( QStringLiteral( "Entering." ), 2, _file, _func, _line );
+      QgsLogger::debug( u"Entering."_s, 2, _file, _func, _line );
     }
     ~QgsScopeLogger()
     {
-      QgsLogger::debug( QStringLiteral( "Leaving." ), 2, _file, _func, _line );
+      QgsLogger::debug( u"Leaving."_s, 2, _file, _func, _line );
     }
   private:
     const char *_file = nullptr;

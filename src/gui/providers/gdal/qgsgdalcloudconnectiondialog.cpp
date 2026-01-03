@@ -40,7 +40,7 @@ QgsGdalCloudConnectionDialog::QgsGdalCloudConnectionDialog( QWidget *parent )
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );
   connect( mBucket, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );

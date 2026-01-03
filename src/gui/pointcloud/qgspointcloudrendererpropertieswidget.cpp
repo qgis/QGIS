@@ -62,10 +62,10 @@ void QgsPointCloudRendererPropertiesWidget::initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
-  initPointCloudRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QStringLiteral( "styleicons/pointcloudextent.svg" ) );
-  initPointCloudRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
-  initPointCloudRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) );
-  initPointCloudRenderer( QStringLiteral( "classified" ), QgsPointCloudClassifiedRendererWidget::create, QStringLiteral( "styleicons/paletted.svg" ) );
+  initPointCloudRenderer( u"extent"_s, QgsPointCloudExtentRendererWidget::create, u"styleicons/pointcloudextent.svg"_s );
+  initPointCloudRenderer( u"rgb"_s, QgsPointCloudRgbRendererWidget::create, u"styleicons/multibandcolor.svg"_s );
+  initPointCloudRenderer( u"ramp"_s, QgsPointCloudAttributeByRampRendererWidget::create, u"styleicons/singlebandpseudocolor.svg"_s );
+  initPointCloudRenderer( u"classified"_s, QgsPointCloudClassifiedRendererWidget::create, u"styleicons/paletted.svg"_s );
 
   sInitialized = true;
 }
@@ -291,7 +291,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
 {
   if ( cboRenderers->currentIndex() == -1 )
   {
-    QgsDebugError( QStringLiteral( "No current item -- this should never happen!" ) );
+    QgsDebugError( u"No current item -- this should never happen!"_s );
     return;
   }
 

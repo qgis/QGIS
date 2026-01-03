@@ -259,7 +259,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No geometry with feature id %1 exists in the index."_s.arg( a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else

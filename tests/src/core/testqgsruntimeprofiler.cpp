@@ -49,53 +49,53 @@ void TestQgsRuntimeProfiler::testGroups()
   QgsRuntimeProfiler profiler;
 
   QVERIFY( profiler.groups().isEmpty() );
-  QVERIFY( !profiler.groupIsActive( QStringLiteral( "xxx" ) ) );
+  QVERIFY( !profiler.groupIsActive( u"xxx"_s ) );
 
   const QSignalSpy spy( &profiler, &QgsRuntimeProfiler::groupAdded );
-  profiler.start( QStringLiteral( "task 1" ), QStringLiteral( "group 1" ) );
+  profiler.start( u"task 1"_s, u"group 1"_s );
 
   QCOMPARE( profiler.groups().count(), 1 );
-  QVERIFY( profiler.groups().contains( QStringLiteral( "group 1" ) ) );
+  QVERIFY( profiler.groups().contains( u"group 1"_s ) );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "group 1" ) );
-  QVERIFY( profiler.groupIsActive( QStringLiteral( "group 1" ) ) );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toString(), u"group 1"_s );
+  QVERIFY( profiler.groupIsActive( u"group 1"_s ) );
 
-  profiler.start( QStringLiteral( "task 2" ), QStringLiteral( "group 2" ) );
+  profiler.start( u"task 2"_s, u"group 2"_s );
 
   QCOMPARE( profiler.groups().count(), 2 );
-  QVERIFY( profiler.groups().contains( QStringLiteral( "group 1" ) ) );
-  QVERIFY( profiler.groups().contains( QStringLiteral( "group 2" ) ) );
+  QVERIFY( profiler.groups().contains( u"group 1"_s ) );
+  QVERIFY( profiler.groups().contains( u"group 2"_s ) );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).toString(), QStringLiteral( "group 2" ) );
-  QVERIFY( profiler.groupIsActive( QStringLiteral( "group 2" ) ) );
-  QVERIFY( profiler.groupIsActive( QStringLiteral( "group 1" ) ) );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toString(), u"group 2"_s );
+  QVERIFY( profiler.groupIsActive( u"group 2"_s ) );
+  QVERIFY( profiler.groupIsActive( u"group 1"_s ) );
 
   // sub task
-  profiler.start( QStringLiteral( "task 1a" ), QStringLiteral( "group 1" ) );
+  profiler.start( u"task 1a"_s, u"group 1"_s );
   QCOMPARE( profiler.groups().count(), 2 );
   QCOMPARE( spy.count(), 2 );
 
-  profiler.end( QStringLiteral( "group 1" ) );
-  QVERIFY( profiler.groupIsActive( QStringLiteral( "group 1" ) ) );
-  profiler.end( QStringLiteral( "group 2" ) );
-  QVERIFY( !profiler.groupIsActive( QStringLiteral( "group 2" ) ) );
-  profiler.end( QStringLiteral( "group 1" ) );
-  QVERIFY( !profiler.groupIsActive( QStringLiteral( "group 1" ) ) );
+  profiler.end( u"group 1"_s );
+  QVERIFY( profiler.groupIsActive( u"group 1"_s ) );
+  profiler.end( u"group 2"_s );
+  QVERIFY( !profiler.groupIsActive( u"group 2"_s ) );
+  profiler.end( u"group 1"_s );
+  QVERIFY( !profiler.groupIsActive( u"group 1"_s ) );
 
-  QCOMPARE( profiler.childGroups( QString(), QStringLiteral( "group 1" ) ), QStringList() << QStringLiteral( "task 1" ) );
-  QCOMPARE( profiler.childGroups( QStringLiteral( "task 1" ), QStringLiteral( "group 1" ) ), QStringList() << QStringLiteral( "task 1a" ) );
-  QCOMPARE( profiler.childGroups( QString(), QStringLiteral( "group 2" ) ), QStringList() << QStringLiteral( "task 2" ) );
+  QCOMPARE( profiler.childGroups( QString(), u"group 1"_s ), QStringList() << u"task 1"_s );
+  QCOMPARE( profiler.childGroups( u"task 1"_s, u"group 1"_s ), QStringList() << u"task 1a"_s );
+  QCOMPARE( profiler.childGroups( QString(), u"group 2"_s ), QStringList() << u"task 2"_s );
 
   QString profilerAsText = profiler.asText();
   // verify individual chunks as the ordering of individual model items can vary
-  QVERIFY( profilerAsText.contains( QStringLiteral( "group 2\r\n- task 2: 0" ) ) );
-  QVERIFY( profilerAsText.contains( QStringLiteral( "group 1\r\n" ) ) );
-  QVERIFY( profilerAsText.contains( QStringLiteral( "\r\n- task 1: 0" ) ) );
-  QVERIFY( profilerAsText.contains( QStringLiteral( "\r\n-- task 1a: 0" ) ) );
+  QVERIFY( profilerAsText.contains( u"group 2\r\n- task 2: 0"_s ) );
+  QVERIFY( profilerAsText.contains( u"group 1\r\n"_s ) );
+  QVERIFY( profilerAsText.contains( u"\r\n- task 1: 0"_s ) );
+  QVERIFY( profilerAsText.contains( u"\r\n-- task 1a: 0"_s ) );
 
-  profilerAsText = profiler.asText( QStringLiteral( "group 2" ) );
+  profilerAsText = profiler.asText( u"group 2"_s );
   // verify individual chunks as the ordering of individual model items can vary
-  QCOMPARE( profilerAsText, QStringLiteral( "group 2\r\n- task 2: 0" ) );
+  QCOMPARE( profilerAsText, u"group 2\r\n- task 2: 0"_s );
 }
 
 
@@ -110,7 +110,7 @@ class ProfileInThread : public QThread
 
     void run() override
     {
-      const QgsScopedRuntimeProfile profile( QStringLiteral( "in thread" ), QStringLiteral( "bg" ) );
+      const QgsScopedRuntimeProfile profile( u"in thread"_s, u"bg"_s );
       QVERIFY( mMainProfiler != QgsApplication::profiler() );
     }
 
@@ -126,7 +126,7 @@ void TestQgsRuntimeProfiler::threading()
 
   QThread *thread = new ProfileInThread( QgsApplication::profiler() );
   {
-    const QgsScopedRuntimeProfile profile( QStringLiteral( "launch thread" ), QStringLiteral( "main" ) );
+    const QgsScopedRuntimeProfile profile( u"launch thread"_s, u"main"_s );
 
     QSignalSpy spy( QgsApplication::profiler(), &QgsRuntimeProfiler::groupAdded );
     thread->start();
@@ -134,15 +134,15 @@ void TestQgsRuntimeProfiler::threading()
 
     spy.wait();
     QCOMPARE( spy.count(), 1 );
-    QCOMPARE( spy.at( 0 ).at( 0 ).toString(), QStringLiteral( "bg" ) );
+    QCOMPARE( spy.at( 0 ).at( 0 ).toString(), u"bg"_s );
   }
 
   QCOMPARE( QgsApplication::profiler()->rowCount(), 2 );
-  const int row1 = QgsApplication::profiler()->data( QgsApplication::profiler()->index( 0, 0 ) ).toString() == QLatin1String( "launch thread" ) ? 0 : 1;
-  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ) ).toString(), QStringLiteral( "launch thread" ) );
-  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ), static_cast<int>( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString(), QStringLiteral( "main" ) );
-  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ) ).toString(), QStringLiteral( "in thread" ) );
-  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ), static_cast<int>( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString(), QStringLiteral( "bg" ) );
+  const int row1 = QgsApplication::profiler()->data( QgsApplication::profiler()->index( 0, 0 ) ).toString() == "launch thread"_L1 ? 0 : 1;
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ) ).toString(), u"launch thread"_s );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ), static_cast<int>( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString(), u"main"_s );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ) ).toString(), u"in thread"_s );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ), static_cast<int>( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString(), u"bg"_s );
 }
 
 

@@ -125,9 +125,9 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   QMenu *dateMenu = new QMenu( tr( "Current Date" ), menu );
   for ( const std::pair<QString, QString> &expression :
         {
-          std::make_pair( tr( "ISO Format (%1)" ).arg( QDateTime::currentDateTime().toString( QStringLiteral( "yyyy-MM-dd" ) ) ), QStringLiteral( "format_date(now(), 'yyyy-MM-dd')" ) ),
-          std::make_pair( tr( "Day/Month/Year (%1)" ).arg( QDateTime::currentDateTime().toString( QStringLiteral( "dd/MM/yyyy" ) ) ), QStringLiteral( "format_date(now(), 'dd/MM/yyyy')" ) ),
-          std::make_pair( tr( "Month/Day/Year (%1)" ).arg( QDateTime::currentDateTime().toString( QStringLiteral( "MM/dd/yyyy" ) ) ), QStringLiteral( "format_date(now(), 'MM/dd/yyyy')" ) ),
+          std::make_pair( tr( "ISO Format (%1)" ).arg( QDateTime::currentDateTime().toString( u"yyyy-MM-dd"_s ) ), u"format_date(now(), 'yyyy-MM-dd')"_s ),
+          std::make_pair( tr( "Day/Month/Year (%1)" ).arg( QDateTime::currentDateTime().toString( u"dd/MM/yyyy"_s ) ), u"format_date(now(), 'dd/MM/yyyy')"_s ),
+          std::make_pair( tr( "Month/Day/Year (%1)" ).arg( QDateTime::currentDateTime().toString( u"MM/dd/yyyy"_s ) ), u"format_date(now(), 'MM/dd/yyyy')"_s ),
         } )
   {
     addExpression( dateMenu, expression.first, expression.second );
@@ -146,8 +146,8 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     QMenu *mapMenu = new QMenu( map->displayName(), mapsMenu );
     for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "Scale (%1)" ).arg( map->scale() ), QStringLiteral( "format_number(item_variables('%1')['map_scale'], places:=6, omit_group_separators:=true, trim_trailing_zeroes:=true)" ).arg( map->id() ) ),
-            std::make_pair( tr( "Rotation (%1)" ).arg( map->rotation() ), QStringLiteral( "item_variables('%1')['map_rotation']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Scale (%1)" ).arg( map->scale() ), u"format_number(item_variables('%1')['map_scale'], places:=6, omit_group_separators:=true, trim_trailing_zeroes:=true)"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Rotation (%1)" ).arg( map->rotation() ), u"item_variables('%1')['map_rotation']"_s.arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
@@ -155,11 +155,11 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     mapMenu->addSeparator();
     for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "CRS Identifier (%1)" ).arg( map->crs().authid() ), QStringLiteral( "item_variables('%1')['map_crs']" ).arg( map->id() ) ),
-            std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ), QStringLiteral( "item_variables('%1')['map_crs_description']" ).arg( map->id() ) ),
-            std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ), QStringLiteral( "item_variables('%1')['map_crs_ellipsoid']" ).arg( map->id() ) ),
-            std::make_pair( tr( "Units (%1)" ).arg( QgsUnitTypes::toString( map->crs().mapUnits() ) ), QStringLiteral( "item_variables('%1')['map_units']" ).arg( map->id() ) ),
-            std::make_pair( tr( "Projection (%1)" ).arg( map->crs().operation().description() ), QStringLiteral( "item_variables('%1')['map_crs_projection']" ).arg( map->id() ) ),
+            std::make_pair( tr( "CRS Identifier (%1)" ).arg( map->crs().authid() ), u"item_variables('%1')['map_crs']"_s.arg( map->id() ) ),
+            std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ), u"item_variables('%1')['map_crs_description']"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ), u"item_variables('%1')['map_crs_ellipsoid']"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Units (%1)" ).arg( QgsUnitTypes::toString( map->crs().mapUnits() ) ), u"item_variables('%1')['map_units']"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Projection (%1)" ).arg( map->crs().operation().description() ), u"item_variables('%1')['map_crs_projection']"_s.arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
@@ -170,12 +170,12 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     const QgsPointXY center = mapExtent.center();
     for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "Center (X) (%1)" ).arg( center.x() ), QStringLiteral( "x(item_variables('%1')['map_extent_center'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "Center (Y) (%1)" ).arg( center.y() ), QStringLiteral( "y(item_variables('%1')['map_extent_center'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "X Minimum (%1)" ).arg( mapExtent.xMinimum() ), QStringLiteral( "x_min(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "Y Minimum (%1)" ).arg( mapExtent.yMinimum() ), QStringLiteral( "y_min(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "X Maximum (%1)" ).arg( mapExtent.xMaximum() ), QStringLiteral( "x_max(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "Y Maximum (%1)" ).arg( mapExtent.yMaximum() ), QStringLiteral( "y_max(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "Center (X) (%1)" ).arg( center.x() ), u"x(item_variables('%1')['map_extent_center'])"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Center (Y) (%1)" ).arg( center.y() ), u"y(item_variables('%1')['map_extent_center'])"_s.arg( map->id() ) ),
+            std::make_pair( tr( "X Minimum (%1)" ).arg( mapExtent.xMinimum() ), u"x_min(item_variables('%1')['map_extent'])"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Y Minimum (%1)" ).arg( mapExtent.yMinimum() ), u"y_min(item_variables('%1')['map_extent'])"_s.arg( map->id() ) ),
+            std::make_pair( tr( "X Maximum (%1)" ).arg( mapExtent.xMaximum() ), u"x_max(item_variables('%1')['map_extent'])"_s.arg( map->id() ) ),
+            std::make_pair( tr( "Y Maximum (%1)" ).arg( mapExtent.yMaximum() ), u"y_max(item_variables('%1')['map_extent'])"_s.arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
@@ -183,7 +183,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     mapMenu->addSeparator();
     for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "Layer Credits" ), QStringLiteral( "array_to_string(map_credits('%1'))" ).arg( map->id() ) ),
+            std::make_pair( tr( "Layer Credits" ), u"array_to_string(map_credits('%1'))"_s.arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
@@ -200,7 +200,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     QMenu *fieldsMenu = new QMenu( tr( "Field" ), menu );
     for ( const QgsField &field : fields )
     {
-      addExpression( fieldsMenu, field.displayName(), QStringLiteral( "\"%1\"" ).arg( field.name() ) );
+      addExpression( fieldsMenu, field.displayName(), u"\"%1\""_s.arg( field.name() ) );
     }
 
     menu->addMenu( fieldsMenu );
@@ -209,10 +209,10 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
 
   for ( const std::pair<QString, QString> &expression :
         {
-          std::make_pair( tr( "Layout Name" ), QStringLiteral( "@layout_name" ) ),
-          std::make_pair( tr( "Layout Page Number" ), QStringLiteral( "@layout_page" ) ),
-          std::make_pair( tr( "Layout Page Count" ), QStringLiteral( "@layout_numpages" ) ),
-          std::make_pair( tr( "Layer Credits" ), QStringLiteral( "array_to_string(map_credits())" ) )
+          std::make_pair( tr( "Layout Name" ), u"@layout_name"_s ),
+          std::make_pair( tr( "Layout Page Number" ), u"@layout_page"_s ),
+          std::make_pair( tr( "Layout Page Count" ), u"@layout_numpages"_s ),
+          std::make_pair( tr( "Layer Credits" ), u"array_to_string(map_credits())"_s )
         } )
   {
     addExpression( menu, expression.first, expression.second );
@@ -220,9 +220,9 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   menu->addSeparator();
   for ( const std::pair<QString, QString> &expression :
         {
-          std::make_pair( tr( "Project Author" ), QStringLiteral( "@project_author" ) ),
-          std::make_pair( tr( "Project Title" ), QStringLiteral( "@project_title" ) ),
-          std::make_pair( tr( "Project Path" ), QStringLiteral( "@project_path" ) )
+          std::make_pair( tr( "Project Author" ), u"@project_author"_s ),
+          std::make_pair( tr( "Project Title" ), u"@project_title"_s ),
+          std::make_pair( tr( "Project Path" ), u"@project_path"_s )
         } )
   {
     addExpression( menu, expression.first, expression.second );
@@ -230,8 +230,8 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   menu->addSeparator();
   for ( const std::pair<QString, QString> &expression :
         {
-          std::make_pair( tr( "Current User Name" ), QStringLiteral( "@user_full_name" ) ),
-          std::make_pair( tr( "Current User Account" ), QStringLiteral( "@user_account_name" ) )
+          std::make_pair( tr( "Current User Name" ), u"@user_full_name"_s ),
+          std::make_pair( tr( "Current User Account" ), u"@user_account_name"_s )
         } )
   {
     addExpression( menu, expression.first, expression.second );
@@ -337,7 +337,7 @@ void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
   QgsVectorLayer *layer = coverageLayer();
 
   QgsExpressionContext context = mLabel->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )

@@ -20,7 +20,7 @@
 
 #include <QPainter>
 
-const QString QgsPieDiagram::DIAGRAM_NAME_PIE = QStringLiteral( "Pie" );
+const QString QgsPieDiagram::DIAGRAM_NAME_PIE = u"Pie"_s;
 
 QgsPieDiagram::QgsPieDiagram()
 {

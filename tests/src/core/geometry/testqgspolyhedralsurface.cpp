@@ -1491,7 +1491,7 @@ void TestQgsPolyhedralSurface::testExport()
   QString result;
 
   // GML document for compare
-  QDomDocument doc( QStringLiteral( "gml" ) );
+  QDomDocument doc( u"gml"_s );
 
   // Z
   // as GML3 - M is dropped
@@ -1501,7 +1501,7 @@ void TestQgsPolyhedralSurface::testExport()
   patch.addInteriorRing( interiorRing.clone() );
   exportPolygon.addPatch( patch.clone() );
 
-  expectedSimpleGML3 = QString( QStringLiteral( "<PolyhedralSurface xmlns=\"gml\"><polygonPatches xmlns=\"gml\"><PolygonPatch xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></LinearRing></exterior><interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0.02 0.02 10 0.06 0.02 10 0.06 0.04 10 0.02 0.02 10</posList></LinearRing></interior></PolygonPatch></polygonPatches></PolyhedralSurface>" ) );
+  expectedSimpleGML3 = QString( u"<PolyhedralSurface xmlns=\"gml\"><polygonPatches xmlns=\"gml\"><PolygonPatch xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></LinearRing></exterior><interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0.02 0.02 10 0.06 0.02 10 0.06 0.04 10 0.02 0.02 10</posList></LinearRing></interior></PolygonPatch></polygonPatches></PolyhedralSurface>"_s );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
@@ -1515,11 +1515,11 @@ void TestQgsPolyhedralSurface::testExport()
   patch.addInteriorRing( interiorRing.clone() );
   exportPolygon.addPatch( patch.clone() );
 
-  expectedSimpleGML3 = QString( QStringLiteral( "<PolyhedralSurface xmlns=\"gml\"><polygonPatches xmlns=\"gml\"><PolygonPatch xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></LinearRing></exterior><interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0.02 0.02 10 0.06 0.02 10 0.06 0.04 10 0.02 0.02 10</posList></LinearRing></interior></PolygonPatch></polygonPatches></PolyhedralSurface>" ) );
+  expectedSimpleGML3 = QString( u"<PolyhedralSurface xmlns=\"gml\"><polygonPatches xmlns=\"gml\"><PolygonPatch xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></LinearRing></exterior><interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0.02 0.02 10 0.06 0.02 10 0.06 0.04 10 0.02 0.02 10</posList></LinearRing></interior></PolygonPatch></polygonPatches></PolyhedralSurface>"_s );
   result = elemToString( exportPolygon.asGml3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
-  QString expectedGML3empty( QStringLiteral( "<PolyhedralSurface xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<PolyhedralSurface xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsPolyhedralSurface().asGml3( doc ) ), expectedGML3empty );
 }
 
@@ -1531,19 +1531,19 @@ void TestQgsPolyhedralSurface::testCast()
   QVERIFY( QgsPolyhedralSurface::cast( &pCast ) );
 
   QgsPolyhedralSurface pCast2;
-  pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
+  pCast2.fromWkt( u"PolyhedralSurfaceZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))"_s );
   QVERIFY( QgsPolyhedralSurface::cast( &pCast2 ) );
   QVERIFY( QgsSurface::cast( &pCast2 ) );
 
-  pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
+  pCast2.fromWkt( u"PolyhedralSurfaceM((0 0 1, 0 1 2, 1 0 3, 0 0 1))"_s );
   QVERIFY( QgsPolyhedralSurface::cast( &pCast2 ) );
   QVERIFY( QgsSurface::cast( &pCast2 ) );
 
-  pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
+  pCast2.fromWkt( u"PolyhedralSurfaceZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))"_s );
   QVERIFY( QgsPolyhedralSurface::cast( &pCast2 ) );
   QVERIFY( QgsSurface::cast( &pCast2 ) );
 
-  QVERIFY( !pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((111111))" ) ) );
+  QVERIFY( !pCast2.fromWkt( u"PolyhedralSurfaceZ((111111))"_s ) );
 }
 
 void TestQgsPolyhedralSurface::testIsValid()
@@ -1559,7 +1559,7 @@ void TestQgsPolyhedralSurface::testIsValid()
 
   // a QgsPolyhedralSurface with a valid QgsPolygon is valid
   QgsPolyhedralSurface polySurface1;
-  polySurface1.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
+  polySurface1.fromWkt( u"PolyhedralSurfaceZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))"_s );
   isValid = polySurface1.isValid( error );
   QVERIFY( error.isEmpty() );
   QVERIFY( isValid );

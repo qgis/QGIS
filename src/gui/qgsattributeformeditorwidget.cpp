@@ -42,12 +42,12 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   mRememberLastValueButton = new QToolButton();
   mRememberLastValueButton->setAutoRaise( true );
   mRememberLastValueButton->setCheckable( true );
-  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
+  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( u"/mIconRememberDisabled.svg"_s ) );
   mRememberLastValueButton->setToolTip( tr( "When enabled, the entered value will be remembered and reused for the next feature additions" ) );
   updateRememberWidget();
 
   connect( mRememberLastValueButton, &QAbstractButton::toggled, this, [this]( bool checked ) {
-    mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( checked ? QStringLiteral( "/mIconRememberEnabled.svg" ) : QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
+    mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( checked ? u"/mIconRememberEnabled.svg"_s : u"/mIconRememberDisabled.svg"_s ) );
     emit rememberLastValueChanged( mEditorWidget->fieldIdx(), checked );
   } );
   connect( mForm, &QgsAttributeForm::modeChanged, this, [this]( QgsAttributeEditorContext::Mode ) {
@@ -55,7 +55,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   } );
 
   mConstraintResultLabel = new QLabel();
-  mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
+  mConstraintResultLabel->setObjectName( u"ConstraintStatus"_s );
   mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
   mConstraintResultLabel->setAlignment( Qt::AlignCenter );
   mConstraintResultLabel->setFixedWidth( 24 );
@@ -108,17 +108,17 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
   switch ( result )
   {
     case QgsEditorWidgetWrapper::ConstraintResultFailHard:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) ) );
-      mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
+      mConstraintResultLabel->setText( u"<font color=\"#FF9800\">%1</font>"_s.arg( QChar( 0x2718 ) ) );
+      mConstraintResultLabel->setToolTip( description.isEmpty() ? u"<b>%1</b>: %2"_s.arg( constraint, err ) : description );
       break;
 
     case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) ) );
-      mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
+      mConstraintResultLabel->setText( u"<font color=\"#FFC107\">%1</font>"_s.arg( QChar( 0x2718 ) ) );
+      mConstraintResultLabel->setToolTip( description.isEmpty() ? u"<b>%1</b>: %2"_s.arg( constraint, err ) : description );
       break;
 
     case QgsEditorWidgetWrapper::ConstraintResultPass:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) ) );
+      mConstraintResultLabel->setText( u"<font color=\"#259B24\">%1</font>"_s.arg( QChar( 0x2714 ) ) );
       mConstraintResultLabel->setToolTip( description );
       break;
   }
@@ -169,7 +169,7 @@ void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
 void QgsAttributeFormEditorWidget::setRememberLastValue( bool remember )
 {
   mRememberLastValueButton->setChecked( remember );
-  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( remember ? QStringLiteral( "/mIconRememberEnabled.svg" ) : QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
+  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( remember ? u"/mIconRememberEnabled.svg"_s : u"/mIconRememberDisabled.svg"_s ) );
 }
 
 void QgsAttributeFormEditorWidget::changesCommitted()

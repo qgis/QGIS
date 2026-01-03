@@ -26,13 +26,13 @@
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
-  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
   mColorRampShader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
 {
-  return QStringLiteral( "ramp" );
+  return u"ramp"_s;
 }
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::clone() const
@@ -73,9 +73,9 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
   const QgsDoubleRange zRange = context.renderContext().zRange();
   const bool considerZ = !zRange.isInfinite() || renderElevation;
 
-  const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
-  const bool applyXOffset = attribute->name() == QLatin1String( "X" );
-  const bool applyYOffset = attribute->name() == QLatin1String( "Y" );
+  const bool applyZOffset = attribute->name() == "Z"_L1;
+  const bool applyXOffset = attribute->name() == "X"_L1;
+  const bool applyYOffset = attribute->name() == "Y"_L1;
 
   int rendered = 0;
   double x = 0;
@@ -154,13 +154,13 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
 {
   auto r = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
 
-  r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Intensity" ) ) );
+  r->setAttribute( element.attribute( u"attribute"_s, u"Intensity"_s ) );
 
-  QDomElement elemShader = element.firstChildElement( QStringLiteral( "colorrampshader" ) );
+  QDomElement elemShader = element.firstChildElement( u"colorrampshader"_s );
   r->mColorRampShader.readXml( elemShader, context );
 
-  r->setMinimum( element.attribute( QStringLiteral( "min" ), QStringLiteral( "0" ) ).toDouble() );
-  r->setMaximum( element.attribute( QStringLiteral( "max" ), QStringLiteral( "100" ) ).toDouble() );
+  r->setMinimum( element.attribute( u"min"_s, u"0"_s ).toDouble() );
+  r->setMaximum( element.attribute( u"max"_s, u"100"_s ).toDouble() );
 
   r->restoreCommonProperties( element, context );
 
@@ -169,13 +169,13 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement
 
 QDomElement QgsPointCloudAttributeByRampRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
+  QDomElement rendererElem = doc.createElement( u"renderer"_s );
 
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ramp" ) );
-  rendererElem.setAttribute( QStringLiteral( "min" ), mMin );
-  rendererElem.setAttribute( QStringLiteral( "max" ), mMax );
+  rendererElem.setAttribute( u"type"_s, u"ramp"_s );
+  rendererElem.setAttribute( u"min"_s, mMin );
+  rendererElem.setAttribute( u"max"_s, mMax );
 
-  rendererElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
+  rendererElem.setAttribute( u"attribute"_s, mAttribute );
 
   QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   rendererElem.appendChild( elemShader );
@@ -274,9 +274,9 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudAttributeByRampR
   data->attributeName = mAttribute;
   data->colorRampShader = mColorRampShader;
 
-  data->attributeIsX = mAttribute == QLatin1String( "X" );
-  data->attributeIsY = mAttribute == QLatin1String( "Y" );
-  data->attributeIsZ = mAttribute == QLatin1String( "Z" );
+  data->attributeIsX = mAttribute == "X"_L1;
+  data->attributeIsY = mAttribute == "Y"_L1;
+  data->attributeIsZ = mAttribute == "Z"_L1;
   return data;
 }
 

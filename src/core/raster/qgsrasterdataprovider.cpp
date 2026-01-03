@@ -53,8 +53,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "boundingBox = %1" ).arg( boundingBox.toString() ), 4 );
+  QgsDebugMsgLevel( u"bandNo = %1 width = %2 height = %3"_s.arg( bandNo ).arg( width ).arg( height ), 4 );
+  QgsDebugMsgLevel( u"boundingBox = %1"_s.arg( boundingBox.toString() ), 4 );
 
   auto block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
@@ -64,8 +64,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
   if ( block->isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Couldn't create raster block" ) );
-    block->setError( { tr( "Couldn't create raster block." ), QStringLiteral( "Raster" ) } );
+    QgsDebugError( u"Couldn't create raster block"_s );
+    block->setError( { tr( "Couldn't create raster block." ), u"Raster"_s } );
     block->setValid( false );
     return block.release();
   }
@@ -75,8 +75,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
   if ( tmpExtent.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Extent outside provider extent" ) );
-    block->setError( { tr( "Extent outside provider extent." ), QStringLiteral( "Raster" ) } );
+    QgsDebugError( u"Extent outside provider extent"_s );
+    block->setError( { tr( "Extent outside provider extent." ), u"Raster"_s } );
     block->setValid( false );
     block->setIsNoData();
     return block.release();
@@ -119,14 +119,14 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     const int fromCol = std::round( ( tmpExtent.xMinimum() - boundingBox.xMinimum() ) / xRes );
     const int toCol = std::round( ( tmpExtent.xMaximum() - boundingBox.xMinimum() ) / xRes ) - 1;
 
-    QgsDebugMsgLevel( QStringLiteral( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
+    QgsDebugMsgLevel( u"fromRow = %1 toRow = %2 fromCol = %3 toCol = %4"_s.arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
 
     if ( fromRow < 0 || fromRow >= height || toRow < 0 || toRow >= height ||
          fromCol < 0 || fromCol >= width || toCol < 0 || toCol >= width )
     {
       // Should not happen
-      QgsDebugError( QStringLiteral( "Row or column limits out of range" ) );
-      block->setError( { tr( "Row or column limits out of range" ), QStringLiteral( "Raster" ) } );
+      QgsDebugError( u"Row or column limits out of range"_s );
+      block->setError( { tr( "Row or column limits out of range" ), u"Raster"_s } );
       block->setValid( false );
       return block.release();
     }
@@ -152,8 +152,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     tmpXRes = tmpExtent.width() / tmpWidth;
     tmpYRes = tmpExtent.height() / tmpHeight;
 
-    QgsDebugMsgLevel( QStringLiteral( "Reading smaller block tmpWidth = %1 height = %2" ).arg( tmpWidth ).arg( tmpHeight ), 4 );
-    QgsDebugMsgLevel( QStringLiteral( "tmpExtent = %1" ).arg( tmpExtent.toString() ), 4 );
+    QgsDebugMsgLevel( u"Reading smaller block tmpWidth = %1 height = %2"_s.arg( tmpWidth ).arg( tmpHeight ), 4 );
+    QgsDebugMsgLevel( u"tmpExtent = %1"_s.arg( tmpExtent.toString() ), 4 );
 
     auto tmpBlock = std::make_unique< QgsRasterBlock >( dataType( bandNo ), tmpWidth, tmpHeight );
     if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
@@ -163,8 +163,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
     if ( !readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback ) )
     {
-      QgsDebugError( QStringLiteral( "Error occurred while reading block" ) );
-      block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "Raster" ) } );
+      QgsDebugError( u"Error occurred while reading block"_s );
+      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
       block->setValid( false );
       block->setIsNoData();
       return block.release();
@@ -189,9 +189,9 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
         if ( tmpRow < 0 || tmpRow >= tmpHeight || tmpCol < 0 || tmpCol >= tmpWidth )
         {
-          QgsDebugError( QStringLiteral( "Source row or column limits out of range" ) );
+          QgsDebugError( u"Source row or column limits out of range"_s );
           block->setIsNoData(); // so that the problem becomes obvious and fixed
-          block->setError( { tr( "Source row or column limits out of range." ), QStringLiteral( "Raster" ) } );
+          block->setError( { tr( "Source row or column limits out of range." ), u"Raster"_s } );
           block->setValid( false );
           return block.release();
         }
@@ -203,12 +203,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         char *bits = block->bits( index );
         if ( !tmpBits )
         {
-          QgsDebugError( QStringLiteral( "Cannot get input block data tmpRow = %1 tmpCol = %2 tmpIndex = %3." ).arg( tmpRow ).arg( tmpCol ).arg( tmpIndex ) );
+          QgsDebugError( u"Cannot get input block data tmpRow = %1 tmpCol = %2 tmpIndex = %3."_s.arg( tmpRow ).arg( tmpCol ).arg( tmpIndex ) );
           continue;
         }
         if ( !bits )
         {
-          QgsDebugError( QStringLiteral( "Cannot set output block data." ) );
+          QgsDebugError( u"Cannot set output block data."_s );
           continue;
         }
         memcpy( bits, tmpBits, pixelSize );
@@ -219,9 +219,9 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   {
     if ( !readBlock( bandNo, boundingBox, width, height, block->bits(), feedback ) )
     {
-      QgsDebugError( QStringLiteral( "Error occurred while reading block" ) );
+      QgsDebugError( u"Error occurred while reading block"_s );
       block->setIsNoData();
-      block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "Raster" ) } );
+      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
       block->setValid( false );
       return block.release();
     }
@@ -274,12 +274,12 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
   QMap<int, QVariant> results;
 
   if ( format != Qgis::RasterIdentifyFormat::Value || !( capabilities() & Qgis::RasterInterfaceCapability::IdentifyValue ) )
   {
-    QgsDebugError( QStringLiteral( "Format not supported" ) );
+    QgsDebugError( u"Format not supported"_s );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
 
@@ -369,7 +369,7 @@ QString QgsRasterDataProvider::lastErrorFormat()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "text/plain" );
+  return u"text/plain"_s;
 }
 
 bool QgsRasterDataProvider::writeBlock( QgsRasterBlock *block, int band, int xOffset, int yOffset )
@@ -380,8 +380,8 @@ bool QgsRasterDataProvider::writeBlock( QgsRasterBlock *block, int band, int xOf
     return false;
   if ( !isEditable() )
   {
-    setError( QgsError( QStringLiteral( "writeBlock() called on read-only provider." ), QStringLiteral( "writeBlock" ) ) );
-    QgsDebugError( QStringLiteral( "writeBlock() called on read-only provider." ) );
+    setError( QgsError( u"writeBlock() called on read-only provider."_s, u"writeBlock"_s ) );
+    QgsDebugError( u"writeBlock() called on read-only provider."_s );
     return false;
   }
   return write( block->bits(), band, block->width(), block->height(), xOffset, yOffset );
@@ -393,7 +393,7 @@ QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods(
   QList<QPair<QString, QString> > methods = QgsProviderRegistry::instance()->pyramidResamplingMethods( providerKey );
   if ( methods.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "provider pyramidResamplingMethods returned no methods" ), 2 );
+    QgsDebugMsgLevel( u"provider pyramidResamplingMethods returned no methods"_s, 2 );
   }
   return methods;
 }
@@ -417,7 +417,7 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
       mUserNoDataValue.append( QgsRasterRangeList() );
     }
   }
-  QgsDebugMsgLevel( QStringLiteral( "set %1 band %1 no data ranges" ).arg( noData.size() ), 4 );
+  QgsDebugMsgLevel( u"set %1 band %1 no data ranges"_s.arg( noData.size() ), 4 );
 
   if ( mUserNoDataValue[bandNo - 1] != noData )
   {
@@ -491,17 +491,17 @@ QString QgsRasterDataProvider::identifyFormatName( Qgis::RasterIdentifyFormat fo
   switch ( format )
   {
     case Qgis::RasterIdentifyFormat::Value:
-      return QStringLiteral( "Value" );
+      return u"Value"_s;
     case Qgis::RasterIdentifyFormat::Text:
-      return QStringLiteral( "Text" );
+      return u"Text"_s;
     case Qgis::RasterIdentifyFormat::Html:
-      return QStringLiteral( "Html" );
+      return u"Html"_s;
     case Qgis::RasterIdentifyFormat::Feature:
-      return QStringLiteral( "Feature" );
+      return u"Feature"_s;
     case Qgis::RasterIdentifyFormat::Undefined:
       break;
   }
-  return QStringLiteral( "Undefined" );
+  return u"Undefined"_s;
 }
 
 QString QgsRasterDataProvider::identifyFormatLabel( Qgis::RasterIdentifyFormat format )
@@ -519,18 +519,18 @@ QString QgsRasterDataProvider::identifyFormatLabel( Qgis::RasterIdentifyFormat f
     case Qgis::RasterIdentifyFormat::Undefined:
       break;
   }
-  return QStringLiteral( "Undefined" );
+  return u"Undefined"_s;
 }
 
 Qgis::RasterIdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const QString &formatName )
 {
-  if ( formatName == QLatin1String( "Value" ) )
+  if ( formatName == "Value"_L1 )
     return Qgis::RasterIdentifyFormat::Value;
-  if ( formatName == QLatin1String( "Text" ) )
+  if ( formatName == "Text"_L1 )
     return Qgis::RasterIdentifyFormat::Text;
-  if ( formatName == QLatin1String( "Html" ) )
+  if ( formatName == "Html"_L1 )
     return Qgis::RasterIdentifyFormat::Html;
-  if ( formatName == QLatin1String( "Feature" ) )
+  if ( formatName == "Feature"_L1 )
     return Qgis::RasterIdentifyFormat::Feature;
   return Qgis::RasterIdentifyFormat::Undefined;
 }
@@ -611,31 +611,31 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
 
 static Qgis::RasterResamplingMethod resamplingMethodFromString( const QString &str )
 {
-  if ( str == QLatin1String( "bilinear" ) )
+  if ( str == "bilinear"_L1 )
   {
     return Qgis::RasterResamplingMethod::Bilinear;
   }
-  else if ( str == QLatin1String( "cubic" ) )
+  else if ( str == "cubic"_L1 )
   {
     return Qgis::RasterResamplingMethod::Cubic;
   }
-  else if ( str == QLatin1String( "cubicSpline" ) )
+  else if ( str == "cubicSpline"_L1 )
   {
     return Qgis::RasterResamplingMethod::CubicSpline;
   }
-  else if ( str == QLatin1String( "lanczos" ) )
+  else if ( str == "lanczos"_L1 )
   {
     return Qgis::RasterResamplingMethod::Lanczos;
   }
-  else if ( str == QLatin1String( "average" ) )
+  else if ( str == "average"_L1 )
   {
     return Qgis::RasterResamplingMethod::Average;
   }
-  else if ( str == QLatin1String( "mode" ) )
+  else if ( str == "mode"_L1 )
   {
     return Qgis::RasterResamplingMethod::Mode;
   }
-  else if ( str == QLatin1String( "gauss" ) )
+  else if ( str == "gauss"_L1 )
   {
     return Qgis::RasterResamplingMethod::Gauss;
   }
@@ -651,13 +651,13 @@ void QgsRasterDataProvider::readXml( const QDomElement &filterElem )
     return;
   }
 
-  const QDomElement resamplingElement = filterElem.firstChildElement( QStringLiteral( "resampling" ) );
+  const QDomElement resamplingElement = filterElem.firstChildElement( u"resampling"_s );
   if ( !resamplingElement.isNull() )
   {
-    setMaxOversampling( resamplingElement.attribute( QStringLiteral( "maxOversampling" ), QStringLiteral( "2.0" ) ).toDouble() );
-    setZoomedInResamplingMethod( resamplingMethodFromString( resamplingElement.attribute( QStringLiteral( "zoomedInResamplingMethod" ) ) ) );
-    setZoomedOutResamplingMethod( resamplingMethodFromString( resamplingElement.attribute( QStringLiteral( "zoomedOutResamplingMethod" ) ) ) );
-    enableProviderResampling( resamplingElement.attribute( QStringLiteral( "enabled" ) ) == QLatin1String( "true" ) );
+    setMaxOversampling( resamplingElement.attribute( u"maxOversampling"_s, u"2.0"_s ).toDouble() );
+    setZoomedInResamplingMethod( resamplingMethodFromString( resamplingElement.attribute( u"zoomedInResamplingMethod"_s ) ) );
+    setZoomedOutResamplingMethod( resamplingMethodFromString( resamplingElement.attribute( u"zoomedOutResamplingMethod"_s ) ) );
+    enableProviderResampling( resamplingElement.attribute( u"enabled"_s ) == "true"_L1 );
   }
 }
 
@@ -666,46 +666,46 @@ static QString resamplingMethodToString( Qgis::RasterResamplingMethod method )
   switch ( method )
   {
     case Qgis::RasterResamplingMethod::Nearest:
-      return QStringLiteral( "nearestNeighbour" );
+      return u"nearestNeighbour"_s;
     case Qgis::RasterResamplingMethod::Bilinear:
-      return QStringLiteral( "bilinear" );
+      return u"bilinear"_s;
     case Qgis::RasterResamplingMethod::Cubic:
-      return QStringLiteral( "cubic" );
+      return u"cubic"_s;
     case Qgis::RasterResamplingMethod::CubicSpline:
-      return QStringLiteral( "cubicSpline" );
+      return u"cubicSpline"_s;
     case Qgis::RasterResamplingMethod::Lanczos:
-      return QStringLiteral( "lanczos" );
+      return u"lanczos"_s;
     case Qgis::RasterResamplingMethod::Average:
-      return QStringLiteral( "average" );
+      return u"average"_s;
     case Qgis::RasterResamplingMethod::Mode:
-      return QStringLiteral( "mode" );
+      return u"mode"_s;
     case Qgis::RasterResamplingMethod::Gauss:
-      return QStringLiteral( "gauss" );
+      return u"gauss"_s;
   }
   // should not happen
-  return QStringLiteral( "nearestNeighbour" );
+  return u"nearestNeighbour"_s;
 }
 
 void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QDomElement providerElement = doc.createElement( QStringLiteral( "provider" ) );
+  QDomElement providerElement = doc.createElement( u"provider"_s );
   parentElem.appendChild( providerElement );
 
-  QDomElement resamplingElement = doc.createElement( QStringLiteral( "resampling" ) );
+  QDomElement resamplingElement = doc.createElement( u"resampling"_s );
   providerElement.appendChild( resamplingElement );
 
-  resamplingElement.setAttribute( QStringLiteral( "enabled" ),
-                                  mProviderResamplingEnabled ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
+  resamplingElement.setAttribute( u"enabled"_s,
+                                  mProviderResamplingEnabled ? u"true"_s :  u"false"_s );
 
-  resamplingElement.setAttribute( QStringLiteral( "zoomedInResamplingMethod" ),
+  resamplingElement.setAttribute( u"zoomedInResamplingMethod"_s,
                                   resamplingMethodToString( mZoomedInResamplingMethod ) );
 
-  resamplingElement.setAttribute( QStringLiteral( "zoomedOutResamplingMethod" ),
+  resamplingElement.setAttribute( u"zoomedOutResamplingMethod"_s,
                                   resamplingMethodToString( mZoomedOutResamplingMethod ) );
 
-  resamplingElement.setAttribute( QStringLiteral( "maxOversampling" ),
+  resamplingElement.setAttribute( u"maxOversampling"_s,
                                   QString::number( mMaxOversampling ) );
 }
 
@@ -931,13 +931,13 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   const QUrlQuery query( url.query() );
   VirtualRasterParameters components;
 
-  if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
+  if ( ! query.hasQueryItem( u"crs"_s ) )
   {
     QgsDebugError( "crs is missing" );
     if ( ok ) *ok = false;
     return components;
   }
-  if ( ! components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) ) )
+  if ( ! components.crs.createFromString( query.queryItemValue( u"crs"_s ) ) )
   {
     QgsDebugError( "failed to create crs" );
     if ( ok ) *ok = false;
@@ -945,13 +945,13 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   }
 
 
-  if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
+  if ( ! query.hasQueryItem( u"extent"_s ) )
   {
     QgsDebugError( "extent is missing" );
     if ( ok ) *ok = false;
     return components;
   }
-  QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
+  QStringList pointValuesList = query.queryItemValue( u"extent"_s ).split( ',' );
   if ( pointValuesList.size() != 4 )
   {
     QgsDebugError( "the extent is not correct" );
@@ -961,14 +961,14 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
                                     pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
 
-  if ( ! query.hasQueryItem( QStringLiteral( "width" ) ) )
+  if ( ! query.hasQueryItem( u"width"_s ) )
   {
     QgsDebugError( "width is missing" );
     if ( ok ) *ok = false;
     return components;
   }
   bool flagW;
-  components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flagW );
+  components.width = query.queryItemValue( u"width"_s ).toInt( & flagW );
   if ( !flagW ||  components.width < 0 )
   {
     QgsDebugError( "invalid or negative width input" );
@@ -976,14 +976,14 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
     return components;
   }
 
-  if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
+  if ( ! query.hasQueryItem( u"height"_s ) )
   {
     QgsDebugError( "height is missing" );
     if ( ok ) *ok = false;
     return components;
   }
   bool flagH;
-  components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flagH );
+  components.height = query.queryItemValue( u"height"_s ).toInt( & flagH );
   if ( !flagH ||  components.height < 0 )
   {
     QgsDebugError( "invalid or negative width input" );
@@ -991,17 +991,17 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
     return components;
   }
 
-  if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
+  if ( ! query.hasQueryItem( u"formula"_s ) )
   {
     QgsDebugError( "formula is missing" );
     if ( ok ) *ok = false;
     return components;
   }
-  components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
+  components.formula = query.queryItemValue( u"formula"_s );
 
   for ( const auto &item : query.queryItems() )
   {
-    if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QLatin1String( ":uri" ) ) )
+    if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == ":uri"_L1 ) )
     {
       continue;
     }
@@ -1009,7 +1009,7 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
     VirtualRasterInputLayers rLayer;
     rLayer.name = item.first.mid( 0, item.first.indexOf( ':' ) );
     rLayer.uri = query.queryItemValue( item.first );
-    rLayer.provider = query.queryItemValue( item.first.mid( 0, item.first.indexOf( ':' ) ) + QStringLiteral( ":provider" ) );
+    rLayer.provider = query.queryItemValue( item.first.mid( 0, item.first.indexOf( ':' ) ) + u":provider"_s );
 
     if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
     {
@@ -1033,7 +1033,7 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
 
   if ( parts.crs.isValid() )
   {
-    query.addQueryItem( QStringLiteral( "crs" ), parts.crs.authid() );
+    query.addQueryItem( u"crs"_s, parts.crs.authid() );
   }
 
   if ( ! parts.extent.isNull() )
@@ -1041,21 +1041,21 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
     QString rect = QString( "%1,%2,%3,%4" ).arg( qgsDoubleToString( parts.extent.xMinimum() ), qgsDoubleToString( parts.extent.yMinimum() ),
                    qgsDoubleToString( parts.extent.xMaximum() ), qgsDoubleToString( parts.extent.yMaximum() ) );
 
-    query.addQueryItem( QStringLiteral( "extent" ), rect );
+    query.addQueryItem( u"extent"_s, rect );
   }
 
-  query.addQueryItem( QStringLiteral( "width" ), QString::number( parts.width ) );
+  query.addQueryItem( u"width"_s, QString::number( parts.width ) );
 
-  query.addQueryItem( QStringLiteral( "height" ), QString::number( parts.height ) );
+  query.addQueryItem( u"height"_s, QString::number( parts.height ) );
 
-  query.addQueryItem( QStringLiteral( "formula" ), parts.formula );
+  query.addQueryItem( u"formula"_s, parts.formula );
 
   if ( ! parts.rInputLayers.isEmpty() )
   {
     for ( const auto &it : parts.rInputLayers )
     {
-      query.addQueryItem( it.name + QStringLiteral( ":uri" ), it.uri );
-      query.addQueryItem( it.name + QStringLiteral( ":provider" ), it.provider );
+      query.addQueryItem( it.name + u":uri"_s, it.uri );
+      query.addQueryItem( it.name + u":provider"_s, it.provider );
     }
   }
   uri.setQuery( query );

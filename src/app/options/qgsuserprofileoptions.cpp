@@ -43,9 +43,9 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   connect( mAskUser, &QRadioButton::toggled, this, &QgsUserProfileOptionsWidget::onAskUserChanged );
 
   // Connect icon size and allow profile creation
-  mIconSize->setCurrentText( QString::number( manager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
+  mIconSize->setCurrentText( QString::number( manager->settings()->value( u"/selector/iconSize"_s, 24 ).toInt() ) );
   connect( mIconSize, &QComboBox::currentTextChanged, this, [manager]( const QString &text ) {
-    manager->settings()->setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
+    manager->settings()->setValue( u"/selector/iconSize"_s, text.toInt() );
     manager->settings()->sync();
   } );
 
@@ -83,7 +83,7 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
 
 QString QgsUserProfileOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#user-profiles" );
+  return u"introduction/qgis_configuration.html#user-profiles"_s;
 }
 
 void QgsUserProfileOptionsWidget::apply()
@@ -151,7 +151,7 @@ void QgsUserProfileOptionsWidget::onAskUserChanged()
 // QgsUserProfileOptionsFactory
 //
 QgsUserProfileOptionsFactory::QgsUserProfileOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "User Profiles" ), QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) )
+  : QgsOptionsWidgetFactory( tr( "User Profiles" ), QgsApplication::getThemeIcon( u"/user.svg"_s ) )
 {
 }
 
@@ -162,5 +162,5 @@ QgsOptionsPageWidget *QgsUserProfileOptionsFactory::createWidget( QWidget *paren
 
 QString QgsUserProfileOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageCRS" );
+  return u"mOptionsPageCRS"_s;
 }

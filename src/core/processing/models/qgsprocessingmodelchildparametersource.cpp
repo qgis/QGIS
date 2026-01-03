@@ -100,28 +100,28 @@ void QgsProcessingModelChildParameterSource::setSource( Qgis::ProcessingModelChi
 QVariant QgsProcessingModelChildParameterSource::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "source" ), static_cast< int >( mSource ) );
+  map.insert( u"source"_s, static_cast< int >( mSource ) );
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
-      map.insert( QStringLiteral( "parameter_name" ), mParameterName );
+      map.insert( u"parameter_name"_s, mParameterName );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
-      map.insert( QStringLiteral( "child_id" ), mChildId );
-      map.insert( QStringLiteral( "output_name" ), mOutputName );
+      map.insert( u"child_id"_s, mChildId );
+      map.insert( u"output_name"_s, mOutputName );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::StaticValue:
-      map.insert( QStringLiteral( "static_value" ), mStaticValue );
+      map.insert( u"static_value"_s, mStaticValue );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::Expression:
-      map.insert( QStringLiteral( "expression" ), mExpression );
+      map.insert( u"expression"_s, mExpression );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ExpressionText:
-      map.insert( QStringLiteral( "expression_text" ), mExpressionText );
+      map.insert( u"expression_text"_s, mExpressionText );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ModelOutput:
@@ -132,28 +132,28 @@ QVariant QgsProcessingModelChildParameterSource::toVariant() const
 
 bool QgsProcessingModelChildParameterSource::loadVariant( const QVariantMap &map )
 {
-  mSource = static_cast< Qgis::ProcessingModelChildParameterSource >( map.value( QStringLiteral( "source" ) ).toInt() );
+  mSource = static_cast< Qgis::ProcessingModelChildParameterSource >( map.value( u"source"_s ).toInt() );
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
-      mParameterName = map.value( QStringLiteral( "parameter_name" ) ).toString();
+      mParameterName = map.value( u"parameter_name"_s ).toString();
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
-      mChildId = map.value( QStringLiteral( "child_id" ) ).toString();
-      mOutputName = map.value( QStringLiteral( "output_name" ) ).toString();
+      mChildId = map.value( u"child_id"_s ).toString();
+      mOutputName = map.value( u"output_name"_s ).toString();
       break;
 
     case Qgis::ProcessingModelChildParameterSource::StaticValue:
-      mStaticValue = map.value( QStringLiteral( "static_value" ) );
+      mStaticValue = map.value( u"static_value"_s );
       break;
 
     case Qgis::ProcessingModelChildParameterSource::Expression:
-      mExpression = map.value( QStringLiteral( "expression" ) ).toString();
+      mExpression = map.value( u"expression"_s ).toString();
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ExpressionText:
-      mExpressionText = map.value( QStringLiteral( "expression_text" ) ).toString();
+      mExpressionText = map.value( u"expression_text"_s ).toString();
       break;
 
     case Qgis::ProcessingModelChildParameterSource::ModelOutput:
@@ -167,10 +167,10 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
-      return QStringLiteral( "parameters['%1']" ).arg( mParameterName );
+      return u"parameters['%1']"_s.arg( mParameterName );
 
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
-      return QStringLiteral( "outputs['%1']['%2']" ).arg( friendlyChildNames.value( mChildId, mChildId ), mOutputName );
+      return u"outputs['%1']['%2']"_s.arg( friendlyChildNames.value( mChildId, mChildId ), mOutputName );
 
     case Qgis::ProcessingModelChildParameterSource::StaticValue:
       if ( definition )
@@ -184,7 +184,7 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
       }
 
     case Qgis::ProcessingModelChildParameterSource::Expression:
-      return QStringLiteral( "QgsExpression(%1).evaluate()" ).arg( QgsProcessingUtils::stringToPythonLiteral( mExpression ) );
+      return u"QgsExpression(%1).evaluate()"_s.arg( QgsProcessingUtils::stringToPythonLiteral( mExpression ) );
 
     case Qgis::ProcessingModelChildParameterSource::ExpressionText:
       return mExpressionText;

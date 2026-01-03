@@ -21,7 +21,7 @@
 
 QString QgsLoadLayerAlgorithm::name() const
 {
-  return QStringLiteral( "loadlayer" );
+  return u"loadlayer"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsLoadLayerAlgorithm::flags() const
@@ -46,7 +46,7 @@ QString QgsLoadLayerAlgorithm::group() const
 
 QString QgsLoadLayerAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsLoadLayerAlgorithm::shortHelpString() const
@@ -66,15 +66,15 @@ QgsLoadLayerAlgorithm *QgsLoadLayerAlgorithm::createInstance() const
 
 void QgsLoadLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "NAME" ), QObject::tr( "Loaded layer name" ) ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterString( u"NAME"_s, QObject::tr( "Loaded layer name" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Layer" ) ) );
 }
 
 QVariantMap QgsLoadLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
+  const QString name = parameterAsString( parameters, u"NAME"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -88,7 +88,7 @@ QVariantMap QgsLoadLayerAlgorithm::processAlgorithm( const QVariantMap &paramete
   context.addLayerToLoadOnCompletion( layer->id(), details );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), layer->id() );
+  results.insert( u"OUTPUT"_s, layer->id() );
   return results;
 }
 

@@ -70,7 +70,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
     passarray = QCA::SecureArray( lePkcs12KeyPass->text().toUtf8() );
 
   QCA::ConvertResult res;
-  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, u"qca-ossl"_s ) );
 
   if ( res == QCA::ErrorFile )
   {
@@ -80,7 +80,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
   else if ( res == QCA::ErrorPassphrase )
   {
     writePkiMessage( lePkcs12Msg, tr( "Incorrect bundle password" ), Invalid );
-    lePkcs12KeyPass->setPlaceholderText( QStringLiteral( "Required passphrase" ) );
+    lePkcs12KeyPass->setPlaceholderText( u"Required passphrase"_s );
     return validityChange( false );
   }
   else if ( res == QCA::ErrorDecode )
@@ -123,10 +123,10 @@ bool QgsAuthPkcs12Edit::validateConfig()
 QgsStringMap QgsAuthPkcs12Edit::configMap() const
 {
   QgsStringMap config;
-  config.insert( QStringLiteral( "bundlepath" ), lePkcs12Bundle->text() );
-  config.insert( QStringLiteral( "bundlepass" ), lePkcs12KeyPass->text() );
-  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  config.insert( u"bundlepath"_s, lePkcs12Bundle->text() );
+  config.insert( u"bundlepass"_s, lePkcs12KeyPass->text() );
+  config.insert( u"addcas"_s, cbAddCas->isChecked() ? u"true"_s : u"false"_s );
+  config.insert( u"addrootca"_s, cbAddRootCa->isChecked() ? u"true"_s : u"false"_s );
 
   return config;
 }
@@ -136,10 +136,10 @@ void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  lePkcs12Bundle->setText( configmap.value( QStringLiteral( "bundlepath" ) ) );
-  lePkcs12KeyPass->setText( configmap.value( QStringLiteral( "bundlepass" ) ) );
-  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
-  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
+  lePkcs12Bundle->setText( configmap.value( u"bundlepath"_s ) );
+  lePkcs12KeyPass->setText( configmap.value( u"bundlepass"_s ) );
+  cbAddCas->setChecked( configmap.value( u"addcas"_s, u"false "_s ) == "true"_L1 );
+  cbAddRootCa->setChecked( configmap.value( u"addrootca"_s, u"false "_s ) == "true"_L1 );
 
   validateConfig();
 }
@@ -171,11 +171,11 @@ void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg
   switch ( valid )
   {
     case Valid:
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s );
       txt = tr( "Valid: %1" ).arg( msg );
       break;
     case Invalid:
-      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+      ss = QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
@@ -196,7 +196,7 @@ void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
 {
   lePkcs12KeyPass->clear();
   lePkcs12KeyPass->setStyleSheet( QString() );
-  lePkcs12KeyPass->setPlaceholderText( QStringLiteral( "Optional passphrase" ) );
+  lePkcs12KeyPass->setPlaceholderText( u"Optional passphrase"_s );
 }
 
 void QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged( const QString &pass )
@@ -251,7 +251,7 @@ bool QgsAuthPkcs12Edit::populateCas()
     {
       item = new QTreeWidgetItem( twCas, QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
     }
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber(), cert.expiryDate().toString( Qt::TextDate ) ) );
     prevItem = item;
   }

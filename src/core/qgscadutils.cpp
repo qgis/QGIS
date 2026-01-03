@@ -498,11 +498,11 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
   // *****************************
   // ---- calculate CAD values
-  QgsDebugMsgLevel( QStringLiteral( "point:             %1 %2" ).arg( point.x() ).arg( point.y() ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "previous point:    %1 %2" ).arg( previousPt.x() ).arg( previousPt.y() ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "penultimate point: %1 %2" ).arg( penultimatePt.x() ).arg( penultimatePt.y() ), 4 );
-  //QgsDebugMsgLevel( QStringLiteral( "dx: %1 dy: %2" ).arg( point.x() - previousPt.x() ).arg( point.y() - previousPt.y() ), 4 );
-  //QgsDebugMsgLevel( QStringLiteral( "ddx: %1 ddy: %2" ).arg( previousPt.x() - penultimatePt.x() ).arg( previousPt.y() - penultimatePt.y() ), 4 );
+  QgsDebugMsgLevel( u"point:             %1 %2"_s.arg( point.x() ).arg( point.y() ), 4 );
+  QgsDebugMsgLevel( u"previous point:    %1 %2"_s.arg( previousPt.x() ).arg( previousPt.y() ), 4 );
+  QgsDebugMsgLevel( u"penultimate point: %1 %2"_s.arg( penultimatePt.x() ).arg( penultimatePt.y() ), 4 );
+  //QgsDebugMsgLevel( u"dx: %1 dy: %2"_s.arg( point.x() - previousPt.x() ).arg( point.y() - previousPt.y() ), 4 );
+  //QgsDebugMsgLevel( u"ddx: %1 ddy: %2"_s.arg( previousPt.x() - penultimatePt.x() ).arg( previousPt.y() - penultimatePt.y() ), 4 );
 
   res.finalMapPoint = point;
 
@@ -511,9 +511,9 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
 void QgsCadUtils::AlignMapPointContext::dump() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "Constraints (locked / relative / value" ), 1 );
-  QgsDebugMsgLevel( QStringLiteral( "Angle:    %1 %2 %3" ).arg( angleConstraint.locked ).arg( angleConstraint.relative ).arg( angleConstraint.value ), 1 );
-  QgsDebugMsgLevel( QStringLiteral( "Distance: %1 %2 %3" ).arg( distanceConstraint.locked ).arg( distanceConstraint.relative ).arg( distanceConstraint.value ), 1 );
-  QgsDebugMsgLevel( QStringLiteral( "X:        %1 %2 %3" ).arg( xConstraint.locked ).arg( xConstraint.relative ).arg( xConstraint.value ), 1 );
-  QgsDebugMsgLevel( QStringLiteral( "Y:        %1 %2 %3" ).arg( yConstraint.locked ).arg( yConstraint.relative ).arg( yConstraint.value ), 1 );
+  QgsDebugMsgLevel( u"Constraints (locked / relative / value"_s, 1 );
+  QgsDebugMsgLevel( u"Angle:    %1 %2 %3"_s.arg( angleConstraint.locked ).arg( angleConstraint.relative ).arg( angleConstraint.value ), 1 );
+  QgsDebugMsgLevel( u"Distance: %1 %2 %3"_s.arg( distanceConstraint.locked ).arg( distanceConstraint.relative ).arg( distanceConstraint.value ), 1 );
+  QgsDebugMsgLevel( u"X:        %1 %2 %3"_s.arg( xConstraint.locked ).arg( xConstraint.relative ).arg( xConstraint.value ), 1 );
+  QgsDebugMsgLevel( u"Y:        %1 %2 %3"_s.arg( yConstraint.locked ).arg( yConstraint.relative ).arg( yConstraint.value ), 1 );
 }

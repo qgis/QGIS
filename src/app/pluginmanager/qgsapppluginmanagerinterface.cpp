@@ -47,12 +47,12 @@ void QgsAppPluginManagerInterface::clearPythonPluginMetadata()
 
 void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QString> &metadata )
 {
-  if ( metadata.isEmpty() || !metadata.contains( QStringLiteral( "id" ) ) )
+  if ( metadata.isEmpty() || !metadata.contains( u"id"_s ) )
   {
-    QgsDebugError( QStringLiteral( "Warning: incomplete metadata" ) );
+    QgsDebugError( u"Warning: incomplete metadata"_s );
     return;
   }
-  mPluginManager->addPluginMetadata( metadata.value( QStringLiteral( "id" ) ), metadata );
+  mPluginManager->addPluginMetadata( metadata.value( u"id"_s ), metadata );
 }
 
 void QgsAppPluginManagerInterface::reloadModel()

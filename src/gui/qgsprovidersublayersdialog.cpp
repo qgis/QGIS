@@ -129,9 +129,9 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     setGroupName( fileName );
   }
 
-  setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), fileName ) );
+  setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : u"%1 | %2"_s.arg( tr( "Select Items to Add" ), fileName ) );
 
-  mLblFilePath->setText( QStringLiteral( "<a href=\"%1\">%2</a>" )
+  mLblFilePath->setText( u"<a href=\"%1\">%2</a>"_s
                            .arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) ) );
   mLblFilePath->setVisible( !filePath.isEmpty() );
   mLblFilePath->setWordWrap( true );
@@ -154,7 +154,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mLayersTree->expandAll();
 
   const QgsSettings settings;
-  const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+  const bool addToGroup = settings.value( u"/qgis/openSublayersInGroup"_s, false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
   mCbxAddToGroup->setVisible( !fileName.isEmpty() );
 
@@ -229,7 +229,7 @@ QgsProviderSublayersDialog::~QgsProviderSublayersDialog()
 {
   QgsSettings settings;
   settings.setValue( "/Windows/SubLayers/headerState", mLayersTree->header()->saveState() );
-  settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCbxAddToGroup->isChecked() );
+  settings.setValue( u"/qgis/openSublayersInGroup"_s, mCbxAddToGroup->isChecked() );
 
   if ( mTask )
     mTask->cancel();
@@ -269,7 +269,7 @@ void QgsProviderSublayersDialog::setGroupName( const QString &groupNameIn )
 {
   mGroupName = groupNameIn;
   const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
   {
     mGroupName = QgsMapLayer::formatLayerName( mGroupName );
   }

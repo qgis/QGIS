@@ -43,19 +43,19 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   const QgsCoordinateReferenceSystem crs = ld.source->sourceCrs();
 
   auto writer = std::make_unique<QgsRasterFileWriter>( mOutputFilePath );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
+  writer->setOutputProviderKey( u"gdal"_s );
   writer->setOutputFormat( mOutputFormat );
   writer->setCreationOptions( mCreationOptions );
 
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( Qgis::DataType::Float32, mNumColumns, mNumRows, mInterpolationExtent, crs ) );
   if ( !provider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Could not create raster output: %1" ).arg( mOutputFilePath ), 2 );
+    QgsDebugMsgLevel( u"Could not create raster output: %1"_s.arg( mOutputFilePath ), 2 );
     return 1;
   }
   if ( !provider->isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Could not create raster output: %1: %2" ).arg( mOutputFilePath, provider->error().message( QgsErrorMessage::Text ) ), 2 );
+    QgsDebugMsgLevel( u"Could not create raster output: %1: %2"_s.arg( mOutputFilePath, provider->error().message( QgsErrorMessage::Text ) ), 2 );
     return 2;
   }
 

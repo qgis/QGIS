@@ -73,7 +73,7 @@ void TestQgsVectorLayerFeaturePool::addFeature()
   QCOMPARE( ids2.size(), 1 );
 
   QgsFeature feature;
-  feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((1 1, 9 1, 9 9, 1 9, 1 1))" ) ) );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Polygon((1 1, 9 1, 9 9, 1 9, 1 1))"_s ) );
 
   // Add another feature...
   vl->startEditing();
@@ -138,7 +138,7 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
   pool.getFeature( 1, feat );
 
   // Update a feature to be outside the AOI
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((100 100, 110 100, 110 110, 100 110, 100 100))" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"Polygon((100 100, 110 100, 110 110, 100 110, 100 100))"_s ) );
   vl->updateFeature( feat );
 
   // Cached data updated with geometryChanged vector layer signal
@@ -147,10 +147,10 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
 
   // Verify that the geometry is up to date
   pool.getFeature( 1, feat );
-  QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((100 100, 110 100, 110 110, 100 110, 100 100))" ) );
+  QCOMPARE( feat.geometry().asWkt(), u"Polygon ((100 100, 110 100, 110 110, 100 110, 100 100))"_s );
 
   // Update a feature to be inside the AOI
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"Polygon((0 0, 10 0, 10 10, 0 10, 0 0))"_s ) );
   vl->updateFeature( feat );
 
   // Cached data updated with geometryChanged vector layer signal
@@ -159,7 +159,7 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
 
   // Verify that the geometry is up to date
   pool.getFeature( 1, feat );
-  QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
+  QCOMPARE( feat.geometry().asWkt(), u"Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))"_s );
 
   // Add enough features for the cache to be full
   for ( int i = 0; i < 1100; i++ ) // max cache size is 1000
@@ -193,17 +193,17 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
 
   // Verify that when we get a feature that is no more in the cache we have the updated geometry
   pool.getFeature( 102, feat );
-  QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 30 0, 30 30, 0 30, 0 0))" ) );
+  QCOMPARE( feat.geometry().asWkt(), u"Polygon ((0 0, 30 0, 30 30, 0 30, 0 0))"_s );
 }
 
 std::unique_ptr<QgsVectorLayer> TestQgsVectorLayerFeaturePool::createPopulatedLayer()
 {
-  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon" ), QStringLiteral( "Polygons" ), QStringLiteral( "memory" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( u"Polygon"_s, u"Polygons"_s, u"memory"_s );
 
   QgsFeature feature;
-  feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) ) );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Polygon((0 0, 10 0, 10 10, 0 10, 0 0))"_s ) );
   vl->dataProvider()->addFeature( feature );
-  feature.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((100 100, 110 100, 110 110, 100 110, 100 100))" ) ) );
+  feature.setGeometry( QgsGeometry::fromWkt( u"Polygon((100 100, 110 100, 110 110, 100 110, 100 100))"_s ) );
   vl->dataProvider()->addFeature( feature );
 
   return vl;

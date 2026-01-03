@@ -30,7 +30,7 @@
 ///@cond PRIVATE
 
 QgsAuthConfigurationStorageSqlite::QgsAuthConfigurationStorageSqlite( const QString &databasePath )
-  : QgsAuthConfigurationStorageDb( {{ QStringLiteral( "driver" ), QStringLiteral( "QSQLITE" ) }, { QStringLiteral( "database" ), databasePath }} )
+  : QgsAuthConfigurationStorageDb( {{ u"driver"_s, u"QSQLITE"_s }, { u"database"_s, databasePath }} )
 {
 }
 
@@ -99,7 +99,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
 
 QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorageSqlite::settingsParameters() const
 {
-  return {{ QStringLiteral( "database" ), tr( "Path to the SQLite database file" ), QVariant::String }};
+  return {{ u"database"_s, tr( "Path to the SQLite database file" ), QVariant::String }};
 }
 
 QString QgsAuthConfigurationStorageSqlite::description() const
@@ -109,7 +109,7 @@ QString QgsAuthConfigurationStorageSqlite::description() const
 
 QString QgsAuthConfigurationStorageSqlite::type() const
 {
-  return QStringLiteral( "SQLITE" );
+  return u"SQLITE"_s;
 }
 
 bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) const
@@ -123,8 +123,8 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "SELECT name FROM sqlite_master WHERE type='table' AND name=:name" ) );
-  query.bindValue( QStringLiteral( ":name" ), table );
+  query.prepare( u"SELECT name FROM sqlite_master WHERE type='table' AND name=:name"_s );
+  query.bindValue( u":name"_s, table );
 
   if ( !authDbQuery( &query ) )
   {

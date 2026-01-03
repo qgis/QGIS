@@ -26,7 +26,7 @@
 
 QString QgsNumericScaleBarRenderer::id() const
 {
-  return QStringLiteral( "Numeric" );
+  return u"Numeric"_s;
 }
 
 QString QgsNumericScaleBarRenderer::visibleName() const

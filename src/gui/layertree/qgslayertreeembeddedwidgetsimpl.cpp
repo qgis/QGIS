@@ -94,7 +94,7 @@ void QgsLayerTreeOpacityWidget::layerTrChanged()
 
 QString QgsLayerTreeOpacityWidget::Provider::id() const
 {
-  return QStringLiteral( "transparency" );
+  return u"transparency"_s;
 }
 
 QString QgsLayerTreeOpacityWidget::Provider::name() const

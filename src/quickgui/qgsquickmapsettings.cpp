@@ -227,14 +227,14 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
 {
   if ( mProject )
   {
-    int red = mProject->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-    int green = mProject->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-    int blue = mProject->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
+    int red = mProject->readNumEntry( u"Gui"_s, u"/CanvasColorRedPart"_s, 255 );
+    int green = mProject->readNumEntry( u"Gui"_s, u"/CanvasColorGreenPart"_s, 255 );
+    int blue = mProject->readNumEntry( u"Gui"_s, u"/CanvasColorBluePart"_s, 255 );
     mMapSettings.setBackgroundColor( QColor( red, green, blue ) );
 
-    const bool isTemporal = mProject->readNumEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ), 0 ) != 0;
-    const QString startString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/StartDateTime" ) );
-    const QString endString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/EndDateTime" ) );
+    const bool isTemporal = mProject->readNumEntry( u"TemporalControllerWidget"_s, u"/NavigationMode"_s, 0 ) != 0;
+    const QString startString = QgsProject::instance()->readEntry( u"TemporalControllerWidget"_s, u"/StartDateTime"_s );
+    const QString endString = QgsProject::instance()->readEntry( u"TemporalControllerWidget"_s, u"/EndDateTime"_s );
     mMapSettings.setIsTemporal( isTemporal );
     mMapSettings.setTemporalRange( QgsDateTimeRange( QDateTime::fromString( startString, Qt::ISODateWithMs ), QDateTime::fromString( endString, Qt::ISODateWithMs ) ) );
   }
@@ -246,7 +246,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
     QDomNode node = nodes.item( 0 );
     QDomElement element = node.toElement();
 
-    if ( element.hasAttribute( QStringLiteral( "name" ) ) && element.attribute( QStringLiteral( "name" ) ) == QLatin1String( "theMapCanvas" ) )
+    if ( element.hasAttribute( u"name"_s ) && element.attribute( u"name"_s ) == "theMapCanvas"_L1 )
     {
       foundTheMapCanvas = true;
       mMapSettings.readXml( node );

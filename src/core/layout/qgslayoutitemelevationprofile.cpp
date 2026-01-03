@@ -132,7 +132,7 @@ int QgsLayoutItemElevationProfile::type() const
 
 QIcon QgsLayoutItemElevationProfile::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mLayoutItemElevationProfile.svg" ) );
+  return QgsApplication::getThemeIcon( u"mLayoutItemElevationProfile.svg"_s );
 }
 
 void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedProperty property )
@@ -850,33 +850,33 @@ void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
   {
-    QDomElement plotElement = doc.createElement( QStringLiteral( "plot" ) );
+    QDomElement plotElement = doc.createElement( u"plot"_s );
     mPlot->writeXml( plotElement, doc, rwContext );
     layoutProfileElem.appendChild( plotElement );
   }
 
-  layoutProfileElem.setAttribute( QStringLiteral( "distanceUnit" ), qgsEnumValueToKey( mDistanceUnit ) );
+  layoutProfileElem.setAttribute( u"distanceUnit"_s, qgsEnumValueToKey( mDistanceUnit ) );
 
-  layoutProfileElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
-  layoutProfileElem.setAttribute( QStringLiteral( "atlasDriven" ), mAtlasDriven ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  layoutProfileElem.setAttribute( u"tolerance"_s, mTolerance );
+  layoutProfileElem.setAttribute( u"atlasDriven"_s, mAtlasDriven ? u"1"_s : u"0"_s );
   if ( mCrs.isValid() )
   {
-    QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
+    QDomElement crsElem = doc.createElement( u"crs"_s );
     mCrs.writeXml( crsElem, doc );
     layoutProfileElem.appendChild( crsElem );
   }
   if ( mCurve )
   {
-    QDomElement curveElem = doc.createElement( QStringLiteral( "curve" ) );
+    QDomElement curveElem = doc.createElement( u"curve"_s );
     curveElem.appendChild( doc.createTextNode( mCurve->asWkt( ) ) );
     layoutProfileElem.appendChild( curveElem );
   }
 
   {
-    QDomElement layersElement = doc.createElement( QStringLiteral( "layers" ) );
+    QDomElement layersElement = doc.createElement( u"layers"_s );
     for ( const QgsMapLayerRef &layer : mLayers )
     {
-      QDomElement layerElement = doc.createElement( QStringLiteral( "layer" ) );
+      QDomElement layerElement = doc.createElement( u"layer"_s );
       layer.writeXml( layerElement, rwContext );
       layersElement.appendChild( layerElement );
     }
@@ -884,20 +884,20 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
   }
 
   {
-    QDomElement sourcesElement = doc.createElement( QStringLiteral( "profileSources" ) );
+    QDomElement sourcesElement = doc.createElement( u"profileSources"_s );
     for ( QgsAbstractProfileSource *source : mSources )
     {
       if ( source )
       {
         if ( QgsApplication::profileSourceRegistry()->findSourceById( source->profileSourceId() ) )
         {
-          QDomElement sourceElement = doc.createElement( QStringLiteral( "profileCustomSource" ) );
-          sourceElement.setAttribute( QStringLiteral( "id" ), source->profileSourceId() );
+          QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
+          sourceElement.setAttribute( u"id"_s, source->profileSourceId() );
           sourcesElement.appendChild( sourceElement );
         }
         else if ( auto layer = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( source ) ) )
         {
-          QDomElement sourceElement = doc.createElement( QStringLiteral( "profileLayerSource" ) );
+          QDomElement sourceElement = doc.createElement( u"profileLayerSource"_s );
           layer.writeXml( sourceElement, rwContext );
           sourcesElement.appendChild( sourceElement );
         }
@@ -908,8 +908,8 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
 
   if ( mSubsectionsSymbol )
   {
-    QDomElement subsectionsElement = doc.createElement( QStringLiteral( "subsections" ) );
-    const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "subsections" ), mSubsectionsSymbol.get(), doc, rwContext );
+    QDomElement subsectionsElement = doc.createElement( u"subsections"_s );
+    const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( u"subsections"_s, mSubsectionsSymbol.get(), doc, rwContext );
     subsectionsElement.appendChild( symbolElement );
     layoutProfileElem.appendChild( subsectionsElement );
   }
@@ -919,13 +919,13 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
 
 bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  const QDomElement plotElement = itemElem.firstChildElement( QStringLiteral( "plot" ) );
+  const QDomElement plotElement = itemElem.firstChildElement( u"plot"_s );
   if ( !plotElement.isNull() )
   {
     mPlot->readXml( plotElement, context );
   }
 
-  const QDomNodeList crsNodeList = itemElem.elementsByTagName( QStringLiteral( "crs" ) );
+  const QDomNodeList crsNodeList = itemElem.elementsByTagName( u"crs"_s );
   QgsCoordinateReferenceSystem crs;
   if ( !crsNodeList.isEmpty() )
   {
@@ -934,9 +934,9 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   }
   mCrs = crs;
 
-  setDistanceUnit( qgsEnumKeyToValue( itemElem.attribute( QStringLiteral( "distanceUnit" ) ), mCrs.mapUnits() ) );
+  setDistanceUnit( qgsEnumKeyToValue( itemElem.attribute( u"distanceUnit"_s ), mCrs.mapUnits() ) );
 
-  const QDomNodeList curveNodeList = itemElem.elementsByTagName( QStringLiteral( "curve" ) );
+  const QDomNodeList curveNodeList = itemElem.elementsByTagName( u"curve"_s );
   if ( !curveNodeList.isEmpty() )
   {
     const QDomElement curveElem = curveNodeList.at( 0 ).toElement();
@@ -951,13 +951,13 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     }
   }
 
-  mTolerance = itemElem.attribute( QStringLiteral( "tolerance" ) ).toDouble();
-  mAtlasDriven = static_cast< bool >( itemElem.attribute( QStringLiteral( "atlasDriven" ), QStringLiteral( "0" ) ).toInt() );
+  mTolerance = itemElem.attribute( u"tolerance"_s ).toDouble();
+  mAtlasDriven = static_cast< bool >( itemElem.attribute( u"atlasDriven"_s, u"0"_s ).toInt() );
 
   {
     mLayers.clear();
-    const QDomElement layersElement = itemElem.firstChildElement( QStringLiteral( "layers" ) );
-    QDomElement layerElement = layersElement.firstChildElement( QStringLiteral( "layer" ) );
+    const QDomElement layersElement = itemElem.firstChildElement( u"layers"_s );
+    QDomElement layerElement = layersElement.firstChildElement( u"layer"_s );
     while ( !layerElement.isNull() )
     {
       QgsMapLayerRef ref;
@@ -965,25 +965,25 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
       ref.resolveWeakly( mLayout->project() );
       mLayers.append( ref );
 
-      layerElement = layerElement.nextSiblingElement( QStringLiteral( "layer" ) );
+      layerElement = layerElement.nextSiblingElement( u"layer"_s );
     }
   }
 
   {
     mSources.clear();
-    const QDomElement sourcesElement = itemElem.firstChildElement( QStringLiteral( "profileSources" ) );
+    const QDomElement sourcesElement = itemElem.firstChildElement( u"profileSources"_s );
     QDomElement sourceElement = sourcesElement.firstChildElement();
     while ( !sourceElement.isNull() )
     {
-      if ( sourceElement.tagName() == QLatin1String( "profileCustomSource" ) )
+      if ( sourceElement.tagName() == "profileCustomSource"_L1 )
       {
-        const QString sourceId = sourceElement.attribute( QStringLiteral( "id" ) );
+        const QString sourceId = sourceElement.attribute( u"id"_s );
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
           mSources.append( profileSource );
         }
       }
-      else if ( sourceElement.tagName() == QLatin1String( "profileLayerSource" ) )
+      else if ( sourceElement.tagName() == "profileLayerSource"_L1 )
       {
         QgsMapLayerRef ref;
         ref.readXml( sourceElement, context );
@@ -998,8 +998,8 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     }
   }
 
-  const QDomElement subsectionsElement = itemElem.firstChildElement( QStringLiteral( "subsections" ) );
-  const QDomElement symbolsElement = subsectionsElement.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement subsectionsElement = itemElem.firstChildElement( u"subsections"_s );
+  const QDomElement symbolsElement = subsectionsElement.firstChildElement( u"symbol"_s );
   if ( !symbolsElement.isNull() )
   {
     std::unique_ptr< QgsLineSymbol > subSectionsSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol >( symbolsElement, context );
@@ -1181,7 +1181,7 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::MilesUSSurvey:
     case Qgis::DistanceUnit::Fathoms:
     case Qgis::DistanceUnit::MetersGermanLegal:
-      mPlot->xAxis().setLabelSuffix( QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) ) );
+      mPlot->xAxis().setLabelSuffix( u" %1"_s.arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) ) );
       break;
 
     case Qgis::DistanceUnit::Degrees:

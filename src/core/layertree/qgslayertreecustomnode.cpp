@@ -51,12 +51,12 @@ void QgsLayerTreeCustomNode::setName( const QString &name )
 
 QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::readXml( const QDomElement &element, const QgsReadWriteContext & ) // cppcheck-suppress duplInheritedMember
 {
-  if ( element.tagName() != QLatin1String( "layer-tree-custom-node" ) )
+  if ( element.tagName() != "layer-tree-custom-node"_L1 )
     return nullptr;
 
-  const QString nodeId = element.attribute( QStringLiteral( "id" ) );
-  const QString name =  element.attribute( QStringLiteral( "name" ) );
-  bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked;
+  const QString nodeId = element.attribute( u"id"_s );
+  const QString name =  element.attribute( u"name"_s );
+  bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( u"checked"_s ) ) != Qt::Unchecked;
 
   QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( nodeId, name, checked );
   customNode->readCommonXml( element );
@@ -67,10 +67,10 @@ QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::readXml( const QDomElement &elem
 void QgsLayerTreeCustomNode::writeXml( QDomElement &parentElement, const QgsReadWriteContext & )
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-custom-node" ) );
-  elem.setAttribute( QStringLiteral( "id" ), mId );
-  elem.setAttribute( QStringLiteral( "name" ), mName );
-  elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
+  QDomElement elem = doc.createElement( u"layer-tree-custom-node"_s );
+  elem.setAttribute( u"id"_s, mId );
+  elem.setAttribute( u"name"_s, mName );
+  elem.setAttribute( u"checked"_s, mChecked ? u"Qt::Checked"_s : u"Qt::Unchecked"_s );
 
   writeCommonXml( elem );
 
@@ -79,7 +79,7 @@ void QgsLayerTreeCustomNode::writeXml( QDomElement &parentElement, const QgsRead
 
 QString QgsLayerTreeCustomNode::dump() const
 {
-  return QStringLiteral( "CUSTOM NODE: %1 checked=%2 id=%3\n" ).arg( mName ).arg( mChecked ).arg( mId );
+  return u"CUSTOM NODE: %1 checked=%2 id=%3\n"_s.arg( mName ).arg( mChecked ).arg( mId );
 }
 
 QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::clone() const

@@ -56,7 +56,7 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   }
   catch ( QgsProviderConnectionException &e )
   {
-    QgsDebugError( QStringLiteral( "Could not retrieve connection native types: %1" ).arg( e.what() ) );
+    QgsDebugError( u"Could not retrieve connection native types: %1"_s.arg( e.what() ) );
   }
   connect( mResetButton, &QPushButton::clicked, this, &QgsDbImportVectorLayerDialog::loadFieldsFromLayer );
   connect( mAddButton, &QPushButton::clicked, this, &QgsDbImportVectorLayerDialog::addField );
@@ -283,7 +283,7 @@ void QgsDbImportVectorLayerDialog::loadFieldsFromLayer()
 void QgsDbImportVectorLayerDialog::addField()
 {
   const int rowCount = mFieldsView->model()->rowCount();
-  mFieldsView->appendField( QgsField( QStringLiteral( "new_field" ) ), QStringLiteral( "NULL" ) );
+  mFieldsView->appendField( QgsField( u"new_field"_s ), u"NULL"_s );
   const QModelIndex index = mFieldsView->model()->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,
@@ -362,13 +362,13 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   // overwrite?
   if ( mChkDropTable->isChecked() )
   {
-    allProviderOptions.insert( QStringLiteral( "overwrite" ), true );
+    allProviderOptions.insert( u"overwrite"_s, true );
   }
 
   // This flag tells to the provider that field types do not need conversion -- we have already
   // explicitly set all fields to provider-specific field types and we do not need to treat
   // them as generic/different provider fields
-  allProviderOptions.insert( QStringLiteral( "skipConvertFields" ), true );
+  allProviderOptions.insert( u"skipConvertFields"_s, true );
 
   QgsVectorLayerExporter::ExportOptions exportOptions;
   if ( mCrsSelector )

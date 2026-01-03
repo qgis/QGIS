@@ -80,34 +80,34 @@ QString QgsHanaExpressionCompiler::sqlFunctionFromFunctionName( const QString &f
 QStringList QgsHanaExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == QLatin1String( "make_datetime" ) )
+  if ( fnName == "make_datetime"_L1 )
   {
-    args = QStringList( QStringLiteral( "TO_TIMESTAMP('%1-%2-%3 %4:%5:%6', 'YYYY-MM-DD HH24:MI:SS')" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"TO_TIMESTAMP('%1-%2-%3 %4:%5:%6', 'YYYY-MM-DD HH24:MI:SS')"_s.arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
   }
-  else if ( fnName == QLatin1String( "make_date" ) )
+  else if ( fnName == "make_date"_L1 )
   {
-    args = QStringList( QStringLiteral( "TO_DATE('%1-%2-%3', 'YYYY-MM-DD')" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"TO_DATE('%1-%2-%3', 'YYYY-MM-DD')"_s.arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
-  else if ( fnName == QLatin1String( "make_time" ) )
+  else if ( fnName == "make_time"_L1 )
   {
-    args = QStringList( QStringLiteral( "TO_TIME('%1:%2:%3', 'HH24:MI:SS') " ).arg( args[0].rightJustified( 2, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"TO_TIME('%1:%2:%3', 'HH24:MI:SS') "_s.arg( args[0].rightJustified( 2, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   return args;
 }
 
 QString QgsHanaExpressionCompiler::castToReal( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
+  return u"CAST((%1) AS REAL)"_s.arg( value );
 }
 
 QString QgsHanaExpressionCompiler::castToInt( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
+  return u"CAST((%1) AS INTEGER)"_s.arg( value );
 }
 
 QString QgsHanaExpressionCompiler::castToText( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS NVARCHAR)" ).arg( value );
+  return u"CAST((%1) AS NVARCHAR)"_s.arg( value );
 }
 
 QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
@@ -128,17 +128,17 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       if ( fd->name().isEmpty() )
         break;
 
-      if ( fd->name() == QLatin1String( "$geometry" ) )
+      if ( fd->name() == "$geometry"_L1 )
       {
         result = quotedIdentifier( mGeometryColumn );
         return Complete;
       }
-      else if ( fd->name().toLower() == QLatin1String( "pi" ) )
+      else if ( fd->name().toLower() == "pi"_L1 )
       {
-        result = QStringLiteral( "3.141592653589793238" );
+        result = u"3.141592653589793238"_s;
         return Complete;
       }
-      else if ( fd->name() == QLatin1String( "make_datetime" ) || fd->name() == QLatin1String( "make_date" ) || fd->name() == QLatin1String( "make_time" ) )
+      else if ( fd->name() == "make_datetime"_L1 || fd->name() == "make_date"_L1 || fd->name() == "make_time"_L1 )
       {
         const auto constList = nodeFunc->args()->list();
         for ( const QgsExpressionNode *ln : constList )
@@ -155,7 +155,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       switch ( n->value().userType() )
       {
         case QMetaType::Type::Bool:
-          result = n->value().toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
+          result = n->value().toBool() ? u"(1=1)"_s : u"(1=0)"_s;
           return Complete;
         default:
           break;
@@ -170,12 +170,12 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         case QgsExpressionNodeUnaryOperator::uoNot:
         {
           Result resRight = compileNode( unaryOp->operand(), result );
-          if ( QLatin1String( "NULL" ) == result.toUpper() )
+          if ( "NULL"_L1 == result.toUpper() )
           {
             result.clear();
             return Fail;
           }
-          result = QStringLiteral( "NOT " ) + result;
+          result = u"NOT "_s + result;
           return resRight;
         }
         case QgsExpressionNodeUnaryOperator::uoMinus:
@@ -195,34 +195,34 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       if ( resLeft == Fail || resRight == Fail )
         return Fail;
       // NULL can not appear on the left, only as part of IS NULL or IS NOT NULL
-      if ( QLatin1String( "NULL" ) == opLeft.toUpper() )
+      if ( "NULL"_L1 == opLeft.toUpper() )
         return Fail;
 
       // NULL can only be on the right for IS and IS NOT
-      if ( QLatin1String( "NULL" ) == opRight.toUpper() && ( binOp->op() != QgsExpressionNodeBinaryOperator::boIs && binOp->op() != QgsExpressionNodeBinaryOperator::boIsNot ) )
+      if ( "NULL"_L1 == opRight.toUpper() && ( binOp->op() != QgsExpressionNodeBinaryOperator::boIs && binOp->op() != QgsExpressionNodeBinaryOperator::boIsNot ) )
         return Fail;
 
       switch ( binOp->op() )
       {
         case QgsExpressionNodeBinaryOperator::boMod:
-          result = QStringLiteral( "MOD(%1,%2)" ).arg( opLeft, opRight );
+          result = u"MOD(%1,%2)"_s.arg( opLeft, opRight );
           compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
           return compileResult;
 
         case QgsExpressionNodeBinaryOperator::boPow:
-          result = QStringLiteral( "POWER(%1,%2)" ).arg( opLeft, opRight );
+          result = u"POWER(%1,%2)"_s.arg( opLeft, opRight );
           compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
           return compileResult;
 
         case QgsExpressionNodeBinaryOperator::boRegexp:
-          result = QStringLiteral( "%1 LIKE_REGEXPR %2" ).arg( opLeft, opRight );
+          result = u"%1 LIKE_REGEXPR %2"_s.arg( opLeft, opRight );
           compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
           return compileResult;
 
         // We only support IS NULL and IS NOT NULL if the operand on the left is a column
         case QgsExpressionNodeBinaryOperator::boIs:
         case QgsExpressionNodeBinaryOperator::boIsNot:
-          if ( QLatin1String( "NULL" ) == opRight.toUpper() )
+          if ( "NULL"_L1 == opRight.toUpper() )
           {
             if ( binOp->opLeft()->nodeType() != QgsExpressionNode::ntColumnRef )
             {
@@ -241,10 +241,10 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
           switch ( binOp->op() )
           {
             case QgsExpressionNodeBinaryOperator::boILike:
-              result = QStringLiteral( "LOWER(%1) LIKE LOWER(%2)" ).arg( opLeft, opRight );
+              result = u"LOWER(%1) LIKE LOWER(%2)"_s.arg( opLeft, opRight );
               return Complete;
             case QgsExpressionNodeBinaryOperator::boNotILike:
-              result = QStringLiteral( "NOT LOWER(%1) LIKE LOWER(%2)" ).arg( opLeft, opRight );
+              result = u"NOT LOWER(%1) LIKE LOWER(%2)"_s.arg( opLeft, opRight );
               return Complete;
             default:
               break;

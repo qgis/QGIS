@@ -30,11 +30,11 @@ QString QgsAbstractBabelFormat::featureTypeToArgument( Qgis::GpsFeatureType type
   switch ( type )
   {
     case Qgis::GpsFeatureType::Waypoint:
-      return QStringLiteral( "-w" );
+      return u"-w"_s;
     case Qgis::GpsFeatureType::Route:
-      return QStringLiteral( "-r" );
+      return u"-r"_s;
     case Qgis::GpsFeatureType::Track:
-      return QStringLiteral( "-t" );
+      return u"-t"_s;
   }
   return QString();
 }
@@ -81,13 +81,13 @@ QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
     const QString &output,
     Qgis::BabelCommandFlags flags ) const
 {
-  return { ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel,
+  return { ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( babel ) : babel,
            featureTypeToArgument( featureType ),
-           QStringLiteral( "-i" ),
+           u"-i"_s,
            name(),
-           QStringLiteral( "-o" ),
-           QStringLiteral( "gpx" ),
-           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( input ) : input,
-           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( output ) : output
+           u"-o"_s,
+           u"gpx"_s,
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( input ) : input,
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? u"\"%1\""_s.arg( output ) : output
          };
 }

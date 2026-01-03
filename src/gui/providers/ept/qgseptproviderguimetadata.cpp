@@ -22,7 +22,7 @@
 ///@cond PRIVATE
 
 QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "ept" ) )
+  : QgsProviderGuiMetadata( u"ept"_s )
 {
 }
 

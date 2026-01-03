@@ -262,7 +262,7 @@
  * If OUTSIDE_CLASS is defined, the enum has been unnested
  * from the class, and it will be used for monkey patching
  * e.g. QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
- * These macros should be removed in QGIS 4
+ * These macros should be removed in QGIS 5
  */
 #define SIP_MONKEYPATCH_SCOPEENUM
 #define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)

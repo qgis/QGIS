@@ -35,7 +35,7 @@ class TestQgsLayoutContext : public QgsTest
 
   public:
     TestQgsLayoutContext()
-      : QgsTest( QStringLiteral( "Layout Context Tests" ) ) {}
+      : QgsTest( u"Layout Context Tests"_s ) {}
 
   private slots:
 
@@ -118,7 +118,7 @@ void TestQgsLayoutContext::layer()
   QVERIFY( !context.layer() );
 
   //test setting/getting layer
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?field=id_a:integer"_s, u"A"_s, u"memory"_s );
   context.setLayer( layer );
   QCOMPARE( context.layer(), layer );
 
@@ -201,25 +201,25 @@ void TestQgsLayoutContext::geometry()
 
   // no feature set
   QVERIFY( context.currentGeometry().isNull() );
-  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) ).isNull() );
 
   // no layer set
   QgsFeature f;
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 144 -38, 145 -39 )" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString( 144 -38, 145 -39 )"_s ) );
   context.setFeature( f );
   QCOMPARE( context.currentGeometry().asWkt(), f.geometry().asWkt() );
-  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) ).isNull() );
 
   //with layer
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326&field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=id_a:integer"_s, u"A"_s, u"memory"_s );
   context.setLayer( layer );
 
   QCOMPARE( context.currentGeometry().asWkt(), f.geometry().asWkt() );
-  QVERIFY( !context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
-  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( -2 ), QStringLiteral( "LineString (2412200 2388600, 2500000 2278000)" ) );
+  QVERIFY( !context.currentGeometry( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) ).isNull() );
+  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) ).asWkt( -2 ), u"LineString (2412200 2388600, 2500000 2278000)"_s );
 
   // should be cached
-  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( -2 ), QStringLiteral( "LineString (2412200 2388600, 2500000 2278000)" ) );
+  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) ).asWkt( -2 ), u"LineString (2412200 2388600, 2500000 2278000)"_s );
 
   // layer crs
   QCOMPARE( context.currentGeometry( layer->crs() ).asWkt(), f.geometry().asWkt() );
@@ -228,7 +228,7 @@ void TestQgsLayoutContext::geometry()
   const QgsFeature f2;
   context.setFeature( f2 );
   QVERIFY( context.currentGeometry().isNull() );
-  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) ).isNull() );
 
   delete layer;
 }

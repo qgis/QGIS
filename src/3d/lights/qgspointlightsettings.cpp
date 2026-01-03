@@ -88,26 +88,26 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
 
 QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  QDomElement elemLight = doc.createElement( QStringLiteral( "point-light" ) );
-  elemLight.setAttribute( QStringLiteral( "x" ), mPosition.x() );
-  elemLight.setAttribute( QStringLiteral( "y" ), mPosition.y() );
-  elemLight.setAttribute( QStringLiteral( "z" ), mPosition.z() );
-  elemLight.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
-  elemLight.setAttribute( QStringLiteral( "intensity" ), mIntensity );
-  elemLight.setAttribute( QStringLiteral( "attenuation-0" ), mConstantAttenuation );
-  elemLight.setAttribute( QStringLiteral( "attenuation-1" ), mLinearAttenuation );
-  elemLight.setAttribute( QStringLiteral( "attenuation-2" ), mQuadraticAttenuation );
+  QDomElement elemLight = doc.createElement( u"point-light"_s );
+  elemLight.setAttribute( u"x"_s, mPosition.x() );
+  elemLight.setAttribute( u"y"_s, mPosition.y() );
+  elemLight.setAttribute( u"z"_s, mPosition.z() );
+  elemLight.setAttribute( u"color"_s, QgsColorUtils::colorToString( mColor ) );
+  elemLight.setAttribute( u"intensity"_s, mIntensity );
+  elemLight.setAttribute( u"attenuation-0"_s, mConstantAttenuation );
+  elemLight.setAttribute( u"attenuation-1"_s, mLinearAttenuation );
+  elemLight.setAttribute( u"attenuation-2"_s, mQuadraticAttenuation );
   return elemLight;
 }
 
 void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  mPosition.set( elem.attribute( QStringLiteral( "x" ) ).toDouble(), elem.attribute( QStringLiteral( "y" ) ).toDouble(), elem.attribute( QStringLiteral( "z" ) ).toDouble() );
-  mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
-  mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
-  mConstantAttenuation = elem.attribute( QStringLiteral( "attenuation-0" ) ).toDouble();
-  mLinearAttenuation = elem.attribute( QStringLiteral( "attenuation-1" ) ).toDouble();
-  mQuadraticAttenuation = elem.attribute( QStringLiteral( "attenuation-2" ) ).toDouble();
+  mPosition.set( elem.attribute( u"x"_s ).toDouble(), elem.attribute( u"y"_s ).toDouble(), elem.attribute( u"z"_s ).toDouble() );
+  mColor = QgsColorUtils::colorFromString( elem.attribute( u"color"_s ) );
+  mIntensity = elem.attribute( u"intensity"_s ).toFloat();
+  mConstantAttenuation = elem.attribute( u"attenuation-0"_s ).toDouble();
+  mLinearAttenuation = elem.attribute( u"attenuation-1"_s ).toDouble();
+  mQuadraticAttenuation = elem.attribute( u"attenuation-2"_s ).toDouble();
 }
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other ) const

@@ -20,25 +20,25 @@
 Qgs3DMapExportSettings::Qgs3DMapExportSettings()
 {
   const QgsSettings settings;
-  mSceneName = settings.value( QStringLiteral( "UI/last3DSceneExportName" ), QStringLiteral( "Scene" ) ).toString();
-  mSceneFolderPath = settings.value( QStringLiteral( "UI/last3DSceneExportDir" ), QDir::homePath() ).toString();
-  mTerrainResolution = settings.value( QStringLiteral( "UI/last3DSceneExportTerrainResolution" ), 128 ).toInt();
-  mTerrainTextureResolution = settings.value( QStringLiteral( "UI/last3DSceneExportTerrainTextureResolution" ), 512 ).toInt();
-  mScale = settings.value( QStringLiteral( "UI/last3DSceneExportModelScale" ), 1.0f ).toFloat();
-  mSmoothEdges = settings.value( QStringLiteral( "UI/last3DSceneExportSmoothEdges" ), false ).toBool();
-  mExportNormals = settings.value( QStringLiteral( "UI/last3DSceneExportExportNormals" ), true ).toBool();
-  mExportTextures = settings.value( QStringLiteral( "UI/last3DSceneExportExportTextures" ), true ).toBool();
+  mSceneName = settings.value( u"UI/last3DSceneExportName"_s, u"Scene"_s ).toString();
+  mSceneFolderPath = settings.value( u"UI/last3DSceneExportDir"_s, QDir::homePath() ).toString();
+  mTerrainResolution = settings.value( u"UI/last3DSceneExportTerrainResolution"_s, 128 ).toInt();
+  mTerrainTextureResolution = settings.value( u"UI/last3DSceneExportTerrainTextureResolution"_s, 512 ).toInt();
+  mScale = settings.value( u"UI/last3DSceneExportModelScale"_s, 1.0f ).toFloat();
+  mSmoothEdges = settings.value( u"UI/last3DSceneExportSmoothEdges"_s, false ).toBool();
+  mExportNormals = settings.value( u"UI/last3DSceneExportExportNormals"_s, true ).toBool();
+  mExportTextures = settings.value( u"UI/last3DSceneExportExportTextures"_s, true ).toBool();
 }
 
 Qgs3DMapExportSettings::~Qgs3DMapExportSettings()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportName" ), mSceneName );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportDir" ), mSceneFolderPath );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportTerrainResolution" ), mTerrainResolution );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportTerrainTextureResolution" ), mTerrainTextureResolution );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportModelScale" ), mScale );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportSmoothEdges" ), mSmoothEdges );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportExportNormals" ), mExportNormals );
-  settings.setValue( QStringLiteral( "UI/last3DSceneExportExportTextures" ), mExportTextures );
+  settings.setValue( u"UI/last3DSceneExportName"_s, mSceneName );
+  settings.setValue( u"UI/last3DSceneExportDir"_s, mSceneFolderPath );
+  settings.setValue( u"UI/last3DSceneExportTerrainResolution"_s, mTerrainResolution );
+  settings.setValue( u"UI/last3DSceneExportTerrainTextureResolution"_s, mTerrainTextureResolution );
+  settings.setValue( u"UI/last3DSceneExportModelScale"_s, mScale );
+  settings.setValue( u"UI/last3DSceneExportSmoothEdges"_s, mSmoothEdges );
+  settings.setValue( u"UI/last3DSceneExportExportNormals"_s, mExportNormals );
+  settings.setValue( u"UI/last3DSceneExportExportTextures"_s, mExportTextures );
 }

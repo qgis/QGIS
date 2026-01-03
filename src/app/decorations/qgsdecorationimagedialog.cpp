@@ -80,11 +80,11 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
 
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setContext( u"gui"_s );
   pbnChangeColor->setColorDialogTitle( tr( "Select SVG Image Fill Color" ) );
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
-  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setContext( u"gui"_s );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select SVG Image Outline Color" ) );
   connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawImage(); } );
   connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawImage(); } );
@@ -94,7 +94,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
 
 void QgsDecorationImageDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#image-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#image-decoration"_s );
 }
 
 void QgsDecorationImageDialog::buttonBox_accepted()
@@ -259,7 +259,7 @@ void QgsDecorationImageDialog::drawImage()
     px.fill( Qt::transparent );
     QPainter painter;
     painter.begin( &px );
-    const QFont font( QStringLiteral( "time" ), 12, QFont::Bold );
+    const QFont font( u"time"_s, 12, QFont::Bold );
     painter.setFont( font );
     painter.setPen( Qt::red );
     painter.drawText( 10, 20, tr( "Pixmap not found" ) );

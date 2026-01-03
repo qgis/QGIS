@@ -218,7 +218,7 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
   const QString quotedTableName { QgsSqliteUtils::quotedValue( tableName ) };
 
   int resultCode = 0;
-  sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
+  sqlite3_statement_unique_ptr stmt { dsPtr.prepare( u"SELECT seq FROM sqlite_sequence WHERE name = %1"_s
                                       .arg( quotedTableName ), resultCode )};
   if ( resultCode == SQLITE_OK && stmt.step() )
   {
@@ -226,7 +226,7 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
     // Try to create the sequence in case this is an empty layer
     if ( sqlite3_column_count( stmt.get() ) == 0 )
     {
-      dsPtr.exec( QStringLiteral( "INSERT INTO sqlite_sequence (name, seq) VALUES (%1, 1)" ).arg( quotedTableName ), errorMessage );
+      dsPtr.exec( u"INSERT INTO sqlite_sequence (name, seq) VALUES (%1, 1)"_s.arg( quotedTableName ), errorMessage );
       if ( errorMessage.isEmpty() )
       {
         result = 1;
@@ -238,7 +238,7 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
     }
     else // increment
     {
-      if ( dsPtr.exec( QStringLiteral( "UPDATE sqlite_sequence SET seq = %1 WHERE name = %2" )
+      if ( dsPtr.exec( u"UPDATE sqlite_sequence SET seq = %1 WHERE name = %2"_s
                        .arg( QString::number( ++result ), quotedTableName ),
                        errorMessage ) != SQLITE_OK )
       {
@@ -256,24 +256,24 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
 QString QgsSqliteUtils::quotedString( const QString &value )
 {
   if ( value.isNull() )
-    return QStringLiteral( "NULL" );
+    return u"NULL"_s;
 
   QString v = value;
-  v.replace( '\'', QLatin1String( "''" ) );
+  v.replace( '\'', "''"_L1 );
   return v.prepend( '\'' ).append( '\'' );
 }
 
 QString QgsSqliteUtils::quotedIdentifier( const QString &identifier )
 {
   QString id( identifier );
-  id.replace( '\"', QLatin1String( "\"\"" ) );
+  id.replace( '\"', "\"\""_L1 );
   return id.prepend( '\"' ).append( '\"' );
 }
 
 QString QgsSqliteUtils::quotedValue( const QVariant &value )
 {
   if ( QgsVariantUtils::isNull( value ) )
-    return QStringLiteral( "NULL" );
+    return u"NULL"_s;
 
   switch ( value.userType() )
   {
@@ -284,7 +284,7 @@ QString QgsSqliteUtils::quotedValue( const QVariant &value )
 
     case QMetaType::Type::Bool:
       //SQLite has no boolean literals
-      return value.toBool() ? QStringLiteral( "1" ) : QStringLiteral( "0" );
+      return value.toBool() ? u"1"_s : u"0"_s;
 
     default:
     case QMetaType::Type::QString:
@@ -293,52 +293,52 @@ QString QgsSqliteUtils::quotedValue( const QVariant &value )
       // """A string constant is formed by enclosing the string in single quotes (').
       // A single quote within the string can be encoded by putting two single quotes
       // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
-      return v.replace( '\'', QLatin1String( "''" ) ).prepend( '\'' ).append( '\'' );
+      return v.replace( '\'', "''"_L1 ).prepend( '\'' ).append( '\'' );
   }
 }
 
 QStringList QgsSqliteUtils::systemTables()
 {
-  return QStringList() << QStringLiteral( "ElementaryGeometries" ) << QStringLiteral( "SpatialIndex" )
-         << QStringLiteral( "geom_cols_ref_sys" ) << QStringLiteral( "geometry_columns" )
-         << QStringLiteral( "geometry_columns_auth" ) << QStringLiteral( "geometry_columns_field_infos" )
-         << QStringLiteral( "geometry_columns_statistics" ) << QStringLiteral( "geometry_columns_time" )
-         << QStringLiteral( "layer_params" ) << QStringLiteral( "layer_statistics" ) << QStringLiteral( "layer_sub_classes" )
-         << QStringLiteral( "layer_table_layout" ) << QStringLiteral( "pattern_bitmaps" ) << QStringLiteral( "project_defs" )
-         << QStringLiteral( "raster_pyramids" ) << QStringLiteral( "spatial_ref_sys" ) << QStringLiteral( "spatial_ref_sys_all" )
-         << QStringLiteral( "spatial_ref_sys_aux" ) << QStringLiteral( "spatialite_history" ) << QStringLiteral( "sql_statements_log" )
-         << QStringLiteral( "sqlite_sequence" ) << QStringLiteral( "sqlite_stat1" ) << QStringLiteral( "sqlite_stat2" )
-         << QStringLiteral( "symbol_bitmaps" ) << QStringLiteral( "tableprefix_metadata" ) << QStringLiteral( "tableprefix_rasters" )
-         << QStringLiteral( "vector_layers" ) << QStringLiteral( "vector_layers_auth" ) << QStringLiteral( "vector_layers_field_infos" )
-         << QStringLiteral( "vector_layers_statistics" ) << QStringLiteral( "views_geometry_columns" )
-         << QStringLiteral( "views_geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns_field_infos" )
-         << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "views_layer_statistics" )
-         << QStringLiteral( "virts_geometry_columns" ) << QStringLiteral( "virts_geometry_columns_auth" )
-         << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
-         << QStringLiteral( "virts_layer_statistics" )
+  return QStringList() << u"ElementaryGeometries"_s << u"SpatialIndex"_s
+         << u"geom_cols_ref_sys"_s << u"geometry_columns"_s
+         << u"geometry_columns_auth"_s << u"geometry_columns_field_infos"_s
+         << u"geometry_columns_statistics"_s << u"geometry_columns_time"_s
+         << u"layer_params"_s << u"layer_statistics"_s << u"layer_sub_classes"_s
+         << u"layer_table_layout"_s << u"pattern_bitmaps"_s << u"project_defs"_s
+         << u"raster_pyramids"_s << u"spatial_ref_sys"_s << u"spatial_ref_sys_all"_s
+         << u"spatial_ref_sys_aux"_s << u"spatialite_history"_s << u"sql_statements_log"_s
+         << u"sqlite_sequence"_s << u"sqlite_stat1"_s << u"sqlite_stat2"_s
+         << u"symbol_bitmaps"_s << u"tableprefix_metadata"_s << u"tableprefix_rasters"_s
+         << u"vector_layers"_s << u"vector_layers_auth"_s << u"vector_layers_field_infos"_s
+         << u"vector_layers_statistics"_s << u"views_geometry_columns"_s
+         << u"views_geometry_columns_auth"_s << u"views_geometry_columns_field_infos"_s
+         << u"views_geometry_columns_statistics"_s << u"views_layer_statistics"_s
+         << u"virts_geometry_columns"_s << u"virts_geometry_columns_auth"_s
+         << u"virts_geometry_columns_field_infos"_s << u"virts_geometry_columns_statistics"_s
+         << u"virts_layer_statistics"_s
          // Additional tables to be hidden
-         << QStringLiteral( "all_buckets_objects" ) << QStringLiteral( "byfoot" ) << QStringLiteral( "byfoot_data" )
-         << QStringLiteral( "data_licenses" ) << QStringLiteral( "ISO_metadata" ) << QStringLiteral( "ISO_metadata_reference" )
-         << QStringLiteral( "ISO_metadata_view" ) << QStringLiteral( "KNN2" ) << QStringLiteral( "KNN" )
-         << QStringLiteral( "networks" ) << QStringLiteral( "raster_coverages" ) << QStringLiteral( "raster_coverages_keyword" )
-         << QStringLiteral( "raster_coverages_ref_sys" ) << QStringLiteral( "raster_coverages_srid" )
-         << QStringLiteral( "rl2map_configurations" ) << QStringLiteral( "rl2map_configurations_view" )
+         << u"all_buckets_objects"_s << u"byfoot"_s << u"byfoot_data"_s
+         << u"data_licenses"_s << u"ISO_metadata"_s << u"ISO_metadata_reference"_s
+         << u"ISO_metadata_view"_s << u"KNN2"_s << u"KNN"_s
+         << u"networks"_s << u"raster_coverages"_s << u"raster_coverages_keyword"_s
+         << u"raster_coverages_ref_sys"_s << u"raster_coverages_srid"_s
+         << u"rl2map_configurations"_s << u"rl2map_configurations_view"_s
          // SE_ (Styled Elements)
-         << QStringLiteral( "SE_external_graphics" ) << QStringLiteral( "SE_external_graphics_view" )
-         << QStringLiteral( "SE_fonts" ) << QStringLiteral( "SE_fonts_view" ) << QStringLiteral( "SE_group_styles" )
-         << QStringLiteral( "SE_group_styles_view" ) << QStringLiteral( "SE_raster_styled_layers" )
-         << QStringLiteral( "SE_raster_styled_layers_view" ) << QStringLiteral( "SE_raster_styles" )
-         << QStringLiteral( "SE_raster_styles_view" ) << QStringLiteral( "SE_styled_group_refs" )
-         << QStringLiteral( "SE_styled_group_styles" ) << QStringLiteral( "SE_styled_groups" )
-         << QStringLiteral( "SE_styled_groups_view" ) << QStringLiteral( "SE_vector_styled_layers" )
-         << QStringLiteral( "SE_vector_styled_layers_view" ) << QStringLiteral( "SE_vector_styles" )
-         << QStringLiteral( "SE_vector_styles_view" )
-         << QStringLiteral( "sqlite_stat3" ) << QStringLiteral( "stored_procedures" ) << QStringLiteral( "stored_variables" )
-         << QStringLiteral( "topologies" ) << QStringLiteral( "vector_coverages" ) << QStringLiteral( "vector_coverages_keyword" )
-         << QStringLiteral( "vector_coverages_ref_sys" ) << QStringLiteral( "vector_coverages_srid" )
+         << u"SE_external_graphics"_s << u"SE_external_graphics_view"_s
+         << u"SE_fonts"_s << u"SE_fonts_view"_s << u"SE_group_styles"_s
+         << u"SE_group_styles_view"_s << u"SE_raster_styled_layers"_s
+         << u"SE_raster_styled_layers_view"_s << u"SE_raster_styles"_s
+         << u"SE_raster_styles_view"_s << u"SE_styled_group_refs"_s
+         << u"SE_styled_group_styles"_s << u"SE_styled_groups"_s
+         << u"SE_styled_groups_view"_s << u"SE_vector_styled_layers"_s
+         << u"SE_vector_styled_layers_view"_s << u"SE_vector_styles"_s
+         << u"SE_vector_styles_view"_s
+         << u"sqlite_stat3"_s << u"stored_procedures"_s << u"stored_variables"_s
+         << u"topologies"_s << u"vector_coverages"_s << u"vector_coverages_keyword"_s
+         << u"vector_coverages_ref_sys"_s << u"vector_coverages_srid"_s
          // WMS
-         << QStringLiteral( "wms_getcapabilities" ) << QStringLiteral( "wms_getmap" ) << QStringLiteral( "wms_ref_sys" )
-         << QStringLiteral( "wms_settings" );
+         << u"wms_getcapabilities"_s << u"wms_getmap"_s << u"wms_ref_sys"_s
+         << u"wms_settings"_s;
 }
 
 QString qgs_sqlite3_mprintf( const char *format, ... )

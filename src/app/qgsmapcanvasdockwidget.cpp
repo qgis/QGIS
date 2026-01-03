@@ -84,7 +84,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   QToolButton *btnMapThemes = new QToolButton;
   btnMapThemes->setAutoRaise( true );
   btnMapThemes->setToolTip( tr( "Set View Theme" ) );
-  btnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  btnMapThemes->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
   btnMapThemes->setPopupMode( QToolButton::InstantPopup );
   btnMapThemes->setMenu( mMenu );
   mToolbar->addWidget( btnMapThemes );
@@ -95,7 +95,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsButton->setToolTip( tr( "View Settings" ) );
   settingsButton->setMenu( settingsMenu );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mToolbar->addWidget( settingsButton );
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
@@ -612,10 +612,10 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   const QgsSettings settings;
   const int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   const int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  const int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  const int defaultFactor = 100 * settings.value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
 
   mMagnifierWidget = new QgsDoubleSpinBox();
-  mMagnifierWidget->setSuffix( QStringLiteral( "%" ) );
+  mMagnifierWidget->setSuffix( u"%"_s );
   mMagnifierWidget->setKeyboardTracking( false );
   mMagnifierWidget->setDecimals( 0 );
   mMagnifierWidget->setRange( minimumFactor, maximumFactor );

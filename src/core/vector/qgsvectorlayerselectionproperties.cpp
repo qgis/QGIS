@@ -32,15 +32,15 @@ QgsVectorLayerSelectionProperties::~QgsVectorLayerSelectionProperties() = defaul
 
 QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  QDomElement element = document.createElement( QStringLiteral( "selection" ) );
+  QDomElement element = document.createElement( u"selection"_s );
 
-  element.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mSelectionRenderingMode ) );
+  element.setAttribute( u"mode"_s, qgsEnumValueToKey( mSelectionRenderingMode ) );
 
-  QgsColorUtils::writeXml( mSelectionColor, QStringLiteral( "selectionColor" ), document, element, context );
+  QgsColorUtils::writeXml( mSelectionColor, u"selectionColor"_s, document, element, context );
 
   if ( mSelectionSymbol )
   {
-    QDomElement selectionSymbolElement = document.createElement( QStringLiteral( "selectionSymbol" ) );
+    QDomElement selectionSymbolElement = document.createElement( u"selectionSymbol"_s );
     selectionSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mSelectionSymbol.get(), document, context ) );
     element.appendChild( selectionSymbolElement );
   }
@@ -51,15 +51,15 @@ QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElem
 
 bool QgsVectorLayerSelectionProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement selectionElement = element.firstChildElement( QStringLiteral( "selection" ) ).toElement();
+  const QDomElement selectionElement = element.firstChildElement( u"selection"_s ).toElement();
   if ( selectionElement.isNull() )
     return false;
 
-  mSelectionRenderingMode = qgsEnumKeyToValue( selectionElement.attribute( QStringLiteral( "mode" ) ), Qgis::SelectionRenderingMode::Default );
-  mSelectionColor = QgsColorUtils::readXml( selectionElement, QStringLiteral( "selectionColor" ), context );
+  mSelectionRenderingMode = qgsEnumKeyToValue( selectionElement.attribute( u"mode"_s ), Qgis::SelectionRenderingMode::Default );
+  mSelectionColor = QgsColorUtils::readXml( selectionElement, u"selectionColor"_s, context );
 
   {
-    const QDomElement selectionSymbolElement = selectionElement.firstChildElement( QStringLiteral( "selectionSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+    const QDomElement selectionSymbolElement = selectionElement.firstChildElement( u"selectionSymbol"_s ).firstChildElement( u"symbol"_s );
     mSelectionSymbol = QgsSymbolLayerUtils::loadSymbol( selectionSymbolElement, context );
   }
   return true;

@@ -64,13 +64,13 @@ QString QgsProviderUtils::suggestLayerNameFromFilePath( const QString &path )
   QString name = info.completeBaseName();
 
   // special handling for .adf files -- use directory as base name, not the unhelpful .adf file name
-  if ( info.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
+  if ( info.suffix().compare( "adf"_L1, Qt::CaseInsensitive ) == 0 )
   {
     const QString dirName = info.path();
     name = QFileInfo( dirName ).completeBaseName();
   }
   // special handling for ept.json files -- use directory as base name
-  else if ( info.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  else if ( info.fileName().compare( "ept.json"_L1, Qt::CaseInsensitive ) == 0 )
   {
     const QString dirName = info.path();
     name = QFileInfo( dirName ).completeBaseName();

@@ -128,7 +128,7 @@ void QgsBrowserDockWidget::refresh()
 
 bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
 {
-  QgsDebugMsgLevel( QStringLiteral( "rowCount() = %1" ).arg( mWidget->mModel->rowCount( mWidget->mProxyModel->mapToSource( index ) ) ), 2 );
+  QgsDebugMsgLevel( u"rowCount() = %1"_s.arg( mWidget->mModel->rowCount( mWidget->mProxyModel->mapToSource( index ) ) ), 2 );
   QgsDataItem *item = mWidget->mModel->dataItem( mWidget->mProxyModel->mapToSource( index ) );
 
   if ( item && item->type() == Qgis::BrowserItemType::Project )
@@ -137,7 +137,7 @@ bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      emit openFile( projectItem->path(), QStringLiteral( "project" ) );
+      emit openFile( projectItem->path(), u"project"_s );
       QApplication::restoreOverrideCursor();
     }
     return true;
@@ -181,7 +181,7 @@ void QgsBrowserDockWidget::toggleFastScan()
   if ( item->type() == Qgis::BrowserItemType::Directory )
   {
     QgsSettings settings;
-    QStringList fastScanDirs = settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ), QStringList() ).toStringList();
+    QStringList fastScanDirs = settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList();
     const int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
     {
@@ -191,7 +191,7 @@ void QgsBrowserDockWidget::toggleFastScan()
     {
       fastScanDirs << item->path();
     }
-    settings.setValue( QStringLiteral( "qgis/scanItemsFastScanUris" ), fastScanDirs );
+    settings.setValue( u"qgis/scanItemsFastScanUris"_s, fastScanDirs );
   }
 }
 

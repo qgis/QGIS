@@ -24,7 +24,7 @@
 
 QString QgsPdalConvertFormatAlgorithm::name() const
 {
-  return QStringLiteral( "convertformat" );
+  return u"convertformat"_s;
 }
 
 QString QgsPdalConvertFormatAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalConvertFormatAlgorithm::group() const
 
 QString QgsPdalConvertFormatAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointcloudconversion" );
+  return u"pointcloudconversion"_s;
 }
 
 QStringList QgsPdalConvertFormatAlgorithm::tags() const
@@ -64,24 +64,24 @@ QgsPdalConvertFormatAlgorithm *QgsPdalConvertFormatAlgorithm::createInstance() c
 
 void QgsPdalConvertFormatAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Converted" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Converted" ) ) );
 }
 
 QStringList QgsPdalConvertFormatAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ) };
+  QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
   applyThreadsParameter( args, context );
   return args;

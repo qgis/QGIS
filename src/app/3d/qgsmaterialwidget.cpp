@@ -59,7 +59,7 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
   if ( prevIndex == -1 )
   {
     // if phong material type is available, default to it (for now?)
-    const int phongIndex = mMaterialTypeComboBox->findData( QStringLiteral( "phong" ) );
+    const int phongIndex = mMaterialTypeComboBox->findData( u"phong"_s );
     if ( phongIndex >= 0 )
       mMaterialTypeComboBox->setCurrentIndex( phongIndex );
     else
@@ -112,7 +112,7 @@ void QgsMaterialWidget::materialTypeChanged()
       if ( currentSettings )
       {
         QDomDocument doc;
-        QDomElement tempElem = doc.createElement( QStringLiteral( "temp" ) );
+        QDomElement tempElem = doc.createElement( u"temp"_s );
         currentSettings->writeXml( tempElem, QgsReadWriteContext() );
         newMaterial->readXml( tempElem, QgsReadWriteContext() );
       }

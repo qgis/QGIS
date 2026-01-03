@@ -37,7 +37,7 @@ class QgsExtentToLayerAlgorithm : public QgsProcessingAlgorithm
     QString displayName() const override { return QObject::tr( "Create layer from extent" ); }
     QStringList tags() const override { return QObject::tr( "extent,layer,polygon,create,new" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector creation" ); }
-    QString groupId() const override { return QStringLiteral( "vectorcreation" ); }
+    QString groupId() const override { return u"vectorcreation"_s; }
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsExtentToLayerAlgorithm *createInstance() const override SIP_FACTORY;

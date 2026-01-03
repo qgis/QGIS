@@ -33,21 +33,12 @@
 #include "qgstessellator.h"
 #include "qgsvertexid.h"
 
-#include <Qt3DCore/QEntity>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-#else
+#include <QColor>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
-#endif
-
 #include <Qt3DRender/QGeometryRenderer>
-#include <QColor>
-
 
 /// @cond PRIVATE
 
@@ -241,7 +232,7 @@ void QgsRubberBand3D::setColor( const QColor color )
     mMarkerSymbol->setColor( color );
   }
 
-  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == QLatin1String( "SimpleMarker" ) && !mOutlineColor.value() )
+  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == "SimpleMarker"_L1 && !mOutlineColor.value() )
   {
     mMarkerSymbol->symbolLayer( 0 )->setStrokeColor( color );
   }
@@ -273,7 +264,7 @@ void QgsRubberBand3D::setOutlineColor( const QColor color )
 {
   mOutlineColor = color;
 
-  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == QLatin1String( "SimpleMarker" ) )
+  if ( mMarkerSymbol->symbolLayerCount() > 0 && mMarkerSymbol->symbolLayer( 0 )->layerType() == "SimpleMarker"_L1 )
   {
     mMarkerSymbol->symbolLayer( 0 )->setStrokeColor( color );
   }
@@ -287,13 +278,13 @@ void QgsRubberBand3D::setMarkerType( const MarkerType marker )
   const bool lineOrPolygon = mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon;
 
   const QVariantMap props {
-    { QStringLiteral( "color" ), lineOrPolygon ? mColor.lighter( 130 ).name() : mColor.name() },
-    { QStringLiteral( "size_unit" ), QStringLiteral( "pixel" ) },
-    { QStringLiteral( "size" ), QString::number( lineOrPolygon ? mWidth * 3.f : mWidth ) },
-    { QStringLiteral( "outline_color" ), mOutlineColor.value() ? mOutlineColor.name() : mColor.name() },
-    { QStringLiteral( "outline_style" ), QgsSymbolLayerUtils::encodePenStyle( mMarkerOutlineStyle ) },
-    { QStringLiteral( "outline_width" ), QString::number( lineOrPolygon ? 0.5 : 1 ) },
-    { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
+    { u"color"_s, lineOrPolygon ? mColor.lighter( 130 ).name() : mColor.name() },
+    { u"size_unit"_s, u"pixel"_s },
+    { u"size"_s, QString::number( lineOrPolygon ? mWidth * 3.f : mWidth ) },
+    { u"outline_color"_s, mOutlineColor.value() ? mOutlineColor.name() : mColor.name() },
+    { u"outline_style"_s, QgsSymbolLayerUtils::encodePenStyle( mMarkerOutlineStyle ) },
+    { u"outline_width"_s, QString::number( lineOrPolygon ? 0.5 : 1 ) },
+    { u"name"_s, mMarkerType == Square ? u"square"_s : u"circle"_s }
   };
 
   mMarkerSymbol = QgsMarkerSymbol::createSimple( props );

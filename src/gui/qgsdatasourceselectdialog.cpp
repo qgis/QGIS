@@ -116,7 +116,7 @@ QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
 
   mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
-  if ( QgsSettings().value( QStringLiteral( "datasourceSelectFilterVisible" ), false, QgsSettings::Section::Gui ).toBool() )
+  if ( QgsSettings().value( u"datasourceSelectFilterVisible"_s, false, QgsSettings::Section::Gui ).toBool() )
   {
     mActionShowFilter->trigger();
   }
@@ -129,7 +129,7 @@ QgsDataSourceSelectWidget::~QgsDataSourceSelectWidget() = default;
 void QgsDataSourceSelectWidget::showEvent( QShowEvent *e )
 {
   QgsPanelWidget::showEvent( e );
-  const QString lastSelectedPath( QgsSettings().value( QStringLiteral( "datasourceSelectLastSelectedItem" ), QString(), QgsSettings::Section::Gui ).toString() );
+  const QString lastSelectedPath( QgsSettings().value( u"datasourceSelectLastSelectedItem"_s, QString(), QgsSettings::Section::Gui ).toString() );
   if ( !lastSelectedPath.isEmpty() )
   {
     const QModelIndexList items = mBrowserProxyModel.match(
@@ -205,7 +205,7 @@ void QgsDataSourceSelectWidget::dropEvent( QDropEvent *event )
 
 void QgsDataSourceSelectWidget::showFilterWidget( bool visible )
 {
-  QgsSettings().setValue( QStringLiteral( "datasourceSelectFilterVisible" ), visible, QgsSettings::Section::Gui );
+  QgsSettings().setValue( u"datasourceSelectFilterVisible"_s, visible, QgsSettings::Section::Gui );
   mWidgetFilter->setVisible( visible );
   if ( !visible )
   {
@@ -271,7 +271,7 @@ void QgsDataSourceSelectWidget::refreshModel( const QModelIndex &index )
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalid item" ), 2 );
+    QgsDebugMsgLevel( u"invalid item"_s, 2 );
   }
 
   if ( item && ( item->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
@@ -351,7 +351,7 @@ void QgsDataSourceSelectWidget::onLayerSelected( const QModelIndex &index )
         isLayerCompatible = true;
         mUri = layerItem->mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : layerItem->mimeUris().first();
         // Store last viewed item
-        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ), mBrowserProxyModel.data( index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QgsSettings::Section::Gui );
+        QgsSettings().setValue( u"datasourceSelectLastSelectedItem"_s, mBrowserProxyModel.data( index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QgsSettings::Section::Gui );
       }
     }
   }
@@ -374,7 +374,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browse
   : QDialog( parent )
 {
   setWindowTitle( tr( "Select a Data Source" ) );
-  setObjectName( QStringLiteral( "QgsDataSourceSelectDialog" ) );
+  setObjectName( u"QgsDataSourceSelectDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
   mWidget = new QgsDataSourceSelectWidget( browserModel, setFilterByLayerType, layerType );

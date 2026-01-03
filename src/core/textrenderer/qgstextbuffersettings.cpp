@@ -259,10 +259,10 @@ QSet<QString> QgsTextBufferSettings::referencedFields( const QgsRenderContext & 
 void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 {
   // text buffer
-  const double bufSize = layer->customProperty( QStringLiteral( "labeling/bufferSize" ), QVariant( 0.0 ) ).toDouble();
+  const double bufSize = layer->customProperty( u"labeling/bufferSize"_s, QVariant( 0.0 ) ).toDouble();
 
   // fix for buffer being keyed off of just its size in the past (<2.0)
-  const QVariant drawBuffer = layer->customProperty( QStringLiteral( "labeling/bufferDraw" ), QVariant() );
+  const QVariant drawBuffer = layer->customProperty( u"labeling/bufferDraw"_s, QVariant() );
   if ( drawBuffer.isValid() )
   {
     d->enabled = drawBuffer.toBool();
@@ -279,48 +279,48 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     d->enabled = false;
   }
 
-  if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeUnits" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/bufferSizeUnits"_s ).toString().isEmpty() )
   {
-    const bool bufferSizeInMapUnits = layer->customProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ) ).toBool();
+    const bool bufferSizeInMapUnits = layer->customProperty( u"labeling/bufferSizeInMapUnits"_s ).toBool();
     d->sizeUnit = bufferSizeInMapUnits ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   }
   else
   {
-    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( layer->customProperty( QStringLiteral( "labeling/bufferSizeUnits" ) ).toString() );
+    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( layer->customProperty( u"labeling/bufferSizeUnits"_s ).toString() );
   }
 
-  if ( layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/bufferSizeMapUnitScale"_s ).toString().isEmpty() )
   {
     //fallback to older property
-    const double oldMin = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMinScale" ), 0.0 ).toDouble();
+    const double oldMin = layer->customProperty( u"labeling/bufferSizeMapUnitMinScale"_s, 0.0 ).toDouble();
     d->sizeMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    const double oldMax = layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitMaxScale" ), 0.0 ).toDouble();
+    const double oldMax = layer->customProperty( u"labeling/bufferSizeMapUnitMaxScale"_s, 0.0 ).toDouble();
     d->sizeMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
   {
-    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ) ).toString() );
+    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/bufferSizeMapUnitScale"_s ).toString() );
   }
-  d->color = QgsTextRendererUtils::readColor( layer, QStringLiteral( "labeling/bufferColor" ), Qt::white, false );
-  if ( layer->customProperty( QStringLiteral( "labeling/bufferOpacity" ) ).toString().isEmpty() )
+  d->color = QgsTextRendererUtils::readColor( layer, u"labeling/bufferColor"_s, Qt::white, false );
+  if ( layer->customProperty( u"labeling/bufferOpacity"_s ).toString().isEmpty() )
   {
-    d->opacity = ( 1 - layer->customProperty( QStringLiteral( "labeling/bufferTransp" ) ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - layer->customProperty( u"labeling/bufferTransp"_s ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( layer->customProperty( QStringLiteral( "labeling/bufferOpacity" ) ).toDouble() );
+    d->opacity = ( layer->customProperty( u"labeling/bufferOpacity"_s ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/bufferBlendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/bufferJoinStyle" ), QVariant( Qt::RoundJoin ) ).toUInt() );
+                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/bufferBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( u"labeling/bufferJoinStyle"_s, QVariant( Qt::RoundJoin ) ).toUInt() );
 
-  d->fillBufferInterior = !layer->customProperty( QStringLiteral( "labeling/bufferNoFill" ), QVariant( false ) ).toBool();
+  d->fillBufferInterior = !layer->customProperty( u"labeling/bufferNoFill"_s, QVariant( false ) ).toBool();
 
-  if ( layer->customProperty( QStringLiteral( "labeling/bufferEffect" ) ).isValid() )
+  if ( layer->customProperty( u"labeling/bufferEffect"_s ).isValid() )
   {
-    QDomDocument doc( QStringLiteral( "effect" ) );
-    doc.setContent( layer->customProperty( QStringLiteral( "labeling/bufferEffect" ) ).toString() );
-    const QDomElement effectElem = doc.firstChildElement( QStringLiteral( "effect" ) ).firstChildElement( QStringLiteral( "effect" ) );
+    QDomDocument doc( u"effect"_s );
+    doc.setContent( layer->customProperty( u"labeling/bufferEffect"_s ).toString() );
+    const QDomElement effectElem = doc.firstChildElement( u"effect"_s ).firstChildElement( u"effect"_s );
     setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
   }
   else
@@ -329,11 +329,11 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 
 void QgsTextBufferSettings::readXml( const QDomElement &elem )
 {
-  const QDomElement textBufferElem = elem.firstChildElement( QStringLiteral( "text-buffer" ) );
-  const double bufSize = textBufferElem.attribute( QStringLiteral( "bufferSize" ), QStringLiteral( "0" ) ).toDouble();
+  const QDomElement textBufferElem = elem.firstChildElement( u"text-buffer"_s );
+  const double bufSize = textBufferElem.attribute( u"bufferSize"_s, u"0"_s ).toDouble();
 
   // fix for buffer being keyed off of just its size in the past (<2.0)
-  const QVariant drawBuffer = textBufferElem.attribute( QStringLiteral( "bufferDraw" ) );
+  const QVariant drawBuffer = textBufferElem.attribute( u"bufferDraw"_s );
   if ( drawBuffer.isValid() )
   {
     d->enabled = drawBuffer.toBool();
@@ -350,44 +350,44 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
     d->enabled = false;
   }
 
-  if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeUnits" ) ) )
+  if ( !textBufferElem.hasAttribute( u"bufferSizeUnits"_s ) )
   {
-    const bool bufferSizeInMapUnits = textBufferElem.attribute( QStringLiteral( "bufferSizeInMapUnits" ) ).toInt();
+    const bool bufferSizeInMapUnits = textBufferElem.attribute( u"bufferSizeInMapUnits"_s ).toInt();
     d->sizeUnit = bufferSizeInMapUnits ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   }
   else
   {
-    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textBufferElem.attribute( QStringLiteral( "bufferSizeUnits" ) ) );
+    d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textBufferElem.attribute( u"bufferSizeUnits"_s ) );
   }
 
-  if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferSizeMapUnitScale" ) ) )
+  if ( !textBufferElem.hasAttribute( u"bufferSizeMapUnitScale"_s ) )
   {
     //fallback to older property
-    const double oldMin = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMin = textBufferElem.attribute( u"bufferSizeMapUnitMinScale"_s, u"0"_s ).toDouble();
     d->sizeMapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
-    const double oldMax = textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    const double oldMax = textBufferElem.attribute( u"bufferSizeMapUnitMaxScale"_s, u"0"_s ).toDouble();
     d->sizeMapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
   }
   else
   {
-    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitScale" ) ) );
+    d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textBufferElem.attribute( u"bufferSizeMapUnitScale"_s ) );
   }
-  d->color = QgsColorUtils::colorFromString( textBufferElem.attribute( QStringLiteral( "bufferColor" ), QgsColorUtils::colorToString( Qt::white ) ) );
+  d->color = QgsColorUtils::colorFromString( textBufferElem.attribute( u"bufferColor"_s, QgsColorUtils::colorToString( Qt::white ) ) );
 
-  if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferOpacity" ) ) )
+  if ( !textBufferElem.hasAttribute( u"bufferOpacity"_s ) )
   {
-    d->opacity = ( 1 - textBufferElem.attribute( QStringLiteral( "bufferTransp" ) ).toInt() / 100.0 ); //0 -100
+    d->opacity = ( 1 - textBufferElem.attribute( u"bufferTransp"_s ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = ( textBufferElem.attribute( QStringLiteral( "bufferOpacity" ) ).toDouble() );
+    d->opacity = ( textBufferElem.attribute( u"bufferOpacity"_s ).toDouble() );
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
-  d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
-  const QDomElement effectElem = textBufferElem.firstChildElement( QStringLiteral( "effect" ) );
+                   static_cast< Qgis::BlendMode >( textBufferElem.attribute( u"bufferBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( u"bufferJoinStyle"_s, QString::number( Qt::RoundJoin ) ).toUInt() );
+  d->fillBufferInterior = !textBufferElem.attribute( u"bufferNoFill"_s, u"0"_s ).toInt();
+  const QDomElement effectElem = textBufferElem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
     setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
   else
@@ -397,16 +397,16 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
 QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
 {
   // text buffer
-  QDomElement textBufferElem = doc.createElement( QStringLiteral( "text-buffer" ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferDraw" ), d->enabled );
-  textBufferElem.setAttribute( QStringLiteral( "bufferSize" ), d->size );
-  textBufferElem.setAttribute( QStringLiteral( "bufferSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferColor" ), QgsColorUtils::colorToString( d->color ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferNoFill" ), !d->fillBufferInterior );
-  textBufferElem.setAttribute( QStringLiteral( "bufferOpacity" ), d->opacity );
-  textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
+  QDomElement textBufferElem = doc.createElement( u"text-buffer"_s );
+  textBufferElem.setAttribute( u"bufferDraw"_s, d->enabled );
+  textBufferElem.setAttribute( u"bufferSize"_s, d->size );
+  textBufferElem.setAttribute( u"bufferSizeUnits"_s, QgsUnitTypes::encodeUnit( d->sizeUnit ) );
+  textBufferElem.setAttribute( u"bufferSizeMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
+  textBufferElem.setAttribute( u"bufferColor"_s, QgsColorUtils::colorToString( d->color ) );
+  textBufferElem.setAttribute( u"bufferNoFill"_s, !d->fillBufferInterior );
+  textBufferElem.setAttribute( u"bufferOpacity"_s, d->opacity );
+  textBufferElem.setAttribute( u"bufferJoinStyle"_s, static_cast< unsigned int >( d->joinStyle ) );
+  textBufferElem.setAttribute( u"bufferBlendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, textBufferElem );
   return textBufferElem;
