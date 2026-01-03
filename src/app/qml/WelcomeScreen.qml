@@ -27,7 +27,7 @@ Item {
       Layout.fillWidth: true
       Layout.fillHeight: true
       radius: 10
-      color: "#252a34"
+      color: "#002033"
       clip: true
 
       layer.enabled: true
@@ -41,14 +41,17 @@ Item {
 
       GridLayout {
         anchors {
-          fill: parent
+          top: parent.top
+          left: parent.left
+          right: parent.right
+          bottom: footer.top
           topMargin: 28
           leftMargin: 28
           rightMargin: 28
           bottomMargin: 8
         }
         columns: welcomeScreen.narrowLayout ? 1 : 2
-        columnSpacing: 16
+        columnSpacing: 20
         rowSpacing: 10
 
         Column {
@@ -135,13 +138,13 @@ Item {
               model: recentProjectsModel
 
               delegate: ProjectCard {
-                width: recentProjectsListView.width
+                width: recentProjectsListView.width - 12
                 title: Title || ""
                 subtitle: ProjectNativePath || ProjectPath || ""
                 imageSource: PreviewImagePath || ""
                 isPinned: Pinned
                 isSelected: recentProjectsListView.currentIndex === index
-                radius: 10
+                radius: 6
 
                 onClicked: (mouse) => {
                              if (mouse.button == Qt.LeftButton) {
@@ -156,8 +159,8 @@ Item {
                            }
               }
 
-              ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
+              ScrollBar.vertical: CustomScrollBar {
+                policy: ScrollBar.AsNeeded 
               }
 
               Menu {
@@ -222,19 +225,19 @@ Item {
               model: templateProjectsModel
 
               delegate: ProjectCard {
-                width: templatesListView.width
+                width: templatesListView.width - 12
                 title: Title || ""
                 subtitle: TemplateNativePath || "" //#spellok
                 imageSource: PreviewImagePath || ""
                 isSelected: templatesListView.currentIndex === index
-                radius: 10
+                radius: 6
 
                 onClicked: {
                   welcomeScreenController.createProjectFromTemplate(TemplateNativePath || "") //#spellok
                 }
               }
 
-              ScrollBar.vertical: ScrollBar {
+              ScrollBar.vertical: CustomScrollBar {
                 policy: ScrollBar.AsNeeded
               }
             }
@@ -270,6 +273,7 @@ Item {
 
             Rectangle {
               id: newsSwitchBackground
+              Layout.rightMargin: 12
               width: 70
               height: 28
               radius: 14
@@ -331,13 +335,15 @@ Item {
           }
 
           ScrollView {
+            id: welcomeView
             Layout.fillWidth: true
             Layout.fillHeight: true
-            contentWidth: welcomeNewsLayout.width
+            contentWidth: welcomeLayout.width
             contentHeight: welcomeLayout.height
+            rightPadding: 12
             clip: true
           
-            ScrollBar.vertical: ScrollBar {
+            ScrollBar.vertical: CustomScrollBar {
               policy: ScrollBar.AsNeeded
               anchors.top: parent.top
               anchors.bottom: parent.bottom
@@ -347,13 +353,13 @@ Item {
             ColumnLayout {
               id: welcomeLayout
               visible: !newsSwitch.checked
-              width: welcomeNewsLayout.width
+              width: welcomeNewsLayout.width - welcomeView.rightPadding
               spacing: 12
             
               Rectangle {
                 Layout.preferredWidth: parent.width
                 Layout.preferredHeight: welcomeDescription.contentHeight + 32
-                radius: 10
+                radius: 6
                 color: "#ffffff"
             
                 Text {
@@ -371,7 +377,7 @@ Item {
               Rectangle {
                 Layout.preferredWidth: parent.width
                 Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
-                radius: 10
+                radius: 6
                 color: "#ffffff"
             
                 ColumnLayout {
@@ -397,8 +403,8 @@ Item {
             
                   Rectangle {
                     width: enableNewsText.implicitWidth + 24
-                    height: 25
-                    radius: 10
+                    height: 24
+                    radius: 12
                     color: "transparent"
                     border.width: 1
                     border.color: "#93b023"
@@ -434,7 +440,8 @@ Item {
             model: newsFeedModel
 
             delegate: NewsCard {
-              width: newsListView.width
+              radius: 6
+              width: newsListView.width - 12
               title: Title
               description: Content
               showCloseButton: true
@@ -444,7 +451,7 @@ Item {
               }
             }
 
-            ScrollBar.vertical: ScrollBar {
+            ScrollBar.vertical: CustomScrollBar {
               policy: ScrollBar.AsNeeded
             }
           }
