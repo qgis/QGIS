@@ -61,7 +61,6 @@ set(QGIS_APP_SRCS
   qgslayertreeviewofflineindicator.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
-  qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrasterattributetableapputils.cpp
@@ -76,7 +75,6 @@ set(QGIS_APP_SRCS
   qgsrecentprojectsitemsmodel.cpp
   qgsrecentprojectsmenueventfilter.cpp
   qgsvectorlayerdigitizingproperties.cpp
-  qgswelcomepage.cpp
   qgswelcomescreen.cpp
 
   qgsmaptooladdfeature.cpp
