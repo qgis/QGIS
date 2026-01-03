@@ -65,6 +65,16 @@ class QgsWelcomeScreen : public QQuickWidget
     ~QgsWelcomeScreen() = default;
 
     /**
+     * Shows the welcome screen.
+     */
+    void showScene();
+
+    /**
+     * Hides the welcome screen.
+     */
+    void hideScene();
+
+    /**
      * Applies the recent projects list to the recent proejcts model.
      */
     void setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects );

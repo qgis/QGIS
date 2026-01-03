@@ -97,7 +97,6 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   rootContext()->setContextProperty( u"welcomeScreenController"_s, mWelcomeScreenController );
 
   setResizeMode( QQuickWidget::ResizeMode::SizeRootObjectToView );
-  setSource( QUrl( "qrc:/qt/qml/org/qgis/app/qml/WelcomeScreen.qml" ) );
 
   if ( parent )
   {
@@ -133,6 +132,23 @@ void QgsWelcomeScreen::refreshGeometry()
   if ( QWidget *parentWidget = qobject_cast<QWidget *>( parent() ) )
   {
     setGeometry( 20, 20, parentWidget->width() - 40, parentWidget->height() - 40 );
+  }
+}
+
+void QgsWelcomeScreen::showScene()
+{
+  if ( source().isEmpty() )
+  {
+    setSource( QUrl( "qrc:/qt/qml/org/qgis/app/qml/WelcomeScreen.qml" ) );
+  }
+  show();
+}
+
+void QgsWelcomeScreen::hideScene()
+{
+  if ( isVisible() )
+  {
+    hide();
   }
 }
 

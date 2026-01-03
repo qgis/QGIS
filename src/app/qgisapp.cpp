@@ -2058,7 +2058,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mWelcomeScreen->setRecentProjects( mRecentProjects );
   if ( !mProjOpen )
   {
-    mWelcomeScreen->show();
+    mWelcomeScreen->showScene();
   }
   endProfile();
 }
@@ -5862,7 +5862,7 @@ void QgisApp::fileClose()
 {
   if ( fileNewBlank() )
   {
-    mWelcomeScreen->show();
+    mWelcomeScreen->showScene();
   }
 }
 
@@ -14804,10 +14804,7 @@ void QgisApp::showMapCanvas()
   if ( mCentralContainer )
   {
     mCentralContainer->setCurrentIndex( 0 );
-    if ( mWelcomeScreen->isVisible() )
-    {
-      mWelcomeScreen->hide();
-    }
+    mWelcomeScreen->hideScene();
   }
 }
 
