@@ -39,6 +39,8 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void openProject( const QString &path );
 
+    Q_INVOKABLE void createBlankProject();
+    Q_INVOKABLE void createProjectFromBasemap();
     Q_INVOKABLE void createProjectFromTemplate( const QString &path );
 
     Q_INVOKABLE void clearRecentProjects();
@@ -81,6 +83,11 @@ class QgsWelcomeScreen : public QQuickWidget
      * Returns the URL used for the QGIS project news feed.
      */
     static QString newsFeedUrl();
+
+    /**
+     * Register object types needed by the QML scene.
+     */
+    static void registerTypes();
 
   protected:
     bool eventFilter( QObject *object, QEvent *event ) override;

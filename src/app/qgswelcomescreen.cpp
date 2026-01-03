@@ -41,16 +41,19 @@ void QgsWelcomeScreenController::openProject( const QString &path )
   QgisApp::instance()->openProject( path );
 }
 
+void QgsWelcomeScreenController::createBlankProject()
+{
+  QgisApp::instance()->newProject();
+}
+
+void QgsWelcomeScreenController::createProjectFromBasemap()
+{
+  QgisApp::instance()->fileNewWithBasemap();
+}
+
 void QgsWelcomeScreenController::createProjectFromTemplate( const QString &path )
 {
-  if ( !path.isEmpty() )
-  {
-    QgisApp::instance()->fileNewFromTemplate( path );
-  }
-  else
-  {
-    QgisApp::instance()->newProject();
-  }
+  QgisApp::instance()->fileNewFromTemplate( path );
 }
 
 void QgsWelcomeScreenController::clearRecentProjects()
@@ -87,11 +90,11 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
 
   mWelcomeScreenController = new QgsWelcomeScreenController( this );
 
-  rootContext()->setContextProperty( QStringLiteral( "recentProjectsModel" ), mRecentProjectsModel );
-  rootContext()->setContextProperty( QStringLiteral( "templateProjectsModel" ), mTemplateProjectsModel );
-  rootContext()->setContextProperty( QStringLiteral( "newsFeedParser" ), mNewsFeedParser );
-  rootContext()->setContextProperty( QStringLiteral( "newsFeedModel" ), mNewsFeedModel );
-  rootContext()->setContextProperty( QStringLiteral( "welcomeScreenController" ), mWelcomeScreenController );
+  rootContext()->setContextProperty( u"recentProjectsModel"_s, mRecentProjectsModel );
+  rootContext()->setContextProperty( u"templateProjectsModel"_s, mTemplateProjectsModel );
+  rootContext()->setContextProperty( u"newsFeedParser"_s, mNewsFeedParser );
+  rootContext()->setContextProperty( u"newsFeedModel"_s, mNewsFeedModel );
+  rootContext()->setContextProperty( u"welcomeScreenController"_s, mWelcomeScreenController );
 
   setResizeMode( QQuickWidget::ResizeMode::SizeRootObjectToView );
   setSource( QUrl( "qrc:/qt/qml/org/qgis/app/qml/WelcomeScreen.qml" ) );
@@ -103,8 +106,8 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
 
   QgsSettings settings;
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool()
-       && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool()
+       && settings.value( u"qgis/checkVersion"_s, true ).toBool() && !skipVersionCheck )
   {
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
     mVersionInfo->checkVersion();
@@ -136,6 +139,13 @@ void QgsWelcomeScreen::refreshGeometry()
 QString QgsWelcomeScreen::newsFeedUrl()
 {
   return QStringLiteral( FEED_URL );
+}
+
+void QgsWelcomeScreen::registerTypes()
+{
+  qmlRegisterType<QgsTemplateProjectsModel>( "org.qgis.app", 1, 0, "TemplateProjectsModel" );
+  qmlRegisterType<QgsRecentProjectItemsModel>( "org.qgis.app", 1, 0, "RecentProjectItemsModel" );
+  qmlRegisterType<QgsNewsFeedModel>( "org.qgis.app", 1, 0, "NewsFeedModel" );
 }
 
 void QgsWelcomeScreen::setRecentProjects( const QList<QgsRecentProjectItemsModel::RecentProjectData> &recentProjects )
@@ -182,7 +192,7 @@ void QgsWelcomeScreen::versionInfoReceived()
     int minor = latestVersionCode.mid( latestVersionCode.size() - 4, 2 ).toInt();
     int patch = latestVersionCode.mid( latestVersionCode.size() - 2, 2 ).toInt();
 
-    emit mWelcomeScreenController->newVersionAvailable( QStringLiteral( "%1.%2.%3" ).arg( major ).arg( minor ).arg( patch ) );
+    emit mWelcomeScreenController->newVersionAvailable( u"%1.%2.%3"_s.arg( major ).arg( minor ).arg( patch ) );
   }
 }
 

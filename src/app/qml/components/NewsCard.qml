@@ -79,7 +79,7 @@ Rectangle {
     }
 
     flat: true
-    icon.source: "../close.svg"
+    icon.source: "../images/close.svg"
     icon.color: "black"
     icon.width: 20
     icon.height: 20
