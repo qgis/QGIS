@@ -76,7 +76,7 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
     table->setSortingEnabled( false );
 
   const int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
-  const QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
+  const QString posStr = u"%1, %2"_s.arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
 
   const int row = table->rowCount();
   table->insertRow( row );

@@ -64,7 +64,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "attributes-form" ) );
+    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( u"attributes-form"_s );
     static const QgsSettingsEntryBool *settingShowAliases;
 
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );

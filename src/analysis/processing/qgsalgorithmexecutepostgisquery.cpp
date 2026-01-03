@@ -25,7 +25,7 @@
 
 QString QgsExecutePostgisQueryAlgorithm::name() const
 {
-  return QStringLiteral( "postgisexecutesql" );
+  return u"postgisexecutesql"_s;
 }
 
 QString QgsExecutePostgisQueryAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsExecutePostgisQueryAlgorithm::group() const
 
 QString QgsExecutePostgisQueryAlgorithm::groupId() const
 {
-  return QStringLiteral( "database" );
+  return u"database"_s;
 }
 
 QString QgsExecutePostgisQueryAlgorithm::shortHelpString() const
@@ -65,20 +65,20 @@ QgsExecutePostgisQueryAlgorithm *QgsExecutePostgisQueryAlgorithm::createInstance
 
 void QgsExecutePostgisQueryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterProviderConnection( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QStringLiteral( "postgres" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "SQL" ), QObject::tr( "SQL query" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterProviderConnection( u"DATABASE"_s, QObject::tr( "Database (connection name)" ), u"postgres"_s ) );
+  addParameter( new QgsProcessingParameterString( u"SQL"_s, QObject::tr( "SQL query" ), QVariant(), true ) );
 }
 
 QVariantMap QgsExecutePostgisQueryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  const QString connName = parameterAsConnectionName( parameters, QStringLiteral( "DATABASE" ), context );
+  const QString connName = parameterAsConnectionName( parameters, u"DATABASE"_s, context );
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
   {
-    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s );
     conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connName ) ) );
   }
   catch ( QgsProviderConnectionException & )
@@ -86,7 +86,7 @@ QVariantMap QgsExecutePostgisQueryAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( QObject::tr( "Could not retrieve connection details for %1" ).arg( connName ) );
   }
 
-  const QString sql = parameterAsString( parameters, QStringLiteral( "SQL" ), context ).replace( '\n', ' ' );
+  const QString sql = parameterAsString( parameters, u"SQL"_s, context ).replace( '\n', ' ' );
   try
   {
     conn->executeSql( sql );

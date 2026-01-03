@@ -77,20 +77,20 @@ void QgsAbstractReportSection::setContext( const QgsReportSectionContext &contex
 
 bool QgsAbstractReportSection::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = doc.createElement( QStringLiteral( "Section" ) );
-  element.setAttribute( QStringLiteral( "type" ), type() );
+  QDomElement element = doc.createElement( u"Section"_s );
+  element.setAttribute( u"type"_s, type() );
 
-  element.setAttribute( QStringLiteral( "headerEnabled" ), mHeaderEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"headerEnabled"_s, mHeaderEnabled ? u"1"_s : u"0"_s );
   if ( mHeader )
   {
-    QDomElement headerElement = doc.createElement( QStringLiteral( "header" ) );
+    QDomElement headerElement = doc.createElement( u"header"_s );
     headerElement.appendChild( mHeader->writeXml( doc, context ) );
     element.appendChild( headerElement );
   }
-  element.setAttribute( QStringLiteral( "footerEnabled" ), mFooterEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"footerEnabled"_s, mFooterEnabled ? u"1"_s : u"0"_s );
   if ( mFooter )
   {
-    QDomElement footerElement = doc.createElement( QStringLiteral( "footer" ) );
+    QDomElement footerElement = doc.createElement( u"footer"_s );
     footerElement.appendChild( mFooter->writeXml( doc, context ) );
     element.appendChild( footerElement );
   }
@@ -108,14 +108,14 @@ bool QgsAbstractReportSection::writeXml( QDomElement &parentElement, QDomDocumen
 
 bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QLatin1String( "Section" ) )
+  if ( element.nodeName() != "Section"_L1 )
   {
     return false;
   }
 
-  mHeaderEnabled = element.attribute( QStringLiteral( "headerEnabled" ), QStringLiteral( "0" ) ).toInt();
-  mFooterEnabled = element.attribute( QStringLiteral( "footerEnabled" ), QStringLiteral( "0" ) ).toInt();
-  const QDomElement headerElement = element.firstChildElement( QStringLiteral( "header" ) );
+  mHeaderEnabled = element.attribute( u"headerEnabled"_s, u"0"_s ).toInt();
+  mFooterEnabled = element.attribute( u"footerEnabled"_s, u"0"_s ).toInt();
+  const QDomElement headerElement = element.firstChildElement( u"header"_s );
   if ( !headerElement.isNull() )
   {
     const QDomElement headerLayoutElem = headerElement.firstChild().toElement();
@@ -123,7 +123,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
     header->readXml( headerLayoutElem, doc, context );
     mHeader = std::move( header );
   }
-  const QDomElement footerElement = element.firstChildElement( QStringLiteral( "footer" ) );
+  const QDomElement footerElement = element.firstChildElement( u"footer"_s );
   if ( !footerElement.isNull() )
   {
     const QDomElement footerLayoutElem = footerElement.firstChild().toElement();
@@ -136,18 +136,18 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   for ( int i = 0; i < sectionItemList.size(); ++i )
   {
     const QDomElement currentSectionElem = sectionItemList.at( i ).toElement();
-    if ( currentSectionElem.nodeName() != QLatin1String( "Section" ) )
+    if ( currentSectionElem.nodeName() != "Section"_L1 )
       continue;
 
-    const QString sectionType = currentSectionElem.attribute( QStringLiteral( "type" ) );
+    const QString sectionType = currentSectionElem.attribute( u"type"_s );
 
     //TODO - eventually move this to a registry when there's enough subclasses to warrant it
     std::unique_ptr< QgsAbstractReportSection > section;
-    if ( sectionType == QLatin1String( "SectionFieldGroup" ) )
+    if ( sectionType == "SectionFieldGroup"_L1 )
     {
       section = std::make_unique< QgsReportSectionFieldGroup >();
     }
-    else if ( sectionType == QLatin1String( "SectionLayout" ) )
+    else if ( sectionType == "SectionLayout"_L1 )
     {
       section = std::make_unique< QgsReportSectionLayout >();
     }
@@ -175,18 +175,18 @@ void QgsAbstractReportSection::reloadSettings()
 bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   // NOTE: if visitEnter returns false it means "don't visit the report section", not "abort all further visitations"
-  if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
+  if ( mParent && !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, u"reportsection"_s, QObject::tr( "Report Section" ) ) ) )
     return true;
 
   if ( mHeader )
   {
     // NOTE: if visitEnter returns false it means "don't visit the header", not "abort all further visitations"
-    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
+    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, u"reportheader"_s, QObject::tr( "Report Header" ) ) ) )
     {
       if ( !mHeader->accept( visitor ) )
         return false;
 
-      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, QStringLiteral( "reportheader" ), QObject::tr( "Report Header" ) ) ) )
+      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportHeader, u"reportheader"_s, QObject::tr( "Report Header" ) ) ) )
         return false;
     }
   }
@@ -200,17 +200,17 @@ bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor )
   if ( mFooter )
   {
     // NOTE: if visitEnter returns false it means "don't visit the footer", not "abort all further visitations"
-    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
+    if ( visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, u"reportfooter"_s, QObject::tr( "Report Footer" ) ) ) )
     {
       if ( !mFooter->accept( visitor ) )
         return false;
 
-      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, QStringLiteral( "reportfooter" ), QObject::tr( "Report Footer" ) ) ) )
+      if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportFooter, u"reportfooter"_s, QObject::tr( "Report Footer" ) ) ) )
         return false;
     }
   }
 
-  if ( mParent && !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, QStringLiteral( "reportsection" ), QObject::tr( "Report Section" ) ) ) )
+  if ( mParent && !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::ReportSection, u"reportsection"_s, QObject::tr( "Report Section" ) ) ) )
     return false;
 
   return true;
@@ -218,7 +218,7 @@ bool QgsAbstractReportSection::accept( QgsStyleEntityVisitorInterface *visitor )
 
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
 {
-  QString base = QStringLiteral( "%1_%2" ).arg( baseFilePath ).arg( mSectionNumber, 4, 10, QChar( '0' ) );
+  QString base = u"%1_%2"_s.arg( baseFilePath ).arg( mSectionNumber, 4, 10, QChar( '0' ) );
   if ( !extension.startsWith( '.' ) )
     base += '.';
   base += extension;

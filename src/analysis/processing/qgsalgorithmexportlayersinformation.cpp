@@ -23,7 +23,7 @@
 
 QString QgsExportLayersInformationAlgorithm::name() const
 {
-  return QStringLiteral( "exportlayersinformation" );
+  return u"exportlayersinformation"_s;
 }
 
 QString QgsExportLayersInformationAlgorithm::displayName() const
@@ -43,13 +43,13 @@ QString QgsExportLayersInformationAlgorithm::group() const
 
 QString QgsExportLayersInformationAlgorithm::groupId() const
 {
-  return QStringLiteral( "layertools" );
+  return u"layertools"_s;
 }
 
 void QgsExportLayersInformationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layer(s)" ), Qgis::ProcessingSourceType::MapLayer ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant() ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layer(s)" ), Qgis::ProcessingSourceType::MapLayer ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant() ) );
 }
 
 QString QgsExportLayersInformationAlgorithm::shortHelpString() const
@@ -70,26 +70,26 @@ QgsExportLayersInformationAlgorithm *QgsExportLayersInformationAlgorithm::create
 
 bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
   for ( QgsMapLayer *layer : layers )
   {
     if ( !mCrs.isValid() )
     {
       mCrs = layer->crs();
     }
-    else if ( mCrs.authid() != QLatin1String( "EPSG:4326" ) )
+    else if ( mCrs.authid() != "EPSG:4326"_L1 )
     {
       if ( mCrs != layer->crs() )
       {
         // mixed CRSes, set output CRS to EPSG:4326
-        mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+        mCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
       }
     }
     mLayers.emplace_back( layer->clone() );
   }
 
   if ( !mCrs.isValid() )
-    mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    mCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
 
   if ( mLayers.empty() )
     feedback->reportError( QObject::tr( "No layers selected" ), false );
@@ -100,20 +100,20 @@ bool QgsExportLayersInformationAlgorithm::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsFields outFields;
-  outFields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "source" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "crs" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "provider" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "file_path" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "layer_name" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "subset" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "abstract" ), QMetaType::Type::QString ) );
-  outFields.append( QgsField( QStringLiteral( "attribution" ), QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"source"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"crs"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"provider"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"file_path"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"layer_name"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"subset"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"abstract"_s, QMetaType::Type::QString ) );
+  outFields.append( QgsField( u"attribution"_s, QMetaType::Type::QString ) );
 
   QString outputDest;
-  std::unique_ptr<QgsFeatureSink> outputSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, outputDest, outFields, Qgis::WkbType::Polygon, mCrs ) );
+  std::unique_ptr<QgsFeatureSink> outputSink( parameterAsSink( parameters, u"OUTPUT"_s, context, outputDest, outFields, Qgis::WkbType::Polygon, mCrs ) );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
 
   const double step = layers.size() > 0 ? 100.0 / layers.size() : 1;
   int i = 0;
@@ -137,9 +137,9 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     {
       const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->dataProvider()->name(), layer->source() );
       attributes << layer->dataProvider()->name()
-                 << parts[QStringLiteral( "path" )]
-                 << parts[QStringLiteral( "layerName" )]
-                 << parts[QStringLiteral( "subset" )];
+                 << parts[u"path"_s]
+                 << parts[u"layerName"_s]
+                 << parts[u"subset"_s];
     }
     else
     {
@@ -170,13 +170,13 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
       feature.setGeometry( QgsGeometry::fromRect( rect ) );
     }
     if ( !outputSink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   outputSink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputDest );
+  outputs.insert( u"OUTPUT"_s, outputDest );
   return outputs;
 }
 

@@ -34,7 +34,7 @@ QString QgsTinMeshCreationAlgorithm::group() const
 
 QString QgsTinMeshCreationAlgorithm::groupId() const
 {
-  return QStringLiteral( "mesh" );
+  return u"mesh"_s;
 }
 
 QString QgsTinMeshCreationAlgorithm::shortDescription() const
@@ -54,7 +54,7 @@ QStringList QgsTinMeshCreationAlgorithm::tags() const
 
 QString QgsTinMeshCreationAlgorithm::name() const
 {
-  return QStringLiteral( "tinmeshcreation" );
+  return u"tinmeshcreation"_s;
 }
 
 QString QgsTinMeshCreationAlgorithm::displayName() const
@@ -70,9 +70,9 @@ QgsProcessingAlgorithm *QgsTinMeshCreationAlgorithm::createInstance() const
 void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration );
-  addParameter( new QgsProcessingParameterTinInputLayers( QStringLiteral( "SOURCE_DATA" ), QObject::tr( "Input layers" ) ) );
+  addParameter( new QgsProcessingParameterTinInputLayers( u"SOURCE_DATA"_s, QObject::tr( "Input layers" ) ) );
 
-  QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( u"mdal"_s );
 
   QList<QgsMeshDriverMetadata> driverList;
   if ( meta )
@@ -86,20 +86,20 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
       mAvailableFormat.append( name );
     }
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MESH_FORMAT" ), QObject::tr( "Output format" ), mAvailableFormat, false, 0 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_MESH" ), QObject::tr( "Output file" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"MESH_FORMAT"_s, QObject::tr( "Output format" ), mAvailableFormat, false, 0 ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS_OUTPUT"_s, QObject::tr( "Output coordinate system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_MESH"_s, QObject::tr( "Output file" ) ) );
 }
 
 bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "SOURCE_DATA" ) )->name() );
+  const QVariant layersVariant = parameters.value( parameterDefinition( u"SOURCE_DATA"_s )->name() );
   if ( layersVariant.userType() != QMetaType::Type::QVariantList )
     return false;
 
   const QVariantList layersList = layersVariant.toList();
 
-  QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, u"CRS_OUTPUT"_s, context );
   if ( !destinationCrs.isValid() && context.project() )
     destinationCrs = context.project()->crs();
 
@@ -111,9 +111,9 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     if ( layer.userType() != QMetaType::Type::QVariantMap )
       continue;
     const QVariantMap layerMap = layer.toMap();
-    const QString layerSource = layerMap.value( QStringLiteral( "source" ) ).toString();
-    const Qgis::ProcessingTinInputLayerType type = static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
-    const int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
+    const QString layerSource = layerMap.value( u"source"_s ).toString();
+    const Qgis::ProcessingTinInputLayerType type = static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( u"type"_s ).toInt() );
+    const int attributeIndex = layerMap.value( u"attributeIndex"_s ).toInt();
 
     std::unique_ptr<QgsProcessingFeatureSource> featureSource( QgsProcessingUtils::variantToSource( layerSource, context ) );
 
@@ -144,7 +144,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMeshTriangulation triangulation;
-  QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, u"CRS_OUTPUT"_s, context );
   if ( !destinationCrs.isValid() && context.project() )
     destinationCrs = context.project()->crs();
   triangulation.setCrs( destinationCrs );
@@ -170,8 +170,8 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( feedback && feedback->isCanceled() )
     return QVariantMap();
 
-  QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
-  const int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
+  QString fileName = parameterAsFile( parameters, u"OUTPUT_MESH"_s, context );
+  const int driverIndex = parameterAsEnum( parameters, u"MESH_FORMAT"_s, context );
   const QString driver = mAvailableFormat.at( driverIndex );
   if ( feedback )
     feedback->setProgressText( QObject::tr( "Creating mesh from triangulation" ) );
@@ -180,7 +180,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( feedback && feedback->isCanceled() )
     return QVariantMap();
 
-  const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"mdal"_s );
 
   fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << mDriverSuffix.value( driver ) );
 
@@ -198,7 +198,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   QVariantMap ret;
-  ret[QStringLiteral( "OUTPUT_MESH" )] = fileName;
+  ret[u"OUTPUT_MESH"_s] = fileName;
 
   return ret;
 }

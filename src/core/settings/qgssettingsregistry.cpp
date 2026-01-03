@@ -33,13 +33,13 @@ bool QgsSettingsRegistry::addSettingsEntry( const QgsSettingsEntryBase *settings
 {
   if ( !settingsEntry )
   {
-    QgsDebugError( QStringLiteral( "Trying to register a nullptr settings entry." ) );
+    QgsDebugError( u"Trying to register a nullptr settings entry."_s );
     return false;
   }
 
   if ( mSettingsEntriesMap.contains( settingsEntry->definitionKey() ) )
   {
-    QgsDebugError( QStringLiteral( "Settings with key '%1' is already registered." ).arg( settingsEntry->definitionKey() ) );
+    QgsDebugError( u"Settings with key '%1' is already registered."_s.arg( settingsEntry->definitionKey() ) );
     return false;
   }
 
@@ -91,13 +91,13 @@ void QgsSettingsRegistry::addSubRegistry( const QgsSettingsRegistry *settingsReg
 {
   if ( !settingsRegistry )
   {
-    QgsDebugError( QStringLiteral( "Trying to register a nullptr child settings registry." ) );
+    QgsDebugError( u"Trying to register a nullptr child settings registry."_s );
     return;
   }
 
   if ( mSettingsRegistryChildList.contains( settingsRegistry ) )
   {
-    QgsDebugError( QStringLiteral( "Child register is already registered." ) );
+    QgsDebugError( u"Child register is already registered."_s );
     return;
   }
 
@@ -108,13 +108,13 @@ void QgsSettingsRegistry::removeSubRegistry( const QgsSettingsRegistry *settings
 {
   if ( !settingsRegistry )
   {
-    QgsDebugError( QStringLiteral( "Trying to unregister a nullptr child settings registry." ) );
+    QgsDebugError( u"Trying to unregister a nullptr child settings registry."_s );
     return;
   }
 
   if ( mSettingsRegistryChildList.contains( settingsRegistry ) )
   {
-    QgsDebugError( QStringLiteral( "Child register is not registered." ) );
+    QgsDebugError( u"Child register is not registered."_s );
     return;
   }
 

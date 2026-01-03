@@ -27,7 +27,7 @@ class APP_EXPORT QgsDevToolsPanelWidget : public QWidget, private Ui::QgsDevTool
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreeDevTools = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "devtools" ) );
+    static inline QgsSettingsTreeNode *sTreeDevTools = QgsSettingsTree::sTreeApp->createChildNode( u"devtools"_s );
     static const QgsSettingsEntryString *settingLastActiveTab;
 
     QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent = nullptr );

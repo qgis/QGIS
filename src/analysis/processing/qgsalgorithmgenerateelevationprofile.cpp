@@ -89,62 +89,62 @@ class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
 
 void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterGeometry( QStringLiteral( "CURVE" ), QObject::tr( "Profile curve" ), QVariant(), false, QList<int>() << static_cast<int>( Qgis::GeometryType::Line ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "MAP_LAYERS" ), QObject::tr( "Map layers" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "WIDTH" ), QObject::tr( "Chart width (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "HEIGHT" ), QObject::tr( "Chart height (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TERRAIN_LAYER" ), QObject::tr( "Terrain layer" ), QVariant(), true, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Raster ) << static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) );
+  addParameter( new QgsProcessingParameterGeometry( u"CURVE"_s, QObject::tr( "Profile curve" ), QVariant(), false, QList<int>() << static_cast<int>( Qgis::GeometryType::Line ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"MAP_LAYERS"_s, QObject::tr( "Map layers" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
+  addParameter( new QgsProcessingParameterNumber( u"WIDTH"_s, QObject::tr( "Chart width (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"HEIGHT"_s, QObject::tr( "Chart height (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"TERRAIN_LAYER"_s, QObject::tr( "Terrain layer" ), QVariant(), true, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Raster ) << static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) );
 
-  auto minimumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MINIMUM_DISTANCE" ), QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto minimumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( u"MINIMUM_DISTANCE"_s, QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   minimumDistanceParam->setFlags( minimumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( minimumDistanceParam.release() );
-  auto maximumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAXIMUM_DISTANCE" ), QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto maximumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( u"MAXIMUM_DISTANCE"_s, QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   maximumDistanceParam->setFlags( maximumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maximumDistanceParam.release() );
-  auto minimumElevationParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MINIMUM_ELEVATION" ), QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto minimumElevationParam = std::make_unique<QgsProcessingParameterNumber>( u"MINIMUM_ELEVATION"_s, QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   minimumElevationParam->setFlags( minimumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( minimumElevationParam.release() );
-  auto maximumElevationParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAXIMUM_ELEVATION" ), QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto maximumElevationParam = std::make_unique<QgsProcessingParameterNumber>( u"MAXIMUM_ELEVATION"_s, QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   maximumElevationParam->setFlags( maximumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maximumElevationParam.release() );
 
-  auto textColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "TEXT_COLOR" ), QObject::tr( "Chart text color" ), QColor( 0, 0, 0 ), true, true );
+  auto textColorParam = std::make_unique<QgsProcessingParameterColor>( u"TEXT_COLOR"_s, QObject::tr( "Chart text color" ), QColor( 0, 0, 0 ), true, true );
   textColorParam->setFlags( textColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( textColorParam.release() );
 
-  auto textFontFamilyParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "TEXT_FONT_FAMILY" ), QObject::tr( "Chart text font family" ), QVariant(), false, true );
+  auto textFontFamilyParam = std::make_unique<QgsProcessingParameterString>( u"TEXT_FONT_FAMILY"_s, QObject::tr( "Chart text font family" ), QVariant(), false, true );
   textFontFamilyParam->setFlags( textFontFamilyParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( textFontFamilyParam.release() );
 
-  auto textFontStyleParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "TEXT_FONT_STYLE" ), QObject::tr( "Chart text font style" ), QVariant(), false, true );
+  auto textFontStyleParam = std::make_unique<QgsProcessingParameterString>( u"TEXT_FONT_STYLE"_s, QObject::tr( "Chart text font style" ), QVariant(), false, true );
   textFontStyleParam->setFlags( textFontStyleParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( textFontStyleParam.release() );
 
-  auto textFontSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TEXT_FONT_SIZE" ), QObject::tr( "Chart text font size" ), Qgis::ProcessingNumberParameterType::Double, 0, true );
+  auto textFontSizeParam = std::make_unique<QgsProcessingParameterNumber>( u"TEXT_FONT_SIZE"_s, QObject::tr( "Chart text font size" ), Qgis::ProcessingNumberParameterType::Double, 0, true );
   textFontSizeParam->setFlags( textFontSizeParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( textFontSizeParam.release() );
 
-  auto backgroundColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Chart background color" ), QColor( 255, 255, 255 ), true, true );
+  auto backgroundColorParam = std::make_unique<QgsProcessingParameterColor>( u"BACKGROUND_COLOR"_s, QObject::tr( "Chart background color" ), QColor( 255, 255, 255 ), true, true );
   backgroundColorParam->setFlags( backgroundColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( backgroundColorParam.release() );
-  auto borderColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "BORDER_COLOR" ), QObject::tr( "Chart border color" ), QColor( 99, 99, 99 ), true, true );
+  auto borderColorParam = std::make_unique<QgsProcessingParameterColor>( u"BORDER_COLOR"_s, QObject::tr( "Chart border color" ), QColor( 99, 99, 99 ), true, true );
   borderColorParam->setFlags( borderColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( borderColorParam.release() );
 
-  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Profile tolerance" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0 );
+  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"TOLERANCE"_s, QObject::tr( "Profile tolerance" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0 );
   toleranceParam->setFlags( toleranceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( toleranceParam.release() );
 
-  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DPI" ), QObject::tr( "Chart DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 0 );
+  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( u"DPI"_s, QObject::tr( "Chart DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 0 );
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output image" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output image" ) ) );
 }
 
 QString QgsGenerateElevationProfileAlgorithm::name() const
 {
-  return QStringLiteral( "generateelevationprofileimage" );
+  return u"generateelevationprofileimage"_s;
 }
 
 QString QgsGenerateElevationProfileAlgorithm::displayName() const
@@ -164,7 +164,7 @@ QString QgsGenerateElevationProfileAlgorithm::group() const
 
 QString QgsGenerateElevationProfileAlgorithm::groupId() const
 {
-  return QStringLiteral( "plots" );
+  return u"plots"_s;
 }
 
 QString QgsGenerateElevationProfileAlgorithm::shortHelpString() const
@@ -184,13 +184,13 @@ QgsGenerateElevationProfileAlgorithm *QgsGenerateElevationProfileAlgorithm::crea
 
 bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  const QgsGeometry curveGeom = parameterAsGeometry( parameters, QStringLiteral( "CURVE" ), context );
-  const QgsCoordinateReferenceSystem curveCrs = parameterAsGeometryCrs( parameters, QStringLiteral( "CURVE" ), context );
+  const QgsGeometry curveGeom = parameterAsGeometry( parameters, u"CURVE"_s, context );
+  const QgsCoordinateReferenceSystem curveCrs = parameterAsGeometryCrs( parameters, u"CURVE"_s, context );
 
-  QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "MAP_LAYERS" ), context );
-  QgsMapLayer *terrainLayer = parameterAsLayer( parameters, QStringLiteral( "TERRAIN_LAYER" ), context );
+  QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"MAP_LAYERS"_s, context );
+  QgsMapLayer *terrainLayer = parameterAsLayer( parameters, u"TERRAIN_LAYER"_s, context );
 
-  const double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  const double tolerance = parameterAsDouble( parameters, u"TOLERANCE"_s, context );
 
   QList<QgsAbstractProfileSource *> sources;
   for ( QgsMapLayer *layer : layers )
@@ -229,32 +229,32 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
 
 QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  const QgsGeometry curveGeom = parameterAsGeometry( parameters, QStringLiteral( "CURVE" ), context );
+  const QgsGeometry curveGeom = parameterAsGeometry( parameters, u"CURVE"_s, context );
 
-  const bool hasMinimumDistance = parameters.value( QStringLiteral( "MINIMUM_DISTANCE" ) ).isValid();
-  const double minimumDistance = parameterAsDouble( parameters, QStringLiteral( "MINIMUM_DISTANCE" ), context );
-  const bool hasMaximumDistance = parameters.value( QStringLiteral( "MAXIMUM_DISTANCE" ) ).isValid();
-  const double maximumDistance = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM_DISTANCE" ), context );
-  const bool hasMinimumElevation = parameters.value( QStringLiteral( "MINIMUM_ELEVATION" ) ).isValid();
-  const double minimumElevation = parameterAsDouble( parameters, QStringLiteral( "MINIMUM_ELEVATION" ), context );
-  const bool hasMaximumElevation = parameters.value( QStringLiteral( "MAXIMUM_ELEVATION" ) ).isValid();
-  const double maximumElevation = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM_ELEVATION" ), context );
+  const bool hasMinimumDistance = parameters.value( u"MINIMUM_DISTANCE"_s ).isValid();
+  const double minimumDistance = parameterAsDouble( parameters, u"MINIMUM_DISTANCE"_s, context );
+  const bool hasMaximumDistance = parameters.value( u"MAXIMUM_DISTANCE"_s ).isValid();
+  const double maximumDistance = parameterAsDouble( parameters, u"MAXIMUM_DISTANCE"_s, context );
+  const bool hasMinimumElevation = parameters.value( u"MINIMUM_ELEVATION"_s ).isValid();
+  const double minimumElevation = parameterAsDouble( parameters, u"MINIMUM_ELEVATION"_s, context );
+  const bool hasMaximumElevation = parameters.value( u"MAXIMUM_ELEVATION"_s ).isValid();
+  const double maximumElevation = parameterAsDouble( parameters, u"MAXIMUM_ELEVATION"_s, context );
 
-  const int width = parameterAsInt( parameters, QStringLiteral( "WIDTH" ), context );
-  const int height = parameterAsInt( parameters, QStringLiteral( "HEIGHT" ), context );
-  const int dpi = parameterAsInt( parameters, QStringLiteral( "DPI" ), context );
+  const int width = parameterAsInt( parameters, u"WIDTH"_s, context );
+  const int height = parameterAsInt( parameters, u"HEIGHT"_s, context );
+  const int dpi = parameterAsInt( parameters, u"DPI"_s, context );
 
-  const QString outputImage = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputImage = parameterAsString( parameters, u"OUTPUT"_s, context );
 
-  const QColor textColor = parameterAsColor( parameters, QStringLiteral( "TEXT_COLOR" ), context );
-  const QColor backgroundColor = parameterAsColor( parameters, QStringLiteral( "BACKGROUND_COLOR" ), context );
-  const QColor borderColor = parameterAsColor( parameters, QStringLiteral( "BORDER_COLOR" ), context );
+  const QColor textColor = parameterAsColor( parameters, u"TEXT_COLOR"_s, context );
+  const QColor backgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
+  const QColor borderColor = parameterAsColor( parameters, u"BORDER_COLOR"_s, context );
 
   QgsAlgorithmElevationProfilePlotItem plotItem( width, height, dpi );
 
-  const QString textFontFamily = parameterAsString( parameters, QStringLiteral( "TEXT_FONT_FAMILY" ), context );
-  const QString textFontStyle = parameterAsString( parameters, QStringLiteral( "TEXT_FONT_STYLE" ), context );
-  const double textFontSize = parameterAsDouble( parameters, QStringLiteral( "TEXT_FONT_SIZE" ), context );
+  const QString textFontFamily = parameterAsString( parameters, u"TEXT_FONT_FAMILY"_s, context );
+  const QString textFontStyle = parameterAsString( parameters, u"TEXT_FONT_STYLE"_s, context );
+  const double textFontSize = parameterAsDouble( parameters, u"TEXT_FONT_SIZE"_s, context );
 
   if ( !textFontFamily.isEmpty() || !textFontStyle.isEmpty() || textFontSize > 0 )
   {
@@ -361,7 +361,7 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
   image.save( outputImage );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputImage );
+  outputs.insert( u"OUTPUT"_s, outputImage );
   return outputs;
 }
 

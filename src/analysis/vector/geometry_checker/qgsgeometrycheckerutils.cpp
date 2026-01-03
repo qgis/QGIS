@@ -45,7 +45,7 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Shrug. What shall we do with a geometry that cannot be converted?" ) );
+      QgsDebugError( u"Shrug. What shall we do with a geometry that cannot be converted?"_s );
     }
   }
 }
@@ -77,7 +77,7 @@ QgsGeometry QgsGeometryCheckerUtils::LayerFeature::geometry() const
 
 QString QgsGeometryCheckerUtils::LayerFeature::id() const
 {
-  return QStringLiteral( "%1:%2" ).arg( mFeaturePool->layerName() ).arg( mFeature.id() );
+  return u"%1:%2"_s.arg( mFeaturePool->layerName() ).arg( mFeature.id() );
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::operator==( const LayerFeature &other ) const

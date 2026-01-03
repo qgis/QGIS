@@ -46,7 +46,7 @@ class TestQgsShapeburst : public QgsTest
     Q_OBJECT
   public:
     TestQgsShapeburst()
-      : QgsTest( QStringLiteral( "Shapeburst Renderer Tests" ) ) {}
+      : QgsTest( u"Shapeburst Renderer Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -91,7 +91,7 @@ void TestQgsShapeburst::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
@@ -219,7 +219,7 @@ bool TestQgsShapeburst::imageCheck( const QString &testType )
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "symbol_shapeburst" ) );
+  myChecker.setControlPathPrefix( u"symbol_shapeburst"_s );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

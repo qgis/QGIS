@@ -100,36 +100,36 @@ void TestQgsAppLocatorFilters::testCalculator()
   QgsExpressionCalculatorLocatorFilter filter;
 
   // valid expression
-  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "1+2" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, u"1+2"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).userData().toInt(), 3 );
 
   // trigger result
   filter.triggerResult( results.at( 0 ) );
-  QCOMPARE( QApplication::clipboard()->text(), QStringLiteral( "3" ) );
+  QCOMPARE( QApplication::clipboard()->text(), u"3"_s );
 
   // invalid expression
-  results = gatherResults( &filter, QStringLiteral( "1+" ), QgsLocatorContext() );
+  results = gatherResults( &filter, u"1+"_s, QgsLocatorContext() );
   QVERIFY( results.empty() );
 }
 
 void TestQgsAppLocatorFilters::testLayers()
 {
-  QgsVectorLayer *l1 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "aaaaa" ), QStringLiteral( "memory" ) );
-  QgsVectorLayer *l2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "abc" ), QStringLiteral( "memory" ) );
-  QgsVectorLayer *l3 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "ccccc" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *l1 = new QgsVectorLayer( u"Point"_s, u"aaaaa"_s, u"memory"_s );
+  QgsVectorLayer *l2 = new QgsVectorLayer( u"Point"_s, u"abc"_s, u"memory"_s );
+  QgsVectorLayer *l3 = new QgsVectorLayer( u"Point"_s, u"ccccc"_s, u"memory"_s );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 << l2 << l3 );
 
   QgsLayerTreeLocatorFilter filter;
 
-  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, u"xxxxx"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 0 );
 
-  results = gatherResults( &filter, QStringLiteral( "aa" ), QgsLocatorContext() );
+  results = gatherResults( &filter, u"aa"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).userData().toString(), l1->id() );
 
-  results = gatherResults( &filter, QStringLiteral( "A" ), QgsLocatorContext() );
+  results = gatherResults( &filter, u"A"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 2 );
   QCOMPARE( results.at( 0 ).userData().toString(), l1->id() );
   QCOMPARE( results.at( 1 ).userData().toString(), l2->id() );
@@ -149,25 +149,25 @@ void TestQgsAppLocatorFilters::testLayers()
 void TestQgsAppLocatorFilters::testLayouts()
 {
   QgsPrintLayout *pl1 = new QgsPrintLayout( QgsProject::instance() );
-  pl1->setName( QStringLiteral( "aaaaaa" ) );
+  pl1->setName( u"aaaaaa"_s );
   QgsProject::instance()->layoutManager()->addLayout( pl1 );
   QgsPrintLayout *pl2 = new QgsPrintLayout( QgsProject::instance() );
-  pl2->setName( QStringLiteral( "abc" ) );
+  pl2->setName( u"abc"_s );
   QgsProject::instance()->layoutManager()->addLayout( pl2 );
   QgsPrintLayout *pl3 = new QgsPrintLayout( QgsProject::instance() );
-  pl3->setName( QStringLiteral( "ccccc" ) );
+  pl3->setName( u"ccccc"_s );
   QgsProject::instance()->layoutManager()->addLayout( pl3 );
 
   QgsLayoutLocatorFilter filter;
 
-  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, u"xxxxx"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 0 );
 
-  results = gatherResults( &filter, QStringLiteral( "aa" ), QgsLocatorContext() );
+  results = gatherResults( &filter, u"aa"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).userData().toString(), pl1->name() );
 
-  results = gatherResults( &filter, QStringLiteral( "A" ), QgsLocatorContext() );
+  results = gatherResults( &filter, u"A"_s, QgsLocatorContext() );
   QCOMPARE( results.count(), 2 );
   QCOMPARE( results.at( 0 ).userData().toString(), pl1->name() );
   QCOMPARE( results.at( 1 ).userData().toString(), pl2->name() );
@@ -186,8 +186,8 @@ void TestQgsAppLocatorFilters::testLayouts()
 
 void TestQgsAppLocatorFilters::testSearchActiveLayer()
 {
-  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
-  QgsVectorLayer *vl = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk"_s;
+  QgsVectorLayer *vl = new QgsVectorLayer( layerDef, u"Layer"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( vl );
 
   QgsFeature f;
@@ -204,37 +204,37 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   QgsActiveLayerFeaturesLocatorFilter filter;
   const QgsLocatorContext context;
 
-  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "12345.6789" ), context );
+  QList<QgsLocatorResult> results = gatherResults( &filter, u"12345.6789"_s, context );
   QCOMPARE( results.count(), 1 );
 
-  results = gatherResults( &filter, QStringLiteral( "12345.67" ), context );
+  results = gatherResults( &filter, u"12345.67"_s, context );
   QCOMPARE( results.count(), 0 );
 
-  results = gatherResults( &filter, QStringLiteral( "1234567890" ), context );
+  results = gatherResults( &filter, u"1234567890"_s, context );
   QCOMPARE( results.count(), 1 );
 
-  results = gatherResults( &filter, QStringLiteral( "nice" ), context );
+  results = gatherResults( &filter, u"nice"_s, context );
   QCOMPARE( results.count(), 1 );
 
-  results = gatherResults( &filter, QStringLiteral( "@my_text nice" ), context );
+  results = gatherResults( &filter, u"@my_text nice"_s, context );
   QCOMPARE( results.count(), 1 );
 
-  results = gatherResults( &filter, QStringLiteral( "@my_integer nice" ), context );
+  results = gatherResults( &filter, u"@my_integer nice"_s, context );
   QCOMPARE( results.count(), 0 );
 
-  results = gatherResults( &filter, QStringLiteral( "@unknown_field nice" ), context );
+  results = gatherResults( &filter, u"@unknown_field nice"_s, context );
   QCOMPARE( results.count(), 0 );
 
   // check with display expression, feature should not be shown twice
-  vl->setDisplayExpression( QStringLiteral( "concat(\"my_text\", ' ', \"my_double\")" ) );
-  results = gatherResults( &filter, QStringLiteral( "nice" ), context );
+  vl->setDisplayExpression( u"concat(\"my_text\", ' ', \"my_double\")"_s );
+  results = gatherResults( &filter, u"nice"_s, context );
   QCOMPARE( results.count(), 1 );
-  results = gatherResults( &filter, QStringLiteral( "a feature" ), context );
+  results = gatherResults( &filter, u"a feature"_s, context );
   QCOMPARE( results.count(), 1 );
-  results = gatherResults( &filter, QStringLiteral( "nice .678" ), context );
+  results = gatherResults( &filter, u"nice .678"_s, context );
   QCOMPARE( results.count(), 1 );
 
-  results = gatherResults( &filter, QStringLiteral( "@my_text @home" ), context );
+  results = gatherResults( &filter, u"@my_text @home"_s, context );
   QCOMPARE( results.count(), 1 );
 
   QgsProject::instance()->removeAllMapLayers();
@@ -244,35 +244,35 @@ void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
 {
   bool isRestricting = false;
 
-  QString search = QStringLiteral( "@my_field search" );
+  QString search = u"@my_field search"_s;
   QString restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
   QVERIFY( isRestricting );
-  QCOMPARE( restr, QStringLiteral( "my_field" ) );
-  QCOMPARE( search, QStringLiteral( "search" ) );
+  QCOMPARE( restr, u"my_field"_s );
+  QCOMPARE( search, u"search"_s );
 
-  search = QStringLiteral( "@home" );
+  search = u"@home"_s;
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
   QVERIFY( isRestricting );
-  QCOMPARE( restr, QStringLiteral( "home" ) );
+  QCOMPARE( restr, u"home"_s );
   QCOMPARE( search, QString() );
 
-  search = QStringLiteral( "@" );
+  search = u"@"_s;
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
   QVERIFY( isRestricting );
   QCOMPARE( restr, QString() );
   QCOMPARE( search, QString() );
 
-  search = QStringLiteral( "hello there" );
+  search = u"hello there"_s;
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
   QVERIFY( !isRestricting );
   QVERIFY( restr.isNull() );
-  QCOMPARE( search, QStringLiteral( "hello there" ) );
+  QCOMPARE( search, u"hello there"_s );
 }
 
 void TestQgsAppLocatorFilters::testActiveLayerCompletion()
 {
-  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
-  QgsVectorLayer *vl = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk"_s;
+  QgsVectorLayer *vl = new QgsVectorLayer( layerDef, u"Layer"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( vl );
   mQgisApp->setActiveLayer( vl );
 
@@ -282,16 +282,16 @@ void TestQgsAppLocatorFilters::testActiveLayerCompletion()
   context.usingPrefix = true;
 
   QCOMPARE( filter.prepare( QString(), context ), QStringList( { "@pk ", "@my_text ", "@my_integer ", "@my_double " } ) );
-  QCOMPARE( filter.prepare( QStringLiteral( "@my_i" ), context ), QStringList( { "@my_integer " } ) );
+  QCOMPARE( filter.prepare( u"@my_i"_s, context ), QStringList( { "@my_integer " } ) );
 
   QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestQgsAppLocatorFilters::testSearchAllLayers()
 {
-  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
-  QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
-  QgsVectorLayer *l2 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 2" ), QStringLiteral( "memory" ) );
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk"_s;
+  QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, u"Layer 1"_s, u"memory"_s );
+  QgsVectorLayer *l2 = new QgsVectorLayer( layerDef, u"Layer 2"_s, u"memory"_s );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 << l2 );
 
@@ -311,17 +311,17 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
   QgsAllLayersFeaturesLocatorFilter filter;
   const QgsLocatorContext context;
 
-  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "100" ), context );
+  QList<QgsLocatorResult> results = gatherResults( &filter, u"100"_s, context );
 
-  l1->setDisplayExpression( QStringLiteral( "\"my_text\" || ' is ' || \"my_number\"" ) );
-  l2->setDisplayExpression( QStringLiteral( "\"my_text\" || ' is ' || \"my_number\"" ) );
+  l1->setDisplayExpression( u"\"my_text\" || ' is ' || \"my_number\""_s );
+  l2->setDisplayExpression( u"\"my_text\" || ' is ' || \"my_number\""_s );
 
-  results = gatherResults( &filter, QStringLiteral( "feature is 6789" ), context );
+  results = gatherResults( &filter, u"feature is 6789"_s, context );
   QCOMPARE( results.count(), 2 );
 
   l2->setFlags( l2->flags() & ~QgsMapLayer::Searchable );
 
-  results = gatherResults( &filter, QStringLiteral( "feature is 6789" ), context );
+  results = gatherResults( &filter, u"feature is 6789"_s, context );
   QCOMPARE( results.count(), 1 );
 
   QgsProject::instance()->removeAllMapLayers();
@@ -329,8 +329,8 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
 
 void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
 {
-  const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
-  QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
+  const QString layerDef = u"Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk"_s;
+  QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, u"Layer 1"_s, u"memory"_s );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 );
 
@@ -350,12 +350,12 @@ void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
   QgsLocatorContext context;
   context.usingPrefix = true; // Searching for short strings is only available with prefix
 
-  l1->setDisplayExpression( QStringLiteral( "\"my_number\"" ) );
+  l1->setDisplayExpression( u"\"my_number\""_s );
 
-  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "1" ), context );
+  QList<QgsLocatorResult> results = gatherResults( &filter, u"1"_s, context );
   QCOMPARE( results.count(), 2 );
-  QCOMPARE( results.first().displayString, QStringLiteral( "1" ) );
-  QCOMPARE( results.last().displayString, QStringLiteral( "100" ) );
+  QCOMPARE( results.first().displayString, u"1"_s );
+  QCOMPARE( results.last().displayString, u"100"_s );
 
   QgsProject::instance()->removeAllMapLayers();
 }
@@ -384,23 +384,23 @@ void TestQgsAppLocatorFilters::testGoto_data()
   QTest::addColumn<QString>( "string" );
   QTest::addColumn<Results>( "expected" );
 
-  QTest::newRow( "simple" ) << QStringLiteral( "4 5" ) << Results( { { QObject::tr( "Go to 4 5 (Map CRS, )" ), QgsPointXY( 4, 5 ) }, { QObject::tr( "Go to 4°N 5°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 5, 4 ) } } );
+  QTest::newRow( "simple" ) << u"4 5"_s << Results( { { QObject::tr( "Go to 4 5 (Map CRS, )" ), QgsPointXY( 4, 5 ) }, { QObject::tr( "Go to 4°N 5°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 5, 4 ) } } );
 
-  QTest::newRow( "locale" ) << QStringLiteral( "1,234.56 789.012" ) << Results( { { QObject::tr( "Go to 1,234.56 789.012 (Map CRS, )" ), QgsPointXY( 1234.56, 789.012 ) } } );
+  QTest::newRow( "locale" ) << u"1,234.56 789.012"_s << Results( { { QObject::tr( "Go to 1,234.56 789.012 (Map CRS, )" ), QgsPointXY( 1234.56, 789.012 ) } } );
 
-  QTest::newRow( "nort-west" ) << QStringLiteral( "12.345N, 67.890W" ) << Results( { { QObject::tr( "Go to 12.345°N -67.89°E (EPSG:4326 - WGS 84)" ), QgsPointXY( -67.890, 12.345 ) } } );
-  QTest::newRow( "east-south" ) << QStringLiteral( "12.345 e, 67.890 s" ) << Results( { { QObject::tr( "Go to -67.89°N 12.345°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 12.345, -67.890 ) } } );
-  QTest::newRow( "degree-suffix" ) << QStringLiteral( "40deg 1' 0\" E 11deg  55' 0\" S" ) << Results( { { QObject::tr( "Go to -11.91666667°N 40.01666667°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 40.0166666667, -11.9166666667 ) } } );
-  QTest::newRow( "north-east------------" ) << QStringLiteral( "14°49′48″N 01°48′45″E" ) << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
-  QTest::newRow( "north-east-space------" ) << QStringLiteral( "14°49′48″ N 01°48′45″ E" ) << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
-  QTest::newRow( "north-east-comma------" ) << QStringLiteral( "14°49′48″N, 01°48′45″E" ) << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
-  QTest::newRow( "north-east-comma-space" ) << QStringLiteral( "14°49′48″ N, 01°48′45″ E" ) << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
-  QTest::newRow( "north-east-front------" ) << QStringLiteral( "N 14°49′48″ E 01°48′45″" ) << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
-  QTest::newRow( "north-east-front-comma" ) << QStringLiteral( "N 14°49′48″, E 01°48′45″" ) << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
-  QTest::newRow( "osm.leaflet.OL" ) << QStringLiteral( "https://www.openstreetmap.org/#map=15/44.5546/6.4936" ) << Results( { { QObject::tr( "Go to 44.5546°N 6.4936°E at scale 1:22569 (EPSG:4326 - WGS 84)" ), QgsPointXY( 6.4936, 44.5546 ), 22569.0 } } );
-  QTest::newRow( "gmaps1" ) << QStringLiteral( "https://www.google.com/maps/@44.5546,6.4936,15.25z" ) << Results( { { QObject::tr( "Go to 44.5546°N 6.4936°E at scale 1:22569 (EPSG:4326 - WGS 84)" ), QgsPointXY( 6.4936, 44.5546 ), 22569.0 } } );
-  QTest::newRow( "gmaps2" ) << QStringLiteral( "https://www.google.com/maps/@7.8750,81.0149,574195m/data=!3m1!1e3" ) << Results( { { QObject::tr( "Go to 7.875°N 81.0149°E at scale 1:6.49572e+07 (EPSG:4326 - WGS 84)" ), QgsPointXY( 81.0149, 7.8750 ) } } );
-  QTest::newRow( "gmaps3" ) << QStringLiteral( "https://www.google.com/maps/@27.7132,85.3288,3a,75y,278.89h,90t/data=!3m8!1e1!3m6!1sAF1QipMrXuXozGc9x9bxx5uPl_3ys4H-rNVqMLr6EYLA!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMrXuXozGc9x9bxx5uPl_3ys4H-rNVqMLr6EYLA%3Dw203-h100-k-no-pi2.869903-ya293.58762-ro-1.9255565-fo100!7i3840!8i1920" ) << Results( { { QObject::tr( "Go to 27.7132°N 85.3288°E at scale 1:282 (EPSG:4326 - WGS 84)" ), QgsPointXY( 85.3288, 27.7132 ), 282.0 } } );
+  QTest::newRow( "nort-west" ) << u"12.345N, 67.890W"_s << Results( { { QObject::tr( "Go to 12.345°N -67.89°E (EPSG:4326 - WGS 84)" ), QgsPointXY( -67.890, 12.345 ) } } );
+  QTest::newRow( "east-south" ) << u"12.345 e, 67.890 s"_s << Results( { { QObject::tr( "Go to -67.89°N 12.345°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 12.345, -67.890 ) } } );
+  QTest::newRow( "degree-suffix" ) << u"40deg 1' 0\" E 11deg  55' 0\" S"_s << Results( { { QObject::tr( "Go to -11.91666667°N 40.01666667°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 40.0166666667, -11.9166666667 ) } } );
+  QTest::newRow( "north-east------------" ) << u"14°49′48″N 01°48′45″E"_s << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
+  QTest::newRow( "north-east-space------" ) << u"14°49′48″ N 01°48′45″ E"_s << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
+  QTest::newRow( "north-east-comma------" ) << u"14°49′48″N, 01°48′45″E"_s << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
+  QTest::newRow( "north-east-comma-space" ) << u"14°49′48″ N, 01°48′45″ E"_s << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
+  QTest::newRow( "north-east-front------" ) << u"N 14°49′48″ E 01°48′45″"_s << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
+  QTest::newRow( "north-east-front-comma" ) << u"N 14°49′48″, E 01°48′45″"_s << Results( { { QObject::tr( "Go to 14.83°N 1.8125°E (EPSG:4326 - WGS 84)" ), QgsPointXY( 1.8125, 14.83 ) } } );
+  QTest::newRow( "osm.leaflet.OL" ) << u"https://www.openstreetmap.org/#map=15/44.5546/6.4936"_s << Results( { { QObject::tr( "Go to 44.5546°N 6.4936°E at scale 1:22569 (EPSG:4326 - WGS 84)" ), QgsPointXY( 6.4936, 44.5546 ), 22569.0 } } );
+  QTest::newRow( "gmaps1" ) << u"https://www.google.com/maps/@44.5546,6.4936,15.25z"_s << Results( { { QObject::tr( "Go to 44.5546°N 6.4936°E at scale 1:22569 (EPSG:4326 - WGS 84)" ), QgsPointXY( 6.4936, 44.5546 ), 22569.0 } } );
+  QTest::newRow( "gmaps2" ) << u"https://www.google.com/maps/@7.8750,81.0149,574195m/data=!3m1!1e3"_s << Results( { { QObject::tr( "Go to 7.875°N 81.0149°E at scale 1:6.49572e+07 (EPSG:4326 - WGS 84)" ), QgsPointXY( 81.0149, 7.8750 ) } } );
+  QTest::newRow( "gmaps3" ) << u"https://www.google.com/maps/@27.7132,85.3288,3a,75y,278.89h,90t/data=!3m8!1e1!3m6!1sAF1QipMrXuXozGc9x9bxx5uPl_3ys4H-rNVqMLr6EYLA!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMrXuXozGc9x9bxx5uPl_3ys4H-rNVqMLr6EYLA%3Dw203-h100-k-no-pi2.869903-ya293.58762-ro-1.9255565-fo100!7i3840!8i1920"_s << Results( { { QObject::tr( "Go to 27.7132°N 85.3288°E at scale 1:282 (EPSG:4326 - WGS 84)" ), QgsPointXY( 85.3288, 27.7132 ), 282.0 } } );
 }
 
 void TestQgsAppLocatorFilters::testGoto()
@@ -416,9 +416,9 @@ void TestQgsAppLocatorFilters::testGoto()
   for ( int i = 0; i < results.count(); i++ )
   {
     QCOMPARE( results.at( i ).displayString, expected.at( i ).displayString );
-    QCOMPARE( results.at( i ).userData().toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), expected.at( i ).point );
+    QCOMPARE( results.at( i ).userData().toMap()[u"point"_s].value<QgsPointXY>(), expected.at( i ).point );
     if ( expected.at( i ).scale > 0 )
-      QCOMPARE( results.at( 0 ).userData().toMap()[QStringLiteral( "scale" )].toDouble(), expected.at( i ).scale );
+      QCOMPARE( results.at( 0 ).userData().toMap()[u"scale"_s].toDouble(), expected.at( i ).scale );
   }
 }
 

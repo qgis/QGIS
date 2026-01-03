@@ -52,7 +52,7 @@ QWidget *QgsColorWidgetWrapper::createWidget( QWidget *parent )
   container->setLayout( layout );
   layout->setContentsMargins( 0, 0, 0, 0 );
   QgsColorButton *button = new QgsColorButton();
-  button->setContext( QStringLiteral( "editor" ) );
+  button->setContext( u"editor"_s );
   layout->addWidget( button );
   layout->addStretch();
   container->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );

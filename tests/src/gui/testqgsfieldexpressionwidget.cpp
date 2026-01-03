@@ -64,18 +64,18 @@ void TestQgsFieldExpressionWidget::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   // Create memory layers
   // LAYER A //
-  mLayerA = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  mLayerA = new QgsVectorLayer( u"Point?field=id_a:integer"_s, u"A"_s, u"memory"_s );
   QVERIFY( mLayerA->isValid() );
   QVERIFY( mLayerA->fields().count() == 1 );
   QgsProject::instance()->addMapLayer( mLayerA );
   // LAYER B //
-  mLayerB = new QgsVectorLayer( QStringLiteral( "Point?field=id_b:integer&field=value_b" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  mLayerB = new QgsVectorLayer( u"Point?field=id_b:integer&field=value_b"_s, u"B"_s, u"memory"_s );
   QVERIFY( mLayerB->isValid() );
   QVERIFY( mLayerB->fields().count() == 2 );
   QgsProject::instance()->addMapLayer( mLayerB );
@@ -103,16 +103,16 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
   QVERIFY( mLayerA->fields().count() == 1 );
 
   QgsVectorLayerJoinInfo joinInfo;
-  joinInfo.setTargetFieldName( QStringLiteral( "id_a" ) );
+  joinInfo.setTargetFieldName( u"id_a"_s );
   joinInfo.setJoinLayer( mLayerB );
-  joinInfo.setJoinFieldName( QStringLiteral( "id_b" ) );
+  joinInfo.setJoinFieldName( u"id_b"_s );
   joinInfo.setUsingMemoryCache( false );
-  joinInfo.setPrefix( QStringLiteral( "B_" ) );
+  joinInfo.setPrefix( u"B_"_s );
   mLayerA->addJoin( joinInfo );
 
   QVERIFY( mLayerA->fields().count() == 2 );
 
-  const QString expr = QStringLiteral( "'hello '|| B_value_b" );
+  const QString expr = u"'hello '|| B_value_b"_s;
   mWidget->setField( expr );
 
   bool isExpression, isValid;
@@ -134,8 +134,8 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
 
 void TestQgsFieldExpressionWidget::asExpression()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-  layer->dataProvider()->addAttributes( QList<QgsField>() << QgsField( QStringLiteral( "a space" ), QMetaType::Type::QString ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"point?field=fld:int&field=fld2:int&field=fld3:int"_s, u"x"_s, u"memory"_s );
+  layer->dataProvider()->addAttributes( QList<QgsField>() << QgsField( u"a space"_s, QMetaType::Type::QString ) );
   layer->updateFields();
   QgsProject::instance()->addMapLayer( layer );
 
@@ -146,46 +146,46 @@ void TestQgsFieldExpressionWidget::asExpression()
   const QSignalSpy spy2( widget.get(), static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ) );
 
   // check with field set
-  widget->setField( QStringLiteral( "fld" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "\"fld\"" ) );
+  widget->setField( u"fld"_s );
+  QCOMPARE( widget->asExpression(), u"\"fld\""_s );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"fld"_s );
   QCOMPARE( spy2.count(), 1 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"fld"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   // check with expressions set
-  widget->setField( QStringLiteral( "fld + 1" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "fld + 1" ) );
+  widget->setField( u"fld + 1"_s );
+  QCOMPARE( widget->asExpression(), u"fld + 1"_s );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld + 1" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"fld + 1"_s );
   QCOMPARE( spy2.count(), 2 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld + 1" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"fld + 1"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
-  widget->setField( QStringLiteral( "1" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "1" ) );
+  widget->setField( u"1"_s );
+  QCOMPARE( widget->asExpression(), u"1"_s );
   QCOMPARE( spy.count(), 3 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"1"_s );
   QCOMPARE( spy2.count(), 3 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"1"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
-  widget->setField( QStringLiteral( "\"fld2\"" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "\"fld2\"" ) );
+  widget->setField( u"\"fld2\""_s );
+  QCOMPARE( widget->asExpression(), u"\"fld2\""_s );
   QCOMPARE( spy.count(), 4 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld2" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"fld2"_s );
   QCOMPARE( spy2.count(), 4 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld2" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"fld2"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   // check switching back to a field
-  widget->setField( QStringLiteral( "fld3" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "\"fld3\"" ) );
+  widget->setField( u"fld3"_s );
+  QCOMPARE( widget->asExpression(), u"\"fld3\""_s );
   QCOMPARE( spy.count(), 5 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "fld3" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"fld3"_s );
   QCOMPARE( spy2.count(), 5 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "fld3" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"fld3"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   // and back to null
@@ -198,28 +198,28 @@ void TestQgsFieldExpressionWidget::asExpression()
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   // field name with space
-  widget->setField( QStringLiteral( "a space" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "\"a space\"" ) );
+  widget->setField( u"a space"_s );
+  QCOMPARE( widget->asExpression(), u"\"a space\""_s );
   bool isExpression = true;
-  QCOMPARE( widget->currentField( &isExpression ), QStringLiteral( "a space" ) );
+  QCOMPARE( widget->currentField( &isExpression ), u"a space"_s );
   QVERIFY( !isExpression );
   QCOMPARE( spy.count(), 7 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"a space"_s );
   QCOMPARE( spy2.count(), 7 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"a space"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   widget->setField( QString() );
   QVERIFY( widget->asExpression().isEmpty() );
-  widget->setExpression( QStringLiteral( "\"a space\"" ) );
-  QCOMPARE( widget->asExpression(), QStringLiteral( "\"a space\"" ) );
+  widget->setExpression( u"\"a space\""_s );
+  QCOMPARE( widget->asExpression(), u"\"a space\""_s );
   isExpression = true;
-  QCOMPARE( widget->currentField( &isExpression ), QStringLiteral( "a space" ) );
+  QCOMPARE( widget->currentField( &isExpression ), u"a space"_s );
   QVERIFY( !isExpression );
   QCOMPARE( spy.count(), 9 );
-  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), u"a space"_s );
   QCOMPARE( spy2.count(), 9 );
-  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), u"a space"_s );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   QgsProject::instance()->removeMapLayer( layer );
@@ -227,7 +227,7 @@ void TestQgsFieldExpressionWidget::asExpression()
 
 void TestQgsFieldExpressionWidget::testIsValid()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=name%20with%20space:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"point?field=fld:int&field=name%20with%20space:string"_s, u"x"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( layer );
 
   auto widget = std::make_unique<QgsFieldExpressionWidget>();
@@ -239,44 +239,44 @@ void TestQgsFieldExpressionWidget::testIsValid()
   // check with simple field name set
   bool isExpression = false;
   bool isValid = false;
-  widget->setField( QStringLiteral( "fld" ) );
-  QCOMPARE( widget->currentField( &isExpression, &isValid ), QStringLiteral( "fld" ) );
+  widget->setField( u"fld"_s );
+  QCOMPARE( widget->currentField( &isExpression, &isValid ), u"fld"_s );
   QVERIFY( !isExpression );
   QVERIFY( isValid );
   QVERIFY( widget->isValidExpression() );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "fld" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), u"fld"_s );
   QVERIFY( spy.last().at( 1 ).toBool() );
 
 
   //check with complex field name set
-  widget->setField( QStringLiteral( "name with space" ) );
-  QCOMPARE( widget->currentField( &isExpression, &isValid ), QStringLiteral( "name with space" ) );
+  widget->setField( u"name with space"_s );
+  QCOMPARE( widget->currentField( &isExpression, &isValid ), u"name with space"_s );
   QVERIFY( !isExpression );
   QVERIFY( isValid );
   QVERIFY( !widget->isValidExpression() );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "name with space" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), u"name with space"_s );
   QVERIFY( spy.last().at( 1 ).toBool() );
 
   //check with valid expression set
-  widget->setField( QStringLiteral( "2 * 4" ) );
-  QCOMPARE( widget->currentField( &isExpression, &isValid ), QStringLiteral( "2 * 4" ) );
+  widget->setField( u"2 * 4"_s );
+  QCOMPARE( widget->currentField( &isExpression, &isValid ), u"2 * 4"_s );
   QVERIFY( isExpression );
   QVERIFY( isValid );
   QVERIFY( widget->isValidExpression() );
   QCOMPARE( spy.count(), 3 );
-  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "2 * 4" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), u"2 * 4"_s );
   QVERIFY( spy.last().at( 1 ).toBool() );
 
   //check with invalid expression set
-  widget->setField( QStringLiteral( "2 *" ) );
-  QCOMPARE( widget->currentField( &isExpression, &isValid ), QStringLiteral( "2 *" ) );
+  widget->setField( u"2 *"_s );
+  QCOMPARE( widget->currentField( &isExpression, &isValid ), u"2 *"_s );
   QVERIFY( isExpression );
   QVERIFY( !isValid );
   QVERIFY( !widget->isValidExpression() );
   QCOMPARE( spy.count(), 4 );
-  QCOMPARE( spy.last().at( 0 ).toString(), QStringLiteral( "2 *" ) );
+  QCOMPARE( spy.last().at( 0 ).toString(), u"2 *"_s );
   QVERIFY( !spy.last().at( 1 ).toBool() );
 
   QgsProject::instance()->removeMapLayer( layer );
@@ -284,67 +284,67 @@ void TestQgsFieldExpressionWidget::testIsValid()
 
 void TestQgsFieldExpressionWidget::testFilters()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean"_s, u"x"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( layer );
 
   auto widget = std::make_unique<QgsFieldExpressionWidget>();
   widget->setLayer( layer );
 
   QCOMPARE( widget->mCombo->count(), 10 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "intfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 1 ), QStringLiteral( "stringfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 2 ), QStringLiteral( "string2fld" ) );
-  QCOMPARE( widget->mCombo->itemText( 3 ), QStringLiteral( "longfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 4 ), QStringLiteral( "doublefld" ) );
-  QCOMPARE( widget->mCombo->itemText( 5 ), QStringLiteral( "datefld" ) );
-  QCOMPARE( widget->mCombo->itemText( 6 ), QStringLiteral( "timefld" ) );
-  QCOMPARE( widget->mCombo->itemText( 7 ), QStringLiteral( "datetimefld" ) );
-  QCOMPARE( widget->mCombo->itemText( 8 ), QStringLiteral( "binaryfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 9 ), QStringLiteral( "booleanfld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"intfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 1 ), u"stringfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 2 ), u"string2fld"_s );
+  QCOMPARE( widget->mCombo->itemText( 3 ), u"longfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 4 ), u"doublefld"_s );
+  QCOMPARE( widget->mCombo->itemText( 5 ), u"datefld"_s );
+  QCOMPARE( widget->mCombo->itemText( 6 ), u"timefld"_s );
+  QCOMPARE( widget->mCombo->itemText( 7 ), u"datetimefld"_s );
+  QCOMPARE( widget->mCombo->itemText( 8 ), u"binaryfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 9 ), u"booleanfld"_s );
 
   widget->setFilters( QgsFieldProxyModel::String );
   QCOMPARE( widget->mCombo->count(), 2 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "stringfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 1 ), QStringLiteral( "string2fld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"stringfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 1 ), u"string2fld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Int );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "intfld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"intfld"_s );
 
   widget->setFilters( QgsFieldProxyModel::LongLong );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "longfld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"longfld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Double );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "doublefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"doublefld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Numeric );
   QCOMPARE( widget->mCombo->count(), 3 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "intfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 1 ), QStringLiteral( "longfld" ) );
-  QCOMPARE( widget->mCombo->itemText( 2 ), QStringLiteral( "doublefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"intfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 1 ), u"longfld"_s );
+  QCOMPARE( widget->mCombo->itemText( 2 ), u"doublefld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Date );
   QCOMPARE( widget->mCombo->count(), 2 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "datefld" ) );
-  QCOMPARE( widget->mCombo->itemText( 1 ), QStringLiteral( "datetimefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"datefld"_s );
+  QCOMPARE( widget->mCombo->itemText( 1 ), u"datetimefld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Time );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "timefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"timefld"_s );
 
   widget->setFilters( QgsFieldProxyModel::DateTime );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "datetimefld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"datetimefld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Binary );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "binaryfld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"binaryfld"_s );
 
   widget->setFilters( QgsFieldProxyModel::Boolean );
   QCOMPARE( widget->mCombo->count(), 1 );
-  QCOMPARE( widget->mCombo->itemText( 0 ), QStringLiteral( "booleanfld" ) );
+  QCOMPARE( widget->mCombo->itemText( 0 ), u"booleanfld"_s );
 
   QgsProject::instance()->removeMapLayer( layer );
 }
@@ -352,7 +352,7 @@ void TestQgsFieldExpressionWidget::testFilters()
 void TestQgsFieldExpressionWidget::setNull()
 {
   // test that QgsFieldExpressionWidget can be set to an empty value
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"point?field=fld:int&field=fld2:int&field=fld3:int"_s, u"x"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( layer );
 
   auto widget = std::make_unique<QgsFieldExpressionWidget>();
@@ -361,8 +361,8 @@ void TestQgsFieldExpressionWidget::setNull()
   widget->setField( QString() );
   QVERIFY( widget->currentField().isEmpty() );
 
-  widget->setField( QStringLiteral( "fld2" ) );
-  QCOMPARE( widget->currentField(), QStringLiteral( "fld2" ) );
+  widget->setField( u"fld2"_s );
+  QCOMPARE( widget->currentField(), u"fld2"_s );
 
   widget->setField( QString() );
   QVERIFY( widget->currentField().isEmpty() );

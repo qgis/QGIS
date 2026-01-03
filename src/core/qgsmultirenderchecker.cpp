@@ -24,7 +24,7 @@
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {
-  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s )
     mIsCiRun = true;
 }
 
@@ -60,7 +60,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
   mResult = false;
 
   mReportHeader = "<h2>" + testName + "</h2>\n";
-  mMarkdownReportHeader = QStringLiteral( "### %1\n\n" ).arg( testName );
+  mMarkdownReportHeader = u"### %1\n\n"_s.arg( testName );
 
   const QString baseDir = controlImagePath();
   if ( !QFile::exists( baseDir ) )
@@ -114,7 +114,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
     mReport += checker.report( false );
     if ( subDirs.count() > 1 )
-      mMarkdownReport += QStringLiteral( "* " ) + checker.markdownReport( false );
+      mMarkdownReport += u"* "_s + checker.markdownReport( false );
     else
       mMarkdownReport += checker.markdownReport( false );
 
@@ -135,7 +135,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     for ( const QgsDartMeasurement &measurement : constDartMeasurements )
       measurement.send();
 
-    QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
+    QgsDartMeasurement msg( u"Image not accepted by test"_s, QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
                             "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
     msg.send();
 
@@ -159,11 +159,11 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     {
       if ( subDirs.size() > 1 )
       {
-        qDebug() << QStringLiteral( "Variant %1: %2/%3 pixels mismatched (%4 allowed)" ).arg( it.key() ).arg( it.value() ).arg( variantSize.value( it.key() ) ).arg( mismatchCount );
+        qDebug() << u"Variant %1: %2/%3 pixels mismatched (%4 allowed)"_s.arg( it.key() ).arg( it.value() ).arg( variantSize.value( it.key() ) ).arg( mismatchCount );
       }
       else
       {
-        qDebug() << QStringLiteral( "%1/%2 pixels mismatched (%4 allowed)" ).arg( it.value() ).arg( variantSize.value( it.key() ) ).arg( mismatchCount );
+        qDebug() << u"%1/%2 pixels mismatched (%4 allowed)"_s.arg( it.value() ).arg( variantSize.value( it.key() ) ).arg( mismatchCount );
       }
     }
     const QDir reportDir = QgsRenderChecker::testReportDir();
@@ -215,16 +215,16 @@ QString QgsMultiRenderChecker::report() const
     const QString githubSha = qgetenv( "GITHUB_SHA" );
     if ( !githubSha.isEmpty() )
     {
-      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+      const QString githubBlobUrl = u"https://github.com/qgis/QGIS/blob/%1/%2#L%3"_s.arg(
                                       githubSha, mSourceFile ).arg( mSourceLine );
-      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at <a href=\"%2\">%3:%4</a></b>\n" ).arg(
+      report += u"<b style=\"color: red\">Test failed in %1 at <a href=\"%2\">%3:%4</a></b>\n"_s.arg(
                   mSourceFunction,
                   githubBlobUrl,
                   mSourceFile ).arg( mSourceLine );
     }
     else
     {
-      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at %2:%3</b>\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+      report += u"<b style=\"color: red\">Test failed in %1 at %2:%3</b>\n"_s.arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
     }
   }
 
@@ -245,14 +245,14 @@ QString QgsMultiRenderChecker::markdownReport() const
     QString fileLink;
     if ( !githubSha.isEmpty() )
     {
-      fileLink = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+      fileLink = u"https://github.com/qgis/QGIS/blob/%1/%2#L%3"_s.arg(
                    githubSha, mSourceFile ).arg( mSourceLine );
     }
     else
     {
       fileLink = QUrl::fromLocalFile( QDir( QgsRenderChecker::sourcePath() ).filePath( mSourceFile ) ).toString();
     }
-    report += QStringLiteral( "**Test failed at %1 at [%2:%3](%4)**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine ).arg( fileLink );
+    report += u"**Test failed at %1 at [%2:%3](%4)**\n\n"_s.arg( mSourceFunction, mSourceFile ).arg( mSourceLine ).arg( fileLink );
   }
   report += mMarkdownReport;
   return report;

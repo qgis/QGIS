@@ -55,7 +55,7 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   } );
 
 
-  const QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl" ).split( ';' );
+  const QStringList protocolTypes = u"HTTP/HTTPS/FTP,vsicurl"_s.split( ';' );
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
     const QString protocolType = protocolTypes.at( i );
@@ -66,7 +66,7 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
 
 void QgsPointCloudSourceSelect::addButtonClicked()
 {
-  if ( mDataSourceType == QLatin1String( "file" ) )
+  if ( mDataSourceType == "file"_L1 )
   {
     if ( mPath.isEmpty() )
     {
@@ -79,14 +79,14 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
       const QList<QgsProviderRegistry::ProviderCandidateDetails> preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( path );
       // if no preferred providers we can still give pdal a try
-      const QString providerKey = preferredProviders.empty() ? QStringLiteral( "pdal" ) : preferredProviders.first().metadata()->key();
+      const QString providerKey = preferredProviders.empty() ? u"pdal"_s : preferredProviders.first().metadata()->key();
       Q_NOWARN_DEPRECATED_PUSH
       emit addPointCloudLayer( path, QFileInfo( path ).baseName(), providerKey );
       Q_NOWARN_DEPRECATED_POP
       emit addLayer( Qgis::LayerType::PointCloud, path, QFileInfo( path ).baseName(), providerKey );
     }
   }
-  else if ( mDataSourceType == QLatin1String( "remote" ) )
+  else if ( mDataSourceType == "remote"_L1 )
   {
     if ( mPath.isEmpty() )
     {
@@ -97,7 +97,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     QUrl url = QUrl::fromUserInput( mPath );
     QString fileName = url.fileName();
 
-    if ( fileName.compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) != 0 && !fileName.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".vpc" ), Qt::CaseInsensitive ) )
+    if ( fileName.compare( "ept.json"_L1, Qt::CaseInsensitive ) != 0 && !fileName.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) && !fileName.endsWith( ".vpc"_L1, Qt::CaseInsensitive ) )
     {
       QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz or .vpc" ).arg( mPath ) );
       return;
@@ -108,14 +108,14 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
     {
-      QString baseName = QStringLiteral( "remote ept layer" );
-      if ( mPath.endsWith( QLatin1String( "/ept.json" ), Qt::CaseInsensitive ) )
+      QString baseName = u"remote ept layer"_s;
+      if ( mPath.endsWith( "/ept.json"_L1, Qt::CaseInsensitive ) )
       {
         QStringList separatedPath = mPath.split( '/' );
         if ( separatedPath.size() >= 2 )
           baseName = separatedPath[separatedPath.size() - 2];
       }
-      if ( mPath.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
+      if ( mPath.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) )
       {
         baseName = QFileInfo( mPath ).baseName();
       }
@@ -125,17 +125,17 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         const QString authcfg = mAuthSettingsProtocol->configId();
         if ( !authcfg.isEmpty() )
-          parts.insert( QStringLiteral( "authcfg" ), authcfg );
+          parts.insert( u"authcfg"_s, authcfg );
       }
       else
       {
         const QString username = mAuthSettingsProtocol->username();
         const QString password = mAuthSettingsProtocol->password();
         if ( !username.isEmpty() && !password.isEmpty() )
-          mPath.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+          mPath.replace( "://"_L1, u"://%1:%2@"_s.arg( username, password ) );
       }
 
-      parts.insert( QStringLiteral( "path" ), mPath );
+      parts.insert( u"path"_s, mPath );
       const QString dsUri = preferredProviders.at( 0 ).metadata()->encodeUri( parts );
 
       Q_NOWARN_DEPRECATED_PUSH
@@ -157,7 +157,7 @@ void QgsPointCloudSourceSelect::radioSrcFile_toggled( bool checked )
     mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
     mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
 
-    mDataSourceType = QStringLiteral( "file" );
+    mDataSourceType = u"file"_s;
 
     emit enableButtons( !mFileWidget->filePath().isEmpty() );
   }
@@ -170,7 +170,7 @@ void QgsPointCloudSourceSelect::radioSrcProtocol_toggled( bool checked )
     fileGroupBox->hide();
     protocolGroupBox->show();
 
-    mDataSourceType = QStringLiteral( "remote" );
+    mDataSourceType = u"remote"_s;
 
     setProtocolWidgetsVisibility();
 
@@ -198,7 +198,7 @@ void QgsPointCloudSourceSelect::setProtocolWidgetsVisibility()
 
 void QgsPointCloudSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-layer-from-a-file"_s );
 }
 
 ///@endcond

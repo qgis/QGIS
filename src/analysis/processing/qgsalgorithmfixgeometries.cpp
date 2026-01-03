@@ -25,7 +25,7 @@
 
 QString QgsFixGeometriesAlgorithm::name() const
 {
-  return QStringLiteral( "fixgeometries" );
+  return u"fixgeometries"_s;
 }
 
 QString QgsFixGeometriesAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsFixGeometriesAlgorithm::group() const
 
 QString QgsFixGeometriesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsFixGeometriesAlgorithm::sourceFlags() const
@@ -96,7 +96,7 @@ bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
 {
   auto methodParameter = std::make_unique<QgsProcessingParameterEnum>(
-    QStringLiteral( "METHOD" ),
+    u"METHOD"_s,
     QObject::tr( "Repair method" ),
     QStringList { QObject::tr( "Linework" ), QObject::tr( "Structure" ) },
     0,
@@ -112,7 +112,7 @@ void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsFixGeometriesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMethod = static_cast<Qgis::MakeValidMethod>( parameterAsInt( parameters, QStringLiteral( "METHOD" ), context ) );
+  mMethod = static_cast<Qgis::MakeValidMethod>( parameterAsInt( parameters, u"METHOD"_s, context ) );
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
   if ( mMethod == Qgis::MakeValidMethod::Structure )
   {

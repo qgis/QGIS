@@ -112,7 +112,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + ", "_L1 +
     qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax );
 
   return rep;
@@ -122,10 +122,10 @@ QString QgsRectangle::asWktPolygon() const
 {
   if ( isNull() )
   {
-    return QStringLiteral( "Polygon EMPTY" );
+    return u"Polygon EMPTY"_s;
   }
 
-  return QStringLiteral( "Polygon ((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))" ).arg(
+  return u"Polygon ((%1 %2, %3 %2, %3 %4, %1 %4, %1 %2))"_s.arg(
            qgsDoubleToString( mXmin ),
            qgsDoubleToString( mYmin ),
            qgsDoubleToString( mXmax ),
@@ -150,15 +150,15 @@ QString QgsRectangle::toString( int precision ) const
   }
 
   if ( isNull() )
-    rep = QStringLiteral( "Null" );
+    rep = u"Null"_s;
   else
-    rep = QStringLiteral( "%1,%2 : %3,%4" )
+    rep = u"%1,%2 : %3,%4"_s
           .arg( mXmin, 0, 'f', precision )
           .arg( mYmin, 0, 'f', precision )
           .arg( mXmax, 0, 'f', precision )
           .arg( mYmax, 0, 'f', precision );
 
-  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
+  QgsDebugMsgLevel( u"Extents : %1"_s.arg( rep ), 4 );
 
   return rep;
 }
@@ -167,7 +167,7 @@ QString QgsRectangle::asPolygon() const
 {
   if ( isNull() )
   {
-    return QStringLiteral( "EMPTY" );
+    return u"EMPTY"_s;
   }
 
   QString rep;

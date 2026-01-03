@@ -89,10 +89,10 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
         m->setMessageAsPlainText( thisLayerErrors.at( 0 ) );
       else
       {
-        QString message = QStringLiteral( "<ul>" );
+        QString message = u"<ul>"_s;
         for ( const QString &e : thisLayerErrors )
-          message += QStringLiteral( "<li>%1</li>" ).arg( e );
-        message += QLatin1String( "</ul>" );
+          message += u"<li>%1</li>"_s.arg( e );
+        message += "</ul>"_L1;
         m->setMessageAsHtml( message );
       }
       m->exec();
@@ -103,9 +103,9 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
 QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   if ( !layer->isValid() )
-    return QStringLiteral( "/mIndicatorBadLayer.svg" );
+    return u"/mIndicatorBadLayer.svg"_s;
   else
-    return QStringLiteral( "/mIndicatorLayerError.svg" );
+    return u"/mIndicatorLayerError.svg"_s;
 }
 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *layer )

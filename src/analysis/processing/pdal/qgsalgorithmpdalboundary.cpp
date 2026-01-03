@@ -24,7 +24,7 @@
 
 QString QgsPdalBoundaryAlgorithm::name() const
 {
-  return QStringLiteral( "boundary" );
+  return u"boundary"_s;
 }
 
 QString QgsPdalBoundaryAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalBoundaryAlgorithm::group() const
 
 QString QgsPdalBoundaryAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointcloudextraction" );
+  return u"pointcloudextraction"_s;
 }
 
 QStringList QgsPdalBoundaryAlgorithm::tags() const
@@ -64,28 +64,28 @@ QgsPdalBoundaryAlgorithm *QgsPdalBoundaryAlgorithm::createInstance() const
 
 void QgsPdalBoundaryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of cells used to calculate boundary" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-6 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "THRESHOLD" ), QObject::tr( "Minimal number of points in a cell to consider cell occupied" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 1 ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"RESOLUTION"_s, QObject::tr( "Resolution of cells used to calculate boundary" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-6 ) );
+  addParameter( new QgsProcessingParameterNumber( u"THRESHOLD"_s, QObject::tr( "Minimal number of points in a cell to consider cell occupied" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 1 ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Boundary" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterVectorDestination( u"OUTPUT"_s, QObject::tr( "Boundary" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QStringList args = { QStringLiteral( "boundary" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ) };
+  QStringList args = { u"boundary"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
-  bool hasResolution = parameters.value( QStringLiteral( "RESOLUTION" ) ).isValid();
-  bool hasThreshold = parameters.value( QStringLiteral( "THRESHOLD" ) ).isValid();
+  bool hasResolution = parameters.value( u"RESOLUTION"_s ).isValid();
+  bool hasThreshold = parameters.value( u"THRESHOLD"_s ).isValid();
 
   if ( hasThreshold && !hasResolution )
   {
@@ -94,12 +94,12 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
 
   if ( hasResolution )
   {
-    args << QStringLiteral( "--resolution=%1" ).arg( parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context ) );
+    args << u"--resolution=%1"_s.arg( parameterAsDouble( parameters, u"RESOLUTION"_s, context ) );
   }
 
   if ( hasThreshold )
   {
-    args << QStringLiteral( "--threshold=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "THRESHOLD" ), context ) );
+    args << u"--threshold=%1"_s.arg( parameterAsInt( parameters, u"THRESHOLD"_s, context ) );
   }
 
   applyCommonParameters( args, layer->crs(), parameters, context );

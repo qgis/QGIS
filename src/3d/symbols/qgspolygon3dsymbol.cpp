@@ -58,30 +58,30 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
 
   QDomDocument doc = elem.ownerDocument();
 
-  QDomElement elemDataProperties = doc.createElement( QStringLiteral( "data" ) );
-  elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
-  elemDataProperties.setAttribute( QStringLiteral( "alt-binding" ), Qgs3DUtils::altBindingToString( mAltBinding ) );
-  elemDataProperties.setAttribute( QStringLiteral( "offset" ), mOffset );
-  elemDataProperties.setAttribute( QStringLiteral( "extrusion-height" ), mExtrusionHeight );
-  elemDataProperties.setAttribute( QStringLiteral( "culling-mode" ), Qgs3DUtils::cullingModeToString( mCullingMode ) );
-  elemDataProperties.setAttribute( QStringLiteral( "invert-normals" ), mInvertNormals ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elemDataProperties.setAttribute( QStringLiteral( "add-back-faces" ), mAddBackFaces ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elemDataProperties.setAttribute( QStringLiteral( "rendered-facade" ), qgsEnumValueToKey( mExtrusionFaces ) );
+  QDomElement elemDataProperties = doc.createElement( u"data"_s );
+  elemDataProperties.setAttribute( u"alt-clamping"_s, Qgs3DUtils::altClampingToString( mAltClamping ) );
+  elemDataProperties.setAttribute( u"alt-binding"_s, Qgs3DUtils::altBindingToString( mAltBinding ) );
+  elemDataProperties.setAttribute( u"offset"_s, mOffset );
+  elemDataProperties.setAttribute( u"extrusion-height"_s, mExtrusionHeight );
+  elemDataProperties.setAttribute( u"culling-mode"_s, Qgs3DUtils::cullingModeToString( mCullingMode ) );
+  elemDataProperties.setAttribute( u"invert-normals"_s, mInvertNormals ? u"1"_s : u"0"_s );
+  elemDataProperties.setAttribute( u"add-back-faces"_s, mAddBackFaces ? u"1"_s : u"0"_s );
+  elemDataProperties.setAttribute( u"rendered-facade"_s, qgsEnumValueToKey( mExtrusionFaces ) );
   elem.appendChild( elemDataProperties );
 
-  elem.setAttribute( QStringLiteral( "material_type" ), mMaterialSettings->type() );
-  QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
+  elem.setAttribute( u"material_type"_s, mMaterialSettings->type() );
+  QDomElement elemMaterial = doc.createElement( u"material"_s );
   mMaterialSettings->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
-  QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
+  QDomElement elemDDP = doc.createElement( u"data-defined-properties"_s );
   mDataDefinedProperties.writeXml( elemDDP, propertyDefinitions() );
   elem.appendChild( elemDDP );
 
-  QDomElement elemEdges = doc.createElement( QStringLiteral( "edges" ) );
-  elemEdges.setAttribute( QStringLiteral( "enabled" ), mEdgesEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elemEdges.setAttribute( QStringLiteral( "width" ), mEdgeWidth );
-  elemEdges.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mEdgeColor ) );
+  QDomElement elemEdges = doc.createElement( u"edges"_s );
+  elemEdges.setAttribute( u"enabled"_s, mEdgesEnabled ? u"1"_s : u"0"_s );
+  elemEdges.setAttribute( u"width"_s, mEdgeWidth );
+  elemEdges.setAttribute( u"color"_s, QgsColorUtils::colorToString( mEdgeColor ) );
   elem.appendChild( elemEdges );
 }
 
@@ -89,33 +89,33 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
 {
   Q_UNUSED( context )
 
-  const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
-  mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
-  mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( QStringLiteral( "alt-binding" ) ) );
-  mOffset = elemDataProperties.attribute( QStringLiteral( "offset" ) ).toFloat();
-  mExtrusionHeight = elemDataProperties.attribute( QStringLiteral( "extrusion-height" ) ).toFloat();
-  mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( QStringLiteral( "culling-mode" ) ) );
-  mInvertNormals = elemDataProperties.attribute( QStringLiteral( "invert-normals" ) ).toInt();
-  mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
-  mExtrusionFaces = qgsEnumKeyToValue( elemDataProperties.attribute( QStringLiteral( "rendered-facade" ) ), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  const QDomElement elemDataProperties = elem.firstChildElement( u"data"_s );
+  mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( u"alt-clamping"_s ) );
+  mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( u"alt-binding"_s ) );
+  mOffset = elemDataProperties.attribute( u"offset"_s ).toFloat();
+  mExtrusionHeight = elemDataProperties.attribute( u"extrusion-height"_s ).toFloat();
+  mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( u"culling-mode"_s ) );
+  mInvertNormals = elemDataProperties.attribute( u"invert-normals"_s ).toInt();
+  mAddBackFaces = elemDataProperties.attribute( u"add-back-faces"_s ).toInt();
+  mExtrusionFaces = qgsEnumKeyToValue( elemDataProperties.attribute( u"rendered-facade"_s ), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
 
-  const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
-  const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
+  const QDomElement elemMaterial = elem.firstChildElement( u"material"_s );
+  const QString materialType = elem.attribute( u"material_type"_s, u"phong"_s );
   mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
   if ( !mMaterialSettings )
-    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
+    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( u"phong"_s ) );
   mMaterialSettings->readXml( elemMaterial, context );
 
-  const QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDDP = elem.firstChildElement( u"data-defined-properties"_s );
   if ( !elemDDP.isNull() )
     mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 
-  const QDomElement elemEdges = elem.firstChildElement( QStringLiteral( "edges" ) );
+  const QDomElement elemEdges = elem.firstChildElement( u"edges"_s );
   if ( !elemEdges.isNull() )
   {
-    mEdgesEnabled = elemEdges.attribute( QStringLiteral( "enabled" ) ).toInt();
-    mEdgeWidth = elemEdges.attribute( QStringLiteral( "width" ) ).toFloat();
-    mEdgeColor = QgsColorUtils::colorFromString( elemEdges.attribute( QStringLiteral( "color" ) ) );
+    mEdgesEnabled = elemEdges.attribute( u"enabled"_s ).toInt();
+    mEdgeWidth = elemEdges.attribute( u"width"_s ).toFloat();
+    mEdgeColor = QgsColorUtils::colorFromString( elemEdges.attribute( u"color"_s ) );
   }
 }
 

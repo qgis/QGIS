@@ -53,7 +53,7 @@ bool QgsVtpkVectorTileSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer )
     QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
     layer->source()
   );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -69,7 +69,7 @@ QgsProviderSourceWidget *QgsVtpkVectorTileSourceWidgetProvider::createWidget( Qg
     layer->source()
   );
 
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsVtpkVectorTileSourceWidget( parent );

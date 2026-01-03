@@ -53,30 +53,30 @@ class TestQgsMapToolLabel : public QObject
 
     void testSelectLabel()
     {
-      auto vl1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      auto vl1 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=text:string"_s, u"vl1"_s, u"memory"_s );
       QVERIFY( vl1->isValid() );
       QgsFeature f1;
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
+      f1.setAttributes( QgsAttributes() << u"label"_s );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 3 ) ) );
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "l" ) );
+      f1.setAttributes( QgsAttributes() << u"l"_s );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
-      auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:3946&field=text:string"_s, u"vl1"_s, u"memory"_s );
       QVERIFY( vl2->isValid() );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
+      f1.setAttributes( QgsAttributes() << u"label"_s );
       QVERIFY( vl2->dataProvider()->addFeature( f1 ) );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 3 ) ) );
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "label2" ) );
+      f1.setAttributes( QgsAttributes() << u"label2"_s );
       QVERIFY( vl2->dataProvider()->addFeature( f1 ) );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 1 ) ) );
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "label3" ) );
+      f1.setAttributes( QgsAttributes() << u"label3"_s );
       QVERIFY( vl2->dataProvider()->addFeature( f1 ) );
 
       auto canvas = std::make_unique<QgsMapCanvas>();
-      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
 
@@ -109,14 +109,14 @@ class TestQgsMapToolLabel : public QObject
 
       // add some labels
       QgsPalLayerSettings pls1;
-      pls1.fieldName = QStringLiteral( "text" );
+      pls1.fieldName = u"text"_s;
       pls1.placement = Qgis::LabelPlacement::OverPoint;
       pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
       pls1.placementSettings().setAllowDegradedPlacement( true );
       pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
       QgsTextFormat format = pls1.format();
-      format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+      format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
       format.setSize( 12 );
       pls1.setFormat( format );
 
@@ -132,7 +132,7 @@ class TestQgsMapToolLabel : public QObject
       QVERIFY( canvas->labelingResults() );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
       event = std::make_unique<QMouseEvent>(
@@ -141,7 +141,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "l" ) );
+      QCOMPARE( pos.labelText, u"l"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
       event = std::make_unique<QMouseEvent>(
@@ -167,7 +167,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
       event = std::make_unique<QMouseEvent>(
@@ -176,7 +176,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "l" ) );
+      QCOMPARE( pos.labelText, u"l"_s );
 
       //... but fallback to any labels if nothing in current layer
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
@@ -186,7 +186,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label3" ) );
+      QCOMPARE( pos.labelText, u"label3"_s );
 
       canvas->setCurrentLayer( vl2.get() );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
@@ -196,7 +196,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
       event = std::make_unique<QMouseEvent>(
@@ -205,7 +205,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label2" ) );
+      QCOMPARE( pos.labelText, u"label2"_s );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
       event = std::make_unique<QMouseEvent>(
         QEvent::MouseButtonPress,
@@ -213,7 +213,7 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl2->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label3" ) );
+      QCOMPARE( pos.labelText, u"label3"_s );
 
       canvas->setCurrentLayer( nullptr );
 
@@ -225,24 +225,24 @@ class TestQgsMapToolLabel : public QObject
       );
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "l" ) );
+      QCOMPARE( pos.labelText, u"l"_s );
     }
 
     void testAlignment()
     {
-      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?crs=epsg:3946&field=halig:string&field=valig:string"_s, u"vl1"_s, u"memory"_s );
       QVERIFY( vl1->isValid() );
       QgsProject::instance()->addMapLayer( vl1 );
       QgsFeature f1;
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "right" ) << QStringLiteral( "top" ) );
+      f1.setAttributes( QgsAttributes() << u"right"_s << u"top"_s );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 3 ) ) );
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "center" ) << QStringLiteral( "base" ) );
+      f1.setAttributes( QgsAttributes() << u"center"_s << u"base"_s );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
       auto canvas = std::make_unique<QgsMapCanvas>();
-      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
 
@@ -265,7 +265,7 @@ class TestQgsMapToolLabel : public QObject
 
       // add some labels
       QgsPalLayerSettings pls1;
-      pls1.fieldName = QStringLiteral( "'label'" );
+      pls1.fieldName = u"'label'"_s;
       pls1.isExpression = true;
       pls1.placement = Qgis::LabelPlacement::OverPoint;
       pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
@@ -273,7 +273,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
       QgsTextFormat format = pls1.format();
-      format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+      format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
       format.setSize( 12 );
       pls1.setFormat( format );
 
@@ -296,7 +296,7 @@ class TestQgsMapToolLabel : public QObject
       QgsLabelPosition pos;
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       // defaults to half center
@@ -304,8 +304,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfCenter );
 
       // using field bound alignment
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromField( QStringLiteral( "halig" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromField( QStringLiteral( "valig" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromField( u"halig"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromField( u"valig"_s ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
 
       canvas->refreshAllLayers();
@@ -314,7 +314,7 @@ class TestQgsMapToolLabel : public QObject
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       labelAlignment = tool->currentAlignment();
@@ -328,15 +328,15 @@ class TestQgsMapToolLabel : public QObject
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::BaseCenter );
 
       // now try with expression based alignment
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromExpression( u"case when $id % 2 = 0 then 'right' else 'left' end"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromExpression( u"case when $id % 2 = 0 then 'half' else 'cap' end"_s ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
 
       canvas->refreshAllLayers();
@@ -351,7 +351,7 @@ class TestQgsMapToolLabel : public QObject
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       labelAlignment = tool->currentAlignment();
@@ -365,7 +365,7 @@ class TestQgsMapToolLabel : public QObject
 
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       labelAlignment = tool->currentAlignment();
@@ -374,19 +374,19 @@ class TestQgsMapToolLabel : public QObject
 
     void testAlignmentQuadrant()
     {
-      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?crs=epsg:3946&field=halig:string&field=valig:string"_s, u"vl1"_s, u"memory"_s );
       QVERIFY( vl1->isValid() );
       QgsProject::instance()->addMapLayer( vl1 );
       QgsFeature f1;
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "right" ) << QStringLiteral( "top" ) );
+      f1.setAttributes( QgsAttributes() << u"right"_s << u"top"_s );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 3, 3 ) ) );
-      f1.setAttributes( QgsAttributes() << QStringLiteral( "center" ) << QStringLiteral( "base" ) );
+      f1.setAttributes( QgsAttributes() << u"center"_s << u"base"_s );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
       auto canvas = std::make_unique<QgsMapCanvas>();
-      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
 
@@ -409,7 +409,7 @@ class TestQgsMapToolLabel : public QObject
 
       // add some labels
       QgsPalLayerSettings pls1;
-      pls1.fieldName = QStringLiteral( "'label'" );
+      pls1.fieldName = u"'label'"_s;
       pls1.isExpression = true;
       pls1.placement = Qgis::LabelPlacement::OverPoint;
       pls1.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
@@ -417,7 +417,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
       QgsTextFormat format = pls1.format();
-      format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+      format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
       format.setSize( 12 );
       pls1.setFormat( format );
 
@@ -440,7 +440,7 @@ class TestQgsMapToolLabel : public QObject
       QgsLabelPosition pos;
       QVERIFY( tool->labelAtPosition( event.get(), pos ) );
       QCOMPARE( pos.layerID, vl1->id() );
-      QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
+      QCOMPARE( pos.labelText, u"label"_s );
       tool->mCurrentLabel = QgsMapToolLabel::LabelDetails( pos, canvas.get() );
 
       QgsMapToolLabel::LabelAlignment labelAlignment = tool->currentAlignment();
@@ -460,15 +460,15 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       // using field bound alignment
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromField( QStringLiteral( "halig" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromField( QStringLiteral( "valig" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromField( u"halig"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromField( u"valig"_s ) );
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       // now try with expression based alignment
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromExpression( u"case when $id % 2 = 0 then 'right' else 'left' end"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromExpression( u"case when $id % 2 = 0 then 'half' else 'cap' end"_s ) );
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::CapLeft );
@@ -476,22 +476,22 @@ class TestQgsMapToolLabel : public QObject
 
     void dataDefinedColumnName()
     {
-      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string&field=override_x_field:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string&field=override_x_field:string"_s, u"vl1"_s, u"memory"_s );
       QVERIFY( vl1->isValid() );
       QgsProject::instance()->addMapLayer( vl1 );
 
       auto canvas = std::make_unique<QgsMapCanvas>();
-      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
       const std::unique_ptr<QgsAdvancedDigitizingDockWidget> advancedDigitizingDockWidget = std::make_unique<QgsAdvancedDigitizingDockWidget>( canvas.get() );
 
       auto tool = std::make_unique<QgsMapToolLabel>( canvas.get(), advancedDigitizingDockWidget.get() );
 
-      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "1" ) );
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), u"var_1"_s, u"1"_s );
 
       // add some labels
       QgsPalLayerSettings pls1;
-      pls1.fieldName = QStringLiteral( "'label'" );
+      pls1.fieldName = u"'label'"_s;
 
       // not using a column
       pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromValue( 5 ) );
@@ -509,83 +509,83 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // using direct field references
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "label_x_2" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "label_y_2" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( u"label_x_2"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( u"label_y_2"_s ) );
 
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::AlwaysShow, pls1, vl1, status ), QString() );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), u"label_x_2"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), u"label_y_2"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // using expressions which are just field references, should still work
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"label_x_1\"" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "\"label_y_1\"" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"\"label_x_1\""_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"\"label_y_1\""_s ) );
 
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::AlwaysShow, pls1, vl1, status ), QString() );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), u"label_x_1"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), u"label_y_1"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
 
       // using complex expressions which change field depending on a project level variable
 
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_x_1\" else \"label_x_2\" end" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"case when @var_1 = '1' then \"label_x_1\" else \"label_x_2\" end"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end"_s ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::AlwaysShow, pls1, vl1, status ), QString() );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), u"label_x_1"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), u"label_y_1"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
-      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "2" ) );
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), u"var_1"_s, u"2"_s );
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::AlwaysShow, pls1, vl1, status ), QString() );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), u"label_x_2"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), u"label_y_2"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // another smart situation -- an expression which uses coalesce to store per-feature overrides in a field, otherwise falling back to some complex expression
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "coalesce(\"override_x_field\", $x + 10)" ) ) );
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "COALESCE(case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end, $y-20)" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"coalesce(\"override_x_field\", $x + 10)"_s ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( u"COALESCE(case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end, $y-20)"_s ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
-      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "1" ) );
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), u"var_1"_s, u"1"_s );
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::AlwaysShow, pls1, vl1, status ), QString() );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QStringLiteral( "override_x_field" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), u"override_x_field"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), u"label_y_1"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
-      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "2" ) );
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), u"var_1"_s, u"2"_s );
 
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::AlwaysShow, pls1, vl1, status ), QString() );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::DoesNotExist );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QStringLiteral( "override_x_field" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), u"override_x_field"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
-      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), QStringLiteral( "label_y_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, pls1, vl1, status ), u"label_y_2"_s );
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // with an invalid expression set
-      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"this field does not exist\"" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( u"\"this field does not exist\""_s ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QString() );

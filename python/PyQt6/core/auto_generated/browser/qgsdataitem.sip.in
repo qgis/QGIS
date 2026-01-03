@@ -273,14 +273,14 @@ a selection from browser model.
 .. versionadded:: 3.18
 %End
 
- virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0."/;
+ virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.6. This method is no longer used by QGIS and will be removed in QGIS 5.0."/;
 %Docstring
 Writes the selected crs into data source. The original data source will
 be modified when calling this method.
 
 .. deprecated:: 3.6
 
-   This method is no longer used by QGIS and will be removed in QGIS 4.0.
+   This method is no longer used by QGIS and will be removed in QGIS 5.0.
 %End
 
  virtual bool rename( const QString &name ) /Deprecated="Since 3.10. "/;

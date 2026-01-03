@@ -24,7 +24,7 @@
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::name() const
 {
-  return QStringLiteral( "zonalstatisticsfb" );
+  return u"zonalstatisticsfb"_s;
 }
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::displayName() const
@@ -46,7 +46,7 @@ QString QgsZonalStatisticsFeatureBasedAlgorithm::group() const
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::shortHelpString() const
@@ -81,12 +81,12 @@ void QgsZonalStatisticsFeatureBasedAlgorithm::initParameters( const QVariantMap 
     statChoices << QgsZonalStatistics::displayName( stat );
   }
 
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Raster band" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Raster band" ), 1, u"INPUT_RASTER"_s ) );
 
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "_" ) ) );
+  addParameter( new QgsProcessingParameterString( u"COLUMN_PREFIX"_s, QObject::tr( "Output column prefix" ), u"_"_s ) );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTICS" ), QObject::tr( "Statistics to calculate" ), statChoices, true, QVariantList() << 0 << 1 << 2 ) );
+  addParameter( new QgsProcessingParameterEnum( u"STATISTICS"_s, QObject::tr( "Statistics to calculate" ), statChoices, true, QVariantList() << 0 << 1 << 2 ) );
 }
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::outputName() const
@@ -102,20 +102,20 @@ QgsFields QgsZonalStatisticsFeatureBasedAlgorithm::outputFields( const QgsFields
 
 bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
+  mPrefix = parameterAsString( parameters, u"COLUMN_PREFIX"_s, context );
 
-  const QList<int> stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
+  const QList<int> stats = parameterAsEnums( parameters, u"STATISTICS"_s, context );
   mStats = Qgis::ZonalStatistics();
   for ( const int s : stats )
   {
     mStats |= STATS.at( s );
   }
 
-  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
+  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
   if ( !rasterLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  mBand = parameterAsInt( parameters, u"RASTER_BAND"_s, context );
   if ( mBand < 1 || mBand > rasterLayer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( rasterLayer->bandCount() ) );
 
@@ -134,7 +134,7 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
   {
     if ( mStats & stat )
     {
-      const QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QMetaType::Type::Double, QStringLiteral( "double precision" ) );
+      const QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QMetaType::Type::Double, u"double precision"_s );
       if ( mOutputFields.names().contains( field.name() ) )
       {
         throw QgsProcessingException( QObject::tr( "Field %1 already exists" ).arg( field.name() ) );

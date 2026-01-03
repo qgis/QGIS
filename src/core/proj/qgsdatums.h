@@ -65,10 +65,10 @@ class CORE_EXPORT QgsDatumEnsembleMember
     % MethodCode
     QString id;
     if ( !sipCpp->code().isEmpty() )
-      id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
+      id = u"%1 (%2:%3)"_s.arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
       id = sipCpp->name();
-    QString str = QStringLiteral( "<QgsDatumEnsembleMember: %1>" ).arg( id );
+    QString str = u"<QgsDatumEnsembleMember: %1>"_s.arg( id );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -142,16 +142,16 @@ class CORE_EXPORT QgsDatumEnsemble
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsDatumEnsemble: invalid>" );
+      str = u"<QgsDatumEnsemble: invalid>"_s;
     }
     else
     {
       QString id;
       if ( !sipCpp->code().isEmpty() )
-        id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
+        id = u"%1 (%2:%3)"_s.arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
       else
         id = sipCpp->name();
-      str = QStringLiteral( "<QgsDatumEnsemble: %1>" ).arg( id );
+      str = u"<QgsDatumEnsemble: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

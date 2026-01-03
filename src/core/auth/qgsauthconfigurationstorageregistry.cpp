@@ -54,7 +54,7 @@ bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorag
 
     if ( s->id() == storage->id() )
     {
-      QgsDebugError( QStringLiteral( "A storage with the same ID (%1) already exists" ).arg( storage->id() ) );
+      QgsDebugError( u"A storage with the same ID (%1) already exists"_s.arg( storage->id() ) );
       return false;
     }
   }

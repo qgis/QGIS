@@ -77,8 +77,8 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   mRendererComboBox->blockSignals( true );
   for ( ; it != rendererList.constEnd(); ++it, ++idx )
   {
-    if ( *it != QLatin1String( "mergedFeatureRenderer" )
-         && *it != QLatin1String( "invertedPolygonRenderer" ) ) //< an merged renderer cannot contain another merged or inverted renderer
+    if ( *it != "mergedFeatureRenderer"_L1
+         && *it != "invertedPolygonRenderer"_L1 ) //< an merged renderer cannot contain another merged or inverted renderer
     {
       QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );

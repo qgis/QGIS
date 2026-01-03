@@ -99,7 +99,7 @@ void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
 
 void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel level )
 {
-  QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), QStringLiteral( "Locator bar" ), level );
+  QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), u"Locator bar"_s, level );
 }
 
 

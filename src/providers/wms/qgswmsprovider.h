@@ -94,7 +94,7 @@ class QgsCachedImageFetcher : public QgsImageFetcher
   private slots:
     void send()
     {
-      QgsDebugMsgLevel( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ), 2 );
+      QgsDebugMsgLevel( u"XXX Sending %1x%2 image"_s.arg( _img.width() ).arg( _img.height() ), 2 );
       emit finish( _img );
     }
 };
@@ -138,7 +138,7 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
     bool representsElevation() const override;
 
     static QString displayName() { return QObject::tr( "MapTiler Terrain RGB" ); }
-    static QString interpretationKey() { return QStringLiteral( "maptilerterrain" ); }
+    static QString interpretationKey() { return u"maptilerterrain"_s; }
 };
 
 //! Class to convert color to float value following the terrarium terrain RGB interpretation
@@ -154,7 +154,7 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
     bool representsElevation() const override;
 
     static QString displayName() { return QObject::tr( "Terrarium Terrain RGB" ); }
-    static QString interpretationKey() { return QStringLiteral( "terrariumterrain" ); }
+    static QString interpretationKey() { return u"terrariumterrain"_s; }
 };
 
 /**
@@ -174,7 +174,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     static QString WMS_KEY;
     static QString WMS_DESCRIPTION;
 
-    static inline QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
+    static inline QString DEFAULT_LATLON_CRS = u"CRS:84"_s;
 
     /**
      * Constructor for the provider.

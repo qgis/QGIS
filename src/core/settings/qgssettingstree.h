@@ -40,34 +40,34 @@ class CORE_EXPORT QgsSettingsTree
 #ifndef SIP_RUN
 
     // only create first level here
-    static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );
-    static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( QStringLiteral( "connections" ) );
-    static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( QStringLiteral( "core" ) );
-    static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( QStringLiteral( "digitizing" ) );
-    static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( QStringLiteral( "elevation-profile" ) );
-    static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( QStringLiteral( "fonts" ) );
-    static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( QStringLiteral( "geometry_validation" ) );
-    static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( QStringLiteral( "gps" ) );
-    static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildNode( QStringLiteral( "gui" ) );
-    static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildNode( QStringLiteral( "layer-tree" ) );
-    static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( QStringLiteral( "layout" ) );
-    static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( QStringLiteral( "locale" ) );
-    static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildNode( QStringLiteral( "map" ) );
-    static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildNode( QStringLiteral( "network" ) );
-    static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( QStringLiteral( "qgis" ) );
-    static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( QStringLiteral( "plugins" ) );
-    static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( QStringLiteral( "processing" ) );
-    static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( QStringLiteral( "raster" ) );
-    static inline QgsSettingsTreeNode *sTreeRendering = treeRoot()->createChildNode( QStringLiteral( "rendering" ) );
-    static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( QStringLiteral( "svg" ) );
-    static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( QStringLiteral( "wms" ) );
-    static inline QgsSettingsTreeNode *sTreeMeasure = treeRoot()->createChildNode( QStringLiteral( "measure" ) );
-    static inline QgsSettingsTreeNode *sTreeAnnotations = treeRoot()->createChildNode( QStringLiteral( "annotations" ) );
-    static inline QgsSettingsTreeNode *sTreeNetworkCache = treeRoot()->createChildNode( QStringLiteral( "cache" ) );
-    static inline QgsSettingsTreeNode *sTreeAttributeTable = treeRoot()->createChildNode( QStringLiteral( "attribute-table" ) );
-    static inline QgsSettingsTreeNode *sTreeWindowState = sTreeGui->createChildNode( QStringLiteral( "window-state" ) );
-    static inline QgsSettingsTreeNode *sTreeAuthentication = treeRoot()->createChildNode( QStringLiteral( "authentication" ) );
-    static inline QgsSettingsTreeNode *sTreeDatabase = treeRoot()->createChildNode( QStringLiteral( "database" ) );
+    static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( u"app"_s );
+    static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( u"connections"_s );
+    static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( u"core"_s );
+    static inline QgsSettingsTreeNode *sTreeDigitizing = treeRoot()->createChildNode( u"digitizing"_s );
+    static inline QgsSettingsTreeNode *sTreeElevationProfile = treeRoot()->createChildNode( u"elevation-profile"_s );
+    static inline QgsSettingsTreeNode *sTreeFonts = treeRoot()->createChildNode( u"fonts"_s );
+    static inline QgsSettingsTreeNode *sTreeGeometryValidation = treeRoot()->createChildNode( u"geometry_validation"_s );
+    static inline QgsSettingsTreeNode *sTreeGps = treeRoot()->createChildNode( u"gps"_s );
+    static inline QgsSettingsTreeNode *sTreeGui = treeRoot()->createChildNode( u"gui"_s );
+    static inline QgsSettingsTreeNode *sTreeLayerTree = treeRoot()->createChildNode( u"layer-tree"_s );
+    static inline QgsSettingsTreeNode *sTreeLayout = treeRoot()->createChildNode( u"layout"_s );
+    static inline QgsSettingsTreeNode *sTreeLocale = treeRoot()->createChildNode( u"locale"_s );
+    static inline QgsSettingsTreeNode *sTreeMap = treeRoot()->createChildNode( u"map"_s );
+    static inline QgsSettingsTreeNode *sTreeNetwork = treeRoot()->createChildNode( u"network"_s );
+    static inline QgsSettingsTreeNode *sTreeQgis = treeRoot()->createChildNode( u"qgis"_s );
+    static inline QgsSettingsTreeNode *sTreePlugins = treeRoot()->createChildNode( u"plugins"_s );
+    static inline QgsSettingsTreeNode *sTreeProcessing = treeRoot()->createChildNode( u"processing"_s );
+    static inline QgsSettingsTreeNode *sTreeRaster = treeRoot()->createChildNode( u"raster"_s );
+    static inline QgsSettingsTreeNode *sTreeRendering = treeRoot()->createChildNode( u"rendering"_s );
+    static inline QgsSettingsTreeNode *sTreeSvg = treeRoot()->createChildNode( u"svg"_s );
+    static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( u"wms"_s );
+    static inline QgsSettingsTreeNode *sTreeMeasure = treeRoot()->createChildNode( u"measure"_s );
+    static inline QgsSettingsTreeNode *sTreeAnnotations = treeRoot()->createChildNode( u"annotations"_s );
+    static inline QgsSettingsTreeNode *sTreeNetworkCache = treeRoot()->createChildNode( u"cache"_s );
+    static inline QgsSettingsTreeNode *sTreeAttributeTable = treeRoot()->createChildNode( u"attribute-table"_s );
+    static inline QgsSettingsTreeNode *sTreeWindowState = sTreeGui->createChildNode( u"window-state"_s );
+    static inline QgsSettingsTreeNode *sTreeAuthentication = treeRoot()->createChildNode( u"authentication"_s );
+    static inline QgsSettingsTreeNode *sTreeDatabase = treeRoot()->createChildNode( u"database"_s );
 
 #endif
 

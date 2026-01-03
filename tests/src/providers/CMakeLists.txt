@@ -118,7 +118,6 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${QT_VERSION_BASE}::Network
     ${QT_VERSION_BASE}::Svg
     ${QT_VERSION_BASE}::Xml
-    ${OPTIONAL_QTWEBKIT}
     qgis_core
   )
 

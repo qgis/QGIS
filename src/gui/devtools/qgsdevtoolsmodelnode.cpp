@@ -134,7 +134,7 @@ QVariant QgsDevToolsModelValueNode::data( int role ) const
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
     {
-      return QStringLiteral( "%1: %2" ).arg( mKey.leftJustified( 30, ' ' ), mValue );
+      return u"%1: %2"_s.arg( mKey.leftJustified( 30, ' ' ), mValue );
     }
 
     case Qt::ForegroundRole:
@@ -155,7 +155,7 @@ QList<QAction *> QgsDevToolsModelValueNode::actions( QObject *parent )
 
   QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
   QObject::connect( copyAction, &QAction::triggered, copyAction, [this] {
-    QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
+    QApplication::clipboard()->setText( u"%1: %2"_s.arg( mKey, mValue ) );
   } );
 
   res << copyAction;

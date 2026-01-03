@@ -48,7 +48,7 @@ int main( int argc, char **argv )
 
   for ( const QString &arg : args )
   {
-    if ( arg == QLatin1String( "--verbose" ) )
+    if ( arg == "--verbose"_L1 )
       verbose = true;
   }
 

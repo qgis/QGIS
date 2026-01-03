@@ -76,11 +76,11 @@ QgsGeocoderInterface *QgsAbstractGeocoderLocatorFilter::geocoder() const
 QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResult( const QgsLocatorResult &result ) const
 {
   const QVariantMap attrs = result.userData().toMap();
-  QgsGeocoderResult geocodeResult( attrs.value( QStringLiteral( "identifier" ) ).toString(),
-                                   attrs.value( QStringLiteral( "geom" ) ).value< QgsGeometry >(),
-                                   attrs.value( QStringLiteral( "crs" ) ).value< QgsCoordinateReferenceSystem >() );
-  geocodeResult.setAdditionalAttributes( attrs.value( QStringLiteral( "attributes" ) ).toMap() );
-  geocodeResult.setViewport( attrs.value( QStringLiteral( "viewport" ) ).value< QgsRectangle >() );
+  QgsGeocoderResult geocodeResult( attrs.value( u"identifier"_s ).toString(),
+                                   attrs.value( u"geom"_s ).value< QgsGeometry >(),
+                                   attrs.value( u"crs"_s ).value< QgsCoordinateReferenceSystem >() );
+  geocodeResult.setAdditionalAttributes( attrs.value( u"attributes"_s ).toMap() );
+  geocodeResult.setViewport( attrs.value( u"viewport"_s ).value< QgsRectangle >() );
   geocodeResult.setDescription( result.description );
   geocodeResult.setGroup( result.group );
   return geocodeResult;
@@ -89,11 +89,11 @@ QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResul
 QgsLocatorResult QgsAbstractGeocoderLocatorFilter::geocoderResultToLocatorResult( const QgsGeocoderResult &result )
 {
   QVariantMap attrs;
-  attrs.insert( QStringLiteral( "identifier" ), result.identifier() );
-  attrs.insert( QStringLiteral( "geom" ), result.geometry() );
-  attrs.insert( QStringLiteral( "viewport" ), result.viewport() );
-  attrs.insert( QStringLiteral( "crs" ), result.crs() );
-  attrs.insert( QStringLiteral( "attributes" ), result.additionalAttributes() );
+  attrs.insert( u"identifier"_s, result.identifier() );
+  attrs.insert( u"geom"_s, result.geometry() );
+  attrs.insert( u"viewport"_s, result.viewport() );
+  attrs.insert( u"crs"_s, result.crs() );
+  attrs.insert( u"attributes"_s, result.additionalAttributes() );
   QgsLocatorResult res( this, result.identifier(), attrs );
   res.description = result.description();
   res.group = result.group();

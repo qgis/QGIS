@@ -60,10 +60,10 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     if ( crs.isGeographic() )
     {
       // we can't deal with non-projected CRS, so let's just pick something
-      QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+      QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
     }
 
-    map->setCrs( isGlobe ? QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) : QgsProject::instance()->crs() );
+    map->setCrs( isGlobe ? QgsCoordinateReferenceSystem( u"EPSG:4978"_s ) : QgsProject::instance()->crs() );
     map->setLayers( visibleLayers );
 
     if ( map->sceneMode() == Qgis::SceneMode::Local )
@@ -130,7 +130,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     QgsReadWriteContext readWriteContext;
     readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
-    map->readXml( viewXml.firstChildElement( QStringLiteral( "qgis3d" ) ), readWriteContext );
+    map->readXml( viewXml.firstChildElement( u"qgis3d"_s ), readWriteContext );
     map->resolveReferences( *QgsProject::instance() );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
@@ -142,7 +142,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
 
     canvas->setMapSettings( map );
 
-    QDomElement elemCamera = viewXml.firstChildElement( QStringLiteral( "camera" ) );
+    QDomElement elemCamera = viewXml.firstChildElement( u"camera"_s );
     if ( !elemCamera.isNull() )
     {
       canvas->cameraController()->readXml( elemCamera, savedOrigin );
@@ -159,8 +159,8 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
 QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
 {
   const QPointer configDialog = new QDialog;
-  configDialog->setWindowTitle( QStringLiteral( "3D Configuration" ) );
-  configDialog->setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  configDialog->setWindowTitle( u"3D Configuration"_s );
+  configDialog->setObjectName( u"3DConfigurationDialog"_s );
   configDialog->setMinimumSize( 600, 460 );
   QgsGui::enableAutoGeometryRestore( configDialog );
 
@@ -199,7 +199,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
       configDialog->accept();
   } );
-  QObject::connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
+  QObject::connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( u"map_views/3d_map_view.html#scene-configuration"_s ); } );
 
   QObject::connect( w, &Qgs3DMapConfigWidget::isValidChanged, configDialog, [buttons]( const bool valid ) {
     buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
@@ -214,7 +214,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
 
 int main( int argc, char *argv[] )
 {
-  QgsApplication myApp( argc, argv, true, QString(), QStringLiteral( "desktop" ) );
+  QgsApplication myApp( argc, argv, true, QString(), u"desktop"_s );
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -260,15 +260,15 @@ int main( int argc, char *argv[] )
 
   QToolBar *toolBar = new QToolBar( windowWidget );
   toolBar->setIconSize( QgsGuiUtils::iconSize() );
-  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), QStringLiteral( "Reset camera to default position" ), windowWidget, [canvas] {
+  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), u"Reset camera to default position"_s, windowWidget, [canvas] {
     canvas->resetView();
   } );
   QAction *toggleDebugPanel = toolBar->addAction(
-    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
-    QStringLiteral( "Toggle on-screen Debug panel" )
+    QgsApplication::getThemeIcon( u"/propertyicons/general.svg"_s ),
+    u"Toggle on-screen Debug panel"_s
   );
   toggleDebugPanel->setCheckable( true );
-  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ), QStringLiteral( "Configure…" ), windowWidget );
+  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ), u"Configure…"_s, windowWidget );
   QDialog *configDialog = createConfigDialog( canvas );
   QObject::connect( configureAction, &QAction::triggered, windowWidget, [configDialog] {
     configDialog->setVisible( true );

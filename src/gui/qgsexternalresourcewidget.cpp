@@ -38,10 +38,6 @@
 
 #include "moc_qgsexternalresourcewidget.cpp"
 
-#ifdef WITH_QTWEBKIT
-#include <QWebView>
-#endif
-
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -58,24 +54,18 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   mPixmapLabel = new QgsPixmapLabel( this );
   layout->addWidget( mPixmapLabel, 1, 0 );
 
-#ifdef WITH_QTWEBKIT
-  mWebView = new QWebView( this );
-  mWebView->setAcceptDrops( false );
-  layout->addWidget( mWebView, 2, 0 );
-#endif
-
   mMediaWidget = new QgsMediaWidget( this );
   layout->addWidget( mMediaWidget, 3, 0 );
 
   mLoadingLabel = new QLabel( this );
   layout->addWidget( mLoadingLabel, 4, 0 );
-  mLoadingMovie = new QMovie( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), QByteArray(), this );
+  mLoadingMovie = new QMovie( QgsApplication::iconPath( u"/mIconLoading.gif"_s ), QByteArray(), this );
   mLoadingMovie->setScaledSize( QSize( 32, 32 ) );
   mLoadingLabel->setMovie( mLoadingMovie );
 
   mErrorLabel = new QLabel( this );
   layout->addWidget( mErrorLabel, 5, 0 );
-  mErrorLabel->setPixmap( QPixmap( QgsApplication::iconPath( QStringLiteral( "/mIconWarning.svg" ) ) ) );
+  mErrorLabel->setPixmap( QPixmap( QgsApplication::iconPath( u"/mIconWarning.svg"_s ) ) );
 
   updateDocumentViewer();
 
@@ -175,9 +165,6 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   {
     case Web:
     {
-#ifdef WITH_QTWEBKIT
-      mWebView->setVisible( true );
-#endif
       mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( false );
       break;
@@ -185,17 +172,10 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
     case Image:
     {
-#ifdef WITH_QTWEBKIT
-      mWebView->setVisible( false );
-#endif
       mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( true );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      const QPixmap pm = mPixmapLabel->pixmap() ? *mPixmapLabel->pixmap() : QPixmap();
-#else
       const QPixmap pm = mPixmapLabel->pixmap();
-#endif
 
       if ( !pm || pm.isNull() )
       {
@@ -225,9 +205,6 @@ void QgsExternalResourceWidget::updateDocumentViewer()
     case Audio:
     case Video:
     {
-#ifdef WITH_QTWEBKIT
-      mWebView->setVisible( false );
-#endif
       mMediaWidget->setVisible( true );
       mPixmapLabel->setVisible( false );
 
@@ -238,9 +215,6 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
     case NoContent:
     {
-#ifdef WITH_QTWEBKIT
-      mWebView->setVisible( false );
-#endif
       mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( false );
       break;
@@ -321,15 +295,6 @@ void QgsExternalResourceWidget::updateDocumentContent( const QString &filePath )
 {
   switch ( mDocumentViewerContent )
   {
-    case Web:
-    {
-#ifdef WITH_QTWEBKIT
-      mWebView->load( QUrl::fromUserInput( filePath.toUtf8() ) );
-      mWebView->page()->settings()->setAttribute( QWebSettings::LocalStorageEnabled, true );
-#endif
-      break;
-    }
-
     case Image:
     {
       QImageReader ir( filePath );
@@ -354,6 +319,7 @@ void QgsExternalResourceWidget::updateDocumentContent( const QString &filePath )
       break;
     }
 
+    case Web:
     case NoContent:
     {
       break;
@@ -365,12 +331,6 @@ void QgsExternalResourceWidget::updateDocumentContent( const QString &filePath )
 
 void QgsExternalResourceWidget::clearContent()
 {
-#ifdef WITH_QTWEBKIT
-  if ( mDocumentViewerContent == Web )
-  {
-    mWebView->load( QUrl( QStringLiteral( "about:blank" ) ) );
-  }
-#endif
   if ( mDocumentViewerContent == Image )
   {
     mPixmapLabel->clear();
@@ -404,9 +364,6 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 
       mContent = mFileWidget->externalStorage()->fetch( resolvedPath, storageAuthConfigId() );
 
-#ifdef WITH_QTWEBKIT
-      mWebView->setVisible( false );
-#endif
       mMediaWidget->setVisible( false );
       mPixmapLabel->setVisible( false );
       mErrorLabel->setVisible( false );
@@ -431,9 +388,6 @@ void QgsExternalResourceWidget::onFetchFinished()
 
   if ( content == mContent && mContent->status() == Qgis::ContentStatus::Failed )
   {
-#ifdef WITH_QTWEBKIT
-    mWebView->setVisible( false );
-#endif
     mPixmapLabel->setVisible( false );
     mLoadingLabel->setVisible( false );
     mLoadingMovie->stop();

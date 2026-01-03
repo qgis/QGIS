@@ -29,7 +29,7 @@ class CORE_EXPORT QgsRasterPyramid
 {
   public:
 
-    //TODO QGIS 4.0 - rename get* to remove get prefix, and remove
+    //TODO QGIS 5.0 - rename get* to remove get prefix, and remove
     //temporary SIP_PROPERTY definitions
 
     /**

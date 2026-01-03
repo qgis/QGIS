@@ -37,7 +37,7 @@ class TestQgs3DCameraController : public QgsTest
 
   public:
     TestQgs3DCameraController()
-      : QgsTest( QStringLiteral( "3D Camera Controller Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Camera Controller Tests"_s, u"3d"_s )
     {}
 
   private slots:

@@ -80,9 +80,9 @@ void QgsDirectoryItem::init( const QString &dirName )
       break;
   }
 
-  settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
+  settings.beginGroup( u"qgis/browserPathColors"_s );
   QString settingKey = mDirPath;
-  settingKey.replace( '/', QLatin1String( "|||" ) );
+  settingKey.replace( '/', "|||"_L1 );
   if ( settings.childKeys().contains( settingKey ) )
   {
     const QString colorString = settings.value( settingKey ).toString();
@@ -91,7 +91,7 @@ void QgsDirectoryItem::init( const QString &dirName )
   settings.endGroup();
 
   // we want directories shown before files
-  setSortKey( QStringLiteral( "  %1" ).arg( dirName ) );
+  setSortKey( u"  %1"_s.arg( dirName ) );
 }
 
 void QgsDirectoryItem::reevaluateMonitoring()
@@ -152,9 +152,9 @@ void QgsDirectoryItem::setIconColor( const QColor &color )
 void QgsDirectoryItem::setCustomColor( const QString &directory, const QColor &color )
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
+  settings.beginGroup( u"qgis/browserPathColors"_s );
   QString settingKey = directory;
-  settingKey.replace( '/', QLatin1String( "|||" ) );
+  settingKey.replace( '/', "|||"_L1 );
   if ( color.isValid() )
     settings.setValue( settingKey, color.name( QColor::HexArgb ) );
   else
@@ -175,8 +175,8 @@ QIcon QgsDirectoryItem::icon()
   if ( mIsDir && mIsSymLink )
   {
     return mIconColor.isValid()
-           ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLinkParams.svg" ), mIconColor, mIconColor.darker() )
-           : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLink.svg" ) );
+           ? QgsApplication::getThemeIcon( u"/mIconFolderLinkParams.svg"_s, mIconColor, mIconColor.darker() )
+           : QgsApplication::getThemeIcon( u"/mIconFolderLink.svg"_s );
   }
 
   // loaded? show the open dir icon
@@ -197,8 +197,8 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
   mMonitoring = monitoring;
 
   QgsSettings settings;
-  QStringList noMonitorDirs = settings.value( QStringLiteral( "qgis/disableMonitorItemUris" ), QStringList() ).toStringList();
-  QStringList alwaysMonitorDirs = settings.value( QStringLiteral( "qgis/alwaysMonitorItemUris" ), QStringList() ).toStringList();
+  QStringList noMonitorDirs = settings.value( u"qgis/disableMonitorItemUris"_s, QStringList() ).toStringList();
+  QStringList alwaysMonitorDirs = settings.value( u"qgis/alwaysMonitorItemUris"_s, QStringList() ).toStringList();
 
   switch ( mMonitoring )
   {
@@ -206,10 +206,10 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
     {
       // remove disable/always setting for this path, so that default behavior is used
       noMonitorDirs.removeAll( mDirPath );
-      settings.setValue( QStringLiteral( "qgis/disableMonitorItemUris" ), noMonitorDirs );
+      settings.setValue( u"qgis/disableMonitorItemUris"_s, noMonitorDirs );
 
       alwaysMonitorDirs.removeAll( mDirPath );
-      settings.setValue( QStringLiteral( "qgis/alwaysMonitorItemUris" ), alwaysMonitorDirs );
+      settings.setValue( u"qgis/alwaysMonitorItemUris"_s, alwaysMonitorDirs );
 
       mMonitored = pathShouldByMonitoredByDefault( mDirPath );
       break;
@@ -220,11 +220,11 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
       if ( !noMonitorDirs.contains( mDirPath ) )
       {
         noMonitorDirs.append( mDirPath );
-        settings.setValue( QStringLiteral( "qgis/disableMonitorItemUris" ), noMonitorDirs );
+        settings.setValue( u"qgis/disableMonitorItemUris"_s, noMonitorDirs );
       }
 
       alwaysMonitorDirs.removeAll( mDirPath );
-      settings.setValue( QStringLiteral( "qgis/alwaysMonitorItemUris" ), alwaysMonitorDirs );
+      settings.setValue( u"qgis/alwaysMonitorItemUris"_s, alwaysMonitorDirs );
 
       mMonitored = false;
       break;
@@ -233,12 +233,12 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
     case Qgis::BrowserDirectoryMonitoring::AlwaysMonitor:
     {
       noMonitorDirs.removeAll( mDirPath );
-      settings.setValue( QStringLiteral( "qgis/disableMonitorItemUris" ), noMonitorDirs );
+      settings.setValue( u"qgis/disableMonitorItemUris"_s, noMonitorDirs );
 
       if ( !alwaysMonitorDirs.contains( mDirPath ) )
       {
         alwaysMonitorDirs.append( mDirPath );
-        settings.setValue( QStringLiteral( "qgis/alwaysMonitorItemUris" ), alwaysMonitorDirs );
+        settings.setValue( u"qgis/alwaysMonitorItemUris"_s, alwaysMonitorDirs );
       }
 
       mMonitored = true;
@@ -274,9 +274,9 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 
     const QString subdirPath = dir.absoluteFilePath( subdir );
 
-    QgsDebugMsgLevel( QStringLiteral( "creating subdir: %1" ).arg( subdirPath ), 2 );
+    QgsDebugMsgLevel( u"creating subdir: %1"_s.arg( subdirPath ), 2 );
 
-    const QString path = mPath + ( mPath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + subdir; // may differ from subdirPath
+    const QString path = mPath + ( mPath.endsWith( '/' ) ? QString() : u"/"_s ) + subdir; // may differ from subdirPath
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
@@ -348,8 +348,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     {
       // if item is a QGIS project, and no specific item provider has overridden handling of
       // project items, then use the default project item behavior
-      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
-           fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+      if ( fileInfo.suffix().compare( "qgs"_L1, Qt::CaseInsensitive ) == 0 ||
+           fileInfo.suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0 )
       {
         QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
         item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
@@ -389,7 +389,7 @@ void QgsDirectoryItem::setState( Qgis::BrowserItemState state )
 void QgsDirectoryItem::directoryChanged()
 {
   // If the last scan was less than 10 seconds ago, skip this
-  if ( mLastScan.msecsTo( QDateTime::currentDateTime() ) < QgsSettings().value( QStringLiteral( "browser/minscaninterval" ), 10000 ).toInt() )
+  if ( mLastScan.msecsTo( QDateTime::currentDateTime() ) < QgsSettings().value( u"browser/minscaninterval"_s, 10000 ).toInt() )
   {
     return;
   }
@@ -417,7 +417,7 @@ void QgsDirectoryItem::directoryChanged()
 bool QgsDirectoryItem::hiddenPath( const QString &path )
 {
   const QgsSettings settings;
-  const QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
+  const QStringList hiddenItems = settings.value( u"browser/hiddenPaths"_s,
                                   QStringList() ).toStringList();
   const int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
@@ -426,9 +426,9 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
 Qgis::BrowserDirectoryMonitoring QgsDirectoryItem::monitoringForPath( const QString &path )
 {
   const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/disableMonitorItemUris" ), QStringList() ).toStringList().contains( path ) )
+  if ( settings.value( u"qgis/disableMonitorItemUris"_s, QStringList() ).toStringList().contains( path ) )
     return Qgis::BrowserDirectoryMonitoring::NeverMonitor;
-  else if ( settings.value( QStringLiteral( "qgis/alwaysMonitorItemUris" ), QStringList() ).toStringList().contains( path ) )
+  else if ( settings.value( u"qgis/alwaysMonitorItemUris"_s, QStringList() ).toStringList().contains( path ) )
     return Qgis::BrowserDirectoryMonitoring::AlwaysMonitor;
   return Qgis::BrowserDirectoryMonitoring::Default;
 }
@@ -465,16 +465,16 @@ bool QgsDirectoryItem::pathShouldByMonitoredByDefault( const QString &path )
 
   // paths are monitored by default if no explicit setting is in place, and the user hasn't
   // completely opted out of all browser monitoring
-  return QgsSettings().value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool();
+  return QgsSettings().value( u"/qgis/monitorDirectoriesInBrowser"_s, true ).toBool();
 }
 
 void QgsDirectoryItem::childrenCreated()
 {
-  QgsDebugMsgLevel( QStringLiteral( "mRefreshLater = %1" ).arg( mRefreshLater ), 3 );
+  QgsDebugMsgLevel( u"mRefreshLater = %1"_s.arg( mRefreshLater ), 3 );
 
   if ( mRefreshLater )
   {
-    QgsDebugMsgLevel( QStringLiteral( "directory changed during createChildren() -> refresh() again" ), 3 );
+    QgsDebugMsgLevel( u"directory changed during createChildren() -> refresh() again"_s, 3 );
     mRefreshLater = false;
     setState( Qgis::BrowserItemState::Populated );
     refresh();
@@ -510,7 +510,7 @@ QWidget *QgsDirectoryItem::paramWidget()
 QgsMimeDataUtils::UriList QgsDirectoryItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
-  u.layerType = QStringLiteral( "directory" );
+  u.layerType = u"directory"_s;
   u.name = mName;
   u.uri = mDirPath;
   u.filePath = path();
@@ -531,10 +531,10 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   labels << tr( "Name" ) << tr( "Size" ) << tr( "Date" ) << tr( "Permissions" ) << tr( "Owner" ) << tr( "Group" ) << tr( "Type" );
   setHeaderLabels( labels );
 
-  const QIcon iconDirectory = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) );
-  const QIcon iconFile = QgsApplication::getThemeIcon( QStringLiteral( "mIconFile.svg" ) );
-  const QIcon iconDirLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ) );
-  const QIcon iconFileLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFileLink.svg" ) );
+  const QIcon iconDirectory = QgsApplication::getThemeIcon( u"mIconFolder.svg"_s );
+  const QIcon iconFile = QgsApplication::getThemeIcon( u"mIconFile.svg"_s );
+  const QIcon iconDirLink = QgsApplication::getThemeIcon( u"mIconFolderLink.svg"_s );
+  const QIcon iconFileLink = QgsApplication::getThemeIcon( u"mIconFileLink.svg"_s );
 
   QList<QTreeWidgetItem *> items;
 
@@ -548,15 +548,15 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
     QString size;
     if ( fi.size() > 1024 )
     {
-      size = QStringLiteral( "%1 KiB" ).arg( QLocale().toString( fi.size() / 1024.0, 'f', 1 ) );
+      size = u"%1 KiB"_s.arg( QLocale().toString( fi.size() / 1024.0, 'f', 1 ) );
     }
     else if ( fi.size() > 1.048576e6 )
     {
-      size = QStringLiteral( "%1 MiB" ).arg( QLocale().toString( fi.size() / 1.048576e6, 'f', 1 ) );
+      size = u"%1 MiB"_s.arg( QLocale().toString( fi.size() / 1.048576e6, 'f', 1 ) );
     }
     else
     {
-      size = QStringLiteral( "%1 B" ).arg( fi.size() );
+      size = u"%1 B"_s.arg( fi.size() );
     }
     texts << size;
     texts << QLocale().toString( fi.lastModified(), QLocale::ShortFormat );
@@ -610,7 +610,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
 
   // hide columns that are not requested
   const QgsSettings settings;
-  const QList<QVariant> lst = settings.value( QStringLiteral( "dataitem/directoryHiddenColumns" ) ).toList();
+  const QList<QVariant> lst = settings.value( u"dataitem/directoryHiddenColumns"_s ).toList();
   for ( const QVariant &colVariant : lst )
   {
     setColumnHidden( colVariant.toInt(), true );
@@ -655,7 +655,7 @@ void QgsDirectoryParamWidget::showHideColumn()
     if ( isColumnHidden( i ) )
       lst.append( QVariant( i ) );
   }
-  settings.setValue( QStringLiteral( "dataitem/directoryHiddenColumns" ), lst );
+  settings.setValue( u"dataitem/directoryHiddenColumns"_s, lst );
 }
 
 //
@@ -663,7 +663,7 @@ void QgsDirectoryParamWidget::showHideColumn()
 //
 
 QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDirectoryItem( parent, name, dirPath, path, QStringLiteral( "special:ProjectHome" ) )
+  : QgsDirectoryItem( parent, name, dirPath, path, u"special:ProjectHome"_s )
 {
 }
 
@@ -671,12 +671,12 @@ QIcon QgsProjectHomeItem::icon()
 {
   if ( state() == Qgis::BrowserItemState::Populating )
     return QgsDirectoryItem::icon();
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderProject.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconFolderProject.svg"_s );
 }
 
 QVariant QgsProjectHomeItem::sortKey() const
 {
-  return QStringLiteral( " 1" );
+  return u" 1"_s;
 }
 
 

@@ -313,7 +313,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform rubber band geometry to map CRS" ) );
+      QgsDebugError( u"Could not transform rubber band geometry to map CRS"_s );
       return;
     }
   }

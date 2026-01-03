@@ -23,7 +23,7 @@
 
 QString QgsConditionalBranchAlgorithm::name() const
 {
-  return QStringLiteral( "condition" );
+  return u"condition"_s;
 }
 
 QString QgsConditionalBranchAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsConditionalBranchAlgorithm::group() const
 
 QString QgsConditionalBranchAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsConditionalBranchAlgorithm::flags() const
@@ -73,12 +73,12 @@ QgsConditionalBranchAlgorithm::~QgsConditionalBranchAlgorithm()
 
 void QgsConditionalBranchAlgorithm::initAlgorithm( const QVariantMap &configuration )
 {
-  const QVariantList branches = configuration.value( QStringLiteral( "conditions" ) ).toList();
+  const QVariantList branches = configuration.value( u"conditions"_s ).toList();
   for ( const QVariant &branch : branches )
   {
     const QVariantMap branchDef = branch.toMap();
-    const QString name = branchDef.value( QStringLiteral( "name" ) ).toString();
-    mOutputs.append( new Output( name, branchDef.value( QStringLiteral( "expression" ) ).toString() ) );
+    const QString name = branchDef.value( u"name"_s ).toString();
+    mOutputs.append( new Output( name, branchDef.value( u"expression"_s ).toString() ) );
     addOutput( new QgsProcessingOutputConditionalBranch( name, name ) );
   }
 }

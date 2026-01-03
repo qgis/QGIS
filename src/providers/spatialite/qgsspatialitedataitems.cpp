@@ -64,7 +64,7 @@ bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableNa
 }
 
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType )
-  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
+  : QgsLayerItem( parent, name, path, uri, layerType, u"spatialite"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete;
   setState( Qgis::BrowserItemState::NotPopulated );
@@ -73,7 +73,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
 // ------
 
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "spatialite" ) )
+  : QgsDataCollectionItem( parent, name, path, u"spatialite"_s )
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
@@ -82,19 +82,19 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &na
 
 static Qgis::BrowserLayerType _layerTypeFromDb( const QString &dbType )
 {
-  if ( dbType == QLatin1String( "POINT" ) || dbType == QLatin1String( "MULTIPOINT" ) )
+  if ( dbType == "POINT"_L1 || dbType == "MULTIPOINT"_L1 )
   {
     return Qgis::BrowserLayerType::Point;
   }
-  else if ( dbType == QLatin1String( "LINESTRING" ) || dbType == QLatin1String( "MULTILINESTRING" ) )
+  else if ( dbType == "LINESTRING"_L1 || dbType == "MULTILINESTRING"_L1 )
   {
     return Qgis::BrowserLayerType::Line;
   }
-  else if ( dbType == QLatin1String( "POLYGON" ) || dbType == QLatin1String( "MULTIPOLYGON" ) )
+  else if ( dbType == "POLYGON"_L1 || dbType == "MULTIPOLYGON"_L1 )
   {
     return Qgis::BrowserLayerType::Polygon;
   }
-  else if ( dbType == QLatin1String( "qgis_table" ) )
+  else if ( dbType == "qgis_table"_L1 )
   {
     return Qgis::BrowserLayerType::Table;
   }
@@ -133,12 +133,12 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
     }
     const QString msgDetails = connection.errorMessage();
     if ( !msgDetails.isEmpty() )
-      msg = QStringLiteral( "%1 (%2)" ).arg( msg, msgDetails );
+      msg = u"%1 (%2)"_s.arg( msg, msgDetails );
     children.append( new QgsErrorItem( this, msg, mPath + "/error" ) );
     return children;
   }
 
-  const QString connectionInfo = QStringLiteral( "dbname='%1'" ).arg( QString( connection.path() ).replace( '\'', QLatin1String( "\\'" ) ) );
+  const QString connectionInfo = u"dbname='%1'"_s.arg( QString( connection.path() ).replace( '\'', "\\'"_L1 ) );
   QgsDataSourceUri uri( connectionInfo );
 
   const auto constTables = connection.tables();
@@ -165,10 +165,10 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------------
 
 QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "spatialite" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"spatialite"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconSpatialite.svg" );
+  mIconName = u"mIconSpatialite.svg"_s;
   populate();
 }
 
@@ -243,11 +243,11 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause
 
 bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
 {
-  QgsDebugMsgLevel( QStringLiteral( "creating a new db" ), 2 );
+  QgsDebugMsgLevel( u"creating a new db"_s, 2 );
 
   const QFileInfo fullPath = QFileInfo( dbPath );
   const QDir path = fullPath.dir();
-  QgsDebugMsgLevel( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ), 2 );
+  QgsDebugMsgLevel( u"making this dir: %1"_s.arg( path.absolutePath() ), 2 );
 
   // Must be sure there is destination directory ~/.qgis
   QDir().mkpath( path.absolutePath() );
@@ -280,12 +280,12 @@ bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
 
 QString QgsSpatiaLiteDataItemProvider::name()
 {
-  return QStringLiteral( "spatialite" );
+  return u"spatialite"_s;
 }
 
 QString QgsSpatiaLiteDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "spatialite" );
+  return u"spatialite"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsSpatiaLiteDataItemProvider::capabilities() const
@@ -296,7 +296,7 @@ Qgis::DataItemProviderCapabilities QgsSpatiaLiteDataItemProvider::capabilities()
 QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )
-  return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
+  return new QgsSLRootItem( parentItem, u"SpatiaLite"_s, u"spatialite:"_s );
 }
 
 
@@ -308,6 +308,6 @@ bool QgsSLConnectionItem::layerCollection() const
 QVector<QgsDataItem *> QgsSLLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this, path() + QStringLiteral( "/columns/ " ), uri(), QStringLiteral( "spatialite" ), QString(), name() ) );
+  children.push_back( new QgsFieldsItem( this, path() + u"/columns/ "_s, uri(), u"spatialite"_s, QString(), name() ) );
   return children;
 }

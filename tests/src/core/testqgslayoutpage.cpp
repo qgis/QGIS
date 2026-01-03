@@ -36,7 +36,7 @@ class TestQgsLayoutPage : public QgsTest
 
   public:
     TestQgsLayoutPage()
-      : QgsTest( QStringLiteral( "Layout Page Tests" ), QStringLiteral( "composer_paper" ) ) {}
+      : QgsTest( u"Layout Page Tests"_s, u"composer_paper"_s ) {}
 
   private slots:
     void cleanupTestCase();
@@ -156,7 +156,7 @@ void TestQgsLayoutPage::defaultPaper()
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_default" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composerpaper_default"_s, &l );
 }
 
 void TestQgsLayoutPage::transparentPaper()
@@ -174,7 +174,7 @@ void TestQgsLayoutPage::transparentPaper()
   simpleFill->setStrokeColor( Qt::transparent );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_transparent" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composerpaper_transparent"_s, &l );
 }
 
 void TestQgsLayoutPage::borderedPaper()
@@ -193,7 +193,7 @@ void TestQgsLayoutPage::borderedPaper()
   simpleFill->setStrokeWidth( 6 );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_bordered" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composerpaper_bordered"_s, &l );
 }
 
 void TestQgsLayoutPage::markerLinePaper()
@@ -210,7 +210,7 @@ void TestQgsLayoutPage::markerLinePaper()
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_markerborder" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composerpaper_markerborder"_s, &l );
 }
 
 void TestQgsLayoutPage::hiddenPages()
@@ -230,7 +230,7 @@ void TestQgsLayoutPage::hiddenPages()
 
   l.renderContext().setPagesVisible( false );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerpaper_hidden" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composerpaper_hidden"_s, &l );
 }
 
 void TestQgsLayoutPage::pageLayout()

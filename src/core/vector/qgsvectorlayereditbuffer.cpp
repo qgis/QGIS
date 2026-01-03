@@ -57,7 +57,7 @@ void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
   if ( mBlockModifiedSignals )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
+  QgsDebugMsgLevel( u"undo index changed %1"_s.arg( index ), 4 );
   Q_UNUSED( index )
   L->triggerRepaint();
   emit layerModified();
@@ -184,7 +184,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 {
   if ( !( L->dataProvider()->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
   {
-    QgsDebugError( QStringLiteral( "Cannot delete features (missing DeleteFeature capability)" ) );
+    QgsDebugError( u"Cannot delete features (missing DeleteFeature capability)"_s );
     return false;
   }
 
@@ -192,7 +192,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( !mAddedFeatures.contains( fid ) )
     {
-      QgsDebugError( QStringLiteral( "Cannot delete features (in the list of added features)" ) );
+      QgsDebugError( u"Cannot delete features (in the list of added features)"_s );
       return false;
     }
   }
@@ -200,7 +200,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( mDeletedFeatureIds.contains( fid ) )
     {
-      QgsDebugError( QStringLiteral( "Cannot delete features (in the list of deleted features)" ) );
+      QgsDebugError( u"Cannot delete features (in the list of deleted features)"_s );
       return false;
     }
   }
@@ -213,7 +213,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
 {
   if ( !( L->dataProvider()->capabilities() & Qgis::VectorProviderCapability::DeleteFeatures ) )
   {
-    QgsDebugError( QStringLiteral( "Cannot delete features (missing DeleteFeatures capability)" ) );
+    QgsDebugError( u"Cannot delete features (missing DeleteFeatures capability)"_s );
     return false;
   }
 
@@ -458,7 +458,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     const auto constErrors = provider->errors();
     for ( QString e : constErrors )
     {
-      commitErrors << "    " + e.replace( '\n', QLatin1String( "\n    " ) );
+      commitErrors << "    " + e.replace( '\n', "\n    "_L1 );
     }
     provider->clearErrors();
   }
@@ -765,14 +765,14 @@ bool QgsVectorLayerEditBuffer::commitChangesCheckAttributesModifications( const 
           << tr( "ERROR: field with index %1 is not the same!" ).arg( i )
           << tr( "Provider: %1" ).arg( L->providerType() )
           << tr( "Storage: %1" ).arg( L->storageType() )
-          << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+          << u"%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6"_s
           .arg( tr( "expected field" ),
                 oldField.name(),
                 QVariant::typeToName( oldField.type() ),
                 oldField.typeName() )
           .arg( oldField.length() )
           .arg( oldField.precision() )
-          << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+          << u"%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6"_s
           .arg( tr( "retrieved field" ),
                 newField.name(),
                 QVariant::typeToName( newField.type() ),

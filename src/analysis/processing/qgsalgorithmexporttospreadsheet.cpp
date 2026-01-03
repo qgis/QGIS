@@ -32,7 +32,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
     FieldValueConverter( QgsVectorLayer *vl )
       : mLayer( vl )
     {
-      const QStringList formattersAllowList { QStringLiteral( "KeyValue" ), QStringLiteral( "List" ), QStringLiteral( "ValueRelation" ), QStringLiteral( "ValueMap" ) };
+      const QStringList formattersAllowList { u"KeyValue"_s, u"List"_s, u"ValueRelation"_s, u"ValueMap"_s };
 
       for ( int i = 0; i < mLayer->fields().count(); ++i )
       {
@@ -95,7 +95,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
 
 QString QgsExportToSpreadsheetAlgorithm::name() const
 {
-  return QStringLiteral( "exporttospreadsheet" );
+  return u"exporttospreadsheet"_s;
 }
 
 QString QgsExportToSpreadsheetAlgorithm::displayName() const
@@ -115,19 +115,19 @@ QString QgsExportToSpreadsheetAlgorithm::group() const
 
 QString QgsExportToSpreadsheetAlgorithm::groupId() const
 {
-  return QStringLiteral( "layertools" );
+  return u"layertools"_s;
 }
 
 void QgsExportToSpreadsheetAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_ALIAS" ), QObject::tr( "Use field aliases as column headings" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORMATTED_VALUES" ), QObject::tr( "Export formatted values instead of raw values" ), false ) );
-  QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination spreadsheet" ), QObject::tr( "Microsoft Excel (*.xlsx);;Open Document Spreadsheet (*.ods)" ) );
-  outputParameter->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "dontconfirmoverwrite" ), true } } ) } } ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
+  addParameter( new QgsProcessingParameterBoolean( u"USE_ALIAS"_s, QObject::tr( "Use field aliases as column headings" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"FORMATTED_VALUES"_s, QObject::tr( "Export formatted values instead of raw values" ), false ) );
+  QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Destination spreadsheet" ), QObject::tr( "Microsoft Excel (*.xlsx);;Open Document Spreadsheet (*.ods)" ) );
+  outputParameter->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"dontconfirmoverwrite"_s, true } } ) } } ) );
   addParameter( outputParameter );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing spreadsheet" ), true ) );
-  addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within spreadsheet" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"OVERWRITE"_s, QObject::tr( "Overwrite existing spreadsheet" ), true ) );
+  addOutput( new QgsProcessingOutputMultipleLayers( u"OUTPUT_LAYERS"_s, QObject::tr( "Layers within spreadsheet" ) ) );
 }
 
 QString QgsExportToSpreadsheetAlgorithm::shortHelpString() const
@@ -148,7 +148,7 @@ QgsExportToSpreadsheetAlgorithm *QgsExportToSpreadsheetAlgorithm::createInstance
 
 bool QgsExportToSpreadsheetAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
   for ( QgsMapLayer *layer : layers )
   {
     mLayers.emplace_back( layer->clone() );
@@ -162,13 +162,13 @@ bool QgsExportToSpreadsheetAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
-  const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const bool overwrite = parameterAsBoolean( parameters, u"OVERWRITE"_s, context );
+  const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
   if ( outputPath.isEmpty() )
     throw QgsProcessingException( QObject::tr( "No output file specified." ) );
 
-  const bool useAlias = parameterAsBoolean( parameters, QStringLiteral( "USE_ALIAS" ), context );
-  const bool formattedValues = parameterAsBoolean( parameters, QStringLiteral( "FORMATTED_VALUES" ), context );
+  const bool useAlias = parameterAsBoolean( parameters, u"USE_ALIAS"_s, context );
+  const bool formattedValues = parameterAsBoolean( parameters, u"FORMATTED_VALUES"_s, context );
   bool createNew = true;
   // delete existing spreadsheet if it exists
   if ( overwrite && QFile::exists( outputPath ) )
@@ -190,7 +190,7 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
   OGRSFDriverH hDriver = OGRGetDriverByName( driverName.toLocal8Bit().constData() );
   if ( !hDriver )
   {
-    if ( driverName == QLatin1String( "ods" ) )
+    if ( driverName == "ods"_L1 )
       throw QgsProcessingException( QObject::tr( "Open Document Spreadsheet driver not found." ) );
     else
       throw QgsProcessingException( QObject::tr( "Microsoft Excel driver not found." ) );
@@ -235,7 +235,7 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
       errored = true;
     else
     {
-      outputLayers.append( QStringLiteral( "%1|layername=%2" ).arg( outputPath, layer->name() ) );
+      outputLayers.append( u"%1|layername=%2"_s.arg( outputPath, layer->name() ) );
       createNew = false;
     }
   }
@@ -244,8 +244,8 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( QObject::tr( "Error obtained while exporting one or more layers." ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
-  outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
+  outputs.insert( u"OUTPUT"_s, outputPath );
+  outputs.insert( u"OUTPUT_LAYERS"_s, outputLayers );
   return outputs;
 }
 

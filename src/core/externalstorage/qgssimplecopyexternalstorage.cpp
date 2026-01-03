@@ -98,7 +98,7 @@ QString QgsSimpleCopyExternalStorageFetchedContent::filePath() const
 
 QString QgsSimpleCopyExternalStorage::type() const
 {
-  return QStringLiteral( "SimpleCopy" );
+  return u"SimpleCopy"_s;
 };
 
 QString QgsSimpleCopyExternalStorage::displayName() const

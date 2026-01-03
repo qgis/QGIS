@@ -117,7 +117,7 @@ void TestQgsPolygon::altConstructor()
 
   QgsPolygon pl( ext.clone(), QList<QgsLineString *>() << ring1.clone() << ring2.clone() );
 
-  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1))" ) );
+  QCOMPARE( pl.asWkt(), u"Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1))"_s );
 }
 
 void TestQgsPolygon::polygon25D()
@@ -861,7 +861,7 @@ void TestQgsPolygon::removeInvalidRings()
   pl.setExteriorRing( ls.clone() );
 
   pl.removeInvalidRings();
-  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
+  QCOMPARE( pl.asWkt(), u"Polygon ZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
@@ -870,7 +870,7 @@ void TestQgsPolygon::removeInvalidRings()
   pl.addInteriorRing( ls.clone() );
 
   pl.removeInvalidRings();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4),(1 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 1 2 5 6))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4),(1 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 1 2 5 6))"_s );
 }
 
 void TestQgsPolygon::insertVertex()
@@ -1379,27 +1379,27 @@ void TestQgsPolygon::removeDuplicateNodes()
   pl.setExteriorRing( ls.clone() );
 
   QVERIFY( !pl.removeDuplicateNodes() );
-  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2))" ) );
+  QCOMPARE( pl.asWkt(), u"Polygon ((11 2, 11 12, 11 22, 11 2))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11.01, 21.99 ) << QgsPoint( 10.99, 1.99 ) << QgsPoint( 11, 2 ) );
   pl.setExteriorRing( ls.clone() );
 
   QVERIFY( pl.removeDuplicateNodes( 0.02 ) );
   QVERIFY( !pl.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ((11 2, 11 12, 11 22, 11 2))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11.01, 21.99 ) << QgsPoint( 10.99, 1.99 ) << QgsPoint( 11, 2 ) );
   pl.setExteriorRing( ls.clone() );
 
   QVERIFY( !pl.removeDuplicateNodes() );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11.01 1.99, 11.02 2.01, 11 12, 11 22, 11.01 21.99, 10.99 1.99, 11 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ((11 2, 11.01 1.99, 11.02 2.01, 11 12, 11 22, 11.01 21.99, 10.99 1.99, 11 2))"_s );
 
   // don't create degenerate rings
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 2.01 ) << QgsPoint( 11, 2.01 ) << QgsPoint( 11, 2 ) );
   pl.addInteriorRing( ls.clone() );
 
   QVERIFY( pl.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2),(11 2, 11.01 2.01, 11 2.01, 11 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ((11 2, 11 12, 11 22, 11 2),(11 2, 11.01 2.01, 11 2.01, 11 2))"_s );
 }
 
 void TestQgsPolygon::dropZValue()
@@ -1522,13 +1522,13 @@ void TestQgsPolygon::swapXy()
   pl.setExteriorRing( ls.clone() );
 
   pl.swapXy();
-  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((2 11 3 4, 12 11 13 14, 22 11 23 24, 2 11 3 4))" ) );
+  QCOMPARE( pl.asWkt(), u"Polygon ZM ((2 11 3 4, 12 11 13 14, 22 11 23 24, 2 11 3 4))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
 
   pl.swapXy();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(2 1 5 6, 2.01 11.01 15 16, 2.01 11 25 26, 2 11 5 6, 2 1 5 6))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(2 1 5 6, 2.01 11.01 15 16, 2.01 11 25 26, 2 11 5 6, 2 1 5 6))"_s );
 }
 
 void TestQgsPolygon::boundary()
@@ -1798,73 +1798,73 @@ void TestQgsPolygon::forceRHR()
   QgsPolygon pl;
   pl.forceRHR(); // no crash
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))"_s );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))"_s );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))"_s );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))"_s );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))"_s );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))"_s );
 
   // force cw (same as force RHR)
   pl = QgsPolygon();
   pl.forceClockwise(); // no crash
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))"_s );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))"_s );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))"_s );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))"_s );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))"_s );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))"_s );
 
   // force ccw
   pl = QgsPolygon();
   pl.forceCounterClockwise(); // no crash
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))"_s );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))"_s );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))"_s );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))"_s );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))"_s );
 
-  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( u"Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))"_s );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))"_s );
 }
 
 void TestQgsPolygon::boundingBoxIntersects()
@@ -1920,7 +1920,7 @@ void TestQgsPolygon::filterVertices()
 
   pl.filterVertices( filter );
 
-  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
+  QCOMPARE( pl.asWkt(), u"Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
@@ -1930,7 +1930,7 @@ void TestQgsPolygon::filterVertices()
 
   pl.filterVertices( filter );
 
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(10 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 11 2 5 6, 10 2 5 6),(11.01 2.01 15 16, 11 2.01 25 26))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(10 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 11 2 5 6, 10 2 5 6),(11.01 2.01 15 16, 11 2.01 25 26))"_s );
 }
 
 void TestQgsPolygon::transformVertices()
@@ -1947,7 +1947,7 @@ void TestQgsPolygon::transformVertices()
   pl.setExteriorRing( ls.clone() );
 
   pl.transformVertices( transform );
-  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((13 5 7 9, 6 15 17 19, 13 15 17 19, 13 25 27 29, 13 5 7 9))" ) );
+  QCOMPARE( pl.asWkt(), u"Polygon ZM ((13 5 7 9, 6 15 17 19, 13 15 17 19, 13 25 27 29, 13 5 7 9))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
@@ -1956,7 +1956,7 @@ void TestQgsPolygon::transformVertices()
   pl.addInteriorRing( ls.clone() );
 
   pl.transformVertices( transform );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((15 8 11 14, 8 18 21 24, 15 18 21 24, 15 28 31 34, 15 8 11 14),(12 5 9 11, 6 15 17 19, 13.01 5.01 19 21, 13 5.01 29 31, 13 5 9 11, 12 5 9 11),(3 5 9 11, 13.01 5.01 19 21, 13 5.01 29 31, 3 5 9 11))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((15 8 11 14, 8 18 21 24, 15 18 21 24, 15 28 31 34, 15 8 11 14),(12 5 9 11, 6 15 17 19, 13.01 5.01 19 21, 13 5.01 29 31, 13 5 9 11, 12 5 9 11),(3 5 9 11, 13.01 5.01 19 21, 13 5.01 29 31, 3 5 9 11))"_s );
 }
 
 void TestQgsPolygon::transformWithClass()
@@ -1972,7 +1972,7 @@ void TestQgsPolygon::transformWithClass()
   pl.setExteriorRing( ls.clone() );
 
   QVERIFY( pl.transform( &transformer ) );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((33 16 8 3, 12 26 18 13, 33 26 18 13, 33 36 28 23, 33 16 8 3))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((33 16 8 3, 12 26 18 13, 33 26 18 13, 33 36 28 23, 33 16 8 3))"_s );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2.01, 25, 26, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM ) );
   pl.addInteriorRing( ls.clone() );
@@ -1981,7 +1981,7 @@ void TestQgsPolygon::transformWithClass()
   pl.addInteriorRing( ls.clone() );
 
   QVERIFY( pl.transform( &transformer ) );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((99 30 13 2, 36 40 23 12, 99 40 23 12, 99 50 33 22, 99 30 13 2),(30 16 10 5, 12 26 18 13, 33.03 16.01 20 15, 33 16.01 30 25, 33 16 10 5, 30 16 10 5),(3 16 10 5, 33.03 16.01 20 15, 33 16.01 30 25, 3 16 10 5))" ) );
+  QCOMPARE( pl.asWkt( 2 ), u"Polygon ZM ((99 30 13 2, 36 40 23 12, 99 40 23 12, 99 50 33 22, 99 30 13 2),(30 16 10 5, 12 26 18 13, 33.03 16.01 20 15, 33 16.01 30 25, 33 16 10 5, 30 16 10 5),(3 16 10 5, 33.03 16.01 20 15, 33 16.01 30 25, 3 16 10 5))"_s );
 
   TestFailTransformer failTransformer;
   QVERIFY( !pl.transform( &failTransformer ) );
@@ -1990,8 +1990,8 @@ void TestQgsPolygon::transformWithClass()
 void TestQgsPolygon::transform2D()
 {
   //CRS transform
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   QgsPolygon pl;
@@ -2038,8 +2038,8 @@ void TestQgsPolygon::transform2D()
 void TestQgsPolygon::transform3D()
 {
   //CRS transform
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   QgsPolygon pl;
@@ -2103,8 +2103,8 @@ void TestQgsPolygon::transform3D()
 void TestQgsPolygon::transformReverse()
 {
   //CRS transform
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   QgsPolygon pl;
@@ -2167,8 +2167,8 @@ void TestQgsPolygon::transformReverse()
 void TestQgsPolygon::transformOldVersion()
 {
   //CRS transform
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   QgsPolygon pl;
@@ -2275,17 +2275,17 @@ void TestQgsPolygon::cast()
   QVERIFY( QgsCurvePolygon::cast( &pl ) );
   QVERIFY( QgsSurface::cast( &pl ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
+  pl.fromWkt( u"PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))"_s );
   QVERIFY( QgsPolygon::cast( &pl ) );
   QVERIFY( QgsCurvePolygon::cast( &pl ) );
   QVERIFY( QgsSurface::cast( &pl ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
+  pl.fromWkt( u"PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))"_s );
   QVERIFY( QgsPolygon::cast( &pl ) );
   QVERIFY( QgsCurvePolygon::cast( &pl ) );
   QVERIFY( QgsSurface::cast( &pl ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
+  pl.fromWkt( u"PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))"_s );
   QVERIFY( QgsPolygon::cast( &pl ) );
   QVERIFY( QgsCurvePolygon::cast( &pl ) );
   QVERIFY( QgsSurface::cast( &pl ) );
@@ -2501,7 +2501,7 @@ void TestQgsPolygon::toFromWKT()
   compound->addCurve( ring3 );
   pl3.addInteriorRing( compound );
   wkt = pl3.asWkt();
-  QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 1 9, 9 9, 9 1, 1 1))" ) );
+  QCOMPARE( wkt, u"Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 1 9, 9 9, 9 1, 1 1))"_s );
 
   // Test WKT export with empty interior ring
   QgsPolygon pl4;
@@ -2510,7 +2510,7 @@ void TestQgsPolygon::toFromWKT()
   pl4.setExteriorRing( ext4 );
   pl4.addInteriorRing( new QgsLineString() );
   wkt = pl4.asWkt();
-  QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))" ) );
+  QCOMPARE( wkt, u"Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))"_s );
 }
 
 void TestQgsPolygon::exportImport()
@@ -2522,31 +2522,31 @@ void TestQgsPolygon::exportImport()
   exportPolygon.setExteriorRing( ext );
 
   // GML document for compare
-  QDomDocument doc( QStringLiteral( "gml" ) );
+  QDomDocument doc( u"gml"_s );
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QString expectedSimpleGML2( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s );
   QGSCOMPAREGML( elemToString( exportPolygon.asGml2( doc ) ), expectedSimpleGML2 );
 
-  QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<Polygon xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsPolygon().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
+  QString expectedSimpleGML3( u"<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>"_s );
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
-  QString expectedGML3empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<Polygon xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsPolygon().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON
-  QString expectedSimpleJson( QStringLiteral( "{\"coordinates\":[[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]]],\"type\":\"Polygon\"}" ) );
+  QString expectedSimpleJson( u"{\"coordinates\":[[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]]],\"type\":\"Polygon\"}"_s );
   QCOMPARE( exportPolygon.asJson(), expectedSimpleJson );
 
   QgsLineString *ring = new QgsLineString();
   ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 1 ) << QgsPoint( Qgis::WkbType::Point, 1, 9 ) << QgsPoint( Qgis::WkbType::Point, 9, 9 ) << QgsPoint( Qgis::WkbType::Point, 9, 1 ) << QgsPoint( Qgis::WkbType::Point, 1, 1 ) );
   exportPolygon.addInteriorRing( ring );
 
-  QString expectedJson( QStringLiteral( "{\"coordinates\":[[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]],[[1.0,1.0],[1.0,9.0],[9.0,9.0],[9.0,1.0],[1.0,1.0]]],\"type\":\"Polygon\"}" ) );
+  QString expectedJson( u"{\"coordinates\":[[[0.0,0.0],[0.0,10.0],[10.0,10.0],[10.0,0.0],[0.0,0.0]],[[1.0,1.0],[1.0,9.0],[9.0,9.0],[9.0,1.0],[1.0,1.0]]],\"type\":\"Polygon\"}"_s );
   QCOMPARE( exportPolygon.asJson(), expectedJson );
 
   QgsPolygon exportPolygonFloat;
@@ -2558,32 +2558,32 @@ void TestQgsPolygon::exportImport()
   ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 4 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 4 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 4 / 3.0, 2 / 3.0 ) << QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 2 / 3.0 ) );
   exportPolygonFloat.addInteriorRing( ring );
 
-  QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[[[1.111,1.111],[1.111,11.111],[11.111,11.111],[11.111,1.111],[1.111,1.111]],[[0.667,0.667],[0.667,1.333],[1.333,1.333],[1.333,0.667],[0.667,0.667]]],\"type\":\"Polygon\"}" ) );
+  QString expectedJsonPrec3( u"{\"coordinates\":[[[1.111,1.111],[1.111,11.111],[11.111,11.111],[11.111,1.111],[1.111,1.111]],[[0.667,0.667],[0.667,1.333],[1.333,1.333],[1.333,0.667],[0.667,0.667]]],\"type\":\"Polygon\"}"_s );
   QCOMPARE( exportPolygonFloat.asJson( 3 ), expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
-  expectedGML2 += QLatin1String( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
+  QString expectedGML2( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>"_s );
+  expectedGML2 += "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>"_L1;
   QGSCOMPAREGML( elemToString( exportPolygon.asGml2( doc ) ), expectedGML2 );
 
-  QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" ) );
-  expectedGML2prec3 += QLatin1String( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
+  QString expectedGML2prec3( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>"_s );
+  expectedGML2prec3 += "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>"_L1;
   QGSCOMPAREGML( elemToString( exportPolygonFloat.asGml2( doc, 3 ) ), expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior>" ) );
-  expectedGML3 += QLatin1String( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LinearRing></interior></Polygon>" );
+  QString expectedGML3( u"<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior>"_s );
+  expectedGML3 += "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LinearRing></interior></Polygon>"_L1;
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedGML3 );
 
-  QString expectedGML3prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LinearRing></exterior>" ) );
-  expectedGML3prec3 += QLatin1String( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LinearRing></interior></Polygon>" );
+  QString expectedGML3prec3( u"<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LinearRing></exterior>"_s );
+  expectedGML3prec3 += "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LinearRing></interior></Polygon>"_L1;
   QCOMPARE( elemToString( exportPolygonFloat.asGml3( doc, 3 ) ), expectedGML3prec3 );
 
   //asKML
-  QString expectedKml( QStringLiteral( "<Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0,0,0 0,10,0 10,10,0 10,0,0 0,0,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1,1,0 1,9,0 9,9,0 9,1,0 1,1,0</coordinates></LinearRing></innerBoundaryIs></Polygon>" ) );
+  QString expectedKml( u"<Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0,0,0 0,10,0 10,10,0 10,0,0 0,0,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1,1,0 1,9,0 9,9,0 9,1,0 1,1,0</coordinates></LinearRing></innerBoundaryIs></Polygon>"_s );
   QCOMPARE( exportPolygon.asKml(), expectedKml );
 
-  QString expectedKmlPrec3( QStringLiteral( "<Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></innerBoundaryIs></Polygon>" ) );
+  QString expectedKmlPrec3( u"<Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></innerBoundaryIs></Polygon>"_s );
   QCOMPARE( exportPolygonFloat.asKml( 3 ), expectedKmlPrec3 );
 }
 

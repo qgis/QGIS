@@ -19,7 +19,7 @@
 #include "qgsnetworkloggerpanelwidget.h"
 
 QgsNetworkLoggerWidgetFactory::QgsNetworkLoggerWidgetFactory( QgsNetworkLogger *logger )
-  : QgsDevToolWidgetFactory( QObject::tr( "Network Logger" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) )
+  : QgsDevToolWidgetFactory( QObject::tr( "Network Logger" ), QgsApplication::getThemeIcon( u"propertyicons/network_and_proxy.svg"_s ) )
   , mLogger( logger )
 {
 }

@@ -56,7 +56,7 @@ class TestQgsCopcProvider : public QgsTest
 
   public:
     TestQgsCopcProvider()
-      : QgsTest( QStringLiteral( "COPC Provider Tests" ) ) {}
+      : QgsTest( u"COPC Provider Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -107,10 +107,10 @@ void TestQgsCopcProvider::cleanupTestCase()
 
 void TestQgsCopcProvider::filters()
 {
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"copc"_s );
   QVERIFY( metadata );
 
-  QCOMPARE( metadata->filters( Qgis::FileFilterType::PointCloud ), QStringLiteral( "COPC Point Clouds (*.copc.laz *.COPC.LAZ)" ) );
+  QCOMPARE( metadata->filters( Qgis::FileFilterType::PointCloud ), u"COPC Point Clouds (*.copc.laz *.COPC.LAZ)"_s );
   QCOMPARE( metadata->filters( Qgis::FileFilterType::Vector ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
@@ -119,86 +119,86 @@ void TestQgsCopcProvider::filters()
 
 void TestQgsCopcProvider::encodeUri()
 {
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"copc"_s );
   QVERIFY( metadata );
 
   QVariantMap parts;
-  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
-  QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  parts.insert( u"path"_s, u"/home/point_clouds/dataset.copc.laz"_s );
+  QCOMPARE( metadata->encodeUri( parts ), u"/home/point_clouds/dataset.copc.laz"_s );
 
-  parts.insert( QStringLiteral( "authcfg" ), QStringLiteral( "abc1234" ) );
-  QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/dataset.copc.laz authcfg='abc1234'" ) );
+  parts.insert( u"authcfg"_s, u"abc1234"_s );
+  QCOMPARE( metadata->encodeUri( parts ), u"/home/point_clouds/dataset.copc.laz authcfg='abc1234'"_s );
 }
 
 void TestQgsCopcProvider::decodeUri()
 {
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"copc"_s );
   QVERIFY( metadata );
 
-  QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
-  QCOMPARE( parts.value( QStringLiteral( "file-name" ) ).toString(), QStringLiteral( "dataset.copc.laz" ) );
-  QVERIFY( parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() );
+  QVariantMap parts = metadata->decodeUri( u"/home/point_clouds/dataset.copc.laz"_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/point_clouds/dataset.copc.laz"_s );
+  QCOMPARE( parts.value( u"file-name"_s ).toString(), u"dataset.copc.laz"_s );
+  QVERIFY( parts.value( u"authcfg"_s ).toString().isEmpty() );
 
-  parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz authcfg='abc1234'" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
-  QCOMPARE( parts.value( QStringLiteral( "authcfg" ) ).toString(), QStringLiteral( "abc1234" ) );
+  parts = metadata->decodeUri( u"/home/point_clouds/dataset.copc.laz authcfg='abc1234'"_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/point_clouds/dataset.copc.laz"_s );
+  QCOMPARE( parts.value( u"authcfg"_s ).toString(), u"abc1234"_s );
 }
 
 void TestQgsCopcProvider::absoluteRelativeUri()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( testDataPath( QStringLiteral( "/project.qgs" ) ) ) );
+  context.setPathResolver( QgsPathResolver( testDataPath( u"/project.qgs"_s ) ) );
 
   QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( "copc" );
   QVERIFY( copcMetadata );
 
-  QString absoluteUri = testDataPath( QStringLiteral( "/point_clouds/copc/rgb.copc.laz" ) );
-  QString relativeUri = QStringLiteral( "./point_clouds/copc/rgb.copc.laz" );
+  QString absoluteUri = testDataPath( u"/point_clouds/copc/rgb.copc.laz"_s );
+  QString relativeUri = u"./point_clouds/copc/rgb.copc.laz"_s;
   QCOMPARE( copcMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( copcMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
 void TestQgsCopcProvider::preferredUri()
 {
-  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( u"copc"_s );
   QVERIFY( copcMetadata->capabilities() & QgsProviderMetadata::PriorityForUri );
 
   // test that COPC is the preferred provider for .copc.laz uris
-  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/dataset.copc.laz" ) );
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"/home/test/dataset.copc.laz"_s );
   QCOMPARE( candidates.size(), 1 );
-  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "copc" ) );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), u"copc"_s );
   QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
 
-  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/dataset.COPC.LAZ" ) );
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"/home/test/dataset.COPC.LAZ"_s );
   QCOMPARE( candidates.size(), 1 );
-  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "copc" ) );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), u"copc"_s );
   QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
 
-  QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/dataset.copc.laz" ), QStringLiteral( "copc" ) ) );
-  QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/dataset.copc.laz" ), QStringLiteral( "ogr" ) ) );
+  QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( u"/home/test/dataset.copc.laz"_s, u"copc"_s ) );
+  QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( u"/home/test/dataset.copc.laz"_s, u"ogr"_s ) );
 }
 
 void TestQgsCopcProvider::layerTypesForUri()
 {
-  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( u"copc"_s );
   QVERIFY( copcMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
-  QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
-  QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz authcfg='abc1234'" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
-  QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList<Qgis::LayerType>() );
+  QCOMPARE( copcMetadata->validLayerTypesForUri( u"/home/test/cloud.copc.laz"_s ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( copcMetadata->validLayerTypesForUri( u"/home/test/cloud.copc.laz authcfg='abc1234'"_s ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( copcMetadata->validLayerTypesForUri( u"/home/test/ept.json"_s ), QList<Qgis::LayerType>() );
 }
 
 void TestQgsCopcProvider::uriIsBlocklisted()
 {
-  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/test/ept.json" ) ) );
-  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/test/dataset.copc.laz" ) ) );
+  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( u"/home/test/ept.json"_s ) );
+  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( u"/home/test/dataset.copc.laz"_s ) );
 }
 
 void TestQgsCopcProvider::querySublayers()
 {
   // test querying sub layers for a ept layer
-  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
+  QgsProviderMetadata *copcMetadata = QgsProviderRegistry::instance()->providerMetadata( u"copc"_s );
 
   // invalid uri
   QList<QgsProviderSublayerDetails> res = copcMetadata->querySublayers( QString() );
@@ -209,13 +209,13 @@ void TestQgsCopcProvider::querySublayers()
   QVERIFY( res.empty() );
 
   // valid copc layer
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/sunshine-coast.copc.laz"_s );
 
   res = copcMetadata->querySublayers( dataPath );
   QCOMPARE( res.count(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "sunshine-coast.copc" ) );
+  QCOMPARE( res.at( 0 ).name(), u"sunshine-coast.copc"_s );
   QCOMPARE( res.at( 0 ).uri(), dataPath );
-  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "copc" ) );
+  QCOMPARE( res.at( 0 ).providerKey(), u"copc"_s );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::PointCloud );
 
   // make sure result is valid to load layer from
@@ -227,13 +227,13 @@ void TestQgsCopcProvider::querySublayers()
 void TestQgsCopcProvider::brokenPath()
 {
   // test loading a bad layer URI
-  auto layer = std::make_unique<QgsPointCloudLayer>( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( u"not valid"_s, u"layer"_s, u"copc"_s );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsCopcProvider::testLazInfo()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/lone-star.copc.laz"_s );
 
   std::ifstream file( dataPath.toStdString(), std::ios::binary );
   QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
@@ -261,17 +261,17 @@ void TestQgsCopcProvider::testLazInfo()
 
 void TestQgsCopcProvider::validLayer()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
-  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QCOMPARE( layer->crs().authid(), u"EPSG:28356"_s );
   QGSCOMPARENEAR( layer->extent().xMinimum(), 498062.0, 0.1 );
   QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.84, 0.1 );
   QGSCOMPARENEAR( layer->extent().xMaximum(), 498067.39, 0.1 );
   QGSCOMPARENEAR( layer->extent().yMaximum(), 7050997.04, 0.1 );
-  QCOMPARE( layer->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((498062 7050993, 498067 7050993, 498067 7050997, 498062 7050997, 498062 7050993))" ) );
+  QCOMPARE( layer->dataProvider()->polygonBounds().asWkt( 0 ), u"Polygon ((498062 7050993, 498067 7050993, 498067 7050997, 498062 7050997, 498062 7050993))"_s );
   QCOMPARE( layer->dataProvider()->pointCount(), 253 );
   QCOMPARE( layer->pointCount(), 253 );
 
@@ -283,9 +283,9 @@ void TestQgsCopcProvider::validLayer()
 
 void TestQgsCopcProvider::validLayerWithCopcHierarchy()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/lone-star.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   QGSCOMPARENEAR( layer->extent().xMinimum(), 515368.6022, 0.1 );
@@ -301,62 +301,62 @@ void TestQgsCopcProvider::validLayerWithCopcHierarchy()
 
 void TestQgsCopcProvider::attributes()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
   QCOMPARE( attributes.count(), 21 );
-  QCOMPARE( attributes.at( 0 ).name(), QStringLiteral( "X" ) );
+  QCOMPARE( attributes.at( 0 ).name(), u"X"_s );
   QCOMPARE( attributes.at( 0 ).type(), QgsPointCloudAttribute::Int32 );
-  QCOMPARE( attributes.at( 1 ).name(), QStringLiteral( "Y" ) );
+  QCOMPARE( attributes.at( 1 ).name(), u"Y"_s );
   QCOMPARE( attributes.at( 1 ).type(), QgsPointCloudAttribute::Int32 );
-  QCOMPARE( attributes.at( 2 ).name(), QStringLiteral( "Z" ) );
+  QCOMPARE( attributes.at( 2 ).name(), u"Z"_s );
   QCOMPARE( attributes.at( 2 ).type(), QgsPointCloudAttribute::Int32 );
-  QCOMPARE( attributes.at( 3 ).name(), QStringLiteral( "Intensity" ) );
+  QCOMPARE( attributes.at( 3 ).name(), u"Intensity"_s );
   QCOMPARE( attributes.at( 3 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 4 ).name(), QStringLiteral( "ReturnNumber" ) );
+  QCOMPARE( attributes.at( 4 ).name(), u"ReturnNumber"_s );
   QCOMPARE( attributes.at( 4 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 5 ).name(), QStringLiteral( "NumberOfReturns" ) );
+  QCOMPARE( attributes.at( 5 ).name(), u"NumberOfReturns"_s );
   QCOMPARE( attributes.at( 5 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 6 ).name(), QStringLiteral( "ScanDirectionFlag" ) );
+  QCOMPARE( attributes.at( 6 ).name(), u"ScanDirectionFlag"_s );
   QCOMPARE( attributes.at( 6 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 7 ).name(), QStringLiteral( "EdgeOfFlightLine" ) );
+  QCOMPARE( attributes.at( 7 ).name(), u"EdgeOfFlightLine"_s );
   QCOMPARE( attributes.at( 7 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 8 ).name(), QStringLiteral( "Classification" ) );
+  QCOMPARE( attributes.at( 8 ).name(), u"Classification"_s );
   QCOMPARE( attributes.at( 8 ).type(), QgsPointCloudAttribute::UChar );
-  QCOMPARE( attributes.at( 9 ).name(), QStringLiteral( "ScanAngleRank" ) );
+  QCOMPARE( attributes.at( 9 ).name(), u"ScanAngleRank"_s );
   QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Float );
-  QCOMPARE( attributes.at( 10 ).name(), QStringLiteral( "UserData" ) );
+  QCOMPARE( attributes.at( 10 ).name(), u"UserData"_s );
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::UChar );
-  QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
+  QCOMPARE( attributes.at( 11 ).name(), u"PointSourceId"_s );
   QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "Synthetic" ) );
+  QCOMPARE( attributes.at( 12 ).name(), u"Synthetic"_s );
   QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::UChar );
-  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "KeyPoint" ) );
+  QCOMPARE( attributes.at( 13 ).name(), u"KeyPoint"_s );
   QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::UChar );
-  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Withheld" ) );
+  QCOMPARE( attributes.at( 14 ).name(), u"Withheld"_s );
   QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UChar );
-  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Overlap" ) );
+  QCOMPARE( attributes.at( 15 ).name(), u"Overlap"_s );
   QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UChar );
-  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "ScannerChannel" ) );
+  QCOMPARE( attributes.at( 16 ).name(), u"ScannerChannel"_s );
   QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "GpsTime" ) );
+  QCOMPARE( attributes.at( 17 ).name(), u"GpsTime"_s );
   QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::Double );
-  QCOMPARE( attributes.at( 18 ).name(), QStringLiteral( "Red" ) );
+  QCOMPARE( attributes.at( 18 ).name(), u"Red"_s );
   QCOMPARE( attributes.at( 18 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 19 ).name(), QStringLiteral( "Green" ) );
+  QCOMPARE( attributes.at( 19 ).name(), u"Green"_s );
   QCOMPARE( attributes.at( 19 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 20 ).name(), QStringLiteral( "Blue" ) );
+  QCOMPARE( attributes.at( 20 ).name(), u"Blue"_s );
   QCOMPARE( attributes.at( 20 ).type(), QgsPointCloudAttribute::UShort );
 }
 
 void TestQgsCopcProvider::calculateZRange()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
@@ -375,7 +375,7 @@ void TestQgsCopcProvider::testIdentify_data()
 {
   QTest::addColumn<QString>( "srcDatasetPath" );
 
-  QTest::newRow( "copc" ) << QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" );
+  QTest::newRow( "copc" ) << u"point_clouds/copc/sunshine-coast.copc.laz"_s;
 }
 
 void TestQgsCopcProvider::testIdentify()
@@ -384,7 +384,7 @@ void TestQgsCopcProvider::testIdentify()
 
   const QString datasetPath = copyTestData( srcDatasetPath );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( datasetPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( datasetPath, u"layer"_s, u"copc"_s );
 
   QVERIFY( layer->isValid() );
 
@@ -404,22 +404,22 @@ void TestQgsCopcProvider::testIdentify()
     const QMap<QString, QVariant> identifiedPoint = points[0];
     QMap<QString, QVariant> expected;
 
-    expected[QStringLiteral( "Blue" )] = 0;
-    expected[QStringLiteral( "Classification" )] = 2;
-    expected[QStringLiteral( "EdgeOfFlightLine" )] = 0;
-    expected[QStringLiteral( "GpsTime (raw)" )] = 268793.37257748609409;
-    expected[QStringLiteral( "Green" )] = 0;
-    expected[QStringLiteral( "Intensity" )] = 1765;
-    expected[QStringLiteral( "NumberOfReturns" )] = 1;
-    expected[QStringLiteral( "PointSourceId" )] = 7041;
-    expected[QStringLiteral( "Red" )] = 0;
-    expected[QStringLiteral( "ReturnNumber" )] = 1;
-    expected[QStringLiteral( "ScanAngleRank" )] = -28.0020008087;
-    expected[QStringLiteral( "ScanDirectionFlag" )] = 1;
-    expected[QStringLiteral( "UserData" )] = 17;
-    expected[QStringLiteral( "X" )] = 498062.52;
-    expected[QStringLiteral( "Y" )] = 7050996.61;
-    expected[QStringLiteral( "Z" )] = 75.0;
+    expected[u"Blue"_s] = 0;
+    expected[u"Classification"_s] = 2;
+    expected[u"EdgeOfFlightLine"_s] = 0;
+    expected[u"GpsTime (raw)"_s] = 268793.37257748609409;
+    expected[u"Green"_s] = 0;
+    expected[u"Intensity"_s] = 1765;
+    expected[u"NumberOfReturns"_s] = 1;
+    expected[u"PointSourceId"_s] = 7041;
+    expected[u"Red"_s] = 0;
+    expected[u"ReturnNumber"_s] = 1;
+    expected[u"ScanAngleRank"_s] = -28.0020008087;
+    expected[u"ScanDirectionFlag"_s] = 1;
+    expected[u"UserData"_s] = 17;
+    expected[u"X"_s] = 498062.52;
+    expected[u"Y"_s] = 7050996.61;
+    expected[u"Z"_s] = 75.0;
     // compare values using toDouble() so that fuzzy comparison is used in case of
     // tiny rounding errors (e.g. 74.6 vs 74.60000000000001)
     for ( auto it = expected.constBegin(); it != expected.constEnd(); it++ )
@@ -443,22 +443,22 @@ void TestQgsCopcProvider::testIdentify()
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "2";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "268793.3373408913";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "278";
-      point[QStringLiteral( "NumberOfReturns" )] = "1";
-      point[QStringLiteral( "PointSourceId" )] = "7041";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "ReturnNumber" )] = "1";
-      point[QStringLiteral( "ScanAngleRank" )] = "-28.0020008087";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "1";
-      point[QStringLiteral( "UserData" )] = "17";
-      point[QStringLiteral( "X" )] = "498066.27";
-      point[QStringLiteral( "Y" )] = "7050995.06";
-      point[QStringLiteral( "Z" )] = "74.60";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "2";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "268793.3373408913";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "278";
+      point[u"NumberOfReturns"_s] = "1";
+      point[u"PointSourceId"_s] = "7041";
+      point[u"Red"_s] = "0";
+      point[u"ReturnNumber"_s] = "1";
+      point[u"ScanAngleRank"_s] = "-28.0020008087";
+      point[u"ScanDirectionFlag"_s] = "1";
+      point[u"UserData"_s] = "17";
+      point[u"X"_s] = "498066.27";
+      point[u"Y"_s] = "7050995.06";
+      point[u"Z"_s] = "74.60";
       expected.push_back( point );
     }
 
@@ -486,42 +486,42 @@ void TestQgsCopcProvider::testIdentify()
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "2";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "268793.3813974548";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "1142";
-      point[QStringLiteral( "NumberOfReturns" )] = "1";
-      point[QStringLiteral( "PointSourceId" )] = "7041";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "ReturnNumber" )] = "1";
-      point[QStringLiteral( "ScanAngleRank" )] = "-28.0020008087";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "1";
-      point[QStringLiteral( "UserData" )] = "17";
-      point[QStringLiteral( "X" )] = "498063.14";
-      point[QStringLiteral( "Y" )] = "7050996.79";
-      point[QStringLiteral( "Z" )] = "74.89";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "2";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "268793.3813974548";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "1142";
+      point[u"NumberOfReturns"_s] = "1";
+      point[u"PointSourceId"_s] = "7041";
+      point[u"Red"_s] = "0";
+      point[u"ReturnNumber"_s] = "1";
+      point[u"ScanAngleRank"_s] = "-28.0020008087";
+      point[u"ScanDirectionFlag"_s] = "1";
+      point[u"UserData"_s] = "17";
+      point[u"X"_s] = "498063.14";
+      point[u"Y"_s] = "7050996.79";
+      point[u"Z"_s] = "74.89";
       expected.push_back( point );
     }
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "3";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "269160.5176644815";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "1631";
-      point[QStringLiteral( "NumberOfReturns" )] = "1";
-      point[QStringLiteral( "PointSourceId" )] = "7042";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "ReturnNumber" )] = "1";
-      point[QStringLiteral( "ScanAngleRank" )] = "-12";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "1";
-      point[QStringLiteral( "UserData" )] = "17";
-      point[QStringLiteral( "X" )] = "498063.11";
-      point[QStringLiteral( "Y" )] = "7050996.75";
-      point[QStringLiteral( "Z" )] = "74.90";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "3";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "269160.5176644815";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "1631";
+      point[u"NumberOfReturns"_s] = "1";
+      point[u"PointSourceId"_s] = "7042";
+      point[u"Red"_s] = "0";
+      point[u"ReturnNumber"_s] = "1";
+      point[u"ScanAngleRank"_s] = "-12";
+      point[u"ScanDirectionFlag"_s] = "1";
+      point[u"UserData"_s] = "17";
+      point[u"X"_s] = "498063.11";
+      point[u"Y"_s] = "7050996.75";
+      point[u"Z"_s] = "74.90";
       expected.push_back( point );
     }
 
@@ -540,16 +540,16 @@ void TestQgsCopcProvider::testIdentify()
 void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
 {
   {
-    const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
+    const QString dataPath = copyTestData( u"/point_clouds/copc/extrabytes-dataset.copc.laz"_s );
 
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
     QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 3 );
 
-    QCOMPARE( attributes[0].attribute, QStringLiteral( "Amplitude" ) );
-    QCOMPARE( attributes[1].attribute, QStringLiteral( "Reflectance" ) );
-    QCOMPARE( attributes[2].attribute, QStringLiteral( "Deviation" ) );
+    QCOMPARE( attributes[0].attribute, u"Amplitude"_s );
+    QCOMPARE( attributes[1].attribute, u"Reflectance"_s );
+    QCOMPARE( attributes[2].attribute, u"Deviation"_s );
 
     QCOMPARE( attributes[0].type, QgsPointCloudAttribute::Float );
     QCOMPARE( attributes[1].type, QgsPointCloudAttribute::Float );
@@ -565,7 +565,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
   }
 
   {
-    const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/no-extrabytes-dataset.copc.laz" ) );
+    const QString dataPath = copyTestData( u"/point_clouds/copc/no-extrabytes-dataset.copc.laz"_s );
 
     std::ifstream file( dataPath.toStdString(), std::ios::binary );
     QgsLazInfo lazInfo = QgsLazInfo::fromFile( file );
@@ -576,9 +576,9 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
 
 void TestQgsCopcProvider::testExtraBytesAttributesValues()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/extrabytes-dataset.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
   {
     const float maxErrorInMapCoords = 0.0015207174f;
@@ -594,53 +594,53 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
     QVector<QMap<QString, QVariant>> expectedPoints;
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "14.170000076293945";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "2";
-      point[QStringLiteral( "Deviation" )] = "0";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.235839";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "1417";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-8.050000190734863";
-      point[QStringLiteral( "ReturnNumber" )] = "3";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "X" )] = "527919.11";
-      point[QStringLiteral( "Y" )] = "6210983.55";
-      point[QStringLiteral( "Z" )] = "147.111";
+      point[u"Amplitude"_s] = "14.170000076293945";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "2";
+      point[u"Deviation"_s] = "0";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.235839";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "1417";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-8.050000190734863";
+      point[u"ReturnNumber"_s] = "3";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"X"_s] = "527919.11";
+      point[u"Y"_s] = "6210983.55";
+      point[u"Z"_s] = "147.111";
       expectedPoints.push_back( point );
     }
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "4.409999847412109";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "5";
-      point[QStringLiteral( "Deviation" )] = "2";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.235838";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "441";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-17.829999923706055";
-      point[QStringLiteral( "ReturnNumber" )] = "2";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "X" )] = "527919.1799999999";
-      point[QStringLiteral( "Y" )] = "6210983.47";
-      point[QStringLiteral( "Z" )] = "149.341";
+      point[u"Amplitude"_s] = "4.409999847412109";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "5";
+      point[u"Deviation"_s] = "2";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.235838";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "441";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-17.829999923706055";
+      point[u"ReturnNumber"_s] = "2";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"X"_s] = "527919.1799999999";
+      point[u"Y"_s] = "6210983.47";
+      point[u"Z"_s] = "149.341";
       expectedPoints.push_back( point );
     }
 
     auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 ) {
-      return qgsVariantLessThan( p1.value( QStringLiteral( "X" ), 0 ), p2.value( QStringLiteral( "X" ), 0 ) );
+      return qgsVariantLessThan( p1.value( u"X"_s, 0 ), p2.value( u"X"_s, 0 ) );
     };
     std::sort( expectedPoints.begin(), expectedPoints.end(), cmp );
     std::sort( identifiedPoints.begin(), identifiedPoints.end(), cmp );
@@ -659,9 +659,9 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
 
 void TestQgsCopcProvider::testClassFlagsValues()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/extrabytes-dataset.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
   {
     const float maxErrorInMapCoords = 0.0015207174f;
@@ -677,142 +677,142 @@ void TestQgsCopcProvider::testClassFlagsValues()
     QVector<QMap<QString, QVariant>> expectedPoints;
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "14.170000076293945";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "2";
-      point[QStringLiteral( "Deviation" )] = "0";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.235839";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "1417";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-8.050000190734863";
-      point[QStringLiteral( "ReturnNumber" )] = "3";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "Synthetic" )] = "1";
-      point[QStringLiteral( "KeyPoint" )] = "0";
-      point[QStringLiteral( "Withheld" )] = "0";
-      point[QStringLiteral( "Overlap" )] = "0";
-      point[QStringLiteral( "X" )] = "527919.11";
-      point[QStringLiteral( "Y" )] = "6210983.55";
-      point[QStringLiteral( "Z" )] = "147.111";
+      point[u"Amplitude"_s] = "14.170000076293945";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "2";
+      point[u"Deviation"_s] = "0";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.235839";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "1417";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-8.050000190734863";
+      point[u"ReturnNumber"_s] = "3";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"Synthetic"_s] = "1";
+      point[u"KeyPoint"_s] = "0";
+      point[u"Withheld"_s] = "0";
+      point[u"Overlap"_s] = "0";
+      point[u"X"_s] = "527919.11";
+      point[u"Y"_s] = "6210983.55";
+      point[u"Z"_s] = "147.111";
       expectedPoints.push_back( point );
     }
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "4.409999847412109";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "5";
-      point[QStringLiteral( "Deviation" )] = "2";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.235838";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "441";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-17.829999923706055";
-      point[QStringLiteral( "ReturnNumber" )] = "2";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "Synthetic" )] = "1";
-      point[QStringLiteral( "KeyPoint" )] = "1";
-      point[QStringLiteral( "Withheld" )] = "0";
-      point[QStringLiteral( "Overlap" )] = "0";
-      point[QStringLiteral( "X" )] = "527919.1799999999";
-      point[QStringLiteral( "Y" )] = "6210983.47";
-      point[QStringLiteral( "Z" )] = "149.341";
+      point[u"Amplitude"_s] = "4.409999847412109";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "5";
+      point[u"Deviation"_s] = "2";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.235838";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "441";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-17.829999923706055";
+      point[u"ReturnNumber"_s] = "2";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"Synthetic"_s] = "1";
+      point[u"KeyPoint"_s] = "1";
+      point[u"Withheld"_s] = "0";
+      point[u"Overlap"_s] = "0";
+      point[u"X"_s] = "527919.1799999999";
+      point[u"Y"_s] = "6210983.47";
+      point[u"Z"_s] = "149.341";
       expectedPoints.push_back( point );
     }
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "7.539999961853027";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "5";
-      point[QStringLiteral( "Deviation" )] = "8";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.235837";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "754";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-14.720000267028809";
-      point[QStringLiteral( "ReturnNumber" )] = "2";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "Synthetic" )] = "1";
-      point[QStringLiteral( "KeyPoint" )] = "1";
-      point[QStringLiteral( "Withheld" )] = "1";
-      point[QStringLiteral( "Overlap" )] = "1";
-      point[QStringLiteral( "X" )] = "527919.31";
-      point[QStringLiteral( "Y" )] = "6210983.42";
-      point[QStringLiteral( "Z" )] = "150.99099999999999";
+      point[u"Amplitude"_s] = "7.539999961853027";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "5";
+      point[u"Deviation"_s] = "8";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.235837";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "754";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-14.720000267028809";
+      point[u"ReturnNumber"_s] = "2";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"Synthetic"_s] = "1";
+      point[u"KeyPoint"_s] = "1";
+      point[u"Withheld"_s] = "1";
+      point[u"Overlap"_s] = "1";
+      point[u"X"_s] = "527919.31";
+      point[u"Y"_s] = "6210983.42";
+      point[u"Z"_s] = "150.99099999999999";
       expectedPoints.push_back( point );
     }
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "15.390000343322754";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "2";
-      point[QStringLiteral( "Deviation" )] = "6";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.235838";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "1539";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-6.829999923706055";
-      point[QStringLiteral( "ReturnNumber" )] = "3";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "Synthetic" )] = "1";
-      point[QStringLiteral( "KeyPoint" )] = "1";
-      point[QStringLiteral( "Withheld" )] = "1";
-      point[QStringLiteral( "Overlap" )] = "0";
-      point[QStringLiteral( "X" )] = "527919.39";
-      point[QStringLiteral( "Y" )] = "6210983.56";
-      point[QStringLiteral( "Z" )] = "147.101";
+      point[u"Amplitude"_s] = "15.390000343322754";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "2";
+      point[u"Deviation"_s] = "6";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.235838";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "1539";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-6.829999923706055";
+      point[u"ReturnNumber"_s] = "3";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"Synthetic"_s] = "1";
+      point[u"KeyPoint"_s] = "1";
+      point[u"Withheld"_s] = "1";
+      point[u"Overlap"_s] = "0";
+      point[u"X"_s] = "527919.39";
+      point[u"Y"_s] = "6210983.56";
+      point[u"Z"_s] = "147.101";
       expectedPoints.push_back( point );
     }
     {
       QMap<QString, QVariant> point;
-      point[QStringLiteral( "Amplitude" )] = "11.710000038146973";
-      point[QStringLiteral( "Blue" )] = "0";
-      point[QStringLiteral( "Classification" )] = "5";
-      point[QStringLiteral( "Deviation" )] = "43";
-      point[QStringLiteral( "EdgeOfFlightLine" )] = "0";
-      point[QStringLiteral( "GpsTime (raw)" )] = "302522582.23583597";
-      point[QStringLiteral( "Green" )] = "0";
-      point[QStringLiteral( "Intensity" )] = "1171";
-      point[QStringLiteral( "NumberOfReturns" )] = "3";
-      point[QStringLiteral( "PointSourceId" )] = "15017";
-      point[QStringLiteral( "Red" )] = "0";
-      point[QStringLiteral( "Reflectance" )] = "-10.550000190734863";
-      point[QStringLiteral( "ReturnNumber" )] = "1";
-      point[QStringLiteral( "ScanAngleRank" )] = "-6";
-      point[QStringLiteral( "ScanDirectionFlag" )] = "0";
-      point[QStringLiteral( "UserData" )] = "0";
-      point[QStringLiteral( "Synthetic" )] = "0";
-      point[QStringLiteral( "KeyPoint" )] = "0";
-      point[QStringLiteral( "Withheld" )] = "0";
-      point[QStringLiteral( "Overlap" )] = "0";
-      point[QStringLiteral( "X" )] = "527919.58";
-      point[QStringLiteral( "Y" )] = "6210983.42";
-      point[QStringLiteral( "Z" )] = "151.131";
+      point[u"Amplitude"_s] = "11.710000038146973";
+      point[u"Blue"_s] = "0";
+      point[u"Classification"_s] = "5";
+      point[u"Deviation"_s] = "43";
+      point[u"EdgeOfFlightLine"_s] = "0";
+      point[u"GpsTime (raw)"_s] = "302522582.23583597";
+      point[u"Green"_s] = "0";
+      point[u"Intensity"_s] = "1171";
+      point[u"NumberOfReturns"_s] = "3";
+      point[u"PointSourceId"_s] = "15017";
+      point[u"Red"_s] = "0";
+      point[u"Reflectance"_s] = "-10.550000190734863";
+      point[u"ReturnNumber"_s] = "1";
+      point[u"ScanAngleRank"_s] = "-6";
+      point[u"ScanDirectionFlag"_s] = "0";
+      point[u"UserData"_s] = "0";
+      point[u"Synthetic"_s] = "0";
+      point[u"KeyPoint"_s] = "0";
+      point[u"Withheld"_s] = "0";
+      point[u"Overlap"_s] = "0";
+      point[u"X"_s] = "527919.58";
+      point[u"Y"_s] = "6210983.42";
+      point[u"Z"_s] = "151.131";
       expectedPoints.push_back( point );
     }
 
     auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 ) {
-      return qgsVariantLessThan( p1.value( QStringLiteral( "X" ), 0 ), p2.value( QStringLiteral( "X" ), 0 ) );
+      return qgsVariantLessThan( p1.value( u"X"_s, 0 ), p2.value( u"X"_s, 0 ) );
     };
     std::sort( expectedPoints.begin(), expectedPoints.end(), cmp );
     std::sort( identifiedPoints.begin(), identifiedPoints.end(), cmp );
@@ -831,18 +831,18 @@ void TestQgsCopcProvider::testClassFlagsValues()
 
 void TestQgsCopcProvider::testPointCloudIndex()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/lone-star.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   QgsPointCloudIndex index = layer->dataProvider()->index();
   QVERIFY( index.isValid() );
 
-  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).pointCount(), 56721 );
-  QVERIFY( !index.hasNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ) );
-  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).pointCount(), 446 );
-  QVERIFY( !index.hasNode( QgsPointCloudNodeId::fromString( QStringLiteral( "9-9-9-9" ) ) ) );
+  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( u"0-0-0-0"_s ) ).pointCount(), 56721 );
+  QVERIFY( !index.hasNode( QgsPointCloudNodeId::fromString( u"1-1-1-1"_s ) ) );
+  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( u"2-3-3-1"_s ) ).pointCount(), 446 );
+  QVERIFY( !index.hasNode( QgsPointCloudNodeId::fromString( u"9-9-9-9"_s ) ) );
 
   QCOMPARE( index.pointCount(), 518862 );
   QCOMPARE( index.zMin(), 2322.89625 );
@@ -851,11 +851,11 @@ void TestQgsCopcProvider::testPointCloudIndex()
   QCOMPARE( index.offset().toVector3D(), QVector3D( 515385, 4918361, 2330.5 ) );
   QCOMPARE( index.span(), 128 );
 
-  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).error(), 0.328125 );
-  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).error(), 0.08203125 );
+  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( u"0-0-0-0"_s ) ).error(), 0.328125 );
+  QCOMPARE( index.getNode( QgsPointCloudNodeId::fromString( u"2-3-3-1"_s ) ).error(), 0.08203125 );
 
   {
-    QgsBox3D bounds = index.getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).bounds();
+    QgsBox3D bounds = index.getNode( QgsPointCloudNodeId::fromString( u"0-0-0-0"_s ) ).bounds();
     QCOMPARE( bounds.xMinimum(), 515368 );
     QCOMPARE( bounds.yMinimum(), 4918340 );
     QCOMPARE( bounds.zMinimum(), 2322 );
@@ -865,7 +865,7 @@ void TestQgsCopcProvider::testPointCloudIndex()
   }
 
   {
-    QgsBox3D bounds = QgsPointCloudNode::bounds( index.rootNodeBounds(), QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) );
+    QgsBox3D bounds = QgsPointCloudNode::bounds( index.rootNodeBounds(), QgsPointCloudNodeId::fromString( u"1-1-1-1"_s ) );
     QCOMPARE( bounds.xMinimum(), 515389 );
     QCOMPARE( bounds.yMinimum(), 4918361 );
     QCOMPARE( bounds.zMinimum(), 2343 );
@@ -875,7 +875,7 @@ void TestQgsCopcProvider::testPointCloudIndex()
   }
 
   {
-    QgsBox3D bounds = index.getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).bounds();
+    QgsBox3D bounds = index.getNode( QgsPointCloudNodeId::fromString( u"2-3-3-1"_s ) ).bounds();
     QCOMPARE( bounds.xMinimum(), 515399.5 );
     QCOMPARE( bounds.yMinimum(), 4918371.5 );
     QCOMPARE( bounds.zMinimum(), 2332.5 );
@@ -887,33 +887,33 @@ void TestQgsCopcProvider::testPointCloudIndex()
 
 void TestQgsCopcProvider::testStatsCalculator()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/extrabytes-dataset.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QgsPointCloudIndex index = layer->dataProvider()->index();
   QgsPointCloudStatsCalculator calculator( index );
 
   QVector<QgsPointCloudAttribute> attributes;
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Deviation" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "EdgeOfFlightLine" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "GpsTime" ), QgsPointCloudAttribute::Double ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UShort ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "ReturnNumber" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "NumberOfReturns" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Intensity" ), QgsPointCloudAttribute::UShort ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "PointSourceId" ), QgsPointCloudAttribute::UShort ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "ScanDirectionFlag" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "UserData" ), QgsPointCloudAttribute::UChar ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "ScanAngleRank" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Reflectance" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Amplitude" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( u"Deviation"_s, QgsPointCloudAttribute::Float ) );
+  attributes.append( QgsPointCloudAttribute( u"Synthetic"_s, QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( u"KeyPoint"_s, QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( u"Withheld"_s, QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( u"Overlap"_s, QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( u"Red"_s, QgsPointCloudAttribute::UShort ) );
+  attributes.append( QgsPointCloudAttribute( u"EdgeOfFlightLine"_s, QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( u"Blue"_s, QgsPointCloudAttribute::UShort ) );
+  attributes.append( QgsPointCloudAttribute( u"GpsTime"_s, QgsPointCloudAttribute::Double ) );
+  attributes.append( QgsPointCloudAttribute( u"Green"_s, QgsPointCloudAttribute::UShort ) );
+  attributes.append( QgsPointCloudAttribute( u"ReturnNumber"_s, QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( u"NumberOfReturns"_s, QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( u"Intensity"_s, QgsPointCloudAttribute::UShort ) );
+  attributes.append( QgsPointCloudAttribute( u"PointSourceId"_s, QgsPointCloudAttribute::UShort ) );
+  attributes.append( QgsPointCloudAttribute( u"ScanDirectionFlag"_s, QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( u"UserData"_s, QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( u"ScanAngleRank"_s, QgsPointCloudAttribute::Float ) );
+  attributes.append( QgsPointCloudAttribute( u"Reflectance"_s, QgsPointCloudAttribute::Float ) );
+  attributes.append( QgsPointCloudAttribute( u"Amplitude"_s, QgsPointCloudAttribute::Float ) );
+  attributes.append( QgsPointCloudAttribute( u"Classification"_s, QgsPointCloudAttribute::Char ) );
 
   QgsFeedback feedback;
 
@@ -922,21 +922,21 @@ void TestQgsCopcProvider::testStatsCalculator()
   QgsPointCloudStatistics stats = calculator.statistics();
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Amplitude" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Amplitude"_s );
     QCOMPARE( ( float ) s.minimum, 1.1599999666214 );
     QCOMPARE( ( float ) s.maximum, 19.6000003814697 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 1.1360613108, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Blue" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Blue"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
     QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Synthetic" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Synthetic"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0061436155811, 0.0000001 );
@@ -945,7 +945,7 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "KeyPoint" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"KeyPoint"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0053205453, 0.0000001 );
@@ -954,7 +954,7 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Withheld" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Withheld"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0043442328, 0.0000001 );
@@ -963,7 +963,7 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Overlap" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Overlap"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0030718162, 0.0000001 );
@@ -972,7 +972,7 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Classification" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Classification"_s );
     QCOMPARE( ( float ) s.minimum, 2 );
     QCOMPARE( ( float ) s.maximum, 18 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.5567283630, 0.0000001 );
@@ -988,91 +988,91 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Deviation" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Deviation"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 120 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 3.8086988926, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "EdgeOfFlightLine" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"EdgeOfFlightLine"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
     QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "GpsTime" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"GpsTime"_s );
     QCOMPARE( ( float ) s.minimum, ( float ) 302522581.972046196460723876953 );
     QCOMPARE( ( float ) s.maximum, ( float ) 302522583.437068104743957519531 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.4110022783, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Green" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Green"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
     QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Intensity" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Intensity"_s );
     QCOMPARE( ( float ) s.minimum, 116 );
     QCOMPARE( ( float ) s.maximum, 1960 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 113.6061325073, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "NumberOfReturns" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"NumberOfReturns"_s );
     QCOMPARE( ( float ) s.minimum, 1 );
     QCOMPARE( ( float ) s.maximum, 5 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.2079153657, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "PointSourceId" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"PointSourceId"_s );
     QCOMPARE( ( float ) s.minimum, 15017 );
     QCOMPARE( ( float ) s.maximum, 15017 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Red" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Red"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
     QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Reflectance" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"Reflectance"_s );
     QCOMPARE( ( float ) s.minimum, -21.1100006103515625 );
     QCOMPARE( ( float ) s.maximum, -2.6099998950958251953125 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 1.1387866735, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ReturnNumber" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"ReturnNumber"_s );
     QCOMPARE( ( float ) s.minimum, 1 );
     QCOMPARE( ( float ) s.maximum, 5 );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.1361096203, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanAngleRank" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"ScanAngleRank"_s );
     QCOMPARE( ( float ) s.minimum, -10.998000145f );
     QCOMPARE( ( float ) s.maximum, -4.001999855f );
     QGSCOMPARENEAR( static_cast<float>( s.stDev ), 1.9546363354, 0.0000001 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanDirectionFlag" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"ScanDirectionFlag"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
     QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "UserData" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( u"UserData"_s );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
     QCOMPARE( static_cast<float>( s.stDev ), 0 );
@@ -1096,58 +1096,58 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
     return;
   }
 
-  QUrl url( QStringLiteral( "0.0.0.0/laz.copc.laz" ) );
+  QUrl url( u"0.0.0.0/laz.copc.laz"_s );
   QgsRangeRequestCache cache;
   cache.setCacheDirectory( cacheDir.path() );
   cache.clear();
   cache.setCacheSize( 2 );
 
-  cache.registerEntry( request( url, QStringLiteral( "bytes=1-2" ) ), QByteArray( 1, '0' ) );
+  cache.registerEntry( request( url, u"bytes=1-2"_s ), QByteArray( 1, '0' ) );
   QTest::qSleep( 10 );
 
-  cache.registerEntry( request( url, QStringLiteral( "bytes=3-4" ) ), QByteArray( 1, '1' ) );
+  cache.registerEntry( request( url, u"bytes=3-4"_s ), QByteArray( 1, '1' ) );
   QTest::qSleep( 10 );
 
-  cache.registerEntry( request( url, QStringLiteral( "bytes=5-6" ) ), QByteArray( 1, '2' ) );
+  cache.registerEntry( request( url, u"bytes=5-6"_s ), QByteArray( 1, '2' ) );
   QTest::qSleep( 10 );
 
   // (5, 6) -> (3, 4)
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QVERIFY( files[0].baseName().endsWith( QLatin1String( "bytes=5-6" ) ) );
-    QVERIFY( files[1].baseName().endsWith( QLatin1String( "bytes=3-4" ) ) );
+    QVERIFY( files[0].baseName().endsWith( "bytes=5-6"_L1 ) );
+    QVERIFY( files[1].baseName().endsWith( "bytes=3-4"_L1 ) );
   }
 
-  cache.entry( request( url, QStringLiteral( "bytes=3-4" ) ) );
+  cache.entry( request( url, u"bytes=3-4"_s ) );
   QTest::qSleep( 10 );
 
   // -> (3, 4) -> (5, 6)
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QVERIFY( files[0].baseName().endsWith( QLatin1String( "bytes=3-4" ) ) );
-    QVERIFY( files[1].baseName().endsWith( QLatin1String( "bytes=5-6" ) ) );
+    QVERIFY( files[0].baseName().endsWith( "bytes=3-4"_L1 ) );
+    QVERIFY( files[1].baseName().endsWith( "bytes=5-6"_L1 ) );
   }
 
-  cache.registerEntry( request( url, QStringLiteral( "bytes=7-8" ) ), QByteArray( 1, '3' ) );
+  cache.registerEntry( request( url, u"bytes=7-8"_s ), QByteArray( 1, '3' ) );
   QTest::qSleep( 10 );
 
   // (7, 8) -> (3, 4)
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QVERIFY( files[0].baseName().endsWith( QLatin1String( "bytes=7-8" ) ) );
-    QVERIFY( files[1].baseName().endsWith( QLatin1String( "bytes=3-4" ) ) );
+    QVERIFY( files[0].baseName().endsWith( "bytes=7-8"_L1 ) );
+    QVERIFY( files[1].baseName().endsWith( "bytes=3-4"_L1 ) );
   }
 
-  cache.registerEntry( request( url, QStringLiteral( "bytes=9-10" ) ), QByteArray( 1, '4' ) );
+  cache.registerEntry( request( url, u"bytes=9-10"_s ), QByteArray( 1, '4' ) );
   // (9, 10) -> (7, 8)
   {
     QFileInfoList files = cache.cacheEntries();
     QCOMPARE( files.size(), 2 );
-    QVERIFY( files[0].baseName().endsWith( QLatin1String( "bytes=9-10" ) ) );
-    QVERIFY( files[1].baseName().endsWith( QLatin1String( "bytes=7-8" ) ) );
+    QVERIFY( files[0].baseName().endsWith( "bytes=9-10"_L1 ) );
+    QVERIFY( files[1].baseName().endsWith( "bytes=7-8"_L1 ) );
   }
 }
 
@@ -1155,10 +1155,10 @@ void TestQgsCopcProvider::testSaveLoadStats()
 {
   QgsPointCloudStatistics calculatedStats;
   QgsPointCloudStatistics readStats;
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/lone-star.copc.laz"_s );
 
   {
-    auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+    auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
     QVERIFY( layer->isValid() );
 
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
@@ -1169,7 +1169,7 @@ void TestQgsCopcProvider::testSaveLoadStats()
   }
 
   {
-    auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+    auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
     QVERIFY( layer->isValid() );
 
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
@@ -1184,9 +1184,9 @@ void TestQgsCopcProvider::testSaveLoadStats()
 
 void TestQgsCopcProvider::testPointCloudRequest()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/lone-star.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   QgsPointCloudIndex index = layer->dataProvider()->index();
@@ -1254,12 +1254,12 @@ void TestQgsCopcProvider::testPointCloudRequest()
 
 void TestQgsCopcProvider::testPointCloudRequestIgnoreFilter()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
+  const QString dataPath = copyTestData( u"/point_clouds/copc/lone-star.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
-  layer->setSubsetString( QStringLiteral( "Intensity < 1000" ) );
+  layer->setSubsetString( u"Intensity < 1000"_s );
   QgsPointCloudIndex index = layer->dataProvider()->index();
   QVERIFY( index.isValid() );
 

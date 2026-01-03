@@ -31,7 +31,7 @@
 #include <QDomElement>
 
 QgsMergedFeatureRenderer::QgsMergedFeatureRenderer( QgsFeatureRenderer *subRenderer )
-  : QgsMergedFeatureRenderer( QStringLiteral( "mergedFeatureRenderer" ), subRenderer )
+  : QgsMergedFeatureRenderer( u"mergedFeatureRenderer"_s, subRenderer )
 {
 
 }
@@ -431,7 +431,7 @@ QString QgsMergedFeatureRenderer::dump() const
 {
   if ( !mSubRenderer )
   {
-    return QStringLiteral( "MERGED FEATURES: NULL" );
+    return u"MERGED FEATURES: NULL"_s;
   }
   return "MERGED FEATURES [" + mSubRenderer->dump() + ']';
 }
@@ -455,7 +455,7 @@ QgsFeatureRenderer *QgsMergedFeatureRenderer::create( QDomElement &element, cons
 {
   QgsMergedFeatureRenderer *r = new QgsMergedFeatureRenderer( nullptr );
   //look for an embedded renderer <renderer-v2>
-  QDomElement embeddedRendererElem = element.firstChildElement( QStringLiteral( "renderer-v2" ) );
+  QDomElement embeddedRendererElem = element.firstChildElement( u"renderer-v2"_s );
   if ( !embeddedRendererElem.isNull() )
   {
     QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
@@ -469,7 +469,7 @@ QDomElement QgsMergedFeatureRenderer::save( QDomDocument &doc, const QgsReadWrit
   // clazy:skip
 
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "mergedFeatureRenderer" ) );
+  rendererElem.setAttribute( u"type"_s, u"mergedFeatureRenderer"_s );
 
   if ( mSubRenderer )
   {
@@ -581,21 +581,21 @@ bool QgsMergedFeatureRenderer::willRenderFeature( const QgsFeature &feature, Qgs
 
 QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  if ( renderer->type() == QLatin1String( "mergedFeatureRenderer" ) )
+  if ( renderer->type() == "mergedFeatureRenderer"_L1 )
   {
     return dynamic_cast<QgsMergedFeatureRenderer *>( renderer->clone() );
   }
 
-  if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
-       renderer->type() == QLatin1String( "categorizedSymbol" ) ||
-       renderer->type() == QLatin1String( "graduatedSymbol" ) ||
-       renderer->type() == QLatin1String( "RuleRenderer" ) )
+  if ( renderer->type() == "singleSymbol"_L1 ||
+       renderer->type() == "categorizedSymbol"_L1 ||
+       renderer->type() == "graduatedSymbol"_L1 ||
+       renderer->type() == "RuleRenderer"_L1 )
   {
     auto res = std::make_unique< QgsMergedFeatureRenderer >( renderer->clone() );
     renderer->copyRendererData( res.get() );
     return res.release();
   }
-  else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
+  else if ( renderer->type() == "invertedPolygonRenderer"_L1 )
   {
     auto res = std::make_unique< QgsMergedFeatureRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
     renderer->copyRendererData( res.get() );

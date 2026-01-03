@@ -65,22 +65,22 @@ void TestQgsAppBrowserProviders::initTestCase()
   mTestDataDir = dataDir + '/';
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   // save current scanItemsSetting value
   const QgsSettings settings;
-  mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
+  mScanItemsSetting = settings.value( u"/qgis/scanItemsInBrowser2"_s, QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
-  mDirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  mDirItem = new QgsDirectoryItem( nullptr, u"Test"_s, TEST_DATA_DIR );
 }
 
 void TestQgsAppBrowserProviders::cleanupTestCase()
 {
   // restore scanItemsSetting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), mScanItemsSetting );
+  settings.setValue( u"/qgis/scanItemsInBrowser2"_s, mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
 
@@ -90,38 +90,38 @@ void TestQgsAppBrowserProviders::cleanupTestCase()
 
 void TestQgsAppBrowserProviders::testProjectItemCreation()
 {
-  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), mTestDataDir + QStringLiteral( "qgis_server/" ) );
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, mTestDataDir + u"qgis_server/"_s );
   QVector<QgsDataItem *> children = dirItem->createChildren();
 
   // now, add a specific provider which handles project files
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
 
-  dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), mTestDataDir + QStringLiteral( "qgis_server/" ) );
+  dirItem = new QgsDirectoryItem( nullptr, u"Test"_s, mTestDataDir + u"qgis_server/"_s );
   children = dirItem->createChildren();
 
   for ( QgsDataItem *child : children )
   {
-    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + u"qgis_server/test_project.qgs"_s )
     {
       child->populate( true );
 
       QCOMPARE( child->children().count(), 9 );
       QVERIFY( dynamic_cast<QgsProjectLayerTreeGroupItem *>( child->children().at( 4 ) ) );
-      QCOMPARE( child->children().at( 4 )->name(), QStringLiteral( "groupwithoutshortname" ) );
+      QCOMPARE( child->children().at( 4 )->name(), u"groupwithoutshortname"_s );
 
       QCOMPARE( child->children().at( 4 )->children().count(), 1 );
       QVERIFY( dynamic_cast<QgsLayerItem *>( child->children().at( 4 )->children().at( 0 ) ) );
-      QCOMPARE( child->children().at( 4 )->children().at( 0 )->name(), QStringLiteral( "testlayer3" ) );
+      QCOMPARE( child->children().at( 4 )->children().at( 0 )->name(), u"testlayer3"_s );
 
       QVERIFY( dynamic_cast<QgsProjectLayerTreeGroupItem *>( child->children().at( 5 ) ) );
-      QCOMPARE( child->children().at( 5 )->name(), QStringLiteral( "groupwithshortname" ) );
+      QCOMPARE( child->children().at( 5 )->name(), u"groupwithshortname"_s );
 
       QCOMPARE( child->children().at( 5 )->children().count(), 1 );
       QVERIFY( dynamic_cast<QgsLayerItem *>( child->children().at( 5 )->children().at( 0 ) ) );
-      QCOMPARE( child->children().at( 5 )->children().at( 0 )->name(), QStringLiteral( "testlayer2" ) );
+      QCOMPARE( child->children().at( 5 )->children().at( 0 )->name(), u"testlayer2"_s );
 
       QVERIFY( dynamic_cast<QgsLayerItem *>( child->children().at( 7 ) ) );
-      QCOMPARE( child->children().at( 7 )->name(), QStringLiteral( "testlayer" ) );
+      QCOMPARE( child->children().at( 7 )->name(), u"testlayer"_s );
 
       QVERIFY( dynamic_cast<QgsLayerItem *>( child->children().at( 8 ) ) );
       QCOMPARE( child->children().at( 8 )->name(), QStringLiteral( u"testlayer \u00E8\u00E9" ) );

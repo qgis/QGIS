@@ -36,8 +36,8 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
     QgsSimplifyAlgorithm() = default;
     ~QgsSimplifyAlgorithm() override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSimplify.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSimplify.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

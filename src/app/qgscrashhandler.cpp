@@ -40,14 +40,14 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   QString symbolPath;
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
-    symbolPath = QStringLiteral( "%1\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/%2/symstores/%3" )
+    symbolPath = u"%1\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/%2/symstores/%3"_s
                    .arg( getenv( "QGIS_PREFIX_PATH" ) )
-                   .arg( QSysInfo::WordSize == 64 ? QStringLiteral( "x86_64" ) : QStringLiteral( "x86" ) )
+                   .arg( QSysInfo::WordSize == 64 ? u"x86_64"_s : u"x86"_s )
                    .arg( QFileInfo( getenv( "QGIS_PREFIX_PATH" ) ).baseName() );
   }
   else
   {
-    symbolPath = QStringLiteral( "%1;%2;http://msdl.microsoft.com/download/symbols" )
+    symbolPath = u"%1;%2;http://msdl.microsoft.com/download/symbols"_s
                    .arg( getenv( "QGIS_PDB_PATH" ) )
                    .arg( QgsApplication::applicationDirPath() );
   }
@@ -76,27 +76,27 @@ void QgsCrashHandler::handleCrash( int processID, int threadID, const QString &s
   QString projectFile = QgsProject::instance()->fileName();
   if ( !projectFile.isEmpty() )
     // quote project file path to avoid issues if it has spaces
-    arguments << QStringLiteral( "\"%1\"" ).arg( projectFile );
+    arguments << u"\"%1\""_s.arg( projectFile );
 
   QStringList reportData;
-  reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::version() ) );
+  reportData.append( u"QGIS Version: %1"_s.arg( Qgis::version() ) );
 
-  if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
+  if ( QString( Qgis::devVersion() ) == "exported"_L1 )
   {
-    reportData.append( QStringLiteral( "QGIS code branch: Release %1.%2" )
+    reportData.append( u"QGIS code branch: Release %1.%2"_s
                          .arg( Qgis::versionInt() / 10000 )
                          .arg( Qgis::versionInt() / 100 % 100 ) );
   }
   else
   {
-    reportData.append( QStringLiteral( "QGIS code revision: %1" ).arg( Qgis::devVersion() ) );
+    reportData.append( u"QGIS code revision: %1"_s.arg( Qgis::devVersion() ) );
   }
 
-  reportData.append( QStringLiteral( "Compiled against Qt: %1" ).arg( QT_VERSION_STR ) );
-  reportData.append( QStringLiteral( "Running against Qt: %1" ).arg( qVersion() ) );
+  reportData.append( u"Compiled against Qt: %1"_s.arg( QT_VERSION_STR ) );
+  reportData.append( u"Running against Qt: %1"_s.arg( qVersion() ) );
 
-  reportData.append( QStringLiteral( "Compiled against GDAL: %1" ).arg( GDAL_RELEASE_NAME ) );
-  reportData.append( QStringLiteral( "Running against GDAL: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
+  reportData.append( u"Compiled against GDAL: %1"_s.arg( GDAL_RELEASE_NAME ) );
+  reportData.append( u"Running against GDAL: %1"_s.arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
 
   QFile file( fileName );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
@@ -117,9 +117,9 @@ void QgsCrashHandler::handleCrash( int processID, int threadID, const QString &s
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : QApplication::applicationDirPath() );
 #ifdef _MSC_VER
-  QString path = prefixPath + QStringLiteral( "/qgiscrashhandler.exe" );
+  QString path = prefixPath + u"/qgiscrashhandler.exe"_s;
 #else
-  QString path = prefixPath + QStringLiteral( "/qgiscrashhandler" );
+  QString path = prefixPath + u"/qgiscrashhandler"_s;
 #endif
   QgsDebugMsgLevel( path, 2 );
   QProcess::execute( path, args );

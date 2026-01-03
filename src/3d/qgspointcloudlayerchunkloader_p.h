@@ -36,15 +36,9 @@
 #include "qgspointcloudlayer3drenderer.h"
 
 #include <QFutureWatcher>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QBuffer>
-#else
-#include <Qt3DCore/QGeometry>
-#include <Qt3DCore/QBuffer>
-#endif
 #include <QVector3D>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 
 #define SIP_NO_FILE
 

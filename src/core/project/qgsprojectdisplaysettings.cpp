@@ -148,7 +148,7 @@ void QgsProjectDisplaySettings::updateCoordinateCrs()
 bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   {
-    const QDomElement bearingElement = element.firstChildElement( QStringLiteral( "BearingFormat" ) );
+    const QDomElement bearingElement = element.firstChildElement( u"BearingFormat"_s );
     mBearingFormat.reset( static_cast< QgsBearingNumericFormat * >( QgsApplication::numericFormatRegistry()->createFromXml( bearingElement, context ) ) );
     emit bearingFormatChanged();
   }
@@ -156,7 +156,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   QgsProject *project = qobject_cast< QgsProject * >( parent() );
 
   {
-    const QDomElement geographicElement = element.firstChildElement( QStringLiteral( "GeographicCoordinateFormat" ) );
+    const QDomElement geographicElement = element.firstChildElement( u"GeographicCoordinateFormat"_s );
     if ( !geographicElement.isNull() )
     {
       mGeographicCoordinateFormat.reset( static_cast< QgsGeographicCoordinateNumericFormat * >( QgsApplication::numericFormatRegistry()->createFromXml( geographicElement, context ) ) );
@@ -165,14 +165,14 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
     {
       // upgrade old project setting
       bool ok = false;
-      const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString(), &ok );
+      const QString format = project->readEntry( u"PositionPrecision"_s, u"/DegreeFormat"_s, QString(), &ok );
       if ( ok )
       {
         mGeographicCoordinateFormat = std::make_unique< QgsGeographicCoordinateNumericFormat >();
         mGeographicCoordinateFormat->setShowDirectionalSuffix( true );
-        if ( format == QLatin1String( "DM" ) )
+        if ( format == "DM"_L1 )
           mGeographicCoordinateFormat->setAngleFormat( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutes );
-        else if ( format == QLatin1String( "DMS" ) )
+        else if ( format == "DMS"_L1 )
           mGeographicCoordinateFormat->setAngleFormat( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutesSeconds );
         else
           mGeographicCoordinateFormat->setAngleFormat( QgsGeographicCoordinateNumericFormat::AngleFormat::DecimalDegrees );
@@ -190,16 +190,16 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   }
 
   {
-    if ( element.hasAttribute( QStringLiteral( "CoordinateType" ) ) )
+    if ( element.hasAttribute( u"CoordinateType"_s ) )
     {
-      setCoordinateType( qgsEnumKeyToValue( element.attribute( QStringLiteral( "CoordinateType" ), qgsEnumValueToKey( Qgis::CoordinateDisplayType::MapCrs ) ), Qgis::CoordinateDisplayType::MapCrs ) );
+      setCoordinateType( qgsEnumKeyToValue( element.attribute( u"CoordinateType"_s, qgsEnumValueToKey( Qgis::CoordinateDisplayType::MapCrs ) ), Qgis::CoordinateDisplayType::MapCrs ) );
     }
     else if ( project )
     {
-      const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString() );
+      const QString format = project->readEntry( u"PositionPrecision"_s, u"/DegreeFormat"_s, QString() );
       if ( !format.isEmpty() )
       {
-        if ( format != QLatin1String( "MU" ) && !project->crs().isGeographic() )
+        if ( format != "MU"_L1 && !project->crs().isGeographic() )
         {
           setCoordinateType( Qgis::CoordinateDisplayType::CustomCrs );
         }
@@ -210,7 +210,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       }
     }
 
-    QDomNodeList crsNodeList = element.elementsByTagName( QStringLiteral( "CoordinateCustomCrs" ) );
+    QDomNodeList crsNodeList = element.elementsByTagName( u"CoordinateCustomCrs"_s );
     if ( !crsNodeList.isEmpty() )
     {
       QDomElement crsElem = crsNodeList.at( 0 ).toElement();
@@ -220,13 +220,13 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   }
 
 
-  if ( element.hasAttribute( QStringLiteral( "CoordinateAxisOrder" ) ) )
+  if ( element.hasAttribute( u"CoordinateAxisOrder"_s ) )
   {
-    setCoordinateAxisOrder( qgsEnumKeyToValue( element.attribute( QStringLiteral( "CoordinateAxisOrder" ) ), Qgis::CoordinateOrder::Default ) );
+    setCoordinateAxisOrder( qgsEnumKeyToValue( element.attribute( u"CoordinateAxisOrder"_s ), Qgis::CoordinateOrder::Default ) );
   }
   else if ( project )
   {
-    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
+    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( u"PositionPrecision"_s, u"/CoordinateOrder"_s ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
   }
 
   return true;
@@ -234,29 +234,29 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
 
 QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = doc.createElement( QStringLiteral( "ProjectDisplaySettings" ) );
+  QDomElement element = doc.createElement( u"ProjectDisplaySettings"_s );
 
   {
-    QDomElement bearingElement =  doc.createElement( QStringLiteral( "BearingFormat" ) );
+    QDomElement bearingElement =  doc.createElement( u"BearingFormat"_s );
     mBearingFormat->writeXml( bearingElement, doc, context );
     element.appendChild( bearingElement );
   }
 
   {
-    QDomElement geographicElement =  doc.createElement( QStringLiteral( "GeographicCoordinateFormat" ) );
+    QDomElement geographicElement =  doc.createElement( u"GeographicCoordinateFormat"_s );
     mGeographicCoordinateFormat->writeXml( geographicElement, doc, context );
     element.appendChild( geographicElement );
   }
 
-  element.setAttribute( QStringLiteral( "CoordinateType" ), qgsEnumValueToKey( mCoordinateType ) );
+  element.setAttribute( u"CoordinateType"_s, qgsEnumValueToKey( mCoordinateType ) );
   if ( mCoordinateCustomCrs.isValid() )
   {
-    QDomElement crsElem = doc.createElement( QStringLiteral( "CoordinateCustomCrs" ) );
+    QDomElement crsElem = doc.createElement( u"CoordinateCustomCrs"_s );
     mCoordinateCustomCrs.writeXml( crsElem, doc );
     element.appendChild( crsElem );
   }
 
-  element.setAttribute( QStringLiteral( "CoordinateAxisOrder" ), qgsEnumValueToKey( mCoordinateAxisOrder ) );
+  element.setAttribute( u"CoordinateAxisOrder"_s, qgsEnumValueToKey( mCoordinateAxisOrder ) );
 
   return element;
 }

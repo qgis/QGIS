@@ -29,7 +29,7 @@
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::name() const
 {
-  return QStringLiteral( "splitfeaturesbycharacter" );
+  return u"splitfeaturesbycharacter"_s;
 }
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::displayName() const
@@ -49,7 +49,7 @@ QString QgsSplitFeaturesByAttributeCharacterAlgorithm::group() const
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsSplitFeaturesByAttributeCharacterAlgorithm::shortHelpString() const
@@ -78,9 +78,9 @@ QList<int> QgsSplitFeaturesByAttributeCharacterAlgorithm::inputLayerTypes() cons
 
 void QgsSplitFeaturesByAttributeCharacterAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Split using values in field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "CHAR" ), QObject::tr( "Split values using character" ) ) );
-  std::unique_ptr<QgsProcessingParameterDefinition> regexParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "REGEX" ), QObject::tr( "Use regular expression separator" ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Split using values in field" ), QVariant(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterString( u"CHAR"_s, QObject::tr( "Split values using character" ) ) );
+  std::unique_ptr<QgsProcessingParameterDefinition> regexParam = std::make_unique<QgsProcessingParameterBoolean>( u"REGEX"_s, QObject::tr( "Use regular expression separator" ) );
   regexParam->setFlags( regexParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( regexParam.release() );
 }
@@ -121,9 +121,9 @@ QString QgsSplitFeaturesByAttributeCharacterAlgorithm::outputName() const
 
 bool QgsSplitFeaturesByAttributeCharacterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mChar = parameterAsString( parameters, QStringLiteral( "CHAR" ), context );
-  mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  mUseRegex = parameterAsBoolean( parameters, QStringLiteral( "REGEX" ), context );
+  mChar = parameterAsString( parameters, u"CHAR"_s, context );
+  mFieldName = parameterAsString( parameters, u"FIELD"_s, context );
+  mUseRegex = parameterAsBoolean( parameters, u"REGEX"_s, context );
   if ( mUseRegex )
     mRegex = QRegularExpression( mChar );
   return true;

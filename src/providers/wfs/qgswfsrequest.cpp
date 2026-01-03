@@ -26,7 +26,7 @@ QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ) )
   , mUri( uri )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theUri = " ) + uri.uri(), 4 );
+  QgsDebugMsgLevel( u"theUri = "_s + uri.uri(), 4 );
 }
 
 QUrl QgsWfsRequest::requestUrl( const QString &request ) const
@@ -37,39 +37,39 @@ QUrl QgsWfsRequest::requestUrl( const QString &request ) const
 QDomDocument QgsWfsRequest::createPostDocument() const
 {
   QDomDocument postDocument;
-  postDocument.appendChild( postDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) ) );
+  postDocument.appendChild( postDocument.createProcessingInstruction( u"xml"_s, u"version=\"1.0\" encoding=\"UTF-8\""_s ) );
   return postDocument;
 }
 
 QDomElement QgsWfsRequest::createRootPostElement( const QgsWfsCapabilities &capabilities, const QString &wfsVersion, QDomDocument &postDocument, const QString &name, const QStringList &typeNamesForNamespaces ) const
 {
   QDomElement rootElement = postDocument.createElement( name );
-  rootElement.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
-  rootElement.setAttribute( QStringLiteral( "version" ), wfsVersion );
+  rootElement.setAttribute( u"service"_s, u"WFS"_s );
+  rootElement.setAttribute( u"version"_s, wfsVersion );
 
-  if ( wfsVersion.startsWith( QLatin1String( "1.0" ) ) )
+  if ( wfsVersion.startsWith( "1.0"_L1 ) )
   {
-    rootElement.setAttribute( QStringLiteral( "xmlns:wfs" ), QgsWFSConstants::WFS_NAMESPACE );
-    rootElement.setAttribute( QStringLiteral( "xmlns:ogc" ), QgsWFSConstants::OGC_NAMESPACE );
-    rootElement.setAttribute( QStringLiteral( "xmlns:gml" ), QgsWFSConstants::GML_NAMESPACE );
-    rootElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-    rootElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" ) );
+    rootElement.setAttribute( u"xmlns:wfs"_s, QgsWFSConstants::WFS_NAMESPACE );
+    rootElement.setAttribute( u"xmlns:ogc"_s, QgsWFSConstants::OGC_NAMESPACE );
+    rootElement.setAttribute( u"xmlns:gml"_s, QgsWFSConstants::GML_NAMESPACE );
+    rootElement.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
+    rootElement.setAttribute( u"xsi:schemaLocation"_s, u"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd"_s );
   }
-  else if ( wfsVersion.startsWith( QLatin1String( "1.1" ) ) )
+  else if ( wfsVersion.startsWith( "1.1"_L1 ) )
   {
-    rootElement.setAttribute( QStringLiteral( "xmlns:wfs" ), QgsWFSConstants::WFS_NAMESPACE );
-    rootElement.setAttribute( QStringLiteral( "xmlns:ogc" ), QgsWFSConstants::OGC_NAMESPACE );
-    rootElement.setAttribute( QStringLiteral( "xmlns:gml" ), QgsWFSConstants::GML_NAMESPACE );
-    rootElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-    rootElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" ) );
+    rootElement.setAttribute( u"xmlns:wfs"_s, QgsWFSConstants::WFS_NAMESPACE );
+    rootElement.setAttribute( u"xmlns:ogc"_s, QgsWFSConstants::OGC_NAMESPACE );
+    rootElement.setAttribute( u"xmlns:gml"_s, QgsWFSConstants::GML_NAMESPACE );
+    rootElement.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
+    rootElement.setAttribute( u"xsi:schemaLocation"_s, u"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"_s );
   }
   else // 2.0
   {
-    rootElement.setAttribute( QStringLiteral( "xmlns:wfs" ), QStringLiteral( "http://www.opengis.net/wfs/2.0" ) );
-    rootElement.setAttribute( QStringLiteral( "xmlns:fes" ), QStringLiteral( "http://www.opengis.net/fes/2.0" ) );
-    rootElement.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml/3.2" ) );
-    rootElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-    rootElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd" ) );
+    rootElement.setAttribute( u"xmlns:wfs"_s, u"http://www.opengis.net/wfs/2.0"_s );
+    rootElement.setAttribute( u"xmlns:fes"_s, u"http://www.opengis.net/fes/2.0"_s );
+    rootElement.setAttribute( u"xmlns:gml"_s, u"http://www.opengis.net/gml/3.2"_s );
+    rootElement.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
+    rootElement.setAttribute( u"xsi:schemaLocation"_s, u"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd"_s );
   }
 
   for ( const QString &typeName : typeNamesForNamespaces )
@@ -78,7 +78,7 @@ QDomElement QgsWfsRequest::createRootPostElement( const QgsWfsCapabilities &capa
     if ( !lNamespace.isEmpty() )
     {
       const QStringList typeNameParts = typeName.split( ':' );
-      rootElement.setAttribute( QStringLiteral( "xmlns:%1" ).arg( typeNameParts.at( 0 ) ), lNamespace );
+      rootElement.setAttribute( u"xmlns:%1"_s.arg( typeNameParts.at( 0 ) ), lNamespace );
     }
   }
 

@@ -27,7 +27,7 @@ class TestQgsMergeattributesDialog : public QgsTest
 
   public:
     TestQgsMergeattributesDialog()
-      : QgsTest( QStringLiteral( "Merge attributes dialog" ) )
+      : QgsTest( u"Merge attributes dialog"_s )
     {}
 
   private:
@@ -68,7 +68,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       ) );
 
       QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
-      QgsVectorLayer layer( QStringLiteral( "%1|layername=test" ).arg( newFilename ), "src_test", "ogr" );
+      QgsVectorLayer layer( u"%1|layername=test"_s.arg( newFilename ), "src_test", "ogr" );
       QVERIFY( layer.startEditing() );
       QgsVectorDataProvider *pr = layer.dataProvider();
 
@@ -104,7 +104,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "Polygon", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField uniqueField( QStringLiteral( "unique" ), QMetaType::Type::Int );
+      QgsField uniqueField( u"unique"_s, QMetaType::Type::Int );
       QgsFieldConstraints constraints;
       constraints.setConstraint(
         QgsFieldConstraints::ConstraintUnique
@@ -113,7 +113,7 @@ class TestQgsMergeattributesDialog : public QgsTest
         constraints
       );
 
-      QgsField notUniqueField( QStringLiteral( "not_unique" ), QMetaType::Type::Int );
+      QgsField notUniqueField( u"not_unique"_s, QMetaType::Type::Int );
       QVERIFY( ml.dataProvider()->addAttributes(
         { uniqueField, notUniqueField }
       ) );
@@ -160,10 +160,10 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QMetaType::Type::Int );
-      QgsField hiddenField( QStringLiteral( "hidden" ), QMetaType::Type::Int );
+      QgsField notHiddenField( u"not_hidden"_s, QMetaType::Type::Int );
+      QgsField hiddenField( u"hidden"_s, QMetaType::Type::Int );
       // hide the field
-      ml.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() ) );
+      ml.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( u"Hidden"_s, QVariantMap() ) );
       QVERIFY( ml.dataProvider()->addAttributes( { notHiddenField, hiddenField } ) );
       ml.updateFields();
 
@@ -193,13 +193,13 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField notHiddenField( QStringLiteral( "not_hidden" ), QMetaType::Type::Int );
-      QgsField hiddenField( QStringLiteral( "hidden" ), QMetaType::Type::Int );
+      QgsField notHiddenField( u"not_hidden"_s, QMetaType::Type::Int );
+      QgsField hiddenField( u"hidden"_s, QMetaType::Type::Int );
       QVERIFY( ml.dataProvider()->addAttributes( { notHiddenField, hiddenField } ) );
       ml.updateFields();
 
       // hide the field
-      ml.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() ) );
+      ml.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( u"Hidden"_s, QVariantMap() ) );
 
 
       // Create features
@@ -228,14 +228,14 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "LineString", "test", "memory" );
       QVERIFY( ml.isValid() );
 
-      QgsField defaultValueField( QStringLiteral( "defaultValue" ), QMetaType::Type::Int );
-      QgsField sumField( QStringLiteral( "sum" ), QMetaType::Type::Int );
-      QgsField geometryWeightedField( QStringLiteral( "geometryWeighted" ), QMetaType::Type::Double );
-      QgsField largestGeometryField( QStringLiteral( "largestGeometry" ), QMetaType::Type::QString );
-      QgsField minimumValueField( QStringLiteral( "minimumValue" ), QMetaType::Type::Int );
-      QgsField maximumValueField( QStringLiteral( "maximumValue" ), QMetaType::Type::Int );
-      QgsField skipAttributeField( QStringLiteral( "skipAttribute" ), QMetaType::Type::Int );
-      QgsField unsetField( QStringLiteral( "unsetField" ), QMetaType::Type::Int );
+      QgsField defaultValueField( u"defaultValue"_s, QMetaType::Type::Int );
+      QgsField sumField( u"sum"_s, QMetaType::Type::Int );
+      QgsField geometryWeightedField( u"geometryWeighted"_s, QMetaType::Type::Double );
+      QgsField largestGeometryField( u"largestGeometry"_s, QMetaType::Type::QString );
+      QgsField minimumValueField( u"minimumValue"_s, QMetaType::Type::Int );
+      QgsField maximumValueField( u"maximumValue"_s, QMetaType::Type::Int );
+      QgsField skipAttributeField( u"skipAttribute"_s, QMetaType::Type::Int );
+      QgsField unsetField( u"unsetField"_s, QMetaType::Type::Int );
 
       QVERIFY( ml.dataProvider()->addAttributes( { defaultValueField, sumField, geometryWeightedField, largestGeometryField, minimumValueField, maximumValueField, skipAttributeField, unsetField } ) );
       ml.updateFields();
@@ -263,13 +263,13 @@ class TestQgsMergeattributesDialog : public QgsTest
 
       // Create features
       QgsFeature f1( ml.fields(), 1 );
-      f1.setAttributes( QVector<QVariant>() << 10 << 200 << 7.5 << QStringLiteral( "smaller" ) << 10 << -10 << 0 << 20 );
+      f1.setAttributes( QVector<QVariant>() << 10 << 200 << 7.5 << u"smaller"_s << 10 << -10 << 0 << 20 );
       f1.setGeometry( QgsGeometry::fromWkt( "LINESTRING(10 0, 15 0)" ) );
       QVERIFY( ml.dataProvider()->addFeature( f1 ) );
       QCOMPARE( ml.featureCount(), 1 );
 
       QgsFeature f2( ml.fields(), 2 );
-      f2.setAttributes( QVector<QVariant>() << 15 << 100 << 5 << QStringLiteral( "bigger" ) << -10 << 10 << 5 << 12 );
+      f2.setAttributes( QVector<QVariant>() << 15 << 100 << 5 << u"bigger"_s << -10 << 10 << 5 << 12 );
       f2.setGeometry( QgsGeometry::fromWkt( "LINESTRING(0 0, 10 0)" ) );
       QVERIFY( ml.dataProvider()->addFeature( f2 ) );
       QCOMPARE( ml.featureCount(), 2 );
@@ -279,7 +279,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       QCOMPARE( dialog1.mergedAttributes().at( 0 ).toInt(), 10 );
       QCOMPARE( dialog1.mergedAttributes().at( 1 ).toInt(), 300 );
       QVERIFY( qgsDoubleNear( dialog1.mergedAttributes().at( 2 ).toDouble(), 5.83333, 0.00001 ) );
-      QCOMPARE( dialog1.mergedAttributes().at( 3 ).toString(), QStringLiteral( "bigger" ) );
+      QCOMPARE( dialog1.mergedAttributes().at( 3 ).toString(), u"bigger"_s );
       QCOMPARE( dialog1.mergedAttributes().at( 4 ).toInt(), -10 );
       QCOMPARE( dialog1.mergedAttributes().at( 5 ).toInt(), 10 );
       QVERIFY( !dialog1.mergedAttributes().at( 6 ).isValid() );

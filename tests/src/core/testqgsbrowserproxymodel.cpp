@@ -64,9 +64,9 @@ void TestQgsBrowserProxyModel::initTestCase()
   QgsApplication::showSettings();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsBrowserProxyModel::cleanupTestCase()
@@ -91,7 +91,7 @@ void TestQgsBrowserProxyModel::testModel()
   QVERIFY( !proxy.dataItem( QModelIndex() ) );
 
   // add a root child to model
-  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
+  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, u"Test"_s, u"root1"_s );
   model.setupItemConnections( rootItem1 );
   model.beginInsertRows( QModelIndex(), 0, 0 );
   model.mRootItems.append( rootItem1 );
@@ -106,12 +106,12 @@ void TestQgsBrowserProxyModel::testModel()
   QVERIFY( root1Index.isValid() );
   QCOMPARE( proxy.rowCount( root1Index ), 0 );
   QCOMPARE( proxy.columnCount( root1Index ), 1 );
-  QCOMPARE( proxy.data( root1Index ).toString(), QStringLiteral( "Test" ) );
-  QCOMPARE( proxy.data( root1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "root1" ) );
+  QCOMPARE( proxy.data( root1Index ).toString(), u"Test"_s );
+  QCOMPARE( proxy.data( root1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), u"root1"_s );
   QCOMPARE( proxy.dataItem( root1Index ), rootItem1 );
 
   // second root item
-  QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test2" ), QStringLiteral( "root2" ), QStringLiteral( "provider2" ) );
+  QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, u"Test2"_s, u"root2"_s, u"provider2"_s );
   model.setupItemConnections( rootItem2 );
   model.beginInsertRows( QModelIndex(), 1, 1 );
   model.mRootItems.append( rootItem2 );
@@ -123,12 +123,12 @@ void TestQgsBrowserProxyModel::testModel()
   QVERIFY( root2Index.isValid() );
   QCOMPARE( proxy.rowCount( root2Index ), 0 );
   QCOMPARE( proxy.columnCount( root2Index ), 1 );
-  QCOMPARE( proxy.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
-  QCOMPARE( proxy.data( root2Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "root2" ) );
+  QCOMPARE( proxy.data( root2Index ).toString(), u"Test2"_s );
+  QCOMPARE( proxy.data( root2Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), u"root2"_s );
   QCOMPARE( proxy.dataItem( root2Index ), rootItem2 );
 
   // child item
-  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QStringLiteral( "provider1" ) );
+  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, u"Child1"_s, u"child1"_s, u"provider1"_s );
   rootItem1->addChildItem( childItem1, true );
 
   QCOMPARE( proxy.rowCount(), 2 );
@@ -137,19 +137,19 @@ void TestQgsBrowserProxyModel::testModel()
   QCOMPARE( proxy.columnCount( root1Index ), 1 );
   QVERIFY( proxy.hasChildren( root1Index ) );
   QModelIndex child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
-  QCOMPARE( proxy.data( child1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), QStringLiteral( "child1" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child1"_s );
+  QCOMPARE( proxy.data( child1Index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), u"child1"_s );
   QCOMPARE( proxy.dataItem( child1Index ), childItem1 );
 
   // more children
-  QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child2" ), QStringLiteral( "child2" ) );
+  QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, u"Child2"_s, u"child2"_s );
   rootItem1->addChildItem( childItem2, true );
 
-  QgsLayerItem *childItem3 = new QgsLayerItem( nullptr, QStringLiteral( "Child3" ), QStringLiteral( "child3" ), QString(), Qgis::BrowserLayerType::Vector, QString() );
+  QgsLayerItem *childItem3 = new QgsLayerItem( nullptr, u"Child3"_s, u"child3"_s, QString(), Qgis::BrowserLayerType::Vector, QString() );
   childItem2->addChildItem( childItem3, true );
   QCOMPARE( childItem2->rowCount(), 1 );
 
-  QgsLayerItem *childItem4 = new QgsLayerItem( nullptr, QStringLiteral( "Child4" ), QStringLiteral( "child4" ), QString(), Qgis::BrowserLayerType::Raster, QString() );
+  QgsLayerItem *childItem4 = new QgsLayerItem( nullptr, u"Child4"_s, u"child4"_s, QString(), Qgis::BrowserLayerType::Raster, QString() );
   rootItem2->addChildItem( childItem4, true );
   QCOMPARE( rootItem2->rowCount(), 1 );
 
@@ -158,73 +158,73 @@ void TestQgsBrowserProxyModel::testModel()
   root2Index = proxy.index( 1, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 2 );
   child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child1"_s );
   QModelIndex child2Index = proxy.index( 1, 0, root1Index );
-  QCOMPARE( proxy.data( child2Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( proxy.data( child2Index ).toString(), u"Child2"_s );
   QCOMPARE( proxy.rowCount( child1Index ), 0 );
   QCOMPARE( proxy.dataItem( child2Index ), childItem2 );
   QCOMPARE( childItem2->rowCount(), 1 );
   QCOMPARE( proxy.rowCount( child2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, child2Index ) ).toString(), u"Child3"_s );
   QCOMPARE( proxy.rowCount( root2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), u"Child4"_s );
 
   // filtering
-  proxy.setFilterString( QStringLiteral( "2" ) );
+  proxy.setFilterString( u"2"_s );
   proxy.setFilterSyntax( QgsBrowserProxyModel::Normal );
 
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
-  QCOMPARE( proxy.data( root1Index ).toString(), QStringLiteral( "Test" ) );
+  QCOMPARE( proxy.data( root1Index ).toString(), u"Test"_s );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
   child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child2"_s );
   // children of string matched items should be shown
   QCOMPARE( proxy.rowCount( child1Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, child1Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, child1Index ) ).toString(), u"Child3"_s );
   root2Index = proxy.index( 1, 0 );
-  QCOMPARE( proxy.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
+  QCOMPARE( proxy.data( root2Index ).toString(), u"Test2"_s );
   QCOMPARE( proxy.rowCount( root2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), u"Child4"_s );
 
   // wildcards
-  proxy.setFilterString( QStringLiteral( "2" ) );
+  proxy.setFilterString( u"2"_s );
   proxy.setFilterSyntax( QgsBrowserProxyModel::Wildcards );
   QCOMPARE( proxy.rowCount(), 0 );
-  proxy.setFilterString( QStringLiteral( "*2" ) );
+  proxy.setFilterString( u"*2"_s );
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
-  QCOMPARE( proxy.data( root1Index ).toString(), QStringLiteral( "Test" ) );
+  QCOMPARE( proxy.data( root1Index ).toString(), u"Test"_s );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
   child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child2"_s );
   // children of string matched items should be shown
   QCOMPARE( proxy.rowCount( child1Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, child1Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, child1Index ) ).toString(), u"Child3"_s );
   root2Index = proxy.index( 1, 0 );
-  QCOMPARE( proxy.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
+  QCOMPARE( proxy.data( root2Index ).toString(), u"Test2"_s );
   QCOMPARE( proxy.rowCount( root2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), u"Child4"_s );
 
   // regex
-  proxy.setFilterString( QStringLiteral( "^.*[td]2$" ) );
+  proxy.setFilterString( u"^.*[td]2$"_s );
   proxy.setFilterSyntax( QgsBrowserProxyModel::Normal );
   QCOMPARE( proxy.rowCount(), 0 );
   proxy.setFilterSyntax( QgsBrowserProxyModel::RegularExpression );
 
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
-  QCOMPARE( proxy.data( root1Index ).toString(), QStringLiteral( "Test" ) );
+  QCOMPARE( proxy.data( root1Index ).toString(), u"Test"_s );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
   child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child2"_s );
   // children of string matched items should be shown
   QCOMPARE( proxy.rowCount( child1Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, child1Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, child1Index ) ).toString(), u"Child3"_s );
   root2Index = proxy.index( 1, 0 );
-  QCOMPARE( proxy.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
+  QCOMPARE( proxy.data( root2Index ).toString(), u"Test2"_s );
   QCOMPARE( proxy.rowCount( root2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), u"Child4"_s );
 
   proxy.setFilterString( QString() );
 
@@ -237,14 +237,14 @@ void TestQgsBrowserProxyModel::testModel()
   root2Index = proxy.index( 1, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 2 );
   child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child1"_s );
   child2Index = proxy.index( 1, 0, root1Index );
-  QCOMPARE( proxy.data( child2Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( proxy.data( child2Index ).toString(), u"Child2"_s );
   QCOMPARE( proxy.rowCount( child1Index ), 0 );
   QCOMPARE( proxy.dataItem( child2Index ), childItem2 );
   QCOMPARE( childItem2->rowCount(), 1 );
   QCOMPARE( proxy.rowCount( child2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, child2Index ) ).toString(), u"Child3"_s );
   QCOMPARE( proxy.rowCount( root2Index ), 0 );
 
   proxy.setLayerType( Qgis::LayerType::Raster );
@@ -253,24 +253,24 @@ void TestQgsBrowserProxyModel::testModel()
   root2Index = proxy.index( 1, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 2 );
   child1Index = proxy.index( 0, 0, root1Index );
-  QCOMPARE( proxy.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
+  QCOMPARE( proxy.data( child1Index ).toString(), u"Child1"_s );
   child2Index = proxy.index( 1, 0, root1Index );
-  QCOMPARE( proxy.data( child2Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( proxy.data( child2Index ).toString(), u"Child2"_s );
   QCOMPARE( proxy.rowCount( child1Index ), 0 );
   QCOMPARE( proxy.dataItem( child2Index ), childItem2 );
   QCOMPARE( childItem2->rowCount(), 1 );
   QCOMPARE( proxy.rowCount( child2Index ), 0 );
   QCOMPARE( proxy.rowCount( root2Index ), 1 );
-  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+  QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), u"Child4"_s );
 
   proxy.setFilterByLayerType( false );
 
   // provider filtering
-  proxy.setHiddenDataItemProviderKeyFilter( QStringList( { QStringLiteral( "provider1" ) } ) );
+  proxy.setHiddenDataItemProviderKeyFilter( QStringList( { u"provider1"_s } ) );
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
-  proxy.setHiddenDataItemProviderKeyFilter( QStringList( { QStringLiteral( "provider2" ) } ) );
+  proxy.setHiddenDataItemProviderKeyFilter( QStringList( { u"provider2"_s } ) );
   QCOMPARE( proxy.rowCount(), 1 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 2 );
@@ -279,11 +279,11 @@ void TestQgsBrowserProxyModel::testModel()
 
   // provider filtering
   proxy.setHiddenDataItemProviderKeyFilter( QStringList() );
-  proxy.setShownDataItemProviderKeyFilter( QStringList( { QStringLiteral( "provider2" ) } ) );
+  proxy.setShownDataItemProviderKeyFilter( QStringList( { u"provider2"_s } ) );
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
-  proxy.setShownDataItemProviderKeyFilter( QStringList( { QStringLiteral( "provider1" ) } ) );
+  proxy.setShownDataItemProviderKeyFilter( QStringList( { u"provider1"_s } ) );
   QCOMPARE( proxy.rowCount(), 1 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 2 );
@@ -300,16 +300,16 @@ void TestQgsBrowserProxyModel::testShowLayers()
   QCOMPARE( proxy.browserModel(), &model );
 
   // add a root child to model
-  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
+  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, u"Test"_s, u"root1"_s );
   model.setupItemConnections( rootItem1 );
   model.beginInsertRows( QModelIndex(), 0, 0 );
   model.mRootItems.append( rootItem1 );
   model.endInsertRows();
 
   // Add a layer collection item
-  QgsDataCollectionItem *containerItem1 = new TestCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
+  QgsDataCollectionItem *containerItem1 = new TestCollectionItem( nullptr, u"Test"_s, u"root1"_s );
   rootItem1->addChildItem( containerItem1 );
-  QgsLayerItem *childItem1 = new QgsLayerItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QString(), Qgis::BrowserLayerType::Vector, QString() );
+  QgsLayerItem *childItem1 = new QgsLayerItem( nullptr, u"Child1"_s, u"child1"_s, QString(), Qgis::BrowserLayerType::Vector, QString() );
   containerItem1->addChildItem( childItem1, true );
   QCOMPARE( proxy.rowCount(), 1 );
   const auto root1Index = proxy.index( 0, 0 );

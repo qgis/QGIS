@@ -131,7 +131,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
     return;
 
   bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, QStringLiteral( "new style" ), &ok );
+  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, u"new style"_s, &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -177,7 +177,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   const bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
   if ( !res )
   {
-    QgsDebugError( QStringLiteral( "Failed to remove current style" ) );
+    QgsDebugError( u"Failed to remove current style"_s );
   }
 }
 

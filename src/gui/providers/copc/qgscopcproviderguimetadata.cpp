@@ -22,7 +22,7 @@
 ///@cond PRIVATE
 
 QgsCopcProviderGuiMetadata::QgsCopcProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "copc" ) )
+  : QgsProviderGuiMetadata( u"copc"_s )
 {
 }
 

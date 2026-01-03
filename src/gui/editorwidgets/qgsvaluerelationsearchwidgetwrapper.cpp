@@ -180,23 +180,23 @@ void QgsValueRelationSearchWidgetWrapper::setExpression( const QString &expressi
   QString str;
   if ( exp == nullValue )
   {
-    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = u"%1 IS NULL"_s.arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
-    str = QStringLiteral( "%1 = '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+    str = u"%1 = '%3'"_s
+            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
   }
   mExpression = str;
 }
 
 QWidget *QgsValueRelationSearchWidgetWrapper::createWidget( QWidget *parent )
 {
-  if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
+  if ( config( u"AllowMulti"_s ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
-  else if ( config( QStringLiteral( "UseCompleter" ) ).toBool() )
+  else if ( config( u"UseCompleter"_s ).toBool() )
   {
     return new QgsFilterLineEdit( parent );
   }
@@ -219,7 +219,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
   if ( mComboBox )
   {
     mComboBox->addItem( tr( "Please Select" ), QVariant() ); // creates an invalid to allow selecting all features
-    if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
+    if ( config( u"AllowNull"_s ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QgsVariantUtils::createNullVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }

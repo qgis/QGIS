@@ -68,21 +68,21 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, 1, true ) );
 
-  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
+  expContext.setHighlightedVariables( QStringList() << u"row_number"_s );
 
   return expContext;
 }
 
 QDomElement QgsAttributeTableDialog::writeXml( QDomDocument &document )
 {
-  QDomElement element = document.createElement( QStringLiteral( "attributeTable" ) );
+  QDomElement element = document.createElement( u"attributeTable"_s );
   mDockableWidgetHelper->writeXml( element );
 
-  element.setAttribute( QStringLiteral( "layer" ), mLayer ? mLayer->id() : QString() );
-  element.setAttribute( QStringLiteral( "filterMode" ), qgsEnumValueToKey( mMainView->filterMode() ) );
-  element.setAttribute( QStringLiteral( "view" ), qgsEnumValueToKey( mMainView->view() ) );
+  element.setAttribute( u"layer"_s, mLayer ? mLayer->id() : QString() );
+  element.setAttribute( u"filterMode"_s, qgsEnumValueToKey( mMainView->filterMode() ) );
+  element.setAttribute( u"view"_s, qgsEnumValueToKey( mMainView->view() ) );
 
   return element;
 }
@@ -91,7 +91,7 @@ void QgsAttributeTableDialog::readXml( const QDomElement &element )
 {
   mDockableWidgetHelper->readXml( element );
 
-  mMainView->setView( qgsEnumKeyToValue( element.attribute( QStringLiteral( "view" ) ), QgsDualView::ViewMode::AttributeTable ) );
+  mMainView->setView( qgsEnumKeyToValue( element.attribute( u"view"_s ), QgsDualView::ViewMode::AttributeTable ) );
 }
 
 void QgsAttributeTableDialog::updateMultiEditButtonState()
@@ -111,7 +111,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   : QDialog( parent, flags )
   , mLayer( layer )
 {
-  setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
+  setObjectName( u"QgsAttributeTableDialog/"_s + layer->id() );
   setupUi( this );
 
   connect( mMainViewButtonGroup, &QButtonGroup::idClicked, mMainView, &QgsDualView::setCurrentIndex );
@@ -164,7 +164,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeTable );
   mActionAddFeature->menu()->addAction( mActionAddFeatureViaAttributeForm );
   mActionAddFeature->setIcon(
-    settings.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" )
+    settings.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == u"attributeForm"_s
       ? mActionAddFeatureViaAttributeForm->icon()
       : mActionAddFeatureViaAttributeTable->icon()
   );
@@ -177,7 +177,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast<QGridLayout *>( layout() )->setVerticalSpacing( 0 );
 
-  int size = settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), 16 ).toInt();
+  int size = settings.value( u"/qgis/toolbarIconSize"_s, 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;
@@ -193,7 +193,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mToolbar->setIconSize( QSize( size, size ) );
 
   // Initialize the window geometry
-  restoreGeometry( settings.value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( u"Windows/BetterAttributeTable/geometry"_s ).toByteArray() );
 
   QgsDistanceArea da;
   if ( mLayer )
@@ -243,7 +243,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionFeatureActions = new QToolButton();
   mActionFeatureActions->setAutoRaise( false );
   mActionFeatureActions->setPopupMode( QToolButton::InstantPopup );
-  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
+  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( u"/mAction.svg"_s ) );
   mActionFeatureActions->setText( tr( "Actions" ) );
   mActionFeatureActions->setToolTip( tr( "Actions" ) );
 
@@ -291,7 +291,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsDockableWidgetHelper::OpeningMode openingMode = QgsDockableWidgetHelper::OpeningMode::RespectSetting;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), QStringLiteral( "attribute-table" ), QStringList(), openingMode, true, Qt::BottomDockWidgetArea );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), u"attribute-table"_s, QStringList(), openingMode, true, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
     close();
@@ -312,25 +312,25 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   updateTitle();
 
-  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectActiveLayer.svg" ) ) );
-  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectAll.svg" ) ) );
-  mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectedToTop.svg" ) ) );
-  mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
-  mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
-  mActionZoomMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
-  mActionPanMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
-  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInvertSelection.svg" ) ) );
-  mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-  mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
-  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelectedFeatures.svg" ) ) );
-  mActionOpenFieldCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
-  mActionAddAttribute->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
-  mActionRemoveAttribute->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
-  mTableViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
-  mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
-  mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
-  mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
-  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
+  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( u"/mActionDeselectActiveLayer.svg"_s ) );
+  mActionSelectAll->setIcon( QgsApplication::getThemeIcon( u"/mActionSelectAll.svg"_s ) );
+  mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( u"/mActionSelectedToTop.svg"_s ) );
+  mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( u"/mActionEditCopy.svg"_s ) );
+  mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( u"/mActionEditPaste.svg"_s ) );
+  mActionZoomMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomToSelected.svg"_s ) );
+  mActionPanMapToSelectedRows->setIcon( QgsApplication::getThemeIcon( u"/mActionPanToSelected.svg"_s ) );
+  mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( u"/mActionInvertSelection.svg"_s ) );
+  mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ) );
+  mActionSaveEdits->setIcon( QgsApplication::getThemeIcon( u"/mActionSaveEdits.svg"_s ) );
+  mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( u"/mActionDeleteSelectedFeatures.svg"_s ) );
+  mActionOpenFieldCalculator->setIcon( QgsApplication::getThemeIcon( u"/mActionCalculateField.svg"_s ) );
+  mActionAddAttribute->setIcon( QgsApplication::getThemeIcon( u"/mActionNewAttribute.svg"_s ) );
+  mActionRemoveAttribute->setIcon( QgsApplication::getThemeIcon( u"/mActionDeleteAttribute.svg"_s ) );
+  mTableViewButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOpenTable.svg"_s ) );
+  mAttributeViewButton->setIcon( QgsApplication::getThemeIcon( u"/mActionFormView.svg"_s ) );
+  mActionExpressionSelect->setIcon( QgsApplication::getThemeIcon( u"/mIconExpressionSelect.svg"_s ) );
+  mActionAddFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionNewTableRow.svg"_s ) );
+  mActionFeatureActions->setIcon( QgsApplication::getThemeIcon( u"/mAction.svg"_s ) );
 
   // toggle editing
   Qgis::VectorProviderCapabilities capabilities = ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->capabilities() : Qgis::VectorProviderCapabilities();
@@ -406,10 +406,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mUpdateExpressionText->setLayer( mLayer );
     mUpdateExpressionText->setLeftHandButtonStyle( true );
 
-    int initialView = settings.value( QStringLiteral( "qgis/attributeTableView" ), -1 ).toInt();
+    int initialView = settings.value( u"qgis/attributeTableView"_s, -1 ).toInt();
     if ( initialView < 0 )
     {
-      initialView = settings.value( QStringLiteral( "qgis/attributeTableLastView" ), QgsDualView::AttributeTable ).toInt();
+      initialView = settings.value( u"qgis/attributeTableLastView"_s, QgsDualView::AttributeTable ).toInt();
     }
     mMainView->setView( static_cast<QgsDualView::ViewMode>( initialView ) );
     mMainViewButtonGroup->button( initialView )->setChecked( true );
@@ -529,7 +529,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   }
 
   QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
-  mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
+  mLayer->beginEditCommand( u"Field calculator"_s );
 
   bool calculationSuccess = true;
   QString error;
@@ -583,7 +583,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
       task->setProgress( i / static_cast<double>( count ) * 100 );
 
       context.setFeature( feature );
-      context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
+      context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, rownum, true ) );
 
       QVariant value = exp.evaluate( &context );
       ( void ) fld.convertCompatible( value );
@@ -661,7 +661,7 @@ void QgsAttributeTableDialog::layerActionTriggered()
 
   QgsExpressionContext context = mLayer->createExpressionContext();
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), "AttributeTable" ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"action_scope"_s, "AttributeTable" ) );
   context.appendScope( scope );
   action.run( context );
 }
@@ -716,7 +716,7 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
 {
   QgsSettings s;
 
-  if ( s.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QLatin1String( "attributeForm" ) )
+  if ( s.value( u"/qgis/attributeTableLastAddFeatureMethod"_s ) == "attributeForm"_L1 )
     mActionAddFeatureViaAttributeForm_triggered();
   else
     mActionAddFeatureViaAttributeTable_triggered();
@@ -728,7 +728,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
     return;
 
   QgsSettings s;
-  s.setValue( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ), QStringLiteral( "attributeTable" ) );
+  s.setValue( u"/qgis/attributeTableLastAddFeatureMethod"_s, u"attributeTable"_s );
   mActionAddFeature->setIcon( mActionAddFeatureViaAttributeTable->icon() );
 
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
@@ -760,7 +760,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
     return;
 
   QgsSettings s;
-  s.setValue( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ), QStringLiteral( "attributeForm" ) );
+  s.setValue( u"/qgis/attributeTableLastAddFeatureMethod"_s, u"attributeForm"_s );
   mActionAddFeature->setIcon( mActionAddFeatureViaAttributeForm->icon() );
 
   QgsFeature f;
@@ -895,7 +895,7 @@ void QgsAttributeTableDialog::mMainView_currentChanged( int viewMode )
     mActionSearchForm->setChecked( false );
 
   QgsSettings s;
-  s.setValue( QStringLiteral( "/qgis/attributeTableLastView" ), static_cast<int>( viewMode ) );
+  s.setValue( u"/qgis/attributeTableLastView"_s, static_cast<int>( viewMode ) );
 }
 
 void QgsAttributeTableDialog::mActionToggleEditing_toggled( bool )
@@ -952,7 +952,7 @@ void QgsAttributeTableDialog::editingToggled()
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
 
-  QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Layer" ) );
+  QList<QgsAction> actions = mLayer->actions()->actions( u"Layer"_s );
 
   if ( actions.isEmpty() )
   {
@@ -1079,7 +1079,7 @@ void QgsAttributeTableDialog::setView( QgsDualView::ViewMode mode )
 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Delete %1" ).arg( fid ), 2 );
+  QgsDebugMsgLevel( u"Delete %1"_s.arg( fid ), 2 );
 
   QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
   if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsFeatureIds() << fid, QgsProject::instance(), infoContext, QgsVectorLayerUtils::IgnoreAuxiliaryLayers ) )
@@ -1120,7 +1120,7 @@ void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFea
 {
   if ( mLayer->isEditable() )
   {
-    QAction *qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelectedFeatures.svg" ) ), tr( "Delete Feature" ) );
+    QAction *qAction = menu->addAction( QgsApplication::getThemeIcon( u"/mActionDeleteSelectedFeatures.svg"_s ), tr( "Delete Feature" ) );
     connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
   }
 }
@@ -1147,7 +1147,7 @@ void QgsAttributeTableDialog::toggleShortcuts( bool enable )
   if ( !enable )
   {
     // To prevent "QAction::event: Ambiguous shortcut overload"
-    QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
+    QgsDebugMsgLevel( u"Remove shortcuts from attribute table already defined in main window"_s, 2 );
     mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
     mActionRemoveSelection->setShortcut( QKeySequence() );
     mActionDeleteSelected->setShortcut( QKeySequence() );
@@ -1158,13 +1158,13 @@ void QgsAttributeTableDialog::toggleShortcuts( bool enable )
   else
   {
     // restore attribute table shortcuts in window mode
-    QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
+    QgsDebugMsgLevel( u"Restore attribute table dialog shortcuts in window mode"_s, 2 );
     // duplicated on Main Window
-    mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
-    mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
-    mActionDeleteSelected->setShortcut( QStringLiteral( "Del" ) );
+    mActionZoomMapToSelectedRows->setShortcut( u"Ctrl+J"_s );
+    mActionRemoveSelection->setShortcut( u"Ctrl+Shift+A"_s );
+    mActionDeleteSelected->setShortcut( u"Del"_s );
     // duplicated on Main Window, with different semantics
-    mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
-    mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
+    mActionPanMapToSelectedRows->setShortcut( u"Ctrl+P"_s );
+    mActionSearchForm->setShortcut( u"Ctrl+F"_s );
   }
 }

@@ -31,13 +31,13 @@ QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDom
 {
   Q_UNUSED( context );
 
-  QDomElement temporalElement = doc.createElement( QStringLiteral( "temporal" ) );
-  temporalElement.setAttribute( QStringLiteral( "temporal-active" ), isActive() ? true : false );
-  temporalElement.setAttribute( QStringLiteral( "reference-time" ), mReferenceTime.toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
-  temporalElement.setAttribute( QStringLiteral( "start-time-extent" ), mTimeExtent.begin().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
-  temporalElement.setAttribute( QStringLiteral( "end-time-extent" ), mTimeExtent.end().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
-  temporalElement.setAttribute( QStringLiteral( "matching-method" ), mMatchingMethod );
-  temporalElement.setAttribute( QStringLiteral( "always-load-reference-time-from-source" ), mAlwaysLoadReferenceTimeFromSource ? 1 : 0 );
+  QDomElement temporalElement = doc.createElement( u"temporal"_s );
+  temporalElement.setAttribute( u"temporal-active"_s, isActive() ? true : false );
+  temporalElement.setAttribute( u"reference-time"_s, mReferenceTime.toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
+  temporalElement.setAttribute( u"start-time-extent"_s, mTimeExtent.begin().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
+  temporalElement.setAttribute( u"end-time-extent"_s, mTimeExtent.end().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
+  temporalElement.setAttribute( u"matching-method"_s, mMatchingMethod );
+  temporalElement.setAttribute( u"always-load-reference-time-from-source"_s, mAlwaysLoadReferenceTimeFromSource ? 1 : 0 );
   element.appendChild( temporalElement );
 
   return element;
@@ -47,24 +47,24 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 {
   Q_UNUSED( context );
 
-  const QDomElement temporalElement = element.firstChildElement( QStringLiteral( "temporal" ) );
-  const bool active = temporalElement.attribute( QStringLiteral( "temporal-active" ) ).toInt();
+  const QDomElement temporalElement = element.firstChildElement( u"temporal"_s );
+  const bool active = temporalElement.attribute( u"temporal-active"_s ).toInt();
   setIsActive( active );
 
-  mAlwaysLoadReferenceTimeFromSource = temporalElement.attribute( QStringLiteral( "always-load-reference-time-from-source" ) ).toInt();
+  mAlwaysLoadReferenceTimeFromSource = temporalElement.attribute( u"always-load-reference-time-from-source"_s ).toInt();
 
-  mReferenceTime = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "reference-time" ) ), Qt::ISODate );
+  mReferenceTime = QDateTime::fromString( temporalElement.attribute( u"reference-time"_s ), Qt::ISODate );
 
-  if ( temporalElement.hasAttribute( QStringLiteral( "start-time-extent" ) )
-       && temporalElement.hasAttribute( QStringLiteral( "end-time-extent" ) ) )
+  if ( temporalElement.hasAttribute( u"start-time-extent"_s )
+       && temporalElement.hasAttribute( u"end-time-extent"_s ) )
   {
-    const QDateTime start = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "start-time-extent" ) ), Qt::ISODate );
-    const QDateTime end = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "end-time-extent" ) ), Qt::ISODate );
+    const QDateTime start = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
+    const QDateTime end = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
     mTimeExtent = QgsDateTimeRange( start, end );
   }
 
   mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-                      temporalElement.attribute( QStringLiteral( "matching-method" ) ).toInt() );
+                      temporalElement.attribute( u"matching-method"_s ).toInt() );
 
   mIsValid = true;
   return true;

@@ -67,15 +67,15 @@ void TestQgsMapToolRotateFeature::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -84,15 +84,15 @@ void TestQgsMapToolRotateFeature::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerBase = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946" ), QStringLiteral( "baselayer" ), QStringLiteral( "memory" ) );
+  mLayerBase = new QgsVectorLayer( u"Polygon?crs=EPSG:3946"_s, u"baselayer"_s, u"memory"_s );
   QVERIFY( mLayerBase->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  const QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  const QString wkt1 = u"Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))"_s;
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  const QString wkt2 = QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" );
+  const QString wkt2 = u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s;
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -138,8 +138,8 @@ void TestQgsMapToolRotateFeature::testRotateFeature()
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-0.17 0.28, 0.28 1.17, 1.17 0.72, 0.72 -0.17, -0.17 0.28))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-0.17 0.28, 0.28 1.17, 1.17 0.72, 0.72 -0.17, -0.17 0.28))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -156,8 +156,8 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchor()
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.08 0.12, 0.87 1.1, 1.84 1.31, 2.06 0.34, 1.08 0.12))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((1.08 0.12, 0.87 1.1, 1.84 1.31, 2.06 0.34, 1.08 0.12))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -178,8 +178,8 @@ void TestQgsMapToolRotateFeature::testCancelManualAnchor()
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-0.17 0.28, 0.28 1.17, 1.17 0.72, 0.72 -0.17, -0.17 0.28))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-0.17 0.28, 0.28 1.17, 1.17 0.72, 0.72 -0.17, -0.17 0.28))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -200,8 +200,8 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorAfterStartRotate(
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-4.74 6.58, -3.79 6.26, -4.11 5.32, -5.06 5.63, -4.74 6.58))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((-4.74 6.58, -3.79 6.26, -4.11 5.32, -5.06 5.63, -4.74 6.58))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s );
 
   mLayerBase->undoStack()->undo();
 }
@@ -229,8 +229,8 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorSnapping()
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.37 -0.11, 1.11 0.85, 2.07 1.12, 2.34 0.15, 1.37 -0.11))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon ((1.37 -0.11, 1.11 0.85, 2.07 1.12, 2.34 0.15, 1.37 -0.11))"_s );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), u"Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))"_s );
 
   mLayerBase->undoStack()->undo();
 

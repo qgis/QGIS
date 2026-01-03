@@ -341,11 +341,11 @@ QString QgsBox3D::toString( int precision ) const
   }
 
   if ( isNull() )
-    rep = QStringLiteral( "Null" );
+    rep = u"Null"_s;
   else if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "%1,%2,%3 : %4,%5,%6" )
+    rep = u"%1,%2,%3 : %4,%5,%6"_s
           .arg( mBounds2d.xMinimum(), 0, 'f', precision )
           .arg( mBounds2d.yMinimum(), 0, 'f', precision )
           .arg( mZmin, 0, 'f', precision )
@@ -353,7 +353,7 @@ QString QgsBox3D::toString( int precision ) const
           .arg( mBounds2d.yMaximum(), 0, 'f', precision )
           .arg( mZmax, 0, 'f', precision );
 
-  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
+  QgsDebugMsgLevel( u"Extents : %1"_s.arg( rep ), 4 );
 
   return rep;
 }

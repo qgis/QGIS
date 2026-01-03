@@ -67,7 +67,7 @@ static QgsFeature make_feature( const QString &wkt )
 
 static QgsVectorLayer *make_layer( const QStringList &wkts )
 {
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:4326" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( u"LineString?crs=EPSG:4326"_s, u"x"_s, u"memory"_s );
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();
@@ -108,10 +108,10 @@ void TestQgsTracer::cleanupTestCase()
 void TestQgsTracer::testSimple()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts << u"LINESTRING(0 0, 0 10)"_s
+       << u"LINESTRING(0 0, 10 0)"_s
+       << u"LINESTRING(0 10, 20 10)"_s
+       << u"LINESTRING(10 0, 20 10)"_s;
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):
@@ -161,9 +161,9 @@ void TestQgsTracer::testSimple()
 
 void TestQgsTracer::testInvisible()
 {
-  QgsVectorLayer *mVL = new QgsVectorLayer( QStringLiteral( "Linestring?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *mVL = new QgsVectorLayer( u"Linestring?field=fld:int"_s, u"x"_s, u"memory"_s );
   QgsFeature f1, f2, f3, f4;
-  const int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+  const int idx = mVL->fields().indexFromName( u"fld"_s );
   QVERIFY( idx != -1 );
   f1.initAttributes( 1 );
   f2.initAttributes( 1 );
@@ -196,9 +196,9 @@ void TestQgsTracer::testInvisible()
   QgsProject::instance()->addMapLayer( mVL );
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
-  renderer->setClassAttribute( QStringLiteral( "fld" ) );
+  renderer->setClassAttribute( u"fld"_s );
   renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
-  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ), QStringLiteral( "2" ) ) );
+  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ), u"2"_s ) );
   mVL->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -255,7 +255,7 @@ void TestQgsTracer::testPolygon()
   // to check extraction from polygons work + routing along one ring works
 
   QStringList wkts;
-  wkts << QStringLiteral( "POLYGON((0 0, 0 10, 20 10, 10 0, 0 0))" );
+  wkts << u"POLYGON((0 0, 0 10, 20 10, 10 0, 0 0))"_s;
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -276,7 +276,7 @@ void TestQgsTracer::testButterfly()
   // checks whether tracer internally splits linestrings at intersections
 
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10, 10 0, 10 10, 0 0)" );
+  wkts << u"LINESTRING(0 0, 0 10, 10 0, 10 10, 0 0)"_s;
 
   /* This shape (without a vertex where the linestring crosses itself):
    *    +  +  10,10
@@ -306,8 +306,8 @@ void TestQgsTracer::testAddPointsOnIntersections()
   // checks whether tracer adds vertices at intersections
 
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 10 10)" )
-       << QStringLiteral( "LINESTRING(0 10, 10 0)" );
+  wkts << u"LINESTRING(0 0, 10 10)"_s
+       << u"LINESTRING(0 10, 10 0)"_s;
 
   /* This shape (without a vertex where the linestring crosses itself):
    *    +  +  10,10
@@ -352,10 +352,10 @@ void TestQgsTracer::testLayerUpdates()
 
   // same shape as in testSimple()
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts << u"LINESTRING(0 0, 0 10)"_s
+       << u"LINESTRING(0 0, 10 0)"_s
+       << u"LINESTRING(0 10, 20 10)"_s
+       << u"LINESTRING(10 0, 20 10)"_s;
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -372,7 +372,7 @@ void TestQgsTracer::testLayerUpdates()
   vl->startEditing();
 
   // add a shortcut
-  QgsFeature f( make_feature( QStringLiteral( "LINESTRING(10 0, 10 10)" ) ) );
+  QgsFeature f( make_feature( u"LINESTRING(10 0, 10 10)"_s ) );
   vl->addFeature( f );
 
   QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
@@ -390,7 +390,7 @@ void TestQgsTracer::testLayerUpdates()
   QCOMPARE( points3[2], QgsPointXY( 10, 10 ) );
 
   // make the shortcut again from a different feature
-  QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(10 0, 10 10)" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( u"LINESTRING(10 0, 10 10)"_s );
   vl->changeGeometry( 2, g ); // change bottom line (second item in wkts)
 
   QgsPolylineXY points4 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
@@ -416,10 +416,10 @@ void TestQgsTracer::testExtent()
 
   // same shape as in testSimple()
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts << u"LINESTRING(0 0, 0 10)"_s
+       << u"LINESTRING(0 0, 10 0)"_s
+       << u"LINESTRING(0 10, 20 10)"_s
+       << u"LINESTRING(10 0, 20 10)"_s;
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -440,12 +440,12 @@ void TestQgsTracer::testExtent()
 void TestQgsTracer::testReprojection()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(1 0, 2 0)" );
+  wkts << u"LINESTRING(1 0, 2 0)"_s;
 
   QgsVectorLayer *vl = make_layer( wkts );
 
-  const QgsCoordinateReferenceSystem dstCrs( QStringLiteral( "EPSG:3857" ) );
-  const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs, QgsProject::instance() );
+  const QgsCoordinateReferenceSystem dstCrs( u"EPSG:3857"_s );
+  const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), dstCrs, QgsProject::instance() );
   const QgsPointXY p1 = ct.transform( QgsPointXY( 1, 0 ) );
   const QgsPointXY p2 = ct.transform( QgsPointXY( 2, 0 ) );
 
@@ -462,7 +462,7 @@ void TestQgsTracer::testReprojection()
 void TestQgsTracer::testCurved()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "CIRCULARSTRING(0 0, 10 10, 20 0)" );
+  wkts << u"CIRCULARSTRING(0 0, 10 10, 20 0)"_s;
 
   /* This shape - half of a circle (r = 10)
    * 10,10  _
@@ -495,10 +495,10 @@ void TestQgsTracer::testCurved()
 void TestQgsTracer::testOffset()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts << u"LINESTRING(0 0, 0 10)"_s
+       << u"LINESTRING(0 0, 10 0)"_s
+       << u"LINESTRING(0 10, 20 10)"_s
+       << u"LINESTRING(10 0, 20 10)"_s;
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):

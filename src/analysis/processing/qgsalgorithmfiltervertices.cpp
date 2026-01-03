@@ -29,7 +29,7 @@ QString QgsFilterVerticesAlgorithmBase::group() const
 
 QString QgsFilterVerticesAlgorithmBase::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsFilterVerticesAlgorithmBase::outputName() const
@@ -57,38 +57,38 @@ QString QgsFilterVerticesAlgorithmBase::shortDescription() const
 
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
-  auto min = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MIN" ), QObject::tr( "Minimum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto min = std::make_unique<QgsProcessingParameterNumber>( u"MIN"_s, QObject::tr( "Minimum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   min->setIsDynamic( true );
-  min->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Minimum" ), QObject::tr( "Minimum value" ), QgsPropertyDefinition::Double ) );
-  min->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  min->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Minimum"_s, QObject::tr( "Minimum value" ), QgsPropertyDefinition::Double ) );
+  min->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( min.release() );
 
-  auto max = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX" ), QObject::tr( "Maximum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto max = std::make_unique<QgsProcessingParameterNumber>( u"MAX"_s, QObject::tr( "Maximum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   max->setIsDynamic( true );
-  max->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Maximum" ), QObject::tr( "Maximum value" ), QgsPropertyDefinition::Double ) );
-  max->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  max->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Maximum"_s, QObject::tr( "Maximum value" ), QgsPropertyDefinition::Double ) );
+  max->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( max.release() );
 }
 
 bool QgsFilterVerticesAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  if ( parameters.contains( QStringLiteral( "MIN" ) ) && parameters.value( QStringLiteral( "MIN" ) ).isValid() )
-    mMin = parameterAsDouble( parameters, QStringLiteral( "MIN" ), context );
+  if ( parameters.contains( u"MIN"_s ) && parameters.value( u"MIN"_s ).isValid() )
+    mMin = parameterAsDouble( parameters, u"MIN"_s, context );
   else
     mMin = std::numeric_limits<double>::quiet_NaN();
 
-  mDynamicMin = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN" ) );
+  mDynamicMin = QgsProcessingParameters::isDynamic( parameters, u"MIN"_s );
   if ( mDynamicMin )
-    mMinProperty = parameters.value( QStringLiteral( "MIN" ) ).value<QgsProperty>();
+    mMinProperty = parameters.value( u"MIN"_s ).value<QgsProperty>();
 
-  if ( parameters.contains( QStringLiteral( "MAX" ) ) && parameters.value( QStringLiteral( "MAX" ) ).isValid() )
-    mMax = parameterAsDouble( parameters, QStringLiteral( "MAX" ), context );
+  if ( parameters.contains( u"MAX"_s ) && parameters.value( u"MAX"_s ).isValid() )
+    mMax = parameterAsDouble( parameters, u"MAX"_s, context );
   else
     mMax = std::numeric_limits<double>::quiet_NaN();
 
-  mDynamicMax = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MAX" ) );
+  mDynamicMax = QgsProcessingParameters::isDynamic( parameters, u"MAX"_s );
   if ( mDynamicMax )
-    mMaxProperty = parameters.value( QStringLiteral( "MAX" ) ).value<QgsProperty>();
+    mMaxProperty = parameters.value( u"MAX"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -119,7 +119,7 @@ QgsFeatureList QgsFilterVerticesAlgorithmBase::processFeature( const QgsFeature 
 
 QString QgsFilterVerticesByM::name() const
 {
-  return QStringLiteral( "filterverticesbym" );
+  return u"filterverticesbym"_s;
 }
 
 QString QgsFilterVerticesByM::displayName() const
@@ -168,7 +168,7 @@ void QgsFilterVerticesByM::filter( QgsGeometry &geometry, double min, double max
 
 QString QgsFilterVerticesByZ::name() const
 {
-  return QStringLiteral( "filterverticesbyz" );
+  return u"filterverticesbyz"_s;
 }
 
 QString QgsFilterVerticesByZ::displayName() const

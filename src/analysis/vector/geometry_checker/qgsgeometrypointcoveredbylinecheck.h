@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsGeometryPointCoveredByLineCheck : public QgsGeometryChe
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Point not covered by line" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryPointCoveredByLineCheck" ); }
+    static QString factoryId() { return u"QgsGeometryPointCoveredByLineCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;

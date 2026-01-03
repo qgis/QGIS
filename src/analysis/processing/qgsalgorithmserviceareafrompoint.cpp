@@ -24,7 +24,7 @@
 
 QString QgsServiceAreaFromPointAlgorithm::name() const
 {
-  return QStringLiteral( "serviceareafrompoint" );
+  return u"serviceareafrompoint"_s;
 }
 
 QString QgsServiceAreaFromPointAlgorithm::displayName() const
@@ -61,28 +61,28 @@ QgsServiceAreaFromPointAlgorithm *QgsServiceAreaFromPointAlgorithm::createInstan
 void QgsServiceAreaFromPointAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addCommonParams();
-  addParameter( new QgsProcessingParameterPoint( QStringLiteral( "START_POINT" ), QObject::tr( "Start point" ) ) );
+  addParameter( new QgsProcessingParameterPoint( u"START_POINT"_s, QObject::tr( "Start point" ) ) );
 
-  auto travelCost = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  auto travelCost = std::make_unique<QgsProcessingParameterNumber>( u"TRAVEL_COST"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   travelCost->setFlags( travelCost->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( travelCost.release() );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"TRAVEL_COST2"_s, QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> maxPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "POINT_TOLERANCE" ), QObject::tr( "Maximum point distance from network" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> maxPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
   maxPointDistanceFromNetwork->setFlags( maxPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
   maxPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the point to the network layer. If the point is further from the network than this distance an error will be raised." ) );
   addParameter( maxPointDistanceFromNetwork.release() );
 
-  auto includeBounds = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
+  auto includeBounds = std::make_unique<QgsProcessingParameterBoolean>( u"INCLUDE_BOUNDS"_s, QObject::tr( "Include upper/lower bound points" ), false, true );
   includeBounds->setFlags( includeBounds->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( includeBounds.release() );
 
-  auto outputLines = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Service area (lines)" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true );
+  auto outputLines = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT_LINES"_s, QObject::tr( "Service area (lines)" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true );
   outputLines->setCreateByDefault( true );
   addParameter( outputLines.release() );
 
-  auto outputPoints = std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Service area (boundary nodes)" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
+  auto outputPoints = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT"_s, QObject::tr( "Service area (boundary nodes)" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   outputPoints->setCreateByDefault( false );
   addParameter( outputPoints.release() );
 }
@@ -91,20 +91,20 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 {
   loadCommonParams( parameters, context, feedback );
 
-  const QgsPointXY startPoint = parameterAsPoint( parameters, QStringLiteral( "START_POINT" ), context, mNetwork->sourceCrs() );
+  const QgsPointXY startPoint = parameterAsPoint( parameters, u"START_POINT"_s, context, mNetwork->sourceCrs() );
 
   // use older deprecated travel cost style if specified, to maintain old api
-  const bool useOldTravelCost = parameters.value( QStringLiteral( "TRAVEL_COST" ) ).isValid();
-  double travelCost = parameterAsDouble( parameters, useOldTravelCost ? QStringLiteral( "TRAVEL_COST" ) : QStringLiteral( "TRAVEL_COST2" ), context );
+  const bool useOldTravelCost = parameters.value( u"TRAVEL_COST"_s ).isValid();
+  double travelCost = parameterAsDouble( parameters, useOldTravelCost ? u"TRAVEL_COST"_s : u"TRAVEL_COST2"_s, context );
 
-  const int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
+  const int strategy = parameterAsInt( parameters, u"STRATEGY"_s, context );
   if ( strategy && !useOldTravelCost )
     travelCost *= mMultiplier;
 
   bool includeBounds = true; // default to true to maintain 3.0 API
-  if ( parameters.contains( QStringLiteral( "INCLUDE_BOUNDS" ) ) )
+  if ( parameters.contains( u"INCLUDE_BOUNDS"_s ) )
   {
-    includeBounds = parameterAsBool( parameters, QStringLiteral( "INCLUDE_BOUNDS" ), context );
+    includeBounds = parameterAsBool( parameters, u"INCLUDE_BOUNDS"_s, context );
   }
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
@@ -113,9 +113,9 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   const QgsPointXY snappedStartPoint = snappedPoints[0];
 
   // check distance for the snapped point
-  if ( parameters.value( QStringLiteral( "POINT_TOLERANCE" ) ).isValid() )
+  if ( parameters.value( u"POINT_TOLERANCE"_s ).isValid() )
   {
-    const double pointDistanceThreshold = parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context );
+    const double pointDistanceThreshold = parameterAsDouble( parameters, u"POINT_TOLERANCE"_s, context );
 
     double distancePointToNetwork = 0;
     try
@@ -208,24 +208,24 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   QVariantMap outputs;
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( u"type"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"start"_s, QMetaType::Type::QString ) );
 
   QgsFeature feat;
   feat.setFields( fields );
 
   QString pointsSinkId;
-  std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, pointsSinkId, fields, Qgis::WkbType::MultiPoint, mNetwork->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, u"OUTPUT"_s, context, pointsSinkId, fields, Qgis::WkbType::MultiPoint, mNetwork->sourceCrs() ) );
 
   if ( pointsSink )
   {
-    outputs.insert( QStringLiteral( "OUTPUT" ), pointsSinkId );
+    outputs.insert( u"OUTPUT"_s, pointsSinkId );
 
     const QgsGeometry geomPoints = QgsGeometry::fromMultiPointXY( points );
     feat.setGeometry( geomPoints );
-    feat.setAttributes( QgsAttributes() << QStringLiteral( "within" ) << startPoint.toString() );
+    feat.setAttributes( QgsAttributes() << u"within"_s << startPoint.toString() );
     if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
 
     if ( includeBounds )
     {
@@ -257,30 +257,30 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
       const QgsGeometry geomLower = QgsGeometry::fromMultiPointXY( lowerBoundary );
 
       feat.setGeometry( geomUpper );
-      feat.setAttributes( QgsAttributes() << QStringLiteral( "upper" ) << startPoint.toString() );
+      feat.setAttributes( QgsAttributes() << u"upper"_s << startPoint.toString() );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
 
       feat.setGeometry( geomLower );
-      feat.setAttributes( QgsAttributes() << QStringLiteral( "lower" ) << startPoint.toString() );
+      feat.setAttributes( QgsAttributes() << u"lower"_s << startPoint.toString() );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, u"OUTPUT"_s ) );
     } // includeBounds
 
     pointsSink->finalize();
   }
 
   QString linesSinkId;
-  std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LINES" ), context, linesSinkId, fields, Qgis::WkbType::MultiLineString, mNetwork->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, u"OUTPUT_LINES"_s, context, linesSinkId, fields, Qgis::WkbType::MultiLineString, mNetwork->sourceCrs() ) );
 
   if ( linesSink )
   {
-    outputs.insert( QStringLiteral( "OUTPUT_LINES" ), linesSinkId );
+    outputs.insert( u"OUTPUT_LINES"_s, linesSinkId );
     const QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
     feat.setGeometry( geomLines );
-    feat.setAttributes( QgsAttributes() << QStringLiteral( "lines" ) << startPoint.toString() );
+    feat.setAttributes( QgsAttributes() << u"lines"_s << startPoint.toString() );
     if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
+      throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, u"OUTPUT_LINES"_s ) );
     linesSink->finalize();
   }
 

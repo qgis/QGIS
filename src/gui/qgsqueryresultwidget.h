@@ -118,7 +118,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNode *sTreeSqlQueries = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "sql-queries" ) );
+    static inline QgsSettingsTreeNode *sTreeSqlQueries = QgsSettingsTree::sTreeGui->createChildNode( u"sql-queries"_s );
     static const QgsSettingsEntryString *settingLastSourceFolder;
 ///@endcond PRIVATE
 #endif

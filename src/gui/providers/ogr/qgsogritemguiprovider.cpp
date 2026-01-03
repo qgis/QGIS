@@ -43,7 +43,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
 {
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    if ( layerItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast<QgsGeoPackageAbstractLayerItem *>( item ) )
+    if ( layerItem->providerKey() == "ogr"_L1 && !qobject_cast<QgsGeoPackageAbstractLayerItem *>( item ) )
     {
       if ( !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
       {
@@ -53,7 +53,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
 
         // test if GDAL supports deleting this layer
         const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
-        const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+        const QString path = parts.value( u"path"_s ).toString();
         bool canDeleteLayers = false;
         if ( !path.isEmpty() )
         {
@@ -64,9 +64,9 @@ void QgsOgrItemGuiProvider::populateContextMenu(
 
         QAction *actionDeleteLayer = new QAction( QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ), menu );
         QVariantMap data;
-        data.insert( QStringLiteral( "uri" ), layerItem->uri() );
-        data.insert( QStringLiteral( "name" ), layerItem->name() );
-        data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
+        data.insert( u"uri"_s, layerItem->uri() );
+        data.insert( u"name"_s, layerItem->name() );
+        data.insert( u"parent"_s, QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
         actionDeleteLayer->setData( data );
         connect( actionDeleteLayer, &QAction::triggered, this, [this, context] { onDeleteLayer( context ); } );
         actionDeleteLayer->setEnabled( canDeleteLayers );
@@ -79,7 +79,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
 
   if ( QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item ) )
   {
-    if ( collectionItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
+    if ( collectionItem->providerKey() == "ogr"_L1 && !qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
     {
       const bool isFolder = QFileInfo( collectionItem->path() ).isDir();
       // Messages are different for files and tables
@@ -87,8 +87,8 @@ void QgsOgrItemGuiProvider::populateContextMenu(
       QAction *actionDeleteCollection = new QAction( message, menu );
 
       QVariantMap data;
-      data.insert( QStringLiteral( "path" ), collectionItem->path() );
-      data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer<QgsDataItem>( collectionItem->parent() ) ) );
+      data.insert( u"path"_s, collectionItem->path() );
+      data.insert( u"parent"_s, QVariant::fromValue( QPointer<QgsDataItem>( collectionItem->parent() ) ) );
       actionDeleteCollection->setData( data );
       connect( actionDeleteCollection, &QAction::triggered, this, [this, context] { deleteCollection( context ); } );
       menu->addAction( actionDeleteCollection );
@@ -100,9 +100,9 @@ void QgsOgrItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
-  const QString uri = data[QStringLiteral( "uri" )].toString();
-  const QString name = data[QStringLiteral( "name" )].toString();
-  const QPointer<QgsDataItem> parent = data[QStringLiteral( "parent" )].value<QPointer<QgsDataItem>>();
+  const QString uri = data[u"uri"_s].toString();
+  const QString name = data[u"name"_s].toString();
+  const QPointer<QgsDataItem> parent = data[u"parent"_s].value<QPointer<QgsDataItem>>();
 
   const QString title = QObject::tr( "Delete Layer" );
   // Check if the layer is in the registry
@@ -147,8 +147,8 @@ void QgsOgrItemGuiProvider::deleteCollection( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
-  const QString path = data[QStringLiteral( "path" )].toString();
-  const QPointer<QgsDataItem> parent = data[QStringLiteral( "parent" )].value<QPointer<QgsDataItem>>();
+  const QString path = data[u"path"_s].toString();
+  const QPointer<QgsDataItem> parent = data[u"parent"_s].value<QPointer<QgsDataItem>>();
 
   const bool isFolder = QFileInfo( path ).isDir();
   const QString type = isFolder ? tr( "folder" ) : tr( "file" );
@@ -160,7 +160,7 @@ void QgsOgrItemGuiProvider::deleteCollection( QgsDataItemGuiContext context )
   for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( it.value()->providerType(), it.value()->source() );
-    if ( parts.value( QStringLiteral( "path" ) ).toString() == path )
+    if ( parts.value( u"path"_s ).toString() == path )
     {
       projectLayer = it.value();
     }

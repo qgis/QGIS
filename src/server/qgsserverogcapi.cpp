@@ -28,15 +28,15 @@
 
 QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = []() -> QMap<QgsServerOgcApi::ContentType, QStringList> {
   QMap<QgsServerOgcApi::ContentType, QStringList> map;
-  map[QgsServerOgcApi::ContentType::JSON] = QStringList { QStringLiteral( "application/json" ) };
+  map[QgsServerOgcApi::ContentType::JSON] = QStringList { u"application/json"_s };
   map[QgsServerOgcApi::ContentType::GEOJSON] = QStringList {
-    QStringLiteral( "application/geo+json" ),
-    QStringLiteral( "application/vnd.geo+json" ),
-    QStringLiteral( "application/geojson" )
+    u"application/geo+json"_s,
+    u"application/vnd.geo+json"_s,
+    u"application/geojson"_s
   };
-  map[QgsServerOgcApi::ContentType::HTML] = QStringList { QStringLiteral( "text/html" ) };
-  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" ) };
-  map[QgsServerOgcApi::ContentType::XML] = QStringList { QStringLiteral( "application/xml" ) };
+  map[QgsServerOgcApi::ContentType::HTML] = QStringList { u"text/html"_s };
+  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { u"application/vnd.oai.openapi+json;version=3.0"_s };
+  map[QgsServerOgcApi::ContentType::XML] = QStringList { u"application/xml"_s };
   return map;
 }();
 
@@ -67,9 +67,9 @@ QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 {
   // Since QT 5.12 NormalizePathSegments does not collapse double slashes
   QUrl u { url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments ) };
-  if ( u.path().contains( QLatin1String( "//" ) ) )
+  if ( u.path().contains( "//"_L1 ) )
   {
-    u.setPath( u.path().replace( QLatin1String( "//" ), QChar( '/' ) ) );
+    u.setPath( u.path().replace( "//"_L1, QChar( '/' ) ) );
   }
   // Make sure the path starts with '/'
   if ( !u.path().startsWith( '/' ) )
@@ -87,12 +87,12 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
   auto hasMatch { false };
   for ( const auto &handler : mHandlers )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, handler->path().pattern() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    QgsMessageLog::logMessage( u"Checking API path %1 for %2 "_s.arg( path, handler->path().pattern() ), u"Server"_s, Qgis::MessageLevel::Info );
     if ( handler->path().match( path ).hasMatch() )
     {
       hasMatch = true;
       // Execute handler
-      QgsMessageLog::logMessage( QStringLiteral( "API %1: found handler %2" ).arg( name(), QString::fromStdString( handler->operationId() ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+      QgsMessageLog::logMessage( u"API %1: found handler %2"_s.arg( name(), QString::fromStdString( handler->operationId() ) ), u"Server"_s, Qgis::MessageLevel::Info );
       // May throw QgsServerApiBadRequestException or JSON exceptions on serializing
       try
       {
@@ -100,7 +100,7 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
       }
       catch ( json::exception &ex )
       {
-        throw QgsServerApiInternalServerError( QStringLiteral( "The API handler returned an error: %1" ).arg( ex.what() ) );
+        throw QgsServerApiInternalServerError( u"The API handler returned an error: %1"_s.arg( ex.what() ) );
       }
       break;
     }
@@ -108,7 +108,7 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
   // Throw
   if ( !hasMatch )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "Requested URI does not match any registered API handler" ) );
+    throw QgsServerApiBadRequestException( u"Requested URI does not match any registered API handler"_s );
   }
 }
 
@@ -166,7 +166,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApi::contentTypeFromExtension( const st
     }
   }
   // Default to JSON, but log a warning!
-  QgsMessageLog::logMessage( QStringLiteral( "Content type for extension %1 not found! Returning default (JSON)" ).arg( exts ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+  QgsMessageLog::logMessage( u"Content type for extension %1 not found! Returning default (JSON)"_s.arg( exts ), u"Server"_s, Qgis::MessageLevel::Warning );
   return QgsServerOgcApi::ContentType::JSON;
 }
 

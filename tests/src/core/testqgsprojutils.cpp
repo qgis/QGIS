@@ -79,9 +79,9 @@ void TestQgsProjUtils::usesAngularUnits()
 {
   QVERIFY( !QgsProjUtils::usesAngularUnit( QString() ) );
   QVERIFY( !QgsProjUtils::usesAngularUnit( QString( "" ) ) );
-  QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "x" ) ) );
-  QVERIFY( QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=longlat +ellps=WGS60 +no_defs" ) ) );
-  QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=tmerc +lat_0=0 +lon_0=147 +k_0=0.9996 +x_0=500000 +y_0=10000000 +ellps=GRS80 +units=m +no_defs" ) ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( u"x"_s ) );
+  QVERIFY( QgsProjUtils::usesAngularUnit( u"+proj=longlat +ellps=WGS60 +no_defs"_s ) );
+  QVERIFY( !QgsProjUtils::usesAngularUnit( u"+proj=tmerc +lat_0=0 +lon_0=147 +k_0=0.9996 +x_0=500000 +y_0=10000000 +ellps=GRS80 +units=m +no_defs"_s ) );
 }
 
 void TestQgsProjUtils::axisOrderIsSwapped()
@@ -107,21 +107,21 @@ void TestQgsProjUtils::searchPath()
 {
   // ensure local user-writable path is present in Proj search paths
   const QStringList paths = QgsProjUtils::searchPaths();
-  QVERIFY( paths.contains( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "proj" ) ) );
+  QVERIFY( paths.contains( QgsApplication::qgisSettingsDirPath() + u"proj"_s ) );
 }
 
 void TestQgsProjUtils::gridsUsed()
 {
   // ensure local user-writable path is present in Proj search paths
-  QList<QgsDatumTransform::GridDetails> grids = QgsProjUtils::gridsUsed( QStringLiteral( "+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1" ) );
+  QList<QgsDatumTransform::GridDetails> grids = QgsProjUtils::gridsUsed( u"+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1"_s );
   QCOMPARE( grids.count(), 1 );
-  QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "GDA94_GDA2020_conformal_and_distortion.gsb" ) );
+  QCOMPARE( grids.at( 0 ).shortName, u"GDA94_GDA2020_conformal_and_distortion.gsb"_s );
   QVERIFY( grids.at( 0 ).directDownload );
   QVERIFY( !grids.at( 0 ).url.isEmpty() );
   // using tif grid
-  grids = QgsProjUtils::gridsUsed( QStringLiteral( "+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1" ) );
+  grids = QgsProjUtils::gridsUsed( u"+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=au_icsm_GDA94_GDA2020_conformal_and_distortion.tif +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1"_s );
   QCOMPARE( grids.count(), 1 );
-  QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "au_icsm_GDA94_GDA2020_conformal_and_distortion.tif" ) );
+  QCOMPARE( grids.at( 0 ).shortName, u"au_icsm_GDA94_GDA2020_conformal_and_distortion.tif"_s );
   QVERIFY( grids.at( 0 ).directDownload );
   QVERIFY( !grids.at( 0 ).url.isEmpty() );
 }
@@ -133,12 +133,12 @@ void TestQgsProjUtils::toHorizontalCrs()
   // compound crs
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, "urn:ogc:def:crs:EPSG::5500" ) );
   QgsProjUtils::proj_pj_unique_ptr horizontalCrs( QgsProjUtils::crsToHorizontalCrs( crs.get() ) );
-  QCOMPARE( QString( proj_get_id_code( horizontalCrs.get(), 0 ) ), QStringLiteral( "4759" ) );
+  QCOMPARE( QString( proj_get_id_code( horizontalCrs.get(), 0 ) ), u"4759"_s );
 
   // horizontal CRS
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4759" ) );
   horizontalCrs = QgsProjUtils::crsToHorizontalCrs( crs.get() );
-  QCOMPARE( QString( proj_get_id_code( horizontalCrs.get(), 0 ) ), QStringLiteral( "4759" ) );
+  QCOMPARE( QString( proj_get_id_code( horizontalCrs.get(), 0 ) ), u"4759"_s );
 
   // vertical only CRS
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::5703" ) );
@@ -153,17 +153,17 @@ void TestQgsProjUtils::toUnboundCrs()
   // compound crs
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create( context, "urn:ogc:def:crs:EPSG::5500" ) );
   QgsProjUtils::proj_pj_unique_ptr unbound( QgsProjUtils::unboundCrs( crs.get() ) );
-  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), QStringLiteral( "5500" ) );
+  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), u"5500"_s );
 
   // horizontal CRS
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4759" ) );
   unbound = QgsProjUtils::unboundCrs( crs.get() );
-  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), QStringLiteral( "4759" ) );
+  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), u"4759"_s );
 
   // vertical only CRS
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::5703" ) );
   unbound = QgsProjUtils::unboundCrs( crs.get() );
-  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), QStringLiteral( "5703" ) );
+  QCOMPARE( QString( proj_get_id_code( unbound.get(), 0 ) ), u"5703"_s );
 }
 
 void TestQgsProjUtils::hasVerticalAxis()

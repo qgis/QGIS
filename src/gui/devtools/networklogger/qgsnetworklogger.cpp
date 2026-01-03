@@ -34,7 +34,7 @@ QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *p
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
   Q_ASSERT( mNam->thread() == QApplication::instance()->thread() );
 
-  if ( QgsSettings().value( QStringLiteral( "logNetworkRequests" ), false, QgsSettings::App ).toBool() )
+  if ( QgsSettings().value( u"logNetworkRequests"_s, false, QgsSettings::App ).toBool() )
     enableLogging( true );
 }
 
