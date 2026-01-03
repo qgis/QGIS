@@ -269,7 +269,7 @@ bool QgsLayoutPdfExportOptionsDialog::openAfterExporting() const
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  QgsHelp::openHelp( u"print_composer/create_output.html"_s );
 }
 
 void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index )

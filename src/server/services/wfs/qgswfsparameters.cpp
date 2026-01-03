@@ -217,12 +217,12 @@ namespace QgsWfs
       if ( !value.isEmpty() )
       {
         const QString name = QgsWfsParameter::name( parameter.first );
-        log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
+        log( u" - %1 : %2"_s.arg( name, value ) );
       }
     }
 
     if ( !version().isEmpty() )
-      log( QStringLiteral( " - VERSION : %1" ).arg( version() ) );
+      log( u" - VERSION : %1"_s.arg( version() ) );
   }
 
   QString QgsWfsParameters::outputFormatAsString() const
@@ -243,20 +243,20 @@ namespace QgsWfs
     }
 
     Format f = Format::NONE;
-    if ( fStr.compare( QLatin1String( "text/xml; subtype=gml/2.1.2" ), Qt::CaseInsensitive ) == 0 )
+    if ( fStr.compare( "text/xml; subtype=gml/2.1.2"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GML2;
-    else if ( fStr.compare( QLatin1String( "text/xml; subtype=gml/3.1.1" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( "text/xml; subtype=gml/3.1.1"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GML3;
-    else if ( fStr.compare( QLatin1String( "application/vnd.geo+json" ), Qt::CaseInsensitive ) == 0 ||
+    else if ( fStr.compare( "application/vnd.geo+json"_L1, Qt::CaseInsensitive ) == 0 ||
               // Needs to check for space too, because a + sign in the query string is interpreted as a space
-              fStr.compare( QLatin1String( "application/vnd.geo json" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "application/geo+json" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "application/geo json" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "geojson" ), Qt::CaseInsensitive ) == 0 )
+              fStr.compare( "application/vnd.geo json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "application/geo+json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "application/geo json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "application/json"_L1, Qt::CaseInsensitive ) == 0 || fStr.compare( "geojson"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GeoJSON;
-    else if ( fStr.compare( QLatin1String( "gml2" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( "gml2"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GML2;
-    else if ( fStr.compare( QLatin1String( "gml3" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( "gml3"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::GML3;
 
-    if ( f == Format::NONE && request().compare( QLatin1String( "describefeaturetype" ), Qt::CaseInsensitive ) == 0 && fStr.compare( QLatin1String( "xmlschema" ), Qt::CaseInsensitive ) == 0 )
+    if ( f == Format::NONE && request().compare( "describefeaturetype"_L1, Qt::CaseInsensitive ) == 0 && fStr.compare( "xmlschema"_L1, Qt::CaseInsensitive ) == 0 )
     {
       if ( versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) )
         return Format::GML3;
@@ -279,7 +279,7 @@ namespace QgsWfs
       return ResultType::RESULTS;
 
     ResultType rt = ResultType::RESULTS;
-    if ( rtStr.compare( QLatin1String( "hits" ), Qt::CaseInsensitive ) == 0 )
+    if ( rtStr.compare( "hits"_L1, Qt::CaseInsensitive ) == 0 )
       rt = ResultType::HITS;
     return rt;
   }

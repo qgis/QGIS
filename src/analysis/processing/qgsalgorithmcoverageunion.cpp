@@ -25,7 +25,7 @@
 
 QString QgsCoverageUnionAlgorithm::name() const
 {
-  return QStringLiteral( "coverageunion" );
+  return u"coverageunion"_s;
 }
 
 QString QgsCoverageUnionAlgorithm::displayName() const
@@ -45,13 +45,13 @@ QString QgsCoverageUnionAlgorithm::group() const
 
 QString QgsCoverageUnionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcoverage" );
+  return u"vectorcoverage"_s;
 }
 
 void QgsCoverageUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Dissolved" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsCoverageUnionAlgorithm::shortDescription() const
@@ -74,14 +74,14 @@ QgsCoverageUnionAlgorithm *QgsCoverageUnionAlgorithm::createInstance() const
 
 QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   QString sinkId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, sinkId, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   // we have to build up a list of geometries in advance
   QgsGeometryCollection collection;
@@ -154,12 +154,12 @@ QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &para
   QgsFeature outFeature( source->fields() );
   outFeature.setGeometry( std::move( dissolved ) );
   if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
-    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );
+  outputs.insert( u"OUTPUT"_s, sinkId );
   return outputs;
 }
 

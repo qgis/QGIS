@@ -24,7 +24,7 @@
 
 QString QgsPdalThinByRadiusAlgorithm::name() const
 {
-  return QStringLiteral( "thinbyradius" );
+  return u"thinbyradius"_s;
 }
 
 QString QgsPdalThinByRadiusAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalThinByRadiusAlgorithm::group() const
 
 QString QgsPdalThinByRadiusAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalThinByRadiusAlgorithm::tags() const
@@ -64,28 +64,28 @@ QgsPdalThinByRadiusAlgorithm *QgsPdalThinByRadiusAlgorithm::createInstance() con
 
 void QgsPdalThinByRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SAMPLING_RADIUS" ), QObject::tr( "Sampling radius (in map units)" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 1e-9 ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"SAMPLING_RADIUS"_s, QObject::tr( "Sampling radius (in map units)" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 1e-9 ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned (by radius)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Thinned (by radius)" ) ) );
 }
 
 QStringList QgsPdalThinByRadiusAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  double step = parameterAsDouble( parameters, QStringLiteral( "SAMPLING_RADIUS" ), context );
+  double step = parameterAsDouble( parameters, u"SAMPLING_RADIUS"_s, context );
 
-  QStringList args = { QStringLiteral( "thin" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--mode=sample" ), QStringLiteral( "--step-sample=%1" ).arg( step ) };
+  QStringList args = { u"thin"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--mode=sample"_s, u"--step-sample=%1"_s.arg( step ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

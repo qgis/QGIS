@@ -25,7 +25,7 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent )
   setupUi( this );
   mWelcomeDevLabel->hide();
   mWelcomeLabel->setText( tr( "Welcome to QGIS %1" ).arg( Qgis::version() ) );
-  if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
+  if ( Qgis::version().endsWith( "Master"_L1 ) )
   {
     mWelcomeDevLabel->show();
   }
@@ -40,7 +40,7 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent )
   else
   {
     // Production version shows link.
-    mWelcomeProdLabel->setText( mWelcomeProdLabel->text().replace( QLatin1String( "VERSION_TOKEN" ), major.append( minor ) ) );
+    mWelcomeProdLabel->setText( mWelcomeProdLabel->text().replace( "VERSION_TOKEN"_L1, major.append( minor ) ) );
     mWelcomeDevLabel->hide();
   }
 }

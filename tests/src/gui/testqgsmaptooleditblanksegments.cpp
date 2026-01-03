@@ -30,7 +30,7 @@ class TestQgsMapToolEditBlankSegments : public QgsTest
 
   public:
     TestQgsMapToolEditBlankSegments()
-      : QgsTest( QStringLiteral( "Blank Segments Map Tool Tests" ) ) {}
+      : QgsTest( u"Blank Segments Map Tool Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -54,14 +54,14 @@ class TestQgsMapToolEditBlankSegments : public QgsTest
 void TestQgsMapToolEditBlankSegments::initTestCase()
 {
   mCanvas = std::make_unique<QgsMapCanvas>();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 25, 10 ) );
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  mLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?field=pk:int&field=bas:string&crs=EPSG:3946" ), QStringLiteral( "polys" ), QStringLiteral( "memory" ) );
+  mLayer = std::make_unique<QgsVectorLayer>( u"MultiPolygon?field=pk:int&field=bas:string&crs=EPSG:3946"_s, u"polys"_s, u"memory"_s );
   QVERIFY( mLayer->isValid() );
   QCOMPARE( mLayer->fields().count(), 2 );
 
@@ -127,19 +127,19 @@ void TestQgsMapToolEditBlankSegments::compareBlankSegments( const QString &strBl
   QList<QList<QgsBlankSegmentUtils::BlankSegments>> blankSegments = QgsBlankSegmentUtils::parseBlankSegments( strBlankSegments, QgsRenderContext(), Qgis::RenderUnit::Pixels, error );
   QVERIFY( error.isEmpty() );
 
-  QVERIFY2( expectedBlankSegments.count() == blankSegments.count(), QStringLiteral( "Part number differs (Actual: %1 != Expected: %2). Returned blank segments: %3" ).arg( blankSegments.count() ).arg( expectedBlankSegments.count() ).arg( strBlankSegments ).toLatin1().constData() );
+  QVERIFY2( expectedBlankSegments.count() == blankSegments.count(), u"Part number differs (Actual: %1 != Expected: %2). Returned blank segments: %3"_s.arg( blankSegments.count() ).arg( expectedBlankSegments.count() ).arg( strBlankSegments ).toLatin1().constData() );
 
   for ( int iPart = 0; iPart < expectedBlankSegments.count(); iPart++ )
   {
     const QList<QgsBlankSegmentUtils::BlankSegments> &expectedRings = expectedBlankSegments.at( iPart );
     const QList<QgsBlankSegmentUtils::BlankSegments> &rings = blankSegments.at( iPart );
-    QVERIFY2( expectedRings.count() == rings.count(), QStringLiteral( "Rings number differs (Actual: %1 != Expected: %2) for part %3. Returned blank segments: %4" ).arg( rings.count() ).arg( expectedRings.count() ).arg( iPart ).arg( strBlankSegments ).toLatin1().constData() );
+    QVERIFY2( expectedRings.count() == rings.count(), u"Rings number differs (Actual: %1 != Expected: %2) for part %3. Returned blank segments: %4"_s.arg( rings.count() ).arg( expectedRings.count() ).arg( iPart ).arg( strBlankSegments ).toLatin1().constData() );
 
     for ( int iRing = 0; iRing < rings.count(); iRing++ )
     {
       const QgsBlankSegmentUtils::BlankSegments &expectedSegments = expectedRings.at( iRing );
       const QgsBlankSegmentUtils::BlankSegments &segments = rings.at( iRing );
-      QVERIFY2( expectedSegments.count() == segments.count(), QStringLiteral( "Segments number differs (Actual: %1 != Expected: %2) for part %3 and ring %4. Returned blank segments: %5" ).arg( segments.count() ).arg( expectedSegments.count() ).arg( iPart ).arg( iRing ).arg( strBlankSegments ).toLatin1().constData() );
+      QVERIFY2( expectedSegments.count() == segments.count(), u"Segments number differs (Actual: %1 != Expected: %2) for part %3 and ring %4. Returned blank segments: %5"_s.arg( segments.count() ).arg( expectedSegments.count() ).arg( iPart ).arg( iRing ).arg( strBlankSegments ).toLatin1().constData() );
       for ( int iSegment = 0; iSegment < segments.count(); iSegment++ )
       {
         QVERIFY2( qgsDoubleNear( segments.at( iSegment ).first, expectedSegments.at( iSegment ).first, 0.1 ), QString( "Value differs (Actual: %1 != Expected: %2) for part %3, ring %4, segment %5, start distance. Returned blank segments: %6" ).arg( segments.at( iSegment ).first ).arg( expectedSegments.at( iSegment ).first ).arg( iPart ).arg( iRing ).arg( iSegment ).arg( strBlankSegments ).toLatin1().constData() );

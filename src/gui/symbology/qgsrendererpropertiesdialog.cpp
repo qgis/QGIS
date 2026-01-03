@@ -70,18 +70,18 @@ void QgsRendererPropertiesDialog::initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
-  initVectorLayerRenderer( QStringLiteral( "singleSymbol" ), QgsSingleSymbolRendererWidget::create, QStringLiteral( "rendererSingleSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "categorizedSymbol" ), QgsCategorizedSymbolRendererWidget::create, QStringLiteral( "rendererCategorizedSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "graduatedSymbol" ), QgsGraduatedSymbolRendererWidget::create, QStringLiteral( "rendererGraduatedSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "RuleRenderer" ), QgsRuleBasedRendererWidget::create, QStringLiteral( "rendererRuleBasedSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "pointDisplacement" ), QgsPointDisplacementRendererWidget::create, QStringLiteral( "rendererPointDisplacementSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "pointCluster" ), QgsPointClusterRendererWidget::create, QStringLiteral( "rendererPointClusterSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "invertedPolygonRenderer" ), QgsInvertedPolygonRendererWidget::create, QStringLiteral( "rendererInvertedSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "mergedFeatureRenderer" ), QgsMergedFeatureRendererWidget::create, QStringLiteral( "rendererMergedFeatures.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "heatmapRenderer" ), QgsHeatmapRendererWidget::create, QStringLiteral( "rendererHeatmapSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "25dRenderer" ), Qgs25DRendererWidget::create, QStringLiteral( "renderer25dSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "nullSymbol" ), QgsNullSymbolRendererWidget::create, QStringLiteral( "rendererNullSymbol.svg" ) );
-  initVectorLayerRenderer( QStringLiteral( "embeddedSymbol" ), QgsEmbeddedSymbolRendererWidget::create );
+  initVectorLayerRenderer( u"singleSymbol"_s, QgsSingleSymbolRendererWidget::create, u"rendererSingleSymbol.svg"_s );
+  initVectorLayerRenderer( u"categorizedSymbol"_s, QgsCategorizedSymbolRendererWidget::create, u"rendererCategorizedSymbol.svg"_s );
+  initVectorLayerRenderer( u"graduatedSymbol"_s, QgsGraduatedSymbolRendererWidget::create, u"rendererGraduatedSymbol.svg"_s );
+  initVectorLayerRenderer( u"RuleRenderer"_s, QgsRuleBasedRendererWidget::create, u"rendererRuleBasedSymbol.svg"_s );
+  initVectorLayerRenderer( u"pointDisplacement"_s, QgsPointDisplacementRendererWidget::create, u"rendererPointDisplacementSymbol.svg"_s );
+  initVectorLayerRenderer( u"pointCluster"_s, QgsPointClusterRendererWidget::create, u"rendererPointClusterSymbol.svg"_s );
+  initVectorLayerRenderer( u"invertedPolygonRenderer"_s, QgsInvertedPolygonRendererWidget::create, u"rendererInvertedSymbol.svg"_s );
+  initVectorLayerRenderer( u"mergedFeatureRenderer"_s, QgsMergedFeatureRendererWidget::create, u"rendererMergedFeatures.svg"_s );
+  initVectorLayerRenderer( u"heatmapRenderer"_s, QgsHeatmapRendererWidget::create, u"rendererHeatmapSymbol.svg"_s );
+  initVectorLayerRenderer( u"25dRenderer"_s, Qgs25DRendererWidget::create, u"renderer25dSymbol.svg"_s );
+  initVectorLayerRenderer( u"nullSymbol"_s, QgsNullSymbolRendererWidget::create, u"rendererNullSymbol.svg"_s );
+  initVectorLayerRenderer( u"embeddedSymbol"_s, QgsEmbeddedSymbolRendererWidget::create );
   sInitialized = true;
 }
 
@@ -93,7 +93,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
-  mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
+  mLayerRenderingGroupBox->setSettingGroup( u"layerRenderingGroupBox"_s );
 
   // can be embedded in vector layer properties
   if ( embedded )
@@ -224,7 +224,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
 {
   if ( cboRenderers->currentIndex() == -1 )
   {
-    QgsDebugError( QStringLiteral( "No current item -- this should never happen!" ) );
+    QgsDebugError( u"No current item -- this should never happen!"_s );
     return;
   }
 
@@ -329,7 +329,7 @@ void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    const QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    const QString key = u"/UI/paneldialog/%1"_s.arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

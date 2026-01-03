@@ -97,11 +97,11 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
       const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
       if ( zoomedInResampler )
       {
-        if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
+        if ( zoomedInResampler->type() == "bilinear"_L1 )
         {
           mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Bilinear ) ) );
         }
-        else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
+        else if ( zoomedInResampler->type() == "cubic"_L1 )
         {
           mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Cubic ) ) );
         }
@@ -114,11 +114,11 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
       const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
       if ( zoomedOutResampler )
       {
-        if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) )
+        if ( zoomedOutResampler->type() == "bilinear"_L1 )
         {
           mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Bilinear ) ) );
         }
-        else if ( zoomedOutResampler->type() == QLatin1String( "cubic" ) )
+        else if ( zoomedOutResampler->type() == "cubic"_L1 )
         {
           mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Cubic ) ) );
         }

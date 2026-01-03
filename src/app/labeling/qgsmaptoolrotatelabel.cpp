@@ -221,7 +221,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         // Convert back to settings unit
         const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mCurrentLabel.settings.rotationUnit() );
 
-        vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+        vlayer->beginEditCommand( tr( "Rotated label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
         if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation ) )
         {
           if ( !vlayer->isEditable() )
@@ -276,7 +276,7 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
           int rotationCol;
           if ( labelRotatableStatus( vlayer, mCurrentLabel.settings, rotationCol ) == PropertyStatus::Valid )
           {
-            vlayer->beginEditCommand( tr( "Delete Label Rotation" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+            vlayer->beginEditCommand( tr( "Delete Label Rotation" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
             if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, QVariant() ) )
             {
               // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)

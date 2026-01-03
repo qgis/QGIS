@@ -69,7 +69,7 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
         final_queue->append( geom );
         break;
       default:
-        QgsDebugError( QStringLiteral( "unexpected geometry type:%1" ).arg( type ) );
+        QgsDebugError( u"unexpected geometry type:%1"_s.arg( type ) );
         delete final_queue;
         delete queue;
         return nullptr;

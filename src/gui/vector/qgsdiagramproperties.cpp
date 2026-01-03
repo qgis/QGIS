@@ -99,13 +99,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
   mDiagramTypeComboBox->blockSignals( true );
-  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) );
+  QIcon icon = QgsApplication::getThemeIcon( u"pie-chart.svg"_s );
   mDiagramTypeComboBox->addItem( icon, tr( "Pie Chart" ), QgsPieDiagram::DIAGRAM_NAME_PIE );
-  icon = QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) );
+  icon = QgsApplication::getThemeIcon( u"text.svg"_s );
   mDiagramTypeComboBox->addItem( icon, tr( "Text Diagram" ), QgsTextDiagram::DIAGRAM_NAME_TEXT );
-  icon = QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) );
+  icon = QgsApplication::getThemeIcon( u"histogram.svg"_s );
   mDiagramTypeComboBox->addItem( icon, tr( "Histogram" ), QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM );
-  icon = QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) );
+  icon = QgsApplication::getThemeIcon( u"stacked-bar.svg"_s );
   mDiagramTypeComboBox->addItem( icon, tr( "Stacked Bars" ), QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR );
   mDiagramTypeComboBox->blockSignals( false );
 
@@ -117,12 +117,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
+  mBackgroundColorButton->setContext( u"symbology"_s );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent Background" ) );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Select Pen Color" ) );
   mDiagramPenColorButton->setAllowOpacity( true );
-  mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
+  mDiagramPenColorButton->setContext( u"symbology"_s );
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent Stroke" ) );
 
@@ -213,7 +213,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   QSizePolicy policy( mDiagramOptionsListFrame->sizePolicy() );
   policy.setHorizontalStretch( 0 );
   mDiagramOptionsListFrame->setSizePolicy( policy );
-  if ( !settings.contains( QStringLiteral( "/Windows/Diagrams/OptionsSplitState" ) ) )
+  if ( !settings.contains( u"/Windows/Diagrams/OptionsSplitState"_s ) )
   {
     // set left list widget width on initial showing
     QList<int> splitsizes;
@@ -222,8 +222,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   }
 
   // restore dialog, splitters and current tab
-  mDiagramOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
-  mDiagramOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/Diagrams/Tab" ), 0 ).toInt() );
+  mDiagramOptionsSplitter->restoreState( settings.value( u"Windows/Diagrams/OptionsSplitState"_s ).toByteArray() );
+  mDiagramOptionsListWidget->setCurrentRow( settings.value( u"Windows/Diagrams/Tab"_s, 0 ).toInt() );
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mDiagramStackedWidget->currentIndex() );
@@ -241,7 +241,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    const QString name = QStringLiteral( "\"%1\"" ).arg( layerFields.at( idx ).name() );
+    const QString name = u"\"%1\""_s.arg( layerFields.at( idx ).name() );
     newItem->setText( 0, name );
     newItem->setData( 0, RoleAttributeExpression, name );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
@@ -649,8 +649,8 @@ void QgsDiagramProperties::syncToSettings( const QgsDiagramLayerSettings *dls )
 QgsDiagramProperties::~QgsDiagramProperties()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
-  settings.setValue( QStringLiteral( "Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
+  settings.setValue( u"Windows/Diagrams/OptionsSplitState"_s, mDiagramOptionsSplitter->saveState() );
+  settings.setValue( u"Windows/Diagrams/Tab"_s, mDiagramOptionsListWidget->currentRow() );
 }
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key )
@@ -1071,7 +1071,7 @@ void QgsDiagramProperties::apply()
 {
   // Avoid this messageBox when in both dock and liveUpdate mode
   QgsSettings settings;
-  if ( !dockMode() || !settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() )
+  if ( !dockMode() || !settings.value( u"UI/autoApplyStyling"_s, true ).toBool() )
   {
     if ( isDiagramEnabled() && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
@@ -1094,7 +1094,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
 {
   QgsExpressionContext context = createExpressionContext();
 
-  QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, u"generic"_s, context );
   dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
 
   QgsDistanceArea myDa;
@@ -1234,7 +1234,7 @@ void QgsDiagramProperties::showSizeLegendDialog()
 
 void QgsDiagramProperties::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#legend" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#legend"_s );
 }
 
 void QgsDiagramProperties::createAuxiliaryField()
@@ -1340,7 +1340,7 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
     }
     else
     {
-      QgsLogger::warning( QStringLiteral( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
+      QgsLogger::warning( u"Could not create connection for widget %1"_s.arg( widget->objectName() ) );
     }
   }
 }

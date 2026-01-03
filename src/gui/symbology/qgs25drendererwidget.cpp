@@ -48,13 +48,13 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   mAngleWidget->setClearValue( 0 );
   mWallColorButton->setColorDialogTitle( tr( "Select Wall Color" ) );
   mWallColorButton->setAllowOpacity( true );
-  mWallColorButton->setContext( QStringLiteral( "symbology" ) );
+  mWallColorButton->setContext( u"symbology"_s );
   mRoofColorButton->setColorDialogTitle( tr( "Select Roof Color" ) );
   mRoofColorButton->setAllowOpacity( true );
-  mRoofColorButton->setContext( QStringLiteral( "symbology" ) );
+  mRoofColorButton->setContext( u"symbology"_s );
   mShadowColorButton->setColorDialogTitle( tr( "Select Shadow Color" ) );
   mShadowColorButton->setAllowOpacity( true );
-  mShadowColorButton->setContext( QStringLiteral( "symbology" ) );
+  mShadowColorButton->setContext( u"symbology"_s );
 
   if ( renderer )
   {
@@ -64,11 +64,11 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   mHeightWidget->setLayer( layer );
 
   QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( mLayer );
-  const QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
-  const QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
+  const QVariant height = scope->variable( u"qgis_25d_height"_s );
+  const QVariant angle = scope->variable( u"qgis_25d_angle"_s );
   delete scope;
 
-  mHeightWidget->setField( QgsVariantUtils::isNull( height ) ? QStringLiteral( "10" ) : height.toString() );
+  mHeightWidget->setField( QgsVariantUtils::isNull( height ) ? u"10"_s : height.toString() );
   mAngleWidget->setValue( QgsVariantUtils::isNull( angle ) ? 70 : angle.toDouble() );
   mAngleWidget->setClearValue( 70 );
   mWallColorButton->setColor( mRenderer->wallColor() );
@@ -111,8 +111,8 @@ void Qgs25DRendererWidget::apply()
 {
   if ( mHeightWidget )
   {
-    QgsExpressionContextUtils::setLayerVariable( mLayer, QStringLiteral( "qgis_25d_height" ), mHeightWidget->currentText() );
-    QgsExpressionContextUtils::setLayerVariable( mLayer, QStringLiteral( "qgis_25d_angle" ), mAngleWidget->value() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, u"qgis_25d_height"_s, mHeightWidget->currentText() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, u"qgis_25d_angle"_s, mAngleWidget->value() );
 
     emit layerVariablesChanged();
   }

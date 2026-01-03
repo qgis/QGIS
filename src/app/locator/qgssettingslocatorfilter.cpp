@@ -38,21 +38,21 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     const QString title = optionsPagesIterator.key();
-    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), optionsPagesIterator.value() ) );
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( u"optionpage"_s, optionsPagesIterator.value() ) );
   }
 
   const QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
   for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
   {
     const QString title = projectPropertyPagesIterator.key();
-    matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( u"projectpropertypage"_s, projectPropertyPagesIterator.value() ) );
   }
 
   const QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
   for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
   {
     const QString title = settingPagesIterator.key();
-    matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
+    matchingSettingsPagesMap.insert( title, settingsPage( u"settingspage"_s, settingPagesIterator.value() ) );
   }
 
   for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
@@ -80,26 +80,26 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
 QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type, const QString &page )
 {
   QMap<QString, QString> returnPage;
-  returnPage.insert( QStringLiteral( "type" ), type );
-  returnPage.insert( QStringLiteral( "page" ), page );
+  returnPage.insert( u"type"_s, type );
+  returnPage.insert( u"page"_s, page );
   return returnPage;
 }
 
 void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   const QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData() );
-  const QString type = settingsPage.value( QStringLiteral( "type" ) );
-  const QString page = settingsPage.value( QStringLiteral( "page" ) );
+  const QString type = settingsPage.value( u"type"_s );
+  const QString page = settingsPage.value( u"page"_s );
 
-  if ( type == QLatin1String( "optionpage" ) )
+  if ( type == "optionpage"_L1 )
   {
     QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
   }
-  else if ( type == QLatin1String( "projectpropertypage" ) )
+  else if ( type == "projectpropertypage"_L1 )
   {
     QgisApp::instance()->showProjectProperties( page );
   }
-  else if ( type == QLatin1String( "settingspage" ) )
+  else if ( type == "settingspage"_L1 )
   {
     QgisApp::instance()->showSettings( page );
   }

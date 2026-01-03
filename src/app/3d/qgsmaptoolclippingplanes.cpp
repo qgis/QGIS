@@ -105,7 +105,7 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not reproject cross section coordinates to 3d map crs." ) );
+      QgsDebugError( u"Could not reproject cross section coordinates to 3d map crs."_s );
     }
   }
   else
@@ -139,7 +139,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       catch ( const QgsCsException & )
       {
         crossSectionPolygon.set( nullptr );
-        QgsDebugError( QStringLiteral( "Could not reproject cross-section extent to 3d map canvas crs." ) );
+        QgsDebugError( u"Could not reproject cross-section extent to 3d map canvas crs."_s );
       }
 
       if ( !crossSectionPolygon.intersects( m3DCanvasWidget->mapCanvas3D()->scene()->sceneExtent() ) )
@@ -172,7 +172,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
         );
 
         const QgsSettings settings;
-        QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+        QColor highlightColor = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
         highlightColor.setAlphaF( 0.5 );
         mRubberBandPolygon->setColor( highlightColor );
 

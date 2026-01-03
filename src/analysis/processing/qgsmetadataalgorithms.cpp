@@ -21,7 +21,7 @@
 
 QString QgsCopyLayerMetadataAlgorithm::name() const
 {
-  return QStringLiteral( "copylayermetadata" );
+  return u"copylayermetadata"_s;
 }
 
 QString QgsCopyLayerMetadataAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsCopyLayerMetadataAlgorithm::group() const
 
 QString QgsCopyLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "metadatatools" );
+  return u"metadatatools"_s;
 }
 
 QString QgsCopyLayerMetadataAlgorithm::shortHelpString() const
@@ -61,17 +61,17 @@ QgsCopyLayerMetadataAlgorithm *QgsCopyLayerMetadataAlgorithm::createInstance() c
 
 void QgsCopyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ) ) );
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TARGET" ), QObject::tr( "Target layer" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DEFAULT" ), QObject::tr( "Save metadata as default" ), false ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"SOURCE"_s, QObject::tr( "Source layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"TARGET"_s, QObject::tr( "Target layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"DEFAULT"_s, QObject::tr( "Save metadata as default" ), false ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Updated layer" ) ) );
 }
 
 bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *sourceLayer = parameterAsLayer( parameters, QStringLiteral( "SOURCE" ), context );
-  QgsMapLayer *targetLayer = parameterAsLayer( parameters, QStringLiteral( "TARGET" ), context );
-  const bool saveAsDefault = parameterAsBool( parameters, QStringLiteral( "DEFAULT" ), context );
+  QgsMapLayer *sourceLayer = parameterAsLayer( parameters, u"SOURCE"_s, context );
+  QgsMapLayer *targetLayer = parameterAsLayer( parameters, u"TARGET"_s, context );
+  const bool saveAsDefault = parameterAsBool( parameters, u"DEFAULT"_s, context );
 
   if ( !sourceLayer )
     throw QgsProcessingException( QObject::tr( "Invalid source layer" ) );
@@ -100,7 +100,7 @@ QVariantMap QgsCopyLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 
@@ -108,7 +108,7 @@ QVariantMap QgsCopyLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &
 
 QString QgsApplyLayerMetadataAlgorithm::name() const
 {
-  return QStringLiteral( "setlayermetadata" );
+  return u"setlayermetadata"_s;
 }
 
 QString QgsApplyLayerMetadataAlgorithm::displayName() const
@@ -128,7 +128,7 @@ QString QgsApplyLayerMetadataAlgorithm::group() const
 
 QString QgsApplyLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "metadatatools" );
+  return u"metadatatools"_s;
 }
 
 QString QgsApplyLayerMetadataAlgorithm::shortHelpString() const
@@ -148,17 +148,17 @@ QgsApplyLayerMetadataAlgorithm *QgsApplyLayerMetadataAlgorithm::createInstance()
 
 void QgsApplyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "METADATA" ), QObject::tr( "Metadata file" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "qmd" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DEFAULT" ), QObject::tr( "Save metadata as default" ), false ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterFile( u"METADATA"_s, QObject::tr( "Metadata file" ), Qgis::ProcessingFileParameterBehavior::File, u"qmd"_s ) );
+  addParameter( new QgsProcessingParameterBoolean( u"DEFAULT"_s, QObject::tr( "Save metadata as default" ), false ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Updated" ) ) );
 }
 
 bool QgsApplyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QString metadata = parameterAsFile( parameters, QStringLiteral( "METADATA" ), context );
-  const bool saveAsDefault = parameterAsBool( parameters, QStringLiteral( "DEFAULT" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
+  const QString metadata = parameterAsFile( parameters, u"METADATA"_s, context );
+  const bool saveAsDefault = parameterAsBool( parameters, u"DEFAULT"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -191,7 +191,7 @@ QVariantMap QgsApplyLayerMetadataAlgorithm::processAlgorithm( const QVariantMap 
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 
@@ -199,7 +199,7 @@ QVariantMap QgsApplyLayerMetadataAlgorithm::processAlgorithm( const QVariantMap 
 
 QString QgsExportLayerMetadataAlgorithm::name() const
 {
-  return QStringLiteral( "exportlayermetadata" );
+  return u"exportlayermetadata"_s;
 }
 
 QString QgsExportLayerMetadataAlgorithm::displayName() const
@@ -219,7 +219,7 @@ QString QgsExportLayerMetadataAlgorithm::group() const
 
 QString QgsExportLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "metadatatools" );
+  return u"metadatatools"_s;
 }
 
 QString QgsExportLayerMetadataAlgorithm::shortHelpString() const
@@ -239,14 +239,14 @@ QgsExportLayerMetadataAlgorithm *QgsExportLayerMetadataAlgorithm::createInstance
 
 void QgsExportLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QObject::tr( "QGIS Metadata File" ) + QStringLiteral( " (*.qmd *.QMD)" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output" ), QObject::tr( "QGIS Metadata File" ) + u" (*.qmd *.QMD)"_s ) );
 }
 
 QVariantMap QgsExportLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QString outputFile = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
+  const QString outputFile = parameterAsString( parameters, u"OUTPUT"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -259,7 +259,7 @@ QVariantMap QgsExportLayerMetadataAlgorithm::processAlgorithm( const QVariantMap
   }
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  results.insert( u"OUTPUT"_s, outputFile );
   return results;
 }
 
@@ -267,7 +267,7 @@ QVariantMap QgsExportLayerMetadataAlgorithm::processAlgorithm( const QVariantMap
 
 QString QgsAddHistoryMetadataAlgorithm::name() const
 {
-  return QStringLiteral( "addhistorymetadata" );
+  return u"addhistorymetadata"_s;
 }
 
 QString QgsAddHistoryMetadataAlgorithm::displayName() const
@@ -287,7 +287,7 @@ QString QgsAddHistoryMetadataAlgorithm::group() const
 
 QString QgsAddHistoryMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "metadatatools" );
+  return u"metadatatools"_s;
 }
 
 QString QgsAddHistoryMetadataAlgorithm::shortHelpString() const
@@ -307,15 +307,15 @@ QgsAddHistoryMetadataAlgorithm *QgsAddHistoryMetadataAlgorithm::createInstance()
 
 void QgsAddHistoryMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "HISTORY" ), QObject::tr( "History entry" ) ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterString( u"HISTORY"_s, QObject::tr( "History entry" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Updated" ) ) );
 }
 
 bool QgsAddHistoryMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QString history = parameterAsString( parameters, QStringLiteral( "HISTORY" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
+  const QString history = parameterAsString( parameters, u"HISTORY"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -335,7 +335,7 @@ QVariantMap QgsAddHistoryMetadataAlgorithm::processAlgorithm( const QVariantMap 
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 
@@ -343,7 +343,7 @@ QVariantMap QgsAddHistoryMetadataAlgorithm::processAlgorithm( const QVariantMap 
 
 QString QgsUpdateLayerMetadataAlgorithm::name() const
 {
-  return QStringLiteral( "updatelayermetadata" );
+  return u"updatelayermetadata"_s;
 }
 
 QString QgsUpdateLayerMetadataAlgorithm::displayName() const
@@ -363,7 +363,7 @@ QString QgsUpdateLayerMetadataAlgorithm::group() const
 
 QString QgsUpdateLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "metadatatools" );
+  return u"metadatatools"_s;
 }
 
 QString QgsUpdateLayerMetadataAlgorithm::shortHelpString() const
@@ -383,15 +383,15 @@ QgsUpdateLayerMetadataAlgorithm *QgsUpdateLayerMetadataAlgorithm::createInstance
 
 void QgsUpdateLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ) ) );
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TARGET" ), QObject::tr( "Target layer" ) ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"SOURCE"_s, QObject::tr( "Source layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"TARGET"_s, QObject::tr( "Target layer" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Updated layer" ) ) );
 }
 
 bool QgsUpdateLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *sourceLayer = parameterAsLayer( parameters, QStringLiteral( "SOURCE" ), context );
-  QgsMapLayer *targetLayer = parameterAsLayer( parameters, QStringLiteral( "TARGET" ), context );
+  QgsMapLayer *sourceLayer = parameterAsLayer( parameters, u"SOURCE"_s, context );
+  QgsMapLayer *targetLayer = parameterAsLayer( parameters, u"TARGET"_s, context );
 
   if ( !sourceLayer )
     throw QgsProcessingException( QObject::tr( "Invalid source layer" ) );
@@ -414,7 +414,7 @@ QVariantMap QgsUpdateLayerMetadataAlgorithm::processAlgorithm( const QVariantMap
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 
@@ -422,7 +422,7 @@ QVariantMap QgsUpdateLayerMetadataAlgorithm::processAlgorithm( const QVariantMap
 
 QString QgsSetMetadataFieldsAlgorithm::name() const
 {
-  return QStringLiteral( "setmetadatafields" );
+  return u"setmetadatafields"_s;
 }
 
 QString QgsSetMetadataFieldsAlgorithm::displayName() const
@@ -442,7 +442,7 @@ QString QgsSetMetadataFieldsAlgorithm::group() const
 
 QString QgsSetMetadataFieldsAlgorithm::groupId() const
 {
-  return QStringLiteral( "metadatatools" );
+  return u"metadatatools"_s;
 }
 
 QString QgsSetMetadataFieldsAlgorithm::shortHelpString() const
@@ -462,108 +462,108 @@ QgsSetMetadataFieldsAlgorithm *QgsSetMetadataFieldsAlgorithm::createInstance() c
 
 void QgsSetMetadataFieldsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "IDENTIFIER" ), QObject::tr( "Identifier" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "PARENT_IDENTIFIER" ), QObject::tr( "Parent identifier" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "TITLE" ), QObject::tr( "Title" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "TYPE" ), QObject::tr( "Type" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "LANGUAGE" ), QObject::tr( "Language" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "ABSTRACT" ), QObject::tr( "Abstract" ), QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinate reference system" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FEES" ), QObject::tr( "Fees" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_EMPTY" ), QObject::tr( "Ignore empty fields" ), false ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterString( u"IDENTIFIER"_s, QObject::tr( "Identifier" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"PARENT_IDENTIFIER"_s, QObject::tr( "Parent identifier" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"TITLE"_s, QObject::tr( "Title" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"TYPE"_s, QObject::tr( "Type" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"LANGUAGE"_s, QObject::tr( "Language" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"ENCODING"_s, QObject::tr( "Encoding" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( u"ABSTRACT"_s, QObject::tr( "Abstract" ), QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Coordinate reference system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterString( u"FEES"_s, QObject::tr( "Fees" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"IGNORE_EMPTY"_s, QObject::tr( "Ignore empty fields" ), false ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Updated" ) ) );
 }
 
 bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
   mLayerId = layer->id();
 
-  const bool ignoreEmpty = parameterAsBool( parameters, QStringLiteral( "IGNORE_EMPTY" ), context );
+  const bool ignoreEmpty = parameterAsBool( parameters, u"IGNORE_EMPTY"_s, context );
 
   std::unique_ptr<QgsLayerMetadata> md( layer->metadata().clone() );
 
-  if ( parameters.value( QStringLiteral( "IDENTIFIER" ) ).isValid() )
+  if ( parameters.value( u"IDENTIFIER"_s ).isValid() )
   {
-    const QString identifier = parameterAsString( parameters, QStringLiteral( "IDENTIFIER" ), context );
+    const QString identifier = parameterAsString( parameters, u"IDENTIFIER"_s, context );
     if ( !identifier.isEmpty() || !ignoreEmpty )
     {
       md->setIdentifier( identifier );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "PARENT_IDENTIFIER" ) ).isValid() )
+  if ( parameters.value( u"PARENT_IDENTIFIER"_s ).isValid() )
   {
-    const QString parentIdentifier = parameterAsString( parameters, QStringLiteral( "PARENT_IDENTIFIER" ), context );
+    const QString parentIdentifier = parameterAsString( parameters, u"PARENT_IDENTIFIER"_s, context );
     if ( !parentIdentifier.isEmpty() || !ignoreEmpty )
     {
       md->setParentIdentifier( parentIdentifier );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "TITLE" ) ).isValid() )
+  if ( parameters.value( u"TITLE"_s ).isValid() )
   {
-    const QString title = parameterAsString( parameters, QStringLiteral( "TITLE" ), context );
+    const QString title = parameterAsString( parameters, u"TITLE"_s, context );
     if ( !title.isEmpty() || !ignoreEmpty )
     {
       md->setTitle( title );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "TYPE" ) ).isValid() )
+  if ( parameters.value( u"TYPE"_s ).isValid() )
   {
-    const QString type = parameterAsString( parameters, QStringLiteral( "TYPE" ), context );
+    const QString type = parameterAsString( parameters, u"TYPE"_s, context );
     if ( !type.isEmpty() || !ignoreEmpty )
     {
       md->setType( type );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "LANGUAGE" ) ).isValid() )
+  if ( parameters.value( u"LANGUAGE"_s ).isValid() )
   {
-    const QString language = parameterAsString( parameters, QStringLiteral( "LANGUAGE" ), context );
+    const QString language = parameterAsString( parameters, u"LANGUAGE"_s, context );
     if ( !language.isEmpty() || !ignoreEmpty )
     {
       md->setLanguage( language );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "ENCODING" ) ).isValid() )
+  if ( parameters.value( u"ENCODING"_s ).isValid() )
   {
-    const QString encoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
+    const QString encoding = parameterAsString( parameters, u"ENCODING"_s, context );
     if ( !encoding.isEmpty() || !ignoreEmpty )
     {
       md->setEncoding( encoding );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "ABSTRACT" ) ).isValid() )
+  if ( parameters.value( u"ABSTRACT"_s ).isValid() )
   {
-    const QString abstract = parameterAsString( parameters, QStringLiteral( "ABSTRACT" ), context );
+    const QString abstract = parameterAsString( parameters, u"ABSTRACT"_s, context );
     if ( !abstract.isEmpty() || !ignoreEmpty )
     {
       md->setAbstract( abstract );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
     if ( crs.isValid() || !ignoreEmpty )
     {
       md->setCrs( crs );
     }
   }
 
-  if ( parameters.value( QStringLiteral( "FEES" ) ).isValid() )
+  if ( parameters.value( u"FEES"_s ).isValid() )
   {
-    const QString fees = parameterAsString( parameters, QStringLiteral( "FEES" ), context );
+    const QString fees = parameterAsString( parameters, u"FEES"_s, context );
     if ( !fees.isEmpty() || !ignoreEmpty )
     {
       md->setFees( fees );
@@ -581,7 +581,7 @@ QVariantMap QgsSetMetadataFieldsAlgorithm::processAlgorithm( const QVariantMap &
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 

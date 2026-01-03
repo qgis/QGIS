@@ -578,12 +578,12 @@ class CORE_EXPORT QgsFeature
     const int attributeSize = sipCpp->attributeCount();
     if ( fieldSize == 0 && attributeSize != 0 )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Field definition has not been set for feature" ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Field definition has not been set for feature"_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( fieldSize != attributeSize )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Feature attribute size (%1) does not match number of fields (%2)" ).arg( attributeSize ).arg( fieldSize ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Feature attribute size (%1) does not match number of fields (%2)"_s.arg( attributeSize ).arg( fieldSize ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else

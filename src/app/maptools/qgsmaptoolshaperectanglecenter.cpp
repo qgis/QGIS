@@ -27,7 +27,7 @@
 
 #include "moc_qgsmaptoolshaperectanglecenter.cpp"
 
-const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = QStringLiteral( "rectangle-from-center-and-a-point" );
+const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = u"rectangle-from-center-and-a-point"_s;
 
 QString QgsMapToolShapeRectangleCenterMetadata::id() const
 {
@@ -41,7 +41,7 @@ QString QgsMapToolShapeRectangleCenterMetadata::name() const
 
 QIcon QgsMapToolShapeRectangleCenterMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRectangleCenter.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRectangleCenter.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRectangleCenterMetadata::category() const

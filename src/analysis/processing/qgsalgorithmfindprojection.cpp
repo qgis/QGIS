@@ -23,7 +23,7 @@
 
 QString QgsFindProjectionAlgorithm::name() const
 {
-  return QStringLiteral( "findprojection" );
+  return u"findprojection"_s;
 }
 
 QString QgsFindProjectionAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsFindProjectionAlgorithm::group() const
 
 QString QgsFindProjectionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsFindProjectionAlgorithm::shortHelpString() const
@@ -69,28 +69,28 @@ QgsFindProjectionAlgorithm *QgsFindProjectionAlgorithm::createInstance() const
 
 void QgsFindProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "TARGET_AREA" ), QObject::tr( "Target area for layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterExtent( u"TARGET_AREA"_s, QObject::tr( "Target area for layer" ) ) );
 
   // deprecated
-  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "TARGET_AREA_CRS" ), QObject::tr( "Target area CRS" ), QVariant(), true );
+  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( u"TARGET_AREA_CRS"_s, QObject::tr( "Target area CRS" ), QVariant(), true );
   crsParam->setFlags( crsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( crsParam.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "CRS candidates" ), Qgis::ProcessingSourceType::Vector ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "CRS candidates" ), Qgis::ProcessingSourceType::Vector ) );
 }
 
 QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "TARGET_AREA" ), context );
-  QgsCoordinateReferenceSystem targetCrs = parameterAsExtentCrs( parameters, QStringLiteral( "TARGET_AREA" ), context );
-  if ( parameters.contains( QStringLiteral( "TARGET_AREA_CRS" ) ) )
+  const QgsRectangle extent = parameterAsExtent( parameters, u"TARGET_AREA"_s, context );
+  QgsCoordinateReferenceSystem targetCrs = parameterAsExtentCrs( parameters, u"TARGET_AREA"_s, context );
+  if ( parameters.contains( u"TARGET_AREA_CRS"_s ) )
   {
-    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_AREA_CRS" ), context );
+    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"TARGET_AREA_CRS"_s, context );
     if ( crs.isValid() )
     {
       targetCrs = crs;
@@ -103,10 +103,10 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
   fields.append( QgsField( "auth_id", QMetaType::Type::QString ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
   if ( !sink )
   {
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
   }
 
   std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( targetGeometry.constGet() ) );
@@ -159,7 +159,7 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
         QgsFeature f = QgsFeature( fields );
         f.setAttributes( QgsAttributes() << candidateCrs.authid() );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
         foundResults++;
       }
@@ -181,7 +181,7 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

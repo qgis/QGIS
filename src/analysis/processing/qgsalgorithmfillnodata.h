@@ -37,8 +37,8 @@ class QgsFillNoDataAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsFillNoDataAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFillNoData.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFillNoData.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmFillNoData.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmFillNoData.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

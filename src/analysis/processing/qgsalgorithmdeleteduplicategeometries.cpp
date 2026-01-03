@@ -25,7 +25,7 @@
 
 QString QgsDeleteDuplicateGeometriesAlgorithm::name() const
 {
-  return QStringLiteral( "deleteduplicategeometries" );
+  return u"deleteduplicategeometries"_s;
 }
 
 QString QgsDeleteDuplicateGeometriesAlgorithm::displayName() const
@@ -45,20 +45,20 @@ QString QgsDeleteDuplicateGeometriesAlgorithm::group() const
 
 QString QgsDeleteDuplicateGeometriesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 void QgsDeleteDuplicateGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Cleaned" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Cleaned" ) ) );
 
-  QgsProcessingParameterFeatureSink *duplicatesOutput = new QgsProcessingParameterFeatureSink( QStringLiteral( "DUPLICATES" ), QObject::tr( "Duplicates" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
+  QgsProcessingParameterFeatureSink *duplicatesOutput = new QgsProcessingParameterFeatureSink( u"DUPLICATES"_s, QObject::tr( "Duplicates" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true );
   duplicatesOutput->setCreateByDefault( false );
   addParameter( duplicatesOutput );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "RETAINED_COUNT" ), QObject::tr( "Count of retained records" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "DUPLICATE_COUNT" ), QObject::tr( "Count of discarded duplicate records" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"RETAINED_COUNT"_s, QObject::tr( "Count of retained records" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"DUPLICATE_COUNT"_s, QObject::tr( "Count of discarded duplicate records" ) ) );
 }
 
 QString QgsDeleteDuplicateGeometriesAlgorithm::shortHelpString() const
@@ -81,9 +81,9 @@ QgsDeleteDuplicateGeometriesAlgorithm *QgsDeleteDuplicateGeometriesAlgorithm::cr
 
 bool QgsDeleteDuplicateGeometriesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !mSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   return true;
 }
@@ -91,12 +91,12 @@ bool QgsDeleteDuplicateGeometriesAlgorithm::prepareAlgorithm( const QVariantMap 
 QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString destId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mSource->fields(), mSource->wkbType(), mSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, destId, mSource->fields(), mSource->wkbType(), mSource->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString dupesSinkId;
-  std::unique_ptr<QgsFeatureSink> dupesSink( parameterAsSink( parameters, QStringLiteral( "DUPLICATES" ), context, dupesSinkId, mSource->fields(), mSource->wkbType(), mSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> dupesSink( parameterAsSink( parameters, u"DUPLICATES"_s, context, dupesSinkId, mSource->fields(), mSource->wkbType(), mSource->sourceCrs() ) );
 
   QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
@@ -199,7 +199,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
       f.setGeometry( uniqueFeatures.value( f.id() ) );
     }
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
     current++;
     feedback->setProgress( stepTime * static_cast<double>( current ) * step + 90 ); // takes about 5%-10% of time
@@ -226,7 +226,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
       // use already fetched geometry
       f.setGeometry( duplicateFeatures.value( f.id() ) );
       if ( !dupesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( dupesSink.get(), parameters, QStringLiteral( "DUPLICATES" ) ) );
+        throw QgsProcessingException( writeFeatureError( dupesSink.get(), parameters, u"DUPLICATES"_s ) );
 
       current++;
       feedback->setProgress( 0.05 * static_cast<double>( current ) * step + 95 ); // takes about 5% of time
@@ -236,12 +236,12 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), destId );
-  outputs.insert( QStringLiteral( "DUPLICATE_COUNT" ), static_cast<long long>( removed ) );
-  outputs.insert( QStringLiteral( "RETAINED_COUNT" ), outputFeatureIds.size() );
+  outputs.insert( u"OUTPUT"_s, destId );
+  outputs.insert( u"DUPLICATE_COUNT"_s, static_cast<long long>( removed ) );
+  outputs.insert( u"RETAINED_COUNT"_s, outputFeatureIds.size() );
   if ( dupesSink )
   {
-    outputs.insert( QStringLiteral( "DUPLICATES" ), dupesSinkId );
+    outputs.insert( u"DUPLICATES"_s, dupesSinkId );
   }
   return outputs;
 }

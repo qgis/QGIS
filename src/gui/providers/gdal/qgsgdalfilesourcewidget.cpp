@@ -48,17 +48,17 @@ QgsGdalFileSourceWidget::QgsGdalFileSourceWidget( QWidget *parent )
 
 void QgsGdalFileSourceWidget::setSourceUri( const QString &uri )
 {
-  mSourceParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  mSourceParts = QgsProviderRegistry::instance()->decodeUri( u"gdal"_s, uri );
 
-  mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
+  mFileWidget->setFilePath( mSourceParts.value( u"path"_s ).toString() );
   mIsValid = true;
 }
 
 QString QgsGdalFileSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
-  parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
-  return QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
+  parts.insert( u"path"_s, mFileWidget->filePath() );
+  return QgsProviderRegistry::instance()->encodeUri( u"gdal"_s, parts );
 }
 
 void QgsGdalFileSourceWidget::validate()

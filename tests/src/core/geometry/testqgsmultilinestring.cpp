@@ -469,13 +469,13 @@ void TestQgsMultiLineString::cast()
   QgsMultiLineString mls;
   QVERIFY( QgsMultiLineString::cast( &mls ) );
 
-  mls.fromWkt( QStringLiteral( "MultiLineStringZ()" ) );
+  mls.fromWkt( u"MultiLineStringZ()"_s );
   QVERIFY( QgsMultiLineString::cast( &mls ) );
   QVERIFY( QgsGeometryCollection::cast( &mls ) );
-  mls.fromWkt( QStringLiteral( "MultiLineStringM()" ) );
+  mls.fromWkt( u"MultiLineStringM()"_s );
   QVERIFY( QgsMultiLineString::cast( &mls ) );
   QVERIFY( QgsGeometryCollection::cast( &mls ) );
-  mls.fromWkt( QStringLiteral( "MultiLineStringZM()" ) );
+  mls.fromWkt( u"MultiLineStringZM()"_s );
   QVERIFY( QgsMultiLineString::cast( &mls ) );
   QVERIFY( QgsGeometryCollection::cast( &mls ) );
 }
@@ -712,10 +712,10 @@ void TestQgsMultiLineString::toCurveType()
   QCOMPARE( curveType->numGeometries(), 2 );
 
   const QgsCompoundCurve *curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 0 ) );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurve ZM ((5 50 1 4, 6 61 3 5))" ) );
+  QCOMPARE( curve->asWkt(), u"CompoundCurve ZM ((5 50 1 4, 6 61 3 5))"_s );
 
   curve = static_cast<const QgsCompoundCurve *>( curveType->geometryN( 1 ) );
-  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurve ZM ((5 50 1 4, 6 61 3 5))" ) );
+  QCOMPARE( curve->asWkt(), u"CompoundCurve ZM ((5 50 1 4, 6 61 3 5))"_s );
 }
 
 void TestQgsMultiLineString::toFromWKT()
@@ -851,19 +851,19 @@ void TestQgsMultiLineString::exportImport()
   QDomDocument doc( "gml" );
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43</coordinates></LineString></lineStringMember></MultiLineString>" ) );
+  QString expectedSimpleGML2( u"<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43</coordinates></LineString></lineStringMember></MultiLineString>"_s );
   QString res = elemToString( exportC.asGml2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
 
-  QString expectedGML2empty( QStringLiteral( "<MultiLineString xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<MultiLineString xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsMultiLineString().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43</posList></LineString></curveMember></MultiCurve>" ) );
+  QString expectedSimpleGML3( u"<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43</posList></LineString></curveMember></MultiCurve>"_s );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
 
-  QString expectedGML3empty( QStringLiteral( "<MultiCurve xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<MultiCurve xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsMultiLineString().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON
@@ -882,20 +882,20 @@ void TestQgsMultiLineString::exportImport()
   QCOMPARE( res, expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2prec3( QStringLiteral( "<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2.333,5.667 0.6,4.333</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">9,4.111 1.049,1.024</coordinates></LineString></lineStringMember></MultiLineString>" ) );
+  QString expectedGML2prec3( u"<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2.333,5.667 0.6,4.333</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">9,4.111 1.049,1.024</coordinates></LineString></lineStringMember></MultiLineString>"_s );
   res = elemToString( exportFloat.asGml2( doc, 3 ) );
   QGSCOMPAREGML( res, expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3prec3( QStringLiteral( "<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 5.667 0.6 4.333</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">9 4.111 1.049 1.024</posList></LineString></curveMember></MultiCurve>" ) );
+  QString expectedGML3prec3( u"<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 5.667 0.6 4.333</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">9 4.111 1.049 1.024</posList></LineString></curveMember></MultiCurve>"_s );
   res = elemToString( exportFloat.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
 
   //asKML
-  QString expectedKml( QStringLiteral( "<MultiGeometry><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>7,17,0 3,13,0</coordinates></LineString><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>27,37,0 43,43,0</coordinates></LineString></MultiGeometry>" ) );
+  QString expectedKml( u"<MultiGeometry><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>7,17,0 3,13,0</coordinates></LineString><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>27,37,0 43,43,0</coordinates></LineString></MultiGeometry>"_s );
   QCOMPARE( exportC.asKml(), expectedKml );
 
-  QString expectedKmlPrec3( QStringLiteral( "<MultiGeometry><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>2.333,5.667,0 0.6,4.333,0</coordinates></LineString><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>9,4.111,0 1.049,1.024,0</coordinates></LineString></MultiGeometry>" ) );
+  QString expectedKmlPrec3( u"<MultiGeometry><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>2.333,5.667,0 0.6,4.333,0</coordinates></LineString><LineString><altitudeMode>clampToGround</altitudeMode><coordinates>9,4.111,0 1.049,1.024,0</coordinates></LineString></MultiGeometry>"_s );
   QCOMPARE( exportFloat.asKml( 3 ), expectedKmlPrec3 );
 }
 

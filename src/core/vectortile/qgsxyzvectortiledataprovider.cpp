@@ -35,7 +35,7 @@
 
 ///@cond PRIVATE
 
-QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_KEY = QStringLiteral( "xyzvectortiles" );
+QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_KEY = u"xyzvectortiles"_s;
 QString QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_DESCRIPTION = QObject::tr( "XYZ Vector Tiles data provider" );
 
 //
@@ -106,18 +106,18 @@ QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const Qgs
     QString urlTemplate = it.value();
     QString layerName = it.key();
 
-    if ( urlTemplate.contains( QLatin1String( "{usage}" ) ) )
+    if ( urlTemplate.contains( "{usage}"_L1 ) )
     {
       switch ( usage )
       {
         case Qgis::RendererUsage::View:
-          urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
+          urlTemplate.replace( "{usage}"_L1, "view"_L1 );
           break;
         case Qgis::RendererUsage::Export:
-          urlTemplate.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
+          urlTemplate.replace( "{usage}"_L1, "export"_L1 );
           break;
         case Qgis::RendererUsage::Unknown:
-          urlTemplate.replace( QLatin1String( "{usage}" ), QString() );
+          urlTemplate.replace( "{usage}"_L1, QString() );
           break;
       }
     }
@@ -125,7 +125,7 @@ QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const Qgs
     const QString url = QgsVectorTileUtils::formatXYZUrlTemplate( urlTemplate, id, set.tileMatrix( id.zoomLevel() ) );
 
     QNetworkRequest request( url );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsXyzVectorTileDataProvider" ) );
+    QgsSetRequestInitiatorClass( request, u"QgsXyzVectorTileDataProvider"_s );
     QgsSetRequestInitiatorId( request, id.toString() );
 
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( QgsVectorTileDataProvider::DATA_COLUMN ), id.column() );
@@ -153,18 +153,18 @@ QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
 
-  if ( url.contains( QLatin1String( "{usage}" ) ) )
+  if ( url.contains( "{usage}"_L1 ) )
   {
     switch ( usage )
     {
       case Qgis::RendererUsage::View:
-        url.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
+        url.replace( "{usage}"_L1, "view"_L1 );
         break;
       case Qgis::RendererUsage::Export:
-        url.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
+        url.replace( "{usage}"_L1, "export"_L1 );
         break;
       case Qgis::RendererUsage::Unknown:
-        url.replace( QLatin1String( "{usage}" ), QString() );
+        url.replace( "{usage}"_L1, QString() );
         break;
     }
   }
@@ -176,15 +176,15 @@ QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &
 
   QgsBlockingNetworkRequest req;
   req.setAuthCfg( authid );
-  QgsDebugMsgLevel( QStringLiteral( "Blocking request: " ) + url, 2 );
+  QgsDebugMsgLevel( u"Blocking request: "_s + url, 2 );
   QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr, false, feedback );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( u"Request failed: "_s + url );
     return QByteArray();
   }
   QgsNetworkReplyContent reply = req.reply();
-  QgsDebugMsgLevel( QStringLiteral( "Request successful, content size %1" ).arg( reply.content().size() ), 2 );
+  QgsDebugMsgLevel( u"Request successful, content size %1"_s.arg( reply.content().size() ), 2 );
   return reply.content();
 }
 
@@ -206,7 +206,7 @@ QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvid
 
 QIcon QgsXyzVectorTileDataProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::providerCapabilities() const
@@ -220,46 +220,46 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  uriComponents.insert( u"type"_s, u"xyz"_s );
 
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
+  if ( uriComponents[ u"type"_s ] == "mbtiles"_L1 ||
+       ( uriComponents[ u"type"_s ] == "xyz"_L1 &&
+         !dsUri.param( u"url"_s ).startsWith( "http"_L1 ) ) )
   {
-    uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+    uriComponents.insert( u"path"_s, dsUri.param( u"url"_s ) );
   }
   else
   {
-    uriComponents.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
-    if ( dsUri.hasParam( QStringLiteral( "urlName" ) ) )
-      uriComponents.insert( QStringLiteral( "urlName" ), dsUri.param( QStringLiteral( "urlName" ) ) );
+    uriComponents.insert( u"url"_s, dsUri.param( u"url"_s ) );
+    if ( dsUri.hasParam( u"urlName"_s ) )
+      uriComponents.insert( u"urlName"_s, dsUri.param( u"urlName"_s ) );
   }
   int i = 2;
   while ( true )
   {
-    QString url = dsUri.param( QStringLiteral( "url_%2" ).arg( i ) );
-    QString urlName = dsUri.param( QStringLiteral( "urlName_%2" ).arg( i ) );
+    QString url = dsUri.param( u"url_%2"_s.arg( i ) );
+    QString urlName = dsUri.param( u"urlName_%2"_s.arg( i ) );
     if ( url.isEmpty() || urlName.isEmpty() )
       break;
-    uriComponents.insert( QStringLiteral( "urlName_%2" ).arg( i ), urlName );
-    uriComponents.insert( QStringLiteral( "url_%2" ).arg( i ), url );
+    uriComponents.insert( u"urlName_%2"_s.arg( i ), urlName );
+    uriComponents.insert( u"url_%2"_s.arg( i ), url );
     i++;
   }
 
 
-  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-    uriComponents.insert( QStringLiteral( "zmin" ), dsUri.param( QStringLiteral( "zmin" ) ) );
-  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-    uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
+  if ( dsUri.hasParam( u"zmin"_s ) )
+    uriComponents.insert( u"zmin"_s, dsUri.param( u"zmin"_s ) );
+  if ( dsUri.hasParam( u"zmax"_s ) )
+    uriComponents.insert( u"zmax"_s, dsUri.param( u"zmax"_s ) );
 
   dsUri.httpHeaders().updateMap( uriComponents );
 
-  if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
-    uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
+  if ( dsUri.hasParam( u"styleUrl"_s ) )
+    uriComponents.insert( u"styleUrl"_s, dsUri.param( u"styleUrl"_s ) );
 
   const QString authcfg = dsUri.authConfigId();
   if ( !authcfg.isEmpty() )
-    uriComponents.insert( QStringLiteral( "authcfg" ), authcfg );
+    uriComponents.insert( u"authcfg"_s, authcfg );
 
   return uriComponents;
 }
@@ -267,21 +267,21 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
 QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "urlName" ) ) )
-    dsUri.setParam( QStringLiteral( "urlName" ), parts[ QStringLiteral( "urlName" ) ].toString() );
+  dsUri.setParam( u"type"_s, u"xyz"_s );
+  dsUri.setParam( u"url"_s, parts.value( parts.contains( u"path"_s ) ? u"path"_s : u"url"_s ).toString() );
+  if ( parts.contains( u"urlName"_s ) )
+    dsUri.setParam( u"urlName"_s, parts[ u"urlName"_s ].toString() );
 
   int i = 2;
   while ( true )
   {
-    QString urlNameKey = QStringLiteral( "urlName_%2" ).arg( i );
-    QString urlKey = QStringLiteral( "url_%2" ).arg( i );
+    QString urlNameKey = u"urlName_%2"_s.arg( i );
+    QString urlKey = u"url_%2"_s.arg( i );
 
     if ( !parts.contains( urlNameKey ) || !parts.contains( urlKey ) )
       break;
-    QString url = dsUri.param( QStringLiteral( "url_%2" ).arg( i ) );
-    QString urlName = dsUri.param( QStringLiteral( "urlName_%2" ).arg( i ) );
+    QString url = dsUri.param( u"url_%2"_s.arg( i ) );
+    QString urlName = dsUri.param( u"urlName_%2"_s.arg( i ) );
     if ( url.isEmpty() || urlName.isEmpty() )
       break;
 
@@ -290,18 +290,18 @@ QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &part
     i++;
   }
 
-  if ( parts.contains( QStringLiteral( "zmin" ) ) )
-    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
-  if ( parts.contains( QStringLiteral( "zmax" ) ) )
-    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+  if ( parts.contains( u"zmin"_s ) )
+    dsUri.setParam( u"zmin"_s, parts[ u"zmin"_s ].toString() );
+  if ( parts.contains( u"zmax"_s ) )
+    dsUri.setParam( u"zmax"_s, parts[ u"zmax"_s ].toString() );
 
   dsUri.httpHeaders().setFromMap( parts );
 
-  if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
-    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+  if ( parts.contains( u"styleUrl"_s ) )
+    dsUri.setParam( u"styleUrl"_s, parts[ u"styleUrl"_s ].toString() );
 
-  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+  if ( parts.contains( u"authcfg"_s ) )
+    dsUri.setAuthConfigId( parts[ u"authcfg"_s ].toString() );
 
   return dsUri.encodedUri();
 }
@@ -311,15 +311,15 @@ QString QgsXyzVectorTileDataProviderMetadata::absoluteToRelativeUri( const QStri
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  QString sourcePath = dsUri.param( u"url"_s );
 
   const QUrl sourceUrl( sourcePath );
   if ( sourceUrl.isLocalFile() )
   {
     // relative path will become "file:./x.txt"
     const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
+    dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( u"url"_s, QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
     return dsUri.encodedUri();
   }
 
@@ -331,14 +331,14 @@ QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStri
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  QString sourcePath = dsUri.param( u"url"_s );
 
   const QUrl sourceUrl( sourcePath );
   if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
   {
     const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
-    dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
+    dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( u"url"_s, QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
     return dsUri.encodedUri();
   }
 
@@ -361,21 +361,21 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
-  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  const QString sourcePath = dsUri.param( u"url"_s );
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
   {
-    QgsDebugError( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
+    QgsDebugError( u"Invalid format of URL for XYZ source: "_s + sourcePath );
     mIsValid = false;
     return;
   }
 
   int zMin = 0;
-  if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
-    zMin = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
+  if ( dsUri.hasParam( u"zmin"_s ) )
+    zMin = dsUri.param( u"zmin"_s ).toInt();
 
   int zMax = 14;
-  if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
-    zMax = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+  if ( dsUri.hasParam( u"zmax"_s ) )
+    zMax = dsUri.param( u"zmax"_s ).toInt();
 
   mMatrixSet = QgsVectorTileMatrixSet::fromWebMercator( zMin, zMax );
   mExtent = QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 );
@@ -435,7 +435,7 @@ QgsCoordinateReferenceSystem QgsXyzVectorTileDataProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
+  return QgsCoordinateReferenceSystem( u"EPSG:3857"_s );
 }
 
 const QgsVectorTileMatrixSet &QgsXyzVectorTileDataProvider::tileMatrixSet() const
@@ -451,7 +451,7 @@ QString QgsXyzVectorTileDataProvider::sourcePath() const
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  return dsUri.param( QStringLiteral( "url" ) );
+  return dsUri.param( u"url"_s );
 }
 
 QgsStringMap QgsXyzVectorTileDataProvider::sourcePaths() const
@@ -461,13 +461,13 @@ QgsStringMap QgsXyzVectorTileDataProvider::sourcePaths() const
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
 
-  QgsStringMap paths = { { dsUri.param( QStringLiteral( "urlName" ) ), dsUri.param( QStringLiteral( "url" ) ) } };
+  QgsStringMap paths = { { dsUri.param( u"urlName"_s ), dsUri.param( u"url"_s ) } };
 
   int i = 2;
   while ( true )
   {
-    QString url = dsUri.param( QStringLiteral( "url_%2" ).arg( i ) );
-    QString urlName = dsUri.param( QStringLiteral( "urlName_%2" ).arg( i ) );
+    QString url = dsUri.param( u"url_%2"_s.arg( i ) );
+    QString urlName = dsUri.param( u"urlName_%2"_s.arg( i ) );
     if ( url.isEmpty() || urlName.isEmpty() )
       break;
 

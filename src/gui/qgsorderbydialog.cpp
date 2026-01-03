@@ -157,5 +157,5 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
 
 void QgsOrderByDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#layer-rendering"_s );
 }

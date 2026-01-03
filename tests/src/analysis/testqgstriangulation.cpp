@@ -26,7 +26,7 @@ class TestQgsTriangulation : public QgsTest
 
   public:
     TestQgsTriangulation()
-      : QgsTest( QStringLiteral( "Triangulation Test" ) )
+      : QgsTest( u"Triangulation Test"_s )
     {}
 
 
@@ -186,7 +186,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
 
-  auto mLayerPointZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ?crs=EPSG:32620" ), QStringLiteral( "point Z" ), QStringLiteral( "memory" ) );
+  auto mLayerPointZ = std::make_unique<QgsVectorLayer>( u"PointZ?crs=EPSG:32620"_s, u"point Z"_s, u"memory"_s );
 
   const QString wkt1 = "PointZ (684486.0 1761297.0 1)";
   const QString wkt2 = "PointZ (684276.0 1761309.0 2)";
@@ -226,7 +226,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   const QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
-  auto mLayerBreakLine = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=EPSG:32620" ), QStringLiteral( "line" ), QStringLiteral( "memory" ) );
+  auto mLayerBreakLine = std::make_unique<QgsVectorLayer>( u"LineStringZ?crs=EPSG:32620"_s, u"line"_s, u"memory"_s );
 
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
@@ -253,20 +253,20 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
+  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( u"LineStringZ"_s, u"break line Z"_s, u"memory"_s );
 
   QStringList wktLines;
 
-  wktLines << QStringLiteral( "LineStringZ (315377.05605000001378357 5839566.94189499784260988 24.94718200000000152, 315374.77223399997455999 5839565.11973000038415194 24.04360499999999945)" )
-           << QStringLiteral( "LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315369.31927300000097603 5839570.36336500104516745 25.47851700000000008)" )
-           << QStringLiteral( "LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)" )
-           << QStringLiteral( "LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)" )
-           << QStringLiteral( "LineStringZ (315374.77223399997455999 5839565.11973000038415194 24.04360499999999945, 315370.67597402411047369 5839565.22503056097775698 24.04360499999999945)" )
-           << QStringLiteral( "LineStringZ (315370.67597402411047369 5839565.22503056097775698 24.04360499999999945, 315369.53268400009255856 5839567.42751600034534931 25.41215299999999999)" )
-           << QStringLiteral( "LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315371.93385799997486174 5839571.38528699986636639 24.06699300000000008)" )
-           << QStringLiteral( "LineStringZ (315371.93385799997486174 5839571.38528699986636639 24.06699300000000008, 315376.77400700020371005 5839570.69979299977421761 24.0794150000000009)" )
-           << QStringLiteral( "LineStringZ (315376.77400700020371005 5839570.69979299977421761 24.0794150000000009, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)" )
-           << QStringLiteral( "LineStringZ (315377.62744900002144277 5839568.60983499884605408 24.98952099999999987, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)" );
+  wktLines << u"LineStringZ (315377.05605000001378357 5839566.94189499784260988 24.94718200000000152, 315374.77223399997455999 5839565.11973000038415194 24.04360499999999945)"_s
+           << u"LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315369.31927300000097603 5839570.36336500104516745 25.47851700000000008)"_s
+           << u"LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)"_s
+           << u"LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)"_s
+           << u"LineStringZ (315374.77223399997455999 5839565.11973000038415194 24.04360499999999945, 315370.67597402411047369 5839565.22503056097775698 24.04360499999999945)"_s
+           << u"LineStringZ (315370.67597402411047369 5839565.22503056097775698 24.04360499999999945, 315369.53268400009255856 5839567.42751600034534931 25.41215299999999999)"_s
+           << u"LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315371.93385799997486174 5839571.38528699986636639 24.06699300000000008)"_s
+           << u"LineStringZ (315371.93385799997486174 5839571.38528699986636639 24.06699300000000008, 315376.77400700020371005 5839570.69979299977421761 24.0794150000000009)"_s
+           << u"LineStringZ (315376.77400700020371005 5839570.69979299977421761 24.0794150000000009, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)"_s
+           << u"LineStringZ (315377.62744900002144277 5839568.60983499884605408 24.98952099999999987, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)"_s;
 
   QgsFeatureList flist;
   for ( const QString &wkt : wktLines )
@@ -301,7 +301,7 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  auto mLayerPointsZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "points Z" ), QStringLiteral( "memory" ) );
+  auto mLayerPointsZ = std::make_unique<QgsVectorLayer>( u"PointZ"_s, u"points Z"_s, u"memory"_s );
 
   for ( int i = 0; i < 4; ++i )
   {
@@ -324,11 +324,11 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   QCOMPARE( mesh.vertexCount(), 40 );
   QCOMPARE( mesh.faceCount(), 54 );
 
-  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
+  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( u"LineStringZ"_s, u"break line Z"_s, u"memory"_s );
 
 
   QgsFeature feat;
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ (5 25 1, 95 25 2, 95 15 3, 5 15 4)" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"LineStringZ (5 25 1, 95 25 2, 95 15 3, 5 15 4)"_s ) );
   mLayerLineZ->dataProvider()->addFeature( feat );
   fIt = mLayerLineZ->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );

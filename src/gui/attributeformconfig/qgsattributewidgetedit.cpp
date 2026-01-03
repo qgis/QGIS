@@ -122,7 +122,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
     {
       if ( !nmrel.fieldPairs().isEmpty() && nmrel.fieldPairs().at( 0 ).referencingField() != relationFirstFieldPair.referencingField() )
       {
-        setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+        setCardinalityCombo( u"%1 (%2)"_s.arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
       }
     }
   }

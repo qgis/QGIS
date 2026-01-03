@@ -27,7 +27,7 @@
 
 QString QgsFixGeometryMissingVertexAlgorithm::name() const
 {
-  return QStringLiteral( "fixgeometrymissingvertex" );
+  return u"fixgeometrymissingvertex"_s;
 }
 
 QString QgsFixGeometryMissingVertexAlgorithm::displayName() const
@@ -52,7 +52,7 @@ QString QgsFixGeometryMissingVertexAlgorithm::group() const
 
 QString QgsFixGeometryMissingVertexAlgorithm::groupId() const
 {
-  return QStringLiteral( "fixgeometry" );
+  return u"fixgeometry"_s;
 }
 
 QString QgsFixGeometryMissingVertexAlgorithm::shortHelpString() const
@@ -71,41 +71,41 @@ void QgsFixGeometryMissingVertexAlgorithm::initAlgorithm( const QVariantMap &con
   Q_UNUSED( configuration )
 
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+    u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+    u"ERRORS"_s, QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
   ) );
 
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
-    QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
+    u"UNIQUE_ID"_s, QObject::tr( "Field of original feature unique identifier" ),
+    u"id"_s, u"ERRORS"_s
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
-    QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
+    u"PART_IDX"_s, QObject::tr( "Field of part index" ),
+    u"gc_partidx"_s, u"ERRORS"_s,
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
-    QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
+    u"RING_IDX"_s, QObject::tr( "Field of ring index" ),
+    u"gc_ringidx"_s, u"ERRORS"_s,
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
-    QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
+    u"VERTEX_IDX"_s, QObject::tr( "Field of vertex index" ),
+    u"gc_vertidx"_s, u"ERRORS"_s,
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Border vertices fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    u"OUTPUT"_s, QObject::tr( "Border vertices fixed layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing border vertices" ), Qgis::ProcessingSourceType::VectorPoint
+    u"REPORT"_s, QObject::tr( "Report layer from fixing border vertices" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
@@ -115,20 +115,20 @@ void QgsFixGeometryMissingVertexAlgorithm::initAlgorithm( const QVariantMap &con
 
 QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const std::unique_ptr<QgsProcessingFeatureSource> errors( parameterAsSource( parameters, QStringLiteral( "ERRORS" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> errors( parameterAsSource( parameters, u"ERRORS"_s, context ) );
   if ( !errors )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 2, feedback );
 
-  const QString featIdFieldName = parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context );
-  const QString partIdxFieldName = parameterAsString( parameters, QStringLiteral( "PART_IDX" ), context );
-  const QString ringIdxFieldName = parameterAsString( parameters, QStringLiteral( "RING_IDX" ), context );
-  const QString vertexIdxFieldName = parameterAsString( parameters, QStringLiteral( "VERTEX_IDX" ), context );
+  const QString featIdFieldName = parameterAsString( parameters, u"UNIQUE_ID"_s, context );
+  const QString partIdxFieldName = parameterAsString( parameters, u"PART_IDX"_s, context );
+  const QString ringIdxFieldName = parameterAsString( parameters, u"RING_IDX"_s, context );
+  const QString vertexIdxFieldName = parameterAsString( parameters, u"VERTEX_IDX"_s, context );
 
   // Verify that input fields exists
   if ( errors->fields().indexFromName( featIdFieldName ) == -1 )
@@ -149,20 +149,20 @@ QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVaria
 
   QString dest_output;
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
+    parameters, u"OUTPUT"_s, context, dest_output, input->fields(), input->wkbType(), input->sourceCrs()
   ) );
   if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString dest_report;
   QgsFields reportFields = errors->fields();
-  reportFields.append( QgsField( QStringLiteral( "report" ), QMetaType::QString ) );
-  reportFields.append( QgsField( QStringLiteral( "error_fixed" ), QMetaType::Bool ) );
+  reportFields.append( QgsField( u"report"_s, QMetaType::QString ) );
+  reportFields.append( QgsField( u"error_fixed"_s, QMetaType::Bool ) );
   const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink(
-    parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
+    parameters, u"REPORT"_s, context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs()
   ) );
   if ( !sink_report )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"REPORT"_s ) );
 
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
@@ -236,7 +236,7 @@ QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVaria
     }
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, QStringLiteral( "REPORT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, u"REPORT"_s ) );
   }
   multiStepFeedback.setProgress( 100 );
 
@@ -254,20 +254,20 @@ QVariantMap QgsFixGeometryMissingVertexAlgorithm::processAlgorithm( const QVaria
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( progression ) / static_cast<double>( totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
   }
   multiStepFeedback.setProgress( 100 );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
-  outputs.insert( QStringLiteral( "REPORT" ), dest_report );
+  outputs.insert( u"OUTPUT"_s, dest_output );
+  outputs.insert( u"REPORT"_s, dest_report );
 
   return outputs;
 }
 
 bool QgsFixGeometryMissingVertexAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
 
   return true;
 }

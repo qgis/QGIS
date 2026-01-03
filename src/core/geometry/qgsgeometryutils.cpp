@@ -830,8 +830,8 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
-  const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const thread_local QRegularExpression rx( u"\\s"_s );
+  const thread_local QRegularExpression rxIsNumber( u"^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$"_s );
   for ( const QString &pointCoordinates : coordList )
   {
     const QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
@@ -924,7 +924,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
 
 QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure )
 {
-  QString wkt = QStringLiteral( "(" );
+  QString wkt = u"("_s;
   for ( const QgsPoint &p : points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
@@ -933,9 +933,9 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
       wkt += ' ' + qgsDoubleToString( p.z(), precision );
     if ( isMeasure )
       wkt += ' ' + qgsDoubleToString( p.m(), precision );
-    wkt += QLatin1String( ", " );
+    wkt += ", "_L1;
   }
-  if ( wkt.endsWith( QLatin1String( ", " ) ) )
+  if ( wkt.endsWith( ", "_L1 ) )
     wkt.chop( 2 ); // Remove last ", "
   wkt += ')';
   return wkt;
@@ -943,15 +943,15 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
 
 QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, QgsAbstractGeometry::AxisOrder axisOrder )
 {
-  QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
+  QDomElement elemCoordinates = doc.createElementNS( ns, u"coordinates"_s );
 
   // coordinate separator
-  const QString cs = QStringLiteral( "," );
+  const QString cs = u","_s;
   // tuple separator
-  const QString ts = QStringLiteral( " " );
+  const QString ts = u" "_s;
 
-  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
-  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
+  elemCoordinates.setAttribute( u"cs"_s, cs );
+  elemCoordinates.setAttribute( u"ts"_s, ts );
 
   QString strCoordinates;
 
@@ -970,8 +970,8 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 
 QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, QgsAbstractGeometry::AxisOrder axisOrder )
 {
-  QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
-  elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
+  QDomElement elemPosList = doc.createElementNS( ns, u"posList"_s );
+  elemPosList.setAttribute( u"srsDimension"_s, is3D ? 3 : 2 );
 
   QString strCoordinates;
   for ( const QgsPoint &p : points )
@@ -992,12 +992,12 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
 
 QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int precision )
 {
-  QString json = QStringLiteral( "[ " );
+  QString json = u"[ "_s;
   for ( const QgsPoint &p : points )
   {
-    json += '[' + qgsDoubleToString( p.x(), precision ) + QLatin1String( ", " ) + qgsDoubleToString( p.y(), precision ) + QLatin1String( "], " );
+    json += '[' + qgsDoubleToString( p.x(), precision ) + ", "_L1 + qgsDoubleToString( p.y(), precision ) + "], "_L1;
   }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
+  if ( json.endsWith( ", "_L1 ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
@@ -1058,7 +1058,7 @@ QPair<Qgis::WkbType, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt
     // removes extra parentheses
     wktParsed.truncate( wktParsed.size() - ( closedParenthesisCount - openedParenthesisCount ) );
 
-    const thread_local QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ), QRegularExpression::DotMatchesEverythingOption );
+    const thread_local QRegularExpression cooRegEx( u"^[^\\(]*\\((.*)\\)[^\\)]*$"_s, QRegularExpression::DotMatchesEverythingOption );
     const QRegularExpressionMatch match = cooRegEx.match( wktParsed );
     contents = match.hasMatch() ? match.captured( 1 ) : QString();
   }
@@ -1524,14 +1524,14 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     if ( curve->numPoints() < 4 )
       throw QgsInvalidArgumentException( "Closed curve must have at least 4 vertex." );
     if ( vertexIndex < 0 || vertexIndex > curve->numPoints() - 1 )
-      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in [0, %2]." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+      throw QgsInvalidArgumentException( u"Vertex index out of range. %1 must be in [0, %2]."_s.arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
   }
   else
   {
     if ( curve->numPoints() < 3 )
       throw QgsInvalidArgumentException( "Opened curve must have at least 3 points." );
     if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
-      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in (0, %2)." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+      throw QgsInvalidArgumentException( u"Vertex index out of range. %1 must be in (0, %2)."_s.arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
   }
 
   // Extract the three consecutive vertices
@@ -1567,7 +1567,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     createChamfer( pPrev, p, p, pNext, value1, value2, firstNewPoint, lastNewPoint );
   }
   else
-    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( qgsEnumValueToKey( operation ) ) );
+    throw QgsInvalidArgumentException( u"Operation '%1' is unknown."_s.arg( qgsEnumValueToKey( operation ) ) );
 
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )

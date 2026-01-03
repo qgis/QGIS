@@ -326,7 +326,7 @@ QgsCoordinateTransformContext QgsRenderContext::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
 #endif
   return mTransformContext;
 }
@@ -441,7 +441,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
   const QStringList layerIds = mapSettings.layerIds( true );
   if ( !layerIds.empty() )
-    ctx.setCustomProperty( QStringLiteral( "visible_layer_ids" ), layerIds );
+    ctx.setCustomProperty( u"visible_layer_ids"_s, layerIds );
 
   return ctx;
 }
@@ -846,7 +846,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
         }
         catch ( const QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter" ) );
+          QgsDebugError( u"QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter"_s );
           // what should we return;.. ?
           return meters;
         }

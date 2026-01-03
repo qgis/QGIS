@@ -40,7 +40,7 @@ class QgsLandingPageHandler : public QgsServerOgcApiHandler
     // QgsServerOgcApiHandler interface
     QRegularExpression path() const override;
     std::string operationId() const override { return "getLandingPage"; }
-    QStringList tags() const override { return { QStringLiteral( "Catalog" ) }; }
+    QStringList tags() const override { return { u"Catalog"_s }; }
     std::string summary() const override
     {
       return "Server Landing Page";
@@ -80,7 +80,7 @@ class QgsLandingPageMapHandler : public QgsServerOgcApiHandler
     // QgsServerOgcApiHandler interface
     QRegularExpression path() const override;
     std::string operationId() const override { return "getMap"; }
-    QStringList tags() const override { return { QStringLiteral( "Catalog" ), QStringLiteral( "Map Viewer" ) }; }
+    QStringList tags() const override { return { u"Catalog"_s, u"Map Viewer"_s }; }
     std::string summary() const override
     {
       return "Server Map Viewer";

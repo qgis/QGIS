@@ -22,7 +22,7 @@ QString QgsLayerNotesUtils::layerNotes( const QgsMapLayer *layer )
   if ( !layer )
     return nullptr;
 
-  return layer->customProperty( QStringLiteral( "userNotes" ) ).toString();
+  return layer->customProperty( u"userNotes"_s ).toString();
 }
 
 void QgsLayerNotesUtils::setLayerNotes( QgsMapLayer *layer, const QString &notes )
@@ -31,9 +31,9 @@ void QgsLayerNotesUtils::setLayerNotes( QgsMapLayer *layer, const QString &notes
     return;
 
   if ( notes.isEmpty() )
-    layer->removeCustomProperty( QStringLiteral( "userNotes" ) );
+    layer->removeCustomProperty( u"userNotes"_s );
   else
-    layer->setCustomProperty( QStringLiteral( "userNotes" ), notes );
+    layer->setCustomProperty( u"userNotes"_s, notes );
 }
 
 bool QgsLayerNotesUtils::layerHasNotes( const QgsMapLayer *layer )
@@ -41,11 +41,11 @@ bool QgsLayerNotesUtils::layerHasNotes( const QgsMapLayer *layer )
   if ( !layer )
     return false;
 
-  return !layer->customProperty( QStringLiteral( "userNotes" ) ).toString().isEmpty();
+  return !layer->customProperty( u"userNotes"_s ).toString().isEmpty();
 }
 
 void QgsLayerNotesUtils::removeNotes( QgsMapLayer *layer )
 {
   if ( layer )
-    layer->removeCustomProperty( QStringLiteral( "userNotes" ) );
+    layer->removeCustomProperty( u"userNotes"_s );
 }

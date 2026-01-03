@@ -51,9 +51,9 @@ class TestQgsNewDatabaseTableNameWidget : public QObject
 
 void TestQgsNewDatabaseTableNameWidget::initTestCase()
 {
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST-NEW-DBTABLE-WIDGET" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST-NEW-DBTABLE-WIDGET"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -61,23 +61,23 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
   // Add some connections to test with
   QgsProviderMetadata *md = nullptr;
 #ifdef ENABLE_PGTEST
-  md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  md = QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s );
   mPgConn.reset( md->createConnection( qgetenv( "QGIS_PGTEST_DB" ), {} ) );
-  md->saveConnection( mPgConn.get(), QStringLiteral( "PG_1" ) );
-  md->saveConnection( mPgConn.get(), QStringLiteral( "PG_2" ) );
+  md->saveConnection( mPgConn.get(), u"PG_1"_s );
+  md->saveConnection( mPgConn.get(), u"PG_2"_s );
 #endif
 
-  md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  md = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s );
   QString errCause;
   QMap<int, int> m;
-  mGpkgPath = mDir.filePath( QStringLiteral( "test.gpkg" ) );
-  const QMap<QString, QVariant> options { { QStringLiteral( "layerName" ), QString( "test_layer" ) } };
+  mGpkgPath = mDir.filePath( u"test.gpkg"_s );
+  const QMap<QString, QVariant> options { { u"layerName"_s, QString( "test_layer" ) } };
   QString createdLayerUri;
   QVERIFY( md->createEmptyLayer( mGpkgPath, QgsFields(), Qgis::WkbType::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), true, m, errCause, &options, createdLayerUri ) == Qgis::VectorExportResult::Success );
   QCOMPARE( createdLayerUri, mGpkgPath + "|layername=test_layer" );
   QVERIFY( errCause.isEmpty() );
-  mGpkgConn.reset( md->createConnection( mDir.filePath( QStringLiteral( "test.gpkg" ) ), {} ) );
-  md->saveConnection( mGpkgConn.get(), QStringLiteral( "GPKG_1" ) );
+  mGpkgConn.reset( md->createConnection( mDir.filePath( u"test.gpkg"_s ), {} ) );
+  md->saveConnection( mGpkgConn.get(), u"GPKG_1"_s );
 }
 
 void TestQgsNewDatabaseTableNameWidget::cleanupTestCase()
@@ -109,7 +109,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 #ifdef ENABLE_PGTEST
   std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList { "postgres" } ) };
 
-  auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
+  auto index = w->mBrowserModel->findPath( u"pg:/PG_1"_s );
   QVERIFY( index.isValid() );
   w->mBrowserModel->dataItem( index )->populate( true );
   w->mBrowserTreeView->expandAll();
@@ -148,7 +148,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   QCOMPARE( arguments.at( 0 ).toString(), QString( "postgres" ) );
 
   // Find qgis_test schema item
-  index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1/qgis_test" ) );
+  index = w->mBrowserModel->findPath( u"pg:/PG_1/qgis_test"_s );
   QVERIFY( index.isValid() );
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
@@ -165,7 +165,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   arguments = uriSpy.takeLast();
   QVERIFY( !arguments.at( 0 ).toString().isEmpty() );
 
-  w->mNewTableName->setText( QStringLiteral( "someNewTableData" ) ); //#spellok
+  w->mNewTableName->setText( u"someNewTableData"_s ); //#spellok
   QCOMPARE( tableSpy.count(), 1 );
   arguments = tableSpy.takeLast();
   QCOMPARE( arguments.at( 0 ).toString(), QString( "someNewTableData" ) ); //#spellok
@@ -181,7 +181,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   QVERIFY( w->uri().contains( R"("qgis_test"."someNewTableData")" ) ); //#spellok
 
   // Test unique and make it invalid again so we get a status change
-  w->mNewTableName->setText( QStringLiteral( "someData" ) );
+  w->mNewTableName->setText( u"someData"_s );
   QVERIFY( !w->isValid() );
   QCOMPARE( tableSpy.count(), 1 );
   arguments = tableSpy.takeLast();
@@ -191,7 +191,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   QCOMPARE( arguments.at( 0 ).toBool(), false );
 
   // Now select another schema
-  index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1/public" ) );
+  index = w->mBrowserModel->findPath( u"pg:/PG_1/public"_s );
   QVERIFY( index.isValid() );
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
@@ -219,7 +219,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
 #ifdef ENABLE_PGTEST
   std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList { "ogr" } ) };
 
-  auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
+  auto index = w->mBrowserModel->findPath( u"pg:/PG_1"_s );
   QVERIFY( index.isValid() );
   w->mBrowserModel->dataItem( index )->populate( true );
   w->mBrowserTreeView->expandAll();
@@ -241,7 +241,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   //*/
 
   uriSpy.clear();
-  index = w->mBrowserModel->findPath( QStringLiteral( "gpkg:/%1" ).arg( mGpkgPath ) );
+  index = w->mBrowserModel->findPath( u"gpkg:/%1"_s.arg( mGpkgPath ) );
   QVERIFY( index.isValid() );
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   const auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
@@ -256,7 +256,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   arguments = uriSpy.takeLast();
   QCOMPARE( arguments.at( 0 ).toString(), mGpkgPath );
 
-  w->mNewTableName->setText( QStringLiteral( "newTableName" ) );
+  w->mNewTableName->setText( u"newTableName"_s );
   QVERIFY( w->isValid() );
   QCOMPARE( validationSpy.count(), 1 );
   arguments = validationSpy.takeLast();
@@ -266,7 +266,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   QCOMPARE( w->table(), QString( "newTableName" ) );
   QCOMPARE( w->schema(), mGpkgPath );
   QCOMPARE( w->dataProviderKey(), QString( "ogr" ) );
-  QCOMPARE( w->uri(), QString( mGpkgPath + QStringLiteral( "|layername=newTableName" ) ) );
+  QCOMPARE( w->uri(), QString( mGpkgPath + u"|layername=newTableName"_s ) );
 #endif
 }
 

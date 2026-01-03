@@ -39,7 +39,7 @@ class TestQgsDataDefinedSizeLegend : public QgsTest
 
   public:
     TestQgsDataDefinedSizeLegend()
-      : QgsTest( QStringLiteral( "Data Defined Size Legend Tests" ), QStringLiteral( "data_defined_size_legend" ) ) {}
+      : QgsTest( u"Data Defined Size Legend Tests"_s, u"data_defined_size_legend"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -67,18 +67,18 @@ void TestQgsDataDefinedSizeLegend::testBasic()
 {
   QgsDataDefinedSizeLegend settings;
   settings.setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
-  settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  settings.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
 
   QList<QgsDataDefinedSizeLegend::SizeClass> classes;
-  classes << QgsDataDefinedSizeLegend::SizeClass( 3., QStringLiteral( "3" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 15., QStringLiteral( "15" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 30., QStringLiteral( "30" ) );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 3., u"3"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 15., u"15"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 30., u"30"_s );
   settings.setClasses( classes );
 
   QVariantMap props;
-  props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
-  props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
-  props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,255,0" );
+  props[u"name"_s] = u"circle"_s;
+  props[u"color"_s] = u"200,255,200"_s;
+  props[u"outline_color"_s] = u"0,255,0"_s;
 
   settings.setSymbol( QgsMarkerSymbol::createSimple( props ).release() ); // takes ownership
 
@@ -97,21 +97,21 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
 {
   QgsDataDefinedSizeLegend settings;
   settings.setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
-  settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  settings.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
 
   QList<QgsDataDefinedSizeLegend::SizeClass> classes;
-  classes << QgsDataDefinedSizeLegend::SizeClass( 2., QStringLiteral( "2" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 5., QStringLiteral( "5" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 10., QStringLiteral( "10" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 12., QStringLiteral( "12" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 15., QStringLiteral( "15" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 18., QStringLiteral( "18" ) );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 2., u"2"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 5., u"5"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 10., u"10"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 12., u"12"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 15., u"15"_s );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 18., u"18"_s );
   settings.setClasses( classes );
 
   QVariantMap props;
-  props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
-  props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
-  props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,255,0" );
+  props[u"name"_s] = u"circle"_s;
+  props[u"color"_s] = u"200,255,200"_s;
+  props[u"outline_color"_s] = u"0,255,0"_s;
 
   settings.setSymbol( QgsMarkerSymbol::createSimple( props ).release() ); // takes ownership
 

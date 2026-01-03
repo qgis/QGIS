@@ -64,9 +64,9 @@ void TestQgsOgrProviderGui::providersRegistered()
   bool hasGpkgProvider = false;
   for ( QgsDataItemGuiProvider *provider : providers )
   {
-    if ( provider->name() == QLatin1String( "ogr_items" ) )
+    if ( provider->name() == "ogr_items"_L1 )
       hasOgrProvider = true;
-    if ( provider->name() == QLatin1String( "geopackage_items" ) )
+    if ( provider->name() == "geopackage_items"_L1 )
       hasGpkgProvider = true;
   }
   QVERIFY( hasOgrProvider );
@@ -81,21 +81,21 @@ void TestQgsOgrProviderGui::cleanupTestCase()
 
 void TestQgsOgrProviderGui::testGpkgDataItemRename()
 {
-  QTemporaryFile tmpFile( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-XXXXXX.gpkg" ) ) );
+  QTemporaryFile tmpFile( QDir::temp().absoluteFilePath( u"qgis-XXXXXX.gpkg"_s ) );
   QVERIFY( tmpFile.open() );
   tmpFile.close();
   const QString fileName { tmpFile.fileName() };
   tmpFile.remove();
-  QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ), fileName ) );
+  QVERIFY( QFile::copy( u"%1/provider/bug_21227-rename-styles.gpkg"_s.arg( mTestDataDir ), fileName ) );
 
   // create geopackage item and populate it with layers
-  QgsGeoPackageCollectionItem gpkgItem( nullptr, QStringLiteral( "test gpkg" ), QStringLiteral( "gpkg:/%1" ).arg( fileName ) );
+  QgsGeoPackageCollectionItem gpkgItem( nullptr, u"test gpkg"_s, u"gpkg:/%1"_s.arg( fileName ) );
   gpkgItem.populate( true );
   const QVector<QgsDataItem *> items = gpkgItem.children();
   QgsDataItem *itemLayer1 = nullptr;
   for ( QgsDataItem *item : items )
   {
-    if ( item->name() == QLatin1String( "layer 1" ) )
+    if ( item->name() == "layer 1"_L1 )
       itemLayer1 = item;
   }
   QVERIFY( itemLayer1 );
@@ -107,11 +107,11 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
   bool success = false;
   for ( QgsDataItemGuiProvider *provider : providers )
   {
-    if ( provider->rename( itemLayer1, QStringLiteral( "layer 3" ), QgsDataItemGuiContext() ) )
+    if ( provider->rename( itemLayer1, u"layer 3"_s, QgsDataItemGuiContext() ) )
     {
       success = true;
       // also check it was the correct provider
-      QCOMPARE( provider->name(), QStringLiteral( "geopackage_items" ) );
+      QCOMPARE( provider->name(), u"geopackage_items"_s );
     }
   }
   QVERIFY( success );
@@ -124,19 +124,19 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
     ;
 
   // Check that the style is still available
-  const QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
+  const QgsVectorLayer metadataLayer( u"/%1|layername=layer_styles"_s.arg( fileName ) );
   QVERIFY( metadataLayer.isValid() );
   QgsFeature feature;
-  QgsFeatureIterator it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 3'" ) ) ) );
+  QgsFeatureIterator it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( u"\"f_table_name\" = 'layer 3'"_s ) ) );
   QVERIFY( it.nextFeature( feature ) );
   QVERIFY( feature.isValid() );
-  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 1" ) );
-  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 1' " ) ) ) );
+  QCOMPARE( feature.attribute( u"styleName"_s ).toString(), QString( "style for layer 1" ) );
+  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( u"\"f_table_name\" = 'layer 1' "_s ) ) );
   QVERIFY( !it.nextFeature( feature ) );
-  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 2' " ) ) ) );
+  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( u"\"f_table_name\" = 'layer 2' "_s ) ) );
   QVERIFY( it.nextFeature( feature ) );
   QVERIFY( feature.isValid() );
-  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 2" ) );
+  QCOMPARE( feature.attribute( u"styleName"_s ).toString(), QString( "style for layer 2" ) );
 }
 
 

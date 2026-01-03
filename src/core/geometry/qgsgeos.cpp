@@ -341,7 +341,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QS
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -746,7 +746,7 @@ bool QgsGeos::contains( double x, double y, QString *errorMsg ) const
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -868,7 +868,7 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) c
       }
       catch ( QgsGeosException &e )
       {
-        logError( QStringLiteral( "GEOS" ), e.what() );
+        logError( u"GEOS"_s, e.what() );
         if ( errorMsg )
         {
           *errorMsg = e.what();
@@ -921,7 +921,7 @@ bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) con
       }
       catch ( QgsGeosException &e )
       {
-        logError( QStringLiteral( "GEOS" ), e.what() );
+        logError( u"GEOS"_s, e.what() );
         if ( errorMsg )
         {
           *errorMsg = e.what();
@@ -966,7 +966,7 @@ QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) co
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -997,7 +997,7 @@ bool QgsGeos::relatePattern( const QgsAbstractGeometry *geom, const QString &pat
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -1997,7 +1997,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -2079,7 +2079,7 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -2279,7 +2279,7 @@ Qgis::CoverageValidityResult QgsGeos::validateCoverage( double gapWidth, std::un
   if ( !mGeos )
   {
     if ( errorMsg )
-      *errorMsg = QStringLiteral( "Input geometry was not set" );
+      *errorMsg = u"Input geometry was not set"_s;
     return Qgis::CoverageValidityResult::Error;
   }
 
@@ -2324,7 +2324,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::simplifyCoverageVW( double toleran
   if ( !mGeos )
   {
     if ( errorMsg )
-      *errorMsg = QStringLiteral( "Input geometry was not set" );
+      *errorMsg = u"Input geometry was not set"_s;
     return nullptr;
   }
 
@@ -2343,7 +2343,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::unionCoverage( QString *errorMsg )
   if ( !mGeos )
   {
     if ( errorMsg )
-      *errorMsg = QStringLiteral( "Input geometry was not set" );
+      *errorMsg = u"Input geometry was not set"_s;
     return nullptr;
   }
 
@@ -2385,18 +2385,18 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
       // Copied from https://github.com/libgeos/geos/blob/main/src/operation/valid/TopologyValidationError.cpp
       static const std::map< QString, QString > sTranslatedErrors
       {
-        { QStringLiteral( "topology validation error" ), QObject::tr( "Topology validation error", "GEOS Error" ) },
-        { QStringLiteral( "repeated point" ), QObject::tr( "Repeated point", "GEOS Error" ) },
-        { QStringLiteral( "hole lies outside shell" ), QObject::tr( "Hole lies outside shell", "GEOS Error" ) },
-        { QStringLiteral( "holes are nested" ), QObject::tr( "Holes are nested", "GEOS Error" ) },
-        { QStringLiteral( "interior is disconnected" ), QObject::tr( "Interior is disconnected", "GEOS Error" ) },
-        { QStringLiteral( "self-intersection" ), QObject::tr( "Self-intersection", "GEOS Error" ) },
-        { QStringLiteral( "ring self-intersection" ), QObject::tr( "Ring self-intersection", "GEOS Error" ) },
-        { QStringLiteral( "nested shells" ), QObject::tr( "Nested shells", "GEOS Error" ) },
-        { QStringLiteral( "duplicate rings" ), QObject::tr( "Duplicate rings", "GEOS Error" ) },
-        { QStringLiteral( "too few points in geometry component" ), QObject::tr( "Too few points in geometry component", "GEOS Error" ) },
-        { QStringLiteral( "invalid coordinate" ), QObject::tr( "Invalid coordinate", "GEOS Error" ) },
-        { QStringLiteral( "ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) },
+        { u"topology validation error"_s, QObject::tr( "Topology validation error", "GEOS Error" ) },
+        { u"repeated point"_s, QObject::tr( "Repeated point", "GEOS Error" ) },
+        { u"hole lies outside shell"_s, QObject::tr( "Hole lies outside shell", "GEOS Error" ) },
+        { u"holes are nested"_s, QObject::tr( "Holes are nested", "GEOS Error" ) },
+        { u"interior is disconnected"_s, QObject::tr( "Interior is disconnected", "GEOS Error" ) },
+        { u"self-intersection"_s, QObject::tr( "Self-intersection", "GEOS Error" ) },
+        { u"ring self-intersection"_s, QObject::tr( "Ring self-intersection", "GEOS Error" ) },
+        { u"nested shells"_s, QObject::tr( "Nested shells", "GEOS Error" ) },
+        { u"duplicate rings"_s, QObject::tr( "Duplicate rings", "GEOS Error" ) },
+        { u"too few points in geometry component"_s, QObject::tr( "Too few points in geometry component", "GEOS Error" ) },
+        { u"invalid coordinate"_s, QObject::tr( "Invalid coordinate", "GEOS Error" ) },
+        { u"ring is not closed"_s, QObject::tr( "Ring is not closed", "GEOS Error" ) },
       };
 
       const auto translatedError = sTranslatedErrors.find( error.toLower() );
@@ -2501,7 +2501,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         coordSeq = GEOSCoordSeq_copyFromArrays_r( context, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
         if ( !coordSeq )
         {
-          QgsDebugError( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
+          QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for %1 points"_s.arg( numPoints ) );
           return nullptr;
         }
       }
@@ -2523,7 +2523,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         coordSeq = GEOSCoordSeq_copyFromArrays_r( context, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), nullptr, numPoints + 1 );
         if ( !coordSeq )
         {
-          QgsDebugError( QStringLiteral( "GEOS Exception: Could not create closed coordinate sequence for %1 points" ).arg( numPoints + 1 ) );
+          QgsDebugError( u"GEOS Exception: Could not create closed coordinate sequence for %1 points"_s.arg( numPoints + 1 ) );
           return nullptr;
         }
       }
@@ -2556,7 +2556,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     coordSeq = GEOSCoordSeq_create_r( context, numOutPoints, coordDims );
     if ( !coordSeq )
     {
-      QgsDebugError( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ) );
+      QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions"_s.arg( numPoints ).arg( coordDims ) );
       return nullptr;
     }
 
@@ -2654,7 +2654,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( context, 1, coordDims );
     if ( !coordSeq )
     {
-      QgsDebugError( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ) );
+      QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for point with %1 dimensions"_s.arg( coordDims ) );
       return nullptr;
     }
     if ( precision > 0. )
@@ -3113,7 +3113,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::closestPoint( const QgsGeometry &o
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -3157,7 +3157,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractG
     if ( !nearestCoord )
     {
       if ( errorMsg )
-        *errorMsg = QStringLiteral( "GEOS returned no nearest points" );
+        *errorMsg = u"GEOS returned no nearest points"_s;
       return nullptr;
     }
 
@@ -3168,7 +3168,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractG
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -3202,7 +3202,7 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -3231,7 +3231,7 @@ double QgsGeos::lineLocatePoint( double x, double y, QString *errorMsg ) const
   }
   catch ( QgsGeosException &e )
   {
-    logError( QStringLiteral( "GEOS" ), e.what() );
+    logError( u"GEOS"_s, e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();

@@ -35,7 +35,7 @@ class TestQgsLayoutShapes : public QgsTest
 
   public:
     TestQgsLayoutShapes()
-      : QgsTest( QStringLiteral( "Layout Shape Tests" ), QStringLiteral( "composer_shapes" ) ) {}
+      : QgsTest( u"Layout Shape Tests"_s, u"composer_shapes"_s ) {}
 
   private slots:
     void initTestCase();     // will be called before the first testfunction is executed.
@@ -82,7 +82,7 @@ void TestQgsLayoutShapes::rectangle()
 
   l.addLayoutItem( shape );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_rectangle" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composershapes_rectangle"_s, &l );
 }
 
 void TestQgsLayoutShapes::triangle()
@@ -107,7 +107,7 @@ void TestQgsLayoutShapes::triangle()
 
   l.addLayoutItem( shape );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_triangle" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composershapes_triangle"_s, &l );
 }
 
 void TestQgsLayoutShapes::ellipse()
@@ -132,7 +132,7 @@ void TestQgsLayoutShapes::ellipse()
 
   l.addLayoutItem( shape );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_ellipse" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composershapes_ellipse"_s, &l );
 }
 
 void TestQgsLayoutShapes::roundedRectangle()
@@ -158,7 +158,7 @@ void TestQgsLayoutShapes::roundedRectangle()
 
   shape->setCornerRadius( QgsLayoutMeasurement( 30 ) );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_roundedrect" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composershapes_roundedrect"_s, &l );
 }
 
 void TestQgsLayoutShapes::symbol()
@@ -182,7 +182,7 @@ void TestQgsLayoutShapes::symbol()
   delete fillSymbol;
 
   l.addLayoutItem( shape );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composershapes_symbol" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composershapes_symbol"_s, &l );
 }
 
 void TestQgsLayoutShapes::readWriteXml()
@@ -203,10 +203,10 @@ void TestQgsLayoutShapes::readWriteXml()
   //save original item to xml
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement rootNode = doc.createElement( u"qgis"_s );
 
   shape->writeXml( rootNode, doc, QgsReadWriteContext() );
 
@@ -214,8 +214,8 @@ void TestQgsLayoutShapes::readWriteXml()
   auto copy = std::make_unique<QgsLayoutItemShape>( &l );
   QVERIFY( copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() ) );
   QCOMPARE( copy->shapeType(), QgsLayoutItemShape::Triangle );
-  QCOMPARE( copy->symbol()->symbolLayer( 0 )->color().name(), QStringLiteral( "#00ff00" ) );
-  QCOMPARE( copy->symbol()->symbolLayer( 0 )->strokeColor().name(), QStringLiteral( "#ffff00" ) );
+  QCOMPARE( copy->symbol()->symbolLayer( 0 )->color().name(), u"#00ff00"_s );
+  QCOMPARE( copy->symbol()->symbolLayer( 0 )->strokeColor().name(), u"#ffff00"_s );
 }
 
 void TestQgsLayoutShapes::bounds()
@@ -272,9 +272,9 @@ void TestQgsLayoutShapes::shapeRotation()
   delete fillSymbol;
 
   l.addLayoutItem( shape );
-  mControlPathPrefix = QStringLiteral( "composer_items" );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composerrotation_shape" ), &l );
-  mControlPathPrefix = QStringLiteral( "composer_shape" );
+  mControlPathPrefix = u"composer_items"_s;
+  QGSVERIFYLAYOUTCHECK( u"composerrotation_shape"_s, &l );
+  mControlPathPrefix = u"composer_shape"_s;
 }
 
 QGSTEST_MAIN( TestQgsLayoutShapes )

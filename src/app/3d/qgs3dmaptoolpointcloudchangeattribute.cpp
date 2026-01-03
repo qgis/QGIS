@@ -71,7 +71,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::restart()
 
 void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeometry &geometry, const QString &attributeName, const double newValue, Qgs3DMapCanvas &canvas, QgsMapLayer *mapLayer )
 {
-  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue" ) );
+  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue"_s );
   QgsGeos preparedPolygon = QgsGeos( geometry.constGet() );
   preparedPolygon.prepareGeometry();
 
@@ -101,7 +101,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
 
   QVector<QgsPointCloudNodeId> nodes;
   {
-    QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes" ) );
+    QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes"_s );
     QgsPointCloudIndex index = layer->index();
     const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
     QQueue<QgsPointCloudNodeId> queue;
@@ -121,7 +121,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
+        QgsDebugError( u"Error transforming node bounds coordinate"_s );
         continue;
       }
 
@@ -159,7 +159,7 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
     }
   }
 
-  QgsEventTracing::ScopedEvent _trace2( QStringLiteral( "PointCloud" ), QStringLiteral( "Qgs3DMapToolPointCloudChangeAttribute::searchPoints, selecting points" ) );
+  QgsEventTracing::ScopedEvent _trace2( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, selecting points"_s );
 
   // Get the map's clipping extent in layer crs and skip if empty. We only need points within this extent.
   const Qgs3DMapSettings *map = canvas.mapSettings();
@@ -210,9 +210,9 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   QVector<int> selected;
 
   QgsPointCloudAttributeCollection attributes;
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
-  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   QString categoryAttributeName;
   QSet<int> categoryValues;
@@ -240,7 +240,7 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   QgsPointCloudExpression filterExpression;
 
   if ( !layerFilter.isEmpty() && !mPointFilter.isEmpty() )
-    filterExpression.setExpression( QStringLiteral( "(%1) AND (%2)" ).arg( layerFilter, mPointFilter ) );
+    filterExpression.setExpression( u"(%1) AND (%2)"_s.arg( layerFilter, mPointFilter ) );
   else if ( !mPointFilter.isEmpty() )
     filterExpression.setExpression( mPointFilter );
   else
@@ -271,9 +271,9 @@ QVector<int> Qgs3DMapToolPointCloudChangeAttribute::selectedPointsInNode( const 
   const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
   const std::size_t recordSize = blockAttributes.pointRecordSize();
   int xOffset = 0, yOffset = 0, zOffset = 0, categoryAttributeOffset = 0;
-  const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-  const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-  const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+  const QgsPointCloudAttribute::DataType xType = blockAttributes.find( u"X"_s, xOffset )->type();
+  const QgsPointCloudAttribute::DataType yType = blockAttributes.find( u"Y"_s, yOffset )->type();
+  const QgsPointCloudAttribute::DataType zType = blockAttributes.find( u"Z"_s, zOffset )->type();
   const QgsPointCloudAttribute *categoryAttribute = const_cast<QgsPointCloudAttribute *>( blockAttributes.find( categoryAttributeName, categoryAttributeOffset ) );
 
   // we should adjust the Z based on the layer's elevation properties scale and offset

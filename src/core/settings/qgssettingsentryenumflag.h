@@ -59,7 +59,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
       if ( !mMetaEnum.isValid() )
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
+        QgsDebugError( u"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'"_s.arg( this->key() ) );
     }
 
     /**
@@ -84,7 +84,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
       if ( !mMetaEnum.isValid() )
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
+        QgsDebugError( u"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'"_s.arg( this->key() ) );
     }
 
     QVariant convertToVariant( const T &value ) const override
@@ -103,7 +103,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
     {
       if ( !mMetaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key() ) );
+        QgsDebugError( u"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'"_s.arg( this->key() ) );
         return T();
       }
 
@@ -116,7 +116,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
 
       if ( !ok )
       {
-        QgsDebugError( QStringLiteral( "Invalid enum/flag key/s '%1' for settings key '%2'" ).arg( value.toString(), this->key() ) );
+        QgsDebugError( u"Invalid enum/flag key/s '%1' for settings key '%2'"_s.arg( value.toString(), this->key() ) );
         return T();
       }
 
@@ -133,7 +133,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
     {
       if ( !mMetaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'" ).arg( this->key( dynamicKeyPartList ) ) );
+        QgsDebugError( u"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '%1'"_s.arg( this->key( dynamicKeyPartList ) ) );
         return false;
       }
 
@@ -165,7 +165,7 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
 
     QString typeId() const override
     {
-      return QStringLiteral( "%1-%2" ).arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() );
+      return u"%1-%2"_s.arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() );
     }
 
   private:

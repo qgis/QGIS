@@ -75,21 +75,21 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
 
         if ( !domainError.isEmpty() )
         {
-          children.push_back( new QgsErrorItem( this, domainError, path() + QStringLiteral( "/domainerror" ) ) );
+          children.push_back( new QgsErrorItem( this, domainError, path() + u"/domainerror"_s ) );
         }
       }
     }
   }
   catch ( const QgsProviderConnectionException &ex )
   {
-    children.push_back( new QgsErrorItem( this, ex.what(), path() + QStringLiteral( "/error" ) ) );
+    children.push_back( new QgsErrorItem( this, ex.what(), path() + u"/error"_s ) );
   }
   return children;
 }
 
 QIcon QgsFieldDomainsItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mSourceFields.svg" ) );
+  return QgsApplication::getThemeIcon( u"mSourceFields.svg"_s );
 }
 
 QString QgsFieldDomainsItem::connectionUri() const
@@ -118,11 +118,11 @@ QIcon QgsFieldDomainItem::icon()
   switch ( mDomain->type() )
   {
     case Qgis::FieldDomainType::Coded:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s );
     case Qgis::FieldDomainType::Range:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconFieldInteger.svg"_s );
     case Qgis::FieldDomainType::Glob:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s );
   }
   BUILTIN_UNREACHABLE
 }

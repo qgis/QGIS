@@ -108,7 +108,7 @@ QString QgsField::displayNameWithAlias() const
   {
     return name();
   }
-  return QStringLiteral( "%1 (%2)" ).arg( name(), alias() );
+  return u"%1 (%2)"_s.arg( name(), alias() );
 }
 
 QString QgsField::displayType( const bool showConstraints ) const
@@ -120,18 +120,18 @@ QString QgsField::displayType( const bool showConstraints ) const
   }
 
   if ( length() > 0 && precision() > 0 )
-    typeStr += QStringLiteral( "(%1, %2)" ).arg( length() ).arg( precision() );
+    typeStr += u"(%1, %2)"_s.arg( length() ).arg( precision() );
   else if ( length() > 0 )
-    typeStr += QStringLiteral( "(%1)" ).arg( length() );
+    typeStr += u"(%1)"_s.arg( length() );
 
   if ( showConstraints )
   {
     typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
-               ? QStringLiteral( " NOT NULL" )
-               : QStringLiteral( " NULL" );
+               ? u" NOT NULL"_s
+               : u" NULL"_s;
 
     typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
-               ? QStringLiteral( " UNIQUE" )
+               ? u" UNIQUE"_s
                : QString();
   }
 
@@ -142,7 +142,7 @@ QString QgsField::friendlyTypeString() const
 {
   if ( d->type == QMetaType::Type::User )
   {
-    if ( d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+    if ( d->typeName.compare( "geometry"_L1, Qt::CaseInsensitive ) == 0 )
     {
       return QObject::tr( "Geometry" );
     }
@@ -335,7 +335,7 @@ QString QgsField::displayString( const QVariant &v ) const
       {
         wkt = wkt.left( MAX_WKT_LENGTH ) + QChar( 0x2026 );
       }
-      QString formattedText = QStringLiteral( "%1 [%2]" ).arg( wkt, geom.crs().userFriendlyIdentifier() );
+      QString formattedText = u"%1 [%2]"_s.arg( wkt, geom.crs().userFriendlyIdentifier() );
       return formattedText;
     }
   }
@@ -424,7 +424,7 @@ QString QgsField::displayString( const QVariant &v ) const
     if ( ok )
       return QLocale().toString( converted );
   }
-  else if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) )
+  else if ( d->typeName.compare( "json"_L1, Qt::CaseInsensitive ) == 0 || d->typeName == "jsonb"_L1 )
   {
     const QJsonDocument doc = QJsonDocument::fromVariant( v );
     return QString::fromUtf8( doc.toJson().constData() );
@@ -440,7 +440,7 @@ QString QgsField::displayString( const QVariant &v ) const
     for ( const QVariant &var : list )
     {
       if ( !result.isEmpty() )
-        result.append( QStringLiteral( ", " ) );
+        result.append( u", "_s );
       result.append( var.toString() );
     }
     return result;
@@ -628,7 +628,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
   }
 
-  if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName.compare( QLatin1String( "jsonb" ), Qt::CaseInsensitive ) == 0 )
+  if ( d->typeName.compare( "json"_L1, Qt::CaseInsensitive ) == 0 || d->typeName.compare( "jsonb"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( d->type == QMetaType::Type::QString )
     {
@@ -683,7 +683,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
     return true;
   }
-  else if ( d->type == QMetaType::Type::User && d->typeName.compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  else if ( d->type == QMetaType::Type::User && d->typeName.compare( "geometry"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( v.userType() == qMetaTypeId<QgsReferencedGeometry>() || v.userType() == qMetaTypeId< QgsGeometry>() )
     {

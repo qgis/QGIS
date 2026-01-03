@@ -1246,7 +1246,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    // TODO QGIS 4.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
+    // TODO QGIS 5.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
     // only apply to simple line symbol layers and do not belong here.
 
     /**

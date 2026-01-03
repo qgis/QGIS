@@ -27,10 +27,10 @@
 ///@cond PRIVATE
 
 
-const QgsSettingsEntryString *QgsGdalCloudProviderConnection::settingsVsiHandler = new QgsSettingsEntryString( QStringLiteral( "handler" ), sTreeConnectionCloud );
-const QgsSettingsEntryString *QgsGdalCloudProviderConnection::settingsContainer = new QgsSettingsEntryString( QStringLiteral( "container" ), sTreeConnectionCloud );
-const QgsSettingsEntryString *QgsGdalCloudProviderConnection::settingsPath = new QgsSettingsEntryString( QStringLiteral( "path" ), sTreeConnectionCloud );
-const QgsSettingsEntryVariantMap *QgsGdalCloudProviderConnection::settingsCredentialOptions = new QgsSettingsEntryVariantMap( QStringLiteral( "credential-options" ), sTreeConnectionCloud );
+const QgsSettingsEntryString *QgsGdalCloudProviderConnection::settingsVsiHandler = new QgsSettingsEntryString( u"handler"_s, sTreeConnectionCloud );
+const QgsSettingsEntryString *QgsGdalCloudProviderConnection::settingsContainer = new QgsSettingsEntryString( u"container"_s, sTreeConnectionCloud );
+const QgsSettingsEntryString *QgsGdalCloudProviderConnection::settingsPath = new QgsSettingsEntryString( u"path"_s, sTreeConnectionCloud );
+const QgsSettingsEntryVariantMap *QgsGdalCloudProviderConnection::settingsCredentialOptions = new QgsSettingsEntryVariantMap( u"credential-options"_s, sTreeConnectionCloud );
 
 ///@endcond
 
@@ -39,18 +39,18 @@ QString QgsGdalCloudProviderConnection::encodedUri( const QgsGdalCloudProviderCo
   QgsDataSourceUri uri;
 
   if ( !data.vsiHandler.isEmpty() )
-    uri.setParam( QStringLiteral( "handler" ), data.vsiHandler );
+    uri.setParam( u"handler"_s, data.vsiHandler );
   if ( !data.container.isEmpty() )
-    uri.setParam( QStringLiteral( "container" ), data.container );
+    uri.setParam( u"container"_s, data.container );
   if ( !data.rootPath.isEmpty() )
-    uri.setParam( QStringLiteral( "rootPath" ), data.rootPath );
+    uri.setParam( u"rootPath"_s, data.rootPath );
 
   QStringList credentialOptions;
   for ( auto it = data.credentialOptions.constBegin(); it != data.credentialOptions.constEnd(); ++it )
   {
     if ( !it.value().toString().isEmpty() )
     {
-      credentialOptions.append( QStringLiteral( "%1=%2" ).arg( it.key(), it.value().toString() ) );
+      credentialOptions.append( u"%1=%2"_s.arg( it.key(), it.value().toString() ) );
     }
   }
   if ( !credentialOptions.empty() )
@@ -65,14 +65,14 @@ QgsGdalCloudProviderConnection::Data QgsGdalCloudProviderConnection::decodedUri(
   dsUri.setEncodedUri( uri );
 
   QgsGdalCloudProviderConnection::Data conn;
-  conn.vsiHandler = dsUri.param( QStringLiteral( "handler" ) );
-  conn.container = dsUri.param( QStringLiteral( "container" ) );
-  conn.rootPath = dsUri.param( QStringLiteral( "rootPath" ) );
+  conn.vsiHandler = dsUri.param( u"handler"_s );
+  conn.container = dsUri.param( u"container"_s );
+  conn.rootPath = dsUri.param( u"rootPath"_s );
 
-  const QStringList credentialOptions = dsUri.param( QStringLiteral( "credentialOptions" ) ).split( '|' );
+  const QStringList credentialOptions = dsUri.param( u"credentialOptions"_s ).split( '|' );
   for ( const QString &option : credentialOptions )
   {
-    const thread_local QRegularExpression credentialOptionKeyValueRegex( QStringLiteral( "(.*?)=(.*)" ) );
+    const thread_local QRegularExpression credentialOptionKeyValueRegex( u"(.*?)=(.*)"_s );
     const QRegularExpressionMatch keyValueMatch = credentialOptionKeyValueRegex.match( option );
     if ( keyValueMatch.hasMatch() )
     {
@@ -156,7 +156,7 @@ QList<QgsGdalCloudProviderConnection::DirectoryObject> QgsGdalCloudProviderConne
   char **papszOptions = nullptr;
   papszOptions = CSLAddString( papszOptions, "NAME_AND_TYPE_ONLY=YES" );
 
-  const QString vsiPath = QStringLiteral( "/%1/%2/%3" ).arg( connectionDetails.vsiHandler,
+  const QString vsiPath = u"/%1/%2/%3"_s.arg( connectionDetails.vsiHandler,
                           connectionDetails.container,
                           path );
 

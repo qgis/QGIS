@@ -28,7 +28,7 @@
 
 QString QgsGeometryCheckContainedAlgorithm::name() const
 {
-  return QStringLiteral( "checkgeometrycontained" );
+  return u"checkgeometrycontained"_s;
 }
 
 QString QgsGeometryCheckContainedAlgorithm::displayName() const
@@ -53,7 +53,7 @@ QString QgsGeometryCheckContainedAlgorithm::group() const
 
 QString QgsGeometryCheckContainedAlgorithm::groupId() const
 {
-  return QStringLiteral( "checkgeometry" );
+  return u"checkgeometry"_s;
 }
 
 QString QgsGeometryCheckContainedAlgorithm::shortHelpString() const
@@ -78,27 +78,27 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
   Q_UNUSED( configuration )
 
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+    u"INPUT"_s, QObject::tr( "Input layer" ),
     QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
                  << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
                  << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
   ) );
   addParameter( new QgsProcessingParameterMultipleLayers(
-    QStringLiteral( "POLYGONS" ), QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
+    u"POLYGONS"_s, QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
 
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorPoint
+    u"ERRORS"_s, QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    u"OUTPUT"_s, QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
 
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -109,36 +109,36 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
 
 bool QgsGeometryCheckContainedAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
   return true;
 }
 
 QgsFields QgsGeometryCheckContainedAlgorithm::outputFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_layername" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_partidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_ringidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_vertidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_errorx" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_errory" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layerid"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layername"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_partidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_ringidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_vertidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_errorx"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_errory"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_error"_s, QMetaType::QString ) );
   return fields;
 }
 
 
 QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  QList<QgsMapLayer *> polygonLayers = parameterAsLayerList( parameters, QStringLiteral( "POLYGONS" ), context );
+  QList<QgsMapLayer *> polygonLayers = parameterAsLayerList( parameters, u"POLYGONS"_s, context );
   if ( polygonLayers.isEmpty() )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "POLYGONS" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"POLYGONS"_s ) );
 
-  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const QString uniqueIdFieldName( parameterAsString( parameters, u"UNIQUE_ID"_s, context ) );
   const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
@@ -150,14 +150,14 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
 
   QString dest_output, dest_errors;
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
+    parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs()
   ) );
 
   std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
+    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
   ) );
   if ( !sink_errors )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
@@ -251,11 +251,11 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
 
     f.setGeometry( error->geometry() );
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -276,8 +276,8 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
 
   QVariantMap outputs;
   if ( sink_output )
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
-  outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
+    outputs.insert( u"OUTPUT"_s, dest_output );
+  outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;
 }

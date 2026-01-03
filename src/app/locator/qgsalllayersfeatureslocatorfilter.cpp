@@ -73,12 +73,12 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
       req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QString enhancedSearch = string;
     enhancedSearch.replace( ' ', '%' );
-    req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
+    req.setFilterExpression( u"%1 ILIKE '%%2%'"_s
                                .arg( layer->displayExpression(), enhancedSearch ) );
     req.setLimit( mMaxResultsPerLayer );
 
     QgsFeatureRequest exactMatchRequest = req;
-    exactMatchRequest.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
+    exactMatchRequest.setFilterExpression( u"%1 ILIKE '%2'"_s
                                              .arg( layer->displayExpression(), enhancedSearch ) );
     exactMatchRequest.setLimit( mMaxResultsPerLayer );
 
@@ -222,16 +222,16 @@ void QgsAllLayersFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
   QString key = "locator_filters/all_layers_features";
   QgsSettings settings;
   auto dlg = std::make_unique<QDialog>( parent );
-  dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
+  dlg->restoreGeometry( settings.value( u"Windows/%1/geometry"_s.arg( key ) ).toByteArray() );
   dlg->setWindowTitle( "All layers features locator filter" );
   QFormLayout *formLayout = new QFormLayout;
   QSpinBox *globalLimitSpinBox = new QSpinBox( dlg.get() );
-  globalLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_global" ).arg( key ), 15, QgsSettings::App ).toInt() );
+  globalLimitSpinBox->setValue( settings.value( u"%1/limit_global"_s.arg( key ), 15, QgsSettings::App ).toInt() );
   globalLimitSpinBox->setMinimum( 1 );
   globalLimitSpinBox->setMaximum( 200 );
   formLayout->addRow( tr( "&Maximum number of results:" ), globalLimitSpinBox );
   QSpinBox *perLayerLimitSpinBox = new QSpinBox( dlg.get() );
-  perLayerLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_per_layer" ).arg( key ), 8, QgsSettings::App ).toInt() );
+  perLayerLimitSpinBox->setValue( settings.value( u"%1/limit_per_layer"_s.arg( key ), 8, QgsSettings::App ).toInt() );
   perLayerLimitSpinBox->setMinimum( 1 );
   perLayerLimitSpinBox->setMaximum( 200 );
   formLayout->addRow( tr( "&Maximum number of results per layer:" ), perLayerLimitSpinBox );
@@ -239,8 +239,8 @@ void QgsAllLayersFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
   formLayout->addRow( buttonbBox );
   dlg->setLayout( formLayout );
   connect( buttonbBox, &QDialogButtonBox::accepted, dlg.get(), [&]() {
-    settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
-    settings.setValue( QStringLiteral( "%1/limit_per_layer" ).arg( key ), perLayerLimitSpinBox->value(), QgsSettings::App );
+    settings.setValue( u"%1/limit_global"_s.arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
+    settings.setValue( u"%1/limit_per_layer"_s.arg( key ), perLayerLimitSpinBox->value(), QgsSettings::App );
     dlg->accept();
   } );
   connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );

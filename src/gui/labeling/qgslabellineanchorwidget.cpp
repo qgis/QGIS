@@ -28,10 +28,10 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
 
   setPanelTitle( tr( "Line Anchor Settings" ) );
 
-  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorCenter.svg" ) ), tr( "Center of Line" ), 0.5 );
-  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorStart.svg" ) ), tr( "Start of Line" ), 0.0 );
-  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorEnd.svg" ) ), tr( "End of Line" ), 1.0 );
-  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorCustom.svg" ) ), tr( "Custom…" ), -1.0 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( u"/mActionLabelAnchorCenter.svg"_s ), tr( "Center of Line" ), 0.5 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( u"/mActionLabelAnchorStart.svg"_s ), tr( "Start of Line" ), 0.0 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( u"/mActionLabelAnchorEnd.svg"_s ), tr( "End of Line" ), 1.0 );
+  mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( u"/mActionLabelAnchorCustom.svg"_s ), tr( "Custom…" ), -1.0 );
 
   mClippingComboBox->addItem( tr( "Use Visible Part of Line" ), static_cast<int>( QgsLabelLineSettings::AnchorClipping::UseVisiblePartsOfLine ) );
   mClippingComboBox->addItem( tr( "Use Entire Line" ), static_cast<int>( QgsLabelLineSettings::AnchorClipping::UseEntireLine ) );

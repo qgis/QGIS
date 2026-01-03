@@ -39,11 +39,11 @@ QgsFindFilesByPatternWidget::QgsFindFilesByPatternWidget( QWidget *parent )
   connect( mFindButton, &QPushButton::clicked, this, &QgsFindFilesByPatternWidget::find );
 
   const QgsSettings settings;
-  mFolderWidget->setFilePath( settings.value( QStringLiteral( "qgis/lastFindRecursiveFolder" ) ).toString() );
+  mFolderWidget->setFilePath( settings.value( u"qgis/lastFindRecursiveFolder"_s ).toString() );
   mFindButton->setEnabled( !mFolderWidget->filePath().isEmpty() );
   connect( mFolderWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "qgis/lastFindRecursiveFolder" ), filePath );
+    settings.setValue( u"qgis/lastFindRecursiveFolder"_s, filePath );
     mFindButton->setEnabled( !filePath.isEmpty() );
   } );
 }

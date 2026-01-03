@@ -88,7 +88,7 @@ void TestQgsOfflineEditing::init()
   QFile::copy( myFileName + "/points.geojson", myTempDirName + "/points.geojson" );
   const QString myTempFileName = myTempDirName + "/points.geojson";
   const QFileInfo myMapFileInfo( myTempFileName );
-  mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(), myMapFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(), myMapFileInfo.completeBaseName(), u"ogr"_s );
   QgsProject::instance()->addMapLayer( mpLayer );
 
   numberOfFeatures = mpLayer->featureCount();
@@ -100,7 +100,7 @@ void TestQgsOfflineEditing::init()
   QFile::copy( myFileName + "/points_gpkg.gpkg", myTempDirName + "/points_gpkg.gpkg" );
   const QString myTempFileNameGpgk = myTempDirName + "/points_gpkg.gpkg";
   const QFileInfo myMapFileInfoGpkg( myTempFileNameGpgk );
-  gpkgLayer = new QgsVectorLayer( myMapFileInfoGpkg.filePath() + "|layername=points_gpkg", "points_gpkg", QStringLiteral( "ogr" ) );
+  gpkgLayer = new QgsVectorLayer( myMapFileInfoGpkg.filePath() + "|layername=points_gpkg", "points_gpkg", u"ogr"_s );
 
   QgsProject::instance()->addMapLayer( gpkgLayer );
   layerIds.append( gpkgLayer->id() );
@@ -119,11 +119,11 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack_data()
   QTest::addColumn<QString>( "suffix_input" );
   QTest::addColumn<QString>( "suffix_result" );
 
-  QTest::newRow( "no suffix" ) << QString( "no suffix" ) << QStringLiteral( " (offline)" ); //default value expected
+  QTest::newRow( "no suffix" ) << QString( "no suffix" ) << u" (offline)"_s; //default value expected
   QTest::newRow( "null suffix" ) << QString() << QString();
   QTest::newRow( "empty suffix" ) << QString() << QString();
-  QTest::newRow( "part of name suffix" ) << QStringLiteral( "point" ) << QStringLiteral( "point" );
-  QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
+  QTest::newRow( "part of name suffix" ) << u"point"_s << u"point"_s;
+  QTest::newRow( "another suffix" ) << u"another suffix"_s << u"another suffix"_s;
 }
 
 void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack_data()
@@ -131,12 +131,12 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack_data()
   QTest::addColumn<QString>( "suffix_input" );
   QTest::addColumn<QString>( "suffix_result" );
 
-  QTest::newRow( "no suffix" ) << QStringLiteral( "no suffix" ) << QStringLiteral( " (offline)" ); //default value expected
+  QTest::newRow( "no suffix" ) << u"no suffix"_s << u" (offline)"_s; //default value expected
   QTest::newRow( "null suffix" ) << QString() << QString();
 
   QTest::newRow( "empty suffix" ) << QString() << QString();
-  QTest::newRow( "part of name suffix" ) << QStringLiteral( "point" ) << QStringLiteral( "point" );
-  QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
+  QTest::newRow( "part of name suffix" ) << u"point"_s << u"point"_s;
+  QTest::newRow( "another suffix" ) << u"another suffix"_s << u"another suffix"_s;
 }
 
 void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
@@ -145,42 +145,42 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   QFETCH( QString, suffix_result );
 
   offlineDbFile = "TestQgsOfflineEditing.sqlite";
-  QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
+  QCOMPARE( mpLayer->name(), u"points"_s );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
 
   //set on LayerTreeNode showFeatureCount property
   QgsLayerTreeLayer *layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
-  layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
+  layerTreelayer->setCustomProperty( u"showFeatureCount"_s, 1 );
 
   //convert
-  if ( suffix_input.compare( QLatin1String( "no suffix" ) ) == 0 )
+  if ( suffix_input.compare( "no suffix"_L1 ) == 0 )
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite, suffix_input );
 
-  const QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
+  const QString layerName = u"points%1"_s.arg( suffix_result );
 
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( layerName ).first() );
   QCOMPARE( mpLayer->name(), layerName );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
-  QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
+  QCOMPARE( layerTreelayer->customProperty( u"showFeatureCount"_s, 0 ).toInt(), 1 );
   //unset on LayerTreeNode showFeatureCount property
-  layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 0 );
+  layerTreelayer->setCustomProperty( u"showFeatureCount"_s, 0 );
 
   //synchronize back
   mOfflineEditing->synchronize();
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points" ) ).first() );
-  QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( u"points"_s ).first() );
+  QCOMPARE( mpLayer->name(), u"points"_s );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
 
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
-  QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 0 );
+  QCOMPARE( layerTreelayer->customProperty( u"showFeatureCount"_s, 0 ).toInt(), 0 );
 }
 
 void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
@@ -189,7 +189,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QFETCH( QString, suffix_result );
 
   offlineDbFile = "TestQgsOfflineEditing.gpkg";
-  QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
+  QCOMPARE( mpLayer->name(), u"points"_s );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
   QgsFeature firstFeatureBeforeAction;
@@ -200,20 +200,20 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
 
   //set on LayerTreeNode showFeatureCount property
   QgsLayerTreeLayer *layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
-  layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
+  layerTreelayer->setCustomProperty( u"showFeatureCount"_s, 1 );
   layerTreelayer->setItemVisibilityChecked( false );
   QgsMapLayerStyle style;
   style.readFromLayer( mpLayer );
 
-  mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
+  mpLayer->styleManager()->addStyle( u"testStyle"_s, style );
 
   //convert
-  if ( suffix_input.compare( QLatin1String( "no suffix" ) ) == 0 )
+  if ( suffix_input.compare( "no suffix"_L1 ) == 0 )
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG, suffix_input );
 
-  const QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
+  const QString layerName = u"points%1"_s.arg( suffix_result );
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( layerName ).first() );
   QCOMPARE( mpLayer->name(), layerName );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
@@ -221,52 +221,52 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QCOMPARE( mpLayer->fields().size(), numberOfFields + 1 );
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
-  QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
+  QCOMPARE( layerTreelayer->customProperty( u"showFeatureCount"_s, 0 ).toInt(), 1 );
   QCOMPARE( layerTreelayer->isVisible(), false );
-  QVERIFY( mpLayer->styleManager()->styles().contains( QStringLiteral( "testStyle" ) ) );
+  QVERIFY( mpLayer->styleManager()->styles().contains( u"testStyle"_s ) );
 
   QgsFeature firstFeatureInAction;
   it = mpLayer->getFeatures();
   it.nextFeature( firstFeatureInAction );
 
   //compare some values
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Class" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Class" ) ).toString() );
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Heading" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Heading" ) ).toString() );
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( u"Class"_s ).toString(), firstFeatureBeforeAction.attribute( u"Class"_s ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( u"Heading"_s ).toString(), firstFeatureBeforeAction.attribute( u"Heading"_s ).toString() );
+  QCOMPARE( firstFeatureInAction.attribute( u"Cabin Crew"_s ).toString(), firstFeatureBeforeAction.attribute( u"Cabin Crew"_s ).toString() );
 
   //check converted lists values
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffNames" ) ), QVariantList() << QStringLiteral( "Bob" ) << QStringLiteral( "Alice" ) );
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffAges" ) ), QVariantList() << 22 << 33 );
+  QCOMPARE( firstFeatureInAction.attribute( u"StaffNames"_s ), QVariantList() << u"Bob"_s << u"Alice"_s );
+  QCOMPARE( firstFeatureInAction.attribute( u"StaffAges"_s ), QVariantList() << 22 << 33 );
 
   QgsFeature newFeature( mpLayer->dataProvider()->fields() );
-  newFeature.setAttribute( QStringLiteral( "Class" ), QStringLiteral( "Superjet" ) );
-  newFeature.setAttribute( QStringLiteral( "StaffNames" ), QgsJsonUtils::parseArray( QStringLiteral( "[ \"Sebastien\", \"Naomi\", \"And, many, more\" ]" ) ) );
-  newFeature.setAttribute( QStringLiteral( "StaffAges" ), QgsJsonUtils::parseArray( QStringLiteral( "[ 0, 2 ]" ) ) );
+  newFeature.setAttribute( u"Class"_s, u"Superjet"_s );
+  newFeature.setAttribute( u"StaffNames"_s, QgsJsonUtils::parseArray( u"[ \"Sebastien\", \"Naomi\", \"And, many, more\" ]"_s ) );
+  newFeature.setAttribute( u"StaffAges"_s, QgsJsonUtils::parseArray( u"[ 0, 2 ]"_s ) );
   mpLayer->startEditing();
   mpLayer->addFeature( newFeature );
   mpLayer->commitChanges();
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures + 1 );
 
   //unset on LayerTreeNode showFeatureCount property
-  layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 0 );
+  layerTreelayer->setCustomProperty( u"showFeatureCount"_s, 0 );
 
   //synchronize back
   mOfflineEditing->synchronize();
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points" ) ).first() );
-  QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( u"points"_s ).first() );
+  QCOMPARE( mpLayer->name(), u"points"_s );
   QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures + 1 );
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
-  QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 0 );
+  QCOMPARE( layerTreelayer->customProperty( u"showFeatureCount"_s, 0 ).toInt(), 0 );
 
   //get last feature
   const QgsFeature f = mpLayer->getFeature( mpLayer->dataProvider()->featureCount() - 1 );
   qDebug() << "FID:" << f.id() << "Class:" << f.attribute( "Class" ).toString();
-  QCOMPARE( f.attribute( QStringLiteral( "Class" ) ).toString(), QStringLiteral( "Superjet" ) );
-  QCOMPARE( f.attribute( QStringLiteral( "StaffNames" ) ).toStringList(), QStringList() << QStringLiteral( "Sebastien" ) << QStringLiteral( "Naomi" ) << QStringLiteral( "And, many, more" ) );
-  QCOMPARE( f.attribute( QStringLiteral( "StaffAges" ) ).toList(), QList<QVariant>() << 0 << 2 );
+  QCOMPARE( f.attribute( u"Class"_s ).toString(), u"Superjet"_s );
+  QCOMPARE( f.attribute( u"StaffNames"_s ).toStringList(), QStringList() << u"Sebastien"_s << u"Naomi"_s << u"And, many, more"_s );
+  QCOMPARE( f.attribute( u"StaffAges"_s ).toList(), QList<QVariant>() << 0 << 2 );
 
   QgsFeature firstFeatureAfterAction;
   it = mpLayer->getFeatures();
@@ -284,20 +284,20 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
 void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 {
   offlineDbFile = "TestQgsOfflineEditing.gpkg";
-  QCOMPARE( gpkgLayer->name(), QStringLiteral( "points_gpkg" ) );
+  QCOMPARE( gpkgLayer->name(), u"points_gpkg"_s );
 
   //check constraints (not null and unique)
-  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
+  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( "fid"_L1 ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
 
-  QCOMPARE( gpkgLayer->name(), QStringLiteral( "points_gpkg (offline)" ) );
+  QCOMPARE( gpkgLayer->name(), u"points_gpkg (offline)"_s );
 
   //check constraints (not not null)
-  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( "fid"_L1 ) ).constraints();
   QVERIFY( !( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull ) );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 
@@ -305,7 +305,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
   mOfflineEditing->synchronize();
 
   //check constraints (not null and unique)
-  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( "fid"_L1 ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 }

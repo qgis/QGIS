@@ -188,39 +188,39 @@ void TestQgsTranslateProject::translateProject()
 
   //LAYER NAMES
   //lines -> Linien
-  QCOMPARE( lines_layer->name(), QStringLiteral( "Linien" ) );
+  QCOMPARE( lines_layer->name(), u"Linien"_s );
   //points -> Punkte
-  QCOMPARE( points_layer->name(), QStringLiteral( "Punkte" ) );
+  QCOMPARE( points_layer->name(), u"Punkte"_s );
 
   //LAYER GROUPS AND SUBGROUPS
   //Points:
   //Planes and Roads -> Flugzeuge und Strassen
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Flugzeuge und Strassen" ) ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Flugzeuge und Strassen"_s ) );
   //Little bit of nothing -> Bisschen nichts
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Bisschen nichts" ) ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Bisschen nichts"_s ) );
 
   //FIELDS AND ALIASES
   //Lines:
   const QgsFields lines_fields = lines_layer->fields();
   //Name (Alias: Runwayid) -> Pistenid
-  QCOMPARE( lines_fields.field( QStringLiteral( "Name" ) ).alias(), QStringLiteral( "Pistenid" ) );
+  QCOMPARE( lines_fields.field( u"Name"_s ).alias(), u"Pistenid"_s );
   //Value (Alias: Name) -> Pistenname
-  QCOMPARE( lines_fields.field( QStringLiteral( "Value" ) ).alias(), QStringLiteral( "Pistenname" ) );
+  QCOMPARE( lines_fields.field( u"Value"_s ).alias(), u"Pistenname"_s );
 
   //Points:
   const QgsFields points_fields = points_layer->fields();
   //Class (Alias: Level) -> Klasse
-  QCOMPARE( points_fields.field( QStringLiteral( "Class" ) ).alias(), QStringLiteral( "Klasse" ) );
+  QCOMPARE( points_fields.field( u"Class"_s ).alias(), u"Klasse"_s );
   //Heading -> Titel  //#spellok
-  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) ); //#spellok
+  QCOMPARE( points_fields.field( u"Heading"_s ).alias(), u"Titel"_s ); //#spellok
   //Importance -> Wichtigkeit
-  QCOMPARE( points_fields.field( QStringLiteral( "Importance" ) ).alias(), QStringLiteral( "Wichtigkeit" ) );
+  QCOMPARE( points_fields.field( u"Importance"_s ).alias(), u"Wichtigkeit"_s );
   //Pilots -> Piloten
-  QCOMPARE( points_fields.field( QStringLiteral( "Pilots" ) ).alias(), QStringLiteral( "Piloten" ) );
+  QCOMPARE( points_fields.field( u"Pilots"_s ).alias(), u"Piloten"_s );
   //Cabin Crew -> Kabinenpersonal
-  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).alias(), QStringLiteral( "Kabinenpersonal" ) );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).alias(), u"Kabinenpersonal"_s );
   //Staff -> Mitarbeiter
-  QCOMPARE( points_fields.field( QStringLiteral( "Staff" ) ).alias(), QStringLiteral( "Mitarbeiter" ) );
+  QCOMPARE( points_fields.field( u"Staff"_s ).alias(), u"Mitarbeiter"_s );
 
   //FORMCONTAINERS
   const QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
@@ -232,29 +232,29 @@ void TestQgsTranslateProject::translateProject()
   }
 
   //Plane -> Flugzeug
-  QCOMPARE( containers.at( 0 )->name(), QStringLiteral( "Flugzeug" ) );
+  QCOMPARE( containers.at( 0 )->name(), u"Flugzeug"_s );
   //Employees -> Angestellte
-  QCOMPARE( containers.at( 1 )->name(), QStringLiteral( "Angestellte" ) );
+  QCOMPARE( containers.at( 1 )->name(), u"Angestellte"_s );
   //Flightattends -> Flugbegleitung
   for ( QgsAttributeEditorElement *element : containers.at( 1 )->children() )
   {
     if ( element->type() == Qgis::AttributeEditorType::Container )
-      QCOMPARE( element->name(), QStringLiteral( "Flugbegleitung" ) );
+      QCOMPARE( element->name(), u"Flugbegleitung"_s );
   }
 
   //RELATIONS
   //Runway -> Piste
-  QCOMPARE( QgsProject::instance()->relationManager()->relation( QStringLiteral( "points_240_Importance_lines_a677_Value" ) ).name(), QStringLiteral( "Piste" ) );
+  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value"_s ).name(), u"Piste"_s );
   //Sheepwalk -> Schafweide
-  QCOMPARE( QgsProject::instance()->relationManager()->relation( QStringLiteral( "points_240_Importance_lines_a677_Value_1" ) ).name(), QStringLiteral( "Schafweide" ) );
+  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value_1"_s ).name(), u"Schafweide"_s );
 
   //WIDGETS
   //ValueRelation value is not anymore Name but Runwayid
-  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString(), QStringLiteral( "Runwayid" ) );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Runwayid"_s );
 
   //ValueMap with descriptions
   const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };
-  const QList<QVariant> valueList = lines_fields.field( QStringLiteral( "Name" ) ).editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+  const QList<QVariant> valueList = lines_fields.field( u"Name"_s ).editorWidgetSetup().config().value( u"map"_s ).toList();
   QList<QString> stringValueList;
   for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
   {
@@ -262,15 +262,15 @@ void TestQgsTranslateProject::translateProject()
   }
 
   //METADATA
-  QCOMPARE( QgsProject::instance()->metadata().title(), QStringLiteral( "Metadatentitel" ) );
-  QCOMPARE( QgsProject::instance()->metadata().type(), QStringLiteral( "Metadatentyp" ) );
-  QCOMPARE( QgsProject::instance()->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
-  QCOMPARE( QgsProject::instance()->metadata().author(), QStringLiteral( "Webmasterin" ) );
+  QCOMPARE( QgsProject::instance()->metadata().title(), u"Metadatentitel"_s );
+  QCOMPARE( QgsProject::instance()->metadata().type(), u"Metadatentyp"_s );
+  QCOMPARE( QgsProject::instance()->metadata().abstract(), u"Metadaten-Zusammenfassung"_s );
+  QCOMPARE( QgsProject::instance()->metadata().author(), u"Webmasterin"_s );
 
-  QCOMPARE( lines_layer->metadata().title(), QStringLiteral( "Metadatentitel" ) );
-  QCOMPARE( lines_layer->metadata().type(), QStringLiteral( "Metadatentyp" ) );
-  QCOMPARE( lines_layer->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
-  QCOMPARE( lines_layer->metadata().rights(), QStringList() << QStringLiteral( "Metadatenrechte" ) );
+  QCOMPARE( lines_layer->metadata().title(), u"Metadatentitel"_s );
+  QCOMPARE( lines_layer->metadata().type(), u"Metadatentyp"_s );
+  QCOMPARE( lines_layer->metadata().abstract(), u"Metadaten-Zusammenfassung"_s );
+  QCOMPARE( lines_layer->metadata().rights(), QStringList() << u"Metadatenrechte"_s );
 
   QCOMPARE( stringValueList, expectedStringValueList );
 

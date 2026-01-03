@@ -189,7 +189,7 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo &rasterInfo, cons
     QPointF go;
     if ( !suggestedWarpOutput( rasterInfo, customCRSWkt, &cs, &go ) )
     {
-      mCrsWkt = QStringLiteral( "_error_" );
+      mCrsWkt = u"_error_"_s;
       mCellSizeX = mCellSizeY = 0;
       mGridOffsetX = mGridOffsetY = 0;
       return false;
@@ -227,7 +227,7 @@ bool QgsAlignRaster::checkInputParameters()
 {
   mErrorMessage.clear();
 
-  if ( mCrsWkt == QLatin1String( "_error_" ) )
+  if ( mCrsWkt == "_error_"_L1 )
   {
     mErrorMessage = QObject::tr( "Unable to reproject." );
     return false;
@@ -391,7 +391,7 @@ int QgsAlignRaster::suggestedReferenceLayer() const
   // using WGS84 as a destination CRS... but maybe some projected CRS
   // would be a better a choice to more accurately compute areas?
   // (Why earth is not flat???)
-  const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem destCRS( u"EPSG:4326"_s );
   const QString destWkt = destCRS.toWkt( Qgis::CrsWktVariant::PreferredGdal );
 
   const auto constMRasters = mRasters;
@@ -418,7 +418,7 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
   GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
   if ( !hDriver )
   {
-    mErrorMessage = QStringLiteral( "GDALGetDriverByName(GTiff) failed." );
+    mErrorMessage = u"GDALGetDriverByName(GTiff) failed."_s;
     return false;
   }
 

@@ -52,7 +52,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = nullptr );
 
-    QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
+    QString type() const override { return u"SectionFieldGroup"_s; }
     QString description() const override;
     QIcon icon() const override;
 

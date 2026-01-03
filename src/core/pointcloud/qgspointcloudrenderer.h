@@ -325,13 +325,13 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "rgb" ) )
+    if ( type == "rgb"_L1 )
       sipType = sipType_QgsPointCloudRgbRenderer;
-    else if ( type == QLatin1String( "ramp" ) )
+    else if ( type == "ramp"_L1 )
       sipType = sipType_QgsPointCloudAttributeByRampRenderer;
-    else if ( type == QLatin1String( "classified" ) )
+    else if ( type == "classified"_L1 )
       sipType = sipType_QgsPointCloudClassifiedRenderer;
-    else if ( type == QLatin1String( "extent" ) )
+    else if ( type == "extent"_L1 )
       sipType = sipType_QgsPointCloudExtentRenderer;
     else
       sipType = 0;

@@ -87,19 +87,19 @@ int main( int argc, char *argv[] )
   for ( int i = 1; i < argc; ++i )
   {
     const QString arg( argv[i] );
-    if ( arg == QLatin1String( "--json" )
-         || arg == QLatin1String( "--verbose" )
-         || arg == QLatin1String( "--no-python" ) )
+    if ( arg == "--json"_L1
+         || arg == "--verbose"_L1
+         || arg == "--no-python"_L1 )
     {
       // ignore these arguments
       continue;
     }
-    if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-h" ) )
+    if ( arg == "--help"_L1 || arg == "-h"_L1 )
     {
       hasHelpArgument = true;
       break;
     }
-    else if ( arg == QLatin1String( "--version" ) || arg == QLatin1String( "-v" ) )
+    else if ( arg == "--version"_L1 || arg == "-v"_L1 )
     {
       hasVersionArgument = true;
       break;
@@ -118,7 +118,7 @@ int main( int argc, char *argv[] )
     return 0;
   }
 
-  QgsApplication app( argc, argv, false, QString(), QStringLiteral( "qgis_process" ) );
+  QgsApplication app( argc, argv, false, QString(), u"qgis_process"_s );
 
   // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
   // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
@@ -126,14 +126,14 @@ int main( int argc, char *argv[] )
 
   QgsProcessingExec::Flags flags;
 
-  const int jsonIndex = args.indexOf( QLatin1String( "--json" ) );
+  const int jsonIndex = args.indexOf( "--json"_L1 );
   if ( jsonIndex >= 0 )
   {
     flags |= QgsProcessingExec::Flag::UseJson;
     args.removeAt( jsonIndex );
   }
 
-  const int verboseIndex = args.indexOf( QLatin1String( "--verbose" ) );
+  const int verboseIndex = args.indexOf( "--verbose"_L1 );
   Qgis::ProcessingLogLevel logLevel = Qgis::ProcessingLogLevel::DefaultLevel;
   if ( verboseIndex >= 0 )
   {
@@ -141,14 +141,14 @@ int main( int argc, char *argv[] )
     args.removeAt( verboseIndex );
   }
 
-  const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
+  const int noPythonIndex = args.indexOf( "--no-python"_L1 );
   if ( noPythonIndex >= 0 )
   {
     flags |= QgsProcessingExec::Flag::SkipPython;
     args.removeAt( noPythonIndex );
   }
 
-  const int skipLoadingPluginsIndex = args.indexOf( QLatin1String( "--skip-loading-plugins" ) );
+  const int skipLoadingPluginsIndex = args.indexOf( "--skip-loading-plugins"_L1 );
   if ( skipLoadingPluginsIndex >= 0 )
   {
     flags |= QgsProcessingExec::Flag::SkipLoadingPlugins;
@@ -156,7 +156,7 @@ int main( int argc, char *argv[] )
   }
 
   const QString command = args.value( 1 );
-  if ( args.size() == 1 || command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
+  if ( args.size() == 1 || command == "--help"_L1 || command == "-h"_L1 )
   {
     // a shortcut -- if we are showing usage information, we don't need to initialize
     // QgsApplication at all!
@@ -174,9 +174,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QgsApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
+  QgsApplication::setOrganizationName( u"QGIS"_s );
+  QgsApplication::setOrganizationDomain( u"qgis.org"_s );
+  QgsApplication::setApplicationName( u"QGIS3"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -195,7 +195,7 @@ int main( int argc, char *argv[] )
 
   if ( openClProgramFolder.isEmpty() )
   {
-    openClProgramFolder = QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) );
+    openClProgramFolder = QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( u"resources/opencl_programs"_s );
   }
 
   QgsOpenClUtils::setSourcePath( openClProgramFolder );

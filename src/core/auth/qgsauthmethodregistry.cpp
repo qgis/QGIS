@@ -116,9 +116,9 @@ void QgsAuthMethodRegistry::init()
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*authmethod_*.dll" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod_*.so" ) ) );
+  mLibraryDirectory.setNameFilters( QStringList( u"*authmethod_*.so"_s ) );
 #endif
-  QgsDebugMsgLevel( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ), 2 );
+  QgsDebugMsgLevel( u"Checking for auth method plugins in: %1"_s.arg( mLibraryDirectory.path() ), 2 );
 
   if ( mLibraryDirectory.count() == 0 )
   {
@@ -157,12 +157,12 @@ void QgsAuthMethodRegistry::init()
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugError( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugError( u"Checking %1: ...invalid (lib not loadable): %2"_s.arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
     bool libraryLoaded { false };
-    QFunctionPointer func = myLib.resolve( QStringLiteral( "authMethodMetadataFactory" ).toLatin1().data() );
+    QFunctionPointer func = myLib.resolve( u"authMethodMetadataFactory"_s.toLatin1().data() );
     factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
     if ( function )
     {
@@ -171,7 +171,7 @@ void QgsAuthMethodRegistry::init()
       {
         if ( findMetadata_( mAuthMethods, meta->key() ) )
         {
-          QgsDebugError( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+          QgsDebugError( u"Checking %1: ...invalid (key %2 already registered)"_s.arg( myLib.fileName() ).arg( meta->key() ) );
           delete meta;
           continue;
         }
@@ -182,7 +182,7 @@ void QgsAuthMethodRegistry::init()
     }
     if ( ! libraryLoaded )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...invalid (no authMethodMetadataFactory method)" ).arg( myLib.fileName() ), 2 );
+      QgsDebugMsgLevel( u"Checking %1: ...invalid (no authMethodMetadataFactory method)"_s.arg( myLib.fileName() ), 2 );
     }
   }
 #endif
@@ -204,7 +204,7 @@ void QgsAuthMethodRegistry::clean()
 
   while ( it != mAuthMethods.end() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "cleanup: %1" ).arg( it->first ), 5 );
+    QgsDebugMsgLevel( u"cleanup: %1"_s.arg( it->first ), 5 );
     const QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
@@ -249,21 +249,21 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
   if ( asHtml )
   {
-    list += QLatin1String( "<ol>" );
+    list += "<ol>"_L1;
   }
 
   while ( it != mAuthMethods.end() )
   {
     if ( asHtml )
     {
-      list += QLatin1String( "<li>" );
+      list += "<li>"_L1;
     }
 
     list += it->second->description();
 
     if ( asHtml )
     {
-      list += QLatin1String( "<br></li>" );
+      list += "<br></li>"_L1;
     }
     else
     {
@@ -275,7 +275,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
   if ( asHtml )
   {
-    list += QLatin1String( "</ol>" );
+    list += "</ol>"_L1;
   }
 
   return list;

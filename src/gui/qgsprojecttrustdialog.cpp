@@ -61,7 +61,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
   mScriptPreviewEditor->setReadOnly( true );
   mScriptPreviewEditor->setLineNumbersVisible( false );
 
-  QSvgRenderer svg( QStringLiteral( ":/images/themes/default/mIconPythonFile.svg" ) );
+  QSvgRenderer svg( u":/images/themes/default/mIconPythonFile.svg"_s );
   if ( svg.isValid() )
   {
     const double maxLength = 64.0;
@@ -117,13 +117,13 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
 
     if ( mProjectIsFile )
     {
-      mProjectDetailsLabel->setText( tr( "The current project file path is ’%1’." ).arg( QStringLiteral( "<b>%1</b>" ).arg( mProjectAbsoluteFilePath ) ) );
+      mProjectDetailsLabel->setText( tr( "The current project file path is ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
       QDir dir( mProjectAbsolutePath );
-      mTrustProjectFolderCheckBox->setText( tr( "Apply decision to all projects in folder ’%1’" ).arg( QStringLiteral( "%1" ).arg( dir.dirName() ) ) );
+      mTrustProjectFolderCheckBox->setText( tr( "Apply decision to all projects in folder ’%1’" ).arg( u"%1"_s.arg( dir.dirName() ) ) );
     }
     else
     {
-      mProjectDetailsLabel->setText( tr( "The current project URI is ’%1’." ).arg( QStringLiteral( "<b>%1</b>" ).arg( mProjectAbsoluteFilePath ) ) );
+      mProjectDetailsLabel->setText( tr( "The current project URI is ’%1’." ).arg( u"<b>%1</b>"_s.arg( mProjectAbsoluteFilePath ) ) );
       mTrustProjectFolderCheckBox->setVisible( false );
     }
 
@@ -136,19 +136,19 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
     switch ( scriptDetails.type() )
     {
       case Qgis::EmbeddedScriptType::Macro:
-        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPythonFile.svg" ) ) );
+        newItem->setIcon( QgsApplication::getThemeIcon( u"/mIconPythonFile.svg"_s ) );
         break;
 
       case Qgis::EmbeddedScriptType::ExpressionFunction:
-        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+        newItem->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
         break;
 
       case Qgis::EmbeddedScriptType::Action:
-        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
+        newItem->setIcon( QgsApplication::getThemeIcon( u"/mAction.svg"_s ) );
         break;
 
       case Qgis::EmbeddedScriptType::FormInitCode:
-        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
+        newItem->setIcon( QgsApplication::getThemeIcon( u"/mActionFormView.svg"_s ) );
         break;
     }
     newItem->setText( scriptDetails.name() );
@@ -218,5 +218,5 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 
 void QgsProjectTrustDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html" ) );
+  QgsHelp::openHelp( u"introduction/getting_started.html"_s );
 }

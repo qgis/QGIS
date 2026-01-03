@@ -44,7 +44,7 @@ QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Layout Extent" ) );
-  mConfigurationName = QStringLiteral( "LayoutExtent" );
+  mConfigurationName = u"LayoutExtent"_s;
 
   projectRead();
 }
@@ -59,7 +59,7 @@ void QgsDecorationLayoutExtent::projectRead()
   QDomElement elem;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QString xml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Symbol" ) );
+  QString xml = QgsProject::instance()->readEntry( mConfigurationName, u"/Symbol"_s );
   mSymbol.reset( nullptr );
   if ( !xml.isEmpty() )
   {
@@ -74,14 +74,14 @@ void QgsDecorationLayoutExtent::projectRead()
     mSymbol->changeSymbolLayer( 0, layer );
   }
 
-  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, u"/Font"_s );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
     elem = doc.documentElement();
     mTextFormat.readXml( elem, rwContext );
   }
-  mLabelExtents = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Labels" ), true );
+  mLabelExtents = QgsProject::instance()->readBoolEntry( mConfigurationName, u"/Labels"_s, true );
 }
 
 void QgsDecorationLayoutExtent::saveToProject()
@@ -94,17 +94,17 @@ void QgsDecorationLayoutExtent::saveToProject()
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( mSymbol )
   {
-    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mSymbol.get(), doc, rwContext );
+    elem = QgsSymbolLayerUtils::saveSymbol( u"Symbol"_s, mSymbol.get(), doc, rwContext );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
-    QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Symbol" ), doc.toString() );
+    QgsProject::instance()->writeEntry( mConfigurationName, u"/Symbol"_s, doc.toString() );
   }
 
   QDomDocument textDoc;
   QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Labels" ), mLabelExtents );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Font"_s, textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Labels"_s, mLabelExtents );
 }
 
 void QgsDecorationLayoutExtent::run()

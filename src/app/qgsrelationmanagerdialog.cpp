@@ -94,8 +94,8 @@ int QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelati
   {
     if ( i != 0 )
     {
-      referencingFields += QLatin1String( ", " );
-      referencedFields += QLatin1String( ", " );
+      referencingFields += ", "_L1;
+      referencedFields += ", "_L1;
     }
 
     referencingFields += polyRel.fieldPairs().at( i ).referencingField();
@@ -115,16 +115,16 @@ int QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelati
   item->setText( 0, polyRel.name() );
   item->setText( 1, polyRel.referencingLayer()->name() );
   item->setText( 2, referencedFields );
-  item->setText( 3, QStringLiteral( "as in \"%1\".\"%2\"" ).arg( polyRel.referencingLayer()->name(), polyRel.referencedLayerField() ) );
+  item->setText( 3, u"as in \"%1\".\"%2\""_s.arg( polyRel.referencingLayer()->name(), polyRel.referencedLayerField() ) );
   item->setText( 4, referencingFields );
   item->setText( 5, polyRel.id() );
   switch ( polyRel.strength() )
   {
     case Qgis::RelationshipStrength::Association:
-      item->setText( 6, QStringLiteral( "Association" ) );
+      item->setText( 6, u"Association"_s );
       break;
     case Qgis::RelationshipStrength::Composition:
-      item->setText( 6, QStringLiteral( "Composition" ) );
+      item->setText( 6, u"Composition"_s );
       break;
   }
 
@@ -149,8 +149,8 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
   QString referencedFields = rel.fieldPairs().at( 0 ).referencedField();
   for ( int i = 1; i < rel.fieldPairs().count(); i++ )
   {
-    referencingFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencingField() ) );
-    referencedFields.append( QStringLiteral( ", %1" ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+    referencingFields.append( u", %1"_s.arg( rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( u", %1"_s.arg( rel.fieldPairs().at( i ).referencedField() ) );
   }
 
   mRelationsTree->setSortingEnabled( false );
@@ -181,10 +181,10 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
   switch ( rel.strength() )
   {
     case Qgis::RelationshipStrength::Association:
-      item->setText( 6, QStringLiteral( "Association" ) );
+      item->setText( 6, u"Association"_s );
       break;
     case Qgis::RelationshipStrength::Composition:
-      item->setText( 6, QStringLiteral( "Composition" ) );
+      item->setText( 6, u"Composition"_s );
       break;
   }
 
@@ -205,7 +205,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
     relation.setReferencedLayer( addDlg.referencedLayerId() );
     QString relationId = addDlg.relationId();
     if ( addDlg.relationId().isEmpty() )
-      relationId = QStringLiteral( "%1_%2_%3_%4" )
+      relationId = u"%1_%2_%3_%4"_s
                      .arg( addDlg.referencingLayerId().left( 10 ), addDlg.references().at( 0 ).first, addDlg.referencedLayerId().left( 10 ), addDlg.references().at( 0 ).second );
 
     QStringList existingNames;
@@ -342,7 +342,7 @@ QList<QgsRelation> QgsRelationManagerDialog::relations()
   {
     QTreeWidgetItem *item = mRelationsTree->topLevelItem( i );
 
-    if ( item->data( 0, Qt::UserRole ).typeName() != QLatin1String( "QgsRelation" ) )
+    if ( item->data( 0, Qt::UserRole ).typeName() != "QgsRelation"_L1 )
       continue;
 
     QgsRelation relation = item->data( 0, Qt::UserRole ).value<QgsRelation>();
@@ -364,7 +364,7 @@ QList<QgsPolymorphicRelation> QgsRelationManagerDialog::polymorphicRelations()
   {
     QTreeWidgetItem *item = mRelationsTree->topLevelItem( i );
 
-    if ( item->data( 0, Qt::UserRole ).typeName() != QLatin1String( "QgsPolymorphicRelation" ) )
+    if ( item->data( 0, Qt::UserRole ).typeName() != "QgsPolymorphicRelation"_L1 )
       continue;
 
     QgsPolymorphicRelation relation = item->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();

@@ -75,11 +75,11 @@ bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 {
   QVariantMap transformerMap = transformer.toMap();
 
-  mMinValue = transformerMap.value( QStringLiteral( "minValue" ), 0.0 ).toDouble();
-  mMaxValue = transformerMap.value( QStringLiteral( "maxValue" ), 1.0 ).toDouble();
+  mMinValue = transformerMap.value( u"minValue"_s, 0.0 ).toDouble();
+  mMaxValue = transformerMap.value( u"maxValue"_s, 1.0 ).toDouble();
   mCurveTransform.reset( nullptr );
 
-  QVariantMap curve = transformerMap.value( QStringLiteral( "curve" ) ).toMap();
+  QVariantMap curve = transformerMap.value( u"curve"_s ).toMap();
 
   if ( !curve.isEmpty() )
   {
@@ -94,12 +94,12 @@ QVariant QgsPropertyTransformer::toVariant() const
 {
   QVariantMap transformerMap;
 
-  transformerMap.insert( QStringLiteral( "minValue" ), mMinValue );
-  transformerMap.insert( QStringLiteral( "maxValue" ), mMaxValue );
+  transformerMap.insert( u"minValue"_s, mMinValue );
+  transformerMap.insert( u"maxValue"_s, mMaxValue );
 
   if ( mCurveTransform )
   {
-    transformerMap.insert( QStringLiteral( "curve" ), mCurveTransform->toVariant() );
+    transformerMap.insert( u"curve"_s, mCurveTransform->toVariant() );
   }
   return transformerMap;
 }
@@ -159,10 +159,10 @@ QVariant QgsGenericNumericTransformer::toVariant() const
 {
   QVariantMap transformerMap = QgsPropertyTransformer::toVariant().toMap();
 
-  transformerMap.insert( QStringLiteral( "minOutput" ), mMinOutput );
-  transformerMap.insert( QStringLiteral( "maxOutput" ), mMaxOutput );
-  transformerMap.insert( QStringLiteral( "nullOutput" ), mNullOutput );
-  transformerMap.insert( QStringLiteral( "exponent" ), mExponent );
+  transformerMap.insert( u"minOutput"_s, mMinOutput );
+  transformerMap.insert( u"maxOutput"_s, mMaxOutput );
+  transformerMap.insert( u"nullOutput"_s, mNullOutput );
+  transformerMap.insert( u"exponent"_s, mExponent );
 
   return transformerMap;
 }
@@ -173,10 +173,10 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 
   QVariantMap transformerMap = transformer.toMap();
 
-  mMinOutput = transformerMap.value( QStringLiteral( "minOutput" ), 0.0 ).toDouble();
-  mMaxOutput = transformerMap.value( QStringLiteral( "maxOutput" ), 1.0 ).toDouble();
-  mNullOutput = transformerMap.value( QStringLiteral( "nullOutput" ), 0.0 ).toDouble();
-  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
+  mMinOutput = transformerMap.value( u"minOutput"_s, 0.0 ).toDouble();
+  mMaxOutput = transformerMap.value( u"maxOutput"_s, 1.0 ).toDouble();
+  mNullOutput = transformerMap.value( u"nullOutput"_s, 0.0 ).toDouble();
+  mExponent = transformerMap.value( u"exponent"_s, 1.0 ).toDouble();
   return true;
 }
 
@@ -225,9 +225,9 @@ QString QgsGenericNumericTransformer::toExpression( const QString &baseExpressio
   QString exponentString = QString::number( mExponent );
 
   if ( qgsDoubleNear( mExponent, 1.0 ) )
-    return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, nullOutputString );
+    return u"coalesce(scale_linear(%1, %2, %3, %4, %5), %6)"_s.arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, nullOutputString );
   else
-    return QStringLiteral( "coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
+    return u"coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)"_s.arg( baseExpression, minValueString, maxValueString, minOutputString, maxOutputString, exponentString, nullOutputString );
 }
 
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName ) // cppcheck-suppress duplInheritedMember
@@ -336,11 +336,11 @@ QVariant QgsSizeScaleTransformer::toVariant() const
 {
   QVariantMap transformerMap = QgsPropertyTransformer::toVariant().toMap();
 
-  transformerMap.insert( QStringLiteral( "scaleType" ), static_cast< int >( mType ) );
-  transformerMap.insert( QStringLiteral( "minSize" ), mMinSize );
-  transformerMap.insert( QStringLiteral( "maxSize" ), mMaxSize );
-  transformerMap.insert( QStringLiteral( "nullSize" ), mNullSize );
-  transformerMap.insert( QStringLiteral( "exponent" ), mExponent );
+  transformerMap.insert( u"scaleType"_s, static_cast< int >( mType ) );
+  transformerMap.insert( u"minSize"_s, mMinSize );
+  transformerMap.insert( u"maxSize"_s, mMaxSize );
+  transformerMap.insert( u"nullSize"_s, mNullSize );
+  transformerMap.insert( u"exponent"_s, mExponent );
 
   return transformerMap;
 }
@@ -351,11 +351,11 @@ bool QgsSizeScaleTransformer::loadVariant( const QVariant &transformer )
 
   QVariantMap transformerMap = transformer.toMap();
 
-  mType = static_cast< ScaleType >( transformerMap.value( QStringLiteral( "scaleType" ), Linear ).toInt() );
-  mMinSize = transformerMap.value( QStringLiteral( "minSize" ), 0.0 ).toDouble();
-  mMaxSize = transformerMap.value( QStringLiteral( "maxSize" ), 1.0 ).toDouble();
-  mNullSize = transformerMap.value( QStringLiteral( "nullSize" ), 0.0 ).toDouble();
-  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
+  mType = static_cast< ScaleType >( transformerMap.value( u"scaleType"_s, Linear ).toInt() );
+  mMinSize = transformerMap.value( u"minSize"_s, 0.0 ).toDouble();
+  mMaxSize = transformerMap.value( u"maxSize"_s, 1.0 ).toDouble();
+  mNullSize = transformerMap.value( u"nullSize"_s, 0.0 ).toDouble();
+  mExponent = transformerMap.value( u"exponent"_s, 1.0 ).toDouble();
 
   return true;
 }
@@ -436,12 +436,12 @@ QString QgsSizeScaleTransformer::toExpression( const QString &baseExpression ) c
   switch ( mType )
   {
     case Linear:
-      return QStringLiteral( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
+      return u"coalesce(scale_linear(%1, %2, %3, %4, %5), %6)"_s.arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Area:
     case Flannery:
     case Exponential:
-      return QStringLiteral( "coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
+      return u"coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)"_s.arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
 
   }
   return QString();
@@ -586,10 +586,10 @@ QVariant QgsColorRampTransformer::toVariant() const
 
   if ( mGradientRamp )
   {
-    transformerMap.insert( QStringLiteral( "colorramp" ), QgsSymbolLayerUtils::colorRampToVariant( QStringLiteral( "[source]" ), mGradientRamp.get() ) );
+    transformerMap.insert( u"colorramp"_s, QgsSymbolLayerUtils::colorRampToVariant( u"[source]"_s, mGradientRamp.get() ) );
   }
-  transformerMap.insert( QStringLiteral( "nullColor" ), QgsColorUtils::colorToString( mNullColor ) );
-  transformerMap.insert( QStringLiteral( "rampName" ), mRampName );
+  transformerMap.insert( u"nullColor"_s, QgsColorUtils::colorToString( mNullColor ) );
+  transformerMap.insert( u"rampName"_s, mRampName );
 
   return transformerMap;
 }
@@ -601,13 +601,13 @@ bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
   QgsPropertyTransformer::loadVariant( definition );
 
   mGradientRamp.reset( nullptr );
-  if ( transformerMap.contains( QStringLiteral( "colorramp" ) ) )
+  if ( transformerMap.contains( u"colorramp"_s ) )
   {
-    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( QStringLiteral( "colorramp" ) ).toMap() ).release() );
+    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( u"colorramp"_s ).toMap() ).release() );
   }
 
-  mNullColor = QgsColorUtils::colorFromString( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );
-  mRampName = transformerMap.value( QStringLiteral( "rampName" ) ).toString();
+  mNullColor = QgsColorUtils::colorFromString( transformerMap.value( u"nullColor"_s, u"0,0,0,0"_s ).toString() );
+  mRampName = transformerMap.value( u"rampName"_s ).toString();
   return true;
 }
 
@@ -641,7 +641,7 @@ QString QgsColorRampTransformer::toExpression( const QString &baseExpression ) c
   QString maxValueString = QString::number( mMaxValue );
   QString nullColorString = mNullColor.name();
 
-  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1)), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
+  return u"coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1)), '%5')"_s.arg( !mRampName.isEmpty() ? mRampName : u"custom ramp"_s,
          baseExpression, minValueString, maxValueString, nullColorString );
 }
 
@@ -897,8 +897,8 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
 
 bool QgsCurveTransform::readXml( const QDomElement &elem, const QDomDocument & )
 {
-  QString xString = elem.attribute( QStringLiteral( "x" ) );
-  QString yString = elem.attribute( QStringLiteral( "y" ) );
+  QString xString = elem.attribute( u"x"_s );
+  QString yString = elem.attribute( u"y"_s );
 
   QStringList xVals = xString.split( ',' );
   QStringList yVals = yString.split( ',' );
@@ -932,8 +932,8 @@ bool QgsCurveTransform::writeXml( QDomElement &transformElem, QDomDocument & ) c
     y << qgsDoubleToString( p.y() );
   }
 
-  transformElem.setAttribute( QStringLiteral( "x" ), x.join( ',' ) );
-  transformElem.setAttribute( QStringLiteral( "y" ), y.join( ',' ) );
+  transformElem.setAttribute( u"x"_s, x.join( ',' ) );
+  transformElem.setAttribute( u"y"_s, y.join( ',' ) );
 
   return true;
 }
@@ -951,8 +951,8 @@ QVariant QgsCurveTransform::toVariant() const
     y << qgsDoubleToString( p.y() );
   }
 
-  transformMap.insert( QStringLiteral( "x" ), x.join( ',' ) );
-  transformMap.insert( QStringLiteral( "y" ), y.join( ',' ) );
+  transformMap.insert( u"x"_s, x.join( ',' ) );
+  transformMap.insert( u"y"_s, y.join( ',' ) );
 
   return transformMap;
 }
@@ -961,8 +961,8 @@ bool QgsCurveTransform::loadVariant( const QVariant &transformer )
 {
   QVariantMap transformMap = transformer.toMap();
 
-  QString xString = transformMap.value( QStringLiteral( "x" ) ).toString();
-  QString yString = transformMap.value( QStringLiteral( "y" ) ).toString();
+  QString xString = transformMap.value( u"x"_s ).toString();
+  QString yString = transformMap.value( u"y"_s ).toString();
 
   QStringList xVals = xString.split( ',' );
   QStringList yVals = yString.split( ',' );

@@ -26,7 +26,7 @@ constexpr uint KMEANS_MAX_ITERATIONS = 1000;
 
 QString QgsKMeansClusteringAlgorithm::name() const
 {
-  return QStringLiteral( "kmeansclustering" );
+  return u"kmeansclustering"_s;
 }
 
 QString QgsKMeansClusteringAlgorithm::displayName() const
@@ -46,27 +46,27 @@ QString QgsKMeansClusteringAlgorithm::group() const
 
 QString QgsKMeansClusteringAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CLUSTERS" ), QObject::tr( "Number of clusters" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"CLUSTERS"_s, QObject::tr( "Number of clusters" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
 
   QStringList initializationMethods;
   initializationMethods << QObject::tr( "Farthest points" )
                         << QObject::tr( "K-means++" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), initializationMethods, false, 0, false ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), initializationMethods, false, 0, false ) );
 
-  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( u"FIELD_NAME"_s, QObject::tr( "Cluster field name" ), u"CLUSTER_ID"_s );
   fieldNameParam->setFlags( fieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( fieldNameParam.release() );
-  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ), QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
+  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( u"SIZE_FIELD_NAME"_s, QObject::tr( "Cluster size field name" ), u"CLUSTER_SIZE"_s );
   sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( sizeFieldNameParam.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clusters" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Clusters" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
 
 QString QgsKMeansClusteringAlgorithm::shortHelpString() const
@@ -90,25 +90,25 @@ QgsKMeansClusteringAlgorithm *QgsKMeansClusteringAlgorithm::createInstance() con
 
 QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  int k = parameterAsInt( parameters, QStringLiteral( "CLUSTERS" ), context );
-  int initializationMethod = parameterAsInt( parameters, QStringLiteral( "METHOD" ), context );
+  int k = parameterAsInt( parameters, u"CLUSTERS"_s, context );
+  int initializationMethod = parameterAsInt( parameters, u"METHOD"_s, context );
 
   QgsFields outputFields = source->fields();
   QgsFields newFields;
-  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  const QString clusterFieldName = parameterAsString( parameters, u"FIELD_NAME"_s, context );
   newFields.append( QgsField( clusterFieldName, QMetaType::Type::Int ) );
-  const QString clusterSizeFieldName = parameterAsString( parameters, QStringLiteral( "SIZE_FIELD_NAME" ), context );
+  const QString clusterSizeFieldName = parameterAsString( parameters, u"SIZE_FIELD_NAME"_s, context );
   newFields.append( QgsField( clusterSizeFieldName, QMetaType::Type::Int ) );
   outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   // build list of point inputs - if it's already a point, use that. If not, take the centroid.
   feedback->pushInfo( QObject::tr( "Collecting input points" ) );
@@ -213,13 +213,13 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     }
     feat.setAttributes( attr );
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

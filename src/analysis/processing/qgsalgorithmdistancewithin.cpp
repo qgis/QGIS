@@ -24,10 +24,10 @@
 
 void QgsDistanceWithinAlgorithm::addDistanceParameter()
 {
-  auto distanceParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Where the features are within" ), 100, QStringLiteral( "INPUT" ), false, 0 );
+  auto distanceParam = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Where the features are within" ), 100, u"INPUT"_s, false, 0 );
   distanceParam->setIsDynamic( true );
-  distanceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Distance within" ), QgsPropertyDefinition::DoublePositive ) );
-  distanceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  distanceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Distance"_s, QObject::tr( "Distance within" ), QgsPropertyDefinition::DoublePositive ) );
+  distanceParam->setDynamicLayerParameterName( u"INPUT"_s );
 
   addParameter( distanceParam.release() );
 }
@@ -195,17 +195,17 @@ void QgsSelectWithinDistanceAlgorithm::initAlgorithm( const QVariantMap & )
                                             << QObject::tr( "selecting within current selection" )
                                             << QObject::tr( "removing from current selection" );
 
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Select features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE" ), QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"REFERENCE"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addDistanceParameter();
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Modify current selection by" ), methods, false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Modify current selection by" ), methods, false, 0 ) );
 }
 
 QString QgsSelectWithinDistanceAlgorithm::name() const
 {
-  return QStringLiteral( "selectwithindistance" );
+  return u"selectwithindistance"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsSelectWithinDistanceAlgorithm::flags() const
@@ -230,7 +230,7 @@ QString QgsSelectWithinDistanceAlgorithm::group() const
 
 QString QgsSelectWithinDistanceAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return u"vectorselection"_s;
 }
 
 QString QgsSelectWithinDistanceAlgorithm::shortHelpString() const
@@ -251,20 +251,20 @@ QgsSelectWithinDistanceAlgorithm *QgsSelectWithinDistanceAlgorithm::createInstan
 
 QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
-  const Qgis::SelectBehavior method = static_cast<Qgis::SelectBehavior>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
-  const std::unique_ptr<QgsFeatureSource> referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE" ), context ) );
+  const Qgis::SelectBehavior method = static_cast<Qgis::SelectBehavior>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
+  const std::unique_ptr<QgsFeatureSource> referenceSource( parameterAsSource( parameters, u"REFERENCE"_s, context ) );
   if ( !referenceSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"REFERENCE"_s ) );
 
-  const double distance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  const bool dynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  const double distance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  const bool dynamicDistance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   QgsProperty distanceProperty;
   if ( dynamicDistance )
-    distanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    distanceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
   expressionContext.appendScope( selectLayer->createExpressionContextScope() );
 
@@ -276,7 +276,7 @@ QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMa
 
   selectLayer->selectByIds( selectedIds, method );
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+  results.insert( u"OUTPUT"_s, parameters.value( u"INPUT"_s ) );
   return results;
 }
 
@@ -287,16 +287,16 @@ QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMa
 
 void QgsExtractWithinDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Extract features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE" ), QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Extract features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"REFERENCE"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addDistanceParameter();
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (location)" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (location)" ) ) );
 }
 
 QString QgsExtractWithinDistanceAlgorithm::name() const
 {
-  return QStringLiteral( "extractwithindistance" );
+  return u"extractwithindistance"_s;
 }
 
 QString QgsExtractWithinDistanceAlgorithm::displayName() const
@@ -316,7 +316,7 @@ QString QgsExtractWithinDistanceAlgorithm::group() const
 
 QString QgsExtractWithinDistanceAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return u"vectorselection"_s;
 }
 
 QString QgsExtractWithinDistanceAlgorithm::shortHelpString() const
@@ -339,37 +339,37 @@ QgsExtractWithinDistanceAlgorithm *QgsExtractWithinDistanceAlgorithm::createInst
 
 QVariantMap QgsExtractWithinDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-  const std::unique_ptr<QgsFeatureSource> referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE" ), context ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
+  const std::unique_ptr<QgsFeatureSource> referenceSource( parameterAsSource( parameters, u"REFERENCE"_s, context ) );
   if ( !referenceSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"REFERENCE"_s ) );
 
-  const double distance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  const bool dynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  const double distance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  const bool dynamicDistance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   QgsProperty distanceProperty;
   if ( dynamicDistance )
-    distanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    distanceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, input.get() );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, input->fields(), input->wkbType(), input->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, input->fields(), input->wkbType(), input->sourceCrs() ) );
 
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   auto addToSink = [&]( const QgsFeature &feature ) {
     QgsFeature f = feature;
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   };
   process( context, input.get(), referenceSource.get(), distance, distanceProperty, addToSink, false, feedback, expressionContext );
 
   sink->finalize();
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), dest );
+  results.insert( u"OUTPUT"_s, dest );
   return results;
 }
 

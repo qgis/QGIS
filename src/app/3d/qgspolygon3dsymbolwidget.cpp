@@ -122,7 +122,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 
 QString QgsPolygon3DSymbolWidget::symbolType() const
 {
-  return QStringLiteral( "polygon" );
+  return u"polygon"_s;
 }
 
 void QgsPolygon3DSymbolWidget::updateGuiState()

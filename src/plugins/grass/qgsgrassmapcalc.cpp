@@ -81,37 +81,37 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QActionGroup *ag = new QActionGroup( this );
   QToolBar *tb = addToolBar( tr( "Mapcalc tools" ) );
 
-  mActionAddMap = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_map.png" ) ), tr( "Add map" ), this );
+  mActionAddMap = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_add_map.png"_s ), tr( "Add map" ), this );
   mActionAddMap->setCheckable( true );
   ag->addAction( mActionAddMap );
   tb->addAction( mActionAddMap );
   connect( mActionAddMap, &QAction::triggered, this, &QgsGrassMapcalc::addMap );
 
-  mActionAddConstant = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_constant.png" ) ), tr( "Add constant value" ), this );
+  mActionAddConstant = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_add_constant.png"_s ), tr( "Add constant value" ), this );
   mActionAddConstant->setCheckable( true );
   ag->addAction( mActionAddConstant );
   tb->addAction( mActionAddConstant );
   connect( mActionAddConstant, &QAction::triggered, this, &QgsGrassMapcalc::addConstant );
 
-  mActionAddFunction = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_function.png" ) ), tr( "Add operator or function" ), this );
+  mActionAddFunction = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_add_function.png"_s ), tr( "Add operator or function" ), this );
   mActionAddFunction->setCheckable( true );
   ag->addAction( mActionAddFunction );
   tb->addAction( mActionAddFunction );
   connect( mActionAddFunction, &QAction::triggered, this, &QgsGrassMapcalc::addFunction );
 
-  mActionAddConnection = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_add_connection.png" ) ), tr( "Add connection" ), this );
+  mActionAddConnection = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_add_connection.png"_s ), tr( "Add connection" ), this );
   mActionAddConnection->setCheckable( true );
   ag->addAction( mActionAddConnection );
   tb->addAction( mActionAddConnection );
   connect( mActionAddConnection, &QAction::triggered, this, &QgsGrassMapcalc::addConnection );
 
-  mActionSelectItem = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_select.png" ) ), tr( "Select item" ), this );
+  mActionSelectItem = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_select.png"_s ), tr( "Select item" ), this );
   mActionSelectItem->setCheckable( true );
   ag->addAction( mActionSelectItem );
   tb->addAction( mActionSelectItem );
   connect( mActionSelectItem, &QAction::triggered, this, &QgsGrassMapcalc::selectItem );
 
-  mActionDeleteItem = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_delete.png" ) ), tr( "Delete selected item" ), this );
+  mActionDeleteItem = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_delete.png"_s ), tr( "Delete selected item" ), this );
   mActionDeleteItem->setCheckable( true );
   mActionDeleteItem->setEnabled( false );
   ag->addAction( mActionDeleteItem );
@@ -120,16 +120,16 @@ QgsGrassMapcalc::QgsGrassMapcalc(
 
   mActionAddMap->setChecked( true );
 
-  mActionLoad = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_open.png" ) ), tr( "Open" ), this );
+  mActionLoad = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_open.png"_s ), tr( "Open" ), this );
   tb->addAction( mActionLoad );
   connect( mActionLoad, &QAction::triggered, this, &QgsGrassMapcalc::load );
 
-  mActionSave = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_save.png" ) ), tr( "Save" ), this );
+  mActionSave = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_save.png"_s ), tr( "Save" ), this );
   tb->addAction( mActionSave );
   connect( mActionSave, &QAction::triggered, this, &QgsGrassMapcalc::save );
   mActionSave->setEnabled( false );
 
-  mActionSaveAs = new QAction( QgsGrassPlugin::getThemeIcon( QStringLiteral( "mapcalc_save_as.png" ) ), tr( "Save as" ), this );
+  mActionSaveAs = new QAction( QgsGrassPlugin::getThemeIcon( u"mapcalc_save_as.png"_s ), tr( "Save as" ), this );
   tb->addAction( mActionSaveAs );
   connect( mActionSaveAs, &QAction::triggered, this, &QgsGrassMapcalc::saveAs );
 
@@ -147,61 +147,61 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   /* Create functions */
   int t = QgsGrassMapcalcFunction::Operator;
   // Arithmetical
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "+" ), 2, tr( "Addition" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "-" ), 2, tr( "Subtraction" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "*" ), 2, tr( "Multiplication" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "/" ), 2, tr( "Division" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "%" ), 2, tr( "Modulus" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "^" ), 2, tr( "Exponentiation" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"+"_s, 2, tr( "Addition" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"-"_s, 2, tr( "Subtraction" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"*"_s, 2, tr( "Multiplication" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"/"_s, 2, tr( "Division" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"%"_s, 2, tr( "Modulus" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"^"_s, 2, tr( "Exponentiation" ) ) );
 
   // Logical
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "==" ), 2, tr( "Equal" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "!=" ), 2, tr( "Not equal" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( ">" ), 2, tr( "Greater than" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( ">=" ), 2, tr( "Greater than or equal" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "<" ), 2, tr( "Less than" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "<=" ), 2, tr( "Less than or equal" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "&&" ), 2, tr( "And" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "||" ), 2, tr( "Or" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"=="_s, 2, tr( "Equal" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"!="_s, 2, tr( "Not equal" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u">"_s, 2, tr( "Greater than" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u">="_s, 2, tr( "Greater than or equal" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"<"_s, 2, tr( "Less than" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"<="_s, 2, tr( "Less than or equal" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"&&"_s, 2, tr( "And" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"||"_s, 2, tr( "Or" ) ) );
 
   t = QgsGrassMapcalcFunction::Function;
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "abs" ), 1, tr( "Absolute value of x" ), QStringLiteral( "abs(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "atan" ), 1, tr( "Inverse tangent of x (result is in degrees)" ), QStringLiteral( "atan(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "atan" ), 2, tr( "Inverse tangent of y/x (result is in degrees)" ), QStringLiteral( "atan(x,y)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "col" ), 0, tr( "Current column of moving window (starts with 1)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "cos" ), 1, tr( "Cosine of x (x is in degrees)" ), QStringLiteral( "cos(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "double" ), 1, tr( "Convert x to double-precision floating point" ), QStringLiteral( "double(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "ewres" ), 0, tr( "Current east-west resolution" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "exp" ), 1, tr( "Exponential function of x" ), QStringLiteral( "exp(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "exp" ), 2, tr( "x to the power y" ), QStringLiteral( "exp(x,y)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "float" ), 1, tr( "Convert x to single-precision floating point" ), QStringLiteral( "float(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "if" ), 1, tr( "Decision: 1 if x not zero, 0 otherwise" ), QStringLiteral( "if(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "if" ), 2, tr( "Decision: a if x not zero, 0 otherwise" ), QStringLiteral( "if(x,a)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "if" ), 3, tr( "Decision: a if x not zero, b otherwise" ), QStringLiteral( "if(x,a,b)" ), QStringLiteral( "if,then,else" ), false ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "if" ), 4, tr( "Decision: a if x > 0, b if x is zero, c if x < 0" ), QStringLiteral( "if(x,a,b,c)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "int" ), 1, tr( "Convert x to integer [ truncates ]" ), QStringLiteral( "int(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "isnull" ), 1, tr( "Check if x = NULL" ), QStringLiteral( "isnull(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "log" ), 1, tr( "Natural log of x" ), QStringLiteral( "log(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "log" ), 2, tr( "Log of x base b" ), QStringLiteral( "log(x,b)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "max" ), 2, tr( "Largest value" ), QStringLiteral( "max(a,b)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "max" ), 3, tr( "Largest value" ), QStringLiteral( "max(a,b,c)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "median" ), 2, tr( "Median value" ), QStringLiteral( "median(a,b)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "median" ), 3, tr( "Median value" ), QStringLiteral( "median(a,b,c)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "min" ), 2, tr( "Smallest value" ), QStringLiteral( "min(a,b)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "min" ), 3, tr( "Smallest value" ), QStringLiteral( "min(a,b,c)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "mode" ), 2, tr( "Mode value" ), QStringLiteral( "mode(a,b)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "mode" ), 3, tr( "Mode value" ), QStringLiteral( "mode(a,b,c)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "not" ), 1, tr( "1 if x is zero, 0 otherwise" ), QStringLiteral( "not(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "nsres" ), 0, tr( "Current north-south resolution" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "null" ), 0, tr( "NULL value" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "rand" ), 2, tr( "Random value between a and b" ), QStringLiteral( "rand(a,b)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "round" ), 1, tr( "Round x to nearest integer" ), QStringLiteral( "round(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "row" ), 0, tr( "Current row of moving window (Starts with 1)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "sin" ), 1, tr( "Sine of x (x is in degrees)", "sin(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "sqrt" ), 1, tr( "Square root of x", "sqrt(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "tan" ), 1, tr( "Tangent of x (x is in degrees)", "tan(x)" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "x" ), 0, tr( "Current x-coordinate of moving window" ) ) );
-  mFunctions.push_back( QgsGrassMapcalcFunction( t, QStringLiteral( "y" ), 0, tr( "Current y-coordinate of moving window" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"abs"_s, 1, tr( "Absolute value of x" ), u"abs(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"atan"_s, 1, tr( "Inverse tangent of x (result is in degrees)" ), u"atan(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"atan"_s, 2, tr( "Inverse tangent of y/x (result is in degrees)" ), u"atan(x,y)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"col"_s, 0, tr( "Current column of moving window (starts with 1)" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"cos"_s, 1, tr( "Cosine of x (x is in degrees)" ), u"cos(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"double"_s, 1, tr( "Convert x to double-precision floating point" ), u"double(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"ewres"_s, 0, tr( "Current east-west resolution" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"exp"_s, 1, tr( "Exponential function of x" ), u"exp(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"exp"_s, 2, tr( "x to the power y" ), u"exp(x,y)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"float"_s, 1, tr( "Convert x to single-precision floating point" ), u"float(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"if"_s, 1, tr( "Decision: 1 if x not zero, 0 otherwise" ), u"if(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"if"_s, 2, tr( "Decision: a if x not zero, 0 otherwise" ), u"if(x,a)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"if"_s, 3, tr( "Decision: a if x not zero, b otherwise" ), u"if(x,a,b)"_s, u"if,then,else"_s, false ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"if"_s, 4, tr( "Decision: a if x > 0, b if x is zero, c if x < 0" ), u"if(x,a,b,c)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"int"_s, 1, tr( "Convert x to integer [ truncates ]" ), u"int(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"isnull"_s, 1, tr( "Check if x = NULL" ), u"isnull(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"log"_s, 1, tr( "Natural log of x" ), u"log(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"log"_s, 2, tr( "Log of x base b" ), u"log(x,b)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"max"_s, 2, tr( "Largest value" ), u"max(a,b)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"max"_s, 3, tr( "Largest value" ), u"max(a,b,c)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"median"_s, 2, tr( "Median value" ), u"median(a,b)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"median"_s, 3, tr( "Median value" ), u"median(a,b,c)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"min"_s, 2, tr( "Smallest value" ), u"min(a,b)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"min"_s, 3, tr( "Smallest value" ), u"min(a,b,c)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"mode"_s, 2, tr( "Mode value" ), u"mode(a,b)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"mode"_s, 3, tr( "Mode value" ), u"mode(a,b,c)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"not"_s, 1, tr( "1 if x is zero, 0 otherwise" ), u"not(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"nsres"_s, 0, tr( "Current north-south resolution" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"null"_s, 0, tr( "NULL value" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"rand"_s, 2, tr( "Random value between a and b" ), u"rand(a,b)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"round"_s, 1, tr( "Round x to nearest integer" ), u"round(x)"_s ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"row"_s, 0, tr( "Current row of moving window (Starts with 1)" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"sin"_s, 1, tr( "Sine of x (x is in degrees)", "sin(x)" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"sqrt"_s, 1, tr( "Square root of x", "sqrt(x)" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"tan"_s, 1, tr( "Tangent of x (x is in degrees)", "tan(x)" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"x"_s, 0, tr( "Current x-coordinate of moving window" ) ) );
+  mFunctions.push_back( QgsGrassMapcalcFunction( t, u"y"_s, 0, tr( "Current y-coordinate of moving window" ) ) );
 
   for ( unsigned int i = 0; i < mFunctions.size(); i++ )
   {
@@ -960,7 +960,7 @@ void QgsGrassMapcalc::saveAs()
   {
     QDir d( ms );
 
-    if ( !d.mkdir( QStringLiteral( "mapcalc" ) ) )
+    if ( !d.mkdir( u"mapcalc"_s ) )
     {
       QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot create 'mapcalc' directory in current mapset." ) );
       return;
@@ -1044,30 +1044,30 @@ void QgsGrassMapcalc::save()
       QString type;
       if ( obj->type() == QgsGrassMapcalcObject::Map )
       {
-        type = QStringLiteral( "map" );
+        type = u"map"_s;
       }
       else if ( obj->type() == QgsGrassMapcalcObject::Constant )
       {
-        type = QStringLiteral( "constant" );
+        type = u"constant"_s;
       }
       else if ( obj->type() == QgsGrassMapcalcObject::Function )
       {
         if ( obj->function().type() == QgsGrassMapcalcFunction::Operator )
-          type = QStringLiteral( "operator" );
+          type = u"operator"_s;
         else
-          type = QStringLiteral( "function" );
+          type = u"function"_s;
       }
       else if ( obj->type() == QgsGrassMapcalcObject::Output )
       {
-        type = QStringLiteral( "output" );
+        type = u"output"_s;
       }
 
       QString val = obj->value();
       if ( obj->type() == QgsGrassMapcalcObject::Function )
       {
-        val.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) );
-        val.replace( QLatin1String( "<" ), QLatin1String( "&lt;" ) );
-        val.replace( QLatin1String( ">" ), QLatin1String( "&gt;" ) );
+        val.replace( "&"_L1, "&amp;"_L1 );
+        val.replace( "<"_L1, "&lt;"_L1 );
+        val.replace( ">"_L1, "&gt;"_L1 );
       }
 
       stream << "  <object id=\"" + QString::number( obj->id() )
@@ -1152,7 +1152,7 @@ void QgsGrassMapcalc::load()
     return;
   }
 
-  QDomDocument doc( QStringLiteral( "mapcalc" ) );
+  QDomDocument doc( u"mapcalc"_s );
   QString err;
   int line, column;
   int parsed = doc.setContent( &file, &err, &line, &column );
@@ -1169,15 +1169,15 @@ void QgsGrassMapcalc::load()
   QDomElement docElem = doc.documentElement();
 
   // Set canvas
-  QDomNodeList canvasNodes = docElem.elementsByTagName( QStringLiteral( "canvas" ) );
+  QDomNodeList canvasNodes = docElem.elementsByTagName( u"canvas"_s );
   QDomElement canvasElement = canvasNodes.item( 0 ).toElement();
-  int width = canvasElement.attribute( QStringLiteral( "width" ), QStringLiteral( "300" ) ).toInt();
-  int height = canvasElement.attribute( QStringLiteral( "height" ), QStringLiteral( "200" ) ).toInt();
+  int width = canvasElement.attribute( u"width"_s, u"300"_s ).toInt();
+  int height = canvasElement.attribute( u"height"_s, u"200"_s ).toInt();
   resizeCanvas( width, height );
 
   // Add objects
   std::vector<QgsGrassMapcalcObject *> objects;
-  QDomNodeList objectNodes = docElem.elementsByTagName( QStringLiteral( "object" ) );
+  QDomNodeList objectNodes = docElem.elementsByTagName( u"object"_s );
   QgsDebugMsgLevel( QString( "objectNodes.count() = %1" ).arg( objectNodes.count() ), 2 );
   for ( int n = 0; n < objectNodes.count(); n++ )
   {
@@ -1187,11 +1187,11 @@ void QgsGrassMapcalc::load()
       continue;
 
     QgsDebugMsgLevel( QString( "id = %1" ).arg( e.attribute( "id", "?" ).toLocal8Bit().constData() ), 2 );
-    unsigned int id = e.attribute( QStringLiteral( "id" ), QStringLiteral( "0" ) ).toInt();
-    int x = e.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
-    int y = e.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
-    QString typeName = e.attribute( QStringLiteral( "type" ), QStringLiteral( "constant" ) );
-    QString value = e.attribute( QStringLiteral( "value" ), QStringLiteral( "???" ) );
+    unsigned int id = e.attribute( u"id"_s, u"0"_s ).toInt();
+    int x = e.attribute( u"x"_s, u"0"_s ).toInt();
+    int y = e.attribute( u"y"_s, u"0"_s ).toInt();
+    QString typeName = e.attribute( u"type"_s, u"constant"_s );
+    QString value = e.attribute( u"value"_s, u"???"_s );
 
     if ( id >= mNextId )
       mNextId = id + 1;
@@ -1202,15 +1202,15 @@ void QgsGrassMapcalc::load()
 
     int type = -1;
 
-    if ( typeName == QLatin1String( "map" ) )
+    if ( typeName == "map"_L1 )
       type = QgsGrassMapcalcObject::Map;
-    else if ( typeName == QLatin1String( "constant" ) )
+    else if ( typeName == "constant"_L1 )
       type = QgsGrassMapcalcObject::Constant;
-    else if ( typeName == QLatin1String( "operator" ) )
+    else if ( typeName == "operator"_L1 )
       type = QgsGrassMapcalcObject::Function;
-    else if ( typeName == QLatin1String( "function" ) )
+    else if ( typeName == "function"_L1 )
       type = QgsGrassMapcalcObject::Function;
-    else if ( typeName == QLatin1String( "output" ) )
+    else if ( typeName == "output"_L1 )
       type = QgsGrassMapcalcObject::Output;
 
     if ( type == -1 )
@@ -1229,7 +1229,7 @@ void QgsGrassMapcalc::load()
     {
       case QgsGrassMapcalcObject::Map:
       {
-        QString label = QApplication::translate( "grasslabel", e.attribute( QStringLiteral( "label" ), QStringLiteral( "???" ) ).toUtf8() );
+        QString label = QApplication::translate( "grasslabel", e.attribute( u"label"_s, u"???"_s ).toUtf8() );
         obj->setValue( value, label );
         break;
       }
@@ -1240,7 +1240,7 @@ void QgsGrassMapcalc::load()
         break;
 
       case QgsGrassMapcalcObject::Function:
-        int inputCount = e.attribute( QStringLiteral( "inputCount" ), QStringLiteral( "1" ) ).toInt();
+        int inputCount = e.attribute( u"inputCount"_s, u"1"_s ).toInt();
         // Find function
         int fn = -1;
         for ( unsigned int i = 0; i < mFunctions.size(); i++ )
@@ -1263,7 +1263,7 @@ void QgsGrassMapcalc::load()
   }
 
   // Add connectors
-  QDomNodeList connectorNodes = docElem.elementsByTagName( QStringLiteral( "connector" ) );
+  QDomNodeList connectorNodes = docElem.elementsByTagName( u"connector"_s );
   for ( int n = 0; n < connectorNodes.count(); n++ )
   {
     QDomNode node = connectorNodes.item( n );
@@ -1272,7 +1272,7 @@ void QgsGrassMapcalc::load()
       continue;
 
     QgsDebugMsgLevel( QString( "id = %1" ).arg( e.attribute( "id", "?" ).toLocal8Bit().constData() ), 2 );
-    unsigned int id = e.attribute( QStringLiteral( "id" ), QStringLiteral( "0" ) ).toInt();
+    unsigned int id = e.attribute( u"id"_s, u"0"_s ).toInt();
     if ( id >= mNextId )
       mNextId = id + 1;
 
@@ -1282,7 +1282,7 @@ void QgsGrassMapcalc::load()
     mCanvasScene->addItem( con );
     con->show();
 
-    QDomNodeList endNodes = e.elementsByTagName( QStringLiteral( "end" ) );
+    QDomNodeList endNodes = e.elementsByTagName( u"end"_s );
     QgsDebugMsgLevel( QString( "endNodes.count = %1" ).arg( endNodes.count() ), 2 );
     for ( int n2 = 0; n2 < endNodes.count() && n2 < 2; n2++ )
     {
@@ -1291,27 +1291,27 @@ void QgsGrassMapcalc::load()
       if ( e2.isNull() )
         continue;
 
-      int x = e2.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
-      int y = e2.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
+      int x = e2.attribute( u"x"_s, u"0"_s ).toInt();
+      int y = e2.attribute( u"y"_s, u"0"_s ).toInt();
       con->setPoint( n2, QPoint( x, y ) );
 
       QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 2 );
 
-      int objId = e2.attribute( QStringLiteral( "object" ), QStringLiteral( "-1" ) ).toInt();
+      int objId = e2.attribute( u"object"_s, u"-1"_s ).toInt();
       QgsDebugMsgLevel( QString( "objId = %1" ).arg( objId ), 2 );
       if ( objId < 0 )
         continue; // not connected
 
       if ( static_cast<uint>( objId ) < objects.size() && objects[objId] )
       {
-        QString socketTypeName = e2.attribute( QStringLiteral( "socketType" ), QStringLiteral( "out" ) );
+        QString socketTypeName = e2.attribute( u"socketType"_s, u"out"_s );
         int socketType;
-        if ( socketTypeName == QLatin1String( "in" ) )
+        if ( socketTypeName == "in"_L1 )
           socketType = QgsGrassMapcalcObject::In;
         else
           socketType = QgsGrassMapcalcObject::Out;
 
-        int socket = e2.attribute( QStringLiteral( "socket" ), QStringLiteral( "0" ) ).toInt();
+        int socket = e2.attribute( u"socket"_s, u"0"_s ).toInt();
 
         QgsDebugMsgLevel( QString( "end = %1 objId = %2 socketType = %3 socket = %4" ).arg( n2 ).arg( objId ).arg( socketType ).arg( socket ), 2 );
 
@@ -1699,7 +1699,7 @@ QString QgsGrassMapcalcObject::expression()
       //return mInputConnectors[0]->expression();
       return "(" + mInputConnectors[0]->expression() + ")";
     else
-      return QStringLiteral( "null()" );
+      return u"null()"_s;
   }
 
   // Functions and operators
@@ -1906,7 +1906,7 @@ QString QgsGrassMapcalcConnector::expression()
     return mSocketObjects[i]->expression();
   }
 
-  return QStringLiteral( "null()" );
+  return u"null()"_s;
 }
 
 QgsGrassMapcalcObject *QgsGrassMapcalcConnector::object( int end )
@@ -1928,7 +1928,7 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name, int co
 
   if ( !labels.isEmpty() )
   {
-    mInputLabels = labels.split( QStringLiteral( "," ), Qt::SkipEmptyParts );
+    mInputLabels = labels.split( u","_s, Qt::SkipEmptyParts );
   }
 }
 

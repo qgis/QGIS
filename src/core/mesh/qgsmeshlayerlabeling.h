@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
       Q_UNUSED( parent )
       Q_UNUSED( props )
       QDomDocument doc = parent.ownerDocument();
-      parent.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( type() ) ) );
+      parent.appendChild( doc.createComment( u"SE Export for %1 not implemented yet"_s.arg( type() ) ) );
     }
 
     /**

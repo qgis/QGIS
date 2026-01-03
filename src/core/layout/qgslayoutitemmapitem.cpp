@@ -39,17 +39,17 @@ bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &documen
 
   QgsLayoutObject::writeObjectPropertiesToElement( element, document, context );
 
-  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "name" ), mName );
-  element.setAttribute( QStringLiteral( "show" ), mEnabled );
-  element.setAttribute( QStringLiteral( "position" ), static_cast< int >( mStackingPosition ) );
+  element.setAttribute( u"uuid"_s, mUuid );
+  element.setAttribute( u"name"_s, mName );
+  element.setAttribute( u"show"_s, mEnabled );
+  element.setAttribute( u"position"_s, static_cast< int >( mStackingPosition ) );
 
   if ( mStackingLayer )
   {
-    element.setAttribute( QStringLiteral( "stackingLayer" ), mStackingLayer.layerId );
-    element.setAttribute( QStringLiteral( "stackingLayerName" ), mStackingLayer.name );
-    element.setAttribute( QStringLiteral( "stackingLayerSource" ), mStackingLayer.source );
-    element.setAttribute( QStringLiteral( "stackingLayerProvider" ), mStackingLayer.provider );
+    element.setAttribute( u"stackingLayer"_s, mStackingLayer.layerId );
+    element.setAttribute( u"stackingLayerName"_s, mStackingLayer.name );
+    element.setAttribute( u"stackingLayerSource"_s, mStackingLayer.source );
+    element.setAttribute( u"stackingLayerProvider"_s, mStackingLayer.provider );
   }
 
   return true;
@@ -59,15 +59,15 @@ bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocum
 {
   QgsLayoutObject::readObjectPropertiesFromElement( itemElem, doc, context );
 
-  mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
-  mName = itemElem.attribute( QStringLiteral( "name" ) );
-  mEnabled = ( itemElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-  mStackingPosition = static_cast< StackingPosition >( itemElem.attribute( QStringLiteral( "position" ), QString::number( QgsLayoutItemMapItem::StackBelowMapLabels ) ).toInt() );
+  mUuid = itemElem.attribute( u"uuid"_s );
+  mName = itemElem.attribute( u"name"_s );
+  mEnabled = ( itemElem.attribute( u"show"_s, u"0"_s ) != "0"_L1 );
+  mStackingPosition = static_cast< StackingPosition >( itemElem.attribute( u"position"_s, QString::number( QgsLayoutItemMapItem::StackBelowMapLabels ) ).toInt() );
 
-  const QString layerId = itemElem.attribute( QStringLiteral( "stackingLayer" ) );
-  const QString layerName = itemElem.attribute( QStringLiteral( "stackingLayerName" ) );
-  const QString layerSource = itemElem.attribute( QStringLiteral( "stackingLayerSource" ) );
-  const QString layerProvider = itemElem.attribute( QStringLiteral( "stackingLayerProvider" ) );
+  const QString layerId = itemElem.attribute( u"stackingLayer"_s );
+  const QString layerName = itemElem.attribute( u"stackingLayerName"_s );
+  const QString layerSource = itemElem.attribute( u"stackingLayerSource"_s );
+  const QString layerProvider = itemElem.attribute( u"stackingLayerProvider"_s );
   mStackingLayer = QgsMapLayerRef( layerId, layerName, layerSource, layerProvider );
   if ( mMap && mMap->layout() )
     mStackingLayer.resolveWeakly( mMap->layout()->project() );

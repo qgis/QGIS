@@ -35,7 +35,7 @@ static const QString sDescription = QObject::tr( "Allow offline editing and sync
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = QStringLiteral( ":/offline_editing/offline_editing_copy.png" );
+static const QString sPluginIcon = u":/offline_editing/offline_editing_copy.png"_s;
 
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
@@ -54,7 +54,7 @@ void QgsOfflineEditingPlugin::initGui()
 
   // Create the action for tool
   mActionConvertProject = new QAction( QIcon( ":/offline_editing/offline_editing_copy.png" ), tr( "Convert to Offline Project…" ), this );
-  mActionConvertProject->setObjectName( QStringLiteral( "mActionConvertProject" ) );
+  mActionConvertProject->setObjectName( u"mActionConvertProject"_s );
   // Set the what's this text
   mActionConvertProject->setWhatsThis( tr( "Create offline copies of selected layers and save as offline project" ) );
   // Connect the action to the run
@@ -65,7 +65,7 @@ void QgsOfflineEditingPlugin::initGui()
   mActionConvertProject->setEnabled( false );
 
   mActionSynchronize = new QAction( QIcon( ":/offline_editing/offline_editing_sync.png" ), tr( "Synchronize" ), this );
-  mActionSynchronize->setObjectName( QStringLiteral( "mActionSynchronize" ) );
+  mActionSynchronize->setObjectName( u"mActionSynchronize"_s );
   mActionSynchronize->setWhatsThis( tr( "Synchronize offline project with remote layers" ) );
   connect( mActionSynchronize, &QAction::triggered, this, &QgsOfflineEditingPlugin::synchronize );
   mQGisIface->addDatabaseToolBarIcon( mActionSynchronize );

@@ -28,7 +28,7 @@
 
 QString QgsGridAlgorithm::name() const
 {
-  return QStringLiteral( "creategrid" );
+  return u"creategrid"_s;
 }
 
 QString QgsGridAlgorithm::displayName() const
@@ -48,24 +48,24 @@ QString QgsGridAlgorithm::group() const
 
 QString QgsGridAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 void QgsGridAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TYPE" ), QObject::tr( "Grid type" ), QStringList() << QObject::tr( "Point" ) << QObject::tr( "Line" ) << QObject::tr( "Rectangle (Polygon)" ) << QObject::tr( "Diamond (Polygon)" ) << QObject::tr( "Hexagon (Polygon)" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "Grid type" ), QStringList() << QObject::tr( "Point" ) << QObject::tr( "Line" ) << QObject::tr( "Rectangle (Polygon)" ) << QObject::tr( "Diamond (Polygon)" ) << QObject::tr( "Hexagon (Polygon)" ), false, 0 ) );
 
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Grid extent" ) ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Grid extent" ) ) );
 
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HSPACING" ), QObject::tr( "Horizontal spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0 ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VSPACING" ), QObject::tr( "Vertical spacing" ), 1, QStringLiteral( "CRS" ), false, 0, 1000000000.0 ) );
+  addParameter( new QgsProcessingParameterDistance( u"HSPACING"_s, QObject::tr( "Horizontal spacing" ), 1, u"CRS"_s, false, 0, 1000000000.0 ) );
+  addParameter( new QgsProcessingParameterDistance( u"VSPACING"_s, QObject::tr( "Vertical spacing" ), 1, u"CRS"_s, false, 0, 1000000000.0 ) );
 
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "HOVERLAY" ), QObject::tr( "Horizontal overlay" ), 0, QStringLiteral( "CRS" ), false ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "VOVERLAY" ), QObject::tr( "Vertical overlay" ), 0, QStringLiteral( "CRS" ), false ) );
+  addParameter( new QgsProcessingParameterDistance( u"HOVERLAY"_s, QObject::tr( "Horizontal overlay" ), 0, u"CRS"_s, false ) );
+  addParameter( new QgsProcessingParameterDistance( u"VOVERLAY"_s, QObject::tr( "Vertical overlay" ), 0, u"CRS"_s, false ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Grid CRS" ), QStringLiteral( "ProjectCrs" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Grid CRS" ), u"ProjectCrs"_s ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Grid" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Grid" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
 
 QString QgsGridAlgorithm::shortHelpString() const
@@ -93,13 +93,13 @@ QgsGridAlgorithm *QgsGridAlgorithm::createInstance() const
 
 bool QgsGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mIdx = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context );
-  mHSpacing = parameterAsDouble( parameters, QStringLiteral( "HSPACING" ), context );
-  mVSpacing = parameterAsDouble( parameters, QStringLiteral( "VSPACING" ), context );
-  mHOverlay = parameterAsDouble( parameters, QStringLiteral( "HOVERLAY" ), context );
-  mVOverlay = parameterAsDouble( parameters, QStringLiteral( "VOVERLAY" ), context );
-  mCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
-  mGridExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs );
+  mIdx = parameterAsEnum( parameters, u"TYPE"_s, context );
+  mHSpacing = parameterAsDouble( parameters, u"HSPACING"_s, context );
+  mVSpacing = parameterAsDouble( parameters, u"VSPACING"_s, context );
+  mHOverlay = parameterAsDouble( parameters, u"HOVERLAY"_s, context );
+  mVOverlay = parameterAsDouble( parameters, u"VOVERLAY"_s, context );
+  mCrs = parameterAsCrs( parameters, u"CRS"_s, context );
+  mGridExtent = parameterAsExtent( parameters, u"EXTENT"_s, context, mCrs );
 
   return true;
 }
@@ -119,19 +119,19 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   //   throw QgsProcessingException( QObject::tr( "Invalid overlay: horizontal: '%1', vertical: '%2'" ).arg( mHOverlay ).arg( mVOverlay ) );
 
   QgsFields fields = QgsFields();
-  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
-  fields.append( QgsField( QStringLiteral( "left" ), QMetaType::Type::Double ) );
-  fields.append( QgsField( QStringLiteral( "top" ), QMetaType::Type::Double ) );
-  fields.append( QgsField( QStringLiteral( "right" ), QMetaType::Type::Double ) );
-  fields.append( QgsField( QStringLiteral( "bottom" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( u"id"_s, QMetaType::Type::LongLong ) );
+  fields.append( QgsField( u"left"_s, QMetaType::Type::Double ) );
+  fields.append( QgsField( u"top"_s, QMetaType::Type::Double ) );
+  fields.append( QgsField( u"right"_s, QMetaType::Type::Double ) );
+  fields.append( QgsField( u"bottom"_s, QMetaType::Type::Double ) );
 
   switch ( mIdx )
   {
     case 0: //point
     case 2: //rectangle
     case 4: //hexagon
-      fields.append( QgsField( QStringLiteral( "row_index" ), QMetaType::Type::LongLong ) );
-      fields.append( QgsField( QStringLiteral( "col_index" ), QMetaType::Type::LongLong ) );
+      fields.append( QgsField( u"row_index"_s, QMetaType::Type::LongLong ) );
+      fields.append( QgsField( u"col_index"_s, QMetaType::Type::LongLong ) );
       break;
     default:
       break;
@@ -150,9 +150,9 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, outputWkb, mCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, outputWkb, mCrs ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   feedback->setProgress( 0 );
 
@@ -177,7 +177,7 @@ QVariantMap QgsGridAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 
   sink->finalize();
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 
@@ -206,7 +206,7 @@ void QgsGridAlgorithm::createPointGrid( std::unique_ptr<QgsFeatureSink> &sink, Q
       f.setGeometry( QgsGeometry( new QgsPoint( x, y ) ) );
       f.setAttributes( QgsAttributes() << id << x << y << x + mHSpacing << y + mVSpacing << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
 
       id++;
       cnt++;
@@ -276,7 +276,7 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr<QgsFeatureSink> &sink, Qg
     f.setGeometry( QgsGeometry( new QgsLineString( pt1, pt2 ) ) );
     f.setAttributes( QgsAttributes() << id << mGridExtent.xMinimum() << y << mGridExtent.xMaximum() << y );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
     y = y - vSpace[cnt % 2];
 
     id++;
@@ -314,7 +314,7 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr<QgsFeatureSink> &sink, Qg
     f.setGeometry( QgsGeometry( new QgsLineString( pt1, pt2 ) ) );
     f.setAttributes( QgsAttributes() << id << x << mGridExtent.yMaximum() << x << mGridExtent.yMinimum() );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
     x = x + hSpace[cnt % 2];
 
     id++;
@@ -367,7 +367,7 @@ void QgsGridAlgorithm::createRectangleGrid( std::unique_ptr<QgsFeatureSink> &sin
       f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x2 << y2 << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
 
       id++;
       cnt++;
@@ -445,7 +445,7 @@ void QgsGridAlgorithm::createDiamondGrid( std::unique_ptr<QgsFeatureSink> &sink,
       f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x3 << y3 );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
 
       id++;
       cnt++;
@@ -534,7 +534,7 @@ void QgsGridAlgorithm::createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink,
       f.setGeometry( std::move( poly ) );
       f.setAttributes( QgsAttributes() << id << x1 << y1 << x4 << y3 << row << col );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), QVariantMap(), u"OUTPUT"_s ) );
 
       id++;
       cnt++;

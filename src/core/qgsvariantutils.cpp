@@ -205,7 +205,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QDateTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QDateTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -215,7 +215,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -225,7 +225,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QDate was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QDate was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -235,7 +235,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QChar was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QChar was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -245,7 +245,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QString was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QString was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -255,7 +255,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QByteArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QByteArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -265,7 +265,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QBitArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QBitArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -275,7 +275,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QRect was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QRect was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -285,7 +285,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QRectF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QRectF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -295,7 +295,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QSize was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QSize was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -305,7 +305,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QSizeF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QSizeF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -315,7 +315,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QLine was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QLine was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -325,7 +325,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QLineF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QLineF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -335,7 +335,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QPoint was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QPoint was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -345,7 +345,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QPointF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QPointF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -355,7 +355,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QUuid was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QUuid was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -365,7 +365,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QPixmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QPixmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -375,7 +375,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QImage was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QImage was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -385,7 +385,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QRegion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QRegion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -395,7 +395,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QBitmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QBitmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -405,7 +405,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QIcon was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QIcon was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -415,7 +415,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QVector2D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QVector2D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -425,7 +425,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QVector3D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QVector3D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -435,7 +435,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QVector4D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QVector4D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -445,7 +445,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       {
         if ( !silenceNullWarnings )
         {
-          QgsDebugError( QStringLiteral( "NULL QQuaternion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+          QgsDebugError( u"NULL QQuaternion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead."_s );
         }
         return true;
       }
@@ -574,10 +574,8 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::ULongLong;
 
     case QMetaType::Char:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::Char16:
     case QMetaType::Char32:
-#endif
     case QMetaType::Short:
     case QMetaType::SChar:
       return QVariant::Type::Int;
@@ -606,9 +604,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
     case QMetaType::QCborArray:
     case QMetaType::QCborMap:
     case QMetaType::QObjectStar:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::QVariantPair:
-#endif
     case QMetaType::QByteArrayList:
     case QMetaType::QColorSpace:
       break;
@@ -627,12 +623,7 @@ bool QgsVariantUtils::isUnsetAttributeValue( const QVariant &variant )
 
 QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  return QVariant( QgsVariantUtils::metaTypeToVariantType( metaType ) );
-#else
   return QVariant( QMetaType( metaType ) );
-#endif
-
 }
 
 QString QgsVariantUtils::displayString( const QVariant &variant, int precision )

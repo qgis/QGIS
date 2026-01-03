@@ -22,7 +22,7 @@
 
 #include <QDir>
 
-const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettingsTree::sTreeQgis, QStringList() );
+const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( u"localized_data_paths"_s, QgsSettingsTree::sTreeQgis, QStringList() );
 
 QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
 {

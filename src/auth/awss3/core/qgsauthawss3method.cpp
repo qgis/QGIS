@@ -31,8 +31,8 @@
 #endif
 
 
-const QString QgsAuthAwsS3Method::AUTH_METHOD_KEY = QStringLiteral( "AWSS3" );
-const QString QgsAuthAwsS3Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "AWS S3" );
+const QString QgsAuthAwsS3Method::AUTH_METHOD_KEY = u"AWSS3"_s;
+const QString QgsAuthAwsS3Method::AUTH_METHOD_DESCRIPTION = u"AWS S3"_s;
 const QString QgsAuthAwsS3Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "AWS S3" );
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthAwsS3Method::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
@@ -42,7 +42,7 @@ QgsAuthAwsS3Method::QgsAuthAwsS3Method()
 {
   setVersion( 4 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << QStringLiteral( "awss3" ) );
+  setDataProviders( QStringList() << u"awss3"_s );
 }
 
 QString QgsAuthAwsS3Method::key() const
@@ -66,13 +66,13 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
-  const QByteArray username = config.config( QStringLiteral( "username" ) ).toUtf8();
-  const QByteArray password = config.config( QStringLiteral( "password" ) ).toUtf8();
-  const QByteArray region = config.config( QStringLiteral( "region" ) ).toUtf8();
+  const QByteArray username = config.config( u"username"_s ).toUtf8();
+  const QByteArray password = config.config( u"password"_s ).toUtf8();
+  const QByteArray region = config.config( u"region"_s ).toUtf8();
 
   const QByteArray headerList = "host;x-amz-content-sha256;x-amz-date";
   const QByteArray encryptionMethod = "AWS4-HMAC-SHA256";
@@ -139,14 +139,14 @@ QgsAuthMethodConfig QgsAuthAwsS3Method::getMethodConfig( const QString &authcfg,
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     config = sAuthConfigCache.value( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return config;
   }
 
   // else build bundle
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, config, fullconfig ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return QgsAuthMethodConfig();
   }
 
@@ -159,7 +159,7 @@ QgsAuthMethodConfig QgsAuthAwsS3Method::getMethodConfig( const QString &authcfg,
 void QgsAuthAwsS3Method::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig )
 {
   const QMutexLocker locker( &mMutex );
-  QgsDebugMsgLevel( QStringLiteral( "Putting AWS S3 config for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Putting AWS S3 config for authcfg: %1"_s.arg( authcfg ), 2 );
   sAuthConfigCache.insert( authcfg, mconfig );
 }
 
@@ -169,7 +169,7 @@ void QgsAuthAwsS3Method::removeMethodConfig( const QString &authcfg )
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     sAuthConfigCache.remove( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Removed Aws S3 config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Removed Aws S3 config for authcfg: %1"_s.arg( authcfg ), 2 );
   }
 }
 

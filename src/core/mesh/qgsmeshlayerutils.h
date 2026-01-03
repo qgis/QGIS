@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \brief Returns N vector/scalar values from the index from the dataset
      *
      * See QgsMeshLayerUtils::datasetValuesCount() to determine maximum number of values to be requested
-     * See QgsMeshLayerUtils::datasetValuesType() to see the the type of values the function returns
+     * See QgsMeshLayerUtils::datasetValuesType() to see the type of values the function returns
      * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
      *
      * \since QGIS 3.12

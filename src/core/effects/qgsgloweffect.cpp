@@ -126,18 +126,18 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
 QVariantMap QgsGlowEffect::properties() const
 {
   QVariantMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
-  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
-  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
-  props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
-  props.insert( QStringLiteral( "blur_unit" ), QgsUnitTypes::encodeUnit( mBlurUnit ) );
-  props.insert( QStringLiteral( "blur_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
-  props.insert( QStringLiteral( "spread" ), QString::number( mSpread ) );
-  props.insert( QStringLiteral( "spread_unit" ), QgsUnitTypes::encodeUnit( mSpreadUnit ) );
-  props.insert( QStringLiteral( "spread_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSpreadMapUnitScale ) );
-  props.insert( QStringLiteral( "color_type" ), QString::number( static_cast< int >( mColorType ) ) );
-  props.insert( QStringLiteral( "single_color" ), QgsColorUtils::colorToString( mColor ) );
+  props.insert( u"enabled"_s, mEnabled ? "1" : "0" );
+  props.insert( u"draw_mode"_s, QString::number( int( mDrawMode ) ) );
+  props.insert( u"blend_mode"_s, QString::number( int( mBlendMode ) ) );
+  props.insert( u"opacity"_s, QString::number( mOpacity ) );
+  props.insert( u"blur_level"_s, QString::number( mBlurLevel ) );
+  props.insert( u"blur_unit"_s, QgsUnitTypes::encodeUnit( mBlurUnit ) );
+  props.insert( u"blur_unit_scale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
+  props.insert( u"spread"_s, QString::number( mSpread ) );
+  props.insert( u"spread_unit"_s, QgsUnitTypes::encodeUnit( mSpreadUnit ) );
+  props.insert( u"spread_unit_scale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mSpreadMapUnitScale ) );
+  props.insert( u"color_type"_s, QString::number( static_cast< int >( mColorType ) ) );
+  props.insert( u"single_color"_s, QgsColorUtils::colorToString( mColor ) );
 
   if ( mRamp )
   {
@@ -150,14 +150,14 @@ QVariantMap QgsGlowEffect::properties() const
 void QgsGlowEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( u"blend_mode"_s ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  if ( props.contains( QStringLiteral( "transparency" ) ) )
+  if ( props.contains( u"transparency"_s ) )
   {
-    const double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    const double transparency = props.value( u"transparency"_s ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = 1.0 - transparency;
@@ -165,46 +165,46 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   }
   else
   {
-    const double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    const double opacity = props.value( u"opacity"_s ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = opacity;
     }
   }
-  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  const double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
+  mEnabled = props.value( u"enabled"_s, u"1"_s ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( u"draw_mode"_s, u"2"_s ).toInt() );
+  const double level = props.value( u"blur_level"_s ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
-    if ( !props.contains( QStringLiteral( "blur_unit" ) ) )
+    if ( !props.contains( u"blur_unit"_s ) )
     {
       // deal with pre blur unit era by assuming 96 dpi and converting pixel values as millimeters
       mBlurLevel *= 0.2645;
     }
   }
-  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
-  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
-  const double spread = props.value( QStringLiteral( "spread" ) ).toDouble( &ok );
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"blur_unit"_s ).toString() );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"blur_unit_scale"_s ).toString() );
+  const double spread = props.value( u"spread"_s ).toDouble( &ok );
   if ( ok )
   {
     mSpread = spread;
   }
-  mSpreadUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "spread_unit" ) ).toString() );
-  mSpreadMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "spread_unit_scale" ) ).toString() );
-  const QgsGlowEffect::GlowColorType type = static_cast< QgsGlowEffect::GlowColorType >( props.value( QStringLiteral( "color_type" ) ).toInt( &ok ) );
+  mSpreadUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"spread_unit"_s ).toString() );
+  mSpreadMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"spread_unit_scale"_s ).toString() );
+  const QgsGlowEffect::GlowColorType type = static_cast< QgsGlowEffect::GlowColorType >( props.value( u"color_type"_s ).toInt( &ok ) );
   if ( ok )
   {
     mColorType = type;
   }
-  if ( props.contains( QStringLiteral( "single_color" ) ) )
+  if ( props.contains( u"single_color"_s ) )
   {
-    mColor = QgsColorUtils::colorFromString( props.value( QStringLiteral( "single_color" ) ).toString() );
+    mColor = QgsColorUtils::colorFromString( props.value( u"single_color"_s ).toString() );
   }
 
   //attempt to create color ramp from props
   delete mRamp;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QgsCptCityColorRamp::typeString() )
+  if ( props.contains( u"rampType"_s ) && props[u"rampType"_s] == QgsCptCityColorRamp::typeString() )
   {
     mRamp = QgsCptCityColorRamp::create( props );
   }

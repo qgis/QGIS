@@ -53,7 +53,7 @@ class TestQgsVertexEditor : public QgsTest
 };
 
 TestQgsVertexEditor::TestQgsVertexEditor()
-  : QgsTest( QStringLiteral( "Vertex Editor tests" ) ) {}
+  : QgsTest( u"Vertex Editor tests"_s ) {}
 
 //runs before all tests
 void TestQgsVertexEditor::initTestCase()
@@ -64,16 +64,16 @@ void TestQgsVertexEditor::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = std::make_unique<QgsMapCanvas>();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   mVertexEditor = std::make_unique<QgsVertexEditorWidget>( mCanvas.get() );
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
-  mLayerLine = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayerLine = std::make_unique<QgsVectorLayer>( u"LineString?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayerLine->isValid() );
 
   QgsFeature line;
@@ -81,21 +81,21 @@ void TestQgsVertexEditor::initTestCase()
   mLayerLine->dataProvider()->addFeature( line );
   QCOMPARE( mLayerLine->featureCount(), 1 );
 
-  mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayerLineZ = std::make_unique<QgsVectorLayer>( u"LineStringZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayerLineZ->isValid() );
 
   line.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 5 1, 6 6 1, 7 5 1)" ) );
   mLayerLineZ->dataProvider()->addFeature( line );
   QCOMPARE( mLayerLineZ->featureCount(), 1 );
 
-  mLayerLineM = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
+  mLayerLineM = std::make_unique<QgsVectorLayer>( u"LineStringM?crs=EPSG:27700"_s, u"layer line M"_s, u"memory"_s );
   QVERIFY( mLayerLineM->isValid() );
 
   line.setGeometry( QgsGeometry::fromWkt( "LineStringM (5 5 1, 6 6 1, 7 5 1)" ) );
   mLayerLineM->dataProvider()->addFeature( line );
   QCOMPARE( mLayerLineM->featureCount(), 1 );
 
-  mLayerLineZM = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZM?crs=EPSG:27700" ), QStringLiteral( "layer line ZM" ), QStringLiteral( "memory" ) );
+  mLayerLineZM = std::make_unique<QgsVectorLayer>( u"LineStringZM?crs=EPSG:27700"_s, u"layer line ZM"_s, u"memory"_s );
   QVERIFY( mLayerLineZM->isValid() );
 
   line.setGeometry( QgsGeometry::fromWkt( "LineStringZM (5 5 1, 6 6 1, 7 5 1)" ) );
@@ -108,10 +108,10 @@ void TestQgsVertexEditor::testColumnZMR_data()
   QTest::addColumn<QgsVectorLayer *>( "layer" );
   QTest::addColumn<QStringList>( "headers" );
 
-  QTest::newRow( "Line" ) << mLayerLine.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "r" ) );
-  QTest::newRow( "LineZ" ) << mLayerLineZ.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "z" ) << QStringLiteral( "r" ) );
-  QTest::newRow( "LineM" ) << mLayerLineM.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "m" ) << QStringLiteral( "r" ) );
-  QTest::newRow( "LineZM" ) << mLayerLineZM.get() << ( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QStringLiteral( "z" ) << QStringLiteral( "m" ) << QStringLiteral( "r" ) );
+  QTest::newRow( "Line" ) << mLayerLine.get() << ( QStringList() << u"x"_s << u"y"_s << u"r"_s );
+  QTest::newRow( "LineZ" ) << mLayerLineZ.get() << ( QStringList() << u"x"_s << u"y"_s << u"z"_s << u"r"_s );
+  QTest::newRow( "LineM" ) << mLayerLineM.get() << ( QStringList() << u"x"_s << u"y"_s << u"m"_s << u"r"_s );
+  QTest::newRow( "LineZM" ) << mLayerLineZM.get() << ( QStringList() << u"x"_s << u"y"_s << u"z"_s << u"m"_s << u"r"_s );
 }
 
 void TestQgsVertexEditor::testColumnZMR()

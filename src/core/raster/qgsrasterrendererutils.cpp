@@ -40,7 +40,7 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
 
   QTextStream inputStream( &inputFile );
   int lineCounter = 0;
-  const thread_local QRegularExpression itemRegex( QStringLiteral( "^(.+?),(.+?),(.+?),(.+?),(.+?),(.+)$" ) );
+  const thread_local QRegularExpression itemRegex( u"^(.+?),(.+?),(.+?),(.+?),(.+?),(.+)$"_s );
 
   //read through the input looking for valid data
   while ( !inputStream.atEnd() )
@@ -51,16 +51,16 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
     {
       if ( !inputLine.simplified().startsWith( '#' ) )
       {
-        if ( inputLine.contains( QLatin1String( "INTERPOLATION" ), Qt::CaseInsensitive ) )
+        if ( inputLine.contains( "INTERPOLATION"_L1, Qt::CaseInsensitive ) )
         {
           QStringList inputStringComponents = inputLine.split( ':' );
           if ( inputStringComponents.size() == 2 )
           {
-            if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "INTERPOLATED" ), Qt::CaseInsensitive ) == 0 )
+            if ( inputStringComponents[1].trimmed().toUpper().compare( "INTERPOLATED"_L1, Qt::CaseInsensitive ) == 0 )
             {
               type = Qgis::ShaderInterpolationMethod::Linear;
             }
-            else if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "DISCRETE" ), Qt::CaseInsensitive ) == 0 )
+            else if ( inputStringComponents[1].trimmed().toUpper().compare( "DISCRETE"_L1, Qt::CaseInsensitive ) == 0 )
             {
               type = Qgis::ShaderInterpolationMethod::Discrete;
             }

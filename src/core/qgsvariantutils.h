@@ -91,7 +91,7 @@ class CORE_EXPORT QgsVariantUtils
      */
     static bool isUnsetAttributeValue( const QVariant &variant ) SIP_SKIP;
 
-    // TODO QGIS 4 remove this method
+    // TODO QGIS 5 remove this method
 
     /**
      * Helper method to properly create a null QVariant from a \a metaType

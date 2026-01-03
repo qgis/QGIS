@@ -28,7 +28,7 @@
 
 QString QgsSingleBoxScaleBarRenderer::id() const
 {
-  return QStringLiteral( "Single Box" );
+  return u"Single Box"_s;
 }
 
 QString QgsSingleBoxScaleBarRenderer::visibleName() const

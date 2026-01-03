@@ -76,9 +76,9 @@ void TestQgsMapToolSelect::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::showSettings();
 
@@ -128,10 +128,10 @@ QgsFeatureList
 void TestQgsMapToolSelect::selectInvalidPolygons()
 {
   //create a temporary layer
-  auto memoryLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto memoryLayer = std::make_unique<QgsVectorLayer>( u"Polygon?field=pk:int"_s, u"vl"_s, u"memory"_s );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( u"pk"_s, 1 );
   // This geometry is an invalid polygon (3 distinct vertices).
   // GEOS reported invalidity: Points of LinearRing do not form a closed linestring
   f1.setGeometry( geomFromHexWKB(

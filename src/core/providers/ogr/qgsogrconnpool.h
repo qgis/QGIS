@@ -45,10 +45,10 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
   c = new QgsOgrConn;
 
   const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connInfo );
-  const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
-                           + parts.value( QStringLiteral( "path" ) ).toString()
-                           + parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
-  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  const QString fullPath = parts.value( u"vsiPrefix"_s ).toString()
+                           + parts.value( u"path"_s ).toString()
+                           + parts.value( u"vsiSuffix"_s ).toString();
+  const QStringList openOptions = parts.value( u"openOptions"_s ).toStringList();
   char **papszOpenOptions = nullptr;
   for ( const QString &option : openOptions )
   {

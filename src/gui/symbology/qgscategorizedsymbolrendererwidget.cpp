@@ -58,7 +58,7 @@
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, QScreen *screen )
   : QAbstractItemModel( parent )
-  , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
+  , mMimeFormat( u"application/x-qgscategorizedsymbolrendererv2model"_s )
   , mScreen( screen )
 {
 }
@@ -431,7 +431,7 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
     to = mRenderer->categories().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsgLevel( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ), 2 );
+    QgsDebugMsgLevel( u"move %1 to %2"_s.arg( rows[i] ).arg( to ), 2 );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t )
@@ -912,7 +912,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
     return;
   }
 
@@ -1089,7 +1089,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
   }
 
   const QgsCategoryList catList = mRenderer->categories();
@@ -1114,7 +1114,7 @@ QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QSt
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
   }
   return uniqueValues;
 }
@@ -1220,7 +1220,7 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
 void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
 {
   QgsSettings settings;
-  const QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
+  const QString openFileDir = settings.value( u"UI/lastMatchToSymbolsDir"_s, QDir::homePath() ).toString();
 
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to Symbols from File" ), openFileDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
@@ -1229,7 +1229,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   }
 
   const QFileInfo openFileInfo( fileName );
-  settings.setValue( QStringLiteral( "UI/lastMatchToSymbolsDir" ), openFileInfo.absolutePath() );
+  settings.setValue( u"UI/lastMatchToSymbolsDir"_s, openFileInfo.absolutePath() );
 
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )
