@@ -11,7 +11,7 @@ Rectangle {
   property string title: ""
   property string description: ""
   property string imageSource: ""
-  property string linkText: "Read more..."
+  property string linkText: qsTr("Read more...")
   property bool showCloseButton: false
 
   signal readMoreClicked

@@ -164,7 +164,7 @@ Item {
               }
 
               ScrollBar.vertical: CustomScrollBar {
-                policy: ScrollBar.AsNeeded 
+                policy: ScrollBar.AsNeeded
               }
               
               onCountChanged: {
@@ -240,12 +240,12 @@ Item {
                 subtitle: Crs || ""
                 imageSource: {
                   switch (Type) {
-                    case TemplateProjectsModel.TemplateType.Blank:
-                      return "../images/blank.jpg";
-                    case TemplateProjectsModel.TemplateType.OpenStreetMap:
-                      return "../images/basemap.jpg";
-                    default:
-                      return PreviewImagePath || "";
+                  case TemplateProjectsModel.TemplateType.Blank:
+                    return "../images/blank.jpg";
+                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                    return "../images/basemap.jpg";
+                  default:
+                    return PreviewImagePath || "";
                   }
                 }
                 isSelected: templatesListView.currentIndex === index
@@ -253,15 +253,15 @@ Item {
 
                 onClicked: {
                   switch (Type) {
-                    case TemplateProjectsModel.TemplateType.Blank:
-                      welcomeScreenController.createBlankProject(); //#spellok
-                      return;
-                    case TemplateProjectsModel.TemplateType.OpenStreetMap:
-                      welcomeScreenController.createProjectFromBasemap();
-                      return;
-                    default:
-                      welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
-                      return;
+                  case TemplateProjectsModel.TemplateType.Blank:
+                    welcomeScreenController.createBlankProject(); //#spellok
+                    return;
+                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                    welcomeScreenController.createProjectFromBasemap();
+                    return;
+                  default:
+                    welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                    return;
                   }
                 }
               }
@@ -371,7 +371,7 @@ Item {
             contentHeight: welcomeLayout.height
             rightPadding: 12
             clip: true
-          
+
             ScrollBar.vertical: CustomScrollBar {
               policy: ScrollBar.AsNeeded
               anchors.top: parent.top
@@ -384,13 +384,13 @@ Item {
               visible: !newsSwitch.checked
               width: welcomeNewsLayout.width - welcomeView.rightPadding
               spacing: 12
-            
+
               Rectangle {
                 Layout.preferredWidth: parent.width
                 Layout.preferredHeight: welcomeDescription.contentHeight + 32
                 radius: 6
                 color: "#ffffff"
-            
+
                 Text {
                   id: welcomeDescription
                   anchors.fill: parent
@@ -402,26 +402,26 @@ Item {
                   lineHeight: 1.3
                 }
               }
-            
+
               Rectangle {
                 Layout.preferredWidth: parent.width
                 Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
                 radius: 6
                 color: "#ffffff"
-            
+
                 ColumnLayout {
                   id: stayUpdateLayout
                   anchors.fill: parent
                   anchors.margins: 16
                   spacing: 10
-            
+
                   Text {
                     text: qsTr("Stay up to date!")
                     font.pointSize: Application.font.pointSize
                     font.bold: true
                     color: "black"
                   }
-            
+
                   Text {
                     Layout.fillWidth: true
                     text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
@@ -429,7 +429,7 @@ Item {
                     color: "black"
                     wrapMode: Text.WordWrap
                   }
-            
+
                   Rectangle {
                     width: enableNewsText.implicitWidth + 24
                     height: 24
@@ -437,7 +437,7 @@ Item {
                     color: "transparent"
                     border.width: 1
                     border.color: "#93b023"
-            
+
                     Text {
                       id: enableNewsText
                       anchors.centerIn: parent
@@ -445,7 +445,7 @@ Item {
                       font.pointSize: Application.font.pointSize * 0.8
                       color: "black"
                     }
-            
+
                     MouseArea {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
