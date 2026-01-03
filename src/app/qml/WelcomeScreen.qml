@@ -449,6 +449,10 @@ Item {
               onReadMoreClicked: {
                 Qt.openUrlExternally(Link);
               }
+              
+              onCloseClicked: {
+                newsFeedParser.dismissEntry(Key);
+              }
             }
 
             ScrollBar.vertical: CustomScrollBar {
