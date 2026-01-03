@@ -116,6 +116,8 @@ Item {
                 text: qsTr("Recent")
                 font.pointSize: Application.font.pointSize * 1.1
                 font.bold: true
+                visible: recentProjectsListView.count > 0
+                width: recentProjectsListView.count > 0 ? implicitWidth : 0
               }
               TabButton {
                 text: qsTr("Templates")
@@ -164,6 +166,12 @@ Item {
               ScrollBar.vertical: CustomScrollBar {
                 policy: ScrollBar.AsNeeded 
               }
+              
+              onCountChanged: {
+                if (count == 0 && tabBar.currentIndex == 0) {
+                  tabBar.currentIndex = 1;
+                }
+              }
 
               Menu {
                 id: recentProjectsMenu
@@ -211,7 +219,7 @@ Item {
                 MenuItem {
                   text: qsTr("Clear List")
                   onClicked: {
-                    recentProjectsModel.clear();
+                    welcomeScreenController.clearRecentProjects();
                   }
                 }
               }
@@ -577,6 +585,7 @@ Item {
   }
 
   Component.onCompleted: {
+    tabBar.currentIndex = recentProjectsListView.count > 0 ? 0 : 1
     if (newsFeedParser.enabled) {
       newsFeedParser.fetch();
     }
