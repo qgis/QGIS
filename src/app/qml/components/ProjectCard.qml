@@ -126,7 +126,7 @@ Item {
     cursorShape: Qt.PointingHandCursor
     
     onClicked: (mouse) => {
-      root.clicked(mouse);
-    } 
+                 root.clicked(mouse);
+               }
   }
 }
