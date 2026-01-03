@@ -6,7 +6,7 @@ Rectangle {
   id: root
   implicitWidth: 340
   implicitHeight: 160
-  radius: 12
+  radius: 6
 
   property string title: ""
   property string description: ""

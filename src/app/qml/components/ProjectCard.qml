@@ -9,7 +9,7 @@ Item {
   implicitWidth: 280
   implicitHeight: 100
 
-  property int radius: 0
+  property int radius: 6
   property string title: ""
   property string subtitle: ""
   property string imageSource: ""

@@ -9,7 +9,7 @@ Rectangle {
   signal websiteClicked
   
   implicitHeight: 60
-  color: "#252a34"
+  color: "transparent"
 
   RowLayout {
     anchors.fill: parent

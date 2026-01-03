@@ -512,6 +512,7 @@ qt_add_qml_module(qgis_app
     VERSION 1.0
     QML_FILES
         qml/WelcomeScreen.qml
+        qml/components/CustomScrollBar.qml
         qml/components/NewsCard.qml
         qml/components/ProjectCard.qml
         qml/components/UpdateNotificationBar.qml
