@@ -349,41 +349,41 @@ QString QgsStatisticalSummary::shortName( Qgis::Statistic statistic )
   switch ( statistic )
   {
     case Qgis::Statistic::Count:
-      return QStringLiteral( "count" );
+      return u"count"_s;
     case Qgis::Statistic::CountMissing:
-      return QStringLiteral( "countmissing" );
+      return u"countmissing"_s;
     case Qgis::Statistic::Sum:
-      return QStringLiteral( "sum" );
+      return u"sum"_s;
     case Qgis::Statistic::Mean:
-      return QStringLiteral( "mean" );
+      return u"mean"_s;
     case Qgis::Statistic::Median:
-      return QStringLiteral( "median" );
+      return u"median"_s;
     case Qgis::Statistic::StDev:
-      return QStringLiteral( "stdev" );
+      return u"stdev"_s;
     case Qgis::Statistic::StDevSample:
-      return QStringLiteral( "stdevsample" );
+      return u"stdevsample"_s;
     case Qgis::Statistic::Min:
-      return QStringLiteral( "min" );
+      return u"min"_s;
     case Qgis::Statistic::Max:
-      return QStringLiteral( "max" );
+      return u"max"_s;
     case Qgis::Statistic::Range:
-      return QStringLiteral( "range" );
+      return u"range"_s;
     case Qgis::Statistic::Minority:
-      return QStringLiteral( "minority" );
+      return u"minority"_s;
     case Qgis::Statistic::Majority:
-      return QStringLiteral( "majority" );
+      return u"majority"_s;
     case Qgis::Statistic::Variety:
-      return QStringLiteral( "variety" );
+      return u"variety"_s;
     case Qgis::Statistic::FirstQuartile:
-      return QStringLiteral( "q1" );
+      return u"q1"_s;
     case Qgis::Statistic::ThirdQuartile:
-      return QStringLiteral( "q3" );
+      return u"q3"_s;
     case Qgis::Statistic::InterQuartileRange:
-      return QStringLiteral( "iqr" );
+      return u"iqr"_s;
     case Qgis::Statistic::First:
-      return QStringLiteral( "first" );
+      return u"first"_s;
     case Qgis::Statistic::Last:
-      return QStringLiteral( "last" );
+      return u"last"_s;
     case Qgis::Statistic::All:
       return QString();
   }

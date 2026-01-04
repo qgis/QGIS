@@ -37,9 +37,9 @@ class TestQgsGdalCloudConnection : public QObject
 void TestQgsGdalCloudConnection::initTestCase()
 {
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -55,75 +55,75 @@ void TestQgsGdalCloudConnection::cleanupTestCase()
 void TestQgsGdalCloudConnection::encodeDecode()
 {
   QgsGdalCloudProviderConnection::Data data;
-  data.vsiHandler = QStringLiteral( "vsis3" );
-  data.container = QStringLiteral( "my_container" );
-  data.rootPath = QStringLiteral( "some/path" );
-  data.credentialOptions = QVariantMap { { "pw", QStringLiteral( "xxxx" ) }, { "key", QStringLiteral( "yyy" ) } };
+  data.vsiHandler = u"vsis3"_s;
+  data.container = u"my_container"_s;
+  data.rootPath = u"some/path"_s;
+  data.credentialOptions = QVariantMap { { "pw", u"xxxx"_s }, { "key", u"yyy"_s } };
 
-  QCOMPARE( QgsGdalCloudProviderConnection::encodedUri( data ), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath" ) );
+  QCOMPARE( QgsGdalCloudProviderConnection::encodedUri( data ), u"container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath"_s );
 
-  const QgsGdalCloudProviderConnection::Data data2 = QgsGdalCloudProviderConnection::decodedUri( QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some/path" ) );
-  QCOMPARE( data2.vsiHandler, QStringLiteral( "vsis3" ) );
-  QCOMPARE( data2.container, QStringLiteral( "my_container" ) );
-  QCOMPARE( data2.rootPath, QStringLiteral( "some/path" ) );
-  QCOMPARE( data2.credentialOptions.value( QStringLiteral( "pw" ) ).toString(), QStringLiteral( "xxxx" ) );
-  QCOMPARE( data2.credentialOptions.value( QStringLiteral( "key" ) ).toString(), QStringLiteral( "yyy" ) );
+  const QgsGdalCloudProviderConnection::Data data2 = QgsGdalCloudProviderConnection::decodedUri( u"container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some/path"_s );
+  QCOMPARE( data2.vsiHandler, u"vsis3"_s );
+  QCOMPARE( data2.container, u"my_container"_s );
+  QCOMPARE( data2.rootPath, u"some/path"_s );
+  QCOMPARE( data2.credentialOptions.value( u"pw"_s ).toString(), u"xxxx"_s );
+  QCOMPARE( data2.credentialOptions.value( u"key"_s ).toString(), u"yyy"_s );
 }
 
 void TestQgsGdalCloudConnection::testConnections()
 {
   QVERIFY( QgsGdalCloudProviderConnection::connectionList().isEmpty() );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "does not exist" ) ).container, QString() );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"does not exist"_s ).container, QString() );
 
-  QgsGdalCloudProviderConnection conn = QgsGdalCloudProviderConnection( QStringLiteral( "my connection" ) );
+  QgsGdalCloudProviderConnection conn = QgsGdalCloudProviderConnection( u"my connection"_s );
   QCOMPARE( conn.uri(), QString() );
 
   QgsGdalCloudProviderConnection::Data data;
-  data.vsiHandler = QStringLiteral( "vsis3" );
-  data.container = QStringLiteral( "my_container" );
-  data.rootPath = QStringLiteral( "some/path" );
-  data.credentialOptions = QVariantMap { { "pw", QStringLiteral( "xxxx" ) }, { "key", QStringLiteral( "yyy" ) } };
+  data.vsiHandler = u"vsis3"_s;
+  data.container = u"my_container"_s;
+  data.rootPath = u"some/path"_s;
+  data.credentialOptions = QVariantMap { { "pw", u"xxxx"_s }, { "key", u"yyy"_s } };
 
-  QgsGdalCloudProviderConnection::addConnection( QStringLiteral( "my connection" ), data );
-  QCOMPARE( QgsGdalCloudProviderConnection::connectionList(), { QStringLiteral( "my connection" ) } );
+  QgsGdalCloudProviderConnection::addConnection( u"my connection"_s, data );
+  QCOMPARE( QgsGdalCloudProviderConnection::connectionList(), { u"my connection"_s } );
 
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).vsiHandler, QStringLiteral( "vsis3" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).container, QStringLiteral( "my_container" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).rootPath, QStringLiteral( "some/path" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).credentialOptions.value( QStringLiteral( "pw" ) ).toString(), QStringLiteral( "xxxx" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).credentialOptions.value( QStringLiteral( "key" ) ).toString(), QStringLiteral( "yyy" ) );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).vsiHandler, u"vsis3"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).container, u"my_container"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).rootPath, u"some/path"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).credentialOptions.value( u"pw"_s ).toString(), u"xxxx"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).credentialOptions.value( u"key"_s ).toString(), u"yyy"_s );
 
   // retrieve stored connection
-  conn = QgsGdalCloudProviderConnection( QStringLiteral( "my connection" ) );
-  QCOMPARE( conn.uri(), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath" ) );
+  conn = QgsGdalCloudProviderConnection( u"my connection"_s );
+  QCOMPARE( conn.uri(), u"container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath"_s );
 
   // add a second connection
   QgsGdalCloudProviderConnection::Data data2;
-  data2.vsiHandler = QStringLiteral( "vsiaz" );
-  data2.container = QStringLiteral( "some_container" );
-  data2.rootPath = QStringLiteral( "path" );
-  data2.credentialOptions = QVariantMap { { "pw", QStringLiteral( "zzz" ) } };
+  data2.vsiHandler = u"vsiaz"_s;
+  data2.container = u"some_container"_s;
+  data2.rootPath = u"path"_s;
+  data2.credentialOptions = QVariantMap { { "pw", u"zzz"_s } };
 
   QgsGdalCloudProviderConnection conn2( QgsGdalCloudProviderConnection::encodedUri( data2 ), {} );
-  QCOMPARE( conn2.uri(), QStringLiteral( "container=some_container&credentialOptions=pw%3Dzzz&handler=vsiaz&rootPath=path" ) );
-  conn2.store( QStringLiteral( "second connection" ) );
+  QCOMPARE( conn2.uri(), u"container=some_container&credentialOptions=pw%3Dzzz&handler=vsiaz&rootPath=path"_s );
+  conn2.store( u"second connection"_s );
 
   // retrieve stored connections
-  QCOMPARE( qgis::listToSet( QgsGdalCloudProviderConnection::connectionList() ), qgis::listToSet( QStringList() << QStringLiteral( "my connection" ) << QStringLiteral( "second connection" ) ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).vsiHandler, QStringLiteral( "vsis3" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).container, QStringLiteral( "my_container" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).rootPath, QStringLiteral( "some/path" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).credentialOptions.value( QStringLiteral( "pw" ) ).toString(), QStringLiteral( "xxxx" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).credentialOptions.value( QStringLiteral( "key" ) ).toString(), QStringLiteral( "yyy" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "second connection" ) ).vsiHandler, QStringLiteral( "vsiaz" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "second connection" ) ).container, QStringLiteral( "some_container" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "second connection" ) ).rootPath, QStringLiteral( "path" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "second connection" ) ).credentialOptions.value( QStringLiteral( "pw" ) ).toString(), QStringLiteral( "zzz" ) );
+  QCOMPARE( qgis::listToSet( QgsGdalCloudProviderConnection::connectionList() ), qgis::listToSet( QStringList() << u"my connection"_s << u"second connection"_s ) );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).vsiHandler, u"vsis3"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).container, u"my_container"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).rootPath, u"some/path"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).credentialOptions.value( u"pw"_s ).toString(), u"xxxx"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"my connection"_s ).credentialOptions.value( u"key"_s ).toString(), u"yyy"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"second connection"_s ).vsiHandler, u"vsiaz"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"second connection"_s ).container, u"some_container"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"second connection"_s ).rootPath, u"path"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::connection( u"second connection"_s ).credentialOptions.value( u"pw"_s ).toString(), u"zzz"_s );
 
-  QgsGdalCloudProviderConnection::setSelectedConnection( QStringLiteral( "second connection" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::selectedConnection(), QStringLiteral( "second connection" ) );
-  QgsGdalCloudProviderConnection::setSelectedConnection( QStringLiteral( "my connection" ) );
-  QCOMPARE( QgsGdalCloudProviderConnection::selectedConnection(), QStringLiteral( "my connection" ) );
+  QgsGdalCloudProviderConnection::setSelectedConnection( u"second connection"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::selectedConnection(), u"second connection"_s );
+  QgsGdalCloudProviderConnection::setSelectedConnection( u"my connection"_s );
+  QCOMPARE( QgsGdalCloudProviderConnection::selectedConnection(), u"my connection"_s );
 }
 
 

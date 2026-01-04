@@ -24,7 +24,7 @@
 
 #include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
 
-const QString QgsMapToolShapeRegularPolygon2PointsMetadata::TOOL_ID = QStringLiteral( "regular-polygon-from-2-points" );
+const QString QgsMapToolShapeRegularPolygon2PointsMetadata::TOOL_ID = u"regular-polygon-from-2-points"_s;
 
 QString QgsMapToolShapeRegularPolygon2PointsMetadata::id() const
 {
@@ -38,7 +38,7 @@ QString QgsMapToolShapeRegularPolygon2PointsMetadata::name() const
 
 QIcon QgsMapToolShapeRegularPolygon2PointsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRegularPolygon2Points.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRegularPolygon2Points.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRegularPolygon2PointsMetadata::category() const

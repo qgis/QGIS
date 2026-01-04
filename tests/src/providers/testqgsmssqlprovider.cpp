@@ -78,11 +78,11 @@ void TestQgsMssqlProvider::initTestCase()
 
   mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='QGIStestSQLServer1234' " );
 
-  mSomeDataWktGeom << QStringLiteral( "Point (-70.33199999999999363 66.32999999999999829)" )
-                   << QStringLiteral( "Point (-68.20000000000000284 70.79999999999999716)" )
+  mSomeDataWktGeom << u"Point (-70.33199999999999363 66.32999999999999829)"_s
+                   << u"Point (-68.20000000000000284 70.79999999999999716)"_s
                    << QString()
-                   << QStringLiteral( "Point (-65.31999999999999318 78.29999999999999716)" )
-                   << QStringLiteral( "Point (-71.12300000000000466 78.23000000000000398)" );
+                   << u"Point (-65.31999999999999318 78.29999999999999716)"_s
+                   << u"Point (-71.12300000000000466 78.23000000000000398)"_s;
 
   QVariantList varList;
   varList << 1ll << 100 << "Orange" << "oranGe" << "1" << QDateTime( QDate( 2020, 05, 03 ), QTime( 12, 13, 14 ) ) << QDate( 2020, 05, 03 ) << QTime( 12, 13, 14 );
@@ -101,9 +101,9 @@ void TestQgsMssqlProvider::initTestCase()
   mSomeDataAttributes << varList;
 
 
-  mSomeDataPolyWktGeom << QStringLiteral( "Polygon ((-69 81.40000000000000568, -69 80.20000000000000284, -73.70000000000000284 80.20000000000000284, -73.70000000000000284 76.29999999999999716, -74.90000000000000568 76.29999999999999716, -74.90000000000000568 81.40000000000000568, -69 81.40000000000000568))" )
-                       << QStringLiteral( "Polygon ((-67.59999999999999432 81.20000000000000284, -66.29999999999999716 81.20000000000000284, -66.29999999999999716 76.90000000000000568, -67.59999999999999432 76.90000000000000568, -67.59999999999999432 81.20000000000000284))" )
-                       << QStringLiteral( "Polygon ((-68.40000000000000568 75.79999999999999716, -67.5 72.59999999999999432, -68.59999999999999432 73.70000000000000284, -70.20000000000000284 72.90000000000000568, -68.40000000000000568 75.79999999999999716))" )
+  mSomeDataPolyWktGeom << u"Polygon ((-69 81.40000000000000568, -69 80.20000000000000284, -73.70000000000000284 80.20000000000000284, -73.70000000000000284 76.29999999999999716, -74.90000000000000568 76.29999999999999716, -74.90000000000000568 81.40000000000000568, -69 81.40000000000000568))"_s
+                       << u"Polygon ((-67.59999999999999432 81.20000000000000284, -66.29999999999999716 81.20000000000000284, -66.29999999999999716 76.90000000000000568, -67.59999999999999432 76.90000000000000568, -67.59999999999999432 81.20000000000000284))"_s
+                       << u"Polygon ((-68.40000000000000568 75.79999999999999716, -67.5 72.59999999999999432, -68.59999999999999432 73.70000000000000284, -70.20000000000000284 72.90000000000000568, -68.40000000000000568 75.79999999999999716))"_s
                        << QString();
 }
 
@@ -116,9 +116,9 @@ void TestQgsMssqlProvider::cleanupTestCase()
 
 void TestQgsMssqlProvider::openLayer()
 {
-  QString uri( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql=" ) );
+  QString uri( mDbConn + u" key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql="_s );
 
-  QgsVectorLayer vl( uri, QStringLiteral( "point_layer" ), QStringLiteral( "mssql" ) );
+  QgsVectorLayer vl( uri, u"point_layer"_s, u"mssql"_s );
 
   QVERIFY( vl.isValid() );
   QCOMPARE( vl.featureCount(), 5 );
@@ -129,13 +129,13 @@ void TestQgsMssqlProvider::openLayer()
 
 void TestQgsMssqlProvider::projectTransaction()
 {
-  QString uriPoint( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql=" ) );
-  QString uriPolygon( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POLYGON schema=\"qgis_test\" table=\"some_poly_data\" (geom) sql=" ) );
+  QString uriPoint( mDbConn + u" key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql="_s );
+  QString uriPolygon( mDbConn + u" key = \"pk\" srid=4326 type=POLYGON schema=\"qgis_test\" table=\"some_poly_data\" (geom) sql="_s );
 
   QgsProject project;
 
-  QgsVectorLayer *vectorLayerPoint = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer" ), QStringLiteral( "mssql" ) );
-  QgsVectorLayer *vectorLayerPoly = new QgsVectorLayer( uriPolygon, QStringLiteral( "poly_layer" ), QStringLiteral( "mssql" ) );
+  QgsVectorLayer *vectorLayerPoint = new QgsVectorLayer( uriPoint, u"point_layer"_s, u"mssql"_s );
+  QgsVectorLayer *vectorLayerPoly = new QgsVectorLayer( uriPolygon, u"poly_layer"_s, u"mssql"_s );
   project.addMapLayer( vectorLayerPoint );
   project.addMapLayer( vectorLayerPoly );
 
@@ -173,7 +173,7 @@ void TestQgsMssqlProvider::projectTransaction()
   feat.setGeometry( QgsGeometry( new QgsPoint( -71, 67 ) ) );
 
   QStringList newGeoms = mSomeDataWktGeom;
-  newGeoms << QStringLiteral( "Point (-71 67)" );
+  newGeoms << u"Point (-71 67)"_s;
   QList<QVariantList> newAttributes = mSomeDataAttributes;
   QVariantList attrList;
   attrList << 10ll << 0 << "" << "" << "" << QDateTime() << QDate() << QTime();
@@ -202,9 +202,9 @@ void TestQgsMssqlProvider::projectTransaction()
 
 void TestQgsMssqlProvider::transactionTwoLayers()
 {
-  QString uriPoint( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql=" ) );
-  QgsVectorLayer *vectorLayerPoint1 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_1" ), QStringLiteral( "mssql" ) );
-  QgsVectorLayer *vectorLayerPoint2 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_2" ), QStringLiteral( "mssql" ) );
+  QString uriPoint( mDbConn + u" key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql="_s );
+  QgsVectorLayer *vectorLayerPoint1 = new QgsVectorLayer( uriPoint, u"point_layer_1"_s, u"mssql"_s );
+  QgsVectorLayer *vectorLayerPoint2 = new QgsVectorLayer( uriPoint, u"point_layer_2"_s, u"mssql"_s );
 
   QgsProject project;
   project.addMapLayer( vectorLayerPoint1 );
@@ -246,9 +246,9 @@ void TestQgsMssqlProvider::transactionTwoLayers()
 
 void TestQgsMssqlProvider::transactionUndoRedo()
 {
-  QString uriPoint( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql=" ) );
-  QgsVectorLayer *vectorLayerPoint1 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_1" ), QStringLiteral( "mssql" ) );
-  //QgsVectorLayer *vectorLayerPoint2 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_2" ), QStringLiteral( "mssql" ) );
+  QString uriPoint( mDbConn + u" key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql="_s );
+  QgsVectorLayer *vectorLayerPoint1 = new QgsVectorLayer( uriPoint, u"point_layer_1"_s, u"mssql"_s );
+  //QgsVectorLayer *vectorLayerPoint2 = new QgsVectorLayer( uriPoint, u"point_layer_2"_s, u"mssql"_s );
 
   QgsProject project;
   project.addMapLayer( vectorLayerPoint1 );
@@ -302,21 +302,21 @@ void TestQgsMssqlProvider::testGeomTypeResolutionValid()
   QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, false );
 
   QgsMssqlLayerProperty layerProperty;
-  layerProperty.schemaName = QStringLiteral( "qgis_test" );
-  layerProperty.tableName = QStringLiteral( "someData" );
-  layerProperty.geometryColName = QStringLiteral( "geom" );
+  layerProperty.schemaName = u"qgis_test"_s;
+  layerProperty.tableName = u"someData"_s;
+  layerProperty.geometryColName = u"geom"_s;
   thread.addGeometryColumn( layerProperty );
 
   thread.run();
   const QList<QgsMssqlLayerProperty> results = thread.results();
   QCOMPARE( results.size(), 1 );
   const QgsMssqlLayerProperty result = results.at( 0 );
-  QCOMPARE( result.type, QStringLiteral( "POINT" ) );
-  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
-  QCOMPARE( result.tableName, QStringLiteral( "someData" ) );
-  QCOMPARE( result.geometryColName, QStringLiteral( "geom" ) );
+  QCOMPARE( result.type, u"POINT"_s );
+  QCOMPARE( result.schemaName, u"qgis_test"_s );
+  QCOMPARE( result.tableName, u"someData"_s );
+  QCOMPARE( result.geometryColName, u"geom"_s );
   QCOMPARE( result.pkCols.size(), 0 );
-  QCOMPARE( result.srid, QStringLiteral( "4326" ) );
+  QCOMPARE( result.srid, u"4326"_s );
   QCOMPARE( result.isGeography, false );
   QCOMPARE( result.sql, QString() );
   QCOMPARE( result.isView, false );
@@ -330,21 +330,21 @@ void TestQgsMssqlProvider::testGeomTypeResolutionValidNoWorkaround()
   QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, true );
 
   QgsMssqlLayerProperty layerProperty;
-  layerProperty.schemaName = QStringLiteral( "qgis_test" );
-  layerProperty.tableName = QStringLiteral( "someData" );
-  layerProperty.geometryColName = QStringLiteral( "geom" );
+  layerProperty.schemaName = u"qgis_test"_s;
+  layerProperty.tableName = u"someData"_s;
+  layerProperty.geometryColName = u"geom"_s;
   thread.addGeometryColumn( layerProperty );
 
   thread.run();
   const QList<QgsMssqlLayerProperty> results = thread.results();
   QCOMPARE( results.size(), 1 );
   const QgsMssqlLayerProperty result = results.at( 0 );
-  QCOMPARE( result.type, QStringLiteral( "POINT" ) );
-  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
-  QCOMPARE( result.tableName, QStringLiteral( "someData" ) );
-  QCOMPARE( result.geometryColName, QStringLiteral( "geom" ) );
+  QCOMPARE( result.type, u"POINT"_s );
+  QCOMPARE( result.schemaName, u"qgis_test"_s );
+  QCOMPARE( result.tableName, u"someData"_s );
+  QCOMPARE( result.geometryColName, u"geom"_s );
   QCOMPARE( result.pkCols.size(), 0 );
-  QCOMPARE( result.srid, QStringLiteral( "4326" ) );
+  QCOMPARE( result.srid, u"4326"_s );
   QCOMPARE( result.isGeography, false );
   QCOMPARE( result.sql, QString() );
   QCOMPARE( result.isView, false );
@@ -359,21 +359,21 @@ void TestQgsMssqlProvider::testGeomTypeResolutionInvalid()
   QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, false );
 
   QgsMssqlLayerProperty layerProperty;
-  layerProperty.schemaName = QStringLiteral( "qgis_test" );
-  layerProperty.tableName = QStringLiteral( "invalid_polys" );
-  layerProperty.geometryColName = QStringLiteral( "ogr_geometry" );
+  layerProperty.schemaName = u"qgis_test"_s;
+  layerProperty.tableName = u"invalid_polys"_s;
+  layerProperty.geometryColName = u"ogr_geometry"_s;
   thread.addGeometryColumn( layerProperty );
 
   thread.run();
   const QList<QgsMssqlLayerProperty> results = thread.results();
   QCOMPARE( results.size(), 1 );
   const QgsMssqlLayerProperty result = results.at( 0 );
-  QCOMPARE( result.type, QStringLiteral( "MULTIPOLYGON,POLYGON" ) );
-  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
-  QCOMPARE( result.tableName, QStringLiteral( "invalid_polys" ) );
-  QCOMPARE( result.geometryColName, QStringLiteral( "ogr_geometry" ) );
+  QCOMPARE( result.type, u"MULTIPOLYGON,POLYGON"_s );
+  QCOMPARE( result.schemaName, u"qgis_test"_s );
+  QCOMPARE( result.tableName, u"invalid_polys"_s );
+  QCOMPARE( result.geometryColName, u"ogr_geometry"_s );
   QCOMPARE( result.pkCols.size(), 0 );
-  QCOMPARE( result.srid, QStringLiteral( "4167,4167" ) );
+  QCOMPARE( result.srid, u"4167,4167"_s );
   QCOMPARE( result.isGeography, false );
   QCOMPARE( result.sql, QString() );
   QCOMPARE( result.isView, false );
@@ -388,9 +388,9 @@ void TestQgsMssqlProvider::testGeomTypeResolutionInvalidNoWorkaround()
   QgsMssqlGeomColumnTypeThread thread( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), false, true );
 
   QgsMssqlLayerProperty layerProperty;
-  layerProperty.schemaName = QStringLiteral( "qgis_test" );
-  layerProperty.tableName = QStringLiteral( "invalid_polys" );
-  layerProperty.geometryColName = QStringLiteral( "ogr_geometry" );
+  layerProperty.schemaName = u"qgis_test"_s;
+  layerProperty.tableName = u"invalid_polys"_s;
+  layerProperty.geometryColName = u"ogr_geometry"_s;
   thread.addGeometryColumn( layerProperty );
 
   thread.run();
@@ -399,9 +399,9 @@ void TestQgsMssqlProvider::testGeomTypeResolutionInvalidNoWorkaround()
   const QgsMssqlLayerProperty result = results.at( 0 );
   // geometry type resolution will fail because of unhandled exception raised by SQL Server
   QCOMPARE( result.type, QString() );
-  QCOMPARE( result.schemaName, QStringLiteral( "qgis_test" ) );
-  QCOMPARE( result.tableName, QStringLiteral( "invalid_polys" ) );
-  QCOMPARE( result.geometryColName, QStringLiteral( "ogr_geometry" ) );
+  QCOMPARE( result.schemaName, u"qgis_test"_s );
+  QCOMPARE( result.tableName, u"invalid_polys"_s );
+  QCOMPARE( result.geometryColName, u"ogr_geometry"_s );
   QCOMPARE( result.pkCols.size(), 0 );
   QCOMPARE( result.srid, QString() );
   QCOMPARE( result.isGeography, false );
@@ -417,33 +417,33 @@ void TestQgsMssqlProvider::testFieldsForTable()
 
   QgsMssqlDatabase::FieldDetails details;
   QString error;
-  QVERIFY( db->loadFields( details, QStringLiteral( "qgis_test" ), QStringLiteral( "someData" ), error ) );
+  QVERIFY( db->loadFields( details, u"qgis_test"_s, u"someData"_s, error ) );
   QCOMPARE( error, QString() );
   QCOMPARE( details.attributeFields.size(), 8 );
-  QCOMPARE( details.attributeFields.at( 0 ).name(), QStringLiteral( "pk" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).name(), u"pk"_s );
   QCOMPARE( details.attributeFields.at( 0 ).type(), QVariant::Int );
-  QCOMPARE( details.attributeFields.at( 0 ).typeName(), QStringLiteral( "int" ) );
-  QCOMPARE( details.attributeFields.at( 1 ).name(), QStringLiteral( "cnt" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).typeName(), u"int"_s );
+  QCOMPARE( details.attributeFields.at( 1 ).name(), u"cnt"_s );
   QCOMPARE( details.attributeFields.at( 1 ).type(), QVariant::Int );
-  QCOMPARE( details.attributeFields.at( 1 ).typeName(), QStringLiteral( "int" ) );
-  QCOMPARE( details.attributeFields.at( 2 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).typeName(), u"int"_s );
+  QCOMPARE( details.attributeFields.at( 2 ).name(), u"name"_s );
   QCOMPARE( details.attributeFields.at( 2 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 2 ).typeName(), QStringLiteral( "ntext" ) );
-  QCOMPARE( details.attributeFields.at( 3 ).name(), QStringLiteral( "name2" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).typeName(), u"ntext"_s );
+  QCOMPARE( details.attributeFields.at( 3 ).name(), u"name2"_s );
   QCOMPARE( details.attributeFields.at( 3 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 3 ).typeName(), QStringLiteral( "ntext" ) );
-  QCOMPARE( details.attributeFields.at( 4 ).name(), QStringLiteral( "num_char" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).typeName(), u"ntext"_s );
+  QCOMPARE( details.attributeFields.at( 4 ).name(), u"num_char"_s );
   QCOMPARE( details.attributeFields.at( 4 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 4 ).typeName(), QStringLiteral( "ntext" ) );
-  QCOMPARE( details.attributeFields.at( 5 ).name(), QStringLiteral( "dt" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).typeName(), u"ntext"_s );
+  QCOMPARE( details.attributeFields.at( 5 ).name(), u"dt"_s );
   QCOMPARE( details.attributeFields.at( 5 ).type(), QVariant::DateTime );
-  QCOMPARE( details.attributeFields.at( 5 ).typeName(), QStringLiteral( "datetime" ) );
-  QCOMPARE( details.attributeFields.at( 6 ).name(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).typeName(), u"datetime"_s );
+  QCOMPARE( details.attributeFields.at( 6 ).name(), u"date"_s );
   QCOMPARE( details.attributeFields.at( 6 ).type(), QVariant::Date );
-  QCOMPARE( details.attributeFields.at( 6 ).typeName(), QStringLiteral( "date" ) );
-  QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).typeName(), u"date"_s );
+  QCOMPARE( details.attributeFields.at( 7 ).name(), u"time"_s );
   QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::Time );
-  QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).typeName(), u"time"_s );
 }
 
 void TestQgsMssqlProvider::testFieldsForQuery()
@@ -454,47 +454,47 @@ void TestQgsMssqlProvider::testFieldsForQuery()
 
   QgsMssqlDatabase::FieldDetails details;
   QString error;
-  QVERIFY( db->loadQueryFields( details, QStringLiteral( "SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS _uid1_, concat('a', cnt ) as b, cast(cnt as numeric)/100 as c, * FROM [qgis_test].[someData]" ), error ) );
+  QVERIFY( db->loadQueryFields( details, u"SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS _uid1_, concat('a', cnt ) as b, cast(cnt as numeric)/100 as c, * FROM [qgis_test].[someData]"_s, error ) );
   QCOMPARE( error, QString() );
   QCOMPARE( details.attributeFields.size(), 11 );
 
-  QCOMPARE( details.attributeFields.at( 0 ).name(), QStringLiteral( "_uid1_" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).name(), u"_uid1_"_s );
   QCOMPARE( details.attributeFields.at( 0 ).type(), QVariant::LongLong );
-  QCOMPARE( details.attributeFields.at( 0 ).typeName(), QStringLiteral( "bigint" ) );
-  QCOMPARE( details.attributeFields.at( 1 ).name(), QStringLiteral( "b" ) );
+  QCOMPARE( details.attributeFields.at( 0 ).typeName(), u"bigint"_s );
+  QCOMPARE( details.attributeFields.at( 1 ).name(), u"b"_s );
   QCOMPARE( details.attributeFields.at( 1 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 1 ).typeName(), QStringLiteral( "varchar(13)" ) );
-  QCOMPARE( details.attributeFields.at( 2 ).name(), QStringLiteral( "c" ) );
+  QCOMPARE( details.attributeFields.at( 1 ).typeName(), u"varchar(13)"_s );
+  QCOMPARE( details.attributeFields.at( 2 ).name(), u"c"_s );
   QCOMPARE( details.attributeFields.at( 2 ).type(), QVariant::Double );
-  QCOMPARE( details.attributeFields.at( 2 ).typeName(), QStringLiteral( "numeric(24,6)" ) );
+  QCOMPARE( details.attributeFields.at( 2 ).typeName(), u"numeric(24,6)"_s );
   QCOMPARE( details.attributeFields.at( 2 ).length(), 24 );
-  QCOMPARE( details.attributeFields.at( 3 ).name(), QStringLiteral( "pk" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).name(), u"pk"_s );
   QCOMPARE( details.attributeFields.at( 3 ).type(), QVariant::Int );
-  QCOMPARE( details.attributeFields.at( 3 ).typeName(), QStringLiteral( "int" ) );
-  QCOMPARE( details.attributeFields.at( 4 ).name(), QStringLiteral( "cnt" ) );
+  QCOMPARE( details.attributeFields.at( 3 ).typeName(), u"int"_s );
+  QCOMPARE( details.attributeFields.at( 4 ).name(), u"cnt"_s );
   QCOMPARE( details.attributeFields.at( 4 ).type(), QVariant::Int );
-  QCOMPARE( details.attributeFields.at( 4 ).typeName(), QStringLiteral( "int" ) );
-  QCOMPARE( details.attributeFields.at( 5 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( details.attributeFields.at( 4 ).typeName(), u"int"_s );
+  QCOMPARE( details.attributeFields.at( 5 ).name(), u"name"_s );
   QCOMPARE( details.attributeFields.at( 5 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 5 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
-  QCOMPARE( details.attributeFields.at( 6 ).name(), QStringLiteral( "name2" ) );
+  QCOMPARE( details.attributeFields.at( 5 ).typeName(), u"nvarchar(max)"_s );
+  QCOMPARE( details.attributeFields.at( 6 ).name(), u"name2"_s );
   QCOMPARE( details.attributeFields.at( 6 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 6 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
-  QCOMPARE( details.attributeFields.at( 7 ).name(), QStringLiteral( "num_char" ) );
+  QCOMPARE( details.attributeFields.at( 6 ).typeName(), u"nvarchar(max)"_s );
+  QCOMPARE( details.attributeFields.at( 7 ).name(), u"num_char"_s );
   QCOMPARE( details.attributeFields.at( 7 ).type(), QVariant::String );
-  QCOMPARE( details.attributeFields.at( 7 ).typeName(), QStringLiteral( "nvarchar(max)" ) );
-  QCOMPARE( details.attributeFields.at( 8 ).name(), QStringLiteral( "dt" ) );
+  QCOMPARE( details.attributeFields.at( 7 ).typeName(), u"nvarchar(max)"_s );
+  QCOMPARE( details.attributeFields.at( 8 ).name(), u"dt"_s );
   QCOMPARE( details.attributeFields.at( 8 ).type(), QVariant::DateTime );
-  QCOMPARE( details.attributeFields.at( 8 ).typeName(), QStringLiteral( "datetime" ) );
-  QCOMPARE( details.attributeFields.at( 9 ).name(), QStringLiteral( "date" ) );
+  QCOMPARE( details.attributeFields.at( 8 ).typeName(), u"datetime"_s );
+  QCOMPARE( details.attributeFields.at( 9 ).name(), u"date"_s );
   QCOMPARE( details.attributeFields.at( 9 ).type(), QVariant::Date );
-  QCOMPARE( details.attributeFields.at( 9 ).typeName(), QStringLiteral( "date" ) );
-  QCOMPARE( details.attributeFields.at( 10 ).name(), QStringLiteral( "time" ) );
+  QCOMPARE( details.attributeFields.at( 9 ).typeName(), u"date"_s );
+  QCOMPARE( details.attributeFields.at( 10 ).name(), u"time"_s );
   QCOMPARE( details.attributeFields.at( 10 ).type(), QVariant::Time );
-  QCOMPARE( details.attributeFields.at( 10 ).typeName(), QStringLiteral( "time(7)" ) );
+  QCOMPARE( details.attributeFields.at( 10 ).typeName(), u"time(7)"_s );
 
-  QCOMPARE( details.geometryColumnName, QStringLiteral( "geom" ) );
-  QCOMPARE( details.geometryColumnType, QStringLiteral( "geometry" ) );
+  QCOMPARE( details.geometryColumnName, u"geom"_s );
+  QCOMPARE( details.geometryColumnType, u"geometry"_s );
   QVERIFY( !details.isGeography );
 }
 
@@ -507,10 +507,10 @@ void TestQgsMssqlProvider::testEmptyLayer()
   metadata->createConnection( mDbConn, {} );
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( metadata->createConnection( uri.uri(), QVariantMap() ) ) );
-  conn->executeSql( QStringLiteral( "DROP TABLE IF EXISTS qgis_test.empty_layer" ) );
+  conn->executeSql( u"DROP TABLE IF EXISTS qgis_test.empty_layer"_s );
 
-  uri.setTable( QStringLiteral( "empty_layer" ) );
-  uri.setSchema( QStringLiteral( "qgis_test" ) );
+  uri.setTable( u"empty_layer"_s );
+  uri.setSchema( u"qgis_test"_s );
   QgsFields fields;
   QMap<int, int> oldToNewAttrIdxMap;
   QString errorMessage;
@@ -521,7 +521,7 @@ void TestQgsMssqlProvider::testEmptyLayer()
   fields.append( QgsField( "my_pk", QMetaType::Type::LongLong ) );
   fields.append( QgsField( "some_real", QMetaType::Type::Double ) );
 
-  uri.setKeyColumn( QStringLiteral( "my_pk" ) );
+  uri.setKeyColumn( u"my_pk"_s );
 
   QCOMPARE(
     metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri ),
@@ -530,16 +530,16 @@ void TestQgsMssqlProvider::testEmptyLayer()
 
   auto vl = std::make_unique< QgsVectorLayer >( createdUri, "test", "mssql" );
   QVERIFY( vl->isValid() );
-  QCOMPARE( vl->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( vl->crs().authid(), u"EPSG:3111"_s );
   QCOMPARE( vl->wkbType(), Qgis::WkbType::Point );
   QCOMPARE( vl->fields().size(), 3 );
   // primary key will always be first
-  QCOMPARE( vl->fields().at( 0 ).name(), QStringLiteral( "my_pk" ) );
+  QCOMPARE( vl->fields().at( 0 ).name(), u"my_pk"_s );
   // currently primary key is always an int (it's created as serial type)
   QCOMPARE( static_cast< int >( vl->fields().at( 0 ).type() ), static_cast< int >( QMetaType::Type::Int ) );
-  QCOMPARE( vl->fields().at( 1 ).name(), QStringLiteral( "some_string" ) );
+  QCOMPARE( vl->fields().at( 1 ).name(), u"some_string"_s );
   QCOMPARE( static_cast< int >( vl->fields().at( 1 ).type() ), static_cast< int >( QMetaType::Type::QString ) );
-  QCOMPARE( vl->fields().at( 2 ).name(), QStringLiteral( "some_real" ) );
+  QCOMPARE( vl->fields().at( 2 ).name(), u"some_real"_s );
   QCOMPARE( static_cast< int >( vl->fields().at( 2 ).type() ), static_cast< int >( QMetaType::Type::Double ) );
 
   QCOMPARE( oldToNewAttrIdxMap.size(), 3 );
@@ -548,7 +548,7 @@ void TestQgsMssqlProvider::testEmptyLayer()
   QCOMPARE( oldToNewAttrIdxMap.value( 2 ), 2 );
 
   // creating a brand new primary key
-  uri.setKeyColumn( QStringLiteral( "my_new_pk" ) );
+  uri.setKeyColumn( u"my_new_pk"_s );
 
   QCOMPARE(
     metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri ),
@@ -557,18 +557,18 @@ void TestQgsMssqlProvider::testEmptyLayer()
 
   vl = std::make_unique< QgsVectorLayer >( createdUri, "test", "mssql" );
   QVERIFY( vl->isValid() );
-  QCOMPARE( vl->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( vl->crs().authid(), u"EPSG:3111"_s );
   QCOMPARE( vl->wkbType(), Qgis::WkbType::Point );
   QCOMPARE( vl->fields().size(), 4 );
   // primary key will always be first
-  QCOMPARE( vl->fields().at( 0 ).name(), QStringLiteral( "my_new_pk" ) );
+  QCOMPARE( vl->fields().at( 0 ).name(), u"my_new_pk"_s );
   // currently primary key is always an int (it's created as serial type)
   QCOMPARE( static_cast< int >( vl->fields().at( 0 ).type() ), static_cast< int >( QMetaType::Type::Int ) );
-  QCOMPARE( vl->fields().at( 1 ).name(), QStringLiteral( "some_string" ) );
+  QCOMPARE( vl->fields().at( 1 ).name(), u"some_string"_s );
   QCOMPARE( static_cast< int >( vl->fields().at( 1 ).type() ), static_cast< int >( QMetaType::Type::QString ) );
-  QCOMPARE( vl->fields().at( 2 ).name(), QStringLiteral( "my_pk" ) );
+  QCOMPARE( vl->fields().at( 2 ).name(), u"my_pk"_s );
   QCOMPARE( static_cast< int >( vl->fields().at( 2 ).type() ), static_cast< int >( QMetaType::Type::LongLong ) );
-  QCOMPARE( vl->fields().at( 3 ).name(), QStringLiteral( "some_real" ) );
+  QCOMPARE( vl->fields().at( 3 ).name(), u"some_real"_s );
   QCOMPARE( static_cast< int >( vl->fields().at( 3 ).type() ), static_cast< int >( QMetaType::Type::Double ) );
 
   QCOMPARE( oldToNewAttrIdxMap.size(), 3 );

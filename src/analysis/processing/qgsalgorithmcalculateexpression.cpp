@@ -21,7 +21,7 @@
 
 QString QgsCalculateExpressionAlgorithm::name() const
 {
-  return QStringLiteral( "calculateexpression" );
+  return u"calculateexpression"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsCalculateExpressionAlgorithm::flags() const
@@ -46,7 +46,7 @@ QString QgsCalculateExpressionAlgorithm::group() const
 
 QString QgsCalculateExpressionAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsCalculateExpressionAlgorithm::shortHelpString() const
@@ -68,24 +68,24 @@ void QgsCalculateExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   // possibly this should be a new dedicated parameter type for "QgsProcessingParameterVariant", as the values specified for the parameter will
   // be whatever the model calculates as the result of the expression. But this works for now...
-  auto inputParameter = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "INPUT" ), QObject::tr( "Input" ), QVariant(), false, false );
+  auto inputParameter = std::make_unique<QgsProcessingParameterString>( u"INPUT"_s, QObject::tr( "Input" ), QVariant(), false, false );
   // we limit the available sources for this parameter to just precalculated expressions -- otherwise it's confusing if we allow users
   // to enter a literal value for this parameter, as they could enter an expression in there and expect it to be evaluated.
   inputParameter->setMetadata(
-    { QVariantMap( { { QStringLiteral( "model_widget" ), QVariantMap( { { QStringLiteral( "accepted_sources" ), QVariantList { static_cast<int>( Qgis::ProcessingModelChildParameterSource::Expression ) } } } ) } } )
+    { QVariantMap( { { u"model_widget"_s, QVariantMap( { { u"accepted_sources"_s, QVariantList { static_cast<int>( Qgis::ProcessingModelChildParameterSource::Expression ) } } } ) } } )
     }
   );
   addParameter( inputParameter.release() );
 
-  addOutput( new QgsProcessingOutputVariant( QStringLiteral( "OUTPUT" ), QObject::tr( "Value" ) ) );
+  addOutput( new QgsProcessingOutputVariant( u"OUTPUT"_s, QObject::tr( "Value" ) ) );
 }
 
 QVariantMap QgsCalculateExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &, QgsProcessingFeedback * )
 {
-  const QVariant res = parameters.value( QStringLiteral( "INPUT" ) );
+  const QVariant res = parameters.value( u"INPUT"_s );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), res );
+  outputs.insert( u"OUTPUT"_s, res );
   return outputs;
 }
 

@@ -56,12 +56,12 @@ QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> QgsCoordinateReferen
   int result = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugError( u"Can't open database: %1"_s.arg( database.errorMessage() ) );
     return res;
   }
 
-  const QString sql = QStringLiteral( "select srs_id,description,parameters, wkt from tbl_srs" );
-  QgsDebugMsgLevel( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ), 4 );
+  const QString sql = u"select srs_id,description,parameters, wkt from tbl_srs"_s;
+  QgsDebugMsgLevel( u"Query to populate existing list:%1"_s.arg( sql ), 4 );
   sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
   if ( result == SQLITE_OK )
   {
@@ -89,7 +89,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
 {
   if ( !crs.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Can't save an invalid CRS!" ), 4 );
+    QgsDebugMsgLevel( u"Can't save an invalid CRS!"_s, 4 );
     return -1;
   }
 
@@ -104,7 +104,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
 
   // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
-  const QString quotedEllipsoidString = crs.ellipsoidAcronym().isNull() ? QStringLiteral( "''" ) : QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() );
+  const QString quotedEllipsoidString = crs.ellipsoidAcronym().isNull() ? u"''"_s : QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() );
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumbering
@@ -115,22 +115,22 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
             + QString::number( Qgis::USER_CRS_START_ID )
             + ',' + QgsSqliteUtils::quotedString( name )
-            + ',' + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : QStringLiteral( "''" ) )
+            + ',' + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : u"''"_s )
             + ',' + quotedEllipsoidString
-            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : QStringLiteral( "''" ) )
+            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : u"''"_s )
             + ",0,"  // <-- is_geo shamelessly hard coded for now
-            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : QStringLiteral( "''" ) )
+            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : u"''"_s )
             + ')';
   }
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
             + QgsSqliteUtils::quotedString( name )
-            + ',' + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : QStringLiteral( "''" ) )
+            + ',' + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : u"''"_s )
             + ',' + quotedEllipsoidString
-            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : QStringLiteral( "''" ) )
+            + ',' + ( !proj4String.isEmpty() ? QgsSqliteUtils::quotedString( proj4String ) : u"''"_s )
             + ",0,"  // <-- is_geo shamelessly hard coded for now
-            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : QStringLiteral( "''" ) )
+            + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( wktString ) : u"''"_s )
             + ')';
   }
   sqlite3_database_unique_ptr database;
@@ -139,7 +139,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
   int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open or create database %1: %2" )
+    QgsDebugError( u"Can't open or create database %1: %2"_s
                    .arg( QgsApplication::qgisUserDatabaseFilePath(),
                          database.errorMessage() ) );
     return false;
@@ -153,7 +153,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
 
     returnId = sqlite3_last_insert_rowid( database.get() );
     crs.d->mSrsId = returnId;
-    crs.d->mAuthId = QStringLiteral( "USER:%1" ).arg( returnId );
+    crs.d->mAuthId = u"USER:%1"_s.arg( returnId );
     crs.d->mDescription = name;
   }
 
@@ -181,17 +181,17 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
 {
   if ( !crs.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Can't save an invalid CRS!" ), 4 );
+    QgsDebugMsgLevel( u"Can't save an invalid CRS!"_s, 4 );
     return false;
   }
 
   const QString sql = "update tbl_srs set description="
                       + QgsSqliteUtils::quotedString( name )
-                      + ",projection_acronym=" + ( !crs.projectionAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.projectionAcronym() ) : QStringLiteral( "''" ) )
-                      + ",ellipsoid_acronym=" + ( !crs.ellipsoidAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() ) : QStringLiteral( "''" ) )
-                      + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
+                      + ",projection_acronym=" + ( !crs.projectionAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.projectionAcronym() ) : u"''"_s )
+                      + ",ellipsoid_acronym=" + ( !crs.ellipsoidAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() ) : u"''"_s )
+                      + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : u"''"_s )
                       + ",is_geo=0" // <--shamelessly hard coded for now
-                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) ) : QStringLiteral( "''" ) )
+                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) ) : u"''"_s )
                       + " where srs_id=" + QgsSqliteUtils::quotedString( QString::number( id ) )
                       ;
 
@@ -200,7 +200,7 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
   const int myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open or create database %1: %2" )
+    QgsDebugError( u"Can't open or create database %1: %2"_s
                    .arg( QgsApplication::qgisUserDatabaseFilePath(),
                          database.errorMessage() ) );
     return false;
@@ -240,7 +240,7 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
 
   if ( res )
   {
-    emit userCrsChanged( QStringLiteral( "USER:%1" ).arg( id ) );
+    emit userCrsChanged( u"USER:%1"_s.arg( id ) );
     emit crsDefinitionsChanged();
   }
 
@@ -257,7 +257,7 @@ bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open database: %1 \n please notify QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+    QgsDebugError( u"Can't open database: %1 \n please notify QGIS developers of this error \n %2 (file name) "_s.arg( database.errorMessage(),
                    QgsApplication::qgisUserDatabaseFilePath() ) );
     return false;
   }
@@ -267,7 +267,7 @@ bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
     sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
     if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
     {
-      QgsDebugError( QStringLiteral( "failed to remove custom CRS from database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+      QgsDebugError( u"failed to remove custom CRS from database: %1 [%2]"_s.arg( sql, database.errorMessage() ) );
       res = false;
     }
     else
@@ -307,14 +307,14 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+    QgsDebugError( u"Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) "_s.arg( database.errorMessage(),
                    QgsApplication::qgisUserDatabaseFilePath() ) );
     return false;
   }
   int srsResult = srsDatabase.open( QgsApplication::srsDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
+    QgsDebugError( u"Can't open database %1 [%2]"_s.arg( QgsApplication::srsDatabaseFilePath(),
                    srsDatabase.errorMessage() ) );
     return false;
   }
@@ -327,7 +327,7 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
   {
     if ( srsPreparedStatement.step() == SQLITE_ROW )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Trying to insert projection" ), 4 );
+      QgsDebugMsgLevel( u"Trying to insert projection"_s, 4 );
       // We have the result from system srs.db. Now insert into user db.
       sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
             + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
@@ -338,14 +338,14 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
       sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
       if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
       {
-        QgsDebugError( QStringLiteral( "Could not insert projection into database: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+        QgsDebugError( u"Could not insert projection into database: %1 [%2]"_s.arg( sql, database.errorMessage() ) );
         return false;
       }
     }
   }
   else
   {
-    QgsDebugError( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
+    QgsDebugError( u"prepare failed: %1 [%2]"_s.arg( srsSql, srsDatabase.errorMessage() ) );
     return false;
   }
 
@@ -368,7 +368,7 @@ QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperat
       value.mId = QString( operation->id );
 
       const QString description( *operation->descr );
-      const QStringList descriptionParts = description.split( QStringLiteral( "\n\t" ) );
+      const QStringList descriptionParts = description.split( u"\n\t"_s );
       value.mDescription = descriptionParts.value( 0 );
       value.mDetails = descriptionParts.mid( 1 ).join( '\n' );
 
@@ -452,7 +452,7 @@ QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
     int result = database.open_v2( srsDatabaseFileName, SQLITE_OPEN_READONLY, nullptr );
     if ( result == SQLITE_OK )
     {
-      const QString sql = QStringLiteral( "SELECT description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type FROM tbl_srs" );
+      const QString sql = u"SELECT description, srs_id, auth_name, auth_id, projection_acronym, deprecated, srs_type FROM tbl_srs"_s;
       sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
       if ( result == SQLITE_OK )
       {
@@ -482,9 +482,9 @@ QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystemRegistry::recent
 
   // Read settings from persistent storage
   QgsSettings settings;
-  QStringList projectionsProj4  = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
-  QStringList projectionsWkt = settings.value( QStringLiteral( "UI/recentProjectionsWkt" ) ).toStringList();
-  QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
+  QStringList projectionsProj4  = settings.value( u"UI/recentProjectionsProj4"_s ).toStringList();
+  QStringList projectionsWkt = settings.value( u"UI/recentProjectionsWkt"_s ).toStringList();
+  QStringList projectionsAuthId = settings.value( u"UI/recentProjectionsAuthId"_s ).toStringList();
   int max = std::max( projectionsAuthId.size(), std::max( projectionsProj4.size(), projectionsWkt.size() ) );
   res.reserve( max );
   for ( int i = 0; i < max; ++i )
@@ -510,9 +510,9 @@ QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystemRegistry::recent
 void QgsCoordinateReferenceSystemRegistry::clearRecent()
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "UI/recentProjectionsAuthId" ) );
-  settings.remove( QStringLiteral( "UI/recentProjectionsWkt" ) );
-  settings.remove( QStringLiteral( "UI/recentProjectionsProj4" ) );
+  settings.remove( u"UI/recentProjectionsAuthId"_s );
+  settings.remove( u"UI/recentProjectionsWkt"_s );
+  settings.remove( u"UI/recentProjectionsProj4"_s );
 
   emit recentCrsCleared();
 }
@@ -578,9 +578,9 @@ void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateRefere
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+  settings.setValue( u"UI/recentProjectionsAuthId"_s, authids );
+  settings.setValue( u"UI/recentProjectionsWkt"_s, wkt );
+  settings.setValue( u"UI/recentProjectionsProj4"_s, proj );
 
   emit recentCrsPushed( crs );
 }
@@ -605,9 +605,9 @@ void QgsCoordinateReferenceSystemRegistry::removeRecent( const QgsCoordinateRefe
     wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
   }
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+  settings.setValue( u"UI/recentProjectionsAuthId"_s, authids );
+  settings.setValue( u"UI/recentProjectionsWkt"_s, wkt );
+  settings.setValue( u"UI/recentProjectionsProj4"_s, proj );
 
   emit recentCrsRemoved( crs );
 }

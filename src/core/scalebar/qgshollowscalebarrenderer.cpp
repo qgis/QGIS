@@ -28,7 +28,7 @@
 
 QString QgsHollowScaleBarRenderer::id() const
 {
-  return QStringLiteral( "hollow" );
+  return u"hollow"_s;
 }
 
 QString QgsHollowScaleBarRenderer::visibleName() const

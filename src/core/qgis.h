@@ -27,7 +27,10 @@
 #include "qgis_sip.h"
 
 #include <QMetaEnum>
+#include <QString>
 #include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -486,7 +489,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, ReadFlags )
     Q_FLAG( DataProviderReadFlags )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
 
     /**
      * Vector data provider capabilities.
@@ -950,7 +953,7 @@ class CORE_EXPORT Qgis
     enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0, //!< Item has no capabilities
-      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
       Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -2841,7 +2844,7 @@ class CORE_EXPORT Qgis
     {
       UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
       UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
@@ -4838,7 +4841,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RasterIdentifyFormat )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
     // remove deprecated members
     // Remove "Identify" member, and replace with combinations of IdentifyValue/IdentifyText/etc
 
@@ -4853,8 +4856,8 @@ class CORE_EXPORT Qgis
     {
       NoCapabilities = 0, //!< No capabilities
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
-      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
+      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
       BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
       Identify = 1 << 5, //!< At least one identify format supported
       IdentifyValue = 1 << 6, //!< Numerical values
@@ -4873,7 +4876,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( RasterInterfaceCapabilities, RasterInterfaceCapability )
     Q_FLAG( RasterInterfaceCapabilities )
 
-    // TODO QGIS 4 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
 
     /**
      * Raster data provider capabilities.
@@ -5348,6 +5351,200 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( ScaleBarDistanceLabelHorizontalPlacement )
 
+
+    /**
+     * Units for map grid values.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::GridUnit.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, GridUnit ) : int
+      {
+      MapUnits SIP_MONKEYPATCH_COMPAT_NAME( MapUnit ), //!< Grid units follow map units
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( MM ), //!< Grid units in millimeters
+      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( CM ), //!< Grid units in centimeters
+      DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
+    };
+    Q_ENUM( MapGridUnit )
+
+    /**
+     * Map grid drawing styles.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::GridStyle.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, GridStyle ) : int
+      {
+      Lines SIP_MONKEYPATCH_COMPAT_NAME( Solid ) = 0, //!< Draw lines for grid
+      LineCrosses SIP_MONKEYPATCH_COMPAT_NAME( Cross ), //!< Draw line crosses at intersections of grid lines
+      Markers, //!< Draw markers at intersections of grid lines
+      FrameAndAnnotationsOnly SIP_MONKEYPATCH_COMPAT_NAME( FrameAnnotationsOnly ) //!< No grid lines over the map, only draw frame and annotations
+    };
+    Q_ENUM( MapGridStyle )
+
+    /**
+     * Visibility display settings for map grid annotations and frames.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::DisplayMode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridComponentVisibility SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, DisplayMode ) : int
+      {
+      ShowAll = 0, //!< Show both latitude and longitude annotations/divisions
+      LatitudeOnly, //!< Show latitude/y annotations/divisions only
+      LongitudeOnly, //!< Show longitude/x annotations/divisions only
+      HideAll //!< No annotations
+    };
+    Q_ENUM( MapGridComponentVisibility )
+
+    /**
+     * Position for map grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationPosition.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationPosition ) : int
+      {
+      InsideMapFrame = 0, //!< Draw annotations inside the map frame
+      OutsideMapFrame, //!< Draw annotations outside the map frame
+    };
+    Q_ENUM( MapGridAnnotationPosition )
+
+    /**
+     * Direction of grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationDirection.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationDirection ) : int
+      {
+      Horizontal = 0, //!< Draw annotations horizontally
+      Vertical, //!< Draw annotations vertically, ascending
+      VerticalDescending, //!< Draw annotations vertically, descending
+      BoundaryDirection, //!< Annotations follow the boundary direction
+      AboveTick, //!< Draw annotations parallel to tick (above the line)
+      OnTick, //!< Draw annotations parallel to tick (on the line)
+      UnderTick, //!< Draw annotations parallel to tick (under the line)
+    };
+    Q_ENUM( MapGridAnnotationDirection )
+
+    /**
+     * Format for displaying map grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationFormat.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationFormat ) : int
+      {
+      Decimal = 0, //!< Decimal degrees, use - for S/W coordinates
+      DegreeMinute, //!< Degree/minutes, use NSEW suffix
+      DegreeMinuteSecond, //!< Degree/minutes/seconds, use NSEW suffix
+      DecimalWithSuffix, //!< Decimal degrees, use NSEW suffix
+      DegreeMinuteNoSuffix, //!< Degree/minutes, use - for S/W coordinates
+      DegreeMinutePadded, //!< Degree/minutes, with minutes using leading zeros where required
+      DegreeMinuteSecondNoSuffix, //!< Degree/minutes/seconds, use - for S/W coordinates
+      DegreeMinuteSecondPadded, //!< Degree/minutes/seconds, with minutes using leading zeros where required
+      CustomFormat //!< Custom expression-based format
+    };
+    Q_ENUM( MapGridAnnotationFormat )
+
+    /**
+     * Border sides for map grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::BorderSide.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridBorderSide SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, BorderSide ) : int
+      {
+      Left, //!< Left border
+      Right, //!< Right border
+      Bottom, //!< Bottom border
+      Top, //!< Top border
+    };
+    Q_ENUM( MapGridBorderSide )
+
+    /**
+     * Style for map grid frames.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::FrameStyle.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridFrameStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, FrameStyle ) : int
+      {
+      NoFrame = 0, //!< Disable grid frame
+      Zebra, //!< Black/white pattern
+      InteriorTicks,  //!< Tick markers drawn inside map frame
+      ExteriorTicks,  //!< Tick markers drawn outside map frame
+      InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
+      LineBorder, //!< Simple solid line frame
+      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
+      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
+    };
+    Q_ENUM( MapGridFrameStyle )
+
+    /**
+     * Map grid tick length mode (useful for rotated grids).
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::TickLengthMode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridTickLengthMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, TickLengthMode ) : int
+      {
+      OrthogonalTicks = 0, //!< Align ticks orthogonaly
+      NormalizedTicks, //!< Constant tick lengths
+    };
+    Q_ENUM( MapGridTickLengthMode )
+
+
+    /**
+     * Flags for controlling which side of the map a frame is drawn on.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::FrameSideFlag.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridFrameSideFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, FrameSideFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( FrameLeft ) = 0x01, //!< Left side of map
+      Right SIP_MONKEYPATCH_COMPAT_NAME( FrameRight ) = 0x02, //!< Right side of map
+      Top SIP_MONKEYPATCH_COMPAT_NAME( FrameTop ) = 0x04, //!< Top side of map
+      Bottom SIP_MONKEYPATCH_COMPAT_NAME( FrameBottom ) = 0x08 //!< Bottom side of map
+    };
+    Q_ENUM( MapGridFrameSideFlag )
+
+    /**
+     * Flags for controlling which side of the map a frame is drawn on.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::FrameSideFlags.
+     *
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( MapGridFrameSideFlags, MapGridFrameSideFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLayoutItemMapGrid, FrameSideFlags )
+    Q_FLAG( MapGridFrameSideFlags )
+
+    /**
+     * Annotation coordinate type.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationCoordinate.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationCoordinate ) : int
+      {
+      Longitude = 0, //!< Coordinate is a longitude value
+      Latitude //!< Coordinate is a latitude value
+    };
+    Q_ENUM( MapGridAnnotationType )
+
     /**
      * Input controller types.
      *
@@ -5751,7 +5948,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VsiHandlerType )
 
-    // TODO QGIS 4: make All include all values (we can't do this before 4.0, as we need to keep
+    // TODO QGIS 5: make All include all values (we can't do this before 4.0, as we need to keep
     // compatibility with code which expects all these statistics to give numeric results)
 
     /**
@@ -6169,6 +6366,17 @@ class CORE_EXPORT Qgis
     Q_FLAG( ExtrusionFaces )
 
     /**
+     * Triangulation algorithms.
+     * \since QGIS 4.0
+     */
+    enum class TriangulationAlgorithm : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ConstrainedDelaunay = 0,
+      Earcut = 1 << 0
+    };
+    Q_ENUM( TriangulationAlgorithm )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6198,7 +6406,7 @@ class CORE_EXPORT Qgis
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      *
-     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static const double SCALE_PRECISION;
 
@@ -6324,11 +6532,11 @@ class CORE_EXPORT Qgis
     static int geographicLibVersion();
 
     /**
-     * Returns TRUE if the QGIS build contains QtWebkit.
+     * Returns FALSE.
      *
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.0. WebKit-Support was removed.
      */
-    static bool hasQtWebkit();
+    Q_DECL_DEPRECATED static bool hasQtWebkit();
 
     /**
      * Constant that holds the string representation for "No ellipse/No CRS".
@@ -6337,7 +6545,7 @@ class CORE_EXPORT Qgis
      */
     static QString geoNone()
     {
-      return QStringLiteral( "NONE" );
+      return u"NONE"_s;
     }
 
     /**
@@ -6347,12 +6555,12 @@ class CORE_EXPORT Qgis
      */
     static QString geographicCrsAuthId()
     {
-      return QStringLiteral( "EPSG:4326" );
+      return u"EPSG:4326"_s;
     }
 
     /**
     * WKT string that represents a geographic coord system
-    * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+    * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
     */
     Q_DECL_DEPRECATED static QString geoWkt()
     {
@@ -6363,11 +6571,11 @@ class CORE_EXPORT Qgis
 
     /**
      * PROJ4 string that represents a geographic coord system.
-     * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static QString geoProj4()
     {
-      return QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
+      return u"+proj=longlat +datum=WGS84 +no_defs"_s;
     }
 
 };
@@ -6464,6 +6672,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
@@ -6549,7 +6758,7 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
     else
     {
       str = QString::number( a, 'f', precision );
-      if ( str.contains( QLatin1Char( '.' ) ) )
+      if ( str.contains( '.'_L1 ) )
       {
         // remove ending 0s
         int idx = str.length() - 1;
@@ -6568,9 +6777,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
   }
   // avoid printing -0
   // see https://bugreports.qt.io/browse/QTBUG-71439
-  if ( str == QLatin1String( "-0" ) )
+  if ( str == "-0"_L1 )
   {
-    return QLatin1String( "0" );
+    return "0"_L1;
   }
   return str;
 }
@@ -7022,8 +7231,6 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  *
@@ -7055,16 +7262,6 @@ inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
   return qgsVariantCompare( v1, v2, true ) < 0;
 }
-#endif
-
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-
-/**
- * Compares two QVariantList values and returns whether the first is less than the second.
- */
-template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-#endif
 
 /**
  * Returns a the vsi prefix which corresponds to a file \a path, or an empty
@@ -7126,21 +7323,21 @@ class ScopedIntIncrementor
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOSRID = 4326;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system in QGIS internal srs database.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOCRS_ID = 3452;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEO_EPSG_CRS_ID = 4326;
 

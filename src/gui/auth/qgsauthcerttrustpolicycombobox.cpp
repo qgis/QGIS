@@ -86,17 +86,17 @@ void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
   {
     case QgsAuthCertUtils::Trusted:
       // ss = QgsAuthCertUtils::greenTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( u"QComboBox:open"_s ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::Untrusted:
       // ss = QgsAuthCertUtils::redTextStyleSheet( "QLineEdit" );
-      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QComboBox:open" ) ) + "\nQComboBox:!open{}";
+      ss = QgsAuthGuiUtils::redTextStyleSheet( u"QComboBox:open"_s ) + "\nQComboBox:!open{}";
       break;
     case QgsAuthCertUtils::DefaultTrust:
     default:
       break;
   }
-  QgsDebugMsgLevel( QStringLiteral( "Set Stylesheet to : %1" ).arg( ss ), 2 );
+  QgsDebugMsgLevel( u"Set Stylesheet to : %1"_s.arg( ss ), 2 );
   // lineEdit()->setStyleSheet( ss );
   setStyleSheet( ss );
 }
@@ -114,6 +114,6 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
       defaultpolicy = QgsAuthCertUtils::Trusted;
     }
   }
-  return QStringLiteral( "%1 (%2)" )
+  return u"%1 (%2)"_s
     .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ), QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

@@ -26,7 +26,7 @@
 
 QString QgsSumLineLengthAlgorithm::name() const
 {
-  return QStringLiteral( "sumlinelengths" );
+  return u"sumlinelengths"_s;
 }
 
 QString QgsSumLineLengthAlgorithm::displayName() const
@@ -41,12 +41,12 @@ QStringList QgsSumLineLengthAlgorithm::tags() const
 
 QString QgsSumLineLengthAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSumLengthLines.svg" ) );
+  return QgsApplication::iconPath( u"/algorithms/mAlgorithmSumLengthLines.svg"_s );
 }
 
 QIcon QgsSumLineLengthAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSumLengthLines.svg" ) );
+  return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSumLengthLines.svg"_s );
 }
 
 QString QgsSumLineLengthAlgorithm::group() const
@@ -56,7 +56,7 @@ QString QgsSumLineLengthAlgorithm::group() const
 
 QString QgsSumLineLengthAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsSumLineLengthAlgorithm::shortHelpString() const
@@ -106,7 +106,7 @@ QgsCoordinateReferenceSystem QgsSumLineLengthAlgorithm::outputCrs( const QgsCoor
 
 QString QgsSumLineLengthAlgorithm::inputParameterName() const
 {
-  return QStringLiteral( "POLYGONS" );
+  return u"POLYGONS"_s;
 }
 
 QString QgsSumLineLengthAlgorithm::inputParameterDescription() const
@@ -121,29 +121,29 @@ QString QgsSumLineLengthAlgorithm::outputName() const
 
 void QgsSumLineLengthAlgorithm::initParameters( const QVariantMap &configuration )
 {
-  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+  mIsInPlace = configuration.value( u"IN_PLACE"_s ).toBool();
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ), QObject::tr( "Lines" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"LINES"_s, QObject::tr( "Lines" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
   if ( mIsInPlace )
   {
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "LEN_FIELD" ), QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "COUNT_FIELD" ), QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+    addParameter( new QgsProcessingParameterField( u"LEN_FIELD"_s, QObject::tr( "Lines length field name" ), u"LENGTH"_s, inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+    addParameter( new QgsProcessingParameterField( u"COUNT_FIELD"_s, QObject::tr( "Lines count field name" ), u"COUNT"_s, inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   }
   else
   {
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "LEN_FIELD" ), QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ) ) );
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "COUNT_FIELD" ), QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ) ) );
+    addParameter( new QgsProcessingParameterString( u"LEN_FIELD"_s, QObject::tr( "Lines length field name" ), u"LENGTH"_s ) );
+    addParameter( new QgsProcessingParameterString( u"COUNT_FIELD"_s, QObject::tr( "Lines count field name" ), u"COUNT"_s ) );
   }
 }
 
 bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mLengthFieldName = parameterAsString( parameters, QStringLiteral( "LEN_FIELD" ), context );
-  mCountFieldName = parameterAsString( parameters, QStringLiteral( "COUNT_FIELD" ), context );
+  mLengthFieldName = parameterAsString( parameters, u"LEN_FIELD"_s, context );
+  mCountFieldName = parameterAsString( parameters, u"COUNT_FIELD"_s, context );
 
-  mLinesSource.reset( parameterAsSource( parameters, QStringLiteral( "LINES" ), context ) );
+  mLinesSource.reset( parameterAsSource( parameters, u"LINES"_s, context ) );
   if ( !mLinesSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "LINES" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"LINES"_s ) );
 
   if ( mLinesSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for lines layer, performance will be severely degraded" ) );

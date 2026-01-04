@@ -28,7 +28,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
     DummyMaterialSettings() = default;
-    QString type() const override { return QStringLiteral( "Dummy" ); }
+    QString type() const override { return u"Dummy"_s; }
     static QgsAbstractMaterialSettings *create() { return new DummyMaterialSettings(); }
     DummyMaterialSettings *clone() const override { return new DummyMaterialSettings(); }
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique ) { return true; }
@@ -47,7 +47,7 @@ class TestQgsMaterialRegistry : public QgsTest
 
   public:
     TestQgsMaterialRegistry()
-      : QgsTest( QStringLiteral( "3D Material Registry Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Material Registry Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -86,7 +86,7 @@ void TestQgsMaterialRegistry::cleanup()
 
 void TestQgsMaterialRegistry::metadata()
 {
-  QgsMaterialSettingsMetadata metadata = QgsMaterialSettingsMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ), DummyMaterialSettings::create, DummyMaterialSettings::supportsTechnique );
+  QgsMaterialSettingsMetadata metadata = QgsMaterialSettingsMetadata( u"name"_s, u"display name"_s, DummyMaterialSettings::create, DummyMaterialSettings::supportsTechnique );
   QCOMPARE( metadata.type(), QString( "name" ) );
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
@@ -120,10 +120,10 @@ void TestQgsMaterialRegistry::addMaterialSettings()
   QgsMaterialRegistry *registry = Qgs3D::materialRegistry();
   const int previousCount = registry->materialSettingsTypes().length();
 
-  registry->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy material" ), DummyMaterialSettings::create, DummyMaterialSettings::supportsTechnique ) );
+  registry->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"Dummy"_s, u"Dummy material"_s, DummyMaterialSettings::create, DummyMaterialSettings::supportsTechnique ) );
   QCOMPARE( registry->materialSettingsTypes().length(), previousCount + 1 );
   //try adding again, should have no effect
-  QgsMaterialSettingsMetadata *dupe = new QgsMaterialSettingsMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy material" ), DummyMaterialSettings::create, DummyMaterialSettings::supportsTechnique );
+  QgsMaterialSettingsMetadata *dupe = new QgsMaterialSettingsMetadata( u"Dummy"_s, u"Dummy material"_s, DummyMaterialSettings::create, DummyMaterialSettings::supportsTechnique );
   QVERIFY( !registry->addMaterialSettingsType( dupe ) );
   QCOMPARE( registry->materialSettingsTypes().length(), previousCount + 1 );
   delete dupe;
@@ -140,25 +140,25 @@ void TestQgsMaterialRegistry::fetchTypes()
 
   QVERIFY( types.contains( "Dummy" ) );
 
-  QgsMaterialSettingsAbstractMetadata *metadata = registry->materialSettingsMetadata( QStringLiteral( "Dummy" ) );
+  QgsMaterialSettingsAbstractMetadata *metadata = registry->materialSettingsMetadata( u"Dummy"_s );
   QCOMPARE( metadata->type(), QString( "Dummy" ) );
 
   //metadata for bad material
-  metadata = registry->materialSettingsMetadata( QStringLiteral( "bad material" ) );
+  metadata = registry->materialSettingsMetadata( u"bad material"_s );
   QVERIFY( !metadata );
 }
 
 void TestQgsMaterialRegistry::createMaterial()
 {
   QgsMaterialRegistry *registry = Qgs3D::materialRegistry();
-  std::unique_ptr<QgsAbstractMaterialSettings> material( registry->createMaterialSettings( QStringLiteral( "Dummy" ) ) );
+  std::unique_ptr<QgsAbstractMaterialSettings> material( registry->createMaterialSettings( u"Dummy"_s ) );
 
   QVERIFY( material.get() );
   DummyMaterialSettings *dummySymbol = dynamic_cast<DummyMaterialSettings *>( material.get() );
   QVERIFY( dummySymbol );
 
   //try creating a bad material
-  material.reset( registry->createMaterialSettings( QStringLiteral( "bad material" ) ) );
+  material.reset( registry->createMaterialSettings( u"bad material"_s ) );
   QVERIFY( !material.get() );
 }
 

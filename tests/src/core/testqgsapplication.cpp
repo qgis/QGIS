@@ -28,7 +28,7 @@ class TestQgsApplication : public QgsTest
 
   public:
     TestQgsApplication()
-      : QgsTest( QStringLiteral( "QgsApplication Tests" ), QStringLiteral( "application" ) )
+      : QgsTest( u"QgsApplication Tests"_s, u"application"_s )
     {}
 
   private slots:
@@ -54,9 +54,9 @@ void TestQgsApplication::initTestCase()
 
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -72,14 +72,14 @@ void TestQgsApplication::cleanupTestCase()
 void TestQgsApplication::accountName()
 {
   const QString loginName = QgsApplication::userLoginName();
-  qDebug() << QStringLiteral( "Got login name: '%1'" ).arg( loginName );
+  qDebug() << u"Got login name: '%1'"_s.arg( loginName );
   QVERIFY( !loginName.isEmpty() );
   //test cached return works correctly
   QCOMPARE( loginName, QgsApplication::userLoginName() );
 
   //can't test contents, as it can be validly empty (e.g., on Travis). Just testing that we don't crash
   const QString fullName = QgsApplication::userFullName();
-  qDebug() << QStringLiteral( "Got full name: '%1'" ).arg( fullName );
+  qDebug() << u"Got full name: '%1'"_s.arg( fullName );
   //test cached return works correctly
   QCOMPARE( fullName, QgsApplication::userFullName() );
 }
@@ -87,7 +87,7 @@ void TestQgsApplication::accountName()
 void TestQgsApplication::osName()
 {
   // can't test expected result, so just check for non-empty result
-  qDebug() << QStringLiteral( "Got OS name: '%1'" ).arg( QgsApplication::osName() );
+  qDebug() << u"Got OS name: '%1'"_s.arg( QgsApplication::osName() );
   QVERIFY( !QgsApplication::osName().isEmpty() );
 }
 
@@ -105,20 +105,20 @@ void TestQgsApplication::applicationFullName()
 
 void TestQgsApplication::themeIcon()
 {
-  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
+  QIcon icon = QgsApplication::getThemeIcon( u"/mIconFolder.svg"_s );
   QVERIFY( !icon.isNull() );
   QImage im( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon" ), QStringLiteral( "theme_icon" ), im, QString(), 0 ) );
+  QVERIFY( QGSIMAGECHECK( u"theme_icon"_s, u"theme_icon"_s, im, QString(), 0 ) );
 
   // with colors
-  icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
+  icon = QgsApplication::getThemeIcon( u"/mIconFolderParams.svg"_s, QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon_colors_1" ), QStringLiteral( "theme_icon_colors_1" ), im, QString(), 0 ) );
+  QVERIFY( QGSIMAGECHECK( u"theme_icon_colors_1"_s, u"theme_icon_colors_1"_s, im, QString(), 0 ) );
 
   // different colors
-  icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
+  icon = QgsApplication::getThemeIcon( u"/mIconFolderParams.svg"_s, QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon_colors_2" ), QStringLiteral( "theme_icon_colors_2" ), im, QString(), 0 ) );
+  QVERIFY( QGSIMAGECHECK( u"theme_icon_colors_2"_s, u"theme_icon_colors_2"_s, im, QString(), 0 ) );
 }
 
 void TestQgsApplication::checkPaths()
@@ -132,9 +132,9 @@ void TestQgsApplication::checkPaths()
 void TestQgsApplication::checkGdalSkip()
 {
   GDALAllRegister();
-  QgsApplication::skipGdalDriver( QStringLiteral( "GTiff" ) );
+  QgsApplication::skipGdalDriver( u"GTiff"_s );
   QVERIFY( QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
-  QgsApplication::restoreGdalDriver( QStringLiteral( "GTiff" ) );
+  QgsApplication::restoreGdalDriver( u"GTiff"_s );
   QVERIFY( !QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
 }
 

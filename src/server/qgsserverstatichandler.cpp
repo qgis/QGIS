@@ -33,10 +33,10 @@ void QgsServerStaticHandler::handleRequest( const QgsServerApiContext &context )
   const QRegularExpressionMatch match { path().match( context.request()->url().path() ) };
   if ( !match.hasMatch() )
   {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Static file was not found" ) );
+    throw QgsServerApiNotFoundError( u"Static file was not found"_s );
   }
 
-  const QString staticFilePath { match.captured( QStringLiteral( "staticFilePath" ) ) };
+  const QString staticFilePath { match.captured( u"staticFilePath"_s ) };
   // Calculate real path
   QString filePath { staticPath( context ) };
   if ( !mStaticPathSuffix.isEmpty() )
@@ -46,20 +46,20 @@ void QgsServerStaticHandler::handleRequest( const QgsServerApiContext &context )
   filePath += '/' + staticFilePath;
   if ( !QFile::exists( filePath ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-    throw QgsServerApiNotFoundError( QStringLiteral( "Static file %1 was not found" ).arg( staticFilePath ) );
+    QgsMessageLog::logMessage( u"Static file was not found: %1"_s.arg( filePath ), u"Server"_s, Qgis::MessageLevel::Info );
+    throw QgsServerApiNotFoundError( u"Static file %1 was not found"_s.arg( staticFilePath ) );
   }
 
   QFile f( filePath );
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    throw QgsServerApiInternalServerError( QStringLiteral( "Could not open static file %1" ).arg( staticFilePath ) );
+    throw QgsServerApiInternalServerError( u"Could not open static file %1"_s.arg( staticFilePath ) );
   }
 
   const qint64 size { f.size() };
   const QByteArray content { f.readAll() };
   const QMimeType mimeType { QMimeDatabase().mimeTypeForFile( filePath ) };
-  context.response()->setHeader( QStringLiteral( "Content-Type" ), mimeType.name() );
-  context.response()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
+  context.response()->setHeader( u"Content-Type"_s, mimeType.name() );
+  context.response()->setHeader( u"Content-Length"_s, QString::number( size ) );
   context.response()->write( content );
 }

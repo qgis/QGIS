@@ -137,7 +137,7 @@ parameters and outputs associated with it.
 .. seealso:: :py:func:`helpUrl`
 %End
 
- virtual QString helpString() const /HoldGIL,Deprecated="Since 3.40. Unused, will be removed in QGIS 4.0."/;
+ virtual QString helpString() const /HoldGIL,Deprecated="Since 3.40. Unused, will be removed in QGIS 5.0."/;
 %Docstring
 Returns a localised help string for the algorithm. Algorithm subclasses
 should implement either :py:func:`~QgsProcessingAlgorithm.helpString` or
@@ -149,7 +149,7 @@ should implement either :py:func:`~QgsProcessingAlgorithm.helpString` or
 
 .. deprecated:: 3.40
 
-   Unused, will be removed in QGIS 4.0.
+   Unused, will be removed in QGIS 5.0.
 %End
 
     virtual QString helpUrl() const /HoldGIL/;

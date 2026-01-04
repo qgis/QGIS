@@ -50,7 +50,7 @@ void QgsRasterDrawer::draw( QgsRenderContext &context, QgsRasterViewPort *viewPo
 
 void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( !p || !mIterator || !viewPort || !qgsMapToPixel )
   {
     return;
@@ -82,7 +82,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   {
     if ( !block )
     {
-      QgsDebugError( QStringLiteral( "Cannot get block" ) );
+      QgsDebugError( u"Cannot get block"_s );
       continue;
     }
 
@@ -93,7 +93,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
     QPdfWriter *pdfWriter = dynamic_cast<QPdfWriter *>( p->device() );
     if ( pdfWriter )
     {
-      QgsDebugMsgLevel( QStringLiteral( "PdfFormat" ), 4 );
+      QgsDebugMsgLevel( u"PdfFormat"_s, 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       const QRgb transparentBlack = qRgba( 0, 0, 0, 0 );

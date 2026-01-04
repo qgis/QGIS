@@ -57,7 +57,7 @@ void TestQgsAttributesFormProperties::cleanup()
 
 void TestQgsAttributesFormProperties::testConfigStored()
 {
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?field=col0:integer&field=col1:integer"_s, u"test"_s, u"memory"_s );
   QgsAttributesFormProperties attributeFormProperties( layer );
   attributeFormProperties.init();
 
@@ -69,23 +69,23 @@ void TestQgsAttributesFormProperties::testConfigStored()
 
   QVERIFY( fieldContainer.isValid() );
   const QString name = fieldContainer.data( QgsAttributesFormModel::ItemNameRole ).toString();
-  QCOMPARE( name, QStringLiteral( "Fields" ) );
+  QCOMPARE( name, u"Fields"_s );
   QCOMPARE( availableWidgetsModel->rowCount( fieldContainer ), 2 );
 
   // Insure that the configuration was stored when switching from one available widgets tree item to another
   attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 0, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias0" ) );
+  attributeFormProperties.mAttributeTypeDialog->setAlias( u"alias0"_s );
   attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 1, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias1" ) );
+  attributeFormProperties.mAttributeTypeDialog->setAlias( u"alias1"_s );
 
   attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 0, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias0" ) );
+  QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), u"alias0"_s );
   attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 1, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
-  QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias1" ) );
+  QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), u"alias1"_s );
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormProperties )

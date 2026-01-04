@@ -29,7 +29,7 @@ QString QgsDrapeAlgorithmBase::group() const
 
 QString QgsDrapeAlgorithmBase::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsDrapeAlgorithmBase::outputName() const
@@ -39,59 +39,59 @@ QString QgsDrapeAlgorithmBase::outputName() const
 
 void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "RASTER" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"RASTER"_s ) );
 
   // nodata value
-  auto nodata = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto nodata = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Value for NoData or non-intersecting vertices" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   nodata->setIsDynamic( true );
-  nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
-  nodata->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( u"NODATA"_s, QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
+  nodata->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( nodata.release() );
 
-  auto scaleParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
+  auto scaleParam = std::make_unique<QgsProcessingParameterNumber>( u"SCALE"_s, QObject::tr( "Scale factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
   scaleParam->setIsDynamic( true );
-  scaleParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), QgsPropertyDefinition::Double ) );
-  scaleParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  scaleParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"SCALE"_s, QObject::tr( "Scale factor" ), QgsPropertyDefinition::Double ) );
+  scaleParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( scaleParam.release() );
 
-  auto offsetParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto offsetParam = std::make_unique<QgsProcessingParameterNumber>( u"OFFSET"_s, QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   offsetParam->setIsDynamic( true );
-  offsetParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsPropertyDefinition::Double ) );
-  offsetParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  offsetParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"OFFSET"_s, QObject::tr( "Offset" ), QgsPropertyDefinition::Double ) );
+  offsetParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( offsetParam.release() );
 }
 
 bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mNoData = parameterAsDouble( parameters, QStringLiteral( "NODATA" ), context );
-  mDynamicNoData = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "NODATA" ) );
+  mNoData = parameterAsDouble( parameters, u"NODATA"_s, context );
+  mDynamicNoData = QgsProcessingParameters::isDynamic( parameters, u"NODATA"_s );
   if ( mDynamicNoData )
-    mNoDataProperty = parameters.value( QStringLiteral( "NODATA" ) ).value<QgsProperty>();
+    mNoDataProperty = parameters.value( u"NODATA"_s ).value<QgsProperty>();
 
-  mScale = parameterAsDouble( parameters, QStringLiteral( "SCALE" ), context );
-  mDynamicScale = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "SCALE" ) );
+  mScale = parameterAsDouble( parameters, u"SCALE"_s, context );
+  mDynamicScale = QgsProcessingParameters::isDynamic( parameters, u"SCALE"_s );
   if ( mDynamicScale )
-    mScaleProperty = parameters.value( QStringLiteral( "SCALE" ) ).value<QgsProperty>();
+    mScaleProperty = parameters.value( u"SCALE"_s ).value<QgsProperty>();
 
-  mOffset = parameterAsDouble( parameters, QStringLiteral( "OFFSET" ), context );
-  mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "OFFSET" ) );
+  mOffset = parameterAsDouble( parameters, u"OFFSET"_s, context );
+  mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, u"OFFSET"_s );
   if ( mDynamicOffset )
-    mOffsetProperty = parameters.value( QStringLiteral( "OFFSET" ) ).value<QgsProperty>();
+    mOffsetProperty = parameters.value( u"OFFSET"_s ).value<QgsProperty>();
 
-  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "RASTER" ), context );
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"RASTER"_s, context );
 
   if ( !layer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"RASTER"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
   mRasterExtent = layer->extent();
 
   mRasterProvider.reset( layer->dataProvider()->clone() );
   if ( !mRasterProvider )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"RASTER"_s ) );
 
   return true;
 }
@@ -175,7 +175,7 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
 
 QString QgsDrapeToZAlgorithm::name() const
 {
-  return QStringLiteral( "setzfromraster" );
+  return u"setzfromraster"_s;
 }
 
 QString QgsDrapeToZAlgorithm::displayName() const
@@ -191,7 +191,7 @@ QStringList QgsDrapeToZAlgorithm::tags() const
 QString QgsDrapeToZAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm sets the z value of every vertex in the feature geometry to a value sampled from a band within a raster layer." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The raster values can optionally be scaled by a preset amount and an offset can be algebraically added." );
 }
 
@@ -238,7 +238,7 @@ QgsPoint QgsDrapeToZAlgorithm::drapeVertex( const QgsPoint &p, double rasterVal 
 
 QString QgsDrapeToMAlgorithm::name() const
 {
-  return QStringLiteral( "setmfromraster" );
+  return u"setmfromraster"_s;
 }
 
 QString QgsDrapeToMAlgorithm::displayName() const
@@ -254,7 +254,7 @@ QStringList QgsDrapeToMAlgorithm::tags() const
 QString QgsDrapeToMAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm sets the M value for every vertex in the feature geometry to a value sampled from a band within a raster layer." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The raster values can optionally be scaled by a preset amount and an offset can be algebraically added." );
 }
 

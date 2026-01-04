@@ -53,7 +53,7 @@ bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )
 void QgsLayoutItemUndoCommand::saveState( QDomDocument &stateDoc ) const
 {
   stateDoc.clear();
-  QDomElement documentElement = stateDoc.createElement( QStringLiteral( "ItemState" ) );
+  QDomElement documentElement = stateDoc.createElement( u"ItemState"_s );
 
   QgsLayoutItem *item = mLayout->itemByUuid( mItemUuid );
   if ( item )
@@ -63,7 +63,7 @@ void QgsLayoutItemUndoCommand::saveState( QDomDocument &stateDoc ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "QgsLayoutItemUndoCommand::saveState: could not retrieve item %1 for saving state" ).arg( mItemUuid ) );
+    QgsDebugError( u"QgsLayoutItemUndoCommand::saveState: could not retrieve item %1 for saving state"_s.arg( mItemUuid ) );
   }
 }
 

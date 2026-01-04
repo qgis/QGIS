@@ -121,7 +121,7 @@ class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWF
     void startOapifLandingPageRequest();
     void startOapifCollectionsRequest( const QString &url );
     void resizeTreeViewAfterModelFill();
-    bool isOapif() const { return mVersion == QLatin1String( "OGC_API_FEATURES" ); }
+    bool isOapif() const { return mVersion == "OGC_API_FEATURES"_L1; }
 };
 
 #endif

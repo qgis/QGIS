@@ -119,7 +119,7 @@ QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &re
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mRenderer->type() != QLatin1String( "extent" ) )
+  if ( mRenderer->type() != "extent"_L1 )
     loadIndexesForRenderContext( rendererContext );
 
   return new QgsPointCloudLayerRenderer( this, rendererContext );
@@ -151,7 +151,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // create provider
-  const QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
+  const QDomNode pkeyNode = layerNode.namedItem( u"provider"_s );
   mProviderKey = pkeyNode.toElement().text();
 
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
@@ -161,7 +161,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     // read extent
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
-      const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
+      const QDomNode extentNode = layerNode.namedItem( u"extent"_s );
       if ( !extentNode.isNull() )
       {
         // get the extent
@@ -173,7 +173,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     }
 
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
-    const QDomNode subset = layerNode.namedItem( QStringLiteral( "subset" ) );
+    const QDomNode subset = layerNode.namedItem( u"subset"_s );
     const QString subsetText = subset.toElement().text();
     if ( !subsetText.isEmpty() )
       setSubsetString( subsetText );
@@ -197,18 +197,18 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) );
+  mapLayerNode.setAttribute( u"type"_s, QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) );
 
   if ( !subsetString().isEmpty() )
   {
-    QDomElement subset = doc.createElement( QStringLiteral( "subset" ) );
+    QDomElement subset = doc.createElement( u"subset"_s );
     const QDomText subsetText = doc.createTextNode( subsetString() );
     subset.appendChild( subsetText );
     layerNode.appendChild( subset );
   }
   if ( mDataProvider )
   {
-    QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
+    QDomElement provider  = doc.createElement( u"provider"_s );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
@@ -231,13 +231,13 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
   readStyle( node, errorMessage, context, categories );
 
   if ( categories.testFlag( CustomProperties ) )
-    readCustomProperties( node, QStringLiteral( "variable" ) );
+    readCustomProperties( node, u"variable"_s );
 
   if ( categories.testFlag( Legend ) )
   {
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
-    const QDomElement legendElem = node.firstChildElement( QStringLiteral( "legend" ) );
+    const QDomElement legendElem = node.firstChildElement( u"legend"_s );
     if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
     {
       l->readXml( legendElem, context );
@@ -256,14 +256,14 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   if ( categories.testFlag( Symbology3D ) )
   {
     bool ok;
-    bool sync = node.attributes().namedItem( QStringLiteral( "sync3DRendererTo2DRenderer" ) ).nodeValue().toInt( &ok );
+    bool sync = node.attributes().namedItem( u"sync3DRendererTo2DRenderer"_s ).nodeValue().toInt( &ok );
     if ( ok )
       setSync3DRendererTo2DRenderer( sync );
   }
 
   if ( categories.testFlag( Symbology ) )
   {
-    QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
+    QDomElement rendererElement = node.firstChildElement( u"renderer"_s );
     if ( !rendererElement.isNull() )
     {
       std::unique_ptr< QgsPointCloudRenderer > r( QgsPointCloudRenderer::load( rendererElement, context ) );
@@ -286,7 +286,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   if ( categories.testFlag( Symbology ) )
   {
     // get and set the blend mode if it exists
-    const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    const QDomNode blendModeNode = node.namedItem( u"blendMode"_s );
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
@@ -297,22 +297,22 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   // get and set the layer transparency and scale visibility if they exists
   if ( categories.testFlag( Rendering ) )
   {
-    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( u"layerOpacity"_s );
     if ( !layerOpacityNode.isNull() )
     {
       const QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
     }
 
-    const bool hasScaleBasedVisibiliy { node.attributes().namedItem( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).nodeValue() == '1' };
+    const bool hasScaleBasedVisibiliy { node.attributes().namedItem( u"hasScaleBasedVisibilityFlag"_s ).nodeValue() == '1' };
     setScaleBasedVisibility( hasScaleBasedVisibiliy );
     bool ok;
-    const double maxScale { node.attributes().namedItem( QStringLiteral( "maxScale" ) ).nodeValue().toDouble( &ok ) };
+    const double maxScale { node.attributes().namedItem( u"maxScale"_s ).nodeValue().toDouble( &ok ) };
     if ( ok )
     {
       setMaximumScale( maxScale );
     }
-    const double minScale { node.attributes().namedItem( QStringLiteral( "minScale" ) ).nodeValue().toDouble( &ok ) };
+    const double minScale { node.attributes().namedItem( u"minScale"_s ).nodeValue().toDouble( &ok ) };
     if ( ok )
     {
       setMinimumScale( minScale );
@@ -351,7 +351,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
 
   if ( categories.testFlag( Symbology3D ) )
   {
-    mapLayerNode.setAttribute( QStringLiteral( "sync3DRendererTo2DRenderer" ), mSync3DRendererTo2DRenderer ? 1 : 0 );
+    mapLayerNode.setAttribute( u"sync3DRendererTo2DRenderer"_s, mSync3DRendererTo2DRenderer ? 1 : 0 );
   }
 
   if ( categories.testFlag( Symbology ) )
@@ -372,7 +372,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -381,14 +381,14 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   // add the layer opacity and scale visibility
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomElement layerOpacityElem = doc.createElement( u"layerOpacity"_s );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
 
-    mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-    mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
-    mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
+    mapLayerNode.setAttribute( u"hasScaleBasedVisibilityFlag"_s, hasScaleBasedVisibility() ? 1 : 0 );
+    mapLayerNode.setAttribute( u"maxScale"_s, maximumScale() );
+    mapLayerNode.setAttribute( u"minScale"_s, minimumScale() );
   }
   return true;
 }
@@ -424,25 +424,25 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   else
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
-    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+    if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), u"projectload"_s );
     mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   }
 
   if ( !mDataProvider )
   {
-    QgsDebugError( QStringLiteral( "Unable to get point cloud data provider" ) );
+    QgsDebugError( u"Unable to get point cloud data provider"_s );
     setValid( false );
     return;
   }
 
   mDataProvider->setParent( this );
-  QgsDebugMsgLevel( QStringLiteral( "Instantiated the point cloud data provider plugin" ), 2 );
+  QgsDebugMsgLevel( u"Instantiated the point cloud data provider plugin"_s, 2 );
 
   setValid( mDataProvider->isValid() );
   if ( !isValid() )
   {
-    QgsDebugError( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
+    QgsDebugError( u"Invalid point cloud provider plugin %1"_s.arg( QString( mDataSource.toUtf8() ) ) );
     setError( mDataProvider->error() );
     return;
   }
@@ -482,8 +482,8 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
-    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+    if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), u"projectload"_s );
 
     bool defaultLoadedFlag = false;
 
@@ -576,178 +576,178 @@ QString QgsPointCloudLayer::htmlMetadata() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsLayerMetadataFormatter htmlFormatter( metadata() );
-  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
+  QString myMetadata = u"<html>\n<body>\n"_s;
 
   myMetadata += generalHtmlMetadata();
 
   // Begin Provider section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
+  myMetadata += u"<h1>"_s + tr( "Information from provider" ) + u"</h1>\n<hr>\n"_s;
+  myMetadata += "<table class=\"list-view\">\n"_L1;
 
   // Extent
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Extent" ) + u"</td><td>"_s + extent().toString() + u"</td></tr>\n"_s;
 
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Point count" ) + QStringLiteral( "</td><td>" )
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Point count" ) + u"</td><td>"_s
                 + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
-                + QStringLiteral( "</td></tr>\n" );
+                + u"</td></tr>\n"_s;
 
   if ( const QgsPointCloudDataProvider *provider = dataProvider() )
   {
     myMetadata += provider->htmlMetadata();
   }
 
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata += "</table>\n<br><br>"_L1;
 
   // CRS
   myMetadata += crsHtmlMetadata();
 
   // provider metadata section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Metadata" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+  myMetadata += u"<h1>"_s + tr( "Metadata" ) + u"</h1>\n<hr>\n"_s + u"<table class=\"list-view\">\n"_s;
   const QVariantMap originalMetadata = mDataProvider ? mDataProvider->originalMetadata() : QVariantMap();
 
-  if ( originalMetadata.value( QStringLiteral( "creation_year" ) ).toInt() > 0 && originalMetadata.contains( QStringLiteral( "creation_doy" ) ) )
+  if ( originalMetadata.value( u"creation_year"_s ).toInt() > 0 && originalMetadata.contains( u"creation_doy"_s ) )
   {
-    QDate creationDate( originalMetadata.value( QStringLiteral( "creation_year" ) ).toInt(), 1, 1 );
-    creationDate = creationDate.addDays( originalMetadata.value( QStringLiteral( "creation_doy" ) ).toInt() );
+    QDate creationDate( originalMetadata.value( u"creation_year"_s ).toInt(), 1, 1 );
+    creationDate = creationDate.addDays( originalMetadata.value( u"creation_doy"_s ).toInt() );
 
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Creation date" ) + QStringLiteral( "</td><td>" )
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Creation date" ) + u"</td><td>"_s
                   + creationDate.toString( Qt::ISODate )
-                  + QStringLiteral( "</td></tr>\n" );
+                  + u"</td></tr>\n"_s;
   }
-  if ( originalMetadata.contains( QStringLiteral( "major_version" ) ) && originalMetadata.contains( QStringLiteral( "minor_version" ) ) )
+  if ( originalMetadata.contains( u"major_version"_s ) && originalMetadata.contains( u"minor_version"_s ) )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Version" ) + QStringLiteral( "</td><td>" )
-                  + QStringLiteral( "%1.%2" ).arg( originalMetadata.value( QStringLiteral( "major_version" ) ).toString(),
-                      originalMetadata.value( QStringLiteral( "minor_version" ) ).toString() )
-                  + QStringLiteral( "</td></tr>\n" );
-  }
-
-  if ( !originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toString().isEmpty() )
-  {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Data format" ) + QStringLiteral( "</td><td>" )
-                  + QStringLiteral( "%1 (%2)" ).arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toInt() ),
-                      originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toString() ).trimmed()
-                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Version" ) + u"</td><td>"_s
+                  + u"%1.%2"_s.arg( originalMetadata.value( u"major_version"_s ).toString(),
+                                    originalMetadata.value( u"minor_version"_s ).toString() )
+                  + u"</td></tr>\n"_s;
   }
 
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Scale X" ) + QStringLiteral( "</td><td>" )
-                + QString::number( originalMetadata.value( QStringLiteral( "scale_x" ) ).toDouble() )
-                + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Scale Y" ) + QStringLiteral( "</td><td>" )
-                + QString::number( originalMetadata.value( QStringLiteral( "scale_y" ) ).toDouble() )
-                + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Scale Z" ) + QStringLiteral( "</td><td>" )
-                + QString::number( originalMetadata.value( QStringLiteral( "scale_z" ) ).toDouble() )
-                + QStringLiteral( "</td></tr>\n" );
-
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Offset X" ) + QStringLiteral( "</td><td>" )
-                + QString::number( originalMetadata.value( QStringLiteral( "offset_x" ) ).toDouble() )
-                + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Offset Y" ) + QStringLiteral( "</td><td>" )
-                + QString::number( originalMetadata.value( QStringLiteral( "offset_y" ) ).toDouble() )
-                + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                + tr( "Offset Z" ) + QStringLiteral( "</td><td>" )
-                + QString::number( originalMetadata.value( QStringLiteral( "offset_z" ) ).toDouble() )
-                + QStringLiteral( "</td></tr>\n" );
-
-  if ( !originalMetadata.value( QStringLiteral( "project_id" ) ).toString().isEmpty() )
+  if ( !originalMetadata.value( u"dataformat_id"_s ).toString().isEmpty() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Project ID" ) + QStringLiteral( "</td><td>" )
-                  + originalMetadata.value( QStringLiteral( "project_id" ) ).toString()
-                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Data format" ) + u"</td><td>"_s
+                  + u"%1 (%2)"_s.arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( u"dataformat_id"_s ).toInt() ),
+                                      originalMetadata.value( u"dataformat_id"_s ).toString() ).trimmed()
+                  + u"</td></tr>\n"_s;
   }
 
-  if ( !originalMetadata.value( QStringLiteral( "system_id" ) ).toString().isEmpty() )
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Scale X" ) + u"</td><td>"_s
+                + QString::number( originalMetadata.value( u"scale_x"_s ).toDouble() )
+                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Scale Y" ) + u"</td><td>"_s
+                + QString::number( originalMetadata.value( u"scale_y"_s ).toDouble() )
+                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Scale Z" ) + u"</td><td>"_s
+                + QString::number( originalMetadata.value( u"scale_z"_s ).toDouble() )
+                + u"</td></tr>\n"_s;
+
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Offset X" ) + u"</td><td>"_s
+                + QString::number( originalMetadata.value( u"offset_x"_s ).toDouble() )
+                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Offset Y" ) + u"</td><td>"_s
+                + QString::number( originalMetadata.value( u"offset_y"_s ).toDouble() )
+                + u"</td></tr>\n"_s;
+  myMetadata += u"<tr><td class=\"highlight\">"_s
+                + tr( "Offset Z" ) + u"</td><td>"_s
+                + QString::number( originalMetadata.value( u"offset_z"_s ).toDouble() )
+                + u"</td></tr>\n"_s;
+
+  if ( !originalMetadata.value( u"project_id"_s ).toString().isEmpty() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "System ID" ) + QStringLiteral( "</td><td>" )
-                  + originalMetadata.value( QStringLiteral( "system_id" ) ).toString()
-                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Project ID" ) + u"</td><td>"_s
+                  + originalMetadata.value( u"project_id"_s ).toString()
+                  + u"</td></tr>\n"_s;
   }
 
-  if ( !originalMetadata.value( QStringLiteral( "software_id" ) ).toString().isEmpty() )
+  if ( !originalMetadata.value( u"system_id"_s ).toString().isEmpty() )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
-                  + tr( "Software ID" ) + QStringLiteral( "</td><td>" )
-                  + originalMetadata.value( QStringLiteral( "software_id" ) ).toString()
-                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "System ID" ) + u"</td><td>"_s
+                  + originalMetadata.value( u"system_id"_s ).toString()
+                  + u"</td></tr>\n"_s;
+  }
+
+  if ( !originalMetadata.value( u"software_id"_s ).toString().isEmpty() )
+  {
+    myMetadata += u"<tr><td class=\"highlight\">"_s
+                  + tr( "Software ID" ) + u"</td><td>"_s
+                  + originalMetadata.value( u"software_id"_s ).toString()
+                  + u"</td></tr>\n"_s;
   }
 
   // End Provider section
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata += "</table>\n<br><br>"_L1;
 
   // identification section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Identification" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.identificationSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // extent section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Extent" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.extentSectionHtml( isSpatial() );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the Access section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Access" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.accessSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Attributes section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Attributes" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+  myMetadata += u"<h1>"_s + tr( "Attributes" ) + u"</h1>\n<hr>\n<table class=\"list-view\">\n"_s;
 
   const QgsPointCloudAttributeCollection attrs = attributes();
 
   // count attributes
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( attrs.count() ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Count" ) + u"</td><td>"_s + QString::number( attrs.count() ) + u"</td></tr>\n"_s;
 
-  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
-  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Attribute" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th></tr>\n" );
+  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n"_L1;
+  myMetadata += "<tr><th>"_L1 + tr( "Attribute" ) + "</th><th>"_L1 + tr( "Type" ) + "</th></tr>\n"_L1;
 
   for ( int i = 0; i < attrs.count(); ++i )
   {
     const QgsPointCloudAttribute attribute = attrs.at( i );
     QString rowClass;
     if ( i % 2 )
-      rowClass = QStringLiteral( "class=\"odd-row\"" );
-    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + attribute.name() + QLatin1String( "</td><td>" ) + attribute.displayType() + QLatin1String( "</td></tr>\n" );
+      rowClass = u"class=\"odd-row\""_s;
+    myMetadata += "<tr "_L1 + rowClass + "><td>"_L1 + attribute.name() + "</td><td>"_L1 + attribute.displayType() + "</td></tr>\n"_L1;
   }
 
   //close field list
-  myMetadata += QLatin1String( "</table>\n<br><br>" );
+  myMetadata += "</table>\n<br><br>"_L1;
 
 
   // Start the contacts section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Contacts" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.contactsSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the links section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "Links" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.linksSectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   // Start the history section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += u"<h1>"_s + tr( "History" ) + u"</h1>\n<hr>\n"_s;
   myMetadata += htmlFormatter.historySectionHtml( );
-  myMetadata += QLatin1String( "<br><br>\n" );
+  myMetadata += "<br><br>\n"_L1;
 
   myMetadata += customPropertyHtmlMetadata();
 
-  myMetadata += QLatin1String( "\n</body>\n</html>\n" );
+  myMetadata += "\n</body>\n</html>\n"_L1;
   return myMetadata;
 }
 
@@ -807,8 +807,8 @@ bool QgsPointCloudLayer::setSubsetString( const QString &subset )
 
   if ( !isValid() || !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
-    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    QgsDebugMsgLevel( u"invoked with invalid layer or null mDataProvider"_s, 3 );
+    setCustomProperty( u"storedSubsetString"_s, subset );
     return false;
   }
   else if ( subset == mDataProvider->subsetString() )
@@ -829,8 +829,8 @@ QString QgsPointCloudLayer::subsetString() const
 
   if ( !isValid() || !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
-    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
+    QgsDebugMsgLevel( u"invoked with invalid layer or null mDataProvider"_s, 3 );
+    return customProperty( u"storedSubsetString"_s ).toString();
   }
   return mDataProvider->subsetString();
 }
@@ -923,7 +923,7 @@ void QgsPointCloudLayer::calculateStatistics()
     resetRenderer();
     mStatsCalculationTask = 0;
 #ifdef HAVE_COPC
-    if ( mDataProvider && mDataProvider->index() && mDataProvider->index().isValid() && mDataProvider->name() == QLatin1String( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
+    if ( mDataProvider && mDataProvider->index() && mDataProvider->index().isValid() && mDataProvider->name() == "pdal"_L1 && mStatistics.sampledPointsCount() != 0 )
     {
       mDataProvider->index().writeStatistics( mStatistics );
     }
@@ -955,7 +955,7 @@ void QgsPointCloudLayer::resetRenderer()
   {
     calculateStatistics();
   }
-  if ( !mRenderer || mRenderer->type() == QLatin1String( "extent" ) )
+  if ( !mRenderer || mRenderer->type() == "extent"_L1 )
   {
     setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
   }
@@ -975,7 +975,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
+      QgsDebugError( u"Transformation of extent failed!"_s );
     }
 
     const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();
@@ -1106,15 +1106,15 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<QgsPointCloudNodeId, 
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "QgsPointCloudLayer::changeAttributeValue" ) );
+  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayer::changeAttributeValue"_s );
 
   if ( !mEditIndex )
     return false;
 
   // Cannot allow x,y,z editing as points may get moved outside the node extents
-  if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 ||
-       attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 ||
-       attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+  if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 ||
+       attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 ||
+       attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
     return false;
 
   const QgsPointCloudAttributeCollection attributeCollection = mEditIndex.attributes();

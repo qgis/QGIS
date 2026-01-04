@@ -383,7 +383,7 @@ legendString
 :return: the string to show in the legend and in the preview icon
 %End
 
- void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 4.0."/;
+ void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 5.0."/;
 %Docstring
 Calculates the space required to render the provided ``text`` in map
 units. Results will be written to ``labelX`` and ``labelY``.
@@ -399,7 +399,7 @@ render vertically oriented text will be written to ``rotatedLabelX`` and
 
 .. deprecated:: 3.40
 
-   Will be removed from public API in QGIS 4.0.
+   Will be removed from public API in QGIS 5.0.
 %End
 
     void registerFeature( const QgsFeature &f, QgsRenderContext &context );

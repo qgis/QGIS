@@ -23,7 +23,7 @@
 
 QString QgsExtractBinaryFieldAlgorithm::name() const
 {
-  return QStringLiteral( "extractbinary" );
+  return u"extractbinary"_s;
 }
 
 QString QgsExtractBinaryFieldAlgorithm::displayName() const
@@ -55,7 +55,7 @@ QString QgsExtractBinaryFieldAlgorithm::group() const
 
 QString QgsExtractBinaryFieldAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return u"vectortable"_s;
 }
 
 QgsExtractBinaryFieldAlgorithm *QgsExtractBinaryFieldAlgorithm::createInstance() const
@@ -65,32 +65,32 @@ QgsExtractBinaryFieldAlgorithm *QgsExtractBinaryFieldAlgorithm::createInstance()
 
 void QgsExtractBinaryFieldAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
 
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Binary field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Binary field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any ) );
 
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME" ), QObject::tr( "File name" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"FILENAME"_s, QObject::tr( "File name" ), QVariant(), u"INPUT"_s ) );
 
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "FOLDER" ), QObject::tr( "Destination folder" ) ) );
+  addParameter( new QgsProcessingParameterFolderDestination( u"FOLDER"_s, QObject::tr( "Destination folder" ) ) );
 }
 
 QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD"_s, context );
   const int fieldIndex = input->fields().lookupField( fieldName );
   if ( fieldIndex < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid binary field" ) );
 
-  const QString folder = parameterAsString( parameters, QStringLiteral( "FOLDER" ), context );
+  const QString folder = parameterAsString( parameters, u"FOLDER"_s, context );
   if ( !QDir().mkpath( folder ) )
     throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
   const QDir dir( folder );
-  const QString filenameExpressionString = parameterAsString( parameters, QStringLiteral( "FILENAME" ), context );
+  const QString filenameExpressionString = parameterAsString( parameters, u"FILENAME"_s, context );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, input.get() );
 
   QSet<QString> fields;
@@ -145,7 +145,7 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "FOLDER" ), folder );
+  outputs.insert( u"FOLDER"_s, folder );
   return outputs;
 }
 

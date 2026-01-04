@@ -23,7 +23,7 @@
 
 QString QgsGeometryByExpressionAlgorithm::name() const
 {
-  return QStringLiteral( "geometrybyexpression" );
+  return u"geometrybyexpression"_s;
 }
 
 QString QgsGeometryByExpressionAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsGeometryByExpressionAlgorithm::group() const
 
 QString QgsGeometryByExpressionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsGeometryByExpressionAlgorithm::outputName() const
@@ -89,15 +89,15 @@ Qgis::ProcessingFeatureSourceFlags QgsGeometryByExpressionAlgorithm::sourceFlags
 
 void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OUTPUT_GEOMETRY" ), QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "WITH_Z" ), QObject::tr( "Output geometry has z dimension" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "WITH_M" ), QObject::tr( "Output geometry has m values" ), false ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Geometry expression" ), QStringLiteral( "@geometry" ), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"OUTPUT_GEOMETRY"_s, QObject::tr( "Output geometry type" ), QStringList() << QObject::tr( "Polygon" ) << QObject::tr( "Line" ) << QObject::tr( "Point" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterBoolean( u"WITH_Z"_s, QObject::tr( "Output geometry has z dimension" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"WITH_M"_s, QObject::tr( "Output geometry has m values" ), false ) );
+  addParameter( new QgsProcessingParameterExpression( u"EXPRESSION"_s, QObject::tr( "Geometry expression" ), u"@geometry"_s, u"INPUT"_s ) );
 }
 
 bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const int geometryType = parameterAsInt( parameters, QStringLiteral( "OUTPUT_GEOMETRY" ), context );
+  const int geometryType = parameterAsInt( parameters, u"OUTPUT_GEOMETRY"_s, context );
   switch ( geometryType )
   {
     case 0:
@@ -111,16 +111,16 @@ bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &para
       break;
   }
 
-  if ( parameterAsBoolean( parameters, QStringLiteral( "WITH_Z" ), context ) )
+  if ( parameterAsBoolean( parameters, u"WITH_Z"_s, context ) )
   {
     mWkbType = QgsWkbTypes::addZ( mWkbType );
   }
-  if ( parameterAsBoolean( parameters, QStringLiteral( "WITH_M" ), context ) )
+  if ( parameterAsBoolean( parameters, u"WITH_M"_s, context ) )
   {
     mWkbType = QgsWkbTypes::addM( mWkbType );
   }
 
-  mExpression = QgsExpression( parameterAsString( parameters, QStringLiteral( "EXPRESSION" ), context ) );
+  mExpression = QgsExpression( parameterAsString( parameters, u"EXPRESSION"_s, context ) );
   if ( mExpression.hasParserError() )
   {
     feedback->reportError( mExpression.parserErrorString() );

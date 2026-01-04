@@ -33,7 +33,7 @@ namespace QgsWms
   void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
   {
     const QDomDocument doc = describeLayer( serverIface, project, request );
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.setHeader( u"Content-Type"_s, u"text/xml; charset=utf-8"_s );
     response.write( doc.toByteArray() );
   }
 
@@ -42,51 +42,51 @@ namespace QgsWms
   {
     const QgsServerRequest::Parameters parameters = request.parameters();
 
-    if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
+    if ( !parameters.contains( u"SLD_VERSION"_s ) )
     {
-      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ), 400 );
+      throw QgsServiceException( u"MissingParameterValue"_s, u"SLD_VERSION is mandatory for DescribeLayer operation"_s, 400 );
     }
-    if ( parameters[QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
+    if ( parameters[u"SLD_VERSION"_s] != "1.1.0"_L1 )
     {
-      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[QStringLiteral( "SLD_VERSION" )] ), 400 );
+      throw QgsServiceException( u"InvalidParameterValue"_s, u"SLD_VERSION = %1 is not supported"_s.arg( parameters[u"SLD_VERSION"_s] ), 400 );
     }
 
-    if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) && !parameters.contains( QStringLiteral( "LAYER" ) ) )
+    if ( !parameters.contains( u"LAYERS"_s ) && !parameters.contains( u"LAYER"_s ) )
     {
-      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "LAYERS or LAYER is mandatory for DescribeLayer operation" ), 400 );
+      throw QgsServiceException( u"MissingParameterValue"_s, u"LAYERS or LAYER is mandatory for DescribeLayer operation"_s, 400 );
     }
 
     QStringList layersList;
 
-    if ( parameters.contains( QStringLiteral( "LAYERS" ) ) )
+    if ( parameters.contains( u"LAYERS"_s ) )
     {
-      layersList = parameters[QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
+      layersList = parameters[u"LAYERS"_s].split( ',', Qt::SkipEmptyParts );
     }
     else
     {
-      layersList = parameters[QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
+      layersList = parameters[u"LAYER"_s].split( ',', Qt::SkipEmptyParts );
     }
     if ( layersList.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
+      throw QgsServiceException( u"InvalidParameterValue"_s, u"Layers is empty"_s, 400 );
     }
     QDomDocument myDocument = QDomDocument();
 
-    const QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+    const QDomNode header = myDocument.createProcessingInstruction( u"xml"_s, u"version=\"1.0\" encoding=\"UTF-8\""_s );
     myDocument.appendChild( header );
 
     // Create the root element
-    QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "DescribeLayerResponse" ) );
-    root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/DescribeLayer.xsd" ) );
-    root.setAttribute( QStringLiteral( "xmlns:ows" ), QStringLiteral( "http://www.opengis.net/ows" ) );
-    root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
-    root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-    root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+    QDomElement root = myDocument.createElementNS( u"http://www.opengis.net/sld"_s, u"DescribeLayerResponse"_s );
+    root.setAttribute( u"xsi:schemaLocation"_s, u"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/DescribeLayer.xsd"_s );
+    root.setAttribute( u"xmlns:ows"_s, u"http://www.opengis.net/ows"_s );
+    root.setAttribute( u"xmlns:se"_s, u"http://www.opengis.net/se"_s );
+    root.setAttribute( u"xmlns:xlink"_s, u"http://www.w3.org/1999/xlink"_s );
+    root.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
     myDocument.appendChild( root );
 
     // store the Version element
-    QDomElement versionNode = myDocument.createElement( QStringLiteral( "Version" ) );
-    versionNode.appendChild( myDocument.createTextNode( QStringLiteral( "1.1.0" ) ) );
+    QDomElement versionNode = myDocument.createElement( u"Version"_s );
+    versionNode.appendChild( myDocument.createTextNode( u"1.1.0"_s ) );
     root.appendChild( versionNode );
 
     // get the wms service url defined in project or keep the one from the
@@ -140,55 +140,55 @@ namespace QgsWms
       //unpublished layer
       if ( restrictedLayers.contains( layer->name() ) )
       {
-        throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
+        throw QgsSecurityException( u"You are not allowed to access to this layer"_s );
       }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
-        throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
+        throw QgsSecurityException( u"You are not allowed to access to this layer"_s );
       }
 #endif
 
       // Create the NamedLayer element
-      QDomElement layerNode = myDocument.createElement( QStringLiteral( "LayerDescription" ) );
+      QDomElement layerNode = myDocument.createElement( u"LayerDescription"_s );
       root.appendChild( layerNode );
 
       // store the owsType element
-      QDomElement typeNode = myDocument.createElement( QStringLiteral( "owsType" ) );
+      QDomElement typeNode = myDocument.createElement( u"owsType"_s );
       // store the se:OnlineResource element
-      QDomElement oResNode = myDocument.createElement( QStringLiteral( "se:OnlineResource" ) );
-      oResNode.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+      QDomElement oResNode = myDocument.createElement( u"se:OnlineResource"_s );
+      oResNode.setAttribute( u"xlink:type"_s, u"simple"_s );
       // store the TypeName element
-      QDomElement nameNode = myDocument.createElement( QStringLiteral( "TypeName" ) );
+      QDomElement nameNode = myDocument.createElement( u"TypeName"_s );
       switch ( layer->type() )
       {
         case Qgis::LayerType::Vector:
         {
-          typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
+          typeNode.appendChild( myDocument.createTextNode( u"wfs"_s ) );
 
           if ( wfsLayerIds.indexOf( layer->id() ) != -1 )
           {
-            oResNode.setAttribute( QStringLiteral( "xlink:href" ), wfsHrefString );
+            oResNode.setAttribute( u"xlink:href"_s, wfsHrefString );
           }
 
           // store the se:FeatureTypeName element
-          QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:FeatureTypeName" ) );
+          QDomElement typeNameNode = myDocument.createElement( u"se:FeatureTypeName"_s );
           typeNameNode.appendChild( myDocument.createTextNode( name ) );
           nameNode.appendChild( typeNameNode );
           break;
         }
         case Qgis::LayerType::Raster:
         {
-          typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
+          typeNode.appendChild( myDocument.createTextNode( u"wcs"_s ) );
 
           if ( wcsLayerIds.indexOf( layer->id() ) != -1 )
           {
-            oResNode.setAttribute( QStringLiteral( "xlink:href" ), wcsHrefString );
+            oResNode.setAttribute( u"xlink:href"_s, wcsHrefString );
           }
 
           // store the se:CoverageTypeName element
-          QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:CoverageTypeName" ) );
+          QDomElement typeNameNode = myDocument.createElement( u"se:CoverageTypeName"_s );
           typeNameNode.appendChild( myDocument.createTextNode( name ) );
           nameNode.appendChild( typeNameNode );
           break;

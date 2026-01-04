@@ -27,20 +27,20 @@
 
 void QgsBookmarksToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  auto sourceParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "SOURCE" ), QObject::tr( "Bookmark source" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), true, QVariantList() << 0 << 1 );
+  auto sourceParam = std::make_unique<QgsProcessingParameterEnum>( u"SOURCE"_s, QObject::tr( "Bookmark source" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), true, QVariantList() << 0 << 1 );
   QVariantMap wrapperMetadata;
-  wrapperMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
+  wrapperMetadata.insert( u"useCheckBoxes"_s, true );
   QVariantMap metadata;
-  metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+  metadata.insert( u"widget_wrapper"_s, wrapperMetadata );
   sourceParam->setMetadata( metadata );
   addParameter( sourceParam.release() );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Output CRS" ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsBookmarksToLayerAlgorithm::name() const
 {
-  return QStringLiteral( "bookmarkstolayer" );
+  return u"bookmarkstolayer"_s;
 }
 
 QString QgsBookmarksToLayerAlgorithm::displayName() const
@@ -60,7 +60,7 @@ QString QgsBookmarksToLayerAlgorithm::group() const
 
 QString QgsBookmarksToLayerAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsBookmarksToLayerAlgorithm::shortHelpString() const
@@ -76,12 +76,12 @@ QString QgsBookmarksToLayerAlgorithm::shortDescription() const
 
 QIcon QgsBookmarksToLayerAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mActionShowBookmarks.svg" ) );
+  return QgsApplication::getThemeIcon( u"mActionShowBookmarks.svg"_s );
 }
 
 QString QgsBookmarksToLayerAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "mActionShowBookmarks.svg" ) );
+  return QgsApplication::iconPath( u"mActionShowBookmarks.svg"_s );
 }
 
 QgsBookmarksToLayerAlgorithm *QgsBookmarksToLayerAlgorithm::createInstance() const
@@ -91,7 +91,7 @@ QgsBookmarksToLayerAlgorithm *QgsBookmarksToLayerAlgorithm::createInstance() con
 
 bool QgsBookmarksToLayerAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QList<int> sources = parameterAsEnums( parameters, QStringLiteral( "SOURCE" ), context );
+  QList<int> sources = parameterAsEnums( parameters, u"SOURCE"_s, context );
   if ( sources.contains( 0 ) )
   {
     if ( !context.project() )
@@ -106,14 +106,14 @@ bool QgsBookmarksToLayerAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "group" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"group"_s, QMetaType::Type::QString ) );
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, crs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Polygon, crs ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   int count = mBookmarks.count();
   int current = 0;
@@ -149,7 +149,7 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
     feat.setGeometry( geom );
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
     feedback->setProgress( current++ * step );
   }
@@ -157,7 +157,7 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 
@@ -168,20 +168,20 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
 void QgsLayerToBookmarksAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
-  auto sourceParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "DESTINATION" ), QObject::tr( "Bookmark destination" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), false, 0 );
+  auto sourceParam = std::make_unique<QgsProcessingParameterEnum>( u"DESTINATION"_s, QObject::tr( "Bookmark destination" ), QStringList() << QObject::tr( "Project bookmarks" ) << QObject::tr( "User bookmarks" ), false, 0 );
   addParameter( sourceParam.release() );
 
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "NAME_EXPRESSION" ), QObject::tr( "Name field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "GROUP_EXPRESSION" ), QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
+  addParameter( new QgsProcessingParameterExpression( u"NAME_EXPRESSION"_s, QObject::tr( "Name field" ), QVariant(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterExpression( u"GROUP_EXPRESSION"_s, QObject::tr( "Group field" ), QVariant(), u"INPUT"_s, true ) );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COUNT" ), QObject::tr( "Count of bookmarks added" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"COUNT"_s, QObject::tr( "Count of bookmarks added" ) ) );
 }
 
 QString QgsLayerToBookmarksAlgorithm::name() const
 {
-  return QStringLiteral( "layertobookmarks" );
+  return u"layertobookmarks"_s;
 }
 
 QString QgsLayerToBookmarksAlgorithm::displayName() const
@@ -201,7 +201,7 @@ QString QgsLayerToBookmarksAlgorithm::group() const
 
 QString QgsLayerToBookmarksAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsLayerToBookmarksAlgorithm::shortHelpString() const
@@ -216,12 +216,12 @@ QString QgsLayerToBookmarksAlgorithm::shortDescription() const
 
 QIcon QgsLayerToBookmarksAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mActionShowBookmarks.svg" ) );
+  return QgsApplication::getThemeIcon( u"mActionShowBookmarks.svg"_s );
 }
 
 QString QgsLayerToBookmarksAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "mActionShowBookmarks.svg" ) );
+  return QgsApplication::iconPath( u"mActionShowBookmarks.svg"_s );
 }
 
 QgsLayerToBookmarksAlgorithm *QgsLayerToBookmarksAlgorithm::createInstance() const
@@ -231,14 +231,14 @@ QgsLayerToBookmarksAlgorithm *QgsLayerToBookmarksAlgorithm::createInstance() con
 
 QVariantMap QgsLayerToBookmarksAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mDest = parameterAsEnum( parameters, QStringLiteral( "DESTINATION" ), context );
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mDest = parameterAsEnum( parameters, u"DESTINATION"_s, context );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
 
-  QString nameExpressionString = parameterAsExpression( parameters, QStringLiteral( "NAME_EXPRESSION" ), context );
-  QString groupExpressionString = parameterAsExpression( parameters, QStringLiteral( "GROUP_EXPRESSION" ), context );
+  QString nameExpressionString = parameterAsExpression( parameters, u"NAME_EXPRESSION"_s, context );
+  QString groupExpressionString = parameterAsExpression( parameters, u"GROUP_EXPRESSION"_s, context );
 
   QgsExpressionContext expressionContext = context.expressionContext();
   expressionContext.appendScope( source->createExpressionContextScope() );
@@ -331,7 +331,7 @@ QVariantMap QgsLayerToBookmarksAlgorithm::postProcessAlgorithm( QgsProcessingCon
     dest->addBookmark( b );
 
   QVariantMap res;
-  res.insert( QStringLiteral( "COUNT" ), mBookmarks.size() );
+  res.insert( u"COUNT"_s, mBookmarks.size() );
   return res;
 }
 

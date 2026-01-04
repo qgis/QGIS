@@ -62,7 +62,7 @@ bool QgsLayoutItemRegistry::populate()
     return new TestLayoutItem( layout );
   };
 
-  addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), createTemporaryItem ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, u"temp type"_s, createTemporaryItem ) );
 #endif
 
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QObject::tr( "Group" ), QObject::tr( "Groups" ), QgsLayoutItemGroup::create ) );
@@ -206,12 +206,12 @@ TestLayoutItem::TestLayoutItem( QgsLayout *layout )
   mColor = QColor::fromHsv( h, s, v );
 
   QgsStringMap properties;
-  properties.insert( QStringLiteral( "color" ), mColor.name() );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, mColor.name() );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"solid"_s );
+  properties.insert( u"color_border"_s, u"black"_s );
+  properties.insert( u"width_border"_s, u"0.3"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
 
 }

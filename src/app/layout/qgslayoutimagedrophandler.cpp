@@ -96,14 +96,14 @@ bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, 
   const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
   auto item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
 
-  const QByteArray imageData = data->data( QStringLiteral( "application/x-qt-image" ) );
+  const QByteArray imageData = data->data( u"application/x-qt-image"_s );
   if ( imageData.isEmpty() )
     return false;
 
   const QByteArray encoded = imageData.toBase64();
 
   QString path( encoded );
-  path.prepend( QLatin1String( "base64:" ) );
+  path.prepend( "base64:"_L1 );
 
   item->setPicturePath( path, Qgis::PictureFormat::Raster );
 

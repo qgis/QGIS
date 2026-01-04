@@ -38,7 +38,7 @@
 #endif
 
 QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle ):
-  QgsRasterRenderer( input, QStringLiteral( "hillshade" ) )
+  QgsRasterRenderer( input, u"hillshade"_s )
   , mBand( band )
   , mLightAngle( lightAngle )
   , mLightAzimuth( lightAzimuth )
@@ -68,11 +68,11 @@ QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRas
     return nullptr;
   }
 
-  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "0" ) ).toInt();
-  double azimuth = elem.attribute( QStringLiteral( "azimuth" ), QStringLiteral( "315" ) ).toDouble();
-  double angle = elem.attribute( QStringLiteral( "angle" ), QStringLiteral( "45" ) ).toDouble();
-  double zFactor = elem.attribute( QStringLiteral( "zfactor" ), QStringLiteral( "1" ) ).toDouble();
-  bool multiDirectional = elem.attribute( QStringLiteral( "multidirection" ), QStringLiteral( "0" ) ).toInt();
+  int band = elem.attribute( u"band"_s, u"0"_s ).toInt();
+  double azimuth = elem.attribute( u"azimuth"_s, u"315"_s ).toDouble();
+  double angle = elem.attribute( u"angle"_s, u"45"_s ).toDouble();
+  double zFactor = elem.attribute( u"zfactor"_s, u"1"_s ).toDouble();
+  bool multiDirectional = elem.attribute( u"multidirection"_s, u"0"_s ).toInt();
   QgsHillshadeRenderer *r = new QgsHillshadeRenderer( input, band, azimuth, angle );
   r->readXml( elem );
 
@@ -88,14 +88,14 @@ void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem 
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  QDomElement rasterRendererElem = doc.createElement( u"rasterrenderer"_s );
   _writeXml( doc, rasterRendererElem );
 
-  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mBand );
-  rasterRendererElem.setAttribute( QStringLiteral( "azimuth" ), QString::number( mLightAzimuth ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "angle" ), QString::number( mLightAngle ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "zfactor" ), QString::number( mZFactor ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "multidirection" ), QString::number( mMultiDirectional ) );
+  rasterRendererElem.setAttribute( u"band"_s, mBand );
+  rasterRendererElem.setAttribute( u"azimuth"_s, QString::number( mLightAzimuth ) );
+  rasterRendererElem.setAttribute( u"angle"_s, QString::number( mLightAngle ) );
+  rasterRendererElem.setAttribute( u"zfactor"_s, QString::number( mZFactor ) );
+  rasterRendererElem.setAttribute( u"multidirection"_s, QString::number( mMultiDirectional ) );
   parentElem.appendChild( rasterRendererElem );
 }
 
@@ -105,7 +105,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput )
   {
-    QgsDebugError( QStringLiteral( "No input raster!" ) );
+    QgsDebugError( u"No input raster!"_s );
     return outputBlock.release();
   }
 
@@ -113,7 +113,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( u"No raster data!"_s );
     return outputBlock.release();
   }
 
@@ -180,7 +180,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   QString source;
   if ( useOpenCL )
   {
-    source = QgsOpenClUtils::sourceFromBaseName( QStringLiteral( "hillshade_renderer" ) );
+    source = QgsOpenClUtils::sourceFromBaseName( u"hillshade_renderer"_s );
     if ( source.isEmpty() )
     {
       useOpenCL = false;
@@ -204,30 +204,30 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       switch ( inputBlock->dataType() )
       {
         case Qgis::DataType::Byte:
-          typeName = QStringLiteral( "unsigned char" );
+          typeName = u"unsigned char"_s;
           break;
         case Qgis::DataType::UInt16:
-          typeName = QStringLiteral( "unsigned int" );
+          typeName = u"unsigned int"_s;
           break;
         case Qgis::DataType::Int16:
-          typeName = QStringLiteral( "short" );
+          typeName = u"short"_s;
           break;
         case Qgis::DataType::UInt32:
-          typeName = QStringLiteral( "unsigned int" );
+          typeName = u"unsigned int"_s;
           break;
         case Qgis::DataType::Int32:
-          typeName = QStringLiteral( "int" );
+          typeName = u"int"_s;
           break;
         case Qgis::DataType::Float32:
-          typeName = QStringLiteral( "float" );
+          typeName = u"float"_s;
           break;
         default:
-          throw QgsException( QStringLiteral( "Unsupported data type for OpenCL processing." ) );
+          throw QgsException( u"Unsupported data type for OpenCL processing."_s );
       }
 
       if ( inputBlock->dataType() != Qgis::DataType::Float32 )
       {
-        source.replace( QLatin1String( "__global float *scanLine" ), QStringLiteral( "__global %1 *scanLine" ).arg( typeName ) );
+        source.replace( "__global float *scanLine"_L1, u"__global %1 *scanLine"_s.arg( typeName ) );
       }
 
       // Data type for input is Float32 (4 bytes)
@@ -546,10 +546,10 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   } // End of switch in case OpenCL is not available or enabled
 
 #ifdef QGISDEBUG
-  if ( QgsSettings().value( QStringLiteral( "Map/logCanvasRefreshEvent" ), false ).toBool() )
+  if ( QgsSettings().value( u"Map/logCanvasRefreshEvent"_s, false ).toBool() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "%1 processing time for hillshade (%2 x %3 ): %4 ms" )
-                               .arg( useOpenCL ? QStringLiteral( "OpenCL" ) : QStringLiteral( "CPU" ) )
+    QgsMessageLog::logMessage( u"%1 processing time for hillshade (%2 x %3 ): %4 ms"_s
+                               .arg( useOpenCL ? u"OpenCL"_s : u"CPU"_s )
                                .arg( width )
                                .arg( height )
                                .arg( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now() - startTime ).count() ),
@@ -610,7 +610,7 @@ bool QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSl
   QgsRasterRenderer::toSld( doc, element, context );
 
   // look for RasterSymbolizer tag
-  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  QDomNodeList elements = element.elementsByTagName( u"sld:RasterSymbolizer"_s );
   if ( elements.size() == 0 )
     return false;
 
@@ -622,15 +622,15 @@ bool QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSl
   // after opacity or geometry or as first element after sld:RasterSymbolizer
   if ( mBand != 1 )
   {
-    QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
-    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+    QDomElement channelSelectionElem = doc.createElement( u"sld:ChannelSelection"_s );
+    elements = rasterSymbolizerElem.elementsByTagName( u"sld:Opacity"_s );
     if ( elements.size() != 0 )
     {
       rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
     }
     else
     {
-      elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
+      elements = rasterSymbolizerElem.elementsByTagName( u"sld:Geometry"_s );
       if ( elements.size() != 0 )
       {
         rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
@@ -642,44 +642,44 @@ bool QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSl
     }
 
     // for gray band
-    QDomElement channelElem = doc.createElement( QStringLiteral( "sld:GrayChannel" ) );
+    QDomElement channelElem = doc.createElement( u"sld:GrayChannel"_s );
     channelSelectionElem.appendChild( channelElem );
 
     // set band
-    QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+    QDomElement sourceChannelNameElem = doc.createElement( u"sld:SourceChannelName"_s );
     sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( mBand ) ) );
     channelElem.appendChild( sourceChannelNameElem );
   }
 
   // add ShadedRelief tag
-  QDomElement shadedReliefElem = doc.createElement( QStringLiteral( "sld:ShadedRelief" ) );
+  QDomElement shadedReliefElem = doc.createElement( u"sld:ShadedRelief"_s );
   rasterSymbolizerElem.appendChild( shadedReliefElem );
 
   // brightnessOnly tag
-  QDomElement brightnessOnlyElem = doc.createElement( QStringLiteral( "sld:BrightnessOnly" ) );
-  brightnessOnlyElem.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
+  QDomElement brightnessOnlyElem = doc.createElement( u"sld:BrightnessOnly"_s );
+  brightnessOnlyElem.appendChild( doc.createTextNode( u"true"_s ) );
   shadedReliefElem.appendChild( brightnessOnlyElem );
 
   // ReliefFactor tag
-  QDomElement reliefFactorElem = doc.createElement( QStringLiteral( "sld:ReliefFactor" ) );
+  QDomElement reliefFactorElem = doc.createElement( u"sld:ReliefFactor"_s );
   reliefFactorElem.appendChild( doc.createTextNode( QString::number( zFactor() ) ) );
   shadedReliefElem.appendChild( reliefFactorElem );
 
   // altitude VendorOption tag
-  QDomElement altitudeVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
-  altitudeVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "altitude" ) );
+  QDomElement altitudeVendorOptionElem = doc.createElement( u"sld:VendorOption"_s );
+  altitudeVendorOptionElem.setAttribute( u"name"_s, u"altitude"_s );
   altitudeVendorOptionElem.appendChild( doc.createTextNode( QString::number( altitude() ) ) );
   shadedReliefElem.appendChild( altitudeVendorOptionElem );
 
   // azimuth VendorOption tag
-  QDomElement azimutVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
-  azimutVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "azimuth" ) );
+  QDomElement azimutVendorOptionElem = doc.createElement( u"sld:VendorOption"_s );
+  azimutVendorOptionElem.setAttribute( u"name"_s, u"azimuth"_s );
   azimutVendorOptionElem.appendChild( doc.createTextNode( QString::number( azimuth() ) ) );
   shadedReliefElem.appendChild( azimutVendorOptionElem );
 
   // multidirectional VendorOption tag
-  QDomElement multidirectionalVendorOptionElem = doc.createElement( QStringLiteral( "sld:VendorOption" ) );
-  multidirectionalVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "multidirectional" ) );
+  QDomElement multidirectionalVendorOptionElem = doc.createElement( u"sld:VendorOption"_s );
+  multidirectionalVendorOptionElem.setAttribute( u"name"_s, u"multidirectional"_s );
   multidirectionalVendorOptionElem.appendChild( doc.createTextNode( QString::number( multiDirectional() ) ) );
   shadedReliefElem.appendChild( multidirectionalVendorOptionElem );
 

@@ -78,7 +78,7 @@ class TestQgsPointLocator : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      mVL = new QgsVectorLayer( u"Polygon"_s, u"x"_s, u"memory"_s );
       QgsFeature ff( 0 );
       QgsPolygonXY polygon;
       QgsPolylineXY polyline;
@@ -305,7 +305,7 @@ class TestQgsPointLocator : public QObject
 
     void testNullGeometries()
     {
-      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( u"Polygon"_s, u"x"_s, u"memory"_s );
       QgsFeature ff( 0 );
       ff.setGeometry( QgsGeometry() );
       QgsFeatureList flist;
@@ -325,7 +325,7 @@ class TestQgsPointLocator : public QObject
 
     void testEmptyGeometries()
     {
-      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( u"Polygon"_s, u"x"_s, u"memory"_s );
       QgsFeature ff( 0 );
       QgsGeometry g;
       g.set( new QgsPolygon() );
@@ -476,7 +476,7 @@ class TestQgsPointLocator : public QObject
       // Issue https://github.com/qgis/QGIS/issues/33449
 
       // Create an empty layer, add one feature and check that we can snap on this feature
-      QgsVectorLayer layer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer layer( u"Polygon"_s, u"x"_s, u"memory"_s );
       QgsProject::instance()->addMapLayer( &layer );
 
       QgsPointLocator loc( &layer );
@@ -514,7 +514,7 @@ class TestQgsPointLocator : public QObject
 
     void testInterpolatedPoint()
     {
-      auto curveLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "CircularStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      auto curveLayer = std::make_unique<QgsVectorLayer>( u"CircularStringZ"_s, u"test"_s, u"memory"_s );
       QgsFeature f1;
       const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f1.setGeometry( f1g );
@@ -538,7 +538,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( pt2, QgsPointXY( 0, 10 ) );
       QCOMPARE( m1.interpolatedPoint( QgsCoordinateReferenceSystem() ), QgsPoint( 3.53553390593273775, 8.53553390593273775, 7.70598050073098584 ) );
 
-      auto lineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      auto lineLayer = std::make_unique<QgsVectorLayer>( u"LineStringZ"_s, u"test"_s, u"memory"_s );
       QgsFeature f2;
       const QgsGeometry f2g = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 5 5 5, 0 10 10)" );
       f2.setGeometry( f2g );

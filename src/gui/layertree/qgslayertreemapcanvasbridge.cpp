@@ -60,7 +60,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
         allLayerOrder << nodeLayer->layer();
         if ( nodeLayer->isVisible() )
           canvasLayers << nodeLayer->layer();
-        if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
+        if ( nodeLayer->customProperty( u"overview"_s, 0 ).toInt() )
           overviewLayers << nodeLayer->layer();
       }
     }
@@ -111,12 +111,12 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mFirstCRS.isValid() && firstLayers )
   {
-    const QgsGui::ProjectCrsBehavior projectCrsBehavior = QgsSettings().enumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ), QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
+    const QgsGui::ProjectCrsBehavior projectCrsBehavior = QgsSettings().enumValue( u"/projections/newProjectCrsBehavior"_s, QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
     switch ( projectCrsBehavior )
     {
       case QgsGui::UseCrsOfFirstLayerAdded:
       {
-        const bool planimetric = QgsSettings().value( QStringLiteral( "measure/planimetric" ), true, QgsSettings::Core ).toBool();
+        const bool planimetric = QgsSettings().value( u"measure/planimetric"_s, true, QgsSettings::Core ).toBool();
         // Only adjust ellipsoid to CRS if it's not set to planimetric
         QgsProject::instance()->setCrs( mFirstCRS.horizontalCrs(), !planimetric );
         const QgsCoordinateReferenceSystem vertCrs = mFirstCRS.verticalCrs();
@@ -152,7 +152,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
       allLayers << nodeLayer->layer();
       if ( nodeLayer->isVisible() )
         canvasLayers << nodeLayer->layer();
-      if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
+      if ( nodeLayer->customProperty( u"overview"_s, 0 ).toInt() )
         overviewLayers << nodeLayer->layer();
     }
   }
@@ -190,7 +190,7 @@ void QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged()
 void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
   Q_UNUSED( node )
-  if ( key == QLatin1String( "overview" ) )
+  if ( key == "overview"_L1 )
     deferredSetCanvasLayers();
 }
 

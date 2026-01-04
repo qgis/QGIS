@@ -47,9 +47,9 @@ void TestQgsNewsFeedParser::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsNewsFeedParser::cleanupTestCase()
@@ -90,21 +90,21 @@ void TestQgsNewsFeedParser::testFetch()
   // check result
   QCOMPARE( spy.count(), 5 );
   QCOMPARE( entries.count(), 5 );
-  QCOMPARE( entries.at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( entries.at( 1 ).title, QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( entries.at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
-  QCOMPARE( entries.at( 3 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( entries.at( 4 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( entries.at( 0 ).title, u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( entries.at( 1 ).title, u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( entries.at( 2 ).title, u"QGIS Italian Meeting"_s );
+  QCOMPARE( entries.at( 3 ).title, u"QGIS acquired by ESRI"_s );
+  QCOMPARE( entries.at( 4 ).title, u"Null Island QGIS Meeting"_s );
 
   QCOMPARE( parser.entries().count(), 5 );
-  QCOMPARE( parser.entries().at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( parser.entries().at( 0 ).title, u"Next Microsoft Windows code name revealed"_s );
   QVERIFY( parser.entries().at( 0 ).expiry.isValid() );
   QCOMPARE( parser.entries().at( 0 ).expiry.toUTC(), QDateTime( QDate( 2027, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-  QCOMPARE( parser.entries().at( 1 ).title, QStringLiteral( "QGIS core will be rewritten in Rust" ) );
+  QCOMPARE( parser.entries().at( 1 ).title, u"QGIS core will be rewritten in Rust"_s );
   QVERIFY( !parser.entries().at( 1 ).expiry.isValid() );
-  QCOMPARE( parser.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
-  QCOMPARE( parser.entries().at( 3 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( parser.entries().at( 4 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( parser.entries().at( 2 ).title, u"QGIS Italian Meeting"_s );
+  QCOMPARE( parser.entries().at( 3 ).title, u"QGIS acquired by ESRI"_s );
+  QCOMPARE( parser.entries().at( 4 ).title, u"Null Island QGIS Meeting"_s );
 
   entries.clear();
 
@@ -130,19 +130,19 @@ void TestQgsNewsFeedParser::testFetch()
 
   // check only new entries are present
   QCOMPARE( entries.count(), 4 );
-  QCOMPARE( entries.at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( entries.at( 0 ).title, u"QGIS acquired by ESRI"_s );
   QVERIFY( parser.entries().at( 0 ).expiry.isValid() );
   QCOMPARE( parser.entries().at( 0 ).expiry.toUTC(), QDateTime( QDate( 2027, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-  QCOMPARE( entries.at( 1 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( entries.at( 1 ).title, u"Next Microsoft Windows code name revealed"_s );
   QVERIFY( !parser.entries().at( 1 ).expiry.isValid() );
-  QCOMPARE( entries.at( 2 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( entries.at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( entries.at( 2 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( entries.at( 3 ).title, u"QGIS Italian Meeting"_s );
 
   QCOMPARE( parser2.entries().count(), 4 );
-  QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( parser2.entries().at( 1 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( parser2.entries().at( 2 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( parser2.entries().at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( parser2.entries().at( 0 ).title, u"QGIS acquired by ESRI"_s );
+  QCOMPARE( parser2.entries().at( 1 ).title, u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( parser2.entries().at( 2 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( parser2.entries().at( 3 ).title, u"QGIS Italian Meeting"_s );
 
   entries.clear();
 
@@ -150,13 +150,13 @@ void TestQgsNewsFeedParser::testFetch()
   QgsNewsFeedParser parser3( url );
   // previous entries should be automatically read
   QCOMPARE( parser3.entries().count(), 4 );
-  QCOMPARE( parser3.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( parser3.entries().at( 0 ).title, u"QGIS acquired by ESRI"_s );
   QVERIFY( parser.entries().at( 0 ).expiry.isValid() );
   QCOMPARE( parser.entries().at( 0 ).expiry.toUTC(), QDateTime( QDate( 2027, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-  QCOMPARE( parser3.entries().at( 1 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( parser3.entries().at( 1 ).title, u"Next Microsoft Windows code name revealed"_s );
   QVERIFY( !parser.entries().at( 1 ).expiry.isValid() );
-  QCOMPARE( parser3.entries().at( 2 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( parser3.entries().at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( parser3.entries().at( 2 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( parser3.entries().at( 3 ).title, u"QGIS Italian Meeting"_s );
 
   // dismiss imaginary entry
   const QSignalSpy dismissSpy( &parser3, &QgsNewsFeedParser::entryDismissed );
@@ -168,22 +168,22 @@ void TestQgsNewsFeedParser::testFetch()
   parser3.dismissEntry( 4 );
   QCOMPARE( dismissSpy.count(), 1 );
   QCOMPARE( parser3.entries().count(), 3 );
-  QCOMPARE( parser3.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( parser3.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( parser3.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( parser3.entries().at( 0 ).title, u"QGIS acquired by ESRI"_s );
+  QCOMPARE( parser3.entries().at( 1 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( parser3.entries().at( 2 ).title, u"QGIS Italian Meeting"_s );
 
   // craft a new parser, should not have dismissed entry
   QgsNewsFeedParser parser4( url );
   QCOMPARE( parser4.entries().count(), 3 );
-  QCOMPARE( parser4.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( parser4.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( parser4.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( parser4.entries().at( 0 ).title, u"QGIS acquired by ESRI"_s );
+  QCOMPARE( parser4.entries().at( 1 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( parser4.entries().at( 2 ).title, u"QGIS Italian Meeting"_s );
   // even if we re-fetch, the dismissed entry should not come back
   parser4.fetch();
   QCOMPARE( parser4.entries().count(), 3 );
-  QCOMPARE( parser4.entries().at( 0 ).title, QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( parser4.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( parser4.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
+  QCOMPARE( parser4.entries().at( 0 ).title, u"QGIS acquired by ESRI"_s );
+  QCOMPARE( parser4.entries().at( 1 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( parser4.entries().at( 2 ).title, u"QGIS Italian Meeting"_s );
 
   // dismiss all
   parser4.dismissAll();
@@ -195,17 +195,17 @@ void TestQgsNewsFeedParser::testFetch()
 
 void TestQgsNewsFeedParser::testAutoExpiry()
 {
-  const QUrl url( QStringLiteral( "xxx" ) );
+  const QUrl url( u"xxx"_s );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
 
   // ensure entries "auto expire" when past their use-by date
   QgsNewsFeedParser::Entry testEntry;
   testEntry.key = 1;
-  testEntry.title = QStringLiteral( "test entry" );
+  testEntry.title = u"test entry"_s;
   QgsNewsFeedParser::Entry testEntry2;
   testEntry2.key = 2;
-  testEntry2.title = QStringLiteral( "test entry2" );
+  testEntry2.title = u"test entry2"_s;
   testEntry2.expiry = QDateTime( QDate( 1997, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
 
   QgsNewsFeedParser parser( url );
@@ -215,7 +215,7 @@ void TestQgsNewsFeedParser::testAutoExpiry()
   // on relaunch, expired entries should be auto-pruned
   const QgsNewsFeedParser parser2( url );
   QCOMPARE( parser2.entries().count(), 1 );
-  QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "test entry" ) );
+  QCOMPARE( parser2.entries().at( 0 ).title, u"test entry"_s );
   QVERIFY( !parser2.entries().at( 0 ).expiry.isValid() );
 }
 
@@ -227,7 +227,7 @@ void TestQgsNewsFeedParser::testLang()
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
   // force to Spanish language
-  QgsNewsFeedParser::settingsFeedLanguage->setValue( QStringLiteral( "es" ), feedKey );
+  QgsNewsFeedParser::settingsFeedLanguage->setValue( u"es"_s, feedKey );
 
   QgsNewsFeedParser parser( url );
   const QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
@@ -242,7 +242,7 @@ void TestQgsNewsFeedParser::testLang()
   loop.exec();
 
   QCOMPARE( entries.count(), 1 );
-  QCOMPARE( entries.at( 0 ).title, QStringLiteral( "Primer seminario SIG libre" ) );
+  QCOMPARE( entries.at( 0 ).title, u"Primer seminario SIG libre"_s );
 }
 
 void TestQgsNewsFeedParser::testGeoFencing()
@@ -269,7 +269,7 @@ void TestQgsNewsFeedParser::testGeoFencing()
 
   // check only geofenced entries are present (i.e. that request has included lat/lon params)
   QCOMPARE( entries.count(), 1 );
-  QCOMPARE( entries.at( 0 ).title, QStringLiteral( "Secret docs leaked" ) );
+  QCOMPARE( entries.at( 0 ).title, u"Secret docs leaked"_s );
 }
 
 void TestQgsNewsFeedParser::testModel()
@@ -291,40 +291,40 @@ void TestQgsNewsFeedParser::testModel()
   loop.exec();
 
   QCOMPARE( model.rowCount(), 5 );
-  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QLatin1String( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
-  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QLatin1String( "<p>Tired with C++ intricacies, the core developers h" ) ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "<p>Ciao from Italy!</p>" ) );
-  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QLatin1String( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
-  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "<p>Let's dive in the ocean together!</p>" ) );
-  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( QLatin1String( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
-  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( QLatin1String( "<p>Tired with C++ intricacies, the core developers h" ) ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString(), QStringLiteral( "<p>Ciao from Italy!</p>" ) );
-  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( QLatin1String( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
-  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString(), QStringLiteral( "<p>Let's dive in the ocean together!</p>" ) );
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS Italian Meeting" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS Italian Meeting" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
+  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( "<p>Rumors from a whistleblower revealed the next Windows release code nam"_L1 ) );
+  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( "<p>Tired with C++ intricacies, the core developers h"_L1 ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"<p>Ciao from Italy!</p>"_s );
+  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( "<p>QGIS is finally part of the ESRI ecosystem, i"_L1 ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"<p>Let's dive in the ocean together!</p>"_s );
+  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>Rumors from a whistleblower revealed the next Windows release code nam"_L1 ) );
+  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>Tired with C++ intricacies, the core developers h"_L1 ) );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString(), u"<p>Ciao from Italy!</p>"_s );
+  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString().startsWith( "<p>QGIS is finally part of the ESRI ecosystem, i"_L1 ) );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString(), u"<p>Let's dive in the ocean together!</p>"_s );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), u"QGIS Italian Meeting"_s );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), u"QGIS acquired by ESRI"_s );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), u"Null Island QGIS Meeting"_s );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS Italian Meeting"_s );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS acquired by ESRI"_s );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Null Island QGIS Meeting"_s );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 4 );
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 6 );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 11 );
   QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 3 );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 5 );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::ImageUrl ) ).toString(), QString() );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::ImageUrl ) ).toString(), QStringLiteral( "http://0.0.0.0:8000/media/feedimages/rust.png" ) );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::ImageUrl ) ).toString(), u"http://0.0.0.0:8000/media/feedimages/rust.png"_s );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::ImageUrl ) ).toString(), QString() );
   QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::ImageUrl ) ).toString(), QString() );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::ImageUrl ) ).toString(), QString() );
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), QStringLiteral( "https://www.winux.microsoft.com" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), u"https://www.winux.microsoft.com"_s );
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), QString() );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), QString() );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), QStringLiteral( "https://www.qgis.com" ) );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), u"https://www.qgis.com"_s );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toString(), QString() );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool(), true );
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool(), true );
@@ -335,19 +335,19 @@ void TestQgsNewsFeedParser::testModel()
   // remove an entry
   parser.dismissEntry( 11 );
   QCOMPARE( model.rowCount(), 4 );
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS acquired by ESRI"_s );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Null Island QGIS Meeting"_s );
 
   // construct a new model/parser -- should initially have stored entries
   QgsNewsFeedParser parser2( url );
   const QgsNewsFeedModel model2( &parser2 );
   QCOMPARE( model2.rowCount(), 4 );
-  QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
-  QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model2.data( model2.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( model2.data( model2.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
+  QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS acquired by ESRI"_s );
+  QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model2.data( model2.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Null Island QGIS Meeting"_s );
+  QCOMPARE( model2.data( model2.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS core will be rewritten in Rust"_s );
 }
 
 void TestQgsNewsFeedParser::testProxyModel()
@@ -380,28 +380,28 @@ void TestQgsNewsFeedParser::testProxyModel()
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 11 );
   QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 5 );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt(), 3 );
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS Italian Meeting" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS Italian Meeting"_s );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Null Island QGIS Meeting"_s );
+  QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS acquired by ESRI"_s );
 
   // remove an entry
   parser.dismissEntry( 11 );
   QCOMPARE( model.rowCount(), 4 );
-  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Null Island QGIS Meeting"_s );
+  QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS acquired by ESRI"_s );
 
   // construct a new model/parser -- should initially have stored entries
   QgsNewsFeedParser parser2( url );
   const QgsNewsFeedProxyModel model2( &parser2 );
   QCOMPARE( model2.rowCount(), 4 );
-  QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
-  QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( model2.data( model2.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( model2.data( model2.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+  QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS core will be rewritten in Rust"_s );
+  QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( model2.data( model2.index( 2, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"Null Island QGIS Meeting"_s );
+  QCOMPARE( model2.data( model2.index( 3, 0, QModelIndex() ), static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), u"QGIS acquired by ESRI"_s );
 }
 
 void TestQgsNewsFeedParser::testUpdatedEntries()
@@ -457,9 +457,9 @@ void TestQgsNewsFeedParser::testUpdatedEntries()
 
   QCOMPARE( entries.count(), 2 );
   QCOMPARE( parser2.entries().count(), 3 );
-  QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
-  QCOMPARE( parser2.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
-  QCOMPARE( parser2.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting Revisited" ) );
+  QCOMPARE( parser2.entries().at( 0 ).title, u"Next Microsoft Windows code name revealed"_s );
+  QCOMPARE( parser2.entries().at( 1 ).title, u"Null Island QGIS Meeting"_s );
+  QCOMPARE( parser2.entries().at( 2 ).title, u"QGIS Italian Meeting Revisited"_s );
   QCOMPARE( parser2.entries().at( 2 ).expiry.toSecsSinceEpoch(), 7868426853 );
 }
 

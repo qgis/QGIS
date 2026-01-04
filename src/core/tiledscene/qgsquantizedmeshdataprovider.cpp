@@ -90,7 +90,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   QNetworkRequest requestData( metadataUrl );
   mHeaders.updateNetworkRequest( requestData );
   QgsSetRequestInitiatorClass( requestData,
-                               QStringLiteral( "QgsQuantizedMeshDataProvider" ) );
+                               u"QgsQuantizedMeshDataProvider"_s );
   QgsBlockingNetworkRequest request;
   if ( !mAuthCfg.isEmpty() )
     request.setAuthCfg( mAuthCfg );
@@ -197,12 +197,12 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
     }
 
     int rootTileCount = 1;
-    if ( crsString == QLatin1String( "EPSG:4326" ) )
+    if ( crsString == "EPSG:4326"_L1 )
       rootTileCount = 2;
-    else if ( crsString != QLatin1String( "EPSG:3857" ) )
+    else if ( crsString != "EPSG:3857"_L1 )
       error.append( QObject::tr( "Unhandled CRS: %1" ).arg( crsString ) );
 
-    QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
+    QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
     // Bounds of tile schema in projected coordinates
     const QgsRectangle crsBounds =
       QgsCoordinateTransform( wgs84, mCrs, transformContext )
@@ -243,7 +243,7 @@ bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
     return false;
   // We operate with XYZ-style tile coordinates, but the availability array may
   // be given in TMS-style
-  if ( mTileScheme == QLatin1String( "tms" ) )
+  if ( mTileScheme == "tms"_L1 )
     tile = tileToTms( tile );
   for ( const QgsTileRange &range : mAvailableTiles[tile.zoomLevel()] )
   {
@@ -343,7 +343,7 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
     // The root tile is fictitious and has no content, don't bother pointing to any.
     return sceneTile;
 
-  if ( mMetadata.mTileScheme == QLatin1String( "tms" ) )
+  if ( mMetadata.mTileScheme == "tms"_L1 )
     xyzTile = tileToTms( xyzTile );
 
   if ( mMetadata.mTileUrls.size() == 0 )
@@ -358,8 +358,8 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
     sceneTile.setResources( {{"content", tileUri}} );
     sceneTile.setMetadata(
     {
-      {QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Z )},
-      {QStringLiteral( "contentFormat" ), QStringLiteral( "quantizedmesh" )},
+      {u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Z )},
+      {u"contentFormat"_s, u"quantizedmesh"_s},
     } );
   }
 
@@ -438,7 +438,7 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
   if ( !mMetadata.mAuthCfg.isEmpty() )
     QgsApplication::authManager()->updateNetworkRequest( requestData, mMetadata.mAuthCfg );
   QgsSetRequestInitiatorClass( requestData,
-                               QStringLiteral( "QgsQuantizedMeshIndex" ) );
+                               u"QgsQuantizedMeshIndex"_s );
 
   std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( requestData ) );
 
@@ -450,7 +450,7 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    QgsDebugError( QStringLiteral( "Request failed (%1): %2" ).arg( uri ).arg( reply->errorString() ) );
+    QgsDebugError( u"Request failed (%1): %2"_s.arg( uri ).arg( reply->errorString() ) );
     return {};
   }
   return reply->data();
@@ -462,7 +462,7 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
   : QgsTiledSceneDataProvider( uri, providerOptions, flags ), mUri( uri ),
     mProviderOptions( providerOptions )
 {
-  if ( uri.startsWith( QLatin1String( "ion://" ) ) )
+  if ( uri.startsWith( "ion://"_L1 ) )
   {
     QString updatedUri = uriFromIon( uri );
     mMetadata = QgsQuantizedMeshMetadata( updatedUri, transformContext(), mError );
@@ -474,7 +474,7 @@ QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
 
   if ( mError.isEmpty() )
   {
-    QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
+    QgsCoordinateReferenceSystem wgs84( u"EPSG:4326"_s );
     QgsCoordinateTransform wgs84ToCrs( wgs84, mMetadata->mCrs, transformContext() );
     mIndex.emplace( new QgsQuantizedMeshIndex( *mMetadata, wgs84ToCrs ) );
     mIsValid = true;
@@ -488,10 +488,10 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
   // ion://?assetId=123&authcfg=abc
 
   QUrl url( uri );
-  const QString assetId = QUrlQuery( url ).queryItemValue( QStringLiteral( "assetId" ) );
-  const QString accessToken = QUrlQuery( url ).queryItemValue( QStringLiteral( "accessToken" ) );
+  const QString assetId = QUrlQuery( url ).queryItemValue( u"assetId"_s );
+  const QString accessToken = QUrlQuery( url ).queryItemValue( u"accessToken"_s );
 
-  const QString CESIUM_ION_URL = QStringLiteral( "https://api.cesium.com/" );
+  const QString CESIUM_ION_URL = u"https://api.cesium.com/"_s;
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
@@ -500,12 +500,12 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
 
   // get asset info
   {
-    const QString assetInfoEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1" ).arg( assetId );
+    const QString assetInfoEndpoint = CESIUM_ION_URL + u"v1/assets/%1"_s.arg( assetId );
     QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsQuantizedMeshDataProvider" ) )
+    QgsSetRequestInitiatorClass( request, u"QgsQuantizedMeshDataProvider"_s )
     headers.updateNetworkRequest( request );
     if ( !accessToken.isEmpty() )
-      request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
+      request.setRawHeader( "Authorization", u"Bearer %1"_s.arg( accessToken ).toLocal8Bit() );
 
     QgsBlockingNetworkRequest networkRequest;
     if ( accessToken.isEmpty() )
@@ -535,12 +535,12 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
   // get tileset access details
   QString tileSetUri;
   {
-    const QString tileAccessEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1/endpoint" ).arg( assetId );
+    const QString tileAccessEndpoint = CESIUM_ION_URL + u"v1/assets/%1/endpoint"_s.arg( assetId );
     QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsQuantizedMeshDataProvider" ) )
+    QgsSetRequestInitiatorClass( request, u"QgsQuantizedMeshDataProvider"_s )
     headers.updateNetworkRequest( request );
     if ( !accessToken.isEmpty() )
-      request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
+      request.setRawHeader( "Authorization", u"Bearer %1"_s.arg( accessToken ).toLocal8Bit() );
 
     QgsBlockingNetworkRequest networkRequest;
     if ( accessToken.isEmpty() )
@@ -578,8 +578,8 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
     {
       // The tileset accessToken is NOT the same as the token we use to access the asset details -- ie we can't
       // use the same authentication as we got from the providers auth cfg!
-      headers.insert( QStringLiteral( "Authorization" ),
-                      QStringLiteral( "Bearer %1" ).arg( QString::fromStdString( tileAccessJson["accessToken"].get<std::string>() ) ) );
+      headers.insert( u"Authorization"_s,
+                      u"Bearer %1"_s.arg( QString::fromStdString( tileAccessJson["accessToken"].get<std::string>() ) ) );
     }
   }
 

@@ -105,14 +105,14 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
   }
 
   // ensure the user never omitted the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( ".xml"_L1, Qt::CaseInsensitive ) )
   {
-    fileName += QLatin1String( ".xml" );
+    fileName += ".xml"_L1;
   }
 
   QDomDocument doc;
-  QDomElement root = doc.createElement( QStringLiteral( "substitutions" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  QDomElement root = doc.createElement( u"substitutions"_s );
+  root.setAttribute( u"version"_s, u"1.0"_s );
   const QgsStringReplacementCollection collection = substitutions();
   collection.writeXml( root, doc );
   doc.appendChild( root );
@@ -155,7 +155,7 @@ void QgsSubstitutionListWidget::mButtonImport_clicked()
   }
 
   const QDomElement root = doc.documentElement();
-  if ( root.tagName() != QLatin1String( "substitutions" ) )
+  if ( root.tagName() != "substitutions"_L1 )
   {
     QMessageBox::warning( nullptr, tr( "Import Substitutions" ), tr( "The selected file is not a substitution list." ), QMessageBox::Ok, QMessageBox::Ok );
     return;

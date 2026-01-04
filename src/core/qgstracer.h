@@ -92,14 +92,14 @@ class CORE_EXPORT QgsTracer : public QObject
      */
     void setOffset( double offset );
 
-    // TODO QGIS 4.0 -- use Qgis::JoinStyle instead of int!
+    // TODO QGIS 5.0 -- use Qgis::JoinStyle instead of int!
 
     /**
      * Gets extra parameters for offset curve algorithm (used when offset is non-zero)
      */
     void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
 
-    // TODO QGIS 4.0 -- use Qgis::JoinStyle instead of int!
+    // TODO QGIS 5.0 -- use Qgis::JoinStyle instead of int!
 
     /**
      * Set extra parameters for offset curve algorithm (used when offset is non-zero)

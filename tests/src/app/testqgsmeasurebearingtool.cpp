@@ -62,16 +62,16 @@ void TestQgsMeasureBearingTool::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
   mCanvas = new QgsMapCanvas();
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 50, 50 );
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   mCanvas->setExtent( QgsRectangle( -11554312, -5082786, 15123372, 11957046 ) );
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
@@ -91,7 +91,7 @@ void TestQgsMeasureBearingTool::cleanupTestCase()
 void TestQgsMeasureBearingTool::testBearingCartesian()
 {
   // set project CRS and set ellipsoid to none, so that Cartesian calculations are performed
-  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem srs( u"EPSG:3857"_s );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QString() );
 
@@ -108,26 +108,26 @@ void TestQgsMeasureBearingTool::testBearingCartesian()
 
   QVERIFY( mapTool->mResultDisplay );
   QGSCOMPARENEAR( mapTool->mResultDisplay->value(), 2.1995926132, 0.001 );
-  QCOMPARE( mapTool->mResultDisplay->text(), QStringLiteral( "126.027373\u00B0E" ) );
+  QCOMPARE( mapTool->mResultDisplay->text(), u"126.027373\u00B0E"_s );
 
   tools.mouseClick( 14498439, -2694154, Qt::LeftButton );
   QGSCOMPARENEAR( mapTool->mResultDisplay->value(), 2.1995926132, 0.001 );
-  QCOMPARE( mapTool->mResultDisplay->text(), QStringLiteral( "126.027373\u00B0E" ) );
+  QCOMPARE( mapTool->mResultDisplay->text(), u"126.027373\u00B0E"_s );
 
   tools.mouseMove( 555496, 3291312 );
   tools.mouseClick( 555496, 3291312, Qt::LeftButton );
   tools.mouseMove( -611045, 5082786 );
   tools.mouseClick( -611045, 5082786, Qt::LeftButton );
   QGSCOMPARENEAR( mapTool->mResultDisplay->value(), -0.5880026035, 0.001 );
-  QCOMPARE( mapTool->mResultDisplay->text(), QStringLiteral( "33.690068\u00B0W" ) );
+  QCOMPARE( mapTool->mResultDisplay->text(), u"33.690068\u00B0W"_s );
 }
 
 void TestQgsMeasureBearingTool::testBearingEllipsoid()
 {
   // set project CRS and ellipsoid
-  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem srs( u"EPSG:3857"_s );
   QgsProject::instance()->setCrs( srs );
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7030" ) );
+  QgsProject::instance()->setEllipsoid( u"EPSG:7030"_s );
 
   QgsMapToolMeasureBearing *mapTool = new QgsMapToolMeasureBearing( mCanvas );
   mCanvas->setMapTool( mapTool );
@@ -142,18 +142,18 @@ void TestQgsMeasureBearingTool::testBearingEllipsoid()
 
   QVERIFY( mapTool->mResultDisplay );
   QGSCOMPARENEAR( mapTool->mResultDisplay->value(), 2.1679949043, 0.001 );
-  QCOMPARE( mapTool->mResultDisplay->text(), QStringLiteral( "124.216958\u00B0E" ) );
+  QCOMPARE( mapTool->mResultDisplay->text(), u"124.216958\u00B0E"_s );
 
   tools.mouseClick( 14498439, -2694154, Qt::LeftButton );
   QGSCOMPARENEAR( mapTool->mResultDisplay->value(), 2.1679949043, 0.001 );
-  QCOMPARE( mapTool->mResultDisplay->text(), QStringLiteral( "124.216958\u00B0E" ) );
+  QCOMPARE( mapTool->mResultDisplay->text(), u"124.216958\u00B0E"_s );
 
   tools.mouseMove( 555496, 3291312 );
   tools.mouseClick( 555496, 3291312, Qt::LeftButton );
   tools.mouseMove( -611045, 5082786 );
   tools.mouseClick( -611045, 5082786, Qt::LeftButton );
   QGSCOMPARENEAR( mapTool->mResultDisplay->value(), -0.5448498177, 0.001 );
-  QCOMPARE( mapTool->mResultDisplay->text(), QStringLiteral( "31.217595\u00B0W" ) );
+  QCOMPARE( mapTool->mResultDisplay->text(), u"31.217595\u00B0W"_s );
 }
 
 QGSTEST_MAIN( TestQgsMeasureBearingTool )

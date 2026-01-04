@@ -163,15 +163,15 @@ void QgsLayoutHtmlWidget::mUrlLineEdit_editingFinished()
 void QgsLayoutHtmlWidget::mFileToolButton_clicked()
 {
   QgsSettings s;
-  const QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
-  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
+  const QString lastDir = s.value( u"/UI/lastHtmlDir"_s, QDir::homePath() ).toString();
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, u"HTML (*.html *.htm);;All files (*.*)"_s );
   if ( !file.isEmpty() )
   {
     const QUrl url = QUrl::fromLocalFile( file );
     mUrlLineEdit->setText( url.toString() );
     mUrlLineEdit_editingFinished();
     mHtml->update();
-    s.setValue( QStringLiteral( "/UI/lastHtmlDir" ), QFileInfo( file ).absolutePath() );
+    s.setValue( u"/UI/lastHtmlDir"_s, QFileInfo( file ).absolutePath() );
   }
 }
 
@@ -352,7 +352,7 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
   QgsVectorLayer *layer = coverageLayer();
 
   const QgsExpressionContext context = mHtml->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

@@ -145,9 +145,9 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
     return;
 
   // ensure the user never omitted the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( ".xml"_L1, Qt::CaseInsensitive ) )
   {
-    fileName += QLatin1String( ".xml" );
+    fileName += ".xml"_L1;
   }
 
   QFile file( fileName );
@@ -159,10 +159,10 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
 
   QgsSettings settings;
 
-  QDomDocument doc( QStringLiteral( "shortcuts" ) );
-  QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
-  root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::settingsLocaleUserLocale->key(), "en_US" ).toString() );
+  QDomDocument doc( u"shortcuts"_s );
+  QDomElement root = doc.createElement( u"qgsshortcuts"_s );
+  root.setAttribute( u"version"_s, u"1.1"_s );
+  root.setAttribute( u"locale"_s, settings.value( QgsApplication::settingsLocaleUserLocale->key(), "en_US" ).toString() );
   doc.appendChild( root );
 
   const QList<QObject *> objects = mManager->listAll();
@@ -203,10 +203,10 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
       continue;
     }
 
-    QDomElement el = doc.createElement( QStringLiteral( "action" ) );
-    el.setAttribute( QStringLiteral( "name" ), actionText );
-    el.setAttribute( QStringLiteral( "shortcut" ), actionShortcut );
-    el.setAttribute( QStringLiteral( "setting" ), actionSettingKey );
+    QDomElement el = doc.createElement( u"action"_s );
+    el.setAttribute( u"name"_s, actionText );
+    el.setAttribute( u"shortcut"_s, actionShortcut );
+    el.setAttribute( u"setting"_s, actionSettingKey );
     root.appendChild( el );
   }
 
@@ -242,7 +242,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   }
 
   const QDomElement root = doc.documentElement();
-  if ( root.tagName() != QLatin1String( "qgsshortcuts" ) )
+  if ( root.tagName() != "qgsshortcuts"_L1 )
   {
     QMessageBox::information( this, tr( "Loading Shortcuts" ), tr( "The file is not an shortcuts exchange file." ) );
     return;
@@ -260,12 +260,12 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     currentLocale = QLocale().name();
   }
 
-  const QString versionStr = root.attribute( QStringLiteral( "version" ) );
+  const QString versionStr = root.attribute( u"version"_s );
   const QgsProjectVersion version( versionStr );
 
-  if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )
+  if ( root.attribute( u"locale"_s ) != currentLocale )
   {
-    if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
+    if ( version < QgsProjectVersion( u"1.1"_s ) )
     {
       QMessageBox::information( this, tr( "Loading Shortcuts" ), tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
       return;
@@ -284,13 +284,13 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   ActionOnExisting actionOnExisting = ActionOnExisting::Ask;
   while ( !child.isNull() )
   {
-    actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
+    actionShortcut = child.attribute( u"shortcut"_s );
     QKeySequence actionShortcutSequence( actionShortcut );
     QString previousText;
 
-    if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
+    if ( version < QgsProjectVersion( u"1.1"_s ) )
     {
-      actionName = child.attribute( QStringLiteral( "name" ) );
+      actionName = child.attribute( u"name"_s );
       QShortcut *previousShortcut = mManager->shortcutForSequence( actionShortcutSequence );
       QAction *previousAction = mManager->actionForSequence( actionShortcutSequence );
       if ( previousShortcut && previousShortcut->objectName() != actionName )
@@ -341,7 +341,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     }
     else
     {
-      actionSettingKey = child.attribute( QStringLiteral( "setting" ) );
+      actionSettingKey = child.attribute( u"setting"_s );
       QObject *obj = mManager->objectForSettingKey( actionSettingKey );
       if ( obj )
       {
@@ -645,7 +645,7 @@ void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 
 void QgsConfigureShortcutsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#shortcuts" ) );
+  QgsHelp::openHelp( u"introduction/qgis_configuration.html#shortcuts"_s );
 }
 
 void QgsConfigureShortcutsDialog::saveShortcutsPdf()
@@ -658,9 +658,9 @@ void QgsConfigureShortcutsDialog::saveShortcutsPdf()
   if ( fileName.isEmpty() )
     return;
 
-  if ( !fileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( ".pdf"_L1, Qt::CaseInsensitive ) )
   {
-    fileName += QLatin1String( ".pdf" );
+    fileName += ".pdf"_L1;
   }
 
   QTextDocument *document = new QTextDocument;

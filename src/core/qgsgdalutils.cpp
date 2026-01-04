@@ -72,7 +72,7 @@ QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
   else if ( pszType && EQUAL( pszType, "boolean" ) )
   {
     option.type = QgsGdalOption::Type::Boolean;
-    option.defaultValue = pszDefault ? QString( pszDefault ) : QStringLiteral( "YES" );
+    option.defaultValue = pszDefault ? QString( pszDefault ) : u"YES"_s;
     return option;
   }
   else if ( pszType && EQUAL( pszType, "string" ) )
@@ -137,7 +137,7 @@ QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
     return option;
   }
 
-  QgsDebugError( QStringLiteral( "Unhandled GDAL option type: %1" ).arg( pszType ) );
+  QgsDebugError( u"Unhandled GDAL option type: %1"_s.arg( pszType ) );
   return {};
 }
 
@@ -163,8 +163,8 @@ QList<QgsGdalOption> QgsGdalOption::optionsFromXml( const CPLXMLNode *node )
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
   const QString driverShortName = GDALGetDriverShortName( driver );
-  if ( driverShortName == QLatin1String( "SQLite" ) ||
-       driverShortName == QLatin1String( "PDF" ) )
+  if ( driverShortName == "SQLite"_L1 ||
+       driverShortName == "PDF"_L1 )
   {
     // it supports Create() but only for vector side
     return false;
@@ -248,30 +248,30 @@ gdal::dataset_unique_ptr QgsGdalUtils::imageToMemoryDataset( const QImage &image
   gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "",  image.width(), image.height(), 0, GDT_Byte, nullptr ) );
 
   char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
-                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
-                        << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
-                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 2 ) );
+                        << u"PIXELOFFSET=%1"_s.arg( sizeof( QRgb ) )
+                        << u"LINEOFFSET=%1"_s.arg( image.bytesPerLine() )
+                        << u"DATAPOINTER=%1"_s.arg( reinterpret_cast< qulonglong >( rgb ) + 2 ) );
   GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
   CSLDestroy( papszOptions );
 
   papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
-                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
-                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
-                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 1 ) );
+                 << u"PIXELOFFSET=%1"_s.arg( sizeof( QRgb ) )
+                 << u"LINEOFFSET=%1"_s.arg( image.bytesPerLine() )
+                 << u"DATAPOINTER=%1"_s.arg( reinterpret_cast< qulonglong >( rgb ) + 1 ) );
   GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
   CSLDestroy( papszOptions );
 
   papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
-                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
-                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
-                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) ) );
+                 << u"PIXELOFFSET=%1"_s.arg( sizeof( QRgb ) )
+                 << u"LINEOFFSET=%1"_s.arg( image.bytesPerLine() )
+                 << u"DATAPOINTER=%1"_s.arg( reinterpret_cast< qulonglong >( rgb ) ) );
   GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
   CSLDestroy( papszOptions );
 
   papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
-                 << QStringLiteral( "PIXELOFFSET=%1" ).arg( sizeof( QRgb ) )
-                 << QStringLiteral( "LINEOFFSET=%1" ).arg( image.bytesPerLine() )
-                 << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( rgb ) + 3 ) );
+                 << u"PIXELOFFSET=%1"_s.arg( sizeof( QRgb ) )
+                 << u"LINEOFFSET=%1"_s.arg( image.bytesPerLine() )
+                 << u"DATAPOINTER=%1"_s.arg( reinterpret_cast< qulonglong >( rgb ) + 3 ) );
   GDALAddBand( hSrcDS.get(), GDT_Byte, papszOptions );
   CSLDestroy( papszOptions );
 
@@ -301,9 +301,9 @@ gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( int pixel
 
   int dataTypeSize = GDALGetDataTypeSizeBytes( dataType );
   char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
-                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( dataTypeSize )
-                        << QStringLiteral( "LINEOFFSET=%1" ).arg( pixelWidth * dataTypeSize )
-                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( block ) ) );
+                        << u"PIXELOFFSET=%1"_s.arg( dataTypeSize )
+                        << u"LINEOFFSET=%1"_s.arg( pixelWidth * dataTypeSize )
+                        << u"DATAPOINTER=%1"_s.arg( reinterpret_cast< qulonglong >( block ) ) );
   GDALAddBand( hDstDS.get(), dataType, papszOptions );
   CSLDestroy( papszOptions );
 
@@ -358,9 +358,9 @@ gdal::dataset_unique_ptr QgsGdalUtils::blockToSingleBandMemoryDataset( double ro
 
   int dataTypeSize = GDALGetDataTypeSizeBytes( dataType );
   char **papszOptions = QgsGdalUtils::papszFromStringList( QStringList()
-                        << QStringLiteral( "PIXELOFFSET=%1" ).arg( dataTypeSize )
-                        << QStringLiteral( "LINEOFFSET=%1" ).arg( block->width() * dataTypeSize )
-                        << QStringLiteral( "DATAPOINTER=%1" ).arg( reinterpret_cast< qulonglong >( block->bits() ) ) );
+                        << u"PIXELOFFSET=%1"_s.arg( dataTypeSize )
+                        << u"LINEOFFSET=%1"_s.arg( block->width() * dataTypeSize )
+                        << u"DATAPOINTER=%1"_s.arg( reinterpret_cast< qulonglong >( block->bits() ) ) );
   GDALAddBand( hDstDS.get(), dataType, papszOptions );
   CSLDestroy( papszOptions );
 
@@ -459,7 +459,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                                outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugError( QStringLiteral( "failed to read red band" ) );
+    QgsDebugError( u"failed to read red band"_s );
     return QImage();
   }
 
@@ -467,7 +467,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugError( QStringLiteral( "failed to read green band" ) );
+    QgsDebugError( u"failed to read green band"_s );
     return QImage();
   }
 
@@ -475,7 +475,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugError( QStringLiteral( "failed to read blue band" ) );
+    QgsDebugError( u"failed to read blue band"_s );
     return QImage();
   }
 
@@ -483,7 +483,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugError( QStringLiteral( "failed to read alpha band" ) );
+    QgsDebugError( u"failed to read alpha band"_s );
     return QImage();
   }
 
@@ -498,13 +498,13 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
   {
     // first report details and help page
     char **GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
-    message += QLatin1String( "Format Details:\n" );
-    message += QStringLiteral( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
-    message += QStringLiteral( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
-    message += QStringLiteral( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
+    message += "Format Details:\n"_L1;
+    message += u"  Extension: %1\n"_s.arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += u"  Short Name: %1"_s.arg( GDALGetDriverShortName( myGdalDriver ) );
+    message += u"  /  Long Name: %1\n"_s.arg( GDALGetDriverLongName( myGdalDriver ) );
     const QString helpUrl = gdalDocumentationUrlForDriver( myGdalDriver );
     if ( !helpUrl.isEmpty() )
-      message += QStringLiteral( "  Help page:  %1\n\n" ).arg( helpUrl );
+      message += u"  Help page:  %1\n\n"_s.arg( helpUrl );
 
     // next get creation options
     // need to serialize xml to get newlines, should we make the basic xml prettier?
@@ -536,7 +536,7 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &creation
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )
-    return QStringLiteral( "invalid GDAL driver" );
+    return u"invalid GDAL driver"_s;
 
   char **papszOptions = papszFromStringList( creationOptions );
   // get error string?
@@ -544,7 +544,7 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &creation
   CSLDestroy( papszOptions );
 
   if ( !ok )
-    return QStringLiteral( "Failed GDALValidateCreationOptions() test" );
+    return u"Failed GDALValidateCreationOptions() test"_s;
   return QString();
 }
 
@@ -694,7 +694,7 @@ void QgsGdalUtils::setupProxy()
   // is created.
   const QgsSettings settings;
   // Check that proxy is enabled
-  if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
+  if ( settings.value( u"proxy/proxyEnabled"_s, false ).toBool() )
   {
     // Get the first configured proxy
     QList<QNetworkProxy> proxies( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
@@ -703,7 +703,7 @@ void QgsGdalUtils::setupProxy()
       const QNetworkProxy proxy( proxies.first() );
       // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
       //QStringList excludes;
-      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
+      //excludes = settings.value( u"proxy/proxyExcludedUrls"_s, "" ).toStringList();
 
       const QString proxyHost( proxy.hostName() );
       const quint16 proxyPort( proxy.port() );
@@ -745,9 +745,9 @@ bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimi
   const QString suffix = info.suffix().toLower();
   static const QStringList sFileSizeDependentExtensions
   {
-    QStringLiteral( "xlsx" ),
-    QStringLiteral( "ods" ),
-    QStringLiteral( "csv" )
+    u"xlsx"_s,
+    u"ods"_s,
+    u"csv"_s
   };
   if ( sFileSizeDependentExtensions.contains( suffix ) )
   {
@@ -784,14 +784,14 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       }
 
       bool isMultiLayer = false;
-      if ( QString( GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
+      if ( QString( GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) ) == "YES"_L1 )
       {
         if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) )
         {
           isMultiLayer = true;
         }
       }
-      if ( !isMultiLayer && QString( GDALGetMetadataItem( driver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+      if ( !isMultiLayer && QString( GDALGetMetadataItem( driver, GDAL_DCAP_VECTOR, nullptr ) ) == "YES"_L1 )
       {
         if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) )
         {
@@ -811,7 +811,7 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       for ( const QString &ext : splitExtensions )
       {
         // maintain older behavior -- don't always expose tiff files as containers
-        if ( ext == QLatin1String( "tif" ) || ext == QLatin1String( "tiff" ) )
+        if ( ext == "tif"_L1 || ext == "tiff"_L1 )
           continue;
 
         extensions.insert( ext );
@@ -825,26 +825,26 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
 #else
   static const QStringList SUPPORTED_DB_LAYERS_EXTENSIONS
   {
-    QStringLiteral( "gpkg" ),
-    QStringLiteral( "sqlite" ),
-    QStringLiteral( "db" ),
-    QStringLiteral( "gdb" ),
-    QStringLiteral( "kml" ),
-    QStringLiteral( "kmz" ),
-    QStringLiteral( "osm" ),
-    QStringLiteral( "mdb" ),
-    QStringLiteral( "accdb" ),
-    QStringLiteral( "xls" ),
-    QStringLiteral( "xlsx" ),
-    QStringLiteral( "ods" ),
-    QStringLiteral( "gpx" ),
-    QStringLiteral( "pdf" ),
-    QStringLiteral( "pbf" ),
-    QStringLiteral( "vrt" ),
-    QStringLiteral( "nc" ),
-    QStringLiteral( "dxf" ),
-    QStringLiteral( "shp.zip" ),
-    QStringLiteral( "gdb.zip" ) };
+    u"gpkg"_s,
+    u"sqlite"_s,
+    u"db"_s,
+    u"gdb"_s,
+    u"kml"_s,
+    u"kmz"_s,
+    u"osm"_s,
+    u"mdb"_s,
+    u"accdb"_s,
+    u"xls"_s,
+    u"xlsx"_s,
+    u"ods"_s,
+    u"gpx"_s,
+    u"pdf"_s,
+    u"pbf"_s,
+    u"vrt"_s,
+    u"nc"_s,
+    u"dxf"_s,
+    u"shp.zip"_s,
+    u"gdb.zip"_s };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 #endif
 }
@@ -853,44 +853,44 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
 {
   const QStringList vsiPrefixes = QgsGdalUtils::vsiArchivePrefixes();
 
-  const thread_local QRegularExpression vsiRx( QStringLiteral( "^(/vsi.+?/)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  const thread_local QRegularExpression vsiRx( u"^(/vsi.+?/)"_s, QRegularExpression::PatternOption::CaseInsensitiveOption );
   const QRegularExpressionMatch vsiMatch = vsiRx.match( path );
   if ( vsiMatch.hasMatch() )
     return vsiMatch.captured( 1 );
 
-  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) ||
-       path.endsWith( QLatin1String( ".gdb.zip" ), Qt::CaseInsensitive ) )
+  if ( path.endsWith( ".shp.zip"_L1, Qt::CaseInsensitive ) ||
+       path.endsWith( ".gdb.zip"_L1, Qt::CaseInsensitive ) )
   {
     // GDAL 3.1 Shapefile/OpenFileGDB drivers directly handle .shp.zip and .gdb.zip files
     if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
       return QString();
-    return QStringLiteral( "/vsizip/" );
+    return u"/vsizip/"_s;
   }
-  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+  else if ( path.endsWith( ".zip"_L1, Qt::CaseInsensitive ) )
   {
     // GTFS driver directly handles .zip files
     const char *const apszAllowedDrivers[] = { "GTFS", nullptr };
     if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, apszAllowedDrivers, nullptr ) )
       return QString();
-    return QStringLiteral( "/vsizip/" );
+    return u"/vsizip/"_s;
   }
-  else if ( path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsitar/" );
-  else if ( path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsigzip/" );
+  else if ( path.endsWith( ".tar"_L1, Qt::CaseInsensitive ) ||
+            path.endsWith( ".tar.gz"_L1, Qt::CaseInsensitive ) ||
+            path.endsWith( ".tgz"_L1, Qt::CaseInsensitive ) )
+    return u"/vsitar/"_s;
+  else if ( path.endsWith( ".gz"_L1, Qt::CaseInsensitive ) )
+    return u"/vsigzip/"_s;
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  else if ( vsiPrefixes.contains( QStringLiteral( "/vsi7z/" ) ) &&
-            ( path.endsWith( QLatin1String( ".7z" ), Qt::CaseInsensitive ) ||
-              path.endsWith( QLatin1String( ".lpk" ), Qt::CaseInsensitive ) ||
-              path.endsWith( QLatin1String( ".lpkx" ), Qt::CaseInsensitive ) ||
-              path.endsWith( QLatin1String( ".mpk" ), Qt::CaseInsensitive ) ||
-              path.endsWith( QLatin1String( ".mpkx" ), Qt::CaseInsensitive ) ) )
-    return QStringLiteral( "/vsi7z/" );
-  else if ( vsiPrefixes.contains( QStringLiteral( "/vsirar/" ) ) &&
-            path.endsWith( QLatin1String( ".rar" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsirar/" );
+  else if ( vsiPrefixes.contains( u"/vsi7z/"_s ) &&
+            ( path.endsWith( ".7z"_L1, Qt::CaseInsensitive ) ||
+              path.endsWith( ".lpk"_L1, Qt::CaseInsensitive ) ||
+              path.endsWith( ".lpkx"_L1, Qt::CaseInsensitive ) ||
+              path.endsWith( ".mpk"_L1, Qt::CaseInsensitive ) ||
+              path.endsWith( ".mpkx"_L1, Qt::CaseInsensitive ) ) )
+    return u"/vsi7z/"_s;
+  else if ( vsiPrefixes.contains( u"/vsirar/"_s ) &&
+            path.endsWith( ".rar"_L1, Qt::CaseInsensitive ) )
+    return u"/vsirar/"_s;
 #endif
 
   return QString();
@@ -898,13 +898,13 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
 
 QStringList QgsGdalUtils::vsiArchivePrefixes()
 {
-  QStringList res { QStringLiteral( "/vsizip/" ),
-                    QStringLiteral( "/vsitar/" ),
-                    QStringLiteral( "/vsigzip/" ),
+  QStringList res { u"/vsizip/"_s,
+                    u"/vsitar/"_s,
+                    u"/vsigzip/"_s,
                   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  res.append( QStringLiteral( "/vsi7z/" ) );
-  res.append( QStringLiteral( "/vsirar/" ) );
+  res.append( u"/vsi7z/"_s );
+  res.append( u"/vsirar/"_s );
 #endif
   return res;
 }
@@ -927,21 +927,21 @@ QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSys
         if ( details.identifier.endsWith( '/' ) )
           details.identifier.chop( 1 );
 
-        if ( details.identifier == QLatin1String( "vsicurl" ) )
+        if ( details.identifier == "vsicurl"_L1 )
           details.name = QObject::tr( "HTTP/HTTPS/FTP" );
-        else if ( details.identifier == QLatin1String( "vsis3" ) )
+        else if ( details.identifier == "vsis3"_L1 )
           details.name = QObject::tr( "AWS S3" );
-        else if ( details.identifier == QLatin1String( "vsigs" ) )
+        else if ( details.identifier == "vsigs"_L1 )
           details.name = QObject::tr( "Google Cloud Storage" );
-        else if ( details.identifier == QLatin1String( "vsiaz" ) )
+        else if ( details.identifier == "vsiaz"_L1 )
           details.name = QObject::tr( "Microsoft Azure Blob" );
-        else if ( details.identifier == QLatin1String( "vsiadls" ) )
+        else if ( details.identifier == "vsiadls"_L1 )
           details.name = QObject::tr( "Microsoft Azure Data Lake Storage" );
-        else if ( details.identifier == QLatin1String( "vsioss" ) )
+        else if ( details.identifier == "vsioss"_L1 )
           details.name = QObject::tr( "Alibaba Cloud OSS" );
-        else if ( details.identifier == QLatin1String( "vsiswift" ) )
+        else if ( details.identifier == "vsiswift"_L1 )
           details.name = QObject::tr( "OpenStack Swift Object Storage" );
-        else if ( details.identifier == QLatin1String( "vsihdfs" ) )
+        else if ( details.identifier == "vsihdfs"_L1 )
           details.name = QObject::tr( "Hadoop File System" );
         else
           continue;
@@ -969,19 +969,19 @@ bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
 
 QStringList QgsGdalUtils::vsiArchiveFileExtensions()
 {
-  QStringList res { QStringLiteral( ".zip" ),
-                    QStringLiteral( ".tar" ),
-                    QStringLiteral( ".tar.gz" ),
-                    QStringLiteral( ".tgz" ),
-                    QStringLiteral( ".gz" ),
+  QStringList res { u".zip"_s,
+                    u".tar"_s,
+                    u".tar.gz"_s,
+                    u".tgz"_s,
+                    u".gz"_s,
                   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  res.append( { QStringLiteral( ".7z" ),
-                QStringLiteral( ".lpk" ),
-                QStringLiteral( ".lpkx" ),
-                QStringLiteral( ".mpk" ),
-                QStringLiteral( ".mpkx" ),
-                QStringLiteral( ".rar" )
+  res.append( { u".7z"_s,
+                u".lpk"_s,
+                u".lpkx"_s,
+                u".mpk"_s,
+                u".mpkx"_s,
+                u".rar"_s
               } );
 #endif
   return res;
@@ -1004,36 +1004,36 @@ Qgis::VsiHandlerType QgsGdalUtils::vsiHandlerType( const QString &prefix )
   if ( vsiPrefix.endsWith( '/' ) )
     vsiPrefix.chop( 1 );
 
-  if ( !vsiPrefix.startsWith( QLatin1String( "vsi" ) ) )
+  if ( !vsiPrefix.startsWith( "vsi"_L1 ) )
     return Qgis::VsiHandlerType::Invalid;
 
-  if ( vsiPrefix == QLatin1String( "vsizip" ) ||
-       vsiPrefix == QLatin1String( "vsigzip" ) ||
-       vsiPrefix == QLatin1String( "vsitar" ) ||
-       vsiPrefix == QLatin1String( "vsi7z" ) ||
-       vsiPrefix == QLatin1String( "vsirar" ) )
+  if ( vsiPrefix == "vsizip"_L1 ||
+       vsiPrefix == "vsigzip"_L1 ||
+       vsiPrefix == "vsitar"_L1 ||
+       vsiPrefix == "vsi7z"_L1 ||
+       vsiPrefix == "vsirar"_L1 )
     return Qgis::VsiHandlerType::Archive;
 
-  else if ( vsiPrefix == QLatin1String( "vsicurl" ) ||
-            vsiPrefix == QLatin1String( "vsicurl_streaming" ) )
+  else if ( vsiPrefix == "vsicurl"_L1 ||
+            vsiPrefix == "vsicurl_streaming"_L1 )
     return Qgis::VsiHandlerType::Network;
 
-  else if ( vsiPrefix == QLatin1String( "vsis3" ) ||
-            vsiPrefix == QLatin1String( "vsicurl_streaming" ) ||
-            vsiPrefix == QLatin1String( "vsigs" ) ||
-            vsiPrefix == QLatin1String( "vsigs_streaming" ) ||
-            vsiPrefix == QLatin1String( "vsiaz" ) ||
-            vsiPrefix == QLatin1String( "vsiaz_streaming" ) ||
-            vsiPrefix == QLatin1String( "vsiadls" ) ||
-            vsiPrefix == QLatin1String( "vsioss" ) ||
-            vsiPrefix == QLatin1String( "vsioss_streaming" ) ||
-            vsiPrefix == QLatin1String( "vsiswift" ) ||
-            vsiPrefix == QLatin1String( "vsiswift_streaming" ) ||
-            vsiPrefix == QLatin1String( "vsihdfs" ) ||
-            vsiPrefix == QLatin1String( "vsiwebhdfs" ) )
+  else if ( vsiPrefix == "vsis3"_L1 ||
+            vsiPrefix == "vsicurl_streaming"_L1 ||
+            vsiPrefix == "vsigs"_L1 ||
+            vsiPrefix == "vsigs_streaming"_L1 ||
+            vsiPrefix == "vsiaz"_L1 ||
+            vsiPrefix == "vsiaz_streaming"_L1 ||
+            vsiPrefix == "vsiadls"_L1 ||
+            vsiPrefix == "vsioss"_L1 ||
+            vsiPrefix == "vsioss_streaming"_L1 ||
+            vsiPrefix == "vsiswift"_L1 ||
+            vsiPrefix == "vsiswift_streaming"_L1 ||
+            vsiPrefix == "vsihdfs"_L1 ||
+            vsiPrefix == "vsiwebhdfs"_L1 )
     return Qgis::VsiHandlerType::Cloud;
 
-  else if ( vsiPrefix == QLatin1String( "vsimem" ) )
+  else if ( vsiPrefix == "vsimem"_L1 )
     return Qgis::VsiHandlerType::Memory;
 
   return Qgis::VsiHandlerType::Other;
@@ -1075,7 +1075,7 @@ QString QgsGdalUtils::gdalDocumentationUrlForDriver( GDALDriverH hDriver )
   {
     const QString gdalDriverHelpTopic = GDALGetMetadataItem( hDriver, GDAL_DMD_HELPTOPIC, nullptr );  // e.g. "drivers/vector/ili.html"
     if ( !gdalDriverHelpTopic.isEmpty() )
-      return QStringLiteral( "https://gdal.org/%1" ).arg( gdalDriverHelpTopic );
+      return u"https://gdal.org/%1"_s.arg( gdalDriverHelpTopic );
   }
   return QString();
 }
@@ -1102,7 +1102,7 @@ bool QgsGdalUtils::applyVsiCredentialOptions( const QString &prefix, const QStri
     VSISetCredential( bucket.toUtf8().constData(), it.key().toUtf8().constData(), it.value().toString().toUtf8().constData() );
 #else
     ( void )bucket;
-    QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), QStringLiteral( "GDAL" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Cannot use VSI credential options on GDAL versions earlier than 3.5" ), u"GDAL"_s, Qgis::MessageLevel::Critical );
     return false;
 #endif
   }

@@ -34,7 +34,7 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   setupUi( this );
 
   QgsSettings settings;
-  chkAddedVisibility->setChecked( settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
+  chkAddedVisibility->setChecked( settings.value( u"/qgis/new_layers_visible"_s, true ).toBool() );
 
   spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
   spinMaxThreads->setClearValue( 1, tr( "All Available (%1)" ).arg( QThread::idealThreadCount() ) );
@@ -43,42 +43,42 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   else
     spinMaxThreads->clear();
 
-  spinMapUpdateInterval->setValue( settings.value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
+  spinMapUpdateInterval->setValue( settings.value( u"/qgis/map_update_interval"_s, 250 ).toInt() );
   spinMapUpdateInterval->setClearValue( 250 );
 
   double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   double magnifierMax = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  double magnifierVal = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  double magnifierVal = 100 * settings.value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
   doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
   doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
   doubleSpinBoxMagnifierDefault->setDecimals( 0 );
-  doubleSpinBoxMagnifierDefault->setSuffix( QStringLiteral( "%" ) );
+  doubleSpinBoxMagnifierDefault->setSuffix( u"%"_s );
   doubleSpinBoxMagnifierDefault->setValue( magnifierVal );
   doubleSpinBoxMagnifierDefault->setClearValue( 100 );
 
-  chkAntiAliasing->setChecked( settings.value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() );
+  chkAntiAliasing->setChecked( settings.value( u"/qgis/enable_anti_aliasing"_s, true ).toBool() );
 }
 
 QString QgsRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#rendering-options" );
+  return u"introduction/qgis_configuration.html#rendering-options"_s;
 }
 
 void QgsRenderingOptionsWidget::apply()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
+  settings.setValue( u"/qgis/new_layers_visible"_s, chkAddedVisibility->isChecked() );
 
   const int maxThreads = spinMaxThreads->value() == spinMaxThreads->clearValue() ? -1 : spinMaxThreads->value();
   QgsApplication::setMaxThreads( maxThreads );
-  settings.setValue( QStringLiteral( "/qgis/max_threads" ), maxThreads );
+  settings.setValue( u"/qgis/max_threads"_s, maxThreads );
 
-  settings.setValue( QStringLiteral( "/qgis/map_update_interval" ), spinMapUpdateInterval->value() );
+  settings.setValue( u"/qgis/map_update_interval"_s, spinMapUpdateInterval->value() );
 
   // magnification
-  settings.setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
+  settings.setValue( u"/qgis/magnifier_factor_default"_s, doubleSpinBoxMagnifierDefault->value() / 100 );
 
-  settings.setValue( QStringLiteral( "/qgis/enable_anti_aliasing" ), chkAntiAliasing->isChecked() );
+  settings.setValue( u"/qgis/enable_anti_aliasing"_s, chkAntiAliasing->isChecked() );
 }
 
 
@@ -86,13 +86,13 @@ void QgsRenderingOptionsWidget::apply()
 // QgsRenderingOptionsFactory
 //
 QgsRenderingOptionsFactory::QgsRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), QStringLiteral( "rendering" ) )
+  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), u"rendering"_s )
 {
 }
 
 QIcon QgsRenderingOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/rendering.svg" ) );
+  return QgsApplication::getThemeIcon( u"propertyicons/rendering.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsRenderingOptionsFactory::createWidget( QWidget *parent ) const
@@ -102,5 +102,5 @@ QgsOptionsPageWidget *QgsRenderingOptionsFactory::createWidget( QWidget *parent 
 
 QString QgsRenderingOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageMapCanvas" );
+  return u"mOptionsPageMapCanvas"_s;
 }

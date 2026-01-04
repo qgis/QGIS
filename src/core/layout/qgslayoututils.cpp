@@ -395,12 +395,12 @@ QRectF QgsLayoutUtils::largestRotatedRectWithinBounds( const QRectF &originalRec
 QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QString &string, bool &ok )
 {
   QString s = string.trimmed();
-  if ( s.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
+  if ( s.compare( "Portrait"_L1, Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsLayoutItemPage::Portrait;
   }
-  else if ( s.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
+  else if ( s.compare( "Landscape"_L1, Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsLayoutItemPage::Landscape;
@@ -411,20 +411,8 @@ QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QSt
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  // workaround Qt bug 66185
-
-  // Refs #18027 - if a QGraphicsItem is rotated by 90 or 270 degrees, then the item
-  // style given to QGraphicsItem::paint incorrectly uses the shear parameter of the matrix (m12)
-  // to store the current view scale, instead of the horizontal scale parameter (m11) which
-  // is used in all other cases
-
-  // TODO - ifdef this out if Qt fixes upstream
-  return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
-#else
   Q_UNUSED( style )
   return 1;
-#endif
 }
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter )

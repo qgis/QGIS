@@ -47,10 +47,10 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   if ( urlPath == requestPrefix )
   {
     QUrl url { context.request()->url() };
-    url.setPath( QStringLiteral( "%1/index.%2" )
+    url.setPath( u"%1/index.%2"_s
                    .arg( requestPrefix, QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
     context.response()->setStatusCode( 302 );
-    context.response()->setHeader( QStringLiteral( "Location" ), url.toString() );
+    context.response()->setHeader( u"Location"_s, url.toString() );
   }
   else
   {
@@ -67,7 +67,7 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
 const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &context ) const
 {
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += QLatin1String( "/ogc/static/landingpage/index.html" );
+  path += "/ogc/static/landingpage/index.html"_L1;
   return path;
 }
 
@@ -99,7 +99,7 @@ json QgsLandingPageHandler::projectsData( const QgsServerRequest &request ) cons
     }
     catch ( QgsServerException & )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Could not open project '%1': skipping." ).arg( it.value() ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( u"Could not open project '%1': skipping."_s.arg( it.value() ), u"Landing Page"_s, Qgis::MessageLevel::Critical );
     }
   }
   return j;
@@ -119,7 +119,7 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
   const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path(), *mSettings ) };
   if ( projectPath.isEmpty() )
   {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );
+    throw QgsServerApiNotFoundError( u"Requested project hash not found!"_s );
   }
   data["project"] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request() );
   write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );

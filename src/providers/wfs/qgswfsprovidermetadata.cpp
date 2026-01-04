@@ -88,48 +88,48 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities &cap
   */
 
   QDomDocument doc;
-  QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
+  QDomElement filterElem = ( caps.version.startsWith( "2.0"_L1 ) ) ? doc.createElementNS( u"http://www.opengis.net/fes/2.0"_s, u"fes:Filter"_s ) : doc.createElementNS( u"http://www.opengis.net/ogc"_s, u"ogc:Filter"_s );
   doc.appendChild( filterElem );
-  QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
+  QString filterPrefix( caps.version.startsWith( "2.0" ) ? u"fes"_s : u"ogc"_s );
 
-  QDomElement andElem = doc.createElement( filterPrefix + QStringLiteral( ":And" ) );
+  QDomElement andElem = doc.createElement( filterPrefix + u":And"_s );
   filterElem.appendChild( andElem );
   {
-    QDomElement notElem = doc.createElement( filterPrefix + QStringLiteral( ":Not" ) );
+    QDomElement notElem = doc.createElement( filterPrefix + u":Not"_s );
     andElem.appendChild( notElem );
     {
-      QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
+      QDomElement propertyIsNullElem = doc.createElement( filterPrefix + u":PropertyIsNull"_s );
       notElem.appendChild( propertyIsNullElem );
       QDomElement valueReferenceElem = doc.createElement(
-        ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" )
+        ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + u":ValueReference"_s : filterPrefix + u":PropertyName"_s
       );
       propertyIsNullElem.appendChild( valueReferenceElem );
       valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
     }
   }
   {
-    QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsEqualTo" ) );
+    QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + u":PropertyIsEqualTo"_s );
     andElem.appendChild( propertyIsEqualToElem );
     {
-      QDomElement functionElem = doc.createElement( filterPrefix + QStringLiteral( ":Function" ) );
+      QDomElement functionElem = doc.createElement( filterPrefix + u":Function"_s );
       propertyIsEqualToElem.appendChild( functionElem );
       {
-        QDomAttr attrFunctionName = doc.createAttribute( QStringLiteral( "name" ) );
+        QDomAttr attrFunctionName = doc.createAttribute( u"name"_s );
         attrFunctionName.setValue( function );
         functionElem.setAttributeNode( attrFunctionName );
       }
       {
         QDomElement valueReferenceElem = doc.createElement(
-          ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" )
+          ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + u":ValueReference"_s : filterPrefix + u":PropertyName"_s
         );
         functionElem.appendChild( valueReferenceElem );
         valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
       }
     }
     {
-      QDomElement literalElem = doc.createElement( filterPrefix + QStringLiteral( ":Literal" ) );
+      QDomElement literalElem = doc.createElement( filterPrefix + u":Literal"_s );
       propertyIsEqualToElem.appendChild( literalElem );
-      literalElem.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
+      literalElem.appendChild( doc.createTextNode( u"true"_s ) );
     }
   }
 
@@ -147,13 +147,13 @@ QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities &cap
   */
 
   QDomDocument doc;
-  QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
+  QDomElement filterElem = ( caps.version.startsWith( "2.0"_L1 ) ) ? doc.createElementNS( u"http://www.opengis.net/fes/2.0"_s, u"fes:Filter"_s ) : doc.createElementNS( u"http://www.opengis.net/ogc"_s, u"ogc:Filter"_s );
   doc.appendChild( filterElem );
-  QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
-  QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
+  QString filterPrefix( caps.version.startsWith( "2.0" ) ? u"fes"_s : u"ogc"_s );
+  QDomElement propertyIsNullElem = doc.createElement( filterPrefix + u":PropertyIsNull"_s );
   filterElem.appendChild( propertyIsNullElem );
   QDomElement valueReferenceElem = doc.createElement(
-    ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" )
+    ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + u":ValueReference"_s : filterPrefix + u":PropertyName"_s
   );
   propertyIsNullElem.appendChild( valueReferenceElem );
   valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
@@ -164,43 +164,43 @@ QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities &cap
 QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities &caps, const QString &geometryElement )
 {
   QDomDocument doc;
-  QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
+  QDomElement filterElem = ( caps.version.startsWith( "2.0"_L1 ) ) ? doc.createElementNS( u"http://www.opengis.net/fes/2.0"_s, u"fes:Filter"_s ) : doc.createElementNS( u"http://www.opengis.net/ogc"_s, u"ogc:Filter"_s );
   doc.appendChild( filterElem );
-  QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
+  QString filterPrefix( caps.version.startsWith( "2.0" ) ? u"fes"_s : u"ogc"_s );
 
-  QDomElement andElem = doc.createElement( filterPrefix + QStringLiteral( ":And" ) );
+  QDomElement andElem = doc.createElement( filterPrefix + u":And"_s );
   filterElem.appendChild( andElem );
 
   {
-    QDomElement notElem = doc.createElement( filterPrefix + QStringLiteral( ":Not" ) );
+    QDomElement notElem = doc.createElement( filterPrefix + u":Not"_s );
     andElem.appendChild( notElem );
 
-    QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
+    QDomElement propertyIsNullElem = doc.createElement( filterPrefix + u":PropertyIsNull"_s );
     notElem.appendChild( propertyIsNullElem );
     QDomElement valueReferenceElem = doc.createElement(
-      ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" )
+      ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + u":ValueReference"_s : filterPrefix + u":PropertyName"_s
     );
     propertyIsNullElem.appendChild( valueReferenceElem );
     valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
   }
 
-  for ( const QString &function : { QStringLiteral( "IsPoint" ), QStringLiteral( "IsCurve" ), QStringLiteral( "IsSurface" ) } )
+  for ( const QString &function : { u"IsPoint"_s, u"IsCurve"_s, u"IsSurface"_s } )
   {
-    QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsEqualTo" ) );
+    QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + u":PropertyIsEqualTo"_s );
     andElem.appendChild( propertyIsEqualToElem );
-    QDomElement functionElem = doc.createElement( filterPrefix + QStringLiteral( ":Function" ) );
+    QDomElement functionElem = doc.createElement( filterPrefix + u":Function"_s );
     propertyIsEqualToElem.appendChild( functionElem );
-    QDomAttr attrFunctionName = doc.createAttribute( QStringLiteral( "name" ) );
+    QDomAttr attrFunctionName = doc.createAttribute( u"name"_s );
     attrFunctionName.setValue( function );
     functionElem.setAttributeNode( attrFunctionName );
     QDomElement valueReferenceElem = doc.createElement(
-      ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" )
+      ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + u":ValueReference"_s : filterPrefix + u":PropertyName"_s
     );
     functionElem.appendChild( valueReferenceElem );
     valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
-    QDomElement literalElem = doc.createElement( filterPrefix + QStringLiteral( ":Literal" ) );
+    QDomElement literalElem = doc.createElement( filterPrefix + u":Literal"_s );
     propertyIsEqualToElem.appendChild( literalElem );
-    literalElem.appendChild( doc.createTextNode( QStringLiteral( "false" ) ) );
+    literalElem.appendChild( doc.createTextNode( u"false"_s ) );
   }
 
   return doc.toString();
@@ -217,7 +217,7 @@ QString QgsWfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   QgsDataSourceUri dsUri;
   for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
   {
-    if ( it.key() == QLatin1String( "authcfg" ) )
+    if ( it.key() == "authcfg"_L1 )
     {
       dsUri.setAuthConfigId( it.value().toString() );
     }
@@ -258,7 +258,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
 
   QgsDataSourceUri dsUri( uri );
   dsUri.removeParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE );
-  dsUri.setParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE, QStringLiteral( "true" ) );
+  dsUri.setParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE, u"true"_s );
 
   QgsWFSProvider provider(
     dsUri.uri( false ),
@@ -279,7 +279,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   // If set: always issue a GetFeature because the guessed type can't be trusted,
   // for example when dealing with Z geometries identified as 2D.
   const bool forceInitialGetFeature = dsUri.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
-                                      && dsUri.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
+                                      && dsUri.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == "TRUE"_L1;
 
   if ( wfsUri.hasGeometryTypeFilter() || !caps.supportsGeometryTypeFilters() )
   {
@@ -307,7 +307,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     constexpr int INDEX_SURFACE = 4;
     // Order of strings in the list must be consistent with the INDEX_* enumeration above
     const QStringList filterNames = { QString(), // all features
-                                      QString( "IsNull" ), QStringLiteral( "IsPoint" ), QStringLiteral( "IsCurve" ), QStringLiteral( "IsSurface" ) };
+                                      QString( "IsNull" ), u"IsPoint"_s, u"IsCurve"_s, u"IsSurface"_s };
 
     constexpr int INDEX_GEOMETRYCOLLECTION = 5;
     std::vector<int64_t> featureCounts( INDEX_GEOMETRYCOLLECTION + 1, -1 );
@@ -344,7 +344,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
 
         QString filter;
         const QString &function = filterNames[i];
-        if ( function == QLatin1String( "IsNull" ) )
+        if ( function == "IsNull"_L1 )
         {
           filter = QgsWFSProvider::buildIsNullGeometryFilter( caps, provider.geometryColumnName() );
         }
@@ -372,11 +372,11 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         connect( thisRequest, &QgsWfsRequest::downloadFinished, thisRequest, downloadFinishedLambda );
       }
       QgsSettings s;
-      if ( !s.contains( QStringLiteral( "qgis/wfsGetFeatureGeometryTypesTimeout" ) ) )
+      if ( !s.contains( u"qgis/wfsGetFeatureGeometryTypesTimeout"_s ) )
       {
-        s.setValue( QStringLiteral( "qgis/wfsGetFeatureGeometryTypesTimeout" ), 2.0 );
+        s.setValue( u"qgis/wfsGetFeatureGeometryTypesTimeout"_s, 2.0 );
       }
-      const double timeout = s.value( QStringLiteral( "qgis/wfsGetFeatureGeometryTypesTimeout" ), 2.0 ).toDouble();
+      const double timeout = s.value( u"qgis/wfsGetFeatureGeometryTypesTimeout"_s, 2.0 ).toDouble();
       timerForHits.setInterval( static_cast<int>( timeout * 1000 ) );
       timerForHits.setSingleShot( true );
       timerForHits.start();
@@ -464,8 +464,8 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         QgsProviderSublayerDetails details;
         details.setType( Qgis::LayerType::Vector );
         details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
-        details.setUri( uri + QStringLiteral( " " ) + QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER + QStringLiteral( "='" ) + QgsWkbTypes::displayString( tuple.wkbType ) + QStringLiteral( "'" ) );
-        details.setName( wfsUri.typeName() + QStringLiteral( " " ) + QgsWkbTypes::translatedDisplayString( tuple.wkbType ) );
+        details.setUri( uri + u" "_s + QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER + u"='"_s + QgsWkbTypes::displayString( tuple.wkbType ) + u"'"_s );
+        details.setName( wfsUri.typeName() + u" "_s + QgsWkbTypes::translatedDisplayString( tuple.wkbType ) );
         details.setWkbType( tuple.wkbType );
         if ( countsAllValid )
           details.setFeatureCount( featureCounts[tuple.index] );
@@ -481,7 +481,7 @@ QgsWfsProviderMetadata::QgsWfsProviderMetadata()
 
 QIcon QgsWfsProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconWfs.svg"_s );
 }
 
 

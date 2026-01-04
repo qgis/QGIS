@@ -188,7 +188,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   connect( mActionShowCached, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowCached );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsNetworkLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, [this]( bool enabled ) {
-    QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
+    QgsSettings().setValue( u"logNetworkRequests"_s, enabled, QgsSettings::App );
     mLogger->enableLogging( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [this]() {
@@ -221,7 +221,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   settingsButton->setToolTip( tr( "Settings" ) );
   settingsButton->setMenu( settingsMenu );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mToolbar->addWidget( settingsButton );
 
   settingsMenu->addAction( mActionShowSuccessful );

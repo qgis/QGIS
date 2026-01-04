@@ -174,7 +174,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QLatin1String( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( ", "_L1 ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -193,7 +193,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "PgSourceSelect" );
+static const QString SETTINGS_WINDOWS_PATH = u"PgSourceSelect"_s;
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
@@ -378,7 +378,7 @@ void QgsPgSourceSelect::addButtonClicked()
       continue;
 
     mSelectedTables << uri;
-    if ( uri.startsWith( QLatin1String( "PG: " ) ) )
+    if ( uri.startsWith( "PG: "_L1 ) )
     {
       rasterTables.append( QPair<QString, QString>( idx.data().toString(), uri ) );
     }
@@ -396,7 +396,7 @@ void QgsPgSourceSelect::addButtonClicked()
   {
     if ( !dbTables.isEmpty() )
     {
-      emit addDatabaseLayers( dbTables, QStringLiteral( "postgres" ) );
+      emit addDatabaseLayers( dbTables, u"postgres"_s );
     }
     if ( !rasterTables.isEmpty() )
     {
@@ -404,9 +404,9 @@ void QgsPgSourceSelect::addButtonClicked()
       {
         // Use "gdal" to proxy rasters to GDAL provider, or "postgresraster" for native PostGIS raster provider
         Q_NOWARN_DEPRECATED_PUSH
-        emit addRasterLayer( u.second, u.first, QLatin1String( "postgresraster" ) );
+        emit addRasterLayer( u.second, u.first, "postgresraster"_L1 );
         Q_NOWARN_DEPRECATED_POP
-        emit addLayer( Qgis::LayerType::Raster, u.second, u.first, QLatin1String( "postgresraster" ) );
+        emit addLayer( Qgis::LayerType::Raster, u.second, u.first, "postgresraster"_L1 );
       }
     }
 
@@ -512,7 +512,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "schema item found" ), 2 );
+    QgsDebugMsgLevel( u"schema item found"_s, 2 );
     return;
   }
 
@@ -521,12 +521,12 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel->layerURI( index, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no uri" ), 2 );
+    QgsDebugMsgLevel( u"no uri"_s, 2 );
     return;
   }
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "postgres" ), options );
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, u"postgres"_s, options );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
@@ -583,5 +583,5 @@ void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &select
 
 void QgsPgSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-database-layer"_s );
 }

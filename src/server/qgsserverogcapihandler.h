@@ -234,7 +234,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = u"application/json"_s ) const;
 
     /**
      * Writes \a data as HTML to the response stream in \a context using a template.

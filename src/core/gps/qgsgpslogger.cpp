@@ -31,20 +31,20 @@
 
 #include "moc_qgsgpslogger.cpp"
 
-const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettingsTree::sTreeGps, 0 );
-const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( QStringLiteral( "applyLeapSeconds" ), QgsSettingsTree::sTreeGps, true );
-const QgsSettingsEntryString *QgsGpsLogger::settingsTimestampTimeZone = new QgsSettingsEntryString( QStringLiteral( "timestampTimeZone" ), QgsSettingsTree::sTreeGps, QString() );
-const QgsSettingsEntryInteger *QgsGpsLogger::settingsTimeStampFormat = new QgsSettingsEntryInteger( QStringLiteral( "timeStampFormat" ), QgsSettingsTree::sTreeGps, Qt::LocalTime );
-const QgsSettingsEntryInteger *QgsGpsLogger::settingsLeapSecondsCorrection = new QgsSettingsEntryInteger( QStringLiteral( "leapSecondsCorrection" ), QgsSettingsTree::sTreeGps, 18 );
-const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( QStringLiteral( "acquisitionInterval" ), QgsSettingsTree::sTreeGps, 0 );
+const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( u"distanceThreshold"_s, QgsSettingsTree::sTreeGps, 0 );
+const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( u"applyLeapSeconds"_s, QgsSettingsTree::sTreeGps, true );
+const QgsSettingsEntryString *QgsGpsLogger::settingsTimestampTimeZone = new QgsSettingsEntryString( u"timestampTimeZone"_s, QgsSettingsTree::sTreeGps, QString() );
+const QgsSettingsEntryInteger *QgsGpsLogger::settingsTimeStampFormat = new QgsSettingsEntryInteger( u"timeStampFormat"_s, QgsSettingsTree::sTreeGps, Qt::LocalTime );
+const QgsSettingsEntryInteger *QgsGpsLogger::settingsLeapSecondsCorrection = new QgsSettingsEntryInteger( u"leapSecondsCorrection"_s, QgsSettingsTree::sTreeGps, 18 );
+const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( u"acquisitionInterval"_s, QgsSettingsTree::sTreeGps, 0 );
 
-const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( QStringLiteral( "m-value-attribute" ), QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Timestamp, QStringLiteral( "Which GPS attribute should be stored in geometry m values" ) ) SIP_SKIP;
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( u"m-value-attribute"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Timestamp, u"Which GPS attribute should be stored in geometry m values"_s ) SIP_SKIP;
 
-const QgsSettingsEntryBool *QgsGpsLogger::settingsGpsStoreAttributeInMValues = new QgsSettingsEntryBool( QStringLiteral( "store-attribute-in-m-values" ), QgsSettingsTree::sTreeGps, false, QStringLiteral( "Whether GPS attributes should be stored in geometry m values" ) ) SIP_SKIP;
+const QgsSettingsEntryBool *QgsGpsLogger::settingsGpsStoreAttributeInMValues = new QgsSettingsEntryBool( u"store-attribute-in-m-values"_s, QgsSettingsTree::sTreeGps, false, u"Whether GPS attributes should be stored in geometry m values"_s ) SIP_SKIP;
 
 QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QObject( parent )
-  , mWgs84CRS( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
+  , mWgs84CRS( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) )
 {
   setConnection( connection );
 
@@ -278,7 +278,7 @@ double QgsGpsLogger::totalTrackLength() const
   catch ( QgsCsException & )
   {
     // TODO report errors to user
-    QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    QgsDebugError( u"An error occurred while calculating length"_s );
     return 0;
   }
 }
@@ -295,7 +295,7 @@ double QgsGpsLogger::trackDistanceFromStart() const
   catch ( QgsCsException & )
   {
     // TODO report errors to user
-    QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    QgsDebugError( u"An error occurred while calculating length"_s );
     return 0;
   }
 }
@@ -342,7 +342,7 @@ QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component )
       catch ( QgsCsException & )
       {
         // TODO report errors to user
-        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        QgsDebugError( u"An error occurred while calculating length"_s );
         return 0;
       }
 
@@ -518,7 +518,7 @@ QDateTime QgsGpsLogger::lastTimestamp() const
       time = time.toTimeZone( destTz );
     }
 #else
-    QgsDebugError( QStringLiteral( "Qt is built without timezone support, cannot convert GPS timestamps to specified timezone." ) );
+    QgsDebugError( u"Qt is built without timezone support, cannot convert GPS timestamps to specified timezone."_s );
 #endif
   }
   else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )

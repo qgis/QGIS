@@ -24,7 +24,7 @@
 
 QString QgsSlopeAlgorithm::name() const
 {
-  return QStringLiteral( "slope" );
+  return u"slope"_s;
 }
 
 QString QgsSlopeAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsSlopeAlgorithm::group() const
 
 QString QgsSlopeAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasterterrainanalysis" );
+  return u"rasterterrainanalysis"_s;
 }
 
 QString QgsSlopeAlgorithm::shortHelpString() const
@@ -66,30 +66,60 @@ QgsSlopeAlgorithm *QgsSlopeAlgorithm::createInstance() const
 
 void QgsSlopeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Elevation layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "Z_FACTOR" ), QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Elevation layer" ) ) );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Slope" ) ) );
+  auto zFactorParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_FACTOR"_s, QObject::tr( "Z factor" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 0.0 );
+  zFactorParam->setHelp( QObject::tr( "Multiplication factor to convert vertical Z units to horizontal XY units." ) );
+  zFactorParam->setMetadata(
+    { QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"decimals"_s, 12 } } ) } } )
+    }
+  );
+  addParameter( zFactorParam.release() );
+
+  auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
+  outputNodataParam->setFlags( outputNodataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( outputNodataParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Slope" ) ) );
+}
+
+bool QgsSlopeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsRasterLayer *layer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
+  if ( !layer )
+  {
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
+  }
+
+  mLayerSource = layer->source();
+  return true;
 }
 
 QVariantMap QgsSlopeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
+  const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  const double outputNodata = parameterAsDouble( parameters, u"NODATA"_s, context );
 
-  if ( !inputLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
 
-  const double zFactor = parameterAsDouble( parameters, QStringLiteral( "Z_FACTOR" ), context );
-
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
-
-  QgsSlopeFilter slope( inputLayer->source(), outputFile, outputFormat );
+  QgsSlopeFilter slope( mLayerSource, outputFile, outputFormat );
+  if ( !creationOptions.isEmpty() )
+  {
+    slope.setCreationOptions( creationOptions.split( '|' ) );
+  }
+  slope.setOutputNodataValue( outputNodata );
   slope.setZFactor( zFactor );
   slope.processRaster( feedback );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

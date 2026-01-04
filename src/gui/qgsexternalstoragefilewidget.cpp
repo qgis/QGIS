@@ -50,7 +50,7 @@ QgsExternalStorageFileWidget::QgsExternalStorageFileWidget( QWidget *parent )
 
   mCancelButton = new QToolButton( this );
   mLayout->addWidget( mCancelButton );
-  mCancelButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) ) );
+  mCancelButton->setIcon( QgsApplication::getThemeIcon( u"/mTaskCancel.svg"_s ) );
   mCancelButton->hide();
 
   updateAcceptDrops();
@@ -66,7 +66,7 @@ void QgsExternalStorageFileWidget::setStorageType( const QString &storageType )
     mExternalStorage = QgsApplication::externalStorageRegistry()->externalStorageFromType( storageType );
     if ( !mExternalStorage )
     {
-      QgsDebugError( QStringLiteral( "Invalid storage type: %1" ).arg( storageType ) );
+      QgsDebugError( u"Invalid storage type: %1"_s.arg( storageType ) );
     }
     else
     {
@@ -182,7 +182,7 @@ void QgsExternalStorageFileWidget::updateLayout()
   mFileWidgetButton->setEnabled( !mReadOnly );
   mLineEdit->setEnabled( !mReadOnly );
 
-  mLinkEditButton->setIcon( linkVisible && !mReadOnly ? QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+  mLinkEditButton->setIcon( linkVisible && !mReadOnly ? QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ) : QgsApplication::getThemeIcon( u"/mActionSaveEdits.svg"_s ) );
 }
 
 void QgsExternalStorageFileWidget::setSelectedFileNames( QStringList fileNames )
@@ -199,7 +199,7 @@ void QgsExternalStorageFileWidget::setSelectedFileNames( QStringList fileNames )
         messageBar()->pushWarning( tr( "Storing External resource" ), tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
       }
 
-      QgsDebugError( QStringLiteral( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+      QgsDebugError( u"Storage URL expression is invalid : %1"_s.arg( mStorageUrlExpression->evalErrorString() ) );
       return;
     }
 

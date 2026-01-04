@@ -33,8 +33,8 @@ class QgsUniqueValuesAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsUniqueValuesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmUniqueValues.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmUniqueValues.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmUniqueValues.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmUniqueValues.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

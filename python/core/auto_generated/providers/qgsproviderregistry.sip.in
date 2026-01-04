@@ -614,7 +614,7 @@ only, such as ".aux.xml" files or ".shp.xml" files, or the
 cloud sources.
 
 This method tests whether any of the registered providers return
-``True`` for the their :py:func:`QgsProviderMetadata.uriIsBlocklisted()`
+``True`` for their :py:func:`QgsProviderMetadata.uriIsBlocklisted()`
 implementation for the specified URI.
 
 .. versionadded:: 3.18

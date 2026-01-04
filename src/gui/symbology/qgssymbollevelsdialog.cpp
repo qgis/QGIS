@@ -227,7 +227,7 @@ QgsLegendSymbolList QgsSymbolLevelsDialog::symbolLevels() const
 
 void QgsSymbolLevelsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#symbols-levels" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#symbols-levels"_s );
 }
 
 /// @cond PRIVATE

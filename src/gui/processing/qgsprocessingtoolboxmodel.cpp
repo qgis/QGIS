@@ -396,12 +396,12 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
 
 bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 {
-  return providerId == QLatin1String( "qgis" ) || providerId == QLatin1String( "native" ) || providerId == QLatin1String( "3d" ) || providerId == QLatin1String( "pdal" );
+  return providerId == "qgis"_L1 || providerId == "native"_L1 || providerId == "3d"_L1 || providerId == "pdal"_L1;
 }
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
 {
-  return QStringLiteral( "<p><b>%1</b></p>%2<p>%3</p>%4" ).arg( algorithm->displayName(), !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(), QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ), ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString() );
+  return u"<p><b>%1</b></p>%2<p>%3</p>%4"_s.arg( algorithm->displayName(), !algorithm->shortDescription().isEmpty() ? u"<p>%1</p>"_s.arg( algorithm->shortDescription() ) : QString(), QObject::tr( "Algorithm ID: ‘%1’" ).arg( u"<i>%1</i>"_s.arg( algorithm->id() ) ), ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? u"<b style=\"color:red\">%1</b>"_s.arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString() );
 }
 
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
@@ -507,20 +507,20 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           else if ( algorithm )
           {
             if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
-              return QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+              return QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
             return algorithm->icon();
           }
           else if ( paramType )
-            return QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
+            return QgsApplication::getThemeIcon( u"mIconModelInput.svg"_s );
           else if ( isRecentNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconHistory.svg"_s );
           else if ( isFavoriteNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconFavorites.svg"_s );
           else if ( isParameterGroupNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconModelInput.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconModelInput.svg"_s );
           else if ( !index.parent().isValid() )
             // top level groups get the QGIS icon
-            return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+            return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
           else
             return QVariant();
         }
@@ -712,7 +712,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
     {
       stream << algorithm->id();
     }
-    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ), encodedData );
+    mimeData->setData( u"application/x-vnd.qgis.qgis.algorithmid"_s, encodedData );
     return mimeData.release();
   }
   if ( isParameter( indexes.at( 0 ) ) )
@@ -726,7 +726,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
     {
       stream << paramType->id();
     }
-    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ), encodedData );
+    mimeData->setData( u"application/x-vnd.qgis.qgis.parametertypeid"_s, encodedData );
     return mimeData.release();
   }
   return nullptr;

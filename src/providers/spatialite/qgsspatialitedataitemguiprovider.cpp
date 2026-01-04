@@ -59,7 +59,7 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     QAction *actionDeleteConnection = new QAction( slConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDeleteConnection, &QAction::triggered, this, [slConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( slConnectionItems, []( const QString &connectionName ) {
-        QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+        QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s );
         providerMetadata->deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDeleteConnection );
@@ -119,19 +119,19 @@ void QgsSpatiaLiteDataItemGuiProvider::newConnection( QgsDataItem *item )
 void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
 {
   const QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"UI/lastSpatiaLiteDir"_s, QDir::homePath() ).toString();
 
   QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ), lastUsedDir, tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
   if ( filename.isEmpty() )
     return;
 
-  filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "sqlite3" ) << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) );
+  filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << u"sqlite"_s << u"db"_s << u"sqlite3"_s << u"db3"_s << u"s3db"_s );
 
   QString errCause;
   if ( SpatiaLiteUtils::createDb( filename, errCause ) )
   {
-    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
-    std::unique_ptr<QgsSpatiaLiteProviderConnection> providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( QStringLiteral( "dbname='%1'" ).arg( filename ), QVariantMap() ) ) );
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s );
+    std::unique_ptr<QgsSpatiaLiteProviderConnection> providerConnection( qgis::down_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( u"dbname='%1'"_s.arg( filename ), QVariantMap() ) ) );
     if ( providerConnection )
     {
       const QFileInfo fi( filename );
@@ -152,7 +152,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == "vector"_L1 )
   {
     return handleDropUri( connItem, sourceUris.at( 0 ), context );
   }
@@ -181,7 +181,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
 
     if ( srcLayer->isValid() )
     {
-      QString geomColumn { QStringLiteral( "geom" ) };
+      QString geomColumn { u"geom"_s };
       if ( !srcLayer->dataProvider()->geometryColumnName().isEmpty() )
       {
         geomColumn = srcLayer->dataProvider()->geometryColumnName();
@@ -196,7 +196,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
       const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
       QgsDebugMsgLevel( "URI " + destUri, 2 );
 
-      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, QStringLiteral( "spatialite" ), srcLayer->crs(), providerOptions, owner );
+      auto exportTask = std::make_unique<QgsVectorLayerExporterTask>( srcLayer, destUri, u"spatialite"_s, srcLayer->crs(), providerOptions, owner );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, connItem, [connItem]() {

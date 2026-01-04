@@ -86,6 +86,7 @@ from .OgrToPostGis import OgrToPostGis
 from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .OneSideBuffer import OneSideBuffer
 from .PointsAlongLines import PointsAlongLines
+from .CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
 
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 
@@ -189,6 +190,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ExtractProjection(),
             rasterize_over(),
             rasterize_over_fixed_value(),
+            CreateCloudOptimizedGeoTIFF(),
             # ----- OGR tools -----
             Buffer(),
             ClipVectorByExtent(),

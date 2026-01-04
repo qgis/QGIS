@@ -46,11 +46,7 @@ ELSE(QSCI_MOD_VERSION_STR)
 
     EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} ${_find_qsci_py} ${QSCI_VER} OUTPUT_VARIABLE qsci_ver)
 
-    IF(BUILD_WITH_QT6)
-      SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
-    ELSE()
-      SET(QSCI_SIP_MOD_NAME Qsci/qscimod5.sip)
-    ENDIF()
+    SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
 
     IF(qsci_ver)
       STRING(REGEX REPLACE "^qsci_version_str:([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${qsci_ver})

@@ -607,11 +607,11 @@ Convert ``value`` to ``type``
 Returns the transaction this data provider is included in, if any.
 %End
 
- virtual void forceReload() /Deprecated="Since 3.12. Will be removed in QGIS 4.0 - use reloadData() instead."/;
+ virtual void forceReload() /Deprecated="Since 3.12. Will be removed in QGIS 5.0 - use reloadData() instead."/;
 %Docstring
 .. deprecated:: 3.12
 
-   Will be removed in QGIS 4.0 - use :py:func:`~QgsVectorDataProvider.reloadData` instead.
+   Will be removed in QGIS 5.0 - use :py:func:`~QgsVectorDataProvider.reloadData` instead.
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;

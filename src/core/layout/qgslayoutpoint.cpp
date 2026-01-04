@@ -58,7 +58,7 @@ QPointF QgsLayoutPoint::toQPointF() const
 
 QString QgsLayoutPoint::encodePoint() const
 {
-  return QStringLiteral( "%1,%2,%3" ).arg( mX ).arg( mY ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+  return u"%1,%2,%3"_s.arg( mX ).arg( mY ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
 }
 
 QgsLayoutPoint QgsLayoutPoint::decodePoint( const QString &string )

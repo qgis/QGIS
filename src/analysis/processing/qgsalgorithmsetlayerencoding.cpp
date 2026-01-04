@@ -24,7 +24,7 @@
 
 QString QgsSetLayerEncodingAlgorithm::name() const
 {
-  return QStringLiteral( "setlayerencoding" );
+  return u"setlayerencoding"_s;
 }
 
 QString QgsSetLayerEncodingAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsSetLayerEncodingAlgorithm::group() const
 
 QString QgsSetLayerEncodingAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsSetLayerEncodingAlgorithm::shortHelpString() const
@@ -66,20 +66,20 @@ QgsSetLayerEncodingAlgorithm *QgsSetLayerEncodingAlgorithm::createInstance() con
 
 void QgsSetLayerEncodingAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterString( u"ENCODING"_s, QObject::tr( "Encoding" ) ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
 }
 
 bool QgsSetLayerEncodingAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( "INPUT"_L1 ) );
 
-  const QString encoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
+  const QString encoding = parameterAsString( parameters, u"ENCODING"_s, context );
 
   mOutputId = layer->id();
   QgsVectorDataProvider *provider = layer->dataProvider();
@@ -100,7 +100,7 @@ bool QgsSetLayerEncodingAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 QVariantMap QgsSetLayerEncodingAlgorithm::processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), mOutputId );
+  outputs.insert( u"OUTPUT"_s, mOutputId );
   return outputs;
 }
 

@@ -24,7 +24,7 @@
 
 QString QgsPdalThinByDecimateAlgorithm::name() const
 {
-  return QStringLiteral( "thinbydecimate" );
+  return u"thinbydecimate"_s;
 }
 
 QString QgsPdalThinByDecimateAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalThinByDecimateAlgorithm::group() const
 
 QString QgsPdalThinByDecimateAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalThinByDecimateAlgorithm::tags() const
@@ -64,28 +64,28 @@ QgsPdalThinByDecimateAlgorithm *QgsPdalThinByDecimateAlgorithm::createInstance()
 
 void QgsPdalThinByDecimateAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points to skip" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"POINTS_NUMBER"_s, QObject::tr( "Number of points to skip" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned (by decimation)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Thinned (by decimation)" ) ) );
 }
 
 QStringList QgsPdalThinByDecimateAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  int step = parameterAsInt( parameters, QStringLiteral( "POINTS_NUMBER" ), context );
+  int step = parameterAsInt( parameters, u"POINTS_NUMBER"_s, context );
 
-  QStringList args = { QStringLiteral( "thin" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--mode=every-nth" ), QStringLiteral( "--step-every-nth=%1" ).arg( step ) };
+  QStringList args = { u"thin"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--mode=every-nth"_s, u"--step-every-nth=%1"_s.arg( step ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

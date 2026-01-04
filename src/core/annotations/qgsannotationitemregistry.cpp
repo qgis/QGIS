@@ -44,19 +44,19 @@ bool QgsAnnotationItemRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
-  mMetadata.insert( QStringLiteral( "marker" ), new QgsAnnotationItemMetadata( QStringLiteral( "marker" ), QObject::tr( "Marker" ), QObject::tr( "Markers" ),
+  mMetadata.insert( u"marker"_s, new QgsAnnotationItemMetadata( u"marker"_s, QObject::tr( "Marker" ), QObject::tr( "Markers" ),
                     QgsAnnotationMarkerItem::create ) );
-  mMetadata.insert( QStringLiteral( "linestring" ), new QgsAnnotationItemMetadata( QStringLiteral( "linestring" ), QObject::tr( "Polyline" ), QObject::tr( "Polylines" ),
+  mMetadata.insert( u"linestring"_s, new QgsAnnotationItemMetadata( u"linestring"_s, QObject::tr( "Polyline" ), QObject::tr( "Polylines" ),
                     QgsAnnotationLineItem::create ) );
-  mMetadata.insert( QStringLiteral( "polygon" ), new QgsAnnotationItemMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ), QObject::tr( "Polygons" ),
+  mMetadata.insert( u"polygon"_s, new QgsAnnotationItemMetadata( u"polygon"_s, QObject::tr( "Polygon" ), QObject::tr( "Polygons" ),
                     QgsAnnotationPolygonItem::create ) );
-  mMetadata.insert( QStringLiteral( "pointtext" ), new QgsAnnotationItemMetadata( QStringLiteral( "pointtext" ), QObject::tr( "Text at point" ), QObject::tr( "Text at points" ),
+  mMetadata.insert( u"pointtext"_s, new QgsAnnotationItemMetadata( u"pointtext"_s, QObject::tr( "Text at point" ), QObject::tr( "Text at points" ),
                     QgsAnnotationPointTextItem::create ) );
-  mMetadata.insert( QStringLiteral( "linetext" ), new QgsAnnotationItemMetadata( QStringLiteral( "linetext" ), QObject::tr( "Text along line" ), QObject::tr( "Text along lines" ),
+  mMetadata.insert( u"linetext"_s, new QgsAnnotationItemMetadata( u"linetext"_s, QObject::tr( "Text along line" ), QObject::tr( "Text along lines" ),
                     QgsAnnotationLineTextItem::create ) );
-  mMetadata.insert( QStringLiteral( "recttext" ), new QgsAnnotationItemMetadata( QStringLiteral( "recttext" ), QObject::tr( "Text in rectangle" ), QObject::tr( "Text in rectangles" ),
+  mMetadata.insert( u"recttext"_s, new QgsAnnotationItemMetadata( u"recttext"_s, QObject::tr( "Text in rectangle" ), QObject::tr( "Text in rectangles" ),
                     QgsAnnotationRectangleTextItem::create ) );
-  mMetadata.insert( QStringLiteral( "picture" ), new QgsAnnotationItemMetadata( QStringLiteral( "picture" ), QObject::tr( "Picture" ), QObject::tr( "Pictures" ),
+  mMetadata.insert( u"picture"_s, new QgsAnnotationItemMetadata( u"picture"_s, QObject::tr( "Picture" ), QObject::tr( "Pictures" ),
                     QgsAnnotationPictureItem::create ) );
   return true;
 }

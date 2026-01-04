@@ -16,6 +16,7 @@
 #ifndef QGSALIGNMENTCOMBOBOX_H
 #define QGSALIGNMENTCOMBOBOX_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
@@ -60,6 +61,36 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
      * \see currentAlignment()
      */
     void setCurrentAlignment( Qt::Alignment alignment );
+
+    /**
+     * Returns the current alignment choice as a QGIS horizontal text alignment enum.
+     *
+     * \see verticalAlignment()
+     * \since QGIS 4.0
+     */
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+
+    /**
+     * Returns the current alignment choice as a QGIS horizontal text alignment enum.
+     *
+     * \see verticalAlignment()
+     * \since QGIS 4.0
+     */
+    Qgis::TextVerticalAlignment verticalAlignment() const;
+
+    /**
+     * Sets the current \a alignment choice from a QGIS horizontal text alignment enum.
+     *
+     * \since QGIS 4.0
+     */
+    void setCurrentAlignment( Qgis::TextHorizontalAlignment alignment );
+
+    /**
+     * Sets the current \a alignment choice from a QGIS vertical text alignment enum.
+     *
+     * \since QGIS 4.0
+     */
+    void setCurrentAlignment( Qgis::TextVerticalAlignment alignment );
 
     /**
      * Sets the \a text and \a icon to use for a particular \a alignment option,

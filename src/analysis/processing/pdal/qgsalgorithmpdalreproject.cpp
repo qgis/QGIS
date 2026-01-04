@@ -24,7 +24,7 @@
 
 QString QgsPdalReprojectAlgorithm::name() const
 {
-  return QStringLiteral( "reproject" );
+  return u"reproject"_s;
 }
 
 QString QgsPdalReprojectAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalReprojectAlgorithm::group() const
 
 QString QgsPdalReprojectAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalReprojectAlgorithm::tags() const
@@ -64,37 +64,37 @@ QgsPdalReprojectAlgorithm *QgsPdalReprojectAlgorithm::createInstance() const
 
 void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Target CRS" ), u"EPSG:4326"_s ) );
 
-  auto crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ), QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "CRS" ), QVariant(), QVariant(), true );
+  auto crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( u"OPERATION"_s, QObject::tr( "Coordinate operation" ), QVariant(), u"INPUT"_s, u"CRS"_s, QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Reprojected" ) ) );
 }
 
 QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
 
-  QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--transform-crs=%1" ).arg( crs.authid() ) };
+  QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--transform-crs=%1"_s.arg( crs.authid() ) };
 
-  const QString coordOp = parameterAsString( parameters, QStringLiteral( "OPERATION" ), context );
+  const QString coordOp = parameterAsString( parameters, u"OPERATION"_s, context );
   if ( !coordOp.isEmpty() )
   {
-    args << QStringLiteral( "--transform-coord-op=%1" ).arg( coordOp );
+    args << u"--transform-coord-op=%1"_s.arg( coordOp );
   }
 
   applyThreadsParameter( args, context );

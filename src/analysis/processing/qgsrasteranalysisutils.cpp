@@ -184,18 +184,18 @@ void populateDataTypes()
 {
   if ( sDataTypes.empty() )
   {
-    sDataTypes.append( qMakePair( QStringLiteral( "Byte" ), Qgis::DataType::Byte ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int16" ), Qgis::DataType::Int16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "UInt16" ), Qgis::DataType::UInt16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int32" ), Qgis::DataType::Int32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "UInt32" ), Qgis::DataType::UInt32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Float32" ), Qgis::DataType::Float32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Float64" ), Qgis::DataType::Float64 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CInt16" ), Qgis::DataType::CInt16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CInt32" ), Qgis::DataType::CInt32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CFloat32" ), Qgis::DataType::CFloat32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CFloat64" ), Qgis::DataType::CFloat64 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int8" ), Qgis::DataType::Int8 ) );
+    sDataTypes.append( qMakePair( u"Byte"_s, Qgis::DataType::Byte ) );
+    sDataTypes.append( qMakePair( u"Int16"_s, Qgis::DataType::Int16 ) );
+    sDataTypes.append( qMakePair( u"UInt16"_s, Qgis::DataType::UInt16 ) );
+    sDataTypes.append( qMakePair( u"Int32"_s, Qgis::DataType::Int32 ) );
+    sDataTypes.append( qMakePair( u"UInt32"_s, Qgis::DataType::UInt32 ) );
+    sDataTypes.append( qMakePair( u"Float32"_s, Qgis::DataType::Float32 ) );
+    sDataTypes.append( qMakePair( u"Float64"_s, Qgis::DataType::Float64 ) );
+    sDataTypes.append( qMakePair( u"CInt16"_s, Qgis::DataType::CInt16 ) );
+    sDataTypes.append( qMakePair( u"CInt32"_s, Qgis::DataType::CInt32 ) );
+    sDataTypes.append( qMakePair( u"CFloat32"_s, Qgis::DataType::CFloat32 ) );
+    sDataTypes.append( qMakePair( u"CFloat64"_s, Qgis::DataType::CFloat64 ) );
+    sDataTypes.append( qMakePair( u"Int8"_s, Qgis::DataType::Int8 ) );
   }
 }
 

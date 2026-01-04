@@ -78,16 +78,16 @@ class QgsGenericSpatialIndex
       catch ( Tools::Exception &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "Tools::Exception caught when inserting data to QgsGenericSpatialIndex: %1" ).arg( e.what().c_str() ) );
+        QgsDebugError( u"Tools::Exception caught when inserting data to QgsGenericSpatialIndex: %1"_s.arg( e.what().c_str() ) );
       }
       catch ( const std::exception &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "std::exception caught when inserting data to QgsGenericSpatialIndex: %1" ).arg( e.what() ) );
+        QgsDebugError( u"std::exception caught when inserting data to QgsGenericSpatialIndex: %1"_s.arg( e.what() ) );
       }
       catch ( ... )
       {
-        QgsDebugError( QStringLiteral( "unknown spatial index exception caught when inserting data to QgsGenericSpatialIndex" ) );
+        QgsDebugError( u"unknown spatial index exception caught when inserting data to QgsGenericSpatialIndex"_s );
       }
 
       return false;
@@ -134,16 +134,16 @@ class QgsGenericSpatialIndex
       catch ( Tools::Exception &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "Tools::Exception caught in QgsGenericSpatialIndex::intersects: %1" ).arg( e.what().c_str() ) );
+        QgsDebugError( u"Tools::Exception caught in QgsGenericSpatialIndex::intersects: %1"_s.arg( e.what().c_str() ) );
       }
       catch ( const std::exception &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "std::exception caught in QgsGenericSpatialIndex::intersects: %1" ).arg( e.what() ) );
+        QgsDebugError( u"std::exception caught in QgsGenericSpatialIndex::intersects: %1"_s.arg( e.what() ) );
       }
       catch ( ... )
       {
-        QgsDebugError( QStringLiteral( "unknown spatial index exception caught in QgsGenericSpatialIndex::intersects" ) );
+        QgsDebugError( u"unknown spatial index exception caught in QgsGenericSpatialIndex::intersects"_s );
       }
 
       return true;

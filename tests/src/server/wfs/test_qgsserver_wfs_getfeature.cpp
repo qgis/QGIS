@@ -58,14 +58,14 @@ void TestQgsServerWfsGetFeature::nullValueProperty()
   // init project
   QgsProject project;
 
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=name0:int&field=name1:int&field=name2:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( u"Point?crs=epsg:4326&field=name0:int&field=name1:int&field=name2:int"_s, u"vl"_s, u"memory"_s );
 
   QgsFields fields;
-  const QgsField field0( QStringLiteral( "name0" ) );
+  const QgsField field0( u"name0"_s );
   fields.append( field0 );
-  const QgsField field1( QStringLiteral( "name1" ) );
+  const QgsField field1( u"name1"_s );
   fields.append( field1 );
-  const QgsField field2( QStringLiteral( "name2" ) );
+  const QgsField field2( u"name2"_s );
   fields.append( field2 );
 
   QgsFeature f;
