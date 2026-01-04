@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "3c72dc8024704288fa43cb5fbcdf60e6e554c340",
+        "baseline": "35ef49576c77579c0d764a71f490373e44f2520a",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -128,7 +128,8 @@
         {
           "name": "py-geopandas",
           "features": [
-            "fiona"
+            "fiona",
+            "arrow"
           ]
         },
         "py-scipy",
