@@ -778,7 +778,7 @@ CREATE OR REPLACE TRIGGER qgis_project_versions
 
 bool QgsPostgresUtils::disableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )
 {
-  const QString sqlDropTrigger = QStringLiteral( "DROP TRIGGER IF EXISTS qgis_project_versions ON %1.qgis_projects;" )
+  const QString sqlDropTrigger = u"DROP TRIGGER IF EXISTS qgis_project_versions ON %1.qgis_projects;"_s
                                    .arg( QgsPostgresConn::quotedIdentifier( schema ) );
 
   QgsPostgresResult result( conn->PQexec( sqlDropTrigger ) );
@@ -803,12 +803,12 @@ bool QgsPostgresUtils::qgisProjectVersioningEnabled( QgsPostgresConn *conn, cons
                              .arg( QgsPostgresConn::quotedValue( schema ) );
 
   QgsPostgresResult res( conn->PQexec( sqlCheck ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( QLatin1Char( 't' ) ) && res.PQgetvalue( 0, 1 ).startsWith( QLatin1Char( 't' ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 ) && res.PQgetvalue( 0, 1 ).startsWith( 't'_L1 );
 }
 
 bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
 {
-  const QString sqlCopy = QStringLiteral( "INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;" )
+  const QString sqlCopy = u"INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;"_s
                             .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
                             .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
                             .arg( QgsPostgresConn::quotedValue( project ) );
@@ -820,7 +820,7 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
     return false;
   }
 
-  const QString sqlDelete = QStringLiteral( "DELETE FROM %1.qgis_projects_versions WHERE name=%2;" )
+  const QString sqlDelete = u"DELETE FROM %1.qgis_projects_versions WHERE name=%2;"_s
                               .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
                               .arg( QgsPostgresConn::quotedValue( project ) );
   ;
