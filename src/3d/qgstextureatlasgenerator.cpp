@@ -182,12 +182,6 @@ QgsTextureAtlas QgsTextureAtlasGenerator::generateAtlas( std::vector< QgsTexture
   if ( !result )
     return QgsTextureAtlas();
 
-  // rectpack2D::find_best_packing will have rearranged rects. Sort it back to the original order
-  // so that we can retrieve the results by their original indices.
-  std::sort( rects.begin(), rects.end(), []( const QgsTextureRect &a, const QgsTextureRect &b ) {
-    return a.id < b.id;
-  } );
-
   QgsTextureAtlas res;
   res.mRects = std::move( rects );
   res.mAtlasSize = QSize( resultSize.w, resultSize.h );
