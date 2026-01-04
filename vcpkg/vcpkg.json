@@ -128,8 +128,7 @@
         {
           "name": "py-geopandas",
           "features": [
-            "fiona",
-            "arrow"
+            "fiona"
           ]
         },
         "py-scipy",
