@@ -53,6 +53,11 @@ Rectangle {
       elide: Text.ElideRight
       maximumLineCount: 4
       lineHeight: 1.3
+      linkColor: "#589632"
+      
+      onLinkActivated: link => {
+        Qt.openUrlExternally(link);
+      }
     }
 
     Text {
