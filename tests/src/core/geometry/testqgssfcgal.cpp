@@ -174,7 +174,7 @@ class TestQgsSfcgal : public QgsTest
 };
 
 TestQgsSfcgal::TestQgsSfcgal()
-  : QgsTest( QStringLiteral( "Geometry Tests" ) )
+  : QgsTest( u"Geometry Tests"_s )
   , mpPolygonGeometryA( nullptr )
   , mpPolygonGeometryB( nullptr )
   , mpPolygonGeometryC( nullptr )
@@ -488,13 +488,13 @@ void TestQgsSfcgal::centroid()
   QVERIFY_EXCEPTION_THROWN( geomZC->centroid(), QgsNotSupportedException );
 #else
   auto res = std::make_unique<QgsPoint>( geomZA->centroid() );
-  QCOMPARE( res->asWkt( 2 ), QStringLiteral( "Point Z (-5673.79 3594.8 20)" ) );
+  QCOMPARE( res->asWkt( 2 ), u"Point Z (-5673.79 3594.8 20)"_s );
 
   res = std::make_unique<QgsPoint>( geomZB->centroid() );
-  QCOMPARE( res->asWkt( 2 ), QStringLiteral( "Point Z (-5150.77 3351.12 0)" ) );
+  QCOMPARE( res->asWkt( 2 ), u"Point Z (-5150.77 3351.12 0)"_s );
 
   res = std::make_unique<QgsPoint>( geomZC->centroid() );
-  QCOMPARE( res->asWkt( 2 ), QStringLiteral( "Point Z (-6734.85 4471.67 -28.34)" ) );
+  QCOMPARE( res->asWkt( 2 ), u"Point Z (-6734.85 4471.67 -28.34)"_s );
 #endif
 }
 
@@ -662,20 +662,20 @@ void TestQgsSfcgal::scale()
   // simple 2D Point
   QgsSfcgalGeometry sfcgalPoint( "POINT (4 3)" );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint( sfcgalPoint.scale( QgsVector3D( 2, 3, 0 ), QgsPoint() ) );
-  QCOMPARE( sfcgalScalePoint->asWkt( 0 ), QStringLiteral( "POINT (8 9)" ) );
+  QCOMPARE( sfcgalScalePoint->asWkt( 0 ), u"POINT (8 9)"_s );
 
   // simple 2D Point with center
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePointCenter( sfcgalPoint.scale( QgsVector3D( 2, 3, 0 ), QgsPoint( 1, 1 ) ) );
-  QCOMPARE( sfcgalScalePointCenter->asWkt( 0 ), QStringLiteral( "POINT (7 7)" ) );
+  QCOMPARE( sfcgalScalePointCenter->asWkt( 0 ), u"POINT (7 7)"_s );
 
   // simple 3D Point
   QgsSfcgalGeometry sfcgalPoint3D( "POINT Z (4 3 2)" );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3D( sfcgalPoint3D.scale( QgsVector3D( 2, 3, 4 ), QgsPoint() ) );
-  QCOMPARE( sfcgalScalePoint3D->asWkt( 0 ), QStringLiteral( "POINT Z (8 9 8)" ) );
+  QCOMPARE( sfcgalScalePoint3D->asWkt( 0 ), u"POINT Z (8 9 8)"_s );
 
   // simple 3D Point with center
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3DCenter( sfcgalPoint3D.scale( QgsVector3D( 2, 3, 4 ), QgsPoint( 1, 1, 2 ) ) );
-  QCOMPARE( sfcgalScalePoint3DCenter->asWkt( 0 ), QStringLiteral( "POINT Z (7 7 2)" ) );
+  QCOMPARE( sfcgalScalePoint3DCenter->asWkt( 0 ), u"POINT Z (7 7 2)"_s );
 
   // 3D Polygon - no center
   auto sfcgalPolygonA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
@@ -725,7 +725,7 @@ void TestQgsSfcgal::intersection()
   const QgsPolygon *intersectionPoly = qgsgeometry_cast<const QgsPolygon *>( intersectionGeom->asQgisGeometry().release() );
   QVERIFY( intersectionPoly );                               // check that the union created a feature
   QVERIFY( intersectionPoly->exteriorRing()->length() > 0 ); // check that the union created a feature
-  QCOMPARE( intersectionPoly->exteriorRing()->asWkt(), QStringLiteral( "LineString (40 80, 40 40, 80 40, 80 80, 40 80)" ) );
+  QCOMPARE( intersectionPoly->exteriorRing()->asWkt(), u"LineString (40 80, 40 40, 80 40, 80 80, 40 80)"_s );
 
   paintPolygon( intersectionPoly );
   QGSVERIFYIMAGECHECK( "Checking if A intersects B (SFCGAL)", "geometry_intersectionCheck1", mImage, QString(), 0 );
@@ -761,8 +761,8 @@ void TestQgsSfcgal::intersection3d()
 
     const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry().release() );
     QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
-    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5863.79 3335.64 20, -5551.89 3559.33 20)" ) );
-    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5520.8 3581.62 20, -5551.89 3559.33 20)" ) );
+    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), u"LineString Z (-5863.79 3335.64 20, -5551.89 3559.33 20)"_s );
+    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), u"LineString Z (-5520.8 3581.62 20, -5551.89 3559.33 20)"_s );
   }
 
   {
@@ -779,8 +779,8 @@ void TestQgsSfcgal::intersection3d()
 
     const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry().release() );
     QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
-    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)" ) );
-    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)" ) );
+    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), u"LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)"_s );
+    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), u"LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)"_s );
   }
 
   {

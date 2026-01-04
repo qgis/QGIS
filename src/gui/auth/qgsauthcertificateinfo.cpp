@@ -112,7 +112,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
   for ( int i = 0; i < certpairs.size(); ++i )
   {
     QCA::ConvertResult res;
-    const QCA::Certificate acert = QCA::Certificate::fromPEM( certpairs.at( i ).second.toPem(), &res, QStringLiteral( "qca-ossl" ) );
+    const QCA::Certificate acert = QCA::Certificate::fromPEM( certpairs.at( i ).second.toPem(), &res, u"qca-ossl"_s );
     if ( res == QCA::ConvertGood && !acert.isNull() )
     {
       mCaCerts.addCertificate( acert );
@@ -124,7 +124,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
     for ( const QSslCertificate &cert : constMConnectionCAs )
     {
       QCA::ConvertResult res;
-      const QCA::Certificate acert = QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) );
+      const QCA::Certificate acert = QCA::Certificate::fromPEM( cert.toPem(), &res, u"qca-ossl"_s );
       if ( res == QCA::ConvertGood && !acert.isNull() )
       {
         mCaCerts.addCertificate( acert );
@@ -143,7 +143,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
 bool QgsAuthCertInfo::setQcaCertificate( const QSslCertificate &cert )
 {
   QCA::ConvertResult res;
-  mCert = QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) );
+  mCert = QCA::Certificate::fromPEM( cert.toPem(), &res, u"qca-ossl"_s );
   if ( res != QCA::ConvertGood || mCert.isNull() )
   {
     setupError( tr( "Could not set QCA certificate" ) );
@@ -168,7 +168,7 @@ bool QgsAuthCertInfo::populateCertChain()
 
   if ( mACertChain.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Could not populate QCA certificate chain" ) );
+    QgsDebugError( u"Could not populate QCA certificate chain"_s );
     mACertChain = certchain;
   }
 
@@ -207,7 +207,7 @@ void QgsAuthCertInfo::setCertHierarchy()
     if ( missingCA && it.hasPrevious() )
     {
       cert_source = QgsAuthCertUtils::resolvedCertName( it.peekPrevious(), true );
-      cert_source += QStringLiteral( " (%1)" ).arg( tr( "Missing CA" ) );
+      cert_source += u" (%1)"_s.arg( tr( "Missing CA" ) );
     }
     else
     {
@@ -216,11 +216,11 @@ void QgsAuthCertInfo::setCertHierarchy()
       if ( mCaCertsCache.contains( sha ) )
       {
         const QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> &certpair( mCaCertsCache.value( sha ) );
-        cert_source += QStringLiteral( " (%1)" ).arg( QgsAuthCertUtils::getCaSourceName( certpair.first, true ) );
+        cert_source += u" (%1)"_s.arg( QgsAuthCertUtils::getCaSourceName( certpair.first, true ) );
       }
       else if ( mConnectionCAs.contains( cert ) )
       {
-        cert_source += QStringLiteral( " (%1)" )
+        cert_source += u" (%1)"_s
                          .arg( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::Connection, true ) );
       }
     }
@@ -405,7 +405,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
     le->setCursorPosition( 0 );
     if ( color.isValid() )
     {
-      le->setStyleSheet( QStringLiteral( "QLineEdit { color: %1; }" ).arg( color.name() ) );
+      le->setStyleSheet( u"QLineEdit { color: %1; }"_s.arg( color.name() ) );
     }
     item->treeWidget()->setItemWidget( item, 1, le );
   }
@@ -418,7 +418,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
     pte->moveCursor( QTextCursor::Start );
     if ( color.isValid() )
     {
-      pte->setStyleSheet( QStringLiteral( "QPlainTextEdit { color: %1; }" ).arg( color.name() ) );
+      pte->setStyleSheet( u"QPlainTextEdit { color: %1; }"_s.arg( color.name() ) );
     }
     item->treeWidget()->setItemWidget( item, 1, pte );
   }
@@ -463,12 +463,12 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   }
   if ( ( isissuer || isca ) && isselfsigned )
   {
-    certype = QStringLiteral( "%1 %2" )
+    certype = u"%1 %2"_s
                 .arg( tr( "Root" ), QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
   }
   if ( isselfsigned )
   {
-    certype.append( certype.isEmpty() ? selfsigned : QStringLiteral( " (%1)" ).arg( selfsigned ) );
+    certype.append( certype.isEmpty() ? selfsigned : u" (%1)"_s.arg( selfsigned ) );
   }
 
   addFieldItem( mSecGeneral, tr( "Usage type" ), certype, LineEdit );
@@ -479,7 +479,7 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   const QSslKey pubkey( mCurrentQCert.publicKey() );
   const QString alg( pubkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
   const int bitsize( pubkey.length() );
-  addFieldItem( mSecGeneral, tr( "Public key" ), QStringLiteral( "%1, %2 bits" ).arg( alg, bitsize == -1 ? QStringLiteral( "?" ) : QString::number( bitsize ) ), LineEdit );
+  addFieldItem( mSecGeneral, tr( "Public key" ), u"%1, %2 bits"_s.arg( alg, bitsize == -1 ? u"?"_s : QString::number( bitsize ) ), LineEdit );
   addFieldItem( mSecGeneral, tr( "Signature algorithm" ), QgsAuthCertUtils::qcaSignatureAlgorithm( mCurrentACert.signatureAlgorithm() ), LineEdit );
 }
 
@@ -576,8 +576,8 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   const QSslKey pubqkey( mCurrentQCert.publicKey() );
   const QString alg( pubqkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
   const int bitsize( pubqkey.length() );
-  addFieldItem( mGrpPkey, tr( "Algorithm" ), bitsize == -1 ? QStringLiteral( "Unknown (possibly Elliptic Curve)" ) : alg, LineEdit );
-  addFieldItem( mGrpPkey, tr( "Key size" ), bitsize == -1 ? QStringLiteral( "?" ) : QString::number( bitsize ), LineEdit );
+  addFieldItem( mGrpPkey, tr( "Algorithm" ), bitsize == -1 ? u"Unknown (possibly Elliptic Curve)"_s : alg, LineEdit );
+  addFieldItem( mGrpPkey, tr( "Key size" ), bitsize == -1 ? u"?"_s : QString::number( bitsize ), LineEdit );
   if ( bitsize > 0 ) // ECC keys unsupported by Qt/QCA, so returned key size is 0
   {
     const QCA::PublicKey pubakey( mCurrentACert.subjectPublicKey() );
@@ -631,7 +631,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
     }
     if ( !usage.isEmpty() )
     {
-      addFieldItem( mGrpPkey, tr( "Key usage" ), usage.join( QLatin1String( ", " ) ), LineEdit );
+      addFieldItem( mGrpPkey, tr( "Key usage" ), usage.join( ", "_L1 ), LineEdit );
     }
   }
 
@@ -697,7 +697,7 @@ void QgsAuthCertInfo::btnSaveTrust_clicked()
   const QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsApplication::authManager()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
   {
-    QgsDebugError( QStringLiteral( "Could not set trust policy for certificate" ) );
+    QgsDebugError( u"Could not set trust policy for certificate"_s );
   }
   mCurrentTrustPolicy = newpolicy;
   decorateCertTreeItem( mCurrentQCert, newpolicy, nullptr );
@@ -728,7 +728,7 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert, QgsAuth
 
   if ( cert.isNull() || trustpolicy == QgsAuthCertUtils::NoPolicy )
   {
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateMissing.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateMissing.svg"_s ) );
     // missing CA, color gray and italicize
     QBrush b( item->foreground( 0 ) );
     b.setColor( QColor::fromRgb( 90, 90, 90 ) );
@@ -741,22 +741,22 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert, QgsAuth
 
   if ( !QgsAuthCertUtils::certIsViable( cert ) )
   {
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     return;
   }
 
   if ( trustpolicy == QgsAuthCertUtils::Trusted )
   {
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateTrusted.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateTrusted.svg"_s ) );
   }
   else if ( trustpolicy == QgsAuthCertUtils::Untrusted
             || ( trustpolicy == QgsAuthCertUtils::DefaultTrust && mDefaultTrustPolicy == QgsAuthCertUtils::Untrusted ) )
   {
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
   }
   else
   {
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
   }
 }
 

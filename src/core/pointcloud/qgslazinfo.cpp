@@ -42,7 +42,7 @@ void QgsLazInfo::parseRawHeader( char *data, uint64_t length )
   mIsValid = true;
   if ( std::string( data, 4 ) != "LASF" )
   {
-    mError = QStringLiteral( "Supplied header is not from a LAZ file" );
+    mError = u"Supplied header is not from a LAZ file"_s;
     mIsValid = false;
     return;
   }
@@ -110,7 +110,7 @@ void QgsLazInfo::parseCrs()
   // TODO: handle other kind of CRS in the laz spec
   for ( LazVlr &vlr : mVlrVector )
   {
-    if ( vlr.userId.trimmed() == QLatin1String( "LASF_Projection" ) && vlr.recordId == 2112 )
+    if ( vlr.userId.trimmed() == "LASF_Projection"_L1 && vlr.recordId == 2112 )
     {
       mCrs = QgsCoordinateReferenceSystem::fromWkt( QString::fromStdString( vlr.data.toStdString() ) );
       break;
@@ -121,20 +121,20 @@ void QgsLazInfo::parseCrs()
 QVariantMap QgsLazInfo::toMetadata() const
 {
   QVariantMap metadata;
-  metadata[ QStringLiteral( "creation_year" ) ] = mHeader.creation.year;
-  metadata[ QStringLiteral( "creation_day" ) ] = mHeader.creation.day;
-  metadata[ QStringLiteral( "major_version" ) ] = mHeader.version.major;
-  metadata[ QStringLiteral( "minor_version" ) ] = mHeader.version.minor;
-  metadata[ QStringLiteral( "dataformat_id" ) ] = mHeader.pointFormat();
-  metadata[ QStringLiteral( "scale_x" ) ] = mScale.x();
-  metadata[ QStringLiteral( "scale_y" ) ] = mScale.y();
-  metadata[ QStringLiteral( "scale_z" ) ] = mScale.z();
-  metadata[ QStringLiteral( "offset_x" ) ] = mOffset.x();
-  metadata[ QStringLiteral( "offset_y" ) ] = mOffset.y();
-  metadata[ QStringLiteral( "offset_z" ) ] = mOffset.z();
-  metadata[ QStringLiteral( "project_id" ) ] = QString( QByteArray( mHeader.guid, 16 ).toHex() );
-  metadata[ QStringLiteral( "system_id" ) ] = QString::fromLocal8Bit( mHeader.system_identifier, 32 );
-  metadata[ QStringLiteral( "software_id" ) ] = QString::fromLocal8Bit( mHeader.generating_software, 32 );
+  metadata[ u"creation_year"_s ] = mHeader.creation.year;
+  metadata[ u"creation_day"_s ] = mHeader.creation.day;
+  metadata[ u"major_version"_s ] = mHeader.version.major;
+  metadata[ u"minor_version"_s ] = mHeader.version.minor;
+  metadata[ u"dataformat_id"_s ] = mHeader.pointFormat();
+  metadata[ u"scale_x"_s ] = mScale.x();
+  metadata[ u"scale_y"_s ] = mScale.y();
+  metadata[ u"scale_z"_s ] = mScale.z();
+  metadata[ u"offset_x"_s ] = mOffset.x();
+  metadata[ u"offset_y"_s ] = mOffset.y();
+  metadata[ u"offset_z"_s ] = mOffset.z();
+  metadata[ u"project_id"_s ] = QString( QByteArray( mHeader.guid, 16 ).toHex() );
+  metadata[ u"system_id"_s ] = QString::fromLocal8Bit( mHeader.system_identifier, 32 );
+  metadata[ u"software_id"_s ] = QString::fromLocal8Bit( mHeader.generating_software, 32 );
   return metadata;
 }
 
@@ -154,7 +154,7 @@ void QgsLazInfo::parseLazAttributes()
 {
   if ( mPointFormat < 0 || mPointFormat > 10 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Invalid point record format %1" ).arg( mPointFormat ), 2 );
+    QgsDebugMsgLevel( u"Invalid point record format %1"_s.arg( mPointFormat ), 2 );
     return;
   }
   mAttributes.push_back( QgsPointCloudAttribute( "X", QgsPointCloudAttribute::Int32 ) );
@@ -184,13 +184,13 @@ void QgsLazInfo::parseLazAttributes()
   }
   if ( mPointFormat == 2 || mPointFormat == 3 || mPointFormat == 5 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 10 )
   {
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UShort ) );
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
+    mAttributes.push_back( QgsPointCloudAttribute( u"Red"_s, QgsPointCloudAttribute::UShort ) );
+    mAttributes.push_back( QgsPointCloudAttribute( u"Green"_s, QgsPointCloudAttribute::UShort ) );
+    mAttributes.push_back( QgsPointCloudAttribute( u"Blue"_s, QgsPointCloudAttribute::UShort ) );
   }
   if ( mPointFormat == 8 || mPointFormat == 10 )
   {
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Infrared" ), QgsPointCloudAttribute::UShort ) );
+    mAttributes.push_back( QgsPointCloudAttribute( u"Infrared"_s, QgsPointCloudAttribute::UShort ) );
   }
   // Note: wave packet attributes are not handled and are unreadable
 }
@@ -299,7 +299,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url, const QString &authcfg )
   // Fetch header data
   {
     QNetworkRequest nr( url );
-    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsLazInfo" ) );
+    QgsSetRequestInitiatorClass( nr, u"QgsLazInfo"_s );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
@@ -308,7 +308,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url, const QString &authcfg )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( u"Request failed: "_s + url.toString() );
 
       if ( req.reply().attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt() == 200 )
       {
@@ -316,7 +316,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url, const QString &authcfg )
       }
       else
       {
-        lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
+        lazInfo.mError = u"Range query 0-374 to \"%1\" failed: \"%2\""_s.arg( url.toString() ).arg( req.errorMessage() );
       }
       return lazInfo;
     }
@@ -338,20 +338,20 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url, const QString &authcfg )
   // Fetch VLR data
   {
     QNetworkRequest nr( url );
-    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsLazInfo" ) );
+    QgsSetRequestInitiatorClass( nr, u"QgsLazInfo"_s );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     uint32_t firstVlrOffset = lazInfo.firstVariableLengthRecord();
-    QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 ).toLocal8Bit();
+    QByteArray vlrRequestRange = u"bytes=%1-%2"_s.arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 ).toLocal8Bit();
     nr.setRawHeader( "Range", vlrRequestRange );
     QgsBlockingNetworkRequest req;
     req.setAuthCfg( authcfg );
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( u"Request failed: "_s + url.toString() );
 
-      lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
+      lazInfo.mError = u"Range query %1-%2 to \"%3\" failed: \"%4\""_s.arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
                        .arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }

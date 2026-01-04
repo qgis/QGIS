@@ -38,7 +38,7 @@ struct QgsPostgresProjectUri
 class QgsPostgresProjectStorage : public QgsProjectStorage
 {
   public:
-    QString type() override { return QStringLiteral( "postgresql" ); }
+    QString type() override { return u"postgresql"_s; }
 
     QStringList listProjects( const QString &uri ) override;
 

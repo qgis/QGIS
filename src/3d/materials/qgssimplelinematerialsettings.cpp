@@ -19,31 +19,16 @@
 #include "qgslinematerial_p.h"
 
 #include <QMap>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
 QString QgsSimpleLineMaterialSettings::type() const
 {
-  return QStringLiteral( "simpleline" );
+  return u"simpleline"_s;
 }
 
 bool QgsSimpleLineMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )
@@ -85,14 +70,14 @@ bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *o
 
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
 void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
+  elem.setAttribute( u"ambient"_s, QgsColorUtils::colorToString( mAmbient ) );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
@@ -132,14 +117,14 @@ QgsMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRende
 QMap<QString, QString> QgsSimpleLineMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[QStringLiteral( "Ka" )] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[u"Ka"_s] = u"%1 %2 %3"_s.arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
   return parameters;
 }
 
 void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const
 {
   const QColor ambient = materialContext.isSelected() ? materialContext.selectionColor().darker() : mAmbient;
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), ambient );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, ambient );
   effect->addParameter( ambientParameter );
 }
 
@@ -157,15 +142,15 @@ QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const Q
   return array;
 }
 
-void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geometry, int vertexCount, const QByteArray &data ) const
+void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
-  Qt3DQBuffer *dataBuffer = new Qt3DQBuffer( geometry );
+  Qt3DCore::QBuffer *dataBuffer = new Qt3DCore::QBuffer( geometry );
 
-  Qt3DQAttribute *colorAttribute = new Qt3DQAttribute( geometry );
-  colorAttribute->setName( QStringLiteral( "dataDefinedColor" ) );
-  colorAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedByte );
+  Qt3DCore::QAttribute *colorAttribute = new Qt3DCore::QAttribute( geometry );
+  colorAttribute->setName( u"dataDefinedColor"_s );
+  colorAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedByte );
   colorAttribute->setVertexSize( 3 );
-  colorAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  colorAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   colorAttribute->setBuffer( dataBuffer );
   colorAttribute->setByteStride( 3 * sizeof( unsigned char ) );
   colorAttribute->setByteOffset( 0 );

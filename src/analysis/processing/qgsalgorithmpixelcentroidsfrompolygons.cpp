@@ -24,7 +24,7 @@
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::name() const
 {
-  return QStringLiteral( "generatepointspixelcentroidsinsidepolygons" );
+  return u"generatepointspixelcentroidsinsidepolygons"_s;
 }
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsPixelCentroidsFromPolygonsAlgorithm::group() const
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::shortHelpString() const
@@ -70,32 +70,32 @@ QgsPixelCentroidsFromPolygonsAlgorithm *QgsPixelCentroidsFromPolygonsAlgorithm::
 
 void QgsPixelCentroidsFromPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_VECTOR"_s, QObject::tr( "Vector layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Pixel centroids" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Pixel centroids" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
+  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
 
   if ( !rasterLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT_VECTOR"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_VECTOR"_s ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
-  fields.append( QgsField( QStringLiteral( "poly_id" ), QMetaType::Type::Int ) );
-  fields.append( QgsField( QStringLiteral( "point_id" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"id"_s, QMetaType::Type::LongLong ) );
+  fields.append( QgsField( u"poly_id"_s, QMetaType::Type::Int ) );
+  fields.append( QgsField( u"point_id"_s, QMetaType::Type::Int ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, rasterLayer->crs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Point, rasterLayer->crs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setDestinationCrs( rasterLayer->crs(), context.transformContext() ).setSubsetOfAttributes( QList<int>() ) );
@@ -154,7 +154,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
           feature.setGeometry( std::make_unique<QgsPoint>( x, y ) );
           feature.setAttributes( QgsAttributes() << fid << i << pointId );
           if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
-            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
           fid++;
           pointId++;
@@ -171,7 +171,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

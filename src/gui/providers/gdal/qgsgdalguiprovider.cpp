@@ -40,7 +40,7 @@
 #include "qgslayeritem.h"
 #include "qgsgdalclouddataitemguiprovider.h"
 
-static QString PROVIDER_KEY = QStringLiteral( "gdal" );
+static QString PROVIDER_KEY = u"gdal"_s;
 
 QgsGdalItemGuiProvider::QgsGdalItemGuiProvider() = default;
 
@@ -48,16 +48,16 @@ QgsGdalItemGuiProvider::~QgsGdalItemGuiProvider() = default;
 
 QString QgsGdalItemGuiProvider::name()
 {
-  return QStringLiteral( "gdal_items" );
+  return u"gdal_items"_s;
 }
 
 void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
-  const QString uri = data[QStringLiteral( "uri" )].toString();
-  const QString path = data[QStringLiteral( "path" )].toString();
-  const QPointer<QgsDataItem> parent = data[QStringLiteral( "parentItem" )].value<QPointer<QgsDataItem>>();
+  const QString uri = data[u"uri"_s].toString();
+  const QString path = data[u"path"_s].toString();
+  const QPointer<QgsDataItem> parent = data[u"parentItem"_s].value<QPointer<QgsDataItem>>();
 
   const QString title = tr( "Delete Table" );
 
@@ -81,7 +81,7 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
 
     QString errorMessage;
     bool deleted { false };
-    QgsProviderMetadata *postgresMetadata { QgsProviderRegistry::instance()->providerMetadata( QLatin1String( "postgres" ) ) };
+    QgsProviderMetadata *postgresMetadata { QgsProviderRegistry::instance()->providerMetadata( "postgres"_L1 ) };
     if ( postgresMetadata )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> connection { static_cast<QgsAbstractDatabaseProviderConnection *>( postgresMetadata->createConnection( uri, {} ) ) };
@@ -94,11 +94,11 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
           QString schema = dsUri.schema();
           if ( schema.isEmpty() )
           {
-            schema = dsUri.param( QStringLiteral( "schema" ) );
+            schema = dsUri.param( u"schema"_s );
           }
           if ( schema.isEmpty() )
           {
-            schema = QStringLiteral( "public" );
+            schema = u"public"_s;
           }
 
           connection->dropRasterTable( schema, dsUri.table() );
@@ -145,19 +145,19 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
+    if ( layerItem->providerKey() == "gdal"_L1 )
     {
       // We only show a delete layer action for postgres rasters -- GDAL itself only supports
       // deletion of raster layers from geopackage files, and we have special handling elsewhere for those
-      const bool isPostgresRaster { layerItem->uri().startsWith( QLatin1String( "PG:" ) ) };
+      const bool isPostgresRaster { layerItem->uri().startsWith( "PG:"_L1 ) };
       if ( isPostgresRaster )
       {
         const QString message = QObject::tr( "Delete Table “%1”…" ).arg( layerItem->name() );
         QAction *actionDeleteLayer = new QAction( message, menu );
         QVariantMap data;
-        data.insert( QStringLiteral( "uri" ), layerItem->uri() );
-        data.insert( QStringLiteral( "path" ), layerItem->name() );
-        data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
+        data.insert( u"uri"_s, layerItem->uri() );
+        data.insert( u"path"_s, layerItem->name() );
+        data.insert( u"parentItem"_s, QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
         actionDeleteLayer->setData( data );
         connect( actionDeleteLayer, &QAction::triggered, this, [this, context] { onDeletePostgresRasterLayer( context ); } );
         menu->addAction( actionDeleteLayer );
@@ -170,10 +170,10 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
 class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "gdal" ); }
+    QString providerKey() const override { return u"gdal"_s; }
     QString text() const override { return QObject::tr( "Raster" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddRasterLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsGdalSourceSelect( parent, fl, widgetMode );
@@ -194,16 +194,16 @@ QgsGdalSourceWidgetProvider::QgsGdalSourceWidgetProvider()
 
 QString QgsGdalSourceWidgetProvider::providerKey() const
 {
-  return QStringLiteral( "gdal" );
+  return u"gdal"_s;
 }
 
 bool QgsGdalSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
 {
-  if ( layer->providerType() != QLatin1String( "gdal" ) )
+  if ( layer->providerType() != "gdal"_L1 )
     return false;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), layer->source() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"gdal"_s, layer->source() );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -211,11 +211,11 @@ bool QgsGdalSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
 
 QgsProviderSourceWidget *QgsGdalSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )
 {
-  if ( layer->providerType() != QLatin1String( "gdal" ) )
+  if ( layer->providerType() != "gdal"_L1 )
     return nullptr;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), layer->source() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"gdal"_s, layer->source() );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsGdalFileSourceWidget( parent );

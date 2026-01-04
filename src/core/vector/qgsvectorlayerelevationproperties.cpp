@@ -51,33 +51,33 @@ bool QgsVectorLayerElevationProperties::hasElevation() const
 
 QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
+  QDomElement element = document.createElement( u"elevation"_s );
   writeCommonProperties( element, document, context );
 
-  element.setAttribute( QStringLiteral( "extrusionEnabled" ), mEnableExtrusion ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "extrusion" ), qgsDoubleToString( mExtrusionHeight ) );
-  element.setAttribute( QStringLiteral( "customToleranceEnabled" ), mEnableCustomTolerance ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"extrusionEnabled"_s, mEnableExtrusion ? u"1"_s : u"0"_s );
+  element.setAttribute( u"extrusion"_s, qgsDoubleToString( mExtrusionHeight ) );
+  element.setAttribute( u"customToleranceEnabled"_s, mEnableCustomTolerance ? u"1"_s : u"0"_s );
   if ( mCustomTolerance != 0 )
-    element.setAttribute( QStringLiteral( "customTolerance" ), qgsDoubleToString( mCustomTolerance ) );
-  element.setAttribute( QStringLiteral( "clamping" ), qgsEnumValueToKey( mClamping ) );
-  element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
-  element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
-  element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+    element.setAttribute( u"customTolerance"_s, qgsDoubleToString( mCustomTolerance ) );
+  element.setAttribute( u"clamping"_s, qgsEnumValueToKey( mClamping ) );
+  element.setAttribute( u"binding"_s, qgsEnumValueToKey( mBinding ) );
+  element.setAttribute( u"type"_s, qgsEnumValueToKey( mType ) );
+  element.setAttribute( u"symbology"_s, qgsEnumValueToKey( mSymbology ) );
   if ( !std::isnan( mElevationLimit ) )
-    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
+    element.setAttribute( u"elevationLimit"_s, qgsDoubleToString( mElevationLimit ) );
 
-  element.setAttribute( QStringLiteral( "respectLayerSymbol" ), mRespectLayerSymbology ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "showMarkerSymbolInSurfacePlots" ), mShowMarkerSymbolInSurfacePlots ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"respectLayerSymbol"_s, mRespectLayerSymbology ? u"1"_s : u"0"_s );
+  element.setAttribute( u"showMarkerSymbolInSurfacePlots"_s, mShowMarkerSymbolInSurfacePlots ? u"1"_s : u"0"_s );
 
-  QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
+  QDomElement profileLineSymbolElement = document.createElement( u"profileLineSymbol"_s );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
   element.appendChild( profileLineSymbolElement );
 
-  QDomElement profileFillSymbolElement = document.createElement( QStringLiteral( "profileFillSymbol" ) );
+  QDomElement profileFillSymbolElement = document.createElement( u"profileFillSymbol"_s );
   profileFillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileFillSymbol.get(), document, context ) );
   element.appendChild( profileFillSymbolElement );
 
-  QDomElement profileMarkerSymbolElement = document.createElement( QStringLiteral( "profileMarkerSymbol" ) );
+  QDomElement profileMarkerSymbolElement = document.createElement( u"profileMarkerSymbol"_s );
   profileMarkerSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileMarkerSymbol.get(), document, context ) );
   element.appendChild( profileMarkerSymbolElement );
 
@@ -87,42 +87,42 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
 
 bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
+  const QDomElement elevationElement = element.firstChildElement( u"elevation"_s ).toElement();
   if ( elevationElement.isNull() )
     return false;
 
   readCommonProperties( elevationElement, context );
 
-  mClamping = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Terrain );
-  mBinding = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "binding" ) ), Qgis::AltitudeBinding::Centroid );
-  mType = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "type" ) ), Qgis::VectorProfileType::IndividualFeatures );
-  mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
-  mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
-  mEnableCustomTolerance = elevationElement.attribute( QStringLiteral( "customToleranceEnabled" ), QStringLiteral( "0" ) ).toInt();
-  mCustomTolerance = elevationElement.attribute( QStringLiteral( "customTolerance" ), QStringLiteral( "0" ) ).toDouble();
-  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
-  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
-    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  mClamping = qgsEnumKeyToValue( elevationElement.attribute( u"clamping"_s ), Qgis::AltitudeClamping::Terrain );
+  mBinding = qgsEnumKeyToValue( elevationElement.attribute( u"binding"_s ), Qgis::AltitudeBinding::Centroid );
+  mType = qgsEnumKeyToValue( elevationElement.attribute( u"type"_s ), Qgis::VectorProfileType::IndividualFeatures );
+  mEnableExtrusion = elevationElement.attribute( u"extrusionEnabled"_s, u"0"_s ).toInt();
+  mExtrusionHeight = elevationElement.attribute( u"extrusion"_s, u"0"_s ).toDouble();
+  mEnableCustomTolerance = elevationElement.attribute( u"customToleranceEnabled"_s, u"0"_s ).toInt();
+  mCustomTolerance = elevationElement.attribute( u"customTolerance"_s, u"0"_s ).toDouble();
+  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( u"symbology"_s ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( u"elevationLimit"_s ) )
+    mElevationLimit = elevationElement.attribute( u"elevationLimit"_s ).toDouble();
   else
     mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
-  mShowMarkerSymbolInSurfacePlots = elevationElement.attribute( QStringLiteral( "showMarkerSymbolInSurfacePlots" ), QStringLiteral( "0" ) ).toInt();
+  mShowMarkerSymbolInSurfacePlots = elevationElement.attribute( u"showMarkerSymbolInSurfacePlots"_s, u"0"_s ).toInt();
 
-  mRespectLayerSymbology = elevationElement.attribute( QStringLiteral( "respectLayerSymbol" ), QStringLiteral( "1" ) ).toInt();
+  mRespectLayerSymbology = elevationElement.attribute( u"respectLayerSymbol"_s, u"1"_s ).toInt();
 
   const QColor color = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
-  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( u"profileLineSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileLineSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( color );
 
-  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( u"profileFillSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileFillSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( color );
 
-  const QDomElement profileMarkerSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileMarkerSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileMarkerSymbolElement = elevationElement.firstChildElement( u"profileMarkerSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileMarkerSymbol = QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( profileMarkerSymbolElement, context );
   if ( !mProfileMarkerSymbol )
     setDefaultProfileMarkerSymbol( color );
@@ -250,7 +250,7 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
 
   properties << tr( "Scale: %1" ).arg( mZScale );
 
-  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
+  return u"<li>%1</li>"_s.arg( properties.join( "</li><li>"_L1 ) );
 }
 
 bool QgsVectorLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const

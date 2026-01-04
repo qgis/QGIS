@@ -86,12 +86,12 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   connect( mPasteAction, &QAction::triggered, this, &QgsRuleBasedLabelingWidget::paste );
   connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBasedLabelingWidget::removeRule );
 
-  if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
+  if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based"_L1 )
   {
     const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
     mRootRule = rl->rootRule()->clone( false );
   }
-  else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+  else if ( mLayer->labeling() && mLayer->labeling()->type() == "simple"_L1 )
   {
     // copy simple label settings to first rule
     mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
@@ -295,7 +295,7 @@ void QgsLabelingRulePropsDialog::accept()
 
 void QgsLabelingRulePropsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#rule-based-labeling" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#rule-based-labeling"_s );
 }
 
 ////
@@ -505,7 +505,7 @@ Qt::DropActions QgsRuleBasedLabelingModel::supportedDropActions() const
 QStringList QgsRuleBasedLabelingModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/vnd.text.list" );
+  types << u"application/vnd.text.list"_s;
   return types;
 }
 
@@ -513,15 +513,15 @@ QStringList QgsRuleBasedLabelingModel::mimeTypes() const
 void _renderer2labelingRules( QDomElement &ruleElem )
 {
   // labeling rules recognize only "description"
-  if ( ruleElem.hasAttribute( QStringLiteral( "label" ) ) )
-    ruleElem.setAttribute( QStringLiteral( "description" ), ruleElem.attribute( QStringLiteral( "label" ) ) );
+  if ( ruleElem.hasAttribute( u"label"_s ) )
+    ruleElem.setAttribute( u"description"_s, ruleElem.attribute( u"label"_s ) );
 
   // run recursively
-  QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
+  QDomElement childRuleElem = ruleElem.firstChildElement( u"rule"_s );
   while ( !childRuleElem.isNull() )
   {
     _renderer2labelingRules( childRuleElem );
-    childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
+    childRuleElem = childRuleElem.nextSiblingElement( u"rule"_s );
   }
 }
 
@@ -544,8 +544,8 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
     QgsRuleBasedLabeling::Rule *rule = ruleForIndex( index )->clone();
     QDomDocument doc;
 
-    QDomElement rootElem = doc.createElement( QStringLiteral( "rule_mime" ) );
-    rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "labeling" ) ); // for determining whether rules are from renderer or labeling
+    QDomElement rootElem = doc.createElement( u"rule_mime"_s );
+    rootElem.setAttribute( u"type"_s, u"labeling"_s ); // for determining whether rules are from renderer or labeling
     const QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
@@ -555,7 +555,7 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
     stream << doc.toString( -1 );
   }
 
-  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
+  mimeData->setData( u"application/vnd.text.list"_s, encodedData );
   return mimeData;
 }
 
@@ -566,13 +566,13 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAct
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
+  if ( !data->hasFormat( u"application/vnd.text.list"_s ) )
     return false;
 
   if ( parent.column() > 0 )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
+  QByteArray encodedData = data->data( u"application/vnd.text.list"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -591,10 +591,10 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAct
     if ( !doc.setContent( text ) )
       continue;
     const QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != QLatin1String( "rule_mime" ) )
+    if ( rootElem.tagName() != "rule_mime"_L1 )
       continue;
-    QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
-    if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "renderer" ) )
+    QDomElement ruleElem = rootElem.firstChildElement( u"rule"_s );
+    if ( rootElem.attribute( u"type"_s ) == "renderer"_L1 )
       _renderer2labelingRules( ruleElem ); // do some modifications so that we load the rules more nicely
     QgsRuleBasedLabeling::Rule *rule = QgsRuleBasedLabeling::Rule::create( ruleElem, QgsReadWriteContext(), false );
 
@@ -622,7 +622,7 @@ bool QgsRuleBasedLabelingModel::removeRows( int row, int count, const QModelInde
     }
     else
     {
-      QgsDebugError( QStringLiteral( "trying to remove invalid index - this should not happen!" ) );
+      QgsDebugError( u"trying to remove invalid index - this should not happen!"_s );
     }
   }
 
@@ -711,7 +711,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( u"ELSE"_s ); } );
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()
@@ -772,7 +772,7 @@ void QgsLabelingRulePropsWidget::buildExpression()
 {
   const QgsExpressionContext context( createExpressionContext( mMapCanvas, mLayer ) );
 
-  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, u"generic"_s, context );
 
   if ( dlg.exec() )
     editFilter->setText( dlg.expressionText() );
@@ -780,7 +780,7 @@ void QgsLabelingRulePropsWidget::buildExpression()
 
 void QgsLabelingRulePropsWidget::apply()
 {
-  const QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text().trimmed();
+  const QString filter = mElseRadio->isChecked() ? u"ELSE"_s : editFilter->text().trimmed();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
   mRule->setMinimumScale( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );

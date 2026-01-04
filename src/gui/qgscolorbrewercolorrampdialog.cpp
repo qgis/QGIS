@@ -147,5 +147,5 @@ QDialogButtonBox *QgsColorBrewerColorRampDialog::buttonBox() const
 
 void QgsColorBrewerColorRampDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
+  QgsHelp::openHelp( u"style_library/style_manager.html#setting-a-color-ramp"_s );
 }

@@ -90,7 +90,7 @@ const QPixmap &QgsColorButton::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -119,7 +119,7 @@ void QgsColorButton::showColorDialog()
   const QgsSettings settings;
 
   // first check if we need to use the limited native dialogs
-  const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  const bool useNative = settings.value( u"qgis/native_color_dialogs"_s, false ).toBool();
   if ( useNative )
   {
     // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
@@ -177,7 +177,7 @@ bool QgsColorButton::event( QEvent *e )
     if ( !isProjectColor )
       c = mColor;
 
-    QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
+    QString info = ( isProjectColor ? u"<p>%1: %2</p>"_s.arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
 
     info += QgsColorTooltip::htmlDescription( c, this );
 

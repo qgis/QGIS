@@ -47,10 +47,10 @@
 
 #include "moc_qgsadvanceddigitizingdockwidget.cpp"
 
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( QStringLiteral( "cad-snapping-prioritize-feature" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-record-construction-guides" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-show-construction-guides" ), QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) );
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-snap-to-construction-guides" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( u"cad-snapping-prioritize-feature"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( u"cad-record-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowConstructionGuides = new QgsSettingsEntryBool( u"cad-show-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides = new QgsSettingsEntryBool( u"cad-snap-to-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) );
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent, QgsUserInputWidget *userInputWidget )
@@ -58,7 +58,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   , mMapCanvas( canvas )
   , mUserInputWidget( userInputWidget )
   , mSnapIndicator( std::make_unique<QgsSnapIndicator>( canvas ) )
-  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 0.0 ).toDouble() )
+  , mCommonAngleConstraint( QgsSettings().value( u"/Cad/CommonAngle"_s, 0.0 ).toDouble() )
 {
   setupUi( this );
 
@@ -235,7 +235,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QToolButton *constructionModeToolButton = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionModeAction ) );
   constructionModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   constructionModeToolButton->setMenu( constructionSettingsMenu );
-  constructionModeToolButton->setObjectName( QStringLiteral( "ConstructionModeButton" ) );
+  constructionModeToolButton->setObjectName( u"ConstructionModeButton"_s );
 
   // Tools
   QMenu *toolsMenu = new QMenu( this );
@@ -278,7 +278,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   auto constructionToolBar = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionAction ) );
   constructionToolBar->setPopupMode( QToolButton::InstantPopup );
   mConstructionAction->setMenu( constructionMenu );
-  constructionToolBar->setObjectName( QStringLiteral( "ConstructionButton" ) );
+  constructionToolBar->setObjectName( u"ConstructionButton"_s );
   mConstructionAction->setCheckable( true );
   mConstructionAction->setToolTip( tr( "Construction Tools" ) );
 
@@ -350,7 +350,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
     } );
-    const bool isDistanceChecked = QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool();
+    const bool isDistanceChecked = QgsSettings().value( u"/Cad/DistanceShowInFloater"_s, true ).toBool();
     action->setChecked( isDistanceChecked );
     // Call this explicitly because toggled won't be called if there is no change
     mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, isDistanceChecked );
@@ -363,7 +363,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked );
     } );
-    const bool isAngleChecked = QgsSettings().value( QStringLiteral( "/Cad/AngleShowInFloater" ), true ).toBool();
+    const bool isAngleChecked = QgsSettings().value( u"/Cad/AngleShowInFloater"_s, true ).toBool();
     action->setChecked( isAngleChecked );
     // Call this explicitly because toggled won't be called if there is no change
     mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, isAngleChecked );
@@ -378,7 +378,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
     } );
     // There is no separate menu option for X and Y so let's check for X only.
-    const bool isXCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/XCoordinateShowInFloater" ), true ).toBool();
+    const bool isXCoordinateChecked = QgsSettings().value( u"/Cad/XCoordinateShowInFloater"_s, true ).toBool();
     action->setChecked( isXCoordinateChecked );
     // Call this explicitly because toggled won't be called if there is no change
     // See issue #61587
@@ -393,7 +393,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked && mTargetLayerSupportsZ );
     } );
-    const bool isZCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/ZCoordinateShowInFloater" ), true ).toBool();
+    const bool isZCoordinateChecked = QgsSettings().value( u"/Cad/ZCoordinateShowInFloater"_s, true ).toBool();
     action->setChecked( isZCoordinateChecked );
     // Call this explicitly because toggled won't be called if there is no change
     // See issue #61587
@@ -407,7 +407,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked && mTargetLayerSupportsM );
     } );
-    const bool isMCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/MCoordinateShowInFloater" ), true ).toBool();
+    const bool isMCoordinateChecked = QgsSettings().value( u"/Cad/MCoordinateShowInFloater"_s, true ).toBool();
     action->setChecked( isMCoordinateChecked );
     // Call this explicitly because toggled won't be called if there is no change
     // See issue #61587
@@ -421,7 +421,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked );
     } );
-    const bool isBearingChecked = QgsSettings().value( QStringLiteral( "/Cad/BearingShowInFloater" ), false ).toBool();
+    const bool isBearingChecked = QgsSettings().value( u"/Cad/BearingShowInFloater"_s, false ).toBool();
     action->setChecked( isBearingChecked );
     // Call this explicitly because toggled won't be called if there is no change
     // See issue #61587
@@ -435,7 +435,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
     } );
-    const bool isCommonAngleSnappingChecked = QgsSettings().value( QStringLiteral( "/Cad/CommonAngleSnappingShowInFloater" ), false ).toBool();
+    const bool isCommonAngleSnappingChecked = QgsSettings().value( u"/Cad/CommonAngleSnappingShowInFloater"_s, false ).toBool();
     action->setChecked( isCommonAngleSnappingChecked );
     // Call this explicitly because toggled won't be called if there is no change
     // See issue #61587
@@ -823,7 +823,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     {
       it.value()->setChecked( true );
       mCommonAngleConstraint = it.key();
-      QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), it.key() );
+      QgsSettings().setValue( u"/Cad/CommonAngle"_s, it.key() );
       mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
       emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
       return;
@@ -2545,5 +2545,5 @@ void QgsAdvancedDigitizingDockWidget::resetConstructionGuides()
   }
 
   const QgsVectorLayer::LayerOptions options( QgsProject::instance()->transformContext(), false, false );
-  mConstructionGuidesLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=%1" ).arg( mMapCanvas->mapSettings().destinationCrs().authid() ), QStringLiteral( "constructionGuides" ), QStringLiteral( "memory" ), options );
+  mConstructionGuidesLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=%1"_s.arg( mMapCanvas->mapSettings().destinationCrs().authid() ), u"constructionGuides"_s, u"memory"_s, options );
 }

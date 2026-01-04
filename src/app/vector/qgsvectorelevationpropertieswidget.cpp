@@ -31,7 +31,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mVerticalCrsStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
@@ -67,9 +67,9 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mTypeComboBox->addItem( tr( "Individual Features" ), static_cast<int>( Qgis::VectorProfileType::IndividualFeatures ) );
   mTypeComboBox->addItem( tr( "Continuous Surface (e.g. Contours)" ), static_cast<int>( Qgis::VectorProfileType::ContinuousSurface ) );
 
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationLine.svg"_s ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillBelow.svg"_s ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillAbove.svg"_s ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
 
   initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::Property::ZOffset );
   initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::Property::ExtrusionHeight );
@@ -127,7 +127,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions );
 
 
-  setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#elevation-properties" ) );
+  setProperty( "helpPage", u"working_with_vector/vector_properties.html#elevation-properties"_s );
 }
 
 void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -285,7 +285,7 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
   {
     case Qgis::AltitudeClamping::Absolute:
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "Elevation will be taken directly from features." ), tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Elevation will be taken directly from features." ), tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) )
       );
       enableBinding = false; // not used in absolute mode
 
@@ -301,13 +301,13 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
     case Qgis::AltitudeClamping::Relative:
       mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "Elevation is relative to terrain height." ), tr( "Any z values present in the features will be added to the terrain height." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Elevation is relative to terrain height." ), tr( "Any z values present in the features will be added to the terrain height." ) )
       );
       break;
     case Qgis::AltitudeClamping::Terrain:
       mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "Feature elevation will be taken directly from the terrain height." ), tr( "Any existing z values present in the features will be ignored." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation will be taken directly from the terrain height." ), tr( "Any existing z values present in the features will be ignored." ) )
       );
       enableScale = false; // not used in terrain mode
       break;
@@ -324,12 +324,12 @@ void QgsVectorElevationPropertiesWidget::bindingChanged()
   {
     case Qgis::AltitudeBinding::Vertex:
       mLabelBindingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "Feature elevation is relative to the terrain height at every vertex." ), tr( "The terrain will be sampled at every individual vertex before being added to the vertex's z value." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation is relative to the terrain height at every vertex." ), tr( "The terrain will be sampled at every individual vertex before being added to the vertex's z value." ) )
       );
       break;
     case Qgis::AltitudeBinding::Centroid:
       mLabelBindingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg( tr( "Feature elevation is relative to the terrain height at feature's centroid only." ), tr( "The terrain will be sampled once at the feature's centroid, with the centroid height being added to each vertex's z value." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation is relative to the terrain height at feature's centroid only." ), tr( "The terrain will be sampled once at the feature's centroid, with the centroid height being added to each vertex's z value." ) )
       );
       break;
   }
@@ -457,7 +457,7 @@ void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOve
 QgsVectorElevationPropertiesWidgetFactory::QgsVectorElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
@@ -483,5 +483,5 @@ bool QgsVectorElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsVectorElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }

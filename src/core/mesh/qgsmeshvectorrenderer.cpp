@@ -582,7 +582,7 @@ void QgsMeshVectorWindBarbRenderer::drawVector( const QgsPointXY &lineStart, dou
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Could not transform wind barb coordinates to geographic ones" ) );
+    QgsDebugError( u"Could not transform wind barb coordinates to geographic ones"_s );
   }
 
   const double d = shaftLength / 25; // this is a magic number ratio between shaft length and other barb dimensions

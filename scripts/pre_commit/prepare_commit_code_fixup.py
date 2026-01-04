@@ -26,15 +26,10 @@
 # DEALINGS IN THE SOFTWARE.
 ###########################################################################
 
-# This script fixes several suboptimal uses of QStringLiteral where QLatin1String would be better,
-# and other auto code-cleaning operations (such as use of auto with std::make_unique)
-# It is not automatically run yet.
-
-# Run it on whole code base with:
-# ../scripts/code_fixup.sh --all
-
-# or on modified files only with:
-# ../scripts/code_fixup.sh
+# This script fixes replaces QStringLiteral( "foo" ) by u"foo"_s,
+# QLatin1String( "foo" ) with "foo"_L1, several suboptimal uses of u"foo"_s
+# where "foo"_L1 would be better, and other auto code-cleaning operations,
+# such as use of auto with std::make_unique
 
 import re
 import sys
@@ -42,7 +37,7 @@ import sys
 lines = [l[0:-1] if l[-1] == "\n" else l for l in open(sys.argv[1]).readlines()]
 
 # Double quoted strings that only include ASCII characters
-string_literal = r"""(R?"(?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])+?")"""
+ascii_string_literal = r"""(R?"(?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])+?")"""
 
 # Single quoted ASCII character
 char_literal = r"""('(?:\\['"\\nrt]|[\x00-\x26\x28-\x5B\x5D-\x7F])')"""
@@ -52,50 +47,68 @@ simple_expr = (
     r"""([a-zA-Z0-9_:<>]+(?:\.(?:[a-zA-Z0-9_]+\([^\(\)]*\)|[a-zA-Z0-9_]+))?)"""
 )
 
-qsl = rf"""QStringLiteral\( ?{string_literal} ?\)"""
+pattern_qsl = re.compile(
+    r'^(.*?)(?:QStringLiteral\s*\(\s*("(?:(?:\\.|[^"\\])*)")\s*\))(.*)$'
+)
+
+pattern_qlatin1char = re.compile(rf"^(.*?)(?:QLatin1Char*\(\s*('.'|'\\'')\s*\))(.*)$")
+
+pattern_qlatin1string = re.compile(
+    rf"^(.*?)(?:QLatin1String\s*\(\s*{ascii_string_literal}\s*\))(.*)$"
+)
+
+u_str_s = rf"""u{ascii_string_literal}_s"""
 
 # Find lines like "    foo += QStringLiteral( "bla" );  // optional comment"
-pattern_plus_equal = re.compile(rf"^([ ]*)([^ ]+) \+= ?{qsl};([ ]*//.*)?$")
+pattern_plus_equal = re.compile(rf"^([ ]*)([^ ]+) \+= {u_str_s};([ ]*//.*)?$")
 
 # Find patterns like "...QString( tr( "foo" ) )..."
 pattern_qstring_tr = re.compile(
-    rf"""(.*)QString\( ?tr\( ?{string_literal} ?\) ?\)(.*)"""
+    rf"""(.*)QString\( ?tr\( ?{ascii_string_literal} ?\) ?\)(.*)"""
 )
 
 # Find patterns like "...== QStringLiteral( "foo" ) something that is not like .arg()"
 pattern_equalequal_qsl = re.compile(
-    r"(.*)(==|!=) ?" + qsl + r"( \)| \|\|| &&| }|;| \?| ,)(.*)"
+    r"(.*)(==|!=) ?" + u_str_s + r"( \)| \|\|| &&| }|;| \?| ,)(.*)"
 )
 
 # Find patterns like "...startsWith( QStringLiteral( "foo" ) )..."
 pattern_startswith_qsl = re.compile(
-    rf"(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( ?{qsl} ?\)(.*)"
+    rf"(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( {u_str_s} ?\)(.*)"
 )
 
-# .replace( 'a' or simple_expr or qsl, QStringLiteral( "foo" ) )
-replace_char_qsl = re.compile(rf"""(.*)\.replace\( ?{char_literal}, ?{qsl} ?\)(.*)""")
-replace_str_qsl = re.compile(rf"""(.*)\.replace\( ?{string_literal}, ?{qsl} ?\)(.*)""")
+# Matches strings with a _L1 suffix that contain at least one non-ASCII character
+pattern_wrong_L1 = re.compile(
+    r"""^(.*?)(R?"(?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])*[^\x00-\x7F](?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])*")_L1(.*)$"""
+)
+
+# .replace( 'a' or simple_expr or u_str_s, QStringLiteral( "foo" ) )
+replace_char_qsl = re.compile(
+    rf"""(.*)\.replace\( ?{char_literal}, ?{u_str_s} ?\)(.*)"""
+)
+replace_str_qsl = re.compile(
+    rf"""(.*)\.replace\( ?{ascii_string_literal}, ?{u_str_s} ?\)(.*)"""
+)
 # Do not use that: if simple_expr is a QRegExp, there is no QString::replace(QRegExp, QLatin1String)
-# replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {qsl} \)(.*)""".format(simple_expr=simple_expr, qsl=qsl))
+# replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {u_str_s} \)(.*)""".format(simple_expr=simple_expr, u_str_s=u_str_s))
 
 # .replace( QStringLiteral( "foo" ), QStringLiteral( "foo" ) )
 replace_qsl_qsl = re.compile(
-    r"""(.*)\.replace\( ?{qsl}, ?{qsl} ?\)(.*)""".format(qsl=qsl)
+    r"""(.*)\.replace\( ?{u_str_s}, ?{u_str_s} ?\)(.*)""".format(u_str_s=u_str_s)
 )
 
 # .replace( QStringLiteral( "foo" ), something
-replace_qsl_something = re.compile(rf"""(.*)\.replace\( ?{qsl}, ?(.+)""")
+replace_qsl_something = re.compile(rf"""(.*)\.replace\( ?{u_str_s}, ?(.+)""")
 
 # .arg( QStringLiteral( "foo" ) )
 # note: QString QString::arg(QLatin1String a) added in QT 5.10, but using QLatin1String() will work with older too
-arg_qsl = re.compile(rf"""(.*)\.arg\( ?{qsl} ?\)(.*)""")
+arg_qsl = re.compile(rf"""(.*)\.arg\( ?{u_str_s} ?\)(.*)""")
 
 # .join( QStringLiteral( "foo" ) )
-join = re.compile(rf"""(.*)\.join\( ?{qsl} ?\)(.*)""")
+join = re.compile(rf"""(.*)\.join\( ?{u_str_s} ?\)(.*)""")
 
-# if QT >= 5.14 .compare would be ok
 qlatin1str_single_char = re.compile(
-    r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|\+=) QLatin1String\( ?("[^"]") ?\)(.*)"""
+    r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|.compare\(|\+=) ?("[^"]") ?_L1(.*)"""
 )
 
 make_unique_shared = re.compile(
@@ -112,13 +125,13 @@ make_unique3 = re.compile(
 def qlatin1char_or_string(x):
     """x is a double quoted string"""
     if len(x) == 3 and x[1] == "'":
-        return "QLatin1Char( '\\'' )"
+        return "'\\''_L1"
     elif len(x) == 3:
-        return "QLatin1Char( '" + x[1] + "' )"
+        return "'" + x[1] + "'_L1"
     elif len(x) == 4 and x[1] == "\\":
-        return "QLatin1Char( '" + x[1:3] + "' )"
+        return "'" + x[1:3] + "'_L1"
     else:
-        return "QLatin1String( " + x + " )"
+        return x + "_L1"
 
 
 def fix_allows_to(line: str) -> str:
@@ -213,13 +226,45 @@ def fix_allows_to(line: str) -> str:
 i = 0
 while i < len(lines):
     line = lines[i]
-    modified = False
+
+    while True:
+        m = pattern_qsl.match(line)
+        if m:
+            g = m.groups()
+            newline = g[0] + "u" + g[1] + "_s"
+            if g[2]:
+                newline += g[2]
+            line = newline
+        else:
+            break
+
+    while True:
+        m = pattern_qlatin1char.match(line)
+        if m:
+            g = m.groups()
+            newline = g[0] + g[1] + "_L1"
+            if g[2]:
+                newline += g[2]
+            line = newline
+        else:
+            break
+
+    while True:
+        m = pattern_qlatin1string.match(line)
+        if m:
+            g = m.groups()
+            newline = g[0] + g[1] + "_L1"
+            if g[2]:
+                newline += g[2]
+            line = newline
+        else:
+            break
 
     m = pattern_plus_equal.match(line)
     if m:
         g = m.groups()
         newline = g[0] + g[1] + " += "
-        newline += "QLatin1String( " + g[2] + " );"
+        newline += g[2] + "_L1;"
         if g[3]:
             newline += g[3]
         line = newline
@@ -236,7 +281,7 @@ while i < len(lines):
         m = pattern_equalequal_qsl.match(line)
         if m and "qgetenv" not in line and "h.first" not in line:
             g = m.groups()
-            newline = g[0] + g[1] + " QLatin1String( " + g[2] + " )" + g[3]
+            newline = g[0] + g[1] + " " + g[2] + "_L1" + g[3]
             if g[4]:
                 newline += g[4]
             line = newline
@@ -247,7 +292,7 @@ while i < len(lines):
         m = pattern_startswith_qsl.match(line)
         if m:
             g = m.groups()
-            newline = g[0] + "." + g[1] + "( QLatin1String( " + g[2] + " ) )"
+            newline = g[0] + "." + g[1] + "( " + g[2] + "_L1 )"
             if g[3]:
                 newline += g[3]
             line = newline
@@ -262,7 +307,7 @@ while i < len(lines):
         #     m = replace_simple_expr_qsl.match(line)
         if m:
             g = m.groups()
-            newline = g[0] + ".replace( " + g[1] + ", QLatin1String( " + g[2] + " ) )"
+            newline = g[0] + ".replace( " + g[1] + ", " + g[2] + "_L1 )"
             if g[3]:
                 newline += g[3]
             line = newline
@@ -273,14 +318,7 @@ while i < len(lines):
         m = replace_qsl_qsl.match(line)
         if m:
             g = m.groups()
-            newline = (
-                g[0]
-                + ".replace( QLatin1String( "
-                + g[1]
-                + " ), QLatin1String( "
-                + g[2]
-                + " ) )"
-            )
+            newline = g[0] + ".replace( " + g[1] + "_L1, " + g[2] + "_L1 )"
             if g[3]:
                 newline += g[3]
             line = newline
@@ -291,7 +329,7 @@ while i < len(lines):
         m = replace_qsl_something.match(line)
         if m:
             g = m.groups()
-            newline = g[0] + ".replace( QLatin1String( " + g[1] + " ), " + g[2]
+            newline = g[0] + ".replace( " + g[1] + "_L1, " + g[2]
             line = newline
         else:
             break
@@ -300,7 +338,7 @@ while i < len(lines):
         m = arg_qsl.match(line)
         if m:
             g = m.groups()
-            newline = g[0] + ".arg( QLatin1String( " + g[1] + ") )"
+            newline = g[0] + ".arg( " + g[1] + "_L1 )"
             if g[2]:
                 newline += g[2]
             line = newline
@@ -325,6 +363,17 @@ while i < len(lines):
             newline = g[0] + g[1] + " " + qlatin1char_or_string(g[2])
             if g[3]:
                 newline += g[3]
+            line = newline
+        else:
+            break
+
+    while True:
+        m = pattern_wrong_L1.match(line)
+        if m:
+            g = m.groups()
+            newline = g[0] + "u" + g[1] + "_s"
+            if g[2]:
+                newline += g[2]
             line = newline
         else:
             break

@@ -61,7 +61,7 @@ class TestItem : public QgsAnnotationItem // clazy:exclude=missing-qobject-macro
     int mFlag = 0;
 
     //implement pure virtual methods
-    QString type() const override { return QStringLiteral( "mytype" ); }
+    QString type() const override { return u"mytype"_s; }
     TestItem *clone() const override { return new TestItem(); }
     using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override { return QgsRectangle(); }
@@ -103,50 +103,50 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
     return new TestItemWidget( nullptr );
   };
 
-  QgsAnnotationItemGuiMetadata *metadata = new QgsAnnotationItemGuiMetadata( QStringLiteral( "mytype" ), QStringLiteral( "My Type" ), QIcon(), createWidget );
+  QgsAnnotationItemGuiMetadata *metadata = new QgsAnnotationItemGuiMetadata( u"mytype"_s, u"My Type"_s, QIcon(), createWidget );
   QVERIFY( registry.addAnnotationItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   int uuid = registry.itemMetadataIds().value( 0 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), uuid );
-  QCOMPARE( registry.metadataIdForItemType( QStringLiteral( "mytype" ) ), uuid );
+  QCOMPARE( registry.metadataIdForItemType( u"mytype"_s ), uuid );
 
   // duplicate type id is allowed
-  metadata = new QgsAnnotationItemGuiMetadata( QStringLiteral( "mytype" ), QStringLiteral( "My Type" ), QIcon(), createWidget );
+  metadata = new QgsAnnotationItemGuiMetadata( u"mytype"_s, u"My Type"_s, QIcon(), createWidget );
   QVERIFY( registry.addAnnotationItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 2 );
   //retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
   QCOMPARE( registry.itemMetadataIds().count(), 2 );
-  QCOMPARE( registry.metadataIdForItemType( QStringLiteral( "mytype" ) ), uuid );
+  QCOMPARE( registry.metadataIdForItemType( u"mytype"_s ), uuid );
 
   QVERIFY( registry.itemMetadata( uuid ) );
-  QCOMPARE( registry.itemMetadata( uuid )->visibleName(), QStringLiteral( "My Type" ) );
+  QCOMPARE( registry.itemMetadata( uuid )->visibleName(), u"My Type"_s );
 
   QWidget *widget = registry.createItemWidget( testItem.get() );
   QVERIFY( widget );
   delete widget;
 
   // groups
-  QVERIFY( registry.addItemGroup( QgsAnnotationItemGuiGroup( QStringLiteral( "g1" ) ) ) );
-  QCOMPARE( registry.itemGroup( QStringLiteral( "g1" ) ).id, QStringLiteral( "g1" ) );
+  QVERIFY( registry.addItemGroup( QgsAnnotationItemGuiGroup( u"g1"_s ) ) );
+  QCOMPARE( registry.itemGroup( u"g1"_s ).id, u"g1"_s );
   // can't add duplicate group
-  QVERIFY( !registry.addItemGroup( QgsAnnotationItemGuiGroup( QStringLiteral( "g1" ) ) ) );
+  QVERIFY( !registry.addItemGroup( QgsAnnotationItemGuiGroup( u"g1"_s ) ) );
 
   //creating item
   QgsAnnotationItem *item = registry.createItem( uuid );
   QVERIFY( !item );
-  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "mytype" ), QStringLiteral( "My Type" ), QStringLiteral( "My Types" ), []() -> QgsAnnotationItem * {
+  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( u"mytype"_s, u"My Type"_s, u"My Types"_s, []() -> QgsAnnotationItem * {
     return new TestItem();
   } ) );
 
   item = registry.createItem( uuid );
   QVERIFY( item );
-  QCOMPARE( item->type(), QStringLiteral( "mytype" ) );
+  QCOMPARE( item->type(), u"mytype"_s );
   QCOMPARE( static_cast<TestItem *>( item )->mFlag, 0 );
   delete item;
 
   // override create func
-  metadata = new QgsAnnotationItemGuiMetadata( QStringLiteral( "mytype" ), QStringLiteral( "mytype" ), QIcon(), createWidget );
+  metadata = new QgsAnnotationItemGuiMetadata( u"mytype"_s, u"mytype"_s, QIcon(), createWidget );
   metadata->setItemCreationFunction( []() -> QgsAnnotationItem * {
     TestItem *item = new TestItem();
     item->mFlag = 2;
@@ -156,7 +156,7 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   uuid = spyTypeAdded.at( spyTypeAdded.count() - 1 ).at( 0 ).toInt();
   item = registry.createItem( uuid );
   QVERIFY( item );
-  QCOMPARE( item->type(), QStringLiteral( "mytype" ) );
+  QCOMPARE( item->type(), u"mytype"_s );
   QCOMPARE( static_cast<TestItem *>( item )->mFlag, 2 );
   delete item;
 }

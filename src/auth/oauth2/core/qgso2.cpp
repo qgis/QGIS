@@ -34,7 +34,7 @@
 
 #include "moc_qgso2.cpp"
 
-QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
+QString QgsO2::O2_OAUTH2_STATE = u"state"_s;
 
 QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config, QObject *parent, QNetworkAccessManager *manager )
   : O2( parent, manager )
@@ -80,7 +80,7 @@ QgsO2::~QgsO2()
   {
     if ( !QFile::remove( mTokenCacheFile ) )
     {
-      QgsDebugError( QStringLiteral( "Could not remove temp token cache file: %1" ).arg( mTokenCacheFile ) );
+      QgsDebugError( u"Could not remove temp token cache file: %1"_s.arg( mTokenCacheFile ) );
     }
   }
 }
@@ -93,8 +93,8 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  const QString localpolicy = QStringLiteral( "http://%1:% 1/%2" ).arg( mOAuth2Config->redirectHost(), mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
-  QgsDebugMsgLevel( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
+  const QString localpolicy = u"http://%1:% 1/%2"_s.arg( mOAuth2Config->redirectHost(), mOAuth2Config->redirectUrl() ).replace( "% 1"_L1, "%1"_L1 );
+  QgsDebugMsgLevel( u"localpolicy(w/port): %1"_s.arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
   mIsLocalHost = isLocalHost( QUrl( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
@@ -166,18 +166,18 @@ void QgsO2::setSettingsStore( bool persist )
 
   QSettings *settings = new QSettings( mTokenCacheFile, QSettings::IniFormat );
   O0SettingsStore *store = new O0SettingsStore( settings, O2_ENCRYPTION_KEY );
-  store->setGroupKey( QStringLiteral( "authcfg_%1" ).arg( mAuthcfg ) );
+  store->setGroupKey( u"authcfg_%1"_s.arg( mAuthcfg ) );
   setStore( store );
 }
 
 void QgsO2::setVerificationResponseContent()
 {
-  QFile verhtml( QStringLiteral( ":/oauth2method/oauth2_verification_finished.html" ) );
+  QFile verhtml( u":/oauth2method/oauth2_verification_finished.html"_s );
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     setReplyContent( QString::fromUtf8( verhtml.readAll() )
-                       .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished." ) )
-                       .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "You can close this window and return to QGIS." ) )
+                       .replace( "{{ H2_TITLE }}"_L1, tr( "QGIS OAuth2 verification has finished." ) )
+                       .replace( "{{ H3_TITLE }}"_L1, tr( "You can close this window and return to QGIS." ) )
                        .toUtf8()
     );
   }
@@ -186,7 +186,7 @@ void QgsO2::setVerificationResponseContent()
 bool QgsO2::isLocalHost( const QUrl redirectUrl ) const
 {
   const QString hostName = redirectUrl.host();
-  if ( hostName == QLatin1String( "localhost" ) || hostName == QLatin1String( "127.0.0.1" ) || hostName == QLatin1String( "[::1]" ) )
+  if ( hostName == "localhost"_L1 || hostName == "127.0.0.1"_L1 || hostName == "[::1]"_L1 )
   {
     return true;
   }
@@ -199,7 +199,7 @@ void QgsO2::startRefreshTimer()
 
   if ( expiration <= 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "QgsO2::startRefreshTimer() - No expiration time set for client %1, skipping" ).arg( clientId() ), 2 );
+    QgsDebugMsgLevel( u"QgsO2::startRefreshTimer() - No expiration time set for client %1, skipping"_s.arg( clientId() ), 2 );
     return;
   }
 
@@ -213,11 +213,11 @@ void QgsO2::startRefreshTimer()
   qint64 refreshInterval = interval - std::min( static_cast<qint64>( 120 ), interval / 10 );
 
   auto doRefresh = [this]() {
-    QgsDebugMsgLevel( QStringLiteral( "QgsO2::startRefreshTimer() - Token refresh triggered for client %1" ).arg( clientId() ), 2 );
+    QgsDebugMsgLevel( u"QgsO2::startRefreshTimer() - Token refresh triggered for client %1"_s.arg( clientId() ), 2 );
     refresh();
   };
 
-  QgsDebugMsgLevel( QStringLiteral( "QgsO2::startRefreshTimer() - Token refresh scheduled in %1 seconds for client %2" ).arg( refreshInterval ).arg( clientId() ), 2 );
+  QgsDebugMsgLevel( u"QgsO2::startRefreshTimer() - Token refresh scheduled in %1 seconds for client %2"_s.arg( refreshInterval ).arg( clientId() ), 2 );
   connect( mRefreshTimer.get(), &QTimer::timeout, this, doRefresh );
   mRefreshTimer->setSingleShot( true );
   mRefreshTimer->start( static_cast<std::chrono::milliseconds>( refreshInterval * 1000 ) );
@@ -239,7 +239,7 @@ void QgsO2::link()
 {
   Q_ASSERT( thread() == QThread::currentThread() );
 
-  QgsDebugMsgLevel( QStringLiteral( "QgsO2::link" ), 4 );
+  QgsDebugMsgLevel( u"QgsO2::link"_s, 4 );
 
   // Create the reply server if it doesn't exist
   // and we don't use an external web interceptor
@@ -256,7 +256,7 @@ void QgsO2::link()
 
   if ( linked() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "QgsO2::link(): Linked already" ), 4 );
+    QgsDebugMsgLevel( u"QgsO2::link(): Linked already"_s, 4 );
     emit linkingSucceeded();
     return;
   }
@@ -284,11 +284,11 @@ void QgsO2::link()
           // Start listening to authentication replies
           if ( replyServer()->listen( QHostAddress::Any, localPort_ ) )
           {
-            QgsDebugMsgLevel( QStringLiteral( "O2::link(): Reply server listening on port %1" ).arg( localPort() ), 2 );
+            QgsDebugMsgLevel( u"O2::link(): Reply server listening on port %1"_s.arg( localPort() ), 2 );
           }
           else
           {
-            QgsDebugError( QStringLiteral( "O2::link: Reply server failed to start listening on port %1" ).arg( localPort() ) );
+            QgsDebugError( u"O2::link: Reply server failed to start listening on port %1"_s.arg( localPort() ) );
             emit linkingFailed();
             return;
           }
@@ -329,7 +329,7 @@ void QgsO2::link()
     QUrlQuery query( url );
     query.setQueryItems( parameters );
     url.setQuery( query );
-    QgsDebugMsgLevel( QStringLiteral( "QgsO2::link(): Emit openBrowser %1" ).arg( url.toString() ), 4 );
+    QgsDebugMsgLevel( u"QgsO2::link(): Emit openBrowser %1"_s.arg( url.toString() ), 4 );
     QgsNetworkAccessManager::instance()->requestAuthOpenBrowser( url );
     if ( !mIsLocalHost )
     {
@@ -358,8 +358,8 @@ void QgsO2::link()
 
     const QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
-    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+    QgsSetRequestInitiatorClass( tokenRequest, u"QgsO2"_s );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded"_L1 );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
@@ -386,8 +386,8 @@ void QgsO2::link()
     const QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
     QgsLogger::debug( "Test" );
-    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+    QgsSetRequestInitiatorClass( tokenRequest, u"QgsO2"_s );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded"_L1 );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
@@ -403,32 +403,32 @@ void QgsO2::setState( const QString & )
 
 void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived(): Emitting closeBrowser()" ), 4 );
+  QgsDebugMsgLevel( u"QgsO2::onVerificationReceived(): Emitting closeBrowser()"_s, 4 );
   QgsNetworkAccessManager::instance()->requestAuthCloseBrowser();
 
   if ( mIsLocalHost )
   {
-    if ( response.contains( QStringLiteral( "error" ) ) )
+    if ( response.contains( u"error"_s ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived(): Verification failed: %1" ).arg( response["error"] ), 4 );
+      QgsDebugMsgLevel( u"QgsO2::onVerificationReceived(): Verification failed: %1"_s.arg( response["error"] ), 4 );
       emit linkingFailed();
       return;
     }
 
     if ( !state_.isEmpty() )
     {
-      if ( response.contains( QStringLiteral( "state" ) ) )
+      if ( response.contains( u"state"_s ) )
       {
-        if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
+        if ( response.value( u"state"_s, u"ignore"_s ) != state_ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived(): Verification failed: (Response returned wrong state)" ), 3 );
+          QgsDebugMsgLevel( u"QgsO2::onVerificationReceived(): Verification failed: (Response returned wrong state)"_s, 3 );
           emit linkingFailed();
           return;
         }
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived(): Verification failed: (Response does not contain state)" ), 3 );
+        QgsDebugMsgLevel( u"QgsO2::onVerificationReceived(): Verification failed: (Response does not contain state)"_s, 3 );
         emit linkingFailed();
         return;
       }
@@ -442,9 +442,9 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     // Exchange access code for access/refresh tokens
     QString query;
     if ( !apiKey_.isEmpty() )
-      query = QStringLiteral( "?=%1" ).arg( QString( O2_OAUTH2_API_KEY ), apiKey_ );
+      query = u"?=%1"_s.arg( QString( O2_OAUTH2_API_KEY ), apiKey_ );
     QNetworkRequest tokenRequest( QUrl( tokenUrl_.toString() + query ) );
-    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
+    QgsSetRequestInitiatorClass( tokenRequest, u"QgsO2"_s );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
@@ -471,7 +471,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     // Check for mandatory tokens
     if ( response.contains( O2_OAUTH2_ACCESS_TOKEN ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "O2::onVerificationReceived(): Access token returned for implicit flow" ), 2 );
+      QgsDebugMsgLevel( u"O2::onVerificationReceived(): Access token returned for implicit flow"_s, 2 );
       setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
       if ( response.contains( O2_OAUTH2_EXPIRES_IN ) )
       {
@@ -479,7 +479,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
         const int expiresIn = response.value( O2_OAUTH2_EXPIRES_IN ).toInt( &ok );
         if ( ok )
         {
-          QgsDebugMsgLevel( QStringLiteral( "O2::onVerificationReceived(): Token expires in %1 seconds" ).arg( expiresIn ), 2 );
+          QgsDebugMsgLevel( u"O2::onVerificationReceived(): Token expires in %1 seconds"_s.arg( expiresIn ), 2 );
           setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
         }
       }
@@ -488,7 +488,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     }
     else
     {
-      QgsDebugError( QStringLiteral( "O2::onVerificationReceived: Access token missing from response for implicit flow" ) );
+      QgsDebugError( u"O2::onVerificationReceived: Access token missing from response for implicit flow"_s );
       Q_EMIT linkingFailed();
     }
   }
@@ -511,13 +511,13 @@ static QVariantMap parseTokenResponse( const QByteArray &data )
   const QJsonDocument doc = QJsonDocument::fromJson( data, &err );
   if ( err.error != QJsonParseError::NoError )
   {
-    QgsDebugError( QStringLiteral( "parseTokenResponse() - Failed to parse token response due to err: %1" ).arg( err.errorString() ) );
+    QgsDebugError( u"parseTokenResponse() - Failed to parse token response due to err: %1"_s.arg( err.errorString() ) );
     return QVariantMap();
   }
 
   if ( !doc.isObject() )
   {
-    QgsDebugError( QStringLiteral( "parseTokenResponse() - Token response is not an object" ) );
+    QgsDebugError( u"parseTokenResponse() - Token response is not an object"_s );
     return QVariantMap();
   }
 
@@ -527,17 +527,17 @@ static QVariantMap parseTokenResponse( const QByteArray &data )
 // Code adapted from O2::refresh(), but using QgsBlockingNetworkRequest
 void QgsO2::refreshSynchronous()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsO2::refreshSynchronous() - Token: ... %1" ).arg( refreshToken().right( 7 ) ), 2 );
+  QgsDebugMsgLevel( u"QgsO2::refreshSynchronous() - Token: ... %1"_s.arg( refreshToken().right( 7 ) ), 2 );
 
   if ( refreshToken().isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "QgsO2::refreshSynchronous() - No refresh token" ) );
+    QgsDebugError( u"QgsO2::refreshSynchronous() - No refresh token"_s );
     onRefreshError( QNetworkReply::AuthenticationRequiredError );
     return;
   }
   if ( refreshTokenUrl_.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "QgsO2::refreshSynchronous() - Refresh token URL not set" ) );
+    QgsDebugError( u"QgsO2::refreshSynchronous() - Refresh token URL not set"_s );
     onRefreshError( QNetworkReply::AuthenticationRequiredError );
     return;
   }
@@ -562,9 +562,9 @@ void QgsO2::refreshSynchronous()
   {
     const QByteArray reply = blockingRequest.reply().content();
     const QVariantMap tokens = parseTokenResponse( reply );
-    if ( tokens.contains( QStringLiteral( "error" ) ) )
+    if ( tokens.contains( u"error"_s ) )
     {
-      QgsDebugError( QStringLiteral( "QgsO2::refreshSynchronous() - Error refreshing token %1" ).arg( tokens.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString().toLocal8Bit().constData() ) );
+      QgsDebugError( u"QgsO2::refreshSynchronous() - Error refreshing token %1"_s.arg( tokens.value( u"error"_s ).toMap().value( u"message"_s ).toString().toLocal8Bit().constData() ) );
       unlink();
     }
     else
@@ -576,7 +576,7 @@ void QgsO2::refreshSynchronous()
       if ( !refreshToken.isEmpty() )
         setRefreshToken( refreshToken );
       setLinked( true );
-      QgsDebugMsgLevel( QStringLiteral( "QgsO2::refreshSynchronous() - New token expires in %1 seconds" ).arg( expiresIn ), 2 );
+      QgsDebugMsgLevel( u"QgsO2::refreshSynchronous() - New token expires in %1 seconds"_s.arg( expiresIn ), 2 );
       emit linkingSucceeded();
     }
     emit refreshFinished( QNetworkReply::NoError );
@@ -584,7 +584,7 @@ void QgsO2::refreshSynchronous()
   else
   {
     unlink();
-    QgsDebugError( QStringLiteral( "QgsO2::refreshSynchronous() - Error %1" ).arg( blockingRequest.errorMessage() ) );
+    QgsDebugError( u"QgsO2::refreshSynchronous() - Error %1"_s.arg( blockingRequest.errorMessage() ) );
     emit refreshFinished( blockingRequest.reply().error() );
   }
 }
@@ -599,7 +599,7 @@ void QgsO2::stopRefreshTimer()
 {
   if ( mRefreshTimer && mRefreshTimer->isActive() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "QgsO2::stopRefreshTimer() - Stopping refresh timer %1" ).arg( clientId() ), 2 );
+    QgsDebugMsgLevel( u"QgsO2::stopRefreshTimer() - Stopping refresh timer %1"_s.arg( clientId() ), 2 );
     mRefreshTimer->stop();
   }
 }

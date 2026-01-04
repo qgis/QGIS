@@ -21,7 +21,7 @@
 
 QString QgsRenameTableFieldAlgorithm::name() const
 {
-  return QStringLiteral( "renametablefield" );
+  return u"renametablefield"_s;
 }
 
 QString QgsRenameTableFieldAlgorithm::displayName() const
@@ -51,7 +51,7 @@ QString QgsRenameTableFieldAlgorithm::group() const
 
 QString QgsRenameTableFieldAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return u"vectortable"_s;
 }
 
 QString QgsRenameTableFieldAlgorithm::outputName() const
@@ -76,8 +76,8 @@ QgsRenameTableFieldAlgorithm *QgsRenameTableFieldAlgorithm::createInstance() con
 
 void QgsRenameTableFieldAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Field to rename" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "NEW_NAME" ), QObject::tr( "New field name" ) ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Field to rename" ), QVariant(), u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterString( u"NEW_NAME"_s, QObject::tr( "New field name" ) ) );
 }
 
 QgsFields QgsRenameTableFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
@@ -96,8 +96,8 @@ QgsFields QgsRenameTableFieldAlgorithm::outputFields( const QgsFields &inputFiel
 
 bool QgsRenameTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mOriginalName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  mNewName = parameterAsString( parameters, QStringLiteral( "NEW_NAME" ), context );
+  mOriginalName = parameterAsString( parameters, u"FIELD"_s, context );
+  mNewName = parameterAsString( parameters, u"NEW_NAME"_s, context );
   return true;
 }
 

@@ -80,16 +80,16 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   {
     // migrate old settings
     QgsSettings settings;
-    showLocationMarker = settings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool();
-    showBearingLine = settings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool();
-    rotateMap = settings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool();
+    showLocationMarker = settings.value( u"showMarker"_s, "true", QgsSettings::Gps ).toBool();
+    showBearingLine = settings.value( u"showBearingLine"_s, false, QgsSettings::Gps ).toBool();
+    rotateMap = settings.value( u"rotateMap"_s, false, QgsSettings::Gps ).toBool();
 
-    const QString panMode = settings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
-    if ( panMode == QLatin1String( "none" ) )
+    const QString panMode = settings.value( u"panMode"_s, "recenterWhenNeeded", QgsSettings::Gps ).toString();
+    if ( panMode == "none"_L1 )
     {
       mapCenteringMode = Qgis::MapRecenteringMode::Never;
     }
-    else if ( panMode == QLatin1String( "recenterAlways" ) )
+    else if ( panMode == "recenterAlways"_L1 )
     {
       mapCenteringMode = Qgis::MapRecenteringMode::Always;
     }
@@ -261,7 +261,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
         return;
       }
 
-      fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "nmea" ) } );
+      fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { u"nmea"_s } );
       QgsAppGpsLogging::settingLastLogFolder->setValue( QFileInfo( fileName ).absolutePath() );
 
       emit nmeaLogFileChanged( fileName );
@@ -277,9 +277,9 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   addSeparator();
 
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
-  settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  settingsAction->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   connect( settingsAction, &QAction::triggered, this, [] {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mGpsOptions"_s );
   } );
 
   addAction( settingsAction );

@@ -23,7 +23,7 @@
 
 QString QgsTransferAnnotationsFromMainAlgorithm::name() const
 {
-  return QStringLiteral( "transferannotationsfrommain" );
+  return u"transferannotationsfrommain"_s;
 }
 
 QString QgsTransferAnnotationsFromMainAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsTransferAnnotationsFromMainAlgorithm::group() const
 
 QString QgsTransferAnnotationsFromMainAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsTransferAnnotationsFromMainAlgorithm::flags() const
@@ -68,9 +68,9 @@ QgsTransferAnnotationsFromMainAlgorithm *QgsTransferAnnotationsFromMainAlgorithm
 
 void QgsTransferAnnotationsFromMainAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "LAYER_NAME" ), QObject::tr( "New layer name" ), QObject::tr( "Annotations" ) ) );
+  addParameter( new QgsProcessingParameterString( u"LAYER_NAME"_s, QObject::tr( "New layer name" ), QObject::tr( "Annotations" ) ) );
 
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "New annotation layer" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "New annotation layer" ) ) );
 }
 
 QVariantMap QgsTransferAnnotationsFromMainAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -83,11 +83,11 @@ QVariantMap QgsTransferAnnotationsFromMainAlgorithm::processAlgorithm( const QVa
     throw QgsProcessingException( QObject::tr( "Could not load main annotation layer for project." ) );
 
   std::unique_ptr<QgsAnnotationLayer> newLayer( main->clone() );
-  newLayer->setName( parameterAsString( parameters, QStringLiteral( "LAYER_NAME" ), context ) );
+  newLayer->setName( parameterAsString( parameters, u"LAYER_NAME"_s, context ) );
   main->clear();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), newLayer->id() );
+  outputs.insert( u"OUTPUT"_s, newLayer->id() );
 
   context.project()->addMapLayer( newLayer.release() );
 

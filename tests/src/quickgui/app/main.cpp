@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
   // 2) Load QGIS Project
   QString dataDir( TEST_DATA_DIR ); // defined in CMakeLists.txt
   QString projectFile = dataDir + "/quickapp_project.qgs";
-  QgsDebugMsgLevel( QStringLiteral( "project file:  %1" ).arg( projectFile ), 2 );
+  QgsDebugMsgLevel( u"project file:  %1"_s.arg( projectFile ), 2 );
   QgsProject project;
   bool res = project.read( projectFile );
   Q_ASSERT( res );
@@ -57,34 +57,34 @@ int main( int argc, char *argv[] )
   engine.rootContext()->setContextProperty( "__project", &project );
   engine.rootContext()->setContextProperty( "__layers", QVariant::fromValue( project.layerTreeRoot()->layerOrder() ) );
 
-  QQmlComponent component( &engine, QUrl( QStringLiteral( "qrc:/main.qml" ) ) );
+  QQmlComponent component( &engine, QUrl( u"qrc:/main.qml"_s ) );
   QObject *object = component.create();
 
   if ( !component.errors().isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "%s" ).arg( QgsApplication::showSettings().toLocal8Bit().data() ) );
+    QgsDebugError( u"%s"_s.arg( QgsApplication::showSettings().toLocal8Bit().data() ) );
 
-    QgsDebugError( QStringLiteral( "****************************************" ) );
-    QgsDebugError( QStringLiteral( "*****        QML errors:           *****" ) );
-    QgsDebugError( QStringLiteral( "****************************************" ) );
+    QgsDebugError( u"****************************************"_s );
+    QgsDebugError( u"*****        QML errors:           *****"_s );
+    QgsDebugError( u"****************************************"_s );
     const QList<QQmlError> errors = component.errors();
     for ( const QQmlError &error : errors )
     {
       Q_UNUSED( error );
       QgsDebugError( error.toString() );
     }
-    QgsDebugError( QStringLiteral( "****************************************" ) );
-    QgsDebugError( QStringLiteral( "****************************************" ) );
+    QgsDebugError( u"****************************************"_s );
+    QgsDebugError( u"****************************************"_s );
   }
 
   if ( object == nullptr )
   {
-    QgsDebugError( QStringLiteral( "FATAL ERROR: unable to create main.qml" ) );
+    QgsDebugError( u"FATAL ERROR: unable to create main.qml"_s );
     return EXIT_FAILURE;
   }
 
   // Add some data for debugging if needed
-  QgsDebugError( QStringLiteral( "data directory: %1" ).arg( dataDir ) );
+  QgsDebugError( u"data directory: %1"_s.arg( dataDir ) );
 
   return QgsApplication::exec();
 }

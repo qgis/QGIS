@@ -50,7 +50,7 @@ class QgsRectangle;
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
+class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 5
 {
   public:
 

@@ -83,7 +83,7 @@ void TestVectorLayerCache::initTestCase()
 
   // Backup test shape file and attributes
   QStringList backupFiles;
-  backupFiles << QStringLiteral( "points.shp" ) << QStringLiteral( "points.shx" ) << QStringLiteral( "points.dbf" ) << QStringLiteral( "points.prj" );
+  backupFiles << u"points.shp"_s << u"points.shx"_s << u"points.dbf"_s << u"points.prj"_s;
 
   const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString myTestDataDir = myDataDir + '/';
@@ -106,7 +106,7 @@ void TestVectorLayerCache::initTestCase()
   //
   const QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
 }
 
 void TestVectorLayerCache::init()
@@ -166,14 +166,14 @@ void TestVectorLayerCache::testCacheAttrActions()
   // Add an attribute, make sure it is returned also if a cached feature is requested
   mPointsLayer->startEditing();
   const QMetaType::Type attrType = QMetaType::Type::Int;
-  mPointsLayer->addAttribute( QgsField( QStringLiteral( "newAttr" ), attrType, QStringLiteral( "Int" ), 5, 0 ) );
+  mPointsLayer->addAttribute( QgsField( u"newAttr"_s, attrType, u"Int"_s, 5, 0 ) );
   mPointsLayer->commitChanges();
 
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
   QVERIFY( f.attribute( "newAttr" ).isValid() );
 
   const QgsFields allFields = mPointsLayer->fields();
-  const int idx = allFields.indexFromName( QStringLiteral( "newAttr" ) );
+  const int idx = allFields.indexFromName( u"newAttr"_s );
 
   mPointsLayer->startEditing();
   mPointsLayer->deleteAttribute( idx );
@@ -216,7 +216,7 @@ void TestVectorLayerCache::testSubsetRequest()
 
   const QgsFields fields = mPointsLayer->fields();
   QStringList requiredFields;
-  requiredFields << QStringLiteral( "Class" ) << QStringLiteral( "Cabin Crew" );
+  requiredFields << u"Class"_s << u"Cabin Crew"_s;
 
   mVectorLayerCache->featureAtId( 16, f );
   const QVariant a = f.attribute( 3 );

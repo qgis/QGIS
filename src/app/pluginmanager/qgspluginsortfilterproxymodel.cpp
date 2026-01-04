@@ -55,7 +55,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString &spacers )
 
 bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 {
-  if ( mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
+  if ( mAcceptedStatuses.contains( u"invalid"_s )
        && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
     // Don't accept if the "invalid" filter is set and the plugin is OK
@@ -67,7 +67,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   if ( status.endsWith( 'Z' ) )
     status.chop( 1 );
   if ( !mAcceptedStatuses.isEmpty()
-       && !mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
+       && !mAcceptedStatuses.contains( u"invalid"_s )
        && !( mAcceptedStatuses.contains( status ) || mAcceptedStatuses.contains( statusexp ) ) )
   {
     // Don't accept if the status doesn't match
@@ -143,7 +143,7 @@ void QgsPluginSortFilterProxyModel::sortPluginsByVote()
 
 void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
 {
-  setAcceptedSpacers( QStringLiteral( "status" ) );
+  setAcceptedSpacers( u"status"_s );
   sort( 0, Qt::DescendingOrder );
   setSortRole( PLUGIN_STATUS_ROLE );
 }
@@ -168,8 +168,8 @@ void QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated()
 bool QgsPluginSortFilterProxyModel::lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const
 {
   // Always move deprecated plugins to bottom, regardless of the sort order.
-  const bool isLeftDepreciated = sourceModel()->data( source_left, PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" );
-  const bool isRightDepreciated = sourceModel()->data( source_right, PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" );
+  const bool isLeftDepreciated = sourceModel()->data( source_left, PLUGIN_ISDEPRECATED_ROLE ).toString() == "true"_L1;
+  const bool isRightDepreciated = sourceModel()->data( source_right, PLUGIN_ISDEPRECATED_ROLE ).toString() == "true"_L1;
   if ( isRightDepreciated && !isLeftDepreciated )
   {
     return sortOrder() == Qt::AscendingOrder ? true : false;

@@ -67,12 +67,12 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
 
   mArrowHeadStrokeColorButton->setColorDialogTitle( tr( "Select Arrow Head Stroke Color" ) );
   mArrowHeadStrokeColorButton->setAllowOpacity( true );
-  mArrowHeadStrokeColorButton->setContext( QStringLiteral( "composer" ) );
+  mArrowHeadStrokeColorButton->setContext( u"composer"_s );
   mArrowHeadStrokeColorButton->setNoColorString( tr( "Transparent Stroke" ) );
   mArrowHeadStrokeColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select Arrow Head Fill Color" ) );
   mArrowHeadFillColorButton->setAllowOpacity( true );
-  mArrowHeadFillColorButton->setContext( QStringLiteral( "composer" ) );
+  mArrowHeadFillColorButton->setContext( u"composer"_s );
   mArrowHeadFillColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mArrowHeadFillColorButton->setShowNoColor( true );
 
@@ -363,14 +363,14 @@ void QgsLayoutPolylineWidget::mStartMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( QStringLiteral( "/UI/lastComposerMarkerDir" ), QDir::homePath() ).toString();
+    openDir = s.value( u"/UI/lastComposerMarkerDir"_s, QDir::homePath() ).toString();
   }
 
   const QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
     const QFileInfo fileInfo( svgFileName );
-    s.setValue( QStringLiteral( "/UI/lastComposerMarkerDir" ), fileInfo.absolutePath() );
+    s.setValue( u"/UI/lastComposerMarkerDir"_s, fileInfo.absolutePath() );
     mPolyline->beginCommand( tr( "Change Start Marker File" ) );
     mStartMarkerLineEdit->setText( svgFileName );
     mPolyline->endCommand();
@@ -390,14 +390,14 @@ void QgsLayoutPolylineWidget::mEndMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( QStringLiteral( "/UI/lastComposerMarkerDir" ), QDir::homePath() ).toString();
+    openDir = s.value( u"/UI/lastComposerMarkerDir"_s, QDir::homePath() ).toString();
   }
 
   const QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );
   if ( !svgFileName.isNull() )
   {
     const QFileInfo fileInfo( svgFileName );
-    s.setValue( QStringLiteral( "/UI/lastComposerMarkerDir" ), fileInfo.absolutePath() );
+    s.setValue( u"/UI/lastComposerMarkerDir"_s, fileInfo.absolutePath() );
     mPolyline->beginCommand( tr( "Change End Marker File" ) );
     mEndMarkerLineEdit->setText( svgFileName );
     mPolyline->endCommand();

@@ -46,7 +46,7 @@ class TestQgsMeshRenderer : public QgsTest
 
   public:
     TestQgsMeshRenderer()
-      : QgsTest( QStringLiteral( "Mesh Layer Rendering Tests" ), QStringLiteral( "mesh" ) ) {}
+      : QgsTest( u"Mesh Layer Rendering Tests"_s, u"mesh"_s ) {}
 
   private:
     QString mDataDir;
@@ -545,7 +545,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_wind_barbs()
 {
   const QgsMeshDatasetIndex ds( 2, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMdalLayer->dataProvider()->datasetGroupMetadata( ds );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset2" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset2"_s );
 
   QgsMeshRendererSettings rendererSettings = mMdalLayer->rendererSettings();
   QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
@@ -877,8 +877,8 @@ void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
   // layer with several separated parts
   QgsMeshLayer layer(
     testDataPath( "mesh/several_parts.2dm" ),
-    QStringLiteral( "mesh" ),
-    QStringLiteral( "mdal" )
+    u"mesh"_s,
+    u"mdal"_s
   );
 
   QVERIFY( layer.isValid() );

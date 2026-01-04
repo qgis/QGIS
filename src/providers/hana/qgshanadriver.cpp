@@ -38,7 +38,7 @@ static QString detectDriverPath( EnvironmentRef &env, const QString &libName, co
   {
     for ( const DriverInformation::Attribute &attr : drv.attributes )
     {
-      if ( QString::compare( QString::fromStdString( attr.name ), QLatin1String( "DRIVER" ), Qt::CaseInsensitive ) == 0 )
+      if ( QString::compare( QString::fromStdString( attr.name ), "DRIVER"_L1, Qt::CaseInsensitive ) == 0 )
       {
         QString path = QString::fromStdString( attr.value );
         if ( path.endsWith( libName ) && QFileInfo::exists( path ) )
@@ -55,14 +55,14 @@ QgsHanaDriver::QgsHanaDriver()
   QgsDebugCall;
 #if defined( Q_OS_WIN )
 #if defined( Q_OS_WIN64 )
-  mDriver = mEnv->isDriverInstalled( "HDBODBC" ) ? QStringLiteral( "HDBODBC" ) : QString();
+  mDriver = mEnv->isDriverInstalled( "HDBODBC" ) ? u"HDBODBC"_s : QString();
 #else
-  mDriver = mEnv->isDriverInstalled( "HDBODBC32" ) ? QStringLiteral( "HDBODBC32" ) : QString();
+  mDriver = mEnv->isDriverInstalled( "HDBODBC32" ) ? u"HDBODBC32"_s : QString();
 #endif
 #elif defined( Q_OS_MAC )
-  mDriver = detectDriverPath( mEnv, QStringLiteral( "libodbcHDB.dylib" ), QStringLiteral( "/Applications/sap/hdbclient" ) );
+  mDriver = detectDriverPath( mEnv, u"libodbcHDB.dylib"_s, u"/Applications/sap/hdbclient"_s );
 #else
-  mDriver = detectDriverPath( mEnv, QStringLiteral( "libodbcHDB.so" ), QStringLiteral( "/usr/sap/hdbclient" ) );
+  mDriver = detectDriverPath( mEnv, u"libodbcHDB.so"_s, u"/usr/sap/hdbclient"_s );
 #endif
 }
 

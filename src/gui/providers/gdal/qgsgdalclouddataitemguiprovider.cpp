@@ -70,7 +70,7 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
     QMenu *newConnectionMenu = new QMenu( tr( "New Connection" ), menu );
     for ( const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiDetail : std::as_const( vsiDetails ) )
     {
-      if ( vsiDetail.identifier == QLatin1String( "vsicurl" ) )
+      if ( vsiDetail.identifier == "vsicurl"_L1 )
         continue;
 
       QAction *actionNew = new QAction( tr( "%1…" ).arg( vsiDetail.name ), menu );

@@ -231,9 +231,12 @@ class CORE_EXPORT QgsRasterIterator
     /**
      * Returns the raster iteration progress as a fraction from 0 to 1.0, for the specified \a bandNumber.
      *
+     * The optional \a currentBlockProgress argument was added in QGIS 4.0, and can be set to a fraction
+     * from 0 to 1.0 to reflect progress through the current block.
+     *
      * \since QGIS 3.42
      */
-    double progress( int bandNumber ) const;
+    double progress( int bandNumber, double currentBlockProgress = -1 ) const;
 
     //! Default maximum tile width
     static const int DEFAULT_MAXIMUM_TILE_WIDTH = 2000;
@@ -253,6 +256,7 @@ class CORE_EXPORT QgsRasterIterator
 
     QgsRasterInterface *mInput = nullptr;
     QMap<int, RasterPartInfo> mRasterPartInfos;
+    QMap<int, RasterPartInfo> mRasterPrevBlockInfos;
     QgsRectangle mExtent;
     QgsRasterBlockFeedback *mFeedback = nullptr;
 

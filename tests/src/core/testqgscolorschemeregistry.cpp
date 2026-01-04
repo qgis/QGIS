@@ -30,22 +30,22 @@ class DummyColorScheme : public QgsColorScheme
   public:
     DummyColorScheme() = default;
 
-    QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    QString schemeName() const override { return u"Dummy scheme"_s; }
 
     QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override
     {
       QList<QPair<QColor, QString>> colors;
-      if ( context == QLatin1String( "testscheme" ) )
+      if ( context == "testscheme"_L1 )
       {
-        colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
+        colors << qMakePair( QColor( 255, 255, 0 ), u"schemetest"_s );
       }
       else if ( baseColor.isValid() )
       {
-        colors << qMakePair( baseColor, QStringLiteral( "base" ) );
+        colors << qMakePair( baseColor, u"base"_s );
       }
       else
       {
-        colors << qMakePair( QColor( 255, 0, 0 ), QStringLiteral( "red" ) ) << qMakePair( QColor( 0, 255, 0 ), QString() );
+        colors << qMakePair( QColor( 255, 0, 0 ), u"red"_s ) << qMakePair( QColor( 0, 255, 0 ), QString() );
       }
       return colors;
     }
@@ -61,12 +61,12 @@ class DummyColorScheme2 : public QgsColorScheme
   public:
     DummyColorScheme2() = default;
 
-    QString schemeName() const override { return QStringLiteral( "Dummy scheme2" ); }
+    QString schemeName() const override { return u"Dummy scheme2"_s; }
 
     QgsNamedColorList fetchColors( const QString & = QString(), const QColor & = QColor() ) override
     {
       QList<QPair<QColor, QString>> colors;
-      colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
+      colors << qMakePair( QColor( 255, 255, 0 ), u"schemetest"_s );
       return colors;
     }
 
@@ -223,7 +223,7 @@ void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
 
   for ( int i = 0; i < 10; ++i )
   {
-    QCOMPARE( registry->fetchRandomStyleColor().name(), QStringLiteral( "#ffff00" ) );
+    QCOMPARE( registry->fetchRandomStyleColor().name(), u"#ffff00"_s );
   }
 
   DummyColorScheme *dummyScheme2 = new DummyColorScheme();
@@ -232,7 +232,7 @@ void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
   for ( int i = 0; i < 10; ++i )
   {
     const QString color = registry->fetchRandomStyleColor().name();
-    QVERIFY( color == QLatin1String( "#ff0000" ) || color == QLatin1String( "#00ff00" ) );
+    QVERIFY( color == "#ff0000"_L1 || color == "#00ff00"_L1 );
   }
 
   // remove current random style color scheme

@@ -95,7 +95,7 @@ void QgsTileDownloadManagerWorker::queueUpdated()
   {
     if ( !it->networkReply )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting request: " ) + it->request.url().toString(), 2 );
+      QgsDebugMsgLevel( u"Tile download manager: starting request: "_s + it->request.url().toString(), 2 );
       // start entries which are not in progress
 
       QNetworkRequest request( it->request );
@@ -112,7 +112,7 @@ void QgsTileDownloadManagerWorker::queueUpdated()
 
 void QgsTileDownloadManagerWorker::quitThread()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: stopping worker thread" ), 2 );
+  QgsDebugMsgLevel( u"Tile download manager: stopping worker thread"_s, 2 );
 
   mManager->mWorker->deleteLater();
   mManager->mWorker = nullptr;
@@ -138,7 +138,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 {
   const QMutexLocker locker( &mManager->mMutex );
 
-  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal reply finished: " ) + mRequest.url().toString(), 2 );
+  QgsDebugMsgLevel( u"Tile download manager: internal reply finished: "_s + mRequest.url().toString(), 2 );
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   QByteArray data;
@@ -152,7 +152,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
   {
     ++mManager->mStats.networkRequestsFailed;
     const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
+    if ( contentType.startsWith( "text/plain"_L1 ) )
       data = reply->readAll();
   }
 
@@ -205,7 +205,7 @@ QgsTileDownloadManager::QgsTileDownloadManager()
   {
     cacheDirectory.push_back( QDir::separator() );
   }
-  cacheDirectory += QLatin1String( "http-ranges" );
+  cacheDirectory += "http-ranges"_L1;
   mRangesCache->setCacheDirectory( cacheDirectory );
   qint64 cacheSize = QgsSettingsRegistryCore::settingsNetworkCacheSize->value();
   mRangesCache->setCacheSize( cacheSize );
@@ -230,7 +230,7 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
 
   if ( !mWorker )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: starting worker thread" ), 2 );
+    QgsDebugMsgLevel( u"Tile download manager: starting worker thread"_s, 2 );
     mWorkerThread = new QThread;
     mWorker = new QgsTileDownloadManagerWorker( this );
     mWorker->moveToThread( mWorkerThread );
@@ -245,7 +245,7 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
   QgsTileDownloadManager::QueueEntry entry = findEntryForRequest( request );
   if ( !entry.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: get (new entry): " ) + request.url().toString(), 2 );
+    QgsDebugMsgLevel( u"Tile download manager: get (new entry): "_s + request.url().toString(), 2 );
     // create a new entry and add it to queue
     entry.request = request;
     entry.objWorker = new QgsTileDownloadManagerReplyWorkerObject( this, request );
@@ -257,7 +257,7 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: get (existing entry): " ) + request.url().toString(), 2 );
+    QgsDebugMsgLevel( u"Tile download manager: get (existing entry): "_s + request.url().toString(), 2 );
 
     QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
 
@@ -429,7 +429,7 @@ QgsTileDownloadManagerReply::~QgsTileDownloadManagerReply()
 
   if ( !mHasFinished )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Tile download manager: reply deleted before finished: " ) + mRequest.url().toString(), 2 );
+    QgsDebugMsgLevel( u"Tile download manager: reply deleted before finished: "_s + mRequest.url().toString(), 2 );
 
     ++mManager->mStats.requestsEarlyDeleted;
   }
@@ -437,7 +437,7 @@ QgsTileDownloadManagerReply::~QgsTileDownloadManagerReply()
 
 void QgsTileDownloadManagerReply::requestFinished( QByteArray data, QUrl url, const QMap<QNetworkRequest::Attribute, QVariant> &attributes, const QMap<QNetworkRequest::KnownHeaders, QVariant> &headers, const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs, QNetworkReply::NetworkError error, const QString &errorString )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: reply finished: " ) + mRequest.url().toString(), 2 );
+  QgsDebugMsgLevel( u"Tile download manager: reply finished: "_s + mRequest.url().toString(), 2 );
 
   mHasFinished = true;
   mData = data;
@@ -452,7 +452,7 @@ void QgsTileDownloadManagerReply::requestFinished( QByteArray data, QUrl url, co
 
 void QgsTileDownloadManagerReply::cachedRangeRequestFinished()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Tile download manager: internal range request reply loaded from cache: " ) + mRequest.url().toString(), 2 );
+  QgsDebugMsgLevel( u"Tile download manager: internal range request reply loaded from cache: "_s + mRequest.url().toString(), 2 );
   mHasFinished = true;
   mData = mManager->mRangesCache->entry( mRequest );
   mUrl = mRequest.url();

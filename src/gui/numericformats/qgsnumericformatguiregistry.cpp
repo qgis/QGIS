@@ -97,14 +97,14 @@ class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNume
 
 QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
 {
-  addFormatConfigurationWidgetFactory( QStringLiteral( "basic" ), new QgsBasicNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "bearing" ), new QgsBearingNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "currency" ), new QgsCurrencyNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "percentage" ), new QgsPercentageNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "scientific" ), new QgsScientificNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "fraction" ), new QgsFractionNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "geographiccoordinate" ), new QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "expression" ), new QgsExpressionBasedNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"basic"_s, new QgsBasicNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"bearing"_s, new QgsBearingNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"currency"_s, new QgsCurrencyNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"percentage"_s, new QgsPercentageNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"scientific"_s, new QgsScientificNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"fraction"_s, new QgsFractionNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"geographiccoordinate"_s, new QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"expression"_s, new QgsExpressionBasedNumericFormatConfigurationWidgetFactory() );
 }
 
 QgsNumericFormatGuiRegistry::~QgsNumericFormatGuiRegistry()

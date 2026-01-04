@@ -18,7 +18,7 @@
 
 QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
 {
-  QgsCodeEditorColorScheme defaultScheme( QStringLiteral( "default" ), QObject::tr( "Default" ) );
+  QgsCodeEditorColorScheme defaultScheme( u"default"_s, QObject::tr( "Default" ) );
   defaultScheme.setColors(
     {
       { QgsCodeEditorColorScheme::ColorRole::Default, QColor( "#4d4d4c" ) },
@@ -61,7 +61,7 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
   );
   addColorScheme( defaultScheme );
 
-  QgsCodeEditorColorScheme solarizedLight( QStringLiteral( "solarized" ), QObject::tr( "Solarized (Light)" ) );
+  QgsCodeEditorColorScheme solarizedLight( u"solarized"_s, QObject::tr( "Solarized (Light)" ) );
   solarizedLight.setColors(
     {
       { QgsCodeEditorColorScheme::ColorRole::Default, QColor( "#586E75" ) },
@@ -104,7 +104,7 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
   );
   addColorScheme( solarizedLight );
 
-  QgsCodeEditorColorScheme solarizedDark( QStringLiteral( "solarized_dark" ), QObject::tr( "Solarized (Dark)" ) );
+  QgsCodeEditorColorScheme solarizedDark( u"solarized_dark"_s, QObject::tr( "Solarized (Dark)" ) );
   solarizedDark.setColors(
     {
       { QgsCodeEditorColorScheme::ColorRole::Default, QColor( "#839496" ) },
@@ -174,7 +174,7 @@ QStringList QgsCodeEditorColorSchemeRegistry::schemes() const
 QgsCodeEditorColorScheme QgsCodeEditorColorSchemeRegistry::scheme( const QString &id ) const
 {
   if ( !mColorSchemes.contains( id ) )
-    return mColorSchemes.value( QStringLiteral( "default" ) );
+    return mColorSchemes.value( u"default"_s );
 
   return mColorSchemes.value( id );
 }

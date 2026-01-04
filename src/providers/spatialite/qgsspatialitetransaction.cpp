@@ -37,24 +37,24 @@ QgsSpatiaLiteTransaction::QgsSpatiaLiteTransaction( const QString &connString, Q
 
 bool QgsSpatiaLiteTransaction::beginTransaction( QString &error, int /* statementTimeout */ )
 {
-  return executeSql( QStringLiteral( "BEGIN" ), error );
+  return executeSql( u"BEGIN"_s, error );
 }
 
 bool QgsSpatiaLiteTransaction::commitTransaction( QString &error )
 {
-  return executeSql( QStringLiteral( "COMMIT" ), error );
+  return executeSql( u"COMMIT"_s, error );
 }
 
 bool QgsSpatiaLiteTransaction::rollbackTransaction( QString &error )
 {
-  return executeSql( QStringLiteral( "ROLLBACK" ), error );
+  return executeSql( u"ROLLBACK"_s, error );
 }
 
 bool QgsSpatiaLiteTransaction::executeSql( const QString &sql, QString &errorMsg, bool isDirty, const QString &name )
 {
   if ( !mSqliteHandle )
   {
-    QgsDebugError( QStringLiteral( "Spatialite handle is not set" ) );
+    QgsDebugError( u"Spatialite handle is not set"_s );
     return false;
   }
 
@@ -75,7 +75,7 @@ bool QgsSpatiaLiteTransaction::executeSql( const QString &sql, QString &errorMsg
     {
       rollbackToSavepoint( savePoints().last(), errorMsg );
     }
-    errorMsg = QStringLiteral( "%1\n%2" ).arg( errMsg, errorMsg );
+    errorMsg = u"%1\n%2"_s.arg( errMsg, errorMsg );
     QgsDebugError( errMsg );
     sqlite3_free( errMsg );
     return false;
@@ -87,7 +87,7 @@ bool QgsSpatiaLiteTransaction::executeSql( const QString &sql, QString &errorMsg
     emit dirtied( sql, name );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "... ok" ), 2 );
+  QgsDebugMsgLevel( u"... ok"_s, 2 );
   return true;
 }
 

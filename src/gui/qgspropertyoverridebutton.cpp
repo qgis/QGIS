@@ -43,9 +43,9 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent, const Qgs
 {
   setFocusPolicy( Qt::StrongFocus );
 
-  QString ss = QStringLiteral( "QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }" );
+  QString ss = u"QgsPropertyOverrideButton { background: none; border: 1px solid rgba(0, 0, 0, 0%); } QgsPropertyOverrideButton:focus { border: 1px solid palette(highlight); }"_s;
 #ifdef Q_OS_MACOS
-  ss += QLatin1String( "QgsPropertyOverrideButton::menu-indicator { width: 5px; }" );
+  ss += "QgsPropertyOverrideButton::menu-indicator { width: 5px; }"_L1;
 #endif
   setStyleSheet( ss );
 
@@ -141,7 +141,7 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
 
   if ( !ts.isEmpty() )
   {
-    mDataTypesString = ts.join( QLatin1String( ", " ) );
+    mDataTypesString = ts.join( ", "_L1 );
     mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 
@@ -645,7 +645,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
   {
     if ( getColor() != action->text() )
     {
-      mExpressionString = QStringLiteral( "project_color_object('%1')" ).arg( action->text() );
+      mExpressionString = u"project_color_object('%1')"_s.arg( action->text() );
     }
     mProperty.setExpressionString( mExpressionString );
     mProperty.setTransformer( nullptr );
@@ -674,7 +674,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
   QString currentExpression = ( mProperty.propertyType() == Qgis::PropertyType::Static && !mProperty.staticValue().isValid() ) ? QString()
                                                                                                                                : mProperty.asExpression();
 
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, u"generic"_s, context );
   d.setExpectedOutputFormat( mInputDescription );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -725,7 +725,7 @@ void QgsPropertyOverrideButton::showAssistant()
   {
     // Show the dialog version if not in a panel
     QDialog *dlg = new QDialog( this );
-    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    QString key = u"/UI/paneldialog/%1"_s.arg( widget->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( widget->panelTitle() );
@@ -757,17 +757,17 @@ void QgsPropertyOverrideButton::updateGui()
   bool hasExp = !mExpressionString.isEmpty();
   bool hasField = !mFieldName.isEmpty();
 
-  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
+  QIcon icon = QgsApplication::getThemeIcon( u"/mIconDataDefine.svg"_s );
   QString deftip = tr( "undefined" );
   QString deftype;
   if ( mProperty.propertyType() == Qgis::PropertyType::Expression && hasExp )
   {
-    icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpression.svg" ) );
+    icon = mProperty.isActive() ? QgsApplication::getThemeIcon( u"/mIconDataDefineExpressionOn.svg"_s ) : QgsApplication::getThemeIcon( u"/mIconDataDefineExpression.svg"_s );
 
     const QString colorName = getColor();
     if ( !colorName.isEmpty() )
     {
-      icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColorOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineColor.svg" ) );
+      icon = mProperty.isActive() ? QgsApplication::getThemeIcon( u"/mIconDataDefineColorOn.svg"_s ) : QgsApplication::getThemeIcon( u"/mIconDataDefineColor.svg"_s );
       deftip = colorName;
       deftype = tr( "project color" );
     }
@@ -776,7 +776,7 @@ void QgsPropertyOverrideButton::updateGui()
       QgsExpression exp( mExpressionString );
       if ( exp.hasParserError() )
       {
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionError.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mIconDataDefineExpressionError.svg"_s );
         deftip = tr( "Parse error: %1" ).arg( exp.parserErrorString() );
       }
       else
@@ -787,11 +787,11 @@ void QgsPropertyOverrideButton::updateGui()
   }
   else if ( mProperty.propertyType() != Qgis::PropertyType::Expression && hasField )
   {
-    icon = mProperty.isActive() ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineOn.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefine.svg" ) );
+    icon = mProperty.isActive() ? QgsApplication::getThemeIcon( u"/mIconDataDefineOn.svg"_s ) : QgsApplication::getThemeIcon( u"/mIconDataDefine.svg"_s );
 
     if ( !mFieldNameList.contains( mFieldName ) && !mProperty.transformer() )
     {
-      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineError.svg" ) );
+      icon = QgsApplication::getThemeIcon( u"/mIconDataDefineError.svg"_s );
       deftip = tr( "'%1' field missing" ).arg( mFieldName );
     }
     else
@@ -806,15 +806,15 @@ void QgsPropertyOverrideButton::updateGui()
   mFullDescription.clear();
   if ( !mDefinition.description().isEmpty() )
   {
-    mFullDescription += QStringLiteral( "<b><u>%1</b></u>" ).arg( mDefinition.description() );
+    mFullDescription += u"<b><u>%1</b></u>"_s.arg( mDefinition.description() );
   }
   if ( !mDefinition.comment().isEmpty() )
   {
-    mFullDescription += QStringLiteral( "<p><i>%1</i></p>" ).arg( mDefinition.comment() );
+    mFullDescription += u"<p><i>%1</i></p>"_s.arg( mDefinition.comment() );
   }
   else if ( !mFullDescription.isEmpty() )
   {
-    mFullDescription += QLatin1String( "<br>" );
+    mFullDescription += "<br>"_L1;
   }
 
   mFullDescription += tr( "<b>Data defined override</b><br>" );
@@ -987,12 +987,12 @@ void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
 
 void QgsPropertyOverrideButton::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#data-defined" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#data-defined"_s );
 }
 
 QString QgsPropertyOverrideButton::getColor() const
 {
-  const thread_local QRegularExpression rx( QStringLiteral( "^project_color(_object|)\\('(.*)'\\)$" ) );
+  const thread_local QRegularExpression rx( u"^project_color(_object|)\\('(.*)'\\)$"_s );
   QRegularExpressionMatch match = rx.match( mExpressionString );
   return match.hasMatch() ? match.captured( 2 ) : QString();
 }

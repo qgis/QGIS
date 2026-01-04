@@ -200,7 +200,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
     ~QgsLayoutGuideCollection() override;
 
-    QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
+    QString stringType() const override { return u"LayoutGuideCollection"_s; }
     QgsLayout *layout() override;
 
     int rowCount( const QModelIndex & ) const override;

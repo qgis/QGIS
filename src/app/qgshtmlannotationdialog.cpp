@@ -115,7 +115,7 @@ void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
   {
     directory = QDir::homePath();
   }
-  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, u"HTML (*.html *.htm);;All files (*.*)"_s );
   if ( filename.isEmpty() )
   {
     return;
@@ -152,7 +152,7 @@ void QgsHtmlAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsHtmlAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsHtmlAnnotationDialog::onSettingsChanged()

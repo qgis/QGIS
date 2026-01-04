@@ -58,7 +58,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::newNameChanged );
   layout()->addWidget( mLineEdit );
 
-  mNamesLabel = new QLabel( QStringLiteral( " " ), this );
+  mNamesLabel = new QLabel( u" "_s, this );
   mNamesLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   if ( !mExtensions.isEmpty() )
   {
@@ -66,7 +66,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
     layout()->addWidget( mNamesLabel );
   }
 
-  mErrorLabel = new QLabel( QStringLiteral( " " ), this );
+  mErrorLabel = new QLabel( u" "_s, this );
   mErrorLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mErrorLabel->setWordWrap( true );
   layout()->addWidget( mErrorLabel );
@@ -147,7 +147,7 @@ void QgsNewNameDialog::nameChanged()
   {
     mNamesLabel->setText( namesString );
   }
-  mErrorLabel->setText( QStringLiteral( " " ) ); // space to keep vertical space
+  mErrorLabel->setText( u" "_s ); // space to keep vertical space
   QPushButton *okButton = buttonBox()->button( QDialogButtonBox::Ok );
   okButton->setText( mOkString );
   okButton->setEnabled( true );
@@ -164,7 +164,7 @@ void QgsNewNameDialog::nameChanged()
   const QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
-    namesString += ' ' + newNames.join( QLatin1String( ", " ) );
+    namesString += ' ' + newNames.join( ", "_L1 );
     mNamesLabel->setText( namesString );
   }
 
@@ -173,7 +173,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     const QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                                                               : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QLatin1String( ", " ) ) );
+                                                               : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", "_L1 ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {

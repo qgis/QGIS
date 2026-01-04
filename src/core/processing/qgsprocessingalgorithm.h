@@ -171,7 +171,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 

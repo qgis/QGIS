@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 
-    QString layerType() const override { return QStringLiteral( "VectorField" ); }
+    QString layerType() const override { return u"VectorField"_s; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;

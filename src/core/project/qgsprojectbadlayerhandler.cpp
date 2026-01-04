@@ -35,24 +35,24 @@ void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 
 QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode &layerNode )
 {
-  const QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );
+  const QString type = layerNode.toElement().attribute( u"type"_s );
 
   if ( type.isNull() )
   {
-    QgsDebugError( QStringLiteral( "cannot find ``type'' attribute" ) );
+    QgsDebugError( u"cannot find ``type'' attribute"_s );
 
     return IS_BOGUS;
   }
 
   if ( "raster" == type )
   {
-    QgsDebugMsgLevel( QStringLiteral( "is a raster" ), 2 );
+    QgsDebugMsgLevel( u"is a raster"_s, 2 );
 
     return IS_RASTER;
   }
   else if ( "vector" == type )
   {
-    QgsDebugMsgLevel( QStringLiteral( "is a vector" ), 2 );
+    QgsDebugMsgLevel( u"is a vector"_s, 2 );
 
     return IS_VECTOR;
   }
@@ -64,11 +64,11 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
 QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
 {
-  const QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
+  const QDomNode dataSourceNode = layerNode.namedItem( u"datasource"_s );
 
   if ( dataSourceNode.isNull() )
   {
-    QgsDebugError( QStringLiteral( "cannot find datasource node" ) );
+    QgsDebugError( u"cannot find datasource node"_s );
 
     return QString();
   }
@@ -88,11 +88,11 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
 
       QgsDebugMsgLevel( "datasource is " + ds, 2 );
 
-      if ( ds.contains( QLatin1String( "host=" ) ) )
+      if ( ds.contains( "host="_L1 ) )
       {
         return IS_URL;
       }
-      else if ( ds.contains( QLatin1String( "dbname=" ) ) )
+      else if ( ds.contains( "dbname="_L1 ) )
       {
         return IS_DATABASE;
       }
@@ -107,7 +107,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
       return IS_FILE;
 
     default:
-      QgsDebugError( QStringLiteral( "unknown ``type'' attribute" ) );
+      QgsDebugError( u"unknown ``type'' attribute"_s );
   }
 
   return IS_Unknown;
@@ -115,7 +115,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
 
 void QgsProjectBadLayerHandler::setDataSource( QDomNode &layerNode, const QString &dataSource )
 {
-  const QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
+  const QDomNode dataSourceNode = layerNode.namedItem( u"datasource"_s );
   const QDomElement dataSourceElement = dataSourceNode.toElement();
   QDomText dataSourceText = dataSourceElement.firstChild().toText();
 

@@ -222,7 +222,7 @@ void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" ) );
+    QgsDebugError( u"WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore"_s );
   }
   instance()->mWidgetStateHelper->registerWidget( widget, key );
 }
@@ -249,7 +249,7 @@ void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 
 QgsGui::HigFlags QgsGui::higFlags()
 {
-  if ( QgsApplication::settingsLocaleUserLocale->value().startsWith( QLatin1String( "en" ) ) )
+  if ( QgsApplication::settingsLocaleUserLocale->value().startsWith( "en"_L1 ) )
   {
     return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
   }
@@ -323,7 +323,7 @@ QgsGui::QgsGui()
 {
 #ifdef Q_OS_MAC
   QgsMacNative *macNative = new QgsMacNative();
-  macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
+  macNative->setIconPath( QgsApplication::iconsPath() + u"qgis-icon-macos.png"_s );
   mNative = macNative;
 #elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
@@ -435,12 +435,12 @@ void QgsGui::initCalloutWidgets()
       QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
       if ( !abstractMetadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
+        QgsDebugError( u"Failed to find callout entry in registry: %1"_s.arg( name ) );
       }
       QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
       if ( !metadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ).arg( name ) );
+        QgsDebugError( u"Failed to cast callout's metadata: "_s.arg( name ) );
       }
       else
       {
@@ -448,10 +448,10 @@ void QgsGui::initCalloutWidgets()
       }
     };
 
-    _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
-    _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
-    _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
-    _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
+    _initCalloutWidgetFunction( u"simple"_s, QgsSimpleLineCalloutWidget::create );
+    _initCalloutWidgetFunction( u"manhattan"_s, QgsManhattanLineCalloutWidget::create );
+    _initCalloutWidgetFunction( u"curved"_s, QgsCurvedLineCalloutWidget::create );
+    _initCalloutWidgetFunction( u"balloon"_s, QgsBalloonCalloutWidget::create );
   } );
 }
 
@@ -465,12 +465,12 @@ void QgsGui::initPlotWidgets()
       QgsPlotAbstractMetadata *abstractMetadata = registry->plotMetadata( name );
       if ( !abstractMetadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to find plot entry in registry: %1" ).arg( name ) );
+        QgsDebugError( u"Failed to find plot entry in registry: %1"_s.arg( name ) );
       }
       QgsPlotMetadata *metadata = dynamic_cast<QgsPlotMetadata *>( abstractMetadata );
       if ( !metadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to cast plot's metadata: " ).arg( name ) );
+        QgsDebugError( u"Failed to cast plot's metadata: "_s.arg( name ) );
       }
       else
       {
@@ -478,9 +478,9 @@ void QgsGui::initPlotWidgets()
       }
     };
 
-    _initPlotWidgetFunction( QStringLiteral( "bar" ), QgsBarChartPlotWidget::create );
-    _initPlotWidgetFunction( QStringLiteral( "line" ), QgsLineChartPlotWidget::create );
-    _initPlotWidgetFunction( QStringLiteral( "pie" ), QgsPieChartPlotWidget::create );
+    _initPlotWidgetFunction( u"bar"_s, QgsBarChartPlotWidget::create );
+    _initPlotWidgetFunction( u"line"_s, QgsLineChartPlotWidget::create );
+    _initPlotWidgetFunction( u"pie"_s, QgsPieChartPlotWidget::create );
   } );
 }
 

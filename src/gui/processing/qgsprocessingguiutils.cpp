@@ -29,9 +29,9 @@ void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *la
   {
     // post-process vector layer
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "Processing/Configuration/VECTOR_FEATURE_COUNT" ), false ).toBool() )
+    if ( settings.value( u"Processing/Configuration/VECTOR_FEATURE_COUNT"_s, false ).toBool() )
     {
-      layerTreeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), true );
+      layerTreeLayer->setCustomProperty( u"showFeatureCount"_s, true );
     }
   }
 }
@@ -47,7 +47,7 @@ QgsLayerTreeGroup *QgsProcessingGuiUtils::layerTreeResultsGroup( const QgsProces
   // if a specific results group is specified in Processing settings,
   // respect it (and create if necessary)
   QgsSettings settings;
-  const QString resultsGroupName = settings.value( QStringLiteral( "Processing/Configuration/RESULTS_GROUP_NAME" ), QString() ).toString();
+  const QString resultsGroupName = settings.value( u"Processing/Configuration/RESULTS_GROUP_NAME"_s, QString() ).toString();
 
   if ( !resultsGroupName.isEmpty() )
   {

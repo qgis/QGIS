@@ -55,7 +55,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mLayerName( layer->name() )
   , mFields( layer->fields() )
   , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
-  , mNoSetLayerExpressionContext( layer->customProperty( QStringLiteral( "_noset_layer_expression_context" ) ).toBool() )
+  , mNoSetLayerExpressionContext( layer->customProperty( u"_noset_layer_expression_context"_s ).toBool() )
   , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   QElapsedTimer timer;
@@ -149,11 +149,11 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected->value();
 
   QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle->value();
-  if ( markerTypeString == QLatin1String( "Cross" ) )
+  if ( markerTypeString == "Cross"_L1 )
   {
     mVertexMarkerStyle = Qgis::VertexMarkerType::Cross;
   }
-  else if ( markerTypeString == QLatin1String( "SemiTransparentCircle" ) )
+  else if ( markerTypeString == "SemiTransparentCircle"_L1 )
   {
     mVertexMarkerStyle = Qgis::VertexMarkerType::SemiTransparentCircle;
   }
@@ -237,7 +237,7 @@ Qgis::MapLayerRendererFlags QgsVectorLayerRenderer::flags() const
 
 bool QgsVectorLayerRenderer::render()
 {
-  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
 
   if ( mGeometryType == Qgis::GeometryType::Null || mGeometryType == Qgis::GeometryType::Unknown )
   {
@@ -255,9 +255,9 @@ bool QgsVectorLayerRenderer::render()
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {
-    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ), layerId() );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, u"rendering"_s, layerId() );
     if ( mPreparationTime > 0 )
-      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, u"rendering"_s );
   }
 
   // if the previous layer render was relatively quick (e.g. less than 3 seconds), the we show any previously
@@ -290,7 +290,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   QgsRenderContext &context = *renderContext();
   context.setSymbologyReferenceScale( renderer->referenceScale() );
 
-  if ( renderer->type() == QLatin1String( "nullSymbol" ) )
+  if ( renderer->type() == "nullSymbol"_L1 )
   {
     // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
     // so we can even skip the whole loop to fetch features
@@ -307,7 +307,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
       title = QObject::tr( "Preparing render %1" ).arg( rendererIndex + 1 );
     else
       title = QObject::tr( "Preparing render" );
-    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( title, QStringLiteral( "rendering" ) );
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( title, u"rendering"_s );
   }
 
   QgsScopedQPainterState painterState( context.painter() );
@@ -383,7 +383,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
     }
     Q_NOWARN_DEPRECATED_POP
   }
-  if ( !rendererFilter.isEmpty() && rendererFilter != QLatin1String( "TRUE" ) )
+  if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE"_L1 )
   {
     featureRequest.combineFilterExpression( rendererFilter );
   }
@@ -420,8 +420,8 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
         toleranceTransform.setBallparkTransformsAreAppropriate( true );
         QgsRectangle targetRect = toleranceTransform.transform( sourceRect );
 
-        QgsDebugMsgLevel( QStringLiteral( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ), 4 );
-        QgsDebugMsgLevel( QStringLiteral( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ), 4 );
+        QgsDebugMsgLevel( u"Simplify - SourceTransformRect=%1"_s.arg( sourceRect.toString( 16 ) ), 4 );
+        QgsDebugMsgLevel( u"Simplify - TargetTransformRect=%1"_s.arg( targetRect.toString( 16 ) ), 4 );
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
@@ -433,8 +433,8 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
           double sourceHypothenuse = std::sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
           double targetHypothenuse = std::sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
-          QgsDebugMsgLevel( QStringLiteral( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
-          QgsDebugMsgLevel( QStringLiteral( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );
+          QgsDebugMsgLevel( u"Simplify - SourceHypothenuse=%1"_s.arg( sourceHypothenuse ), 4 );
+          QgsDebugMsgLevel( u"Simplify - TargetHypothenuse=%1"_s.arg( targetHypothenuse ), 4 );
 
           if ( !qgsDoubleNear( targetHypothenuse, 0.0 ) )
             map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
@@ -482,7 +482,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   std::unique_ptr< QgsScopedRuntimeProfile > preparingFeatureItProfile;
   if ( mEnableProfile )
   {
-    preparingFeatureItProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Prepare feature iteration" ), QStringLiteral( "rendering" ) );
+    preparingFeatureItProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Prepare feature iteration" ), u"rendering"_s );
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
@@ -499,7 +499,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
   if ( mEnableProfile )
   {
-    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), u"rendering"_s );
   }
 
   if ( ( renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && renderer->usingSymbolLevels() )
@@ -509,7 +509,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
 
   if ( !fit.isValid() )
   {
-    mErrors.append( QStringLiteral( "Data source invalid" ) );
+    mErrors.append( u"Data source invalid"_s );
   }
 
   if ( usingEffect )
@@ -551,7 +551,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     {
       if ( context.renderingStopped() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Drawing of vector layer %1 canceled." ).arg( layerId() ), 2 );
+        QgsDebugMsgLevel( u"Drawing of vector layer %1 canceled."_s.arg( layerId() ), 2 );
         break;
       }
 
@@ -642,7 +642,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     catch ( const QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugError( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+      QgsDebugError( u"Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2"_s
                      .arg( fet.id() ).arg( cse.what() ) );
     }
   }
@@ -652,12 +652,12 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   std::unique_ptr< QgsScopedRuntimeProfile > cleanupProfile;
   if ( mEnableProfile )
   {
-    QgsApplication::profiler()->record( QObject::tr( "Rendering features" ), ( timer.elapsed() - totalLabelTime ) / 1000.0, QStringLiteral( "rendering" ) );
+    QgsApplication::profiler()->record( QObject::tr( "Rendering features" ), ( timer.elapsed() - totalLabelTime ) / 1000.0, u"rendering"_s );
     if ( totalLabelTime > 0 )
     {
-      QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, QStringLiteral( "rendering" ) );
+      QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, u"rendering"_s );
     }
-    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
+    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), u"rendering"_s );
   }
 
   if ( mSelectionSymbol && isMainRenderer )
@@ -720,7 +720,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   std::unique_ptr< QgsScopedRuntimeProfile > fetchFeaturesProfile;
   if ( mEnableProfile )
   {
-    fetchFeaturesProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Fetching features" ), QStringLiteral( "rendering" ) );
+    fetchFeaturesProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Fetching features" ), u"rendering"_s );
   }
 
   QElapsedTimer timer;
@@ -821,7 +821,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   {
     if ( totalLabelTime > 0 )
     {
-      QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, QStringLiteral( "rendering" ) );
+      QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, u"rendering"_s );
     }
   }
 
@@ -841,7 +841,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   std::unique_ptr< QgsScopedRuntimeProfile > sortingProfile;
   if ( mEnableProfile )
   {
-    sortingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Sorting features" ), QStringLiteral( "rendering" ) );
+    sortingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Sorting features" ), u"rendering"_s );
   }
   // find out the order
   QgsSymbolLevelOrder levels;
@@ -874,7 +874,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
       if ( mEnableProfile )
       {
-        renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering symbol level %1" ).arg( l + 1 ), QStringLiteral( "rendering" ) );
+        renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering symbol level %1" ).arg( l + 1 ), u"rendering"_s );
       }
 
       for ( int i = 0; i < level.count(); i++ )
@@ -882,7 +882,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
         const QgsSymbolLevelItem &item = level[i];
         if ( !featureLists.contains( item.symbol() ) )
         {
-          QgsDebugError( QStringLiteral( "level item's symbol not found!" ) );
+          QgsDebugError( u"level item's symbol not found!"_s );
           continue;
         }
         const int layer = item.layer();
@@ -920,7 +920,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           catch ( const QgsCsException &cse )
           {
             Q_UNUSED( cse )
-            QgsDebugError( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+            QgsDebugError( u"Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2"_s
                            .arg( fet.id() ).arg( cse.what() ) );
           }
         }
@@ -962,7 +962,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   std::unique_ptr< QgsScopedRuntimeProfile > cleanupProfile;
   if ( mEnableProfile )
   {
-    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
+    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), u"rendering"_s );
   }
 
   stopRenderer( renderer, selRenderer );

@@ -25,7 +25,7 @@ class TestQgsLabelingWidget : public QgsTest
 
   public:
     TestQgsLabelingWidget()
-      : QgsTest( QStringLiteral( "Labeling Widget Tests" ) ) {}
+      : QgsTest( u"Labeling Widget Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -55,24 +55,24 @@ void TestQgsLabelingWidget::cleanup()
 void TestQgsLabelingWidget::testRuleKeyPreserved()
 {
   // test that rule keys are preserved and not reset when editing labels with a rule based rendering
-  QgsVectorLayer layer( QStringLiteral( "Point?field=pk:int" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer layer( u"Point?field=pk:int"_s, u"layer"_s, u"memory"_s );
 
   QgsFeature ft1( layer.fields() );
-  ft1.setAttribute( QStringLiteral( "pk" ), 1 );
-  ft1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 1 1 )" ) ) );
+  ft1.setAttribute( u"pk"_s, 1 );
+  ft1.setGeometry( QgsGeometry::fromWkt( u"POINT( 1 1 )"_s ) );
   layer.dataProvider()->addFeature( ft1 );
 
   QgsFeature ft2( layer.fields() );
-  ft2.setAttribute( QStringLiteral( "pk" ), 2 );
-  ft2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 2 2 )" ) ) );
+  ft2.setAttribute( u"pk"_s, 2 );
+  ft2.setGeometry( QgsGeometry::fromWkt( u"POINT( 2 2 )"_s ) );
   layer.dataProvider()->addFeature( ft2 );
 
   auto label_settings = std::make_unique<QgsPalLayerSettings>();
-  label_settings->fieldName = QStringLiteral( "pk" );
+  label_settings->fieldName = u"pk"_s;
 
   QgsTextMaskSettings mask;
   mask.setEnabled( true );
-  mask.setMaskedSymbolLayers( QList<QgsSymbolLayerReference>() << QgsSymbolLayerReference( layer.id(), QStringLiteral( "test_unique_id" ) ) );
+  mask.setMaskedSymbolLayers( QList<QgsSymbolLayerReference>() << QgsSymbolLayerReference( layer.id(), u"test_unique_id"_s ) );
 
   QgsTextFormat text_format = label_settings->format();
   text_format.setMask( mask );
@@ -82,7 +82,7 @@ void TestQgsLabelingWidget::testRuleKeyPreserved()
 
   auto rule = std::make_unique<QgsRuleBasedLabeling::Rule>( label_settings.release() );
   rule->setDescription( "test rule" );
-  rule->setFilterExpression( QStringLiteral( "\"{pk}\" % 2 = 0" ) );
+  rule->setFilterExpression( u"\"{pk}\" % 2 = 0"_s );
   rule->setActive( true );
 
   const QString rootRuleKey = root->ruleKey();

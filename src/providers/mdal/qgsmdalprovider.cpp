@@ -33,8 +33,8 @@
 
 #include "moc_qgsmdalprovider.cpp"
 
-const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
-const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
+const QString QgsMdalProvider::MDAL_PROVIDER_KEY = u"mdal"_s;
+const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = u"MDAL provider"_s;
 
 bool QgsMdalProvider::isValid() const
 {
@@ -71,7 +71,7 @@ QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &opt
     loadData();
   else
   {
-    QStringList meshNames = QString( MDAL_MeshNames( curi ) ).split( QStringLiteral( ";;" ) );
+    QStringList meshNames = QString( MDAL_MeshNames( curi ) ).split( u";;"_s );
 
     if ( meshNames.count() == 1 ) //only one uri is present, can be directly loaded
       loadData();
@@ -453,10 +453,10 @@ bool QgsMdalProvider::saveMeshFrame( const QgsMesh &mesh )
 
   QVariantMap uriComponent = mdalProviderMetaData.decodeUri( dataSourceUri() );
 
-  if ( uriComponent.contains( QStringLiteral( "driver" ) ) )
+  if ( uriComponent.contains( u"driver"_s ) )
     return mdalProviderMetaData.createMeshData( mesh, dataSourceUri(), crs(), mMeshMetadata );
-  else if ( uriComponent.contains( QStringLiteral( "path" ) ) )
-    return mdalProviderMetaData.createMeshData( mesh, uriComponent.value( QStringLiteral( "path" ) ).toString(), mDriverName, crs(), mMeshMetadata );
+  else if ( uriComponent.contains( u"path"_s ) )
+    return mdalProviderMetaData.createMeshData( mesh, uriComponent.value( u"path"_s ).toString(), mDriverName, crs(), mMeshMetadata );
 
   return false;
 }
@@ -553,7 +553,7 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
 
   int driverCount = MDAL_driverCount();
 
-  QgsDebugMsgLevel( QStringLiteral( "MDAL driver count: %1" ).arg( driverCount ), 2 );
+  QgsDebugMsgLevel( u"MDAL driver count: %1"_s.arg( driverCount ), 2 );
 
   for ( int i = 0; i < driverCount; ++i )
   {
@@ -566,7 +566,7 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
 
     QString longName = MDAL_DR_longName( mdalDriver );
     QString driverFilters = MDAL_DR_filters( mdalDriver );
-    driverFilters = driverFilters.replace( QLatin1String( ";;" ), QLatin1String( " " ) );
+    driverFilters = driverFilters.replace( ";;"_L1, " "_L1 );
 
     bool isMeshDriver = MDAL_DR_meshLoadCapability( mdalDriver );
 
@@ -587,22 +587,22 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   }
 
   // sort file filters alphabetically
-  QStringList filters = fileMeshFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+  QStringList filters = fileMeshFiltersString.split( u";;"_s, Qt::SkipEmptyParts );
   filters.sort();
-  fileMeshFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
+  fileMeshFiltersString = filters.join( ";;"_L1 ) + ";;";
 
-  filters = fileMeshDatasetFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+  filters = fileMeshDatasetFiltersString.split( u";;"_s, Qt::SkipEmptyParts );
   filters.sort();
-  fileMeshDatasetFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
+  fileMeshDatasetFiltersString = filters.join( ";;"_L1 ) + ";;";
 
   // can't forget the default case - first
   fileMeshFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
   fileMeshDatasetFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
   // cleanup
-  if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) )
+  if ( fileMeshFiltersString.endsWith( ";;"_L1 ) )
     fileMeshFiltersString.chop( 2 );
-  if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) )
+  if ( fileMeshDatasetFiltersString.endsWith( ";;"_L1 ) )
     fileMeshDatasetFiltersString.chop( 2 );
 
   QgsDebugMsgLevel( "Mesh filter list built: " + fileMeshFiltersString, 2 );
@@ -632,14 +632,14 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions, QStri
     }
 
     const QString driverFilters = MDAL_DR_filters( mdalDriver );
-    QStringList extensions = driverFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+    QStringList extensions = driverFilters.split( u";;"_s, Qt::SkipEmptyParts );
     bool isMeshDriver = MDAL_DR_meshLoadCapability( mdalDriver );
 
     if ( !extensions.isEmpty() )
     {
       for ( auto ext : extensions )
       {
-        ext.remove( QStringLiteral( "*." ) );
+        ext.remove( u"*."_s );
         ext = ext.toLower();
         if ( isMeshDriver )
           fileMeshExtensions += ext;
@@ -657,8 +657,8 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions, QStri
   fileMeshExtensions.erase( std::unique( fileMeshExtensions.begin(), fileMeshExtensions.end() ), fileMeshExtensions.end() );
   fileMeshDatasetExtensions.erase( std::unique( fileMeshDatasetExtensions.begin(), fileMeshDatasetExtensions.end() ), fileMeshDatasetExtensions.end() );
 
-  QgsDebugMsgLevel( "Mesh extensions list built: " + fileMeshExtensions.join( QLatin1String( ";;" ) ), 2 );
-  QgsDebugMsgLevel( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QLatin1String( ";;" ) ), 2 );
+  QgsDebugMsgLevel( "Mesh extensions list built: " + fileMeshExtensions.join( ";;"_L1 ), 2 );
+  QgsDebugMsgLevel( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( ";;"_L1 ), 2 );
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -1081,10 +1081,10 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
 {
   QVariantMap uriComponents = decodeUri( uri );
 
-  if ( !uriComponents.contains( QStringLiteral( "driver" ) ) || !uriComponents.contains( QStringLiteral( "path" ) ) )
+  if ( !uriComponents.contains( u"driver"_s ) || !uriComponents.contains( u"path"_s ) )
     return false;
 
-  MDAL_MeshH mdalMesh = createMDALMesh( mesh, uriComponents.value( QStringLiteral( "driver" ) ).toString(), crs );
+  MDAL_MeshH mdalMesh = createMDALMesh( mesh, uriComponents.value( u"driver"_s ).toString(), crs );
 
   if ( !mdalMesh )
     return false;
@@ -1110,17 +1110,17 @@ QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
 
-  const thread_local QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_ /]+?$)|($))" ) );
+  const thread_local QRegularExpression layerRegex( u"^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_ /]+?$)|($))"_s );
   const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
   if ( layerNameMatch.hasMatch() )
   {
-    uriComponents.insert( QStringLiteral( "driver" ), layerNameMatch.captured( 1 ) );
-    uriComponents.insert( QStringLiteral( "path" ), layerNameMatch.captured( 2 ) );
-    uriComponents.insert( QStringLiteral( "layerName" ), layerNameMatch.captured( 3 ) );
+    uriComponents.insert( u"driver"_s, layerNameMatch.captured( 1 ) );
+    uriComponents.insert( u"path"_s, layerNameMatch.captured( 2 ) );
+    uriComponents.insert( u"layerName"_s, layerNameMatch.captured( 3 ) );
   }
   else
   {
-    uriComponents.insert( QStringLiteral( "path" ), uri );
+    uriComponents.insert( u"path"_s, uri );
   }
 
   return uriComponents;
@@ -1128,28 +1128,28 @@ QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 
 QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() && !parts.value( QStringLiteral( "driver" ) ).toString().isEmpty() )
+  if ( !parts.value( u"layerName"_s ).toString().isEmpty() && !parts.value( u"driver"_s ).toString().isEmpty() )
   {
-    return QStringLiteral( "%1:\"%2\":%3" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(), parts.value( QStringLiteral( "path" ) ).toString(), parts.value( QStringLiteral( "layerName" ) ).toString() );
+    return u"%1:\"%2\":%3"_s.arg( parts.value( u"driver"_s ).toString(), parts.value( u"path"_s ).toString(), parts.value( u"layerName"_s ).toString() );
   }
-  else if ( !parts.value( QStringLiteral( "driver" ) ).toString().isEmpty() )
+  else if ( !parts.value( u"driver"_s ).toString().isEmpty() )
   {
-    return QStringLiteral( "%1:\"%2\"" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(), parts.value( QStringLiteral( "path" ) ).toString() );
+    return u"%1:\"%2\""_s.arg( parts.value( u"driver"_s ).toString(), parts.value( u"path"_s ).toString() );
   }
   else
   {
-    return parts.value( QStringLiteral( "path" ) ).toString();
+    return parts.value( u"path"_s ).toString();
   }
 }
 
 QString QgsMdalProviderMetadata::absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
   QVariantMap uriParts = decodeUri( uri );
-  if ( uriParts.contains( QStringLiteral( "path" ) ) )
+  if ( uriParts.contains( u"path"_s ) )
   {
-    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    QString filePath = uriParts.value( u"path"_s ).toString();
     filePath = context.pathResolver().writePath( filePath );
-    uriParts.insert( QStringLiteral( "path" ), filePath );
+    uriParts.insert( u"path"_s, filePath );
     return encodeUri( uriParts );
   }
   return uri;
@@ -1158,11 +1158,11 @@ QString QgsMdalProviderMetadata::absoluteToRelativeUri( const QString &uri, cons
 QString QgsMdalProviderMetadata::relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const
 {
   QVariantMap uriParts = decodeUri( uri );
-  if ( uriParts.contains( QStringLiteral( "path" ) ) )
+  if ( uriParts.contains( u"path"_s ) )
   {
-    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    QString filePath = uriParts.value( u"path"_s ).toString();
     filePath = context.pathResolver().readPath( filePath );
-    uriParts.insert( QStringLiteral( "path" ), filePath );
+    uriParts.insert( u"path"_s, filePath );
     return encodeUri( uriParts );
   }
   return uri;
@@ -1184,8 +1184,8 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     return {};
 
   const QVariantMap uriParts = decodeUri( uri );
-  const QString path = uriParts.value( QStringLiteral( "path" ), uri ).toString();
-  const QString layerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+  const QString path = uriParts.value( u"path"_s, uri ).toString();
+  const QString layerName = uriParts.value( u"layerName"_s ).toString();
 
   const QFileInfo info( path );
 
@@ -1210,8 +1210,8 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     // special handling for .adf files -- although mdal reports support for the .adf file format, we only
     // want to report sublayers for tdenv.adf or tdenv9.adf files (otherwise we are reporting that any arcinfo grids or coverages are meshes)
-    if ( suffix == QLatin1String( "adf" )
-         && !info.completeBaseName().startsWith( QLatin1String( "tdenv" ), Qt::CaseInsensitive ) )
+    if ( suffix == "adf"_L1
+         && !info.completeBaseName().startsWith( "tdenv"_L1, Qt::CaseInsensitive ) )
       return {};
   }
 
@@ -1222,7 +1222,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     QgsProviderSublayerDetails details;
     details.setType( Qgis::LayerType::Mesh );
-    details.setProviderKey( QStringLiteral( "mdal" ) );
+    details.setProviderKey( u"mdal"_s );
     details.setUri( uri );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
     // treat all mesh files as potentially being containers (is this correct?)
@@ -1230,7 +1230,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     return { details };
   }
 
-  const QStringList meshNames = QString( MDAL_MeshNames( path.toUtf8() ) ).split( QStringLiteral( ";;" ) );
+  const QStringList meshNames = QString( MDAL_MeshNames( path.toUtf8() ) ).split( u";;"_s );
 
   QList<QgsProviderSublayerDetails> res;
   res.reserve( meshNames.size() );
@@ -1242,18 +1242,18 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     const QVariantMap layerUriParts = decodeUri( layerUri );
     //if an explicit layer name was included in the original uri, we only keep that layer in the results
-    if ( !layerName.isEmpty() && layerUriParts.value( QStringLiteral( "layerName" ) ).toString() != layerName )
+    if ( !layerName.isEmpty() && layerUriParts.value( u"layerName"_s ).toString() != layerName )
       continue;
 
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
-    details.setProviderKey( QStringLiteral( "mdal" ) );
+    details.setProviderKey( u"mdal"_s );
     details.setType( Qgis::LayerType::Mesh );
     details.setLayerNumber( layerIndex );
-    details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
+    details.setDriverName( layerUriParts.value( u"driver"_s ).toString() );
 
     // strip the driver name and path from the MDAL uri to get the layer name
-    details.setName( layerUriParts.value( QStringLiteral( "layerName" ) ).toString() );
+    details.setName( layerUriParts.value( u"layerName"_s ).toString() );
     if ( details.name().isEmpty() )
     {
       // use file name as layer name if no layer name available from mdal
@@ -1347,7 +1347,7 @@ QgsMdalProviderMetadata::QgsMdalProviderMetadata()
 
 QIcon QgsMdalProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMeshLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconMeshLayer.svg"_s );
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

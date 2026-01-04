@@ -165,21 +165,21 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     virtual bool equal( const QgsCptCityDataItem *other );
 
     /**
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QWidget *paramWidget() SIP_DEPRECATED { return nullptr; }
 
     /**
      * Returns TRUE if the item accepts drag & dropped layers - e.g. for import.
      *
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool acceptDrop() SIP_DEPRECATED { return false; }
 
     /**
      * Tries to process the \a data dropped on this item.
      *
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED { Q_UNUSED( data ); Q_UNUSED( action ); return false; }
 

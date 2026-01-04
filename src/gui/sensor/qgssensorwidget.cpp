@@ -146,17 +146,17 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
 
   for ( const QSerialPortInfo &info : QSerialPortInfo::availablePorts() )
   {
-    mSerialPortComboBox->addItem( QStringLiteral( "%1: %2" ).arg( info.portName(), info.description() ), info.portName() );
+    mSerialPortComboBox->addItem( u"%1: %2"_s.arg( info.portName(), info.description() ), info.portName() );
   }
 
-  mBaudRateComboBox->addItem( QStringLiteral( "1200 baud" ), static_cast<int>( QSerialPort::Baud1200 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "2400 baud" ), static_cast<int>( QSerialPort::Baud2400 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "4800 baud" ), static_cast<int>( QSerialPort::Baud4800 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "9600 baud" ), static_cast<int>( QSerialPort::Baud9600 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "19200 baud" ), static_cast<int>( QSerialPort::Baud19200 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "38400 baud" ), static_cast<int>( QSerialPort::Baud38400 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "57600 baud" ), static_cast<int>( QSerialPort::Baud57600 ) );
-  mBaudRateComboBox->addItem( QStringLiteral( "115200 baud" ), static_cast<int>( QSerialPort::Baud115200 ) );
+  mBaudRateComboBox->addItem( u"1200 baud"_s, static_cast<int>( QSerialPort::Baud1200 ) );
+  mBaudRateComboBox->addItem( u"2400 baud"_s, static_cast<int>( QSerialPort::Baud2400 ) );
+  mBaudRateComboBox->addItem( u"4800 baud"_s, static_cast<int>( QSerialPort::Baud4800 ) );
+  mBaudRateComboBox->addItem( u"9600 baud"_s, static_cast<int>( QSerialPort::Baud9600 ) );
+  mBaudRateComboBox->addItem( u"19200 baud"_s, static_cast<int>( QSerialPort::Baud19200 ) );
+  mBaudRateComboBox->addItem( u"38400 baud"_s, static_cast<int>( QSerialPort::Baud38400 ) );
+  mBaudRateComboBox->addItem( u"57600 baud"_s, static_cast<int>( QSerialPort::Baud57600 ) );
+  mBaudRateComboBox->addItem( u"115200 baud"_s, static_cast<int>( QSerialPort::Baud115200 ) );
   mBaudRateComboBox->setCurrentIndex( 3 );
 
   mDataFrameDelimiterComboBox->addItem( tr( "No Delimiter" ), QString() );
@@ -280,13 +280,13 @@ void QgsSerialPortSensorWidget::updateSerialPortDetails()
     serialPortFound = info.portName() == currentPortName;
     if ( serialPortFound )
     {
-      mSerialPortDetails->setText( QStringLiteral( "%1:\n- %2: %3\n- %4: %5\n- %6: %7\n- %8: %9\n- %10: %11" ).arg( tr( "Serial port details" ), tr( "Port name" ), info.portName(), tr( "Description" ), info.description(), tr( "Manufacturer" ), info.manufacturer(), tr( "Product identifier" ), QString::number( info.productIdentifier() ), tr( "Serial number" ), info.serialNumber() ) );
+      mSerialPortDetails->setText( u"%1:\n- %2: %3\n- %4: %5\n- %6: %7\n- %8: %9\n- %10: %11"_s.arg( tr( "Serial port details" ), tr( "Port name" ), info.portName(), tr( "Description" ), info.description(), tr( "Manufacturer" ), info.manufacturer(), tr( "Product identifier" ), QString::number( info.productIdentifier() ), tr( "Serial number" ), info.serialNumber() ) );
       break;
     }
   }
   if ( !serialPortFound )
   {
-    mSerialPortDetails->setText( QStringLiteral( "%1:\n- %2: %3" ).arg( tr( "Serial port details" ), tr( "Port name" ), currentPortName ) );
+    mSerialPortDetails->setText( u"%1:\n- %2: %3"_s.arg( tr( "Serial port details" ), tr( "Port name" ), currentPortName ) );
   }
   else
   {

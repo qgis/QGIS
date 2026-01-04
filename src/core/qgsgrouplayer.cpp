@@ -104,12 +104,12 @@ bool QgsGroupLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &con
   }
 
   mChildren.clear();
-  const QDomNodeList childLayersElements = layerNode.toElement().elementsByTagName( QStringLiteral( "childLayers" ) );
+  const QDomNodeList childLayersElements = layerNode.toElement().elementsByTagName( u"childLayers"_s );
   const QDomNodeList children = childLayersElements.at( 0 ).childNodes();
   for ( int i = 0; i < children.size(); ++i )
   {
     const QDomElement childElement = children.at( i ).toElement();
-    const QString id = childElement.attribute( QStringLiteral( "layerid" ) );
+    const QString id = childElement.attribute( u"layerid"_s );
     mChildren.append( QgsMapLayerRef( id ) );
   }
   invalidateWgs84Extent();
@@ -131,17 +131,17 @@ bool QgsGroupLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, const Qgs
 
   if ( mapLayerNode.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "can't find maplayer node" ), 2 );
+    QgsDebugMsgLevel( u"can't find maplayer node"_s, 2 );
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::Group ) );
+  mapLayerNode.setAttribute( u"type"_s, QgsMapLayerFactory::typeToString( Qgis::LayerType::Group ) );
 
-  QDomElement childLayersElement = doc.createElement( QStringLiteral( "childLayers" ) );
+  QDomElement childLayersElement = doc.createElement( u"childLayers"_s );
   for ( auto it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
-    QDomElement childElement = doc.createElement( QStringLiteral( "child" ) );
-    childElement.setAttribute( QStringLiteral( "layerid" ), it->layerId );
+    QDomElement childElement = doc.createElement( u"child"_s );
+    childElement.setAttribute( u"layerid"_s, it->layerId );
     childLayersElement.appendChild( childElement );
   }
   mapLayerNode.appendChild( childLayersElement );
@@ -158,14 +158,14 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomElement layerOpacityElem  = doc.createElement( u"layerOpacity"_s );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
 
     if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
     {
-      QDomElement paintEffectElement = doc.createElement( QStringLiteral( "paintEffect" ) );
+      QDomElement paintEffectElement = doc.createElement( u"paintEffect"_s );
       mPaintEffect->saveProperties( doc, paintEffectElement );
       node.appendChild( paintEffectElement );
     }
@@ -174,7 +174,7 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
+    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -189,7 +189,7 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
 
   if ( categories.testFlag( Rendering ) )
   {
-    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( u"layerOpacity"_s );
     if ( !layerOpacityNode.isNull() )
     {
       const QDomElement e = layerOpacityNode.toElement();
@@ -197,10 +197,10 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
     }
 
     //restore layer effect
-    const QDomElement effectElem = node.namedItem( QStringLiteral( "paintEffect" ) ).toElement();
+    const QDomElement effectElem = node.namedItem( u"paintEffect"_s ).toElement();
     if ( !effectElem.isNull() )
     {
-      const QDomElement effectPropertiesElem = effectElem.firstChildElement( QStringLiteral( "effect" ) ).toElement();
+      const QDomElement effectPropertiesElem = effectElem.firstChildElement( u"effect"_s ).toElement();
       mPaintEffect.reset( QgsApplication::paintEffectRegistry()->createEffect( effectPropertiesElem ) );
     }
     else
@@ -213,7 +213,7 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
   if ( categories.testFlag( Symbology ) )
   {
     // get and set the blend mode if it exists
-    const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    const QDomNode blendModeNode = node.namedItem( u"blendMode"_s );
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
@@ -242,15 +242,15 @@ QString QgsGroupLayer::htmlMetadata() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QString metadata = QStringLiteral( "<html>\n<body>\n<h1>" ) + tr( "General" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+  QString metadata = u"<html>\n<body>\n<h1>"_s + tr( "General" ) + u"</h1>\n<hr>\n"_s + u"<table class=\"list-view\">\n"_s;
 
-  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
+  metadata += u"<tr><td class=\"highlight\">"_s + tr( "Name" ) + u"</td><td>"_s + name() + u"</td></tr>\n"_s;
 
   // Extent
-  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+  metadata += u"<tr><td class=\"highlight\">"_s + tr( "Extent" ) + u"</td><td>"_s + extent().toString() + u"</td></tr>\n"_s;
 
 
-  metadata += QLatin1String( "\n</body>\n</html>\n" );
+  metadata += "\n</body>\n</html>\n"_L1;
   return metadata;
 }
 
@@ -288,10 +288,10 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
     if ( !currentLayers.contains( layer ) )
     {
       connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapLayer::triggerRepaint, Qt::UniqueConnection );
-      if ( layer->blendMode() == QPainter::CompositionMode_SourceOver && layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).isValid() )
+      if ( layer->blendMode() == QPainter::CompositionMode_SourceOver && layer->customProperty( u"_prevGroupBlendMode"_s ).isValid() )
       {
         // try to restore previous group blend mode
-        layer->setBlendMode( static_cast< QPainter::CompositionMode >( layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).toInt() ) );
+        layer->setBlendMode( static_cast< QPainter::CompositionMode >( layer->customProperty( u"_prevGroupBlendMode"_s ).toInt() ) );
       }
     }
   }
@@ -306,11 +306,11 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
       if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( groupBlendMode ) ) )
       {
         layer->setBlendMode( QPainter::CompositionMode_SourceOver );
-        layer->setCustomProperty( QStringLiteral( "_prevGroupBlendMode" ), static_cast< int >( groupBlendMode ) );
+        layer->setCustomProperty( u"_prevGroupBlendMode"_s, static_cast< int >( groupBlendMode ) );
       }
       else
       {
-        layer->removeCustomProperty( QStringLiteral( "_prevGroupBlendMode" ) );
+        layer->removeCustomProperty( u"_prevGroupBlendMode"_s );
       }
     }
   }
@@ -390,7 +390,7 @@ QString QgsGroupLayerDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "annotation" );
+  return u"annotation"_s;
 }
 
 QString QgsGroupLayerDataProvider::description() const

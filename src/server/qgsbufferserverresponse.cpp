@@ -67,7 +67,7 @@ void QgsBufferServerResponse::sendError( int code, const QString &message )
 
   clear();
   setStatusCode( code );
-  setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/plain; charset=utf-8" ) );
+  setHeader( u"Content-Type"_s, u"text/plain; charset=utf-8"_s );
   write( message );
   finish();
 }
@@ -89,7 +89,7 @@ void QgsBufferServerResponse::finish()
   {
     if ( !mHeaders.contains( "Content-Length" ) )
     {
-      mHeaders.insert( QStringLiteral( "Content-Length" ), QString::number( mBuffer.pos() ) );
+      mHeaders.insert( u"Content-Length"_s, QString::number( mBuffer.pos() ) );
     }
   }
   flush();

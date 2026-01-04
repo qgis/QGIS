@@ -58,7 +58,7 @@ void TestQgsMapLayerStyleManager::cleanupTestCase()
 
 void TestQgsMapLayerStyleManager::init()
 {
-  mVL = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  mVL = new QgsVectorLayer( u"LineString"_s, u"Line Layer"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( mVL );
 }
 
@@ -73,7 +73,7 @@ void TestQgsMapLayerStyleManager::testDefault()
   QVERIFY( mgr );
 
   QCOMPARE( mgr->styles().count(), 1 );
-  QCOMPARE( mgr->style( QStringLiteral( "default" ) ).isValid(), true );
+  QCOMPARE( mgr->style( u"default"_s ).isValid(), true );
 }
 
 void TestQgsMapLayerStyleManager::testStyle()
@@ -124,8 +124,8 @@ void TestQgsMapLayerStyleManager::testReadWrite()
 
   QgsMapLayerStyleManager sm0( mVL );
 
-  sm0.addStyleFromLayer( QStringLiteral( "blue" ) );
-  sm0.setCurrentStyle( QStringLiteral( "blue" ) );
+  sm0.addStyleFromLayer( u"blue"_s );
+  sm0.setCurrentStyle( u"blue"_s );
   QgsSingleSymbolRenderer *r1 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r1 );
   r1->symbol()->setColor( Qt::blue );
@@ -133,7 +133,7 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   // read and write
 
   QDomDocument doc;
-  QDomElement mgrElem = doc.createElement( QStringLiteral( "map-layer-style-manager" ) );
+  QDomElement mgrElem = doc.createElement( u"map-layer-style-manager"_s );
   doc.appendChild( mgrElem );
   sm0.writeXml( mgrElem );
 
@@ -146,12 +146,12 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   sm1.readXml( mgrElem );
 
   QCOMPARE( sm1.styles().count(), 2 );
-  QCOMPARE( sm1.style( QStringLiteral( "default" ) ).isValid(), true );
+  QCOMPARE( sm1.style( u"default"_s ).isValid(), true );
   QCOMPARE( sm1.style( "blue" ).isValid(), true );
   QCOMPARE( sm1.currentStyle(), QString( "blue" ) );
 
   // now use the default style - the symbol should get red color
-  sm1.setCurrentStyle( QStringLiteral( "default" ) );
+  sm1.setCurrentStyle( u"default"_s );
 
   QgsSingleSymbolRenderer *r2 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r2 );
@@ -178,37 +178,37 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 {
   _setVLColor( mVL, Qt::red );
 
-  mVL->styleManager()->addStyleFromLayer( QStringLiteral( "s1" ) );
-  mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
+  mVL->styleManager()->addStyleFromLayer( u"s1"_s );
+  mVL->styleManager()->setCurrentStyle( u"s1"_s );
 
   QCOMPARE( mVL->styleManager()->currentStyle(), QString( "s1" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
   _setVLColor( mVL, Qt::green );
 
-  mVL->styleManager()->setCurrentStyle( QStringLiteral( "default" ) );
+  mVL->styleManager()->setCurrentStyle( u"default"_s );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
-  mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
+  mVL->styleManager()->setCurrentStyle( u"s1"_s );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::green ) );
 
   _setVLColor( mVL, Qt::blue );
 
-  mVL->styleManager()->setCurrentStyle( QStringLiteral( "default" ) );
+  mVL->styleManager()->setCurrentStyle( u"default"_s );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
-  mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
+  mVL->styleManager()->setCurrentStyle( u"s1"_s );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::blue ) );
 }
 
 void TestQgsMapLayerStyleManager::testCopyStyles()
 {
-  auto lines = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
-  auto lines2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  auto lines = std::make_unique<QgsVectorLayer>( u"LineString"_s, u"Line Layer"_s, u"memory"_s );
+  auto lines2 = std::make_unique<QgsVectorLayer>( u"LineString"_s, u"Line Layer"_s, u"memory"_s );
 
   QgsMapLayerStyleManager *sm = lines->styleManager();
 
-  sm->addStyleFromLayer( QStringLiteral( "style2" ) );
+  sm->addStyleFromLayer( u"style2"_s );
 
   QgsMapLayerStyleManager *sm2 = lines2->styleManager();
 

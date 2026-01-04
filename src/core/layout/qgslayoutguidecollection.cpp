@@ -198,7 +198,7 @@ QgsLayoutGuideCollection::QgsLayoutGuideCollection( QgsLayout *layout, QgsLayout
   , mPageCollection( pageCollection )
 {
   QFont f;
-  mHeaderSize = QFontMetrics( f ).boundingRect( QStringLiteral( "XX" ) ).width();
+  mHeaderSize = QFontMetrics( f ).boundingRect( u"XX"_s ).width();
 
   connect( mPageCollection, &QgsLayoutPageCollection::pageAboutToBeRemoved, this, &QgsLayoutGuideCollection::pageAboutToBeRemoved );
 }
@@ -536,16 +536,16 @@ void QgsLayoutGuideCollection::pageAboutToBeRemoved( int pageNumber )
 
 bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
-  QDomElement element = document.createElement( QStringLiteral( "GuideCollection" ) );
-  element.setAttribute( QStringLiteral( "visible" ), mGuidesVisible );
+  QDomElement element = document.createElement( u"GuideCollection"_s );
+  element.setAttribute( u"visible"_s, mGuidesVisible );
   const auto constMGuides = mGuides;
   for ( QgsLayoutGuide *guide : constMGuides )
   {
-    QDomElement guideElement = document.createElement( QStringLiteral( "Guide" ) );
-    guideElement.setAttribute( QStringLiteral( "orientation" ), guide->orientation() );
-    guideElement.setAttribute( QStringLiteral( "page" ), mPageCollection->pageNumber( guide->page() ) );
-    guideElement.setAttribute( QStringLiteral( "position" ), guide->position().length() );
-    guideElement.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( guide->position().units() ) );
+    QDomElement guideElement = document.createElement( u"Guide"_s );
+    guideElement.setAttribute( u"orientation"_s, guide->orientation() );
+    guideElement.setAttribute( u"page"_s, mPageCollection->pageNumber( guide->page() ) );
+    guideElement.setAttribute( u"position"_s, guide->position().length() );
+    guideElement.setAttribute( u"units"_s, QgsUnitTypes::encodeUnit( guide->position().units() ) );
     element.appendChild( guideElement );
   }
 
@@ -556,12 +556,12 @@ bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocumen
 bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
 {
   QDomElement element = e;
-  if ( element.nodeName() != QLatin1String( "GuideCollection" ) )
+  if ( element.nodeName() != "GuideCollection"_L1 )
   {
-    element = element.firstChildElement( QStringLiteral( "GuideCollection" ) );
+    element = element.firstChildElement( u"GuideCollection"_s );
   }
 
-  if ( element.nodeName() != QLatin1String( "GuideCollection" ) )
+  if ( element.nodeName() != "GuideCollection"_L1 )
   {
     return false;
   }
@@ -571,15 +571,15 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
   qDeleteAll( mGuides );
   mGuides.clear();
 
-  mGuidesVisible = element.attribute( QStringLiteral( "visible" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
-  QDomNodeList guideNodeList = element.elementsByTagName( QStringLiteral( "Guide" ) );
+  mGuidesVisible = element.attribute( u"visible"_s, u"0"_s ) != "0"_L1;
+  QDomNodeList guideNodeList = element.elementsByTagName( u"Guide"_s );
   for ( int i = 0; i < guideNodeList.size(); ++i )
   {
     QDomElement element = guideNodeList.at( i ).toElement();
-    Qt::Orientation orientation = static_cast< Qt::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
-    double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
-    Qgis::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
-    int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();
+    Qt::Orientation orientation = static_cast< Qt::Orientation >( element.attribute( u"orientation"_s, u"1"_s ).toInt() );
+    double pos = element.attribute( u"position"_s, u"0"_s ).toDouble();
+    Qgis::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( u"units"_s ) );
+    int page = element.attribute( u"page"_s, u"0"_s ).toInt();
     auto guide = std::make_unique<QgsLayoutGuide>( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) );
     guide->update();
     addGuide( guide.release() );

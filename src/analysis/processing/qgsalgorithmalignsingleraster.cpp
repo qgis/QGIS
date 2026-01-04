@@ -31,7 +31,7 @@ Qgis::ProcessingAlgorithmFlags QgsAlignSingleRasterAlgorithm::flags() const
 
 QString QgsAlignSingleRasterAlgorithm::name() const
 {
-  return QStringLiteral( "alignsingleraster" );
+  return u"alignsingleraster"_s;
 }
 
 QString QgsAlignSingleRasterAlgorithm::displayName() const
@@ -51,7 +51,7 @@ QString QgsAlignSingleRasterAlgorithm::group() const
 
 QString QgsAlignSingleRasterAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return u"rastertools"_s;
 }
 
 QString QgsAlignSingleRasterAlgorithm::shortHelpString() const
@@ -71,7 +71,7 @@ QgsAlignSingleRasterAlgorithm *QgsAlignSingleRasterAlgorithm::createInstance() c
 
 void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
   QStringList resamplingMethods;
   resamplingMethods << QObject::tr( "Nearest Neighbour" )
@@ -86,32 +86,32 @@ void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
                     << QObject::tr( "Median" )
                     << QObject::tr( "First Quartile (Q1)" )
                     << QObject::tr( "Third Quartile (Q3)" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "RESAMPLING_METHOD" ), QObject::tr( "Resampling method" ), resamplingMethods, false, 0, false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "RESCALE" ), QObject::tr( "Rescale values according to the cell size" ), false ) );
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Override reference CRS" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_X" ), QObject::tr( "Override reference cell size X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_Y" ), QObject::tr( "Override reference cell size Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_X" ), QObject::tr( "Override reference grid offset X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_Y" ), QObject::tr( "Override reference grid offset Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Clip to extent" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Aligned raster" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"RESAMPLING_METHOD"_s, QObject::tr( "Resampling method" ), resamplingMethods, false, 0, false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"RESCALE"_s, QObject::tr( "Rescale values according to the cell size" ), false ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"REFERENCE_LAYER"_s, QObject::tr( "Reference layer" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Override reference CRS" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterNumber( u"CELL_SIZE_X"_s, QObject::tr( "Override reference cell size X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( u"CELL_SIZE_Y"_s, QObject::tr( "Override reference cell size Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( u"GRID_OFFSET_X"_s, QObject::tr( "Override reference grid offset X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( u"GRID_OFFSET_Y"_s, QObject::tr( "Override reference grid offset Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Clip to extent" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Aligned raster" ) ) );
 }
 
 
 QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
   if ( !inputLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REFERENCE_LAYER" ), context );
+  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, u"REFERENCE_LAYER"_s, context );
   if ( !referenceLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"REFERENCE_LAYER"_s ) );
 
-  const int method = parameterAsInt( parameters, QStringLiteral( "RESAMPLING_METHOD" ), context );
-  const bool rescale = parameterAsBoolean( parameters, QStringLiteral( "RESCALE" ), context );
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const int method = parameterAsInt( parameters, u"RESAMPLING_METHOD"_s, context );
+  const bool rescale = parameterAsBoolean( parameters, u"RESCALE"_s, context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
   Qgis::GdalResampleAlgorithm resampleAlg = Qgis::GdalResampleAlgorithm::RA_NearestNeighbour;
   switch ( method )
@@ -170,41 +170,41 @@ QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &
   QSizeF customCellSize;
   QPointF customGridOffset( -1, -1 );
 
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
     customCRSWkt = crs.toWkt( Qgis::CrsWktVariant::PreferredGdal );
   }
 
-  bool hasXValue = parameters.value( QStringLiteral( "CELL_SIZE_X" ) ).isValid();
-  bool hasYValue = parameters.value( QStringLiteral( "CELL_SIZE_Y" ) ).isValid();
+  bool hasXValue = parameters.value( u"CELL_SIZE_X"_s ).isValid();
+  bool hasYValue = parameters.value( u"CELL_SIZE_Y"_s ).isValid();
   if ( ( hasXValue && !hasYValue ) || ( !hasXValue && hasYValue ) )
   {
     throw QgsProcessingException( QObject::tr( "Either set both X and Y cell size values or keep both as 'Not set'." ) );
   }
   else if ( hasXValue && hasYValue )
   {
-    double xSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE_X" ), context );
-    double ySize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE_Y" ), context );
+    double xSize = parameterAsDouble( parameters, u"CELL_SIZE_X"_s, context );
+    double ySize = parameterAsDouble( parameters, u"CELL_SIZE_Y"_s, context );
     customCellSize = QSizeF( xSize, ySize );
   }
 
-  hasXValue = parameters.value( QStringLiteral( "GRID_OFFSET_X" ) ).isValid();
-  hasYValue = parameters.value( QStringLiteral( "GRID_OFFSET_Y" ) ).isValid();
+  hasXValue = parameters.value( u"GRID_OFFSET_X"_s ).isValid();
+  hasYValue = parameters.value( u"GRID_OFFSET_Y"_s ).isValid();
   if ( ( hasXValue && !hasYValue ) || ( !hasXValue && hasYValue ) )
   {
     throw QgsProcessingException( QObject::tr( "Either set both X and Y grid offset values or keep both as 'Not set'." ) );
   }
   else if ( hasXValue && hasYValue )
   {
-    double xSize = parameterAsDouble( parameters, QStringLiteral( "GRID_OFFSET_X" ), context );
-    double ySize = parameterAsDouble( parameters, QStringLiteral( "GRID_OFFSET_Y" ), context );
+    double xSize = parameterAsDouble( parameters, u"GRID_OFFSET_X"_s, context );
+    double ySize = parameterAsDouble( parameters, u"GRID_OFFSET_Y"_s, context );
     customGridOffset = QPointF( xSize, ySize );
   }
 
-  if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
+  if ( parameters.value( u"EXTENT"_s ).isValid() )
   {
-    QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
+    QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
     rasterAlign.setClipExtent( extent );
   }
 
@@ -237,7 +237,7 @@ QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

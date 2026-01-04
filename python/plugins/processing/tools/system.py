@@ -86,13 +86,13 @@ def tempHelpFolder():
 def escapeAndJoin(strList):
     """
     .. deprecated:: 3.0
-    Do not use, will be removed in QGIS 4.0
+    Do not use, will be removed in QGIS 5.0
     """
 
     from warnings import warn
 
     warn(
-        "processing.escapeAndJoin is deprecated and will be removed in QGIS 4.0",
+        "processing.escapeAndJoin is deprecated and will be removed in QGIS 5.0",
         DeprecationWarning,
     )
 

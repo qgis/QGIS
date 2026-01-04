@@ -306,17 +306,17 @@ void TestQgsGeometryCollection::geometryCollection()
 
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember></MultiGeometry>" ) );
+  QString expectedSimpleGML2( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember></MultiGeometry>"_s );
   QString res = elemToString( exportC.asGml2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
-  QString expectedGML2empty( QStringLiteral( "<MultiGeometry xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<MultiGeometry xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsGeometryCollection().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember></MultiGeometry>" ) );
+  QString expectedSimpleGML3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember></MultiGeometry>"_s );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
-  QString expectedGML3empty( QStringLiteral( "<MultiGeometry xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<MultiGeometry xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsGeometryCollection().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON
@@ -342,25 +342,25 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( res, expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LineString></geometryMember></MultiGeometry>" ) );
+  QString expectedGML2( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LineString></geometryMember></MultiGeometry>"_s );
   res = elemToString( exportC.asGml2( doc ) );
   QGSCOMPAREGML( res, expectedGML2 );
-  QString expectedGML2prec3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LineString></geometryMember></MultiGeometry>" ) );
+  QString expectedGML2prec3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LineString></geometryMember></MultiGeometry>"_s );
   res = elemToString( exportFloat.asGml2( doc, 3 ) );
   QGSCOMPAREGML( res, expectedGML2prec3 );
 
   //as GML3
-  QString expectedGML3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LineString></geometryMember></MultiGeometry>" ) );
+  QString expectedGML3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LineString></geometryMember></MultiGeometry>"_s );
   res = elemToString( exportC.asGml3( doc ) );
   QCOMPARE( res, expectedGML3 );
-  QString expectedGML3prec3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LineString></geometryMember></MultiGeometry>" ) );
+  QString expectedGML3prec3( u"<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LineString></geometryMember></MultiGeometry>"_s );
   res = elemToString( exportFloat.asGml3( doc, 3 ) );
   QCOMPARE( res, expectedGML3prec3 );
 
   //asKML
-  QString expectedKml( QStringLiteral( "<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0,0,0 0,10,0 10,10,0 10,0,0 0,0,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1,1,0 1,9,0 9,9,0 9,1,0 1,1,0</coordinates></LinearRing></MultiGeometry>" ) );
+  QString expectedKml( u"<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0,0,0 0,10,0 10,10,0 10,0,0 0,0,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1,1,0 1,9,0 9,9,0 9,1,0 1,1,0</coordinates></LinearRing></MultiGeometry>"_s );
   QCOMPARE( exportC.asKml(), expectedKml );
-  QString expectedKmlPrec3( QStringLiteral( "<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></MultiGeometry>" ) );
+  QString expectedKmlPrec3( u"<MultiGeometry><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></MultiGeometry>"_s );
   QCOMPARE( exportFloat.asKml( 3 ), expectedKmlPrec3 );
 
 
@@ -425,17 +425,17 @@ void TestQgsGeometryCollection::geometryCollection()
   QgsGeometryCollection pCast;
   QVERIFY( QgsGeometryCollection().cast( &pCast ) );
   QgsGeometryCollection pCast2;
-  pCast2.fromWkt( QStringLiteral( "GeometryCollectionZ(PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0)))" ) );
+  pCast2.fromWkt( u"GeometryCollectionZ(PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0)))"_s );
   QVERIFY( QgsGeometryCollection().cast( &pCast2 ) );
-  pCast2.fromWkt( QStringLiteral( "GeometryCollectionM(PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1)))" ) );
+  pCast2.fromWkt( u"GeometryCollectionM(PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1)))"_s );
   QVERIFY( QgsGeometryCollection().cast( &pCast2 ) );
-  pCast2.fromWkt( QStringLiteral( "GeometryCollectionZM(PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1)))" ) );
+  pCast2.fromWkt( u"GeometryCollectionZM(PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1)))"_s );
   QVERIFY( QgsGeometryCollection().cast( &pCast2 ) );
 
   //transform
   //CRS transform
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
@@ -1288,12 +1288,12 @@ void TestQgsGeometryCollection::geometryCollection()
   nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
   gcNodes.addGeometry( nodeLine.clone() );
   QVERIFY( !gcNodes.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( gcNodes.asWkt(), QStringLiteral( "GeometryCollection (LineString (11 2, 11 12, 111 12))" ) );
+  QCOMPARE( gcNodes.asWkt(), u"GeometryCollection (LineString (11 2, 11 12, 111 12))"_s );
   nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
   gcNodes.addGeometry( nodeLine.clone() );
   QVERIFY( gcNodes.removeDuplicateNodes( 0.02 ) );
   QVERIFY( !gcNodes.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( gcNodes.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString (11 2, 11 12, 111 12),LineString (11 2, 11 12, 111 12))" ) );
+  QCOMPARE( gcNodes.asWkt( 2 ), u"GeometryCollection (LineString (11 2, 11 12, 111 12),LineString (11 2, 11 12, 111 12))"_s );
 
   //swapXy
   QgsGeometryCollection swapCollect;
@@ -1302,11 +1302,11 @@ void TestQgsGeometryCollection::geometryCollection()
   swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
-  QCOMPARE( swapCollect.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
+  QCOMPARE( swapCollect.asWkt(), u"GeometryCollection (LineString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))"_s );
   swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 11.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
-  QCOMPARE( swapCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineString ZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))" ) );
+  QCOMPARE( swapCollect.asWkt( 2 ), u"GeometryCollection (LineString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineString ZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))"_s );
 
   // filter vertices
   QgsGeometryCollection filterCollect;
@@ -1318,11 +1318,11 @@ void TestQgsGeometryCollection::geometryCollection()
   filterLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   filterCollect.addGeometry( filterLine.clone() );
   filterCollect.filterVertices( filter );
-  QCOMPARE( filterCollect.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24))" ) );
+  QCOMPARE( filterCollect.asWkt(), u"GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24))"_s );
   filterLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   filterCollect.addGeometry( filterLine.clone() );
   filterCollect.filterVertices( filter );
-  QCOMPARE( filterCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24),LineString ZM (11 2 5 6, 11.02 2.01 25 26))" ) );
+  QCOMPARE( filterCollect.asWkt( 2 ), u"GeometryCollection (LineString ZM (11 12 13 14, 111 12 23 24),LineString ZM (11 2 5 6, 11.02 2.01 25 26))"_s );
 
   // transform vertices
   QgsGeometryCollection transformCollect;
@@ -1334,11 +1334,11 @@ void TestQgsGeometryCollection::geometryCollection()
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   transformCollect.addGeometry( transformLine.clone() );
   transformCollect.transformVertices( transform );
-  QCOMPARE( transformCollect.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (3 5 7 9, 13 15 17 19, 113 15 27 29))" ) );
+  QCOMPARE( transformCollect.asWkt(), u"GeometryCollection (LineString ZM (3 5 7 9, 13 15 17 19, 113 15 27 29))"_s );
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   transformCollect.addGeometry( transformLine.clone() );
   transformCollect.transformVertices( transform );
-  QCOMPARE( transformCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (5 8 11 14, 15 18 21 24, 115 18 31 34),LineString ZM (13 5 9 11, 3.01 4.99 19 21, 13.02 5.01 29 31))" ) );
+  QCOMPARE( transformCollect.asWkt( 2 ), u"GeometryCollection (LineString ZM (5 8 11 14, 15 18 21 24, 115 18 31 34),LineString ZM (13 5 9 11, 3.01 4.99 19 21, 13.02 5.01 29 31))"_s );
 
   // transform using class
   TestTransformer transformer;
@@ -1347,11 +1347,11 @@ void TestQgsGeometryCollection::geometryCollection()
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   transformCollect2.addGeometry( transformLine.clone() );
   QVERIFY( transformCollect2.transform( &transformer ) );
-  QCOMPARE( transformCollect2.asWkt(), QStringLiteral( "GeometryCollection (LineString ZM (3 16 8 3, 33 26 18 13, 333 26 28 23))" ) );
+  QCOMPARE( transformCollect2.asWkt(), u"GeometryCollection (LineString ZM (3 16 8 3, 33 26 18 13, 333 26 28 23))"_s );
   transformLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, Qgis::WkbType::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, Qgis::WkbType::PointZM ) );
   transformCollect2.addGeometry( transformLine.clone() );
   QVERIFY( transformCollect2.transform( &transformer ) );
-  QCOMPARE( transformCollect2.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString ZM (9 30 13 2, 99 40 23 12, 999 40 33 22),LineString ZM (33 16 10 5, 3.03 15.99 20 15, 33.06 16.01 30 25))" ) );
+  QCOMPARE( transformCollect2.asWkt( 2 ), u"GeometryCollection (LineString ZM (9 30 13 2, 99 40 23 12, 999 40 33 22),LineString ZM (33 16 10 5, 3.03 15.99 20 15, 33.06 16.01 30 25))"_s );
 
   TestFailTransformer failTransformer;
   QVERIFY( !transformCollect2.transform( &failTransformer ) );

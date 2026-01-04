@@ -24,7 +24,7 @@
 
 QString QgsAttributeIndexAlgorithm::name() const
 {
-  return QStringLiteral( "createattributeindex" );
+  return u"createattributeindex"_s;
 }
 
 QString QgsAttributeIndexAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsAttributeIndexAlgorithm::group() const
 
 QString QgsAttributeIndexAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsAttributeIndexAlgorithm::flags() const
@@ -72,20 +72,20 @@ QgsAttributeIndexAlgorithm *QgsAttributeIndexAlgorithm::createInstance() const
 
 void QgsAttributeIndexAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int> { static_cast<int>( Qgis::ProcessingSourceType::Vector ) } ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Attribute to index" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int> { static_cast<int>( Qgis::ProcessingSourceType::Vector ) } ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Attribute to index" ), QVariant(), u"INPUT"_s ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Indexed layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Indexed layer" ) ) );
 }
 
 QVariantMap QgsAttributeIndexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( "INPUT"_L1 ) );
 
-  const QString field = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  const QString field = parameterAsString( parameters, u"FIELD"_s, context );
 
   QgsVectorDataProvider *provider = layer->dataProvider();
 
@@ -111,7 +111,7 @@ QVariantMap QgsAttributeIndexAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), layer->id() );
+  outputs.insert( u"OUTPUT"_s, layer->id() );
   return outputs;
 }
 

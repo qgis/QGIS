@@ -41,7 +41,7 @@ QString QgsRelationAggregateSearchWidgetWrapper::expression() const
     aggregateFilter = mAttributeForm->aggregateFilter();
 
   if ( aggregateFilter.isEmpty() )
-    return QStringLiteral( "TRUE" );
+    return u"TRUE"_s;
   else
     return aggregateFilter;
 }
@@ -83,7 +83,7 @@ bool QgsRelationAggregateSearchWidgetWrapper::applyDirectly()
 void QgsRelationAggregateSearchWidgetWrapper::setExpression( const QString &value )
 {
   Q_UNUSED( value )
-  QgsDebugError( QStringLiteral( "Not supported" ) );
+  QgsDebugError( u"Not supported"_s );
 }
 
 bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEvent *event )

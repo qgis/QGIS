@@ -72,7 +72,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock *> &rasterData, 
     const QMap<QString, QgsRasterBlock *>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
-      QgsDebugError( QStringLiteral( "Error: could not find raster data for \"%1\"" ).arg( mRasterName ) );
+      QgsDebugError( u"Error: could not find raster data for \"%1\""_s.arg( mRasterName ) );
       return false;
     }
 
@@ -254,119 +254,119 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       switch ( mOperator )
       {
         case opPLUS:
-          result = QStringLiteral( "( %1 + %2 )" ).arg( left ).arg( right );
+          result = u"( %1 + %2 )"_s.arg( left ).arg( right );
           break;
         case opMINUS:
-          result = QStringLiteral( "( %1 - %2 )" ).arg( left ).arg( right );
+          result = u"( %1 - %2 )"_s.arg( left ).arg( right );
           break;
         case opSIGN:
-          result = QStringLiteral( "-%1" ).arg( left );
+          result = u"-%1"_s.arg( left );
           break;
         case opMUL:
-          result = QStringLiteral( "%1 * %2" ).arg( left ).arg( right );
+          result = u"%1 * %2"_s.arg( left ).arg( right );
           break;
         case opDIV:
-          result = QStringLiteral( "%1 / %2" ).arg( left ).arg( right );
+          result = u"%1 / %2"_s.arg( left ).arg( right );
           break;
         case opPOW:
           if ( cStyle )
-            result = QStringLiteral( "pow( %1, %2 )" ).arg( left ).arg( right );
+            result = u"pow( %1, %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1^%2" ).arg( left ).arg( right );
+            result = u"%1^%2"_s.arg( left ).arg( right );
           break;
         case opEQ:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 == %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 == %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 = %2" ).arg( left ).arg( right );
+            result = u"%1 = %2"_s.arg( left ).arg( right );
           break;
         case opNE:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 != %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 != %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 != %2" ).arg( left ).arg( right );
+            result = u"%1 != %2"_s.arg( left ).arg( right );
           break;
         case opGT:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 > %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 > %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 > %2" ).arg( left ).arg( right );
+            result = u"%1 > %2"_s.arg( left ).arg( right );
           break;
         case opLT:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 < %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 < %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 < %2" ).arg( left ).arg( right );
+            result = u"%1 < %2"_s.arg( left ).arg( right );
           break;
         case opGE:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 >= %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 >= %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 >= %2" ).arg( left ).arg( right );
+            result = u"%1 >= %2"_s.arg( left ).arg( right );
           break;
         case opLE:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 <= %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 <= %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 <= %2" ).arg( left ).arg( right );
+            result = u"%1 <= %2"_s.arg( left ).arg( right );
           break;
         case opAND:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 && %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 && %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 AND %2" ).arg( left ).arg( right );
+            result = u"%1 AND %2"_s.arg( left ).arg( right );
           break;
         case opOR:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 || %2 )" ).arg( left ).arg( right );
+            result = u"( float ) ( %1 || %2 )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "%1 OR %2" ).arg( left ).arg( right );
+            result = u"%1 OR %2"_s.arg( left ).arg( right );
           break;
         case opSQRT:
-          result = QStringLiteral( "sqrt( %1 )" ).arg( left );
+          result = u"sqrt( %1 )"_s.arg( left );
           break;
         case opSIN:
-          result = QStringLiteral( "sin( %1 )" ).arg( left );
+          result = u"sin( %1 )"_s.arg( left );
           break;
         case opCOS:
-          result = QStringLiteral( "cos( %1 )" ).arg( left );
+          result = u"cos( %1 )"_s.arg( left );
           break;
         case opTAN:
-          result = QStringLiteral( "tan( %1 )" ).arg( left );
+          result = u"tan( %1 )"_s.arg( left );
           break;
         case opASIN:
-          result = QStringLiteral( "asin( %1 )" ).arg( left );
+          result = u"asin( %1 )"_s.arg( left );
           break;
         case opACOS:
-          result = QStringLiteral( "acos( %1 )" ).arg( left );
+          result = u"acos( %1 )"_s.arg( left );
           break;
         case opATAN:
-          result = QStringLiteral( "atan( %1 )" ).arg( left );
+          result = u"atan( %1 )"_s.arg( left );
           break;
         case opLOG:
-          result = QStringLiteral( "log( %1 )" ).arg( left );
+          result = u"log( %1 )"_s.arg( left );
           break;
         case opLOG10:
-          result = QStringLiteral( "log10( %1 )" ).arg( left );
+          result = u"log10( %1 )"_s.arg( left );
           break;
         case opABS:
           if ( cStyle )
-            result = QStringLiteral( "fabs( %1 )" ).arg( left );
+            result = u"fabs( %1 )"_s.arg( left );
           else
             // Call the floating point version
-            result = QStringLiteral( "abs( %1 )" ).arg( left );
+            result = u"abs( %1 )"_s.arg( left );
           break;
         case opMIN:
           if ( cStyle )
-            result = QStringLiteral( "min( ( float ) ( %1 ), ( float ) ( %2 ) )" ).arg( left ).arg( right );
+            result = u"min( ( float ) ( %1 ), ( float ) ( %2 ) )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "min( %1, %2 )" ).arg( left ).arg( right );
+            result = u"min( %1, %2 )"_s.arg( left ).arg( right );
           break;
         case opMAX:
           if ( cStyle )
-            result = QStringLiteral( "max( ( float ) ( %1 ), ( float ) ( %2 ) )" ).arg( left ).arg( right );
+            result = u"max( ( float ) ( %1 ), ( float ) ( %2 ) )"_s.arg( left ).arg( right );
           else
-            result = QStringLiteral( "max( %1, %2 )" ).arg( left ).arg( right );
+            result = u"max( %1, %2 )"_s.arg( left ).arg( right );
           break;
         case opNONE:
           break;
@@ -374,15 +374,15 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       break;
     case tRasterRef:
       if ( cStyle )
-        result = QStringLiteral( "( float ) \"%1\"" ).arg( mRasterName );
+        result = u"( float ) \"%1\""_s.arg( mRasterName );
       else
-        result = QStringLiteral( "\"%1\"" ).arg( mRasterName );
+        result = u"\"%1\""_s.arg( mRasterName );
       break;
     case tNumber:
       result = QString::number( mNumber );
       if ( cStyle )
       {
-        result = QStringLiteral( "( float ) %1" ).arg( result );
+        result = u"( float ) %1"_s.arg( result );
       }
       break;
     case tMatrix:
@@ -394,9 +394,9 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
         const QString argTwo = mFunctionArgs.at( 1 )->toString( cStyle );
         const QString argThree = mFunctionArgs.at( 2 )->toString( cStyle );
         if ( cStyle )
-          result = QStringLiteral( " ( %1 ) ? ( %2 ) : ( %3 ) " ).arg( argOne, argTwo, argThree );
+          result = u" ( %1 ) ? ( %2 ) : ( %3 ) "_s.arg( argOne, argTwo, argThree );
         else
-          result = QStringLiteral( "if( %1 , %2 , %3 )" ).arg( argOne, argTwo, argThree );
+          result = u"if( %1 , %2 , %3 )"_s.arg( argOne, argTwo, argThree );
       }
       break;
   }
@@ -448,7 +448,7 @@ QStringList QgsRasterCalcNode::cleanRasterReferences() const
   for ( const QgsRasterCalcNode *r : rasterRefNodes )
   {
     QString layerRef( r->toString() );
-    if ( layerRef.at( 0 ) == QLatin1String( "\"" ) && layerRef.at( layerRef.size() - 1 ) == QLatin1String( "\"" ) )
+    if ( layerRef.at( 0 ) == "\""_L1 && layerRef.at( layerRef.size() - 1 ) == "\""_L1 )
     {
       layerRef.remove( 0, 1 );
       layerRef.chop( 1 );

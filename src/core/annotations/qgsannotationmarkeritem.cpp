@@ -35,7 +35,7 @@ QgsAnnotationMarkerItem::~QgsAnnotationMarkerItem() = default;
 
 QString QgsAnnotationMarkerItem::type() const
 {
-  return QStringLiteral( "marker" );
+  return u"marker"_s;
 }
 
 void QgsAnnotationMarkerItem::render( QgsRenderContext &context, QgsFeedback * )
@@ -61,9 +61,9 @@ void QgsAnnotationMarkerItem::render( QgsRenderContext &context, QgsFeedback * )
 
 bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
-  element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
-  element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "markerSymbol" ), mSymbol.get(), document, context ) );
+  element.setAttribute( u"x"_s, qgsDoubleToString( mPoint.x() ) );
+  element.setAttribute( u"y"_s, qgsDoubleToString( mPoint.y() ) );
+  element.appendChild( QgsSymbolLayerUtils::saveSymbol( u"markerSymbol"_s, mSymbol.get(), document, context ) );
 
   writeCommonProperties( element, document, context );
 
@@ -143,11 +143,11 @@ QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
 
 bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const double x = element.attribute( QStringLiteral( "x" ) ).toDouble();
-  const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
+  const double x = element.attribute( u"x"_s ).toDouble();
+  const double y = element.attribute( u"y"_s ).toDouble();
   mPoint = QgsPoint( x, y );
 
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( u"symbol"_s );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ).release() );
 

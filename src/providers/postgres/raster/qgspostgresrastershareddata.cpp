@@ -72,7 +72,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   mSpatialIndexes[cacheKey]->intersects( request.extent, [&]( Tile *tilePtr ) -> bool {
     if ( tilePtr->data.size() == 0 )
     {
-      missingTileIds.push_back( QStringLiteral( "'%1'" ).arg( tilePtr->tileId ) );
+      missingTileIds.push_back( u"'%1'"_s.arg( tilePtr->tileId ) );
     }
     else
     {
@@ -182,14 +182,14 @@ QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileDat
   const QVariantMap parsedData = QgsPostgresRasterUtils::parseWkb( data );
   for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )
   {
-    tile->data.emplace_back( parsedData[QStringLiteral( "band%1" ).arg( bandCnt )].toByteArray() );
+    tile->data.emplace_back( parsedData[u"band%1"_s.arg( bandCnt )].toByteArray() );
   }
   return tile;
 }
 
 QString QgsPostgresRasterSharedData::keyFromRequest( const QgsPostgresRasterSharedData::TilesRequest &request )
 {
-  return QStringLiteral( "%1 - %2" ).arg( QString::number( request.overviewFactor ), request.whereClause );
+  return u"%1 - %2"_s.arg( QString::number( request.overviewFactor ), request.whereClause );
 }
 
 bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request )
@@ -264,12 +264,12 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
       );
       mSpatialIndexes[cacheKey]->insert( tile.get(), tile->extent );
       mTiles[cacheKey][tileId] = std::move( tile );
-      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 3 );
+      QgsDebugMsgLevel( u"Tile added: %1, ID: %2"_s.arg( cacheKey ).arg( tileId ), 3 );
       //qDebug() << "Tile added:" << cacheKey << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Tile already indexed: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 3 );
+      QgsDebugMsgLevel( u"Tile already indexed: %1, ID: %2"_s.arg( cacheKey ).arg( tileId ), 3 );
     }
   }
 
@@ -348,7 +348,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       CPLFree( binaryData );
       for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )
       {
-        tile->data.emplace_back( parsedData[QStringLiteral( "band%1" ).arg( bandCnt )].toByteArray() );
+        tile->data.emplace_back( parsedData[u"band%1"_s.arg( bandCnt )].toByteArray() );
       }
       mSpatialIndexes[cacheKey]->insert( tile.get(), tile->extent );
 
@@ -370,12 +370,12 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       response.extent.combineExtentWith( tile->extent );
 
       mTiles[cacheKey][tileId] = std::move( tile );
-      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 3 );
+      QgsDebugMsgLevel( u"Tile added: %1, ID: %2"_s.arg( cacheKey ).arg( tileId ), 3 );
       //qDebug() << "Tile data added:" << cacheKey << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Tile and data already indexed: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 2 );
+      QgsDebugMsgLevel( u"Tile and data already indexed: %1, ID: %2"_s.arg( cacheKey ).arg( tileId ), 2 );
     }
   }
 

@@ -123,7 +123,7 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setApiKey( "someapikey" );
     config->setPersistToken( false );
     config->setAccessMethod( QgsAuthOAuth2Config::AccessMethod::Header );
-    config->setCustomHeader( QStringLiteral( "x-auth" ) );
+    config->setCustomHeader( u"x-auth"_s );
     config->setRequestTimeout( 30 ); // in seconds
     QVariantMap extraTokens;
     extraTokens.insert( "id_token", "X-QGS-OPENID" );
@@ -435,7 +435,7 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
   QCOMPARE( dlg.leClientSecret->text(), QString() );
 
   // This JWT does not contain a registration_endpoint
-  dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code.jwt" ).arg( sTestDataDir ) );
+  dlg.leSoftwareStatementJwtPath->setText( u"%1/auth_code_grant_display_code.jwt"_s.arg( sTestDataDir ) );
   QVERIFY( !dlg.btnRegister->isEnabled() );
   QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QString() );
 #endif
@@ -461,21 +461,21 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
   QCOMPARE( dlg.leClientSecret->text(), QString() );
 
   // This JWT does not contain a registration_endpoint
-  dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code.jwt" ).arg( sTestDataDir ) );
+  dlg.leSoftwareStatementJwtPath->setText( u"%1/auth_code_grant_display_code.jwt"_s.arg( sTestDataDir ) );
   QVERIFY( !dlg.btnRegister->isEnabled() );
   QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QString() );
   // Set the config url to something local
-  dlg.leSoftwareStatementConfigUrl->setText( QUrl::fromLocalFile( QStringLiteral( "%1/auth_code_grant_display_code_get_config.json" ).arg( sTestDataDir ) ).toString() );
+  dlg.leSoftwareStatementConfigUrl->setText( QUrl::fromLocalFile( u"%1/auth_code_grant_display_code_get_config.json"_s.arg( sTestDataDir ) ).toString() );
   QVERIFY( dlg.btnRegister->isEnabled() );
   // Change it to something local
-  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString();
+  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( u"%1/client_information_registration_response.json"_s.arg( sTestDataDir ) ).toString();
   QTest::mouseClick( dlg.btnRegister, Qt::MouseButton::LeftButton );
   while ( dlg.mDownloading )
   {
     qApp->processEvents();
   }
-  QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
-  QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+  QCOMPARE( dlg.leClientId->text(), "___QGIS_ROCKS___@www.qgis.org"_L1 );
+  QCOMPARE( dlg.leClientSecret->text(), "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___"_L1 );
 #endif
 }
 
@@ -500,18 +500,18 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
   QCOMPARE( dlg.leClientSecret->text(), QString() );
 
   // Now set the config URL to the JWT that does contain a registration_endpoint
-  dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code_registration_endpoint.jwt" ).arg( sTestDataDir ) );
-  QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QStringLiteral( "http://www.qgis.org/oauth2/registration" ) );
+  dlg.leSoftwareStatementJwtPath->setText( u"%1/auth_code_grant_display_code_registration_endpoint.jwt"_s.arg( sTestDataDir ) );
+  QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), u"http://www.qgis.org/oauth2/registration"_s );
   QVERIFY( dlg.btnRegister->isEnabled() );
   // Change it to something local
-  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString();
+  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( u"%1/client_information_registration_response.json"_s.arg( sTestDataDir ) ).toString();
   QTest::mouseClick( dlg.btnRegister, Qt::MouseButton::LeftButton );
   while ( dlg.mDownloading )
   {
     qApp->processEvents();
   }
-  QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
-  QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+  QCOMPARE( dlg.leClientId->text(), "___QGIS_ROCKS___@www.qgis.org"_L1 );
+  QCOMPARE( dlg.leClientSecret->text(), "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___"_L1 );
 #endif
 }
 

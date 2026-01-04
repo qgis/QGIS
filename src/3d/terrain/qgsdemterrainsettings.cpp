@@ -31,24 +31,24 @@ QgsDemTerrainSettings *QgsDemTerrainSettings::clone() const
 
 QString QgsDemTerrainSettings::type() const
 {
-  return QStringLiteral( "dem" );
+  return u"dem"_s;
 }
 
 void QgsDemTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  if ( element.hasAttribute( QStringLiteral( "layer" ) ) )
+  if ( element.hasAttribute( u"layer"_s ) )
   {
-    mLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "layer" ) ) );
-    mResolution = element.attribute( QStringLiteral( "resolution" ) ).toInt();
-    mSkirtHeight = element.attribute( QStringLiteral( "skirt-height" ) ).toDouble();
+    mLayer = QgsMapLayerRef( element.attribute( u"layer"_s ) );
+    mResolution = element.attribute( u"resolution"_s ).toInt();
+    mSkirtHeight = element.attribute( u"skirt-height"_s ).toDouble();
   }
   else
   {
     // restore old project
-    const QDomElement elemTerrainGenerator = element.firstChildElement( QStringLiteral( "generator" ) );
-    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( QStringLiteral( "layer" ) ) );
-    mResolution = elemTerrainGenerator.attribute( QStringLiteral( "resolution" ) ).toInt();
-    mSkirtHeight = elemTerrainGenerator.attribute( QStringLiteral( "skirt-height" ) ).toDouble();
+    const QDomElement elemTerrainGenerator = element.firstChildElement( u"generator"_s );
+    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( u"layer"_s ) );
+    mResolution = elemTerrainGenerator.attribute( u"resolution"_s ).toInt();
+    mSkirtHeight = elemTerrainGenerator.attribute( u"skirt-height"_s ).toDouble();
   }
 
   readCommonProperties( element, context );
@@ -56,9 +56,9 @@ void QgsDemTerrainSettings::readXml( const QDomElement &element, const QgsReadWr
 
 void QgsDemTerrainSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
-  element.setAttribute( QStringLiteral( "resolution" ), mResolution );
-  element.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
+  element.setAttribute( u"layer"_s, mLayer.layerId );
+  element.setAttribute( u"resolution"_s, mResolution );
+  element.setAttribute( u"skirt-height"_s, mSkirtHeight );
   writeCommonProperties( element, context );
 }
 

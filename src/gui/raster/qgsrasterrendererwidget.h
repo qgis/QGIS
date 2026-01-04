@@ -41,7 +41,7 @@ class GUI_EXPORT QgsRasterRendererWidget : public QWidget
     Q_OBJECT
 
   public:
-    //TODO QGIS 4.0 - remove extent parameter, replace with map canvas parameter
+    //TODO QGIS 5.0 - remove extent parameter, replace with map canvas parameter
 
     /**
      * Constructor for QgsRasterRendererWidget.

@@ -42,24 +42,24 @@ QString QgsCommandLineUtils::allVersions( )
 {
 
   // QGIS main version
-  QString versionString = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION, RELEASE_NAME, QGSVERSION );
+  QString versionString = u"QGIS %1 '%2' (%3)\n"_s.arg( VERSION, RELEASE_NAME, QGSVERSION );
 
   // QGIS code revision
-  if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
+  if ( QString( Qgis::devVersion() ) == "exported"_L1 )
   {
-    versionString += QLatin1String( "QGIS code branch" );
-    if ( Qgis::version().endsWith( QLatin1String( "Master" ) ) )
+    versionString += "QGIS code branch"_L1;
+    if ( Qgis::version().endsWith( "Master"_L1 ) )
     {
-      versionString += QLatin1String( "master\n" );
+      versionString += "master\n"_L1;
     }
     else
     {
-      versionString += QStringLiteral( "Release %1.%2\n" ).arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 );
+      versionString += u"Release %1.%2\n"_s.arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 );
     }
   }
   else
   {
-    versionString += QStringLiteral( "QGIS code revision %1\n" ).arg( Qgis::devVersion() );
+    versionString += u"QGIS code revision %1\n"_s.arg( Qgis::devVersion() );
   }
 
   // Qt version
@@ -67,58 +67,58 @@ QString QgsCommandLineUtils::allVersions( )
   const QString qtVersionRunning{ qVersion() };
   if ( qtVersionCompiled != qtVersionRunning )
   {
-    versionString += QStringLiteral( "Compiled against Qt %1\n" ).arg( qtVersionCompiled );
-    versionString += QStringLiteral( "Running against Qt %1\n" ).arg( qtVersionRunning );
+    versionString += u"Compiled against Qt %1\n"_s.arg( qtVersionCompiled );
+    versionString += u"Running against Qt %1\n"_s.arg( qtVersionRunning );
   }
   else
   {
-    versionString += QStringLiteral( "Qt version %1\n" ).arg( qtVersionCompiled );
+    versionString += u"Qt version %1\n"_s.arg( qtVersionCompiled );
   }
 
   // Python version
-  versionString += QStringLiteral( "Python version %1\n" ).arg( PYTHON_VERSION );
+  versionString += u"Python version %1\n"_s.arg( PYTHON_VERSION );
 
   // GDAL version
   const QString gdalVersionCompiled { GDAL_RELEASE_NAME };
   const QString gdalVersionRunning { GDALVersionInfo( "RELEASE_NAME" ) };
   if ( gdalVersionCompiled != gdalVersionRunning )
   {
-    versionString += QStringLiteral( "Compiled against GDAL/OGR %1\n" ).arg( gdalVersionCompiled );
-    versionString += QStringLiteral( "Running against GDAL/OGR %1\n" ).arg( gdalVersionRunning );
+    versionString += u"Compiled against GDAL/OGR %1\n"_s.arg( gdalVersionCompiled );
+    versionString += u"Running against GDAL/OGR %1\n"_s.arg( gdalVersionRunning );
   }
   else
   {
-    versionString += QStringLiteral( "GDAL/OGR version %1\n" ).arg( gdalVersionCompiled );
+    versionString += u"GDAL/OGR version %1\n"_s.arg( gdalVersionCompiled );
   }
 
   // proj
   const PJ_INFO info = proj_info();
-  const QString projVersionCompiled { QStringLiteral( "%1.%2.%3" ).arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH ) };
+  const QString projVersionCompiled { u"%1.%2.%3"_s.arg( PROJ_VERSION_MAJOR ).arg( PROJ_VERSION_MINOR ).arg( PROJ_VERSION_PATCH ) };
   const QString projVersionRunning { info.version };
   if ( projVersionCompiled != projVersionRunning )
   {
-    versionString += QStringLiteral( "Compiled against PROJ %1\n" ).arg( projVersionCompiled );
-    versionString += QStringLiteral( "Running against PROJ %2\n" ).arg( projVersionRunning );
+    versionString += u"Compiled against PROJ %1\n"_s.arg( projVersionCompiled );
+    versionString += u"Running against PROJ %2\n"_s.arg( projVersionRunning );
   }
   else
   {
-    versionString += QStringLiteral( "PROJ version %1\n" ).arg( projVersionCompiled );
+    versionString += u"PROJ version %1\n"_s.arg( projVersionCompiled );
   }
 
   // CRS database versions
-  versionString += QStringLiteral( "EPSG Registry database version %1 (%2)\n" ).arg( QgsProjUtils::epsgRegistryVersion(), QgsProjUtils::epsgRegistryDate().toString( Qt::ISODate ) );
+  versionString += u"EPSG Registry database version %1 (%2)\n"_s.arg( QgsProjUtils::epsgRegistryVersion(), QgsProjUtils::epsgRegistryDate().toString( Qt::ISODate ) );
 
   // GEOS version
   const QString geosVersionCompiled { GEOS_CAPI_VERSION };
   const QString geosVersionRunning { GEOSversion() };
   if ( geosVersionCompiled != geosVersionRunning )
   {
-    versionString += QStringLiteral( "Compiled against GEOS %1\n" ).arg( geosVersionCompiled );
-    versionString += QStringLiteral( "Running against GEOS %1\n" ).arg( geosVersionRunning );
+    versionString += u"Compiled against GEOS %1\n"_s.arg( geosVersionCompiled );
+    versionString += u"Running against GEOS %1\n"_s.arg( geosVersionRunning );
   }
   else
   {
-    versionString += QStringLiteral( "GEOS version %1\n" ).arg( geosVersionCompiled );
+    versionString += u"GEOS version %1\n"_s.arg( geosVersionCompiled );
   }
 
   // SFCGAL version
@@ -127,23 +127,23 @@ QString QgsCommandLineUtils::allVersions( )
   const QString sfcgalVersionRunning { sfcgal_version() };
   if ( sfcgalVersionCompiled != sfcgalVersionRunning )
   {
-    versionString += QStringLiteral( "Compiled against SFCGAL %1\n" ).arg( sfcgalVersionCompiled );
-    versionString += QStringLiteral( "Running against SFCGAL %1\n" ).arg( sfcgalVersionRunning );
+    versionString += u"Compiled against SFCGAL %1\n"_s.arg( sfcgalVersionCompiled );
+    versionString += u"Running against SFCGAL %1\n"_s.arg( sfcgalVersionRunning );
   }
   else
   {
-    versionString += QStringLiteral( "SFCGAL version %1\n" ).arg( sfcgalVersionCompiled );
+    versionString += u"SFCGAL version %1\n"_s.arg( sfcgalVersionCompiled );
   }
 #else
-  versionString += QLatin1String( "No support for SFCGAL\n" );
+  versionString += "No support for SFCGAL\n"_L1;
 #endif
 
   // GeographicLib version
 #ifdef WITH_GEOGRAPHICLIB
-  const QString geographicLibVersionRunning = QStringLiteral( "%1.%2.%3" ).arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
-  versionString += QStringLiteral( "GeographicLib version %1\n" ).arg( geographicLibVersionRunning );
+  const QString geographicLibVersionRunning = u"%1.%2.%3"_s.arg( GEOGRAPHICLIB_VERSION_MAJOR ).arg( GEOGRAPHICLIB_VERSION_MINOR ).arg( GEOGRAPHICLIB_VERSION_PATCH );
+  versionString += u"GeographicLib version %1\n"_s.arg( geographicLibVersionRunning );
 #else
-  versionString += QLatin1String( "No support for GeographicLib\n" );
+  versionString += "No support for GeographicLib\n"_L1;
 #endif
 
   // SQLite version
@@ -151,19 +151,19 @@ QString QgsCommandLineUtils::allVersions( )
   const QString sqliteVersionRunning { sqlite3_libversion() };
   if ( sqliteVersionCompiled != sqliteVersionRunning )
   {
-    versionString += QStringLiteral( "Compiled against SQLite %1\n" ).arg( sqliteVersionCompiled );
-    versionString += QStringLiteral( "Running against SQLite %1\n" ).arg( sqliteVersionRunning );
+    versionString += u"Compiled against SQLite %1\n"_s.arg( sqliteVersionCompiled );
+    versionString += u"Running against SQLite %1\n"_s.arg( sqliteVersionRunning );
   }
   else
   {
-    versionString += QStringLiteral( "SQLite version %1\n" ).arg( sqliteVersionCompiled );
+    versionString += u"SQLite version %1\n"_s.arg( sqliteVersionCompiled );
   }
 
   // Operating system
-  versionString += QStringLiteral( "OS %1\n" ).arg( QSysInfo::prettyProductName() );
+  versionString += u"OS %1\n"_s.arg( QSysInfo::prettyProductName() );
 
 #ifdef QGISDEBUG
-  versionString += QLatin1String( "This copy of QGIS writes debugging output.\n" );
+  versionString += "This copy of QGIS writes debugging output.\n"_L1;
 #endif
 
   return versionString;

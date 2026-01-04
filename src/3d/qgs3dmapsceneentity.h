@@ -54,7 +54,7 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
       , mMapSettings( mapSettings )
     {
       const QgsSettings settings;
-      mGpuMemoryLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
+      mGpuMemoryLimit = settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble();
     }
 
     //! Records some bits about the scene (context for handleSceneUpdate() method)

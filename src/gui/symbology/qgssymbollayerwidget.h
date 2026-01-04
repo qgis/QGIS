@@ -21,6 +21,7 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgssymbollayer.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qobjectuniqueptr.h"
 
 #include <QStandardItemModel>
 #include <QWidget>
@@ -28,6 +29,9 @@
 class QgsVectorLayer;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
+
+template<class T>
+class GUI_EXPORT QgsMapToolEditBlankSegments;
 
 /**
  * \ingroup gui
@@ -68,7 +72,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     /**
      * Returns the vector layer associated with the widget.
      */
-    const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
   protected:
     /**
@@ -450,6 +454,7 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 #include "ui_widget_templatedline.h"
 
 class QgsTemplatedLineSymbolLayerBase;
+class QgsMapToolEditBlankSegmentsBase;
 
 /**
  * \ingroup gui
@@ -510,11 +515,19 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void mOffsetAlongLineUnitWidget_changed();
     void hashLengthUnitWidgetChanged();
     void averageAngleUnitChanged();
+    void blankSegmentsUnitChanged();
     void setAverageAngle( double val );
+    void toggleMapToolEditBlankSegments( bool toggled );
+
+    void updateBlankSegmentsWidget();
 
   private:
+    // Returns blank segments field index, -1 if no dd property field has been set
+    int blankSegmentsFieldIndex() const;
+
     QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
     TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
+    QObjectUniquePtr<QgsMapToolEditBlankSegmentsBase> mMapToolEditBlankSegments;
 };
 
 /**
@@ -610,7 +623,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 
   protected:
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
 
     /**
      * This method does nothing anymore, the loading is automatic

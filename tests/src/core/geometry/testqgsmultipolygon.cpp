@@ -595,17 +595,17 @@ void TestQgsMultiPolygon::cast()
 
   mp.clear();
 
-  mp.fromWkt( QStringLiteral( "MultiPolygonZ()" ) );
+  mp.fromWkt( u"MultiPolygonZ()"_s );
   QVERIFY( QgsMultiPolygon::cast( &mp ) );
   QVERIFY( QgsMultiSurface::cast( &mp ) );
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
-  mp.fromWkt( QStringLiteral( "MultiPolygonM()" ) );
+  mp.fromWkt( u"MultiPolygonM()"_s );
   QVERIFY( QgsMultiPolygon::cast( &mp ) );
   QVERIFY( QgsMultiSurface::cast( &mp ) );
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
 
-  mp.fromWkt( QStringLiteral( "MultiPolygonZM()" ) );
+  mp.fromWkt( u"MultiPolygonZM()"_s );
   QVERIFY( QgsMultiPolygon::cast( &mp ) );
   QVERIFY( QgsMultiSurface::cast( &mp ) );
   QVERIFY( QgsGeometryCollection::cast( &mp ) );
@@ -709,20 +709,20 @@ void TestQgsMultiPolygon::centroid()
 {
   // test centroid of empty multipolygon
   QgsMultiPolygon mp;
-  QCOMPARE( mp.centroid().asWkt(), QStringLiteral( "Point EMPTY" ) );
+  QCOMPARE( mp.centroid().asWkt(), u"Point EMPTY"_s );
 }
 
 void TestQgsMultiPolygon::removeDuplicateNodes()
 {
   QgsMultiPolygon mp;
 
-  QVERIFY( mp.fromWkt( QStringLiteral( "MultiPolygon Z (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) ) );
+  QVERIFY( mp.fromWkt( u"MultiPolygon Z (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 13 6 0, 8 -3 0, 7 -1 0)))"_s ) );
   QCOMPARE( mp.numGeometries(), 2 );
 
   // First call should remove all duplicate nodes (one per part)
   QVERIFY( mp.removeDuplicateNodes( 0.001, false ) );
   QVERIFY( !mp.removeDuplicateNodes( 0.001, false ) );
-  QCOMPARE( mp.asWkt(), QStringLiteral( "MultiPolygon Z (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
+  QCOMPARE( mp.asWkt(), u"MultiPolygon Z (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))"_s );
 }
 
 void TestQgsMultiPolygon::vertexIterator()
@@ -1040,19 +1040,19 @@ void TestQgsMultiPolygon::exportImport()
   QDomDocument doc( "gml" );
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13 7,21 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43 41,39 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
+  QString expectedSimpleGML2( u"<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13 7,21 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43 41,39 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>"_s );
   QString res = elemToString( mp.asGml2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
 
-  QString expectedGML2empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<MultiPolygon xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsMultiPolygon().asGml2( doc ) ), expectedGML2empty );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 21 7 17</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 41 39 27 37</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>" ) );
+  QString expectedSimpleGML3( u"<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 21 7 17</posList></LinearRing></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 41 39 27 37</posList></LinearRing></exterior></Polygon></surfaceMember></MultiSurface>"_s );
   res = elemToString( mp.asGml3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
 
-  QString expectedGML3empty( QStringLiteral( "<MultiSurface xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<MultiSurface xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsMultiPolygon().asGml3( doc ) ), expectedGML3empty );
 
   // as JSON

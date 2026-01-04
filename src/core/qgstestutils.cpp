@@ -160,7 +160,7 @@ QString QgsTestUtils::sanitizeFakeHttpEndpoint( const QString &urlString )
   // For REST API using URL subpaths, normalize the subpaths
   const int afterEndpointStartPos = static_cast<int>( modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" ) );
   QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
-  afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
+  afterEndpointStart.replace( "/"_L1, "_"_L1 );
   modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
 
   const qsizetype posQuotationMark = modifiedUrlString.indexOf( '?' );

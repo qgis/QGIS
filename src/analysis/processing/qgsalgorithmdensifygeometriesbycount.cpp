@@ -22,7 +22,7 @@
 
 QString QgsDensifyGeometriesByCountAlgorithm::name() const
 {
-  return QStringLiteral( "densifygeometries" );
+  return u"densifygeometries"_s;
 }
 
 QString QgsDensifyGeometriesByCountAlgorithm::displayName() const
@@ -42,7 +42,7 @@ QString QgsDensifyGeometriesByCountAlgorithm::group() const
 
 QString QgsDensifyGeometriesByCountAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsDensifyGeometriesByCountAlgorithm::shortHelpString() const
@@ -75,10 +75,10 @@ QList<int> QgsDensifyGeometriesByCountAlgorithm::inputLayerTypes() const
 void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  auto verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ), QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
+  auto verticesCnt = std::make_unique<QgsProcessingParameterNumber>( u"VERTICES"_s, QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
   verticesCnt->setIsDynamic( true );
-  verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
-  verticesCnt->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( u"VerticesCount"_s, QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
+  verticesCnt->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( verticesCnt.release() );
 }
 
@@ -90,11 +90,11 @@ QString QgsDensifyGeometriesByCountAlgorithm::outputName() const
 bool QgsDensifyGeometriesByCountAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
-  mVerticesCnt = parameterAsInt( parameters, QStringLiteral( "VERTICES" ), context );
+  mVerticesCnt = parameterAsInt( parameters, u"VERTICES"_s, context );
 
-  mDynamicVerticesCnt = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "VERTICES" ) );
+  mDynamicVerticesCnt = QgsProcessingParameters::isDynamic( parameters, u"VERTICES"_s );
   if ( mDynamicVerticesCnt )
-    mVerticesCntProperty = parameters.value( QStringLiteral( "VERTICES" ) ).value<QgsProperty>();
+    mVerticesCntProperty = parameters.value( u"VERTICES"_s ).value<QgsProperty>();
 
   return true;
 }
