@@ -11513,7 +11513,7 @@ void TestProcessingGui::testModelGraphicsView()
   context2.setProject( &p );
   QgsProcessingFeedback feedback;
   QVariantMap params;
-  params.insert( QStringLiteral( "LAYER" ), layer->id() );
+  params.insert( u"LAYER"_s, layer->id() );
 
   // start with no initial state
   bool ok = false;

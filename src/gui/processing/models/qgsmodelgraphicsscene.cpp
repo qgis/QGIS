@@ -586,7 +586,7 @@ void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arro
     return;
   }
 
-  QString numberFeatureText = QStringLiteral( "[%1]" ).arg( mLastResultCount.value( layerId ) );
+  QString numberFeatureText = u"[%1]"_s.arg( mLastResultCount.value( layerId ) );
   QgsModelDesignerFeatureCountGraphicItem *featureCount = new QgsModelDesignerFeatureCountGraphicItem( arrow, numberFeatureText );
   addItem( featureCount );
 }

@@ -317,7 +317,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mActionShowComments->setChecked( settings.value( u"/Processing/Modeler/ShowComments"_s, true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
 
-  mActionShowFeatureCount->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowFeatureCount" ), true ).toBool() );
+  mActionShowFeatureCount->setChecked( settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool() );
   connect( mActionShowFeatureCount, &QAction::toggled, this, &QgsModelDesignerDialog::toggleFeatureCount );
 
   mPanTool = new QgsModelViewToolPan( mView );
@@ -496,7 +496,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene->setMessageBar( mMessageBar );
 
   QgsSettings settings;
-  const bool showFeatureCount = settings.value( QStringLiteral( "/Processing/Modeler/ShowFeatureCount" ), true ).toBool();
+  const bool showFeatureCount = settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool();
   if ( !showFeatureCount )
     mScene->setFlag( QgsModelGraphicsScene::FlagHideFeatureCount );
 
@@ -805,7 +805,7 @@ void QgsModelDesignerDialog::toggleComments( bool show )
 
 void QgsModelDesignerDialog::toggleFeatureCount( bool show )
 {
-  QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/ShowFeatureCount" ), show );
+  QgsSettings().setValue( u"/Processing/Modeler/ShowFeatureCount"_s, show );
 
   repaintModel( true );
 }
