@@ -523,6 +523,23 @@ Item {
           Qt.openUrlExternally("https://www.qgis.org/")
         }
       }
+      
+      RoundButton {
+        anchors{
+          top: parent.top
+          right: parent.right
+          margins: 5
+        }
+      
+        flat: true
+        icon.source: "images/close.svg"
+        icon.color: "white"
+        icon.width: 20
+        icon.height: 20
+        onClicked: {
+          welcomeScreenController.hideScene();
+        }
+      }
     }
 
     UpdateNotificationBar {

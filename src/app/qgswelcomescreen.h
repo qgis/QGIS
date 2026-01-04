@@ -47,6 +47,8 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void showPluginManager();
 
+    Q_INVOKABLE void hideScene();
+
   signals:
     void newVersionAvailable( const QString &versionString );
     void pluginUpdatesAvailable( const QStringList &plugins );

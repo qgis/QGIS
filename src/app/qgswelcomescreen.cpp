@@ -69,6 +69,14 @@ void QgsWelcomeScreenController::showPluginManager()
   QgisApp::instance()->showPluginManager( 3 ); // 3 == PLUGMAN_TAB_UPGRADEABLE
 }
 
+void QgsWelcomeScreenController::hideScene()
+{
+  if ( mWelcomeScreen )
+  {
+    mWelcomeScreen->hideScene();
+  }
+}
+
 
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
