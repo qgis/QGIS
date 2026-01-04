@@ -36,7 +36,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   setAttribute( Qt::WA_TransparentForMouseEvents );
   adjustSize();
 
-  setActive( QgsSettings().value( QStringLiteral( "/Cad/Floater" ), false ).toBool() );
+  setActive( QgsSettings().value( u"/Cad/Floater"_s, false ).toBool() );
 
   hideIfDisabled();
 
@@ -189,7 +189,7 @@ bool QgsAdvancedDigitizingFloater::itemVisibility( const FloaterItem &item ) con
 
 void QgsAdvancedDigitizingFloater::setActive( bool active )
 {
-  QgsSettings().setValue( QStringLiteral( "/Cad/Floater" ), active );
+  QgsSettings().setValue( u"/Cad/Floater"_s, active );
 
   mActive = active;
 
@@ -199,7 +199,7 @@ void QgsAdvancedDigitizingFloater::setActive( bool active )
 void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible )
 {
   const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
-  QgsSettings().setValue( QStringLiteral( "/Cad/%1ShowInFloater" ).arg( enumData.valueToKey( static_cast<int>( item ) ) ), visible );
+  QgsSettings().setValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), visible );
   mItemsVisibility.setFlag( item, visible );
   switch ( item )
   {
@@ -293,8 +293,8 @@ void QgsAdvancedDigitizingFloater::changeLockX( bool locked )
   }
   else
   {
-    mXLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mXLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mXLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mXLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -307,8 +307,8 @@ void QgsAdvancedDigitizingFloater::changeLockY( bool locked )
   }
   else
   {
-    mYLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mYLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mYLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mYLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -321,8 +321,8 @@ void QgsAdvancedDigitizingFloater::changeLockZ( bool locked )
   }
   else
   {
-    mZLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mZLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mZLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mZLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -335,8 +335,8 @@ void QgsAdvancedDigitizingFloater::changeLockM( bool locked )
   }
   else
   {
-    mMLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mMLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mMLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mMLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -349,8 +349,8 @@ void QgsAdvancedDigitizingFloater::changeLockDistance( bool locked )
   }
   else
   {
-    mDistanceLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mDistanceLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mDistanceLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mDistanceLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -363,8 +363,8 @@ void QgsAdvancedDigitizingFloater::changeLockAngle( bool locked )
   }
   else
   {
-    mAngleLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mAngleLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mAngleLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mAngleLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 

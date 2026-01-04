@@ -96,7 +96,7 @@ int QgsLayoutItemHtml::type() const
 
 QIcon QgsLayoutItemHtml::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemHtml.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemHtml.svg"_s );
 }
 
 QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
@@ -183,7 +183,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
       if ( ok )
       {
         currentUrl = currentUrl.trimmed();
-        QgsDebugMsgLevel( QStringLiteral( "exprVal Source Url:%1" ).arg( currentUrl ), 2 );
+        QgsDebugMsgLevel( u"exprVal Source Url:%1"_s.arg( currentUrl ), 2 );
       }
       if ( currentUrl.isEmpty() )
       {
@@ -350,7 +350,7 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( painterRect.width() );
-      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg(
+      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s.arg(
                     tr( "WebKit not available!" ),
                     tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
       painter->setClipRect( painterRect );
@@ -503,34 +503,34 @@ QString QgsLayoutItemHtml::displayName() const
 
 bool QgsLayoutItemHtml::writePropertiesToElement( QDomElement &htmlElem, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  htmlElem.setAttribute( QStringLiteral( "contentMode" ), QString::number( static_cast< int >( mContentMode ) ) );
-  htmlElem.setAttribute( QStringLiteral( "url" ), mUrl.toString() );
-  htmlElem.setAttribute( QStringLiteral( "html" ), mHtml );
-  htmlElem.setAttribute( QStringLiteral( "evaluateExpressions" ), mEvaluateExpressions ? "true" : "false" );
-  htmlElem.setAttribute( QStringLiteral( "useSmartBreaks" ), mUseSmartBreaks ? "true" : "false" );
-  htmlElem.setAttribute( QStringLiteral( "maxBreakDistance" ), QString::number( mMaxBreakDistance ) );
-  htmlElem.setAttribute( QStringLiteral( "stylesheet" ), mUserStylesheet );
-  htmlElem.setAttribute( QStringLiteral( "stylesheetEnabled" ), mEnableUserStylesheet ? "true" : "false" );
+  htmlElem.setAttribute( u"contentMode"_s, QString::number( static_cast< int >( mContentMode ) ) );
+  htmlElem.setAttribute( u"url"_s, mUrl.toString() );
+  htmlElem.setAttribute( u"html"_s, mHtml );
+  htmlElem.setAttribute( u"evaluateExpressions"_s, mEvaluateExpressions ? "true" : "false" );
+  htmlElem.setAttribute( u"useSmartBreaks"_s, mUseSmartBreaks ? "true" : "false" );
+  htmlElem.setAttribute( u"maxBreakDistance"_s, QString::number( mMaxBreakDistance ) );
+  htmlElem.setAttribute( u"stylesheet"_s, mUserStylesheet );
+  htmlElem.setAttribute( u"stylesheetEnabled"_s, mEnableUserStylesheet ? "true" : "false" );
   return true;
 }
 
 bool QgsLayoutItemHtml::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
 {
   bool contentModeOK;
-  mContentMode = static_cast< QgsLayoutItemHtml::ContentMode >( itemElem.attribute( QStringLiteral( "contentMode" ) ).toInt( &contentModeOK ) );
+  mContentMode = static_cast< QgsLayoutItemHtml::ContentMode >( itemElem.attribute( u"contentMode"_s ).toInt( &contentModeOK ) );
   if ( !contentModeOK )
   {
     mContentMode = QgsLayoutItemHtml::Url;
   }
-  mEvaluateExpressions = itemElem.attribute( QStringLiteral( "evaluateExpressions" ), QStringLiteral( "true" ) ) == QLatin1String( "true" );
-  mUseSmartBreaks = itemElem.attribute( QStringLiteral( "useSmartBreaks" ), QStringLiteral( "true" ) ) == QLatin1String( "true" );
-  mMaxBreakDistance = itemElem.attribute( QStringLiteral( "maxBreakDistance" ), QStringLiteral( "10" ) ).toDouble();
-  mHtml = itemElem.attribute( QStringLiteral( "html" ) );
-  mUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheet" ) );
-  mEnableUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheetEnabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
+  mEvaluateExpressions = itemElem.attribute( u"evaluateExpressions"_s, u"true"_s ) == "true"_L1;
+  mUseSmartBreaks = itemElem.attribute( u"useSmartBreaks"_s, u"true"_s ) == "true"_L1;
+  mMaxBreakDistance = itemElem.attribute( u"maxBreakDistance"_s, u"10"_s ).toDouble();
+  mHtml = itemElem.attribute( u"html"_s );
+  mUserStylesheet = itemElem.attribute( u"stylesheet"_s );
+  mEnableUserStylesheet = itemElem.attribute( u"stylesheetEnabled"_s, u"false"_s ) == "true"_L1;
 
   //finally load the set url
-  const QString urlString = itemElem.attribute( QStringLiteral( "url" ) );
+  const QString urlString = itemElem.attribute( u"url"_s );
   if ( !urlString.isEmpty() )
   {
     mUrl = urlString;

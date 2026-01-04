@@ -33,13 +33,13 @@ bool QgsPostgresTransaction::beginTransaction( QString &error, int statementTime
 {
   mConn = QgsPostgresConn::connectDb( mConnString, false /*readonly*/, false /*shared*/, true /*transaction*/ );
 
-  return executeSql( QStringLiteral( "SET statement_timeout = %1" ).arg( statementTimeout * 1000 ), error )
-         && executeSql( QStringLiteral( "BEGIN TRANSACTION" ), error );
+  return executeSql( u"SET statement_timeout = %1"_s.arg( statementTimeout * 1000 ), error )
+         && executeSql( u"BEGIN TRANSACTION"_s, error );
 }
 
 bool QgsPostgresTransaction::commitTransaction( QString &error )
 {
-  if ( executeSql( QStringLiteral( "COMMIT TRANSACTION" ), error ) )
+  if ( executeSql( u"COMMIT TRANSACTION"_s, error ) )
   {
     mConn->unref();
     mConn = nullptr;
@@ -50,7 +50,7 @@ bool QgsPostgresTransaction::commitTransaction( QString &error )
 
 bool QgsPostgresTransaction::rollbackTransaction( QString &error )
 {
-  if ( executeSql( QStringLiteral( "ROLLBACK TRANSACTION" ), error ) )
+  if ( executeSql( u"ROLLBACK TRANSACTION"_s, error ) )
   {
     mConn->unref();
     mConn = nullptr;
@@ -73,11 +73,11 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
     createSavepoint( err );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Transaction sql: %1" ).arg( sql ), 2 );
+  QgsDebugMsgLevel( u"Transaction sql: %1"_s.arg( sql ), 2 );
   QgsPostgresResult r( mConn->LoggedPQexec( "QgsPostgresTransaction", sql ) );
   if ( r.PQresultStatus() == PGRES_BAD_RESPONSE || r.PQresultStatus() == PGRES_FATAL_ERROR )
   {
-    errorMsg = QStringLiteral( "Status %1 (%2)" ).arg( r.PQresultStatus() ).arg( r.PQresultErrorMessage() );
+    errorMsg = u"Status %1 (%2)"_s.arg( r.PQresultStatus() ).arg( r.PQresultErrorMessage() );
     QgsDebugError( errorMsg );
 
     if ( isDirty )
@@ -94,6 +94,6 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
     emit dirtied( sql, name );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Status %1 (OK)" ).arg( r.PQresultStatus() ), 2 );
+  QgsDebugMsgLevel( u"Status %1 (OK)"_s.arg( r.PQresultStatus() ), 2 );
   return true;
 }

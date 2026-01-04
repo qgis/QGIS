@@ -21,8 +21,8 @@
 
 #include "moc_qgsvirtualrasterprovider.cpp"
 
-#define PROVIDER_KEY QStringLiteral( "virtualraster" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
+#define PROVIDER_KEY u"virtualraster"_s
+#define PROVIDER_DESCRIPTION u"Virtual Raster data provider"_s
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
   : QgsRasterDataProvider( uri, providerOptions )
@@ -96,7 +96,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
     for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
     {
-      if ( !rasterRefs.contains( rProvidedLayer->name() + QStringLiteral( "@" ) + QString::number( j + 1 ) ) )
+      if ( !rasterRefs.contains( rProvidedLayer->name() + u"@"_s + QString::number( j + 1 ) ) )
       {
         continue;
       }
@@ -104,7 +104,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       QgsRasterCalculatorEntry entry;
       entry.raster = rProvidedLayer;
       entry.bandNumber = j + 1;
-      entry.ref = rProvidedLayer->name() + QStringLiteral( "@" ) + QString::number( j + 1 );
+      entry.ref = rProvidedLayer->name() + u"@"_s + QString::number( j + 1 );
       mRasterEntries.push_back( entry );
     }
   }
@@ -133,7 +133,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
       QgsRasterCalculatorEntry entry;
       entry.raster = rcProvidedLayer;
       entry.bandNumber = j + 1;
-      entry.ref = rcProvidedLayer->name() % QStringLiteral( "@" ) + QString::number( j + 1 );
+      entry.ref = rcProvidedLayer->name() % u"@"_s + QString::number( j + 1 );
       mRasterEntries.push_back( entry );
     }
   }
@@ -270,7 +270,7 @@ QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
 
 QIcon QgsVirtualRasterProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconRaster.svg"_s );
 }
 
 QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -335,12 +335,12 @@ bool QgsVirtualRasterProvider::isValid() const
 
 QString QgsVirtualRasterProvider::lastErrorTitle()
 {
-  return QStringLiteral( "Not implemented" );
+  return u"Not implemented"_s;
 }
 
 QString QgsVirtualRasterProvider::lastError()
 {
-  return QStringLiteral( "Not implemented" );
+  return u"Not implemented"_s;
 }
 
 QString QgsVirtualRasterProvider::htmlMetadata() const

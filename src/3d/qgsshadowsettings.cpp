@@ -45,19 +45,19 @@ QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
 void QgsShadowSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
-  mRenderShadows = element.attribute( QStringLiteral( "shadow-rendering-enabled" ), QStringLiteral( "0" ) ).toInt();
-  mSelectedDirectionalLight = element.attribute( QStringLiteral( "selected-directional-light" ), QStringLiteral( "-1" ) ).toInt();
-  mMaximumShadowRenderingDistance = element.attribute( QStringLiteral( "max-shadow-rendering-distance" ), QStringLiteral( "1500" ) ).toInt();
-  mShadowBias = element.attribute( QStringLiteral( "shadow-bias" ), QStringLiteral( "0.00001" ) ).toFloat();
-  mShadowMapResolution = element.attribute( QStringLiteral( "shadow-map-resolution" ), QStringLiteral( "2048" ) ).toInt();
+  mRenderShadows = element.attribute( u"shadow-rendering-enabled"_s, u"0"_s ).toInt();
+  mSelectedDirectionalLight = element.attribute( u"selected-directional-light"_s, u"-1"_s ).toInt();
+  mMaximumShadowRenderingDistance = element.attribute( u"max-shadow-rendering-distance"_s, u"1500"_s ).toInt();
+  mShadowBias = element.attribute( u"shadow-bias"_s, u"0.00001"_s ).toFloat();
+  mShadowMapResolution = element.attribute( u"shadow-map-resolution"_s, u"2048"_s ).toInt();
 }
 
 void QgsShadowSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context );
-  element.setAttribute( QStringLiteral( "shadow-rendering-enabled" ), mRenderShadows );
-  element.setAttribute( QStringLiteral( "selected-directional-light" ), mSelectedDirectionalLight );
-  element.setAttribute( QStringLiteral( "max-shadow-rendering-distance" ), mMaximumShadowRenderingDistance );
-  element.setAttribute( QStringLiteral( "shadow-bias" ), mShadowBias );
-  element.setAttribute( QStringLiteral( "shadow-map-resolution" ), mShadowMapResolution );
+  element.setAttribute( u"shadow-rendering-enabled"_s, mRenderShadows );
+  element.setAttribute( u"selected-directional-light"_s, mSelectedDirectionalLight );
+  element.setAttribute( u"max-shadow-rendering-distance"_s, mMaximumShadowRenderingDistance );
+  element.setAttribute( u"shadow-bias"_s, mShadowBias );
+  element.setAttribute( u"shadow-map-resolution"_s, mShadowMapResolution );
 }

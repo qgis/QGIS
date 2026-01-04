@@ -88,11 +88,11 @@ void QgsGeorefConfigDialog::buttonBox_rejected()
 void QgsGeorefConfigDialog::readSettings()
 {
   const QgsSettings s;
-  mShowIDsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() );
-  mShowCoordsCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool() );
-  mShowDockedCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ) ).toBool() );
+  mShowIDsCheckBox->setChecked( s.value( u"/Plugin-GeoReferencer/Config/ShowId"_s ).toBool() );
+  mShowCoordsCheckBox->setChecked( s.value( u"/Plugin-GeoReferencer/Config/ShowCoords"_s ).toBool() );
+  mShowDockedCheckBox->setChecked( s.value( u"/Plugin-GeoReferencer/Config/ShowDocked"_s ).toBool() );
 
-  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ).toString() == QLatin1String( "mapUnits" ) )
+  if ( s.value( u"/Plugin-GeoReferencer/Config/ResidualUnits"_s ).toString() == "mapUnits"_L1 )
   {
     mMapUnitsButton->setChecked( true );
   }
@@ -101,11 +101,11 @@ void QgsGeorefConfigDialog::readSettings()
     mPixelsButton->setChecked( true );
   }
 
-  mLeftMarginSpinBox->setValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/LeftMarginPDF" ), "2.0" ).toDouble() );
-  mRightMarginSpinBox->setValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/RightMarginPDF" ), "2.0" ).toDouble() );
+  mLeftMarginSpinBox->setValue( s.value( u"/Plugin-GeoReferencer/Config/LeftMarginPDF"_s, "2.0" ).toDouble() );
+  mRightMarginSpinBox->setValue( s.value( u"/Plugin-GeoReferencer/Config/RightMarginPDF"_s, "2.0" ).toDouble() );
 
-  const double currentWidth = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), "297" ).toDouble();
-  const double currentHeight = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), "420" ).toDouble();
+  const double currentWidth = s.value( u"/Plugin-GeoReferencer/Config/WidthPDFMap"_s, "297" ).toDouble();
+  const double currentHeight = s.value( u"/Plugin-GeoReferencer/Config/HeightPDFMap"_s, "420" ).toDouble();
 
   int paperIndex = 2; //default to A3
   for ( int i = 0; i < mPaperSizeComboBox->count(); ++i )
@@ -124,20 +124,20 @@ void QgsGeorefConfigDialog::readSettings()
 void QgsGeorefConfigDialog::writeSettings()
 {
   QgsSettings s;
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ), mShowIDsCheckBox->isChecked() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ), mShowCoordsCheckBox->isChecked() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ), mShowDockedCheckBox->isChecked() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/ShowId"_s, mShowIDsCheckBox->isChecked() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/ShowCoords"_s, mShowCoordsCheckBox->isChecked() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/ShowDocked"_s, mShowDockedCheckBox->isChecked() );
   if ( mPixelsButton->isChecked() )
   {
-    s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ), "pixels" );
+    s.setValue( u"/Plugin-GeoReferencer/Config/ResidualUnits"_s, "pixels" );
   }
   else
   {
-    s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ), "mapUnits" );
+    s.setValue( u"/Plugin-GeoReferencer/Config/ResidualUnits"_s, "mapUnits" );
   }
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/LeftMarginPDF" ), mLeftMarginSpinBox->value() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/RightMarginPDF" ), mRightMarginSpinBox->value() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/LeftMarginPDF"_s, mLeftMarginSpinBox->value() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/RightMarginPDF"_s, mRightMarginSpinBox->value() );
 
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), mPaperSizeComboBox->currentData().toSizeF().width() );
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), mPaperSizeComboBox->currentData().toSizeF().height() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/WidthPDFMap"_s, mPaperSizeComboBox->currentData().toSizeF().width() );
+  s.setValue( u"/Plugin-GeoReferencer/Config/HeightPDFMap"_s, mPaperSizeComboBox->currentData().toSizeF().height() );
 }

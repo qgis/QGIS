@@ -26,13 +26,13 @@
 
 ///@cond NOT_STABLE
 
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_DESCRIPTION = QStringLiteral( "ALG_DESC" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_CREATOR = QStringLiteral( "ALG_CREATOR" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_CREATOR = QStringLiteral( "ALG_HELP_CREATOR" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_VERSION = QStringLiteral( "ALG_VERSION" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_SHORT_DESCRIPTION = QStringLiteral( "SHORT_DESCRIPTION" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_URL = QStringLiteral( "HELP_URL" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_EXAMPLES = QStringLiteral( "EXAMPLES" );
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_DESCRIPTION = u"ALG_DESC"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_CREATOR = u"ALG_CREATOR"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_CREATOR = u"ALG_HELP_CREATOR"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_VERSION = u"ALG_VERSION"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_SHORT_DESCRIPTION = u"SHORT_DESCRIPTION"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_URL = u"HELP_URL"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_EXAMPLES = u"EXAMPLES"_s;
 
 
 class QgsProcessingHelpEditorTreeItem : public QTreeWidgetItem
@@ -213,7 +213,7 @@ void QgsProcessingHelpEditorWidget::storeCurrentValue()
 QgsProcessingHelpEditorDialog::QgsProcessingHelpEditorDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsProcessingHelpEditorDialog" ) );
+  setObjectName( u"QgsProcessingHelpEditorDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsProcessingHelpEditorWidget();

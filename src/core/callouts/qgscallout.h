@@ -317,7 +317,7 @@ class CORE_EXPORT QgsCallout
     void render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 
     /**
-     * Returns TRUE if the the callout is enabled.
+     * Returns TRUE if the callout is enabled.
      * \see setEnabled()
      */
     bool enabled() const { return mEnabled; }

@@ -85,15 +85,15 @@ void QgsContributorsMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( featureCount == 1 )
     {
-      QString details = QStringLiteral( "**%1**" ).arg( f.attribute( QStringLiteral( "Name" ) ).toString() );
-      QString gitNickname = f.attribute( QStringLiteral( "GIT Nickname" ) ).toString();
+      QString details = u"**%1**"_s.arg( f.attribute( u"Name"_s ).toString() );
+      QString gitNickname = f.attribute( u"GIT Nickname"_s ).toString();
       if ( !gitNickname.isEmpty() )
       {
-        details += QStringLiteral( " / [@%1](https://github.com/%1/)" ).arg( gitNickname );
+        details += u" / [@%1](https://github.com/%1/)"_s.arg( gitNickname );
       }
-      if ( f.attribute( QStringLiteral( "Committer" ) ).toBool() )
+      if ( f.attribute( u"Committer"_s ).toBool() )
       {
-        details += QStringLiteral( "\n\n%1" ).arg( tr( "Committer" ) );
+        details += u"\n\n%1"_s.arg( tr( "Committer" ) );
       }
 
       mContributorsMapFloatingPanel->setText( details );
@@ -151,10 +151,10 @@ void QgsContributorsMapFloatingPanel::setText( const QString &text )
 QgsContributorsMapCanvas::QgsContributorsMapCanvas( QWidget *parent )
   : QgsMapCanvas( parent )
 {
-  mContributorsMapBaseLayer = std::make_unique<QgsRasterLayer>( QStringLiteral( "type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857" ), QStringLiteral( "OpenStreetMap" ), QLatin1String( "wms" ) );
-  mContributorsMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" ), tr( "Contributors" ), QLatin1String( "ogr" ) );
+  mContributorsMapBaseLayer = std::make_unique<QgsRasterLayer>( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
+  mContributorsMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + u"/resources/data/contributors.json"_s, tr( "Contributors" ), "ogr"_L1 );
   bool ok = false;
-  mContributorsMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ), ok );
+  mContributorsMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + u"/resources/data/contributors_map.qml"_s, ok );
 
   QgsCoordinateTransform transform( mContributorsMapLayer->crs(), mContributorsMapBaseLayer->crs(), QgsProject::instance()->transformContext() );
   QgsRectangle extent = mContributorsMapLayer->extent();

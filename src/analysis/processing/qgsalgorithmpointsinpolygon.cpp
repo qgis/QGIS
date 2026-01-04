@@ -26,24 +26,24 @@
 
 void QgsPointsInPolygonAlgorithm::initParameters( const QVariantMap &configuration )
 {
-  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+  mIsInPlace = configuration.value( u"IN_PLACE"_s ).toBool();
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "POINTS" ), QObject::tr( "Points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "CLASSFIELD" ), QObject::tr( "Class field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"POINTS"_s, QObject::tr( "Points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterField( u"WEIGHT"_s, QObject::tr( "Weight field" ), QVariant(), u"POINTS"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterField( u"CLASSFIELD"_s, QObject::tr( "Class field" ), QVariant(), u"POINTS"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   if ( mIsInPlace )
   {
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Count field" ), QStringLiteral( "NUMPOINTS" ), inputParameterName() ) );
+    addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Count field" ), u"NUMPOINTS"_s, inputParameterName() ) );
   }
   else
   {
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD" ), QObject::tr( "Count field name" ), QStringLiteral( "NUMPOINTS" ) ) );
+    addParameter( new QgsProcessingParameterString( u"FIELD"_s, QObject::tr( "Count field name" ), u"NUMPOINTS"_s ) );
   }
 }
 
 QString QgsPointsInPolygonAlgorithm::name() const
 {
-  return QStringLiteral( "countpointsinpolygon" );
+  return u"countpointsinpolygon"_s;
 }
 
 QString QgsPointsInPolygonAlgorithm::displayName() const
@@ -58,12 +58,12 @@ QStringList QgsPointsInPolygonAlgorithm::tags() const
 
 QString QgsPointsInPolygonAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSumPoints.svg" ) );
+  return QgsApplication::iconPath( u"/algorithms/mAlgorithmSumPoints.svg"_s );
 }
 
 QIcon QgsPointsInPolygonAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSumPoints.svg" ) );
+  return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSumPoints.svg"_s );
 }
 
 QString QgsPointsInPolygonAlgorithm::group() const
@@ -73,7 +73,7 @@ QString QgsPointsInPolygonAlgorithm::group() const
 
 QString QgsPointsInPolygonAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsPointsInPolygonAlgorithm::shortHelpString() const
@@ -120,7 +120,7 @@ QgsCoordinateReferenceSystem QgsPointsInPolygonAlgorithm::outputCrs( const QgsCo
 
 QString QgsPointsInPolygonAlgorithm::inputParameterName() const
 {
-  return QStringLiteral( "POLYGONS" );
+  return u"POLYGONS"_s;
 }
 
 QString QgsPointsInPolygonAlgorithm::inputParameterDescription() const
@@ -135,12 +135,12 @@ QString QgsPointsInPolygonAlgorithm::outputName() const
 
 bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  mWeightFieldName = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
-  mClassFieldName = parameterAsString( parameters, QStringLiteral( "CLASSFIELD" ), context );
-  mPointSource.reset( parameterAsSource( parameters, QStringLiteral( "POINTS" ), context ) );
+  mFieldName = parameterAsString( parameters, u"FIELD"_s, context );
+  mWeightFieldName = parameterAsString( parameters, u"WEIGHT"_s, context );
+  mClassFieldName = parameterAsString( parameters, u"CLASSFIELD"_s, context );
+  mPointSource.reset( parameterAsSource( parameters, u"POINTS"_s, context ) );
   if ( !mPointSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "POINTS" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"POINTS"_s ) );
 
   if ( !mWeightFieldName.isEmpty() )
   {

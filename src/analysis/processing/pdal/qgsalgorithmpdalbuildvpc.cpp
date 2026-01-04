@@ -24,7 +24,7 @@
 
 QString QgsPdalBuildVpcAlgorithm::name() const
 {
-  return QStringLiteral( "virtualpointcloud" );
+  return u"virtualpointcloud"_s;
 }
 
 QString QgsPdalBuildVpcAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalBuildVpcAlgorithm::group() const
 
 QString QgsPdalBuildVpcAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalBuildVpcAlgorithm::tags() const
@@ -64,30 +64,30 @@ QgsPdalBuildVpcAlgorithm *QgsPdalBuildVpcAlgorithm::createInstance() const
 
 void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "BOUNDARY" ), QObject::tr( "Calculate boundary polygons" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "STATISTICS" ), QObject::tr( "Calculate statistics" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERVIEW" ), QObject::tr( "Build overview point cloud" ), false ) );
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Virtual point cloud" ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterBoolean( u"BOUNDARY"_s, QObject::tr( "Calculate boundary polygons" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"STATISTICS"_s, QObject::tr( "Calculate statistics" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"OVERVIEW"_s, QObject::tr( "Build overview point cloud" ), false ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Virtual point cloud" ) ) );
 }
 
 QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFileName( outputName );
 
   QFileInfo fi( outputFileName );
-  if ( fi.suffix() != QLatin1String( "vpc" ) )
+  if ( fi.suffix() != "vpc"_L1 )
   {
-    outputFileName = fi.path() + '/' + fi.completeBaseName() + QStringLiteral( ".vpc" );
+    outputFileName = fi.path() + '/' + fi.completeBaseName() + u".vpc"_s;
     if ( context.willLoadLayerOnCompletion( outputName ) )
     {
       QMap<QString, QgsProcessingContext::LayerDetails> layersToLoad = context.layersToLoadOnCompletion();
@@ -97,32 +97,32 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
     }
   }
 
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFileName );
+  setOutputValue( u"OUTPUT"_s, outputFileName );
 
   QStringList args;
   args.reserve( layers.count() + 5 );
 
-  args << QStringLiteral( "build_vpc" )
-       << QStringLiteral( "--output=%1" ).arg( outputFileName );
+  args << u"build_vpc"_s
+       << u"--output=%1"_s.arg( outputFileName );
 
-  if ( parameterAsBool( parameters, QStringLiteral( "BOUNDARY" ), context ) )
+  if ( parameterAsBool( parameters, u"BOUNDARY"_s, context ) )
   {
     args << "--boundary";
   }
 
-  if ( parameterAsBool( parameters, QStringLiteral( "STATISTICS" ), context ) )
+  if ( parameterAsBool( parameters, u"STATISTICS"_s, context ) )
   {
     args << "--stats";
   }
 
-  if ( parameterAsBool( parameters, QStringLiteral( "OVERVIEW" ), context ) )
+  if ( parameterAsBool( parameters, u"OVERVIEW"_s, context ) )
   {
     args << "--overview";
   }
 
   applyThreadsParameter( args, context );
 
-  const QString fileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "inputFiles.txt" ), &context );
+  const QString fileName = QgsProcessingUtils::generateTempFilename( u"inputFiles.txt"_s, &context );
   QFile listFile( fileName );
   if ( !listFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
@@ -135,7 +135,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
     out << layer->source() << "\n";
   }
 
-  args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+  args << u"--input-file-list=%1"_s.arg( fileName );
 
   return args;
 }

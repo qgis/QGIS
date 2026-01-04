@@ -30,9 +30,9 @@
 // QgsAuthMethodConfig
 //////////////////////////////////////////////
 
-const QString QgsAuthMethodConfig::CONFIG_SEP = QStringLiteral( "|||" );
-const QString QgsAuthMethodConfig::CONFIG_KEY_SEP = QStringLiteral( ":::" );
-const QString QgsAuthMethodConfig::CONFIG_LIST_SEP = QStringLiteral( "```" );
+const QString QgsAuthMethodConfig::CONFIG_SEP = u"|||"_s;
+const QString QgsAuthMethodConfig::CONFIG_KEY_SEP = u":::"_s;
+const QString QgsAuthMethodConfig::CONFIG_LIST_SEP = u"```"_s;
 
 const int QgsAuthMethodConfig::CONFIG_VERSION = 1;
 
@@ -106,7 +106,7 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
 
   if ( configMap().empty() )
   {
-    setConfig( QStringLiteral( "oldconfigstyle" ), configstr );
+    setConfig( u"oldconfigstyle"_s, configstr );
   }
 }
 
@@ -148,7 +148,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
     const QUrl url( accessurl );
     if ( url.isValid() )
     {
-      res = QStringLiteral( "%1://%2:%3%4" ).arg( url.scheme(), url.host() )
+      res = u"%1://%2:%3%4"_s.arg( url.scheme(), url.host() )
             .arg( url.port() ).arg( withpath ? url.path() : QString() );
     }
   }
@@ -159,14 +159,14 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 
 bool QgsAuthMethodConfig::writeXml( QDomElement &parentElement, QDomDocument &document )
 {
-  QDomElement element = document.createElement( QStringLiteral( "AuthMethodConfig" ) );
-  element.setAttribute( QStringLiteral( "method" ), mMethod );
-  element.setAttribute( QStringLiteral( "id" ), mId );
-  element.setAttribute( QStringLiteral( "name" ), mName );
-  element.setAttribute( QStringLiteral( "version" ), QString::number( mVersion ) );
-  element.setAttribute( QStringLiteral( "uri" ), mUri );
+  QDomElement element = document.createElement( u"AuthMethodConfig"_s );
+  element.setAttribute( u"method"_s, mMethod );
+  element.setAttribute( u"id"_s, mId );
+  element.setAttribute( u"name"_s, mName );
+  element.setAttribute( u"version"_s, QString::number( mVersion ) );
+  element.setAttribute( u"uri"_s, mUri );
 
-  QDomElement configElements = document.createElement( QStringLiteral( "Config" ) );
+  QDomElement configElements = document.createElement( u"Config"_s );
   QgsStringMap::const_iterator i = mConfigMap.constBegin();
   while ( i != mConfigMap.constEnd() )
   {
@@ -181,14 +181,14 @@ bool QgsAuthMethodConfig::writeXml( QDomElement &parentElement, QDomDocument &do
 
 bool QgsAuthMethodConfig::readXml( const QDomElement &element )
 {
-  if ( element.nodeName() != QLatin1String( "AuthMethodConfig" ) )
+  if ( element.nodeName() != "AuthMethodConfig"_L1 )
     return false;
 
-  mMethod = element.attribute( QStringLiteral( "method" ) );
-  mId = element.attribute( QStringLiteral( "id" ) );
-  mName = element.attribute( QStringLiteral( "name" ) );
-  mVersion = element.attribute( QStringLiteral( "version" ) ).toInt();
-  mUri = element.attribute( QStringLiteral( "uri" ) );
+  mMethod = element.attribute( u"method"_s );
+  mId = element.attribute( u"id"_s );
+  mName = element.attribute( u"name"_s );
+  mVersion = element.attribute( u"version"_s ).toInt();
+  mUri = element.attribute( u"uri"_s );
 
   clearConfigMap();
   const QDomNamedNodeMap configAttributes = element.firstChildElement().attributes();
@@ -225,13 +225,13 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
 {
   QgsPkiBundle pkibundle;
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
-       && ( certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
-            || certPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
+       && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive )
+            || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) )
        && QFile::exists( certPath ) && QFile::exists( keyPath )
      )
   {
     // client cert
-    const bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
+    const bool pem = certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive );
     const QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
@@ -252,15 +252,15 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
   QgsPkiBundle pkibundle;
   if ( QCA::isSupported( "pkcs12" )
        && !bundlepath.isEmpty()
-       && ( bundlepath.endsWith( QLatin1String( ".p12" ), Qt::CaseInsensitive )
-            || bundlepath.endsWith( QLatin1String( ".pfx" ), Qt::CaseInsensitive ) )
+       && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive )
+            || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
        && QFile::exists( bundlepath ) )
   {
     QCA::SecureArray passarray;
     if ( !bundlepass.isNull() )
       passarray = QCA::SecureArray( bundlepass.toUtf8() );
     QCA::ConvertResult res;
-    const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+    const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, u"qca-ossl"_s ) );
     if ( res == QCA::ConvertGood && !bundle.isNull() )
     {
       const QCA::CertificateChain cert_chain( bundle.certificateChain() );
@@ -356,7 +356,7 @@ bool QgsPkiConfigBundle::isValid()
 // QgsAuthConfigSslServer
 //////////////////////////////////////////////
 
-const QString QgsAuthConfigSslServer::CONF_SEP = QStringLiteral( "|||" );
+const QString QgsAuthConfigSslServer::CONF_SEP = u"|||"_s;
 
 QgsAuthConfigSslServer::QgsAuthConfigSslServer()
   : mSslHostPort( QString() )
@@ -395,9 +395,9 @@ const QString QgsAuthConfigSslServer::configString() const
   {
     errs << QString::number( static_cast< int >( err ) );
   }
-  configlist << errs.join( QLatin1String( "~~" ) );
+  configlist << errs.join( "~~"_L1 );
 
-  configlist << QStringLiteral( "%1~~%2" ).arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
+  configlist << u"%1~~%2"_s.arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
 
   return configlist.join( CONF_SEP );
 }
@@ -415,13 +415,13 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
   mSslProtocol = decodeSslProtocol( configlist.at( 2 ) );
 
   mSslIgnoredErrors.clear();
-  const QStringList errs( configlist.at( 3 ).split( QStringLiteral( "~~" ) ) );
+  const QStringList errs( configlist.at( 3 ).split( u"~~"_s ) );
   for ( const auto &err : errs )
   {
     mSslIgnoredErrors.append( static_cast< QSslError::SslError >( err.toInt() ) );
   }
 
-  const QStringList peerverify( configlist.at( 4 ).split( QStringLiteral( "~~" ) ) );
+  const QStringList peerverify( configlist.at( 4 ).split( u"~~"_s ) );
   mSslPeerVerifyMode = static_cast< QSslSocket::PeerVerifyMode >( peerverify.at( 0 ).toInt() );
   mSslPeerVerifyDepth = peerverify.at( 1 ).toInt();
 }
@@ -480,36 +480,36 @@ QSsl::SslProtocol QgsAuthConfigSslServer::decodeSslProtocol( const QString &prot
     }
   }
 
-  if ( protocol == QLatin1String( "TlsV1_0" ) )
+  if ( protocol == "TlsV1_0"_L1 )
     return QSsl::SslProtocol::TlsV1_0;
-  else if ( protocol == QLatin1String( "TlsV1_1" ) )
+  else if ( protocol == "TlsV1_1"_L1 )
     return QSsl::SslProtocol::TlsV1_1;
-  else if ( protocol == QLatin1String( "TlsV1_2" ) )
+  else if ( protocol == "TlsV1_2"_L1 )
     return QSsl::SslProtocol::TlsV1_2;
-  else if ( protocol == QLatin1String( "AnyProtocol" ) )
+  else if ( protocol == "AnyProtocol"_L1 )
     return QSsl::SslProtocol::AnyProtocol;
-  else if ( protocol == QLatin1String( "SecureProtocols" ) )
+  else if ( protocol == "SecureProtocols"_L1 )
     return QSsl::SslProtocol::SecureProtocols;
-  else if ( protocol == QLatin1String( "TlsV1_0OrLater" ) )
+  else if ( protocol == "TlsV1_0OrLater"_L1 )
     return QSsl::SslProtocol::TlsV1_0OrLater;
-  else if ( protocol == QLatin1String( "TlsV1_1OrLater" ) )
+  else if ( protocol == "TlsV1_1OrLater"_L1 )
     return QSsl::SslProtocol::TlsV1_1OrLater;
-  else if ( protocol == QLatin1String( "TlsV1_2OrLater" ) )
+  else if ( protocol == "TlsV1_2OrLater"_L1 )
     return QSsl::SslProtocol::TlsV1_2OrLater;
-  else if ( protocol == QLatin1String( "DtlsV1_0" ) )
+  else if ( protocol == "DtlsV1_0"_L1 )
     return QSsl::SslProtocol::DtlsV1_0;
-  else if ( protocol == QLatin1String( "DtlsV1_0OrLater" ) )
+  else if ( protocol == "DtlsV1_0OrLater"_L1 )
     return QSsl::SslProtocol::DtlsV1_0OrLater;
-  else if ( protocol == QLatin1String( "DtlsV1_2" ) )
+  else if ( protocol == "DtlsV1_2"_L1 )
     return QSsl::SslProtocol::DtlsV1_2;
-  else if ( protocol == QLatin1String( "DtlsV1_2OrLater" ) )
+  else if ( protocol == "DtlsV1_2OrLater"_L1 )
     return QSsl::SslProtocol::DtlsV1_2OrLater;
-  else if ( protocol == QLatin1String( "TlsV1_3" ) )
+  else if ( protocol == "TlsV1_3"_L1 )
     return QSsl::SslProtocol::TlsV1_3;
-  else if ( protocol == QLatin1String( "TlsV1_3OrLater" ) )
+  else if ( protocol == "TlsV1_3OrLater"_L1 )
     return QSsl::SslProtocol::TlsV1_3OrLater;
 
-  QgsDebugError( QStringLiteral( "Can't decode protocol \"%1\"" ).arg( protocol ) );
+  QgsDebugError( u"Can't decode protocol \"%1\""_s.arg( protocol ) );
 
   return QSsl::SslProtocol::UnknownProtocol;
 }
@@ -519,40 +519,40 @@ QString QgsAuthConfigSslServer::encodeSslProtocol( QSsl::SslProtocol protocol )
   switch ( protocol )
   {
     case QSsl::TlsV1_0:
-      return QStringLiteral( "TlsV1_0" );
+      return u"TlsV1_0"_s;
     case QSsl::TlsV1_1:
-      return QStringLiteral( "TlsV1_1" );
+      return u"TlsV1_1"_s;
     case QSsl::TlsV1_2:
-      return QStringLiteral( "TlsV1_2" );
+      return u"TlsV1_2"_s;
     case QSsl::AnyProtocol:
-      return QStringLiteral( "AnyProtocol" );
+      return u"AnyProtocol"_s;
     case QSsl::SecureProtocols:
-      return QStringLiteral( "SecureProtocols" );
+      return u"SecureProtocols"_s;
     case QSsl::TlsV1_0OrLater:
-      return QStringLiteral( "TlsV1_0OrLater" );
+      return u"TlsV1_0OrLater"_s;
     case QSsl::TlsV1_1OrLater:
-      return QStringLiteral( "TlsV1_1OrLater" );
+      return u"TlsV1_1OrLater"_s;
     case QSsl::TlsV1_2OrLater:
-      return QStringLiteral( "TlsV1_2OrLater" );
+      return u"TlsV1_2OrLater"_s;
     case QSsl::DtlsV1_0:
-      return QStringLiteral( "DtlsV1_0" );
+      return u"DtlsV1_0"_s;
     case QSsl::DtlsV1_0OrLater:
-      return QStringLiteral( "DtlsV1_0OrLater" );
+      return u"DtlsV1_0OrLater"_s;
     case QSsl::DtlsV1_2:
-      return QStringLiteral( "DtlsV1_2" );
+      return u"DtlsV1_2"_s;
     case QSsl::DtlsV1_2OrLater:
-      return QStringLiteral( "DtlsV1_2OrLater" );
+      return u"DtlsV1_2OrLater"_s;
     case QSsl::TlsV1_3:
-      return QStringLiteral( "TlsV1_3" );
+      return u"TlsV1_3"_s;
     case QSsl::TlsV1_3OrLater:
-      return QStringLiteral( "TlsV1_3OrLater" );
+      return u"TlsV1_3OrLater"_s;
     case QSsl::UnknownProtocol:
-      return QStringLiteral( "UnknownProtocol" );
+      return u"UnknownProtocol"_s;
   }
 
-  QgsDebugError( QStringLiteral( "Can't encode protocol: %1" ).arg( protocol ) );
+  QgsDebugError( u"Can't encode protocol: %1"_s.arg( protocol ) );
 
-  return QStringLiteral( "UnknownProtocol" );
+  return u"UnknownProtocol"_s;
 }
 
 #endif

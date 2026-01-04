@@ -43,30 +43,30 @@ QStringList QgsFrameGraphUtils::dumpFrameGraph( const Qt3DCore::QNode *node, FgD
 
 QString QgsFrameGraphUtils::formatIdName( FgDumpContext context, quint64 id, const QString &name )
 {
-  QString fixedName = name.isEmpty() ? QLatin1String( "<no_name>" ) : name;
-  return QLatin1String( "{%1/%2}" ).arg( QString::number( id - context.lowestId ) ).arg( fixedName );
+  QString fixedName = name.isEmpty() ? "<no_name>"_L1 : name;
+  return "{%1/%2}"_L1.arg( QString::number( id - context.lowestId ) ).arg( fixedName );
 }
 
 QString QgsFrameGraphUtils::formatIdName( FgDumpContext context, const Qt3DRender::QAbstractTexture *texture )
 {
-  QString fixedName = texture->objectName().isEmpty() ? QLatin1String( "<no_name>" ) : texture->objectName();
-  return QLatin1String( "{%1[%2]/%3" )
+  QString fixedName = texture->objectName().isEmpty() ? "<no_name>"_L1 : texture->objectName();
+  return "{%1[%2]/%3"_L1
     .arg( QString::number( texture->id().id() - context.lowestId ), QString( QMetaEnum::fromType<Qt3DRender::QAbstractTexture::TextureFormat>().valueToKey( texture->format() ) ), fixedName );
 }
 
 QString QgsFrameGraphUtils::formatNode( FgDumpContext context, const Qt3DCore::QNode *node )
 {
-  QString res = QLatin1String( "(%1%2)" )
+  QString res = "(%1%2)"_L1
                   .arg( QLatin1String( node->metaObject()->className() ) )
                   .arg( formatIdName( context, node->id().id(), node->objectName() ) );
   if ( !node->isEnabled() )
-    res += QLatin1String( " [D]" );
+    res += " [D]"_L1;
   return res;
 }
 
 QString QgsFrameGraphUtils::formatList( const QStringList &lst )
 {
-  return QString( QLatin1String( "[ %1 ]" ) ).arg( lst.join( QLatin1String( ", " ) ) );
+  return QString( "[ %1 ]"_L1 ).arg( lst.join( ", "_L1 ) );
 }
 
 QString QgsFrameGraphUtils::formatLongList( const QStringList &lst, int level )
@@ -75,21 +75,21 @@ QString QgsFrameGraphUtils::formatLongList( const QStringList &lst, int level )
   if ( out.size() < 200 )
     return out;
 
-  out = QString( QLatin1String( "[\n" ) );
+  out = QString( "[\n"_L1 );
   for ( QString item : lst )
   {
     item = QString( "-> %1\n" ).arg( item );
     out += item.rightJustified( item.length() + ( 1 + level ) * 2, ' ' );
   }
-  QString end( QLatin1String( "]" ) );
+  QString end( "]"_L1 );
   return out + end.rightJustified( end.length() + ( 1 + level ) * 2, ' ' );
 }
 
 QString QgsFrameGraphUtils::formatField( const QString &name, const QString &value )
 {
   if ( value == "<no_value>" )
-    return QString( QLatin1String( "(%1)" ) ).arg( name );
-  return QString( QLatin1String( "(%1:%2)" ) ).arg( name, value );
+    return QString( "(%1)"_L1 ).arg( name );
+  return QString( "(%1:%2)"_L1 ).arg( name, value );
 }
 
 QString QgsFrameGraphUtils::dumpSGEntity( FgDumpContext context, const Qt3DCore::QEntity *node, int level )
@@ -229,10 +229,10 @@ QString QgsFrameGraphUtils::dumpFGNode( FgDumpContext context, const Qt3DRender:
       else if ( const auto *rs_cast = qobject_cast<const Qt3DRender::QColorMask *>( rs ) )
       {
         QStringList fl;
-        fl += formatField( "red", ( rs_cast->isRedMasked() ? QLatin1String( "true" ) : QLatin1String( "false" ) ) );
-        fl += formatField( "green", ( rs_cast->isGreenMasked() ? QLatin1String( "true" ) : QLatin1String( "false" ) ) );
-        fl += formatField( "blue", ( rs_cast->isBlueMasked() ? QLatin1String( "true" ) : QLatin1String( "false" ) ) );
-        fl += formatField( "alpha", ( rs_cast->isAlphaMasked() ? QLatin1String( "true" ) : QLatin1String( "false" ) ) );
+        fl += formatField( "red", ( rs_cast->isRedMasked() ? "true"_L1 : "false"_L1 ) );
+        fl += formatField( "green", ( rs_cast->isGreenMasked() ? "true"_L1 : "false"_L1 ) );
+        fl += formatField( "blue", ( rs_cast->isBlueMasked() ? "true"_L1 : "false"_L1 ) );
+        fl += formatField( "alpha", ( rs_cast->isAlphaMasked() ? "true"_L1 : "false"_L1 ) );
         sl += formatField( "QColorMask", formatList( fl ) );
       }
       else if ( const auto *rs_cast = qobject_cast<const Qt3DRender::QDepthTest *>( rs ) )
@@ -276,12 +276,12 @@ QString QgsFrameGraphUtils::dumpFGNode( FgDumpContext context, const Qt3DRender:
         sl += formatField( QMetaEnum::fromType<Qt3DRender::QRenderTargetOutput::AttachmentPoint>().valueToKey( output->attachmentPoint() ), formatIdName( context, output->texture() ) );
       }
       QStringList fl;
-      fl += formatField( QLatin1String( "outputs" ), formatList( sl ) );
+      fl += formatField( "outputs"_L1, formatList( sl ) );
       res += QString( " %1" ).arg( formatList( fl ) );
     }
   }
   //    if (!n->isEnabled())
-  //        res += QLatin1String(" [D]");
+  //        res += " [D]"_L1;
   return res;
 }
 

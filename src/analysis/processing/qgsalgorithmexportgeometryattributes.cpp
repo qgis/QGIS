@@ -25,7 +25,7 @@
 
 QString QgsExportGeometryAttributesAlgorithm::name() const
 {
-  return QStringLiteral( "exportaddgeometrycolumns" );
+  return u"exportaddgeometrycolumns"_s;
 }
 
 QString QgsExportGeometryAttributesAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsExportGeometryAttributesAlgorithm::group() const
 
 QString QgsExportGeometryAttributesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsExportGeometryAttributesAlgorithm::shortHelpString() const
@@ -74,14 +74,14 @@ QgsExportGeometryAttributesAlgorithm *QgsExportGeometryAttributesAlgorithm::crea
 
 void QgsExportGeometryAttributesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   const QStringList options = QStringList()
                               << QObject::tr( "Cartesian Calculations in Layer's CRS" )
                               << QObject::tr( "Cartesian Calculations in Project's CRS" )
                               << QObject::tr( "Ellipsoidal Calculations" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Calculate using" ), options, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Added geometry info" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Calculate using" ), options, false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Added geometry info" ) ) );
 }
 
 bool QgsExportGeometryAttributesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -94,11 +94,11 @@ bool QgsExportGeometryAttributesAlgorithm::prepareAlgorithm( const QVariantMap &
 
 QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
 
   const Qgis::WkbType wkbType = source->wkbType();
   QgsFields fields = source->fields();
@@ -108,36 +108,36 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
   bool exportM = false;
   if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Polygon )
   {
-    newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double ) );
-    newFields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double ) );
+    newFields.append( QgsField( u"area"_s, QMetaType::Type::Double ) );
+    newFields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double ) );
   }
   else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line )
   {
-    newFields.append( QgsField( QStringLiteral( "length" ), QMetaType::Type::Double ) );
+    newFields.append( QgsField( u"length"_s, QMetaType::Type::Double ) );
     if ( !QgsWkbTypes::isMultiType( wkbType ) )
     {
-      newFields.append( QgsField( QStringLiteral( "straightdis" ), QMetaType::Type::Double ) );
-      newFields.append( QgsField( QStringLiteral( "sinuosity" ), QMetaType::Type::Double ) );
+      newFields.append( QgsField( u"straightdis"_s, QMetaType::Type::Double ) );
+      newFields.append( QgsField( u"sinuosity"_s, QMetaType::Type::Double ) );
     }
   }
   else
   {
     if ( QgsWkbTypes::isMultiType( wkbType ) )
     {
-      newFields.append( QgsField( QStringLiteral( "numparts" ), QMetaType::Type::Int ) );
+      newFields.append( QgsField( u"numparts"_s, QMetaType::Type::Int ) );
     }
     else
     {
-      newFields.append( QgsField( QStringLiteral( "xcoord" ), QMetaType::Type::Double ) );
-      newFields.append( QgsField( QStringLiteral( "ycoord" ), QMetaType::Type::Double ) );
+      newFields.append( QgsField( u"xcoord"_s, QMetaType::Type::Double ) );
+      newFields.append( QgsField( u"ycoord"_s, QMetaType::Type::Double ) );
       if ( QgsWkbTypes::hasZ( wkbType ) )
       {
-        newFields.append( QgsField( QStringLiteral( "zcoord" ), QMetaType::Type::Double ) );
+        newFields.append( QgsField( u"zcoord"_s, QMetaType::Type::Double ) );
         exportZ = true;
       }
       if ( QgsWkbTypes::hasM( wkbType ) )
       {
-        newFields.append( QgsField( QStringLiteral( "mvalue" ), QMetaType::Type::Double ) );
+        newFields.append( QgsField( u"mvalue"_s, QMetaType::Type::Double ) );
         exportM = true;
       }
     }
@@ -146,10 +146,10 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
   fields = QgsProcessingUtils::combineFields( fields, newFields );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, wkbType, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, wkbType, source->sourceCrs() ) );
   if ( !sink )
   {
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
   }
 
   QgsCoordinateTransform transform;
@@ -225,7 +225,7 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
     outputFeature.setAttributes( attrs );
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
     {
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
 
     i++;
@@ -235,7 +235,7 @@ QVariantMap QgsExportGeometryAttributesAlgorithm::processAlgorithm( const QVaria
   sink->finalize();
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), dest );
+  results.insert( u"OUTPUT"_s, dest );
   return results;
 }
 

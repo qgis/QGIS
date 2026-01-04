@@ -47,7 +47,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   vl->setContentsMargins( 0, 0, 0, 0 );
   mExtentWidget = new QgsExtentWidget( nullptr, QgsExtentWidget::CondensedStyle );
   mExtentWidget->setNullValueAllowed( true, tr( "Not set" ) );
-  mExtentWidget->setOutputCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  mExtentWidget->setOutputCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   vl->addWidget( mExtentWidget );
   mExtentLimitFrame->setLayout( vl );
 
@@ -137,22 +137,22 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
     uri
   );
 
-  const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( mSourceParts.value( QStringLiteral( "entity" ) ).toString() );
+  const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( mSourceParts.value( u"entity"_s ).toString() );
   if ( type != Qgis::SensorThingsEntity::Invalid )
     mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( type ) ) );
 
   setCurrentEntityType( mComboEntityType->currentData().value<Qgis::SensorThingsEntity>() );
-  setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
+  setCurrentGeometryTypeFromString( mSourceParts.value( u"geometryType"_s ).toString() );
 
   bool ok = false;
-  const int maxPageSizeParam = mSourceParts.value( QStringLiteral( "pageSize" ) ).toInt( &ok );
+  const int maxPageSizeParam = mSourceParts.value( u"pageSize"_s ).toInt( &ok );
   if ( ok )
   {
     mSpinPageSize->setValue( maxPageSizeParam );
   }
 
   ok = false;
-  const int featureLimitParam = mSourceParts.value( QStringLiteral( "featureLimit" ) ).toInt( &ok );
+  const int featureLimitParam = mSourceParts.value( u"featureLimit"_s ).toInt( &ok );
   if ( ok )
   {
     mSpinFeatureLimit->setValue( featureLimitParam );
@@ -168,18 +168,18 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
     mSpinFeatureLimit->setValue( QgsSensorThingsUtils::DEFAULT_FEATURE_LIMIT );
   }
 
-  const QgsRectangle bounds = mSourceParts.value( QStringLiteral( "bounds" ) ).value<QgsRectangle>();
+  const QgsRectangle bounds = mSourceParts.value( u"bounds"_s ).value<QgsRectangle>();
   if ( !bounds.isNull() )
   {
-    mExtentWidget->setCurrentExtent( bounds, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
-    mExtentWidget->setOutputExtentFromUser( bounds, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+    mExtentWidget->setCurrentExtent( bounds, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+    mExtentWidget->setOutputExtentFromUser( bounds, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   }
   else
   {
     mExtentWidget->clear();
   }
 
-  const QVariantList expandTo = mSourceParts.value( QStringLiteral( "expandTo" ) ).toList();
+  const QVariantList expandTo = mSourceParts.value( u"expandTo"_s ).toList();
   QList<QgsSensorThingsExpansionDefinition> expansions;
   QStringList expansionsLabelText;
   for ( const QVariant &expandVariant : expandTo )
@@ -228,10 +228,10 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
   );
 
   const Qgis::SensorThingsEntity entityType = mComboEntityType->currentData().value<Qgis::SensorThingsEntity>();
-  parts.insert( QStringLiteral( "entity" ), qgsEnumValueToKey( entityType ) );
+  parts.insert( u"entity"_s, qgsEnumValueToKey( entityType ) );
   if ( !QgsSensorThingsUtils::entityTypeHasGeometry( entityType ) )
   {
-    parts.remove( QStringLiteral( "geometryType" ) );
+    parts.remove( u"geometryType"_s );
   }
   else
   {
@@ -239,19 +239,19 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
     switch ( newWkbType )
     {
       case Qgis::WkbType::Point:
-        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "point" ) );
+        parts.insert( u"geometryType"_s, u"point"_s );
         break;
       case Qgis::WkbType::MultiPoint:
-        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "multipoint" ) );
+        parts.insert( u"geometryType"_s, u"multipoint"_s );
         break;
       case Qgis::WkbType::MultiLineString:
-        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "line" ) );
+        parts.insert( u"geometryType"_s, u"line"_s );
         break;
       case Qgis::WkbType::MultiPolygon:
-        parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "polygon" ) );
+        parts.insert( u"geometryType"_s, u"polygon"_s );
         break;
       case Qgis::WkbType::NoGeometry:
-        parts.remove( QStringLiteral( "geometryType" ) );
+        parts.remove( u"geometryType"_s );
         break;
       default:
         break;
@@ -260,26 +260,26 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
 
   if ( mSpinPageSize->value() > 0 )
   {
-    parts.insert( QStringLiteral( "pageSize" ), QString::number( mSpinPageSize->value() ) );
+    parts.insert( u"pageSize"_s, QString::number( mSpinPageSize->value() ) );
   }
   else
   {
-    parts.remove( QStringLiteral( "pageSize" ) );
+    parts.remove( u"pageSize"_s );
   }
 
   if ( mSpinFeatureLimit->value() > 0 )
   {
-    parts.insert( QStringLiteral( "featureLimit" ), QString::number( mSpinFeatureLimit->value() ) );
+    parts.insert( u"featureLimit"_s, QString::number( mSpinFeatureLimit->value() ) );
   }
   else
   {
-    parts.remove( QStringLiteral( "featureLimit" ) );
+    parts.remove( u"featureLimit"_s );
   }
 
   const QList<QgsSensorThingsExpansionDefinition> expansions = mExpansionsModel->expansions();
   if ( expansions.isEmpty() )
   {
-    parts.remove( QStringLiteral( "expandTo" ) );
+    parts.remove( u"expandTo"_s );
   }
   else
   {
@@ -288,13 +288,13 @@ QString QgsSensorThingsSourceWidget::updateUriFromGui( const QString &connection
     {
       expansionsList.append( QVariant::fromValue( def ) );
     }
-    parts.insert( QStringLiteral( "expandTo" ), expansionsList );
+    parts.insert( u"expandTo"_s, expansionsList );
   }
 
   if ( mExtentWidget->outputExtent().isNull() )
-    parts.remove( QStringLiteral( "bounds" ) );
+    parts.remove( u"bounds"_s );
   else
-    parts.insert( QStringLiteral( "bounds" ), QVariant::fromValue( mExtentWidget->outputExtent() ) );
+    parts.insert( u"bounds"_s, QVariant::fromValue( mExtentWidget->outputExtent() ) );
 
   return QgsProviderRegistry::instance()->encodeUri(
     QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
@@ -334,7 +334,7 @@ void QgsSensorThingsSourceWidget::retrieveTypes()
     mPropertiesTask = nullptr;
   }
 
-  mPropertiesTask = new QgsSensorThingsConnectionPropertiesTask( mSourceParts.value( QStringLiteral( "url" ) ).toString(), mComboEntityType->currentData().value<Qgis::SensorThingsEntity>() );
+  mPropertiesTask = new QgsSensorThingsConnectionPropertiesTask( mSourceParts.value( u"url"_s ).toString(), mComboEntityType->currentData().value<Qgis::SensorThingsEntity>() );
   connect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
   QgsApplication::taskManager()->addTask( mPropertiesTask );
   mRetrieveTypesButton->setEnabled( false );
@@ -377,7 +377,7 @@ void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity
     mPropertiesTask = nullptr;
   }
 
-  mRetrieveTypesButton->setEnabled( QgsSensorThingsUtils::geometryTypeForEntity( type ) == Qgis::GeometryType::Unknown && !mSourceParts.value( QStringLiteral( "url" ) ).toString().isEmpty() );
+  mRetrieveTypesButton->setEnabled( QgsSensorThingsUtils::geometryTypeForEntity( type ) == Qgis::GeometryType::Unknown && !mSourceParts.value( u"url"_s ).toString().isEmpty() );
   const Qgis::GeometryType geometryTypeForEntity = QgsSensorThingsUtils::geometryTypeForEntity( type );
   if ( geometryTypeForEntity == Qgis::GeometryType::Unknown && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) < 0 )
   {
@@ -387,7 +387,7 @@ void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "Line" ), QVariant::fromValue( Qgis::WkbType::MultiLineString ) );
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "Polygon" ), QVariant::fromValue( Qgis::WkbType::MultiPolygon ) );
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
-    setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
+    setCurrentGeometryTypeFromString( mSourceParts.value( u"geometryType"_s ).toString() );
   }
   else if ( geometryTypeForEntity == Qgis::GeometryType::Null && ( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::NoGeometry ) ) < 0 || mComboGeometryType->count() > 1 ) )
   {
@@ -418,26 +418,26 @@ void QgsSensorThingsSourceWidget::setCurrentEntityType( Qgis::SensorThingsEntity
     }
     // we always add a "no geometry" option here, as some services don't correctly respect the mandated geometry types for eg MultiDatastreams
     mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::NoGeometry ), tr( "No Geometry" ), QVariant::fromValue( Qgis::WkbType::NoGeometry ) );
-    setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
+    setCurrentGeometryTypeFromString( mSourceParts.value( u"geometryType"_s ).toString() );
     mComboGeometryType->setCurrentIndex( 0 );
   }
 }
 
 void QgsSensorThingsSourceWidget::setCurrentGeometryTypeFromString( const QString &geometryType )
 {
-  if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 )
+  if ( geometryType.compare( "point"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) );
   }
-  else if ( geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+  else if ( geometryType.compare( "multipoint"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiPoint ) ) );
   }
-  else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+  else if ( geometryType.compare( "line"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiLineString ) ) );
   }
-  else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+  else if ( geometryType.compare( "polygon"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiPolygon ) ) );
   }
@@ -1023,7 +1023,7 @@ QgsSensorThingsFilterWidget::QgsSensorThingsFilterWidget( QWidget *parent, Qgis:
   hl->addStretch( 1 );
   QToolButton *button = new QToolButton();
   connect( button, &QToolButton::clicked, this, &QgsSensorThingsFilterWidget::setQuery );
-  button->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
+  button->setIcon( QgsApplication::getThemeIcon( u"/mActionFilter2.svg"_s ) );
   hl->addWidget( button );
   setLayout( hl );
 }

@@ -28,9 +28,9 @@
 
 #include "moc_qgstransformsettingsdialog.cpp"
 
-const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( u"last-destination-folder"_s, QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
 
-const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastPdfFolder = new QgsSettingsEntryString( QStringLiteral( "last-pdf-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
+const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastPdfFolder = new QgsSettingsEntryString( u"last-pdf-folder"_s, QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer PDF report files" ) );
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, const QString &source, const QString &output, QWidget *parent )
   : QDialog( parent )
@@ -331,10 +331,10 @@ QString QgsTransformSettingsDialog::generateModifiedFileName( const QString &fil
   switch ( mType )
   {
     case Qgis::LayerType::Vector:
-      modifiedFileName.replace( pos, modifiedFileName.size(), QStringLiteral( "gpkg" ) );
+      modifiedFileName.replace( pos, modifiedFileName.size(), u"gpkg"_s );
       break;
     case Qgis::LayerType::Raster:
-      modifiedFileName.replace( pos, modifiedFileName.size(), QStringLiteral( "tif" ) );
+      modifiedFileName.replace( pos, modifiedFileName.size(), u"tif"_s );
       break;
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Mesh:
@@ -352,5 +352,5 @@ QString QgsTransformSettingsDialog::generateModifiedFileName( const QString &fil
 
 void QgsTransformSettingsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_raster/georeferencer.html#defining-the-transformation-settings" ) );
+  QgsHelp::openHelp( u"working_with_raster/georeferencer.html#defining-the-transformation-settings"_s );
 }

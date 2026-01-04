@@ -149,7 +149,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     void invalidateCacheBaseUnderLock() override;
 
-    bool supportsLimitedFeatureCountDownloads() const override { return !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ); }
+    bool supportsLimitedFeatureCountDownloads() const override { return !( mWFSVersion.startsWith( "1.0"_L1 ) ); }
 
     bool hasServerSideFilter() const override { return !mWFSFilter.isEmpty(); }
 

@@ -94,7 +94,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
   QUrl url{ expandedAction };
 
   // Encode '+' (fully encoded doesn't encode it)
-  const QString payload { url.query( QUrl::ComponentFormattingOption::FullyEncoded ).replace( QChar( '+' ), QStringLiteral( "%2B" ) ) };
+  const QString payload { url.query( QUrl::ComponentFormattingOption::FullyEncoded ).replace( QChar( '+' ), u"%2B"_s ) };
 
   // Remove query string from URL
   const QUrlQuery queryString { url.query( ) };
@@ -104,22 +104,22 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 
   // Specific code for testing, produces an invalid POST but we can still listen to
   // signals and examine the request
-  if ( url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  if ( url.toString().contains( "fake_qgis_http_endpoint"_L1 ) )
   {
-    req.setUrl( QStringLiteral( "file://%1" ).arg( url.path() ) );
+    req.setUrl( u"file://%1"_s.arg( url.path() ) );
   }
 
   QNetworkReply *reply = nullptr;
 
   if ( mType != Qgis::AttributeActionType::SubmitUrlMultipart )
   {
-    QString contentType { QStringLiteral( "application/x-www-form-urlencoded" ) };
+    QString contentType { u"application/x-www-form-urlencoded"_s };
     // check for json
     QJsonParseError jsonError;
     QJsonDocument::fromJson( payload.toUtf8(), &jsonError );
     if ( jsonError.error == QJsonParseError::ParseError::NoError )
     {
-      contentType = QStringLiteral( "application/json" );
+      contentType = u"application/json"_s;
     }
     req.setHeader( QNetworkRequest::KnownHeaders::ContentTypeHeader, contentType );
     reply = QgsNetworkAccessManager::instance()->post( req, payload.toUtf8() );
@@ -133,8 +133,8 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
     {
       QHttpPart part;
       part.setHeader( QNetworkRequest::ContentDispositionHeader,
-                      QStringLiteral( "form-data; name=\"%1\"" )
-                      .arg( QString( queryItem.first ).replace( '"', QLatin1String( R"(\")" ) ) ) );
+                      u"form-data; name=\"%1\""_s
+                      .arg( QString( queryItem.first ).replace( '"', R"(\")"_L1 ) ) );
       part.setBody( queryItem.second.toUtf8() );
       multiPart->append( part );
     }
@@ -238,7 +238,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
           QMimeType mimeType { QMimeDatabase().mimeTypeForName( contentTypeHeader ) };
           if ( mimeType.isValid() )
           {
-            filename = QStringLiteral( "download.%1" ).arg( mimeType.preferredSuffix() );
+            filename = u"download.%1"_s.arg( mimeType.preferredSuffix() );
           }
         }
 
@@ -255,17 +255,17 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
         }
         else
         {
-          QgsMessageLog::logMessage( QObject::tr( "Could not open temporary file for writing" ), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+          QgsMessageLog::logMessage( QObject::tr( "Could not open temporary file for writing" ), u"Form Submit Action"_s, Qgis::MessageLevel::Critical );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QObject::tr( "Redirect is not supported!" ), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+        QgsMessageLog::logMessage( QObject::tr( "Redirect is not supported!" ), u"Form Submit Action"_s, Qgis::MessageLevel::Critical );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( reply->errorString(), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( reply->errorString(), u"Form Submit Action"_s, Qgis::MessageLevel::Critical );
     }
     reply->deleteLater();
     QApplication::restoreOverrideCursor( );
@@ -282,7 +282,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
 {
   if ( !isValid() )
   {
-    QgsDebugError( QStringLiteral( "Invalid action cannot be run" ) );
+    QgsDebugError( u"Invalid action cannot be run"_s );
     return;
   }
 
@@ -335,55 +335,55 @@ void QgsAction::setActionScopes( const QSet<QString> &actionScopes )
 void QgsAction::readXml( const QDomNode &actionNode )
 {
   QDomElement actionElement = actionNode.toElement();
-  const QDomNodeList actionScopeNodes = actionElement.elementsByTagName( QStringLiteral( "actionScope" ) );
+  const QDomNodeList actionScopeNodes = actionElement.elementsByTagName( u"actionScope"_s );
 
   if ( actionScopeNodes.isEmpty() )
   {
     mActionScopes
-        << QStringLiteral( "Canvas" )
-        << QStringLiteral( "Field" )
-        << QStringLiteral( "Feature" );
+        << u"Canvas"_s
+        << u"Field"_s
+        << u"Feature"_s;
   }
   else
   {
     for ( int j = 0; j < actionScopeNodes.length(); ++j )
     {
       const QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
-      mActionScopes << actionScopeElem.attribute( QStringLiteral( "id" ) );
+      mActionScopes << actionScopeElem.attribute( u"id"_s );
     }
   }
 
-  mType = static_cast< Qgis::AttributeActionType >( actionElement.attributeNode( QStringLiteral( "type" ) ).value().toInt() );
-  mDescription = actionElement.attributeNode( QStringLiteral( "name" ) ).value();
-  mCommand = actionElement.attributeNode( QStringLiteral( "action" ) ).value();
-  mIcon = actionElement.attributeNode( QStringLiteral( "icon" ) ).value();
-  mCaptureOutput = actionElement.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0;
-  mShortTitle = actionElement.attributeNode( QStringLiteral( "shortTitle" ) ).value();
-  mNotificationMessage = actionElement.attributeNode( QStringLiteral( "notificationMessage" ) ).value();
-  mIsEnabledOnlyWhenEditable = actionElement.attributeNode( QStringLiteral( "isEnabledOnlyWhenEditable" ) ).value().toInt() != 0;
-  mId = QUuid( actionElement.attributeNode( QStringLiteral( "id" ) ).value() );
+  mType = static_cast< Qgis::AttributeActionType >( actionElement.attributeNode( u"type"_s ).value().toInt() );
+  mDescription = actionElement.attributeNode( u"name"_s ).value();
+  mCommand = actionElement.attributeNode( u"action"_s ).value();
+  mIcon = actionElement.attributeNode( u"icon"_s ).value();
+  mCaptureOutput = actionElement.attributeNode( u"capture"_s ).value().toInt() != 0;
+  mShortTitle = actionElement.attributeNode( u"shortTitle"_s ).value();
+  mNotificationMessage = actionElement.attributeNode( u"notificationMessage"_s ).value();
+  mIsEnabledOnlyWhenEditable = actionElement.attributeNode( u"isEnabledOnlyWhenEditable"_s ).value().toInt() != 0;
+  mId = QUuid( actionElement.attributeNode( u"id"_s ).value() );
   if ( mId.isNull() )
     mId = QUuid::createUuid();
 }
 
 void QgsAction::writeXml( QDomNode &actionsNode ) const
 {
-  QDomElement actionSetting = actionsNode.ownerDocument().createElement( QStringLiteral( "actionsetting" ) );
-  actionSetting.setAttribute( QStringLiteral( "type" ), static_cast< int >( mType ) );
-  actionSetting.setAttribute( QStringLiteral( "name" ), mDescription );
-  actionSetting.setAttribute( QStringLiteral( "shortTitle" ), mShortTitle );
-  actionSetting.setAttribute( QStringLiteral( "icon" ), mIcon );
-  actionSetting.setAttribute( QStringLiteral( "action" ), mCommand );
-  actionSetting.setAttribute( QStringLiteral( "capture" ), mCaptureOutput );
-  actionSetting.setAttribute( QStringLiteral( "notificationMessage" ), mNotificationMessage );
-  actionSetting.setAttribute( QStringLiteral( "isEnabledOnlyWhenEditable" ), mIsEnabledOnlyWhenEditable );
-  actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
+  QDomElement actionSetting = actionsNode.ownerDocument().createElement( u"actionsetting"_s );
+  actionSetting.setAttribute( u"type"_s, static_cast< int >( mType ) );
+  actionSetting.setAttribute( u"name"_s, mDescription );
+  actionSetting.setAttribute( u"shortTitle"_s, mShortTitle );
+  actionSetting.setAttribute( u"icon"_s, mIcon );
+  actionSetting.setAttribute( u"action"_s, mCommand );
+  actionSetting.setAttribute( u"capture"_s, mCaptureOutput );
+  actionSetting.setAttribute( u"notificationMessage"_s, mNotificationMessage );
+  actionSetting.setAttribute( u"isEnabledOnlyWhenEditable"_s, mIsEnabledOnlyWhenEditable );
+  actionSetting.setAttribute( u"id"_s, mId.toString() );
 
   const auto constMActionScopes = mActionScopes;
   for ( const QString &scope : constMActionScopes )
   {
-    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( QStringLiteral( "actionScope" ) );
-    actionScopeElem.setAttribute( QStringLiteral( "id" ), scope );
+    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( u"actionScope"_s );
+    actionScopeElem.setAttribute( u"id"_s, scope );
     actionSetting.appendChild( actionScopeElem );
   }
 
@@ -456,5 +456,5 @@ QString QgsAction::html() const
    <b>Action:</b><br>
    <pre>%6</pre>
 </p>
-  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QLatin1String( ", " ) ), mCommand )};
+  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( ", "_L1 ), mCommand )};
 };

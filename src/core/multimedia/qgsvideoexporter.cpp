@@ -113,7 +113,7 @@ QString QgsVideoExporter::errorString() const
 void QgsVideoExporter::writeVideo()
 {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 8, 0 )
-  throw QgsNotSupportedException( QStringLiteral( "Writing video is not supported on this system" ) );
+  throw QgsNotSupportedException( u"Writing video is not supported on this system"_s );
 #else
   mSession = std::make_unique< QMediaCaptureSession >();
   mRecorder = std::make_unique< QMediaRecorder >();

@@ -41,20 +41,20 @@ QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientO
 
 void QgsAmbientOcclusionSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mEnabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mIntensity = element.attribute( QStringLiteral( "intensity" ), QStringLiteral( "0.5" ) ).toFloat();
-  mRadius = element.attribute( QStringLiteral( "radius" ), QStringLiteral( "25" ) ).toFloat();
-  mThreshold = element.attribute( QStringLiteral( "threshold" ), QStringLiteral( "0.5" ) ).toFloat();
+  mEnabled = element.attribute( u"enabled"_s, u"0"_s ).toInt();
+  mIntensity = element.attribute( u"intensity"_s, u"0.5"_s ).toFloat();
+  mRadius = element.attribute( u"radius"_s, u"25"_s ).toFloat();
+  mThreshold = element.attribute( u"threshold"_s, u"0.5"_s ).toFloat();
 
   Q_UNUSED( context );
 }
 
 void QgsAmbientOcclusionSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "enabled" ), mEnabled );
-  element.setAttribute( QStringLiteral( "intensity" ), mIntensity );
-  element.setAttribute( QStringLiteral( "radius" ), mRadius );
-  element.setAttribute( QStringLiteral( "threshold" ), mThreshold );
+  element.setAttribute( u"enabled"_s, mEnabled );
+  element.setAttribute( u"intensity"_s, mIntensity );
+  element.setAttribute( u"radius"_s, mRadius );
+  element.setAttribute( u"threshold"_s, mThreshold );
 
   Q_UNUSED( context );
 }

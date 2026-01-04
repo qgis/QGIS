@@ -23,12 +23,12 @@
 QString QgsXyzConnection::encodedUri() const
 {
   QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  uri.setParam( QStringLiteral( "url" ), url );
+  uri.setParam( u"type"_s, u"xyz"_s );
+  uri.setParam( u"url"_s, url );
   if ( zMin != -1 )
-    uri.setParam( QStringLiteral( "zmin" ), QString::number( zMin ) );
+    uri.setParam( u"zmin"_s, QString::number( zMin ) );
   if ( zMax != -1 )
-    uri.setParam( QStringLiteral( "zmax" ), QString::number( zMax ) );
+    uri.setParam( u"zmax"_s, QString::number( zMax ) );
   if ( !authCfg.isEmpty() )
     uri.setAuthConfigId( authCfg );
   if ( !username.isEmpty() )
@@ -39,9 +39,9 @@ QString QgsXyzConnection::encodedUri() const
   uri.setHttpHeaders( httpHeaders );
 
   if ( tilePixelRatio != 0 )
-    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( tilePixelRatio ) );
+    uri.setParam( u"tilePixelRatio"_s, QString::number( tilePixelRatio ) );
   if ( !interpretation.isEmpty() )
-    uri.setParam( QStringLiteral( "interpretation" ), interpretation );
+    uri.setParam( u"interpretation"_s, interpretation );
   return uri.encodedUri();
 }
 

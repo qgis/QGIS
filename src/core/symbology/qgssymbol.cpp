@@ -114,12 +114,12 @@ QgsSymbolBufferSettings::~QgsSymbolBufferSettings() = default;
 
 void QgsSymbolBufferSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  QDomElement symbolBufferElem = element.ownerDocument().createElement( QStringLiteral( "buffer" ) );
-  symbolBufferElem.setAttribute( QStringLiteral( "enabled" ), mEnabled );
-  symbolBufferElem.setAttribute( QStringLiteral( "size" ), mSize );
-  symbolBufferElem.setAttribute( QStringLiteral( "sizeUnits" ), QgsUnitTypes::encodeUnit( mSizeUnit ) );
-  symbolBufferElem.setAttribute( QStringLiteral( "sizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale ) );
-  symbolBufferElem.setAttribute( QStringLiteral( "joinStyle" ), static_cast< unsigned int >( mJoinStyle ) );
+  QDomElement symbolBufferElem = element.ownerDocument().createElement( u"buffer"_s );
+  symbolBufferElem.setAttribute( u"enabled"_s, mEnabled );
+  symbolBufferElem.setAttribute( u"size"_s, mSize );
+  symbolBufferElem.setAttribute( u"sizeUnits"_s, QgsUnitTypes::encodeUnit( mSizeUnit ) );
+  symbolBufferElem.setAttribute( u"sizeMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale ) );
+  symbolBufferElem.setAttribute( u"joinStyle"_s, static_cast< unsigned int >( mJoinStyle ) );
 
   if ( mFillSymbol )
   {
@@ -133,14 +133,14 @@ void QgsSymbolBufferSettings::writeXml( QDomElement &element, const QgsReadWrite
 
 void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement symbolBufferElem = element.firstChildElement( QStringLiteral( "buffer" ) );
-  mEnabled = symbolBufferElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mSize = symbolBufferElem.attribute( QStringLiteral( "size" ), QStringLiteral( "1" ) ).toDouble();
-  mSizeUnit = QgsUnitTypes::decodeRenderUnit( symbolBufferElem.attribute( QStringLiteral( "sizeUnits" ) ) );
-  mSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( symbolBufferElem.attribute( QStringLiteral( "sizeMapUnitScale" ) ) );
-  mJoinStyle = static_cast< Qt::PenJoinStyle >( symbolBufferElem.attribute( QStringLiteral( "joinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
+  const QDomElement symbolBufferElem = element.firstChildElement( u"buffer"_s );
+  mEnabled = symbolBufferElem.attribute( u"enabled"_s, u"0"_s ).toInt();
+  mSize = symbolBufferElem.attribute( u"size"_s, u"1"_s ).toDouble();
+  mSizeUnit = QgsUnitTypes::decodeRenderUnit( symbolBufferElem.attribute( u"sizeUnits"_s ) );
+  mSizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( symbolBufferElem.attribute( u"sizeMapUnitScale"_s ) );
+  mJoinStyle = static_cast< Qt::PenJoinStyle >( symbolBufferElem.attribute( u"joinStyle"_s, QString::number( Qt::RoundJoin ) ).toUInt() );
 
-  const QDomElement fillSymbolElem = symbolBufferElem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement fillSymbolElem = symbolBufferElem.firstChildElement( u"symbol"_s );
   if ( !fillSymbolElem.isNull() )
   {
     mFillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context );
@@ -854,7 +854,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
         s = std::make_unique< QgsFillSymbol >();
         break;
       default:
-        QgsDebugError( QStringLiteral( "unknown layer's geometry type" ) );
+        QgsDebugError( u"unknown layer's geometry type"_s );
         break;
     }
   }
@@ -984,7 +984,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
     }
 
     const long long symbolFrame = static_cast< long long >( std::floor( animationTimeSeconds * mAnimationSettings.frameRate() ) );
-    scope->setVariable( QStringLiteral( "symbol_frame" ), symbolFrame, true );
+    scope->setVariable( u"symbol_frame"_s, symbolFrame, true );
   }
 
   mSymbolRenderContext->setExpressionContextScope( scope.release() );
@@ -1251,7 +1251,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )
 {
-  if ( format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+  if ( format.compare( "svg"_L1, Qt::CaseInsensitive ) == 0 )
   {
     QSvgGenerator generator;
     generator.setFileName( path );
@@ -1351,18 +1351,18 @@ QString QgsSymbol::dump() const
   switch ( type() )
   {
     case Qgis::SymbolType::Marker:
-      t = QStringLiteral( "MARKER" );
+      t = u"MARKER"_s;
       break;
     case Qgis::SymbolType::Line:
-      t = QStringLiteral( "LINE" );
+      t = u"LINE"_s;
       break;
     case Qgis::SymbolType::Fill:
-      t = QStringLiteral( "FILL" );
+      t = u"FILL"_s;
       break;
     default:
       Q_ASSERT( false && "unknown symbol type" );
   }
-  QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsColorUtils::colorToString( color() ) );
+  QString s = u"%1 SYMBOL (%2 layers) color %3"_s.arg( t ).arg( mLayers.count() ).arg( QgsColorUtils::colorToString( color() ) );
 
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -1420,10 +1420,10 @@ bool QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportCont
   const QVariantMap oldProps = context.extraProperties();
   QVariantMap props = oldProps;
   //TODO move these to proper getters/setters in QgsSldExportContext
-  props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
+  props[ u"alpha"_s] = QString::number( opacity() );
   double scaleFactor = 1.0;
-  props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
-  props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QString() );
+  props[ u"uom"_s] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
+  props[ u"uomScale"_s] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QString() );
 
   context.setExtraProperties( props );
   bool result = true;
@@ -1761,7 +1761,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     if ( !processedGeometry )
     {
       // shouldn't happen!
-      QgsDebugError( QStringLiteral( "No processed geometry to render for part!" ) );
+      QgsDebugError( u"No processed geometry to render for part!"_s );
       return;
     }
 
@@ -1771,7 +1771,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       {
         if ( mType != Qgis::SymbolType::Marker )
         {
-          QgsDebugMsgLevel( QStringLiteral( "point can be drawn only with marker symbol!" ), 2 );
+          QgsDebugMsgLevel( u"point can be drawn only with marker symbol!"_s, 2 );
           break;
         }
 
@@ -1786,7 +1786,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       {
         if ( mType != Qgis::SymbolType::Line )
         {
-          QgsDebugMsgLevel( QStringLiteral( "linestring can be drawn only with line symbol!" ), 2 );
+          QgsDebugMsgLevel( u"linestring can be drawn only with line symbol!"_s, 2 );
           break;
         }
 
@@ -1803,7 +1803,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         QPolygonF pts;
         if ( mType != Qgis::SymbolType::Fill )
         {
-          QgsDebugMsgLevel( QStringLiteral( "polygon can be drawn only with fill symbol!" ), 2 );
+          QgsDebugMsgLevel( u"polygon can be drawn only with fill symbol!"_s, 2 );
           break;
         }
 
@@ -1812,7 +1812,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         info.originalPartIndex = partIndex;
         if ( !qgsgeometry_cast<const QgsPolygon *>( processedGeometry )->exteriorRing() )
         {
-          QgsDebugError( QStringLiteral( "cannot render polygon with no exterior ring" ) );
+          QgsDebugError( u"cannot render polygon with no exterior ring"_s );
           break;
         }
 
@@ -1849,7 +1849,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       {
         if ( mType != Qgis::SymbolType::Fill )
         {
-          QgsDebugMsgLevel( QStringLiteral( "multi-polygon can be drawn only with fill symbol!" ), 2 );
+          QgsDebugMsgLevel( u"multi-polygon can be drawn only with fill symbol!"_s, 2 );
           break;
         }
 
@@ -1900,7 +1900,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       }
 
       default:
-        QgsDebugError( QStringLiteral( "feature %1: unsupported wkb type %2/%3 for rendering" )
+        QgsDebugError( u"feature %1: unsupported wkb type %2/%3 for rendering"_s
                        .arg( feature.id() )
                        .arg( QgsWkbTypes::displayString( part->wkbType() ) )
                        .arg( static_cast< quint32>( part->wkbType() ), 0, 16 ) );
@@ -1942,7 +1942,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   // step 3 - render these geometries using the desired symbol layers.
 
   if ( needsExpressionContext )
-    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), mLayers.count(), true ) );
+    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_layer_count"_s, mLayers.count(), true ) );
 
   const bool maskGeometriesDisabledForSymbol = context.testFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks )
       && !mRenderHints.testFlag( Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
@@ -1981,7 +1981,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       continue;
 
     if ( needsExpressionContext )
-      mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_index" ), symbolLayerIndex + 1, true ) );
+      mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_layer_index"_s, symbolLayerIndex + 1, true ) );
 
     // if this symbol layer has associated clip masks, we need to render it to a QPicture first so that we can
     // determine the actual rendered bounds of the symbol. We'll then use that to retrieve the clip masks we need
@@ -2316,7 +2316,7 @@ void QgsSymbol::initPropertyDefinitions()
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  QString origin = QStringLiteral( "symbol" );
+  QString origin = u"symbol"_s;
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {

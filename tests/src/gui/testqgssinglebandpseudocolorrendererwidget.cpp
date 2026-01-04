@@ -109,7 +109,7 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
   QVERIFY( newColorRampShader );
 
   const QList<QgsColorRampShader::ColorRampItem> newColorRampItems = newColorRampShader->colorRampItemList();
-  QCOMPARE( newColorRampItems.at( 0 ).label, QStringLiteral( "zero" ) );
+  QCOMPARE( newColorRampItems.at( 0 ).label, u"zero"_s );
 
   QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->minimum() ) );
   QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->maximum() ) );

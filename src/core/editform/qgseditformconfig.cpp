@@ -114,13 +114,13 @@ bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorCont
       {
         if ( relation->relation().id() == widgetName )
         {
-          if ( config.contains( QStringLiteral( "nm-rel" ) ) )
+          if ( config.contains( u"nm-rel"_s ) )
           {
-            relation->setNmRelationId( config[QStringLiteral( "nm-rel" )] );
+            relation->setNmRelationId( config[u"nm-rel"_s] );
           }
-          if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) )
+          if ( config.contains( u"force-suppress-popup"_s ) )
           {
-            relation->setForceSuppressFormPopup( config[QStringLiteral( "force-suppress-popup" )].toBool() );
+            relation->setForceSuppressFormPopup( config[u"force-suppress-popup"_s].toBool() );
           }
           return true;
         }
@@ -134,14 +134,14 @@ bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVaria
 {
   if ( d->mFields.indexOf( widgetName ) != -1 )
   {
-    QgsDebugError( QStringLiteral( "Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead." ) );
+    QgsDebugError( u"Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead."_s );
     return false;
   }
 
   //for legacy use it writes the relation editor configuration into the first instance of the widget
-  if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) || config.contains( QStringLiteral( "nm-rel" ) ) )
+  if ( config.contains( u"force-suppress-popup"_s ) || config.contains( u"nm-rel"_s ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Deprecation Warning: Trying to set a relation config directly on the relation %1. Relation settings should be done for the specific widget instance instead. Use attributeEditorRelation->setNmRelationId() or attributeEditorRelation->setForceSuppressFormPopup() instead." ).arg( widgetName ) );
+    QgsMessageLog::logMessage( u"Deprecation Warning: Trying to set a relation config directly on the relation %1. Relation settings should be done for the specific widget instance instead. Use attributeEditorRelation->setNmRelationId() or attributeEditorRelation->setForceSuppressFormPopup() instead."_s.arg( widgetName ) );
     legacyUpdateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
   }
 
@@ -381,11 +381,11 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
 
   d.detach();
 
-  const QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );
+  const QDomNode editFormNode = node.namedItem( u"editform"_s );
   if ( !editFormNode.isNull() )
   {
     const QDomElement e = editFormNode.toElement();
-    const bool tolerantRemoteUrls = e.hasAttribute( QStringLiteral( "tolerant" ) );
+    const bool tolerantRemoteUrls = e.hasAttribute( u"tolerant"_s );
     if ( !e.text().isEmpty() )
     {
       const QString uiFormPath = context.pathResolver().readPath( e.text() );
@@ -393,24 +393,24 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
       // to avoid restoring these invalid paths, we take a less-tolerant approach for older (untrustworthy) projects
       // and only set ui forms paths IF they are local files OR start with "http(s)".
       const bool localFile = QFileInfo::exists( uiFormPath );
-      if ( localFile || tolerantRemoteUrls || uiFormPath.startsWith( QLatin1String( "http" ) ) )
+      if ( localFile || tolerantRemoteUrls || uiFormPath.startsWith( "http"_L1 ) )
         setUiForm( uiFormPath );
     }
   }
 
-  const QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );
+  const QDomNode editFormInitNode = node.namedItem( u"editforminit"_s );
   if ( !editFormInitNode.isNull() )
   {
     d->mInitFunction = editFormInitNode.toElement().text();
   }
 
-  const QDomNode editFormInitCodeSourceNode = node.namedItem( QStringLiteral( "editforminitcodesource" ) );
+  const QDomNode editFormInitCodeSourceNode = node.namedItem( u"editforminitcodesource"_s );
   if ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() )
   {
     setInitCodeSource( static_cast< Qgis::AttributeFormPythonInitCodeSource >( editFormInitCodeSourceNode.toElement().text().toInt() ) );
   }
 
-  const QDomNode editFormInitCodeNode = node.namedItem( QStringLiteral( "editforminitcode" ) );
+  const QDomNode editFormInitCodeNode = node.namedItem( u"editforminitcode"_s );
   if ( !editFormInitCodeNode.isNull() )
   {
     setInitCode( editFormInitCodeNode.toElement().text() );
@@ -425,17 +425,17 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   if ( dotPos >= 0 ) // It's a module
   {
     setInitCodeSource( Qgis::AttributeFormPythonInitCodeSource::Dialog );
-    setInitCode( QStringLiteral( "from %1 import %2\n" ).arg( d->mInitFunction.left( dotPos ), d->mInitFunction.mid( dotPos + 1 ) ) );
+    setInitCode( u"from %1 import %2\n"_s.arg( d->mInitFunction.left( dotPos ), d->mInitFunction.mid( dotPos + 1 ) ) );
     setInitFunction( d->mInitFunction.mid( dotPos + 1 ) );
   }
 
-  const QDomNode editFormInitFilePathNode = node.namedItem( QStringLiteral( "editforminitfilepath" ) );
+  const QDomNode editFormInitFilePathNode = node.namedItem( u"editforminitfilepath"_s );
   if ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() )
   {
     setInitFilePath( context.pathResolver().readPath( editFormInitFilePathNode.toElement().text() ) );
   }
 
-  const QDomNode fFSuppNode = node.namedItem( QStringLiteral( "featformsuppress" ) );
+  const QDomNode fFSuppNode = node.namedItem( u"featformsuppress"_s );
   if ( fFSuppNode.isNull() )
   {
     d->mSuppressForm = Qgis::AttributeFormSuppression::Default;
@@ -447,18 +447,18 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   }
 
   // tab display
-  const QDomNode editorLayoutNode = node.namedItem( QStringLiteral( "editorlayout" ) );
+  const QDomNode editorLayoutNode = node.namedItem( u"editorlayout"_s );
   if ( editorLayoutNode.isNull() )
   {
     d->mEditorLayout = Qgis::AttributeFormLayout::AutoGenerated;
   }
   else
   {
-    if ( editorLayoutNode.toElement().text() == QLatin1String( "uifilelayout" ) )
+    if ( editorLayoutNode.toElement().text() == "uifilelayout"_L1 )
     {
       d->mEditorLayout = Qgis::AttributeFormLayout::UiFile;
     }
-    else if ( editorLayoutNode.toElement().text() == QLatin1String( "tablayout" ) )
+    else if ( editorLayoutNode.toElement().text() == "tablayout"_L1 )
     {
       d->mEditorLayout = Qgis::AttributeFormLayout::DragAndDrop;
     }
@@ -469,58 +469,58 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   }
 
   d->mFieldEditables.clear();
-  const QDomNodeList editableNodeList = node.namedItem( QStringLiteral( "editable" ) ).toElement().childNodes();
+  const QDomNodeList editableNodeList = node.namedItem( u"editable"_s ).toElement().childNodes();
   for ( int i = 0; i < editableNodeList.size(); ++i )
   {
     const QDomElement editableElement = editableNodeList.at( i ).toElement();
-    d->mFieldEditables.insert( editableElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( editableElement.attribute( QStringLiteral( "editable" ) ).toInt() ) );
+    d->mFieldEditables.insert( editableElement.attribute( u"name"_s ), static_cast< bool >( editableElement.attribute( u"editable"_s ).toInt() ) );
   }
 
   d->mLabelOnTop.clear();
-  const QDomNodeList labelOnTopNodeList = node.namedItem( QStringLiteral( "labelOnTop" ) ).toElement().childNodes();
+  const QDomNodeList labelOnTopNodeList = node.namedItem( u"labelOnTop"_s ).toElement().childNodes();
   for ( int i = 0; i < labelOnTopNodeList.size(); ++i )
   {
     const QDomElement labelOnTopElement = labelOnTopNodeList.at( i ).toElement();
-    d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
+    d->mLabelOnTop.insert( labelOnTopElement.attribute( u"name"_s ), static_cast< bool >( labelOnTopElement.attribute( u"labelOnTop"_s ).toInt() ) );
   }
 
   d->mReuseLastValuePolicy.clear();
   // Compatibility with QGIS projects saved prior to 4.0
-  const QDomNodeList reuseLastValueNodeList = node.namedItem( QStringLiteral( "reuseLastValue" ) ).toElement().childNodes();
+  const QDomNodeList reuseLastValueNodeList = node.namedItem( u"reuseLastValue"_s ).toElement().childNodes();
   for ( int i = 0; i < reuseLastValueNodeList.size(); ++i )
   {
     const QDomElement reuseLastValueElement = reuseLastValueNodeList.at( i ).toElement();
-    d->mReuseLastValuePolicy.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed );
+    d->mReuseLastValuePolicy.insert( reuseLastValueElement.attribute( u"name"_s ), static_cast< bool >( reuseLastValueElement.attribute( u"reuseLastValue"_s ).toInt() ) ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed );
   }
-  const QDomNodeList reuseLastValuePolicyNodeList = node.namedItem( QStringLiteral( "reuseLastValuePolicy" ) ).toElement().childNodes();
+  const QDomNodeList reuseLastValuePolicyNodeList = node.namedItem( u"reuseLastValuePolicy"_s ).toElement().childNodes();
   for ( int i = 0; i < reuseLastValuePolicyNodeList.size(); ++i )
   {
     const QDomElement reuseLastValuePolicyElement = reuseLastValuePolicyNodeList.at( i ).toElement();
-    d->mReuseLastValuePolicy.insert( reuseLastValuePolicyElement.attribute( QStringLiteral( "name" ) ), qgsEnumKeyToValue( reuseLastValuePolicyElement.attribute( QStringLiteral( "reuseLastValuePolicy" ) ), Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
+    d->mReuseLastValuePolicy.insert( reuseLastValuePolicyElement.attribute( u"name"_s ), qgsEnumKeyToValue( reuseLastValuePolicyElement.attribute( u"reuseLastValuePolicy"_s ), Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
   }
 
   // Read data defined field properties
-  const QDomNodeList fieldDDPropertiesNodeList = node.namedItem( QStringLiteral( "dataDefinedFieldProperties" ) ).toElement().childNodes();
+  const QDomNodeList fieldDDPropertiesNodeList = node.namedItem( u"dataDefinedFieldProperties"_s ).toElement().childNodes();
   for ( int i = 0; i < fieldDDPropertiesNodeList.size(); ++i )
   {
     const QDomElement DDElement = fieldDDPropertiesNodeList.at( i ).toElement();
     QgsPropertyCollection collection;
     collection.readXml( DDElement, propertyDefinitions() );
-    d->mDataDefinedFieldProperties.insert( DDElement.attribute( QStringLiteral( "name" ) ), collection );
+    d->mDataDefinedFieldProperties.insert( DDElement.attribute( u"name"_s ), collection );
   }
 
-  const QDomNodeList widgetsNodeList = node.namedItem( QStringLiteral( "widgets" ) ).toElement().childNodes();
+  const QDomNodeList widgetsNodeList = node.namedItem( u"widgets"_s ).toElement().childNodes();
 
   for ( int i = 0; i < widgetsNodeList.size(); ++i )
   {
     const QDomElement widgetElement = widgetsNodeList.at( i ).toElement();
-    const QVariant config = QgsXmlUtils::readVariant( widgetElement.firstChildElement( QStringLiteral( "config" ) ) );
+    const QVariant config = QgsXmlUtils::readVariant( widgetElement.firstChildElement( u"config"_s ) );
 
-    d->mWidgetConfigs[widgetElement.attribute( QStringLiteral( "name" ) )] = config.toMap();
+    d->mWidgetConfigs[widgetElement.attribute( u"name"_s )] = config.toMap();
   }
 
   // tabs and groups display info
-  const QDomNode attributeEditorFormNode = node.namedItem( QStringLiteral( "attributeEditorForm" ) );
+  const QDomNode attributeEditorFormNode = node.namedItem( u"attributeEditorForm"_s );
   if ( !attributeEditorFormNode.isNull() )
   {
     const QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
@@ -536,7 +536,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
 
         fixLegacyConfig( elem );
 
-        const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
+        const QString layerId = node.namedItem( u"id"_s ).toElement().text();
         QgsAttributeEditorElement *attributeEditorWidget = QgsAttributeEditorElement::create( elem, layerId, d->mFields, context, nullptr );
         if ( attributeEditorWidget )
           addTab( attributeEditorWidget );
@@ -551,18 +551,18 @@ void QgsEditFormConfig::fixLegacyConfig( QDomElement &el ) const
 {
   // recursive method to move widget config into attribute element config
 
-  if ( el.tagName() == QLatin1String( "attributeEditorRelation" ) )
+  if ( el.tagName() == "attributeEditorRelation"_L1 )
   {
-    if ( !el.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
+    if ( !el.hasAttribute( u"forceSuppressFormPopup"_s ) )
     {
       // pre QGIS 3.16 compatibility - the widgets section is read before
-      const bool forceSuppress = widgetConfig( el.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool();
-      el.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), forceSuppress ? 1 : 0 );
+      const bool forceSuppress = widgetConfig( el.attribute( u"relation"_s ) ).value( u"force-suppress-popup"_s, false ).toBool();
+      el.setAttribute( u"forceSuppressFormPopup"_s, forceSuppress ? 1 : 0 );
     }
-    if ( !el.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
+    if ( !el.hasAttribute( u"nmRelationId"_s ) )
     {
       // pre QGIS 3.16 compatibility - the widgets section is read before
-      el.setAttribute( QStringLiteral( "nmRelationId" ), widgetConfig( el.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ).toString() );
+      el.setAttribute( u"nmRelationId"_s, widgetConfig( el.attribute( u"relation"_s ) ).value( u"nm-rel"_s ).toString() );
     }
   }
 
@@ -579,49 +579,49 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
 {
   QDomDocument doc( node.ownerDocument() );
 
-  QDomElement efField  = doc.createElement( QStringLiteral( "editform" ) );
-  efField.setAttribute( QStringLiteral( "tolerant" ), QStringLiteral( "1" ) );
+  QDomElement efField  = doc.createElement( u"editform"_s );
+  efField.setAttribute( u"tolerant"_s, u"1"_s );
   const QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 
-  QDomElement efiField  = doc.createElement( QStringLiteral( "editforminit" ) );
+  QDomElement efiField  = doc.createElement( u"editforminit"_s );
   if ( !initFunction().isEmpty() )
     efiField.appendChild( doc.createTextNode( initFunction() ) );
   node.appendChild( efiField );
 
-  QDomElement eficsField  = doc.createElement( QStringLiteral( "editforminitcodesource" ) );
+  QDomElement eficsField  = doc.createElement( u"editforminitcodesource"_s );
   eficsField.appendChild( doc.createTextNode( QString::number( static_cast< int >( initCodeSource() ) ) ) );
   node.appendChild( eficsField );
 
-  QDomElement efifpField  = doc.createElement( QStringLiteral( "editforminitfilepath" ) );
+  QDomElement efifpField  = doc.createElement( u"editforminitfilepath"_s );
   efifpField.appendChild( doc.createTextNode( context.pathResolver().writePath( initFilePath() ) ) );
   node.appendChild( efifpField );
 
-  QDomElement eficField  = doc.createElement( QStringLiteral( "editforminitcode" ) );
+  QDomElement eficField  = doc.createElement( u"editforminitcode"_s );
   eficField.appendChild( doc.createCDATASection( initCode() ) );
   node.appendChild( eficField );
 
-  QDomElement fFSuppElem  = doc.createElement( QStringLiteral( "featformsuppress" ) );
+  QDomElement fFSuppElem  = doc.createElement( u"featformsuppress"_s );
   const QDomText fFSuppText = doc.createTextNode( QString::number( static_cast< int >( suppress() ) ) );
   fFSuppElem.appendChild( fFSuppText );
   node.appendChild( fFSuppElem );
 
   // tab display
-  QDomElement editorLayoutElem  = doc.createElement( QStringLiteral( "editorlayout" ) );
+  QDomElement editorLayoutElem  = doc.createElement( u"editorlayout"_s );
   switch ( layout() )
   {
     case Qgis::AttributeFormLayout::UiFile:
-      editorLayoutElem.appendChild( doc.createTextNode( QStringLiteral( "uifilelayout" ) ) );
+      editorLayoutElem.appendChild( doc.createTextNode( u"uifilelayout"_s ) );
       break;
 
     case Qgis::AttributeFormLayout::DragAndDrop:
-      editorLayoutElem.appendChild( doc.createTextNode( QStringLiteral( "tablayout" ) ) );
+      editorLayoutElem.appendChild( doc.createTextNode( u"tablayout"_s ) );
       break;
 
     case Qgis::AttributeFormLayout::AutoGenerated:
     default:
-      editorLayoutElem.appendChild( doc.createTextNode( QStringLiteral( "generatedlayout" ) ) );
+      editorLayoutElem.appendChild( doc.createTextNode( u"generatedlayout"_s ) );
       break;
   }
 
@@ -630,7 +630,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   // tabs and groups of edit form
   if ( !tabs().empty() && d->mConfiguredRootContainer )
   {
-    QDomElement tabsElem = doc.createElement( QStringLiteral( "attributeEditorForm" ) );
+    QDomElement tabsElem = doc.createElement( u"attributeEditorForm"_s );
     const QDomElement rootElem = d->mInvisibleRootContainer->toDomElement( doc );
     const QDomNodeList elemList = rootElem.childNodes();
     while ( !elemList.isEmpty() )
@@ -640,59 +640,59 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
     node.appendChild( tabsElem );
   }
 
-  QDomElement editableElem = doc.createElement( QStringLiteral( "editable" ) );
+  QDomElement editableElem = doc.createElement( u"editable"_s );
   for ( auto editIt = d->mFieldEditables.constBegin(); editIt != d->mFieldEditables.constEnd(); ++editIt )
   {
-    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
-    fieldElem.setAttribute( QStringLiteral( "name" ), editIt.key() );
-    fieldElem.setAttribute( QStringLiteral( "editable" ), editIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    QDomElement fieldElem = doc.createElement( u"field"_s );
+    fieldElem.setAttribute( u"name"_s, editIt.key() );
+    fieldElem.setAttribute( u"editable"_s, editIt.value() ? u"1"_s : u"0"_s );
     editableElem.appendChild( fieldElem );
   }
   node.appendChild( editableElem );
 
-  QDomElement labelOnTopElem = doc.createElement( QStringLiteral( "labelOnTop" ) );
+  QDomElement labelOnTopElem = doc.createElement( u"labelOnTop"_s );
   for ( auto labelOnTopIt = d->mLabelOnTop.constBegin(); labelOnTopIt != d->mLabelOnTop.constEnd(); ++labelOnTopIt )
   {
-    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
-    fieldElem.setAttribute( QStringLiteral( "name" ), labelOnTopIt.key() );
-    fieldElem.setAttribute( QStringLiteral( "labelOnTop" ), labelOnTopIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    QDomElement fieldElem = doc.createElement( u"field"_s );
+    fieldElem.setAttribute( u"name"_s, labelOnTopIt.key() );
+    fieldElem.setAttribute( u"labelOnTop"_s, labelOnTopIt.value() ? u"1"_s : u"0"_s );
     labelOnTopElem.appendChild( fieldElem );
   }
   node.appendChild( labelOnTopElem );
 
-  QDomElement reuseLastValuePolicyElem = doc.createElement( QStringLiteral( "reuseLastValuePolicy" ) );
+  QDomElement reuseLastValuePolicyElem = doc.createElement( u"reuseLastValuePolicy"_s );
   for ( auto reuseLastValuePolicyIt = d->mReuseLastValuePolicy.constBegin(); reuseLastValuePolicyIt != d->mReuseLastValuePolicy.constEnd(); ++reuseLastValuePolicyIt )
   {
-    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
-    fieldElem.setAttribute( QStringLiteral( "name" ), reuseLastValuePolicyIt.key() );
-    fieldElem.setAttribute( QStringLiteral( "reuseLastValuePolicy" ), qgsEnumValueToKey( reuseLastValuePolicyIt.value() ) );
+    QDomElement fieldElem = doc.createElement( u"field"_s );
+    fieldElem.setAttribute( u"name"_s, reuseLastValuePolicyIt.key() );
+    fieldElem.setAttribute( u"reuseLastValuePolicy"_s, qgsEnumValueToKey( reuseLastValuePolicyIt.value() ) );
     reuseLastValuePolicyElem.appendChild( fieldElem );
   }
   node.appendChild( reuseLastValuePolicyElem );
 
   // Store data defined field properties
-  QDomElement ddFieldPropsElement = doc.createElement( QStringLiteral( "dataDefinedFieldProperties" ) );
+  QDomElement ddFieldPropsElement = doc.createElement( u"dataDefinedFieldProperties"_s );
   for ( auto it = d->mDataDefinedFieldProperties.constBegin(); it != d->mDataDefinedFieldProperties.constEnd(); ++it )
   {
-    QDomElement ddPropsElement = doc.createElement( QStringLiteral( "field" ) );
-    ddPropsElement.setAttribute( QStringLiteral( "name" ), it.key() );
+    QDomElement ddPropsElement = doc.createElement( u"field"_s );
+    ddPropsElement.setAttribute( u"name"_s, it.key() );
     it.value().writeXml( ddPropsElement, propertyDefinitions() );
     ddFieldPropsElement.appendChild( ddPropsElement );
   }
   node.appendChild( ddFieldPropsElement );
 
-  QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
+  QDomElement widgetsElem = doc.createElement( u"widgets"_s );
 
   QMap<QString, QVariantMap >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
 
   while ( configIt != d->mWidgetConfigs.constEnd() )
   {
-    QDomElement widgetElem = doc.createElement( QStringLiteral( "widget" ) );
-    widgetElem.setAttribute( QStringLiteral( "name" ), configIt.key() );
+    QDomElement widgetElem = doc.createElement( u"widget"_s );
+    widgetElem.setAttribute( u"name"_s, configIt.key() );
     // widgetElem.setAttribute( "notNull",  );
 
     QDomElement configElem = QgsXmlUtils::writeVariant( configIt.value(), doc );
-    configElem.setTagName( QStringLiteral( "config" ) );
+    configElem.setTagName( u"config"_s );
     widgetElem.appendChild( configElem );
     widgetsElem.appendChild( widgetElem );
     ++configIt;

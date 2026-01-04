@@ -223,7 +223,9 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrastercalculator.cpp
   processing/qgsalgorithmrasterdtmslopebasedfilter.cpp
+  processing/qgsalgorithmrasterfeaturepreservingsmoothing.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
+  processing/qgsalgorithmrastergaussianblur.cpp
   processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp

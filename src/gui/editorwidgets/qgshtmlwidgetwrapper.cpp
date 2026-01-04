@@ -97,7 +97,7 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
 
   auto frame = webView.page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] {
-    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), &evaluator );
+    frame->addToJavaScriptWindowObject( u"expression"_s, &evaluator );
   } );
 
   webView.setHtml( mHtmlCode );
@@ -142,7 +142,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext()
   htmlExpression->setExpressionContext( expressionContext );
   auto frame = mWidget->page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] {
-    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), htmlExpression );
+    frame->addToJavaScriptWindowObject( u"expression"_s, htmlExpression );
   } );
 
   mWidget->setHtml( mHtmlCode );

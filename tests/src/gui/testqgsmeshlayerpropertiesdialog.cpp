@@ -58,7 +58,7 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
   const QString uri( testDataDir + "/quad_and_triangle.2dm" );
   mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
 
@@ -94,7 +94,7 @@ void TestQgsMeshLayerPropertiesDialog::testCrs()
 
 void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
 {
-  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
   const QString uri( testDataDir + "/trap_steady_05_3D.nc" );
   QgsMeshLayer meshLayer( uri, "", "mdal" );
 

@@ -283,130 +283,130 @@ void TestQgsDataSourceUri::equality()
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setHost( QStringLiteral( "localhost" ) );
+  uri1.setHost( u"localhost"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setHost( QStringLiteral( "remote" ) );
+  uri2.setHost( u"remote"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setHost( QStringLiteral( "localhost" ) );
+  uri2.setHost( u"localhost"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setPort( QStringLiteral( "5432" ) );
+  uri1.setPort( u"5432"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setPort( QStringLiteral( "5433" ) );
+  uri2.setPort( u"5433"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setPort( QStringLiteral( "5432" ) );
+  uri2.setPort( u"5432"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setDriver( QStringLiteral( "QPSQL" ) );
+  uri1.setDriver( u"QPSQL"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setDriver( QStringLiteral( "mssql" ) );
+  uri2.setDriver( u"mssql"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setDriver( QStringLiteral( "QPSQL" ) );
+  uri2.setDriver( u"QPSQL"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setService( QStringLiteral( "service" ) );
+  uri1.setService( u"service"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setService( QStringLiteral( "service2" ) );
+  uri2.setService( u"service2"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setService( QStringLiteral( "service" ) );
+  uri2.setService( u"service"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setDatabase( QStringLiteral( "mydb" ) );
+  uri1.setDatabase( u"mydb"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setDatabase( QStringLiteral( "mydb2" ) );
+  uri2.setDatabase( u"mydb2"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setDatabase( QStringLiteral( "mydb" ) );
+  uri2.setDatabase( u"mydb"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setUsername( QStringLiteral( "user" ) );
+  uri1.setUsername( u"user"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setUsername( QStringLiteral( "user2" ) );
+  uri2.setUsername( u"user2"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setUsername( QStringLiteral( "user" ) );
+  uri2.setUsername( u"user"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setPassword( QStringLiteral( "pass" ) );
+  uri1.setPassword( u"pass"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setPassword( QStringLiteral( "pass2" ) );
+  uri2.setPassword( u"pass2"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setPassword( QStringLiteral( "pass" ) );
+  uri2.setPassword( u"pass"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setSchema( QStringLiteral( "public" ) );
+  uri1.setSchema( u"public"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setSchema( QStringLiteral( "other" ) );
+  uri2.setSchema( u"other"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setSchema( QStringLiteral( "public" ) );
+  uri2.setSchema( u"public"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setTable( QStringLiteral( "mytable" ) );
+  uri1.setTable( u"mytable"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setTable( QStringLiteral( "othertable" ) );
+  uri2.setTable( u"othertable"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setTable( QStringLiteral( "mytable" ) );
+  uri2.setTable( u"mytable"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setGeometryColumn( QStringLiteral( "geom" ) );
+  uri1.setGeometryColumn( u"geom"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setGeometryColumn( QStringLiteral( "geometry" ) );
+  uri2.setGeometryColumn( u"geometry"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setGeometryColumn( QStringLiteral( "geom" ) );
+  uri2.setGeometryColumn( u"geom"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setKeyColumn( QStringLiteral( "id" ) );
+  uri1.setKeyColumn( u"id"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setKeyColumn( QStringLiteral( "id" ) );
+  uri2.setKeyColumn( u"id"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setSql( QStringLiteral( "WHERE id > 10" ) );
+  uri1.setSql( u"WHERE id > 10"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setSql( QStringLiteral( "WHERE id < 10" ) );
+  uri2.setSql( u"WHERE id < 10"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setSql( QStringLiteral( "WHERE id > 10" ) );
+  uri2.setSql( u"WHERE id > 10"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setAuthConfigId( QStringLiteral( "abc123" ) );
+  uri1.setAuthConfigId( u"abc123"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setAuthConfigId( QStringLiteral( "def123" ) );
+  uri2.setAuthConfigId( u"def123"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setAuthConfigId( QStringLiteral( "abc123" ) );
+  uri2.setAuthConfigId( u"abc123"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
@@ -417,13 +417,13 @@ void TestQgsDataSourceUri::equality()
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setKeyColumn( QStringLiteral( "pk" ) );
+  uri1.setKeyColumn( u"pk"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setKeyColumn( QStringLiteral( "id" ) );
+  uri2.setKeyColumn( u"id"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setKeyColumn( QStringLiteral( "pk" ) );
+  uri2.setKeyColumn( u"pk"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
@@ -448,38 +448,38 @@ void TestQgsDataSourceUri::equality()
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setSrid( QStringLiteral( "4326" ) );
+  uri1.setSrid( u"4326"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setSrid( QStringLiteral( "3111" ) );
+  uri2.setSrid( u"3111"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setSrid( QStringLiteral( "4326" ) );
+  uri2.setSrid( u"4326"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
-  uri1.setParam( QStringLiteral( "param1" ), QStringLiteral( "value1" ) );
+  uri1.setParam( u"param1"_s, u"value1"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.setParam( QStringLiteral( "param1" ), QStringLiteral( "value2" ) );
+  uri2.setParam( u"param1"_s, u"value2"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
   // params are a multi-map!
-  uri2.setParam( QStringLiteral( "param1" ), QStringLiteral( "value1" ) );
+  uri2.setParam( u"param1"_s, u"value1"_s );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
-  uri2.removeParam( QStringLiteral( "param1" ) );
-  uri2.setParam( QStringLiteral( "param1" ), QStringLiteral( "value1" ) );
+  uri2.removeParam( u"param1"_s );
+  uri2.setParam( u"param1"_s, u"value1"_s );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
 
   QgsHttpHeaders headers1;
-  headers1.insert( QStringLiteral( "Authorization" ), QStringLiteral( "Bearer token123" ) );
+  headers1.insert( u"Authorization"_s, u"Bearer token123"_s );
   uri1.setHttpHeaders( headers1 );
   QVERIFY( uri1 != uri2 );
   QVERIFY( !( uri1 == uri2 ) );
   QgsHttpHeaders headers2;
-  headers2.insert( QStringLiteral( "Authorization" ), QStringLiteral( "Bearer token123" ) );
+  headers2.insert( u"Authorization"_s, u"Bearer token123"_s );
   uri2.setHttpHeaders( headers2 );
   QVERIFY( uri1 == uri2 );
   QVERIFY( !( uri1 != uri2 ) );
@@ -687,7 +687,7 @@ void TestQgsDataSourceUri::checkConnectionInfo()
   QCOMPARE( ds.connectionInfo( true ), conninfo );
   QCOMPARE( ds.connectionInfo( false ), conninfo );
 
-  ds.setParam( QStringLiteral( "extraparam" ), QStringLiteral( "extravalue" ) );
+  ds.setParam( u"extraparam"_s, u"extravalue"_s );
   QCOMPARE( ds.connectionInfo(), conninfo );
   QCOMPARE( ds.connectionInfo( true ), conninfo );
   QCOMPARE( ds.connectionInfo( false ), conninfo );
@@ -699,135 +699,135 @@ void TestQgsDataSourceUri::checkAuthParams()
   // Test here that the direct setters and getters for username/password/authcfg are compatible with providers which utilize the parameter system
 
   QgsDataSourceUri uri;
-  QVERIFY( uri.param( QStringLiteral( "username" ) ).isEmpty() );
-  QVERIFY( uri.param( QStringLiteral( "password" ) ).isEmpty() );
-  QVERIFY( uri.param( QStringLiteral( "authcfg" ) ).isEmpty() );
+  QVERIFY( uri.param( u"username"_s ).isEmpty() );
+  QVERIFY( uri.param( u"password"_s ).isEmpty() );
+  QVERIFY( uri.param( u"authcfg"_s ).isEmpty() );
 
-  uri.setUsername( QStringLiteral( "kaladin" ) );
-  uri.setPassword( QStringLiteral( "stormblessed" ) );
-  uri.setAuthConfigId( QStringLiteral( "syl" ) );
+  uri.setUsername( u"kaladin"_s );
+  uri.setPassword( u"stormblessed"_s );
+  uri.setAuthConfigId( u"syl"_s );
 
-  QCOMPARE( uri.param( QStringLiteral( "username" ) ), QStringLiteral( "kaladin" ) );
-  QCOMPARE( uri.param( QStringLiteral( "password" ) ), QStringLiteral( "stormblessed" ) );
-  QCOMPARE( uri.param( QStringLiteral( "authcfg" ) ), QStringLiteral( "syl" ) );
+  QCOMPARE( uri.param( u"username"_s ), u"kaladin"_s );
+  QCOMPARE( uri.param( u"password"_s ), u"stormblessed"_s );
+  QCOMPARE( uri.param( u"authcfg"_s ), u"syl"_s );
 
   // round trip through encodedUri should not lose username/password/authcfg
   const QByteArray encoded = uri.encodedUri();
   QgsDataSourceUri uri2;
   uri2.setEncodedUri( encoded );
 
-  QCOMPARE( uri2.param( QStringLiteral( "username" ) ), QStringLiteral( "kaladin" ) );
-  QCOMPARE( uri2.username(), QStringLiteral( "kaladin" ) );
-  QCOMPARE( uri2.param( QStringLiteral( "password" ) ), QStringLiteral( "stormblessed" ) );
-  QCOMPARE( uri2.password(), QStringLiteral( "stormblessed" ) );
-  QCOMPARE( uri2.param( QStringLiteral( "authcfg" ) ), QStringLiteral( "syl" ) );
-  QCOMPARE( uri2.authConfigId(), QStringLiteral( "syl" ) );
+  QCOMPARE( uri2.param( u"username"_s ), u"kaladin"_s );
+  QCOMPARE( uri2.username(), u"kaladin"_s );
+  QCOMPARE( uri2.param( u"password"_s ), u"stormblessed"_s );
+  QCOMPARE( uri2.password(), u"stormblessed"_s );
+  QCOMPARE( uri2.param( u"authcfg"_s ), u"syl"_s );
+  QCOMPARE( uri2.authConfigId(), u"syl"_s );
 
   QgsDataSourceUri uri3;
-  uri3.setParam( QStringLiteral( "username" ), QStringLiteral( "kaladin" ) );
-  uri3.setParam( QStringLiteral( "password" ), QStringLiteral( "stormblessed" ) );
-  uri3.setParam( QStringLiteral( "authcfg" ), QStringLiteral( "syl" ) );
-  QCOMPARE( uri3.param( QStringLiteral( "username" ) ), QStringLiteral( "kaladin" ) );
-  QCOMPARE( uri3.params( QStringLiteral( "username" ) ), QStringList() << QStringLiteral( "kaladin" ) );
-  QCOMPARE( uri3.username(), QStringLiteral( "kaladin" ) );
-  QCOMPARE( uri3.param( QStringLiteral( "password" ) ), QStringLiteral( "stormblessed" ) );
-  QCOMPARE( uri3.params( QStringLiteral( "password" ) ), QStringList() << QStringLiteral( "stormblessed" ) );
-  QCOMPARE( uri3.password(), QStringLiteral( "stormblessed" ) );
-  QCOMPARE( uri3.param( QStringLiteral( "authcfg" ) ), QStringLiteral( "syl" ) );
-  QCOMPARE( uri3.params( QStringLiteral( "authcfg" ) ), QStringList() << QStringLiteral( "syl" ) );
-  QCOMPARE( uri3.authConfigId(), QStringLiteral( "syl" ) );
+  uri3.setParam( u"username"_s, u"kaladin"_s );
+  uri3.setParam( u"password"_s, u"stormblessed"_s );
+  uri3.setParam( u"authcfg"_s, u"syl"_s );
+  QCOMPARE( uri3.param( u"username"_s ), u"kaladin"_s );
+  QCOMPARE( uri3.params( u"username"_s ), QStringList() << u"kaladin"_s );
+  QCOMPARE( uri3.username(), u"kaladin"_s );
+  QCOMPARE( uri3.param( u"password"_s ), u"stormblessed"_s );
+  QCOMPARE( uri3.params( u"password"_s ), QStringList() << u"stormblessed"_s );
+  QCOMPARE( uri3.password(), u"stormblessed"_s );
+  QCOMPARE( uri3.param( u"authcfg"_s ), u"syl"_s );
+  QCOMPARE( uri3.params( u"authcfg"_s ), QStringList() << u"syl"_s );
+  QCOMPARE( uri3.authConfigId(), u"syl"_s );
 
-  QVERIFY( uri.hasParam( QStringLiteral( "username" ) ) );
-  uri.removeParam( QStringLiteral( "username" ) );
-  QVERIFY( !uri.hasParam( QStringLiteral( "username" ) ) );
-  QVERIFY( uri.param( QStringLiteral( "username" ) ).isEmpty() );
+  QVERIFY( uri.hasParam( u"username"_s ) );
+  uri.removeParam( u"username"_s );
+  QVERIFY( !uri.hasParam( u"username"_s ) );
+  QVERIFY( uri.param( u"username"_s ).isEmpty() );
   QVERIFY( uri.username().isEmpty() );
-  QVERIFY( uri.hasParam( QStringLiteral( "password" ) ) );
-  uri.removeParam( QStringLiteral( "password" ) );
-  QVERIFY( !uri.hasParam( QStringLiteral( "password" ) ) );
-  QVERIFY( uri.param( QStringLiteral( "password" ) ).isEmpty() );
+  QVERIFY( uri.hasParam( u"password"_s ) );
+  uri.removeParam( u"password"_s );
+  QVERIFY( !uri.hasParam( u"password"_s ) );
+  QVERIFY( uri.param( u"password"_s ).isEmpty() );
   QVERIFY( uri.password().isEmpty() );
-  QVERIFY( uri.hasParam( QStringLiteral( "authcfg" ) ) );
-  uri.removeParam( QStringLiteral( "authcfg" ) );
-  QVERIFY( !uri.hasParam( QStringLiteral( "authcfg" ) ) );
-  QVERIFY( uri.param( QStringLiteral( "authcfg" ) ).isEmpty() );
+  QVERIFY( uri.hasParam( u"authcfg"_s ) );
+  uri.removeParam( u"authcfg"_s );
+  QVERIFY( !uri.hasParam( u"authcfg"_s ) );
+  QVERIFY( uri.param( u"authcfg"_s ).isEmpty() );
   QVERIFY( uri.authConfigId().isEmpty() );
 
   // issue GH #39243
   QgsDataSourceUri uri4;
-  uri4.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3D/home/bug.qgs&username=username&password=pa%25%25word" ) );
+  uri4.setEncodedUri( u"dpiMode=7&url=http://localhost:8000/ows/?MAP%3D/home/bug.qgs&username=username&password=pa%25%25word"_s );
 
-  QCOMPARE( uri4.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-  QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
-  QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "pa%%word" ) );
-  QCOMPARE( uri4.password(), QStringLiteral( "pa%%word" ) );
+  QCOMPARE( uri4.param( u"username"_s ), u"username"_s );
+  QCOMPARE( uri4.username(), u"username"_s );
+  QCOMPARE( uri4.param( u"password"_s ), u"pa%%word"_s );
+  QCOMPARE( uri4.password(), u"pa%%word"_s );
 
   // issue GH #42405
-  uri4.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3D/home/bug.qgs&username=username&password=qgis%C3%A8%C3%A9" ) );
-  QCOMPARE( uri4.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-  QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
-  QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
-  QCOMPARE( uri4.password(), QStringLiteral( "qgisèé" ) );
+  uri4.setEncodedUri( u"dpiMode=7&url=http://localhost:8000/ows/?MAP%3D/home/bug.qgs&username=username&password=qgis%C3%A8%C3%A9"_s );
+  QCOMPARE( uri4.param( u"username"_s ), u"username"_s );
+  QCOMPARE( uri4.username(), u"username"_s );
+  QCOMPARE( uri4.param( u"password"_s ), u"qgisèé"_s );
+  QCOMPARE( uri4.password(), u"qgisèé"_s );
 
-  uri4.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/&username=username&password=%1" ).arg( QString( QUrl::toPercentEncoding( QStringLiteral( "😁😂😍" ) ) ) ) );
-  QCOMPARE( uri4.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-  QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
-  QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "😁😂😍" ) );
-  QCOMPARE( uri4.password(), QStringLiteral( "😁😂😍" ) );
+  uri4.setEncodedUri( u"dpiMode=7&url=http://localhost:8000/&username=username&password=%1"_s.arg( QString( QUrl::toPercentEncoding( u"😁😂😍"_s ) ) ) );
+  QCOMPARE( uri4.param( u"username"_s ), u"username"_s );
+  QCOMPARE( uri4.username(), u"username"_s );
+  QCOMPARE( uri4.param( u"password"_s ), u"😁😂😍"_s );
+  QCOMPARE( uri4.password(), u"😁😂😍"_s );
 
   // issue GH #53654
   QgsDataSourceUri uri5;
-  uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
-  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+  uri5.setEncodedUri( u"zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson"_s );
+  QCOMPARE( uri5.param( u"f"_s ), u"application/vnd.geoserver.mbstyle+json"_s );
 
-  uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application/vnd.geoserver.mbstyle+json" ) );
-  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+  uri5.setEncodedUri( u"zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application/vnd.geoserver.mbstyle+json"_s );
+  QCOMPARE( uri5.param( u"f"_s ), u"application/vnd.geoserver.mbstyle+json"_s );
 
   // round trip through encodedUri/setEncodedUri should not lose "%2B" or "+"
   QgsDataSourceUri uri6;
-  uri6.setParam( QStringLiteral( "percent" ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
-  uri6.setParam( QStringLiteral( "explicit" ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
-  QCOMPARE( uri6.param( QStringLiteral( "percent" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
-  QCOMPARE( uri6.param( QStringLiteral( "explicit" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+  uri6.setParam( u"percent"_s, u"application%2Fvnd.geoserver.mbstyle%2Bjson"_s );
+  uri6.setParam( u"explicit"_s, u"application/vnd.geoserver.mbstyle+json"_s );
+  QCOMPARE( uri6.param( u"percent"_s ), u"application%2Fvnd.geoserver.mbstyle%2Bjson"_s );
+  QCOMPARE( uri6.param( u"explicit"_s ), u"application/vnd.geoserver.mbstyle+json"_s );
 
   const QByteArray encodedTwo = uri6.encodedUri();
 
   QgsDataSourceUri uri7;
   uri7.setEncodedUri( encodedTwo );
-  QCOMPARE( uri7.param( QStringLiteral( "percent" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
-  QCOMPARE( uri7.param( QStringLiteral( "explicit" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+  QCOMPARE( uri7.param( u"percent"_s ), u"application%2Fvnd.geoserver.mbstyle%2Bjson"_s );
+  QCOMPARE( uri7.param( u"explicit"_s ), u"application/vnd.geoserver.mbstyle+json"_s );
 }
 
 void TestQgsDataSourceUri::checkParameterKeys()
 {
-  QgsDataSourceUri uri( QLatin1String( "dbname='foo' bar='baz'" ) );
+  QgsDataSourceUri uri( "dbname='foo' bar='baz'"_L1 );
   QCOMPARE( uri.parameterKeys().size(), 2 );
-  QVERIFY( uri.parameterKeys().contains( QLatin1String( "dbname" ) ) );
-  QVERIFY( uri.parameterKeys().contains( QLatin1String( "bar" ) ) );
+  QVERIFY( uri.parameterKeys().contains( "dbname"_L1 ) );
+  QVERIFY( uri.parameterKeys().contains( "bar"_L1 ) );
 }
 
 void TestQgsDataSourceUri::checkRemovePassword()
 {
-  const QString uri0 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) );
-  QCOMPARE( uri0, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  const QString uri0 = QgsDataSourceUri::removePassword( u"postgresql://user:password@127.0.0.1:5432?dbname=test"_s );
+  QCOMPARE( uri0, u"postgresql://user@127.0.0.1:5432?dbname=test"_s );
 
-  const QString uri1 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ), true );
-  QCOMPARE( uri1, QStringLiteral( "postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test" ) );
+  const QString uri1 = QgsDataSourceUri::removePassword( u"postgresql://user:password@127.0.0.1:5432?dbname=test"_s, true );
+  QCOMPARE( uri1, u"postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test"_s );
 
-  const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
-  QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  const QString uri2 = QgsDataSourceUri::removePassword( u"postgresql://user@127.0.0.1:5432?dbname=test"_s );
+  QCOMPARE( uri2, u"postgresql://user@127.0.0.1:5432?dbname=test"_s );
 }
 
 void TestQgsDataSourceUri::checkUnicodeUri()
 {
   QgsDataSourceUri uri;
-  uri.setEncodedUri( QStringLiteral( "url=file:///directory/テスト.mbtiles&type=mbtiles" ) );
-  QCOMPARE( uri.param( QStringLiteral( "url" ) ), QStringLiteral( "file:///directory/テスト.mbtiles" ) );
+  uri.setEncodedUri( u"url=file:///directory/テスト.mbtiles&type=mbtiles"_s );
+  QCOMPARE( uri.param( u"url"_s ), u"file:///directory/テスト.mbtiles"_s );
 }
 
 void TestQgsDataSourceUri::checkUriInUri()
 {
-  QString dataUri = QStringLiteral( "dpiMode=7&url=%1&SERVICE=WMS&REQUEST=GetCapabilities&username=username&password=qgis%C3%A8%C3%A9" );
+  QString dataUri = u"dpiMode=7&url=%1&SERVICE=WMS&REQUEST=GetCapabilities&username=username&password=qgis%C3%A8%C3%A9"_s;
 
   // If the 'url' field references a QGIS server then the 'MAP' parameter can contain an url to the project file.
   // When the project is saved in a postgresql db, the connection url will also contains '&' and '='.
@@ -841,14 +841,14 @@ void TestQgsDataSourceUri::checkUriInUri()
     QString projectEnc = QUrl::toPercentEncoding( project );
     QString serverUrl = QString( "http://localhost:8000/ows/?MAP=%1" );
     uri.setEncodedUri( dataUri.arg( serverUrl.arg( projectEnc ) ) );
-    QCOMPARE( uri.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-    QCOMPARE( uri.username(), QStringLiteral( "username" ) );
-    QCOMPARE( uri.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri.password(), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
-    QCOMPARE( uri.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+    QCOMPARE( uri.param( u"username"_s ), u"username"_s );
+    QCOMPARE( uri.username(), u"username"_s );
+    QCOMPARE( uri.param( u"password"_s ), u"qgisèé"_s );
+    QCOMPARE( uri.password(), u"qgisèé"_s );
+    QCOMPARE( uri.param( u"SERVICE"_s ), u"WMS"_s );
+    QCOMPARE( uri.param( u"REQUEST"_s ), u"GetCapabilities"_s );
     // not enough encoded at the beginning ==> bad encoding at the end
-    QCOMPARE( uri.param( QStringLiteral( "url" ) ), serverUrl.arg( project ) );
+    QCOMPARE( uri.param( u"url"_s ), serverUrl.arg( project ) );
 
     QgsDataSourceUri uri2;
     // here the project url is encoded and the whole serverUrl is also encoded.
@@ -856,13 +856,13 @@ void TestQgsDataSourceUri::checkUriInUri()
     // and will be able to decode all parameters
     QString serverUrlEnc = QUrl::toPercentEncoding( serverUrl.arg( projectEnc ) );
     uri2.setEncodedUri( dataUri.arg( serverUrlEnc ) );
-    QCOMPARE( uri2.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-    QCOMPARE( uri2.username(), QStringLiteral( "username" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri2.password(), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "url" ) ), serverUrl.arg( projectEnc ) );
+    QCOMPARE( uri2.param( u"username"_s ), u"username"_s );
+    QCOMPARE( uri2.username(), u"username"_s );
+    QCOMPARE( uri2.param( u"password"_s ), u"qgisèé"_s );
+    QCOMPARE( uri2.password(), u"qgisèé"_s );
+    QCOMPARE( uri2.param( u"SERVICE"_s ), u"WMS"_s );
+    QCOMPARE( uri2.param( u"REQUEST"_s ), u"GetCapabilities"_s );
+    QCOMPARE( uri2.param( u"url"_s ), serverUrl.arg( projectEnc ) );
   }
 
   // same as above but with extra param at the end of the
@@ -877,14 +877,14 @@ void TestQgsDataSourceUri::checkUriInUri()
     QString serverUrl = QString( "https://titiler.xyz/cog/tiles/WebMercatorQuad/16/34060/23336@1x?url=%1" );
 
     uri.setEncodedUri( dataUri.arg( serverUrl.arg( projectEnc ) + extraParam ) );
-    QCOMPARE( uri.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-    QCOMPARE( uri.username(), QStringLiteral( "username" ) );
-    QCOMPARE( uri.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri.password(), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
-    QCOMPARE( uri.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+    QCOMPARE( uri.param( u"username"_s ), u"username"_s );
+    QCOMPARE( uri.username(), u"username"_s );
+    QCOMPARE( uri.param( u"password"_s ), u"qgisèé"_s );
+    QCOMPARE( uri.password(), u"qgisèé"_s );
+    QCOMPARE( uri.param( u"SERVICE"_s ), u"WMS"_s );
+    QCOMPARE( uri.param( u"REQUEST"_s ), u"GetCapabilities"_s );
     // not enough encoded at the beginning ==> bad encoding at the end
-    QCOMPARE( uri.param( QStringLiteral( "url" ) ), serverUrl.arg( project ) );
+    QCOMPARE( uri.param( u"url"_s ), serverUrl.arg( project ) );
 
     QgsDataSourceUri uri2;
     // here the project url is encoded and the whole serverUrl is also encoded.
@@ -892,13 +892,13 @@ void TestQgsDataSourceUri::checkUriInUri()
     // and will be able to decode all parameters
     QString serverUrlEnc = QUrl::toPercentEncoding( serverUrl.arg( projectEnc ) + extraParam );
     uri2.setEncodedUri( dataUri.arg( serverUrlEnc ) );
-    QCOMPARE( uri2.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
-    QCOMPARE( uri2.username(), QStringLiteral( "username" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri2.password(), QStringLiteral( "qgisèé" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
-    QCOMPARE( uri2.param( QStringLiteral( "url" ) ), serverUrl.arg( projectEnc ) + extraParam );
+    QCOMPARE( uri2.param( u"username"_s ), u"username"_s );
+    QCOMPARE( uri2.username(), u"username"_s );
+    QCOMPARE( uri2.param( u"password"_s ), u"qgisèé"_s );
+    QCOMPARE( uri2.password(), u"qgisèé"_s );
+    QCOMPARE( uri2.param( u"SERVICE"_s ), u"WMS"_s );
+    QCOMPARE( uri2.param( u"REQUEST"_s ), u"GetCapabilities"_s );
+    QCOMPARE( uri2.param( u"url"_s ), serverUrl.arg( projectEnc ) + extraParam );
   }
 }
 

@@ -36,17 +36,17 @@ QgsServerFilter::QgsServerFilter( QgsServerInterface *serverInterface )
 
 void QgsServerFilter::requestReady()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsServerFilter plugin default requestReady called" ), 2 );
+  QgsDebugMsgLevel( u"QgsServerFilter plugin default requestReady called"_s, 2 );
 }
 
 void QgsServerFilter::responseComplete()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsServerFilter plugin default responseComplete called" ), 2 );
+  QgsDebugMsgLevel( u"QgsServerFilter plugin default responseComplete called"_s, 2 );
 }
 
 void QgsServerFilter::sendResponse()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsServerFilter plugin default sendResponse called" ), 2 );
+  QgsDebugMsgLevel( u"QgsServerFilter plugin default sendResponse called"_s, 2 );
 }
 
 bool QgsServerFilter::onRequestReady()

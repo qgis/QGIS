@@ -23,13 +23,13 @@
 
 void QgsVectorTileBasicLabelingStyle::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "name" ), mStyleName );
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerName );
-  elem.setAttribute( QStringLiteral( "geometry" ), static_cast<int>( mGeometryType ) );
-  elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elem.setAttribute( QStringLiteral( "expression" ), mExpression );
-  elem.setAttribute( QStringLiteral( "min-zoom" ), mMinZoomLevel );
-  elem.setAttribute( QStringLiteral( "max-zoom" ), mMaxZoomLevel );
+  elem.setAttribute( u"name"_s, mStyleName );
+  elem.setAttribute( u"layer"_s, mLayerName );
+  elem.setAttribute( u"geometry"_s, static_cast<int>( mGeometryType ) );
+  elem.setAttribute( u"enabled"_s, mEnabled ? u"1"_s : u"0"_s );
+  elem.setAttribute( u"expression"_s, mExpression );
+  elem.setAttribute( u"min-zoom"_s, mMinZoomLevel );
+  elem.setAttribute( u"max-zoom"_s, mMaxZoomLevel );
 
   QDomDocument doc = elem.ownerDocument();
   QDomElement elemLabelSettings = mLabelSettings.writeXml( doc, context );
@@ -38,15 +38,15 @@ void QgsVectorTileBasicLabelingStyle::writeXml( QDomElement &elem, const QgsRead
 
 void QgsVectorTileBasicLabelingStyle::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mStyleName = elem.attribute( QStringLiteral( "name" ) );
-  mLayerName = elem.attribute( QStringLiteral( "layer" ) );
-  mGeometryType = static_cast<Qgis::GeometryType>( elem.attribute( QStringLiteral( "geometry" ) ).toInt() );
-  mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
-  mExpression = elem.attribute( QStringLiteral( "expression" ) );
-  mMinZoomLevel = elem.attribute( QStringLiteral( "min-zoom" ) ).toInt();
-  mMaxZoomLevel = elem.attribute( QStringLiteral( "max-zoom" ) ).toInt();
+  mStyleName = elem.attribute( u"name"_s );
+  mLayerName = elem.attribute( u"layer"_s );
+  mGeometryType = static_cast<Qgis::GeometryType>( elem.attribute( u"geometry"_s ).toInt() );
+  mEnabled = elem.attribute( u"enabled"_s ).toInt();
+  mExpression = elem.attribute( u"expression"_s );
+  mMinZoomLevel = elem.attribute( u"min-zoom"_s ).toInt();
+  mMaxZoomLevel = elem.attribute( u"max-zoom"_s ).toInt();
 
-  QDomElement elemLabelSettings = elem.firstChildElement( QStringLiteral( "settings" ) );
+  QDomElement elemLabelSettings = elem.firstChildElement( u"settings"_s );
   mLabelSettings.readXml( elemLabelSettings, context );
 }
 
@@ -60,7 +60,7 @@ QgsVectorTileBasicLabeling::QgsVectorTileBasicLabeling()
 
 QString QgsVectorTileBasicLabeling::type() const
 {
-  return QStringLiteral( "basic" );
+  return u"basic"_s;
 }
 
 QgsVectorTileLabeling *QgsVectorTileBasicLabeling::clone() const
@@ -78,10 +78,10 @@ QgsVectorTileLabelProvider *QgsVectorTileBasicLabeling::provider( QgsVectorTileL
 void QgsVectorTileBasicLabeling::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
-  QDomElement elemStyles = doc.createElement( QStringLiteral( "styles" ) );
+  QDomElement elemStyles = doc.createElement( u"styles"_s );
   for ( const QgsVectorTileBasicLabelingStyle &layerStyle : mStyles )
   {
-    QDomElement elemStyle = doc.createElement( QStringLiteral( "style" ) );
+    QDomElement elemStyle = doc.createElement( u"style"_s );
     layerStyle.writeXml( elemStyle, context );
     elemStyles.appendChild( elemStyle );
   }
@@ -92,14 +92,14 @@ void QgsVectorTileBasicLabeling::readXml( const QDomElement &elem, const QgsRead
 {
   mStyles.clear();
 
-  QDomElement elemStyles = elem.firstChildElement( QStringLiteral( "styles" ) );
-  QDomElement elemStyle = elemStyles.firstChildElement( QStringLiteral( "style" ) );
+  QDomElement elemStyles = elem.firstChildElement( u"styles"_s );
+  QDomElement elemStyle = elemStyles.firstChildElement( u"style"_s );
   while ( !elemStyle.isNull() )
   {
     QgsVectorTileBasicLabelingStyle layerStyle;
     layerStyle.readXml( elemStyle, context );
     mStyles.append( layerStyle );
-    elemStyle = elemStyle.nextSiblingElement( QStringLiteral( "style" ) );
+    elemStyle = elemStyle.nextSiblingElement( u"style"_s );
   }
 }
 
@@ -189,7 +189,7 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
     mSubProviders[i]->mSettings.isExpression = !fields.names().contains( mSubProviders[i]->mSettings.fieldName );
     if ( !mSubProviders[i]->prepare( context, attributeNames ) )
     {
-      QgsDebugError( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
+      QgsDebugError( u"Failed to prepare labeling for style index"_s + QString::number( i ) );
       mSubProviders[i] = nullptr;
     }
   }

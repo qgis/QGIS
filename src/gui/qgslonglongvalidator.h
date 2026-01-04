@@ -60,7 +60,7 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       if ( t < 0 && input.startsWith( '+' ) )
         return Invalid;
 
-      if ( input == QLatin1String( "-" ) || input == QLatin1String( "+" ) )
+      if ( input == "-"_L1 || input == "+"_L1 )
         return Intermediate;
 
 

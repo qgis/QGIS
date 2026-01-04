@@ -27,7 +27,7 @@
 
 QString QgsNearestNeighbourAnalysisAlgorithm::name() const
 {
-  return QStringLiteral( "nearestneighbouranalysis" );
+  return u"nearestneighbouranalysis"_s;
 }
 
 QString QgsNearestNeighbourAnalysisAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QString QgsNearestNeighbourAnalysisAlgorithm::group() const
 
 QString QgsNearestNeighbourAnalysisAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoranalysis" );
+  return u"vectoranalysis"_s;
 }
 
 QString QgsNearestNeighbourAnalysisAlgorithm::shortHelpString() const
@@ -64,12 +64,12 @@ QString QgsNearestNeighbourAnalysisAlgorithm::shortDescription() const
 
 QString QgsNearestNeighbourAnalysisAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNearestNeighbour.svg" ) );
+  return QgsApplication::iconPath( u"/algorithms/mAlgorithmNearestNeighbour.svg"_s );
 }
 
 QIcon QgsNearestNeighbourAnalysisAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNearestNeighbour.svg" ) );
+  return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmNearestNeighbour.svg"_s );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsNearestNeighbourAnalysisAlgorithm::documentationFlags() const
@@ -84,22 +84,22 @@ QgsNearestNeighbourAnalysisAlgorithm *QgsNearestNeighbourAnalysisAlgorithm::crea
 
 void QgsNearestNeighbourAnalysisAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Nearest neighbour" ), QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OBSERVED_MD" ), QObject::tr( "Observed mean distance" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "EXPECTED_MD" ), QObject::tr( "Expected mean distance" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NN_INDEX" ), QObject::tr( "Nearest neighbour index" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "POINT_COUNT" ), QObject::tr( "Number of points" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "Z_SCORE" ), QObject::tr( "Z-score" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML_FILE"_s, QObject::tr( "Nearest neighbour" ), QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
+  addOutput( new QgsProcessingOutputNumber( u"OBSERVED_MD"_s, QObject::tr( "Observed mean distance" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"EXPECTED_MD"_s, QObject::tr( "Expected mean distance" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"NN_INDEX"_s, QObject::tr( "Nearest neighbour index" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"POINT_COUNT"_s, QObject::tr( "Number of points" ) ) );
+  addOutput( new QgsProcessingOutputNumber( u"Z_SCORE"_s, QObject::tr( "Z-score" ) ) );
 }
 
 QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT_HTML_FILE"_s, context );
 
   const QgsSpatialIndex spatialIndex( *source, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
   QgsDistanceArea da;
@@ -145,11 +145,11 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
   const double zScore = ( observedDistance - expectedDistance ) / se;
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OBSERVED_MD" ), observedDistance );
-  outputs.insert( QStringLiteral( "EXPECTED_MD" ), expectedDistance );
-  outputs.insert( QStringLiteral( "NN_INDEX" ), nnIndex );
-  outputs.insert( QStringLiteral( "POINT_COUNT" ), count );
-  outputs.insert( QStringLiteral( "Z_SCORE" ), zScore );
+  outputs.insert( u"OBSERVED_MD"_s, observedDistance );
+  outputs.insert( u"EXPECTED_MD"_s, expectedDistance );
+  outputs.insert( u"NN_INDEX"_s, nnIndex );
+  outputs.insert( u"POINT_COUNT"_s, count );
+  outputs.insert( u"Z_SCORE"_s, zScore );
 
   if ( !outputFile.isEmpty() )
   {
@@ -157,15 +157,15 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
+      out << u"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n"_s;
       out << QObject::tr( "<p>Observed mean distance: %1</p>\n" ).arg( observedDistance, 0, 'f', 11 );
       out << QObject::tr( "<p>Expected mean distance: %1</p>\n" ).arg( expectedDistance, 0, 'f', 11 );
       out << QObject::tr( "<p>Nearest neighbour index: %1</p>\n" ).arg( nnIndex, 0, 'f', 11 );
       out << QObject::tr( "<p>Number of points: %1</p>\n" ).arg( count );
       out << QObject::tr( "<p>Z-Score: %1</p>\n" ).arg( zScore, 0, 'f', 11 );
-      out << QStringLiteral( "</body></html>" );
+      out << u"</body></html>"_s;
 
-      outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputFile );
+      outputs.insert( u"OUTPUT_HTML_FILE"_s, outputFile );
     }
   }
 

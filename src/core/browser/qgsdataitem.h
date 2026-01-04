@@ -95,7 +95,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      *
-     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool rename( const QString &name ) SIP_DEPRECATED;
 
-    // ### QGIS 4 - rename to capabilities()
+    // ### QGIS 5 - rename to capabilities()
 
     /**
      * Returns the capabilities for the data item.
@@ -610,7 +610,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

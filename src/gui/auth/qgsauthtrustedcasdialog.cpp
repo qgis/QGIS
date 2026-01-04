@@ -58,7 +58,7 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent, const QList<Q
 
 
     btnGroupByOrg->setChecked( false );
-    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "trustedcasortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( u"trustedcasortby"_s, QVariant( false ) );
     if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -175,11 +175,11 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate> &c
 
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( catype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -201,7 +201,7 @@ void QgsAuthTrustedCAsDialog::showCertInfo( QTreeWidgetItem *item )
 
   if ( !cacertscache.contains( digest ) )
   {
-    QgsDebugError( QStringLiteral( "Certificate Authority not in CA certs cache" ) );
+    QgsDebugError( u"Certificate Authority not in CA certs cache"_s );
     return;
   }
 
@@ -275,7 +275,7 @@ void QgsAuthTrustedCAsDialog::btnInfoCa_clicked()
 
 void QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "trustedcasortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( u"trustedcasortby"_s, QVariant( checked ) ) )
   {
     authMessageLog( QObject::tr( "Could not store sort by preference" ), QObject::tr( "Trusted Authorities/Issuers" ), Qgis::MessageLevel::Warning );
   }
@@ -304,5 +304,5 @@ QgsMessageBar *QgsAuthTrustedCAsDialog::messageBar()
 int QgsAuthTrustedCAsDialog::messageTimeout()
 {
   const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( u"qgis/messageTimeout"_s, 5 ).toInt();
 }

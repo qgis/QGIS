@@ -145,14 +145,14 @@ void QgsCrsDefinitionWidget::validateCurrent()
       }
       else
       {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "This WKT projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + warningStrings.join( '\n' ) + grammarStrings.join( '\n' ) );
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "This WKT projection definition is not valid:" ) + u"\n\n"_s + warningStrings.join( '\n' ) + grammarStrings.join( '\n' ) );
       }
       break;
     }
 
     case Qgis::CrsDefinitionFormat::Proj:
     {
-      const QString projCrsString = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+      const QString projCrsString = projDef + ( projDef.contains( u"+type=crs"_s ) ? QString() : u" +type=crs"_s );
       crs.reset( proj_create( context, projCrsString.toUtf8().constData() ) );
       if ( crs )
       {
@@ -160,7 +160,7 @@ void QgsCrsDefinitionWidget::validateCurrent()
       }
       else
       {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "This proj projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + projLogger.errors().join( '\n' ) );
+        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ), tr( "This proj projection definition is not valid:" ) + u"\n\n"_s + projLogger.errors().join( '\n' ) );
       }
       break;
     }
@@ -185,12 +185,12 @@ void QgsCrsDefinitionWidget::formatChanged()
     {
       PJ_CONTEXT *pjContext = QgsProjContext::get();
       QString proj = mTextEditParameters->toPlainText();
-      proj.replace( QLatin1String( "+type=crs" ), QString() );
-      proj += QLatin1String( " +type=crs" );
+      proj.replace( "+type=crs"_L1, QString() );
+      proj += " +type=crs"_L1;
       QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toUtf8().constData() ) );
       if ( crs )
       {
-        const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
+        const QByteArray multiLineOption = u"MULTILINE=YES"_s.toLocal8Bit();
         const char *const options[] = { multiLineOption.constData(), nullptr };
         newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
       }
@@ -222,7 +222,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
   QgsCoordinateReferenceSystem target;
   if ( static_cast<Qgis::CrsDefinitionFormat>( mFormatComboBox->currentData().toInt() ) == Qgis::CrsDefinitionFormat::Proj )
   {
-    projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+    projDef = projDef + ( projDef.contains( u"+type=crs"_s ) ? QString() : u" +type=crs"_s );
     target = QgsCoordinateReferenceSystem::fromProj( projDef );
   }
   else
@@ -241,7 +241,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
   QgsCoordinateReferenceSystem source;
   try
   {
-    if ( target.celestialBodyName() == QLatin1String( "Earth" ) )
+    if ( target.celestialBodyName() == "Earth"_L1 )
     {
       source = QgsCoordinateReferenceSystem( "EPSG:4326" );
     }
@@ -274,7 +274,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
 QString QgsCrsDefinitionWidget::multiLineWktToSingleLine( const QString &wkt )
 {
   QString res = wkt;
-  const thread_local QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ), QRegularExpression::MultilineOption );
+  const thread_local QRegularExpression re( u"\\s*\\n\\s*"_s, QRegularExpression::MultilineOption );
   res.replace( re, QString() );
   return res;
 }

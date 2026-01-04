@@ -53,7 +53,7 @@ bool QgsPdalIndexingTask::run()
 
 void QgsPdalIndexingTask::cleanup()
 {
-  QFile::remove( QStringLiteral( "%1-indexing" ).arg( mFile ) );
+  QFile::remove( u"%1-indexing"_s.arg( mFile ) );
 }
 
 bool QgsPdalIndexingTask::runUntwine()
@@ -66,7 +66,7 @@ bool QgsPdalIndexingTask::runUntwine()
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Using executable %1" ).arg( mUntwineExecutableBinary ), 2 );
+    QgsDebugMsgLevel( u"Using executable %1"_s.arg( mUntwineExecutableBinary ), 2 );
   }
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
@@ -131,7 +131,7 @@ void QgsPdalIndexingTask::setUntwineExecutableBinary( const QString &untwineExec
 
 QString QgsPdalIndexingTask::guessUntwineExecutableBinary() const
 {
-  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
+  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( u"QGIS_UNTWINE_EXECUTABLE"_s );
   if ( untwineExecutable.isEmpty() )
   {
 #if defined( Q_OS_WIN )
@@ -164,7 +164,7 @@ bool QgsPdalIndexingTask::prepareOutputPath()
     return false;
   }
 
-  QFile marker( QStringLiteral( "%1-indexing" ).arg( mFile ) );
+  QFile marker( u"%1-indexing"_s.arg( mFile ) );
   if ( marker.exists() )
   {
     mErrorMessage = tr( "Another indexing process is running (or finished with crash) for file %1" ).arg( mFile );

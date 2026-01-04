@@ -680,6 +680,7 @@ if(WITH_CORE)
 
   # Master password hash and authentication encryption
   if(WITH_AUTH)
+    set(HAVE_AUTH TRUE)
     find_package(QCA REQUIRED)
   endif()
   # Check for runtime dependency of qca-ossl plugin

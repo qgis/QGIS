@@ -127,7 +127,7 @@ void QgsOracleProjectStorageDialog::populateProjects()
   mExistingProjects.clear();
 
   const QString uri = currentProjectUri();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"oracle"_s );
   Q_ASSERT( storage );
   mExistingProjects = storage->listProjects( uri );
   mCboProject->addItems( mExistingProjects );
@@ -164,7 +164,7 @@ void QgsOracleProjectStorageDialog::removeProject()
   if ( res != QMessageBox::Yes )
     return;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"oracle"_s );
   Q_ASSERT( storage );
   storage->removeProject( currentProjectUri() );
   populateProjects();

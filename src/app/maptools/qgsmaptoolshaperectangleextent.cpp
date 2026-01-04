@@ -26,7 +26,7 @@
 
 #include "moc_qgsmaptoolshaperectangleextent.cpp"
 
-const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = QStringLiteral( "rectangle-from-extent" );
+const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = u"rectangle-from-extent"_s;
 
 QString QgsMapToolShapeRectangleExtentMetadata::id() const
 {
@@ -40,7 +40,7 @@ QString QgsMapToolShapeRectangleExtentMetadata::name() const
 
 QIcon QgsMapToolShapeRectangleExtentMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRectangleExtent.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRectangleExtent.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRectangleExtentMetadata::category() const

@@ -50,14 +50,14 @@ void TestQgsServerWmsVectorTile::cleanupTestCase()
 void TestQgsServerWmsVectorTile::opacity()
 {
   // init vector tile layers
-  const QString path = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
+  const QString path = QStringLiteral( TEST_DATA_DIR ) + u"/vector_tile/{z}-{x}-{y}.pbf"_s;
 
   QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
+  uri.setParam( u"type"_s, u"xyz"_s );
+  uri.setParam( u"url"_s, QUrl::fromLocalFile( path ).toString() );
 
-  QgsVectorTileLayer *layer0 = new QgsVectorTileLayer( uri.encodedUri(), QStringLiteral( "layer0" ) );
-  QgsVectorTileLayer *layer1 = new QgsVectorTileLayer( uri.encodedUri(), QStringLiteral( "layer1" ) );
+  QgsVectorTileLayer *layer0 = new QgsVectorTileLayer( uri.encodedUri(), u"layer0"_s );
+  QgsVectorTileLayer *layer1 = new QgsVectorTileLayer( uri.encodedUri(), u"layer1"_s );
 
   // init project with vector tile
   QgsProject project;

@@ -175,5 +175,5 @@ void QgsExtentBufferDialog::setContext( const QgsSymbolWidgetContext &context )
 
 void QgsExtentBufferDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#extent-buffer" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#extent-buffer"_s );
 }

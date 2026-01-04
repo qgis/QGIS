@@ -31,22 +31,22 @@
 
 // read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS {
-  QStringLiteral( "userTablesOnly" ),
-  QStringLiteral( "geometryColumnsOnly" ),
-  QStringLiteral( "allowGeometrylessTables" ),
-  QStringLiteral( "disableInvalidGeometryHandling" ),
-  QStringLiteral( "onlyExistingTypes" ),
-  QStringLiteral( "includeGeoAttributes" ),
-  QStringLiteral( "projectsInDatabase" ),
-  QStringLiteral( "saveUsername" ),
-  QStringLiteral( "savePassword" ),
-  QStringLiteral( "schema" )
+  u"userTablesOnly"_s,
+  u"geometryColumnsOnly"_s,
+  u"allowGeometrylessTables"_s,
+  u"disableInvalidGeometryHandling"_s,
+  u"onlyExistingTypes"_s,
+  u"includeGeoAttributes"_s,
+  u"projectsInDatabase"_s,
+  u"saveUsername"_s,
+  u"savePassword"_s,
+  u"schema"_s
 };
 
 // read from uri and used in the provider connection
 const QStringList EXTRA_CONNECTION_PARAMETERS {
-  QStringLiteral( "dboptions" ),
-  QStringLiteral( "dbworkspace" )
+  u"dboptions"_s,
+  u"dbworkspace"_s
 };
 
 /**
@@ -67,7 +67,7 @@ class QgsOracleQuery : public QSqlQuery
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
-  mProviderKey = QStringLiteral( "oracle" );
+  mProviderKey = u"oracle"_s;
   setUri( QgsOracleConn::connUri( name ).uri() );
   setDefaultCapabilities();
 
@@ -76,7 +76,7 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
   QVariantMap configuration;
   for ( const auto &p : CONFIGURATION_PARAMETERS )
   {
-    const QVariant v = settings.value( QStringLiteral( "/Oracle/connections/%1/%2" ).arg( name, p ) );
+    const QVariant v = settings.value( u"/Oracle/connections/%1/%2"_s.arg( name, p ) );
     if ( v.isValid() )
     {
       configuration.insert( p, v );
@@ -88,16 +88,16 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &name )
 QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, const QVariantMap &configuration )
   : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
-  mProviderKey = QStringLiteral( "oracle" );
+  mProviderKey = u"oracle"_s;
   setDefaultCapabilities();
 
   // Additional connection information
   const QgsDataSourceUri inputUri( uri );
   QgsDataSourceUri currentUri { QgsDataSourceUri( uri ).connectionInfo( false ) };
 
-  if ( inputUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) )
+  if ( inputUri.hasParam( u"estimatedMetadata"_s ) )
   {
-    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
+    currentUri.setUseEstimatedMetadata( inputUri.param( u"estimatedMetadata"_s ) == "true"_L1 || inputUri.param( u"estimatedMetadata"_s ) == '1' );
   }
 
   for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
@@ -155,7 +155,7 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOracleProviderCo
   options.geometryColumn = tUri.geometryColumn();
   options.filter = tUri.sql();
   const QString trimmedTable { tUri.table().trimmed() };
-  options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
+  options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : u"SELECT * FROM %1"_s.arg( tUri.quotedTablename() );
   return options;
 }
 
@@ -177,25 +177,25 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
   if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
-    tUri.setTable( QStringLiteral( "(%1)" ).arg( optionsSql ) );
+    tUri.setTable( u"(%1)"_s.arg( optionsSql ) );
   }
   else
   {
     // Disable when there is no pk
     tUri.setUseEstimatedMetadata( false );
     int pkId { 0 };
-    while ( optionsSql.contains( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    while ( optionsSql.contains( u"qgis_generated_uid_%1_"_s.arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
       pkId++;
     }
-    tUri.setKeyColumn( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ) );
+    tUri.setKeyColumn( u"qgis_generated_uid_%1_"_s.arg( pkId ) );
 
     int sqlId { 0 };
-    while ( optionsSql.contains( QStringLiteral( "qgis_generated_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    while ( optionsSql.contains( u"qgis_generated_subq_%1_"_s.arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
       sqlId++;
     }
-    tUri.setTable( QStringLiteral( "(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), optionsSql, QString::number( sqlId ) ) );
+    tUri.setTable( u"(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)"_s.arg( QString::number( pkId ), optionsSql, QString::number( sqlId ) ) );
   }
 
   if ( !options.geometryColumn.isEmpty() )
@@ -203,12 +203,12 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  auto vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+  auto vl = std::make_unique<QgsVectorLayer>( tUri.uri( false ), options.layerName.isEmpty() ? u"QueryLayer"_s : options.layerName, providerKey() );
 
   // Try to guess the geometry and srid
   if ( !vl->isValid() )
   {
-    const QString limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
+    const QString limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? u"AND ROWNUM < 100"_s : QString() };
     const QString sql { QStringLiteral( R"(
       SELECT DISTINCT a.%1.SDO_GTYPE As gtype,
                             a.%1.SDO_SRID
@@ -277,7 +277,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
           {
             tUri.setSrid( QString::number( srid ) );
             tUri.setWkbType( geomType );
-            vl = std::make_unique<QgsVectorLayer>( tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+            vl = std::make_unique<QgsVectorLayer>( tUri.uri(), options.layerName.isEmpty() ? u"QueryLayer"_s : options.layerName, providerKey() );
             if ( vl->isValid() )
             {
               break;
@@ -298,12 +298,12 @@ Qgis::DatabaseProviderTableImportCapabilities QgsOracleProviderConnection::table
 
 QString QgsOracleProviderConnection::defaultPrimaryKeyColumnName() const
 {
-  return QStringLiteral( "id" );
+  return u"id"_s;
 }
 
 void QgsOracleProviderConnection::store( const QString &name ) const
 {
-  QString baseKey = QStringLiteral( "/Oracle/connections/" );
+  QString baseKey = u"/Oracle/connections/"_s;
   // delete the original entry first
   remove( name );
 
@@ -371,7 +371,7 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
 
 QString QgsOracleProviderConnection::defaultGeometryColumnName() const
 {
-  return QStringLiteral( "GEOM" );
+  return u"GEOM"_s;
 }
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
@@ -379,992 +379,992 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sq
   return {
     { Qgis::SqlKeywordCategory::Keyword,
       { // From: http://docs.oracle.com/cd/B19306_01/server.102/b14200/ap_keywd.htm
-        QStringLiteral( "ACCESS" ),
-        QStringLiteral( "ADD" ),
-        QStringLiteral( "ALL" ),
-        QStringLiteral( "ALTER" ),
-        QStringLiteral( "AND" ),
-        QStringLiteral( "ANY" ),
-        QStringLiteral( "AS" ),
-        QStringLiteral( "ASC" ),
+        u"ACCESS"_s,
+        u"ADD"_s,
+        u"ALL"_s,
+        u"ALTER"_s,
+        u"AND"_s,
+        u"ANY"_s,
+        u"AS"_s,
+        u"ASC"_s,
 
-        QStringLiteral( "AUDIT" ),
-        QStringLiteral( "BETWEEN" ),
-        QStringLiteral( "BY" ),
-        QStringLiteral( "CHAR" ),
-        QStringLiteral( "CHECK" ),
-        QStringLiteral( "CLUSTER" ),
-        QStringLiteral( "COLUMN" ),
+        u"AUDIT"_s,
+        u"BETWEEN"_s,
+        u"BY"_s,
+        u"CHAR"_s,
+        u"CHECK"_s,
+        u"CLUSTER"_s,
+        u"COLUMN"_s,
 
-        QStringLiteral( "COMMENT" ),
-        QStringLiteral( "COMPRESS" ),
-        QStringLiteral( "CONNECT" ),
-        QStringLiteral( "CREATE" ),
-        QStringLiteral( "CURRENT" ),
-        QStringLiteral( "DATE" ),
+        u"COMMENT"_s,
+        u"COMPRESS"_s,
+        u"CONNECT"_s,
+        u"CREATE"_s,
+        u"CURRENT"_s,
+        u"DATE"_s,
 
-        QStringLiteral( "DECIMAL" ),
-        QStringLiteral( "DEFAULT" ),
-        QStringLiteral( "DELETE" ),
-        QStringLiteral( "DESC" ),
-        QStringLiteral( "DISTINCT" ),
-        QStringLiteral( "DROP" ),
+        u"DECIMAL"_s,
+        u"DEFAULT"_s,
+        u"DELETE"_s,
+        u"DESC"_s,
+        u"DISTINCT"_s,
+        u"DROP"_s,
 
-        QStringLiteral( "ELSE" ),
-        QStringLiteral( "EXCLUSIVE" ),
-        QStringLiteral( "EXISTS" ),
-        QStringLiteral( "FILE" ),
-        QStringLiteral( "FLOAT" ),
-        QStringLiteral( "FOR" ),
-        QStringLiteral( "FROM" ),
+        u"ELSE"_s,
+        u"EXCLUSIVE"_s,
+        u"EXISTS"_s,
+        u"FILE"_s,
+        u"FLOAT"_s,
+        u"FOR"_s,
+        u"FROM"_s,
 
-        QStringLiteral( "GRANT" ),
-        QStringLiteral( "GROUP" ),
-        QStringLiteral( "HAVING" ),
-        QStringLiteral( "IDENTIFIED" ),
-        QStringLiteral( "IMMEDIATE" ),
-        QStringLiteral( "IN" ),
+        u"GRANT"_s,
+        u"GROUP"_s,
+        u"HAVING"_s,
+        u"IDENTIFIED"_s,
+        u"IMMEDIATE"_s,
+        u"IN"_s,
 
-        QStringLiteral( "INCREMENT" ),
-        QStringLiteral( "INDEX" ),
-        QStringLiteral( "INITIAL" ),
-        QStringLiteral( "INSERT" ),
-        QStringLiteral( "INTEGER" ),
-        QStringLiteral( "INTERSECT" ),
+        u"INCREMENT"_s,
+        u"INDEX"_s,
+        u"INITIAL"_s,
+        u"INSERT"_s,
+        u"INTEGER"_s,
+        u"INTERSECT"_s,
 
-        QStringLiteral( "INTO" ),
-        QStringLiteral( "IS" ),
-        QStringLiteral( "LEVEL" ),
-        QStringLiteral( "LIKE" ),
-        QStringLiteral( "LOCK" ),
-        QStringLiteral( "LONG" ),
-        QStringLiteral( "MAXEXTENTS" ),
+        u"INTO"_s,
+        u"IS"_s,
+        u"LEVEL"_s,
+        u"LIKE"_s,
+        u"LOCK"_s,
+        u"LONG"_s,
+        u"MAXEXTENTS"_s,
 
-        QStringLiteral( "MINUS" ),
-        QStringLiteral( "MLSLABEL" ),
-        QStringLiteral( "MODE" ),
-        QStringLiteral( "MODIFY" ),
-        QStringLiteral( "NOAUDIT" ),
-        QStringLiteral( "NOCOMPRESS" ),
+        u"MINUS"_s,
+        u"MLSLABEL"_s,
+        u"MODE"_s,
+        u"MODIFY"_s,
+        u"NOAUDIT"_s,
+        u"NOCOMPRESS"_s,
 
-        QStringLiteral( "NOT" ),
-        QStringLiteral( "NOWAIT" ),
-        QStringLiteral( "NULL" ),
-        QStringLiteral( "NUMBER" ),
-        QStringLiteral( "OF" ),
-        QStringLiteral( "OFFLINE" ),
-        QStringLiteral( "ON" ),
+        u"NOT"_s,
+        u"NOWAIT"_s,
+        u"NULL"_s,
+        u"NUMBER"_s,
+        u"OF"_s,
+        u"OFFLINE"_s,
+        u"ON"_s,
 
-        QStringLiteral( "ONLINE" ),
-        QStringLiteral( "OPTION" ),
-        QStringLiteral( "OR" ),
-        QStringLiteral( "ORDER" ),
-        QStringLiteral( "PCTFREE" ),
-        QStringLiteral( "PRIOR" ),
+        u"ONLINE"_s,
+        u"OPTION"_s,
+        u"OR"_s,
+        u"ORDER"_s,
+        u"PCTFREE"_s,
+        u"PRIOR"_s,
 
-        QStringLiteral( "PRIVILEGES" ),
-        QStringLiteral( "PUBLIC" ),
-        QStringLiteral( "RAW" ),
-        QStringLiteral( "RENAME" ),
-        QStringLiteral( "RESOURCE" ),
-        QStringLiteral( "REVOKE" ),
+        u"PRIVILEGES"_s,
+        u"PUBLIC"_s,
+        u"RAW"_s,
+        u"RENAME"_s,
+        u"RESOURCE"_s,
+        u"REVOKE"_s,
 
-        QStringLiteral( "ROW" ),
-        QStringLiteral( "ROWID" ),
-        QStringLiteral( "ROWNUM" ),
-        QStringLiteral( "ROWS" ),
-        QStringLiteral( "SELECT" ),
-        QStringLiteral( "SESSION" ),
-        QStringLiteral( "SET" ),
+        u"ROW"_s,
+        u"ROWID"_s,
+        u"ROWNUM"_s,
+        u"ROWS"_s,
+        u"SELECT"_s,
+        u"SESSION"_s,
+        u"SET"_s,
 
-        QStringLiteral( "SHARE" ),
-        QStringLiteral( "SIZE" ),
-        QStringLiteral( "SMALLINT" ),
-        QStringLiteral( "START" ),
-        QStringLiteral( "SUCCESSFUL" ),
-        QStringLiteral( "SYNONYM" ),
+        u"SHARE"_s,
+        u"SIZE"_s,
+        u"SMALLINT"_s,
+        u"START"_s,
+        u"SUCCESSFUL"_s,
+        u"SYNONYM"_s,
 
-        QStringLiteral( "SYSDATE" ),
-        QStringLiteral( "TABLE" ),
-        QStringLiteral( "THEN" ),
-        QStringLiteral( "TO" ),
-        QStringLiteral( "TRIGGER" ),
-        QStringLiteral( "UID" ),
-        QStringLiteral( "UNION" ),
+        u"SYSDATE"_s,
+        u"TABLE"_s,
+        u"THEN"_s,
+        u"TO"_s,
+        u"TRIGGER"_s,
+        u"UID"_s,
+        u"UNION"_s,
 
-        QStringLiteral( "UNIQUE" ),
-        QStringLiteral( "UPDATE" ),
-        QStringLiteral( "USER" ),
-        QStringLiteral( "VALIDATE" ),
-        QStringLiteral( "VALUES" ),
-        QStringLiteral( "VARCHAR" ),
+        u"UNIQUE"_s,
+        u"UPDATE"_s,
+        u"USER"_s,
+        u"VALIDATE"_s,
+        u"VALUES"_s,
+        u"VARCHAR"_s,
 
-        QStringLiteral( "VARCHAR2" ),
-        QStringLiteral( "VIEW" ),
-        QStringLiteral( "WHENEVER" ),
-        QStringLiteral( "WHERE" ),
-        QStringLiteral( "WITH" ),
+        u"VARCHAR2"_s,
+        u"VIEW"_s,
+        u"WHENEVER"_s,
+        u"WHERE"_s,
+        u"WITH"_s,
 
         // From http://docs.oracle.com/cd/B13789_01/appdev.101/a42525/apb.htm
-        QStringLiteral( "ADMIN" ),
-        QStringLiteral( "CURSOR" ),
-        QStringLiteral( "FOUND" ),
-        QStringLiteral( "MOUNT" ),
-        QStringLiteral( "AFTER" ),
-        QStringLiteral( "CYCLE" ),
-        QStringLiteral( "FUNCTION" ),
+        u"ADMIN"_s,
+        u"CURSOR"_s,
+        u"FOUND"_s,
+        u"MOUNT"_s,
+        u"AFTER"_s,
+        u"CYCLE"_s,
+        u"FUNCTION"_s,
 
-        QStringLiteral( "NEXT" ),
-        QStringLiteral( "ALLOCATE" ),
-        QStringLiteral( "DATABASE" ),
-        QStringLiteral( "GO" ),
-        QStringLiteral( "NEW" ),
-        QStringLiteral( "ANALYZE" ),
+        u"NEXT"_s,
+        u"ALLOCATE"_s,
+        u"DATABASE"_s,
+        u"GO"_s,
+        u"NEW"_s,
+        u"ANALYZE"_s,
 
-        QStringLiteral( "DATAFILE" ),
-        QStringLiteral( "GOTO" ),
-        QStringLiteral( "NOARCHIVELOG" ),
-        QStringLiteral( "ARCHIVE" ),
-        QStringLiteral( "DBA" ),
-        QStringLiteral( "GROUPS" ),
+        u"DATAFILE"_s,
+        u"GOTO"_s,
+        u"NOARCHIVELOG"_s,
+        u"ARCHIVE"_s,
+        u"DBA"_s,
+        u"GROUPS"_s,
 
-        QStringLiteral( "NOCACHE" ),
-        QStringLiteral( "ARCHIVELOG" ),
-        QStringLiteral( "DEC" ),
-        QStringLiteral( "INCLUDING" ),
-        QStringLiteral( "NOCYCLE" ),
+        u"NOCACHE"_s,
+        u"ARCHIVELOG"_s,
+        u"DEC"_s,
+        u"INCLUDING"_s,
+        u"NOCYCLE"_s,
 
-        QStringLiteral( "AUTHORIZATION" ),
-        QStringLiteral( "DECLARE" ),
-        QStringLiteral( "INDICATOR" ),
-        QStringLiteral( "NOMAXVALUE" ),
-        QStringLiteral( "AVG" ),
+        u"AUTHORIZATION"_s,
+        u"DECLARE"_s,
+        u"INDICATOR"_s,
+        u"NOMAXVALUE"_s,
+        u"AVG"_s,
 
-        QStringLiteral( "DISABLE" ),
-        QStringLiteral( "INITRANS" ),
-        QStringLiteral( "NOMINVALUE" ),
-        QStringLiteral( "BACKUP" ),
-        QStringLiteral( "DISMOUNT" ),
+        u"DISABLE"_s,
+        u"INITRANS"_s,
+        u"NOMINVALUE"_s,
+        u"BACKUP"_s,
+        u"DISMOUNT"_s,
 
-        QStringLiteral( "INSTANCE" ),
-        QStringLiteral( "NONE" ),
-        QStringLiteral( "BEGIN" ),
-        QStringLiteral( "DOUBLE" ),
-        QStringLiteral( "INT" ),
-        QStringLiteral( "NOORDER" ),
-        QStringLiteral( "BECOME" ),
+        u"INSTANCE"_s,
+        u"NONE"_s,
+        u"BEGIN"_s,
+        u"DOUBLE"_s,
+        u"INT"_s,
+        u"NOORDER"_s,
+        u"BECOME"_s,
 
-        QStringLiteral( "DUMP" ),
-        QStringLiteral( "KEY" ),
-        QStringLiteral( "NORESETLOGS" ),
-        QStringLiteral( "BEFORE" ),
-        QStringLiteral( "EACH" ),
-        QStringLiteral( "LANGUAGE" ),
+        u"DUMP"_s,
+        u"KEY"_s,
+        u"NORESETLOGS"_s,
+        u"BEFORE"_s,
+        u"EACH"_s,
+        u"LANGUAGE"_s,
 
-        QStringLiteral( "NORMAL" ),
-        QStringLiteral( "BLOCK" ),
-        QStringLiteral( "ENABLE" ),
-        QStringLiteral( "LAYER" ),
-        QStringLiteral( "NOSORT" ),
-        QStringLiteral( "BODY" ),
-        QStringLiteral( "END" ),
+        u"NORMAL"_s,
+        u"BLOCK"_s,
+        u"ENABLE"_s,
+        u"LAYER"_s,
+        u"NOSORT"_s,
+        u"BODY"_s,
+        u"END"_s,
 
-        QStringLiteral( "LINK" ),
-        QStringLiteral( "NUMERIC" ),
-        QStringLiteral( "CACHE" ),
-        QStringLiteral( "ESCAPE" ),
-        QStringLiteral( "LISTS" ),
-        QStringLiteral( "OFF" ),
-        QStringLiteral( "CANCEL" ),
+        u"LINK"_s,
+        u"NUMERIC"_s,
+        u"CACHE"_s,
+        u"ESCAPE"_s,
+        u"LISTS"_s,
+        u"OFF"_s,
+        u"CANCEL"_s,
 
-        QStringLiteral( "EVENTS" ),
-        QStringLiteral( "LOGFILE" ),
-        QStringLiteral( "OLD" ),
-        QStringLiteral( "CASCADE" ),
-        QStringLiteral( "EXCEPT" ),
-        QStringLiteral( "MANAGE" ),
-        QStringLiteral( "ONLY" ),
+        u"EVENTS"_s,
+        u"LOGFILE"_s,
+        u"OLD"_s,
+        u"CASCADE"_s,
+        u"EXCEPT"_s,
+        u"MANAGE"_s,
+        u"ONLY"_s,
 
-        QStringLiteral( "CHANGE" ),
-        QStringLiteral( "EXCEPTIONS" ),
-        QStringLiteral( "MANUAL" ),
-        QStringLiteral( "OPEN" ),
-        QStringLiteral( "CHARACTER" ),
-        QStringLiteral( "EXEC" ),
+        u"CHANGE"_s,
+        u"EXCEPTIONS"_s,
+        u"MANUAL"_s,
+        u"OPEN"_s,
+        u"CHARACTER"_s,
+        u"EXEC"_s,
 
-        QStringLiteral( "MAX" ),
-        QStringLiteral( "OPTIMAL" ),
-        QStringLiteral( "CHECKPOINT" ),
-        QStringLiteral( "EXPLAIN" ),
-        QStringLiteral( "MAXDATAFILES" ),
-        QStringLiteral( "OWN" ),
+        u"MAX"_s,
+        u"OPTIMAL"_s,
+        u"CHECKPOINT"_s,
+        u"EXPLAIN"_s,
+        u"MAXDATAFILES"_s,
+        u"OWN"_s,
 
-        QStringLiteral( "CLOSE" ),
-        QStringLiteral( "EXECUTE" ),
-        QStringLiteral( "MAXINSTANCES" ),
-        QStringLiteral( "PACKAGE" ),
-        QStringLiteral( "COBOL" ),
-        QStringLiteral( "EXTENT" ),
+        u"CLOSE"_s,
+        u"EXECUTE"_s,
+        u"MAXINSTANCES"_s,
+        u"PACKAGE"_s,
+        u"COBOL"_s,
+        u"EXTENT"_s,
 
-        QStringLiteral( "MAXLOGFILES" ),
-        QStringLiteral( "PARALLEL" ),
-        QStringLiteral( "COMMIT" ),
-        QStringLiteral( "EXTERNALLY" ),
+        u"MAXLOGFILES"_s,
+        u"PARALLEL"_s,
+        u"COMMIT"_s,
+        u"EXTERNALLY"_s,
 
-        QStringLiteral( "MAXLOGHISTORY" ),
-        QStringLiteral( "PCTINCREASE" ),
-        QStringLiteral( "COMPILE" ),
-        QStringLiteral( "FETCH" ),
+        u"MAXLOGHISTORY"_s,
+        u"PCTINCREASE"_s,
+        u"COMPILE"_s,
+        u"FETCH"_s,
 
-        QStringLiteral( "MAXLOGMEMBERS" ),
-        QStringLiteral( "PCTUSED" ),
-        QStringLiteral( "CONSTRAINT" ),
-        QStringLiteral( "FLUSH" ),
-        QStringLiteral( "MAXTRANS" ),
+        u"MAXLOGMEMBERS"_s,
+        u"PCTUSED"_s,
+        u"CONSTRAINT"_s,
+        u"FLUSH"_s,
+        u"MAXTRANS"_s,
 
-        QStringLiteral( "PLAN" ),
-        QStringLiteral( "CONSTRAINTS" ),
-        QStringLiteral( "FREELIST" ),
-        QStringLiteral( "MAXVALUE" ),
-        QStringLiteral( "PLI" ),
-        QStringLiteral( "CONTENTS" ),
+        u"PLAN"_s,
+        u"CONSTRAINTS"_s,
+        u"FREELIST"_s,
+        u"MAXVALUE"_s,
+        u"PLI"_s,
+        u"CONTENTS"_s,
 
-        QStringLiteral( "FREELISTS" ),
-        QStringLiteral( "MIN" ),
-        QStringLiteral( "PRECISION" ),
-        QStringLiteral( "CONTINUE" ),
-        QStringLiteral( "FORCE" ),
+        u"FREELISTS"_s,
+        u"MIN"_s,
+        u"PRECISION"_s,
+        u"CONTINUE"_s,
+        u"FORCE"_s,
 
-        QStringLiteral( "MINEXTENTS" ),
-        QStringLiteral( "PRIMARY" ),
-        QStringLiteral( "CONTROLFILE" ),
-        QStringLiteral( "FOREIGN" ),
-        QStringLiteral( "MINVALUE" ),
+        u"MINEXTENTS"_s,
+        u"PRIMARY"_s,
+        u"CONTROLFILE"_s,
+        u"FOREIGN"_s,
+        u"MINVALUE"_s,
 
-        QStringLiteral( "PRIVATE" ),
-        QStringLiteral( "COUNT" ),
-        QStringLiteral( "FORTRAN" ),
-        QStringLiteral( "MODULE" ),
-        QStringLiteral( "PROCEDURE" ),
-        QStringLiteral( "PROFILE" ),
+        u"PRIVATE"_s,
+        u"COUNT"_s,
+        u"FORTRAN"_s,
+        u"MODULE"_s,
+        u"PROCEDURE"_s,
+        u"PROFILE"_s,
 
-        QStringLiteral( "SAVEPOINT" ),
-        QStringLiteral( "SQLSTATE" ),
-        QStringLiteral( "TRACING" ),
-        QStringLiteral( "QUOTA" ),
-        QStringLiteral( "SCHEMA" ),
+        u"SAVEPOINT"_s,
+        u"SQLSTATE"_s,
+        u"TRACING"_s,
+        u"QUOTA"_s,
+        u"SCHEMA"_s,
 
-        QStringLiteral( "STATEMENT_ID" ),
-        QStringLiteral( "TRANSACTION" ),
-        QStringLiteral( "READ" ),
-        QStringLiteral( "SCN" ),
-        QStringLiteral( "STATISTICS" ),
+        u"STATEMENT_ID"_s,
+        u"TRANSACTION"_s,
+        u"READ"_s,
+        u"SCN"_s,
+        u"STATISTICS"_s,
 
-        QStringLiteral( "TRIGGERS" ),
-        QStringLiteral( "REAL" ),
-        QStringLiteral( "SECTION" ),
-        QStringLiteral( "STOP" ),
-        QStringLiteral( "TRUNCATE" ),
-        QStringLiteral( "RECOVER" ),
+        u"TRIGGERS"_s,
+        u"REAL"_s,
+        u"SECTION"_s,
+        u"STOP"_s,
+        u"TRUNCATE"_s,
+        u"RECOVER"_s,
 
-        QStringLiteral( "SEGMENT" ),
-        QStringLiteral( "STORAGE" ),
-        QStringLiteral( "UNDER" ),
-        QStringLiteral( "REFERENCES" ),
-        QStringLiteral( "SEQUENCE" ),
-        QStringLiteral( "SUM" ),
+        u"SEGMENT"_s,
+        u"STORAGE"_s,
+        u"UNDER"_s,
+        u"REFERENCES"_s,
+        u"SEQUENCE"_s,
+        u"SUM"_s,
 
-        QStringLiteral( "UNLIMITED" ),
-        QStringLiteral( "REFERENCING" ),
-        QStringLiteral( "SHARED" ),
-        QStringLiteral( "SWITCH" ),
-        QStringLiteral( "UNTIL" ),
+        u"UNLIMITED"_s,
+        u"REFERENCING"_s,
+        u"SHARED"_s,
+        u"SWITCH"_s,
+        u"UNTIL"_s,
 
-        QStringLiteral( "RESETLOGS" ),
-        QStringLiteral( "SNAPSHOT" ),
-        QStringLiteral( "SYSTEM" ),
-        QStringLiteral( "USE" ),
-        QStringLiteral( "RESTRICTED" ),
-        QStringLiteral( "SOME" ),
+        u"RESETLOGS"_s,
+        u"SNAPSHOT"_s,
+        u"SYSTEM"_s,
+        u"USE"_s,
+        u"RESTRICTED"_s,
+        u"SOME"_s,
 
-        QStringLiteral( "TABLES" ),
-        QStringLiteral( "USING" ),
-        QStringLiteral( "REUSE" ),
-        QStringLiteral( "SORT" ),
-        QStringLiteral( "TABLESPACE" ),
-        QStringLiteral( "WHEN" ),
-        QStringLiteral( "ROLE" ),
+        u"TABLES"_s,
+        u"USING"_s,
+        u"REUSE"_s,
+        u"SORT"_s,
+        u"TABLESPACE"_s,
+        u"WHEN"_s,
+        u"ROLE"_s,
 
-        QStringLiteral( "SQL" ),
-        QStringLiteral( "TEMPORARY" ),
-        QStringLiteral( "WRITE" ),
-        QStringLiteral( "ROLES" ),
-        QStringLiteral( "SQLCODE" ),
-        QStringLiteral( "THREAD" ),
-        QStringLiteral( "WORK" ),
+        u"SQL"_s,
+        u"TEMPORARY"_s,
+        u"WRITE"_s,
+        u"ROLES"_s,
+        u"SQLCODE"_s,
+        u"THREAD"_s,
+        u"WORK"_s,
 
-        QStringLiteral( "ROLLBACK" ),
-        QStringLiteral( "SQLERROR" ),
-        QStringLiteral( "TIME" ),
-        QStringLiteral( "ABORT" ),
-        QStringLiteral( "BETWEEN" ),
-        QStringLiteral( "CRASH" ),
+        u"ROLLBACK"_s,
+        u"SQLERROR"_s,
+        u"TIME"_s,
+        u"ABORT"_s,
+        u"BETWEEN"_s,
+        u"CRASH"_s,
 
-        QStringLiteral( "DIGITS" ),
-        QStringLiteral( "ACCEPT" ),
-        QStringLiteral( "BINARY_INTEGER" ),
-        QStringLiteral( "CREATE" ),
-        QStringLiteral( "DISPOSE" ),
+        u"DIGITS"_s,
+        u"ACCEPT"_s,
+        u"BINARY_INTEGER"_s,
+        u"CREATE"_s,
+        u"DISPOSE"_s,
 
-        QStringLiteral( "ACCESS" ),
-        QStringLiteral( "BODY" ),
-        QStringLiteral( "CURRENT" ),
-        QStringLiteral( "DISTINCT" ),
-        QStringLiteral( "ADD" ),
-        QStringLiteral( "BOOLEAN" ),
+        u"ACCESS"_s,
+        u"BODY"_s,
+        u"CURRENT"_s,
+        u"DISTINCT"_s,
+        u"ADD"_s,
+        u"BOOLEAN"_s,
 
-        QStringLiteral( "CURRVAL" ),
-        QStringLiteral( "DO" ),
-        QStringLiteral( "ALL" ),
-        QStringLiteral( "BY" ),
-        QStringLiteral( "CURSOR" ),
-        QStringLiteral( "DROP" ),
-        QStringLiteral( "ALTER" ),
-        QStringLiteral( "CASE" ),
+        u"CURRVAL"_s,
+        u"DO"_s,
+        u"ALL"_s,
+        u"BY"_s,
+        u"CURSOR"_s,
+        u"DROP"_s,
+        u"ALTER"_s,
+        u"CASE"_s,
 
-        QStringLiteral( "DATABASE" ),
-        QStringLiteral( "ELSE" ),
-        QStringLiteral( "AND" ),
-        QStringLiteral( "CHAR" ),
-        QStringLiteral( "DATA_BASE" ),
-        QStringLiteral( "ELSIF" ),
-        QStringLiteral( "ANY" ),
+        u"DATABASE"_s,
+        u"ELSE"_s,
+        u"AND"_s,
+        u"CHAR"_s,
+        u"DATA_BASE"_s,
+        u"ELSIF"_s,
+        u"ANY"_s,
 
-        QStringLiteral( "CHAR_BASE" ),
-        QStringLiteral( "DATE" ),
-        QStringLiteral( "END" ),
-        QStringLiteral( "ARRAY" ),
-        QStringLiteral( "CHECK" ),
-        QStringLiteral( "DBA" ),
-        QStringLiteral( "ENTRY" ),
+        u"CHAR_BASE"_s,
+        u"DATE"_s,
+        u"END"_s,
+        u"ARRAY"_s,
+        u"CHECK"_s,
+        u"DBA"_s,
+        u"ENTRY"_s,
 
-        QStringLiteral( "ARRAYLEN" ),
-        QStringLiteral( "CLOSE" ),
-        QStringLiteral( "DEBUGOFF" ),
-        QStringLiteral( "EXCEPTION" ),
-        QStringLiteral( "AS" ),
-        QStringLiteral( "CLUSTER" ),
+        u"ARRAYLEN"_s,
+        u"CLOSE"_s,
+        u"DEBUGOFF"_s,
+        u"EXCEPTION"_s,
+        u"AS"_s,
+        u"CLUSTER"_s,
 
-        QStringLiteral( "DEBUGON" ),
-        QStringLiteral( "EXCEPTION_INIT" ),
-        QStringLiteral( "ASC" ),
-        QStringLiteral( "CLUSTERS" ),
-        QStringLiteral( "DECLARE" ),
+        u"DEBUGON"_s,
+        u"EXCEPTION_INIT"_s,
+        u"ASC"_s,
+        u"CLUSTERS"_s,
+        u"DECLARE"_s,
 
-        QStringLiteral( "EXISTS" ),
-        QStringLiteral( "ASSERT" ),
-        QStringLiteral( "COLAUTH" ),
-        QStringLiteral( "DECIMAL" ),
-        QStringLiteral( "EXIT" ),
-        QStringLiteral( "ASSIGN" ),
+        u"EXISTS"_s,
+        u"ASSERT"_s,
+        u"COLAUTH"_s,
+        u"DECIMAL"_s,
+        u"EXIT"_s,
+        u"ASSIGN"_s,
 
-        QStringLiteral( "COLUMNS" ),
-        QStringLiteral( "DEFAULT" ),
-        QStringLiteral( "FALSE" ),
-        QStringLiteral( "AT" ),
-        QStringLiteral( "COMMIT" ),
-        QStringLiteral( "DEFINITION" ),
+        u"COLUMNS"_s,
+        u"DEFAULT"_s,
+        u"FALSE"_s,
+        u"AT"_s,
+        u"COMMIT"_s,
+        u"DEFINITION"_s,
 
-        QStringLiteral( "FETCH" ),
-        QStringLiteral( "AUTHORIZATION" ),
-        QStringLiteral( "COMPRESS" ),
-        QStringLiteral( "DELAY" ),
-        QStringLiteral( "FLOAT" ),
-        QStringLiteral( "AVG" ),
+        u"FETCH"_s,
+        u"AUTHORIZATION"_s,
+        u"COMPRESS"_s,
+        u"DELAY"_s,
+        u"FLOAT"_s,
+        u"AVG"_s,
 
-        QStringLiteral( "CONNECT" ),
-        QStringLiteral( "DELETE" ),
-        QStringLiteral( "FOR" ),
-        QStringLiteral( "BASE_TABLE" ),
-        QStringLiteral( "CONSTANT" ),
-        QStringLiteral( "DELTA" ),
+        u"CONNECT"_s,
+        u"DELETE"_s,
+        u"FOR"_s,
+        u"BASE_TABLE"_s,
+        u"CONSTANT"_s,
+        u"DELTA"_s,
 
-        QStringLiteral( "FORM" ),
-        QStringLiteral( "BEGIN" ),
-        QStringLiteral( "COUNT" ),
-        QStringLiteral( "DESC" ),
-        QStringLiteral( "FROM" ),
-        QStringLiteral( "FUNCTION" ),
-        QStringLiteral( "NEW" ),
+        u"FORM"_s,
+        u"BEGIN"_s,
+        u"COUNT"_s,
+        u"DESC"_s,
+        u"FROM"_s,
+        u"FUNCTION"_s,
+        u"NEW"_s,
 
-        QStringLiteral( "RELEASE" ),
-        QStringLiteral( "SUM" ),
-        QStringLiteral( "GENERIC" ),
-        QStringLiteral( "NEXTVAL" ),
-        QStringLiteral( "REMR" ),
-        QStringLiteral( "TABAUTH" ),
-        QStringLiteral( "GOTO" ),
+        u"RELEASE"_s,
+        u"SUM"_s,
+        u"GENERIC"_s,
+        u"NEXTVAL"_s,
+        u"REMR"_s,
+        u"TABAUTH"_s,
+        u"GOTO"_s,
 
-        QStringLiteral( "NOCOMPRESS" ),
-        QStringLiteral( "RENAME" ),
-        QStringLiteral( "TABLE" ),
-        QStringLiteral( "GRANT" ),
-        QStringLiteral( "NOT" ),
-        QStringLiteral( "RESOURCE" ),
+        u"NOCOMPRESS"_s,
+        u"RENAME"_s,
+        u"TABLE"_s,
+        u"GRANT"_s,
+        u"NOT"_s,
+        u"RESOURCE"_s,
 
-        QStringLiteral( "TABLES" ),
-        QStringLiteral( "GROUP" ),
-        QStringLiteral( "NULL" ),
-        QStringLiteral( "RETURN" ),
-        QStringLiteral( "TASK" ),
-        QStringLiteral( "HAVING" ),
-        QStringLiteral( "NUMBER" ),
+        u"TABLES"_s,
+        u"GROUP"_s,
+        u"NULL"_s,
+        u"RETURN"_s,
+        u"TASK"_s,
+        u"HAVING"_s,
+        u"NUMBER"_s,
 
-        QStringLiteral( "REVERSE" ),
-        QStringLiteral( "TERMINATE" ),
-        QStringLiteral( "IDENTIFIED" ),
-        QStringLiteral( "NUMBER_BASE" ),
-        QStringLiteral( "REVOKE" ),
+        u"REVERSE"_s,
+        u"TERMINATE"_s,
+        u"IDENTIFIED"_s,
+        u"NUMBER_BASE"_s,
+        u"REVOKE"_s,
 
-        QStringLiteral( "THEN" ),
-        QStringLiteral( "IF" ),
-        QStringLiteral( "OF" ),
-        QStringLiteral( "ROLLBACK" ),
-        QStringLiteral( "TO" ),
-        QStringLiteral( "IN" ),
-        QStringLiteral( "ON" ),
-        QStringLiteral( "ROWID" ),
-        QStringLiteral( "TRUE" ),
+        u"THEN"_s,
+        u"IF"_s,
+        u"OF"_s,
+        u"ROLLBACK"_s,
+        u"TO"_s,
+        u"IN"_s,
+        u"ON"_s,
+        u"ROWID"_s,
+        u"TRUE"_s,
 
-        QStringLiteral( "INDEX" ),
-        QStringLiteral( "OPEN" ),
-        QStringLiteral( "ROWLABEL" ),
-        QStringLiteral( "TYPE" ),
-        QStringLiteral( "INDEXES" ),
-        QStringLiteral( "OPTION" ),
+        u"INDEX"_s,
+        u"OPEN"_s,
+        u"ROWLABEL"_s,
+        u"TYPE"_s,
+        u"INDEXES"_s,
+        u"OPTION"_s,
 
-        QStringLiteral( "ROWNUM" ),
-        QStringLiteral( "UNION" ),
-        QStringLiteral( "INDICATOR" ),
-        QStringLiteral( "OR" ),
-        QStringLiteral( "ROWTYPE" ),
-        QStringLiteral( "UNIQUE" ),
+        u"ROWNUM"_s,
+        u"UNION"_s,
+        u"INDICATOR"_s,
+        u"OR"_s,
+        u"ROWTYPE"_s,
+        u"UNIQUE"_s,
 
-        QStringLiteral( "INSERT" ),
-        QStringLiteral( "ORDER" ),
-        QStringLiteral( "RUN" ),
-        QStringLiteral( "UPDATE" ),
-        QStringLiteral( "INTEGER" ),
-        QStringLiteral( "OTHERS" ),
+        u"INSERT"_s,
+        u"ORDER"_s,
+        u"RUN"_s,
+        u"UPDATE"_s,
+        u"INTEGER"_s,
+        u"OTHERS"_s,
 
-        QStringLiteral( "SAVEPOINT" ),
-        QStringLiteral( "USE" ),
-        QStringLiteral( "INTERSECT" ),
-        QStringLiteral( "OUT" ),
-        QStringLiteral( "SCHEMA" ),
-        QStringLiteral( "VALUES" ),
+        u"SAVEPOINT"_s,
+        u"USE"_s,
+        u"INTERSECT"_s,
+        u"OUT"_s,
+        u"SCHEMA"_s,
+        u"VALUES"_s,
 
-        QStringLiteral( "INTO" ),
-        QStringLiteral( "PACKAGE" ),
-        QStringLiteral( "SELECT" ),
-        QStringLiteral( "VARCHAR" ),
-        QStringLiteral( "IS" ),
-        QStringLiteral( "PARTITION" ),
+        u"INTO"_s,
+        u"PACKAGE"_s,
+        u"SELECT"_s,
+        u"VARCHAR"_s,
+        u"IS"_s,
+        u"PARTITION"_s,
 
-        QStringLiteral( "SEPARATE" ),
-        QStringLiteral( "VARCHAR2" ),
-        QStringLiteral( "LEVEL" ),
-        QStringLiteral( "PCTFREE" ),
-        QStringLiteral( "SET" ),
-        QStringLiteral( "VARIANCE" ),
+        u"SEPARATE"_s,
+        u"VARCHAR2"_s,
+        u"LEVEL"_s,
+        u"PCTFREE"_s,
+        u"SET"_s,
+        u"VARIANCE"_s,
 
-        QStringLiteral( "LIKE" ),
-        QStringLiteral( "POSITIVE" ),
-        QStringLiteral( "SIZE" ),
-        QStringLiteral( "VIEW" ),
-        QStringLiteral( "LIMITED" ),
-        QStringLiteral( "PRAGMA" ),
+        u"LIKE"_s,
+        u"POSITIVE"_s,
+        u"SIZE"_s,
+        u"VIEW"_s,
+        u"LIMITED"_s,
+        u"PRAGMA"_s,
 
-        QStringLiteral( "SMALLINT" ),
-        QStringLiteral( "VIEWS" ),
-        QStringLiteral( "LOOP" ),
-        QStringLiteral( "PRIOR" ),
-        QStringLiteral( "SPACE" ),
-        QStringLiteral( "WHEN" ),
-        QStringLiteral( "MAX" ),
+        u"SMALLINT"_s,
+        u"VIEWS"_s,
+        u"LOOP"_s,
+        u"PRIOR"_s,
+        u"SPACE"_s,
+        u"WHEN"_s,
+        u"MAX"_s,
 
-        QStringLiteral( "PRIVATE" ),
-        QStringLiteral( "SQL" ),
-        QStringLiteral( "WHERE" ),
-        QStringLiteral( "MIN" ),
-        QStringLiteral( "PROCEDURE" ),
-        QStringLiteral( "SQLCODE" ),
-        QStringLiteral( "WHILE" ),
+        u"PRIVATE"_s,
+        u"SQL"_s,
+        u"WHERE"_s,
+        u"MIN"_s,
+        u"PROCEDURE"_s,
+        u"SQLCODE"_s,
+        u"WHILE"_s,
 
-        QStringLiteral( "MINUS" ),
-        QStringLiteral( "PUBLIC" ),
-        QStringLiteral( "SQLERRM" ),
-        QStringLiteral( "WITH" ),
-        QStringLiteral( "MLSLABEL" ),
-        QStringLiteral( "RAISE" ),
+        u"MINUS"_s,
+        u"PUBLIC"_s,
+        u"SQLERRM"_s,
+        u"WITH"_s,
+        u"MLSLABEL"_s,
+        u"RAISE"_s,
 
-        QStringLiteral( "START" ),
-        QStringLiteral( "WORK" ),
-        QStringLiteral( "MOD" ),
-        QStringLiteral( "RANGE" ),
-        QStringLiteral( "STATEMENT" ),
-        QStringLiteral( "XOR" ),
-        QStringLiteral( "MODE" ),
+        u"START"_s,
+        u"WORK"_s,
+        u"MOD"_s,
+        u"RANGE"_s,
+        u"STATEMENT"_s,
+        u"XOR"_s,
+        u"MODE"_s,
 
-        QStringLiteral( "REAL" ),
-        QStringLiteral( "STDDEV" ),
-        QStringLiteral( "NATURAL" ),
-        QStringLiteral( "RECORD" ),
-        QStringLiteral( "SUBTYPE" )
+        u"REAL"_s,
+        u"STDDEV"_s,
+        u"NATURAL"_s,
+        u"RECORD"_s,
+        u"SUBTYPE"_s
       }
     },
     { Qgis::SqlKeywordCategory::Function,
       { // From: https://docs.oracle.com/cd/B19306_01/server.102/b14200/functions001.htm
-        QStringLiteral( "CAST" ),
-        QStringLiteral( "COALESCE" ),
-        QStringLiteral( "DECODE" ),
-        QStringLiteral( "GREATEST" ),
-        QStringLiteral( "LEAST" ),
-        QStringLiteral( "LNNVL" ),
+        u"CAST"_s,
+        u"COALESCE"_s,
+        u"DECODE"_s,
+        u"GREATEST"_s,
+        u"LEAST"_s,
+        u"LNNVL"_s,
 
-        QStringLiteral( "NULLIF" ),
-        QStringLiteral( "NVL" ),
-        QStringLiteral( "NVL2" ),
-        QStringLiteral( "SET" ),
-        QStringLiteral( "UID" ),
-        QStringLiteral( "USER" ),
-        QStringLiteral( "USERENV" )
+        u"NULLIF"_s,
+        u"NVL"_s,
+        u"NVL2"_s,
+        u"SET"_s,
+        u"UID"_s,
+        u"USER"_s,
+        u"USERENV"_s
       }
     },
     { Qgis::SqlKeywordCategory::Math,
-      { QStringLiteral( "ABS" ),
-        QStringLiteral( "ACOS" ),
-        QStringLiteral( "ASIN" ),
-        QStringLiteral( "ATAN" ),
-        QStringLiteral( "ATAN2" ),
-        QStringLiteral( "BITAND" ),
-        QStringLiteral( "CEIL" ),
-        QStringLiteral( "COS" ),
+      { u"ABS"_s,
+        u"ACOS"_s,
+        u"ASIN"_s,
+        u"ATAN"_s,
+        u"ATAN2"_s,
+        u"BITAND"_s,
+        u"CEIL"_s,
+        u"COS"_s,
 
-        QStringLiteral( "COSH" ),
-        QStringLiteral( "EXP" ),
-        QStringLiteral( "FLOOR" ),
-        QStringLiteral( "LN" ),
-        QStringLiteral( "LOG" ),
-        QStringLiteral( "MOD" ),
-        QStringLiteral( "NANVL" ),
-        QStringLiteral( "POWER" ),
+        u"COSH"_s,
+        u"EXP"_s,
+        u"FLOOR"_s,
+        u"LN"_s,
+        u"LOG"_s,
+        u"MOD"_s,
+        u"NANVL"_s,
+        u"POWER"_s,
 
-        QStringLiteral( "REMAINDER" ),
-        QStringLiteral( "ROUND" ),
-        QStringLiteral( "SIGN" ),
-        QStringLiteral( "SIN" ),
-        QStringLiteral( "SINH" ),
-        QStringLiteral( "SQRT" ),
-        QStringLiteral( "TAN" ),
+        u"REMAINDER"_s,
+        u"ROUND"_s,
+        u"SIGN"_s,
+        u"SIN"_s,
+        u"SINH"_s,
+        u"SQRT"_s,
+        u"TAN"_s,
 
-        QStringLiteral( "TANH" ),
-        QStringLiteral( "TRUNC" ),
-        QStringLiteral( "WIDTH_BUCKET" )
+        u"TANH"_s,
+        u"TRUNC"_s,
+        u"WIDTH_BUCKET"_s
       }
     },
     { Qgis::SqlKeywordCategory::String,
-      { QStringLiteral( "CHR" ),
-        QStringLiteral( "CONCAT" ),
-        QStringLiteral( "INITCAP" ),
-        QStringLiteral( "LOWER" ),
-        QStringLiteral( "LPAD" ),
-        QStringLiteral( "LTRIM" ),
-        QStringLiteral( "NLS_INITCAP" ),
+      { u"CHR"_s,
+        u"CONCAT"_s,
+        u"INITCAP"_s,
+        u"LOWER"_s,
+        u"LPAD"_s,
+        u"LTRIM"_s,
+        u"NLS_INITCAP"_s,
 
-        QStringLiteral( "NLS_LOWER" ),
-        QStringLiteral( "NLSSORT" ),
-        QStringLiteral( "NLS_UPPER" ),
-        QStringLiteral( "REGEXP_REPLACE" ),
-        QStringLiteral( "REGEXP_SUBSTR" ),
+        u"NLS_LOWER"_s,
+        u"NLSSORT"_s,
+        u"NLS_UPPER"_s,
+        u"REGEXP_REPLACE"_s,
+        u"REGEXP_SUBSTR"_s,
 
-        QStringLiteral( "REPLACE" ),
-        QStringLiteral( "RPAD" ),
-        QStringLiteral( "RTRIM" ),
-        QStringLiteral( "SOUNDEX" ),
-        QStringLiteral( "SUBSTR" ),
-        QStringLiteral( "TRANSLATE" ),
-        QStringLiteral( "TREAT" ),
+        u"REPLACE"_s,
+        u"RPAD"_s,
+        u"RTRIM"_s,
+        u"SOUNDEX"_s,
+        u"SUBSTR"_s,
+        u"TRANSLATE"_s,
+        u"TREAT"_s,
 
-        QStringLiteral( "TRIM" ),
-        QStringLiteral( "UPPER" ),
-        QStringLiteral( "ASCII" ),
-        QStringLiteral( "INSTR" ),
-        QStringLiteral( "LENGTH" ),
-        QStringLiteral( "REGEXP_INSTR" )
+        u"TRIM"_s,
+        u"UPPER"_s,
+        u"ASCII"_s,
+        u"INSTR"_s,
+        u"LENGTH"_s,
+        u"REGEXP_INSTR"_s
       }
     },
     { Qgis::SqlKeywordCategory::Aggregate,
-      { QStringLiteral( "AVG" ),
-        QStringLiteral( "COLLECT" ),
-        QStringLiteral( "CORR" ),
-        QStringLiteral( "COUNT" ),
-        QStringLiteral( "COVAR_POP" ),
-        QStringLiteral( "COVAR_SAMP" ),
-        QStringLiteral( "CUME_DIST" ),
+      { u"AVG"_s,
+        u"COLLECT"_s,
+        u"CORR"_s,
+        u"COUNT"_s,
+        u"COVAR_POP"_s,
+        u"COVAR_SAMP"_s,
+        u"CUME_DIST"_s,
 
-        QStringLiteral( "DENSE_RANK" ),
-        QStringLiteral( "FIRST" ),
-        QStringLiteral( "GROUP_ID" ),
-        QStringLiteral( "GROUPING" ),
-        QStringLiteral( "GROUPING_ID" ),
+        u"DENSE_RANK"_s,
+        u"FIRST"_s,
+        u"GROUP_ID"_s,
+        u"GROUPING"_s,
+        u"GROUPING_ID"_s,
 
-        QStringLiteral( "LAST" ),
-        QStringLiteral( "MAX" ),
-        QStringLiteral( "MEDIAN" ),
-        QStringLiteral( "MIN" ),
-        QStringLiteral( "PERCENTILE_CONT" ),
+        u"LAST"_s,
+        u"MAX"_s,
+        u"MEDIAN"_s,
+        u"MIN"_s,
+        u"PERCENTILE_CONT"_s,
 
-        QStringLiteral( "PERCENTILE_DISC" ),
-        QStringLiteral( "PERCENT_RANK" ),
-        QStringLiteral( "RANK" ),
+        u"PERCENTILE_DISC"_s,
+        u"PERCENT_RANK"_s,
+        u"RANK"_s,
 
-        QStringLiteral( "STATS_BINOMIAL_TEST" ),
-        QStringLiteral( "STATS_CROSSTAB" ),
-        QStringLiteral( "STATS_F_TEST" ),
+        u"STATS_BINOMIAL_TEST"_s,
+        u"STATS_CROSSTAB"_s,
+        u"STATS_F_TEST"_s,
 
-        QStringLiteral( "STATS_KS_TEST" ),
-        QStringLiteral( "STATS_MODE" ),
-        QStringLiteral( "STATS_MW_TEST" ),
+        u"STATS_KS_TEST"_s,
+        u"STATS_MODE"_s,
+        u"STATS_MW_TEST"_s,
 
-        QStringLiteral( "STATS_ONE_WAY_ANOVA" ),
-        QStringLiteral( "STATS_WSR_TEST" ),
-        QStringLiteral( "STDDEV" ),
+        u"STATS_ONE_WAY_ANOVA"_s,
+        u"STATS_WSR_TEST"_s,
+        u"STDDEV"_s,
 
-        QStringLiteral( "STDDEV_POP" ),
-        QStringLiteral( "STDDEV_SAMP" ),
-        QStringLiteral( "SUM" ),
-        QStringLiteral( "SYS_XMLAGG" ),
-        QStringLiteral( "VAR_POP" ),
+        u"STDDEV_POP"_s,
+        u"STDDEV_SAMP"_s,
+        u"SUM"_s,
+        u"SYS_XMLAGG"_s,
+        u"VAR_POP"_s,
 
-        QStringLiteral( "VAR_SAMP" ),
-        QStringLiteral( "VARIANCE" ),
-        QStringLiteral( "XMLAGG" )
+        u"VAR_SAMP"_s,
+        u"VARIANCE"_s,
+        u"XMLAGG"_s
       }
     },
     { Qgis::SqlKeywordCategory::Geospatial,
       { // From http://docs.oracle.com/cd/B19306_01/appdev.102/b14255/toc.htm
         // Spatial operators
-        QStringLiteral( "SDO_ANYINTERACT" ),
-        QStringLiteral( "SDO_CONTAINS" ),
-        QStringLiteral( "SDO_COVEREDBY" ),
-        QStringLiteral( "SDO_COVERS" ),
+        u"SDO_ANYINTERACT"_s,
+        u"SDO_CONTAINS"_s,
+        u"SDO_COVEREDBY"_s,
+        u"SDO_COVERS"_s,
 
-        QStringLiteral( "SDO_EQUAL" ),
-        QStringLiteral( "SDO_FILTER" ),
-        QStringLiteral( "SDO_INSIDE" ),
-        QStringLiteral( "SDO_JOIN" ),
-        QStringLiteral( "SDO_NN" ),
+        u"SDO_EQUAL"_s,
+        u"SDO_FILTER"_s,
+        u"SDO_INSIDE"_s,
+        u"SDO_JOIN"_s,
+        u"SDO_NN"_s,
 
-        QStringLiteral( "SDO_NN_DISTANCE" ),
-        QStringLiteral( "SDO_ON" ),
-        QStringLiteral( "SDO_OVERLAPBDYDISJOINT" ),
+        u"SDO_NN_DISTANCE"_s,
+        u"SDO_ON"_s,
+        u"SDO_OVERLAPBDYDISJOINT"_s,
 
-        QStringLiteral( "SDO_OVERLAPBDYINTERSECT" ),
-        QStringLiteral( "SDO_OVERLAPS" ),
-        QStringLiteral( "SDO_RELATE" ),
+        u"SDO_OVERLAPBDYINTERSECT"_s,
+        u"SDO_OVERLAPS"_s,
+        u"SDO_RELATE"_s,
 
-        QStringLiteral( "SDO_TOUCH" ),
-        QStringLiteral( "SDO_WITHIN_DISTANCE" ),
+        u"SDO_TOUCH"_s,
+        u"SDO_WITHIN_DISTANCE"_s,
 
         // SPATIAL AGGREGATE FUNCTIONS
-        QStringLiteral( "SDO_AGGR_CENTROID" ),
-        QStringLiteral( "SDO_AGGR_CONCAT_LINES" ),
+        u"SDO_AGGR_CENTROID"_s,
+        u"SDO_AGGR_CONCAT_LINES"_s,
 
-        QStringLiteral( "SDO_AGGR_CONVEXHULL" ),
-        QStringLiteral( "SDO_AGGR_LRS_CONCAT" ),
-        QStringLiteral( "SDO_AGGR_MBR" ),
+        u"SDO_AGGR_CONVEXHULL"_s,
+        u"SDO_AGGR_LRS_CONCAT"_s,
+        u"SDO_AGGR_MBR"_s,
 
-        QStringLiteral( "SDO_AGGR_UNION" ),
+        u"SDO_AGGR_UNION"_s,
 
         // COORDINATE SYSTEM TRANSFORMATION (SDO_CS)
-        QStringLiteral( "SDO_CS.ADD_PREFERENCE_FOR_OP" ),
-        QStringLiteral( "SDO_CS.CONVERT_NADCON_TO_XML" ),
+        u"SDO_CS.ADD_PREFERENCE_FOR_OP"_s,
+        u"SDO_CS.CONVERT_NADCON_TO_XML"_s,
 
-        QStringLiteral( "SDO_CS.CONVERT_NTV2_TO_XML" ),
-        QStringLiteral( "SDO_CS.CONVERT_XML_TO_NADCON" ),
+        u"SDO_CS.CONVERT_NTV2_TO_XML"_s,
+        u"SDO_CS.CONVERT_XML_TO_NADCON"_s,
 
-        QStringLiteral( "SDO_CS.CONVERT_XML_TO_NTV2" ),
-        QStringLiteral( "SDO_CS.CREATE_CONCATENATED_OP" ),
+        u"SDO_CS.CONVERT_XML_TO_NTV2"_s,
+        u"SDO_CS.CREATE_CONCATENATED_OP"_s,
 
-        QStringLiteral( "SDO_CS.CREATE_OBVIOUS_EPSG_RULES" ),
+        u"SDO_CS.CREATE_OBVIOUS_EPSG_RULES"_s,
 
-        QStringLiteral( "SDO_CS.CREATE_PREF_CONCATENATED_OP" ),
+        u"SDO_CS.CREATE_PREF_CONCATENATED_OP"_s,
 
-        QStringLiteral( "SDO_CS.DELETE_ALL_EPSG_RULES" ),
-        QStringLiteral( "SDO_CS.DELETE_OP" ),
+        u"SDO_CS.DELETE_ALL_EPSG_RULES"_s,
+        u"SDO_CS.DELETE_OP"_s,
 
-        QStringLiteral( "SDO_CS.DETERMINE_CHAIN" ),
-        QStringLiteral( "SDO_CS.DETERMINE_DEFAULT_CHAIN" ),
+        u"SDO_CS.DETERMINE_CHAIN"_s,
+        u"SDO_CS.DETERMINE_DEFAULT_CHAIN"_s,
 
-        QStringLiteral( "SDO_CS.FIND_GEOG_CRS" ),
-        QStringLiteral( "SDO_CS.FIND_PROJ_CRS" ),
+        u"SDO_CS.FIND_GEOG_CRS"_s,
+        u"SDO_CS.FIND_PROJ_CRS"_s,
 
-        QStringLiteral( "SDO_CS.FROM_OGC_SIMPLEFEATURE_SRS" ),
-        QStringLiteral( "SDO_CS.FROM_USNG" ),
+        u"SDO_CS.FROM_OGC_SIMPLEFEATURE_SRS"_s,
+        u"SDO_CS.FROM_USNG"_s,
 
-        QStringLiteral( "SDO_CS.MAP_EPSG_SRID_TO_ORACLE" ),
+        u"SDO_CS.MAP_EPSG_SRID_TO_ORACLE"_s,
 
-        QStringLiteral( "SDO_CS.MAP_ORACLE_SRID_TO_EPSG" ),
+        u"SDO_CS.MAP_ORACLE_SRID_TO_EPSG"_s,
 
-        QStringLiteral( "SDO_CS.REVOKE_PREFERENCE_FOR_OP" ),
+        u"SDO_CS.REVOKE_PREFERENCE_FOR_OP"_s,
 
-        QStringLiteral( "SDO_CS.TO_OGC_SIMPLEFEATURE_SRS" ),
-        QStringLiteral( "SDO_CS.TO_USNG" ),
+        u"SDO_CS.TO_OGC_SIMPLEFEATURE_SRS"_s,
+        u"SDO_CS.TO_USNG"_s,
 
-        QStringLiteral( "SDO_CS.TRANSFORM" ),
-        QStringLiteral( "SDO_CS.TRANSFORM_LAYER" ),
+        u"SDO_CS.TRANSFORM"_s,
+        u"SDO_CS.TRANSFORM_LAYER"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_ALL_EPSG_CRS" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_ALL_EPSG_CRS"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_EPSG_CRS" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_EPSG_CRS"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_EPSG_DATUM" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_EPSG_DATUM"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_EPSG_ELLIPS" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_EPSG_ELLIPS"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_EPSG_OP" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_EPSG_OP"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_EPSG_PARAM" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_EPSG_PARAM"_s,
 
-        QStringLiteral( "SDO_CS.UPDATE_WKTS_FOR_EPSG_PM" ),
-        QStringLiteral( "SDO_CS.VALIDATE_WKT" ),
+        u"SDO_CS.UPDATE_WKTS_FOR_EPSG_PM"_s,
+        u"SDO_CS.VALIDATE_WKT"_s,
 
-        QStringLiteral( "SDO_CS.VIEWPORT_TRANSFORM" ),
+        u"SDO_CS.VIEWPORT_TRANSFORM"_s,
 
         // GEOCODING (SDO_GCDR)
-        QStringLiteral( "SDO_GCDR.GEOCODE" ),
-        QStringLiteral( "SDO_GCDR.GEOCODE_ADDR" ),
+        u"SDO_GCDR.GEOCODE"_s,
+        u"SDO_GCDR.GEOCODE_ADDR"_s,
 
-        QStringLiteral( "SDO_GCDR.GEOCODE_ADDR_ALL" ),
-        QStringLiteral( "SDO_GCDR.GEOCODE_ALL" ),
+        u"SDO_GCDR.GEOCODE_ADDR_ALL"_s,
+        u"SDO_GCDR.GEOCODE_ALL"_s,
 
-        QStringLiteral( "SDO_GCDR.GEOCODE_AS_GEOMETRY" ),
-        QStringLiteral( "SDO_GCDR.REVERSE_GEOCODE" ),
+        u"SDO_GCDR.GEOCODE_AS_GEOMETRY"_s,
+        u"SDO_GCDR.REVERSE_GEOCODE"_s,
 
         // GEOMETRY (SDO_GEOM)
-        QStringLiteral( "SDO_GEOM.RELATE" ),
-        QStringLiteral( "SDO_GEOM.SDO_ARC_DENSIFY" ),
+        u"SDO_GEOM.RELATE"_s,
+        u"SDO_GEOM.SDO_ARC_DENSIFY"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_AREA" ),
-        QStringLiteral( "SDO_GEOM.SDO_BUFFER" ),
+        u"SDO_GEOM.SDO_AREA"_s,
+        u"SDO_GEOM.SDO_BUFFER"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_CENTROID" ),
-        QStringLiteral( "SDO_GEOM.SDO_CONVEXHULL" ),
+        u"SDO_GEOM.SDO_CENTROID"_s,
+        u"SDO_GEOM.SDO_CONVEXHULL"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_DIFFERENCE" ),
-        QStringLiteral( "SDO_GEOM.SDO_DISTANCE" ),
+        u"SDO_GEOM.SDO_DIFFERENCE"_s,
+        u"SDO_GEOM.SDO_DISTANCE"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_INTERSECTION" ),
-        QStringLiteral( "SDO_GEOM.SDO_LENGTH" ),
+        u"SDO_GEOM.SDO_INTERSECTION"_s,
+        u"SDO_GEOM.SDO_LENGTH"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_MAX_MBR_ORDINATE" ),
-        QStringLiteral( "SDO_GEOM.SDO_MBR" ),
+        u"SDO_GEOM.SDO_MAX_MBR_ORDINATE"_s,
+        u"SDO_GEOM.SDO_MBR"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_MIN_MBR_ORDINATE" ),
-        QStringLiteral( "SDO_GEOM.SDO_POINTONSURFACE" ),
+        u"SDO_GEOM.SDO_MIN_MBR_ORDINATE"_s,
+        u"SDO_GEOM.SDO_POINTONSURFACE"_s,
 
-        QStringLiteral( "SDO_GEOM.SDO_UNION" ),
-        QStringLiteral( "SDO_GEOM.SDO_XOR" ),
+        u"SDO_GEOM.SDO_UNION"_s,
+        u"SDO_GEOM.SDO_XOR"_s,
 
-        QStringLiteral( "SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT" ),
+        u"SDO_GEOM.VALIDATE_GEOMETRY_WITH_CONTEXT"_s,
 
-        QStringLiteral( "SDO_GEOM.VALIDATE_LAYER_WITH_CONTEXT" ),
+        u"SDO_GEOM.VALIDATE_LAYER_WITH_CONTEXT"_s,
 
-        QStringLiteral( "SDO_GEOM.WITHIN_DISTANCE" ),
+        u"SDO_GEOM.WITHIN_DISTANCE"_s,
 
         // LINEAR REFERENCING SYSTEM (SDO_LRS)
-        QStringLiteral( "SDO_LRS.CLIP_GEOM_SEGMENT" ),
-        QStringLiteral( "SDO_LRS.CONCATENATE_GEOM_SEGMENTS" ),
+        u"SDO_LRS.CLIP_GEOM_SEGMENT"_s,
+        u"SDO_LRS.CONCATENATE_GEOM_SEGMENTS"_s,
 
-        QStringLiteral( "SDO_LRS.CONNECTED_GEOM_SEGMENTS" ),
+        u"SDO_LRS.CONNECTED_GEOM_SEGMENTS"_s,
 
-        QStringLiteral( "SDO_LRS.CONVERT_TO_LRS_DIM_ARRAY" ),
-        QStringLiteral( "SDO_LRS.CONVERT_TO_LRS_GEOM" ),
+        u"SDO_LRS.CONVERT_TO_LRS_DIM_ARRAY"_s,
+        u"SDO_LRS.CONVERT_TO_LRS_GEOM"_s,
 
-        QStringLiteral( "SDO_LRS.CONVERT_TO_LRS_LAYER" ),
+        u"SDO_LRS.CONVERT_TO_LRS_LAYER"_s,
 
-        QStringLiteral( "SDO_LRS.CONVERT_TO_STD_DIM_ARRAY" ),
-        QStringLiteral( "SDO_LRS.CONVERT_TO_STD_GEOM" ),
+        u"SDO_LRS.CONVERT_TO_STD_DIM_ARRAY"_s,
+        u"SDO_LRS.CONVERT_TO_STD_GEOM"_s,
 
-        QStringLiteral( "SDO_LRS.CONVERT_TO_STD_LAYER" ),
-        QStringLiteral( "SDO_LRS.DEFINE_GEOM_SEGMENT" ),
+        u"SDO_LRS.CONVERT_TO_STD_LAYER"_s,
+        u"SDO_LRS.DEFINE_GEOM_SEGMENT"_s,
 
-        QStringLiteral( "SDO_LRS.DYNAMIC_SEGMENT" ),
-        QStringLiteral( "SDO_LRS.FIND_LRS_DIM_POS" ),
+        u"SDO_LRS.DYNAMIC_SEGMENT"_s,
+        u"SDO_LRS.FIND_LRS_DIM_POS"_s,
 
-        QStringLiteral( "SDO_LRS.FIND_MEASURE" ),
-        QStringLiteral( "SDO_LRS.FIND_OFFSET" ),
+        u"SDO_LRS.FIND_MEASURE"_s,
+        u"SDO_LRS.FIND_OFFSET"_s,
 
-        QStringLiteral( "SDO_LRS.GEOM_SEGMENT_END_MEASURE" ),
-        QStringLiteral( "SDO_LRS.GEOM_SEGMENT_END_PT" ),
+        u"SDO_LRS.GEOM_SEGMENT_END_MEASURE"_s,
+        u"SDO_LRS.GEOM_SEGMENT_END_PT"_s,
 
-        QStringLiteral( "SDO_LRS.GEOM_SEGMENT_LENGTH" ),
+        u"SDO_LRS.GEOM_SEGMENT_LENGTH"_s,
 
-        QStringLiteral( "SDO_LRS.GEOM_SEGMENT_START_MEASURE" ),
+        u"SDO_LRS.GEOM_SEGMENT_START_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.GEOM_SEGMENT_START_PT" ),
-        QStringLiteral( "SDO_LRS.GET_MEASURE" ),
+        u"SDO_LRS.GEOM_SEGMENT_START_PT"_s,
+        u"SDO_LRS.GET_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.GET_NEXT_SHAPE_PT" ),
-        QStringLiteral( "SDO_LRS.GET_NEXT_SHAPE_PT_MEASURE" ),
+        u"SDO_LRS.GET_NEXT_SHAPE_PT"_s,
+        u"SDO_LRS.GET_NEXT_SHAPE_PT_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.GET_PREV_SHAPE_PT" ),
-        QStringLiteral( "SDO_LRS.GET_PREV_SHAPE_PT_MEASURE" ),
+        u"SDO_LRS.GET_PREV_SHAPE_PT"_s,
+        u"SDO_LRS.GET_PREV_SHAPE_PT_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.IS_GEOM_SEGMENT_DEFINED" ),
+        u"SDO_LRS.IS_GEOM_SEGMENT_DEFINED"_s,
 
-        QStringLiteral( "SDO_LRS.IS_MEASURE_DECREASING" ),
-        QStringLiteral( "SDO_LRS.IS_MEASURE_INCREASING" ),
+        u"SDO_LRS.IS_MEASURE_DECREASING"_s,
+        u"SDO_LRS.IS_MEASURE_INCREASING"_s,
 
-        QStringLiteral( "SDO_LRS.IS_SHAPE_PT_MEASURE" ),
-        QStringLiteral( "SDO_LRS.LOCATE_PT" ),
+        u"SDO_LRS.IS_SHAPE_PT_MEASURE"_s,
+        u"SDO_LRS.LOCATE_PT"_s,
 
-        QStringLiteral( "SDO_LRS.LRS_INTERSECTION" ),
-        QStringLiteral( "SDO_LRS.MEASURE_RANGE" ),
+        u"SDO_LRS.LRS_INTERSECTION"_s,
+        u"SDO_LRS.MEASURE_RANGE"_s,
 
-        QStringLiteral( "SDO_LRS.MEASURE_TO_PERCENTAGE" ),
-        QStringLiteral( "SDO_LRS.OFFSET_GEOM_SEGMENT" ),
+        u"SDO_LRS.MEASURE_TO_PERCENTAGE"_s,
+        u"SDO_LRS.OFFSET_GEOM_SEGMENT"_s,
 
-        QStringLiteral( "SDO_LRS.PERCENTAGE_TO_MEASURE" ),
-        QStringLiteral( "SDO_LRS.PROJECT_PT" ),
+        u"SDO_LRS.PERCENTAGE_TO_MEASURE"_s,
+        u"SDO_LRS.PROJECT_PT"_s,
 
-        QStringLiteral( "SDO_LRS.REDEFINE_GEOM_SEGMENT" ),
-        QStringLiteral( "SDO_LRS.RESET_MEASURE" ),
+        u"SDO_LRS.REDEFINE_GEOM_SEGMENT"_s,
+        u"SDO_LRS.RESET_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.REVERSE_GEOMETRY" ),
-        QStringLiteral( "SDO_LRS.REVERSE_MEASURE" ),
+        u"SDO_LRS.REVERSE_GEOMETRY"_s,
+        u"SDO_LRS.REVERSE_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.SET_PT_MEASURE" ),
-        QStringLiteral( "SDO_LRS.SPLIT_GEOM_SEGMENT" ),
+        u"SDO_LRS.SET_PT_MEASURE"_s,
+        u"SDO_LRS.SPLIT_GEOM_SEGMENT"_s,
 
-        QStringLiteral( "SDO_LRS.TRANSLATE_MEASURE" ),
-        QStringLiteral( "SDO_LRS.VALID_GEOM_SEGMENT" ),
+        u"SDO_LRS.TRANSLATE_MEASURE"_s,
+        u"SDO_LRS.VALID_GEOM_SEGMENT"_s,
 
-        QStringLiteral( "SDO_LRS.VALID_LRS_PT" ),
-        QStringLiteral( "SDO_LRS.VALID_MEASURE" ),
+        u"SDO_LRS.VALID_LRS_PT"_s,
+        u"SDO_LRS.VALID_MEASURE"_s,
 
-        QStringLiteral( "SDO_LRS.VALIDATE_LRS_GEOMETRY" ),
+        u"SDO_LRS.VALIDATE_LRS_GEOMETRY"_s,
 
         // SDO_MIGRATE
-        QStringLiteral( "SDO_MIGRATE.TO_CURRENT" ),
+        u"SDO_MIGRATE.TO_CURRENT"_s,
 
         // SPATIAL ANALYSIS AND MINING (SDO_SAM)
-        QStringLiteral( "SDO_SAM.AGGREGATES_FOR_GEOMETRY" ),
-        QStringLiteral( "SDO_SAM.AGGREGATES_FOR_LAYER" ),
+        u"SDO_SAM.AGGREGATES_FOR_GEOMETRY"_s,
+        u"SDO_SAM.AGGREGATES_FOR_LAYER"_s,
 
-        QStringLiteral( "SDO_SAM.BIN_GEOMETRY" ),
-        QStringLiteral( "SDO_SAM.BIN_LAYER" ),
+        u"SDO_SAM.BIN_GEOMETRY"_s,
+        u"SDO_SAM.BIN_LAYER"_s,
 
-        QStringLiteral( "SDO_SAM.COLOCATED_REFERENCE_FEATURES" ),
+        u"SDO_SAM.COLOCATED_REFERENCE_FEATURES"_s,
 
-        QStringLiteral( "SDO_SAM.SIMPLIFY_GEOMETRY" ),
-        QStringLiteral( "SDO_SAM.SIMPLIFY_LAYER" ),
+        u"SDO_SAM.SIMPLIFY_GEOMETRY"_s,
+        u"SDO_SAM.SIMPLIFY_LAYER"_s,
 
-        QStringLiteral( "SDO_SAM.SPATIAL_CLUSTERS" ),
-        QStringLiteral( "SDO_SAM.TILED_AGGREGATES" ),
+        u"SDO_SAM.SPATIAL_CLUSTERS"_s,
+        u"SDO_SAM.TILED_AGGREGATES"_s,
 
-        QStringLiteral( "SDO_SAM.TILED_BINS" ),
+        u"SDO_SAM.TILED_BINS"_s,
 
         // TUNING (SDO_TUNE)
-        QStringLiteral( "SDO_TUNE.AVERAGE_MBR" ),
-        QStringLiteral( "SDO_TUNE.ESTIMATE_RTREE_INDEX_SIZE" ),
+        u"SDO_TUNE.AVERAGE_MBR"_s,
+        u"SDO_TUNE.ESTIMATE_RTREE_INDEX_SIZE"_s,
 
-        QStringLiteral( "SDO_TUNE.EXTENT_OF" ),
-        QStringLiteral( "SDO_TUNE.MIX_INFO" ),
+        u"SDO_TUNE.EXTENT_OF"_s,
+        u"SDO_TUNE.MIX_INFO"_s,
 
-        QStringLiteral( "SDO_TUNE.QUALITY_DEGRADATION" ),
+        u"SDO_TUNE.QUALITY_DEGRADATION"_s,
 
         // UTILITY (SDO_UTIL)
-        QStringLiteral( "SDO_UTIL.APPEND" ),
-        QStringLiteral( "SDO_UTIL.CIRCLE_POLYGON" ),
+        u"SDO_UTIL.APPEND"_s,
+        u"SDO_UTIL.CIRCLE_POLYGON"_s,
 
-        QStringLiteral( "SDO_UTIL.CONCAT_LINES" ),
-        QStringLiteral( "SDO_UTIL.CONVERT_UNIT" ),
+        u"SDO_UTIL.CONCAT_LINES"_s,
+        u"SDO_UTIL.CONVERT_UNIT"_s,
 
-        QStringLiteral( "SDO_UTIL.ELLIPSE_POLYGON" ),
-        QStringLiteral( "SDO_UTIL.EXTRACT" ),
+        u"SDO_UTIL.ELLIPSE_POLYGON"_s,
+        u"SDO_UTIL.EXTRACT"_s,
 
-        QStringLiteral( "SDO_UTIL.FROM_WKBGEOMETRY" ),
-        QStringLiteral( "SDO_UTIL.FROM_WKTGEOMETRY" ),
+        u"SDO_UTIL.FROM_WKBGEOMETRY"_s,
+        u"SDO_UTIL.FROM_WKTGEOMETRY"_s,
 
-        QStringLiteral( "SDO_UTIL.GETNUMELEM" ),
-        QStringLiteral( "SDO_UTIL.GETNUMVERTICES" ),
+        u"SDO_UTIL.GETNUMELEM"_s,
+        u"SDO_UTIL.GETNUMVERTICES"_s,
 
-        QStringLiteral( "SDO_UTIL.GETVERTICES" ),
-        QStringLiteral( "SDO_UTIL.INITIALIZE_INDEXES_FOR_TTS" ),
+        u"SDO_UTIL.GETVERTICES"_s,
+        u"SDO_UTIL.INITIALIZE_INDEXES_FOR_TTS"_s,
 
-        QStringLiteral( "SDO_UTIL.POINT_AT_BEARING" ),
-        QStringLiteral( "SDO_UTIL.POLYGONTOLINE" ),
+        u"SDO_UTIL.POINT_AT_BEARING"_s,
+        u"SDO_UTIL.POLYGONTOLINE"_s,
 
-        QStringLiteral( "SDO_UTIL.PREPARE_FOR_TTS" ),
-        QStringLiteral( "SDO_UTIL.RECTIFY_GEOMETRY" ),
+        u"SDO_UTIL.PREPARE_FOR_TTS"_s,
+        u"SDO_UTIL.RECTIFY_GEOMETRY"_s,
 
-        QStringLiteral( "SDO_UTIL.REMOVE_DUPLICATE_VERTICES" ),
+        u"SDO_UTIL.REMOVE_DUPLICATE_VERTICES"_s,
 
-        QStringLiteral( "SDO_UTIL.REVERSE_LINESTRING" ),
-        QStringLiteral( "SDO_UTIL.SIMPLIFY" ),
+        u"SDO_UTIL.REVERSE_LINESTRING"_s,
+        u"SDO_UTIL.SIMPLIFY"_s,
 
-        QStringLiteral( "SDO_UTIL.TO_GMLGEOMETRY" ),
-        QStringLiteral( "SDO_UTIL.TO_WKBGEOMETRY" ),
+        u"SDO_UTIL.TO_GMLGEOMETRY"_s,
+        u"SDO_UTIL.TO_WKBGEOMETRY"_s,
 
-        QStringLiteral( "SDO_UTIL.TO_WKTGEOMETRY" ),
-        QStringLiteral( "SDO_UTIL.VALIDATE_WKBGEOMETRY" ),
+        u"SDO_UTIL.TO_WKTGEOMETRY"_s,
+        u"SDO_UTIL.VALIDATE_WKBGEOMETRY"_s,
 
-        QStringLiteral( "SDO_UTIL.VALIDATE_WKTGEOMETRY" )
+        u"SDO_UTIL.VALIDATE_WKTGEOMETRY"_s
       }
     },
     { Qgis::SqlKeywordCategory::Operator,
-      { QStringLiteral( "AND" ),
-        QStringLiteral( "OR" ),
-        QStringLiteral( "||" ),
-        QStringLiteral( "<" ),
-        QStringLiteral( "<=" ),
-        QStringLiteral( ">" ),
-        QStringLiteral( ">=" ),
-        QStringLiteral( "=" ),
+      { u"AND"_s,
+        u"OR"_s,
+        u"||"_s,
+        u"<"_s,
+        u"<="_s,
+        u">"_s,
+        u">="_s,
+        u"="_s,
 
-        QStringLiteral( "<>" ),
-        QStringLiteral( "!=" ),
-        QStringLiteral( "^=" ),
-        QStringLiteral( "IS" ),
-        QStringLiteral( "IS NOT" ),
-        QStringLiteral( "IN" ),
-        QStringLiteral( "ANY" ),
-        QStringLiteral( "SOME" ),
+        u"<>"_s,
+        u"!="_s,
+        u"^="_s,
+        u"IS"_s,
+        u"IS NOT"_s,
+        u"IN"_s,
+        u"ANY"_s,
+        u"SOME"_s,
 
-        QStringLiteral( "NOT IN" ),
-        QStringLiteral( "LIKE" ),
-        QStringLiteral( "GLOB" ),
-        QStringLiteral( "MATCH" ),
-        QStringLiteral( "REGEXP" ),
+        u"NOT IN"_s,
+        u"LIKE"_s,
+        u"GLOB"_s,
+        u"MATCH"_s,
+        u"REGEXP"_s,
 
-        QStringLiteral( "BETWEEN x AND y" ),
-        QStringLiteral( "NOT BETWEEN x AND y" ),
-        QStringLiteral( "EXISTS" ),
+        u"BETWEEN x AND y"_s,
+        u"NOT BETWEEN x AND y"_s,
+        u"EXISTS"_s,
 
-        QStringLiteral( "IS NULL" ),
-        QStringLiteral( "IS NOT NULL" ),
-        QStringLiteral( "ALL" ),
-        QStringLiteral( "NOT" ),
+        u"IS NULL"_s,
+        u"IS NOT NULL"_s,
+        u"ALL"_s,
+        u"NOT"_s,
 
-        QStringLiteral( "CASE {column} WHEN {value} THEN {value}" )
+        u"CASE {column} WHEN {value} THEN {value}"_s
       }
     },
     { Qgis::SqlKeywordCategory::Constant,
-      { QStringLiteral( "NULL" ),
-        QStringLiteral( "FALSE" ),
-        QStringLiteral( "TRUE" )
+      { u"NULL"_s,
+        u"FALSE"_s,
+        u"TRUE"_s
       }
     }
   };
@@ -1388,7 +1388,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
   auto qry = std::make_unique<QgsOracleQuery>( pconn );
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsAbstractDatabaseProviderConnection" ), QGS_QUERY_LOG_ORIGIN };
+  QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), u"QgsAbstractDatabaseProviderConnection"_s, QGS_QUERY_LOG_ORIGIN };
 
   if ( !qry->exec( sql ) )
   {
@@ -1472,7 +1472,7 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema, cons
   // Set geometry column and if it's not aspatial
   if ( wkbType != Qgis::WkbType::Unknown && wkbType != Qgis::WkbType::NoGeometry )
   {
-    newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "GEOM" ) ).toString() );
+    newUri.setGeometryColumn( options->value( u"geometryColumn"_s, u"GEOM"_s ).toString() );
   }
   QMap<int, int> map;
   QString errCause;
@@ -1498,12 +1498,12 @@ QString QgsOracleProviderConnection::createVectorLayerExporterDestinationUri( co
 
   destUri.setTable( options.layerName );
   destUri.setSchema( options.schema );
-  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "GEOM" ) : options.geometryColumn ) : QString() );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? u"GEOM"_s : options.geometryColumn ) : QString() );
   if ( !options.primaryKeyColumns.isEmpty() )
   {
     if ( options.primaryKeyColumns.length() > 1 )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Multiple primary keys are not supported by Oracle, ignoring" ), QString(), Qgis::MessageLevel::Info );
+      QgsMessageLog::logMessage( u"Multiple primary keys are not supported by Oracle, ignoring"_s, QString(), Qgis::MessageLevel::Info );
     }
     destUri.setKeyColumn( options.primaryKeyColumns.at( 0 ) );
   }
@@ -1594,11 +1594,11 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOracleProviderCon
 void QgsOracleProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
-  executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
+  executeSqlPrivate( u"DROP TABLE %1.%2"_s
                        .arg( QgsOracleConn::quotedIdentifier( schema ) )
                        .arg( QgsOracleConn::quotedIdentifier( name ) ) );
 
-  executeSqlPrivate( QStringLiteral( "DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '%1'" )
+  executeSqlPrivate( u"DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '%1'"_s
                        .arg( name ) );
 }
 
@@ -1611,10 +1611,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
 void QgsOracleProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameVectorTable );
-  executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
+  executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s
                        .arg( QgsOracleConn::quotedIdentifier( schema ), QgsOracleConn::quotedIdentifier( name ), QgsOracleConn::quotedIdentifier( newName ) ) );
 
-  executeSqlPrivate( QStringLiteral( "UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'" )
+  executeSqlPrivate( u"UPDATE user_sdo_geom_metadata SET TABLE_NAME = '%1' where TABLE_NAME = '%2'"_s
                        .arg( newName, name ) );
 }
 
@@ -1647,7 +1647,7 @@ void QgsOracleProviderConnection::deleteSpatialIndex( const QString &schema, con
   if ( indexName.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2(%3)" ).arg( schema, name, geometryColumn ) );
 
-  executeSqlPrivate( QStringLiteral( "DROP INDEX %1" ).arg( indexName ) );
+  executeSqlPrivate( u"DROP INDEX %1"_s.arg( indexName ) );
 }
 
 bool QgsOracleProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -1667,7 +1667,7 @@ bool QgsOracleProviderConnection::spatialIndexExists( const QString &schema, con
 
 QIcon QgsOracleProviderConnection::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconOracle.svg"_s );
 }
 
 QStringList QgsOracleProviderConnection::schemas() const
@@ -1676,7 +1676,7 @@ QStringList QgsOracleProviderConnection::schemas() const
   QStringList schemas;
 
   // get only non system schemas/users
-  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS where ORACLE_MAINTAINED = 'N' AND USERNAME NOT IN ( 'PDBADMIN', 'HR' )" ) ).rows();
+  QList<QVariantList> users = executeSqlPrivate( u"SELECT USERNAME FROM ALL_USERS where ORACLE_MAINTAINED = 'N' AND USERNAME NOT IN ( 'PDBADMIN', 'HR' )"_s ).rows();
   for ( QVariantList userInfos : users )
     schemas << userInfos.at( 0 ).toString();
 

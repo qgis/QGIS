@@ -41,7 +41,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   const QgsTextFormat format = settings.textFormat();
 
-  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( QStringLiteral( "scalebar_text" ) );
+  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( u"scalebar_text"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), scaleScope );
 
   const QString firstLabel = firstLabelString( settings );
@@ -99,9 +99,9 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     }
 
     //don't draw label for intermediate left segments or the zero label when it needs to be skipped
-    if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != QLatin1String( "0" ) || drawZero ) )
+    if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != "0"_L1 || drawZero ) )
     {
-      scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
+      scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( u"scale_value"_s, currentNumericLabel, true, false ) );
       QPointF pos;
       if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment )
       {
@@ -137,7 +137,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     // of it is, without considering the unit label suffix. That's drawn at the end after
     // horizontally centering just the numeric portion.
     currentNumericLabel = settings.numericFormat()->formatDouble( currentLabelNumber / settings.mapUnitsPerScaleBarUnit(), numericContext );
-    scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
+    scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( u"scale_value"_s, currentNumericLabel, true, false ) );
     QPointF pos;
     pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
     if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment )

@@ -181,8 +181,8 @@ class CORE_EXPORT QgsRendererRange
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
-                        : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
+                        ? u"<QgsRendererRange: %1 - %2>"_s.arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
+                        : u"<QgsRendererRange: %1 - %2 (%3)>"_s.arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 

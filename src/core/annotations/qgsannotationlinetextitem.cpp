@@ -45,7 +45,7 @@ QgsAnnotationLineTextItem::~QgsAnnotationLineTextItem() = default;
 
 QString QgsAnnotationLineTextItem::type() const
 {
-  return QStringLiteral( "linetext" );
+  return u"linetext"_s;
 }
 
 void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback * )
@@ -91,14 +91,14 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
 
 bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "wkt" ), mCurve->asWkt() );
-  element.setAttribute( QStringLiteral( "text" ), mText );
+  element.setAttribute( u"wkt"_s, mCurve->asWkt() );
+  element.setAttribute( u"text"_s, mText );
 
-  element.setAttribute( QStringLiteral( "offsetFromLine" ), qgsDoubleToString( mOffsetFromLineDistance ) );
-  element.setAttribute( QStringLiteral( "offsetFromLineUnit" ), QgsUnitTypes::encodeUnit( mOffsetFromLineUnit ) );
-  element.setAttribute( QStringLiteral( "offsetFromLineScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLineScale ) );
+  element.setAttribute( u"offsetFromLine"_s, qgsDoubleToString( mOffsetFromLineDistance ) );
+  element.setAttribute( u"offsetFromLineUnit"_s, QgsUnitTypes::encodeUnit( mOffsetFromLineUnit ) );
+  element.setAttribute( u"offsetFromLineScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLineScale ) );
 
-  QDomElement textFormatElem = document.createElement( QStringLiteral( "lineTextFormat" ) );
+  QDomElement textFormatElem = document.createElement( u"lineTextFormat"_s );
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElem );
 
@@ -200,27 +200,27 @@ QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::create()
 
 bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
+  const QString wkt = element.attribute( u"wkt"_s );
   const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
   if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geometry.constGet() ) )
     mCurve.reset( curve->clone() );
 
-  mText = element.attribute( QStringLiteral( "text" ) );
-  const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "lineTextFormat" ) );
+  mText = element.attribute( u"text"_s );
+  const QDomElement textFormatElem = element.firstChildElement( u"lineTextFormat"_s );
   if ( !textFormatElem.isNull() )
   {
-    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( u"text-style"_s );
     const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mTextFormat.readXml( textFormatElem, context );
   }
 
-  mOffsetFromLineDistance = element.attribute( QStringLiteral( "offsetFromLine" ) ).toDouble();
+  mOffsetFromLineDistance = element.attribute( u"offsetFromLine"_s ).toDouble();
   bool ok = false;
-  mOffsetFromLineUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "offsetFromLineUnit" ) ), &ok );
+  mOffsetFromLineUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"offsetFromLineUnit"_s ), &ok );
   if ( !ok )
     mOffsetFromLineUnit = Qgis::RenderUnit::Millimeters;
 
-  mOffsetFromLineScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "offsetFromLineScale" ) ) );
+  mOffsetFromLineScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"offsetFromLineScale"_s ) );
 
   readCommonProperties( element, context );
 

@@ -37,13 +37,13 @@
 #include <QUrlQuery>
 
 
-const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_KEY = QStringLiteral( "PlanetaryComputer" );
-const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "Microsoft Planetary Computer" );
+const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_KEY = u"PlanetaryComputer"_s;
+const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DESCRIPTION = u"Microsoft Planetary Computer"_s;
 const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "Microsoft Planetary Computer" );
 
-const QString QgsAuthPlanetaryComputerMethod::OPEN_SAS_SIGN_URL = QStringLiteral( "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" );
-const QString QgsAuthPlanetaryComputerMethod::PRO_SAS_SIGN_URL = QStringLiteral( "%1://%2/sas/sign?api-version=2025-04-30-preview&href=" );
-const QString QgsAuthPlanetaryComputerMethod::BLOB_STORAGE_DOMAIN = QStringLiteral( ".blob.core.windows.net" );
+const QString QgsAuthPlanetaryComputerMethod::OPEN_SAS_SIGN_URL = u"https://planetarycomputer.microsoft.com/api/sas/v1/sign?href="_s;
+const QString QgsAuthPlanetaryComputerMethod::PRO_SAS_SIGN_URL = u"%1://%2/sas/sign?api-version=2025-04-30-preview&href="_s;
+const QString QgsAuthPlanetaryComputerMethod::BLOB_STORAGE_DOMAIN = u".blob.core.windows.net"_s;
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthPlanetaryComputerMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
 QMap<QString, QgsAuthPlanetaryComputerMethod::SasToken> QgsAuthPlanetaryComputerMethod::sSasTokensCache = QMap<QString, QgsAuthPlanetaryComputerMethod::SasToken>();
@@ -52,9 +52,9 @@ QMap<QString, QgsAuthPlanetaryComputerMethod::SasToken> QgsAuthPlanetaryComputer
 QgsAuthPlanetaryComputerMethod::QgsAuthPlanetaryComputerMethod()
 {
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( { QStringLiteral( "gdal" ), QStringLiteral( "copc" ), QStringLiteral( "stac" ) } );
+  setDataProviders( { u"gdal"_s, u"copc"_s, u"stac"_s } );
 
-  mOauth2 = QgsApplication::authManager()->authMethod( QStringLiteral( "OAuth2" ) );
+  mOauth2 = QgsApplication::authManager()->authMethod( u"OAuth2"_s );
 }
 
 QString QgsAuthPlanetaryComputerMethod::key() const
@@ -79,11 +79,11 @@ bool QgsAuthPlanetaryComputerMethod::updateNetworkRequest( QNetworkRequest &requ
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
-  const bool planetaryComputerPro = config.config( QStringLiteral( "serverType" ) ) == QLatin1String( "pro" );
+  const bool planetaryComputerPro = config.config( u"serverType"_s ) == "pro"_L1;
   const bool needsSasSigning = request.url().host().endsWith( BLOB_STORAGE_DOMAIN );
 
   // Planetary Computer Pro requests need to be updated using oauth2
@@ -110,7 +110,7 @@ bool QgsAuthPlanetaryComputerMethod::updateDataSourceUriItems( QStringList &conn
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update URI items FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update URI items FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
@@ -139,14 +139,14 @@ QgsAuthMethodConfig QgsAuthPlanetaryComputerMethod::getMethodConfig( const QStri
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     config = sAuthConfigCache.value( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return config;
   }
 
   // else build basic bundle
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, config, fullconfig ) )
   {
-    QgsDebugError( QStringLiteral( "Retrieve config FAILED for authcfg: %1" ).arg( authcfg ) );
+    QgsDebugError( u"Retrieve config FAILED for authcfg: %1"_s.arg( authcfg ) );
     return QgsAuthMethodConfig();
   }
 
@@ -159,7 +159,7 @@ QgsAuthMethodConfig QgsAuthPlanetaryComputerMethod::getMethodConfig( const QStri
 void QgsAuthPlanetaryComputerMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &config )
 {
   const QMutexLocker locker( &mMutex );
-  QgsDebugMsgLevel( QStringLiteral( "Putting Planetary Computer config for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Putting Planetary Computer config for authcfg: %1"_s.arg( authcfg ), 2 );
   sAuthConfigCache.insert( authcfg, config );
 }
 
@@ -175,17 +175,17 @@ void QgsAuthPlanetaryComputerMethod::removeMethodConfig( const QString &authcfg 
       if ( it.key().startsWith( authcfg ) )
         it.remove();
     }
-    QgsDebugMsgLevel( QStringLiteral( "Removed Planetary Computer config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Removed Planetary Computer config for authcfg: %1"_s.arg( authcfg ), 2 );
   }
 }
 
 void QgsAuthPlanetaryComputerMethod::updateUri( QString &uri, const QgsAuthMethodConfig &config, const QString &authcfg )
 {
-  const bool isPro = config.config( QStringLiteral( "serverType" ) ) == QLatin1String( "pro" );
+  const bool isPro = config.config( u"serverType"_s ) == "pro"_L1;
   QString signUrl;
   if ( isPro )
   {
-    const QUrl rootUrl( config.config( QStringLiteral( "rootUrl" ) ) );
+    const QUrl rootUrl( config.config( u"rootUrl"_s ) );
     signUrl = PRO_SAS_SIGN_URL.arg( rootUrl.scheme(), rootUrl.host() );
   }
   else
@@ -194,7 +194,7 @@ void QgsAuthPlanetaryComputerMethod::updateUri( QString &uri, const QgsAuthMetho
   }
 
   // We trim the vsicurl prefix from the uri before creating the url, we'll add it back after fetching the token if needed
-  const bool isVsi = uri.startsWith( QLatin1String( "/vsicurl/" ) );
+  const bool isVsi = uri.startsWith( "/vsicurl/"_L1 );
   if ( isVsi )
   {
     uri.remove( 0, 9 );
@@ -209,10 +209,10 @@ void QgsAuthPlanetaryComputerMethod::updateUri( QString &uri, const QgsAuthMetho
     if ( query.isEmpty() )
       url.setQuery( token );
     else
-      url.setQuery( QStringLiteral( "%1&%2" ).arg( query, token ) );
+      url.setQuery( u"%1&%2"_s.arg( query, token ) );
 
     if ( isVsi )
-      uri = QStringLiteral( "/vsicurl/%1" ).arg( url.toString() );
+      uri = u"/vsicurl/%1"_s.arg( url.toString() );
     else
       uri = url.toString();
   }
@@ -248,7 +248,7 @@ QString QgsAuthPlanetaryComputerMethod::sasTokenForUrl( const QUrl &url, const Q
 
   if ( content.error() != QNetworkReply::NoError )
   {
-    QgsDebugError( QStringLiteral( "Error getting SAS token" ) );
+    QgsDebugError( u"Error getting SAS token"_s );
     return token;
   }
 
@@ -279,7 +279,7 @@ QString QgsAuthPlanetaryComputerMethod::sasTokenForUrl( const QUrl &url, const Q
   }
   catch ( nlohmann::json::exception &ex )
   {
-    QgsDebugError( QStringLiteral( "Error parsing SAS token reply : %1" ).arg( ex.what() ) );
+    QgsDebugError( u"Error parsing SAS token reply : %1"_s.arg( ex.what() ) );
   }
 
   return token;
@@ -288,13 +288,13 @@ QString QgsAuthPlanetaryComputerMethod::sasTokenForUrl( const QUrl &url, const Q
 void QgsAuthPlanetaryComputerMethod::storeSasToken( const QString &authcfg, const QString &account, const QString &container, const SasToken &token )
 {
   const QMutexLocker locker( &mMutex );
-  sSasTokensCache.insert( QStringLiteral( "%1/%2/%3" ).arg( authcfg, account, container ), token );
+  sSasTokensCache.insert( u"%1/%2/%3"_s.arg( authcfg, account, container ), token );
 }
 
 QgsAuthPlanetaryComputerMethod::SasToken QgsAuthPlanetaryComputerMethod::retrieveSasToken( const QString &authcfg, const QString &account, const QString &container )
 {
   const QMutexLocker locker( &mMutex );
-  SasToken sas = sSasTokensCache.value( QStringLiteral( "%1/%2/%3" ).arg( authcfg, account, container ) );
+  SasToken sas = sSasTokensCache.value( u"%1/%2/%3"_s.arg( authcfg, account, container ) );
   return sas;
 }
 

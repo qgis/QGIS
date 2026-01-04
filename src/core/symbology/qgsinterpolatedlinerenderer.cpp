@@ -363,30 +363,30 @@ double QgsInterpolatedLineWidth::strokeWidth( double value ) const
 
 QDomElement QgsInterpolatedLineWidth::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "mesh-stroke-width" ) );
+  QDomElement elem = doc.createElement( u"mesh-stroke-width"_s );
 
-  elem.setAttribute( QStringLiteral( "width-varying" ), mIsWidthVariable ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "fixed-width" ), mFixedWidth );
-  elem.setAttribute( QStringLiteral( "minimum-value" ), mMinimumValue );
-  elem.setAttribute( QStringLiteral( "maximum-value" ), mMaximumValue );
-  elem.setAttribute( QStringLiteral( "minimum-width" ), mMinimumWidth );
-  elem.setAttribute( QStringLiteral( "maximum-width" ), mMaximumWidth );
-  elem.setAttribute( QStringLiteral( "ignore-out-of-range" ), mIgnoreOutOfRange ? 1 : 0 );
-  elem.setAttribute( QStringLiteral( "use-absolute-value" ), mUseAbsoluteValue ? 1 : 0 );
+  elem.setAttribute( u"width-varying"_s, mIsWidthVariable ? 1 : 0 );
+  elem.setAttribute( u"fixed-width"_s, mFixedWidth );
+  elem.setAttribute( u"minimum-value"_s, mMinimumValue );
+  elem.setAttribute( u"maximum-value"_s, mMaximumValue );
+  elem.setAttribute( u"minimum-width"_s, mMinimumWidth );
+  elem.setAttribute( u"maximum-width"_s, mMaximumWidth );
+  elem.setAttribute( u"ignore-out-of-range"_s, mIgnoreOutOfRange ? 1 : 0 );
+  elem.setAttribute( u"use-absolute-value"_s, mUseAbsoluteValue ? 1 : 0 );
 
   return elem;
 }
 
 void QgsInterpolatedLineWidth::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  mIsWidthVariable = elem.attribute( QStringLiteral( "width-varying" ) ).toInt();
-  mFixedWidth = elem.attribute( QStringLiteral( "fixed-width" ) ).toDouble();
-  mMinimumValue = elem.attribute( QStringLiteral( "minimum-value" ) ).toDouble();
-  mMaximumValue = elem.attribute( QStringLiteral( "maximum-value" ) ).toDouble();
-  mMinimumWidth = elem.attribute( QStringLiteral( "minimum-width" ) ).toDouble();
-  mMaximumWidth = elem.attribute( QStringLiteral( "maximum-width" ) ).toDouble();
-  mIgnoreOutOfRange = elem.attribute( QStringLiteral( "ignore-out-of-range" ) ).toInt();
-  mUseAbsoluteValue = elem.attribute( QStringLiteral( "use-absolute-value" ) ).toInt();
+  mIsWidthVariable = elem.attribute( u"width-varying"_s ).toInt();
+  mFixedWidth = elem.attribute( u"fixed-width"_s ).toDouble();
+  mMinimumValue = elem.attribute( u"minimum-value"_s ).toDouble();
+  mMaximumValue = elem.attribute( u"maximum-value"_s ).toDouble();
+  mMinimumWidth = elem.attribute( u"minimum-width"_s ).toDouble();
+  mMaximumWidth = elem.attribute( u"maximum-width"_s ).toDouble();
+  mIgnoreOutOfRange = elem.attribute( u"ignore-out-of-range"_s ).toInt();
+  mUseAbsoluteValue = elem.attribute( u"use-absolute-value"_s ).toInt();
 }
 
 bool QgsInterpolatedLineWidth::useAbsoluteValue() const
@@ -508,10 +508,10 @@ QColor QgsInterpolatedLineColor::singleColor() const
 
 QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "mesh-stroke-color" ) );
+  QDomElement elem = doc.createElement( u"mesh-stroke-color"_s );
 
-  elem.setAttribute( QStringLiteral( "single-color" ), QgsColorUtils::colorToString( mSingleColor ) );
-  elem.setAttribute( QStringLiteral( "coloring-method" ), mColoringMethod );
+  elem.setAttribute( u"single-color"_s, QgsColorUtils::colorToString( mSingleColor ) );
+  elem.setAttribute( u"coloring-method"_s, mColoringMethod );
   elem.appendChild( mColorRampShader.writeXml( doc ) );
 
   return elem;
@@ -519,12 +519,12 @@ QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsRead
 
 void QgsInterpolatedLineColor::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  QDomElement shaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
+  QDomElement shaderElem = elem.firstChildElement( u"colorrampshader"_s );
   mColorRampShader.readXml( shaderElem );
 
-  mSingleColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "single-color" ) ) );
+  mSingleColor = QgsColorUtils::colorFromString( elem.attribute( u"single-color"_s ) );
   mColoringMethod = static_cast<QgsInterpolatedLineColor::ColoringMethod>(
-                      elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
+                      elem.attribute( u"coloring-method"_s ).toInt() );
 }
 
 void QgsInterpolatedLineColor::graduatedColors( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const
@@ -805,7 +805,7 @@ void QgsInterpolatedLineColor::graduatedColorsDiscrete( double value1, double va
 
 }
 
-QString QgsInterpolatedLineSymbolLayer::layerType() const {return QStringLiteral( "InterpolatedLine" );}
+QString QgsInterpolatedLineSymbolLayer::layerType() const {return u"InterpolatedLine"_s;}
 
 void QgsInterpolatedLineSymbolLayer::startRender( QgsSymbolRenderContext & )
 {
@@ -828,42 +828,42 @@ QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &prope
   std::unique_ptr<QgsInterpolatedLineSymbolLayer> symbolLayer;
   symbolLayer = std::make_unique<QgsInterpolatedLineSymbolLayer>( );
 
-  if ( properties.contains( QStringLiteral( "start_width_expression" ) ) )
-    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineStartWidthValue, QgsProperty::fromExpression( properties.value( QStringLiteral( "start_width_expression" ) ).toString() ) );
-  if ( properties.contains( QStringLiteral( "end_width_expression" ) ) )
-    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineEndWidthValue, QgsProperty::fromExpression( properties.value( QStringLiteral( "end_width_expression" ) ).toString() ) );
+  if ( properties.contains( u"start_width_expression"_s ) )
+    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineStartWidthValue, QgsProperty::fromExpression( properties.value( u"start_width_expression"_s ).toString() ) );
+  if ( properties.contains( u"end_width_expression"_s ) )
+    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineEndWidthValue, QgsProperty::fromExpression( properties.value( u"end_width_expression"_s ).toString() ) );
 
-  if ( properties.contains( QStringLiteral( "start_color_expression" ) ) )
-    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineStartColorValue, QgsProperty::fromExpression( properties.value( QStringLiteral( "start_color_expression" ) ).toString() ) );
-  if ( properties.contains( QStringLiteral( "end_color_expression" ) ) )
-    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineEndColorValue, QgsProperty::fromExpression( properties.value( QStringLiteral( "end_color_expression" ) ).toString() ) );
+  if ( properties.contains( u"start_color_expression"_s ) )
+    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineStartColorValue, QgsProperty::fromExpression( properties.value( u"start_color_expression"_s ).toString() ) );
+  if ( properties.contains( u"end_color_expression"_s ) )
+    symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineEndColorValue, QgsProperty::fromExpression( properties.value( u"end_color_expression"_s ).toString() ) );
 
-  if ( properties.contains( QStringLiteral( "line_width" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setFixedStrokeWidth( properties.value( QStringLiteral( "line_width" ) ).toDouble() ) ;
-  if ( properties.contains( QStringLiteral( "line_width_unit" ) ) )
-    symbolLayer->mLineRender.setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties.value( QStringLiteral( "line_width_unit" ) ).toString() ) );
-  if ( properties.contains( QStringLiteral( "width_varying_minimum_value" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setMinimumValue( properties.value( QStringLiteral( "width_varying_minimum_value" ) ).toDouble() );
-  if ( properties.contains( QStringLiteral( "width_varying_maximum_value" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setMaximumValue( properties.value( QStringLiteral( "width_varying_maximum_value" ) ).toDouble() );
-  if ( properties.contains( QStringLiteral( "width_varying_use_absolute_value" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setUseAbsoluteValue( properties.value( QStringLiteral( "width_varying_use_absolute_value" ) ).toInt() );
-  if ( properties.contains( QStringLiteral( "width_varying_minimum_width" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setMinimumWidth( properties.value( QStringLiteral( "width_varying_minimum_width" ) ).toDouble() );
-  if ( properties.contains( QStringLiteral( "width_varying_maximum_width" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setMaximumWidth( properties.value( QStringLiteral( "width_varying_maximum_width" ) ).toDouble() );
-  if ( properties.contains( QStringLiteral( "width_varying_ignore_out_of_range" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setIgnoreOutOfRange( properties.value( QStringLiteral( "width_varying_ignore_out_of_range" ) ).toInt() );
-  if ( properties.contains( QStringLiteral( "width_varying_is_variable_width" ) ) )
-    symbolLayer->mLineRender.mStrokeWidth.setIsVariableWidth( properties.value( QStringLiteral( "width_varying_is_variable_width" ) ).toInt() );
+  if ( properties.contains( u"line_width"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setFixedStrokeWidth( properties.value( u"line_width"_s ).toDouble() ) ;
+  if ( properties.contains( u"line_width_unit"_s ) )
+    symbolLayer->mLineRender.setWidthUnit( QgsUnitTypes::decodeRenderUnit( properties.value( u"line_width_unit"_s ).toString() ) );
+  if ( properties.contains( u"width_varying_minimum_value"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setMinimumValue( properties.value( u"width_varying_minimum_value"_s ).toDouble() );
+  if ( properties.contains( u"width_varying_maximum_value"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setMaximumValue( properties.value( u"width_varying_maximum_value"_s ).toDouble() );
+  if ( properties.contains( u"width_varying_use_absolute_value"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setUseAbsoluteValue( properties.value( u"width_varying_use_absolute_value"_s ).toInt() );
+  if ( properties.contains( u"width_varying_minimum_width"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setMinimumWidth( properties.value( u"width_varying_minimum_width"_s ).toDouble() );
+  if ( properties.contains( u"width_varying_maximum_width"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setMaximumWidth( properties.value( u"width_varying_maximum_width"_s ).toDouble() );
+  if ( properties.contains( u"width_varying_ignore_out_of_range"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setIgnoreOutOfRange( properties.value( u"width_varying_ignore_out_of_range"_s ).toInt() );
+  if ( properties.contains( u"width_varying_is_variable_width"_s ) )
+    symbolLayer->mLineRender.mStrokeWidth.setIsVariableWidth( properties.value( u"width_varying_is_variable_width"_s ).toInt() );
 
-  if ( properties.contains( QStringLiteral( "single_color" ) ) )
-    symbolLayer->mLineRender.mStrokeColoring.setColor( QgsColorUtils::colorFromString( properties.value( QStringLiteral( "single_color" ) ).toString() ) );
-  if ( properties.contains( QStringLiteral( "color_ramp_shader" ) ) )
-    symbolLayer->mLineRender.mStrokeColoring.setColor( createColorRampShaderFromProperties( properties.value( QStringLiteral( "color_ramp_shader" ) ) ) );
-  if ( properties.contains( QStringLiteral( "coloring_method" ) ) )
+  if ( properties.contains( u"single_color"_s ) )
+    symbolLayer->mLineRender.mStrokeColoring.setColor( QgsColorUtils::colorFromString( properties.value( u"single_color"_s ).toString() ) );
+  if ( properties.contains( u"color_ramp_shader"_s ) )
+    symbolLayer->mLineRender.mStrokeColoring.setColor( createColorRampShaderFromProperties( properties.value( u"color_ramp_shader"_s ) ) );
+  if ( properties.contains( u"coloring_method"_s ) )
     symbolLayer->mLineRender.mStrokeColoring.setColoringMethod(
-      static_cast<QgsInterpolatedLineColor::ColoringMethod>( properties.value( QStringLiteral( "coloring_method" ) ).toInt() ) );
+      static_cast<QgsInterpolatedLineColor::ColoringMethod>( properties.value( u"coloring_method"_s ).toInt() ) );
 
   return symbolLayer.release();
 }
@@ -880,20 +880,20 @@ QVariantMap QgsInterpolatedLineSymbolLayer::properties() const
   QVariantMap props;
 
   // Line width varying
-  props.insert( QStringLiteral( "line_width" ), QString::number( mLineRender.mStrokeWidth.fixedStrokeWidth() ) );
-  props.insert( QStringLiteral( "line_width_unit" ), QgsUnitTypes::encodeUnit( mLineRender.widthUnit() ) );
-  props.insert( QStringLiteral( "width_varying_minimum_value" ), mLineRender.mStrokeWidth.minimumValue() );
-  props.insert( QStringLiteral( "width_varying_maximum_value" ), mLineRender.mStrokeWidth.maximumValue() );
-  props.insert( QStringLiteral( "width_varying_use_absolute_value" ), mLineRender.mStrokeWidth.useAbsoluteValue() ? 1 : 0 );
-  props.insert( QStringLiteral( "width_varying_minimum_width" ), mLineRender.mStrokeWidth.minimumWidth() );
-  props.insert( QStringLiteral( "width_varying_maximum_width" ), mLineRender.mStrokeWidth.maximumWidth() );
-  props.insert( QStringLiteral( "width_varying_ignore_out_of_range" ), mLineRender.mStrokeWidth.ignoreOutOfRange() ? 1 : 0 );
-  props.insert( QStringLiteral( "width_varying_is_variable_width" ), mLineRender.mStrokeWidth.isVariableWidth() ? 1 : 0 );
+  props.insert( u"line_width"_s, QString::number( mLineRender.mStrokeWidth.fixedStrokeWidth() ) );
+  props.insert( u"line_width_unit"_s, QgsUnitTypes::encodeUnit( mLineRender.widthUnit() ) );
+  props.insert( u"width_varying_minimum_value"_s, mLineRender.mStrokeWidth.minimumValue() );
+  props.insert( u"width_varying_maximum_value"_s, mLineRender.mStrokeWidth.maximumValue() );
+  props.insert( u"width_varying_use_absolute_value"_s, mLineRender.mStrokeWidth.useAbsoluteValue() ? 1 : 0 );
+  props.insert( u"width_varying_minimum_width"_s, mLineRender.mStrokeWidth.minimumWidth() );
+  props.insert( u"width_varying_maximum_width"_s, mLineRender.mStrokeWidth.maximumWidth() );
+  props.insert( u"width_varying_ignore_out_of_range"_s, mLineRender.mStrokeWidth.ignoreOutOfRange() ? 1 : 0 );
+  props.insert( u"width_varying_is_variable_width"_s, mLineRender.mStrokeWidth.isVariableWidth() ? 1 : 0 );
 
   // Color varying
-  props.insert( QStringLiteral( "coloring_method" ), mLineRender.mStrokeColoring.coloringMethod() );
-  props.insert( QStringLiteral( "single_color" ), QgsColorUtils::colorToString( mLineRender.mStrokeColoring.singleColor() ) );
-  props.insert( QStringLiteral( "color_ramp_shader" ), colorRampShaderProperties() );
+  props.insert( u"coloring_method"_s, mLineRender.mStrokeColoring.coloringMethod() );
+  props.insert( u"single_color"_s, QgsColorUtils::colorToString( mLineRender.mStrokeColoring.singleColor() ) );
+  props.insert( u"color_ramp_shader"_s, colorRampShaderProperties() );
 
   return props;
 }
@@ -1020,26 +1020,26 @@ QVariant QgsInterpolatedLineSymbolLayer::colorRampShaderProperties() const
 
   QVariantMap props;
   if ( colorRampShader.sourceColorRamp() )
-    props.insert( QStringLiteral( "color_ramp_source" ), QgsSymbolLayerUtils::colorRampToVariant( QString(), colorRampShader.sourceColorRamp() ) );
-  props.insert( QStringLiteral( "color_ramp_shader_type" ), static_cast< int >( colorRampShader.colorRampType() ) );
-  props.insert( QStringLiteral( "color_ramp_shader_classification_mode" ), static_cast< int >( colorRampShader.classificationMode() ) );
+    props.insert( u"color_ramp_source"_s, QgsSymbolLayerUtils::colorRampToVariant( QString(), colorRampShader.sourceColorRamp() ) );
+  props.insert( u"color_ramp_shader_type"_s, static_cast< int >( colorRampShader.colorRampType() ) );
+  props.insert( u"color_ramp_shader_classification_mode"_s, static_cast< int >( colorRampShader.classificationMode() ) );
   QVariantList colorRampItemListVariant;
 
   const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader.colorRampItemList();
   for ( const QgsColorRampShader::ColorRampItem &item : colorRampItemList )
   {
     QVariantMap itemVar;
-    itemVar[QStringLiteral( "label" )] = item.label;
-    itemVar[QStringLiteral( "color" )] = QgsColorUtils::colorToString( item.color );
-    itemVar[QStringLiteral( "value" )] = item.value;
+    itemVar[u"label"_s] = item.label;
+    itemVar[u"color"_s] = QgsColorUtils::colorToString( item.color );
+    itemVar[u"value"_s] = item.value;
     colorRampItemListVariant.append( itemVar );
   }
-  props.insert( QStringLiteral( "color_ramp_shader_items_list" ), colorRampItemListVariant );
+  props.insert( u"color_ramp_shader_items_list"_s, colorRampItemListVariant );
 
-  props.insert( QStringLiteral( "color_ramp_shader_minimum_value" ), colorRampShader.minimumValue() );
-  props.insert( QStringLiteral( "color_ramp_shader_maximum_value" ), colorRampShader.maximumValue() );
-  props.insert( QStringLiteral( "color_ramp_shader_value_out_of_range" ), colorRampShader.clip() ? 1 : 0 );
-  props.insert( QStringLiteral( "color_ramp_shader_label_precision" ), colorRampShader.labelPrecision() );
+  props.insert( u"color_ramp_shader_minimum_value"_s, colorRampShader.minimumValue() );
+  props.insert( u"color_ramp_shader_maximum_value"_s, colorRampShader.maximumValue() );
+  props.insert( u"color_ramp_shader_value_out_of_range"_s, colorRampShader.clip() ? 1 : 0 );
+  props.insert( u"color_ramp_shader_label_precision"_s, colorRampShader.labelPrecision() );
 
   return props;
 }
@@ -1053,18 +1053,18 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
 
   QVariantMap shaderVariantMap = properties.toMap();
 
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_source" ) ) )
-    colorRampShader.setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( shaderVariantMap.value( QStringLiteral( "color_ramp_source" ) ) ).release() );
+  if ( shaderVariantMap.contains( u"color_ramp_source"_s ) )
+    colorRampShader.setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( shaderVariantMap.value( u"color_ramp_source"_s ) ).release() );
 
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_type" ) ) )
-    colorRampShader.setColorRampType( static_cast<Qgis::ShaderInterpolationMethod>( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_type" ) ).toInt() ) );
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_classification_mode" ) ) )
+  if ( shaderVariantMap.contains( u"color_ramp_shader_type"_s ) )
+    colorRampShader.setColorRampType( static_cast<Qgis::ShaderInterpolationMethod>( shaderVariantMap.value( u"color_ramp_shader_type"_s ).toInt() ) );
+  if ( shaderVariantMap.contains( u"color_ramp_shader_classification_mode"_s ) )
     colorRampShader.setClassificationMode( static_cast<Qgis::ShaderClassificationMethod>(
-        shaderVariantMap.value( QStringLiteral( "color_ramp_shader_classification_mode" ) ).toInt() ) );
+        shaderVariantMap.value( u"color_ramp_shader_classification_mode"_s ).toInt() ) );
 
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_items_list" ) ) )
+  if ( shaderVariantMap.contains( u"color_ramp_shader_items_list"_s ) )
   {
-    QVariant colorRampItemsVar = shaderVariantMap.value( QStringLiteral( "color_ramp_shader_items_list" ) );
+    QVariant colorRampItemsVar = shaderVariantMap.value( u"color_ramp_shader_items_list"_s );
     if ( colorRampItemsVar.userType() == QMetaType::Type::QVariantList )
     {
       QVariantList itemVariantList = colorRampItemsVar.toList();
@@ -1075,12 +1075,12 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
         if ( itemVar.userType() != QMetaType::Type::QVariantMap )
           continue;
         QVariantMap itemVarMap = itemVar.toMap();
-        if ( !itemVarMap.contains( QStringLiteral( "label" ) ) || !itemVarMap.contains( QStringLiteral( "color" ) ) || !itemVarMap.contains( QStringLiteral( "value" ) ) )
+        if ( !itemVarMap.contains( u"label"_s ) || !itemVarMap.contains( u"color"_s ) || !itemVarMap.contains( u"value"_s ) )
           continue;
 
-        item.label = itemVarMap.value( QStringLiteral( "label" ) ).toString();
-        item.color = QgsColorUtils::colorFromString( itemVarMap.value( QStringLiteral( "color" ) ).toString() );
-        item.value = itemVarMap.value( QStringLiteral( "value" ) ).toDouble();
+        item.label = itemVarMap.value( u"label"_s ).toString();
+        item.color = QgsColorUtils::colorFromString( itemVarMap.value( u"color"_s ).toString() );
+        item.value = itemVarMap.value( u"value"_s ).toDouble();
 
         colorRampItemList.append( item );
       }
@@ -1088,20 +1088,20 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
     }
   }
 
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_minimum_value" ) ) )
-    colorRampShader.setMinimumValue( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_minimum_value" ) ).toDouble() );
+  if ( shaderVariantMap.contains( u"color_ramp_shader_minimum_value"_s ) )
+    colorRampShader.setMinimumValue( shaderVariantMap.value( u"color_ramp_shader_minimum_value"_s ).toDouble() );
   else
     colorRampShader.setMinimumValue( std::numeric_limits<double>::quiet_NaN() );
 
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_maximum_value" ) ) )
-    colorRampShader.setMaximumValue( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_maximum_value" ) ).toDouble() );
+  if ( shaderVariantMap.contains( u"color_ramp_shader_maximum_value"_s ) )
+    colorRampShader.setMaximumValue( shaderVariantMap.value( u"color_ramp_shader_maximum_value"_s ).toDouble() );
   else
     colorRampShader.setMaximumValue( std::numeric_limits<double>::quiet_NaN() );
 
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_value_out_of_range" ) ) )
-    colorRampShader.setClip( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_value_out_of_range" ) ).toInt() == 1 );
-  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_label_precision" ) ) )
-    colorRampShader.setLabelPrecision( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_label_precision" ) ).toInt() );
+  if ( shaderVariantMap.contains( u"color_ramp_shader_value_out_of_range"_s ) )
+    colorRampShader.setClip( shaderVariantMap.value( u"color_ramp_shader_value_out_of_range"_s ).toInt() == 1 );
+  if ( shaderVariantMap.contains( u"color_ramp_shader_label_precision"_s ) )
+    colorRampShader.setLabelPrecision( shaderVariantMap.value( u"color_ramp_shader_label_precision"_s ).toInt() );
 
   return colorRampShader;
 }

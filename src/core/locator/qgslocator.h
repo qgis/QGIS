@@ -157,7 +157,7 @@ class CORE_EXPORT QgsLocator : public QObject
     QStringList completionList() const {return mAutocompletionList;}
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( QStringLiteral( "locator-filters" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( u"locator-filters"_s );
 
     //! Settings entry locator filter enabled
     static const QgsSettingsEntryBool *settingsLocatorFilterEnabled;

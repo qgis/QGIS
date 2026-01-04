@@ -49,7 +49,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   const QFont font;
   const QFontMetrics fm( font );
-  mMaximumShadowWidth = fm.boundingRect( QStringLiteral( "X" ) ).width();
+  mMaximumShadowWidth = fm.boundingRect( u"X"_s ).width();
 
   mGrid = std::make_unique<QgsLayoutItemPageGrid>( pos().x(), pos().y(), rect().width(), rect().height(), mLayout );
   mGrid->setParentItem( this );
@@ -154,13 +154,13 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
     *ok = false;
 
   const QString trimmedString = string.trimmed();
-  if ( trimmedString.compare( QLatin1String( "portrait" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmedString.compare( "portrait"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
       *ok = true;
     return Portrait;
   }
-  else if ( trimmedString.compare( QLatin1String( "landscape" ), Qt::CaseInsensitive ) == 0 )
+  else if ( trimmedString.compare( "landscape"_L1, Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
       *ok = true;
@@ -192,10 +192,10 @@ void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesF
 void QgsLayoutItemPage::createDefaultPageStyleSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, u"white"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"no"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
   mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
 
@@ -240,7 +240,7 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() cons
 bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   QgsStyleSymbolEntity entity( mPageStyleSymbol.get() );
-  if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
+  if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"page"_s, QObject::tr( "Page" ) ) ) )
     return false;
   return true;
 }
@@ -330,7 +330,7 @@ bool QgsLayoutItemPage::writePropertiesToElement( QDomElement &element, QDomDocu
 
 bool QgsLayoutItemPage::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( u"symbol"_s );
   if ( !symbolElem.isNull() )
   {
     mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );

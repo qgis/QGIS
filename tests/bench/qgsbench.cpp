@@ -124,7 +124,7 @@ QgsBench::QgsBench( int width, int height, int iterations )
   , mIterations( iterations )
 
 {
-  QgsDebugMsgLevel( QStringLiteral( "mIterations = %1" ).arg( mIterations ), 1 );
+  QgsDebugMsgLevel( u"mIterations = %1"_s.arg( mIterations ), 1 );
 
   connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBench::readProject );
 }
@@ -135,13 +135,13 @@ bool QgsBench::openProject( const QString &fileName )
   {
     return false;
   }
-  mLogMap.insert( QStringLiteral( "project" ), fileName );
+  mLogMap.insert( u"project"_s, fileName );
   return true;
 }
 
 void QgsBench::readProject( const QDomDocument &doc )
 {
-  const QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
+  const QDomNodeList nodes = doc.elementsByTagName( u"mapcanvas"_s );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
@@ -203,8 +203,8 @@ void QgsBench::render()
   }
 
 
-  mLogMap.insert( QStringLiteral( "iterations" ), mTimes.size() );
-  mLogMap.insert( QStringLiteral( "revision" ), QGSVERSION );
+  mLogMap.insert( u"iterations"_s, mTimes.size() );
+  mLogMap.insert( u"revision"_s, QGSVERSION );
 
   // Calc stats: user, sys, total
   double min[4] = { std::numeric_limits<double>::max() };
@@ -245,15 +245,15 @@ void QgsBench::render()
 
     QMap<QString, QVariant> map;
 
-    map.insert( QStringLiteral( "min" ), min[t] );
-    map.insert( QStringLiteral( "max" ), max[t] );
-    map.insert( QStringLiteral( "avg" ), avg[t] );
-    map.insert( QStringLiteral( "stdev" ), stdev[t] );
-    map.insert( QStringLiteral( "maxdev" ), maxdev[t] );
+    map.insert( u"min"_s, min[t] );
+    map.insert( u"max"_s, max[t] );
+    map.insert( u"avg"_s, avg[t] );
+    map.insert( u"stdev"_s, stdev[t] );
+    map.insert( u"maxdev"_s, maxdev[t] );
 
     timesMap.insert( pre[t], map );
   }
-  mLogMap.insert( QStringLiteral( "times" ), timesMap );
+  mLogMap.insert( u"times"_s, timesMap );
 }
 
 void QgsBench::saveSnapsot( const QString &fileName )
@@ -264,7 +264,7 @@ void QgsBench::saveSnapsot( const QString &fileName )
 
 void QgsBench::printLog( const QString &printTime )
 {
-  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toLatin1().constData() << std::endl;
+  std::cout << "iterations: " << mLogMap[u"iterations"_s].toString().toLatin1().constData() << std::endl;
 
   bool validPrintTime = false;
   for ( int x = 0; x < 4; ++x )
@@ -277,7 +277,7 @@ void QgsBench::printLog( const QString &printTime )
     return;
   }
 
-  QMap<QString, QVariant> timesMap = mLogMap[QStringLiteral( "times" )].toMap();
+  QMap<QString, QVariant> timesMap = mLogMap[u"times"_s].toMap();
   QMap<QString, QVariant> totalMap = timesMap[printTime].toMap();
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
@@ -291,8 +291,8 @@ void QgsBench::printLog( const QString &printTime )
 QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
 {
   QStringList list;
-  const QString space = QStringLiteral( " " ).repeated( level * 2 );
-  const QString space2 = QStringLiteral( " " ).repeated( level * 2 + 2 );
+  const QString space = u" "_s.repeated( level * 2 );
+  const QString space2 = u" "_s.repeated( level * 2 + 2 );
   QMap<QString, QVariant>::const_iterator i = map.constBegin();
   while ( i != map.constEnd() )
   {
@@ -302,10 +302,10 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
         list.append( space2 + '\"' + i.key() + "\": " + QString::number( i.value().toInt() ) );
         break;
       case QMetaType::Double:
-        list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + u"%1"_s.arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', QLatin1String( "\\\\" ) ).replace( '\"', QLatin1String( "\\\"" ) ) + '\"' );
+        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', "\\\\"_L1 ).replace( '\"', "\\\""_L1 ) + '\"' );
         break;
       //case QMetaType::QMap: QMap is not in QMetaType
       default:
@@ -314,7 +314,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     }
     ++i;
   }
-  return space + "{\n" + list.join( QLatin1String( ",\n" ) ) + '\n' + space + '}';
+  return space + "{\n" + list.join( ",\n"_L1 ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString &fileName )

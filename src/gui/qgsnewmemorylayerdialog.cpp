@@ -98,7 +98,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QVariantList, QMetaType::Type::Double ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), "doublelist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), "integer64list" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::QVariantMap ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantMap ), "map" );
-  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::User, QMetaType::Type::UnknownType, QStringLiteral( "geometry" ) ), tr( "Geometry" ), "geometry" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QMetaType::Type::User, QMetaType::Type::UnknownType, u"geometry"_s ), tr( "Geometry" ), "geometry" );
   mTypeBox_currentIndexChanged( 0 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
@@ -161,69 +161,69 @@ void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
 {
   const QString fieldType = mTypeBox->currentData().toString();
-  if ( fieldType == QLatin1String( "string" ) )
+  if ( fieldType == "string"_L1 )
   {
     if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
-      mWidth->setText( QStringLiteral( "255" ) );
+      mWidth->setText( u"255"_s );
     mPrecision->clear();
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 255, this ) );
     mWidth->setEnabled( true );
   }
-  else if ( fieldType == QLatin1String( "integer" ) )
+  else if ( fieldType == "integer"_L1 )
   {
     if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
-      mWidth->setText( QStringLiteral( "10" ) );
+      mWidth->setText( u"10"_s );
     mPrecision->clear();
     mPrecision->setEnabled( false );
     mWidth->setValidator( new QIntValidator( 1, 10, this ) );
     mWidth->setEnabled( true );
   }
-  else if ( fieldType == QLatin1String( "double" ) )
+  else if ( fieldType == "double"_L1 )
   {
     if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 30 )
-      mWidth->setText( QStringLiteral( "30" ) );
+      mWidth->setText( u"30"_s );
     if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 30 )
-      mPrecision->setText( QStringLiteral( "6" ) );
+      mPrecision->setText( u"6"_s );
     mPrecision->setEnabled( true );
     mWidth->setValidator( new QIntValidator( 1, 20, this ) );
     mWidth->setEnabled( true );
   }
-  else if ( fieldType == QLatin1String( "bool" ) )
+  else if ( fieldType == "bool"_L1 )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QLatin1String( "date" ) )
+  else if ( fieldType == "date"_L1 )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QLatin1String( "time" ) )
+  else if ( fieldType == "time"_L1 )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QLatin1String( "datetime" ) )
+  else if ( fieldType == "datetime"_L1 )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
     mPrecision->clear();
     mPrecision->setEnabled( false );
   }
-  else if ( fieldType == QStringLiteral( "binary" )
-            || fieldType == QStringLiteral( "stringlist" )
-            || fieldType == QStringLiteral( "integerlist" )
-            || fieldType == QStringLiteral( "doublelist" )
-            || fieldType == QStringLiteral( "integer64list" )
-            || fieldType == QStringLiteral( "map" )
-            || fieldType == QLatin1String( "geometry" ) )
+  else if ( fieldType == u"binary"_s
+            || fieldType == u"stringlist"_s
+            || fieldType == u"integerlist"_s
+            || fieldType == u"doublelist"_s
+            || fieldType == u"integer64list"_s
+            || fieldType == u"map"_s
+            || fieldType == "geometry"_L1 )
   {
     mWidth->clear();
     mWidth->setEnabled( false );
@@ -232,7 +232,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "unexpected index" ) );
+    QgsDebugError( u"unexpected index"_s );
   }
 }
 
@@ -276,45 +276,45 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
     const int precision = ( *it )->text( 3 ).toInt();
     QMetaType::Type fieldType = QMetaType::Type::UnknownType;
     QMetaType::Type fieldSubType = QMetaType::Type::UnknownType;
-    if ( typeName == QLatin1String( "string" ) )
+    if ( typeName == "string"_L1 )
       fieldType = QMetaType::Type::QString;
-    else if ( typeName == QLatin1String( "integer" ) )
+    else if ( typeName == "integer"_L1 )
       fieldType = QMetaType::Type::Int;
-    else if ( typeName == QLatin1String( "double" ) )
+    else if ( typeName == "double"_L1 )
       fieldType = QMetaType::Type::Double;
-    else if ( typeName == QLatin1String( "bool" ) )
+    else if ( typeName == "bool"_L1 )
       fieldType = QMetaType::Type::Bool;
-    else if ( typeName == QLatin1String( "date" ) )
+    else if ( typeName == "date"_L1 )
       fieldType = QMetaType::Type::QDate;
-    else if ( typeName == QLatin1String( "time" ) )
+    else if ( typeName == "time"_L1 )
       fieldType = QMetaType::Type::QTime;
-    else if ( typeName == QLatin1String( "datetime" ) )
+    else if ( typeName == "datetime"_L1 )
       fieldType = QMetaType::Type::QDateTime;
-    else if ( typeName == QLatin1String( "binary" ) )
+    else if ( typeName == "binary"_L1 )
       fieldType = QMetaType::Type::QByteArray;
-    else if ( typeName == QLatin1String( "stringlist" ) )
+    else if ( typeName == "stringlist"_L1 )
     {
       fieldType = QMetaType::Type::QStringList;
       fieldSubType = QMetaType::Type::QString;
     }
-    else if ( typeName == QLatin1String( "integerlist" ) )
+    else if ( typeName == "integerlist"_L1 )
     {
       fieldType = QMetaType::Type::QVariantList;
       fieldSubType = QMetaType::Type::Int;
     }
-    else if ( typeName == QLatin1String( "doublelist" ) )
+    else if ( typeName == "doublelist"_L1 )
     {
       fieldType = QMetaType::Type::QVariantList;
       fieldSubType = QMetaType::Type::Double;
     }
-    else if ( typeName == QLatin1String( "integer64list" ) )
+    else if ( typeName == "integer64list"_L1 )
     {
       fieldType = QMetaType::Type::QVariantList;
       fieldSubType = QMetaType::Type::LongLong;
     }
-    else if ( typeName == QLatin1String( "map" ) )
+    else if ( typeName == "map"_L1 )
       fieldType = QMetaType::Type::QVariantMap;
-    else if ( typeName == QLatin1String( "geometry" ) )
+    else if ( typeName == "geometry"_L1 )
       fieldType = QMetaType::Type::User;
 
     const QgsField field = QgsField( name, fieldType, typeName, width, precision, QString(), fieldSubType );
@@ -368,7 +368,7 @@ void QgsNewMemoryLayerDialog::mRemoveAttributeButton_clicked()
 
 void QgsNewMemoryLayerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-temporary-scratch-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-a-new-temporary-scratch-layer"_s );
 }
 
 void QgsNewMemoryLayerDialog::moveFieldsUp()

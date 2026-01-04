@@ -304,10 +304,10 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
   switch ( jsonValue.type() )
   {
     case QJsonValue::Null:
-      refreshTreeViewItemValue( treeWidgetItem, QStringLiteral( "null" ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
+      refreshTreeViewItemValue( treeWidgetItem, u"null"_s, QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
       break;
     case QJsonValue::Bool:
-      refreshTreeViewItemValue( treeWidgetItem, jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
+      refreshTreeViewItemValue( treeWidgetItem, jsonValue.toBool() ? u"true"_s : u"false"_s, QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
       break;
     case QJsonValue::Double:
       refreshTreeViewItemValue( treeWidgetItem, QString::number( jsonValue.toDouble() ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Number ) );
@@ -379,7 +379,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
     }
     break;
     case QJsonValue::Undefined:
-      refreshTreeViewItemValue( treeWidgetItem, QStringLiteral( "Undefined value" ), QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
+      refreshTreeViewItemValue( treeWidgetItem, u"Undefined value"_s, QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
       break;
   }
 }
@@ -390,7 +390,7 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( QTreeWidgetItem *treeWidgetIte
   label->setFont( monospaceFont() );
 
   if ( textColor.isValid() )
-    label->setStyleSheet( QStringLiteral( "color: %1;" ).arg( textColor.name() ) );
+    label->setStyleSheet( u"color: %1;"_s.arg( textColor.name() ) );
   mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 }
 

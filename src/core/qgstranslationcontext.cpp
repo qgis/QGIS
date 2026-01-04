@@ -56,32 +56,32 @@ void QgsTranslationContext::registerTranslation( const QString &context, const Q
 void QgsTranslationContext::writeTsFile( const QString &locale ) const
 {
   //write xml
-  QDomDocument doc( QStringLiteral( "TS" ) );
+  QDomDocument doc( u"TS"_s );
 
-  QDomElement tsElement = doc.createElement( QStringLiteral( "TS" ) );
-  tsElement.setAttribute( QStringLiteral( "sourcelanguage" ), locale );
+  QDomElement tsElement = doc.createElement( u"TS"_s );
+  tsElement.setAttribute( u"sourcelanguage"_s, locale );
   doc.appendChild( tsElement );
 
   for ( const TranslatableObject &translatableObject : mTranslatableObjects )
   {
-    QDomElement contextElement = doc.createElement( QStringLiteral( "context" ) );
+    QDomElement contextElement = doc.createElement( u"context"_s );
     tsElement.appendChild( contextElement );
 
-    QDomElement nameElement = doc.createElement( QStringLiteral( "name" ) );
+    QDomElement nameElement = doc.createElement( u"name"_s );
     const QDomText nameText = doc.createTextNode( translatableObject.context );
     nameElement.appendChild( nameText );
     contextElement.appendChild( nameElement );
 
-    QDomElement messageElement = doc.createElement( QStringLiteral( "message" ) );
+    QDomElement messageElement = doc.createElement( u"message"_s );
     contextElement.appendChild( messageElement );
 
-    QDomElement sourceElement = doc.createElement( QStringLiteral( "source" ) );
+    QDomElement sourceElement = doc.createElement( u"source"_s );
     const QDomText sourceText = doc.createTextNode( translatableObject.source );
     sourceElement.appendChild( sourceText );
     messageElement.appendChild( sourceElement );
 
-    QDomElement translationElement = doc.createElement( QStringLiteral( "translation" ) );
-    translationElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unfinished" ) );
+    QDomElement translationElement = doc.createElement( u"translation"_s );
+    translationElement.setAttribute( u"type"_s, u"unfinished"_s );
     messageElement.appendChild( translationElement );
   }
 
@@ -89,7 +89,7 @@ void QgsTranslationContext::writeTsFile( const QString &locale ) const
   QFile tsFile( fileName() );
   if ( !tsFile.open( QIODevice::WriteOnly ) )
   {
-    QgsDebugError( QStringLiteral( "Can't open file %1" ).arg( fileName() ) );
+    QgsDebugError( u"Can't open file %1"_s.arg( fileName() ) );
     return;
   }
   QTextStream stream( &tsFile );

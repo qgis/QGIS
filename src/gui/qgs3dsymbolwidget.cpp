@@ -50,7 +50,7 @@ Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "style_library/3d_symbols.html" ) );
+    QgsHelp::openHelp( u"style_library/3d_symbols.html"_s );
   } );
   vLayout->addStretch();
   vLayout->addWidget( mButtonBox );

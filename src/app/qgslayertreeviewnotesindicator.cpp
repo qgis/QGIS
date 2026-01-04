@@ -66,7 +66,7 @@ bool QgsLayerTreeViewNotesIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 QString QgsLayerTreeViewNotesIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorNotes.svg" );
+  return u"/mIndicatorNotes.svg"_s;
 }
 
 QString QgsLayerTreeViewNotesIndicatorProvider::tooltipText( QgsMapLayer *layer )

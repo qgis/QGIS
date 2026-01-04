@@ -51,7 +51,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
     result.filter = this;
     result.displayString = name;
     result.setUserData( index );
-    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
+    result.icon = QgsApplication::getThemeIcon( u"/mItemBookmark.svg"_s );
 
     if ( context.usingPrefix && string.isEmpty() )
     {

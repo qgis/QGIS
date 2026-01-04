@@ -164,7 +164,7 @@ class CORE_EXPORT QgsMargins
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsMargins: %1 %2 %3 %4>" ).arg( sipCpp->left() ).arg( sipCpp->top() ).arg( sipCpp->right() ).arg( sipCpp->bottom() );
+    const QString str = u"<QgsMargins: %1 %2 %3 %4>"_s.arg( sipCpp->left() ).arg( sipCpp->top() ).arg( sipCpp->right() ).arg( sipCpp->bottom() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

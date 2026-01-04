@@ -86,9 +86,9 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   clear();
 
   QDomElement layoutsElem = element;
-  if ( element.tagName() != QLatin1String( "Layouts" ) )
+  if ( element.tagName() != "Layouts"_L1 )
   {
-    layoutsElem = element.firstChildElement( QStringLiteral( "Layouts" ) );
+    layoutsElem = element.firstChildElement( u"Layouts"_s );
   }
   if ( layoutsElem.isNull() )
   {
@@ -98,14 +98,14 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
 
   //restore each composer
   bool result = true;
-  QDomNodeList composerNodes = element.elementsByTagName( QStringLiteral( "Composer" ) );
-  QgsScopedRuntimeProfile profile( tr( "Loading QGIS 2.x compositions" ), QStringLiteral( "projectload" ) );
+  QDomNodeList composerNodes = element.elementsByTagName( u"Composer"_s );
+  QgsScopedRuntimeProfile profile( tr( "Loading QGIS 2.x compositions" ), u"projectload"_s );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
     // This legacy title is the Composer "title" (that can be overridden by the Composition "name")
-    QString legacyTitle = composerNodes.at( i ).toElement().attribute( QStringLiteral( "title" ) );
+    QString legacyTitle = composerNodes.at( i ).toElement().attribute( u"title"_s );
     // Convert compositions to layouts
-    QDomNodeList compositionNodes = composerNodes.at( i ).toElement().elementsByTagName( QStringLiteral( "Composition" ) );
+    QDomNodeList compositionNodes = composerNodes.at( i ).toElement().elementsByTagName( u"Composition"_s );
     for ( int j = 0; j < compositionNodes.size(); ++j )
     {
       std::unique_ptr< QgsPrintLayout > l( QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject ) );
@@ -132,7 +132,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
           }
           if ( isDuplicateName )
           {
-            l->setName( QStringLiteral( "%1 %2" ).arg( originalName ).arg( id ) );
+            l->setName( u"%1 %2"_s.arg( originalName ).arg( id ) );
             id++;
           }
         }
@@ -153,11 +153,11 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   const QDomNodeList layoutNodes = layoutsElem.childNodes();
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
-    if ( layoutNodes.at( i ).nodeName() != QLatin1String( "Layout" ) )
+    if ( layoutNodes.at( i ).nodeName() != "Layout"_L1 )
       continue;
 
-    const QString layoutName = layoutNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
-    QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
+    const QString layoutName = layoutNodes.at( i ).toElement().attribute( u"name"_s );
+    QgsScopedRuntimeProfile profile( layoutName, u"projectload"_s );
 
     auto l = std::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
@@ -174,11 +174,11 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   }
   //reports
   profile.switchTask( tr( "Creating reports" ) );
-  const QDomNodeList reportNodes = element.elementsByTagName( QStringLiteral( "Report" ) );
+  const QDomNodeList reportNodes = element.elementsByTagName( u"Report"_s );
   for ( int i = 0; i < reportNodes.size(); ++i )
   {
-    const QString layoutName = reportNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
-    QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
+    const QString layoutName = reportNodes.at( i ).toElement().attribute( u"name"_s );
+    QgsScopedRuntimeProfile profile( layoutName, u"projectload"_s );
 
     auto r = std::make_unique< QgsReport >( mProject );
     if ( !r->readLayoutXml( reportNodes.at( i ).toElement(), doc, context ) )
@@ -196,7 +196,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
 
 QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
 {
-  QDomElement layoutsElem = doc.createElement( QStringLiteral( "Layouts" ) );
+  QDomElement layoutsElem = doc.createElement( u"Layouts"_s );
 
   QgsReadWriteContext context;
   context.setPathResolver( mProject->pathResolver() );
@@ -264,7 +264,7 @@ bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
     return true;
 
   // NOTE: if visitEnter returns false it means "don't visit the layouts", not "abort all further visitations"
-  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, QStringLiteral( "layouts" ), tr( "Layouts" ) ) ) )
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, u"layouts"_s, tr( "Layouts" ) ) ) )
     return true;
 
   for ( QgsMasterLayoutInterface *l : mObjects )
@@ -273,7 +273,7 @@ bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
       return false;
   }
 
-  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, QStringLiteral( "layouts" ), tr( "Layouts" ) ) ) )
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, u"layouts"_s, tr( "Layouts" ) ) ) )
     return false;
 
   return true;

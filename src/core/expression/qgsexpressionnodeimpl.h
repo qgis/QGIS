@@ -49,7 +49,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    QString str = u"<QgsExpressionNodeUnaryOperator: %1>"_s.arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    QString str = u"<QgsExpressionNodeBinaryOperator: %1>"_s.arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -457,7 +457,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
       function = QString::number( sipCpp->fnIndex() );
     }
 
-    QString str = QStringLiteral( "<QgsExpressionNodeFunction: %1>" ).arg( function );
+    QString str = u"<QgsExpressionNodeFunction: %1>"_s.arg( function );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    QString str = u"<QgsExpressionNodeLiteral: %1>"_s.arg( sipCpp->valueAsString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -574,7 +574,7 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+    QString str = u"<QgsExpressionNodeColumnRef: \"%1\">"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

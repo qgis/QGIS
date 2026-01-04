@@ -61,20 +61,20 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
   if ( elem.isNull() )
     return;
 
-  QDomElement styleElem = doc.createElement( QStringLiteral( "style" ) );
+  QDomElement styleElem = doc.createElement( u"style"_s );
 
-  styleElem.setAttribute( QStringLiteral( "name" ), name );
-  styleElem.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
-  styleElem.setAttribute( QStringLiteral( "indent" ), QString::number( mIndent ) );
+  styleElem.setAttribute( u"name"_s, name );
+  styleElem.setAttribute( u"alignment"_s, QString::number( mAlignment ) );
+  styleElem.setAttribute( u"indent"_s, QString::number( mIndent ) );
 
   if ( !qgsDoubleNear( mMarginMap[Top], 0.0 ) )
-    styleElem.setAttribute( QStringLiteral( "marginTop" ), QString::number( mMarginMap[Top] ) );
+    styleElem.setAttribute( u"marginTop"_s, QString::number( mMarginMap[Top] ) );
   if ( !qgsDoubleNear( mMarginMap[Bottom], 0.0 ) )
-    styleElem.setAttribute( QStringLiteral( "marginBottom" ), QString::number( mMarginMap[Bottom] ) );
+    styleElem.setAttribute( u"marginBottom"_s, QString::number( mMarginMap[Bottom] ) );
   if ( !qgsDoubleNear( mMarginMap[Left], 0.0 ) )
-    styleElem.setAttribute( QStringLiteral( "marginLeft" ), QString::number( mMarginMap[Left] ) );
+    styleElem.setAttribute( u"marginLeft"_s, QString::number( mMarginMap[Left] ) );
   if ( !qgsDoubleNear( mMarginMap[Right], 0.0 ) )
-    styleElem.setAttribute( QStringLiteral( "marginRight" ), QString::number( mMarginMap[Right] ) );
+    styleElem.setAttribute( u"marginRight"_s, QString::number( mMarginMap[Right] ) );
 
   QDomElement textElem = mTextFormat.writeXml( doc, context );
   styleElem.appendChild( textElem );
@@ -87,7 +87,7 @@ void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, 
   Q_UNUSED( doc )
   if ( elem.isNull() ) return;
 
-  QDomNodeList textFormatNodeList = elem.elementsByTagName( QStringLiteral( "text-style" ) );
+  QDomNodeList textFormatNodeList = elem.elementsByTagName( u"text-style"_s );
   if ( !textFormatNodeList.isEmpty() )
   {
     QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
@@ -96,20 +96,20 @@ void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, 
   else
   {
     QFont f;
-    if ( !QgsFontUtils::setFromXmlChildNode( f, elem, QStringLiteral( "styleFont" ) ) )
+    if ( !QgsFontUtils::setFromXmlChildNode( f, elem, u"styleFont"_s ) )
     {
-      f.fromString( elem.attribute( QStringLiteral( "font" ) ) );
+      f.fromString( elem.attribute( u"font"_s ) );
     }
     mTextFormat = QgsTextFormat::fromQFont( f );
   }
 
-  mMarginMap[Top] = elem.attribute( QStringLiteral( "marginTop" ), QStringLiteral( "0" ) ).toDouble();
-  mMarginMap[Bottom] = elem.attribute( QStringLiteral( "marginBottom" ), QStringLiteral( "0" ) ).toDouble();
-  mMarginMap[Left] = elem.attribute( QStringLiteral( "marginLeft" ), QStringLiteral( "0" ) ).toDouble();
-  mMarginMap[Right] = elem.attribute( QStringLiteral( "marginRight" ), QStringLiteral( "0" ) ).toDouble();
+  mMarginMap[Top] = elem.attribute( u"marginTop"_s, u"0"_s ).toDouble();
+  mMarginMap[Bottom] = elem.attribute( u"marginBottom"_s, u"0"_s ).toDouble();
+  mMarginMap[Left] = elem.attribute( u"marginLeft"_s, u"0"_s ).toDouble();
+  mMarginMap[Right] = elem.attribute( u"marginRight"_s, u"0"_s ).toDouble();
 
-  mAlignment = static_cast< Qt::Alignment >( elem.attribute( QStringLiteral( "alignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
-  mIndent = elem.attribute( QStringLiteral( "indent" ), QStringLiteral( "0" ) ).toDouble();
+  mAlignment = static_cast< Qt::Alignment >( elem.attribute( u"alignment"_s, QString::number( Qt::AlignLeft ) ).toInt() );
+  mIndent = elem.attribute( u"indent"_s, u"0"_s ).toDouble();
 }
 
 void QgsLegendStyle::updateDataDefinedProperties( QgsRenderContext &context )
@@ -126,34 +126,34 @@ QString QgsLegendStyle::styleName( Qgis::LegendComponent s )
     case Qgis::LegendComponent::Undefined:
       return QString();
     case Qgis::LegendComponent::Hidden:
-      return QStringLiteral( "hidden" );
+      return u"hidden"_s;
     case Qgis::LegendComponent::Title:
-      return QStringLiteral( "title" );
+      return u"title"_s;
     case Qgis::LegendComponent::Group:
-      return QStringLiteral( "group" );
+      return u"group"_s;
     case Qgis::LegendComponent::Subgroup:
-      return QStringLiteral( "subgroup" );
+      return u"subgroup"_s;
     case Qgis::LegendComponent::Symbol:
-      return QStringLiteral( "symbol" );
+      return u"symbol"_s;
     case Qgis::LegendComponent::SymbolLabel:
-      return QStringLiteral( "symbolLabel" );
+      return u"symbolLabel"_s;
   }
   return QString();
 }
 
 Qgis::LegendComponent QgsLegendStyle::styleFromName( const QString &styleName )
 {
-  if ( styleName == QLatin1String( "hidden" ) )
+  if ( styleName == "hidden"_L1 )
     return Qgis::LegendComponent::Hidden;
-  else if ( styleName == QLatin1String( "title" ) )
+  else if ( styleName == "title"_L1 )
     return Qgis::LegendComponent::Title;
-  else if ( styleName == QLatin1String( "group" ) )
+  else if ( styleName == "group"_L1 )
     return Qgis::LegendComponent::Group;
-  else if ( styleName == QLatin1String( "subgroup" ) )
+  else if ( styleName == "subgroup"_L1 )
     return Qgis::LegendComponent::Subgroup;
-  else if ( styleName == QLatin1String( "symbol" ) )
+  else if ( styleName == "symbol"_L1 )
     return Qgis::LegendComponent::Symbol;
-  else if ( styleName == QLatin1String( "symbolLabel" ) )
+  else if ( styleName == "symbolLabel"_L1 )
     return Qgis::LegendComponent::SymbolLabel;
   return Qgis::LegendComponent::Undefined;
 }

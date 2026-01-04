@@ -344,7 +344,7 @@ QgsGeometryCheck::Flags QgsGeometrySelfIntersectionCheck::factoryFlags()
 
 QString QgsGeometrySelfIntersectionCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometrySelfIntersectionCheck" );
+  return u"QgsGeometrySelfIntersectionCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometrySelfIntersectionCheck::factoryCheckType()

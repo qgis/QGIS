@@ -45,31 +45,31 @@ class CORE_EXPORT QgsAnnotationItem
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == QLatin1String( "marker" ) )
+    if ( sipCpp->type() == "marker"_L1 )
     {
       sipType = sipType_QgsAnnotationMarkerItem;
     }
-    else if ( sipCpp->type() == QLatin1String( "linestring" ) )
+    else if ( sipCpp->type() == "linestring"_L1 )
     {
       sipType = sipType_QgsAnnotationLineItem;
     }
-    else if ( sipCpp->type() == QLatin1String( "polygon" ) )
+    else if ( sipCpp->type() == "polygon"_L1 )
     {
       sipType = sipType_QgsAnnotationPolygonItem;
     }
-    else if ( sipCpp->type() == QLatin1String( "pointtext" ) )
+    else if ( sipCpp->type() == "pointtext"_L1 )
     {
       sipType = sipType_QgsAnnotationPointTextItem;
     }
-    else if ( sipCpp->type() == QLatin1String( "linetext" ) )
+    else if ( sipCpp->type() == "linetext"_L1 )
     {
       sipType = sipType_QgsAnnotationLineTextItem;
     }
-    else if ( sipCpp->type() == QLatin1String( "recttext" ) )
+    else if ( sipCpp->type() == "recttext"_L1 )
     {
       sipType = sipType_QgsAnnotationRectangleTextItem;
     }
-    else if ( sipCpp->type() == QLatin1String( "picture" ) )
+    else if ( sipCpp->type() == "picture"_L1 )
     {
       sipType = sipType_QgsAnnotationPictureItem;
     }

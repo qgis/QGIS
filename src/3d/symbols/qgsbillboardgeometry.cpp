@@ -13,19 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsbillboardgeometry.h"
+
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-
-#include "qgsbillboardgeometry.h"
 #include "moc_qgsbillboardgeometry.cpp"
 
 QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   : QGeometry( parent )
-  , mVertexBuffer( new Qt3DQBuffer( this ) )
+  , mVertexBuffer( new Qt3DCore::QBuffer( this ) )
 {
   setMode( Mode::PositionOnly );
 }
@@ -58,14 +56,14 @@ void QgsBillboardGeometry::setMode( Mode mode )
     mPositionAttribute = nullptr;
   }
 
-  mPositionAttribute = new Qt3DQAttribute( this );
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute = new Qt3DCore::QAttribute( this );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( stride );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
   addAttribute( mPositionAttribute );
 
   switch ( mode )
@@ -102,58 +100,58 @@ void QgsBillboardGeometry::setMode( Mode mode )
         mAtlasPixelOffsetAttribute = nullptr;
       }
 
-      mAtlasOffsetAttribute = new Qt3DQAttribute( this );
-      mAtlasOffsetAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasOffsetAttribute = new Qt3DCore::QAttribute( this );
+      mAtlasOffsetAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
       mAtlasOffsetAttribute->setBuffer( mVertexBuffer );
-      mAtlasOffsetAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+      mAtlasOffsetAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
       mAtlasOffsetAttribute->setVertexSize( 2 );
       mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
       mAtlasOffsetAttribute->setByteStride( stride );
-      mAtlasOffsetAttribute->setName( QStringLiteral( "atlasOffset" ) );
+      mAtlasOffsetAttribute->setName( u"atlasOffset"_s );
       addAttribute( mAtlasOffsetAttribute );
 
-      mAtlasSizeAttribute = new Qt3DQAttribute( this );
-      mAtlasSizeAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasSizeAttribute = new Qt3DCore::QAttribute( this );
+      mAtlasSizeAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
       mAtlasSizeAttribute->setBuffer( mVertexBuffer );
-      mAtlasSizeAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+      mAtlasSizeAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
       mAtlasSizeAttribute->setVertexSize( 2 );
       mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
       mAtlasSizeAttribute->setByteStride( stride );
-      mAtlasSizeAttribute->setName( QStringLiteral( "atlasSize" ) );
+      mAtlasSizeAttribute->setName( u"atlasSize"_s );
       addAttribute( mAtlasSizeAttribute );
       break;
     }
 
     case Mode::PositionAndTextureDataWithPixelOffsets:
     {
-      mAtlasOffsetAttribute = new Qt3DQAttribute( this );
-      mAtlasOffsetAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasOffsetAttribute = new Qt3DCore::QAttribute( this );
+      mAtlasOffsetAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
       mAtlasOffsetAttribute->setBuffer( mVertexBuffer );
-      mAtlasOffsetAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+      mAtlasOffsetAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
       mAtlasOffsetAttribute->setVertexSize( 2 );
       mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
       mAtlasOffsetAttribute->setByteStride( stride );
-      mAtlasOffsetAttribute->setName( QStringLiteral( "atlasOffset" ) );
+      mAtlasOffsetAttribute->setName( u"atlasOffset"_s );
       addAttribute( mAtlasOffsetAttribute );
 
-      mAtlasSizeAttribute = new Qt3DQAttribute( this );
-      mAtlasSizeAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasSizeAttribute = new Qt3DCore::QAttribute( this );
+      mAtlasSizeAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
       mAtlasSizeAttribute->setBuffer( mVertexBuffer );
-      mAtlasSizeAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+      mAtlasSizeAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
       mAtlasSizeAttribute->setVertexSize( 2 );
       mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
       mAtlasSizeAttribute->setByteStride( stride );
-      mAtlasSizeAttribute->setName( QStringLiteral( "atlasSize" ) );
+      mAtlasSizeAttribute->setName( u"atlasSize"_s );
       addAttribute( mAtlasSizeAttribute );
 
-      mAtlasPixelOffsetAttribute = new Qt3DQAttribute( this );
-      mAtlasPixelOffsetAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasPixelOffsetAttribute = new Qt3DCore::QAttribute( this );
+      mAtlasPixelOffsetAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
       mAtlasPixelOffsetAttribute->setBuffer( mVertexBuffer );
-      mAtlasPixelOffsetAttribute->setVertexBaseType( Qt3DQAttribute::Int );
+      mAtlasPixelOffsetAttribute->setVertexBaseType( Qt3DCore::QAttribute::Int );
       mAtlasPixelOffsetAttribute->setVertexSize( 2 );
       mAtlasPixelOffsetAttribute->setByteOffset( ( 3 + 2 + 2 ) * sizeof( float ) );
       mAtlasPixelOffsetAttribute->setByteStride( stride );
-      mAtlasPixelOffsetAttribute->setName( QStringLiteral( "pixelOffset" ) );
+      mAtlasPixelOffsetAttribute->setName( u"pixelOffset"_s );
       addAttribute( mAtlasPixelOffsetAttribute );
       break;
     }

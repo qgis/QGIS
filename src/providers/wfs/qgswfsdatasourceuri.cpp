@@ -28,14 +28,14 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
 
   // Compatibility with QGIS < 2.16 layer URI of the format
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
-  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) && ( uri.startsWith( QLatin1String( "http://" ) ) || uri.startsWith( QLatin1String( "https://" ) ) ) )
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) && ( uri.startsWith( "http://"_L1 ) || uri.startsWith( "https://"_L1 ) ) )
   {
     mDeprecatedURI = true;
     static const QSet<QString> sFilter {
-      QStringLiteral( "service" ),
+      u"service"_s,
       QgsWFSConstants::URI_PARAM_VERSION,
       QgsWFSConstants::URI_PARAM_TYPENAME,
-      QStringLiteral( "request" ),
+      u"request"_s,
       QgsWFSConstants::URI_PARAM_BBOX,
       QgsWFSConstants::URI_PARAM_SRSNAME,
       QgsWFSConstants::URI_PARAM_FILTER,
@@ -99,7 +99,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
 
     setFilter( filter );
     if ( !bbox.isEmpty() )
-      mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
+      mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, u"1"_s );
   }
   else if ( mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
@@ -122,7 +122,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
           URLModified = true;
           break;
         }
-        else if ( lowerName == QLatin1String( "service" ) || lowerName == QLatin1String( "request" ) || lowerName == QLatin1String( "typename" ) || lowerName == QLatin1String( "typenames" ) || lowerName == QLatin1String( "version" ) )
+        else if ( lowerName == "service"_L1 || lowerName == "request"_L1 || lowerName == "typename"_L1 || lowerName == "typenames"_L1 || lowerName == "version"_L1 )
         {
           query.removeQueryItem( item.first );
           somethingChanged = true;
@@ -239,7 +239,7 @@ QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
   QUrlQuery query( url );
   if ( bIncludeServiceWFS )
   {
-    query.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+    query.addQueryItem( u"SERVICE"_s, u"WFS"_s );
   }
   url.setQuery( query );
   return url;
@@ -261,17 +261,17 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
       bool hasRequest = false;
       for ( const auto &item : items )
       {
-        if ( item.first.toUpper() == QLatin1String( "SERVICE" ) )
+        if ( item.first.toUpper() == "SERVICE"_L1 )
           hasService = true;
-        if ( item.first.toUpper() == QLatin1String( "REQUEST" ) )
+        if ( item.first.toUpper() == "REQUEST"_L1 )
           hasRequest = true;
       }
 
       // add service / request parameters only if they don't exist in the explicitly defined post URL
       if ( !hasService )
-        urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+        urlQuery.addQueryItem( u"SERVICE"_s, u"WFS"_s );
       if ( !hasRequest && !request.isEmpty() )
-        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+        urlQuery.addQueryItem( u"REQUEST"_s, request );
 
       break;
     }
@@ -309,9 +309,9 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, Qgis::HttpMethod m
         url = defaultUrl;
         urlQuery = QUrlQuery( url );
       }
-      urlQuery.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
+      urlQuery.addQueryItem( u"SERVICE"_s, u"WFS"_s );
       if ( !request.isEmpty() )
-        urlQuery.addQueryItem( QStringLiteral( "REQUEST" ), request );
+        urlQuery.addQueryItem( u"REQUEST"_s, request );
       break;
     }
 
@@ -358,9 +358,9 @@ QgsWFSDataSourceURI::PagingStatus QgsWFSDataSourceURI::pagingStatus() const
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) )
     return PagingStatus::DEFAULT;
   const QString val = mURI.param( QgsWFSConstants::URI_PARAM_PAGING_ENABLED );
-  if ( val == QLatin1String( "true" ) || val == QLatin1String( "enabled" ) )
+  if ( val == "true"_L1 || val == "enabled"_L1 )
     return PagingStatus::ENABLED;
-  else if ( val == QLatin1String( "false" ) || val == QLatin1String( "disabled" ) )
+  else if ( val == "false"_L1 || val == "disabled"_L1 )
     return PagingStatus::DISABLED;
   else
     return PagingStatus::DEFAULT;
@@ -413,7 +413,7 @@ void QgsWFSDataSourceURI::setFilter( const QString &filter )
 bool QgsWFSDataSourceURI::forceInitialGetFeature() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
-         && mURI.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
+         && mURI.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == "TRUE"_L1;
 }
 
 bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
@@ -454,7 +454,7 @@ Qgis::HttpMethod QgsWFSDataSourceURI::httpMethod() const
     return Qgis::HttpMethod::Get;
 
   const QString method = mURI.param( QgsWFSConstants::URI_PARAM_HTTPMETHOD );
-  if ( method.compare( QLatin1String( "post" ), Qt::CaseInsensitive ) == 0 )
+  if ( method.compare( "post"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::HttpMethod::Post;
 
   // default
@@ -467,7 +467,7 @@ bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
     return true;
 
   // accept previously used version with typo
-  if ( mURI.hasParam( QStringLiteral( "retrictToRequestBBOX" ) ) && mURI.param( QStringLiteral( "retrictToRequestBBOX" ) ).toInt() == 1 ) // spellok
+  if ( mURI.hasParam( u"retrictToRequestBBOX"_s ) && mURI.param( u"retrictToRequestBBOX"_s ).toInt() == 1 ) // spellok
     return true;
 
   return false;
@@ -496,14 +496,14 @@ bool QgsWFSDataSourceURI::hideDownloadProgressDialog() const
 
 bool QgsWFSDataSourceURI::preferCoordinatesForWfst11() const
 {
-  return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ) && mURI.param( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ).toUpper() == QLatin1String( "TRUE" );
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ) && mURI.param( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ).toUpper() == "TRUE"_L1;
 }
 
 bool QgsWFSDataSourceURI::skipInitialGetFeature() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ) )
     return false;
-  return mURI.param( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
+  return mURI.param( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ).toUpper() == "TRUE"_L1;
 }
 
 QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
@@ -511,11 +511,11 @@ QgsWFSDataSourceURI::FeatureMode QgsWFSDataSourceURI::featureMode() const
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_FEATURE_MODE ) )
     return FeatureMode::Default;
   const QString val = mURI.param( QgsWFSConstants::URI_PARAM_FEATURE_MODE );
-  if ( val == QLatin1String( "default" ) )
+  if ( val == "default"_L1 )
     return FeatureMode::Default;
-  else if ( val == QLatin1String( "simpleFeatures" ) )
+  else if ( val == "simpleFeatures"_L1 )
     return FeatureMode::SimpleFeatures;
-  else if ( val == QLatin1String( "complexFeatures" ) )
+  else if ( val == "complexFeatures"_L1 )
     return FeatureMode::ComplexFeatures;
   else
   {
@@ -532,12 +532,12 @@ QString QgsWFSDataSourceURI::build( const QString &baseUri, const QString &typeN
   uri.setSql( sql );
   uri.setFilter( filter );
   if ( restrictToCurrentViewExtent )
-    uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
-  if ( uri.version() == QLatin1String( "OGC_API_FEATURES" ) )
+    uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, u"1"_s );
+  if ( uri.version() == "OGC_API_FEATURES"_L1 )
   {
     uri.setVersion( QString() );
   }
-  if ( !featureFormat.isEmpty() && featureFormat != QLatin1String( "default" ) )
+  if ( !featureFormat.isEmpty() && featureFormat != "default"_L1 )
   {
     uri.setOutputFormat( featureFormat );
   }

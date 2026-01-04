@@ -56,45 +56,45 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setEditorContext( *ctx, mCanvas, mMessageBar );
 
-  const bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
-  const bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
-  const bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
-  const bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
+  const bool showForm = config( u"ShowForm"_s, false ).toBool();
+  const bool mapIdent = config( u"MapIdentification"_s, false ).toBool();
+  const bool readOnlyWidget = config( u"ReadOnly"_s, false ).toBool();
+  const bool showOpenFormButton = config( u"ShowOpenFormButton"_s, true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
   mWidget->setOpenFormButtonVisible( showOpenFormButton );
 
-  const bool fetchLimitActive = config( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
+  const bool fetchLimitActive = config( u"FetchLimitActive"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() > 0 ).toBool();
   if ( fetchLimitActive )
   {
-    mWidget->setFetchLimit( config( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
+    mWidget->setFetchLimit( config( u"FetchLimitNumber"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ) ).toInt() );
   }
 
-  if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
+  if ( config( u"FilterFields"_s, QVariant() ).isValid() )
   {
-    mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
-    mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+    mWidget->setFilterFields( config( u"FilterFields"_s ).toStringList() );
+    mWidget->setChainFilters( config( u"ChainFilters"_s ).toBool() );
   }
-  if ( !config( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
+  if ( !config( u"FilterExpression"_s ).toString().isEmpty() )
   {
-    mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
+    mWidget->setFilterExpression( config( u"FilterExpression"_s ).toString() );
     mWidget->setFormFeature( formFeature() );
     mWidget->setParentFormFeature( ctx->parentFormFeature() );
   }
-  mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
+  mWidget->setAllowAddFeatures( config( u"AllowAddFeatures"_s, false ).toBool() );
 
-  mWidget->setOrderExpression( config( QStringLiteral( "OrderExpression" ) ).toString() );
-  mWidget->setSortOrder( config( QStringLiteral( "OrderDescending" ), false ).toBool() ? Qt::DescendingOrder : Qt::AscendingOrder );
+  mWidget->setOrderExpression( config( u"OrderExpression"_s ).toString() );
+  mWidget->setSortOrder( config( u"OrderDescending"_s, false ).toBool() ? Qt::DescendingOrder : Qt::AscendingOrder );
 
-  const QVariant relationName = config( QStringLiteral( "Relation" ) );
+  const QVariant relationName = config( u"Relation"_s );
 
   // Store relation data source and provider key
-  mWidget->setReferencedLayerDataSource( config( QStringLiteral( "ReferencedLayerDataSource" ) ).toString() );
-  mWidget->setReferencedLayerProviderKey( config( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() );
-  mWidget->setReferencedLayerId( config( QStringLiteral( "ReferencedLayerId" ) ).toString() );
-  mWidget->setReferencedLayerName( config( QStringLiteral( "ReferencedLayerName" ) ).toString() );
+  mWidget->setReferencedLayerDataSource( config( u"ReferencedLayerDataSource"_s ).toString() );
+  mWidget->setReferencedLayerProviderKey( config( u"ReferencedLayerProviderKey"_s ).toString() );
+  mWidget->setReferencedLayerId( config( u"ReferencedLayerId"_s ).toString() );
+  mWidget->setReferencedLayerName( config( u"ReferencedLayerName"_s ).toString() );
 
   QgsRelation relation; // invalid relation by default
   if ( relationName.isValid() )
@@ -119,13 +119,13 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   // If AllowNULL is not set in the config, provide a default value based on the
   // constraints of the referencing fields
-  if ( !config( QStringLiteral( "AllowNULL" ) ).isValid() )
+  if ( !config( u"AllowNULL"_s ).isValid() )
   {
     mWidget->setRelation( relation, relation.referencingFieldsAllowNull() );
   }
   else
   {
-    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+    mWidget->setRelation( relation, config( u"AllowNULL"_s ).toBool() );
   }
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
@@ -304,11 +304,11 @@ void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()
           break;
 
         case ConstraintResultFailHard:
-          mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
+          mWidget->setStyleSheet( u".QComboBox { background-color: #dd7777; }"_s );
           break;
 
         case ConstraintResultFailSoft:
-          mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
+          mWidget->setStyleSheet( u".QComboBox { background-color: #ffd85d; }"_s );
           break;
       }
     }

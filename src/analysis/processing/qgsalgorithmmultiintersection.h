@@ -29,8 +29,8 @@ class QgsMultiIntersectionAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsMultiIntersectionAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmIntersect.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmIntersect.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmIntersect.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmIntersect.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

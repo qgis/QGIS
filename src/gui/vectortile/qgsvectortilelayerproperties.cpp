@@ -41,7 +41,7 @@
 #include "moc_qgsvectortilelayerproperties.cpp"
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( lyr, canvas, u"VectorTileLayerProperties"_s, parent, flags )
   , mLayer( lyr )
 {
   setupUi( this );
@@ -93,9 +93,9 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QStringLiteral( "/Windows/VectorTileLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/VectorTileLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/VectorTileLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( u"Windows/VectorTileLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -155,7 +155,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
    */
   const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
   // Inject the stylesheet
-  const QString html { mLayer->htmlMetadata().replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
+  const QString html { mLayer->htmlMetadata().replace( "<head>"_L1, QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
   mMetadataViewer->setHtml( html );
 
   /*
@@ -225,7 +225,7 @@ void QgsVectorTileLayerProperties::loadStyle()
     mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
     const QgsMapLayer::StyleCategories categories = dlg.styleCategories();
     const QString type = dlg.fileExtension();
-    if ( type.compare( QLatin1String( "qml" ), Qt::CaseInsensitive ) == 0 )
+    if ( type.compare( "qml"_L1, Qt::CaseInsensitive ) == 0 )
     {
       QString message;
       bool defaultLoadedFlag = false;
@@ -243,7 +243,7 @@ void QgsVectorTileLayerProperties::loadStyle()
         QMessageBox::warning( this, tr( "Load Style" ), message );
       }
     }
-    else if ( type.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    else if ( type.compare( "json"_L1, Qt::CaseInsensitive ) == 0 )
     {
       QFile file( dlg.filePath() );
       if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -266,7 +266,7 @@ void QgsVectorTileLayerProperties::loadStyle()
         QVariantMap styleDefinition = QgsJsonUtils::parseJson( content ).toMap();
 
         QFileInfo fi( dlg.filePath() );
-        QgsVectorTileUtils::loadSprites( styleDefinition, context, QStringLiteral( "file://" ) + fi.absolutePath() );
+        QgsVectorTileUtils::loadSprites( styleDefinition, context, u"file://"_s + fi.absolutePath() );
 
         QgsMapBoxGlStyleConverter converter;
 
@@ -317,7 +317,7 @@ void QgsVectorTileLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
+    QgsHelp::openHelp( u"working_with_vector_tiles/vector_tiles_properties.html"_s );
   }
 }
 

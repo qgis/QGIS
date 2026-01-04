@@ -34,8 +34,8 @@ class QgsMergeVectorAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsMergeVectorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMergeLayers.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmMergeLayers.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmMergeLayers.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmMergeLayers.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

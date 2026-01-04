@@ -56,7 +56,7 @@ int QgsLayoutItemPolygon::type() const
 
 QIcon QgsLayoutItemPolygon::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolygon.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemPolygon.svg"_s );
 }
 
 bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
@@ -71,12 +71,12 @@ bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
 void QgsLayoutItemPolygon::createDefaultPolygonStyleSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, u"white"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"solid"_s );
+  properties.insert( u"color_border"_s, u"black"_s );
+  properties.insert( u"width_border"_s, u"0.3"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
 
   mPolygonStyleSymbol = QgsFillSymbol::createSimple( properties );
 

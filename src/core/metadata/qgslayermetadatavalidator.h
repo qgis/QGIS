@@ -59,7 +59,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
         //! Metadata section which failed the validation
         QString section;
 
-        // TODO QGIS 4.0 - remove compatibility code
+        // TODO QGIS 5.0 - remove compatibility code
 
         /**
          * Returns the optional identifier for the failed metadata item.

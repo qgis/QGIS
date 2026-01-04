@@ -31,7 +31,7 @@
 ///@cond PRIVATE
 
 
-QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY = QStringLiteral( "vtpkvectortiles" );
+QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY = u"vtpkvectortiles"_s;
 QString QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION = QObject::tr( "VTPK Vector Tiles data provider" );
 
 
@@ -40,21 +40,21 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QString &uri
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  const QString sourcePath = dsUri.param( u"url"_s );
 
   QgsVtpkTiles reader( sourcePath );
   if ( !reader.open() )
   {
-    QgsDebugError( QStringLiteral( "failed to open VTPK file: " ) + sourcePath );
+    QgsDebugError( u"failed to open VTPK file: "_s + sourcePath );
     mIsValid = false;
     return;
   }
 
   const QVariantMap metadata = reader.metadata();
-  const QString format = metadata.value( QStringLiteral( "tileInfo" ) ).toMap().value( QStringLiteral( "format" ) ).toString();
-  if ( format != QLatin1String( "pbf" ) )
+  const QString format = metadata.value( u"tileInfo"_s ).toMap().value( u"format"_s ).toString();
+  if ( format != "pbf"_L1 )
   {
-    QgsDebugError( QStringLiteral( "Cannot open VTPK for vector tiles. Format = " ) + format );
+    QgsDebugError( u"Cannot open VTPK for vector tiles. Format = "_s + format );
     mIsValid = false;
     return;
   }
@@ -127,7 +127,7 @@ QString QgsVtpkVectorTileDataProvider::sourcePath() const
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  return dsUri.param( QStringLiteral( "url" ) );
+  return dsUri.param( u"url"_s );
 }
 
 bool QgsVtpkVectorTileDataProvider::isValid() const
@@ -194,7 +194,7 @@ QgsVectorTileRawData QgsVtpkVectorTileDataProvider::readTile( const QgsTileMatri
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
+  QgsVtpkTiles reader( dsUri.param( u"url"_s ) );
   reader.open();
   const QgsVectorTileRawData rawData = loadFromVtpk( reader, id, feedback );
   mShared->storeCachedTileData( rawData );
@@ -233,7 +233,7 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
     {
       if ( !reader )
       {
-        reader = std::make_unique< QgsVtpkTiles >( dsUri.param( QStringLiteral( "url" ) ) );
+        reader = std::make_unique< QgsVtpkTiles >( dsUri.param( u"url"_s ) );
         reader->open();
       }
       const QgsVectorTileRawData rawData = loadFromVtpk( *reader, id, feedback );
@@ -254,17 +254,17 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( dataSourceUri() );
-  QgsVtpkTiles reader( dsUri.param( QStringLiteral( "url" ) ) );
+  QgsVtpkTiles reader( dsUri.param( u"url"_s ) );
   reader.open();
 
   if ( !reader.rootTileMap().isEmpty() )
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Indexed VTPK (tilemap is present)" ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "VTPK storage" ) % u"</td><td>"_s % tr( "Indexed VTPK (tilemap is present)" ) % u"</td></tr>\n"_s;
   else
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "VTPK storage" ) % QStringLiteral( "</td><td>" ) % tr( "Flat VTPK (no tilemap)" ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "VTPK storage" ) % u"</td><td>"_s % tr( "Flat VTPK (no tilemap)" ) % u"</td></tr>\n"_s;
 
-  if ( reader.metadata().contains( QStringLiteral( "minLOD" ) ) )
+  if ( reader.metadata().contains( u"minLOD"_s ) )
   {
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tile detail levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( reader.metadata().value( QStringLiteral( "minLOD" ) ).toInt() ).arg( reader.metadata().value( QStringLiteral( "maxLOD" ) ).toInt() ) % QStringLiteral( "</td></tr>\n" );
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Tile detail levels" ) % u"</td><td>"_s % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() ) % u"</td></tr>\n"_s;
   }
 
   return metadata;
@@ -315,7 +315,7 @@ QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProv
 
 QIcon QgsVtpkVectorTileDataProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsVtpkVectorTileDataProviderMetadata::providerCapabilities() const
@@ -336,7 +336,7 @@ QString QgsVtpkVectorTileDataProviderMetadata::filters( Qgis::FileFilterType typ
       return QString();
 
     case Qgis::FileFilterType::VectorTile:
-      return QObject::tr( "VTPK Vector Tiles" ) + QStringLiteral( " (*.vtpk *.VTPK)" );
+      return QObject::tr( "VTPK Vector Tiles" ) + u" (*.vtpk *.VTPK)"_s;
   }
   return QString();
 }
@@ -352,16 +352,16 @@ QList<QgsProviderSublayerDetails> QgsVtpkVectorTileDataProviderMetadata::querySu
   else
   {
     const QVariantMap parts = decodeUri( uri );
-    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+    fileName = parts.value( u"path"_s ).toString();
   }
 
   if ( fileName.isEmpty() )
     return {};
 
-  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "vtpk" ), Qt::CaseInsensitive ) == 0 )
+  if ( QFileInfo( fileName ).suffix().compare( "vtpk"_L1, Qt::CaseInsensitive ) == 0 )
   {
     QVariantMap parts;
-    parts.insert( QStringLiteral( "path" ), fileName );
+    parts.insert( u"path"_s, fileName );
 
     QgsProviderSublayerDetails details;
     details.setUri( encodeUri( parts ) );
@@ -387,13 +387,13 @@ int QgsVtpkVectorTileDataProviderMetadata::priorityForUri( const QString &uri ) 
 QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QFileInfo fi( uri );
-  if ( fi.isFile() && fi.suffix().compare( QLatin1String( "vtpk" ), Qt::CaseInsensitive ) == 0 )
+  if ( fi.isFile() && fi.suffix().compare( "vtpk"_L1, Qt::CaseInsensitive ) == 0 )
   {
     return { Qgis::LayerType::VectorTile };
   }
 
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".vtpk", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( u"path"_s ).toString().endsWith( ".vtpk", Qt::CaseSensitivity::CaseInsensitive ) )
     return { Qgis::LayerType::VectorTile };
 
   return {};
@@ -405,8 +405,8 @@ QVariantMap QgsVtpkVectorTileDataProviderMetadata::decodeUri( const QString &uri
   dsUri.setEncodedUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
-  uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+  uriComponents.insert( u"type"_s, u"vtpk"_s );
+  uriComponents.insert( u"path"_s, dsUri.param( u"url"_s ) );
 
   return uriComponents;
 }
@@ -414,8 +414,8 @@ QVariantMap QgsVtpkVectorTileDataProviderMetadata::decodeUri( const QString &uri
 QString QgsVtpkVectorTileDataProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "vtpk" ) );
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  dsUri.setParam( u"type"_s, u"vtpk"_s );
+  dsUri.setParam( u"url"_s, parts.value( parts.contains( u"path"_s ) ? u"path"_s : u"url"_s ).toString() );
   return dsUri.encodedUri();
 }
 
@@ -423,8 +423,8 @@ QString QgsVtpkVectorTileDataProviderMetadata::absoluteToRelativeUri( const QStr
 {
   QVariantMap parts = decodeUri( uri );
 
-  const QString originalPath = parts.value( QStringLiteral( "path" ) ).toString();
-  parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( originalPath ) );
+  const QString originalPath = parts.value( u"path"_s ).toString();
+  parts.insert( u"path"_s, context.pathResolver().writePath( originalPath ) );
 
   return encodeUri( parts );
 }
@@ -433,8 +433,8 @@ QString QgsVtpkVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStr
 {
   QVariantMap parts = decodeUri( uri );
 
-  const QString originalPath = parts.value( QStringLiteral( "path" ) ).toString();
-  parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( originalPath ) );
+  const QString originalPath = parts.value( u"path"_s ).toString();
+  parts.insert( u"path"_s, context.pathResolver().readPath( originalPath ) );
 
   return encodeUri( parts );
 }

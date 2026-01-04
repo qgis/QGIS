@@ -48,20 +48,20 @@ QString QgsRenderChecker::sourcePath()
 }
 
 QgsRenderChecker::QgsRenderChecker()
-  : mBasePath( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/control_images/" ) ) //defined in CmakeLists.txt
+  : mBasePath( QStringLiteral( TEST_DATA_DIR ) + u"/control_images/"_s ) //defined in CmakeLists.txt
 {
-  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s )
     mIsCiRun = true;
 }
 
 QDir QgsRenderChecker::testReportDir()
 {
-  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
-    return QDir( QDir( "/root/QGIS" ).filePath( QStringLiteral( "qgis_test_report" ) ) );
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s )
+    return QDir( QDir( "/root/QGIS" ).filePath( u"qgis_test_report"_s ) );
   else if ( !qgetenv( "QGIS_TEST_REPORT" ).isEmpty() )
     return QDir( qgetenv( "QGIS_TEST_REPORT" ) );
   else
-    return QDir( QDir::temp().filePath( QStringLiteral( "qgis_test_report" ) ) );
+    return QDir( QDir::temp().filePath( u"qgis_test_report"_s ) );
 }
 
 bool QgsRenderChecker::shouldGenerateReport()
@@ -71,7 +71,7 @@ bool QgsRenderChecker::shouldGenerateReport()
 
 QString QgsRenderChecker::controlImagePath() const
 {
-  return mBasePath + ( mBasePath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + mControlPathPrefix;
+  return mBasePath + ( mBasePath.endsWith( '/' ) ? QString() : u"/"_s ) + mControlPathPrefix;
 }
 
 void QgsRenderChecker::setControlImagePath( const QString &path )
@@ -148,7 +148,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
   const QString myControlImageDir = controlImagePath() + mControlName + '/';
   const QDir myDirectory = QDir( myControlImageDir );
   QStringList myList;
-  const QString myFilename = QStringLiteral( "*" );
+  const QString myFilename = u"*"_s;
   myList = myDirectory.entryList( QStringList( myFilename ),
                                   QDir::Files | QDir::NoSymLinks );
   //remove the control file from the list as the anomalies are
@@ -163,30 +163,30 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
     const QString myFile = myList.at( i );
     mReport += "<tr><td colspan=3>"
                "Checking if " + myFile + " is a known anomaly.";
-    mReport += QLatin1String( "</td></tr>" );
+    mReport += "</td></tr>"_L1;
     const QString myAnomalyHash = imageToHash( controlImagePath() + mControlName + '/' + myFile );
     QString myHashMessage = QStringLiteral(
                               "Checking if anomaly %1 (hash %2)<br>" )
                             .arg( myFile,
                                   myAnomalyHash );
-    myHashMessage += QStringLiteral( "&nbsp; matches %1 (hash %2)" )
+    myHashMessage += u"&nbsp; matches %1 (hash %2)"_s
                      .arg( diffImageFile,
                            myImageHash );
     //foo CDash
-    emitDashMessage( QStringLiteral( "Anomaly check" ), QgsDartMeasurement::Text, myHashMessage );
+    emitDashMessage( u"Anomaly check"_s, QgsDartMeasurement::Text, myHashMessage );
 
     mReport += "<tr><td colspan=3>" + myHashMessage + "</td></tr>";
     if ( myImageHash == myAnomalyHash )
     {
       mReport += "<tr><td colspan=3>"
                  "Anomaly found! " + myFile;
-      mReport += QLatin1String( "</td></tr>" );
+      mReport += "</td></tr>"_L1;
       return true;
     }
   }
   mReport += "<tr><td colspan=3>"
              "No anomaly found! ";
-  mReport += QLatin1String( "</td></tr>" );
+  mReport += "</td></tr>"_L1;
   return false;
 }
 
@@ -280,7 +280,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
-    mMarkdownReport = QStringLiteral( "Failed because expected image file not set\n" );
+    mMarkdownReport = u"Failed because expected image file not set\n"_s;
     performPostTestActions( flags );
     return mResult;
   }
@@ -295,7 +295,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File could not be loaded.</td></tr></table>\n";
-    mMarkdownReport = QStringLiteral( "Failed because expected image file (%1) could not be loaded\n" ).arg( mExpectedImageFile );
+    mMarkdownReport = u"Failed because expected image file (%1) could not be loaded\n"_s.arg( mExpectedImageFile );
     performPostTestActions( flags );
     return mResult;
   }
@@ -335,7 +335,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
                 "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
                 "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
                 "Image File could not be saved.</td></tr></table>\n";
-      mMarkdownReport = QStringLiteral( "Failed because rendered image file could not be saved to %1\n" ).arg( mRenderedImageFile );
+      mMarkdownReport = u"Failed because rendered image file could not be saved to %1\n"_s.arg( mRenderedImageFile );
 
       performPostTestActions( flags );
       return mResult;
@@ -348,7 +348,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
       const QgsRectangle r = mMapSettings.extent();
 
       QTextStream stream( &wldFile );
-      stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
+      stream << u"%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n"_s
              .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
                    qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
                    qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
@@ -373,7 +373,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
-    mMarkdownReport = QStringLiteral( "Failed because expected image file was not set\n" );
+    mMarkdownReport = u"Failed because expected image file was not set\n"_s;
 
     performPostTestActions( flags );
     return mResult;
@@ -400,7 +400,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File not set.</td></tr></table>\n";
-    mMarkdownReport = QStringLiteral( "Failed because rendered image file was not set\n" );
+    mMarkdownReport = u"Failed because rendered image file was not set\n"_s;
     performPostTestActions( flags );
     return mResult;
   }
@@ -416,13 +416,13 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because control "
               "image file could not be loaded.</td></tr></table>\n";
-    mMarkdownReport = QStringLiteral( "Failed because expected image file (%1) could not be loaded\n" ).arg( referenceImageFile );
+    mMarkdownReport = u"Failed because expected image file (%1) could not be loaded\n"_s.arg( referenceImageFile );
     performPostTestActions( flags );
     return mResult;
   }
 
-  const QString expectedImageString = QStringLiteral( "<a href=\"%1\" style=\"color: inherit\" target=\"_blank\">expected</a> image" ).arg( QUrl::fromLocalFile( referenceImageFile ).toString() );
-  const QString renderedImageString = QStringLiteral( "<a href=\"%2\" style=\"color: inherit\" target=\"_blank\">rendered</a> image" ).arg( QUrl::fromLocalFile( renderedImageFile ).toString() );
+  const QString expectedImageString = u"<a href=\"%1\" style=\"color: inherit\" target=\"_blank\">expected</a> image"_s.arg( QUrl::fromLocalFile( referenceImageFile ).toString() );
+  const QString renderedImageString = u"<a href=\"%2\" style=\"color: inherit\" target=\"_blank\">rendered</a> image"_s.arg( QUrl::fromLocalFile( renderedImageFile ).toString() );
   auto upperFirst = []( const QString & string ) -> QString
   {
     const int firstNonTagIndex = string.indexOf( '>' ) + 1;
@@ -437,7 +437,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                               "<tr><td>Test Result:</td><td>%1:</td></tr>\n"
                               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
                               "Image File could not be loaded.</td></tr></table>\n" ).arg( upperFirst( expectedImageString ) );
-    mMarkdownReport = QStringLiteral( "Failed because rendered image (%1) could not be loaded\n" ).arg( mRenderedImageFile );
+    mMarkdownReport = u"Failed because rendered image (%1) could not be loaded\n"_s.arg( mRenderedImageFile );
     performPostTestActions( flags );
     return mResult;
   }
@@ -450,7 +450,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //check for mask
   QString maskImagePath = referenceImageFile;
   maskImagePath.chop( 4 ); //remove .png extension
-  maskImagePath += QLatin1String( "_mask.png" );
+  maskImagePath += "_mask.png"_L1;
   const QImage maskImage( maskImagePath );
   const bool hasMask = !maskImage.isNull();
 
@@ -462,8 +462,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // Set the report with the result
   //
-  mReport += QLatin1String( "<table>" );
-  mReport += QLatin1String( "<tr><td colspan=2>" );
+  mReport += "<table>"_L1;
+  mReport += "<tr><td colspan=2>"_L1;
   mReport += QStringLiteral( "<tr><td colspan=2>"
                              "%8 and %9 for %1<br>"
                              "Expected size: %2 w x %3 h (%4 pixels)<br>"
@@ -518,7 +518,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   QString prefix;
   if ( !mControlPathPrefix.isNull() )
   {
-    prefix = QStringLiteral( " (prefix %1)" ).arg( mControlPathPrefix );
+    prefix = u" (prefix %1)"_s.arg( mControlPathPrefix );
   }
 
   //
@@ -548,10 +548,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
       emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
 
-      mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += QStringLiteral( "<font color=red>%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions - FAILING!</font>";
-      mReport += QLatin1String( "</td></tr>" );
-      mMarkdownReport += QStringLiteral( "Failed because rendered image and expected image are different dimensions (%1x%2 v2 %3x%4)\n" )
+      mReport += "<tr><td colspan=3>"_L1;
+      mReport += u"<font color=red>%1 and %2 for "_s.arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions - FAILING!</font>";
+      mReport += "</td></tr>"_L1;
+      mMarkdownReport += u"Failed because rendered image and expected image are different dimensions (%1x%2 v2 %3x%4)\n"_s
                          .arg( myResultImage.width() )
                          .arg( myResultImage.height() )
                          .arg( expectedImage.width() )
@@ -577,9 +577,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     }
     else
     {
-      mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += QStringLiteral( "%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions, but within tolerance";
-      mReport += QLatin1String( "</td></tr>" );
+      mReport += "<tr><td colspan=3>"_L1;
+      mReport += u"%1 and %2 for "_s.arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are different dimensions, but within tolerance";
+      mReport += "</td></tr>"_L1;
     }
   }
 
@@ -592,12 +592,12 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
       qDebug() << "Expected image and rendered image for " << testName << " have different formats (8bit format is expected) - FAILING!";
 
-      mReport += QLatin1String( "<tr><td colspan=3>" );
+      mReport += "<tr><td colspan=3>"_L1;
       mReport += "<font color=red>Expected image and rendered image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
-      mReport += QLatin1String( "</td></tr>" );
+      mReport += "</td></tr>"_L1;
       mReport += myImagesString;
 
-      mMarkdownReport += QLatin1String( "Failed because rendered image and expected image have different formats (8bit format is expected)\n" );
+      mMarkdownReport += "Failed because rendered image and expected image have different formats (8bit format is expected)\n"_L1;
       performPostTestActions( flags );
       return mResult;
     }
@@ -612,12 +612,12 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
        && expectedImage.format() != QImage::Format_ARGB32
        && expectedImage.format() != QImage::Format_ARGB32_Premultiplied )
   {
-    mReport += QLatin1String( "<tr><td colspan=3>" );
-    mReport += QStringLiteral( "<font color=red>Expected image for %1 is not a compatible format (%2). Must be 32 bit RGB format.</font>" ).arg( testName, qgsEnumValueToKey( expectedImage.format() ) );
-    mReport += QLatin1String( "</td></tr>" );
+    mReport += "<tr><td colspan=3>"_L1;
+    mReport += u"<font color=red>Expected image for %1 is not a compatible format (%2). Must be 32 bit RGB format.</font>"_s.arg( testName, qgsEnumValueToKey( expectedImage.format() ) );
+    mReport += "</td></tr>"_L1;
     mReport += myImagesString;
 
-    mMarkdownReport += QStringLiteral( "Failed because expected image has an incompatible format - %1 (32 bit format is expected)\n" ).arg( qgsEnumValueToKey( expectedImage.format() ) );
+    mMarkdownReport += u"Failed because expected image has an incompatible format - %1 (32 bit format is expected)\n"_s.arg( qgsEnumValueToKey( expectedImage.format() ) );
     performPostTestActions( flags );
     return mResult;
   }
@@ -625,12 +625,12 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
        && myResultImage.format() != QImage::Format_ARGB32
        && myResultImage.format() != QImage::Format_ARGB32_Premultiplied )
   {
-    mReport += QLatin1String( "<tr><td colspan=3>" );
-    mReport += QStringLiteral( "<font color=red>Rendered image for %1 is not a compatible format (%2). Must be 32 bit RGB format.</font>" ).arg( testName, qgsEnumValueToKey( myResultImage.format() ) );
-    mReport += QLatin1String( "</td></tr>" );
+    mReport += "<tr><td colspan=3>"_L1;
+    mReport += u"<font color=red>Rendered image for %1 is not a compatible format (%2). Must be 32 bit RGB format.</font>"_s.arg( testName, qgsEnumValueToKey( myResultImage.format() ) );
+    mReport += "</td></tr>"_L1;
     mReport += myImagesString;
 
-    mMarkdownReport += QStringLiteral( "Failed because rendered image has an incompatible format - %1 (32 bit format is expected)\n" ).arg( qgsEnumValueToKey( myResultImage.format() ) );
+    mMarkdownReport += u"Failed because rendered image has an incompatible format - %1 (32 bit format is expected)\n"_s.arg( qgsEnumValueToKey( myResultImage.format() ) );
     performPostTestActions( flags );
     return mResult;
   }
@@ -712,7 +712,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // Send match result to report
   //
-  mReport += QStringLiteral( "<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>" )
+  mReport += u"<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>"_s
              .arg( mMismatchCount ).arg( mMatchTarget ).arg( mismatchCount ).arg( mColorTolerance );
 
   //
@@ -720,24 +720,24 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   if ( mMismatchCount > 0 )
   {
-    emitDashMessage( QStringLiteral( "Mismatch Count" ), QgsDartMeasurement::Integer, QStringLiteral( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
+    emitDashMessage( u"Mismatch Count"_s, QgsDartMeasurement::Integer, u"%1/%2"_s.arg( mMismatchCount ).arg( mMatchTarget ) );
   }
 
   if ( mMismatchCount <= mismatchCount )
   {
-    mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-    mReport += QStringLiteral( "%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are matched<br>";
-    mReport += QLatin1String( "</td></tr>" );
+    mReport += "<tr><td colspan = 3>\n"_L1;
+    mReport += u"%1 and %2 for "_s.arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are matched<br>";
+    mReport += "</td></tr>"_L1;
     if ( mElapsedTimeTarget != 0 && mElapsedTimeTarget < mElapsedTime )
     {
       //test failed because it took too long...
       qDebug( "Test failed because render step took too long" );
-      mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-      mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );
-      mReport += QLatin1String( "</td></tr>" );
+      mReport += "<tr><td colspan = 3>\n"_L1;
+      mReport += "<font color=red>Test failed because render step took too long</font>"_L1;
+      mReport += "</td></tr>"_L1;
       mReport += myImagesString;
 
-      mMarkdownReport += QLatin1String( "Test failed because render step took too long\n" );
+      mMarkdownReport += "Test failed because render step took too long\n"_L1;
 
       performPostTestActions( flags );
       return mResult;
@@ -751,30 +751,30 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     }
   }
 
-  mReport += QLatin1String( "<tr><td colspan=3></td></tr>" );
-  emitDashMessage( QStringLiteral( "Image mismatch" ), QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
+  mReport += "<tr><td colspan=3></td></tr>"_L1;
+  emitDashMessage( u"Image mismatch"_s, QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
                    " If you feel the difference image should be considered an anomaly "
                    "you can do something like this\n"
                    "cp '" + mDiffImageFile + "' " + controlImagePath() + mControlName +
                    "/\nIf it should be included in the mask run\n"
                    "scripts/generate_test_mask_image.py '" + referenceImageFile + "' '" + mRenderedImageFile + "'\n" );
 
-  mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-  mReport += QStringLiteral( "<font color=red>%1 and %2 for " ).arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are mismatched</font><br>";
-  mReport += QLatin1String( "</td></tr>" );
+  mReport += "<tr><td colspan = 3>\n"_L1;
+  mReport += u"<font color=red>%1 and %2 for "_s.arg( upperFirst( expectedImageString ), renderedImageString ) + testName + " are mismatched</font><br>";
+  mReport += "</td></tr>"_L1;
   mReport += myImagesString;
 
   const QString githubSha = qgetenv( "GITHUB_SHA" );
   if ( !githubSha.isEmpty() )
   {
-    const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2" ).arg(
+    const QString githubBlobUrl = u"https://github.com/qgis/QGIS/blob/%1/%2"_s.arg(
                                     githubSha, QDir( sourcePath() ).relativeFilePath( referenceImageFile ) );
-    mMarkdownReport += QStringLiteral( "Rendered image did not match [%1](%2) (found %3 pixels different)\n" ).arg(
+    mMarkdownReport += u"Rendered image did not match [%1](%2) (found %3 pixels different)\n"_s.arg(
                          QDir( sourcePath() ).relativeFilePath( referenceImageFile ), githubBlobUrl ).arg( mMismatchCount );
   }
   else
   {
-    mMarkdownReport += QStringLiteral( "Rendered image did not match [%1](%2) (found %3 pixels different)\n" ).arg(
+    mMarkdownReport += u"Rendered image did not match [%1](%2) (found %3 pixels different)\n"_s.arg(
                          QDir( sourcePath() ).relativeFilePath( referenceImageFile ),
                          QUrl::fromLocalFile( referenceImageFile ).toString() ).arg( mMismatchCount );
   }

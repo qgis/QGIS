@@ -35,8 +35,8 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsRandomPointsInPolygonsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomPointsInPolygons.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomPointsInPolygons.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -52,18 +52,18 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
 
   private:
     // The algorithm parameter names:
-    static inline const QString INPUT = QStringLiteral( "INPUT" );
-    static inline const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
-    static inline const QString MIN_DISTANCE_GLOBAL = QStringLiteral( "MIN_DISTANCE_GLOBAL" );
-    static inline const QString MIN_DISTANCE = QStringLiteral( "MIN_DISTANCE" );
-    static inline const QString MAX_TRIES_PER_POINT = QStringLiteral( "MAX_TRIES_PER_POINT" );
-    static inline const QString SEED = QStringLiteral( "SEED" );
-    static inline const QString INCLUDE_POLYGON_ATTRIBUTES = QStringLiteral( "INCLUDE_POLYGON_ATTRIBUTES" );
-    static inline const QString OUTPUT = QStringLiteral( "OUTPUT" );
-    static inline const QString OUTPUT_POINTS = QStringLiteral( "OUTPUT_POINTS" );
-    static inline const QString POINTS_MISSED = QStringLiteral( "POINTS_MISSED" );
-    static inline const QString POLYGONS_WITH_MISSED_POINTS = QStringLiteral( "POLYGONS_WITH_MISSED_POINTS" );
-    static inline const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = QStringLiteral( "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY" );
+    static inline const QString INPUT = u"INPUT"_s;
+    static inline const QString POINTS_NUMBER = u"POINTS_NUMBER"_s;
+    static inline const QString MIN_DISTANCE_GLOBAL = u"MIN_DISTANCE_GLOBAL"_s;
+    static inline const QString MIN_DISTANCE = u"MIN_DISTANCE"_s;
+    static inline const QString MAX_TRIES_PER_POINT = u"MAX_TRIES_PER_POINT"_s;
+    static inline const QString SEED = u"SEED"_s;
+    static inline const QString INCLUDE_POLYGON_ATTRIBUTES = u"INCLUDE_POLYGON_ATTRIBUTES"_s;
+    static inline const QString OUTPUT = u"OUTPUT"_s;
+    static inline const QString OUTPUT_POINTS = u"OUTPUT_POINTS"_s;
+    static inline const QString POINTS_MISSED = u"POINTS_MISSED"_s;
+    static inline const QString POLYGONS_WITH_MISSED_POINTS = u"POLYGONS_WITH_MISSED_POINTS"_s;
+    static inline const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = u"FEATURES_WITH_EMPTY_OR_NO_GEOMETRY"_s;
 
     int mNumPoints = 0;
     bool mDynamicNumPoints = false;

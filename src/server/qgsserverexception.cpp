@@ -29,14 +29,14 @@ QgsServerException::QgsServerException( const QString &message, int responseCode
 QByteArray QgsServerException::formatResponse( QString &responseFormat ) const
 {
   QDomDocument doc;
-  const QDomNode header = doc.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+  const QDomNode header = doc.createProcessingInstruction( u"xml"_s, u"version=\"1.0\" encoding=\"UTF-8\""_s );
   doc.appendChild( header );
 
-  QDomElement root = doc.createElement( QStringLiteral( "ServerException" ) );
+  QDomElement root = doc.createElement( u"ServerException"_s );
   doc.appendChild( root );
   root.appendChild( doc.createTextNode( what() ) );
 
-  responseFormat = QStringLiteral( "text/xml; charset=utf-8" );
+  responseFormat = u"text/xml; charset=utf-8"_s;
   return doc.toByteArray();
 }
 
@@ -54,24 +54,24 @@ QgsOgcServiceException::QgsOgcServiceException( const QString &code, const QStri
 QByteArray QgsOgcServiceException::formatResponse( QString &responseFormat ) const
 {
   QDomDocument doc;
-  const QDomNode header = doc.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+  const QDomNode header = doc.createProcessingInstruction( u"xml"_s, u"version=\"1.0\" encoding=\"UTF-8\""_s );
   doc.appendChild( header );
 
-  QDomElement root = doc.createElement( QStringLiteral( "ServiceExceptionReport" ) );
-  root.setAttribute( QStringLiteral( "version" ), mVersion );
-  root.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+  QDomElement root = doc.createElement( u"ServiceExceptionReport"_s );
+  root.setAttribute( u"version"_s, mVersion );
+  root.setAttribute( u"xmlns"_s, u"http://www.opengis.net/ogc"_s );
   doc.appendChild( root );
 
-  QDomElement elem = doc.createElement( QStringLiteral( "ServiceException" ) );
-  elem.setAttribute( QStringLiteral( "code" ), mCode );
+  QDomElement elem = doc.createElement( u"ServiceException"_s );
+  elem.setAttribute( u"code"_s, mCode );
   elem.appendChild( doc.createTextNode( mMessage ) );
   root.appendChild( elem );
 
   if ( !mLocator.isEmpty() )
   {
-    elem.setAttribute( QStringLiteral( "locator" ), mLocator );
+    elem.setAttribute( u"locator"_s, mLocator );
   }
 
-  responseFormat = QStringLiteral( "text/xml; charset=utf-8" );
+  responseFormat = u"text/xml; charset=utf-8"_s;
   return doc.toByteArray();
 }

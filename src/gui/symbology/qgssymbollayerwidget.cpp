@@ -85,11 +85,11 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_index" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_frame" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_layer_count"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_layer_index"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_marker_row"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_marker_column"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_frame"_s, 1, true ) );
 
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
@@ -107,16 +107,16 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
              << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
              << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
              << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
-             << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) << QStringLiteral( "symbol_frame" );
+             << u"symbol_layer_count"_s << u"symbol_layer_index"_s << u"symbol_frame"_s;
 
 
-  if ( expContext.hasVariable( QStringLiteral( "zoom_level" ) ) )
+  if ( expContext.hasVariable( u"zoom_level"_s ) )
   {
-    highlights << QStringLiteral( "zoom_level" );
+    highlights << u"zoom_level"_s;
   }
-  if ( expContext.hasVariable( QStringLiteral( "vector_tile_zoom" ) ) )
+  if ( expContext.hasVariable( u"vector_tile_zoom"_s ) )
   {
-    highlights << QStringLiteral( "vector_tile_zoom" );
+    highlights << u"vector_tile_zoom"_s;
   }
 
   expContext.setHighlightedVariables( highlights );
@@ -237,13 +237,13 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
 
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Line Color" ) );
-  btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor->setContext( u"symbology"_s );
 
   mColorDDBtn->registerLinkedWidget( btnChangeColor );
 
-  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
-  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
-  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( u"mIconAllRings.svg"_s ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( u"mIconExteriorRing.svg"_s ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( u"mIconInteriorRings.svg"_s ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
   connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mLayer )
     {
@@ -326,7 +326,7 @@ void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
 
 void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "SimpleLine" ) )
+  if ( !layer || layer->layerType() != "SimpleLine"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -610,7 +610,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
-  mChangePatternButton->setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width ) );
+  mChangePatternButton->setToolTip( u"<img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width ) );
 }
 
 void QgsSimpleLineSymbolLayerWidget::resizeEvent( QResizeEvent *event )
@@ -652,12 +652,12 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
 
   btnChangeColorFill->setAllowOpacity( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select Fill Color" ) );
-  btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColorFill->setContext( u"symbology"_s );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent Fill" ) );
   btnChangeColorStroke->setAllowOpacity( true );
   btnChangeColorStroke->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  btnChangeColorStroke->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColorStroke->setContext( u"symbology"_s );
   btnChangeColorStroke->setShowNoColor( true );
   btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
 
@@ -714,7 +714,7 @@ QgsSimpleMarkerSymbolLayerWidget::~QgsSimpleMarkerSymbolLayerWidget() = default;
 
 void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "SimpleMarker" ) )
+  if ( layer->layerType() != "SimpleMarker"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -951,12 +951,12 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *
 
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Fill Color" ) );
-  btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent Fill" ) );
   btnChangeStrokeColor->setAllowOpacity( true );
   btnChangeStrokeColor->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  btnChangeStrokeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeStrokeColor->setContext( u"symbology"_s );
   btnChangeStrokeColor->setShowNoColor( true );
   btnChangeStrokeColor->setNoColorString( tr( "Transparent Stroke" ) );
 
@@ -978,7 +978,7 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *
 
 void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "SimpleFill" ) )
+  if ( layer->layerType() != "SimpleFill"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -1158,7 +1158,7 @@ QgsFilledMarkerSymbolLayerWidget::~QgsFilledMarkerSymbolLayerWidget() = default;
 
 void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "FilledMarker" ) )
+  if ( layer->layerType() != "FilledMarker"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -1298,12 +1298,12 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( QgsVectorLay
 
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Gradient Color" ) );
-  btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
   btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
-  btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor2->setContext( u"symbology"_s );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
 
@@ -1333,7 +1333,7 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( QgsVectorLay
 
 void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "GradientFill" ) )
+  if ( layer->layerType() != "GradientFill"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -1640,12 +1640,12 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
   group2->addButton( mRadioUseWholeShape );
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Gradient Color" ) );
-  btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
   btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
-  btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor2->setContext( u"symbology"_s );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
 
@@ -1672,7 +1672,7 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
 
 void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "ShapeburstFill" ) )
+  if ( layer->layerType() != "ShapeburstFill"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -1902,9 +1902,9 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   mIntervalUnitWidget->setUnits( units );
   mBlankSegmentsUnitWidget->setUnits( units );
 
-  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
-  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
-  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( u"mIconAllRings.svg"_s ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( u"mIconExteriorRing.svg"_s ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( u"mIconInteriorRings.svg"_s ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
   connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mLayer )
     {
@@ -1980,12 +1980,12 @@ void QgsTemplatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   switch ( mSymbolType )
   {
     case TemplatedSymbolType::Hash:
-      if ( layer->layerType() != QLatin1String( "HashLine" ) )
+      if ( layer->layerType() != "HashLine"_L1 )
         return;
       break;
 
     case TemplatedSymbolType::Marker:
-      if ( layer->layerType() != QLatin1String( "MarkerLine" ) )
+      if ( layer->layerType() != "MarkerLine"_L1 )
         return;
   }
 
@@ -2310,7 +2310,7 @@ void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 
   if ( !mEditBlankSegmentsBtn->isEnabled() )
   {
-    tooltip += QStringLiteral( "<br/><br/>" ) + tr( "This tool is disabled because no valid field property has been set" );
+    tooltip += u"<br/><br/>"_s + tr( "This tool is disabled because no valid field property has been set" );
   }
 
   mEditBlankSegmentsBtn->setToolTip( tooltip );
@@ -2359,7 +2359,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
 
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastSVGMarkerDir"_s );
   mSvgSelectorWidget->initParametersModel( this, vl );
 
   connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgMarkerSymbolLayerWidget::svgSourceChanged );
@@ -2376,10 +2376,10 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mChangeColorButton->setAllowOpacity( true );
   mChangeColorButton->setColorDialogTitle( tr( "Select Fill color" ) );
-  mChangeColorButton->setContext( QStringLiteral( "symbology" ) );
+  mChangeColorButton->setContext( u"symbology"_s );
   mChangeStrokeColorButton->setAllowOpacity( true );
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
+  mChangeStrokeColorButton->setContext( u"symbology"_s );
 
   mFillColorDDBtn->registerLinkedWidget( mChangeColorButton );
   mStrokeColorDDBtn->registerLinkedWidget( mChangeStrokeColorButton );
@@ -2501,7 +2501,7 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "SvgMarker" ) )
+  if ( layer->layerType() != "SvgMarker"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -2782,9 +2782,9 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mRotationSpinBox->setClearValue( 0.0 );
 
   mChangeColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
-  mChangeColorButton->setContext( QStringLiteral( "symbology" ) );
+  mChangeColorButton->setContext( u"symbology"_s );
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
+  mChangeStrokeColorButton->setContext( u"symbology"_s );
 
   mFilColorDDBtn->registerLinkedWidget( mChangeColorButton );
   mStrokeColorDDBtn->registerLinkedWidget( mChangeStrokeColorButton );
@@ -2800,7 +2800,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "SVGFill" ) )
+  if ( layer->layerType() != "SVGFill"_L1 )
   {
     return;
   }
@@ -3037,7 +3037,7 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QgsVec
 
 void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "LinePatternFill" ) )
+  if ( layer->layerType() != "LinePatternFill"_L1 )
   {
     return;
   }
@@ -3228,7 +3228,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
 
 void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "PointPatternFill" ) )
+  if ( !layer || layer->layerType() != "PointPatternFill"_L1 )
   {
     return;
   }
@@ -3445,10 +3445,10 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
 
   btnColor->setAllowOpacity( true );
   btnColor->setColorDialogTitle( tr( "Select Symbol Fill Color" ) );
-  btnColor->setContext( QStringLiteral( "symbology" ) );
+  btnColor->setContext( u"symbology"_s );
   btnStrokeColor->setAllowOpacity( true );
   btnStrokeColor->setColorDialogTitle( tr( "Select Symbol Stroke Color" ) );
-  btnStrokeColor->setContext( QStringLiteral( "symbology" ) );
+  btnStrokeColor->setContext( u"symbology"_s );
 
   mColorDDBtn->registerLinkedWidget( btnColor );
   mStrokeColorDDBtn->registerLinkedWidget( btnStrokeColor );
@@ -3483,7 +3483,7 @@ QgsFontMarkerSymbolLayerWidget::~QgsFontMarkerSymbolLayerWidget() = default;
 
 void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "FontMarker" ) )
+  if ( layer->layerType() != "FontMarker"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -3619,7 +3619,7 @@ void QgsFontMarkerSymbolLayerWidget::setCharacterFromText( const QString &text )
 
   // take the last character of a string for a better experience when users cycle through several characters on their keyboard
   QString character = text;
-  if ( text.contains( QRegularExpression( QStringLiteral( "^0x[0-9a-fA-F]{1,4}$" ) ) ) )
+  if ( text.contains( QRegularExpression( u"^0x[0-9a-fA-F]{1,4}$"_s ) ) )
   {
     bool ok = false;
     const unsigned int value = text.toUInt( &ok, 0 );
@@ -3790,7 +3790,7 @@ QgsCentroidFillSymbolLayerWidget::QgsCentroidFillSymbolLayerWidget( QgsVectorLay
 
 void QgsCentroidFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "CentroidFill" ) )
+  if ( layer->layerType() != "CentroidFill"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -3849,7 +3849,7 @@ QgsRasterMarkerSymbolLayerWidget::QgsRasterMarkerSymbolLayerWidget( QgsVectorLay
   mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
   mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
 
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"/UI/lastRasterMarkerImageDir"_s );
 
   connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterMarkerSymbolLayerWidget::imageSourceChanged );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
@@ -3881,7 +3881,7 @@ void QgsRasterMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "RasterMarker" ) )
+  if ( layer->layerType() != "RasterMarker"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -4126,7 +4126,7 @@ QgsAnimatedMarkerSymbolLayerWidget::QgsAnimatedMarkerSymbolLayerWidget( QgsVecto
   mVerticalAnchorComboBox->addItem( tr( "Vertical Center" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Center ) );
   mVerticalAnchorComboBox->addItem( tr( "Bottom" ), QVariant::fromValue( Qgis::VerticalAnchorPoint::Bottom ) );
 
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastAnimatedMarkerImageDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"/UI/lastAnimatedMarkerImageDir"_s );
 
   connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsAnimatedMarkerSymbolLayerWidget::imageSourceChanged );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnimatedMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
@@ -4165,7 +4165,7 @@ void QgsAnimatedMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "AnimatedMarker" ) )
+  if ( layer->layerType() != "AnimatedMarker"_L1 )
     return;
 
   // layer type is correct, we can do the cast
@@ -4404,7 +4404,7 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
   mLayer = nullptr;
   setupUi( this );
 
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"/UI/lastRasterMarkerImageDir"_s );
   connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterFillSymbolLayerWidget::imageSourceChanged );
 
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mOffsetUnitWidget_changed );
@@ -4458,7 +4458,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "RasterFill" ) )
+  if ( layer->layerType() != "RasterFill"_L1 )
   {
     return;
   }
@@ -4622,7 +4622,7 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
   mLayer = nullptr;
   setupUi( this );
 
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastRasterMarkerImageDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"/UI/lastRasterMarkerImageDir"_s );
 
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
@@ -4696,7 +4696,7 @@ void QgsRasterLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "RasterLine" ) )
+  if ( layer->layerType() != "RasterLine"_L1 )
   {
     return;
   }
@@ -4909,7 +4909,7 @@ QgsRandomMarkerFillSymbolLayerWidget::QgsRandomMarkerFillSymbolLayerWidget( QgsV
 
 void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "RandomMarkerFill" ) )
+  if ( !layer || layer->layerType() != "RandomMarkerFill"_L1 )
   {
     return;
   }
@@ -5025,12 +5025,12 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
 
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Gradient Color" ) );
-  btnChangeColor->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
   btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
-  btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColor2->setContext( u"symbology"_s );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
 
@@ -5144,7 +5144,7 @@ void QgsLineburstSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "Lineburst" ) )
+  if ( layer->layerType() != "Lineburst"_L1 )
   {
     return;
   }
@@ -5279,7 +5279,7 @@ void QgsFilledLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  if ( layer->layerType() != QLatin1String( "FilledLine" ) )
+  if ( layer->layerType() != "FilledLine"_L1 )
   {
     return;
   }
@@ -5453,7 +5453,7 @@ QgsLinearReferencingSymbolLayerWidget::~QgsLinearReferencingSymbolLayerWidget() 
 
 void QgsLinearReferencingSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "LinearReferencing" ) )
+  if ( !layer || layer->layerType() != "LinearReferencing"_L1 )
     return;
 
   // layer type is correct, we can do the cast

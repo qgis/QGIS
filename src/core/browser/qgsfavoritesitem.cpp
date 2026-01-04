@@ -30,12 +30,12 @@
 //
 
 QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ), QStringLiteral( "special:Favorites" ) )
+  : QgsDataCollectionItem( parent, name, u"favorites:"_s, u"special:Favorites"_s )
 {
   Q_UNUSED( path )
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mType = Qgis::BrowserItemType::Favorites;
-  mIconName = QStringLiteral( "/mIconFavorites.svg" );
+  mIconName = u"/mIconFavorites.svg"_s;
   populate();
 }
 
@@ -45,12 +45,12 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
 
   const QgsSettings settings;
 
-  const QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
+  const QStringList favDirs = settings.value( u"browser/favourites"_s, QVariant() ).toStringList();
 
   children.reserve( favDirs.size() );
   for ( const QString &favDir : favDirs )
   {
-    const QStringList parts = favDir.split( QStringLiteral( "|||" ) );
+    const QStringList parts = favDir.split( u"|||"_s );
     if ( parts.empty() )
       continue;
 
@@ -70,9 +70,9 @@ void QgsFavoritesItem::addDirectory( const QString &favDir, const QString &n )
   const QString name = n.isEmpty() ? favDir : n;
 
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
-  favDirs.append( QStringLiteral( "%1|||%2" ).arg( favDir, name ) );
-  settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
+  QStringList favDirs = settings.value( u"browser/favourites"_s ).toStringList();
+  favDirs.append( u"%1|||%2"_s.arg( favDir, name ) );
+  settings.setValue( u"browser/favourites"_s, favDirs );
 
   if ( state() == Qgis::BrowserItemState::Populated )
   {
@@ -90,10 +90,10 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
     return;
 
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
+  QStringList favDirs = settings.value( u"browser/favourites"_s ).toStringList();
   for ( int i = favDirs.count() - 1; i >= 0; --i )
   {
-    const QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
+    const QStringList parts = favDirs.at( i ).split( u"|||"_s );
     if ( parts.empty() )
       continue;
 
@@ -101,12 +101,12 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
     if ( dir == item->dirPath() )
       favDirs.removeAt( i );
   }
-  settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
+  settings.setValue( u"browser/favourites"_s, favDirs );
 
   const int idx = findItem( mChildren, item );
   if ( idx < 0 )
   {
-    QgsDebugError( QStringLiteral( "favorites item %1 not found" ).arg( item->path() ) );
+    QgsDebugError( u"favorites item %1 not found"_s.arg( item->path() ) );
     return;
   }
 
@@ -118,10 +118,10 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
 {
   // update stored name
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
+  QStringList favDirs = settings.value( u"browser/favourites"_s ).toStringList();
   for ( int i = 0; i < favDirs.count(); ++i )
   {
-    const QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
+    const QStringList parts = favDirs.at( i ).split( u"|||"_s );
     if ( parts.empty() )
       continue;
 
@@ -129,11 +129,11 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
     if ( dir == path )
     {
       const QStringList newParts { path, name };
-      favDirs[i] = newParts.join( QLatin1String( "|||" ) );
+      favDirs[i] = newParts.join( "|||"_L1 );
       break;
     }
   }
-  settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
+  settings.setValue( u"browser/favourites"_s, favDirs );
 
   // also update existing data item
   const QVector<QgsDataItem *> ch = children();
@@ -152,12 +152,12 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
 
 QIcon QgsFavoritesItem::iconFavorites()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconFavorites.svg"_s );
 }
 
 QVariant QgsFavoritesItem::sortKey() const
 {
-  return QStringLiteral( " 0" );
+  return u" 0"_s;
 }
 
 QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &directory, const QString &name )
@@ -190,7 +190,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &director
 //
 
 QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDirectoryItem( parent, name, dirPath, path, QStringLiteral( "special:Favorites" ) )
+  : QgsDirectoryItem( parent, name, dirPath, path, u"special:Favorites"_s )
   , mFavorites( parent )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Rename;

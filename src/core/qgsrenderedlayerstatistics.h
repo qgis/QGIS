@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
     {
       maximums.append( QString::number( max ) );
     }
-    QString str = QStringLiteral( "<QgsRenderedLayerStatistics: %1 (min: %2 - max: %3)>" ).arg( sipCpp->layerId(), minimums.join( ',' ), maximums.join( ',' ) );
+    QString str = u"<QgsRenderedLayerStatistics: %1 (min: %2 - max: %3)>"_s.arg( sipCpp->layerId(), minimums.join( ',' ), maximums.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

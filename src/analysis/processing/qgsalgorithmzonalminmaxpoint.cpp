@@ -23,7 +23,7 @@
 
 QString QgsZonalMinimumMaximumPointAlgorithm::name() const
 {
-  return QStringLiteral( "zonalminmaxpoint" );
+  return u"zonalminmaxpoint"_s;
 }
 
 QString QgsZonalMinimumMaximumPointAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsZonalMinimumMaximumPointAlgorithm::group() const
 
 QString QgsZonalMinimumMaximumPointAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsZonalMinimumMaximumPointAlgorithm::shortDescription() const
@@ -74,8 +74,8 @@ QgsZonalMinimumMaximumPointAlgorithm *QgsZonalMinimumMaximumPointAlgorithm::crea
 void QgsZonalMinimumMaximumPointAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Raster band" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT_RASTER"_s, QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( u"RASTER_BAND"_s, QObject::tr( "Raster band" ), 1, u"INPUT_RASTER"_s ) );
 }
 
 QString QgsZonalMinimumMaximumPointAlgorithm::outputName() const
@@ -116,11 +116,11 @@ QgsCoordinateReferenceSystem QgsZonalMinimumMaximumPointAlgorithm::outputCrs( co
 
 bool QgsZonalMinimumMaximumPointAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
+  QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
   if ( !rasterLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  mBand = parameterAsInt( parameters, u"RASTER_BAND"_s, context );
   if ( mBand < 1 || mBand > rasterLayer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( rasterLayer->bandCount() ) );
 
@@ -134,8 +134,8 @@ bool QgsZonalMinimumMaximumPointAlgorithm::prepareAlgorithm( const QVariantMap &
   std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, inputParameterName(), context ) );
 
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "value" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-  newFields.append( QgsField( QStringLiteral( "extremum_type" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( u"value"_s, QMetaType::Type::Double, QString(), 20, 8 ) );
+  newFields.append( QgsField( u"extremum_type"_s, QMetaType::Type::QString ) );
   mOutputFields = QgsProcessingUtils::combineFields( source->fields(), newFields );
 
   return true;
@@ -167,13 +167,13 @@ QgsFeatureList QgsZonalMinimumMaximumPointAlgorithm::processFeature( const QgsFe
 
   QgsFeature minPointFeature( mOutputFields );
   QgsAttributes minAttributes = attributes;
-  minAttributes << results.value( Qgis::ZonalStatistic::Min ) << QStringLiteral( "minimum" );
+  minAttributes << results.value( Qgis::ZonalStatistic::Min ) << u"minimum"_s;
   minPointFeature.setAttributes( minAttributes );
   minPointFeature.setGeometry( QgsGeometry::fromPointXY( results.value( Qgis::ZonalStatistic::MinimumPoint ).value<QgsPointXY>() ) );
 
   QgsFeature maxPointFeature( mOutputFields );
   QgsAttributes maxAttributes = attributes;
-  maxAttributes << results.value( Qgis::ZonalStatistic::Max ) << QStringLiteral( "maximum" );
+  maxAttributes << results.value( Qgis::ZonalStatistic::Max ) << u"maximum"_s;
   maxPointFeature.setAttributes( maxAttributes );
   maxPointFeature.setGeometry( QgsGeometry::fromPointXY( results.value( Qgis::ZonalStatistic::MaximumPoint ).value<QgsPointXY>() ) );
 

@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Polygon with less than three nodes" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryDegeneratePolygonCheck" ); }
+    static QString factoryId() { return u"QgsGeometryDegeneratePolygonCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:

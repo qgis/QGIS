@@ -51,7 +51,7 @@ int QgsLayoutItemChart::type() const
 
 QIcon QgsLayoutItemChart::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemChart.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemChart.svg"_s );
 }
 
 QgsLayoutItemChart *QgsLayoutItemChart::create( QgsLayout *layout )
@@ -373,46 +373,46 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
 {
   if ( mPlot )
   {
-    QDomElement plotElement = document.createElement( QStringLiteral( "plot" ) );
+    QDomElement plotElement = document.createElement( u"plot"_s );
     mPlot->writeXml( plotElement, document, context );
     element.appendChild( plotElement );
   }
 
-  QDomElement seriesListElement = document.createElement( QStringLiteral( "seriesList" ) );
+  QDomElement seriesListElement = document.createElement( u"seriesList"_s );
   for ( const SeriesDetails &series : mSeriesList )
   {
-    QDomElement seriesElement = document.createElement( QStringLiteral( "series" ) );
-    seriesElement.setAttribute( QStringLiteral( "name" ), series.name() );
-    seriesElement.setAttribute( QStringLiteral( "xExpression" ), series.xExpression() );
-    seriesElement.setAttribute( QStringLiteral( "yExpression" ), series.yExpression() );
-    seriesElement.setAttribute( QStringLiteral( "filterExpression" ), series.filterExpression() );
+    QDomElement seriesElement = document.createElement( u"series"_s );
+    seriesElement.setAttribute( u"name"_s, series.name() );
+    seriesElement.setAttribute( u"xExpression"_s, series.xExpression() );
+    seriesElement.setAttribute( u"yExpression"_s, series.yExpression() );
+    seriesElement.setAttribute( u"filterExpression"_s, series.filterExpression() );
     seriesListElement.appendChild( seriesElement );
   }
   element.appendChild( seriesListElement );
 
   if ( mVectorLayer )
   {
-    element.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer.layerId );
-    element.setAttribute( QStringLiteral( "vectorLayerName" ), mVectorLayer.name );
-    element.setAttribute( QStringLiteral( "vectorLayerSource" ), mVectorLayer.source );
-    element.setAttribute( QStringLiteral( "vectorLayerProvider" ), mVectorLayer.provider );
+    element.setAttribute( u"vectorLayer"_s, mVectorLayer.layerId );
+    element.setAttribute( u"vectorLayerName"_s, mVectorLayer.name );
+    element.setAttribute( u"vectorLayerSource"_s, mVectorLayer.source );
+    element.setAttribute( u"vectorLayerProvider"_s, mVectorLayer.provider );
   }
 
-  element.setAttribute( QStringLiteral( "sortFeatures" ), mSortFeatures ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "sortAscending" ), mSortAscending ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "sortExpression" ), mSortExpression );
+  element.setAttribute( u"sortFeatures"_s, mSortFeatures ? u"1"_s : u"0"_s );
+  element.setAttribute( u"sortAscending"_s, mSortAscending ? u"1"_s : u"0"_s );
+  element.setAttribute( u"sortExpression"_s, mSortExpression );
 
-  element.setAttribute( QStringLiteral( "sortExpression" ), mSortExpression );
+  element.setAttribute( u"sortExpression"_s, mSortExpression );
 
   return true;
 }
 
 bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  QDomElement plotElement = element.firstChildElement( QStringLiteral( "plot" ) );
+  QDomElement plotElement = element.firstChildElement( u"plot"_s );
   if ( !plotElement.isNull() )
   {
-    mPlot.reset( dynamic_cast<Qgs2DPlot *>( QgsApplication::instance()->plotRegistry()->createPlot( plotElement.attribute( QStringLiteral( "plotType" ) ) ) ) );
+    mPlot.reset( dynamic_cast<Qgs2DPlot *>( QgsApplication::instance()->plotRegistry()->createPlot( plotElement.attribute( u"plotType"_s ) ) ) );
     if ( mPlot )
     {
       mPlot->readXml( plotElement, context );
@@ -420,7 +420,7 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
   }
 
   mSeriesList.clear();
-  const QDomNodeList seriesNodeList = element.firstChildElement( QStringLiteral( "seriesList" ) ).childNodes();
+  const QDomNodeList seriesNodeList = element.firstChildElement( u"seriesList"_s ).childNodes();
   for ( int i = 0; i < seriesNodeList.count(); i++ )
   {
     const QDomElement seriesElement = seriesNodeList.at( i ).toElement();
@@ -431,16 +431,16 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
     mSeriesList << series;
   }
 
-  QString layerId = element.attribute( QStringLiteral( "vectorLayer" ) );
-  QString layerName = element.attribute( QStringLiteral( "vectorLayerName" ) );
-  QString layerSource = element.attribute( QStringLiteral( "vectorLayerSource" ) );
-  QString layerProvider = element.attribute( QStringLiteral( "vectorLayerProvider" ) );
+  QString layerId = element.attribute( u"vectorLayer"_s );
+  QString layerName = element.attribute( u"vectorLayerName"_s );
+  QString layerSource = element.attribute( u"vectorLayerSource"_s );
+  QString layerProvider = element.attribute( u"vectorLayerProvider"_s );
   mVectorLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mVectorLayer.resolveWeakly( mLayout->project() );
 
-  mSortFeatures = element.attribute( QStringLiteral( "sortFeatures" ), QStringLiteral( "0" ) ).toInt();
-  mSortAscending = element.attribute( QStringLiteral( "sortAscending" ), QStringLiteral( "1" ) ).toInt();
-  mSortExpression = element.attribute( QStringLiteral( "sortExpression" ) );
+  mSortFeatures = element.attribute( u"sortFeatures"_s, u"0"_s ).toInt();
+  mSortAscending = element.attribute( u"sortAscending"_s, u"1"_s ).toInt();
+  mSortExpression = element.attribute( u"sortExpression"_s );
 
   mNeedsGathering = true;
 

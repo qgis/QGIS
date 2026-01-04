@@ -114,32 +114,32 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 QVariantMap QgsShadowEffect::properties() const
 {
   QVariantMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
-  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
-  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
-  props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
-  props.insert( QStringLiteral( "blur_unit" ), QgsUnitTypes::encodeUnit( mBlurUnit ) );
-  props.insert( QStringLiteral( "blur_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
-  props.insert( QStringLiteral( "offset_angle" ), QString::number( mOffsetAngle ) );
-  props.insert( QStringLiteral( "offset_distance" ), QString::number( mOffsetDist ) );
-  props.insert( QStringLiteral( "offset_unit" ), QgsUnitTypes::encodeUnit( mOffsetUnit ) );
-  props.insert( QStringLiteral( "offset_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  props.insert( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
+  props.insert( u"enabled"_s, mEnabled ? "1" : "0" );
+  props.insert( u"draw_mode"_s, QString::number( int( mDrawMode ) ) );
+  props.insert( u"blend_mode"_s, QString::number( int( mBlendMode ) ) );
+  props.insert( u"opacity"_s, QString::number( mOpacity ) );
+  props.insert( u"blur_level"_s, QString::number( mBlurLevel ) );
+  props.insert( u"blur_unit"_s, QgsUnitTypes::encodeUnit( mBlurUnit ) );
+  props.insert( u"blur_unit_scale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
+  props.insert( u"offset_angle"_s, QString::number( mOffsetAngle ) );
+  props.insert( u"offset_distance"_s, QString::number( mOffsetDist ) );
+  props.insert( u"offset_unit"_s, QgsUnitTypes::encodeUnit( mOffsetUnit ) );
+  props.insert( u"offset_unit_scale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
+  props.insert( u"color"_s, QgsColorUtils::colorToString( mColor ) );
   return props;
 }
 
 void QgsShadowEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( u"blend_mode"_s ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  if ( props.contains( QStringLiteral( "transparency" ) ) )
+  if ( props.contains( u"transparency"_s ) )
   {
-    const double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    const double transparency = props.value( u"transparency"_s ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = 1.0 - transparency;
@@ -147,41 +147,41 @@ void QgsShadowEffect::readProperties( const QVariantMap &props )
   }
   else
   {
-    const double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    const double opacity = props.value( u"opacity"_s ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = opacity;
     }
   }
-  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  const double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
+  mEnabled = props.value( u"enabled"_s, u"1"_s ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( u"draw_mode"_s, u"2"_s ).toInt() );
+  const double level = props.value( u"blur_level"_s ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
-    if ( !props.contains( QStringLiteral( "blur_unit" ) ) )
+    if ( !props.contains( u"blur_unit"_s ) )
     {
       // deal with pre blur unit era by assuming 96 dpi and converting pixel values as millimeters
       mBlurLevel *= 0.2645;
     }
   }
-  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
-  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
-  const int angle = props.value( QStringLiteral( "offset_angle" ) ).toInt( &ok );
+  mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"blur_unit"_s ).toString() );
+  mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"blur_unit_scale"_s ).toString() );
+  const int angle = props.value( u"offset_angle"_s ).toInt( &ok );
   if ( ok )
   {
     mOffsetAngle = angle;
   }
-  const double distance = props.value( QStringLiteral( "offset_distance" ) ).toDouble( &ok );
+  const double distance = props.value( u"offset_distance"_s ).toDouble( &ok );
   if ( ok )
   {
     mOffsetDist = distance;
   }
-  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offset_unit" ) ).toString() );
-  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offset_unit_scale" ) ).toString() );
-  if ( props.contains( QStringLiteral( "color" ) ) )
+  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( u"offset_unit"_s ).toString() );
+  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( u"offset_unit_scale"_s ).toString() );
+  if ( props.contains( u"color"_s ) )
   {
-    mColor = QgsColorUtils::colorFromString( props.value( QStringLiteral( "color" ) ).toString() );
+    mColor = QgsColorUtils::colorFromString( props.value( u"color"_s ).toString() );
   }
 }
 
@@ -218,7 +218,7 @@ QgsDropShadowEffect::QgsDropShadowEffect()
 
 QString QgsDropShadowEffect::type() const
 {
-  return QStringLiteral( "dropShadow" );
+  return u"dropShadow"_s;
 }
 
 QgsDropShadowEffect *QgsDropShadowEffect::clone() const
@@ -251,7 +251,7 @@ QgsInnerShadowEffect::QgsInnerShadowEffect()
 
 QString QgsInnerShadowEffect::type() const
 {
-  return QStringLiteral( "innerShadow" );
+  return u"innerShadow"_s;
 }
 
 QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const

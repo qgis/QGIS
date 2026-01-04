@@ -36,9 +36,9 @@ namespace QgsVirtualLayerQueryParser
     // open an empty in-memory sqlite database and execute the query
     // sqlite will return an error for each missing table
     // this way we know the list of tables referenced by the query
-    const QgsScopedSqlite db( QStringLiteral( ":memory:" ), /*withExtension=*/false );
+    const QgsScopedSqlite db( u":memory:"_s, /*withExtension=*/false );
 
-    const QString noSuchError = QStringLiteral( "no such table: " );
+    const QString noSuchError = u"no such table: "_s;
 
     while ( true )
     {
@@ -56,13 +56,13 @@ namespace QgsVirtualLayerQueryParser
         tables << tableName;
 
         // create a dummy table to skip this error
-        const QString createStr = QStringLiteral( "CREATE TABLE \"%1\" (id int)" ).arg( tableName.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) );
+        const QString createStr = u"CREATE TABLE \"%1\" (id int)"_s.arg( tableName.replace( "\""_L1, "\"\""_L1 ) );
         const int createRes = sqlite3_exec( db.get(), createStr.toUtf8().constData(), nullptr, nullptr, &errMsg );
         if ( createRes != SQLITE_OK )
         {
           err = QString::fromUtf8( errMsg );
           sqlite3_free( errMsg );
-          QgsDebugError( QStringLiteral( "Could not create temporary table for virtual layer: %1" ).arg( err ) );
+          QgsDebugError( u"Could not create temporary table for virtual layer: %1"_s.arg( err ) );
           break;
         }
       }
@@ -91,11 +91,11 @@ namespace QgsVirtualLayerQueryParser
       const QString type = match.captured( 2 );
       ColumnDef def;
       def.setName( column );
-      if ( type == QLatin1String( "int" ) )
+      if ( type == "int"_L1 )
         def.setScalarType( QMetaType::Type::LongLong );
-      else if ( type == QLatin1String( "real" ) )
+      else if ( type == "real"_L1 )
         def.setScalarType( QMetaType::Type::Double );
-      else if ( type == QLatin1String( "text" ) )
+      else if ( type == "text"_L1 )
         def.setScalarType( QMetaType::Type::QString );
       else
       {
@@ -121,13 +121,13 @@ namespace QgsVirtualLayerQueryParser
     // the type returned by PRAGMA table_info will be either
     // the type declared by one of the virtual tables
     // or null
-    if ( columnType.compare( QLatin1String( "int" ), Qt::CaseInsensitive ) == 0 )
+    if ( columnType.compare( "int"_L1, Qt::CaseInsensitive ) == 0 )
       d.setScalarType( QMetaType::Type::LongLong );
-    else if ( columnType.compare( QLatin1String( "real" ), Qt::CaseInsensitive ) == 0 )
+    else if ( columnType.compare( "real"_L1, Qt::CaseInsensitive ) == 0 )
       d.setScalarType( QMetaType::Type::Double );
-    else if ( columnType.compare( QLatin1String( "text" ), Qt::CaseInsensitive ) == 0 )
+    else if ( columnType.compare( "text"_L1, Qt::CaseInsensitive ) == 0 )
       d.setScalarType( QMetaType::Type::QString );
-    else if ( columnType.startsWith( QLatin1String( "geometry" ), Qt::CaseInsensitive ) )
+    else if ( columnType.startsWith( "geometry"_L1, Qt::CaseInsensitive ) )
     {
       // parse the geometry type and srid
       // geometry(type,srid)
@@ -142,19 +142,19 @@ namespace QgsVirtualLayerQueryParser
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Unknown column type %1" ).arg( columnType ) );
+      QgsDebugError( u"Unknown column type %1"_s.arg( columnType ) );
     }
   }
 
   ColumnDef geometryDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName )
   {
     ColumnDef d;
-    Sqlite::Query q( db, QStringLiteral( "PRAGMA table_info(%1)" ).arg( tableName ) );
+    Sqlite::Query q( db, u"PRAGMA table_info(%1)"_s.arg( tableName ) );
     while ( q.step() == SQLITE_ROW )
     {
       const QString columnName = q.columnText( 1 );
       const QString columnType = q.columnText( 2 );
-      if ( !columnType.startsWith( QLatin1String( "geometry" ) ) )
+      if ( !columnType.startsWith( "geometry"_L1 ) )
         continue;
 
       d.setName( columnName );
@@ -179,7 +179,7 @@ namespace QgsVirtualLayerQueryParser
     QVector<int> undefinedColumns;
     TableDef tableDef;
     {
-      Sqlite::Query q( db, QStringLiteral( "PRAGMA table_info(_tview)" ) );
+      Sqlite::Query q( db, u"PRAGMA table_info(_tview)"_s );
       int columnNumber = 0;
       while ( q.step() == SQLITE_ROW )
       {
@@ -219,14 +219,14 @@ namespace QgsVirtualLayerQueryParser
 
     // get the first row to introspect types
     {
-      QString qs = QStringLiteral( "SELECT " );
+      QString qs = u"SELECT "_s;
       for ( int i = 0; i < undefinedColumns.size(); i++ )
       {
         qs += "\"" + columns[undefinedColumns[i]] + "\"";
         if ( i != undefinedColumns.size() - 1 )
-          qs += QLatin1String( ", " );
+          qs += ", "_L1;
       }
-      qs += QLatin1String( " FROM _tview LIMIT 1" );
+      qs += " FROM _tview LIMIT 1"_L1;
 
       Sqlite::Query q( db, qs );
       if ( q.step() == SQLITE_ROW )
@@ -274,7 +274,7 @@ namespace QgsVirtualLayerQueryParser
   TableDef tableDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName )
   {
     TableDef td;
-    Sqlite::Query q( db, QStringLiteral( "PRAGMA table_info(%1)" ).arg( tableName ) );
+    Sqlite::Query q( db, u"PRAGMA table_info(%1)"_s.arg( tableName ) );
     while ( q.step() == SQLITE_ROW )
     {
       ColumnDef d;

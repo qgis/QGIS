@@ -65,7 +65,7 @@ void QgsOapifSchemaRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing Schema response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing Schema response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
@@ -103,27 +103,27 @@ void QgsOapifSchemaRequest::processReply()
             if ( jType.is_string() )
             {
               const QString type = QString::fromStdString( jType.get<std::string>() );
-              if ( type == QLatin1String( "integer" ) )
+              if ( type == "integer"_L1 )
               {
                 field.setType( QMetaType::Type::LongLong );
               }
-              else if ( type == QLatin1String( "number" ) )
+              else if ( type == "number"_L1 )
               {
                 field.setType( QMetaType::Type::Double );
               }
-              else if ( type == QLatin1String( "boolean" ) )
+              else if ( type == "boolean"_L1 )
               {
                 field.setType( QMetaType::Type::Bool );
               }
-              else if ( type == QLatin1String( "object" ) )
+              else if ( type == "object"_L1 )
               {
                 field.setType( QMetaType::Type::QVariantMap );
               }
-              else if ( type == QLatin1String( "array" ) )
+              else if ( type == "array"_L1 )
               {
                 field.setType( QMetaType::Type::QVariantList );
               }
-              else if ( type == QLatin1String( "string" ) )
+              else if ( type == "string"_L1 )
               {
                 if ( val.contains( "format" ) )
                 {
@@ -131,11 +131,11 @@ void QgsOapifSchemaRequest::processReply()
                   if ( jFormat.is_string() )
                   {
                     const QString format = QString::fromStdString( jFormat.get<std::string>() );
-                    if ( format == QLatin1String( "date-time" ) )
+                    if ( format == "date-time"_L1 )
                     {
                       field.setType( QMetaType::Type::QDateTime );
                     }
-                    else if ( format == QLatin1String( "date" ) )
+                    else if ( format == "date"_L1 )
                     {
                       field.setType( QMetaType::Type::QDate );
                     }
@@ -144,7 +144,7 @@ void QgsOapifSchemaRequest::processReply()
               }
               else
               {
-                QgsDebugMsgLevel( QStringLiteral( "Unhandled OGC API Features schema type: " ) + type, 3 );
+                QgsDebugMsgLevel( u"Unhandled OGC API Features schema type: "_s + type, 3 );
               }
             }
 
@@ -205,7 +205,7 @@ void QgsOapifSchemaRequest::processReply()
             const json jOgcRole = val["x-ogc-role"];
             if ( jOgcRole.is_string() )
             {
-              if ( QString::fromStdString( jOgcRole.get<std::string>() ) == QLatin1String( "primary-geometry" ) )
+              if ( QString::fromStdString( jOgcRole.get<std::string>() ) == "primary-geometry"_L1 )
               {
                 mSchema.mGeometryColumnName = QString::fromStdString( key );
                 mSchema.mWKBType = Qgis::WkbType::Unknown;
@@ -216,17 +216,17 @@ void QgsOapifSchemaRequest::processReply()
                   {
                     const QString format = QString::fromStdString( jFormat.get<std::string>() );
                     const QMap<QString, Qgis::WkbType> mapFormatToWkbType = {
-                      { QStringLiteral( "geometry-point" ), Qgis::WkbType::Point },
-                      { QStringLiteral( "geometry-multipoint" ), Qgis::WkbType::MultiPoint },
-                      { QStringLiteral( "geometry-linestring" ), Qgis::WkbType::LineString },
-                      { QStringLiteral( "geometry-multilinestring" ), Qgis::WkbType::MultiLineString },
-                      { QStringLiteral( "geometry-polygon" ), Qgis::WkbType::Polygon },
-                      { QStringLiteral( "geometry-multipolygon" ), Qgis::WkbType::MultiPolygon },
-                      { QStringLiteral( "geometry-geometrycollection" ), Qgis::WkbType::GeometryCollection },
-                      { QStringLiteral( "geometry-any" ), Qgis::WkbType::Unknown },
-                      { QStringLiteral( "geometry-point-or-multipoint" ), Qgis::WkbType::MultiPoint },
-                      { QStringLiteral( "geometry-linestring-or-multilinestring" ), Qgis::WkbType::MultiLineString },
-                      { QStringLiteral( "geometry-polygon-or-multipolygon" ), Qgis::WkbType::MultiPolygon },
+                      { u"geometry-point"_s, Qgis::WkbType::Point },
+                      { u"geometry-multipoint"_s, Qgis::WkbType::MultiPoint },
+                      { u"geometry-linestring"_s, Qgis::WkbType::LineString },
+                      { u"geometry-multilinestring"_s, Qgis::WkbType::MultiLineString },
+                      { u"geometry-polygon"_s, Qgis::WkbType::Polygon },
+                      { u"geometry-multipolygon"_s, Qgis::WkbType::MultiPolygon },
+                      { u"geometry-geometrycollection"_s, Qgis::WkbType::GeometryCollection },
+                      { u"geometry-any"_s, Qgis::WkbType::Unknown },
+                      { u"geometry-point-or-multipoint"_s, Qgis::WkbType::MultiPoint },
+                      { u"geometry-linestring-or-multilinestring"_s, Qgis::WkbType::MultiLineString },
+                      { u"geometry-polygon-or-multipolygon"_s, Qgis::WkbType::MultiPolygon },
                     };
                     const auto it = mapFormatToWkbType.constFind( format );
                     if ( it != mapFormatToWkbType.end() )

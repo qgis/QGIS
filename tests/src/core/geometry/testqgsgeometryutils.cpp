@@ -1170,18 +1170,18 @@ void TestQgsGeometryUtils::testGml()
 {
   const QgsPoint point = QgsPoint( 1, 2 );
   QDomDocument doc;
-  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ) );
-  const QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, u"gml"_s );
+  const QString expectedGML2( u"<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
-  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
-  const QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX );
+  const QString expectedGML2_inverted( u"<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
 
-  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
-  const QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, u"gml"_s, false, QgsAbstractGeometry::AxisOrder::XY );
+  const QString expectedGML3( u"<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
-  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
-  const QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, u"gml"_s, false, QgsAbstractGeometry::AxisOrder::YX );
+  const QString expectedGML3_inverted( u"<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
 }
 
