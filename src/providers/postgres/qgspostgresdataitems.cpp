@@ -171,6 +171,8 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
   , mConnectionName( connectionName )
 {
   mIconName = u"mIconDbSchema.svg"_s;
+  // Enable recursive refresh so that refreshing the connection also refreshes schema children (layer items)
+  mCapabilities |= Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
 }
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()

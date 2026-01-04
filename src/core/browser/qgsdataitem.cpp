@@ -361,16 +361,25 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
     const int index = findItem( mChildren, child );
     if ( index >= 0 )
     {
+      // Child already exists - update its tooltip with fresh data from newly created item
+      QgsDataItem *existingItem = mChildren.value( index );
+
+      // Update tooltip if the new item has a non-empty tooltip and it differs from existing
+      if ( !child->toolTip().isEmpty() && existingItem->toolTip() != child->toolTip() )
+      {
+        existingItem->setToolTip( child->toolTip() );
+      }
+
       // Refresh recursively (some providers may create more generations of descendants)
       if ( !( child->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
       {
         // The child cannot createChildren() itself
-        mChildren.value( index )->refresh( child->children() );
+        existingItem->refresh( child->children() );
       }
-      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated
+      else if ( existingItem->state() == Qgis::BrowserItemState::Populated
                 && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
       {
-        mChildren.value( index )->refresh();
+        existingItem->refresh();
       }
 
       child->deleteLater();

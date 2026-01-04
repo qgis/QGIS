@@ -215,6 +215,8 @@ QgsHanaSchemaItem::QgsHanaSchemaItem(
 {
   mIconName = u"mIconDbSchema.svg"_s;
   mSchemaName = name;
+  // Enable recursive refresh so that refreshing the connection also refreshes schema children (layer items)
+  mCapabilities |= Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
 }
 
 QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
