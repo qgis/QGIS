@@ -216,7 +216,16 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
         menu->addAction( showProjectVersions );
         connect( showProjectVersions, &QAction::triggered, this, [projectItem] {
           QgsPostgresProjectVersionsDialog dlg = QgsPostgresProjectVersionsDialog( projectItem->connectionName(), projectItem->schemaName(), projectItem->name(), nullptr );
-          dlg.exec();
+          if ( dlg.exec() == QDialog::Accepted )
+          // TODO handle currently opened project here
+          {
+            const QString uri = dlg.selectedProjectUri();
+            if ( !uri.isEmpty() )
+            {
+              QgsTemporaryCursorOverride override( Qt::WaitCursor );
+              QgsProject::instance()->read( uri );
+            }
+          }
         } );
       }
       else
