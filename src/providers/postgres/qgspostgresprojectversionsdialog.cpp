@@ -19,6 +19,7 @@
 #include "qgspostgresprojectstorage.h"
 #include "qgsproject.h"
 
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #include "moc_qgspostgresprojectversionsdialog.cpp"
@@ -43,6 +44,12 @@ QgsPostgresProjectVersionsDialog::QgsPostgresProjectVersionsDialog( const QStrin
   mTableView->selectRow( 0 );
 
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Yes, this );
+  QPushButton *yesButton = mButtonBox->button( QDialogButtonBox::Yes );
+  if ( yesButton )
+  {
+    yesButton->setText( tr( "Load selected version of the project" ) );
+  }
+
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsPostgresProjectVersionsDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsPostgresProjectVersionsDialog::accept );
 
