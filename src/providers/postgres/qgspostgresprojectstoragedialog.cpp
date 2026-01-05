@@ -44,15 +44,15 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   btnManageProjects->setMenu( menuManageProjects );
   buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
 
-  mVersionsTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mVersionsTableView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mVersionsTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mVersionsTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
 
   mVersionsModel = new QgsPostgresProjectVersionsModel( QString(), this );
-  mVersionsTableView->setModel( mVersionsModel );
+  mVersionsTreeView->setModel( mVersionsModel );
 
   connect( mVersionsModel, &QAbstractTableModel::modelReset, this, [this] {
-    mVersionsTableView->resizeColumnsToContents();
-    mVersionsTableView->selectRow( 0 );
+    mVersionsTreeView->resizeColumnToContents( 0 );
+    mVersionsTreeView->setCurrentIndex( mVersionsModel->index( 0, 0, QModelIndex() ) );
   } );
 
   if ( saving )
@@ -225,7 +225,7 @@ QString QgsPostgresProjectStorageDialog::currentProjectUri( bool schemaOnly )
   }
   else
   {
-    postUri = mVersionsModel->projectUriForRow( mVersionsTableView->currentIndex().row() );
+    postUri = mVersionsModel->projectUriForRow( mVersionsTreeView->currentIndex().row() );
   }
 
   return QgsPostgresProjectStorage::encodeUri( postUri );
