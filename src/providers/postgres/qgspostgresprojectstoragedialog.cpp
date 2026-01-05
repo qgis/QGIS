@@ -193,6 +193,10 @@ void QgsPostgresProjectStorageDialog::projectChanged()
 
     mVersionsModel->populateVersions( mCboSchema->currentText(), mCboProject->currentText() );
   }
+  else
+  {
+    mVersionsModel->clear();
+  }
 }
 
 void QgsPostgresProjectStorageDialog::removeProject()
