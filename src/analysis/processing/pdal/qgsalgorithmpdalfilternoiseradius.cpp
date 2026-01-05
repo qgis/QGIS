@@ -49,7 +49,11 @@ QStringList QgsPdalFilterNoiseRadiusAlgorithm::tags() const
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Filter noise in a point cloud using radius algorithm." );
+  return QObject::tr( "Filter noise in a point cloud using radius algorithm." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "Points are marked as noise if they have fewer than the minimum number of neighbors within the specified radius." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "If 'Remove noise points' is enabled, noise points will be removed from the output, otherwise they are classified but retained." );
 }
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::shortDescription() const
@@ -67,8 +71,8 @@ void QgsPdalFilterNoiseRadiusAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REMOVE_NOISE_POINTS" ), QObject::tr( "Remove noise points" ), false ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_K" ), QObject::tr( "Minimum number of neighbors in radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RADIUS" ), QObject::tr( "Standard deviation threshold" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_K" ), QObject::tr( "Minimum number of neighbors in radius" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RADIUS" ), QObject::tr( "Radius" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
 
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered (radius algorithm)" ) ) );
 }

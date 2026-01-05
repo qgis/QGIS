@@ -49,12 +49,16 @@ QStringList QgsPdalHeightAboveGroundDelaunayAlgorithm::tags() const
 
 QString QgsPdalHeightAboveGroundDelaunayAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using Delaunay algorithm." );
+  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using a Delaunay algorithm." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "The algorithm uses ground-classified points (classification value 2) to create a triangulated irregular network (TIN) from specified number of neighbors, then computes the height above this surface for all points." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "The output adds a HeightAboveGround dimension to the point cloud. If 'Replace Z values' is enabled, the Z coordinate will be replaced with the height above ground value." );
 }
 
 QString QgsPdalHeightAboveGroundDelaunayAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using Delaunay algorithm." );
+  return QObject::tr( "Calculates the height of points above the ground surface using a Delaunay algorithm." );
 }
 
 QgsPdalHeightAboveGroundDelaunayAlgorithm *QgsPdalHeightAboveGroundDelaunayAlgorithm::createInstance() const
@@ -66,7 +70,7 @@ void QgsPdalHeightAboveGroundDelaunayAlgorithm::initAlgorithm( const QVariantMap
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REPLACE_Z" ), QObject::tr( "Replace Z values with height above ground" ), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "COUNT" ), QObject::tr( "Number of Ground Neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "COUNT" ), QObject::tr( "Number of ground neighbors for terrain construction" ), Qgis::ProcessingNumberParameterType::Integer, 10 ) );
 
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Height above ground (delaunay algorithm)" ) ) );
 }

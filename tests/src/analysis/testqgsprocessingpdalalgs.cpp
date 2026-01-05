@@ -932,7 +932,7 @@ void TestQgsProcessingPdalAlgs::heightAboveGroundDelaunay()
 
 void TestQgsProcessingPdalAlgs::heightAboveGroundNearestNeighbour()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:heightabovegroundbynearestneighbour" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:heightabovegroundbynearestneighbor" ) ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );

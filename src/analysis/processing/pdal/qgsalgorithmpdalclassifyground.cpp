@@ -49,24 +49,24 @@ QStringList QgsPdalClassifyGroundAlgorithm::tags() const
 
 QString QgsPdalClassifyGroundAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Classify ground points in a point cloud." )
+  return QObject::tr( "Classifies ground points using the Simple Morphological Filter (SMRF) algorithm." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Parameters:" )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Grid Cell Size - in map units. Smaller values give finer detail but may increase noise." )
+         + QObject::tr( "Cell Size - cell size for processing grid (in map units). Smaller values give finer detail but may increase noise." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Scalar - sets the grid cell size in map units. Smaller values give finer detail but may increase noise." )
+         + QObject::tr( "Scalar - Threshold for steeper slopes. Higher value if the terrain is rough, otherwise real ground might be misclassified." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Slope - controls how much terrain slope is tolerated as ground. Increase for steep terrain." )
+         + QObject::tr( "Slope - slope threshold (rise over run). How much slope is tolerated as ground. Should be higher for steep terrain." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Threshold - elevation threshold for separating ground from objects. Higher values allow larger deviations from ground." )
+         + QObject::tr( "Threshold - elevation threshold for separating ground from objects. Higher values allow larger deviations from the ground." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Window size - the maximum filter window size. Increase to better identify large buildings or objects, decrease to protect smaller features." );
+         + QObject::tr( "Window Size - maximum filter window size. Higher values better identify large buildings or objects, smaller values protect smaller features." );
 }
 
 QString QgsPdalClassifyGroundAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Classify ground points in a point cloud." );
+  return QObject::tr( "Classifies ground points using the Simple Morphological Filter (SMRF) algorithm." );
 }
 
 QgsPdalClassifyGroundAlgorithm *QgsPdalClassifyGroundAlgorithm::createInstance() const
@@ -84,7 +84,7 @@ void QgsPdalClassifyGroundAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "THRESHOLD" ), QObject::tr( "Threshold" ), Qgis::ProcessingNumberParameterType::Double, 0.5 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "WINDOW_SIZE" ), QObject::tr( "Window size" ), Qgis::ProcessingNumberParameterType::Double, 18.0 ) );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered (radius algorithm)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Classified Ground" ) ) );
 }
 
 QStringList QgsPdalClassifyGroundAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

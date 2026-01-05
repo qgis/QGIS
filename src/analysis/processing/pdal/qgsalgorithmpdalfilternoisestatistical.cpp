@@ -49,12 +49,16 @@ QStringList QgsPdalFilterNoiseStatisticalAlgorithm::tags() const
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Filter noise in a point cloud using statistical algorithm." );
+  return QObject::tr( "Filter noise in a point cloud using a statistical outlier removal algorithm." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "For each point, the algorithm computes the mean distance to its K nearest neighbors. Points whose mean distance exceeds a threshold (mean distance + multiplier × standard deviation) are classified as noise." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "If 'Remove noise points' is enabled, noise points will be removed from the output, otherwise they are classified but retained." );
 }
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filter noise in a point cloud using statistical algorithm." );
+  return QObject::tr( "Filter noise in a point cloud using a statistical outlier removal algorithm." );
 }
 
 QgsPdalFilterNoiseStatisticalAlgorithm *QgsPdalFilterNoiseStatisticalAlgorithm::createInstance() const
@@ -68,7 +72,7 @@ void QgsPdalFilterNoiseStatisticalAlgorithm::initAlgorithm( const QVariantMap & 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REMOVE_NOISE_POINTS" ), QObject::tr( "Remove noise points" ), false ) );
 
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MEAN_K" ), QObject::tr( "Mean number of neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 8 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MULTIPLIER" ), QObject::tr( "Standard deviation threshold" ), Qgis::ProcessingNumberParameterType::Double, 2.0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MULTIPLIER" ), QObject::tr( "Standard deviation multiplier" ), Qgis::ProcessingNumberParameterType::Double, 2.0 ) );
 
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered (statistical algorithm)" ) ) );
 }

@@ -24,12 +24,12 @@
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::name() const
 {
-  return QStringLiteral( "heightabovegroundbynearestneighbour" );
+  return QStringLiteral( "heightabovegroundbynearestneighbor" );
 }
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::displayName() const
 {
-  return QObject::tr( "Height Above Ground (by Nearest Neighbour)" );
+  return QObject::tr( "Height Above Ground (by Nearest Neighbor)" );
 }
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::group() const
@@ -49,12 +49,18 @@ QStringList QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::tags() const
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using nearest neighbour algorithm." );
+  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using a nearest neighbor algorithm." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "For each point, the algorithm finds the specified number of nearest ground-classified points (classification value 2) and interpolates the ground elevation from them using inverse distance weighting." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "The output adds a HeightAboveGround dimension to the point cloud. If 'Replace Z values' is enabled, the Z coordinate will be replaced with the height above ground value." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "Maximum Distance parameter can limit the search radius (0 = no limit)." );
 }
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using nearest neighbour algorithm." );
+  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using a nearest neighbor algorithm." );
 }
 
 QgsPdalHeightAboveGroundNearestNeighbourAlgorithm *QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::createInstance() const
@@ -66,8 +72,8 @@ void QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::initAlgorithm( const QVa
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REPLACE_Z" ), QObject::tr( "Replace Z values with height above ground" ), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "COUNT" ), QObject::tr( "Number of Neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 1.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_DISTANCE" ), QObject::tr( "Maximum Distance" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "COUNT" ), QObject::tr( "Number of neighbors for terrain interpolation" ), Qgis::ProcessingNumberParameterType::Integer, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_DISTANCE" ), QObject::tr( "Maximum search distance" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
 
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Height above ground (nearest neighbour)" ) ) );
 }
