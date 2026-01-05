@@ -340,6 +340,36 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     bool changeAttributeValue( const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
+     * Attempts to modify attribute values for specific points in the editing buffer.
+     *
+     * \param mappedPoints A map of URIs to nodes to modify and points to modify within those nodes
+     * \param attribute The attribute whose value will be updated
+     * \param value The new value to set to the attribute
+     * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
+     * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 4.0
+     */
+    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value, const QString uri ) SIP_SKIP;
+
+    /**
+     * Attempts to modify attribute values for specific points in the editing buffer.
+     *
+     * \param mappedPoints A map of URIs to nodes to modify and points to modify within those nodes
+     * \param attribute The attribute whose value will be updated
+     * \param value The new value to set to the attribute
+     * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
+     * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 4.0
+     */
+    bool changeAttributeValue( const QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+
+    /**
      * Returns the point cloud index associated with the layer.
      * If the layer is editable, its QgsPointCloudEditingIndex is returned,
      * otherwise the index is fetched from the data provider.
@@ -376,7 +406,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n );
+    void chunkAttributeValuesChanged( const QString uri, const QgsPointCloudNodeId &n );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
@@ -410,6 +440,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     long mStatsCalculationTask = 0;
 
     QgsPointCloudIndex mEditIndex;
+    QVector<QgsPointCloudIndex> mEditingSubIndexes;
+    bool mIsVpc = false;
     QString mCommitError;
 
     friend class TestQgsVirtualPointCloudProvider;

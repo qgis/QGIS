@@ -30,21 +30,31 @@ QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer
   : mLayer( layer )
 {}
 
-QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value )
+QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
   : QgsPointCloudLayerUndoCommand( layer )
   , mAttribute( attribute )
   , mNewValue( value )
 {
   QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand constructor"_s );
 
-  QgsPointCloudIndex index = mLayer->index();
-  QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
-
-  std::function mapFn = [editIndex, attribute, index = std::move( index )]( std::pair<const QgsPointCloudNodeId &, const QVector<int> &> pair )
+  QList<NodeProcessData> processData;
+  for ( auto it = mappedPoints.constBegin(); it != mappedPoints.constEnd(); ++it )
   {
-    QgsPointCloudNodeId n = pair.first;
-    auto &points = pair.second;
-    QgsPointCloudIndex index2 = index; // Copy to remove const
+    const QString &uri = it.key();
+    QgsPointCloudIndex index = mLayer->index( uri );
+    const auto &nodes = it.value();
+    for ( auto nodeIt = nodes.constBegin(); nodeIt != nodes.constEnd(); ++nodeIt )
+    {
+      processData.append( { uri, index, nodeIt.key(), nodeIt.value() } );
+    }
+  }
+
+  std::function mapFn = [attribute]( const NodeProcessData & data )
+  {
+    QgsPointCloudIndex index = data.index;
+    QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
+    QgsPointCloudNodeId n = data.nodeId;
+    const QVector<int> &points = data.points;
 
     PerNodeData perNodeData;
 
@@ -55,7 +65,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
       req.setAttributes( allAttributes );
       // we want to iterate all points so we have the correct point indexes within the node
       req.setIgnoreIndexFilterEnabled( true );
-      std::unique_ptr<QgsPointCloudBlock> block = index2.nodeData( n, req );
+      std::unique_ptr<QgsPointCloudBlock> block = index.nodeData( n, req );
       const char *ptr = block->data();
       block->attributes().find( attribute.name(), perNodeData.attributeOffset );
       const int size = block->pointRecordSize();
@@ -77,16 +87,16 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
       }
     }
 
-    return std::pair { n, perNodeData };
+    return std::pair { data.uri, std::pair { n, perNodeData } };
   };
 
-  std::function reduceFn = []( QHash<QgsPointCloudNodeId, PerNodeData> &res, const std::pair<QgsPointCloudNodeId, PerNodeData> &pair )
+  std::function reduceFn = []( QMap<QString, QHash<QgsPointCloudNodeId, PerNodeData>> &res, const std::pair<QString, std::pair<QgsPointCloudNodeId, PerNodeData>> &pair )
   {
-    res[pair.first] = pair.second;
+    res[pair.first][pair.second.first] = pair.second.second;
   };
 
-  mPerNodeData = QtConcurrent::blockingMappedReduced<QHash<QgsPointCloudNodeId, PerNodeData>>(
-                   nodesAndPoints.keyValueBegin(), nodesAndPoints.keyValueEnd(),
+  mPerNodeData = QtConcurrent::blockingMappedReduced<QMap<QString, QHash<QgsPointCloudNodeId, PerNodeData>>>(
+                   processData,
                    std::move( mapFn ), std::move( reduceFn )
                  );
 }
@@ -106,42 +116,54 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
   QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand::undoRedoPrivate"_s );
   QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( mLayer->index().get() );
   QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
+
   QgsPointCloudAttribute attribute = mAttribute;
+  double newValue = mNewValue;
 
-  QtConcurrent::blockingMap(
-    mPerNodeData.keyValueBegin(),
-    mPerNodeData.keyValueEnd(),
-    [editIndex, copcIndex, isUndo, attribute = mAttribute, newValue = mNewValue](
-      std::pair<const QgsPointCloudNodeId &, PerNodeData &> pair
-    )
+  for ( auto it = mPerNodeData.begin(); it != mPerNodeData.end(); ++it )
   {
-    QgsPointCloudNodeId node = pair.first;
-    PerNodeData &perNodeData = pair.second;
+    const QString &uri = it.key();
+    QHash<QgsPointCloudNodeId, PerNodeData> &nodesData = it.value();
 
-    QByteArray chunkData = editIndex->rawEditedNodeData( node );
-    if ( chunkData.isEmpty() ) // Not edited yet
-      chunkData = copcIndex->rawNodeData( node );
+    QgsPointCloudIndex index = mLayer->index( uri );
+    QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( index.get() );
+    QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
 
-    QByteArray data;
-    if ( isUndo && perNodeData.firstEdit )
+    QtConcurrent::blockingMap(
+      nodesData.keyValueBegin(),
+      nodesData.keyValueEnd(),
+      [editIndex, copcIndex, isUndo, attribute, newValue](
+        std::pair<const QgsPointCloudNodeId &, PerNodeData &> pair
+      )
     {
-      editIndex->resetNodeEdits( node );
-    }
-    else if ( isUndo )
-    {
-      data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, attribute, node, perNodeData.oldPointValues );
-      editIndex->updateNodeData( { { node, data } } );
-    }
-    else
-    {
-      data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, attribute, node, perNodeData.oldPointValues, newValue );
-      editIndex->updateNodeData( { { node, data } } );
-    }
-  }
-  );
+      QgsPointCloudNodeId node = pair.first;
+      PerNodeData &perNodeData = pair.second;
 
-  for ( auto it = mPerNodeData.constBegin(); it != mPerNodeData.constEnd(); it++ )
-  {
-    emit mLayer->chunkAttributeValuesChanged( it.key() );
+      QByteArray chunkData = editIndex->rawEditedNodeData( node );
+      if ( chunkData.isEmpty() ) // Not edited yet
+        chunkData = copcIndex->rawNodeData( node );
+
+      QByteArray data;
+      if ( isUndo && perNodeData.firstEdit )
+      {
+        editIndex->resetNodeEdits( node );
+      }
+      else if ( isUndo )
+      {
+        data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, attribute, node, perNodeData.oldPointValues );
+        editIndex->updateNodeData( { { node, data } } );
+      }
+      else
+      {
+        data = QgsPointCloudLayerEditUtils::updateChunkValues( copcIndex, chunkData, attribute, node, perNodeData.oldPointValues, newValue );
+        editIndex->updateNodeData( { { node, data } } );
+      }
+    }
+    );
+
+    for ( auto itNode = nodesData.constBegin(); itNode != nodesData.constEnd(); itNode++ )
+    {
+      emit mLayer->chunkAttributeValuesChanged( uri, itNode.key() );
+    }
   }
 }
