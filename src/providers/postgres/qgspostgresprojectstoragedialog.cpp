@@ -86,7 +86,6 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
   populateProjects();
 
-  connect( mCboSchema, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
   connect( mCboProject, &QComboBox::currentTextChanged, this, &QgsPostgresProjectStorageDialog::projectChanged );
 
   projectChanged();
@@ -250,6 +249,8 @@ void QgsPostgresProjectStorageDialog::onSchemaChanged()
   mEnableProjectVersions->setEnabled( !versioningEnabled );
 
   mGroupBoxVersions->setEnabled( versioningEnabled );
+
+  populateProjects();
 }
 
 void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
