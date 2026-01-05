@@ -255,11 +255,7 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         # Set the default file format from the parameter definition
         file_filter = self.parameterDefinition().createFileFilter()
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.widget,
-            self.tr("Select File"),
-            path,
-            file_filter,
-            file_filter
+            self.widget, self.tr("Select File"), path, file_filter, file_filter
         )
         if filename:
             settings.setValue(
