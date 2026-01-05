@@ -33,15 +33,15 @@ QgsPostgresProjectVersionsDialog::QgsPostgresProjectVersionsDialog( const QStrin
   QVBoxLayout *layout = new QVBoxLayout();
   setLayout( layout );
 
-  mTableView = new QTableView( this );
-  mTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mTableView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mTreeView = new QTreeView( this );
+  mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
 
   mModel = new QgsPostgresProjectVersionsModel( connectionName, this );
-  mTableView->setModel( mModel );
+  mTreeView->setModel( mModel );
   mModel->populateVersions( schema, project );
-  mTableView->resizeColumnsToContents();
-  mTableView->selectRow( 0 );
+  mTreeView->resizeColumnToContents( 0 );
+  mTreeView->setCurrentIndex( mModel->index( 0, 0, QModelIndex() ) );
 
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Yes, this );
   QPushButton *yesButton = mButtonBox->button( QDialogButtonBox::Yes );
@@ -53,7 +53,7 @@ QgsPostgresProjectVersionsDialog::QgsPostgresProjectVersionsDialog( const QStrin
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsPostgresProjectVersionsDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsPostgresProjectVersionsDialog::accept );
 
-  layout->addWidget( mTableView );
+  layout->addWidget( mTreeView );
   layout->addWidget( mButtonBox );
 }
 

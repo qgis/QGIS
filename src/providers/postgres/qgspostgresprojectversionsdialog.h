@@ -19,7 +19,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QTableView>
+#include <QTreeView>
 
 class QgsPostgresProjectVersionsDialog : public QDialog
 {
@@ -31,7 +31,7 @@ class QgsPostgresProjectVersionsDialog : public QDialog
 
   private:
     QgsPostgresProjectVersionsModel *mModel = nullptr;
-    QTableView *mTableView = nullptr;
+    QTreeView *mTreeView = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 };
 
