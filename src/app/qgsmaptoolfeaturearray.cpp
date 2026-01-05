@@ -25,9 +25,9 @@
 
 #include "moc_qgsmaptoolfeaturearray.cpp"
 
-const QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode> *QgsMapToolFeatureArray::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode>( QStringLiteral( "featurearray-mode" ), QgsSettingsTree::sTreeDigitizing, QgsMapToolFeatureArray::ArrayMode::FeatureCount );
-const QgsSettingsEntryInteger *QgsMapToolFeatureArray::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "featurearray-feature-count" ), QgsSettingsTree::sTreeDigitizing, 0 );
-const QgsSettingsEntryDouble *QgsMapToolFeatureArray::settingsFeatureSpacing = new QgsSettingsEntryDouble( QStringLiteral( "featurearray-feature-spacing" ), QgsSettingsTree::sTreeDigitizing, 0 );
+const QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode> *QgsMapToolFeatureArray::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode>( u"featurearray-mode"_s, QgsSettingsTree::sTreeDigitizing, QgsMapToolFeatureArray::ArrayMode::FeatureCount );
+const QgsSettingsEntryInteger *QgsMapToolFeatureArray::settingsFeatureCount = new QgsSettingsEntryInteger( u"featurearray-feature-count"_s, QgsSettingsTree::sTreeDigitizing, 0 );
+const QgsSettingsEntryDouble *QgsMapToolFeatureArray::settingsFeatureSpacing = new QgsSettingsEntryDouble( u"featurearray-feature-spacing"_s, QgsSettingsTree::sTreeDigitizing, 0 );
 
 QgsMapToolFeatureArray::QgsMapToolFeatureArray( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )

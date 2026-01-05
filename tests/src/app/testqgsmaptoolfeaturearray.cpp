@@ -69,14 +69,14 @@ void TestQgsMapToolFeatureArray::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 28, 28 ) );
@@ -84,30 +84,30 @@ void TestQgsMapToolFeatureArray::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:3946&field=my_text:string" ), QStringLiteral( "pointlayer" ), QStringLiteral( "memory" ) );
+  mLayerPoint = new QgsVectorLayer( u"Point?crs=EPSG:3946&field=my_text:string"_s, u"pointlayer"_s, u"memory"_s );
   QVERIFY( mLayerPoint->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPoint );
-  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=my_text:string" ), QStringLiteral( "linelayer" ), QStringLiteral( "memory" ) );
+  mLayerLine = new QgsVectorLayer( u"LineString?crs=EPSG:3946&field=my_text:string"_s, u"linelayer"_s, u"memory"_s );
   QVERIFY( mLayerLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine );
-  mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946&field=my_text:string" ), QStringLiteral( "polygonlayer" ), QStringLiteral( "memory" ) );
+  mLayerPolygon = new QgsVectorLayer( u"Polygon?crs=EPSG:3946&field=my_text:string"_s, u"polygonlayer"_s, u"memory"_s );
   QVERIFY( mLayerPolygon->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPolygon );
-  mLayerPolygon2154 = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:2154&field=my_text:string" ), QStringLiteral( "polygonlayer2154" ), QStringLiteral( "memory" ) );
+  mLayerPolygon2154 = new QgsVectorLayer( u"Polygon?crs=EPSG:2154&field=my_text:string"_s, u"polygonlayer2154"_s, u"memory"_s );
   QVERIFY( mLayerPolygon2154->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPolygon2154 );
 
   // Point layer
   mLayerPoint->startEditing();
-  const QString wkt1 = QStringLiteral( "Point (14 10)" );
-  const QString wkt2 = QStringLiteral( "Point (15 10)" );
-  const QString wkt3 = QStringLiteral( "Point (16 11)" );
+  const QString wkt1 = u"Point (14 10)"_s;
+  const QString wkt2 = u"Point (15 10)"_s;
+  const QString wkt3 = u"Point (16 11)"_s;
   QgsAttributeMap attributes1 = QgsAttributeMap();
   QgsAttributeMap attributes2 = QgsAttributeMap();
   QgsAttributeMap attributes3 = QgsAttributeMap();
-  attributes1[0] = QStringLiteral( "why?" );
-  attributes2[0] = QStringLiteral( "whyyy?" );
-  attributes3[0] = QStringLiteral( "why why?" );
+  attributes1[0] = u"why?"_s;
+  attributes2[0] = u"whyyy?"_s;
+  attributes3[0] = u"why why?"_s;
   QgsFeature f1 = QgsVectorLayerUtils::createFeature( mLayerPoint, QgsGeometry::fromWkt( wkt1 ), attributes1 );
   QgsFeature f2 = QgsVectorLayerUtils::createFeature( mLayerPoint, QgsGeometry::fromWkt( wkt2 ), attributes2 );
   QgsFeature f3 = QgsVectorLayerUtils::createFeature( mLayerPoint, QgsGeometry::fromWkt( wkt3 ), attributes3 );
@@ -121,9 +121,9 @@ void TestQgsMapToolFeatureArray::initTestCase()
 
   // Line layer
   mLayerLine->startEditing();
-  const QString wkt4 = QStringLiteral( "LineString (0 3, 3 6)" );
+  const QString wkt4 = u"LineString (0 3, 3 6)"_s;
   QgsAttributeMap attributes4 = QgsAttributeMap();
-  attributes4[0] = QStringLiteral( "maybe?" );
+  attributes4[0] = u"maybe?"_s;
   QgsFeature f4 = QgsVectorLayerUtils::createFeature( mLayerLine, QgsGeometry::fromWkt( wkt4 ), attributes4 );
   QVERIFY( mLayerLine->dataProvider()->addFeature( f4 ) );
   QCOMPARE( mLayerLine->featureCount(), ( long ) 1 );
@@ -131,9 +131,9 @@ void TestQgsMapToolFeatureArray::initTestCase()
 
   // Polygon layer
   mLayerPolygon->startEditing();
-  const QString wkt5 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  const QString wkt5 = u"Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))"_s;
   QgsAttributeMap attributes5 = QgsAttributeMap();
-  attributes5[0] = QStringLiteral( "because." );
+  attributes5[0] = u"because."_s;
   QgsFeature f5 = QgsVectorLayerUtils::createFeature( mLayerPolygon, QgsGeometry::fromWkt( wkt5 ), attributes5 );
   QVERIFY( mLayerPolygon->dataProvider()->addFeature( f5 ) );
   QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
@@ -141,9 +141,9 @@ void TestQgsMapToolFeatureArray::initTestCase()
 
   // Polygon 2154 layer
   mLayerPolygon2154->startEditing();
-  QString wkt6 = QStringLiteral( "Polygon ((0 5, 0 6, 1 6, 1 5, 0 5))" );
+  QString wkt6 = u"Polygon ((0 5, 0 6, 1 6, 1 5, 0 5))"_s;
   QgsAttributeMap attributes6 = QgsAttributeMap();
-  attributes6[0] = QStringLiteral( "sure?" );
+  attributes6[0] = u"sure?"_s;
   QgsGeometry geom = QgsGeometry::fromWkt( wkt6 );
   QCOMPARE( geom.transform( QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:3946" ), QgsCoordinateReferenceSystem( "EPSG:2154" ), QgsCoordinateTransformContext() ) ), Qgis::GeometryOperationResult::Success );
   wkt6 = geom.asWkt();
