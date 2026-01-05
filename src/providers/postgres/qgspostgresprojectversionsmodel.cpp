@@ -21,7 +21,7 @@
 #include "moc_qgspostgresprojectversionsmodel.cpp"
 
 QgsPostgresProjectVersionsModel::QgsPostgresProjectVersionsModel( const QString &connectionName, QObject *parent )
-  : QAbstractTableModel( parent )
+  : QAbstractItemModel( parent )
   , mConnectionName( connectionName )
 {
   if ( !mConnectionName.isEmpty() )
@@ -117,7 +117,7 @@ QVariant QgsPostgresProjectVersionsModel::headerData( int section, Qt::Orientati
     }
   }
 
-  return QAbstractTableModel::headerData( section, orientation, role );
+  return QAbstractItemModel::headerData( section, orientation, role );
 }
 
 void QgsPostgresProjectVersionsModel::populateVersions( const QString &schema, const QString &project )
@@ -191,4 +191,17 @@ void QgsPostgresProjectVersionsModel::clear()
   mSchema.clear();
   mProject.clear();
   endResetModel();
+}
+
+QModelIndex QgsPostgresProjectVersionsModel::index( int row, int column, const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  return createIndex( row, column );
+}
+
+QModelIndex QgsPostgresProjectVersionsModel::parent( const QModelIndex &child ) const
+{
+  Q_UNUSED( child );
+
+  return QModelIndex();
 }

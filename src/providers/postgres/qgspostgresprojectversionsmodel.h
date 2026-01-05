@@ -18,7 +18,7 @@
 #include "qgspostgresconn.h"
 #include "qgspostgresprojectstorage.h"
 
-#include <QAbstractTableModel>
+#include <QAbstractItemModel>
 #include <QVector>
 
 /**
@@ -32,7 +32,7 @@
  *
  * The model stores the date_saved internally for version identification.
  */
-class QgsPostgresProjectVersionsModel : public QAbstractTableModel
+class QgsPostgresProjectVersionsModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -52,6 +52,8 @@ class QgsPostgresProjectVersionsModel : public QAbstractTableModel
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
 
     /**
      * Populate the model with versions for a given schema and project
