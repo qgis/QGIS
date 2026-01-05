@@ -1173,21 +1173,20 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
     notify( tr( "Save Project" ), tr( "Project “%1” exist in the database. Overwriting it." ).arg( pgProjectUri.projectName ), context, Qgis::MessageLevel::Info );
   }
 
-  // read the project, set title and new filename
-  QgsProject savedProject;
-  savedProject.read( project->fileName() );
-  savedProject.setFileName( projectUri );
+  QString previousFileName = project->fileName();
+  project->setFileName( projectUri );
 
   // write project to the database
-  const bool success = savedProject.write();
+  const bool success = project->write();
   if ( !success )
   {
-    notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( savedProject.title(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
+    notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( project->title(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
+    project->setFileName( previousFileName );
     return;
   }
 
-  notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( savedProject.title(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
+  notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( project->title(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
 
   // refresh
   schemaItem->refresh();
