@@ -114,8 +114,6 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::redo()
 void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo )
 {
   QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand::undoRedoPrivate"_s );
-  QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( mLayer->index().get() );
-  QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
 
   QgsPointCloudAttribute attribute = mAttribute;
   double newValue = mNewValue;
