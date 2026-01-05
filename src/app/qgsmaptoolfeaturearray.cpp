@@ -1,5 +1,5 @@
 /***************************************************************************
- qgsmaptooldistributefeature.cpp  -  map tool for copying and distributing features by mouse drag
+ qgsmaptoolfeaturearray.cpp  -  map tool for copying a feature in an array of features by mouse drag
  ---------------------
  begin                : November 2025
  copyright            : (C) 2025 by Jacky Volpes
@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include "qgsmaptooldistributefeature.h"
+#include "qgsmaptoolfeaturearray.h"
 
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
@@ -23,36 +23,36 @@
 #include "qgssettingstree.h"
 #include "qgssnappingutils.h"
 
-#include "moc_qgsmaptooldistributefeature.cpp"
+#include "moc_qgsmaptoolfeaturearray.cpp"
 
-const QgsSettingsEntryEnumFlag<QgsMapToolDistributeFeature::DistributeMode> *QgsMapToolDistributeFeature::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolDistributeFeature::DistributeMode>( QStringLiteral( "distributefeature-mode" ), QgsSettingsTree::sTreeDigitizing, QgsMapToolDistributeFeature::DistributeMode::FeatureCount );
-const QgsSettingsEntryInteger *QgsMapToolDistributeFeature::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "distributefeature-feature-count" ), QgsSettingsTree::sTreeDigitizing, 0 );
-const QgsSettingsEntryDouble *QgsMapToolDistributeFeature::settingsFeatureSpacing = new QgsSettingsEntryDouble( QStringLiteral( "distributefeature-feature-spacing" ), QgsSettingsTree::sTreeDigitizing, 0 );
+const QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode> *QgsMapToolFeatureArray::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode>( QStringLiteral( "featurearray-mode" ), QgsSettingsTree::sTreeDigitizing, QgsMapToolFeatureArray::ArrayMode::FeatureCount );
+const QgsSettingsEntryInteger *QgsMapToolFeatureArray::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "featurearray-feature-count" ), QgsSettingsTree::sTreeDigitizing, 0 );
+const QgsSettingsEntryDouble *QgsMapToolFeatureArray::settingsFeatureSpacing = new QgsSettingsEntryDouble( QStringLiteral( "featurearray-feature-spacing" ), QgsSettingsTree::sTreeDigitizing, 0 );
 
-QgsMapToolDistributeFeature::QgsMapToolDistributeFeature( QgsMapCanvas *canvas )
+QgsMapToolFeatureArray::QgsMapToolFeatureArray( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
 {
-  mToolName = tr( "Copy and distribute feature" );
+  mToolName = tr( "Copy in an array of features" );
   setUseSnappingIndicator( true );
 }
 
-void QgsMapToolDistributeFeature::activate()
+void QgsMapToolFeatureArray::activate()
 {
   QgsMapToolAdvancedDigitizing::activate();
 
-  mUserInputWidget.reset( new QgsDistributeFeatureUserWidget() );
-  connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::modeChanged, this, [this]( QgsMapToolDistributeFeature::DistributeMode mode ) { mMode = mode; } );
-  connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureCountChanged, this, [this]( int value ) { mFeatureCount = value; updateRubberband(); } );
-  connect( mUserInputWidget.get(), &QgsDistributeFeatureUserWidget::featureSpacingChanged, this, [this]( int value ) { mFeatureSpacing = value; } );
+  mUserInputWidget.reset( new QgsFeatureArrayUserWidget() );
+  connect( mUserInputWidget.get(), &QgsFeatureArrayUserWidget::modeChanged, this, [this]( QgsMapToolFeatureArray::ArrayMode mode ) { mMode = mode; } );
+  connect( mUserInputWidget.get(), &QgsFeatureArrayUserWidget::featureCountChanged, this, [this]( int value ) { mFeatureCount = value; updateRubberband(); } );
+  connect( mUserInputWidget.get(), &QgsFeatureArrayUserWidget::featureSpacingChanged, this, [this]( int value ) { mFeatureSpacing = value; } );
 
-  setMode( QgsMapToolDistributeFeature::settingsMode->value() );
-  setFeatureCount( QgsMapToolDistributeFeature::settingsFeatureCount->value() );
-  setFeatureSpacing( QgsMapToolDistributeFeature::settingsFeatureSpacing->value() );
+  setMode( QgsMapToolFeatureArray::settingsMode->value() );
+  setFeatureCount( QgsMapToolFeatureArray::settingsFeatureCount->value() );
+  setFeatureSpacing( QgsMapToolFeatureArray::settingsFeatureSpacing->value() );
 
   QgisApp::instance()->addUserInputWidget( mUserInputWidget.get() );
 }
 
-void QgsMapToolDistributeFeature::deactivate()
+void QgsMapToolFeatureArray::deactivate()
 {
   // Delete rubberbands
   deleteRubberbands();
@@ -62,13 +62,13 @@ void QgsMapToolDistributeFeature::deactivate()
     mUserInputWidget.reset();
 
   // Save current values in QgsSettings
-  QgsMapToolDistributeFeature::settingsMode->setValue( mMode );
-  QgsMapToolDistributeFeature::settingsFeatureCount->setValue( mFeatureCount );
-  QgsMapToolDistributeFeature::settingsFeatureSpacing->setValue( mFeatureSpacing );
+  QgsMapToolFeatureArray::settingsMode->setValue( mMode );
+  QgsMapToolFeatureArray::settingsFeatureCount->setValue( mFeatureCount );
+  QgsMapToolFeatureArray::settingsFeatureSpacing->setValue( mFeatureSpacing );
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
-void QgsMapToolDistributeFeature::setMode( QgsMapToolDistributeFeature::DistributeMode mode )
+void QgsMapToolFeatureArray::setMode( QgsMapToolFeatureArray::ArrayMode mode )
 {
   if ( mUserInputWidget )
   {
@@ -80,7 +80,7 @@ void QgsMapToolDistributeFeature::setMode( QgsMapToolDistributeFeature::Distribu
   mMode = mode;
 }
 
-void QgsMapToolDistributeFeature::setFeatureSpacing( double featureSpacing )
+void QgsMapToolFeatureArray::setFeatureSpacing( double featureSpacing )
 {
   if ( mUserInputWidget )
   {
@@ -92,7 +92,7 @@ void QgsMapToolDistributeFeature::setFeatureSpacing( double featureSpacing )
   mFeatureSpacing = featureSpacing;
 }
 
-void QgsMapToolDistributeFeature::setFeatureCount( int featureCount )
+void QgsMapToolFeatureArray::setFeatureCount( int featureCount )
 {
   if ( mUserInputWidget )
   {
@@ -104,7 +104,7 @@ void QgsMapToolDistributeFeature::setFeatureCount( int featureCount )
   mFeatureCount = featureCount;
 }
 
-void QgsMapToolDistributeFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
+void QgsMapToolFeatureArray::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mStartPointMapCoords.isEmpty() )
   {
@@ -113,7 +113,7 @@ void QgsMapToolDistributeFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolDistributeFeature::keyPressEvent( QKeyEvent *e )
+void QgsMapToolFeatureArray::keyPressEvent( QKeyEvent *e )
 {
   if ( e && e->isAutoRepeat() )
   {
@@ -127,7 +127,7 @@ void QgsMapToolDistributeFeature::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolFeatureArray::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() == Qt::RightButton )
   {
@@ -181,7 +181,7 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       const QgsPointXY firstFeatureLayerPoint = toLayerCoordinates( mFeatureLayer, firstFeatureMapPoint() );
       const double dx = firstFeatureLayerPoint.x() - startPointLayerCoords.x();
       const double dy = firstFeatureLayerPoint.y() - startPointLayerCoords.y();
-      vlayer->beginEditCommand( tr( "Features distributed and copied" ) );
+      vlayer->beginEditCommand( tr( "Feature array created" ) );
       for ( int i = 1; i < count + 1; ++i )
       {
         QgsFeatureIds fids;
@@ -209,7 +209,7 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsPointXY QgsMapToolDistributeFeature::firstFeatureMapPoint() const
+QgsPointXY QgsMapToolFeatureArray::firstFeatureMapPoint() const
 {
   if ( mStartPointMapCoords.isEmpty() || mEndPointMapCoords.isEmpty() )
     return QgsPointXY();
@@ -217,7 +217,7 @@ QgsPointXY QgsMapToolDistributeFeature::firstFeatureMapPoint() const
   return QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( mStartPointMapCoords ), QgsPoint( mEndPointMapCoords ), featureSpacing() );
 }
 
-void QgsMapToolDistributeFeature::deleteRubberbands()
+void QgsMapToolFeatureArray::deleteRubberbands()
 {
   mRubberBand.reset();
   mStartPointMapCoords = QgsPointXY();
@@ -226,7 +226,7 @@ void QgsMapToolDistributeFeature::deleteRubberbands()
   mFeatureLayer = nullptr;
 }
 
-void QgsMapToolDistributeFeature::updateRubberband()
+void QgsMapToolFeatureArray::updateRubberband()
 {
   const int count = featureCount();
   if ( !mFeatureLayer || mFeatureList.count() == 0 || mStartPointMapCoords.isEmpty() || count == 0 )
@@ -291,16 +291,16 @@ void QgsMapToolDistributeFeature::updateRubberband()
   mRubberBand->show();
 }
 
-double QgsMapToolDistributeFeature::featureSpacing() const
+double QgsMapToolFeatureArray::featureSpacing() const
 {
   switch ( mode() )
   {
-    case DistributeMode::FeatureSpacing:
-    case DistributeMode::FeatureCountAndSpacing:
+    case ArrayMode::FeatureSpacing:
+    case ArrayMode::FeatureCountAndSpacing:
     {
       return mFeatureSpacing;
     }
-    case DistributeMode::FeatureCount:
+    case ArrayMode::FeatureCount:
     {
       if ( mEndPointMapCoords.isEmpty() )
         return 0;
@@ -311,16 +311,16 @@ double QgsMapToolDistributeFeature::featureSpacing() const
   return 0; // should not happen
 }
 
-int QgsMapToolDistributeFeature::featureCount() const
+int QgsMapToolFeatureArray::featureCount() const
 {
   switch ( mode() )
   {
-    case DistributeMode::FeatureCount:
-    case DistributeMode::FeatureCountAndSpacing:
+    case ArrayMode::FeatureCount:
+    case ArrayMode::FeatureCountAndSpacing:
     {
       return mFeatureCount;
     }
-    case DistributeMode::FeatureSpacing:
+    case ArrayMode::FeatureSpacing:
     {
       if ( mEndPointMapCoords.isEmpty() )
         return 0;
@@ -331,72 +331,72 @@ int QgsMapToolDistributeFeature::featureCount() const
   return 0; // should not happen
 }
 
-QgsDistributeFeatureUserWidget::QgsDistributeFeatureUserWidget( QWidget *parent )
+QgsFeatureArrayUserWidget::QgsFeatureArrayUserWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
 
-  mModeComboBox->addItem( tr( "Feature Count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCount ) );
-  mModeComboBox->addItem( tr( "Spacing" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing ) );
-  mModeComboBox->addItem( tr( "Spacing and Feature Count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing ) );
+  mModeComboBox->addItem( tr( "Feature Count" ), QVariant::fromValue( QgsMapToolFeatureArray::ArrayMode::FeatureCount ) );
+  mModeComboBox->addItem( tr( "Spacing" ), QVariant::fromValue( QgsMapToolFeatureArray::ArrayMode::FeatureSpacing ) );
+  mModeComboBox->addItem( tr( "Spacing and Feature Count" ), QVariant::fromValue( QgsMapToolFeatureArray::ArrayMode::FeatureCountAndSpacing ) );
 
   updateUi();
 
-  connect( mModeComboBox, &QComboBox::currentIndexChanged, this, &QgsDistributeFeatureUserWidget::updateUi );
+  connect( mModeComboBox, &QComboBox::currentIndexChanged, this, &QgsFeatureArrayUserWidget::updateUi );
   connect( mModeComboBox, &QComboBox::currentIndexChanged, this, [this]() { emit modeChanged( mode() ); } );
   connect( mFeatureCountSpinBox, &QSpinBox::valueChanged, this, [this]( int value ) { emit featureCountChanged( value ); } );
   connect( mFeatureSpacingSpinBox, &QDoubleSpinBox::valueChanged, this, [this]( double value ) { emit featureSpacingChanged( value ); } );
 }
 
-void QgsDistributeFeatureUserWidget::updateUi()
+void QgsFeatureArrayUserWidget::updateUi()
 {
-  const QgsMapToolDistributeFeature::DistributeMode currentMode = mode();
+  const QgsMapToolFeatureArray::ArrayMode currentMode = mode();
 
   mFeatureCountLabel->setVisible(
-    currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCount
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
+    currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureCount
+    || currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureCountAndSpacing
   );
   mFeatureCountSpinBox->setVisible(
-    currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCount
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
+    currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureCount
+    || currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureCountAndSpacing
   );
 
   mFeatureSpacingLabel->setVisible(
-    currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
+    currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureSpacing
+    || currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureCountAndSpacing
   );
   mFeatureSpacingSpinBox->setVisible(
-    currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
+    currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureSpacing
+    || currentMode == QgsMapToolFeatureArray::ArrayMode::FeatureCountAndSpacing
   );
 }
 
-void QgsDistributeFeatureUserWidget::setMode( QgsMapToolDistributeFeature::DistributeMode mode )
+void QgsFeatureArrayUserWidget::setMode( QgsMapToolFeatureArray::ArrayMode mode )
 {
   mModeComboBox->setCurrentIndex( mModeComboBox->findData( QVariant::fromValue( mode ) ) );
 }
 
-QgsMapToolDistributeFeature::DistributeMode QgsDistributeFeatureUserWidget::mode() const
+QgsMapToolFeatureArray::ArrayMode QgsFeatureArrayUserWidget::mode() const
 {
-  return mModeComboBox->currentData().value<QgsMapToolDistributeFeature::DistributeMode>();
+  return mModeComboBox->currentData().value<QgsMapToolFeatureArray::ArrayMode>();
 }
 
-void QgsDistributeFeatureUserWidget::setFeatureCount( int featureCount )
+void QgsFeatureArrayUserWidget::setFeatureCount( int featureCount )
 {
   mFeatureCountSpinBox->setValue( featureCount );
 }
 
-int QgsDistributeFeatureUserWidget::featureCount() const
+int QgsFeatureArrayUserWidget::featureCount() const
 {
   return mFeatureCountSpinBox->value();
 }
 
-void QgsDistributeFeatureUserWidget::setFeatureSpacing( double featureSpacing )
+void QgsFeatureArrayUserWidget::setFeatureSpacing( double featureSpacing )
 {
   mFeatureSpacingSpinBox->setValue( featureSpacing );
 }
 
-double QgsDistributeFeatureUserWidget::featureSpacing() const
+double QgsFeatureArrayUserWidget::featureSpacing() const
 {
   return mFeatureSpacingSpinBox->value();
 }

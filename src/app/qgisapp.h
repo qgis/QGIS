@@ -1856,8 +1856,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void moveFeature();
     //! activates the copy and move feature tool
     void moveFeatureCopy();
-    //! activates the distribute and copy feature tool
-    void distributeFeature();
+    //! activates the feature array copy tool
+    void featureArray();
     //! activates the offset curve tool
     void offsetCurve();
     //! activates the chamfer fillet tool

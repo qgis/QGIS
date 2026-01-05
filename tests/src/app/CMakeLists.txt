@@ -37,7 +37,7 @@ set(TESTS
   testqgsmaptoolcircularstring.cpp
   testqgsmaptooleditmesh.cpp
   testqgsmaptoolmovefeature.cpp
-  testqgsmaptooldistributefeature.cpp
+  testqgsmaptoolfeaturearray.cpp
   testqgsmaptoolellipse.cpp
   testqgsmaptoolcircle.cpp
   testqgsmaptoolrectangle.cpp

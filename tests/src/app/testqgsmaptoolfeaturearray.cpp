@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsmaptooldistributefeature.cpp
+     testqgsmaptoolfeaturearray.cpp
      --------------------------------
     Date                 : November 2025
     Copyright            : (C) 2025 by Jacky Volpes
@@ -21,7 +21,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmapmouseevent.h"
-#include "qgsmaptooldistributefeature.h"
+#include "qgsmaptoolfeaturearray.h"
 #include "qgsproject.h"
 #include "qgssnappingconfig.h"
 #include "qgstest.h"
@@ -33,37 +33,37 @@
  * \ingroup UnitTests
  * This is a unit test for the distribute feature tool
  */
-class TestQgsMapToolDistributeFeature : public QObject
+class TestQgsMapToolFeatureArray : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolDistributeFeature();
+    TestQgsMapToolFeatureArray();
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
-    void testDistributeFeatureFeatureCount();
-    void testDistributeFeatureFeatureSpacing();
-    void testDistributeFeatureFeatureCountAndSpacing();
+    void testFeatureArrayFeatureCount();
+    void testFeatureArrayFeatureSpacing();
+    void testFeatureArrayFeatureCountAndSpacing();
 
   private:
     QgisApp *mQgisApp = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
-    QgsMapToolDistributeFeature *mDistributeFeatureTool = nullptr;
+    QgsMapToolFeatureArray *mFeatureArrayTool = nullptr;
     QgsVectorLayer *mLayerPoint = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerPolygon = nullptr;
     QgsVectorLayer *mLayerPolygon2154 = nullptr;
 };
 
-TestQgsMapToolDistributeFeature::TestQgsMapToolDistributeFeature() = default;
+TestQgsMapToolFeatureArray::TestQgsMapToolFeatureArray() = default;
 
 
 //runs before all tests
-void TestQgsMapToolDistributeFeature::initTestCase()
+void TestQgsMapToolFeatureArray::initTestCase()
 {
-  qDebug() << "TestMapToolDistributeFeature::initTestCase()";
+  qDebug() << "TestMapToolFeatureArray::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -155,29 +155,29 @@ void TestQgsMapToolDistributeFeature::initTestCase()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerPoint << mLayerLine << mLayerPolygon << mLayerPolygon2154 );
 
   // create the tool
-  mDistributeFeatureTool = new QgsMapToolDistributeFeature( mCanvas );
+  mFeatureArrayTool = new QgsMapToolFeatureArray( mCanvas );
 
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 28, 28 ) );
 }
 
 //runs after all tests
-void TestQgsMapToolDistributeFeature::cleanupTestCase()
+void TestQgsMapToolFeatureArray::cleanupTestCase()
 {
-  delete mDistributeFeatureTool;
+  delete mFeatureArrayTool;
   delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolDistributeFeature::testDistributeFeatureFeatureCount()
+void TestQgsMapToolFeatureArray::testFeatureArrayFeatureCount()
 {
-  TestQgsMapToolAdvancedDigitizingUtils utils( mDistributeFeatureTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mFeatureArrayTool );
 
-  mDistributeFeatureTool->setMode( QgsMapToolDistributeFeature::DistributeMode::FeatureCount );
-  mDistributeFeatureTool->setFeatureCount( 4 );         // will add 4 new features
-  mDistributeFeatureTool->setFeatureSpacing( 10.6543 ); // will not be taken into account because the mode is FeatureCount
-  QCOMPARE( mDistributeFeatureTool->featureCount(), 4 );
-  QCOMPARE( mDistributeFeatureTool->featureSpacing(), 0 );
+  mFeatureArrayTool->setMode( QgsMapToolFeatureArray::ArrayMode::FeatureCount );
+  mFeatureArrayTool->setFeatureCount( 4 );         // will add 4 new features
+  mFeatureArrayTool->setFeatureSpacing( 10.6543 ); // will not be taken into account because the mode is FeatureCount
+  QCOMPARE( mFeatureArrayTool->featureCount(), 4 );
+  QCOMPARE( mFeatureArrayTool->featureSpacing(), 0 );
 
   // Point layer
   mCanvas->setCurrentLayer( mLayerPoint );
@@ -299,15 +299,15 @@ void TestQgsMapToolDistributeFeature::testDistributeFeatureFeatureCount()
   QCOMPARE( mLayerPolygon2154->featureCount(), 1 );
 }
 
-void TestQgsMapToolDistributeFeature::testDistributeFeatureFeatureSpacing()
+void TestQgsMapToolFeatureArray::testFeatureArrayFeatureSpacing()
 {
-  TestQgsMapToolAdvancedDigitizingUtils utils( mDistributeFeatureTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mFeatureArrayTool );
 
-  mDistributeFeatureTool->setMode( QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing );
-  mDistributeFeatureTool->setFeatureCount( 7 );     // will not be taken into account because the mode is FeatureSpacing
-  mDistributeFeatureTool->setFeatureSpacing( 1.6 ); // will add a feature every 1.6 map unit
-  QCOMPARE( mDistributeFeatureTool->featureCount(), 0 );
-  QCOMPARE( mDistributeFeatureTool->featureSpacing(), 1.6 );
+  mFeatureArrayTool->setMode( QgsMapToolFeatureArray::ArrayMode::FeatureSpacing );
+  mFeatureArrayTool->setFeatureCount( 7 );     // will not be taken into account because the mode is FeatureSpacing
+  mFeatureArrayTool->setFeatureSpacing( 1.6 ); // will add a feature every 1.6 map unit
+  QCOMPARE( mFeatureArrayTool->featureCount(), 0 );
+  QCOMPARE( mFeatureArrayTool->featureSpacing(), 1.6 );
 
   // Point layer
   mCanvas->setCurrentLayer( mLayerPoint );
@@ -423,15 +423,15 @@ void TestQgsMapToolDistributeFeature::testDistributeFeatureFeatureSpacing()
   QCOMPARE( mLayerPolygon2154->featureCount(), 1 );
 }
 
-void TestQgsMapToolDistributeFeature::testDistributeFeatureFeatureCountAndSpacing()
+void TestQgsMapToolFeatureArray::testFeatureArrayFeatureCountAndSpacing()
 {
-  TestQgsMapToolAdvancedDigitizingUtils utils( mDistributeFeatureTool );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mFeatureArrayTool );
 
-  mDistributeFeatureTool->setMode( QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing );
-  mDistributeFeatureTool->setFeatureCount( 6 );     // will add 6 new features
-  mDistributeFeatureTool->setFeatureSpacing( 2.4 ); // every 2.4 map unit
-  QCOMPARE( mDistributeFeatureTool->featureCount(), 6 );
-  QCOMPARE( mDistributeFeatureTool->featureSpacing(), 2.4 );
+  mFeatureArrayTool->setMode( QgsMapToolFeatureArray::ArrayMode::FeatureCountAndSpacing );
+  mFeatureArrayTool->setFeatureCount( 6 );     // will add 6 new features
+  mFeatureArrayTool->setFeatureSpacing( 2.4 ); // every 2.4 map unit
+  QCOMPARE( mFeatureArrayTool->featureCount(), 6 );
+  QCOMPARE( mFeatureArrayTool->featureSpacing(), 2.4 );
 
   // Point layer
   mCanvas->setCurrentLayer( mLayerPoint );
@@ -557,5 +557,5 @@ void TestQgsMapToolDistributeFeature::testDistributeFeatureFeatureCountAndSpacin
   QCOMPARE( mLayerPolygon2154->featureCount(), 1 );
 }
 
-QGSTEST_MAIN( TestQgsMapToolDistributeFeature )
-#include "testqgsmaptooldistributefeature.moc"
+QGSTEST_MAIN( TestQgsMapToolFeatureArray )
+#include "testqgsmaptoolfeaturearray.moc"
