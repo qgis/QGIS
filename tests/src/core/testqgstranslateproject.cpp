@@ -112,9 +112,10 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>points</source>" ) );
 
   //LAYER GROUPS AND SUBGROUPS
-  //Points:
   //Planes and Roads
   QVERIFY( tsFileContent.contains( "<source>Planes and Roads</source>" ) );
+  //Purple Marks
+  QVERIFY( tsFileContent.contains( "<source>Purple Marks</source>" ) );
   //Little bit of nothing
   QVERIFY( tsFileContent.contains( "<source>Little bit of nothing</source>" ) );
 
@@ -198,6 +199,8 @@ void TestQgsTranslateProject::translateProject()
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Flugzeuge und Strassen" ) ) );
   //Little bit of nothing -> Bisschen nichts
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Bisschen nichts" ) ) );
+  //Purple Marks -> Lila Markierungen
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Lila Markierungen" ) ) );
 
   //FIELDS AND ALIASES
   //Lines:

@@ -710,8 +710,8 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     }
   }
 
-  //register layergroups
-  const QList<QgsLayerTreeGroup *> groupLayers = mRootGroup->findGroups();
+  //register layergroups and subgroups
+  const QList<QgsLayerTreeGroup *> groupLayers = mRootGroup->findGroups( true );
   for ( const QgsLayerTreeGroup *groupLayer : groupLayers )
   {
     translationContext->registerTranslation( QStringLiteral( "project:layergroups" ), groupLayer->name() );
