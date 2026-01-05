@@ -110,6 +110,10 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>lines</source>" ) );
   //points
   QVERIFY( tsFileContent.contains( "<source>points</source>" ) );
+  //purple lines
+  QVERIFY( tsFileContent.contains( "<source>purple lines</source>" ) );
+  //purple points
+  QVERIFY( tsFileContent.contains( "<source>purple points</source>" ) );
 
   //LAYER GROUPS AND SUBGROUPS
   //Planes and Roads
@@ -119,12 +123,16 @@ void TestQgsTranslateProject::createTsFile()
   //Little bit of nothing
   QVERIFY( tsFileContent.contains( "<source>Little bit of nothing</source>" ) );
 
-  //FIELDS AND ALIASES
+  //FIELDNAMES AND ALIASES
   //Lines:
   //Name (Alias: Runwayid)
   QVERIFY( tsFileContent.contains( "<source>Runwayid</source>" ) );
   //Value (Alias: Name)
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //Name (Constraint Description: Road needs a type)
+  QVERIFY( tsFileContent.contains( "<source>Road needs a type</source>" ) );
+  //Value (Constraint Description: Value should not be 1337)
+  QVERIFY( tsFileContent.contains( "<source>Value should not be 1337</source>" ) );
 
   //Points:
   //Class (Alias: Level)
@@ -186,12 +194,18 @@ void TestQgsTranslateProject::translateProject()
   //with the qm file containing translation from en to de, the project should be in german and renamed with postfix .de
   QgsVectorLayer *points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" );
   QgsVectorLayer *lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" );
+  QgsVectorLayer *purple_points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" );
+  QgsVectorLayer *purple_lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_5238db60_470c_41a5_b1d1_059e70f93b99" );
 
   //LAYER NAMES
   //lines -> Linien
   QCOMPARE( lines_layer->name(), QStringLiteral( "Linien" ) );
   //points -> Punkte
   QCOMPARE( points_layer->name(), QStringLiteral( "Punkte" ) );
+  // purple_lines
+  QCOMPARE( purple_lines_layer->name(), QStringLiteral( "Lila Linien" ) );
+  //purple_points -> Punkte
+  QCOMPARE( purple_points_layer->name(), QStringLiteral( "Lila Punkte" ) );
 
   //LAYER GROUPS AND SUBGROUPS
   //Points:
@@ -202,13 +216,17 @@ void TestQgsTranslateProject::translateProject()
   //Purple Marks -> Lila Markierungen
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Lila Markierungen" ) ) );
 
-  //FIELDS AND ALIASES
+  //FIELDNAMES AND ALIASES
   //Lines:
   const QgsFields lines_fields = lines_layer->fields();
   //Name (Alias: Runwayid) -> Pistenid
   QCOMPARE( lines_fields.field( QStringLiteral( "Name" ) ).alias(), QStringLiteral( "Pistenid" ) );
   //Value (Alias: Name) -> Pistenname
   QCOMPARE( lines_fields.field( QStringLiteral( "Value" ) ).alias(), QStringLiteral( "Pistenname" ) );
+  //Name (Constraint Description: Road needs a type)
+  QCOMPARE( lines_fields.field( QStringLiteral( "Name" ) ).constraints().constraintDescription(), QStringLiteral( "Piste braucht eine Art" ) );
+  //Value (Constraint Description: Value should not be 1337)
+  QCOMPARE( lines_fields.field( QStringLiteral( "Value" ) ).constraints().constraintDescription(), QStringLiteral( "Wert sollte nicht 1337 sein" ) );
 
   //Points:
   const QgsFields points_fields = points_layer->fields();

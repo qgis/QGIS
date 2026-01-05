@@ -1060,7 +1060,9 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
   // Constraint expressions
   QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraintExpression" ) );
   constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), field.constraints().constraintExpression() );
-  constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), field.constraints().constraintDescription() );
+  QgsReadWriteContext context;
+  const QString translatedDesc = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:constraintdescriptions" ).arg( mLayer->id() ), field.constraints().constraintDescription() );
+  constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), translatedDesc );
   documentElement.appendChild( constraintExpressionElem );
 
   // Widget general settings

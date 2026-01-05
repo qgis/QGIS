@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="Metadata Title" saveDateTime="2026-01-05T10:00:28" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
+<qgis projectname="Metadata Title" saveDateTime="2026-01-05T11:57:38" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
   <homePath path=""/>
   <title>Metadata Title</title>
   <transaction mode="Disabled"/>
@@ -39,7 +39,7 @@
       <customproperties>
         <Option/>
       </customproperties>
-      <layer-tree-layer checked="Qt::Checked" expanded="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" legend_exp="" legend_split_behavior="0" name="lines" patch_size="0,0" providerKey="ogr" source="../lines.shp">
+      <layer-tree-layer checked="Qt::Checked" expanded="1" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" legend_exp="" legend_split_behavior="0" name="lines" patch_size="0,0" providerKey="ogr" source="../lines.shp">
         <customproperties>
           <Option/>
         </customproperties>
@@ -80,9 +80,9 @@
   <snapping-settings enabled="0" intersection-snapping="0" maxScale="0" minScale="0" mode="2" scaleDependencyMode="0" self-snapping="0" tolerance="0" type="1" unit="2">
     <individual-layer-settings>
       <layer-setting enabled="0" id="lines_5238db60_470c_41a5_b1d1_059e70f93b99" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
+      <layer-setting enabled="0" id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
       <layer-setting enabled="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
       <layer-setting enabled="0" id="points_240d6bd6_9203_470a_994a_aae13cd9fa04" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
-      <layer-setting enabled="0" id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations>
@@ -97,10 +97,10 @@
   <mapcanvas annotationsVisible="1" name="theMapCanvas">
     <units>degrees</units>
     <extent>
-      <xmin>-104.59306303330629362</xmin>
-      <ymin>30.73451395804895014</ymin>
-      <xmax>-85.92639636663932379</xmax>
-      <ymax>43.37219511746897638</ymax>
+      <xmin>-102.28825455734866523</xmin>
+      <ymin>16.67746424329730104</ymin>
+      <xmax>-83.6215878906816954</xmax>
+      <ymax>29.31514540271732727</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -122,8 +122,8 @@
   <projectModels/>
   <legend updateDrawingOrder="true">
     <legendgroup checked="Qt::Checked" name="Planes and Roads" open="true">
-      <legendlayer checked="Qt::Checked" drawingOrder="-1" name="lines" open="false" showFeatureCount="0">
-        <filegroup hidden="false" open="false">
+      <legendlayer checked="Qt::Checked" drawingOrder="-1" name="lines" open="true" showFeatureCount="0">
+        <filegroup hidden="false" open="true">
           <legendlayerfile isInOverview="0" layerid="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" visible="1"/>
         </filegroup>
       </legendlayer>
@@ -820,7 +820,7 @@ def my_form_open(dialog, layer, feature):
           </spatialrefsys>
         </crs>
         <extent>
-          <spatial crs="" dimensions="2" maxx="0" maxy="0" maxz="0" minx="0" miny="0" minz="0"/>
+          <spatial crs="EPSG:4326" dimensions="2" maxx="0" maxy="0" maxz="0" minx="0" miny="0" minz="0"/>
           <temporal>
             <period>
               <start></start>
@@ -1162,11 +1162,12 @@ def my_form_open(dialog, layer, feature):
           <Option name="QFieldSync/tracking_time_requirement_interval_seconds" type="int" value="30"/>
           <Option name="QFieldSync/value_map_button_interface_threshold" type="int" value="0"/>
           <Option name="dualview/previewExpressions" type="List">
+            <Option type="QString" value="&quot;Value&quot;"/>
             <Option type="QString" value="Value"/>
           </Option>
           <Option name="embeddedWidgets/count" type="QString" value="0"/>
-          <Option name="variableNames" type="invalid"/>
-          <Option name="variableValues" type="invalid"/>
+          <Option name="variableNames"/>
+          <Option name="variableValues"/>
         </Option>
       </customproperties>
       <blendMode>0</blendMode>
@@ -1290,12 +1291,12 @@ def my_form_open(dialog, layer, feature):
         <default applyOnUpdate="0" expression="" field="Value"/>
       </defaults>
       <constraints>
-        <constraint constraints="0" exp_strength="0" field="Name" notnull_strength="0" unique_strength="0"/>
-        <constraint constraints="0" exp_strength="0" field="Value" notnull_strength="0" unique_strength="0"/>
+        <constraint constraints="4" exp_strength="2" field="Name" notnull_strength="0" unique_strength="0"/>
+        <constraint constraints="4" exp_strength="2" field="Value" notnull_strength="0" unique_strength="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint desc="" exp="" field="Name"/>
-        <constraint desc="" exp="" field="Value"/>
+        <constraint desc="Road needs a type" exp="name is not NULL" field="Name"/>
+        <constraint desc="Value should not be 1337" exp="Value != 1337" field="Value"/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
@@ -2422,6 +2423,9 @@ def my_form_open(dialog, layer, feature):
           <Option name="QFieldSync/tracking_measurement_type" type="int" value="0"/>
           <Option name="QFieldSync/tracking_time_requirement_interval_seconds" type="int" value="30"/>
           <Option name="QFieldSync/value_map_button_interface_threshold" type="int" value="0"/>
+          <Option name="dualview/previewExpressions" type="List">
+            <Option type="QString" value="&quot;Class&quot;"/>
+          </Option>
           <Option name="embeddedWidgets/count" type="QString" value="0"/>
           <Option name="variableNames" type="invalid"/>
           <Option name="variableValues" type="invalid"/>
@@ -2939,7 +2943,7 @@ def my_form_open(dialog, layer, feature):
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmax="-76.54589458339208363" xmin="-113.97356481655353377" ymax="43.37219511746897638" ymin="30.73451395804895014">
+    <DefaultViewExtent xmax="-83.6215878906816954" xmin="-102.28825455734866523" ymax="31.87324043832938258" ymin="14.11936920768524573">
       <spatialrefsys nativeFormat="Wkt">
         <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],MEMBER["World Geodetic System 1984 (G2296)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
@@ -3004,7 +3008,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings autoAddTrackVertices="0" autoCommitFeatures="0" destinationFollowsActiveLayer="1" destinationLayer="">
+  <ProjectGpsSettings autoAddTrackVertices="0" autoCommitFeatures="0" destinationFollowsActiveLayer="1" destinationLayer="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" destinationLayerName="lines" destinationLayerProvider="ogr" destinationLayerSource="/home/dave/dev/qgis/QGIS/tests/testdata/lines.shp">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>

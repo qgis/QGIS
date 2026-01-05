@@ -659,22 +659,31 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
-          //register aliases and widget settings
+          //register general (like alias) and widget specific field settings (like value map descriptions)
           const QgsFields fields = vlayer->fields();
           for ( const QgsField &field : fields )
           {
+            //general
+            //alias
             QString fieldName;
             if ( field.alias().isEmpty() )
               fieldName = field.name();
             else
               fieldName = field.alias();
-
             translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
 
+            //constraint description
+            if ( !field.constraints().constraintDescription().isEmpty() )
+              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:constraintdescriptions" ).arg( vlayer->id() ), field.constraints().constraintDescription() );
+
+            //widget specific
+            //value relation
             if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
             {
               translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
             }
+
+            //value map
             if ( field.editorWidgetSetup().type() == QLatin1String( "ValueMap" ) )
             {
               if ( field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).canConvert<QList<QVariant>>() )

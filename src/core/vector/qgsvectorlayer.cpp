@@ -2766,7 +2766,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
         QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
         QString exp = constraintElem.attribute( QStringLiteral( "exp" ), QString() );
-        QString desc = constraintElem.attribute( QStringLiteral( "desc" ), QString() );
+        QString desc = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:constraintdescriptions" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), constraintElem.attribute( QStringLiteral( "desc" ), QString() ) );
+        QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:constraintdescriptions" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + constraintElem.attribute( QStringLiteral( "desc" ), QString() ), 3 );
+
         if ( field.isEmpty() || exp.isEmpty() )
           continue;
 
