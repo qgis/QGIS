@@ -29,6 +29,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <QCamera>
 #include <QQueue>
@@ -80,17 +81,44 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
 
   Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
   QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
-  const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas );
+
+  QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> mappedPoints;
+  if ( QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( pcLayer->dataProvider() ) )
+  {
+    for ( QgsPointCloudSubIndex subIndex : vpcProvider->subIndexes() )
+    {
+      QgsPointCloudIndex pc = subIndex.index();
+      if ( !pc || !pc.isValid() )
+        continue;
+
+      const QString uri = pc.uri();
+      const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
+      mappedPoints.insert( uri, sel );
+    }
+  }
+  else
+  {
+    QgsPointCloudIndex pc = pcLayer->index();
+    if ( !pc || !pc.isValid() )
+      return;
+
+    const QString uri = pc.uri();
+    const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
+    mappedPoints.insert( uri, sel );
+  }
 
   int offset;
   const QgsPointCloudAttribute *attribute = pcLayer->attributes().find( attributeName, offset );
 
-  pcLayer->undoStack()->beginMacro( QObject::tr( "Change attribute values" ) );
-  pcLayer->changeAttributeValue( sel, *attribute, newValue );
-  pcLayer->undoStack()->endMacro();
+  if ( !mappedPoints.isEmpty() )
+  {
+    pcLayer->undoStack()->beginMacro( QObject::tr( "Change attribute values" ) );
+    pcLayer->changeAttributeValue( mappedPoints, *attribute, newValue );
+    pcLayer->undoStack()->endMacro();
+  }
 }
 
-SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas )
+SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas, QgsPointCloudIndex &pc )
 {
   MapToPixel3D mapToPixel3D;
   mapToPixel3D.VP = canvas.camera()->projectionMatrix() * canvas.camera()->viewMatrix();
@@ -106,12 +134,13 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
   {
     QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"Qgs3DMapToolPointCloudChangeAttribute::searchPoints, looking for affected nodes"_s );
     QgsPointCloudIndex index = layer->index();
+
     const QList<QVector4D> clipPlanes = mCanvas->scene()->clipPlaneEquations();
     QQueue<QgsPointCloudNodeId> queue;
-    queue.append( index.root() );
+    queue.append( pc.root() );
     while ( !queue.empty() )
     {
-      const QgsPointCloudNode node = index.getNode( queue.constFirst() );
+      const QgsPointCloudNode node = pc.getNode( queue.constFirst() );
       queue.removeFirst();
 
       const QgsBox3D bounds = node.bounds();
@@ -171,16 +200,15 @@ SelectedPoints Qgs3DMapToolPointCloudChangeAttribute::searchPoints( QgsPointClou
     return {};
 
   // The bulk of the time of this method is spent here, parallelise it.
-  QgsPointCloudIndex index = layer->index();
   QgsPointCloudLayerElevationProperties elevationProperties = layer->elevationProperties();
   QgsAbstract3DRenderer *renderer3D = layer->renderer3D();
 
   // QtConcurrent requires std::function, bare lambdas lead to compile errors.
   std::function mapFn =
-    [this, &searchPolygon, &mapToPixel3D, index = std::move( index ), &elevationProperties, renderer3D, mapExtent](
+    [this, &searchPolygon, &mapToPixel3D, pc = std::move( pc ), &elevationProperties, renderer3D, mapExtent](
       const QgsPointCloudNodeId &n
     ) {
-      const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, index, mapExtent, elevationProperties, renderer3D );
+      const QVector<int> pts = selectedPointsInNode( searchPolygon, n, mapToPixel3D, pc, mapExtent, elevationProperties, renderer3D );
       if ( pts.isEmpty() )
         return SelectedPoints {};
       else
