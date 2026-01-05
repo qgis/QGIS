@@ -76,7 +76,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
 
   if ( values.isEmpty() || maxValue <= 0 ) return;
 
-  // THE FIX: Linear scaling logic verified by your staircase screenshot
+  // YOUR VERIFIED FIX: Correct Linear Scaling
   double mScaleFactor = s.size.height() / maxValue;
 
   p->save();
