@@ -136,7 +136,7 @@ void QgsPostgresProjectVersionsModel::populateVersions( const QString &schema, c
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
-  bool versioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( mConn, schema );
+  const bool versioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( mConn, schema );
 
   if ( versioningEnabled )
   {
