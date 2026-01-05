@@ -58,7 +58,7 @@ QgsBatchNominatimGeocodeAlgorithm *QgsBatchNominatimGeocodeAlgorithm::createInst
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"#\">Nominatim</a> service against an input layer string field.\n\n"
+  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"https://nominatim.org/\">Nominatim</a> service against an input layer string field.\n\n"
                       "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location." );
 }
 
