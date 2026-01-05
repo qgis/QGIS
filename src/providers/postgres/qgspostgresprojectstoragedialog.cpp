@@ -239,11 +239,6 @@ void QgsPostgresProjectStorageDialog::onSchemaChanged()
   QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), false );
-  if ( !conn )
-  {
-    QMessageBox::critical( this, tr( "Error" ), tr( "Connection failed" ) + "\n" + QgsPostgresConn::connectionInfo( uri, false ) );
-    return;
-  }
 
   const bool versioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mCboSchema->currentText() );
 
