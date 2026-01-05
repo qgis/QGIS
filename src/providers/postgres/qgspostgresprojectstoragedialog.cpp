@@ -113,8 +113,8 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
 
   mVersionsModel->setConnection( mCboConnection->currentText() );
 
-  QString name = mCboConnection->currentText();
-  QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
+  const QString name = mCboConnection->currentText();
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
 
   bool projectsAllowed = QgsPostgresConn::allowProjectsInDatabase( name );
   mLblProjectsNotAllowed->setVisible( !projectsAllowed );
@@ -235,8 +235,8 @@ void QgsPostgresProjectStorageDialog::onSchemaChanged()
 {
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
-  QString name = mCboConnection->currentText();
-  QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
+  const QString name = mCboConnection->currentText();
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), false );
 
@@ -262,8 +262,8 @@ void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
     {
       QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
-      QString name = mCboConnection->currentText();
-      QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
+      const QString name = mCboConnection->currentText();
+      const QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
 
       QgsPostgresConn *conn = QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), false );
       if ( !conn )
