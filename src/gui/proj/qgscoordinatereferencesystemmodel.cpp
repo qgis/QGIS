@@ -753,10 +753,12 @@ bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, 
   const QString rightStr = sourceModel()->data( right ).toString().toLower();
 
   if ( leftType == QgsCoordinateReferenceSystemModelNode::NodeGroup )
-  {
+{
     // both are groups -- ensure USER group comes last, and CUSTOM group comes first
     const QString leftGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
-    const QString rightGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
+    // FIX: Change 'left' to 'right' below
+    const QString rightGroupId = sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
+    
     if ( leftGroupId == QLatin1String( "USER" ) )
       return false;
     if ( rightGroupId == QLatin1String( "USER" ) )
@@ -767,7 +769,6 @@ bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, 
     if ( rightGroupId == QLatin1String( "CUSTOM" ) )
       return false;
   }
-
   // default sort is alphabetical order
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }
