@@ -252,12 +252,9 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         else:
             path = ""
 
-        # TODO: should use selectedFilter argument for default file format
+        file_filter = self.parameterDefinition().createFileFilter()
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.widget,
-            self.tr("Select File"),
-            path,
-            self.parameterDefinition().createFileFilter(),
+            self.widget, self.tr("Select File"), path, file_filter, file_filter
         )
         if filename:
             settings.setValue(
@@ -690,7 +687,7 @@ class FileWidgetWrapper(WidgetWrapper):
             filter = self.tr("All files (*.*)")
 
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.widget, self.tr("Select File"), path, filter
+            self.widget, self.tr("Select File"), path, filter, filter
         )
         if filename:
             self.combo.setEditText(filename)
