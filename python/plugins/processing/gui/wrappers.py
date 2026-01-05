@@ -7,12 +7,12 @@
     Email                : arnaud dot morvan at camptocamp dot com
                            volayaf at gmail dot com
 ***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
+* *
+* This program is free software; you can redistribute it and/or modify  *
+* it under the terms of the GNU General Public License as published by  *
+* the Free Software Foundation; either version 2 of the License, or     *
+* (at your option) any later version.                                   *
+* *
 ***************************************************************************
 """
 
@@ -252,12 +252,14 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         else:
             path = ""
 
-        # TODO: should use selectedFilter argument for default file format
+        # Set the default file format from the parameter definition
+        file_filter = self.parameterDefinition().createFileFilter()
         filename, selected_filter = QFileDialog.getOpenFileName(
             self.widget,
             self.tr("Select File"),
             path,
-            self.parameterDefinition().createFileFilter(),
+            file_filter,
+            file_filter
         )
         if filename:
             settings.setValue(
@@ -1481,7 +1483,7 @@ class MeshWidgetWrapper(MapLayerWidgetWrapper):
             self.widgetValueHasChanged.emit(self)
 
 
-class EnumWidgetWrapper(WidgetWrapper):
+class EnumWidgetWrapper(EnumWidgetWrapper):
     NOT_SELECTED = "[Not selected]"
 
     def __init__(self, *args, **kwargs):
@@ -1524,7 +1526,7 @@ class EnumWidgetWrapper(WidgetWrapper):
                 self.parameterDefinition().flags()
                 & QgsProcessingParameterDefinition.Flag.FlagOptional
             ):
-                self.combobox.addItem(self.NOT_SELECTED, self.NOT_SET_OPTION)
+                self.combobox.addItem(self.NOT_SET, self.NOT_SET_OPTION)
             for i, option in enumerate(self.parameterDefinition().options()):
                 self.combobox.addItem(option, i)
             values = self.dialog.getAvailableValuesOfType(QgsProcessingParameterEnum)
