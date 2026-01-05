@@ -27,7 +27,10 @@ class QgsPostgresProjectVersionsDialog : public QDialog
   public:
     QgsPostgresProjectVersionsDialog( const QString &connectionName, const QString &schema, const QString &project, QWidget *parent = nullptr );
 
-    void accept() override;
+    /**
+     * Uri of the selected project version.
+     */
+    QString selectedProjectUri() const;
 
   private:
     QgsPostgresProjectVersionsModel *mModel = nullptr;

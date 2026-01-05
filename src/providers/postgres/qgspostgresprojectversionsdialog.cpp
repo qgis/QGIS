@@ -57,11 +57,9 @@ QgsPostgresProjectVersionsDialog::QgsPostgresProjectVersionsDialog( const QStrin
   layout->addWidget( mButtonBox );
 }
 
-void QgsPostgresProjectVersionsDialog::accept()
+QString QgsPostgresProjectVersionsDialog::selectedProjectUri() const
 {
-  QgsPostgresProjectUri projectUri = mModel->projectUriForRow( mTableView->currentIndex().row() );
+  QgsPostgresProjectUri projectUri = mModel->projectUriForRow( mTreeView->currentIndex().row() );
   QString encodedUri = QgsPostgresProjectStorage::encodeUri( projectUri );
-  QgsProject::instance()->read( encodedUri );
-
-  QDialog::accept();
+  return encodedUri;
 }
