@@ -59,7 +59,7 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
      * \param attribute the attribute whose value will be modified
      * \param value the new value for the modified attribute
      */
-    QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value );
+    QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value );
 
     void undo() override;
     void redo() override;
@@ -72,9 +72,17 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
       int attributeOffset = 0;
     };
 
+    struct NodeProcessData
+    {
+      QString uri;
+      QgsPointCloudIndex index;
+      QgsPointCloudNodeId nodeId;
+      QVector<int> points;
+    };
+
     void undoRedoPrivate( bool isUndo );
 
-    QHash<QgsPointCloudNodeId, PerNodeData> mPerNodeData;
+    QMap<QString, QHash<QgsPointCloudNodeId, PerNodeData>> mPerNodeData;
     QgsPointCloudAttribute mAttribute;
     double mNewValue = 0;
 };
