@@ -41,11 +41,9 @@ from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PolarPlot import PolarPlot
-from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .RandomPointsLayer import RandomPointsLayer
 from .RandomPointsPolygons import RandomPointsPolygons
-from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
@@ -95,11 +93,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             PointsDisplacement(),
             PointsFromLines(),
             PolarPlot(),
-            RandomExtractWithinSubsets(),
             RandomPointsAlongLines(),
             RandomPointsLayer(),
             RandomPointsPolygons(),
-            RandomSelectionWithinSubsets(),
             RasterCalculator(),
             RasterLayerHistogram(),
             RectanglesOvalsDiamondsVariable(),
