@@ -283,9 +283,7 @@ void QgsPostgresProjectStorageDialog::setupQgisProjectVersioning()
         return;
       }
 
-      bool success = QgsPostgresUtils::enableQgisProjectVersioning( conn, mCboSchema->currentText() );
-
-      if ( !success )
+      if ( !QgsPostgresUtils::enableQgisProjectVersioning( conn, mCboSchema->currentText() ) )
       {
         QMessageBox::critical( this, tr( "Error" ), tr( "Could not setup QGIS project versioning." ) );
         return;
