@@ -480,6 +480,8 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
+    textChanged( filename );
+
     settings.setValue( u"/Processing/LastOutputPath"_s, QFileInfo( filename ).path() );
     if ( !lastFormatPath.isEmpty() && !mFormat.isEmpty() )
       settings.setValue( lastFormatPath, mFormat );
@@ -532,7 +534,9 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   }
   uri.setGeometryColumn( geomColumn );
 
-  leText->setText( u"ogr:%1"_s.arg( uri.uri() ) );
+  const QString providerUri = u"ogr:%1"_s.arg( uri.uri() );
+  leText->setText( providerUri );
+  textChanged( providerUri );
 
   emit skipOutputChanged( false );
   emit destinationChanged();
@@ -565,13 +569,19 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
         uri.setTable( widget->table() );
         uri.setDatabase( widget->schema() );
         uri.setGeometryColumn( geomColumn );
-        leText->setText( u"ogr:%1"_s.arg( uri.uri() ) );
+
+        const QString providerUri = u"ogr:%1"_s.arg( uri.uri() );
+        leText->setText( providerUri );
+        textChanged( providerUri );
       }
       else
       {
         QgsDataSourceUri uri( widget->uri() );
         uri.setGeometryColumn( geomColumn );
-        leText->setText( QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() ) );
+
+        const QString providerUri = QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() );
+        leText->setText( providerUri );
+        textChanged( providerUri );
       }
 
       emit skipOutputChanged( false );
