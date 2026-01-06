@@ -9886,6 +9886,15 @@ bool QgsExpression::unregisterFunction( const QString &name )
 
 void QgsExpression::cleanRegisteredFunctions()
 {
+  for ( QgsExpressionFunction *func : *sOwnedFunctions() )
+  {
+    sBuiltinFunctions()->removeAll( func->name() );
+    for ( QString alias : func->aliases() )
+      sBuiltinFunctions()->removeAll( alias );
+
+    sFunctions()->removeAll( func );
+  }
+
   qDeleteAll( *sOwnedFunctions() );
   sOwnedFunctions()->clear();
 }
