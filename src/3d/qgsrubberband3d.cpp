@@ -437,7 +437,7 @@ void QgsRubberBand3D::updateGeometry()
   {
     mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
     mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );
-    mLineGeometryRenderer->setVertexCount( lineData.indexes.count() );
+    mLineGeometryRenderer->setVertexCount( static_cast<int>( lineData.indexes.count() ) );
     mLineTransform->setGeoTranslation( dataOrigin );
   }
 
@@ -449,7 +449,7 @@ void QgsRubberBand3D::updateGeometry()
     lineData.vertices.pop_back();
 
   mMarkerGeometry->setPositions( lineData.vertices );
-  mMarkerGeometryRenderer->setVertexCount( lineData.vertices.count() );
+  mMarkerGeometryRenderer->setVertexCount( static_cast<int>( lineData.vertices.count() ) );
   mMarkerTransform->setGeoTranslation( dataOrigin );
 
   if ( mGeometryType == Qgis::GeometryType::Polygon )
@@ -467,7 +467,7 @@ void QgsRubberBand3D::updateGeometry()
       }
       // extract vertex buffer data from tessellator
       const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
-      const int vertexCount = data.count() / tessellator.stride();
+      const int vertexCount = static_cast<int>( data.count() ) / tessellator.stride();
       mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
       mPolygonTransform->setGeoTranslation( mMapSettings->origin() );
     }
