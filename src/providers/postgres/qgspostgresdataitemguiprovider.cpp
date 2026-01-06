@@ -1185,6 +1185,8 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   pgProjectUri.schemaName = schemaItem->name();
   pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
 
+  const QString previousTitle = project->title();
+
   if ( pgProjectUri.projectName.isEmpty() )
   {
     bool ok;
@@ -1192,6 +1194,7 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
     if ( ok && !projectName.isEmpty() )
     {
       pgProjectUri.projectName = projectName;
+      project->setTitle( projectName );
     }
     else
     {
@@ -1217,7 +1220,7 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
     notify( tr( "Save Project" ), tr( "Project “%1” exist in the database. Overwriting it." ).arg( pgProjectUri.projectName ), context, Qgis::MessageLevel::Info );
   }
 
-  QString previousFileName = project->fileName();
+  const QString previousFileName = project->fileName();
   project->setFileName( projectUri );
 
   // write project to the database
@@ -1227,6 +1230,7 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
     notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( project->title(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     project->setFileName( previousFileName );
+    project->setTitle( previousTitle );
     return;
   }
 
