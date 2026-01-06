@@ -125,7 +125,7 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
       }
       catch ( const QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "rotateCamera: ECEF -> lat,lon transform failed!" ) );
+        QgsDebugError( u"rotateCamera: ECEF -> lat,lon transform failed!"_s );
         return;
       }
       QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( viewCenterLatLon.x() ) )
@@ -229,7 +229,7 @@ void QgsCameraController::setViewFromTop( float worldX, float worldY, float dist
 {
   if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
   {
-    QgsDebugError( QStringLiteral( "setViewFromTop() should not be used with globe!" ) );
+    QgsDebugError( u"setViewFromTop() should not be used with globe!"_s );
     return;
   }
 
@@ -283,40 +283,40 @@ void QgsCameraController::setCameraPose( const QgsCameraPose &camPose, bool forc
 
 QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
+  QDomElement elemCamera = doc.createElement( u"camera"_s );
   // Save center point in map coordinates, since our world origin won't be
   // the same on loading
   QgsVector3D centerPoint = mCameraPose.centerPoint() + mOrigin;
-  elemCamera.setAttribute( QStringLiteral( "xMap" ), centerPoint.x() );
-  elemCamera.setAttribute( QStringLiteral( "yMap" ), centerPoint.y() );
-  elemCamera.setAttribute( QStringLiteral( "zMap" ), centerPoint.z() );
-  elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraPose.distanceFromCenterPoint() );
-  elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraPose.pitchAngle() );
-  elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraPose.headingAngle() );
+  elemCamera.setAttribute( u"xMap"_s, centerPoint.x() );
+  elemCamera.setAttribute( u"yMap"_s, centerPoint.y() );
+  elemCamera.setAttribute( u"zMap"_s, centerPoint.z() );
+  elemCamera.setAttribute( u"dist"_s, mCameraPose.distanceFromCenterPoint() );
+  elemCamera.setAttribute( u"pitch"_s, mCameraPose.pitchAngle() );
+  elemCamera.setAttribute( u"yaw"_s, mCameraPose.headingAngle() );
   return elemCamera;
 }
 
 void QgsCameraController::readXml( const QDomElement &elem, QgsVector3D savedOrigin )
 {
-  const float dist = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
-  const float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
-  const float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
+  const float dist = elem.attribute( u"dist"_s ).toFloat();
+  const float pitch = elem.attribute( u"pitch"_s ).toFloat();
+  const float yaw = elem.attribute( u"yaw"_s ).toFloat();
 
   QgsVector3D centerPoint;
   if ( elem.hasAttribute( "xMap" ) )
   {
     // Prefer newer point saved in map coordinates ...
-    const double x = elem.attribute( QStringLiteral( "xMap" ) ).toDouble();
-    const double y = elem.attribute( QStringLiteral( "yMap" ) ).toDouble();
-    const double z = elem.attribute( QStringLiteral( "zMap" ) ).toDouble();
+    const double x = elem.attribute( u"xMap"_s ).toDouble();
+    const double y = elem.attribute( u"yMap"_s ).toDouble();
+    const double z = elem.attribute( u"zMap"_s ).toDouble();
     centerPoint = QgsVector3D( x, y, z ) - mOrigin;
   }
   else
   {
     // ... but allow use of older origin-relative coordinates.
-    const double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
-    const double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
-    const double elev = elem.attribute( QStringLiteral( "elev" ) ).toDouble();
+    const double x = elem.attribute( u"x"_s ).toDouble();
+    const double y = elem.attribute( u"y"_s ).toDouble();
+    const double elev = elem.attribute( u"elev"_s ).toDouble();
     centerPoint = QgsVector3D( x, elev, y ) - savedOrigin + mOrigin;
   }
   setLookingAtPoint( centerPoint, dist, pitch, yaw );
@@ -326,7 +326,7 @@ double QgsCameraController::sampleDepthBuffer( int px, int py )
 {
   if ( !mDepthBufferIsReady )
   {
-    QgsDebugError( QStringLiteral( "Asked to sample depth buffer, but depth buffer not ready!" ) );
+    QgsDebugError( u"Asked to sample depth buffer, but depth buffer not ready!"_s );
   }
 
   double depth = 1;
@@ -401,7 +401,7 @@ QgsVector3D QgsCameraController::moveGeocentricPoint( const QgsVector3D &point, 
   }
   catch ( const QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "moveGeocentricPoint: transform failed!" ) );
+    QgsDebugError( u"moveGeocentricPoint: transform failed!"_s );
     return point;
   }
 }
@@ -441,7 +441,7 @@ void QgsCameraController::resetGlobe( float distance, double lat, double lon )
   }
   catch ( const QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "resetGlobe: transform failed!" ) );
+    QgsDebugError( u"resetGlobe: transform failed!"_s );
     return;
   }
 
@@ -466,7 +466,7 @@ void QgsCameraController::updateCameraFromPose()
       }
       catch ( const QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "updateCameraFromPose: transform failed!" ) );
+        QgsDebugError( u"updateCameraFromPose: transform failed!"_s );
         return;
       }
 
@@ -491,7 +491,7 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   if ( !mInputHandlersEnabled )
     return;
 
-  QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), QStringLiteral( "QgsCameraController::onPositionChanged" ) );
+  QgsEventTracing::ScopedEvent traceEvent( u"3D"_s, u"QgsCameraController::onPositionChanged"_s );
 
   switch ( mCameraNavigationMode )
   {
@@ -523,7 +523,7 @@ bool QgsCameraController::screenPointToWorldPos( QPoint position, double &depth,
   worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mScene->engine()->size(), mDepthBufferCamera.get() );
   if ( !std::isfinite( worldPosition.x() ) || !std::isfinite( worldPosition.y() ) || !std::isfinite( worldPosition.z() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: position is NaN or Inf. This should not happen." ), 2 );
+    QgsDebugMsgLevel( u"screenPointToWorldPos: position is NaN or Inf. This should not happen."_s, 2 );
     return false;
   }
 
@@ -755,7 +755,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   const double rayDistMap = ( -quadB - sqrt( disc ) ) / ( 2 * quadA );
   if ( rayDistMap < 0 )
   {
-    QgsDebugError( QStringLiteral( "Sphere intersection result negative, canceling move" ) );
+    QgsDebugError( u"Sphere intersection result negative, canceling move"_s );
     return;
   }
   const QgsVector3D newPosMap = rayOriginMap + QgsVector3D( ray.direction() ) * rayDistMap;
@@ -771,7 +771,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   }
   catch ( const QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "onPositionChangedGlobeTerrainNavigation: transform failed!" ) );
+    QgsDebugError( u"onPositionChangedGlobeTerrainNavigation: transform failed!"_s );
     return;
   }
 

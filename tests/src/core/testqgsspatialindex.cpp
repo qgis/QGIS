@@ -187,7 +187,7 @@ class TestQgsSpatialIndex : public QObject
 
     void benchmarkBulkLoad()
     {
-      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( u"Point"_s, u"x"_s, u"memory"_s );
       for ( int i = 0; i < 100; ++i )
       {
         QgsFeatureList flist;
@@ -212,14 +212,14 @@ class TestQgsSpatialIndex : public QObject
         while ( fi.nextFeature( f ) )
           ;
       }
-      QgsDebugMsgLevel( QStringLiteral( "iter only: %1 ms" ).arg( t.elapsed() ), 1 );
+      QgsDebugMsgLevel( u"iter only: %1 ms"_s.arg( t.elapsed() ), 1 );
 
       t.start();
       {
         const QgsFeatureIterator fi = vl->getFeatures();
         indexBulk = new QgsSpatialIndex( fi );
       }
-      QgsDebugMsgLevel( QStringLiteral( "bulk load: %1 ms" ).arg( t.elapsed() ), 1 );
+      QgsDebugMsgLevel( u"bulk load: %1 ms"_s.arg( t.elapsed() ), 1 );
 
       t.start();
       {
@@ -229,7 +229,7 @@ class TestQgsSpatialIndex : public QObject
         while ( fi.nextFeature( f ) )
           indexInsert->addFeature( f );
       }
-      QgsDebugMsgLevel( QStringLiteral( "insert:    %1 ms" ).arg( t.elapsed() ), 1 );
+      QgsDebugMsgLevel( u"insert:    %1 ms"_s.arg( t.elapsed() ), 1 );
 
       // test whether a query will give us the same results
       const QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );
@@ -249,7 +249,7 @@ class TestQgsSpatialIndex : public QObject
 
     void bulkLoadWithCallback()
     {
-      auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( u"Point"_s, u"x"_s, u"memory"_s );
       QList<QgsFeatureId> addedIds;
       for ( int i = 0; i < 10; ++i )
       {
@@ -292,7 +292,7 @@ class TestQgsSpatialIndex : public QObject
 
     void testRetrieveGeometries()
     {
-      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( u"LineString"_s, u"x"_s, u"memory"_s );
       int fid = 0;
       for ( int x = 0; x < 10; ++x )
       {
@@ -315,8 +315,8 @@ class TestQgsSpatialIndex : public QObject
 
       // storing geometries
       const QgsSpatialIndex i2( vl->getFeatures(), nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
-      QCOMPARE( i2.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
-      QCOMPARE( i2.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+      QCOMPARE( i2.geometry( 1 ).asWkt( 1 ), u"LineString (0 100, 0.5 99.5)"_s );
+      QCOMPARE( i2.geometry( 50 ).asWkt( 1 ), u"LineString (4 109, 4.5 108.5)"_s );
 
       // manual population
 
@@ -338,8 +338,8 @@ class TestQgsSpatialIndex : public QObject
       {
         i4.addFeature( f );
       }
-      QCOMPARE( i4.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
-      QCOMPARE( i4.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+      QCOMPARE( i4.geometry( 1 ).asWkt( 1 ), u"LineString (0 100, 0.5 99.5)"_s );
+      QCOMPARE( i4.geometry( 50 ).asWkt( 1 ), u"LineString (4 109, 4.5 108.5)"_s );
 
 
       // not storing geometries
@@ -349,13 +349,13 @@ class TestQgsSpatialIndex : public QObject
 
       // storing geometries
       QgsSpatialIndex i6( *vl, nullptr, QgsSpatialIndex::FlagStoreFeatureGeometries );
-      QCOMPARE( i6.geometry( 1 ).asWkt( 1 ), QStringLiteral( "LineString (0 100, 0.5 99.5)" ) );
-      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+      QCOMPARE( i6.geometry( 1 ).asWkt( 1 ), u"LineString (0 100, 0.5 99.5)"_s );
+      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), u"LineString (4 109, 4.5 108.5)"_s );
 
       f = vl->getFeature( 1 );
       QVERIFY( i6.deleteFeature( f ) );
       QVERIFY( i6.geometry( 1 ).isNull() );
-      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), QStringLiteral( "LineString (4 109, 4.5 108.5)" ) );
+      QCOMPARE( i6.geometry( 50 ).asWkt( 1 ), u"LineString (4 109, 4.5 108.5)"_s );
       f = vl->getFeature( 50 );
 
       QVERIFY( i6.deleteFeature( f ) );
@@ -368,11 +368,11 @@ class TestQgsSpatialIndex : public QObject
       QgsSpatialIndex i2( QgsSpatialIndex::FlagStoreFeatureGeometries );
 
       QgsFeature f1( 1 );
-      f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 3 1, 3 3)" ) ) );
+      f1.setGeometry( QgsGeometry::fromWkt( u"LineString(1 1, 3 1, 3 3)"_s ) );
       QgsFeature f2( 2 );
-      f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 0 3)" ) ) );
+      f2.setGeometry( QgsGeometry::fromWkt( u"LineString(0 1, 0 3)"_s ) );
       QgsFeature f3( 3 );
-      f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(0 4, 1 5, 3 3)" ) ) );
+      f3.setGeometry( QgsGeometry::fromWkt( u"LineString(0 4, 1 5, 3 3)"_s ) );
       i.addFeature( f1 );
       i2.addFeature( f1 );
       i.addFeature( f2 );
@@ -400,13 +400,13 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( i2.nearestNeighbor( QgsPointXY( 1, 2.9 ), 2, 2 ), QList<QgsFeatureId>() << 2 << 3 );
 
       // using geometries as input, not points
-      QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LineString (1 0, 1 -1, -2 -1, -2 7, 5 4, 5 0)" ) );
+      QgsGeometry g = QgsGeometry::fromWkt( u"LineString (1 0, 1 -1, -2 -1, -2 7, 5 4, 5 0)"_s );
       QCOMPARE( i2.nearestNeighbor( g, 1 ), QList<QgsFeatureId>() << 3 );
       QCOMPARE( i2.nearestNeighbor( g, 2 ), QList<QgsFeatureId>() << 3 << 1 );
       QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList<QgsFeatureId>() << 3 << 1 );
       QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList<QgsFeatureId>() );
 
-      g = QgsGeometry::fromWkt( QStringLiteral( "LineString (3 7, 3 6, 5 6, 4 2)" ) );
+      g = QgsGeometry::fromWkt( u"LineString (3 7, 3 6, 5 6, 4 2)"_s );
       QCOMPARE( i.nearestNeighbor( g, 1 ), QList<QgsFeatureId>() << 1 << 3 ); // bounding box search only
       QCOMPARE( i.nearestNeighbor( g, 2 ), QList<QgsFeatureId>() << 1 << 3 );
       QCOMPARE( i.nearestNeighbor( g, 2, 1.1 ), QList<QgsFeatureId>() << 1 << 3 );
@@ -416,7 +416,7 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList<QgsFeatureId>() << 1 );
       QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList<QgsFeatureId>() );
 
-      g = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((2 3, -3 4, 1 7, 6 6, 6 1, 3 4, 2 3))" ) );
+      g = QgsGeometry::fromWkt( u"Polygon ((2 3, -3 4, 1 7, 6 6, 6 1, 3 4, 2 3))"_s );
       QCOMPARE( i.nearestNeighbor( g, 1 ), QList<QgsFeatureId>() << 1 << 2 << 3 ); // bounding box search only
       QCOMPARE( i.nearestNeighbor( g, 2 ), QList<QgsFeatureId>() << 1 << 2 << 3 );
       QCOMPARE( i.nearestNeighbor( g, 2, 1.1 ), QList<QgsFeatureId>() << 1 << 2 << 3 );
@@ -426,7 +426,7 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( i2.nearestNeighbor( g, 2, 1.1 ), QList<QgsFeatureId>() << 3 << 2 );
       QCOMPARE( i2.nearestNeighbor( g, 2, 0.2 ), QList<QgsFeatureId>() << 3 );
 
-      g = QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (1.5 2.5, 3 4.5)" ) );
+      g = QgsGeometry::fromWkt( u"MultiPoint (1.5 2.5, 3 4.5)"_s );
       QCOMPARE( i.nearestNeighbor( g, 1 ), QList<QgsFeatureId>() << 1 << 3 ); // bounding box search only
       QCOMPARE( i.nearestNeighbor( g, 2 ), QList<QgsFeatureId>() << 1 << 3 );
       QCOMPARE( i.nearestNeighbor( g, 2, 1.1 ), QList<QgsFeatureId>() << 1 << 3 );

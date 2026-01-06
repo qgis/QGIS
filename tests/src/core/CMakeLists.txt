@@ -240,12 +240,6 @@ set(TESTS
  testziplayer.cpp
 )
 
-if(WITH_QTWEBKIT)
-  set(TESTS ${TESTS}
-    testqgslayouthtml.cpp
-  )
-endif()
-
 if(HAVE_OPENCL)
   set(TESTS ${TESTS}
     testqgsopenclutils.cpp

@@ -21,7 +21,7 @@
 
 QString QgsArrayTranslatedFeaturesAlgorithm::name() const
 {
-  return QStringLiteral( "arraytranslatedfeatures" );
+  return u"arraytranslatedfeatures"_s;
 }
 
 QString QgsArrayTranslatedFeaturesAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsArrayTranslatedFeaturesAlgorithm::group() const
 
 QString QgsArrayTranslatedFeaturesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 QString QgsArrayTranslatedFeaturesAlgorithm::outputName() const
@@ -72,63 +72,63 @@ QgsArrayTranslatedFeaturesAlgorithm *QgsArrayTranslatedFeaturesAlgorithm::create
 
 void QgsArrayTranslatedFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
-  auto count = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1 );
+  auto count = std::make_unique<QgsProcessingParameterNumber>( u"COUNT"_s, QObject::tr( "Number of features to create" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1 );
   count->setIsDynamic( true );
-  count->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
-  count->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  count->setDynamicPropertyDefinition( QgsPropertyDefinition( u"COUNT"_s, QObject::tr( "Number of features to create" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
+  count->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( count.release() );
 
-  auto xOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DELTA_X" ), QObject::tr( "Step distance (x-axis)" ), 0.0, QStringLiteral( "INPUT" ) );
+  auto xOffset = std::make_unique<QgsProcessingParameterDistance>( u"DELTA_X"_s, QObject::tr( "Step distance (x-axis)" ), 0.0, u"INPUT"_s );
   xOffset->setIsDynamic( true );
-  xOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_X" ), QObject::tr( "Offset distance (x-axis)" ), QgsPropertyDefinition::Double ) );
-  xOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  xOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_X"_s, QObject::tr( "Offset distance (x-axis)" ), QgsPropertyDefinition::Double ) );
+  xOffset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( xOffset.release() );
 
-  auto yOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DELTA_Y" ), QObject::tr( "Step distance (y-axis)" ), 0.0, QStringLiteral( "INPUT" ) );
+  auto yOffset = std::make_unique<QgsProcessingParameterDistance>( u"DELTA_Y"_s, QObject::tr( "Step distance (y-axis)" ), 0.0, u"INPUT"_s );
   yOffset->setIsDynamic( true );
-  yOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_Y" ), QObject::tr( "Offset distance (y-axis)" ), QgsPropertyDefinition::Double ) );
-  yOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  yOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_Y"_s, QObject::tr( "Offset distance (y-axis)" ), QgsPropertyDefinition::Double ) );
+  yOffset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( yOffset.release() );
 
-  auto zOffset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DELTA_Z" ), QObject::tr( "Step distance (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto zOffset = std::make_unique<QgsProcessingParameterNumber>( u"DELTA_Z"_s, QObject::tr( "Step distance (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zOffset->setIsDynamic( true );
-  zOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_Z" ), QObject::tr( "Offset distance (z-axis)" ), QgsPropertyDefinition::Double ) );
-  zOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  zOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_Z"_s, QObject::tr( "Offset distance (z-axis)" ), QgsPropertyDefinition::Double ) );
+  zOffset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( zOffset.release() );
 
-  auto mOffset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DELTA_M" ), QObject::tr( "Step distance (m values)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto mOffset = std::make_unique<QgsProcessingParameterNumber>( u"DELTA_M"_s, QObject::tr( "Step distance (m values)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mOffset->setIsDynamic( true );
-  mOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_M" ), QObject::tr( "Offset distance (m values)" ), QgsPropertyDefinition::Double ) );
-  mOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  mOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DELTA_M"_s, QObject::tr( "Offset distance (m values)" ), QgsPropertyDefinition::Double ) );
+  mOffset->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( mOffset.release() );
 }
 
 bool QgsArrayTranslatedFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mCount = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
-  mDynamicCount = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "COUNT" ) );
+  mCount = parameterAsInt( parameters, u"COUNT"_s, context );
+  mDynamicCount = QgsProcessingParameters::isDynamic( parameters, u"COUNT"_s );
   if ( mDynamicCount )
-    mCountProperty = parameters.value( QStringLiteral( "COUNT" ) ).value<QgsProperty>();
+    mCountProperty = parameters.value( u"COUNT"_s ).value<QgsProperty>();
 
-  mDeltaX = parameterAsDouble( parameters, QStringLiteral( "DELTA_X" ), context );
-  mDynamicDeltaX = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_X" ) );
+  mDeltaX = parameterAsDouble( parameters, u"DELTA_X"_s, context );
+  mDynamicDeltaX = QgsProcessingParameters::isDynamic( parameters, u"DELTA_X"_s );
   if ( mDynamicDeltaX )
-    mDeltaXProperty = parameters.value( QStringLiteral( "DELTA_X" ) ).value<QgsProperty>();
+    mDeltaXProperty = parameters.value( u"DELTA_X"_s ).value<QgsProperty>();
 
-  mDeltaY = parameterAsDouble( parameters, QStringLiteral( "DELTA_Y" ), context );
-  mDynamicDeltaY = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_Y" ) );
+  mDeltaY = parameterAsDouble( parameters, u"DELTA_Y"_s, context );
+  mDynamicDeltaY = QgsProcessingParameters::isDynamic( parameters, u"DELTA_Y"_s );
   if ( mDynamicDeltaY )
-    mDeltaYProperty = parameters.value( QStringLiteral( "DELTA_Y" ) ).value<QgsProperty>();
+    mDeltaYProperty = parameters.value( u"DELTA_Y"_s ).value<QgsProperty>();
 
-  mDeltaZ = parameterAsDouble( parameters, QStringLiteral( "DELTA_Z" ), context );
-  mDynamicDeltaZ = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_Z" ) );
+  mDeltaZ = parameterAsDouble( parameters, u"DELTA_Z"_s, context );
+  mDynamicDeltaZ = QgsProcessingParameters::isDynamic( parameters, u"DELTA_Z"_s );
   if ( mDynamicDeltaZ )
-    mDeltaZProperty = parameters.value( QStringLiteral( "DELTA_Z" ) ).value<QgsProperty>();
+    mDeltaZProperty = parameters.value( u"DELTA_Z"_s ).value<QgsProperty>();
 
-  mDeltaM = parameterAsDouble( parameters, QStringLiteral( "DELTA_M" ), context );
-  mDynamicDeltaM = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_M" ) );
+  mDeltaM = parameterAsDouble( parameters, u"DELTA_M"_s, context );
+  mDynamicDeltaM = QgsProcessingParameters::isDynamic( parameters, u"DELTA_M"_s );
   if ( mDynamicDeltaM )
-    mDeltaMProperty = parameters.value( QStringLiteral( "DELTA_M" ) ).value<QgsProperty>();
+    mDeltaMProperty = parameters.value( u"DELTA_M"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -207,7 +207,7 @@ Qgis::WkbType QgsArrayTranslatedFeaturesAlgorithm::outputWkbType( Qgis::WkbType 
 QgsFields QgsArrayTranslatedFeaturesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output;
-  output.append( QgsField( QStringLiteral( "instance" ), QMetaType::Type::Int ) );
+  output.append( QgsField( u"instance"_s, QMetaType::Type::Int ) );
   return QgsProcessingUtils::combineFields( inputFields, output );
 }
 

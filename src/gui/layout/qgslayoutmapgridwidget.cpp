@@ -156,19 +156,19 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select Grid Frame Color" ) );
   mGridFramePenColorButton->setAllowOpacity( true );
-  mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridFramePenColorButton->setContext( u"composer"_s );
   mGridFramePenColorButton->setNoColorString( tr( "Transparent Frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill1ColorButton->setAllowOpacity( true );
-  mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridFrameFill1ColorButton->setContext( u"composer"_s );
   mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill2ColorButton->setAllowOpacity( true );
-  mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridFrameFill2ColorButton->setContext( u"composer"_s );
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
@@ -1288,9 +1288,9 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
   }
 
   QgsExpressionContext expressionContext = mMapGrid->createExpressionContext();
-  expressionContext.setHighlightedFunctions( QStringList() << QStringLiteral( "to_dms" ) << QStringLiteral( "to_dm" ) );
+  expressionContext.setHighlightedFunctions( QStringList() << u"to_dms"_s << u"to_dm"_s );
 
-  QgsExpressionBuilderDialog exprDlg( coverageLayer(), mMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer(), mMapGrid->annotationExpression(), this, u"generic"_s, expressionContext );
   exprDlg.setWindowTitle( tr( "Expression Based Annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )

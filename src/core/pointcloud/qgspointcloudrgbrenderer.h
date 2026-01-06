@@ -41,9 +41,9 @@ class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointC
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override;
 
-    QString redAttribute = QStringLiteral( "Red" );
-    QString greenAttribute = QStringLiteral( "Green" );
-    QString blueAttribute = QStringLiteral( "Blue" );
+    QString redAttribute = u"Red"_s;
+    QString greenAttribute = u"Green"_s;
+    QString blueAttribute = u"Blue"_s;
     std::unique_ptr< QgsContrastEnhancement > redContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > greenContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > blueContrastEnhancement;
@@ -203,9 +203,9 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
 
   private:
 
-    QString mRedAttribute = QStringLiteral( "Red" );
-    QString mGreenAttribute = QStringLiteral( "Green" );
-    QString mBlueAttribute = QStringLiteral( "Blue" );
+    QString mRedAttribute = u"Red"_s;
+    QString mGreenAttribute = u"Green"_s;
+    QString mBlueAttribute = u"Blue"_s;
 
     std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;

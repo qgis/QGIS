@@ -24,7 +24,7 @@
 
 QString QgsTransectFixedDistanceAlgorithm::name() const
 {
-  return QStringLiteral( "transectfixeddistance" );
+  return u"transectfixeddistance"_s;
 }
 
 QString QgsTransectFixedDistanceAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsTransectFixedDistanceAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates transects at fixed distance intervals along (multi)linestrings.\n" )
          + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines at regular intervals." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" )
          + QObject::tr( "- TR_FID: ID of the original feature\n" )
          + QObject::tr( "- TR_ID: ID of the transect. Each transect have an unique ID\n" )
@@ -63,14 +63,14 @@ QgsTransectFixedDistanceAlgorithm *QgsTransectFixedDistanceAlgorithm::createInst
 
 void QgsTransectFixedDistanceAlgorithm::addAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), 10.0, QStringLiteral( "INPUT" ), false, 0.0001 ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "INCLUDE_START" ), QObject::tr( "Include transect at start of line" ), true ) );
+  addParameter( new QgsProcessingParameterDistance( u"INTERVAL"_s, QObject::tr( "Fixed sampling interval" ), 10.0, u"INPUT"_s, false, 0.0001 ) );
+  addParameter( new QgsProcessingParameterBoolean( u"INCLUDE_START"_s, QObject::tr( "Include transect at start of line" ), true ) );
 }
 
 bool QgsTransectFixedDistanceAlgorithm::prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mInterval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
-  mIncludeStartPoint = parameterAsBool( parameters, QStringLiteral( "INCLUDE_START" ), context );
+  mInterval = parameterAsDouble( parameters, u"INTERVAL"_s, context );
+  mIncludeStartPoint = parameterAsBool( parameters, u"INCLUDE_START"_s, context );
   return true;
 }
 

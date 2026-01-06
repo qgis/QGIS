@@ -148,7 +148,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
 {
   // this relies on the naming convention used by MDAL's NetCDF driver: <group name>_<dimension_name>:<dimension_value>
   // If future MDAL releases expose quantities via a standard API then we can safely remove this and port to the new API.
-  const thread_local QRegularExpression parentQuantityRegex( QStringLiteral( "^(.*):.*?$" ) );
+  const thread_local QRegularExpression parentQuantityRegex( u"^(.*):.*?$"_s );
   const QRegularExpressionMatch parentQuantityMatch = parentQuantityRegex.match( mName );
   if ( parentQuantityMatch.hasMatch() )
   {
@@ -529,51 +529,51 @@ QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QString &default
 QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
-  if ( itemElement.hasAttribute( QStringLiteral( "display-name" ) ) )
-    mUserName = itemElement.attribute( QStringLiteral( "display-name" ), mUserName );
+  if ( itemElement.hasAttribute( u"display-name"_s ) )
+    mUserName = itemElement.attribute( u"display-name"_s, mUserName );
 
-  if ( itemElement.hasAttribute( QStringLiteral( "original-name" ) ) )
-    mOriginalName = itemElement.attribute( QStringLiteral( "original-name" ), mOriginalName );
+  if ( itemElement.hasAttribute( u"original-name"_s ) )
+    mOriginalName = itemElement.attribute( u"original-name"_s, mOriginalName );
 
-  if ( itemElement.hasAttribute( QStringLiteral( "source-name" ) ) )
-    mSourceName = itemElement.attribute( QStringLiteral( "source-name" ), mSourceName );
+  if ( itemElement.hasAttribute( u"source-name"_s ) )
+    mSourceName = itemElement.attribute( u"source-name"_s, mSourceName );
 
-  if ( itemElement.hasAttribute( QStringLiteral( "is-vector" ) ) )
-    mIsVector = itemElement.attribute( QStringLiteral( "is-vector" ) ).toInt();
+  if ( itemElement.hasAttribute( u"is-vector"_s ) )
+    mIsVector = itemElement.attribute( u"is-vector"_s ).toInt();
 
-  if ( itemElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
-    mDatasetGroupIndex = itemElement.attribute( QStringLiteral( "dataset-index" ) ).toInt();
+  if ( itemElement.hasAttribute( u"dataset-index"_s ) )
+    mDatasetGroupIndex = itemElement.attribute( u"dataset-index"_s ).toInt();
 
-  if ( itemElement.hasAttribute( QStringLiteral( "is-enabled" ) ) )
-    mIsEnabled = itemElement.attribute( QStringLiteral( "is-enabled" ) ).toInt();
+  if ( itemElement.hasAttribute( u"is-enabled"_s ) )
+    mIsEnabled = itemElement.attribute( u"is-enabled"_s ).toInt();
 
-  if ( itemElement.hasAttribute( QStringLiteral( "dataset-group-type" ) ) )
-    mDatasetGroupType = static_cast<QgsMeshDatasetGroup::Type>( itemElement.attribute( QStringLiteral( "dataset-group-type" ) ) .toInt() ) ;
+  if ( itemElement.hasAttribute( u"dataset-group-type"_s ) )
+    mDatasetGroupType = static_cast<QgsMeshDatasetGroup::Type>( itemElement.attribute( u"dataset-group-type"_s ) .toInt() ) ;
 
-  if ( itemElement.hasAttribute( QStringLiteral( "description" ) ) )
-    mDescription = itemElement.attribute( QStringLiteral( "description" ) );
+  if ( itemElement.hasAttribute( u"description"_s ) )
+    mDescription = itemElement.attribute( u"description"_s );
 
-  QDomElement dependOnElement = itemElement.firstChildElement( QStringLiteral( "dependent-on-item" ) );
+  QDomElement dependOnElement = itemElement.firstChildElement( u"dependent-on-item"_s );
   while ( !dependOnElement.isNull() )
   {
-    if ( dependOnElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
-      mDatasetGroupDependentOn.append( dependOnElement.attribute( QStringLiteral( "dataset-index" ) ).toInt() );
-    dependOnElement = dependOnElement.nextSiblingElement( QStringLiteral( "dependent-on-item" ) );
+    if ( dependOnElement.hasAttribute( u"dataset-index"_s ) )
+      mDatasetGroupDependentOn.append( dependOnElement.attribute( u"dataset-index"_s ).toInt() );
+    dependOnElement = dependOnElement.nextSiblingElement( u"dependent-on-item"_s );
   }
 
-  QDomElement dependencyElement = itemElement.firstChildElement( QStringLiteral( "dependency-item" ) );
+  QDomElement dependencyElement = itemElement.firstChildElement( u"dependency-item"_s );
   while ( !dependencyElement.isNull() )
   {
-    if ( dependencyElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
-      mDatasetGroupDependencies.append( dependencyElement.attribute( QStringLiteral( "dataset-index" ) ).toInt() );
-    dependencyElement = dependencyElement.nextSiblingElement( QStringLiteral( "dependency-item" ) );
+    if ( dependencyElement.hasAttribute( u"dataset-index"_s ) )
+      mDatasetGroupDependencies.append( dependencyElement.attribute( u"dataset-index"_s ).toInt() );
+    dependencyElement = dependencyElement.nextSiblingElement( u"dependency-item"_s );
   }
 
-  QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
+  QDomElement childElement = itemElement.firstChildElement( u"mesh-dataset-group-tree-item"_s );
   while ( !childElement.isNull() )
   {
     appendChild( new QgsMeshDatasetGroupTreeItem( childElement, context ) );
-    childElement = childElement.nextSiblingElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
+    childElement = childElement.nextSiblingElement( u"mesh-dataset-group-tree-item"_s );
   }
 }
 
@@ -763,27 +763,27 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
 {
   Q_UNUSED( context );
 
-  QDomElement itemElement = doc.createElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
-  itemElement.setAttribute( QStringLiteral( "display-name" ), mUserName );
-  itemElement.setAttribute( QStringLiteral( "source-name" ), mSourceName );
-  itemElement.setAttribute( QStringLiteral( "original-name" ), mOriginalName );
-  itemElement.setAttribute( QStringLiteral( "is-vector" ), mIsVector ? true : false );
-  itemElement.setAttribute( QStringLiteral( "dataset-index" ), mDatasetGroupIndex );
-  itemElement.setAttribute( QStringLiteral( "is-enabled" ), mIsEnabled ? true : false );
-  itemElement.setAttribute( QStringLiteral( "dataset-group-type" ), mDatasetGroupType );
-  itemElement.setAttribute( QStringLiteral( "description" ), mDescription );
+  QDomElement itemElement = doc.createElement( u"mesh-dataset-group-tree-item"_s );
+  itemElement.setAttribute( u"display-name"_s, mUserName );
+  itemElement.setAttribute( u"source-name"_s, mSourceName );
+  itemElement.setAttribute( u"original-name"_s, mOriginalName );
+  itemElement.setAttribute( u"is-vector"_s, mIsVector ? true : false );
+  itemElement.setAttribute( u"dataset-index"_s, mDatasetGroupIndex );
+  itemElement.setAttribute( u"is-enabled"_s, mIsEnabled ? true : false );
+  itemElement.setAttribute( u"dataset-group-type"_s, mDatasetGroupType );
+  itemElement.setAttribute( u"description"_s, mDescription );
 
   for ( const int index : mDatasetGroupDependentOn )
   {
-    QDomElement dependOnElement = doc.createElement( QStringLiteral( "dependent-on-item" ) );
-    dependOnElement.setAttribute( QStringLiteral( "dataset-index" ), index );
+    QDomElement dependOnElement = doc.createElement( u"dependent-on-item"_s );
+    dependOnElement.setAttribute( u"dataset-index"_s, index );
     itemElement.appendChild( dependOnElement );
   }
 
   for ( const int index : mDatasetGroupDependencies )
   {
-    QDomElement dependencyElement = doc.createElement( QStringLiteral( "dependency-item" ) );
-    dependencyElement.setAttribute( QStringLiteral( "dataset-index" ), index );
+    QDomElement dependencyElement = doc.createElement( u"dependency-item"_s );
+    dependencyElement.setAttribute( u"dataset-index"_s, index );
     itemElement.appendChild( dependencyElement );
   }
 

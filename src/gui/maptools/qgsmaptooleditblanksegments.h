@@ -191,7 +191,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegments : public QgsMapToolEditBlankSegment
      * \param symbolLayer symbol layer affected by the blank segments
      * \param blankSegmentFieldIndex index of the field containing the digitized blank segments
      */
-    QgsMapToolEditBlankSegments<T>( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
+    QgsMapToolEditBlankSegments( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
       : QgsMapToolEditBlankSegmentsBase( canvas, layer, symbolLayer, blankSegmentFieldIndex )
     {
     }

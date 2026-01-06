@@ -48,7 +48,7 @@ QgsScaleMethodWidget::QgsScaleMethodWidget( QWidget *parent )
   QHBoxLayout *warningLayout = new QHBoxLayout();
   warningLayout->setContentsMargins( 0, 0, 0, 0 );
   mWarningLabel = new QLabel();
-  const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+  const QIcon icon = QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
   const int size = static_cast<int>( std::max( 24.0, mCombo->minimumSize().height() * 0.5 ) );
   mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
   const int labelMargin = static_cast<int>( std::round( mCombo->fontMetrics().horizontalAdvance( 'X' ) ) );
@@ -92,10 +92,10 @@ void QgsScaleMethodWidget::updateWarning()
     case Qgis::ScaleCalculationMethod::AtEquator:
     {
       mWarningLabelContainer->show();
-      const QString warning = QStringLiteral( "<p>%1</p><p>%2</p>" ).arg( tr( "This method will calculate misleading scales when the map extent is not close to the "
-                                                                              "equator, however it ensures that the scale remains constant and does not "
-                                                                              "change as the map is panned." ),
-                                                                          tr( "This setting is valid for maps in a geographic (latitude/longitude) CRS only." ) );
+      const QString warning = u"<p>%1</p><p>%2</p>"_s.arg( tr( "This method will calculate misleading scales when the map extent is not close to the "
+                                                               "equator, however it ensures that the scale remains constant and does not "
+                                                               "change as the map is panned." ),
+                                                           tr( "This setting is valid for maps in a geographic (latitude/longitude) CRS only." ) );
       mWarningLabel->setToolTip( warning );
 
       break;

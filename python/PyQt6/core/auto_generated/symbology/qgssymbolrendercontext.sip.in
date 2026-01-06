@@ -54,36 +54,36 @@ Sets the original value variable value for data defined symbology
               overrides have been applied.
 %End
 
- Qgis::RenderUnit outputUnit() const /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
+ Qgis::RenderUnit outputUnit() const /Deprecated="Since 3.40. No longer used and will be removed in QGIS 5.0."/;
 %Docstring
 Returns the output unit for the context.
 
 .. deprecated:: 3.40
 
-   No longer used and will be removed in QGIS 4.0.
+   No longer used and will be removed in QGIS 5.0.
 %End
 
- void setOutputUnit( Qgis::RenderUnit u ) /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
+ void setOutputUnit( Qgis::RenderUnit u ) /Deprecated="Since 3.40. No longer used and will be removed in QGIS 5.0."/;
 %Docstring
 Sets the output unit for the context.
 
 .. deprecated:: 3.40
 
-   No longer used and will be removed in QGIS 4.0.
+   No longer used and will be removed in QGIS 5.0.
 %End
 
- QgsMapUnitScale mapUnitScale() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ QgsMapUnitScale mapUnitScale() const /Deprecated="Since 3.40. Will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
- void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
     qreal opacity() const;

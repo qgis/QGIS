@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsGeometryDangleCheck : public QgsGeometryCheck
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Line }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Dangle" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryDangleCheck" ); }
+    static QString factoryId() { return u"QgsGeometryDangleCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
     enum ResolutionMethod

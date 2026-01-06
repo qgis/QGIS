@@ -485,7 +485,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
             lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / length : 0.5;
           }
 
-          vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+          vlayer->beginEditCommand( tr( "Moved curved label offset" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
           bool success = false;
 
           if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::LineAnchorPercent ) )
@@ -546,7 +546,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           }
 
           if ( !isCalloutMove )
-            vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+            vlayer->beginEditCommand( tr( "Moved label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
           else
             vlayer->beginEditCommand( tr( "Moved callout" ) );
 
@@ -758,7 +758,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
           }
           else
           {
-            vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
+            vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
             bool success = vlayer->changeAttributeValue( featureId, xCol, QVariant() );
             success = vlayer->changeAttributeValue( featureId, yCol, QVariant() ) && success;
             if ( !success )

@@ -23,7 +23,7 @@
 
 QString QgsSetZValueAlgorithm::name() const
 {
-  return QStringLiteral( "setzvalue" );
+  return u"setzvalue"_s;
 }
 
 QString QgsSetZValueAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsSetZValueAlgorithm::group() const
 
 QString QgsSetZValueAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSetZValueAlgorithm::shortHelpString() const
@@ -91,19 +91,19 @@ Qgis::WkbType QgsSetZValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetZValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto zValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto zValueParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_VALUE"_s, QObject::tr( "Z Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zValueParam->setIsDynamic( true );
-  zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
-  zValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Z_VALUE"_s, QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
+  zValueParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( zValueParam.release() );
 }
 
 bool QgsSetZValueAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mZValue = parameterAsDouble( parameters, QStringLiteral( "Z_VALUE" ), context );
-  mDynamicZValue = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "Z_VALUE" ) );
+  mZValue = parameterAsDouble( parameters, u"Z_VALUE"_s, context );
+  mDynamicZValue = QgsProcessingParameters::isDynamic( parameters, u"Z_VALUE"_s );
   if ( mDynamicZValue )
-    mZValueProperty = parameters.value( QStringLiteral( "Z_VALUE" ) ).value<QgsProperty>();
+    mZValueProperty = parameters.value( u"Z_VALUE"_s ).value<QgsProperty>();
 
   return true;
 }

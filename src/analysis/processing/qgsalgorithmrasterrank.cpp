@@ -26,7 +26,7 @@
 
 QString QgsRasterRankAlgorithm::name() const
 {
-  return QStringLiteral( "rasterrank" );
+  return u"rasterrank"_s;
 }
 
 QString QgsRasterRankAlgorithm::displayName() const
@@ -46,7 +46,7 @@ QString QgsRasterRankAlgorithm::group() const
 
 QString QgsRasterRankAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsRasterRankAlgorithm::shortHelpString() const
@@ -71,8 +71,8 @@ QgsRasterRankAlgorithm *QgsRasterRankAlgorithm::createInstance() const
 
 void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT_RASTERS" ), QObject::tr( "Input raster layers" ), Qgis::ProcessingSourceType::Raster ) );
-  auto ranksParameter = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "RANKS" ), QObject::tr( "Rank(s) (separate multiple ranks using commas)" ), 1 );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"INPUT_RASTERS"_s, QObject::tr( "Input raster layers" ), Qgis::ProcessingSourceType::Raster ) );
+  auto ranksParameter = std::make_unique<QgsProcessingParameterString>( u"RANKS"_s, QObject::tr( "Rank(s) (separate multiple ranks using commas)" ), 1 );
   ranksParameter->setHelp( QObject::tr( "A rank value must be numerical, with multiple ranks separated by commas. The rank will be used to "
                                         "generate output values from sorted lists of input layers’ cell values. A rank value of 1 will pick "
                                         "the first value from a given sorted input layers’ cell values list (i.e. the minimum value). "
@@ -80,27 +80,27 @@ void QgsRasterRankAlgorithm::initAlgorithm( const QVariantMap & )
                                         "pick the second to last value in sorted input values lists, while a rank value of -1 will pick the "
                                         "last value (i.e. the maximum value)." ) );
   addParameter( ranksParameter.release() );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "NODATA_HANDLING" ), QObject::tr( "NoData value handling" ), QStringList() << QObject::tr( "Exclude NoData from values lists" ) << QObject::tr( "Presence of NoData in a values list results in NoData output cell" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"NODATA_HANDLING"_s, QObject::tr( "NoData value handling" ), QStringList() << QObject::tr( "Exclude NoData from values lists" ) << QObject::tr( "Presence of NoData in a values list results in NoData output cell" ), false, 0 ) );
 
-  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
   extentParam->setFlags( extentParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extentParam.release() );
-  auto cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
+  auto cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( u"CELL_SIZE"_s, QObject::tr( "Output cell size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
   cellSizeParam->setHelp( QObject::tr( "Cell size of the output layer. If not specified, the smallest cell size from the input layers will be used" ) );
   cellSizeParam->setFlags( cellSizeParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( cellSizeParam.release() );
-  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
+  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( u"CRS"_s, QObject::tr( "Output CRS" ), QVariant(), true );
   crsParam->setHelp( QObject::tr( "CRS of the output layer. If not specified, the CRS of the first input layer will be used" ) );
   crsParam->setFlags( crsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Ranked" ) ) );
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Ranked" ) ) );
 }
 
 bool QgsRasterRankAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  const QStringList rankStrings = parameterAsString( parameters, QStringLiteral( "RANKS" ), context ).split( QLatin1String( "," ) );
+  const QStringList rankStrings = parameterAsString( parameters, u"RANKS"_s, context ).split( ","_L1 );
   for ( const QString &rankString : rankStrings )
   {
     bool ok = false;
@@ -121,7 +121,7 @@ bool QgsRasterRankAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
     return false;
   }
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "INPUT_RASTERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"INPUT_RASTERS"_s, context );
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
     if ( !qobject_cast<const QgsRasterLayer *>( layer ) || !layer->dataProvider() )
@@ -153,9 +153,9 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   }
 
   QgsCoordinateReferenceSystem outputCrs;
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    outputCrs = parameterAsCrs( parameters, u"CRS"_s, context );
   }
   else
   {
@@ -174,12 +174,12 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   {
     outputNoData = -FLT_MAX;
   }
-  const bool outputNoDataOverride = parameterAsInt( parameters, QStringLiteral( "NODATA_HANDLING" ), context ) == 1;
+  const bool outputNoDataOverride = parameterAsInt( parameters, u"NODATA_HANDLING"_s, context ) == 1;
 
   QgsRectangle outputExtent;
-  if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
+  if ( parameters.value( u"EXTENT"_s ).isValid() )
   {
-    outputExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, outputCrs );
+    outputExtent = parameterAsExtent( parameters, u"EXTENT"_s, context, outputCrs );
   }
   else
   {
@@ -208,7 +208,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
     minCellSizeY = std::min( minCellSizeY, ( extent.yMaximum() - extent.yMinimum() ) / height );
   }
 
-  double outputCellSizeX = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
+  double outputCellSizeX = parameterAsDouble( parameters, u"CELL_SIZE"_s, context );
   double outputCellSizeY = outputCellSizeX;
   if ( outputCellSizeX == 0 )
   {
@@ -219,8 +219,8 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   qgssize cols = static_cast<qgssize>( std::round( ( outputExtent.xMaximum() - outputExtent.xMinimum() ) / outputCellSizeX ) );
   qgssize rows = static_cast<qgssize>( std::round( ( outputExtent.yMaximum() - outputExtent.yMinimum() ) / outputCellSizeY ) );
 
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QString outputFormat = parameterAsOutputRasterFormat( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputFormat( outputFormat );
@@ -333,7 +333,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

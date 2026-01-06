@@ -24,7 +24,7 @@
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
-  , mOverlapThresholdMapUnits( configurationValue<double>( QStringLiteral( "maxOverlapArea" ) ) )
+  , mOverlapThresholdMapUnits( configurationValue<double>( u"maxOverlapArea"_s ) )
 
 {
 }
@@ -255,7 +255,7 @@ QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
 
 QString QgsGeometryOverlapCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryOverlapCheck" );
+  return u"QgsGeometryOverlapCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryOverlapCheck::factoryFlags()
@@ -321,7 +321,7 @@ QMap<QString, QgsFeatureIds> QgsGeometryOverlapCheckError::involvedFeatures() co
 QIcon QgsGeometryOverlapCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/Overlap.svg" ) );
+    return QgsApplication::getThemeIcon( u"/checks/Overlap.svg"_s );
 }

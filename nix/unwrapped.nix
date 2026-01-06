@@ -199,9 +199,7 @@ stdenv.mkDerivation
   env.QT_QPA_PLATFORM_PLUGIN_PATH = "${qtbase}/${qtbase.qtPluginPrefix}/platforms";
 
   cmakeFlags = [
-    "-DBUILD_WITH_QT6=True"
     "-DWITH_QTWEBENGINE=True"
-    "-DWITH_QTWEBKIT=False"
 
     "-DWITH_3D=True"
     "-DWITH_PDAL=True"

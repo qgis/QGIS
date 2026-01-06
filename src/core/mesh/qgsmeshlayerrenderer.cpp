@@ -375,7 +375,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     const bool isScalar = metadata.isScalar();
     if ( isScalar )
     {
-      QgsDebugError( QStringLiteral( "Dataset has no vector values" ) );
+      QgsDebugError( u"Dataset has no vector values"_s );
     }
     else
     {
@@ -421,16 +421,16 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
-  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
   if ( mEnableProfile )
   {
-    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ), layerId() );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, u"rendering"_s, layerId() );
     if ( mPreparationTime > 0 )
-      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
-    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, u"rendering"_s );
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), u"rendering"_s );
   }
 
   mReadyToCompose = false;
@@ -480,7 +480,7 @@ void QgsMeshLayerRenderer::renderMesh()
   std::unique_ptr< QgsScopedRuntimeProfile > renderProfile;
   if ( mEnableProfile )
   {
-    renderProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering mesh" ), QStringLiteral( "rendering" ) );
+    renderProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering mesh" ), u"rendering"_s );
   }
 
   // triangular mesh
@@ -635,7 +635,7 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   std::unique_ptr< QgsScopedRuntimeProfile > renderProfile;
   if ( mEnableProfile )
   {
-    renderProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering scalar datasets" ), QStringLiteral( "rendering" ) );
+    renderProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering scalar datasets" ), u"rendering"_s );
   }
 
   const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( groupIndex );
@@ -756,7 +756,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   std::unique_ptr< QgsScopedRuntimeProfile > renderProfile;
   if ( mEnableProfile )
   {
-    renderProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering vector datasets" ), QStringLiteral( "rendering" ) );
+    renderProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering vector datasets" ), u"rendering"_s );
   }
 
   std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
@@ -791,7 +791,7 @@ void QgsMeshLayerRenderer::prepareLabeling( QgsMeshLayer *layer, QSet<QString> &
         auto c = context.expressionContext();
 
         c.appendScope( QgsExpressionContextUtils::meshExpressionScope( mLabelProvider->labelFaces() ? QgsMesh::Face : QgsMesh::Vertex ) );
-        c.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( mNativeMesh ) );
+        c.lastScope()->setVariable( u"_native_mesh"_s, QVariant::fromValue( mNativeMesh ) );
         context.setExpressionContext( c );
 
         engine->addProvider( mLabelProvider );
@@ -812,7 +812,7 @@ void QgsMeshLayerRenderer::registerLabelFeatures()
 
   QgsRenderContext &context = *renderContext();
 
-  QgsExpressionContextScope *scope = context.expressionContext().activeScopeForVariable( QStringLiteral( "_native_mesh" ) );
+  QgsExpressionContextScope *scope = context.expressionContext().activeScopeForVariable( u"_native_mesh"_s );
 
   const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->mapExtent() );
 
@@ -831,7 +831,7 @@ void QgsMeshLayerRenderer::registerLabelFeatures()
       if ( i < 0 || i >= mNativeMesh.faces.count() )
         continue;
 
-      scope->setVariable( QStringLiteral( "_mesh_face_index" ), i, false );
+      scope->setVariable( u"_mesh_face_index"_s, i, false );
 
       QgsFeature f( i );
       QgsGeometry geom = QgsMeshUtils::toGeometry( mNativeMesh.face( i ), mNativeMesh.vertices );
@@ -854,7 +854,7 @@ void QgsMeshLayerRenderer::registerLabelFeatures()
       if ( i < 0 || i >= mNativeMesh.vertexCount() )
         continue;
 
-      scope->setVariable( QStringLiteral( "_mesh_vertex_index" ), i, false );
+      scope->setVariable( u"_mesh_vertex_index"_s, i, false );
 
       QgsFeature f( i );
       QgsGeometry geom = QgsGeometry( new QgsPoint( mNativeMesh.vertex( i ) ) );

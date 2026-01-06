@@ -32,7 +32,7 @@ class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
     QString providerKey() const override { return QgsAfsProvider::AFS_PROVIDER_KEY; }
     QString text() const override { return QObject::tr( "ArcGIS REST Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddAfsLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsArcGisRestSourceSelect( parent, fl, widgetMode );
@@ -50,14 +50,14 @@ class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
     }
     bool canHandleLayer( QgsMapLayer *layer ) const override
     {
-      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != QLatin1String( "arcgismapserver" ) )
+      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != "arcgismapserver"_L1 )
         return false;
 
       return true;
     }
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override
     {
-      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != QLatin1String( "arcgismapserver" ) )
+      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != "arcgismapserver"_L1 )
         return nullptr;
 
       return new QgsArcGisRestSourceWidget( layer->providerType(), parent );

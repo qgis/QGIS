@@ -55,7 +55,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
+    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( u"plugin-manager"_s );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
     static const QgsSettingsEntryBool *settingsAllowExperimental;
@@ -63,7 +63,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     static const QgsSettingsEntryVariant *settingsCheckOnStartLastDate;
     static const QgsSettingsEntryStringList *settingsSeenPlugins;
 
-    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( QStringLiteral( "UI" ) );
+    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( u"UI"_s );
     static const QgsSettingsEntryString *settingsLastZipDirectory;
     static const QgsSettingsEntryBool *settingsShowInstallFromZipWarning;
 
@@ -200,10 +200,8 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! show the given message in the Plugin Manager internal message bar
     void pushMessage( const QString &text, Qgis::MessageLevel level, int duration = -1 );
 
-#ifndef WITH_QTWEBKIT
     //! vote button was clicked
     void submitVote();
-#endif
 
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
@@ -254,9 +252,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QgsMessageBar *msgBar = nullptr;
 
-#ifndef WITH_QTWEBKIT
     int mCurrentPluginId;
-#endif
 };
 
 #endif

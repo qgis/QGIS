@@ -82,7 +82,7 @@ class QgsConnectionPoolGroup
 
     ~QgsConnectionPoolGroup()
     {
-      QgsDebugMsgLevel( QStringLiteral( "Destroying connection pool group" ), 2 );
+      QgsDebugMsgLevel( u"Destroying connection pool group"_s, 2 );
       for ( const Item &item : std::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( item.c );
@@ -101,14 +101,14 @@ class QgsConnectionPoolGroup
      */
     T acquire( int timeout, bool requestMayBeNested )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Trying to acquire connection" ), 2 );
+      QgsDebugMsgLevel( u"Trying to acquire connection"_s, 2 );
       const int requiredFreeConnectionCount = requestMayBeNested ? 1 : 3;
       // we are going to acquire a resource - if no resource is available, we will block here
       if ( timeout >= 0 )
       {
         if ( !sem.tryAcquire( requiredFreeConnectionCount, timeout ) )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Failed to acquire semaphore" ), 2 );
+          QgsDebugMsgLevel( u"Failed to acquire semaphore"_s, 2 );
           return nullptr;
         }
       }
@@ -128,13 +128,13 @@ class QgsConnectionPoolGroup
 
         if ( !conns.isEmpty() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Trying to use existing connection" ), 2 );
+          QgsDebugMsgLevel( u"Trying to use existing connection"_s, 2 );
           Item i = conns.pop();
           if ( !qgsConnectionPool_ConnectionIsValid( i.c ) )
           {
-            QgsDebugMsgLevel( QStringLiteral( "Connection is not valid, destroying" ), 2 );
+            QgsDebugMsgLevel( u"Connection is not valid, destroying"_s, 2 );
             qgsConnectionPool_ConnectionDestroy( i.c );
-            QgsDebugMsgLevel( QStringLiteral( "Creating new connection" ), 2 );
+            QgsDebugMsgLevel( u"Creating new connection"_s, 2 );
             qgsConnectionPool_ConnectionCreate( connInfo, i.c );
           }
 
@@ -146,26 +146,26 @@ class QgsConnectionPoolGroup
             QMetaObject::invokeMethod( expirationTimer->parent(), "stopExpirationTimer" );
           }
 
-          QgsDebugMsgLevel( QStringLiteral( "Acquired connection" ), 2 );
+          QgsDebugMsgLevel( u"Acquired connection"_s, 2 );
           acquiredConns.append( i.c );
 
           return i.c;
         }
       }
 
-      QgsDebugMsgLevel( QStringLiteral( "Creating new connection" ), 2 );
+      QgsDebugMsgLevel( u"Creating new connection"_s, 2 );
       T c;
       qgsConnectionPool_ConnectionCreate( connInfo, c );
       if ( !c )
       {
         // we didn't get connection for some reason, so release the lock
         sem.release();
-        QgsDebugMsgLevel( QStringLiteral( "Failed to create new connection" ), 2 );
+        QgsDebugMsgLevel( u"Failed to create new connection"_s, 2 );
         return nullptr;
       }
 
       connMutex.lock();
-      QgsDebugMsgLevel( QStringLiteral( "Acquired connection with name: %1" ).arg( qgsConnectionPool_ConnectionToName( c ) ), 2 );
+      QgsDebugMsgLevel( u"Acquired connection with name: %1"_s.arg( qgsConnectionPool_ConnectionToName( c ) ), 2 );
       acquiredConns.append( c );
       connMutex.unlock();
       return c;
@@ -173,12 +173,12 @@ class QgsConnectionPoolGroup
 
     void release( T conn )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Releasing connection" ), 2 );
+      QgsDebugMsgLevel( u"Releasing connection"_s, 2 );
       connMutex.lock();
       acquiredConns.removeAll( conn );
       if ( !qgsConnectionPool_ConnectionIsValid( conn ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Destroying invalid connection" ), 2 );
+        QgsDebugMsgLevel( u"Destroying invalid connection"_s, 2 );
         qgsConnectionPool_ConnectionDestroy( conn );
       }
       else
@@ -202,7 +202,7 @@ class QgsConnectionPoolGroup
 
     void invalidateConnections()
     {
-      QgsDebugMsgLevel( QStringLiteral( "Invalidating connections for group" ), 2 );
+      QgsDebugMsgLevel( u"Invalidating connections for group"_s, 2 );
       connMutex.lock();
       for ( const Item &i : std::as_const( conns ) )
       {
@@ -300,14 +300,14 @@ class QgsConnectionPool
 
     virtual ~QgsConnectionPool()
     {
-      QgsDebugMsgLevel( QStringLiteral( "Destroying connection pool" ), 2 );
+      QgsDebugMsgLevel( u"Destroying connection pool"_s, 2 );
       mMutex.lock();
       for ( auto it = mGroups.constBegin(); it != mGroups.constEnd(); ++it )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Destroying connection pool group with key %1" ).arg( it.key() ), 2 );
+        QgsDebugMsgLevel( u"Destroying connection pool group with key %1"_s.arg( it.key() ), 2 );
         delete it.value();
       }
-      QgsDebugMsgLevel( QStringLiteral( "Connection pool groups destroyed" ), 2 );
+      QgsDebugMsgLevel( u"Connection pool groups destroyed"_s, 2 );
       mGroups.clear();
       mMutex.unlock();
     }
@@ -324,17 +324,17 @@ class QgsConnectionPool
      */
     T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false, QgsFeedback *feedback = nullptr )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Trying to acquire connection for %1" ).arg( connInfo ), 2 );
+      QgsDebugMsgLevel( u"Trying to acquire connection for %1"_s.arg( connInfo ), 2 );
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
       if ( it == mGroups.end() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Could not find existing group, adding new one" ), 2 );
+        QgsDebugMsgLevel( u"Could not find existing group, adding new one"_s, 2 );
         it = mGroups.insert( connInfo, new T_Group( connInfo ) );
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Found existing group" ), 2 );
+        QgsDebugMsgLevel( u"Found existing group"_s, 2 );
       }
       T_Group *group = *it;
       mMutex.unlock();
@@ -365,13 +365,13 @@ class QgsConnectionPool
     {
       mMutex.lock();
       const QString groupName = qgsConnectionPool_ConnectionToName( conn );
-      QgsDebugMsgLevel( QStringLiteral( "Releasing connection for %1" ).arg( groupName ), 2 );
+      QgsDebugMsgLevel( u"Releasing connection for %1"_s.arg( groupName ), 2 );
       typename T_Groups::iterator it = mGroups.find( groupName );
       Q_ASSERT( it != mGroups.end() );
       T_Group *group = *it;
       mMutex.unlock();
 
-      QgsDebugMsgLevel( QStringLiteral( "Group found, releasing..." ), 2 );
+      QgsDebugMsgLevel( u"Group found, releasing..."_s, 2 );
       group->release( conn );
     }
 
@@ -384,18 +384,18 @@ class QgsConnectionPool
      */
     void invalidateConnections( const QString &connInfo )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Invalidating connections for %1" ).arg( connInfo ), 2 );
+      QgsDebugMsgLevel( u"Invalidating connections for %1"_s.arg( connInfo ), 2 );
       mMutex.lock();
 
       auto it = mGroups.constFind( connInfo );
       if ( it != mGroups.constEnd() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Found group, invalidating..." ), 2 );
+        QgsDebugMsgLevel( u"Found group, invalidating..."_s, 2 );
         it.value()->invalidateConnections();
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Could not find matching group!" ), 2 );
+        QgsDebugMsgLevel( u"Could not find matching group!"_s, 2 );
       }
       mMutex.unlock();
     }

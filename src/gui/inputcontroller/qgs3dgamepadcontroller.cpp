@@ -62,7 +62,7 @@ QgsGamepad3DMapController *QgsGamepad3DMapController::clone() const
 
 QString QgsGamepad3DMapController::deviceId() const
 {
-  return QStringLiteral( "gamepad3d:%1" ).arg( mGamepadDeviceId );
+  return u"gamepad3d:%1"_s.arg( mGamepadDeviceId );
 }
 
 bool QgsGamepad3DMapController::isConnected() const

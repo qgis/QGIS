@@ -82,7 +82,7 @@ int sfcgal::errorCallback( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL error occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
+  sfcgal::errorHandler()->addText( u"SFCGAL error occurred: %1"_s.arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
 
   return static_cast<int>( strlen( buffer ) );
 }
@@ -96,7 +96,7 @@ int sfcgal::warningCallback( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL warning occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
+  sfcgal::errorHandler()->addText( u"SFCGAL warning occurred: %1"_s.arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
 
   return static_cast<int>( strlen( buffer ) );
 }
@@ -298,7 +298,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsSfcgalEngine::toAbstractGeometry( const 
   if ( !out )
   {
     Qgis::WkbType sfcgalType = QgsSfcgalEngine::wkbType( geom );
-    sfcgal::errorHandler()->addText( QStringLiteral( "WKB contains unmanaged geometry type (WKB:%1 / SFCGAL:%2" ) //
+    sfcgal::errorHandler()->addText( u"WKB contains unmanaged geometry type (WKB:%1 / SFCGAL:%2"_s //
                                      .arg( static_cast<int>( wkbPtr.readHeader() ) )                          //
                                      .arg( static_cast<int>( sfcgalType ) ),
                                      __FILE__, __FUNCTION__, __LINE__ );
@@ -425,7 +425,7 @@ Qgis::WkbType QgsSfcgalEngine::wkbType( const sfcgal::geometry *geom, QString *e
   if ( qgisType >= Qgis::WkbType::Unknown && qgisType <= Qgis::WkbType::TriangleZM )
     return qgisType;
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "WKB type '%1' is not known from QGIS" ).arg( wkbType ), //
+  sfcgal::errorHandler()->addText( u"WKB type '%1' is not known from QGIS"_s.arg( wkbType ), //
                                    __FILE__, __FUNCTION__, __LINE__ );
   return Qgis::WkbType::Unknown;
 }
@@ -892,7 +892,7 @@ sfcgal::shared_geom QgsSfcgalEngine::offsetCurve( const sfcgal::geometry *geom, 
 sfcgal::shared_geom QgsSfcgalEngine::buffer2D( const sfcgal::geometry *geom, double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg )
 {
   if ( joinStyle != Qgis::JoinStyle::Round )
-    qWarning() << ( QStringLiteral( "Buffer not implemented for %1! Defaulting to round join." ) );
+    qWarning() << ( u"Buffer not implemented for %1! Defaulting to round join."_s );
 
   return offsetCurve( geom, radius, segments, joinStyle, errorMsg );
 }
@@ -1117,7 +1117,7 @@ void sfcgal::to_json( json &j, const sfcgal::PrimitiveParameterDesc &p )
     j["value"] = std::vector<double> { vect.x(), vect.y(), vect.z() };
   }
   else
-    throw json::type_error::create( 306, QStringLiteral( "Unknown type '%1'." ).arg( p.type.c_str() ).toStdString(), nullptr );
+    throw json::type_error::create( 306, u"Unknown type '%1'."_s.arg( p.type.c_str() ).toStdString(), nullptr );
 }
 
 void sfcgal::from_json( const json &j, sfcgal::PrimitiveParameterDesc &p )
@@ -1154,7 +1154,7 @@ void sfcgal::from_json( const json &j, sfcgal::PrimitiveParameterDesc &p )
       p.value = point;
     }
     else
-      throw json::type_error::create( 306, QStringLiteral( "Unknown type '%1'." ).arg( p.type.c_str() ).toStdString(), nullptr );
+      throw json::type_error::create( 306, u"Unknown type '%1'."_s.arg( p.type.c_str() ).toStdString(), nullptr );
   }
 }
 
@@ -1182,7 +1182,7 @@ QVector<sfcgal::PrimitiveParameterDesc> QgsSfcgalEngine::primitiveParameters( co
   }
   catch ( json::exception &e )
   {
-    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception for json: %1. Error: %2" ).arg( jsonString.c_str() ).arg( e.what() ) );
+    sfcgal::errorHandler()->addText( u"Caught json exception for json: %1. Error: %2"_s.arg( jsonString.c_str() ).arg( e.what() ) );
   }
 
   return result;
@@ -1210,7 +1210,7 @@ QVariant QgsSfcgalEngine::primitiveParameter( const sfcgal::primitive *prim, con
   }
   catch ( json::exception &e )
   {
-    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception for json: %1. Error: %2" ).arg( jsonString.c_str() ).arg( e.what() ) );
+    sfcgal::errorHandler()->addText( u"Caught json exception for json: %1. Error: %2"_s.arg( jsonString.c_str() ).arg( e.what() ) );
   }
 
   return result;
@@ -1243,7 +1243,7 @@ void QgsSfcgalEngine::primitiveSetParameter( sfcgal::primitive *prim, const QStr
   }
   catch ( ... )
   {
-    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception" ) );
+    sfcgal::errorHandler()->addText( u"Caught json exception"_s );
   }
 }
 

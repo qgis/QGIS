@@ -129,16 +129,16 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type
 
 void QgsLegendPatchShape::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mGeometry = QgsGeometry::fromWkt( element.attribute( QStringLiteral( "wkt" ) ) );
-  mPreserveAspectRatio = element.attribute( QStringLiteral( "preserveAspect" ) ).toInt();
-  mSymbolType = static_cast< Qgis::SymbolType >( element.attribute( QStringLiteral( "type" ) ).toInt() );
+  mGeometry = QgsGeometry::fromWkt( element.attribute( u"wkt"_s ) );
+  mPreserveAspectRatio = element.attribute( u"preserveAspect"_s ).toInt();
+  mSymbolType = static_cast< Qgis::SymbolType >( element.attribute( u"type"_s ).toInt() );
 }
 
 void QgsLegendPatchShape::writeXml( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  element.setAttribute( QStringLiteral( "wkt" ), mGeometry.isNull() ? QString() : mGeometry.asWkt( ) );
-  element.setAttribute( QStringLiteral( "preserveAspect" ), mPreserveAspectRatio ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "type" ), QString::number( static_cast< int >( mSymbolType ) ) );
+  element.setAttribute( u"wkt"_s, mGeometry.isNull() ? QString() : mGeometry.asWkt( ) );
+  element.setAttribute( u"preserveAspect"_s, mPreserveAspectRatio ? u"1"_s : u"0"_s );
+  element.setAttribute( u"type"_s, QString::number( static_cast< int >( mSymbolType ) ) );
 }
 
 Qgis::SymbolType QgsLegendPatchShape::symbolType() const

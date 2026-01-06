@@ -25,7 +25,7 @@
 
 QString QgsCoverageSimplifyAlgorithm::name() const
 {
-  return QStringLiteral( "coveragesimplify" );
+  return u"coveragesimplify"_s;
 }
 
 QString QgsCoverageSimplifyAlgorithm::displayName() const
@@ -45,18 +45,18 @@ QString QgsCoverageSimplifyAlgorithm::group() const
 
 QString QgsCoverageSimplifyAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcoverage" );
+  return u"vectorcoverage"_s;
 }
 
 void QgsCoverageSimplifyAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 ) );
-  auto boundaryParameter = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "PRESERVE_BOUNDARY" ), QObject::tr( "Preserve boundary" ), false );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterDistance( u"TOLERANCE"_s, QObject::tr( "Tolerance" ), 1.0, u"INPUT"_s, false, 0, 10000000.0 ) );
+  auto boundaryParameter = std::make_unique<QgsProcessingParameterBoolean>( u"PRESERVE_BOUNDARY"_s, QObject::tr( "Preserve boundary" ), false );
   boundaryParameter->setHelp( QObject::tr( "When enabled the outside edges of the coverage will be preserved without simplification." ) );
   addParameter( boundaryParameter.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Simplified" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Simplified" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsCoverageSimplifyAlgorithm::shortDescription() const
@@ -86,17 +86,17 @@ QgsCoverageSimplifyAlgorithm *QgsCoverageSimplifyAlgorithm::createInstance() con
 
 QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const bool preserveBoundary = parameterAsBoolean( parameters, QStringLiteral( "PRESERVE_BOUNDARY" ), context );
-  const double tolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  const bool preserveBoundary = parameterAsBoolean( parameters, u"PRESERVE_BOUNDARY"_s, context );
+  const double tolerance = parameterAsDouble( parameters, u"TOLERANCE"_s, context );
 
   QString sinkId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, sinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   // we have no choice but to build up a list of features in advance
   QVector<QgsFeature> featuresWithGeom;
@@ -186,7 +186,7 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
     QgsFeature outFeature = featuresWithGeom.value( featureIndex );
     outFeature.setGeometry( QgsGeometry( *partsIt ? ( *partsIt )->clone() : nullptr ) );
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
 
     feedback->setProgress( featureIndex * step * 0.2 + 80 );
@@ -196,13 +196,13 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
   {
     QgsFeature outFeature = feature;
     if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );
+  outputs.insert( u"OUTPUT"_s, sinkId );
   return outputs;
 }
 

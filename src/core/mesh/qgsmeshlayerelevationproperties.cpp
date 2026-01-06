@@ -45,34 +45,34 @@ bool QgsMeshLayerElevationProperties::hasElevation() const
 
 QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mMode ) );
-  element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+  QDomElement element = document.createElement( u"elevation"_s );
+  element.setAttribute( u"mode"_s, qgsEnumValueToKey( mMode ) );
+  element.setAttribute( u"symbology"_s, qgsEnumValueToKey( mSymbology ) );
   if ( !std::isnan( mElevationLimit ) )
-    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
+    element.setAttribute( u"elevationLimit"_s, qgsDoubleToString( mElevationLimit ) );
 
   writeCommonProperties( element, document, context );
 
   switch ( mMode )
   {
     case Qgis::MeshElevationMode::FixedElevationRange:
-      element.setAttribute( QStringLiteral( "lower" ), qgsDoubleToString( mFixedRange.lower() ) );
-      element.setAttribute( QStringLiteral( "upper" ), qgsDoubleToString( mFixedRange.upper() ) );
-      element.setAttribute( QStringLiteral( "includeLower" ), mFixedRange.includeLower() ? "1" : "0" );
-      element.setAttribute( QStringLiteral( "includeUpper" ), mFixedRange.includeUpper() ? "1" : "0" );
+      element.setAttribute( u"lower"_s, qgsDoubleToString( mFixedRange.lower() ) );
+      element.setAttribute( u"upper"_s, qgsDoubleToString( mFixedRange.upper() ) );
+      element.setAttribute( u"includeLower"_s, mFixedRange.includeLower() ? "1" : "0" );
+      element.setAttribute( u"includeUpper"_s, mFixedRange.includeUpper() ? "1" : "0" );
       break;
 
     case Qgis::MeshElevationMode::FixedRangePerGroup:
     {
-      QDomElement ranges = document.createElement( QStringLiteral( "ranges" ) );
+      QDomElement ranges = document.createElement( u"ranges"_s );
       for ( auto it = mRangePerGroup.constBegin(); it != mRangePerGroup.constEnd(); ++it )
       {
-        QDomElement range = document.createElement( QStringLiteral( "range" ) );
-        range.setAttribute( QStringLiteral( "group" ), it.key() );
-        range.setAttribute( QStringLiteral( "lower" ), qgsDoubleToString( it.value().lower() ) );
-        range.setAttribute( QStringLiteral( "upper" ), qgsDoubleToString( it.value().upper() ) );
-        range.setAttribute( QStringLiteral( "includeLower" ), it.value().includeLower() ? "1" : "0" );
-        range.setAttribute( QStringLiteral( "includeUpper" ), it.value().includeUpper() ? "1" : "0" );
+        QDomElement range = document.createElement( u"range"_s );
+        range.setAttribute( u"group"_s, it.key() );
+        range.setAttribute( u"lower"_s, qgsDoubleToString( it.value().lower() ) );
+        range.setAttribute( u"upper"_s, qgsDoubleToString( it.value().upper() ) );
+        range.setAttribute( u"includeLower"_s, it.value().includeLower() ? "1" : "0" );
+        range.setAttribute( u"includeUpper"_s, it.value().includeUpper() ? "1" : "0" );
         ranges.appendChild( range );
       }
       element.appendChild( ranges );
@@ -83,11 +83,11 @@ QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElemen
       break;
   }
 
-  QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
+  QDomElement profileLineSymbolElement = document.createElement( u"profileLineSymbol"_s );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
   element.appendChild( profileLineSymbolElement );
 
-  QDomElement profileFillSymbolElement = document.createElement( QStringLiteral( "profileFillSymbol" ) );
+  QDomElement profileFillSymbolElement = document.createElement( u"profileFillSymbol"_s );
   profileFillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileFillSymbol.get(), document, context ) );
   element.appendChild( profileFillSymbolElement );
 
@@ -97,11 +97,11 @@ QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElemen
 
 bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mMode = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "mode" ) ), Qgis::MeshElevationMode::FromVertices );
-  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
-  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
-    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  const QDomElement elevationElement = element.firstChildElement( u"elevation"_s ).toElement();
+  mMode = qgsEnumKeyToValue( elevationElement.attribute( u"mode"_s ), Qgis::MeshElevationMode::FromVertices );
+  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( u"symbology"_s ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( u"elevationLimit"_s ) )
+    mElevationLimit = elevationElement.attribute( u"elevationLimit"_s ).toDouble();
   else
     mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
@@ -111,10 +111,10 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
   {
     case Qgis::MeshElevationMode::FixedElevationRange:
     {
-      const double lower = elevationElement.attribute( QStringLiteral( "lower" ) ).toDouble();
-      const double upper = elevationElement.attribute( QStringLiteral( "upper" ) ).toDouble();
-      const bool includeLower = elevationElement.attribute( QStringLiteral( "includeLower" ) ).toInt();
-      const bool includeUpper = elevationElement.attribute( QStringLiteral( "includeUpper" ) ).toInt();
+      const double lower = elevationElement.attribute( u"lower"_s ).toDouble();
+      const double upper = elevationElement.attribute( u"upper"_s ).toDouble();
+      const bool includeLower = elevationElement.attribute( u"includeLower"_s ).toInt();
+      const bool includeUpper = elevationElement.attribute( u"includeUpper"_s ).toInt();
       mFixedRange = QgsDoubleRange( lower, upper, includeLower, includeUpper );
       break;
     }
@@ -123,15 +123,15 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
     {
       mRangePerGroup.clear();
 
-      const QDomNodeList ranges = elevationElement.firstChildElement( QStringLiteral( "ranges" ) ).childNodes();
+      const QDomNodeList ranges = elevationElement.firstChildElement( u"ranges"_s ).childNodes();
       for ( int i = 0; i < ranges.size(); ++i )
       {
         const QDomElement rangeElement = ranges.at( i ).toElement();
-        const int group = rangeElement.attribute( QStringLiteral( "group" ) ).toInt();
-        const double lower = rangeElement.attribute( QStringLiteral( "lower" ) ).toDouble();
-        const double upper = rangeElement.attribute( QStringLiteral( "upper" ) ).toDouble();
-        const bool includeLower = rangeElement.attribute( QStringLiteral( "includeLower" ) ).toInt();
-        const bool includeUpper = rangeElement.attribute( QStringLiteral( "includeUpper" ) ).toInt();
+        const int group = rangeElement.attribute( u"group"_s ).toInt();
+        const double lower = rangeElement.attribute( u"lower"_s ).toDouble();
+        const double upper = rangeElement.attribute( u"upper"_s ).toDouble();
+        const bool includeLower = rangeElement.attribute( u"includeLower"_s ).toInt();
+        const bool includeUpper = rangeElement.attribute( u"includeUpper"_s ).toInt();
         mRangePerGroup.insert( group, QgsDoubleRange( lower, upper, includeLower, includeUpper ) );
       }
       break;
@@ -143,12 +143,12 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
 
   const QColor defaultColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
-  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( u"profileLineSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileLineSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( defaultColor );
 
-  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( u"profileFillSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileFillSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( defaultColor );
@@ -179,7 +179,7 @@ QString QgsMeshLayerElevationProperties::htmlSummary() const
       properties << tr( "Offset: %1" ).arg( mZOffset );
       break;
   }
-  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
+  return u"<li>%1</li>"_s.arg( properties.join( "</li><li>"_L1 ) );
 }
 
 QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const

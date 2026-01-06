@@ -95,7 +95,7 @@ void QgsProcessingBatchAlgorithmDialogBase::executeNext()
   }
 
   mBatchFeedback->setCurrentStep( mCurrentStep++ );
-  setProgressText( QStringLiteral( "\n" ) + tr( "Processing algorithm %1/%2…" ).arg( mCurrentStep ).arg( mTotalSteps ) );
+  setProgressText( u"\n"_s + tr( "Processing algorithm %1/%2…" ).arg( mCurrentStep ).arg( mTotalSteps ) );
   setInfo( tr( "<b>Algorithm %1 starting&hellip;</b>" ).arg( algorithm()->displayName() ), false, false );
 
   pushInfo( tr( "Input parameters:" ) );
@@ -106,7 +106,7 @@ void QgsProcessingBatchAlgorithmDialogBase::executeNext()
   // if we hold on to these layers
   mTaskContext.reset( createContext( mBatchFeedback.get() ) );
 
-  const QVariantMap paramsJson = algorithm()->asMap( mQueuedParameters.constFirst(), *mTaskContext ).value( QStringLiteral( "inputs" ) ).toMap();
+  const QVariantMap paramsJson = algorithm()->asMap( mQueuedParameters.constFirst(), *mTaskContext ).value( u"inputs"_s ).toMap();
   pushCommandInfo( QString::fromStdString( QgsJsonUtils::jsonFromVariant( paramsJson ).dump() ) );
   pushInfo( QString() );
 
@@ -152,8 +152,8 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     pushInfo( QString() );
 
     mResults.append( QVariantMap(
-      { { QStringLiteral( "parameters" ), mCurrentParameters },
-        { QStringLiteral( "results" ), results }
+      { { u"parameters"_s, mCurrentParameters },
+        { u"results"_s, results }
       }
     ) );
 
@@ -173,8 +173,8 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     reportError( tr( "Execution failed after %1 seconds" ).arg( mCurrentStepTimer.elapsed() / 1000.0, 2 ), false );
 
     mErrors.append( QVariantMap(
-      { { QStringLiteral( "parameters" ), mCurrentParameters },
-        { QStringLiteral( "errors" ), taskErrors }
+      { { u"parameters"_s, mCurrentParameters },
+        { u"errors"_s, taskErrors }
       }
     ) );
     executeNext();
@@ -215,7 +215,7 @@ void QgsProcessingBatchAlgorithmDialogBase::allTasksComplete( bool canceled )
 
     for ( int i = 0; i < mResults.size(); ++i )
     {
-      loadHtmlResults( mResults.at( i ).value( QStringLiteral( "results" ) ).toMap(), i );
+      loadHtmlResults( mResults.at( i ).value( u"results"_s ).toMap(), i );
     }
 
     createSummaryTable( mResults, mErrors );

@@ -243,8 +243,8 @@ bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &element, QDomDoc
     if ( !item )
       continue;
 
-    QDomElement childItem = document.createElement( QStringLiteral( "ComposerItemGroupElement" ) );
-    childItem.setAttribute( QStringLiteral( "uuid" ), item->uuid() );
+    QDomElement childItem = document.createElement( u"ComposerItemGroupElement"_s );
+    childItem.setAttribute( u"uuid"_s, item->uuid() );
     element.appendChild( childItem );
   }
   return true;
@@ -254,14 +254,14 @@ bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemEleme
 {
   mItemUuids.clear();
 
-  QDomNodeList elementNodes = itemElement.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
+  QDomNodeList elementNodes = itemElement.elementsByTagName( u"ComposerItemGroupElement"_s );
   for ( int i = 0; i < elementNodes.count(); ++i )
   {
     QDomNode elementNode = elementNodes.at( i );
     if ( !elementNode.isElement() )
       continue;
 
-    QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
+    QString uuid = elementNode.toElement().attribute( u"uuid"_s );
     mItemUuids << uuid;
   }
   return true;

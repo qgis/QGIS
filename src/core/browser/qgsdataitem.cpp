@@ -70,7 +70,7 @@ QgsDataItem::QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent, const
 
 QgsDataItem::~QgsDataItem()
 {
-  QgsDebugMsgLevel( QStringLiteral( "mName = %1 mPath = %2 mChildren.size() = %3" ).arg( mName, mPath ).arg( mChildren.size() ), 2 );
+  QgsDebugMsgLevel( u"mName = %1 mPath = %2 mChildren.size() = %3"_s.arg( mName, mPath ).arg( mChildren.size() ), 2 );
   const auto constMChildren = mChildren;
   for ( QgsDataItem *child : constMChildren )
   {
@@ -83,7 +83,7 @@ QgsDataItem::~QgsDataItem()
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     // this should not usually happen (until the item was deleted directly when createChildren was running)
-    QgsDebugError( QStringLiteral( "mFutureWatcher not finished (should not happen) -> waitForFinished()" ) );
+    QgsDebugError( u"mFutureWatcher not finished (should not happen) -> waitForFinished()"_s );
     mDeferredDelete = true;
     mFutureWatcher->waitForFinished();
   }
@@ -94,7 +94,7 @@ QgsDataItem::~QgsDataItem()
 QString QgsDataItem::pathComponent( const QString &string )
 {
   const thread_local QRegularExpression rx( "[\\\\/]" );
-  return QString( string ).replace( rx, QStringLiteral( "|" ) );
+  return QString( string ).replace( rx, u"|"_s );
 }
 
 QVariant QgsDataItem::sortKey() const
@@ -122,7 +122,7 @@ void QgsDataItem::deleteLater()
 
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "mFutureWatcher not finished -> schedule to delete later" ), 2 );
+    QgsDebugMsgLevel( u"mFutureWatcher not finished -> schedule to delete later"_s, 2 );
     mDeferredDelete = true;
   }
   else
@@ -222,7 +222,7 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
   QElapsedTimer time;
   time.start();
   const QVector <QgsDataItem *> children = item->createChildren();
-  QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
+  QgsDebugMsgLevel( u"%1 children created in %2 ms"_s.arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
   for ( QgsDataItem *child : children )
   {
@@ -232,17 +232,17 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
     if ( qApp )
       child->moveToThread( qApp->thread() ); // moves also children
   }
-  QgsDebugMsgLevel( QStringLiteral( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ), 3 );
+  QgsDebugMsgLevel( u"finished path %1: %2 children"_s.arg( item->path() ).arg( children.size() ), 3 );
   return children;
 }
 
 void QgsDataItem::childrenCreated()
 {
-  QgsDebugMsgLevel( QStringLiteral( "path = %1 children.size() = %2" ).arg( path() ).arg( mFutureWatcher->result().size() ), 3 );
+  QgsDebugMsgLevel( u"path = %1 children.size() = %2"_s.arg( path() ).arg( mFutureWatcher->result().size() ), 3 );
 
   if ( deferredDelete() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Item was scheduled to be deleted later" ), 2 );
+    QgsDebugMsgLevel( u"Item was scheduled to be deleted later"_s, 2 );
     QObject::deleteLater();
     return;
   }
@@ -426,7 +426,7 @@ void QgsDataItem::setParent( QgsDataItem *parent )
 void QgsDataItem::addChildItem( QgsDataItem *child, bool refresh )
 {
   Q_ASSERT( child );
-  QgsDebugMsgLevel( QStringLiteral( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( qgsEnumValueToKey< Qgis::BrowserItemType >( child->mType ) ), 3 );
+  QgsDebugMsgLevel( u"path = %1 add child #%2 - %3 - %4"_s.arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( qgsEnumValueToKey< Qgis::BrowserItemType >( child->mType ) ), 3 );
 
   //calculate position to insert child
   int i;
@@ -491,7 +491,7 @@ int QgsDataItem::findItem( QVector<QgsDataItem *> items, QgsDataItem *item )
 {
   for ( int i = 0; i < items.size(); i++ )
   {
-    Q_ASSERT_X( items[i], "findItem", QStringLiteral( "item %1 is nullptr" ).arg( i ).toLatin1() );
+    Q_ASSERT_X( items[i], "findItem", u"item %1 is nullptr"_s.arg( i ).toLatin1() );
     QgsDebugMsgLevel( QString::number( i ) + " : " + items[i]->mPath + " x " + item->mPath, 2 );
     if ( items[i]->equal( item ) )
       return i;
@@ -557,7 +557,7 @@ Qgis::BrowserItemState QgsDataItem::state() const
 
 void QgsDataItem::setState( Qgis::BrowserItemState state )
 {
-  QgsDebugMsgLevel( QStringLiteral( "item %1 set state %2 -> %3" ).arg( path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( this->state() ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( state ) ), 3 );
+  QgsDebugMsgLevel( u"item %1 set state %2 -> %3"_s.arg( path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( this->state() ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( state ) ), 3 );
   if ( state == mState )
     return;
 
@@ -568,7 +568,7 @@ void QgsDataItem::setState( Qgis::BrowserItemState state )
     if ( !sPopulatingIcon )
     {
       // TODO: ensure that QgsAnimatedIcon is created on UI thread only
-      sPopulatingIcon = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), QgsApplication::instance() );
+      sPopulatingIcon = new QgsAnimatedIcon( QgsApplication::iconPath( u"/mIconLoading.gif"_s ), QgsApplication::instance() );
     }
 
     sPopulatingIcon->connectFrameChanged( this, &QgsDataItem::updateIcon );
@@ -595,7 +595,7 @@ QList<QMenu *> QgsDataItem::menus( QWidget *parent )
 QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path )
   : QgsDataItem( Qgis::BrowserItemType::Error, parent, error, path )
 {
-  mIconName = QStringLiteral( "/mIconDelete.svg" );
+  mIconName = u"/mIconDelete.svg"_s;
 
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }

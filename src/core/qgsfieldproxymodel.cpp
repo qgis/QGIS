@@ -52,7 +52,7 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
       // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
       // This enables them to be bulk field-calculated when a user needs to, but hides them by default
       // (since there's often MANY of these, e.g. after using the label properties tool on a layer)
-      if ( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ) ).toString() == QLatin1String( "Hidden" ) )
+      if ( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ) ).toString() == "Hidden"_L1 )
         return true;
 
       return !sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::JoinedFieldIsEditable ) ).toBool();

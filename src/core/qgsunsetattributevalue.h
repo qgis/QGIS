@@ -61,9 +61,9 @@ class CORE_EXPORT QgsUnsetAttributeValue
     % MethodCode
     QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
-      str = QStringLiteral( "<QgsUnsetAttributeValue: %1>" ).arg( sipCpp->defaultValueClause() );
+      str = u"<QgsUnsetAttributeValue: %1>"_s.arg( sipCpp->defaultValueClause() );
     else
-      str = QStringLiteral( "<QgsUnsetAttributeValue>" );
+      str = u"<QgsUnsetAttributeValue>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

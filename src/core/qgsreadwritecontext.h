@@ -71,7 +71,7 @@ class CORE_EXPORT QgsReadWriteContext
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+        QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif

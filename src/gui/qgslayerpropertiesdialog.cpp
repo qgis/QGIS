@@ -56,7 +56,7 @@ void QgsLayerPropertiesDialog::loadMetadataFromFile()
     return;
 
   QgsSettings settings; // where we keep last used filter in persistent state
-  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Metadata" ), lastUsedDir, tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
   if ( fileName.isNull() )
@@ -78,7 +78,7 @@ void QgsLayerPropertiesDialog::loadMetadataFromFile()
     QMessageBox::warning( this, tr( "Load Metadata" ), message );
   }
 
-  settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).path() );
+  settings.setValue( u"style/lastStyleDir"_s, QFileInfo( fileName ).path() );
 
   refocusDialog();
 }
@@ -89,7 +89,7 @@ void QgsLayerPropertiesDialog::saveMetadataToFile()
     return;
 
   QgsSettings settings; // where we keep last used filter in persistent state
-  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ), lastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
   // return dialog focus on Mac
@@ -111,7 +111,7 @@ void QgsLayerPropertiesDialog::saveMetadataToFile()
   bool defaultLoadedFlag = false;
   const QString message = mLayer->saveNamedMetadata( outputFileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+    settings.setValue( u"style/lastStyleDir"_s, QFileInfo( outputFileName ).absolutePath() );
   else
     QMessageBox::information( this, tr( "Save Metadata" ), message );
 
@@ -164,7 +164,7 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
     return;
 
   QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName(
     this,
@@ -176,8 +176,8 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
     return;
 
   // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
+  if ( !fileName.endsWith( ".qml"_L1, Qt::CaseInsensitive ) )
+    fileName += ".qml"_L1;
 
   storeCurrentStyleForUndo();
 
@@ -185,7 +185,7 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
   const QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
   {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
+    settings.setValue( u"style/lastStyleDir"_s, QFileInfo( fileName ).absolutePath() );
     syncToLayer();
   }
   else
@@ -201,7 +201,7 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
     return;
 
   QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName(
     this,
@@ -216,7 +216,7 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
     return;
 
   // ensure the user never omits the extension from the file name
-  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
+  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << u"qml"_s );
 
   apply(); // make sure the style to save is up-to-date
 
@@ -226,7 +226,7 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
 
   if ( defaultLoadedFlag )
   {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+    settings.setValue( u"style/lastStyleDir"_s, QFileInfo( outputFileName ).absolutePath() );
   }
   else
   {
@@ -543,7 +543,7 @@ void QgsLayerPropertiesDialog::loadStyle()
           return;
         }
 
-        QDomDocument myDocument( QStringLiteral( "qgis" ) );
+        QDomDocument myDocument( u"qgis"_s );
         myDocument.setContent( qmlStyle );
 
         if ( mLayer->importNamedStyle( myDocument, errorMsg, categories ) )
@@ -590,7 +590,7 @@ QString QgsLayerPropertiesDialog::generateDialogTitle() const
   QString title = tr( "Layer Properties - %1" ).arg( mLayer->name() );
 
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
+    title += u" (%1)"_s.arg( mLayer->styleManager()->currentStyle() );
 
   return title;
 }
@@ -601,7 +601,7 @@ void QgsLayerPropertiesDialog::rollback()
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())
     QString message;
-    QDomDocument doc( QStringLiteral( "qgis" ) );
+    QDomDocument doc( u"qgis"_s );
     int errorLine, errorColumn;
     doc.setContent( mOldStyle.xmlData(), false, &message, &errorLine, &errorColumn );
     mLayer->importNamedStyle( doc, message );

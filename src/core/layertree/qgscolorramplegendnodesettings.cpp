@@ -136,17 +136,17 @@ void QgsColorRampLegendNodeSettings::setNumericFormat( QgsNumericFormat *format 
 
 void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  QDomElement settingsElement = doc.createElement( QStringLiteral( "rampLegendSettings" ) );
+  QDomElement settingsElement = doc.createElement( u"rampLegendSettings"_s );
 
-  settingsElement.setAttribute( QStringLiteral( "useContinuousLegend" ),  mUseContinuousLegend );
-  settingsElement.setAttribute( QStringLiteral( "minimumLabel" ), mMinimumLabel );
-  settingsElement.setAttribute( QStringLiteral( "maximumLabel" ), mMaximumLabel );
-  settingsElement.setAttribute( QStringLiteral( "prefix" ), mPrefix );
-  settingsElement.setAttribute( QStringLiteral( "suffix" ), mSuffix );
-  settingsElement.setAttribute( QStringLiteral( "direction" ), static_cast< int >( mDirection ) );
-  settingsElement.setAttribute( QStringLiteral( "orientation" ), static_cast< int >( mOrientation ) );
+  settingsElement.setAttribute( u"useContinuousLegend"_s,  mUseContinuousLegend );
+  settingsElement.setAttribute( u"minimumLabel"_s, mMinimumLabel );
+  settingsElement.setAttribute( u"maximumLabel"_s, mMaximumLabel );
+  settingsElement.setAttribute( u"prefix"_s, mPrefix );
+  settingsElement.setAttribute( u"suffix"_s, mSuffix );
+  settingsElement.setAttribute( u"direction"_s, static_cast< int >( mDirection ) );
+  settingsElement.setAttribute( u"orientation"_s, static_cast< int >( mOrientation ) );
 
-  QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
+  QDomElement numericFormatElem = doc.createElement( u"numericFormat"_s );
   mNumericFormat->writeXml( numericFormatElem, doc, context );
   settingsElement.appendChild( numericFormatElem );
 
@@ -160,25 +160,25 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
 
 void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement settingsElement = element.firstChildElement( QStringLiteral( "rampLegendSettings" ) );
+  const QDomElement settingsElement = element.firstChildElement( u"rampLegendSettings"_s );
   if ( !settingsElement.isNull() )
   {
-    mUseContinuousLegend = settingsElement.attribute( QStringLiteral( "useContinuousLegend" ), QStringLiteral( "1" ) ).toInt( );
-    mMinimumLabel = settingsElement.attribute( QStringLiteral( "minimumLabel" ) );
-    mMaximumLabel = settingsElement.attribute( QStringLiteral( "maximumLabel" ) );
-    mPrefix = settingsElement.attribute( QStringLiteral( "prefix" ) );
-    mSuffix = settingsElement.attribute( QStringLiteral( "suffix" ) );
-    mDirection = static_cast<  QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( QStringLiteral( "direction" ) ).toInt() );
-    mOrientation = static_cast<  Qt::Orientation >( settingsElement.attribute( QStringLiteral( "orientation" ), QString::number( Qt::Vertical ) ).toInt() );
+    mUseContinuousLegend = settingsElement.attribute( u"useContinuousLegend"_s, u"1"_s ).toInt( );
+    mMinimumLabel = settingsElement.attribute( u"minimumLabel"_s );
+    mMaximumLabel = settingsElement.attribute( u"maximumLabel"_s );
+    mPrefix = settingsElement.attribute( u"prefix"_s );
+    mSuffix = settingsElement.attribute( u"suffix"_s );
+    mDirection = static_cast<  QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( u"direction"_s ).toInt() );
+    mOrientation = static_cast<  Qt::Orientation >( settingsElement.attribute( u"orientation"_s, QString::number( Qt::Vertical ) ).toInt() );
 
-    const QDomNodeList numericFormatNodeList = settingsElement.elementsByTagName( QStringLiteral( "numericFormat" ) );
+    const QDomNodeList numericFormatNodeList = settingsElement.elementsByTagName( u"numericFormat"_s );
     if ( !numericFormatNodeList.isEmpty() )
     {
       const QDomElement numericFormatElem = numericFormatNodeList.at( 0 ).toElement();
       mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElem, context ) );
     }
 
-    if ( !settingsElement.firstChildElement( QStringLiteral( "text-style" ) ).isNull() )
+    if ( !settingsElement.firstChildElement( u"text-style"_s ).isNull() )
     {
       mTextFormat.readXml( settingsElement, context );
     }

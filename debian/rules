@@ -47,7 +47,7 @@ else
 	DISTRIBUTION := $(DIST)
 endif
 
-ifeq (,$(filter $(DISTRIBUTION),bookworm trixie noble plucky questing))
+ifeq (,$(filter $(DISTRIBUTION),trixie plucky questing))
 	DISTRIBUTION := sid
 endif
 
@@ -69,42 +69,12 @@ GRASSABI=$(subst .,,$(shell pkg-config --modversion grass 2>/dev/null|cut -d. -f
 
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
-shlibs :=
+shlibs = -Xqgis-plugin-grass -Xlibqgis-customwidgets
 
-ifneq (,$(filter $(DISTRIBUTION),bookworm trixie noble plucky questing sid))
-	CONTROL_EXPRESSIONS += qt5
-	shlibs += -Xqgis-plugin-grass -Xlibqgis-customwidgets
-ifneq (,$(filter $(DISTRIBUTION),bookworm        noble))
-	CONTROL_EXPRESSIONS += webkit
-endif
-endif
-
-# bookworm: no qca for qt6
-# noble: sip errors
-ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
-	CONTROL_EXPRESSIONS += qt6
-	shlibs += -Xqgis-plugin-grass-qt6 -Xlibqgis-customwidgets-qt6
-endif
-
-ifeq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-ifeq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-$(error neither qt5 nor qt6)
-endif
-endif
-
-ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
-	CONTROL_EXPRESSIONS += sfcgal
-endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
-	CONTROL_EXPRESSIONS += oracle
-
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	shlibs += -Xqgis-provider-oracle
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	shlibs += -Xqgis-provider-oracle-qt6
-endif
+CONTROL_EXPRESSIONS += oracle
+shlibs += -Xqgis-provider-oracle
 endif
 
 ifneq (,$(filter apidoc,$(DEB_BUILD_OPTIONS)))
@@ -117,10 +87,6 @@ ifneq (,$(filter pdal,$(DEB_BUILD_OPTIONS)))
 ifeq ($(shell pkg-config --exists pdal && dpkg --compare-versions $$(pkg-config --modversion pdal) ge 2.5 && echo 1 || echo 0),1)
 CONTROL_EXPRESSIONS += pdal_wrench
 endif
-endif
-
-ifneq (,$(filter sfcgal,$(DEB_BUILD_OPTIONS)))
-	CONTROL_EXPRESSIONS += sfcgal
 endif
 
 define gentemplate
@@ -181,6 +147,7 @@ CMAKE_OPTS := \
 	-DENABLE_UNITY_BUILDS=ON \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
+	-DQGIS_QML_SUBDIR=share/qgis/qml \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
@@ -193,35 +160,18 @@ CMAKE_OPTS := \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_3D=TRUE \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
+	-DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so \
 	-DWITH_HANA=TRUE \
 	-DWITH_EPT=TRUE \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
-	-DPUSH_TO_CDASH=TRUE
+	-DPUSH_TO_CDASH=TRUE \
+	-DQT_PLUGINS_DIR=lib/$(DEB_BUILD_MULTIARCH)/qt6/plugins \
+	-DWITH_SFCGAL=TRUE \
+	-DWITH_GEOGRAPHICLIB=TRUE
 
 ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
-CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
+	CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
 endif
-
-QT5_CMAKE_OPTS = \
-	-D BUILD_WITH_QT5=TRUE -D BUILD_WITH_QT6=FALSE -D WITH_QTWEBENGINE=OFF \
-	-D QGIS_INCLUDE_SUBDIR=include/qgis \
-	-D QT_PLUGINS_DIR=lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins \
-	-D QGIS_QML_SUBDIR=share/qgis/qml
-
-ifneq (,$(filter webkit,$(CONTROL_EXPRESSIONS)))
-QT5_CMAKE_OPTS += \
-	-D WITH_QTWEBKIT=ON
-endif
-
-QT6_CMAKE_OPTS = \
-	-D QGIS_LIBEXEC_SUBDIR=lib/qgis-qt6 \
-	-D QGIS_PLUGIN_SUBDIR=lib/qgis-qt6/plugins \
-	-D QGIS_SERVER_MODULE_SUBDIR=lib/qgis-qt6/server \
-	-D QGIS_DATA_SUBDIR=share/qgis-qt6 \
-	-D QGIS_INCLUDE_SUBDIR=include/qgis-qt6 \
-	-D QGIS_QML_SUBDIR=share/qgis-qt6/qml \
-	-D QGISPOSTFIX=-qt6 \
-	-D QT_PLUGINS_DIR=lib/$(DEB_BUILD_MULTIARCH)/qt6/plugins \
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -229,24 +179,12 @@ endif
 
 ifneq (,$(filter $(GRASSVER),7 8))
 	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS$(GRASSVER)=TRUE \
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(filter $(DISTRIBUTION),trixie sid noble plucky questing))
-	CMAKE_OPTS += \
-		-DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
-endif
-
 ifneq (,$(filter apidoc,$(CONTROL_EXPRESSIONS)))
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	QT5_CMAKE_OPTS += -DWITH_APIDOC=TRUE -DGENERATE_QHP=TRUE
-	QT6_CMAKE_OPTS += -DWITH_APIDOC=OFF -DGENERATE_QHP=OFF
-else
-	QT6_CMAKE_OPTS += -DWITH_APIDOC=TRUE -DGENERATE_QHP=TRUE
-	QT5_CMAKE_OPTS += -DWITH_APIDOC=OFF -DGENERATE_QHP=OFF
-endif
+	CMAKE_OPTS += -DWITH_APIDOC=TRUE -DGENERATE_QHP=TRUE
 else
 	CMAKE_OPTS += -DWITH_APIDOC=OFF -DGENERATE_QHP=OFF
 endif
@@ -257,11 +195,6 @@ else
 	CMAKE_OPTS += -DWITH_PDAL=FALSE
 endif
 
-ifneq (,$(filter sfcgal,$(CONTROL_EXPRESSIONS)))
-	QT6_CMAKE_OPTS += -DWITH_SFCGAL=TRUE
-else
-	QT6_CMAKE_OPTS += -DWITH_SFCGAL=FALSE
-endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
 ifeq ($(DEB_BUILD_ARCH),amd64)
@@ -319,64 +252,29 @@ ifeq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 endif
 
 binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep: templates
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	dh $@ --with python3 --parallel --builddirectory=$(QGIS_BUILDDIR)-qt5
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	dh $@ --with python3 --parallel --builddirectory=$(QGIS_BUILDDIR)-qt6
-endif
+	dh $@ --with python3 --parallel --builddirectory=$(QGIS_BUILDDIR)
 
 override_dh_clean: refreshtemplates
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	dh_clean qgis.bin.1
-	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)-qt5/
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	dh_clean qgis-qt6.bin.1
-	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)-qt6/
-endif
+	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)
 
 override_dh_auto_configure:
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)-qt5/
-	dh_auto_configure --builddirectory=$(QGIS_BUILDDIR)-qt5 -- $(CMAKE_OPTS) $(QT5_CMAKE_OPTS)
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)-qt6/
-	dh_auto_configure --builddirectory=$(QGIS_BUILDDIR)-qt6 -- $(CMAKE_OPTS) $(QT6_CMAKE_OPTS)
-endif
+	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)
+	dh_auto_configure --builddirectory=$(QGIS_BUILDDIR) -- $(CMAKE_OPTS)
 
 override_dh_auto_build:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt5 $(DEB_TEST_TARGET)Build
-	! grep -q "<Error>" $(QGIS_BUILDDIR)-qt5/Testing/$$(head -1 $(QGIS_BUILDDIR)-qt5/Testing/TAG)/Build.xml || { \
-		cat $(QGIS_BUILDDIR)-qt5/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)-qt5/Testing/TAG).log; \
-		ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt5 $(DEB_TEST_TARGET)Submit; \
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Build
+	! grep -q "<Error>" $(QGIS_BUILDDIR)/Testing/$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG)/Build.xml || { \
+		cat $(QGIS_BUILDDIR)/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)/Testing/TAG).log; \
+		ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit; \
 		false; }
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6 $(DEB_TEST_TARGET)Build
-	! grep -q "<Error>" $(QGIS_BUILDDIR)-qt6/Testing/$$(head -1 $(QGIS_BUILDDIR)-qt6/Testing/TAG)/Build.xml || { \
-		cat $(QGIS_BUILDDIR)-qt6/Testing/Temporary/LastBuild_$$(head -1 $(QGIS_BUILDDIR)-qt6/Testing/TAG).log; \
-		ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6 $(DEB_TEST_TARGET)Submit; \
-		false; }
-endif
 else
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt5
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6
-endif
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)
 endif
 
 ifneq (,$(filter apidoc,$(CONTROL_EXPRESSIONS)))
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt5 apidoc
-else
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6 apidoc
-endif
+	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 endif
 
 override_dh_auto_test: test-stamp
@@ -386,41 +284,23 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite
 	mkdir -p debian/tmp/locale/
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	rm -f $(QGIS_BUILDDIR)-qt5/.error
+	rm -f $(QGIS_BUILDDIR)/.error
 	LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
-	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)-qt5/output/lib:$(LD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-		$(TESTMAKE) -C $(QGIS_BUILDDIR)-qt5 $(DEB_TEST_TARGET)Test || touch $(QGIS_BUILDDIR)-qt5/.error
+		$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Test || touch $(QGIS_BUILDDIR)/.error
 	# ignore submission errors
-	-$(TESTMAKE) -C $(QGIS_BUILDDIR)-qt5 $(DEB_TEST_TARGET)Submit
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	rm -f $(QGIS_BUILDDIR)-qt6/.error
-	LOCPATH=$(CURDIR)/debian/tmp/locale/ \
-	LC_ALL=en_US.UTF-8 \
-	LD_LIBRARY_PATH=$(CURDIR)/$(QGIS_BUILDDIR)-qt6/output/lib:$(LD_LIBRARY_PATH) \
-	PATH=/usr/sbin:$(PATH) \
-		$(TESTMAKE) -C $(QGIS_BUILDDIR)-qt6 $(DEB_TEST_TARGET)Test || touch $(QGIS_BUILDDIR)-qt6/.error
-	# ignore submission errors
-	-$(TESTMAKE) -C $(QGIS_BUILDDIR)-qt6 $(DEB_TEST_TARGET)Submit
-endif
+	-$(TESTMAKE) -C $(QGIS_BUILDDIR) $(DEB_TEST_TARGET)Submit
 	# ignore the test outcome for now
-	# ! [ -f $(QGIS_BUILDDIR)-qt5/.error ]
-	# ! [ -f $(QGIS_BUILDDIR)-qt6/.error ]
+	# ! [ -f $(QGIS_BUILDDIR)/.error ]
 else
 	@echo Skipping tests.
 endif
 	touch test-stamp
 
 override_dh_auto_install:
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt5 install
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6 install
-endif
+	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) install
 
 	# remove extra license files
 	-find $(CURDIR)/debian/tmp/usr/share/qgis*/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
@@ -436,17 +316,6 @@ endif
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/test_provider_wcs*
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_quickapp*
 
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/doc
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/resources
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/svg
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/i18n
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/grass
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/images
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/python/plugins
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/python/console
-endif
-
 	# landing page not packaged
 	$(RM) $(CURDIR)/debian/tmp/usr/lib/qgis*/server/liblandingpage*.so
 	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis*/resources/server/src/landingpage
@@ -461,16 +330,15 @@ endif
 	install -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages/qgis.xml
 
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	# qgis binaries info
 	install -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 
 	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
 	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
-	install -m 755 -d $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/qml/QgsQuick
+	install -m 755 -d $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt6/qml/QgsQuick
 	install -m 755 \
 		$(CURDIR)/debian/tmp/usr/share/qgis/qml/QgsQuick/libqgis_quick_plugin.so \
-		$(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/qml/QgsQuick/libqgis_quick_plugin.so
+		$(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt6/qml/QgsQuick/libqgis_quick_plugin.so
 
 	$(RM) \
 		$(CURDIR)/debian/tmp/usr/bin/qgis \
@@ -486,46 +354,6 @@ ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 
 	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	# qgis binaries info
-	install -m 755 -d $(CURDIR)/debian/qgis-qt6/usr/bin
-
-	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis-qt6 $(CURDIR)/debian/qgis-qt6/usr/bin/qgis-qt6.bin
-	install -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process-qt6 $(CURDIR)/debian/qgis-qt6/usr/bin/qgis_process-qt6.bin
-	install -m 755 -d $(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt6/qml/QgsQuick
-	install -m 755 \
-		$(CURDIR)/debian/tmp/usr/share/qgis-qt6/qml/QgsQuick/libqgis_quick_plugin-qt6.so \
-		$(CURDIR)/debian/tmp/usr/lib/$(DEB_BUILD_MULTIARCH)/qt6/qml/QgsQuick/libqgis_quick_plugin.so
-
-	$(RM) \
-		$(CURDIR)/debian/tmp/usr/bin/qgis-qt6 \
-		$(CURDIR)/debian/tmp/usr/bin/qgis_process-qt6
-
-	# replaced by links
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis-qt6/qml
-
-	# qgis binary wrappers
-	sed -r \
-		-e "s/\{GRASS\}/$(GRASS)/g" \
-		-e "s#\{ORACLE_LIBDIR\}#$(ORACLE_LIBDIR)#g" \
-		-e "s#\{QGISPOSTFIX\}#-qt6#g" \
-		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
-
-	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-qt6/usr/bin/qgis-qt6
-	install -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-qt6/usr/bin/qgis_process-qt6
-
-	sed -i \
-		-e "s#<binary>qgis</binary>#<binary>qgis-qt6</binary>#" \
-		$(CURDIR)/debian/tmp/usr/share/metainfo/org.qgis.qgis.appdata.xml \
-		>$(CURDIR)/debian/tmp/usr/share/metainfo/org.qgis.qgis-qt6.appdata.xml
-
-	sed -i \
-		-e "s#^TryExec=qgis\$$#TryExec=qgis-qt6#" \
-		-e "s#^Exec=qgis #Exec=qgis-qt6 #" \
-		$(CURDIR)/debian/tmp/usr/share/applications/org.qgis.qgis.desktop \
-		>$(CURDIR)/debian/tmp/usr/share/applications/org.qgis.qgis-qt6.desktop
-endif
 
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
@@ -547,23 +375,11 @@ override_dh_installchangelogs:
 	dh_installchangelogs ChangeLog
 
 override_dh_installman:
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	cp qgis.1 qgis.bin.1
 	dh_installman -pqgis qgis.1 qgis.bin.1
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	cp qgis.1 qgis-qt6.bin.1
-	cp qgis.1 qgis-qt6.1
-	dh_installman -pqgis-qt6 qgis-qt6.1 qgis-qt6.bin.1
-endif
 
 override_dh_installmime:
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	dh_installmime -pqgis
-endif
-ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
-	dh_installmime -pqgis-qt6
-endif
 
 override_dh_python3:
 	dh_python3

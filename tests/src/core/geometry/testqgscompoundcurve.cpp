@@ -476,14 +476,14 @@ void TestQgsCompoundCurve::addCurveExtend()
   cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
   cc.addCurve( cs.clone(), true );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (1 2, 2 3, 3 4))"_s );
 
   // try to add another curve with extend existing as true
   // should be ignored.
   cs.setPoints( QgsPointSequence() << QgsPoint( 6, 6 ) << QgsPoint( 7, 8 ) );
   cc.addCurve( cs.clone(), true );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8))"_s );
 
   // try to add a linestring with extend existing as true
   //should be ignored because the last curve isn't a linestring
@@ -491,34 +491,34 @@ void TestQgsCompoundCurve::addCurveExtend()
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 8 ) << QgsPoint( 10, 12 ) );
   cc.addCurve( ls.clone(), true );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12))"_s );
 
   // try to extend with another linestring
   //should add to final part
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 13 ) << QgsPoint( 12, 12 ) );
   cc.addCurve( ls.clone(), true );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12))"_s );
 
   // try to extend with another linestring
   //should add to final part, with no duplicate points
   ls.setPoints( QgsPointSequence() << QgsPoint( 12, 12 ) << QgsPoint( 13, 12 ) << QgsPoint( 14, 15 ) );
   cc.addCurve( ls.clone(), true );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15))"_s );
 
   // not extending, should be added as new curve
   ls.setPoints( QgsPointSequence() << QgsPoint( 15, 16 ) << QgsPoint( 17, 12 ) );
   cc.addCurve( ls.clone(), false );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15),(15 16, 17 12))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15),(15 16, 17 12))"_s );
 
   cc.clear();
 
   // adding a linestring as first part, with extend as true
   cc.addCurve( ls.clone(), true );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ((15 16, 17 12))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ((15 16, 17 12))"_s );
 }
 
 void TestQgsCompoundCurve::removeCurve()
@@ -1378,7 +1378,7 @@ void TestQgsCompoundCurve::deleteVertex()
 
   cc.deleteVertex( QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( cc.numPoints(), 2 );
-  QCOMPARE( cc.curveAt( 0 )->asWkt(), QStringLiteral( "LineString (0 0, 0 2)" ) );
+  QCOMPARE( cc.curveAt( 0 )->asWkt(), u"LineString (0 0, 0 2)"_s );
 
   // removing a start vertex from a 3 point CircularString should remove the whole curve
   cc.clear();
@@ -1472,14 +1472,14 @@ void TestQgsCompoundCurve::filterVertices()
   cc.addCurve( cs.clone() );
   cc.filterVertices( filter );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24))"_s );
 
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
   cc.filterVertices( filter );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(12 111 23 24, 22 122 33 34))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(12 111 23 24, 22 122 33 34))"_s );
 }
 
 void TestQgsCompoundCurve::removeDuplicateNodes()
@@ -1493,31 +1493,31 @@ void TestQgsCompoundCurve::removeDuplicateNodes()
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (11 2, 11 12, 111 12))"_s );
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 2 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 11 2))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve (CircularString (11 2, 11 12, 11 2))"_s );
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 10, 3 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 9, 3 ) << QgsPoint( 11, 2 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 10 3, 11.01 1.99, 9 3, 11 2))" ) );
+  QCOMPARE( cc.asWkt( 2 ), u"CompoundCurve (CircularString (11 2, 10 3, 11.01 1.99, 9 3, 11 2))"_s );
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
-  QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99))" ) );
+  QCOMPARE( cc.asWkt( 2 ), u"CompoundCurve (CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99))"_s );
   QVERIFY( cc.removeDuplicateNodes( 0.02 ) );
   QVERIFY( !cc.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))" ) );
+  QCOMPARE( cc.asWkt( 2 ), u"CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))"_s );
 
   // with tiny segment
   QgsLineString ls;
@@ -1525,15 +1525,15 @@ void TestQgsCompoundCurve::removeDuplicateNodes()
   cc.addCurve( ls.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
-  QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99),(111.01 11.99, 111 12))" ) );
+  QCOMPARE( cc.asWkt( 2 ), u"CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99),(111.01 11.99, 111 12))"_s );
   QVERIFY( cc.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))" ) );
+  QCOMPARE( cc.asWkt( 2 ), u"CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))"_s );
 
   // with multiple duplicate nodes
-  cc.fromWkt( QStringLiteral( "CompoundCurve ((11 1, 11 2, 11 2),CircularString(11 2, 10 3, 10 2),(10 2, 10 2, 11 1))" ) );
+  cc.fromWkt( u"CompoundCurve ((11 1, 11 2, 11 2),CircularString(11 2, 10 3, 10 2),(10 2, 10 2, 11 1))"_s );
 
   QVERIFY( cc.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( cc.asWkt( 0 ), QStringLiteral( "CompoundCurve ((11 1, 11 2),CircularString (11 2, 10 3, 10 2),(10 2, 11 1))" ) );
+  QCOMPARE( cc.asWkt( 0 ), u"CompoundCurve ((11 1, 11 2),CircularString (11 2, 10 3, 10 2),(10 2, 11 1))"_s );
 
   // ensure continuity
   cc.clear();
@@ -1543,7 +1543,7 @@ void TestQgsCompoundCurve::removeDuplicateNodes()
   cc.addCurve( ls.clone() );
 
   QVERIFY( cc.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve ((1 1, 111.01 11.99),(111.01 11.99, 31 33))" ) );
+  QCOMPARE( cc.asWkt( 2 ), u"CompoundCurve ((1 1, 111.01 11.99),(111.01 11.99, 31 33))"_s );
 }
 
 void TestQgsCompoundCurve::addZValue()
@@ -1857,10 +1857,10 @@ void TestQgsCompoundCurve::orientation()
 
   ( void ) cc.orientation(); // no crash
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 0 1), CircularString (0 1, 1 1, 1 0), (1 0, 0 0))" ) );
+  cc.fromWkt( u"CompoundCurve( ( 0 0, 0 1), CircularString (0 1, 1 1, 1 0), (1 0, 0 0))"_s );
   QCOMPARE( cc.orientation(), Qgis::AngularDirection::Clockwise );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))" ) );
+  cc.fromWkt( u"CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))"_s );
   QCOMPARE( cc.orientation(), Qgis::AngularDirection::CounterClockwise );
 }
 
@@ -2272,7 +2272,7 @@ void TestQgsCompoundCurve::boundingBox()
   cc.fromWkb( wkbToAppendPtr );
   QCOMPARE( cc.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve(CircularString( 5 10, 6 10, 5.5 9 ))" ) );
+  cc.fromWkt( u"CompoundCurve(CircularString( 5 10, 6 10, 5.5 9 ))"_s );
   QCOMPARE( cc.boundingBox(), QgsRectangle( 5, 9, 6.125, 10.25 ) );
 
   cc.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -1, 7 ) );
@@ -2336,7 +2336,7 @@ void TestQgsCompoundCurve::boundingBoxIntersects()
   QVERIFY( cc.boundingBoxIntersects( QgsRectangle( -5, -9.5, -2, 2 ) ) );
   QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( -4.5, -8.5, -3, -2 ) ) );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve(CircularString( 5 10, 6 10, 5.5 9 ))" ) );
+  cc.fromWkt( u"CompoundCurve(CircularString( 5 10, 6 10, 5.5 9 ))"_s );
   QVERIFY( cc.boundingBoxIntersects( QgsRectangle( 5.1, -7.5, 7.2, 9.2 ) ) );
   QVERIFY( !cc.boundingBoxIntersects( QgsRectangle( 2, 10.3, 3, 10.4 ) ) );
 
@@ -2361,10 +2361,10 @@ void TestQgsCompoundCurve::interpolate()
   std::unique_ptr<QgsPoint> interpolateResult( cc.interpolatePoint( 1 ) ); // no crash
   QVERIFY( !interpolateResult.get() );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve ZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  cc.fromWkt( u"CompoundCurve ZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))"_s );
   interpolateResult.reset( cc.interpolatePoint( 0 ) );
 
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (5 0 -1 -2)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point ZM (5 0 -1 -2)"_s );
 
   interpolateResult.reset( cc.interpolatePoint( -1 ) );
   QVERIFY( !interpolateResult.get() );
@@ -2373,31 +2373,31 @@ void TestQgsCompoundCurve::interpolate()
   QVERIFY( !interpolateResult.get() );
 
   interpolateResult.reset( cc.interpolatePoint( 1 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (6 0 -0.6 -1.2)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point ZM (6 0 -0.6 -1.2)"_s );
 
   interpolateResult.reset( cc.interpolatePoint( 7 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (11.42 0.91 5.73 6.73)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point ZM (11.42 0.91 5.73 6.73)"_s );
 
   interpolateResult.reset( cc.interpolatePoint( 1.5 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (6.5 0 -0.4 -0.8)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point ZM (6.5 0 -0.4 -0.8)"_s );
 
   interpolateResult.reset( cc.interpolatePoint( cc.length() ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (12 0 13 14)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point ZM (12 0 13 14)"_s );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve Z( ( 5 0 -1, 10 0 1 ), CircularString Z (10 0 1, 11 1 3, 12 0 13))" ) );
+  cc.fromWkt( u"CompoundCurve Z( ( 5 0 -1, 10 0 1 ), CircularString Z (10 0 1, 11 1 3, 12 0 13))"_s );
   interpolateResult.reset( cc.interpolatePoint( 1 ) );
 
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point Z (6 0 -0.6)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point Z (6 0 -0.6)"_s );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve M( ( 5 0 -1, 10 0 1 ), CircularString M (10 0 1, 11 1 3, 12 0 13))" ) );
+  cc.fromWkt( u"CompoundCurve M( ( 5 0 -1, 10 0 1 ), CircularString M (10 0 1, 11 1 3, 12 0 13))"_s );
   interpolateResult.reset( cc.interpolatePoint( 1 ) );
 
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point M (6 0 -0.6)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point M (6 0 -0.6)"_s );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))" ) );
+  cc.fromWkt( u"CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))"_s );
   interpolateResult.reset( cc.interpolatePoint( 1 ) );
 
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (6 0)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), u"Point (6 0)"_s );
 }
 
 void TestQgsCompoundCurve::swapXy()
@@ -2411,14 +2411,14 @@ void TestQgsCompoundCurve::swapXy()
   cc.addCurve( cs.clone() );
   cc.swapXy();
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))"_s );
 
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
   cc.swapXy();
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(111 12 23 24, 122 22 33 34))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(111 12 23 24, 122 22 33 34))"_s );
 }
 
 void TestQgsCompoundCurve::reversed()
@@ -2529,14 +2529,14 @@ void TestQgsCompoundCurve::transformVertices()
   cc.addCurve( cs.clone() );
   cc.transformVertices( transform );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (3 5 7 9, 13 5 7 9, 13 15 17 19, 113 15 27 29, 3 5 7 9))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (3 5 7 9, 13 5 7 9, 13 15 17 19, 113 15 27 29, 3 5 7 9))"_s );
 
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
   cc.transformVertices( transform );
 
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (5 8 11 14, 15 8 11 14, 15 18 21 24, 115 18 31 34, 5 8 11 14),(14 114 27 29, 24 125 37 39, 3 114 27 29))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (5 8 11 14, 15 8 11 14, 15 18 21 24, 115 18 31 34, 5 8 11 14),(14 114 27 29, 24 125 37 39, 3 114 27 29))"_s );
 }
 
 void TestQgsCompoundCurve::transformWithClass()
@@ -2553,14 +2553,14 @@ void TestQgsCompoundCurve::transformWithClass()
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.transform( &transformer ) );
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (3 16 8 3, 33 16 8 3, 33 26 18 13, 333 26 28 23, 3 16 8 3))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (3 16 8 3, 33 16 8 3, 33 26 18 13, 333 26 28 23, 3 16 8 3))"_s );
 
   QgsLineString ls;
   ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
 
   QVERIFY( cc.transform( &transformer ) );
-  QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (9 30 13 2, 99 30 13 2, 99 40 23 12, 999 40 33 22, 9 30 13 2),(36 125 28 23, 66 136 38 33, 3 125 28 23))" ) );
+  QCOMPARE( cc.asWkt(), u"CompoundCurve ZM (CircularString ZM (9 30 13 2, 99 30 13 2, 99 40 23 12, 999 40 33 22, 9 30 13 2),(36 125 28 23, 66 136 38 33, 3 125 28 23))"_s );
 
   TestFailTransformer failTransformer;
   QVERIFY( !cc.transform( &failTransformer ) );
@@ -2568,8 +2568,8 @@ void TestQgsCompoundCurve::transformWithClass()
 
 void TestQgsCompoundCurve::crsTransform()
 {
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
@@ -2598,8 +2598,8 @@ void TestQgsCompoundCurve::crsTransform()
 
 void TestQgsCompoundCurve::crs3dTransformAndReverse()
 {
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   //3d CRS transform
@@ -2816,10 +2816,10 @@ void TestQgsCompoundCurve::substring()
   QVERIFY( substringResult.get() );
   QVERIFY( substringResult->isEmpty() );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve ZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  cc.fromWkt( u"CompoundCurve ZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))"_s );
   substringResult.reset( cc.curveSubstring( 0, 0 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 5 0 -1 -2))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((5 0 -1 -2, 5 0 -1 -2))"_s );
 
   substringResult.reset( cc.curveSubstring( -1, -0.1 ) );
   QVERIFY( substringResult->isEmpty() );
@@ -2828,37 +2828,37 @@ void TestQgsCompoundCurve::substring()
   QVERIFY( substringResult->isEmpty() );
 
   substringResult.reset( cc.curveSubstring( -1, 1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 6 0 -0.6 -1.2))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((5 0 -1 -2, 6 0 -0.6 -1.2))"_s );
 
   substringResult.reset( cc.curveSubstring( 1, -1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6 0 -0.6 -1.2))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((6 0 -0.6 -1.2, 6 0 -0.6 -1.2))"_s );
 
   substringResult.reset( cc.curveSubstring( -1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((5 0 -1 -2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))"_s );
 
   substringResult.reset( cc.curveSubstring( 1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))"_s );
 
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 10.46 0.84 2.27 3.27, 11.42 0.91 5.73 6.73))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 10.46 0.84 2.27 3.27, 11.42 0.91 5.73 6.73))"_s );
 
   substringResult.reset( cc.curveSubstring( 1, 1.5 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))"_s );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve Z( ( 5 0 -1, 10 0 1 ), CircularString Z (10 0 1, 11 1 3, 12 0 13))" ) );
+  cc.fromWkt( u"CompoundCurve Z( ( 5 0 -1, 10 0 1 ), CircularString Z (10 0 1, 11 1 3, 12 0 13))"_s );
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve Z ((6 0 -0.6, 10 0 1),CircularString Z (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve Z ((6 0 -0.6, 10 0 1),CircularString Z (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))"_s );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve M( ( 5 0 -1, 10 0 1 ), CircularString M (10 0 1, 11 1 3, 12 0 13))" ) );
+  cc.fromWkt( u"CompoundCurve M( ( 5 0 -1, 10 0 1 ), CircularString M (10 0 1, 11 1 3, 12 0 13))"_s );
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve M ((6 0 -0.6, 10 0 1),CircularString M (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve M ((6 0 -0.6, 10 0 1),CircularString M (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))"_s );
 
-  cc.fromWkt( QStringLiteral( "CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))" ) );
+  cc.fromWkt( u"CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))"_s );
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ((6 0, 10 0),CircularString (10 0, 10.46 0.84, 11.42 0.91))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), u"CompoundCurve ((6 0, 10 0),CircularString (10 0, 10.46 0.84, 11.42 0.91))"_s );
 }
 
 void TestQgsCompoundCurve::convertTo()
@@ -3073,29 +3073,29 @@ void TestQgsCompoundCurve::exportImport()
   exportLineStringFloat.setPoints( QgsPointSequence() << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) << QgsPoint( 3 + 1 / 3.0, 3 + 2 / 3.0 ) );
   exportCurveFloat.addCurve( exportLineStringFloat.clone() );
 
-  QDomDocument doc( QStringLiteral( "gml" ) );
-  QString expectedGML2( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">31,32 41,42 51,52 61,62</coordinates></LineString>" ) );
+  QDomDocument doc( u"gml"_s );
+  QString expectedGML2( u"<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">31,32 41,42 51,52 61,62</coordinates></LineString>"_s );
   QString result = elemToString( exportCurve.asGml2( doc ) );
   QGSCOMPAREGML( result, expectedGML2 );
 
-  QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667 3.333,3.667</coordinates></LineString>" ) );
+  QString expectedGML2prec3( u"<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667 3.333,3.667</coordinates></LineString>"_s );
   result = elemToString( exportCurveFloat.asGml2( doc, 3 ) );
   QGSCOMPAREGML( result, expectedGML2prec3 );
 
-  QString expectedGML2empty( QStringLiteral( "<LineString xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<LineString xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsCompoundCurve().asGml2( doc ) ), expectedGML2empty );
 
 
   //asGML3
-  QString expectedGML3( QStringLiteral( "<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">51 52 61 62</posList></LineString></curveMember></CompositeCurve>" ) );
+  QString expectedGML3( u"<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">51 52 61 62</posList></LineString></curveMember></CompositeCurve>"_s );
   result = elemToString( exportCurve.asGml3( doc ) );
   QCOMPARE( result, expectedGML3 );
 
-  QString expectedGML3prec3( QStringLiteral( "<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 2.667 3.333 3.667</posList></LineString></curveMember></CompositeCurve>" ) );
+  QString expectedGML3prec3( u"<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 2.667 3.333 3.667</posList></LineString></curveMember></CompositeCurve>"_s );
   result = elemToString( exportCurveFloat.asGml3( doc, 3 ) );
   QCOMPARE( result, expectedGML3prec3 );
 
-  QString expectedGML3empty( QStringLiteral( "<CompositeCurve xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<CompositeCurve xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsCompoundCurve().asGml3( doc ) ), expectedGML3empty );
 
   //asJSON
@@ -3108,10 +3108,10 @@ void TestQgsCompoundCurve::exportImport()
   QCOMPARE( result, expectedJsonPrec3 );
 
   //asKML
-  QString expectedKml( QStringLiteral( "<LineString><altitudeMode>clampToGround</altitudeMode><coordinates>31,32,0 41,42,0 51,52,0 61,62,0</coordinates></LineString>" ) );
+  QString expectedKml( u"<LineString><altitudeMode>clampToGround</altitudeMode><coordinates>31,32,0 41,42,0 51,52,0 61,62,0</coordinates></LineString>"_s );
   QCOMPARE( exportCurve.asKml(), expectedKml );
 
-  QString expectedKmlPrec3( QStringLiteral( "<LineString><altitudeMode>clampToGround</altitudeMode><coordinates>0.333,0.667,0 1.333,1.667,0 2.333,2.667,0 3.333,3.667,0</coordinates></LineString>" ) );
+  QString expectedKmlPrec3( u"<LineString><altitudeMode>clampToGround</altitudeMode><coordinates>0.333,0.667,0 1.333,1.667,0 2.333,2.667,0 3.333,3.667,0</coordinates></LineString>"_s );
   QCOMPARE( exportCurveFloat.asKml( 3 ), expectedKmlPrec3 );
 }
 
@@ -3160,15 +3160,15 @@ void TestQgsCompoundCurve::compoundCurveCondense_data()
   QTest::addColumn<QString>( "curve" );
   QTest::addColumn<QString>( "expected" );
 
-  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "CompoundCurve EMPTY" );
-  QTest::newRow( "compound curve one line" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 1 2))" ) << QStringLiteral( "CompoundCurve ((1 1, 1 2))" );
-  QTest::newRow( "compound curve one circular string" ) << QStringLiteral( "COMPOUNDCURVE(CIRCULARSTRING(1 1, 1 2, 2 2))" ) << QStringLiteral( "CompoundCurve (CircularString (1 1, 1 2, 2 2))" );
-  QTest::newRow( "compound curve can't condense" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 2, 2 2),(2 2, 2 3),CIRCULARSTRING(2 3, 2 0, 2 1))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1),CircularString (1 1, 1 2, 2 2),(2 2, 2 3),CircularString (2 3, 2 0, 2 1))" );
-  QTest::newRow( "compound curve two lines" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0))" );
-  QTest::newRow( "compound curve three lines" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),(3 0, 4 0, 5 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0, 4 0, 5 0))" );
-  QTest::newRow( "compound curve two lines and cs" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0))" );
-  QTest::newRow( "compound curve two cs" ) << QStringLiteral( "COMPOUNDCURVE(CIRCULARSTRING(1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 0, 3 0))" ) << QStringLiteral( "CompoundCurve (CircularString (1 5, 1 4, 1 1, 1 0, 3 0))" );
-  QTest::newRow( "compound curve complex" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0),(5 0, 6 0),(6 0, 7 0),CIRCULARSTRING(7 0, 8 0, 9 0),CIRCULARSTRING(9 0, 10 1, 10 0),(10 0, 10 -1))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0),(5 0, 6 0, 7 0),CircularString (7 0, 8 0, 9 0, 10 1, 10 0),(10 0, 10 -1))" );
+  QTest::newRow( "compound curve empty" ) << u"COMPOUNDCURVE()"_s << u"CompoundCurve EMPTY"_s;
+  QTest::newRow( "compound curve one line" ) << u"COMPOUNDCURVE((1 1, 1 2))"_s << u"CompoundCurve ((1 1, 1 2))"_s;
+  QTest::newRow( "compound curve one circular string" ) << u"COMPOUNDCURVE(CIRCULARSTRING(1 1, 1 2, 2 2))"_s << u"CompoundCurve (CircularString (1 1, 1 2, 2 2))"_s;
+  QTest::newRow( "compound curve can't condense" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 2, 2 2),(2 2, 2 3),CIRCULARSTRING(2 3, 2 0, 2 1))"_s << u"CompoundCurve ((1 5, 1 4, 1 1),CircularString (1 1, 1 2, 2 2),(2 2, 2 3),CircularString (2 3, 2 0, 2 1))"_s;
+  QTest::newRow( "compound curve two lines" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0))"_s;
+  QTest::newRow( "compound curve three lines" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),(3 0, 4 0, 5 0))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0, 4 0, 5 0))"_s;
+  QTest::newRow( "compound curve two lines and cs" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0))"_s;
+  QTest::newRow( "compound curve two cs" ) << u"COMPOUNDCURVE(CIRCULARSTRING(1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 0, 3 0))"_s << u"CompoundCurve (CircularString (1 5, 1 4, 1 1, 1 0, 3 0))"_s;
+  QTest::newRow( "compound curve complex" ) << u"COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0),(5 0, 6 0),(6 0, 7 0),CIRCULARSTRING(7 0, 8 0, 9 0),CIRCULARSTRING(9 0, 10 1, 10 0),(10 0, 10 -1))"_s << u"CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0),(5 0, 6 0, 7 0),CircularString (7 0, 8 0, 9 0, 10 1, 10 0),(10 0, 10 -1))"_s;
 }
 
 void TestQgsCompoundCurve::compoundCurveCondense()
@@ -3191,15 +3191,15 @@ void TestQgsCompoundCurve::cast()
 
   cs.clear();
 
-  cs.fromWkt( QStringLiteral( "CompoundCurve Z ((6 0 -0.6, 6.5 0 -0.4))" ) );
+  cs.fromWkt( u"CompoundCurve Z ((6 0 -0.6, 6.5 0 -0.4))"_s );
   QVERIFY( QgsCompoundCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
-  cs.fromWkt( QStringLiteral( "CompoundCurve M ((6 0 -0.6, 6.5 0 -0.4))" ) );
+  cs.fromWkt( u"CompoundCurve M ((6 0 -0.6, 6.5 0 -0.4))"_s );
   QVERIFY( QgsCompoundCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 
-  cs.fromWkt( QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))" ) );
+  cs.fromWkt( u"CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))"_s );
   QVERIFY( QgsCompoundCurve::cast( &cs ) );
   QVERIFY( QgsCurve::cast( &cs ) );
 }

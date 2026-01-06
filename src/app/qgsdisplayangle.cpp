@@ -40,8 +40,8 @@ void QgsDisplayAngle::setAngleInRadians( double value )
   mValue = value;
 
   const QgsSettings settings;
-  const Qgis::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( Qgis::AngleUnit::Degrees ) ).toString() );
-  const int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+  const Qgis::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( u"qgis/measure/angleunits"_s, QgsUnitTypes::encodeUnit( Qgis::AngleUnit::Degrees ) ).toString() );
+  const int decimals = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
   mAngleLineEdit->setText( QgsUnitTypes::formatAngle( mValue * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Radians, unit ), decimals, unit ) );
 }
 

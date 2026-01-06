@@ -361,7 +361,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.14
        */
-      bool exportLayersAsSeperateFiles = false; // TODO QGIS 4 fix typo  //#spellok
+      bool exportLayersAsSeperateFiles = false; // TODO QGIS 5 fix typo  //#spellok
 
       /**
        * TRUE if ISO3200 extension format georeferencing should be used.

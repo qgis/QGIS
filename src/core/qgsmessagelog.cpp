@@ -42,13 +42,13 @@ void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::Success:
     case Qgis::MessageLevel::NoLevel:
-      QgsDebugMsgLevelLoc( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
+      QgsDebugMsgLevelLoc( u"%1 %2[%3] %4"_s.arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
                            1, file, function, line );
       break;
 
     case Qgis::MessageLevel::Warning:
     case Qgis::MessageLevel::Critical:
-      QgsDebugErrorLoc( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
+      QgsDebugErrorLoc( u"%1 %2[%3] %4"_s.arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( static_cast< int >( level ) ).arg( message ),
                         file, function, line );
       break;
   }
@@ -82,11 +82,11 @@ void QgsMessageLogConsole::logMessage( const QString &message, const QString &ta
 QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) const
 {
   const QString time = QTime::currentTime().toString();
-  const QString levelStr = level == Qgis::MessageLevel::Info ? QStringLiteral( "INFO" ) :
-                           level == Qgis::MessageLevel::Warning ? QStringLiteral( "WARNING" ) :
-                           QStringLiteral( "CRITICAL" );
+  const QString levelStr = level == Qgis::MessageLevel::Info ? u"INFO"_s :
+                           level == Qgis::MessageLevel::Warning ? u"WARNING"_s :
+                           u"CRITICAL"_s;
   const QString pid = QString::number( QCoreApplication::applicationPid() );
-  return QStringLiteral( "%1 %2 %3[%4]: %5\n" ).arg( time, levelStr, tag, pid, message );
+  return u"%1 %2 %3[%4]: %5\n"_s.arg( time, levelStr, tag, pid, message );
 }
 
 //

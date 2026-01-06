@@ -229,7 +229,7 @@ void QgsLayoutImageExportOptionsDialog::clipToContentsToggled( bool state )
 
 void QgsLayoutImageExportOptionsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  QgsHelp::openHelp( u"print_composer/create_output.html"_s );
 }
 
 bool QgsLayoutImageExportOptionsDialog::shouldShowQuality() const

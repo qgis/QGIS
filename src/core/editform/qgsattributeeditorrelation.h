@@ -49,7 +49,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
       AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
 
     Q_ENUM( Button )

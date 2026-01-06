@@ -169,7 +169,7 @@ class CORE_EXPORT QgsPathResolver
     % MethodCode
     if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsPathResolver
     % MethodCode
     if ( !QgsPathResolver::removePathWriter( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No writer with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No writer with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End

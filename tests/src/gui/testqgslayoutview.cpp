@@ -79,8 +79,8 @@ void TestQgsLayoutView::basic()
 void TestQgsLayoutView::tool()
 {
   QgsLayoutView *view = new QgsLayoutView();
-  QgsLayoutViewTool *tool = new QgsLayoutViewTool( view, QStringLiteral( "name" ) );
-  QgsLayoutViewTool *tool2 = new QgsLayoutViewTool( view, QStringLiteral( "name2" ) );
+  QgsLayoutViewTool *tool = new QgsLayoutViewTool( view, u"name"_s );
+  QgsLayoutViewTool *tool2 = new QgsLayoutViewTool( view, u"name2"_s );
 
   QVERIFY( tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 5, 10 ) ) );
   QVERIFY( tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 5, 15 ) ) );
@@ -124,7 +124,7 @@ class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-ma
 {
   public:
     LoggingTool( QgsLayoutView *view )
-      : QgsLayoutViewTool( view, QStringLiteral( "logging" ) )
+      : QgsLayoutViewTool( view, u"logging"_s )
     {}
 
     bool receivedMoveEvent = false;
@@ -265,7 +265,7 @@ void TestQgsLayoutView::guiRegistry()
     return new QgsLayoutViewRectangularRubberBand( view );
   };
 
-  QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
+  QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, u"mytype"_s, QIcon(), createWidget, createRubberBand );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   int uuid = registry.itemMetadataIds().value( 0 );
@@ -273,7 +273,7 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( registry.metadataIdForItemType( QgsLayoutItemRegistry::LayoutItem + 101 ), uuid );
 
   // duplicate type id is allowed
-  metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
+  metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, u"mytype"_s, QIcon(), createWidget, createRubberBand );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 2 );
   //retrieve metadata
@@ -282,7 +282,7 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( registry.metadataIdForItemType( QgsLayoutItemRegistry::LayoutItem + 101 ), uuid );
 
   QVERIFY( registry.itemMetadata( uuid ) );
-  QCOMPARE( registry.itemMetadata( uuid )->visibleName(), QStringLiteral( "mytype" ) );
+  QCOMPARE( registry.itemMetadata( uuid )->visibleName(), u"mytype"_s );
 
   QWidget *widget = registry.createItemWidget( testItem.get() );
   QVERIFY( widget );
@@ -297,15 +297,15 @@ void TestQgsLayoutView::guiRegistry()
   delete band;
 
   // groups
-  QVERIFY( registry.addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "g1" ) ) ) );
-  QCOMPARE( registry.itemGroup( QStringLiteral( "g1" ) ).id, QStringLiteral( "g1" ) );
+  QVERIFY( registry.addItemGroup( QgsLayoutItemGuiGroup( u"g1"_s ) ) );
+  QCOMPARE( registry.itemGroup( u"g1"_s ).id, u"g1"_s );
   // can't add duplicate group
-  QVERIFY( !registry.addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "g1" ) ) ) );
+  QVERIFY( !registry.addItemGroup( QgsLayoutItemGuiGroup( u"g1"_s ) ) );
 
   //creating item
   QgsLayoutItem *item = registry.createItem( uuid, nullptr );
   QVERIFY( !item );
-  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), QStringLiteral( "my types" ), []( QgsLayout *layout ) -> QgsLayoutItem * {
+  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, u"my type"_s, u"my types"_s, []( QgsLayout *layout ) -> QgsLayoutItem * {
     return new TestItem( layout );
   } ) );
 
@@ -316,7 +316,7 @@ void TestQgsLayoutView::guiRegistry()
   delete item;
 
   // override create func
-  metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
+  metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, u"mytype"_s, QIcon(), createWidget, createRubberBand );
   metadata->setItemCreationFunction( []( QgsLayout *layout ) -> QgsLayoutItem * {
     TestItem *item = new TestItem( layout );
     item->mFlag = 2;
@@ -345,11 +345,11 @@ void TestQgsLayoutView::guiRegistry()
 
   // test removing item group
   const QSignalSpy spyGroupRemoved( &registry, &QgsLayoutItemGuiRegistry::groupRemoved );
-  QVERIFY( registry.removeItemGroup( QStringLiteral( "g1" ) ) );
+  QVERIFY( registry.removeItemGroup( u"g1"_s ) );
   QCOMPARE( spyGroupRemoved.count(), 1 );
-  QCOMPARE( spyGroupRemoved.at( 0 ).at( 0 ).toString(), QStringLiteral( "g1" ) );
+  QCOMPARE( spyGroupRemoved.at( 0 ).at( 0 ).toString(), u"g1"_s );
   // can't remove group again
-  QVERIFY( !registry.removeItemGroup( QStringLiteral( "g1" ) ) );
+  QVERIFY( !registry.removeItemGroup( u"g1"_s ) );
 }
 
 void TestQgsLayoutView::rubberBand()

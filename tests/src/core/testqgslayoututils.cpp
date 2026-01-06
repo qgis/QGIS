@@ -32,7 +32,7 @@ class TestQgsLayoutUtils : public QgsTest
 
   public:
     TestQgsLayoutUtils()
-      : QgsTest( QStringLiteral( "Layout Utils Tests" ), QStringLiteral( "composer_utils" ) ) {}
+      : QgsTest( u"Layout Utils Tests"_s, u"composer_utils"_s ) {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -65,8 +65,8 @@ class TestQgsLayoutUtils : public QgsTest
 
 void TestQgsLayoutUtils::initTestCase()
 {
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Oblique" ) );
-  mTestFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Oblique " ) );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << u"Oblique"_s );
+  mTestFont = QgsFontUtils::getStandardTestFont( u"Oblique "_s );
   mTestFont.setItalic( true );
 }
 
@@ -119,7 +119,7 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     const double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
-    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    qDebug() << u"actual: %1 expected: %2"_s.arg( result ).arg( ( *it ).second );
     QGSCOMPARENEAR( result, ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
   }
 
@@ -139,7 +139,7 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     const double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
-    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    qDebug() << u"actual: %1 expected: %2"_s.arg( result ).arg( ( *it ).second );
     QGSCOMPARENEAR( result, ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
   }
 }
@@ -482,7 +482,7 @@ void TestQgsLayoutUtils::textHeightMM()
 void TestQgsLayoutUtils::drawTextPos()
 {
   //test drawing with no painter
-  QgsLayoutUtils::drawText( nullptr, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( nullptr, QPointF( 5, 15 ), u"Abc123"_s, mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -490,7 +490,7 @@ void TestQgsLayoutUtils::drawTextPos()
   testImage.fill( qRgb( 152, 219, 249 ) );
   QPainter testPainter;
   testPainter.begin( &testImage );
-  QgsLayoutUtils::drawText( &testPainter, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white );
+  QgsLayoutUtils::drawText( &testPainter, QPointF( 5, 15 ), u"Abc123"_s, mTestFont, Qt::white );
   testPainter.end();
   QGSVERIFYIMAGECHECK( "composerutils_drawtext_pos", "composerutils_drawtext_pos", testImage, QString(), 100 );
 
@@ -499,7 +499,7 @@ void TestQgsLayoutUtils::drawTextPos()
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
   testPainter.setPen( QPen( Qt::green ) );
-  QgsLayoutUtils::drawText( &testPainter, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( &testPainter, QPointF( 5, 15 ), u"Abc123"_s, mTestFont );
   testPainter.end();
   QGSVERIFYIMAGECHECK( "composerutils_drawtext_posnocolor", "composerutils_drawtext_posnocolor", testImage, QString(), 100 );
 }
@@ -507,7 +507,7 @@ void TestQgsLayoutUtils::drawTextPos()
 void TestQgsLayoutUtils::drawTextRect()
 {
   //test drawing with no painter
-  QgsLayoutUtils::drawText( nullptr, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( nullptr, QRectF( 5, 15, 200, 50 ), u"Abc123"_s, mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -515,7 +515,7 @@ void TestQgsLayoutUtils::drawTextRect()
   testImage.fill( qRgb( 152, 219, 249 ) );
   QPainter testPainter;
   testPainter.begin( &testImage );
-  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white );
+  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), u"Abc123"_s, mTestFont, Qt::white );
   testPainter.end();
   QGSVERIFYIMAGECHECK( "composerutils_drawtext_rect", "composerutils_drawtext_rect", testImage, QString(), 100 );
 
@@ -524,21 +524,21 @@ void TestQgsLayoutUtils::drawTextRect()
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
   testPainter.setPen( QPen( Qt::green ) );
-  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), u"Abc123"_s, mTestFont );
   testPainter.end();
   QGSVERIFYIMAGECHECK( "composerutils_drawtext_rectnocolor", "composerutils_drawtext_rectnocolor", testImage, QString(), 100 );
 
   //test alignment settings
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
-  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::black, Qt::AlignRight, Qt::AlignBottom );
+  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 200, 50 ), u"Abc123"_s, mTestFont, Qt::black, Qt::AlignRight, Qt::AlignBottom );
   testPainter.end();
   QGSVERIFYIMAGECHECK( "composerutils_drawtext_rectalign", "composerutils_drawtext_rectalign", testImage, QString(), 100 );
 
   //test extra flags - render without clipping
   testImage.fill( qRgb( 152, 219, 249 ) );
   testPainter.begin( &testImage );
-  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
+  QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), u"Abc123"_s, mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
   testPainter.end();
   QGSVERIFYIMAGECHECK( "composerutils_drawtext_rectflag", "composerutils_drawtext_rectflag", testImage, QString(), 100 );
 }
@@ -610,15 +610,15 @@ void TestQgsLayoutUtils::decodePaperOrientation()
 {
   QgsLayoutItemPage::Orientation orientation;
   bool ok = false;
-  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( "bad string" ), ok );
+  orientation = QgsLayoutUtils::decodePaperOrientation( u"bad string"_s, ok );
   QVERIFY( !ok );
   QCOMPARE( orientation, QgsLayoutItemPage::Landscape ); //should default to landscape
   ok = false;
-  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( "portrait" ), ok );
+  orientation = QgsLayoutUtils::decodePaperOrientation( u"portrait"_s, ok );
   QVERIFY( ok );
   QCOMPARE( orientation, QgsLayoutItemPage::Portrait );
   ok = false;
-  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( " LANDSCAPE  " ), ok );
+  orientation = QgsLayoutUtils::decodePaperOrientation( u" LANDSCAPE  "_s, ok );
   QVERIFY( ok );
   QCOMPARE( orientation, QgsLayoutItemPage::Landscape );
 }
@@ -626,9 +626,9 @@ void TestQgsLayoutUtils::decodePaperOrientation()
 void TestQgsLayoutUtils::mapLayerFromString()
 {
   // add some layers to a project
-  QgsVectorLayer *l1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "layer 1" ), QStringLiteral( "memory" ) );
-  QgsVectorLayer *l2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "layer 2" ), QStringLiteral( "memory" ) );
-  QgsVectorLayer *l2a = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "LAYER 2" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *l1 = new QgsVectorLayer( u"Point?field=col1:integer&field=col2:integer&field=col3:integer"_s, u"layer 1"_s, u"memory"_s );
+  QgsVectorLayer *l2 = new QgsVectorLayer( u"Point?field=col1:integer&field=col2:integer&field=col3:integer"_s, u"layer 2"_s, u"memory"_s );
+  QgsVectorLayer *l2a = new QgsVectorLayer( u"Point?field=col1:integer&field=col2:integer&field=col3:integer"_s, u"LAYER 2"_s, u"memory"_s );
   QgsProject p;
   p.addMapLayer( l1 );
   p.addMapLayer( l2 );

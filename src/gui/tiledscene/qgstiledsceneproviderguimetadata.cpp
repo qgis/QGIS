@@ -25,10 +25,10 @@
 class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "tiledscene" ); }
+    QString providerKey() const override { return u"tiledscene"_s; }
     QString text() const override { return QObject::tr( "Scene" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 51; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTiledSceneLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddTiledSceneLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsTiledSceneSourceSelect( parent, fl, widgetMode );
@@ -36,7 +36,7 @@ class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsTiledSceneProviderGuiMetadata::QgsTiledSceneProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "tiledscene" ) )
+  : QgsProviderGuiMetadata( u"tiledscene"_s )
 {
 }
 

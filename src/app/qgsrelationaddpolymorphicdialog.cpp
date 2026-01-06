@@ -43,7 +43,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddPolymorphicDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRelationAddPolymorphicDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-polymorphic-relations" ) );
+    QgsHelp::openHelp( u"working_with_vector/attribute_table.html#defining-polymorphic-relations"_s );
   } );
 
   const QVector<QgsVectorLayer *> layers = QgsProject::instance()->layers<QgsVectorLayer *>();
@@ -214,7 +214,7 @@ QString QgsRelationAddPolymorphicDialog::relationId() const
 QString QgsRelationAddPolymorphicDialog::relationName() const
 {
   QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
-  return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : QStringLiteral( "<NO LAYER>" ) );
+  return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : u"<NO LAYER>"_s );
 }
 
 Qgis::RelationshipStrength QgsRelationAddPolymorphicDialog::relationStrength() const

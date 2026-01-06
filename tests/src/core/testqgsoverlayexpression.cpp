@@ -76,41 +76,41 @@ void TestQgsOverlayExpression::initTestCase()
 
   const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
 
-  const QString rectanglesFileName = testDataDir + QStringLiteral( "rectangles.shp" );
+  const QString rectanglesFileName = testDataDir + u"rectangles.shp"_s;
   const QFileInfo rectanglesFileInfo( rectanglesFileName );
-  mRectanglesLayer = new QgsVectorLayer( rectanglesFileInfo.filePath(), QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
-  const QString polygonsFileName = testDataDir + QStringLiteral( "polys_overlapping_with_id.shp" );
+  mRectanglesLayer = new QgsVectorLayer( rectanglesFileInfo.filePath(), u"rectangles"_s, u"ogr"_s );
+  const QString polygonsFileName = testDataDir + u"polys_overlapping_with_id.shp"_s;
   const QFileInfo polygonsFileInfo( polygonsFileName );
-  mPolyLayer = new QgsVectorLayer( polygonsFileInfo.filePath(), QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  mPolyLayer = new QgsVectorLayer( polygonsFileInfo.filePath(), u"polys"_s, u"ogr"_s );
 
   // Create linestrings target layer for test
-  QgsVectorLayer *linestringsLayer = new QgsVectorLayer { QStringLiteral( "LineString?crs=epsg:4326" ), QStringLiteral( "linestrings" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer *linestringsLayer = new QgsVectorLayer { u"LineString?crs=epsg:4326"_s, u"linestrings"_s, u"memory"_s };
 
   QgsFeature f1 { linestringsLayer->fields() };
-  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(1 0, 2 0)" ) ) );
+  f1.setGeometry( QgsGeometry::fromWkt( u"LINESTRING(1 0, 2 0)"_s ) );
   QgsFeature f2 { linestringsLayer->fields() };
-  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(3 0, 5 0)" ) ) );
+  f2.setGeometry( QgsGeometry::fromWkt( u"LINESTRING(3 0, 5 0)"_s ) );
 
   linestringsLayer->dataProvider()->addFeature( f1 );
   linestringsLayer->dataProvider()->addFeature( f2 );
 
   // Points layer for tests
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer { QStringLiteral( "Point?crs=epsg:4326" ), QStringLiteral( "points" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer { u"Point?crs=epsg:4326"_s, u"points"_s, u"memory"_s };
 
   QgsFeature f3 { pointsLayer->fields() };
-  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(1 0)" ) ) );
+  f3.setGeometry( QgsGeometry::fromWkt( u"POINT(1 0)"_s ) );
   QgsFeature f4 { pointsLayer->fields() };
-  f4.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(3 0)" ) ) );
+  f4.setGeometry( QgsGeometry::fromWkt( u"POINT(3 0)"_s ) );
 
   pointsLayer->dataProvider()->addFeature( f3 );
   pointsLayer->dataProvider()->addFeature( f4 );
 
-  QgsVectorLayer *polygonsLayer = new QgsVectorLayer { R"layer_definition(Polygon?crs=EPSG:2051&uid={d6f1eaf3-ec08-4e6c-9e39-6dab242e73f4}&field=fid:integer)layer_definition", QStringLiteral( "polygons2" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer *polygonsLayer = new QgsVectorLayer { R"layer_definition(Polygon?crs=EPSG:2051&uid={d6f1eaf3-ec08-4e6c-9e39-6dab242e73f4}&field=fid:integer)layer_definition", u"polygons2"_s, u"memory"_s };
   QgsFeature f { polygonsLayer->fields() };
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((2604689.23400000017136335 1231339.72999999998137355, 2604696.20599999977275729 1231363.55400000000372529, 2604720.66000000014901161 1231358.27099999994970858, 2604713.89399999985471368 1231333.42900000000372529, 2604704.85499999998137355 1231335.10299999988637865, 2604695.41300000017508864 1231337.88999999989755452, 2604689.23400000017136335 1231339.72999999998137355))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((2604689.23400000017136335 1231339.72999999998137355, 2604696.20599999977275729 1231363.55400000000372529, 2604720.66000000014901161 1231358.27099999994970858, 2604713.89399999985471368 1231333.42900000000372529, 2604704.85499999998137355 1231335.10299999988637865, 2604695.41300000017508864 1231337.88999999989755452, 2604689.23400000017136335 1231339.72999999998137355))"_s ) );
   f.setAttribute( 0, 997 );
   polygonsLayer->dataProvider()->addFeature( f );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))"_s ) );
   f.setAttribute( 0, 1002 );
   polygonsLayer->dataProvider()->addFeature( f );
   QVERIFY( polygonsLayer->isValid() );
@@ -251,10 +251,10 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QCOMPARE( result.size(), expectedResult.size() );
   for ( int i = 0; i < result.size(); ++i )
   {
-    QCOMPARE( result.at( i ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), expectedResult.at( i ).toMap().value( QStringLiteral( "id" ) ).toLongLong() );
-    QCOMPARE( result.at( i ).toMap().value( QStringLiteral( "result" ) ).toLongLong(), expectedResult.at( i ).toMap().value( QStringLiteral( "result" ) ).toLongLong() );
-    QGSCOMPARENEAR( result.at( i ).toMap().value( QStringLiteral( "overlap" ) ).toDouble(), expectedResult.at( i ).toMap().value( QStringLiteral( "overlap" ) ).toDouble(), 0.0001 );
-    QGSCOMPARENEAR( result.at( i ).toMap().value( QStringLiteral( "radius" ) ).toDouble(), expectedResult.at( i ).toMap().value( QStringLiteral( "radius" ) ).toDouble(), 0.02 );
+    QCOMPARE( result.at( i ).toMap().value( u"id"_s ).toLongLong(), expectedResult.at( i ).toMap().value( u"id"_s ).toLongLong() );
+    QCOMPARE( result.at( i ).toMap().value( u"result"_s ).toLongLong(), expectedResult.at( i ).toMap().value( u"result"_s ).toLongLong() );
+    QGSCOMPARENEAR( result.at( i ).toMap().value( u"overlap"_s ).toDouble(), expectedResult.at( i ).toMap().value( u"overlap"_s ).toDouble(), 0.0001 );
+    QGSCOMPARENEAR( result.at( i ).toMap().value( u"radius"_s ).toDouble(), expectedResult.at( i ).toMap().value( u"radius"_s ).toDouble(), 0.02 );
   }
 }
 
@@ -265,15 +265,15 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   QTest::addColumn<QVariantList>( "expectedResult" );
 
   QVariantMap expected3;
-  expected3.insert( QStringLiteral( "id" ), 3LL );
-  expected3.insert( QStringLiteral( "result" ), 3LL );
-  expected3.insert( QStringLiteral( "overlap" ), 1.4033836999702842 );
-  expected3.insert( QStringLiteral( "radius" ), 0.5344336346973622 );
+  expected3.insert( u"id"_s, 3LL );
+  expected3.insert( u"result"_s, 3LL );
+  expected3.insert( u"overlap"_s, 1.4033836999702842 );
+  expected3.insert( u"radius"_s, 0.5344336346973622 );
   QVariantMap expected1;
-  expected1.insert( QStringLiteral( "id" ), 1LL );
-  expected1.insert( QStringLiteral( "result" ), 1LL );
-  expected1.insert( QStringLiteral( "overlap" ), 1.2281139270097938 );
-  expected1.insert( QStringLiteral( "radius" ), 0.46454276882989376 );
+  expected1.insert( u"id"_s, 1LL );
+  expected1.insert( u"result"_s, 1LL );
+  expected1.insert( u"overlap"_s, 1.2281139270097938 );
+  expected1.insert( u"radius"_s, 0.46454276882989376 );
 
   QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 );
 
@@ -296,16 +296,16 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   {
     // Check returned values from point intersection
     QVariantMap expected3;
-    expected3.insert( QStringLiteral( "id" ), 3LL );
-    expected3.insert( QStringLiteral( "result" ), 3 );
-    expected3.insert( QStringLiteral( "overlap" ), 19.0496885727123733 );
+    expected3.insert( u"id"_s, 3LL );
+    expected3.insert( u"result"_s, 3 );
+    expected3.insert( u"overlap"_s, 19.0496885727123733 );
     QVariantMap expected1;
-    expected1.insert( QStringLiteral( "id" ), 1LL );
-    expected1.insert( QStringLiteral( "result" ), 1 );
-    expected1.insert( QStringLiteral( "overlap" ), 18.5698431233350831 );
+    expected1.insert( u"id"_s, 1LL );
+    expected1.insert( u"result"_s, 1 );
+    expected1.insert( u"overlap"_s, 18.5698431233350831 );
 
-    expected3.insert( QStringLiteral( "radius" ), 1.3414663642343596 );
-    expected1.insert( QStringLiteral( "radius" ), 1.8924012738149243 );
+    expected3.insert( u"radius"_s, 1.3414663642343596 );
+    expected1.insert( u"radius"_s, 1.8924012738149243 );
 
     QTest::newRow( "intersects multi match points return sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:='des', return_details:=true, expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << expected3 << expected1 );
   }
@@ -313,13 +313,13 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   // Linestring tests!
 
   QVariantMap expectedLine3;
-  expectedLine3.insert( QStringLiteral( "id" ), 3LL );
-  expectedLine3.insert( QStringLiteral( "result" ), 3LL );
-  expectedLine3.insert( QStringLiteral( "overlap" ), 0.9114785997128507 );
+  expectedLine3.insert( u"id"_s, 3LL );
+  expectedLine3.insert( u"result"_s, 3LL );
+  expectedLine3.insert( u"overlap"_s, 0.9114785997128507 );
   QVariantMap expectedLine1;
-  expectedLine1.insert( QStringLiteral( "id" ), 1LL );
-  expectedLine1.insert( QStringLiteral( "result" ), 1LL );
-  expectedLine1.insert( QStringLiteral( "overlap" ), 0.4447782690201052 );
+  expectedLine1.insert( u"id"_s, 1LL );
+  expectedLine1.insert( u"result"_s, 1LL );
+  expectedLine1.insert( u"overlap"_s, 0.4447782690201052 );
 
   QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('polys', expression:=$id)" << "LINESTRING(-102.76 33.74, -102.76 36.44)" << ( QVariantList() << 1LL << 3LL );
 
@@ -345,13 +345,13 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   // Test linestring intersections
   {
     QVariantMap expectedLine1;
-    expectedLine1.insert( QStringLiteral( "id" ), 1LL );
-    expectedLine1.insert( QStringLiteral( "result" ), 1 );
-    expectedLine1.insert( QStringLiteral( "overlap" ), 0 );
+    expectedLine1.insert( u"id"_s, 1LL );
+    expectedLine1.insert( u"result"_s, 1 );
+    expectedLine1.insert( u"overlap"_s, 0 );
     QVariantMap expectedLine2;
-    expectedLine2.insert( QStringLiteral( "id" ), 2LL );
-    expectedLine2.insert( QStringLiteral( "result" ), 2 );
-    expectedLine2.insert( QStringLiteral( "overlap" ), 0 );
+    expectedLine2.insert( u"id"_s, 2LL );
+    expectedLine2.insert( u"result"_s, 2 );
+    expectedLine2.insert( u"overlap"_s, 0 );
 
     QTest::newRow( "intersects linestring single match" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1)" << ( QVariantList() << expectedLine1 );
 
@@ -359,12 +359,12 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     QTest::newRow( "intersects linestring single match fail overlap" ) << "overlay_intersects('linestrings', min_overlap:=0.5, return_details:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1)" << ( QVariantList() );
     QTest::newRow( "intersects linestring no match" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "LINESTRING(1.5 2, 1.5 1)" << ( QVariantList() );
     QTest::newRow( "intersects linestring multi match" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1, 4 -1, 4 1)" << ( QVariantList() << expectedLine1 << expectedLine2 );
-    expectedLine2[QStringLiteral( "overlap" )] = 0.5;
+    expectedLine2[u"overlap"_s] = 0.5;
     QTest::newRow( "intersects linestring multi match sorted" ) << "overlay_intersects('linestrings', return_details:=true, sort_by_intersection_size:='des', expression:=$id)" << "LINESTRING(1.5 1, 1.5 -1, 4 -1, 4 0, 4.5 0)" << ( QVariantList() << expectedLine2 << expectedLine1 );
 
     // Full length of targets is expected
-    expectedLine2[QStringLiteral( "overlap" )] = 2.0;
-    expectedLine1[QStringLiteral( "overlap" )] = 1.0;
+    expectedLine2[u"overlap"_s] = 2.0;
+    expectedLine1[u"overlap"_s] = 1.0;
 
     QTest::newRow( "intersects linestring multi match points" ) << "overlay_intersects('linestrings', return_details:=true, expression:=$id)" << "MULTIPOINT((1.5 0), (3.5 0))" << ( QVariantList() << expectedLine1 << expectedLine2 );
     QTest::newRow( "intersects linestring multi match points sorted" ) << "overlay_intersects('linestrings', sort_by_intersection_size:='des', return_details:=true, expression:=$id)" << "MULTIPOINT((1.5 0), (3.5 0))" << ( QVariantList() << expectedLine2 << expectedLine1 );
@@ -373,13 +373,13 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   // Test point target layer (no sorting supported)
   {
     QVariantMap expectedPoint1;
-    expectedPoint1.insert( QStringLiteral( "id" ), 1LL );
-    expectedPoint1.insert( QStringLiteral( "result" ), 1 );
-    expectedPoint1.insert( QStringLiteral( "overlap" ), 0 );
+    expectedPoint1.insert( u"id"_s, 1LL );
+    expectedPoint1.insert( u"result"_s, 1 );
+    expectedPoint1.insert( u"overlap"_s, 0 );
     QVariantMap expectedPoint2;
-    expectedPoint2.insert( QStringLiteral( "id" ), 2LL );
-    expectedPoint2.insert( QStringLiteral( "result" ), 2 );
-    expectedPoint2.insert( QStringLiteral( "overlap" ), 0 );
+    expectedPoint2.insert( u"id"_s, 2LL );
+    expectedPoint2.insert( u"result"_s, 2 );
+    expectedPoint2.insert( u"overlap"_s, 0 );
 
     QTest::newRow( "intersects points single match" ) << "overlay_intersects('points', return_details:=true, expression:=$id)" << "POLYGON((0 -1, 1.5 -1, 1.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 );
     QTest::newRow( "intersects points multi match" ) << "overlay_intersects('points', return_details:=true, expression:=$id)" << "POLYGON((0 -1, 3.5 -1, 3.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 << expectedPoint2 );
@@ -389,65 +389,65 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   QTest::newRow( "intersects point expression no match" ) << "overlay_intersects('polys', expression:=$id, min_inscribed_circle_radius:=0.5, sort_by_intersection_size:='desc')" << "POLYGON((-90.825 34.486, -89.981 35.059, -90.009 33.992, -90.825 34.486))" << ( QVariantList() );
   // Test polygon intersection resulting in a line with min_inscribed_circle_radius and expression
   QVariantMap expectedPoly;
-  expectedPoly.insert( QStringLiteral( "id" ), 2LL );
-  expectedPoly.insert( QStringLiteral( "overlap" ), 667.9924154989421368 );
-  expectedPoly.insert( QStringLiteral( "radius" ), 12.576424447201404 );
-  expectedPoly.insert( QStringLiteral( "result" ), 1002 );
+  expectedPoly.insert( u"id"_s, 2LL );
+  expectedPoly.insert( u"overlap"_s, 667.9924154989421368 );
+  expectedPoly.insert( u"radius"_s, 12.576424447201404 );
+  expectedPoly.insert( u"result"_s, 1002 );
   QTest::newRow( "intersects line expression no match" ) << "overlay_intersects('polygons2', expression:=fid, return_details:=true, min_inscribed_circle_radius:=3, sort_by_intersection_size:='desc')" << "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" << ( QVariantList() << expectedPoly );
 }
 
 void TestQgsOverlayExpression::testOverlayIntersectsDetails()
 {
   // Create polygon memory layer 1
-  QgsVectorLayer *poly1 = new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "poly_details" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *poly1 = new QgsVectorLayer( u"Polygon?crs=epsg:4326"_s, u"poly_details"_s, u"memory"_s );
   QgsFeature f1;
-  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 0 6, 6 6, 6 0, 0 0))" ) ) );
+  f1.setGeometry( QgsGeometry::fromWkt( u"Polygon ((0 0, 0 6, 6 6, 6 0, 0 0))"_s ) );
   poly1->dataProvider()->addFeature( f1 );
   QgsProject::instance()->addMapLayer( poly1 );
 
   // Create linestring memory layer
-  QgsVectorLayer *line = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326" ), QStringLiteral( "line_details" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *line = new QgsVectorLayer( u"LineString?crs=epsg:4326"_s, u"line_details"_s, u"memory"_s );
   QgsFeature f2;
-  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (0 0, 1 1, 2 1, 3 1, 4 0)" ) ) );
+  f2.setGeometry( QgsGeometry::fromWkt( u"LineString (0 0, 1 1, 2 1, 3 1, 4 0)"_s ) );
   line->dataProvider()->addFeature( f2 );
   QgsProject::instance()->addMapLayer( line );
 
   QgsExpressionContext context;
   QgsFeature feat;
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((6 0, 6 2, 4 2, 4 4, 6 4, 6 6, 12 6, 12 0, 6 0))" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"Polygon ((6 0, 6 2, 4 2, 4 4, 6 4, 6 6, 12 6, 12 0, 6 0))"_s ) );
   context.setFeature( feat );
   context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
 
-  QgsExpression exp( QStringLiteral( "overlay_intersects('poly_details', return_details:=true, expression:=$id)" ) );
+  QgsExpression exp( u"overlay_intersects('poly_details', return_details:=true, expression:=$id)"_s );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   QVariantList result = exp.evaluate( &context ).toList();
   QCOMPARE( result.size(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 4 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"id"_s ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"overlap"_s ).toLongLong(), 4 );
 
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((7 0, 7 1, 5 1, 5 2, 7 2, 7 3, 4 3, 4 5, 7 5, 7 6, 12 6, 12 0, 7 0))" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"Polygon ((7 0, 7 1, 5 1, 5 2, 7 2, 7 3, 4 3, 4 5, 7 5, 7 6, 12 6, 12 0, 7 0))"_s ) );
   context.setFeature( feat );
   result = exp.evaluate( &context ).toList();
   QCOMPARE( result.size(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 4 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"id"_s ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"overlap"_s ).toLongLong(), 4 );
 
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((6 0, 6 1, 5 1, 5 2, 6 2, 6 3, 4 3, 4 5, 6 5, 6 6, 12 6, 12 0, 6 0))" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"Polygon ((6 0, 6 1, 5 1, 5 2, 6 2, 6 3, 4 3, 4 5, 6 5, 6 6, 12 6, 12 0, 6 0))"_s ) );
   context.setFeature( feat );
   result = exp.evaluate( &context ).toList();
   QCOMPARE( result.size(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 4 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"id"_s ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"overlap"_s ).toLongLong(), 4 );
 
   // Test linestring
-  QgsExpression exp2( QStringLiteral( "overlay_intersects('line_details', return_details:=true, expression:=$id)" ) );
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (0 2, 1 1, 2 1, 3 1, 4 2)" ) ) );
+  QgsExpression exp2( u"overlay_intersects('line_details', return_details:=true, expression:=$id)"_s );
+  feat.setGeometry( QgsGeometry::fromWkt( u"LineString (0 2, 1 1, 2 1, 3 1, 4 2)"_s ) );
   context.setFeature( feat );
   QVERIFY2( exp2.prepare( &context ), exp2.parserErrorString().toUtf8().constData() );
   result = exp2.evaluate( &context ).toList();
   QCOMPARE( result.size(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
-  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 2 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"id"_s ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( u"overlap"_s ).toLongLong(), 2 );
 
   QgsProject::instance()->removeMapLayer( poly1->id() );
   QgsProject::instance()->removeMapLayer( line->id() );
@@ -481,8 +481,8 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::addColumn<QString>( "geometry" );
   QTest::addColumn<QVariantList>( "expectedResult" );
 
-  QTest::newRow( "intersects get geometry" ) << "overlay_intersects('rectangles', geom_to_wkt($geometry))" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( QStringLiteral( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) ) };
-  QTest::newRow( "intersects get geometry [cached]" ) << "overlay_intersects('rectangles', geom_to_wkt($geometry),cache:=true)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( QStringLiteral( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) ) };
+  QTest::newRow( "intersects get geometry" ) << "overlay_intersects('rectangles', geom_to_wkt($geometry))" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( u"MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))"_s ) };
+  QTest::newRow( "intersects get geometry [cached]" ) << "overlay_intersects('rectangles', geom_to_wkt($geometry),cache:=true)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( u"MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))"_s ) };
 
   QTest::newRow( "intersects get ids" ) << "overlay_intersects('rectangles', id)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2, 3 };
   QTest::newRow( "intersects get ids [cached]" ) << "overlay_intersects('rectangles', id,cache:=true)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2, 3 };

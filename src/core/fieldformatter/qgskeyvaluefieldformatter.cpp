@@ -22,7 +22,7 @@
 
 QString QgsKeyValueFieldFormatter::id() const
 {
-  return QStringLiteral( "KeyValue" );
+  return u"KeyValue"_s;
 }
 
 QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const

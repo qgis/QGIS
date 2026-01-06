@@ -29,7 +29,7 @@ class TestQgsGcpTransformer : public QgsTest
 
   public:
     TestQgsGcpTransformer()
-      : QgsTest( QStringLiteral( "GCP Transformer Tests" ) )
+      : QgsTest( u"GCP Transformer Tests"_s )
     {}
 
     QString SRC_FILE;
@@ -1316,14 +1316,14 @@ class TestQgsGcpTransformer : public QgsTest
     {
       QgsGcpGeometryTransformer transformer( QgsGcpTransformerInterface::TransformMethod::Projective, QVector<QgsPointXY>() << QgsPointXY( 288, 1126 ) << QgsPointXY( 2352, 716 ) << QgsPointXY( 2067, 2398 ) << QgsPointXY( 1102, 2209 ), QVector<QgsPointXY>() << QgsPointXY( 321210, 130280 ) << QgsPointXY( 322698, 129979 ) << QgsPointXY( 322501, 192061 ) << QgsPointXY( 321803, 192198 ) );
 
-      const QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(288 1000, 2352 1150, 2067 2500, 1102 2300)" ) );
+      const QgsGeometry geom = QgsGeometry::fromWkt( u"LineString(288 1000, 2352 1150, 2067 2500, 1102 2300)"_s );
       bool ok = false;
-      QCOMPARE( transformer.transform( geom, ok ).asWkt( 0 ), QStringLiteral( "LineString (321256 123764, 322688 142909, 322495 197069, 321782 198051)" ) );
+      QCOMPARE( transformer.transform( geom, ok ).asWkt( 0 ), u"LineString (321256 123764, 322688 142909, 322495 197069, 321782 198051)"_s );
       QVERIFY( ok );
 
       // invalid parameters -- not enough GCPs
       QgsGcpGeometryTransformer transformer2( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2, QVector<QgsPointXY>() << QgsPointXY( 288, 1126 ) << QgsPointXY( 2352, 716 ) << QgsPointXY( 2067, 2398 ) << QgsPointXY( 1102, 2209 ), QVector<QgsPointXY>() << QgsPointXY( 321210, 130280 ) << QgsPointXY( 322698, 129979 ) << QgsPointXY( 322501, 192061 ) << QgsPointXY( 321803, 192198 ) );
-      QCOMPARE( transformer2.transform( geom, ok ).asWkt( 0 ), QStringLiteral( "LineString (288 1000, 2352 1150, 2067 2500, 1102 2300)" ) );
+      QCOMPARE( transformer2.transform( geom, ok ).asWkt( 0 ), u"LineString (288 1000, 2352 1150, 2067 2500, 1102 2300)"_s );
       QVERIFY( !ok );
     }
 };

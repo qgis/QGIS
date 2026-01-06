@@ -45,7 +45,7 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
   , mGl3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mMesh( new Qt3DExtras::QCuboidMesh( this ) )
-  , mGammaStrengthParameter( new Qt3DRender::QParameter( QStringLiteral( "gammaStrength" ), 0.0f ) )
+  , mGammaStrengthParameter( new Qt3DRender::QParameter( u"gammaStrength"_s, 0.0f ) )
   , mTextureParameter( new Qt3DRender::QParameter( this ) )
 {
   mGl3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
@@ -54,8 +54,8 @@ QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   mGl3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
 
   mFilterKey->setParent( mEffect );
-  mFilterKey->setName( QStringLiteral( "renderingStyle" ) );
-  mFilterKey->setValue( QStringLiteral( "forward" ) );
+  mFilterKey->setName( u"renderingStyle"_s );
+  mFilterKey->setValue( u"forward"_s );
 
   mGl3Technique->addFilterKey( mFilterKey );
 
@@ -94,8 +94,8 @@ QgsPanoramicSkyboxEntity::QgsPanoramicSkyboxEntity( const QString &texturePath, 
   , mGlShader( new Qt3DRender::QShaderProgram( this ) )
 {
   mLoadedTexture->setGenerateMipMaps( false );
-  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.vert" ) ) ) );
-  mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/hdr_skybox.frag" ) ) ) );
+  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/skybox.vert"_s ) ) );
+  mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/hdr_skybox.frag"_s ) ) );
   mGl3RenderPass->setShaderProgram( mGlShader );
 
   mTextureParameter->setName( "skyboxTexture" );
@@ -128,8 +128,8 @@ QgsCubeFacesSkyboxEntity::QgsCubeFacesSkyboxEntity( const QString &posX, const Q
 
 void QgsCubeFacesSkyboxEntity::init()
 {
-  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.vert" ) ) ) );
-  mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/skybox.frag" ) ) ) );
+  mGlShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/skybox.vert"_s ) ) );
+  mGlShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/skybox.frag"_s ) ) );
   mGl3RenderPass->setShaderProgram( mGlShader );
 
   mCubeMap->setMagnificationFilter( Qt3DRender::QTextureCubeMap::Linear );

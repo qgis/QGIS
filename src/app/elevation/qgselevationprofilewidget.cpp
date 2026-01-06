@@ -76,14 +76,14 @@
 
 #include "moc_qgselevationprofilewidget.cpp"
 
-const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( QStringLiteral( "tolerance" ), QgsSettingsTree::sTreeElevationProfile, 0.1, QStringLiteral( "Tolerance distance for elevation profile plots" ), Qgis::SettingsOptions(), 0 );
+const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTreeElevationProfile, 0.1, u"Tolerance distance for elevation profile plots"_s, Qgis::SettingsOptions(), 0 );
 
-const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( QStringLiteral( "show-layer-tree" ), QgsSettingsTree::sTreeElevationProfile, true, QStringLiteral( "Whether the layer tree should be shown for elevation profile plots" ) );
-const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( QStringLiteral( "lock-axis-ratio" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether the the distance and elevation axis scales are locked to each other" ) );
-const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( QStringLiteral( "last-export-dir" ), QgsSettingsTree::sTreeElevationProfile, QString(), QStringLiteral( "Last elevation profile export directory" ) );
-const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor = new QgsSettingsEntryColor( QStringLiteral( "background-color" ), QgsSettingsTree::sTreeElevationProfile, QColor(), QStringLiteral( "Elevation profile chart background color" ) );
-const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowSubsections = new QgsSettingsEntryBool( QStringLiteral( "show-sub-sections" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether to display subsections" ) );
-const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowScaleRatioInToolbar = new QgsSettingsEntryBool( QStringLiteral( "show-scale-ratio-in-toolbar" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "If true, the scale ratio widget will be moved to the toolbar instead of the options menu" ) );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowLayerTree = new QgsSettingsEntryBool( u"show-layer-tree"_s, QgsSettingsTree::sTreeElevationProfile, true, u"Whether the layer tree should be shown for elevation profile plots"_s );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new QgsSettingsEntryBool( u"lock-axis-ratio"_s, QgsSettingsTree::sTreeElevationProfile, false, u"Whether the the distance and elevation axis scales are locked to each other"_s );
+const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( u"last-export-dir"_s, QgsSettingsTree::sTreeElevationProfile, QString(), u"Last elevation profile export directory"_s );
+const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor = new QgsSettingsEntryColor( u"background-color"_s, QgsSettingsTree::sTreeElevationProfile, QColor(), u"Elevation profile chart background color"_s );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowSubsections = new QgsSettingsEntryBool( u"show-sub-sections"_s, QgsSettingsTree::sTreeElevationProfile, false, u"Whether to display subsections"_s );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowScaleRatioInToolbar = new QgsSettingsEntryBool( u"show-scale-ratio-in-toolbar"_s, QgsSettingsTree::sTreeElevationProfile, false, u"If true, the scale ratio widget will be moved to the toolbar instead of the options menu"_s );
 //
 // QgsElevationProfileLayersDialog
 //
@@ -153,7 +153,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   : QWidget( nullptr )
   , mProfile( profile )
 {
-  setObjectName( QStringLiteral( "ElevationProfile" ) );
+  setObjectName( u"ElevationProfile"_s );
 
   connect( mProfile, &QObject::destroyed, this, &QgsElevationProfileWidget::close );
   connect( mProfile, &QgsElevationProfile::nameChanged, this, [this]( const QString &newName ) {
@@ -187,7 +187,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [this]( const QModelIndex &index ) {
     if ( QgsMapLayer *layer = mLayerTreeView->layerForIndex( index ) )
     {
-      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
+      QgisApp::instance()->showLayerProperties( layer, u"mOptsPage_Elevation"_s );
     }
   } );
 
@@ -203,7 +203,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   mCanvas->setTool( mIdentifyTool );
 
   QAction *addLayerAction = new QAction( tr( "Add Layers" ), this );
-  addLayerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionAddLayer.svg" ) ) );
+  addLayerAction->setIcon( QgsApplication::getThemeIcon( u"mActionAddLayer.svg"_s ) );
   connect( addLayerAction, &QAction::triggered, this, &QgsElevationProfileWidget::addLayers );
   toolBar->addAction( addLayerAction );
 
@@ -211,7 +211,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   toolBar->addAction( mActionAddGroup );
 
   QAction *showLayerTree = new QAction( tr( "Show Layer Tree" ), this );
-  showLayerTree->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconLayerTree.svg" ) ) );
+  showLayerTree->setIcon( QgsApplication::getThemeIcon( u"mIconLayerTree.svg"_s ) );
   showLayerTree->setCheckable( true );
   connect( showLayerTree, &QAction::toggled, this, [this]( bool checked ) {
     settingShowLayerTree->setValue( checked );
@@ -223,7 +223,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   toolBar->addSeparator();
 
   mCaptureCurveAction = new QAction( tr( "Capture Curve" ), this );
-  mCaptureCurveAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
+  mCaptureCurveAction->setIcon( QgsApplication::getThemeIcon( u"mActionCaptureLine.svg"_s ) );
   mCaptureCurveAction->setCheckable( true );
   connect( mCaptureCurveAction, &QAction::triggered, this, [this] {
     if ( mCaptureCurveMapTool && mMainCanvas )
@@ -234,7 +234,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   toolBar->addAction( mCaptureCurveAction );
 
   mCaptureCurveFromFeatureAction = new QAction( tr( "Capture Curve From Feature" ), this );
-  mCaptureCurveFromFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureCurveFromFeature.svg" ) ) );
+  mCaptureCurveFromFeatureAction->setIcon( QgsApplication::getThemeIcon( u"mActionCaptureCurveFromFeature.svg"_s ) );
   mCaptureCurveFromFeatureAction->setCheckable( true );
   connect( mCaptureCurveFromFeatureAction, &QAction::triggered, this, [this] {
     if ( mCaptureCurveFromFeatureMapTool && mMainCanvas )
@@ -245,13 +245,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   toolBar->addAction( mCaptureCurveFromFeatureAction );
 
   mNudgeLeftAction = new QAction( tr( "Nudge Left" ), this );
-  mNudgeLeftAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionArrowLeft.svg" ) ) );
+  mNudgeLeftAction->setIcon( QgsApplication::getThemeIcon( u"mActionArrowLeft.svg"_s ) );
   connect( mNudgeLeftAction, &QAction::triggered, this, &QgsElevationProfileWidget::nudgeLeft );
   mNudgeLeftAction->setEnabled( false );
   toolBar->addAction( mNudgeLeftAction );
 
   mNudgeRightAction = new QAction( tr( "Nudge Right" ), this );
-  mNudgeRightAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionArrowRight.svg" ) ) );
+  mNudgeRightAction->setIcon( QgsApplication::getThemeIcon( u"mActionArrowRight.svg"_s ) );
   connect( mNudgeRightAction, &QAction::triggered, this, &QgsElevationProfileWidget::nudgeRight );
   mNudgeRightAction->setEnabled( false );
   toolBar->addAction( mNudgeRightAction );
@@ -260,18 +260,18 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     if ( QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName ) )
       connect( sc, &QShortcut::activated, this, slot );
   };
-  createShortcuts( QStringLiteral( "mProfileToolNudgeLeft" ), &QgsElevationProfileWidget::nudgeLeft );
-  createShortcuts( QStringLiteral( "mProfileToolNudgeRight" ), &QgsElevationProfileWidget::nudgeRight );
+  createShortcuts( u"mProfileToolNudgeLeft"_s, &QgsElevationProfileWidget::nudgeLeft );
+  createShortcuts( u"mProfileToolNudgeRight"_s, &QgsElevationProfileWidget::nudgeRight );
 
   QAction *clearAction = new QAction( tr( "Clear" ), this );
-  clearAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconClearConsole.svg" ) ) );
+  clearAction->setIcon( QgsApplication::getThemeIcon( u"console/iconClearConsole.svg"_s ) );
   connect( clearAction, &QAction::triggered, this, &QgsElevationProfileWidget::clear );
   toolBar->addAction( clearAction );
 
   toolBar->addSeparator();
 
   QAction *identifyToolAction = new QAction( tr( "Identify Features" ), this );
-  identifyToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ) );
+  identifyToolAction->setIcon( QgsApplication::getThemeIcon( u"/mActionIdentify.svg"_s ) );
   identifyToolAction->setCheckable( true );
   identifyToolAction->setChecked( true );
   mIdentifyTool->setAction( identifyToolAction );
@@ -279,7 +279,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   toolBar->addAction( identifyToolAction );
 
   QAction *panToolAction = new QAction( tr( "Pan" ), this );
-  panToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
+  panToolAction->setIcon( QgsApplication::getThemeIcon( u"/mActionPan.svg"_s ) );
   panToolAction->setCheckable( true );
   panToolAction->setChecked( false );
   mPanTool->setAction( panToolAction );
@@ -288,25 +288,25 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   QAction *zoomXAxisToolAction = new QAction( tr( "Zoom X Axis" ), this );
   zoomXAxisToolAction->setCheckable( true );
-  zoomXAxisToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomInXAxis.svg" ) ) );
+  zoomXAxisToolAction->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomInXAxis.svg"_s ) );
   mXAxisZoomTool->setAction( zoomXAxisToolAction );
   connect( zoomXAxisToolAction, &QAction::triggered, mXAxisZoomTool, [this] { mCanvas->setTool( mXAxisZoomTool ); } );
   toolBar->addAction( zoomXAxisToolAction );
 
   QAction *zoomToolAction = new QAction( tr( "Zoom" ), this );
   zoomToolAction->setCheckable( true );
-  zoomToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+  zoomToolAction->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomIn.svg"_s ) );
   mZoomTool->setAction( zoomToolAction );
   connect( zoomToolAction, &QAction::triggered, mZoomTool, [this] { mCanvas->setTool( mZoomTool ); } );
   toolBar->addAction( zoomToolAction );
 
   QAction *resetViewAction = new QAction( tr( "Zoom Full" ), this );
-  resetViewAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomFullExtent.svg" ) ) );
+  resetViewAction->setIcon( QgsApplication::getThemeIcon( u"/mActionZoomFullExtent.svg"_s ) );
   connect( resetViewAction, &QAction::triggered, mCanvas, &QgsElevationProfileCanvas::zoomFull );
   toolBar->addAction( resetViewAction );
 
   QAction *enabledSnappingAction = new QAction( tr( "Enable Snapping" ), this );
-  enabledSnappingAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
+  enabledSnappingAction->setIcon( QgsApplication::getThemeIcon( u"/mIconSnapping.svg"_s ) );
   enabledSnappingAction->setCheckable( true );
   enabledSnappingAction->setChecked( true );
   connect( enabledSnappingAction, &QAction::toggled, mCanvas, &QgsElevationProfileCanvas::setSnappingEnabled );
@@ -315,7 +315,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   mMeasureTool = std::make_unique<QgsElevationProfileToolMeasure>( mCanvas );
 
   QAction *measureToolAction = new QAction( tr( "Measure Distances" ), this );
-  measureToolAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
+  measureToolAction->setIcon( QgsApplication::getThemeIcon( u"/mActionMeasure.svg"_s ) );
   measureToolAction->setCheckable( true );
   mMeasureTool->setAction( measureToolAction );
   connect( measureToolAction, &QAction::triggered, this, [this] {
@@ -326,12 +326,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   toolBar->addSeparator();
 
   QAction *exportAsPdfAction = new QAction( tr( "Export as PDF" ), this );
-  exportAsPdfAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAsPDF.svg" ) ) );
+  exportAsPdfAction->setIcon( QgsApplication::getThemeIcon( u"/mActionSaveAsPDF.svg"_s ) );
   connect( exportAsPdfAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsPdf );
   toolBar->addAction( exportAsPdfAction );
 
   QAction *exportAsImageAction = new QAction( tr( "Export as Image" ), this );
-  exportAsImageAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
+  exportAsImageAction->setIcon( QgsApplication::getThemeIcon( u"/mActionSaveMapAsImage.svg"_s ) );
   connect( exportAsImageAction, &QAction::triggered, this, &QgsElevationProfileWidget::exportAsImage );
   toolBar->addAction( exportAsImageAction );
 
@@ -352,7 +352,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   QToolButton *exportResultsButton = new QToolButton();
   exportResultsButton->setAutoRaise( true );
   exportResultsButton->setToolTip( tr( "Export Results" ) );
-  exportResultsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSaveAs.svg" ) ) );
+  exportResultsButton->setIcon( QgsApplication::getThemeIcon( u"mActionFileSaveAs.svg"_s ) );
   exportResultsButton->setPopupMode( QToolButton::InstantPopup );
   exportResultsButton->setMenu( exportMenu );
 
@@ -476,7 +476,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   mBtnOptions = new QToolButton();
   mBtnOptions->setAutoRaise( true );
   mBtnOptions->setToolTip( tr( "Options" ) );
-  mBtnOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+  mBtnOptions->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
   mBtnOptions->setPopupMode( QToolButton::InstantPopup );
   mBtnOptions->setMenu( mOptionsMenu );
 
@@ -507,11 +507,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   splitter->setCollapsible( 1, false );
   splitter->setSizes( { QFontMetrics( font() ).horizontalAdvance( '0' ) * 10, splitter->width() } );
   QgsSettings settings;
-  splitter->restoreState( settings.value( QStringLiteral( "Windows/ElevationProfile/SplitState" ) ).toByteArray() );
+  splitter->restoreState( settings.value( u"Windows/ElevationProfile/SplitState"_s ).toByteArray() );
 
   connect( splitter, &QSplitter::splitterMoved, this, [splitter] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Windows/ElevationProfile/SplitState" ), splitter->saveState() );
+    settings.setValue( u"Windows/ElevationProfile/SplitState"_s, splitter->saveState() );
   } );
   setLayout( layout );
 
@@ -588,7 +588,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     }
     catch ( QgsCsException &e )
     {
-      QgsDebugError( QStringLiteral( "Could not transform stored elevation profile curve: %1" ).arg( e.what() ) );
+      QgsDebugError( u"Could not transform stored elevation profile curve: %1"_s.arg( e.what() ) );
     }
 
     mCanvas->setCrs( QgsProject::instance()->crs3D() );
@@ -647,9 +647,9 @@ void QgsElevationProfileWidget::copyProjectTree( QgsLayerTree *destination )
         {
           QgsLayerTreeLayer *newLayerNode = destinationGroup->addLayer( layer );
 
-          if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
+          if ( layer->customProperty( u"_include_in_elevation_profiles"_s ).isValid() )
           {
-            newLayerNode->setItemVisibilityChecked( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).toBool() );
+            newLayerNode->setItemVisibilityChecked( layer->customProperty( u"_include_in_elevation_profiles"_s ).toBool() );
           }
           else
           {
@@ -846,7 +846,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
         sources << layer->profileSource();
       }
     }
-    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
@@ -994,7 +994,7 @@ void QgsElevationProfileWidget::clear()
 void QgsElevationProfileWidget::exportAsPdf()
 {
   QgsSettings s;
-  QString outputFileName = QgsFileUtils::findClosestExistingPath( s.value( QStringLiteral( "lastProfileExportDir" ), QDir::homePath(), QgsSettings::App ).toString() );
+  QString outputFileName = QgsFileUtils::findClosestExistingPath( s.value( u"lastProfileExportDir"_s, QDir::homePath(), QgsSettings::App ).toString() );
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
@@ -1011,8 +1011,8 @@ void QgsElevationProfileWidget::exportAsPdf()
   {
     return;
   }
-  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, { QStringLiteral( "pdf" ) } );
-  QgsSettings().setValue( QStringLiteral( "lastProfileExportDir" ), outputFileName, QgsSettings::App );
+  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, { u"pdf"_s } );
+  QgsSettings().setValue( u"lastProfileExportDir"_s, outputFileName, QgsSettings::App );
 
   QgsElevationProfilePdfExportDialog dialog( this );
   dialog.setPlotSettings( mCanvas->plot() );
@@ -1057,7 +1057,7 @@ void QgsElevationProfileWidget::exportAsPdf()
 void QgsElevationProfileWidget::exportAsImage()
 {
   QgsSettings s;
-  QString outputFileName = QgsFileUtils::findClosestExistingPath( s.value( QStringLiteral( "lastProfileExportDir" ), QDir::homePath(), QgsSettings::App ).toString() );
+  QString outputFileName = QgsFileUtils::findClosestExistingPath( s.value( u"lastProfileExportDir"_s, QDir::homePath(), QgsSettings::App ).toString() );
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
@@ -1070,7 +1070,7 @@ void QgsElevationProfileWidget::exportAsImage()
   {
     return;
   }
-  QgsSettings().setValue( QStringLiteral( "lastProfileExportDir" ), fileWithExtension.first, QgsSettings::App );
+  QgsSettings().setValue( u"lastProfileExportDir"_s, fileWithExtension.first, QgsSettings::App );
 
   QgsElevationProfileImageExportDialog dialog( this );
   dialog.setPlotSettings( mCanvas->plot() );
@@ -1480,7 +1480,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
   {
     QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
     connect( propertiesAction, &QAction::triggered, this, [layer] {
-      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
+      QgisApp::instance()->showLayerProperties( layer, u"mOptsPage_Elevation"_s );
     } );
     menu->addAction( propertiesAction );
   }

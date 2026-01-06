@@ -29,34 +29,34 @@
 
 void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Join to features in" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Join to features in" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  auto predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
+  auto predicateParam = std::make_unique<QgsProcessingParameterEnum>( u"PREDICATE"_s, QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
-  widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
-  widgetMetadata.insert( QStringLiteral( "columns" ), 2 );
-  predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
+  widgetMetadata.insert( u"useCheckBoxes"_s, true );
+  widgetMetadata.insert( u"columns"_s, 2 );
+  predicateMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   predicateParam->setMetadata( predicateMetadata );
   addParameter( predicateParam.release() );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "JOIN" ), QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "JOIN_FIELDS" ), QObject::tr( "Fields to add (leave empty to use all fields)" ), QVariant(), QStringLiteral( "JOIN" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"JOIN"_s, QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterField( u"JOIN_FIELDS"_s, QObject::tr( "Fields to add (leave empty to use all fields)" ), QVariant(), u"JOIN"_s, Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   QStringList joinMethods;
   joinMethods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
               << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" )
               << QObject::tr( "Take attributes of the feature with largest overlap only (one-to-one)" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Join type" ), joinMethods, false, static_cast<int>( OneToMany ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ), QObject::tr( "Discard records which could not be joined" ), false ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ), QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Join type" ), joinMethods, false, static_cast<int>( OneToMany ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"DISCARD_NONMATCHING"_s, QObject::tr( "Discard records which could not be joined" ), false ) );
+  addParameter( new QgsProcessingParameterString( u"PREFIX"_s, QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"NON_MATCHING"_s, QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
+  addOutput( new QgsProcessingOutputNumber( u"JOINED_COUNT"_s, QObject::tr( "Number of joined features from input table" ) ) );
 }
 
 QString QgsJoinByLocationAlgorithm::name() const
 {
-  return QStringLiteral( "joinattributesbylocation" );
+  return u"joinattributesbylocation"_s;
 }
 
 QString QgsJoinByLocationAlgorithm::displayName() const
@@ -76,7 +76,7 @@ QString QgsJoinByLocationAlgorithm::group() const
 
 QString QgsJoinByLocationAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsJoinByLocationAlgorithm::shortHelpString() const
@@ -110,22 +110,22 @@ QStringList QgsJoinByLocationAlgorithm::translatedPredicates()
 
 QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mBaseSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mBaseSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !mBaseSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  mJoinSource.reset( parameterAsSource( parameters, QStringLiteral( "JOIN" ), context ) );
+  mJoinSource.reset( parameterAsSource( parameters, u"JOIN"_s, context ) );
   if ( !mJoinSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"JOIN"_s ) );
 
-  mJoinMethod = static_cast<JoinMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  mJoinMethod = static_cast<JoinMethod>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
 
-  const QStringList joinedFieldNames = parameterAsStrings( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
+  const QStringList joinedFieldNames = parameterAsStrings( parameters, u"JOIN_FIELDS"_s, context );
 
-  mPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+  mPredicates = parameterAsEnums( parameters, u"PREDICATE"_s, context );
   sortPredicates( mPredicates );
 
-  QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
+  QString prefix = parameterAsString( parameters, u"PREFIX"_s, context );
 
   QgsFields joinFields;
   if ( joinedFieldNames.empty() )
@@ -158,17 +158,17 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   const QgsFields outputFields = QgsProcessingUtils::combineFields( mBaseSource->fields(), joinFields );
 
   QString joinedSinkId;
-  mJoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, joinedSinkId, outputFields, mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  mJoinedFeatures.reset( parameterAsSink( parameters, u"OUTPUT"_s, context, joinedSinkId, outputFields, mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
 
-  if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !mJoinedFeatures )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+  if ( parameters.value( u"OUTPUT"_s ).isValid() && !mJoinedFeatures )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-  mDiscardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  mDiscardNonMatching = parameterAsBoolean( parameters, u"DISCARD_NONMATCHING"_s, context );
 
   QString nonMatchingSinkId;
-  mUnjoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING" ), context, nonMatchingSinkId, mBaseSource->fields(), mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
-  if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
+  mUnjoinedFeatures.reset( parameterAsSink( parameters, u"NON_MATCHING"_s, context, nonMatchingSinkId, mBaseSource->fields(), mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  if ( parameters.value( u"NON_MATCHING"_s ).isValid() && !mUnjoinedFeatures )
+    throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING"_s ) );
 
   switch ( mJoinMethod )
   {
@@ -202,19 +202,19 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( mJoinedFeatures )
   {
     mJoinedFeatures->finalize();
-    outputs.insert( QStringLiteral( "OUTPUT" ), joinedSinkId );
+    outputs.insert( u"OUTPUT"_s, joinedSinkId );
   }
   if ( mUnjoinedFeatures )
   {
     mUnjoinedFeatures->finalize();
-    outputs.insert( QStringLiteral( "NON_MATCHING" ), nonMatchingSinkId );
+    outputs.insert( u"NON_MATCHING"_s, nonMatchingSinkId );
   }
 
   // need to release sinks to finalize writing
   mJoinedFeatures.reset();
   mUnjoinedFeatures.reset();
 
-  outputs.insert( QStringLiteral( "JOINED_COUNT" ), static_cast<long long>( mJoinedCount ) );
+  outputs.insert( u"JOINED_COUNT"_s, static_cast<long long>( mJoinedCount ) );
   return outputs;
 }
 
@@ -350,13 +350,13 @@ void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( Qg
         QgsFeature outputFeature( f2 );
         outputFeature.setAttributes( attributes );
         if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), u"OUTPUT"_s ) );
       }
 
       if ( mUnjoinedFeatures )
       {
         if ( !mUnjoinedFeatures->addFeature( f2, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), QStringLiteral( "NON_MATCHING" ) ) );
+          throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), u"NON_MATCHING"_s ) );
       }
     }
   }
@@ -460,7 +460,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
         QgsFeature outputFeature( baseFeature );
         outputFeature.setAttributes( baseFeature.attributes() + joinAttributes );
         if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), u"OUTPUT"_s ) );
       }
       if ( !ok )
         ok = true;
@@ -489,13 +489,13 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
       QgsFeature outputFeature( baseFeature );
       outputFeature.setAttributes( attributes );
       if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), u"OUTPUT"_s ) );
     }
 
     if ( mUnjoinedFeatures )
     {
       if ( !mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), QStringLiteral( "NON_MATCHING" ) ) );
+        throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), u"NON_MATCHING"_s ) );
     }
 
     return false;
@@ -541,7 +541,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
             QgsFeature outputFeature( baseFeature );
             outputFeature.setAttributes( joinAttributes );
             if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-              throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+              throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), u"OUTPUT"_s ) );
           }
           break;
 
@@ -605,7 +605,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
           QgsFeature outputFeature( baseFeature );
           outputFeature.setAttributes( joinAttributes );
           if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-            throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+            throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), u"OUTPUT"_s ) );
         }
       }
       else
@@ -631,13 +631,13 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
       QgsFeature outputFeature( baseFeature );
       outputFeature.setAttributes( attributes );
       if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), u"OUTPUT"_s ) );
     }
 
     if ( mUnjoinedFeatures )
     {
       if ( !mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), QStringLiteral( "NON_MATCHING" ) ) );
+        throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), u"NON_MATCHING"_s ) );
     }
   }
   else

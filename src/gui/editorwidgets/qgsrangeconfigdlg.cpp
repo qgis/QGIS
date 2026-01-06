@@ -74,9 +74,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
       }
 
       rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), QStringLiteral( "SpinBox" ) );
-      rangeWidget->addItem( tr( "Slider" ), QStringLiteral( "Slider" ) );
-      rangeWidget->addItem( tr( "Dial" ), QStringLiteral( "Dial" ) );
+      rangeWidget->addItem( tr( "Editable" ), u"SpinBox"_s );
+      rangeWidget->addItem( tr( "Slider" ), u"Slider"_s );
+      rangeWidget->addItem( tr( "Dial" ), u"Dial"_s );
 
       QVariant min;
       QVariant max;
@@ -120,31 +120,31 @@ QVariantMap QgsRangeConfigDlg::config()
   switch ( layer()->fields().at( field() ).type() )
   {
     case QMetaType::Type::Int:
-      cfg.insert( QStringLiteral( "Min" ), minimumSpinBox->value() );
-      cfg.insert( QStringLiteral( "Max" ), maximumSpinBox->value() );
-      cfg.insert( QStringLiteral( "Step" ), stepSpinBox->value() );
+      cfg.insert( u"Min"_s, minimumSpinBox->value() );
+      cfg.insert( u"Max"_s, maximumSpinBox->value() );
+      cfg.insert( u"Step"_s, stepSpinBox->value() );
       break;
 
     // we use the double spin boxes for double OR long long field types, as QSpinBox does not have sufficient
     // available range for long long values
     case QMetaType::Type::Double:
     case QMetaType::Type::LongLong:
-      cfg.insert( QStringLiteral( "Min" ), minimumDoubleSpinBox->value() );
-      cfg.insert( QStringLiteral( "Max" ), maximumDoubleSpinBox->value() );
-      cfg.insert( QStringLiteral( "Step" ), stepDoubleSpinBox->value() );
+      cfg.insert( u"Min"_s, minimumDoubleSpinBox->value() );
+      cfg.insert( u"Max"_s, maximumDoubleSpinBox->value() );
+      cfg.insert( u"Step"_s, stepDoubleSpinBox->value() );
       break;
 
     default:
       break;
   }
 
-  cfg.insert( QStringLiteral( "Style" ), rangeWidget->currentData().toString() );
-  cfg.insert( QStringLiteral( "AllowNull" ), allowNullCheckBox->isChecked() );
-  cfg.insert( QStringLiteral( "Precision" ), precisionSpinBox->value() );
+  cfg.insert( u"Style"_s, rangeWidget->currentData().toString() );
+  cfg.insert( u"AllowNull"_s, allowNullCheckBox->isChecked() );
+  cfg.insert( u"Precision"_s, precisionSpinBox->value() );
 
   if ( !suffixLineEdit->text().isEmpty() )
   {
-    cfg.insert( QStringLiteral( "Suffix" ), suffixLineEdit->text() );
+    cfg.insert( u"Suffix"_s, suffixLineEdit->text() );
   }
 
   return cfg;
@@ -152,25 +152,25 @@ QVariantMap QgsRangeConfigDlg::config()
 
 void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
 {
-  minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<double>::lowest() ).toDouble() );
-  maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble() );
-  stepDoubleSpinBox->setValue( config.value( QStringLiteral( "Step" ), 1.0 ).toDouble() );
-  minimumSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<int>::lowest() ).toInt() );
-  maximumSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<int>::max() ).toInt() );
-  stepSpinBox->setValue( config.value( QStringLiteral( "Step" ), 1 ).toInt() );
-  rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( QStringLiteral( "Style" ), "SpinBox" ) ) );
-  suffixLineEdit->setText( config.value( QStringLiteral( "Suffix" ) ).toString() );
-  allowNullCheckBox->setChecked( config.value( QStringLiteral( "AllowNull" ), true ).toBool() );
+  minimumDoubleSpinBox->setValue( config.value( u"Min"_s, std::numeric_limits<double>::lowest() ).toDouble() );
+  maximumDoubleSpinBox->setValue( config.value( u"Max"_s, std::numeric_limits<double>::max() ).toDouble() );
+  stepDoubleSpinBox->setValue( config.value( u"Step"_s, 1.0 ).toDouble() );
+  minimumSpinBox->setValue( config.value( u"Min"_s, std::numeric_limits<int>::lowest() ).toInt() );
+  maximumSpinBox->setValue( config.value( u"Max"_s, std::numeric_limits<int>::max() ).toInt() );
+  stepSpinBox->setValue( config.value( u"Step"_s, 1 ).toInt() );
+  rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( u"Style"_s, "SpinBox" ) ) );
+  suffixLineEdit->setText( config.value( u"Suffix"_s ).toString() );
+  allowNullCheckBox->setChecked( config.value( u"AllowNull"_s, true ).toBool() );
 
   const QgsField layerField = layer()->fields().at( field() );
   const int fieldPrecision = QgsRangeWidgetWrapper::defaultFieldPrecision( layerField );
-  precisionSpinBox->setValue( config.value( QStringLiteral( "Precision" ), fieldPrecision ).toInt() );
+  precisionSpinBox->setValue( config.value( u"Precision"_s, fieldPrecision ).toInt() );
 }
 
 void QgsRangeConfigDlg::rangeWidgetChanged( int index )
 {
   const QString style = rangeWidget->itemData( index ).toString();
-  allowNullCheckBox->setEnabled( style == QLatin1String( "SpinBox" ) );
+  allowNullCheckBox->setEnabled( style == "SpinBox"_L1 );
 }
 
 void QgsRangeConfigDlg::setPrecision( int precision )

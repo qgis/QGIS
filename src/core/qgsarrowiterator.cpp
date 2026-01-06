@@ -27,7 +27,7 @@
     const int ec = ( expr );                                                                                                     \
     if ( ec != NANOARROW_OK )                                                                                                    \
     {                                                                                                                            \
-      throw QgsException( QStringLiteral( "nanoarrow error (%1): %2" ).arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
+      throw QgsException( u"nanoarrow error (%1): %2"_s.arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
     }                                                                                                                            \
   } while ( 0 )
 
@@ -37,7 +37,7 @@
     const int ec = ( expr );                                                    \
     if ( ec != NANOARROW_OK )                                                   \
     {                                                                           \
-      throw QgsException( QStringLiteral( "nanoarrow error (%1)" ).arg( ec ) ); \
+      throw QgsException( u"nanoarrow error (%1)"_s.arg( ec ) ); \
     }                                                                           \
   } while ( 0 )
 
@@ -336,7 +336,7 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col->children[0], NANOARROW_TYPE_STRING ) );
         return;
       default:
-        throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
+        throw QgsException( u"QgsArrowIterator can't infer field type '%1' for field '%2'"_s.arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
     }
   }
 
@@ -533,7 +533,7 @@ namespace
         break;
     }
 
-    throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( v.typeName() ).arg( ArrowTypeString( columnTypeView.type ) ) );
+    throw QgsException( u"Can't convert variant of type '%1' to Arrow type '%2'"_s.arg( v.typeName() ).arg( ArrowTypeString( columnTypeView.type ) ) );
   }
 
   class ArrowIteratorArrayStreamImpl
@@ -597,7 +597,7 @@ void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
 {
   if ( !schema.isValid() )
   {
-    throw QgsException( QStringLiteral( "Invalid or null ArrowSchema provided" ) );
+    throw QgsException( u"Invalid or null ArrowSchema provided"_s );
   }
 
   mSchema = schema;
@@ -615,12 +615,12 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
 {
   if ( n < 1 )
   {
-    throw QgsException( QStringLiteral( "QgsArrowIterator can't iterate over less than one feature" ) );
+    throw QgsException( u"QgsArrowIterator can't iterate over less than one feature"_s );
   }
 
   if ( !mSchema.isValid() )
   {
-    throw QgsException( QStringLiteral( "QgsArrowIterator schema not set" ) );
+    throw QgsException( u"QgsArrowIterator schema not set"_s );
   }
 
   // Check the schema and cache a few things about it before we loop over features.
@@ -635,7 +635,7 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
   QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &schemaView, schema, &error ), &error );
   if ( schemaView.type != NANOARROW_TYPE_STRUCT )
   {
-    throw QgsException( QStringLiteral( "QgsArrowIterator expected requested schema as struct but got '%1'" ).arg( ArrowTypeString( schemaView.type ) ) );
+    throw QgsException( u"QgsArrowIterator expected requested schema as struct but got '%1'"_s.arg( ArrowTypeString( schemaView.type ) ) );
   }
 
   std::vector<QString> columnNames( schema->n_children );
@@ -754,7 +754,7 @@ QgsArrowSchema QgsArrowIterator::inferSchema( const QgsFields &fields, bool hasG
     QString geometryColumnName = options.geometryColumnName();
     if ( geometryColumnName.isEmpty() )
     {
-      geometryColumnName = QStringLiteral( "geometry" );
+      geometryColumnName = u"geometry"_s;
     }
 
     inferGeometry( out.schema()->children[fields.count()], geometryColumnName, crs );

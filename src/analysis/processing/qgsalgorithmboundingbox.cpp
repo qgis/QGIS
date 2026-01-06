@@ -21,7 +21,7 @@
 
 QString QgsBoundingBoxAlgorithm::name() const
 {
-  return QStringLiteral( "boundingboxes" );
+  return u"boundingboxes"_s;
 }
 
 QString QgsBoundingBoxAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsBoundingBoxAlgorithm::group() const
 
 QString QgsBoundingBoxAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsBoundingBoxAlgorithm::outputName() const
@@ -51,7 +51,7 @@ QString QgsBoundingBoxAlgorithm::outputName() const
 
 QString QgsBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) + u"\n\n"_s + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QString QgsBoundingBoxAlgorithm::shortDescription() const
@@ -67,10 +67,10 @@ QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
 QgsFields QgsBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "width" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "height" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  newFields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"width"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"height"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 

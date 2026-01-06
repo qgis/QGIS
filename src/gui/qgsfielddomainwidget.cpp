@@ -447,7 +447,7 @@ bool QgsFieldDomainWidget::isValid() const
 QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsFieldDomainDialog" ) );
+  setObjectName( u"QgsFieldDomainDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsFieldDomainWidget( type );

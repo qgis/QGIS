@@ -153,7 +153,7 @@ QgsGeometry QgsStacSearchParametersDialog::spatialExtent() const
   }
   catch ( QgsCsException &e )
   {
-    QgsDebugError( QStringLiteral( "Could not transform extent to WGS84: %1" ).arg( e.what() ) );
+    QgsDebugError( u"Could not transform extent to WGS84: %1"_s.arg( e.what() ) );
   }
 
   return geom.intersection( QgsGeometry::fromRect( QgsRectangle( -180., -90., 180., 90. ) ) );
@@ -214,12 +214,12 @@ QString QgsStacSearchParametersDialog::activeFiltersPreview()
 
   if ( mSpatialFilterEnabled )
   {
-    str += QStringLiteral( ", " ) + tr( "Spatial Extent" );
+    str += u", "_s + tr( "Spatial Extent" );
   }
 
   if ( mTemporalFilterEnabled && !( mTemporalFrom.isNull() && mTemporalTo.isNull() ) )
   {
-    str += QStringLiteral( ", " ) + tr( "Temporal Range" );
+    str += u", "_s + tr( "Temporal Range" );
   }
   return str;
 }
@@ -246,7 +246,7 @@ void QgsStacSearchParametersDialog::onCollectionsListViewScroll( int value )
 {
   if ( !mCollectionsUrl.isEmpty() && value == mCollectionsListView->verticalScrollBar()->maximum() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Scrolled to end, fetching next page" ), 3 );
+    QgsDebugMsgLevel( u"Scrolled to end, fetching next page"_s, 3 );
     mStac->fetchCollectionsAsync( mCollectionsUrl );
   }
 }

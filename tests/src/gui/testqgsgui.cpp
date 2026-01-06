@@ -28,16 +28,16 @@ class TestQgsGui : public QObject
 
 void TestQgsGui::createFileFilterForFormat()
 {
-  const QString expected = QStringLiteral( "FOO format (*.foo *.FOO)" );
-  const QString actual = QgsGuiUtils::createFileFilter_( QStringLiteral( "foo" ) );
+  const QString expected = u"FOO format (*.foo *.FOO)"_s;
+  const QString actual = QgsGuiUtils::createFileFilter_( u"foo"_s );
 
   QCOMPARE( actual, expected );
 }
 
 void TestQgsGui::createFileFilter()
 {
-  const QString expected = QStringLiteral( "My Description (my_regex MY_REGEX)" );
-  const QString actual = QgsGuiUtils::createFileFilter_( QStringLiteral( "My Description" ), QStringLiteral( "my_regex" ) );
+  const QString expected = u"My Description (my_regex MY_REGEX)"_s;
+  const QString actual = QgsGuiUtils::createFileFilter_( u"My Description"_s, u"my_regex"_s );
 
   QCOMPARE( actual, expected );
 }

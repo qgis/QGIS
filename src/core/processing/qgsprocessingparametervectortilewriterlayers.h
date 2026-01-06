@@ -57,7 +57,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "vectortilewriterlayers" ); }
+    static QString typeName() { return u"vectortilewriterlayers"_s; }
 
     //! Converts a QVariant value (a QVariantList) to a list of input layers
     static QList<QgsVectorTileWriter::Layer> parameterAsLayers( const QVariant &layersVariant, QgsProcessingContext &context );
@@ -103,12 +103,12 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsP
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterVectorTileWriterLayers" );
+      return u"from qgis.core import QgsProcessingParameterVectorTileWriterLayers"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers" );
+      return u"QgsProcessingParameterVectorTileWriterLayers"_s;
     }
 
     QStringList acceptedPythonTypes() const override

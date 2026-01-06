@@ -24,9 +24,9 @@
 
 #include "moc_qgsmaterial.cpp"
 
-const QString QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME = QStringLiteral( "clipPlane[0]" );
-const QString QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME = QStringLiteral( "max_plane_real" );
-const QString QgsMaterial::CLIP_PLANE_DEFINE = QStringLiteral( "CLIPPING" );
+const QString QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME = u"clipPlane[0]"_s;
+const QString QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME = u"max_plane_real"_s;
+const QString QgsMaterial::CLIP_PLANE_DEFINE = u"CLIPPING"_s;
 
 
 QgsMaterial::QgsMaterial( QNode *parent )

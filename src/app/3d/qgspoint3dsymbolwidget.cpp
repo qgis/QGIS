@@ -102,34 +102,34 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   switch ( pointSymbol->shape() )
   {
     case Qgis::Point3DShape::Sphere:
-      spinRadius->setValue( pointSymbol->shapeProperty( QStringLiteral( "radius" ) ).toDouble() );
+      spinRadius->setValue( pointSymbol->shapeProperty( u"radius"_s ).toDouble() );
       break;
     case Qgis::Point3DShape::Cylinder:
-      spinRadius->setValue( pointSymbol->shapeProperty( QStringLiteral( "radius" ) ).toDouble() );
-      spinLength->setValue( pointSymbol->shapeProperty( QStringLiteral( "length" ) ).toDouble() );
+      spinRadius->setValue( pointSymbol->shapeProperty( u"radius"_s ).toDouble() );
+      spinLength->setValue( pointSymbol->shapeProperty( u"length"_s ).toDouble() );
       break;
     case Qgis::Point3DShape::Cube:
-      spinSize->setValue( pointSymbol->shapeProperty( QStringLiteral( "size" ) ).toDouble() );
+      spinSize->setValue( pointSymbol->shapeProperty( u"size"_s ).toDouble() );
       break;
     case Qgis::Point3DShape::Cone:
-      spinTopRadius->setValue( pointSymbol->shapeProperty( QStringLiteral( "topRadius" ) ).toDouble() );
-      spinBottomRadius->setValue( pointSymbol->shapeProperty( QStringLiteral( "bottomRadius" ) ).toDouble() );
-      spinLength->setValue( pointSymbol->shapeProperty( QStringLiteral( "length" ) ).toDouble() );
+      spinTopRadius->setValue( pointSymbol->shapeProperty( u"topRadius"_s ).toDouble() );
+      spinBottomRadius->setValue( pointSymbol->shapeProperty( u"bottomRadius"_s ).toDouble() );
+      spinLength->setValue( pointSymbol->shapeProperty( u"length"_s ).toDouble() );
       break;
     case Qgis::Point3DShape::Plane:
-      spinSize->setValue( pointSymbol->shapeProperty( QStringLiteral( "size" ) ).toDouble() );
+      spinSize->setValue( pointSymbol->shapeProperty( u"size"_s ).toDouble() );
       break;
     case Qgis::Point3DShape::Torus:
-      spinRadius->setValue( pointSymbol->shapeProperty( QStringLiteral( "radius" ) ).toDouble() );
-      spinMinorRadius->setValue( pointSymbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toDouble() );
+      spinRadius->setValue( pointSymbol->shapeProperty( u"radius"_s ).toDouble() );
+      spinMinorRadius->setValue( pointSymbol->shapeProperty( u"minorRadius"_s ).toDouble() );
       break;
     case Qgis::Point3DShape::Model:
     {
-      lineEditModel->setSource( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
+      lineEditModel->setSource( pointSymbol->shapeProperty( u"model"_s ).toString() );
       // "overwriteMaterial" is a legacy setting indicating that non-null material should be used
-      forceNullMaterial = ( pointSymbol->shapeProperties().contains( QStringLiteral( "overwriteMaterial" ) ) && !pointSymbol->shapeProperties().value( QStringLiteral( "overwriteMaterial" ) ).toBool() )
+      forceNullMaterial = ( pointSymbol->shapeProperties().contains( u"overwriteMaterial"_s ) && !pointSymbol->shapeProperties().value( u"overwriteMaterial"_s ).toBool() )
                           || !pointSymbol->materialSettings()
-                          || pointSymbol->materialSettings()->type() == QLatin1String( "null" );
+                          || pointSymbol->materialSettings()->type() == "null"_L1;
       technique = QgsMaterialSettingsRenderingTechnique::TrianglesFromModel;
       break;
     }
@@ -149,7 +149,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
 
   if ( forceNullMaterial )
   {
-    widgetMaterial->setType( QStringLiteral( "null" ) );
+    widgetMaterial->setType( u"null"_s );
   }
 
   QVector3D translation, scale;
@@ -178,29 +178,29 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
-      vm[QStringLiteral( "radius" )] = spinRadius->value();
+      vm[u"radius"_s] = spinRadius->value();
       break;
     case Qgis::Point3DShape::Cylinder:
-      vm[QStringLiteral( "radius" )] = spinRadius->value();
-      vm[QStringLiteral( "length" )] = spinLength->value();
+      vm[u"radius"_s] = spinRadius->value();
+      vm[u"length"_s] = spinLength->value();
       break;
     case Qgis::Point3DShape::Cube:
-      vm[QStringLiteral( "size" )] = spinSize->value();
+      vm[u"size"_s] = spinSize->value();
       break;
     case Qgis::Point3DShape::Cone:
-      vm[QStringLiteral( "topRadius" )] = spinTopRadius->value();
-      vm[QStringLiteral( "bottomRadius" )] = spinBottomRadius->value();
-      vm[QStringLiteral( "length" )] = spinLength->value();
+      vm[u"topRadius"_s] = spinTopRadius->value();
+      vm[u"bottomRadius"_s] = spinBottomRadius->value();
+      vm[u"length"_s] = spinLength->value();
       break;
     case Qgis::Point3DShape::Plane:
-      vm[QStringLiteral( "size" )] = spinSize->value();
+      vm[u"size"_s] = spinSize->value();
       break;
     case Qgis::Point3DShape::Torus:
-      vm[QStringLiteral( "radius" )] = spinRadius->value();
-      vm[QStringLiteral( "minorRadius" )] = spinMinorRadius->value();
+      vm[u"radius"_s] = spinRadius->value();
+      vm[u"minorRadius"_s] = spinMinorRadius->value();
       break;
     case Qgis::Point3DShape::Model:
-      vm[QStringLiteral( "model" )] = lineEditModel->source();
+      vm[u"model"_s] = lineEditModel->source();
       break;
     case Qgis::Point3DShape::Billboard:
       sym->setBillboardSymbol( btnChangeSymbol->clonedSymbol<QgsMarkerSymbol>() );
@@ -228,7 +228,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 
 QString QgsPoint3DSymbolWidget::symbolType() const
 {
-  return QStringLiteral( "point" );
+  return u"point"_s;
 }
 
 void QgsPoint3DSymbolWidget::onShapeChanged()
@@ -287,7 +287,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   if ( cboShape->currentIndex() == 6 )
   {
     // going from different shape -> model resets the material to the null type
-    widgetMaterial->setType( QStringLiteral( "null" ) );
+    widgetMaterial->setType( u"null"_s );
   }
 
   const auto constAllWidgets = allWidgets;

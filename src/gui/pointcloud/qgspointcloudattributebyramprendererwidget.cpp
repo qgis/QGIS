@@ -109,7 +109,7 @@ void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
       mProviderMax = std::numeric_limits<double>::quiet_NaN();
     }
 
-    if ( mAttributeComboBox->currentAttribute().compare( QLatin1String( "z" ), Qt::CaseInsensitive ) == 0 )
+    if ( mAttributeComboBox->currentAttribute().compare( 'z'_L1, Qt::CaseInsensitive ) == 0 )
     {
       const double zScale = static_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() )->zScale();
       const double zOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() )->zOffset();
@@ -156,9 +156,9 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
   }
   else
   {
-    if ( mAttributeComboBox->findText( QStringLiteral( "Intensity" ) ) > -1 )
+    if ( mAttributeComboBox->findText( u"Intensity"_s ) > -1 )
     {
-      mAttributeComboBox->setAttribute( QStringLiteral( "Intensity" ) );
+      mAttributeComboBox->setAttribute( u"Intensity"_s );
     }
     else
     {

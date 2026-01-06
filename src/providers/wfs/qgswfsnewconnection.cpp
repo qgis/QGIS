@@ -31,14 +31,14 @@
 static QString translatedImageFormatFromMediaType( const QString &type )
 {
   static QMap<QString, QString> mapMimeTypeToTranslated {
-    { QStringLiteral( "default" ), QObject::tr( "Default" ) },
-    { QStringLiteral( "application/fg+json" ), QObject::tr( "JSON-FG" ) },
-    { QStringLiteral( "application/flatgeobuf" ), QObject::tr( "FlatGeoBuf" ) },
-    { QStringLiteral( "application/geo+json" ), QObject::tr( "GeoJSON" ) },
-    { QStringLiteral( "application/gml+xml" ), QObject::tr( "GML" ) },
-    { QStringLiteral( "application/gml+xml;version=3.2" ), QObject::tr( "GML 3.2" ) },
-    { QStringLiteral( "application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf0\"" ), QObject::tr( "GML 3.2, Simple Features 0 profile" ) },
-    { QStringLiteral( "application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf2\"" ), QObject::tr( "GML 3.2, Simple Features 2 profile" ) },
+    { u"default"_s, QObject::tr( "Default" ) },
+    { u"application/fg+json"_s, QObject::tr( "JSON-FG" ) },
+    { u"application/flatgeobuf"_s, QObject::tr( "FlatGeoBuf" ) },
+    { u"application/geo+json"_s, QObject::tr( "GeoJSON" ) },
+    { u"application/gml+xml"_s, QObject::tr( "GML" ) },
+    { u"application/gml+xml;version=3.2"_s, QObject::tr( "GML 3.2" ) },
+    { u"application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf0\""_s, QObject::tr( "GML 3.2, Simple Features 0 profile" ) },
+    { u"application/gml+xml;version=3.2;profile=\"http://www.opengis.net/def/profile/ogc/2.0/gml-sf2\""_s, QObject::tr( "GML 3.2, Simple Features 2 profile" ) },
   };
 
   const auto iter = mapMimeTypeToTranslated.constFind( type );
@@ -48,18 +48,18 @@ static QString translatedImageFormatFromMediaType( const QString &type )
 }
 
 QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connName )
-  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, QStringLiteral( "WFS" ), connName )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, u"WFS"_s, connName )
 {
   connect( wfsVersionDetectButton(), &QPushButton::clicked, this, &QgsWFSNewConnection::versionDetectButton );
   connect( featureFormatDetectButton(), &QPushButton::clicked, this, &QgsWFSNewConnection::detectFormat );
 
-  const QStringList detailsParameters = { QStringLiteral( "wfs" ), originalConnectionName() };
+  const QStringList detailsParameters = { u"wfs"_s, originalConnectionName() };
   QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
 
   if ( featureFormat.isEmpty() )
   {
     // Read from global default setting
-    featureFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+    featureFormat = QgsSettings().value( u"qgis/lastFeatureFormatEncoding"_s, QString() ).toString();
   }
 
   // Check the settings for available formats
@@ -67,7 +67,7 @@ QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connNa
   featureFormatComboBox()->clear();
   if ( availableFormats.empty() )
   {
-    featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( QStringLiteral( "default" ) ), QStringLiteral( "default" ) );
+    featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( u"default"_s ), u"default"_s );
   }
   else
   {
@@ -110,7 +110,7 @@ QgsDataSourceUri QgsWFSNewConnection::createUri()
 {
   // Honor any defined authentication settings
   QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "url" ), urlTrimmed().toString() );
+  uri.setParam( u"url"_s, urlTrimmed().toString() );
   if ( authSettingsWidget()->configurationTabIsSelected() )
   {
     uri.setAuthConfigId( authSettingsWidget()->configId() );
@@ -169,15 +169,15 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
   const QgsWfsCapabilities &caps = mCapabilities->capabilities();
   int versionIdx = WFS_VERSION_MAX;
   wfsPageSizeLineEdit()->clear();
-  if ( caps.version.startsWith( QLatin1String( "1.0" ) ) )
+  if ( caps.version.startsWith( "1.0"_L1 ) )
   {
     versionIdx = WFS_VERSION_1_0;
   }
-  else if ( caps.version.startsWith( QLatin1String( "1.1" ) ) )
+  else if ( caps.version.startsWith( "1.1"_L1 ) )
   {
     versionIdx = WFS_VERSION_1_1;
   }
-  else if ( caps.version.startsWith( QLatin1String( "2.0" ) ) )
+  else if ( caps.version.startsWith( "2.0"_L1 ) )
   {
     versionIdx = WFS_VERSION_2_0;
     wfsPageSizeLineEdit()->setText( QString::number( caps.maxFeatures ) );
@@ -351,20 +351,20 @@ void QgsWFSNewConnection::oapifCollectionsReplyFinished()
     return;
   }
 
-  const QStringList detailsParameters = { QStringLiteral( "wfs" ), originalConnectionName() };
+  const QStringList detailsParameters = { u"wfs"_s, originalConnectionName() };
 
   // Store current format value
   QString currentFormat { featureFormatComboBox()->currentData().toString() };
   if ( currentFormat.isEmpty() )
   {
-    currentFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+    currentFormat = QgsSettings().value( u"qgis/lastFeatureFormatEncoding"_s, QString() ).toString();
   }
 
   featureFormatComboBox()->clear();
-  featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( QStringLiteral( "default" ) ), QStringLiteral( "default" ) );
+  featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( u"default"_s ), u"default"_s );
   int itemCount = 1;
   QStringList featureFormats;
-  featureFormats << QStringLiteral( "default" );
+  featureFormats << u"default"_s;
   for ( const QString &format : mOAPIFCollectionsRequest->featureFormats() )
   {
     featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( format ), format );

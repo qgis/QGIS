@@ -34,16 +34,16 @@
 #include "qgsogrfilesourcewidget.h"
 #include "qgsmaplayer.h"
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
+static const QString TEXT_PROVIDER_KEY = u"ogr"_s;
 
 //! Provider for OGR vector source select
 class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    QString providerKey() const override { return u"ogr"_s; }
     QString text() const override { return QObject::tr( "Vector" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddOgrLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
     QgsSourceSelectProvider::Capabilities capabilities() override;
 };
@@ -54,10 +54,10 @@ class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
     QString name() const override;
-    QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    QString providerKey() const override { return u"ogr"_s; }
     QString text() const override { return QObject::tr( "GeoPackage" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 45; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddGeoPackageLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
     QgsSourceSelectProvider::Capabilities capabilities() override;
 };
@@ -78,22 +78,22 @@ class QgsSpatiaLiteSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    QString providerKey() const override { return u"ogr"_s; }
     QString text() const override { return QObject::tr( "SQLite" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 46; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mIconSpatialite.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mIconSpatialite.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
-      return new QgsOgrDbSourceSelect( QStringLiteral( "SQLite" ), QObject::tr( "SQLite" ),  QObject::tr( "SpatiaLite Database (*.db *.sqlite)" ), parent, fl, widgetMode );
+      return new QgsOgrDbSourceSelect( u"SQLite"_s, QObject::tr( "SQLite" ),  QObject::tr( "SpatiaLite Database (*.db *.sqlite)" ), parent, fl, widgetMode );
     }
 };
 //*/
 
-QString QgsGeoPackageSourceSelectProvider::name() const { return QStringLiteral( "GeoPackage" ); }
+QString QgsGeoPackageSourceSelectProvider::name() const { return u"GeoPackage"_s; }
 
 QgsAbstractDataSourceWidget *QgsGeoPackageSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
 {
-  return new QgsOgrDbSourceSelect( QStringLiteral( "GPKG" ), QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
+  return new QgsOgrDbSourceSelect( u"GPKG"_s, QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
 }
 
 QgsSourceSelectProvider::Capabilities QgsGeoPackageSourceSelectProvider::capabilities()
@@ -122,16 +122,16 @@ QgsOgrSourceWidgetProvider::QgsOgrSourceWidgetProvider()
 
 QString QgsOgrSourceWidgetProvider::providerKey() const
 {
-  return QStringLiteral( "ogr" );
+  return u"ogr"_s;
 }
 
 bool QgsOgrSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
 {
-  if ( layer->providerType() != QLatin1String( "ogr" ) )
+  if ( layer->providerType() != "ogr"_L1 )
     return false;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), layer->source() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"ogr"_s, layer->source() );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -139,11 +139,11 @@ bool QgsOgrSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
 
 QgsProviderSourceWidget *QgsOgrSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )
 {
-  if ( layer->providerType() != QLatin1String( "ogr" ) )
+  if ( layer->providerType() != "ogr"_L1 )
     return nullptr;
 
-  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), layer->source() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"ogr"_s, layer->source() );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsOgrFileSourceWidget( parent );

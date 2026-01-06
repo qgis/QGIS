@@ -105,8 +105,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "dxf" ) );
-    static const inline QgsSettingsEntryString *settingsDxfLastSettingsDir = new QgsSettingsEntryString( QStringLiteral( "last-settings-dir" ), sTreeAppDdxf, QDir::homePath() );
+    static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( u"dxf"_s );
+    static const inline QgsSettingsEntryString *settingsDxfLastSettingsDir = new QgsSettingsEntryString( u"last-settings-dir"_s, sTreeAppDdxf, QDir::homePath() );
 
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsDxfExportDialog() override;

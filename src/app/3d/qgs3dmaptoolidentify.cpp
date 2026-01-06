@@ -93,11 +93,11 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       catch ( QgsCsException &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
+        QgsDebugError( u"Could not transform identified coordinates to project crs: %1"_s.arg( e.what() ) );
       }
 
       const QgsPoint pt( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y(), mapCoordsCanvas2D.z() );
-      identifyTool2D->showResultsForFeature( vlayer, hit.properties().value( QStringLiteral( "fid" ), FID_NULL ).toLongLong(), pt );
+      identifyTool2D->showResultsForFeature( vlayer, hit.properties().value( u"fid"_s, FID_NULL ).toLongLong(), pt );
       showTerrainResults = false;
     }
     // We need to restructure point cloud layer results to display them later. We may have multiple hits for each layer.
@@ -139,7 +139,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       {
         derivedAttributes[key] = hitAttributes[key].toString();
       }
-      QString nodeId = derivedAttributes[QStringLiteral( "node_id" )];
+      QString nodeId = derivedAttributes[u"node_id"_s];
       // only derived attributes are supported for now, so attributes is empty
       QgsMapToolIdentify::IdentifyResult res( layer, nodeId, {}, derivedAttributes );
       tiledSceneIdentifyResults.append( res );
@@ -178,7 +178,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     catch ( QgsCsException &e )
     {
       Q_UNUSED( e )
-      QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
+      QgsDebugError( u"Could not transform identified coordinates to project crs: %1"_s.arg( e.what() ) );
     }
   }
 

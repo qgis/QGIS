@@ -134,7 +134,7 @@ void QgsPostgresProjectStorageDialog::populateProjects()
   mExistingProjects.clear();
 
   QString uri = currentProjectUri();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"postgresql"_s );
   Q_ASSERT( storage );
   mExistingProjects = storage->listProjects( uri );
   mCboProject->addItems( mExistingProjects );
@@ -171,7 +171,7 @@ void QgsPostgresProjectStorageDialog::removeProject()
   if ( res != QMessageBox::Yes )
     return;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"postgresql"_s );
   Q_ASSERT( storage );
   storage->removeProject( currentProjectUri() );
   populateProjects();

@@ -82,14 +82,14 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     cb_useEstimatedMetadata->setChecked( QgsMssqlConnection::useEstimatedMetadata( connName ) );
     mCheckNoInvalidGeometryHandling->setChecked( QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connName ) );
 
-    if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/saveUsername" ).toString() == "true"_L1 )
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
       chkStoreUsername->setChecked( true );
       cb_trustedConnection->setChecked( false );
     }
 
-    if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/savePassword" ).toString() == "true"_L1 )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
@@ -97,7 +97,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]+"_s ), txtName ) );
   cb_trustedConnection_clicked();
 
   schemaView->setModel( &mSchemaModel );
@@ -124,7 +124,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
-  QString baseKey = QStringLiteral( "/MSSQL/connections/" );
+  QString baseKey = u"/MSSQL/connections/"_s;
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
@@ -144,7 +144,7 @@ void QgsMssqlNewConnection::accept()
   baseKey += connName;
   QString database;
   QListWidgetItem *item = listDatabase->currentItem();
-  if ( item && item->text() != QLatin1String( "(from service)" ) )
+  if ( item && item->text() != "(from service)"_L1 )
   {
     database = item->text();
   }
@@ -235,14 +235,14 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 
 void QgsMssqlNewConnection::listDatabases()
 {
-  testConnection( QStringLiteral( "master" ) );
+  testConnection( u"master"_s );
   QString currentDataBase;
   if ( listDatabase->currentItem() )
     currentDataBase = listDatabase->currentItem()->text();
   listDatabase->clear();
-  const QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
+  const QString queryStr = u"SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')"_s;
 
-  std::shared_ptr<QgsMssqlDatabase> db = getDatabase( QStringLiteral( "master" ) );
+  std::shared_ptr<QgsMssqlDatabase> db = getDatabase( u"master"_s );
 
   if ( db->isValid() )
   {
@@ -252,7 +252,7 @@ void QgsMssqlNewConnection::listDatabases()
 
     if ( !txtService->text().isEmpty() )
     {
-      listDatabase->addItem( QStringLiteral( "(from service)" ) );
+      listDatabase->addItem( u"(from service)"_s );
     }
 
     if ( query.isActive() )
@@ -279,7 +279,7 @@ void QgsMssqlNewConnection::listDatabases()
 
 void QgsMssqlNewConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-mssql-spatial" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#connecting-to-mssql-spatial"_s );
 }
 
 std::shared_ptr<QgsMssqlDatabase> QgsMssqlNewConnection::getDatabase( const QString &name ) const
@@ -290,7 +290,7 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlNewConnection::getDatabase( const QStr
   {
     database = name;
   }
-  else if ( item && item->text() != QLatin1String( "(from service)" ) )
+  else if ( item && item->text() != "(from service)"_L1 )
   {
     database = item->text();
   }
@@ -370,7 +370,7 @@ bool QgsMssqlNewConnection::testExtentInGeometryColumns() const
   if ( !db->isValid() )
     return false;
 
-  const QString queryStr = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns" );
+  const QString queryStr = u"SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns"_s;
   QSqlQuery query = QSqlQuery( db->db() );
   const bool test = query.exec( queryStr );
 
@@ -383,7 +383,7 @@ bool QgsMssqlNewConnection::testPrimaryKeyInGeometryColumns() const
   if ( !db->isValid() )
     return false;
 
-  const QString queryStr = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns" );
+  const QString queryStr = u"SELECT qgis_pkey FROM geometry_columns"_s;
   QSqlQuery query = QSqlQuery( db->db() );
   const bool test = query.exec( queryStr );
 

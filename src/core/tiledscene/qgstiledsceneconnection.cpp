@@ -24,12 +24,12 @@
 ///@cond PRIVATE
 
 
-const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsProvider = new QgsSettingsEntryString( QStringLiteral( "provider" ), sTreeConnectionTiledScene );
-const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeConnectionTiledScene );
-const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeConnectionTiledScene );
-const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionTiledScene );
-const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionTiledScene );
-const QgsSettingsEntryVariantMap *QgsTiledSceneProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionTiledScene );
+const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsProvider = new QgsSettingsEntryString( u"provider"_s, sTreeConnectionTiledScene );
+const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeConnectionTiledScene );
+const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeConnectionTiledScene );
+const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeConnectionTiledScene );
+const QgsSettingsEntryString *QgsTiledSceneProviderConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeConnectionTiledScene );
+const QgsSettingsEntryVariantMap *QgsTiledSceneProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeConnectionTiledScene );
 
 ///@endcond
 
@@ -38,7 +38,7 @@ QString QgsTiledSceneProviderConnection::encodedUri( const QgsTiledSceneProvider
   QgsDataSourceUri uri;
 
   if ( !data.url.isEmpty() )
-    uri.setParam( QStringLiteral( "url" ), data.url );
+    uri.setParam( u"url"_s, data.url );
   if ( !data.authCfg.isEmpty() )
     uri.setAuthConfigId( data.authCfg );
   if ( !data.username.isEmpty() )
@@ -57,7 +57,7 @@ QgsTiledSceneProviderConnection::Data QgsTiledSceneProviderConnection::decodedUr
   dsUri.setEncodedUri( uri );
 
   QgsTiledSceneProviderConnection::Data conn;
-  conn.url = dsUri.param( QStringLiteral( "url" ) );
+  conn.url = dsUri.param( u"url"_s );
   conn.authCfg = dsUri.authConfigId();
   conn.username = dsUri.username();
   conn.password = dsUri.password();
@@ -70,7 +70,7 @@ QString QgsTiledSceneProviderConnection::encodedLayerUri( const QgsTiledScenePro
 {
   QgsDataSourceUri uri;
 
-  uri.setParam( QStringLiteral( "url" ), data.url );
+  uri.setParam( u"url"_s, data.url );
   if ( !data.authCfg.isEmpty() )
     uri.setAuthConfigId( data.authCfg );
   if ( !data.username.isEmpty() )

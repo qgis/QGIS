@@ -153,8 +153,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
           if ( role == Qt::ToolTipRole )
           {
-            QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
-                              tags.count() > 0 ? tags.join( QLatin1String( ", " ) ) : tr( "Not tagged" ) );
+            QString tooltip = u"<h3>%1</h3><p><i>%2</i>"_s.arg( name,
+                              tags.count() > 0 ? tags.join( ", "_L1 ) : tr( "Not tagged" ) );
 
             // generate tooltips for the largest device pixel ratio for all attached screens
             QgsScreenProperties maxDevicePixelRatioScreen;
@@ -178,7 +178,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                   QByteArray data;
                   QBuffer buffer( &data );
                   pm.save( &buffer, "PNG", 100 );
-                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
+                  tooltip += u"<p><img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width );
                 }
                 break;
               }
@@ -192,7 +192,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
-                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
+                tooltip += u"<p><img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width );
                 break;
               }
 
@@ -205,7 +205,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 QByteArray data;
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
-                tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
+                tooltip += u"<p><img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width );
                 break;
               }
 
@@ -221,7 +221,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                   QByteArray data;
                   QBuffer buffer( &data );
                   pm.save( &buffer, "PNG", 100 );
-                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width );
+                  tooltip += u"<p><img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width );
                 }
                 break;
               }
@@ -240,7 +240,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
           }
         }
         case Tags:
-          return mStyle->tagsOfSymbol( entityType, name ).join( QLatin1String( ", " ) );
+          return mStyle->tagsOfSymbol( entityType, name ).join( ", "_L1 );
 
         default:
           break;
@@ -403,10 +403,10 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
               // TODO - use hourglass icon
               if ( mAdditionalSizes.isEmpty() )
-                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), QSize( 24, 24 ) );
+                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + u"3d.svg"_s, QSize( 24, 24 ) );
               for ( const QSize &s : mAdditionalSizes )
               {
-                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), s );
+                icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + u"3d.svg"_s, s );
               }
               mIconCache[ entityType ].insert( name, icon );
               return icon;

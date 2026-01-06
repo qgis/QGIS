@@ -34,7 +34,7 @@ QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
 void QgsWkbPtr::verifyBound( int size ) const
 {
   if ( !mP || mP + size > mEnd )
-    throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
+    throw QgsWkbException( u"wkb access out of bounds"_s );
 }
 
 QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
@@ -72,7 +72,7 @@ Qgis::WkbType QgsConstWkbPtr::readHeader() const
 void QgsConstWkbPtr::verifyBound( int size ) const
 {
   if ( !mP || mP + size > mEnd )
-    throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
+    throw QgsWkbException( u"wkb access out of bounds"_s );
 }
 
 const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPointF &point ) const

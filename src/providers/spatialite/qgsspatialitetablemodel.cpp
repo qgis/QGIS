@@ -162,7 +162,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
       const QIcon myIcon = iconForType( wkbType );
       itemFromIndex( currentTypeIndex )->setText( typeList.at( 0 ) ); //todo: add other rows
       itemFromIndex( currentTypeIndex )->setIcon( myIcon );
-      if ( !geomColText.contains( QLatin1String( " AS " ) ) )
+      if ( !geomColText.contains( " AS "_L1 ) )
       {
         itemFromIndex( currentGeomColumnIndex )->setText( geomColText + " AS " + typeList.at( 0 ) );
       }
@@ -222,32 +222,32 @@ QString QgsSpatiaLiteTableModel::displayStringForType( Qgis::WkbType type ) cons
   {
     return tr( "Multipolygon" );
   }
-  return QStringLiteral( "Unknown" );
+  return u"Unknown"_s;
 }
 
 Qgis::WkbType QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString &dbType ) const
 {
-  if ( dbType == QLatin1String( "POINT" ) )
+  if ( dbType == "POINT"_L1 )
   {
     return Qgis::WkbType::Point;
   }
-  else if ( dbType == QLatin1String( "MULTIPOINT" ) )
+  else if ( dbType == "MULTIPOINT"_L1 )
   {
     return Qgis::WkbType::MultiPoint;
   }
-  else if ( dbType == QLatin1String( "LINESTRING" ) )
+  else if ( dbType == "LINESTRING"_L1 )
   {
     return Qgis::WkbType::LineString;
   }
-  else if ( dbType == QLatin1String( "MULTILINESTRING" ) )
+  else if ( dbType == "MULTILINESTRING"_L1 )
   {
     return Qgis::WkbType::MultiLineString;
   }
-  else if ( dbType == QLatin1String( "POLYGON" ) )
+  else if ( dbType == "POLYGON"_L1 )
   {
     return Qgis::WkbType::Polygon;
   }
-  else if ( dbType == QLatin1String( "MULTIPOLYGON" ) )
+  else if ( dbType == "MULTIPOLYGON"_L1 )
   {
     return Qgis::WkbType::MultiPolygon;
   }

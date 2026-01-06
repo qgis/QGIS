@@ -85,9 +85,9 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   QgsSettings settings;
   settings.clear();
 
@@ -95,10 +95,10 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   // make testing layers
-  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine );
 
@@ -116,7 +116,7 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   // make testing layers
-  mLayerLineM = new QgsVectorLayer( QStringLiteral( "LineStringM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
+  mLayerLineM = new QgsVectorLayer( u"LineStringM?crs=EPSG:27700"_s, u"layer line M"_s, u"memory"_s );
   QVERIFY( mLayerLineM->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineM );
 
@@ -138,7 +138,7 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
   // make layer for topologicalEditing with M
-  mLayerTopoM = new QgsVectorLayer( QStringLiteral( "MultiLineStringM?crs=EPSG:27700" ), QStringLiteral( "layer topologicalEditing M" ), QStringLiteral( "memory" ) );
+  mLayerTopoM = new QgsVectorLayer( u"MultiLineStringM?crs=EPSG:27700"_s, u"layer topologicalEditing M"_s, u"memory"_s );
   QVERIFY( mLayerTopoM->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopoM );
 

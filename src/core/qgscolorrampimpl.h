@@ -161,7 +161,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "gradient" ); }
+    static QString typeString() { return u"gradient"_s; }
 
     QString type() const override;
     void invert() override;
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "random" ); }
+    static QString typeString() { return u"random"_s; }
 
     QString type() const override;
     QgsLimitedRandomColorRamp *clone() const override SIP_FACTORY;
@@ -511,7 +511,7 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "randomcolors" ); }
+    static QString typeString() { return u"randomcolors"_s; }
 
     QString type() const override;
 
@@ -577,7 +577,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "preset" ); }
+    static QString typeString() { return u"preset"_s; }
 
     QString type() const override;
     void invert() override;
@@ -585,7 +585,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     QVariantMap properties() const override;
     int count() const override;
 
-    QString schemeName() const override { return QStringLiteral( "preset" ); }
+    QString schemeName() const override { return u"preset"_s; }
     QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override;
     bool isEditable() const override { return true; }
 
@@ -633,7 +633,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "colorbrewer" ); }
+    static QString typeString() { return u"colorbrewer"_s; }
 
     QString type() const override { return QgsColorBrewerColorRamp::typeString(); }
     void invert() override;
@@ -740,7 +740,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "cpt-city" ); } // cppcheck-suppress duplInheritedMember
+    static QString typeString() { return u"cpt-city"_s; } // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
 

@@ -37,7 +37,7 @@ class TestQgsPointCloudEditing : public QgsTest
 
   public:
     TestQgsPointCloudEditing()
-      : QgsTest( QStringLiteral( "Point Cloud Editing Tests" ), QStringLiteral( "pointcloud_editing" ) ) {}
+      : QgsTest( u"Point Cloud Editing Tests"_s, u"pointcloud_editing"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -70,9 +70,9 @@ void TestQgsPointCloudEditing::cleanupTestCase()
 
 void TestQgsPointCloudEditing::testQgsPointCloudEditingIndex()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   auto i = layer->index();
@@ -97,9 +97,9 @@ void TestQgsPointCloudEditing::testQgsPointCloudEditingIndex()
 
 void TestQgsPointCloudEditing::testStartStopEditing()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->isEditable() );
   QVERIFY( !layer->isModified() );
@@ -162,16 +162,16 @@ void TestQgsPointCloudEditing::testStartStopEditing()
 
 void TestQgsPointCloudEditing::testModifyAttributeValue()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
   QSignalSpy spyChunkChanged( layer.get(), &QgsPointCloudLayer::chunkAttributeValuesChanged );
 
   QgsPointCloudCategoryList categories = QgsPointCloudRendererRegistry::classificationAttributeCategories( layer.get() );
-  QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), categories );
+  QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( u"Classification"_s, categories );
   layer->setRenderer( renderer );
 
   layer->renderer()->setPointSize( 2 );
@@ -190,7 +190,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
   QCOMPARE( layer->undoStack()->index(), 0 );
 
   // Change some points, point order should not matter
-  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  QgsPointCloudAttribute at( u"Classification"_s, QgsPointCloudAttribute::UChar );
   QgsPointCloudNodeId n( 0, 0, 0, 0 );
   QVERIFY( layer->changeAttributeValue( n, { 4, 2, 0, 1, 3, 16, 5, 13, 15, 14 }, at, 1 ) );
   QVERIFY( layer->isModified() );
@@ -251,9 +251,9 @@ void TestQgsPointCloudEditing::testModifyAttributeValue()
 
 void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
@@ -262,7 +262,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
 
   // invalid node
-  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  QgsPointCloudAttribute at( u"Classification"_s, QgsPointCloudAttribute::UChar );
   QgsPointCloudNodeId n;
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 1 ) );
   QVERIFY( !layer->isModified() );
@@ -285,33 +285,33 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QCOMPARE( spy.size(), 0 );
 
   // invalid attribute, X,Y,Z are read only
-  at = QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Double );
+  at = QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Double );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 0 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
-  at = QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Double );
+  at = QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Double );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 0 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
-  at = QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Double );
+  at = QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Double );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 0 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
   // Wrong attribute size
-  at = QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Double );
+  at = QgsPointCloudAttribute( u"Classification"_s, QgsPointCloudAttribute::Double );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 0 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
   // Missing attribute
-  at = QgsPointCloudAttribute( QStringLiteral( "Foo" ), QgsPointCloudAttribute::Double );
+  at = QgsPointCloudAttribute( u"Foo"_s, QgsPointCloudAttribute::Double );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 0 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
   // invalid values for standard LAZ attributes
-  at = QgsPointCloudAttribute( QStringLiteral( "Intensity" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Intensity"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -319,7 +319,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "ReturnNumber" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"ReturnNumber"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -327,7 +327,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "NumberOfReturns" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"NumberOfReturns"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -335,7 +335,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "ScanChannel" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"ScanChannel"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -343,7 +343,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "ScanDirectionFlag" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"ScanDirectionFlag"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -351,7 +351,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "EdgeOfFlightLine" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"EdgeOfFlightLine"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -359,7 +359,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Classification"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -367,7 +367,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "UserData" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"UserData"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -375,7 +375,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "ScanAngle" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"ScanAngle"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -30'001 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -383,7 +383,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "PointSourceId" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"PointSourceId"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -391,20 +391,12 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "GpsTime" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"GpsTime"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar );
-  QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
-  QVERIFY( !layer->isModified() );
-  QCOMPARE( spy.size(), 0 );
-  QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 2 ) );
-  QVERIFY( !layer->isModified() );
-  QCOMPARE( spy.size(), 0 );
-
-  at = QgsPointCloudAttribute( QStringLiteral( "Keypoint" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Synthetic"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -412,7 +404,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Keypoint"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -420,7 +412,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Withheld"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -428,7 +420,15 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Overlap"_s, QgsPointCloudAttribute::UChar );
+  QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
+  QVERIFY( !layer->isModified() );
+  QCOMPARE( spy.size(), 0 );
+  QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, 2 ) );
+  QVERIFY( !layer->isModified() );
+  QCOMPARE( spy.size(), 0 );
+
+  at = QgsPointCloudAttribute( u"Red"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -436,7 +436,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Green" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Green"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -444,7 +444,7 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
 
-  at = QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UChar );
+  at = QgsPointCloudAttribute( u"Blue"_s, QgsPointCloudAttribute::UChar );
   QVERIFY( !layer->changeAttributeValue( n, { 42 }, at, -1 ) );
   QVERIFY( !layer->isModified() );
   QCOMPARE( spy.size(), 0 );
@@ -457,15 +457,15 @@ void TestQgsPointCloudEditing::testModifyAttributeValueInvalid()
 
 void TestQgsPointCloudEditing::testModifyAttributeValueFiltered()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
 
   QgsPointCloudCategoryList categories = QgsPointCloudRendererRegistry::classificationAttributeCategories( layer.get() );
-  QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), categories );
+  QgsPointCloudClassifiedRenderer *renderer = new QgsPointCloudClassifiedRenderer( u"Classification"_s, categories );
   layer->setRenderer( renderer );
 
   layer->renderer()->setPointSize( 2 );
@@ -480,14 +480,14 @@ void TestQgsPointCloudEditing::testModifyAttributeValueFiltered()
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render", "classified_render", mapSettings );
 
   // Set a filter
-  QVERIFY( layer->setSubsetString( QStringLiteral( "Classification != 3" ) ) );
+  QVERIFY( layer->setSubsetString( u"Classification != 3"_s ) );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
   QCOMPARE( layer->undoStack()->index(), 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_filtered", "classified_render_filtered", mapSettings );
 
   // Change some points, some where filtered out
-  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  QgsPointCloudAttribute at( u"Classification"_s, QgsPointCloudAttribute::UChar );
   QgsPointCloudNodeId n( 0, 0, 0, 0 );
   QVERIFY( layer->changeAttributeValue( n, { 42, 82, 62, 52, 72 }, at, 6 ) );
   QVERIFY( layer->isModified() );
@@ -504,9 +504,9 @@ void TestQgsPointCloudEditing::testModifyAttributeValueFiltered()
 
 void TestQgsPointCloudEditing::testCommitChanges()
 {
-  const QString dataPath = copyTestData( QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ) );
+  const QString dataPath = copyTestData( u"point_clouds/copc/sunshine-coast.copc.laz"_s );
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
   QVERIFY( layer->isEditable() );
@@ -514,7 +514,7 @@ void TestQgsPointCloudEditing::testCommitChanges()
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
 
   QgsPointCloudNodeId n( 0, 0, 0, 0 );
-  QgsPointCloudAttribute at( QStringLiteral( "Classification" ), QgsPointCloudAttribute::UChar );
+  QgsPointCloudAttribute at( u"Classification"_s, QgsPointCloudAttribute::UChar );
 
   QgsPointCloudRequest request;
   request.setAttributes( QgsPointCloudAttributeCollection( QVector<QgsPointCloudAttribute>() << at ) );
@@ -557,7 +557,7 @@ void TestQgsPointCloudEditing::testCommitChanges()
   QCOMPARE( block2Data[14], 1 );
 
   // try to open the file as a new layer and check saved values
-  auto layerNew = std::make_unique<QgsPointCloudLayer>( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  auto layerNew = std::make_unique<QgsPointCloudLayer>( dataPath, u"layer"_s, u"copc"_s );
 
   // check values in the new layer
   std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->index().nodeData( n, request );

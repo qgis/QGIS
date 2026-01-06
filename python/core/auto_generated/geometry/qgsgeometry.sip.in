@@ -169,7 +169,7 @@ transferred.
 
 .. note::
 
-   This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+   This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 5.
    Using this method will confuse Python's memory management and type information system.
    Better create a new QgsGeometry object instead.
 
@@ -384,7 +384,7 @@ test performed by :py:func:`~QgsGeometry.isGeosEqual`.
 Compares the geometry with another geometry using GEOS.
 
 This method performs a slow, topological check, where geometries are
-considered equal if all of the their component edges overlap. E.g. lines
+considered equal if all of their component edges overlap. E.g. lines
 with the same vertex locations but opposite direction will be considered
 equal by this method.
 
@@ -801,12 +801,15 @@ not correspond to a valid vertex on this geometry
 Deletes the vertex at the given position number and item (first number
 is index 0)
 
+For Point geometries, this clears the geometry. For MultiPoint
+geometries, this removes the point geometry at the specified index. For
+other geometry types, this removes the vertex at the specified index. If
+the removal of the vertex would result in an invalid geometry (e.g. a
+LineString with less than 2 vertices), the geometry is cleared instead.
+
 :return: ``False`` if atVertex does not correspond to a valid vertex on
-         this geometry (including if this geometry is a Point), or if
-         the number of remaining vertices in the linestring would be
-         less than two. It is up to the caller to distinguish between
-         these error conditions. (Or maybe we add another method to this
-         object to help make the distinction?)
+         this geometry or if the geometry is null, ``True`` if the
+         vertex was successfully deleted or the geometry was cleared.
 %End
 
     bool toggleCircularAtVertex( int atVertex );
@@ -909,7 +912,7 @@ multipolygons.
 :return: OperationResult a result code: success or reason of failure
 %End
 
- Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
+ Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated="Since 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -920,7 +923,7 @@ Adds a new part to a the geometry.
 
 .. deprecated:: 3.38
 
-   Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+   Will be removed in QGIS 5.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsXYV2/;
@@ -935,7 +938,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
+ Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated="Since 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -946,7 +949,7 @@ Adds a new part to a the geometry.
 
 .. deprecated:: 3.38
 
-   Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+   Will be removed in QGIS 5.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsV2/;
@@ -961,7 +964,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
+ Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated="Since 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to this geometry.
 
@@ -972,7 +975,7 @@ Adds a new part to this geometry.
 
 .. deprecated:: 3.38
 
-   Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+   Will be removed in QGIS 5.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( QgsAbstractGeometry *part /Transfer/, Qgis::WkbType wkbType = Qgis::WkbType::Unknown );

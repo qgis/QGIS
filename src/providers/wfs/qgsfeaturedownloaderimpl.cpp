@@ -62,14 +62,14 @@ void QgsFeatureDownloaderImpl::emitResumeMainThread()
 
 void QgsFeatureDownloaderImpl::stop()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::stop()" ), 4 );
+  QgsDebugMsgLevel( u"QgsFeatureDownloaderImpl::stop()"_s, 4 );
   mStop = true;
   emitDoStop();
 }
 
 void QgsFeatureDownloaderImpl::setStopFlag()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::setStopFlag()" ), 4 );
+  QgsDebugMsgLevel( u"QgsFeatureDownloaderImpl::setStopFlag()"_s, 4 );
   mStop = true;
 }
 

@@ -40,7 +40,7 @@ class TestQgsMdalProvider : public QgsTest
 
   public:
     TestQgsMdalProvider()
-      : QgsTest( QStringLiteral( "MDAL Provider Tests" ) ) {}
+      : QgsTest( u"MDAL Provider Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -87,58 +87,58 @@ void TestQgsMdalProvider::filters()
 
 void TestQgsMdalProvider::encodeDecodeUri()
 {
-  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( u"mdal"_s );
 
   // simple file uri
-  QVariantMap parts = mdalMetadata->decodeUri( QStringLiteral( "/home/data/test.nc" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
-  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QString() );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
-  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "/home/data/test.nc" ) );
+  QVariantMap parts = mdalMetadata->decodeUri( u"/home/data/test.nc"_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/data/test.nc"_s );
+  QCOMPARE( parts.value( u"driver"_s ).toString(), QString() );
+  QCOMPARE( parts.value( u"layerName"_s ).toString(), QString() );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), u"/home/data/test.nc"_s );
 
   // uri with driver and layer name
-  parts = mdalMetadata->decodeUri( QStringLiteral( "netcdf:\"/home/data/test.nc\":layer3" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
-  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "netcdf" ) );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "layer3" ) );
-  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "netcdf:\"/home/data/test.nc\":layer3" ) );
+  parts = mdalMetadata->decodeUri( u"netcdf:\"/home/data/test.nc\":layer3"_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/data/test.nc"_s );
+  QCOMPARE( parts.value( u"driver"_s ).toString(), u"netcdf"_s );
+  QCOMPARE( parts.value( u"layerName"_s ).toString(), u"layer3"_s );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), u"netcdf:\"/home/data/test.nc\":layer3"_s );
 
   // uri with driver and layer name with space
-  parts = mdalMetadata->decodeUri( QStringLiteral( "netcdf:\"/home/data/test.nc\":layer 3" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
-  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "netcdf" ) );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "layer 3" ) );
-  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "netcdf:\"/home/data/test.nc\":layer 3" ) );
+  parts = mdalMetadata->decodeUri( u"netcdf:\"/home/data/test.nc\":layer 3"_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/data/test.nc"_s );
+  QCOMPARE( parts.value( u"driver"_s ).toString(), u"netcdf"_s );
+  QCOMPARE( parts.value( u"layerName"_s ).toString(), u"layer 3"_s );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), u"netcdf:\"/home/data/test.nc\":layer 3"_s );
 
   // uri with driver
-  parts = mdalMetadata->decodeUri( QStringLiteral( "Ugrid:\"/home/data/test.nc\"" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
-  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "Ugrid" ) );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
-  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "Ugrid:\"/home/data/test.nc\"" ) );
+  parts = mdalMetadata->decodeUri( u"Ugrid:\"/home/data/test.nc\""_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/data/test.nc"_s );
+  QCOMPARE( parts.value( u"driver"_s ).toString(), u"Ugrid"_s );
+  QCOMPARE( parts.value( u"layerName"_s ).toString(), QString() );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), u"Ugrid:\"/home/data/test.nc\""_s );
 
-  parts = mdalMetadata->decodeUri( QStringLiteral( "ESRI_TIN:\"/home/data/tdenv9.adf\"" ) );
-  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/tdenv9.adf" ) );
-  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "ESRI_TIN" ) );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
-  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "ESRI_TIN:\"/home/data/tdenv9.adf\"" ) );
+  parts = mdalMetadata->decodeUri( u"ESRI_TIN:\"/home/data/tdenv9.adf\""_s );
+  QCOMPARE( parts.value( u"path"_s ).toString(), u"/home/data/tdenv9.adf"_s );
+  QCOMPARE( parts.value( u"driver"_s ).toString(), u"ESRI_TIN"_s );
+  QCOMPARE( parts.value( u"layerName"_s ).toString(), QString() );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), u"ESRI_TIN:\"/home/data/tdenv9.adf\""_s );
 }
 
 void TestQgsMdalProvider::absoluteRelativeUri()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
 
   QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( "mdal" );
   QVERIFY( mdalMetadata );
 
-  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_flower.2dm" );
-  QString relativeUri = QStringLiteral( "./mesh/quad_flower.2dm" );
+  QString absoluteUri = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/quad_flower.2dm"_s;
+  QString relativeUri = u"./mesh/quad_flower.2dm"_s;
   QCOMPARE( mdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( mdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 
-  absoluteUri = QStringLiteral( "2DM:\"%1/mesh/mesh_flower.2dm\"" ).arg( QStringLiteral( TEST_DATA_DIR ) );
-  relativeUri = QStringLiteral( "2DM:\"./mesh/mesh_flower.2dm\"" );
+  absoluteUri = u"2DM:\"%1/mesh/mesh_flower.2dm\""_s.arg( QStringLiteral( TEST_DATA_DIR ) );
+  relativeUri = u"2DM:\"./mesh/mesh_flower.2dm\""_s;
   QCOMPARE( mdalMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
   QCOMPARE( mdalMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
@@ -148,7 +148,7 @@ void TestQgsMdalProvider::load()
   {
     const QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-      QStringLiteral( "mdal" ),
+      u"mdal"_s,
       file,
       QgsDataProvider::ProviderOptions()
     );
@@ -159,9 +159,9 @@ void TestQgsMdalProvider::load()
     delete provider;
   }
   {
-    const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
+    const QString file = QStringLiteral( TEST_DATA_DIR ) + u"/goodluckwiththisfilename.2dm"_s;
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-      QStringLiteral( "mdal" ),
+      u"mdal"_s,
       file,
       QgsDataProvider::ProviderOptions()
     );
@@ -178,17 +178,17 @@ void TestQgsMdalProvider::preserveMeshMetadata()
   QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( "mdal" );
   QVERIFY( mdalMetadata );
 
-  QString uri = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/small.mesh" );
+  QString uri = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/small.mesh"_s;
 
-  QDir dir( QDir::tempPath() + QStringLiteral( "/mesh_metadata_test" ) );
+  QDir dir( QDir::tempPath() + u"/mesh_metadata_test"_s );
   dir.mkpath( dir.path() );
   Q_ASSERT( dir.exists() );
   QFile meshFile( uri );
-  const QString copiedFile = dir.filePath( QStringLiteral( "small.mesh" ) );
+  const QString copiedFile = dir.filePath( u"small.mesh"_s );
   meshFile.copy( copiedFile );
 
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-    QStringLiteral( "mdal" ),
+    u"mdal"_s,
     copiedFile,
     QgsDataProvider::ProviderOptions()
   );
@@ -213,9 +213,9 @@ void TestQgsMdalProvider::preserveMeshMetadata()
 
 void TestQgsMdalProvider::uniqueDatasetNames()
 {
-  const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.2dm" );
+  const QString file = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/quad_and_triangle.2dm"_s;
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-    QStringLiteral( "mdal" ),
+    u"mdal"_s,
     file,
     QgsDataProvider::ProviderOptions()
   );
@@ -223,16 +223,16 @@ void TestQgsMdalProvider::uniqueDatasetNames()
   QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
 
   QgsDataProvider *provider1 = QgsProviderRegistry::instance()->createProvider(
-    QStringLiteral( "mdal" ),
+    u"mdal"_s,
     file,
     QgsDataProvider::ProviderOptions()
   );
   QgsMeshDataProvider *mp1 = dynamic_cast<QgsMeshDataProvider *>( provider1 );
 
   // these three dataset files have the same name
-  const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector.dat" );
-  const QString fileDatasetGroup2 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector_1.dat" );
-  const QString fileDatasetGroup3 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector_2.dat" );
+  const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/quad_and_triangle_vertex_vector.dat"_s;
+  const QString fileDatasetGroup2 = QDir::tempPath() + u"/quad_and_triangle_vertex_vector_1.dat"_s;
+  const QString fileDatasetGroup3 = QDir::tempPath() + u"/quad_and_triangle_vertex_vector_2.dat"_s;
 
   QFile::remove( fileDatasetGroup2 );
   QVERIFY( QFile::copy( fileDatasetGroup1, fileDatasetGroup2 ) );
@@ -245,13 +245,13 @@ void TestQgsMdalProvider::uniqueDatasetNames()
   QCOMPARE( mp->datasetGroupCount(), 2 );
 
   QgsMeshDatasetGroupMetadata metadata = mp->datasetGroupMetadata( 1 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset"_s );
 
   QVERIFY( mp1->addDataset( fileDatasetGroup2 ) );
   QCOMPARE( mp1->datasetGroupCount(), 2 );
 
   metadata = mp1->datasetGroupMetadata( 1 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset"_s );
 
   QCOMPARE( mp1->datasetGroupMetadata( 1 ).name(), mp->datasetGroupMetadata( 1 ).name() );
 
@@ -263,11 +263,11 @@ void TestQgsMdalProvider::uniqueDatasetNames()
   QCOMPARE( mp->datasetGroupCount(), 4 );
 
   metadata = mp->datasetGroupMetadata( 1 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset"_s );
   metadata = mp->datasetGroupMetadata( 2 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset_1" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset_1"_s );
   metadata = mp->datasetGroupMetadata( 3 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset_2" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset_2"_s );
 
   delete provider;
   delete provider1;
@@ -275,9 +275,9 @@ void TestQgsMdalProvider::uniqueDatasetNames()
 
 void TestQgsMdalProvider::addRemoveDatasetGroups()
 {
-  const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.2dm" );
+  const QString file = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/quad_and_triangle.2dm"_s;
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-    QStringLiteral( "mdal" ),
+    u"mdal"_s,
     file,
     QgsDataProvider::ProviderOptions()
   );
@@ -287,25 +287,25 @@ void TestQgsMdalProvider::addRemoveDatasetGroups()
   QVERIFY( mp->isValid() );
   QCOMPARE( mp->datasetGroupCount(), 1 );
 
-  const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector.dat" );
+  const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/quad_and_triangle_vertex_vector.dat"_s;
   QVERIFY( mp->addDataset( fileDatasetGroup1 ) );
   QCOMPARE( mp->datasetGroupCount(), 2 );
 
   // cannot add the same dataset twice
   QCOMPARE( mp->addDataset( fileDatasetGroup1 ), false );
 
-  const QString fileDatasetGroup2 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_scalar2.dat" );
+  const QString fileDatasetGroup2 = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/quad_and_triangle_vertex_scalar2.dat"_s;
   QVERIFY( mp->addDataset( fileDatasetGroup2 ) );
   QCOMPARE( mp->datasetGroupCount(), 3 );
 
   QgsMeshDatasetGroupMetadata metadata = mp->datasetGroupMetadata( 0 );
-  QCOMPARE( metadata.name(), QStringLiteral( "Bed Elevation" ) );
+  QCOMPARE( metadata.name(), u"Bed Elevation"_s );
 
   metadata = mp->datasetGroupMetadata( 1 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset"_s );
 
   metadata = mp->datasetGroupMetadata( 2 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexScalarDataset2" ) );
+  QCOMPARE( metadata.name(), u"VertexScalarDataset2"_s );
 
   // cannot remove dataset groups with index outside of range
   QCOMPARE( mp->removeDatasetGroup( -1 ), false );
@@ -320,9 +320,9 @@ void TestQgsMdalProvider::addRemoveDatasetGroups()
   // check the dataset group that are left
   QCOMPARE( mp->datasetGroupCount(), 2 );
   metadata = mp->datasetGroupMetadata( 0 );
-  QCOMPARE( metadata.name(), QStringLiteral( "Bed Elevation" ) );
+  QCOMPARE( metadata.name(), u"Bed Elevation"_s );
   metadata = mp->datasetGroupMetadata( 1 );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexScalarDataset2" ) );
+  QCOMPARE( metadata.name(), u"VertexScalarDataset2"_s );
 
   // remove the second - only the original remains
   QCOMPARE( mp->removeDatasetGroup( 1 ), true );
@@ -330,7 +330,7 @@ void TestQgsMdalProvider::addRemoveDatasetGroups()
   // check the dataset group that are left
   QCOMPARE( mp->datasetGroupCount(), 1 );
   metadata = mp->datasetGroupMetadata( 0 );
-  QCOMPARE( metadata.name(), QStringLiteral( "Bed Elevation" ) );
+  QCOMPARE( metadata.name(), u"Bed Elevation"_s );
 
   delete provider;
 }

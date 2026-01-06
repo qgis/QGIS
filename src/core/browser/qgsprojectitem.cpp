@@ -25,7 +25,7 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
                                 const QString &path, const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Project, parent, name, path, providerKey )
 {
-  mIconName = QStringLiteral( ":/images/icons/qgis_icon.svg" );
+  mIconName = u":/images/icons/qgis_icon.svg"_s;
   setToolTip( QDir::toNativeSeparators( path ) );
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }
@@ -33,7 +33,7 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
 QgsMimeDataUtils::UriList QgsProjectItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
-  u.layerType = QStringLiteral( "project" );
+  u.layerType = u"project"_s;
   u.name = mName;
   u.uri = mPath;
 

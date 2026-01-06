@@ -34,7 +34,7 @@ class TestQgsMeshRendererScalarSettingsWidget : public QObject
 
   private:
     QgsMeshLayer *mMeshLayer = nullptr;
-    const QString mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+    const QString mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
 
   private slots:
 
@@ -51,9 +51,9 @@ void TestQgsMeshRendererScalarSettingsWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  const QString mMeshFile = mTestDataDir + QStringLiteral( "quad_and_triangle.2dm" );
+  const QString mMeshFile = mTestDataDir + u"quad_and_triangle.2dm"_s;
 
-  mMeshLayer = new QgsMeshLayer( mMeshFile, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  mMeshLayer = new QgsMeshLayer( mMeshFile, u"mesh"_s, u"mdal"_s );
   QVERIFY( mMeshLayer->isValid() );
 
   mMeshLayer->updateTriangularMesh();
@@ -77,7 +77,7 @@ void TestQgsMeshRendererScalarSettingsWidget::testScalarSettingsShader()
   int activeScalarDatasetGroup = settings.activeScalarDatasetGroup();
 
   // manual styling for layer
-  const QString style = mTestDataDir + QStringLiteral( "mesh_custom_shader.qml" );
+  const QString style = mTestDataDir + u"mesh_custom_shader.qml"_s;
 
   bool res;
   mMeshLayer->loadNamedStyle( style, res );
@@ -90,8 +90,8 @@ void TestQgsMeshRendererScalarSettingsWidget::testScalarSettingsShader()
   qgsDoubleNear( shader.minimumValue(), 24, 0.1 );
   qgsDoubleNear( shader.maximumValue(), 35, 0.1 );
   QCOMPARE( shader.colorRampItemList().size(), 30 );
-  QCOMPARE( shader.colorRampItemList().first().label, QStringLiteral( "<=24" ) );
-  QCOMPARE( shader.colorRampItemList().last().label, QStringLiteral( ">=35" ) );
+  QCOMPARE( shader.colorRampItemList().first().label, u"<=24"_s );
+  QCOMPARE( shader.colorRampItemList().last().label, u">=35"_s );
 
   // create widget, sync it to layer
   QgsMeshRendererScalarSettingsWidget *widget = new QgsMeshRendererScalarSettingsWidget( nullptr );
@@ -107,8 +107,8 @@ void TestQgsMeshRendererScalarSettingsWidget::testScalarSettingsShader()
   qgsDoubleNear( shader.minimumValue(), 24, 0.1 );
   qgsDoubleNear( shader.maximumValue(), 35, 0.1 );
   QCOMPARE( shader.colorRampItemList().size(), 30 );
-  QCOMPARE( shader.colorRampItemList().first().label, QStringLiteral( "<=24" ) );
-  QCOMPARE( shader.colorRampItemList().last().label, QStringLiteral( ">=35" ) );
+  QCOMPARE( shader.colorRampItemList().first().label, u"<=24"_s );
+  QCOMPARE( shader.colorRampItemList().last().label, u">=35"_s );
 }
 
 QGSTEST_MAIN( TestQgsMeshRendererScalarSettingsWidget )

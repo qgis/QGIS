@@ -308,7 +308,7 @@ QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, Qgis::Tra
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 
@@ -325,7 +325,7 @@ QgsPointXY QgsCoordinateTransform::transform( const double theX, const double th
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 }
@@ -352,16 +352,16 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Qgis::
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsgLevel( QStringLiteral( "Rect projection..." ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ), 2 );
+  QgsDebugMsgLevel( u"Rect projection..."_s, 2 );
+  QgsDebugMsgLevel( u"Xmin : %1 --> %2"_s.arg( rect.xMinimum() ).arg( x1 ), 2 );
+  QgsDebugMsgLevel( u"Ymin : %1 --> %2"_s.arg( rect.yMinimum() ).arg( y1 ), 2 );
+  QgsDebugMsgLevel( u"Xmax : %1 --> %2"_s.arg( rect.xMaximum() ).arg( x2 ), 2 );
+  QgsDebugMsgLevel( u"Ymax : %1 --> %2"_s.arg( rect.yMaximum() ).arg( y2 ), 2 );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }
@@ -378,7 +378,7 @@ QgsVector3D QgsCoordinateTransform::transform( const QgsVector3D &point, Qgis::T
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
   return QgsVector3D( x, y, z );
@@ -400,7 +400,7 @@ void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 }
@@ -436,7 +436,7 @@ void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
   catch ( QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 }
@@ -514,7 +514,7 @@ void QgsCoordinateTransform::transformInPlace( QVector<double> &x, QVector<doubl
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 }
@@ -575,7 +575,7 @@ void QgsCoordinateTransform::transformInPlace( QVector<float> &x, QVector<float>
   catch ( QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
     throw;
   }
 }
@@ -599,7 +599,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 #ifdef QGISDEBUG
   if ( !mHasContext )
   {
-    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
   }
 #endif
 
@@ -643,7 +643,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   QgsScopedProjSilentLogger errorLogger;
 
-  QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
+  QgsDebugMsgLevel( u"Entering transformBoundingBox..."_s, 4 );
 
 #if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
   const auto legacyImplementation = [this, &rect, xMin, yMin, yMax, direction, handle180Crossover]()
@@ -700,7 +700,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     catch ( const QgsCsException & )
     {
       // rethrow the exception
-      QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+      QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
       throw;
     }
 
@@ -800,13 +800,13 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     transform2D.reset( proj_create_crs_to_crs_from_pj( projContext, srcCrsHorizontal.get(), destCrsHorizontal.get(), nullptr, nullptr ) );
     if ( !transform2D )
     {
-      const QString err = QStringLiteral( "proj_create_crs_to_crs_from_pj(horizontalCrs(%1), horizontalCrs(%2)) failed" ).arg( d->mSourceCRS.authid(), d->mSourceCRS.authid() );
+      const QString err = u"proj_create_crs_to_crs_from_pj(horizontalCrs(%1), horizontalCrs(%2)) failed"_s.arg( d->mSourceCRS.authid(), d->mSourceCRS.authid() );
       throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS: %1" ).arg( err ) );
     }
     transform2D.reset( proj_normalize_for_visualization( projContext, transform2D.get() ) );
     if ( !transform2D )
     {
-      const QString err = QStringLiteral( "Cannot normalize transform between horizontalCrs(%1) and horizontalCrs(%2)" ).arg( d->mSourceCRS.authid(), d->mDestCRS.authid() );
+      const QString err = u"Cannot normalize transform between horizontalCrs(%1) and horizontalCrs(%2)"_s.arg( d->mSourceCRS.authid(), d->mDestCRS.authid() );
       throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS: %1" ).arg( err ) );
     }
     projData = transform2D.get();
@@ -956,13 +956,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
   double yorg = *y;
-  QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ), 2 );
+  QgsDebugMsgLevel( u"[[[[[[ Number of points to transform: %1 ]]]]]]"_s.arg( numPoints ), 2 );
 #endif
 
 #ifdef QGISDEBUG
   if ( !mHasContext )
   {
-    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
   }
 #endif
 
@@ -1052,7 +1052,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       {
         sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation );
 #if 0
-        const QString warning = QStringLiteral( "A fallback coordinate operation was used between %1 and %2" ).arg( d->mSourceCRS.authid(),
+        const QString warning = u"A fallback coordinate operation was used between %1 and %2"_s.arg( d->mSourceCRS.authid(),
                                 d->mDestCRS.authid() );
         qWarning( "%s", warning.toLatin1().constData() );
 #endif
@@ -1073,7 +1073,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     const QChar delim = numPoints > 1 ? '\n' : ' ';
     for ( int i = 0; i < numPoints; ++i )
     {
-      points += QStringLiteral( "(%1, %2)" ).arg( xprev[i], 0, 'f' ).arg( yprev[i], 0, 'f' ) + delim;
+      points += u"(%1, %2)"_s.arg( xprev[i], 0, 'f' ).arg( yprev[i], 0, 'f' ) + delim;
     }
 
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
@@ -1095,13 +1095,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       QgsDebugError( "Projection failed emitting invalid transform signal: " + msg );
       mLastError = msg;
     }
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+    QgsDebugMsgLevel( u"rethrowing exception"_s, 2 );
 
     throw QgsCsException( msg );
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
+  QgsDebugMsgLevel( u"[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]"_s
                     .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
                     .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ), 2 );
 #endif

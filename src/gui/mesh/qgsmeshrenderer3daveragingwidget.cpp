@@ -242,16 +242,16 @@ void QgsMeshRenderer3DAveragingWidget::onAveragingMethodChanged( int methodIndex
 
 void QgsMeshRenderer3DAveragingWidget::updateGraphics()
 {
-  setLabelSvg( mSingleTopPngLabel, QStringLiteral( "SingleTop.svg" ) );
+  setLabelSvg( mSingleTopPngLabel, u"SingleTop.svg"_s );
   mSingleTopGroup->adjustSize();
 
-  setLabelSvg( mSingleBottomPngLabel, QStringLiteral( "SingleBottom.svg" ) );
-  setLabelSvg( mMultiTopPngLabel, QStringLiteral( "MultiTop.svg" ) );
-  setLabelSvg( mMultiBottomPngLabel, QStringLiteral( "MultiBottom.svg" ) );
-  setLabelSvg( mSigmaPngLabel, QStringLiteral( "Sigma.svg" ) );
-  setLabelSvg( mDepthPngLabel, QStringLiteral( "Depth.svg" ) );
-  setLabelSvg( mHeightPngLabel, QStringLiteral( "Height.svg" ) );
-  setLabelSvg( mElevationPngLabel, QStringLiteral( "Elevation.svg" ) );
+  setLabelSvg( mSingleBottomPngLabel, u"SingleBottom.svg"_s );
+  setLabelSvg( mMultiTopPngLabel, u"MultiTop.svg"_s );
+  setLabelSvg( mMultiBottomPngLabel, u"MultiBottom.svg"_s );
+  setLabelSvg( mSigmaPngLabel, u"Sigma.svg"_s );
+  setLabelSvg( mDepthPngLabel, u"Depth.svg"_s );
+  setLabelSvg( mHeightPngLabel, u"Height.svg"_s );
+  setLabelSvg( mElevationPngLabel, u"Elevation.svg"_s );
 }
 
 void QgsMeshRenderer3DAveragingWidget::setLabelSvg( QLabel *imageLabel, const QString &imgName )
@@ -259,7 +259,7 @@ void QgsMeshRenderer3DAveragingWidget::setLabelSvg( QLabel *imageLabel, const QS
   const qreal dpi = mScreenHelper->screenDpi();
   const int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
 
-  QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
+  QSvgRenderer renderer( u":/images/themes/default/mesh/%1"_s.arg( imgName ) );
   if ( renderer.isValid() )
   {
     const QSize defaultSvgSize = renderer.defaultSize();

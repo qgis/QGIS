@@ -34,13 +34,13 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   mCanvasCenterMarker->setColor( QColor( 185, 84, 210 ) );
   mCanvasCenterMarker->setPenWidth( 3 );
 
-  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs( u"EPSG:4326"_s );
   setDestinationCrs( srs );
 
-  const QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  const QString layerPath = QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s;
   QgsVectorLayer::LayerOptions options;
   options.forceReadOnly = true;
-  mLayers << new QgsVectorLayer( layerPath, tr( "World Map" ), QStringLiteral( "ogr" ), options );
+  mLayers << new QgsVectorLayer( layerPath, tr( "World Map" ), u"ogr"_s, options );
   setLayers( mLayers );
   mPanTool = new QgsMapToolPan( this );
   setMapTool( mPanTool );

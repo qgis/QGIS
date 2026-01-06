@@ -21,7 +21,7 @@
 
 QString QgsExtendLinesAlgorithm::name() const
 {
-  return QStringLiteral( "extendlines" );
+  return u"extendlines"_s;
 }
 
 QString QgsExtendLinesAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsExtendLinesAlgorithm::group() const
 
 QString QgsExtendLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsExtendLinesAlgorithm::outputName() const
@@ -78,16 +78,16 @@ QgsExtendLinesAlgorithm *QgsExtendLinesAlgorithm::createInstance() const
 
 void QgsExtendLinesAlgorithm::initParameters( const QVariantMap & )
 {
-  auto startDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_DISTANCE" ), QObject::tr( "Start distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto startDistance = std::make_unique<QgsProcessingParameterDistance>( u"START_DISTANCE"_s, QObject::tr( "Start distance" ), 0.0, u"INPUT"_s, false, 0 );
   startDistance->setIsDynamic( true );
-  startDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Start Distance" ), QObject::tr( "Start distance" ), QgsPropertyDefinition::DoublePositive ) );
-  startDistance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  startDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Start Distance"_s, QObject::tr( "Start distance" ), QgsPropertyDefinition::DoublePositive ) );
+  startDistance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( startDistance.release() );
 
-  auto endDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_DISTANCE" ), QObject::tr( "End distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto endDistance = std::make_unique<QgsProcessingParameterDistance>( u"END_DISTANCE"_s, QObject::tr( "End distance" ), 0.0, u"INPUT"_s, false, 0 );
   endDistance->setIsDynamic( true );
-  endDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "End Distance" ), QObject::tr( "End distance" ), QgsPropertyDefinition::DoublePositive ) );
-  endDistance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  endDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"End Distance"_s, QObject::tr( "End distance" ), QgsPropertyDefinition::DoublePositive ) );
+  endDistance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( endDistance.release() );
 }
 
@@ -99,15 +99,15 @@ Qgis::ProcessingFeatureSourceFlags QgsExtendLinesAlgorithm::sourceFlags() const
 
 bool QgsExtendLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mStartDistance = parameterAsDouble( parameters, QStringLiteral( "START_DISTANCE" ), context );
-  mDynamicStartDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "START_DISTANCE" ) );
+  mStartDistance = parameterAsDouble( parameters, u"START_DISTANCE"_s, context );
+  mDynamicStartDistance = QgsProcessingParameters::isDynamic( parameters, u"START_DISTANCE"_s );
   if ( mDynamicStartDistance )
-    mStartDistanceProperty = parameters.value( QStringLiteral( "START_DISTANCE" ) ).value<QgsProperty>();
+    mStartDistanceProperty = parameters.value( u"START_DISTANCE"_s ).value<QgsProperty>();
 
-  mEndDistance = parameterAsDouble( parameters, QStringLiteral( "END_DISTANCE" ), context );
-  mDynamicEndDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "END_DISTANCE" ) );
+  mEndDistance = parameterAsDouble( parameters, u"END_DISTANCE"_s, context );
+  mDynamicEndDistance = QgsProcessingParameters::isDynamic( parameters, u"END_DISTANCE"_s );
   if ( mDynamicEndDistance )
-    mEndDistanceProperty = parameters.value( QStringLiteral( "END_DISTANCE" ) ).value<QgsProperty>();
+    mEndDistanceProperty = parameters.value( u"END_DISTANCE"_s ).value<QgsProperty>();
 
   return true;
 }

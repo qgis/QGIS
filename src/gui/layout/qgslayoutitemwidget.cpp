@@ -746,7 +746,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   whileBlocking( mOpacityWidget )->setOpacity( mItem->itemOpacity() );
   whileBlocking( mItemRotationSpinBox )->setValue( mItem->itemRotation() );
   whileBlocking( mExcludeFromPrintsCheckBox )->setChecked( mItem->excludeFromExports() );
-  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString() );
+  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->customProperty( u"pdfExportGroup"_s ).toString() );
 }
 
 void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
@@ -781,10 +781,10 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
+  mBackgroundColorButton->setContext( u"composer"_s );
   mFrameColorButton->setColorDialogTitle( tr( "Select Frame Color" ) );
   mFrameColorButton->setAllowOpacity( true );
-  mFrameColorButton->setContext( QStringLiteral( "composer" ) );
+  mFrameColorButton->setContext( u"composer"_s );
 
   if ( QgsLayout *layout = mItem->layout() )
   {
@@ -794,7 +794,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
     QStringList existingGroups;
     for ( const QgsLayoutItem *item : std::as_const( items ) )
     {
-      const QString groupName = item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+      const QString groupName = item->customProperty( u"pdfExportGroup"_s ).toString();
       if ( !groupName.isEmpty() && !existingGroups.contains( groupName ) )
         existingGroups.append( groupName );
     }
@@ -851,7 +851,7 @@ void QgsLayoutItemPropertiesWidget::exportGroupNameEditingFinished()
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Export Group Name" ), QgsLayoutItem::UndoExportLayerName );
-    mItem->setCustomProperty( QStringLiteral( "pdfExportGroup" ), mExportGroupNameCombo->currentText() );
+    mItem->setCustomProperty( u"pdfExportGroup"_s, mExportGroupNameCombo->currentText() );
     mItem->layout()->undoStack()->endCommand();
   }
 }

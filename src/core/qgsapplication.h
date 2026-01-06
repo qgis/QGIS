@@ -243,7 +243,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
-     * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+     * The theme search path usually will be pkgDataPath + "/themes/" + themeName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      * \note A basic test will be carried out to ensure the theme search path
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
-     * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+     * The theme search path usually will be pkgDataPath + "/themes/" + themeName + "/"
      * but plugin writers etc can use this method as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      */

@@ -325,9 +325,9 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)" )
+    rep = u"Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)"_s
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mSemiMajorAxis, axisPrecision ), 0, 'f' )
           .arg( qgsDoubleToString( mSemiMinorAxis, axisPrecision ), 0, 'f' )

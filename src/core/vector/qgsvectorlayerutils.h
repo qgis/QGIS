@@ -505,7 +505,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     const int fieldIndex = a0->lookupField( *a1 );
     if ( fieldIndex == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"Field %1 does not exist."_s.arg( *a1 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -532,7 +532,7 @@ class CORE_EXPORT QgsVectorLayerUtils
 
         default:
         {
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Field type (%1) cannot be converted to a data array."_s.arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
           sipIsErr = 1;
         }
       }

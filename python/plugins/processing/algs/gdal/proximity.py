@@ -158,7 +158,7 @@ class proximity(GdalAlgorithm):
         self.addParameter(nodata_param)
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),

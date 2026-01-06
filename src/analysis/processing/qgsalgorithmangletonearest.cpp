@@ -75,7 +75,7 @@ class SetMarkerRotationPostProcessor : public QgsProcessingLayerPostProcessorInt
 
 QString QgsAngleToNearestAlgorithm::name() const
 {
-  return QStringLiteral( "angletonearest" );
+  return u"angletonearest"_s;
 }
 
 QString QgsAngleToNearestAlgorithm::displayName() const
@@ -95,28 +95,28 @@ QString QgsAngleToNearestAlgorithm::group() const
 
 QString QgsAngleToNearestAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 QgsAngleToNearestAlgorithm::~QgsAngleToNearestAlgorithm() = default;
 
 void QgsAngleToNearestAlgorithm::initAlgorithm( const QVariantMap &configuration )
 {
-  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+  mIsInPlace = configuration.value( u"IN_PLACE"_s ).toBool();
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"REFERENCE_LAYER"_s, QObject::tr( "Reference layer" ) ) );
 
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MAX_DISTANCE" ), QObject::tr( "Maximum distance to consider" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 ) );
+  addParameter( new QgsProcessingParameterDistance( u"MAX_DISTANCE"_s, QObject::tr( "Maximum distance to consider" ), QVariant(), u"INPUT"_s, true, 0 ) );
 
   if ( !mIsInPlace )
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Angle field name" ), QStringLiteral( "rotation" ) ) );
+    addParameter( new QgsProcessingParameterString( u"FIELD_NAME"_s, QObject::tr( "Angle field name" ), u"rotation"_s ) );
   else
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Angle field name" ), QStringLiteral( "rotation" ), QStringLiteral( "INPUT" ) ) );
+    addParameter( new QgsProcessingParameterField( u"FIELD_NAME"_s, QObject::tr( "Angle field name" ), u"rotation"_s, u"INPUT"_s ) );
 
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "APPLY_SYMBOLOGY" ), QObject::tr( "Automatically apply symbology" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"APPLY_SYMBOLOGY"_s, QObject::tr( "Automatically apply symbology" ), true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Aligned layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Aligned layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsAngleToNearestAlgorithm::flags() const
@@ -160,7 +160,7 @@ bool QgsAngleToNearestAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 {
   if ( !mIsInPlace )
   {
-    if ( QgsVectorLayer *sourceLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context ) )
+    if ( QgsVectorLayer *sourceLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context ) )
     {
       mSourceRenderer.reset( sourceLayer->renderer()->clone() );
     }
@@ -171,16 +171,16 @@ bool QgsAngleToNearestAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const double maxDistance = parameters.value( QStringLiteral( "MAX_DISTANCE" ) ).isValid() ? parameterAsDouble( parameters, QStringLiteral( "MAX_DISTANCE" ), context ) : std::numeric_limits<double>::quiet_NaN();
-  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const double maxDistance = parameters.value( u"MAX_DISTANCE"_s ).isValid() ? parameterAsDouble( parameters, u"MAX_DISTANCE"_s, context ) : std::numeric_limits<double>::quiet_NaN();
+  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  std::unique_ptr<QgsProcessingFeatureSource> referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE_LAYER" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> referenceSource( parameterAsSource( parameters, u"REFERENCE_LAYER"_s, context ) );
   if ( !referenceSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"REFERENCE_LAYER"_s ) );
 
-  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  const QString fieldName = parameterAsString( parameters, u"FIELD_NAME"_s, context );
 
   QgsFields outFields = input->fields();
   int fieldIndex = -1;
@@ -198,9 +198,9 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, input->wkbType(), input->sourceCrs() ) );
-  if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outFields, input->wkbType(), input->sourceCrs() ) );
+  if ( parameters.value( u"OUTPUT"_s ).isValid() && !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   // make spatial index
   const QgsFeatureIterator f2 = referenceSource->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setNoAttributes() );
@@ -241,7 +241,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
         attributes[fieldIndex] = QVariant();
       f.setAttributes( attributes );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
     else
     {
@@ -255,7 +255,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
           attributes[fieldIndex] = QVariant();
         f.setAttributes( attributes );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       }
       else
       {
@@ -281,7 +281,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
         }
         f.setAttributes( attributes );
         if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       }
     }
   }
@@ -289,7 +289,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   if ( sink )
     sink->finalize();
 
-  const bool applySymbology = parameterAsBool( parameters, QStringLiteral( "APPLY_SYMBOLOGY" ), context );
+  const bool applySymbology = parameterAsBool( parameters, u"APPLY_SYMBOLOGY"_s, context );
   if ( applySymbology )
   {
     if ( mIsInPlace )
@@ -297,8 +297,8 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
       // get in place vector layer
       // (possibly TODO - make this a reusable method!)
       QVariantMap inPlaceParams = parameters;
-      inPlaceParams.insert( QStringLiteral( "INPUT" ), parameters.value( QStringLiteral( "INPUT" ) ).value<QgsProcessingFeatureSourceDefinition>().source );
-      if ( QgsVectorLayer *sourceLayer = parameterAsVectorLayer( inPlaceParams, QStringLiteral( "INPUT" ), context ) )
+      inPlaceParams.insert( u"INPUT"_s, parameters.value( u"INPUT"_s ).value<QgsProcessingFeatureSourceDefinition>().source );
+      if ( QgsVectorLayer *sourceLayer = parameterAsVectorLayer( inPlaceParams, u"INPUT"_s, context ) )
       {
         std::unique_ptr<QgsFeatureRenderer> sourceRenderer( sourceLayer->renderer()->clone() );
         SetMarkerRotationPostProcessor processor( std::move( sourceRenderer ), fieldName );
@@ -312,7 +312,7 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

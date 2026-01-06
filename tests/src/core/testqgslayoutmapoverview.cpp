@@ -33,7 +33,7 @@ class TestQgsLayoutMapOverview : public QgsTest
 
   public:
     TestQgsLayoutMapOverview()
-      : QgsTest( QStringLiteral( "Layout Map Overview Tests" ), QStringLiteral( "composer_mapoverview" ) ) {}
+      : QgsTest( u"Layout Map Overview Tests"_s, u"composer_mapoverview"_s ) {}
 
   private slots:
     void initTestCase();        // will be called before the first testfunction is executed.
@@ -108,7 +108,7 @@ void TestQgsLayoutMapOverview::overviewMap()
 
   //render
   overviewMap->overview()->setLinkedMap( map );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewMapRotated()
@@ -130,7 +130,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated()
   map->setMapRotation( 30 );
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setLinkedMap( map );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_rotated" ), &l, 0, 600 );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_rotated"_s, &l, 0, 600 );
 }
 
 void TestQgsLayoutMapOverview::overviewMapRotated2()
@@ -152,7 +152,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated2()
   overviewMap->setMapRotation( 30 );
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setLinkedMap( map );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_rotated2" ), &l, 0, 600 );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_rotated2"_s, &l, 0, 600 );
 }
 
 void TestQgsLayoutMapOverview::overviewMapBlending()
@@ -175,7 +175,7 @@ void TestQgsLayoutMapOverview::overviewMapBlending()
   overviewMapBlend->overview()->setLinkedMap( map );
   overviewMapBlend->overview()->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_blending" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_blending"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewMapInvert()
@@ -198,7 +198,7 @@ void TestQgsLayoutMapOverview::overviewMapInvert()
   overviewMapInvert->overview()->setLinkedMap( map );
   overviewMapInvert->overview()->setInverted( true );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_invert" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_invert"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewMapCenter()
@@ -221,7 +221,7 @@ void TestQgsLayoutMapOverview::overviewMapCenter()
   overviewMapCenter->overview()->setLinkedMap( map );
   overviewMapCenter->overview()->setCentered( true );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_center" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_center"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewReprojected()
@@ -247,7 +247,7 @@ void TestQgsLayoutMapOverview::overviewReprojected()
   overviewMap->setExtent( QgsRectangle( 4712502, -7620278, 10872777, -2531356 ) );
   overviewMap->overview()->setLinkedMap( map );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_reprojected" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_reprojected"_s, &l );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMapOverview )

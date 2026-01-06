@@ -61,28 +61,28 @@ void TestQgsValueMapConfigDlg::cleanup()
 void TestQgsValueMapConfigDlg::testLoadFromCSV()
 {
   const QString dataDir( TEST_DATA_DIR );
-  QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=name:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl( u"LineString?crs=epsg:3111&field=pk:int&field=name:string"_s, u"vl1"_s, u"memory"_s );
 
   QList<QVariant> valueList;
   QVariantMap value;
-  value.insert( QStringLiteral( "Basic unquoted record" ), QString( "1" ) );
+  value.insert( u"Basic unquoted record"_s, QString( "1" ) );
   valueList << value;
   value.clear();
-  value.insert( QStringLiteral( "Forest type" ), QString( "2" ) );
+  value.insert( u"Forest type"_s, QString( "2" ) );
   valueList << value;
   value.clear();
-  value.insert( QStringLiteral( "So-called \"data\"" ), QString( "three" ) );
+  value.insert( u"So-called \"data\""_s, QString( "three" ) );
   valueList << value;
   value.clear();
-  value.insert( QStringLiteral( "444" ), QString( "4" ) );
+  value.insert( u"444"_s, QString( "4" ) );
   valueList << value;
   value.clear();
-  value.insert( QStringLiteral( "five" ), QString( "5" ) );
+  value.insert( u"five"_s, QString( "5" ) );
   valueList << value;
 
-  QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), &vl, 1, nullptr ) );
-  valueMapConfig->loadMapFromCSV( dataDir + QStringLiteral( "/valuemapsample.csv" ) );
-  QCOMPARE( valueMapConfig->config().value( QStringLiteral( "map" ) ).toList(), valueList );
+  QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( u"ValueMap"_s, &vl, 1, nullptr ) );
+  valueMapConfig->loadMapFromCSV( dataDir + u"/valuemapsample.csv"_s );
+  QCOMPARE( valueMapConfig->config().value( u"map"_s ).toList(), valueList );
   delete valueMapConfig;
 }
 
@@ -90,30 +90,30 @@ void TestQgsValueMapConfigDlg::testTestTrimValues()
 {
   // Create a GPKG layer in a temporary file using GDAL
   QTemporaryDir tempDir;
-  const QString tempFile = tempDir.path() + QDir::separator() + QStringLiteral( "test.gpkg" );
+  const QString tempFile = tempDir.path() + QDir::separator() + u"test.gpkg"_s;
 
   QList<QPair<QString, QString>> fields;
-  fields << QPair<QString, QString>( QStringLiteral( "key" ), QStringLiteral( "String;1" ) );
+  fields << QPair<QString, QString>( u"key"_s, u"String;1"_s );
   QString error;
-  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( tempFile, QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, fields, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
-  QgsVectorLayer vl { tempFile, QStringLiteral( "vl1" ), QStringLiteral( "ogr" ) };
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( tempFile, u"GPKG"_s, u"UTF-8"_s, Qgis::WkbType::Point, fields, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+  QgsVectorLayer vl { tempFile, u"vl1"_s, u"ogr"_s };
   QVERIFY( vl.isValid() );
   QCOMPARE( vl.fields().count(), 2 );
 
   QMap<QString, QVariant> valueList;
-  valueList[QStringLiteral( "1" )] = QStringLiteral( "Choice 1" );
-  valueList[QStringLiteral( "2" )] = QStringLiteral( "Choice 2" );
+  valueList[u"1"_s] = u"Choice 1"_s;
+  valueList[u"2"_s] = u"Choice 2"_s;
 
   std::unique_ptr<QgsValueMapConfigDlg> valueMapConfig;
-  valueMapConfig.reset( static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), &vl, 1, nullptr ) ) );
+  valueMapConfig.reset( static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( u"ValueMap"_s, &vl, 1, nullptr ) ) );
 
   valueMapConfig->updateMap( valueList, false );
   valueMapConfig->addNullButtonPushed();
-  QVERIFY( !valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
+  QVERIFY( !valueMapConfig->mValueMapErrorsLabel->text().contains( u"trimmed"_s ) );
 
-  valueList[QStringLiteral( "33" )] = QStringLiteral( "Choice 33" );
+  valueList[u"33"_s] = u"Choice 33"_s;
   valueMapConfig->updateMap( valueList, false );
-  QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
+  QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( u"trimmed"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsValueMapConfigDlg )

@@ -23,7 +23,7 @@
 
 QString QgsOrthogonalizeAlgorithm::name() const
 {
-  return QStringLiteral( "orthogonalize" );
+  return u"orthogonalize"_s;
 }
 
 QString QgsOrthogonalizeAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsOrthogonalizeAlgorithm::group() const
 
 QString QgsOrthogonalizeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsOrthogonalizeAlgorithm::shortHelpString() const
@@ -86,14 +86,14 @@ QgsOrthogonalizeAlgorithm *QgsOrthogonalizeAlgorithm::createInstance() const
 
 void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
 {
-  auto angleToleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ANGLE_TOLERANCE" ), QObject::tr( "Maximum angle tolerance (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 15.0, false, 0.0, 45.0 );
+  auto angleToleranceParam = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE_TOLERANCE"_s, QObject::tr( "Maximum angle tolerance (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 15.0, false, 0.0, 45.0 );
   angleToleranceParam->setIsDynamic( true );
-  angleToleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Angle tolerance" ), QObject::tr( "Maximum angle tolerance (degrees)" ), QgsPropertyDefinition::Double ) );
-  angleToleranceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  angleToleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Angle tolerance"_s, QObject::tr( "Maximum angle tolerance (degrees)" ), QgsPropertyDefinition::Double ) );
+  angleToleranceParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( angleToleranceParam.release() );
 
   auto maxIterations = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "MAX_ITERATIONS" ),
+    u"MAX_ITERATIONS"_s,
     QObject::tr( "Maximum algorithm iterations" ),
     Qgis::ProcessingNumberParameterType::Integer,
     1000, false, 1, 10000
@@ -104,12 +104,12 @@ void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsOrthogonalizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mAngleTolerance = parameterAsDouble( parameters, QStringLiteral( "ANGLE_TOLERANCE" ), context );
-  mDynamicAngleTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE_TOLERANCE" ) );
+  mAngleTolerance = parameterAsDouble( parameters, u"ANGLE_TOLERANCE"_s, context );
+  mDynamicAngleTolerance = QgsProcessingParameters::isDynamic( parameters, u"ANGLE_TOLERANCE"_s );
   if ( mDynamicAngleTolerance )
-    mAngleToleranceProperty = parameters.value( QStringLiteral( "ANGLE_TOLERANCE" ) ).value<QgsProperty>();
+    mAngleToleranceProperty = parameters.value( u"ANGLE_TOLERANCE"_s ).value<QgsProperty>();
 
-  mMaxIterations = parameterAsDouble( parameters, QStringLiteral( "MAX_ITERATIONS" ), context );
+  mMaxIterations = parameterAsDouble( parameters, u"MAX_ITERATIONS"_s, context );
 
   return true;
 }

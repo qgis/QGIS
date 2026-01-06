@@ -155,7 +155,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
   }
 
   const QgsExpressionContext context = mLayout->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( mAtlas->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( mAtlas->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Expression Based Filename" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -221,7 +221,7 @@ void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
     mAtlasFilenameExpressionButton->setEnabled( true );
   }
 
-  mLayout->setCustomProperty( QStringLiteral( "singleFile" ), state == Qt::Checked );
+  mLayout->setCustomProperty( u"singleFile"_s, state == Qt::Checked );
 }
 
 void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
@@ -346,7 +346,7 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
   }
 
   const QgsExpressionContext context = mLayout->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -392,7 +392,7 @@ void QgsLayoutAtlasWidget::changeFileFormat()
   if ( !mLayout )
     return;
 
-  mLayout->setCustomProperty( QStringLiteral( "atlasRasterFormat" ), mAtlasFileFormat->currentText() );
+  mLayout->setCustomProperty( u"atlasRasterFormat"_s, mAtlasFileFormat->currentText() );
 }
 
 void QgsLayoutAtlasWidget::updateGuiElements()
@@ -416,7 +416,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasLimitCoverageLayerRenderCheckBox->setCheckState( mAtlas->limitCoverageLayerRenderToCurrentFeature() ? Qt::Checked : Qt::Unchecked );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
-  const bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ) ).toBool();
+  const bool singleFile = mLayout->customProperty( u"singleFile"_s ).toBool();
   mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
   mAtlasFilenamePatternEdit->setEnabled( !singleFile );
   mAtlasFilenameExpressionButton->setEnabled( !singleFile );
@@ -432,7 +432,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasFeatureFilterEdit->setEnabled( mAtlas->filterFeatures() );
   mAtlasFeatureFilterButton->setEnabled( mAtlas->filterFeatures() );
 
-  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( mLayout->customProperty( QStringLiteral( "atlasRasterFormat" ), QStringLiteral( "png" ) ).toString() ) );
+  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( mLayout->customProperty( u"atlasRasterFormat"_s, u"png"_s ).toString() ) );
 
   blockAllSignals( false );
 }

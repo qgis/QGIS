@@ -248,11 +248,11 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     {
       if ( section == Visibility )
       {
-        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( u"/mActionShowAllLayersGray.svg"_s ) );
       }
       else if ( section == LockStatus )
       {
-        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( u"/lockedGray.svg"_s ) );
       }
 
       return QVariant();
@@ -275,7 +275,7 @@ Qt::DropActions QgsLayoutModel::supportedDropActions() const
 QStringList QgsLayoutModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" );
+  types << u"application/x-vnd.qgis.qgis.composeritemid"_s;
   return types;
 }
 
@@ -300,7 +300,7 @@ QMimeData *QgsLayoutModel::mimeData( const QModelIndexList &indexes ) const
     }
   }
 
-  mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ), encodedData );
+  mimeData->setData( u"application/x-vnd.qgis.qgis.composeritemid"_s, encodedData );
   return mimeData;
 }
 
@@ -322,7 +322,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
     return true;
   }
 
-  if ( !data->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) ) )
+  if ( !data->hasFormat( u"application/x-vnd.qgis.qgis.composeritemid"_s ) )
   {
     return false;
   }
@@ -334,7 +334,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
 
   int beginRow = row != -1 ? row : rowCount( QModelIndex() );
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) );
+  QByteArray encodedData = data->data( u"application/x-vnd.qgis.qgis.composeritemid"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   QList<QgsLayoutItem *> droppedItems;
 

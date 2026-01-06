@@ -13846,7 +13846,7 @@ class TestQgsGeometry(QgisTestCase):
     def testSplitGeometry(self):
         """
         splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
-        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 4.0
+        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 5.0
         this could be potentially removed in favor of the existing cpp test which will be sufficient
         """
         square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")

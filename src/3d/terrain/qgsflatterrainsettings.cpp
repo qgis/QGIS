@@ -31,7 +31,7 @@ QgsFlatTerrainSettings *QgsFlatTerrainSettings::clone() const
 
 QString QgsFlatTerrainSettings::type() const
 {
-  return QStringLiteral( "flat" );
+  return u"flat"_s;
 }
 
 void QgsFlatTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )

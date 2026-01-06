@@ -34,7 +34,7 @@
 
 #include "moc_qgsnewhttpconnection.cpp"
 
-const QgsSettingsEntryBool *QgsNewHttpConnection::settingsIgnoreReportedLayerExtentsDefault = new QgsSettingsEntryBool( QStringLiteral( "ignore-reported-layer-extents-default" ), sTreeHttpConnectionDialog, false );
+const QgsSettingsEntryBool *QgsNewHttpConnection::settingsIgnoreReportedLayerExtentsDefault = new QgsSettingsEntryBool( u"ignore-reported-layer-extents-default"_s, sTreeHttpConnectionDialog, false );
 
 QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &serviceName, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -45,7 +45,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   setupUi( this );
 
   // compatibility fix with former API (pre 3.26) when serviceName was a setting key instead
-  if ( mServiceName.startsWith( QLatin1String( "qgis/" ) ) )
+  if ( mServiceName.startsWith( "qgis/"_L1 ) )
   {
     // It would be obviously much better to use mBaseKey also for credentials,
     // but for some strange reason a different hardcoded key was used instead.
@@ -63,9 +63,9 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
 
   QString connectionType = mServiceName;
-  if ( mServiceName == QLatin1String( "WMS" ) )
+  if ( mServiceName == "WMS"_L1 )
   {
-    connectionType = QStringLiteral( "WMS/WMTS" );
+    connectionType = u"WMS/WMTS"_s;
   }
 
   if ( connectionName.isEmpty() )
@@ -100,16 +100,16 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
 
   mFeatureFormatComboBox->clear();
-  mFeatureFormatComboBox->addItem( tr( "Default" ), QStringLiteral( "default" ) );
+  mFeatureFormatComboBox->addItem( tr( "Default" ), u"default"_s );
   connect( mFeatureFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::featureFormatCurrentIndexChanged );
 
   mComboWfsFeatureMode->clear();
-  mComboWfsFeatureMode->addItem( tr( "Default" ), QStringLiteral( "default" ) );
-  mComboWfsFeatureMode->addItem( tr( "Simple Features" ), QStringLiteral( "simpleFeatures" ) );
-  mComboWfsFeatureMode->addItem( tr( "Complex Features" ), QStringLiteral( "complexFeatures" ) );
+  mComboWfsFeatureMode->addItem( tr( "Default" ), u"default"_s );
+  mComboWfsFeatureMode->addItem( tr( "Simple Features" ), u"simpleFeatures"_s );
+  mComboWfsFeatureMode->addItem( tr( "Complex Features" ), u"complexFeatures"_s );
 
-  mComboHttpMethod->addItem( QStringLiteral( "GET" ), QVariant::fromValue( Qgis::HttpMethod::Get ) );
-  mComboHttpMethod->addItem( QStringLiteral( "POST" ), QVariant::fromValue( Qgis::HttpMethod::Post ) );
+  mComboHttpMethod->addItem( u"GET"_s, QVariant::fromValue( Qgis::HttpMethod::Get ) );
+  mComboHttpMethod->addItem( u"POST"_s, QVariant::fromValue( Qgis::HttpMethod::Post ) );
   mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( Qgis::HttpMethod::Get ) ) );
 
   cmbFeaturePaging->clear();
@@ -222,7 +222,7 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
   featureFormatComboBox()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
   featureFormatDetectButton()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
   mComboWfsFeatureMode->setEnabled(
-    index != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( QLatin1String( "gml" ) ) >= 0
+    index != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( "gml"_L1 ) >= 0
   );
 }
 
@@ -237,7 +237,7 @@ void QgsNewHttpConnection::featureFormatCurrentIndexChanged( int index )
 {
   Q_UNUSED( index );
   mComboWfsFeatureMode->setEnabled(
-    wfsVersionComboBox()->currentIndex() != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( QLatin1String( "gml" ) ) >= 0
+    wfsVersionComboBox()->currentIndex() != WFS_VERSION_API_FEATURES_1_0 || featureFormatComboBox()->currentData().toString().indexOf( "gml"_L1 ) >= 0
   );
 }
 
@@ -403,13 +403,13 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   const QString version = QgsOwsConnection::settingsVersion->value( detailsParameters );
   int versionIdx = WFS_VERSION_MAX; // AUTO
-  if ( version == QLatin1String( "1.0.0" ) )
+  if ( version == "1.0.0"_L1 )
     versionIdx = WFS_VERSION_1_0;
-  else if ( version == QLatin1String( "1.1.0" ) )
+  else if ( version == "1.1.0"_L1 )
     versionIdx = WFS_VERSION_1_1;
-  else if ( version == QLatin1String( "2.0.0" ) )
+  else if ( version == "2.0.0"_L1 )
     versionIdx = WFS_VERSION_2_0;
-  else if ( version == QLatin1String( "OGC_API_FEATURES" ) )
+  else if ( version == "OGC_API_FEATURES"_L1 )
     versionIdx = WFS_VERSION_API_FEATURES_1_0;
   cmbVersion->setCurrentIndex( versionIdx );
 
@@ -422,9 +422,9 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   // Only default to paging enabled if WFS 2.0.0 or higher
   const QString pagingEnabled = QgsOwsConnection::settingsPagingEnabled->value( detailsParameters );
-  if ( pagingEnabled == QLatin1String( "enabled" ) )
+  if ( pagingEnabled == "enabled"_L1 )
     cmbFeaturePaging->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED ) );
-  else if ( pagingEnabled == QLatin1String( "disabled" ) )
+  else if ( pagingEnabled == "disabled"_L1 )
     cmbFeaturePaging->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED ) );
   else
     cmbFeaturePaging->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DEFAULT ) );
@@ -457,11 +457,11 @@ QUrl QgsNewHttpConnection::urlTrimmed() const
     params.insert( it.first.toUpper(), it );
   }
 
-  if ( params[QStringLiteral( "SERVICE" )].second.toUpper() == "WMS" || params[QStringLiteral( "SERVICE" )].second.toUpper() == "WFS" || params[QStringLiteral( "SERVICE" )].second.toUpper() == "WCS" )
+  if ( params[u"SERVICE"_s].second.toUpper() == "WMS" || params[u"SERVICE"_s].second.toUpper() == "WFS" || params[u"SERVICE"_s].second.toUpper() == "WCS" )
   {
-    query.removeQueryItem( params.value( QStringLiteral( "SERVICE" ) ).first );
-    query.removeQueryItem( params.value( QStringLiteral( "REQUEST" ) ).first );
-    query.removeQueryItem( params.value( QStringLiteral( "FORMAT" ) ).first );
+    query.removeQueryItem( params.value( u"SERVICE"_s ).first );
+    query.removeQueryItem( params.value( u"REQUEST"_s ).first );
+    query.removeQueryItem( params.value( u"FORMAT"_s ).first );
   }
 
   url.setQuery( query );
@@ -509,7 +509,7 @@ void QgsNewHttpConnection::accept()
     }
     QString format = mFeatureFormatComboBox->currentData().toString();
     QgsOwsConnection::settingsDefaultFeatureFormat->setValue( format, detailsParameters );
-    settings.setValue( QStringLiteral( "/qgis/lastFeatureFormatEncoding" ), format );
+    settings.setValue( u"/qgis/lastFeatureFormatEncoding"_s, format );
     QgsOwsConnection::settingsAvailableFeatureFormats->setValue( availableFormats, detailsParameters );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
@@ -543,23 +543,23 @@ void QgsNewHttpConnection::accept()
   }
   if ( mTypes & ConnectionWfs )
   {
-    QString version = QStringLiteral( "auto" );
+    QString version = u"auto"_s;
     switch ( cmbVersion->currentIndex() )
     {
       case WFS_VERSION_MAX:
-        version = QStringLiteral( "auto" );
+        version = u"auto"_s;
         break;
       case WFS_VERSION_1_0:
-        version = QStringLiteral( "1.0.0" );
+        version = u"1.0.0"_s;
         break;
       case WFS_VERSION_1_1:
-        version = QStringLiteral( "1.1.0" );
+        version = u"1.1.0"_s;
         break;
       case WFS_VERSION_2_0:
-        version = QStringLiteral( "2.0.0" );
+        version = u"2.0.0"_s;
         break;
       case WFS_VERSION_API_FEATURES_1_0:
-        version = QStringLiteral( "OGC_API_FEATURES" );
+        version = u"OGC_API_FEATURES"_s;
         break;
     }
     QgsOwsConnection::settingsVersion->setValue( version, detailsParameters );
@@ -567,17 +567,17 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsPagesize->setValue( txtPageSize->text(), detailsParameters );
     QgsOwsConnection::settingsPreferredHttpMethod->setValue( mComboHttpMethod->currentData().value< Qgis::HttpMethod >(), detailsParameters );
 
-    QString pagingEnabled = QStringLiteral( "default" );
+    QString pagingEnabled = u"default"_s;
     switch ( cmbFeaturePaging->currentIndex() )
     {
       case static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DEFAULT ):
-        pagingEnabled = QStringLiteral( "default" );
+        pagingEnabled = u"default"_s;
         break;
       case static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED ):
-        pagingEnabled = QStringLiteral( "enabled" );
+        pagingEnabled = u"enabled"_s;
         break;
       case static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED ):
-        pagingEnabled = QStringLiteral( "disabled" );
+        pagingEnabled = u"disabled"_s;
         break;
     }
     QgsOwsConnection::settingsPagingEnabled->setValue( pagingEnabled, detailsParameters );
@@ -601,5 +601,5 @@ void QgsNewHttpConnection::accept()
 
 void QgsNewHttpConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/index.html"_s );
 }

@@ -62,7 +62,7 @@ class GUI_EXPORT QgsSensorAbstractGuiMetadata
     /**
      * Returns an icon representing creation of the sensor type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mSensor.svg" ) ); }
+    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( u"/mSensor.svg"_s ); }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not

@@ -94,7 +94,7 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Setting factory was not found for '%1', returning the default string factory" ).arg( id ) );
+    QgsDebugError( u"Setting factory was not found for '%1', returning the default string factory"_s.arg( id ) );
     return nullptr;
   }
 }
