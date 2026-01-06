@@ -40,7 +40,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      */
     QgsCustomizationDialog( QgisApp *qgisApp );
 
-    static inline QgsSettingsTreeNode *sTreeCustomization = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "customization" ) );
+    static inline QgsSettingsTreeNode *sTreeCustomization = QgsSettingsTree::sTreeApp->createChildNode( u"customization"_s );
     static const QgsSettingsEntryString *sSettingLastSaveDir;
 
   private slots:
