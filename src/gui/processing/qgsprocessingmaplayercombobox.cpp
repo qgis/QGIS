@@ -29,6 +29,7 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
+#include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 #include "qgswmsutils.h"
 
@@ -760,7 +761,8 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
   else
     filter = QObject::tr( "All files (*.*)" );
 
-  const QString filename = QFileDialog::getOpenFileName( this, tr( "Select File" ), path, filter );
+  QString selectedFilter = filter.split( u";;"_s ).at( 0 );
+  const QString filename = QFileDialog::getOpenFileName( this, tr( "Select File" ), path, filter, &selectedFilter );
   if ( filename.isEmpty() )
     return;
 
