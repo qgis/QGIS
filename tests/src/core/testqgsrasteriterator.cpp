@@ -87,6 +87,9 @@ void TestQgsRasterIterator::testBasic()
   it.setMaximumTileWidth( 3000 );
   QCOMPARE( it.maximumTileWidth(), 3000 );
 
+  QCOMPARE( mpRasterLayer->width(), 7200 );
+  QCOMPARE( mpRasterLayer->height(), 5450 );
+
   it.startRasterRead( 1, mpRasterLayer->width(), mpRasterLayer->height(), mpRasterLayer->extent() );
 
   QCOMPARE( it.blockCount(), 9 );
@@ -108,12 +111,12 @@ void TestQgsRasterIterator::testBasic()
   std::unique_ptr<QgsRasterBlock> block;
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.111, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.1911314985, 0.001 );
   QGSCOMPARENEAR( it.progress( 1, 0 ), 0.0, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 0.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 0.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 0.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1.0 ), 0.111, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.1911314985 * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.1911314985 * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.1911314985 * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1.0 ), 0.1911314985, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 0 );
@@ -133,12 +136,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.222, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0 ), 0.111, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 1.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 1.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 1.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1.0 ), 0.222, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.382262996941896, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0 ), 0.1911314985, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.1911314985 + ( 0.382262996941896 - 0.1911314985 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.1911314985 + ( 0.382262996941896 - 0.1911314985 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.1911314985 + ( 0.382262996941896 - 0.1911314985 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1.0 ), 0.382262996941896, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 3000 );
@@ -154,12 +157,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.333, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.222, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 2.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 2.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 2.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.333, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.45871559633027525, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.382262996941896, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.382262996941896 + ( 0.45871559633027525 - 0.382262996941896 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.382262996941896 + ( 0.45871559633027525 - 0.382262996941896 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.382262996941896 + ( 0.45871559633027525 - 0.382262996941896 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.45871559633027525, 0.001 );
   QCOMPARE( nCols, 1200 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 6000 );
@@ -175,12 +178,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.444, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.333, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 3.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 3.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 3.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.444, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.6498470948012233, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.45871559633027525, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.45871559633027525 + ( 0.6498470948012233 - 0.45871559633027525 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.45871559633027525 + ( 0.6498470948012233 - 0.45871559633027525 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.45871559633027525 + ( 0.6498470948012233 - 0.45871559633027525 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.6498470948012233, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 0 );
@@ -196,12 +199,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.555, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.444, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 4.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 4.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 4.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.555, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.8409785932721713, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.6498470948012233, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.6498470948012233 + ( 0.8409785932721713 - 0.6498470948012233 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.6498470948012233 + ( 0.8409785932721713 - 0.6498470948012233 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.6498470948012233 + ( 0.8409785932721713 - 0.6498470948012233 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.8409785932721713, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 3000 );
@@ -217,12 +220,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.666, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.555, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 5.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 5.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 5.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.666, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.9174311926605505, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.8409785932721713, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.8409785932721713 + ( 0.9174311926605505 - 0.8409785932721713 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.8409785932721713 + ( 0.9174311926605505 - 0.8409785932721713 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.8409785932721713 + ( 0.9174311926605505 - 0.8409785932721713 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.9174311926605505, 0.001 );
   QCOMPARE( nCols, 1200 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 6000 );
@@ -236,12 +239,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.777, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.666, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 6.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 6.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 6.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.777, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.9518348623853211, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.9174311926605505, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.9174311926605505 + ( 0.9518348623853211 - 0.9174311926605505 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.9174311926605505 + ( 0.9518348623853211 - 0.9174311926605505 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.9174311926605505 + ( 0.9518348623853211 - 0.9174311926605505 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.9518348623853211, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 450 );
   QCOMPARE( topLeftCol, 0 );
@@ -257,12 +260,12 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
-  QGSCOMPARENEAR( it.progress( 1 ), 0.888, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.777, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 7.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 7.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 7.75, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.888, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.9862385321100917, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.9518348623853211, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.9518348623853211 + ( 0.9862385321100917 - 0.9518348623853211 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.9518348623853211 + ( 0.9862385321100917 - 0.9518348623853211 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.9518348623853211 + ( 0.9862385321100917 - 0.9518348623853211 ) * 0.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 1 ), 0.9862385321100917, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 450 );
   QCOMPARE( topLeftCol, 3000 );
@@ -277,10 +280,10 @@ void TestQgsRasterIterator::testBasic()
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
   QGSCOMPARENEAR( it.progress( 1 ), 1.0, 0.01 );
-  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.888, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.111 * 8.25, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.111 * 8.5, 0.001 );
-  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.111 * 8.75, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.0 ), 0.9862385321100917, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.25 ), 0.9862385321100917 + ( 1 - 0.9862385321100917 ) * 0.25, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.5 ), 0.9862385321100917 + ( 1 - 0.9862385321100917 ) * 0.5, 0.001 );
+  QGSCOMPARENEAR( it.progress( 1, 0.75 ), 0.9862385321100917 + ( 1 - 0.9862385321100917 ) * 0.75, 0.001 );
   QGSCOMPARENEAR( it.progress( 1, 1 ), 1.0, 0.001 );
   QCOMPARE( nCols, 1200 );
   QCOMPARE( nRows, 450 );
