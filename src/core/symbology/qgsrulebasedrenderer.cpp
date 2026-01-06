@@ -785,7 +785,7 @@ void QgsRuleBasedRenderer::Rule::stopRender( QgsRenderContext &context )
   mSymbolNormZLevels.clear();
 }
 
-QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId )
+QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId, const QgsReadWriteContext &context )
 {
   QString symbolIdx = ruleElem.attribute( QStringLiteral( "symbol" ) );
   QgsSymbol *symbol = nullptr;
@@ -802,7 +802,8 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   }
 
   QString filterExp = ruleElem.attribute( QStringLiteral( "filter" ) );
-  QString label = ruleElem.attribute( QStringLiteral( "label" ) );
+  QString label = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ), ruleElem.attribute( QStringLiteral( "label" ) ) );
+  QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ) + " source " + ruleElem.attribute( QStringLiteral( "label" ) ), 3 );
   QString description = ruleElem.attribute( QStringLiteral( "description" ) );
   int scaleMinDenom = ruleElem.attribute( QStringLiteral( "scalemindenom" ), QStringLiteral( "0" ) ).toInt();
   int scaleMaxDenom = ruleElem.attribute( QStringLiteral( "scalemaxdenom" ), QStringLiteral( "0" ) ).toInt();
@@ -821,7 +822,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
   while ( !childRuleElem.isNull() )
   {
-    Rule *childRule = create( childRuleElem, symbolMap );
+    Rule *childRule = create( childRuleElem, symbolMap, true, context );
     if ( childRule )
     {
       rule->appendChild( childRule );
@@ -1312,7 +1313,7 @@ QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element, const Qg
 
   QDomElement rulesElem = element.firstChildElement( QStringLiteral( "rules" ) );
 
-  Rule *root = Rule::create( rulesElem, symbolMap );
+  Rule *root = Rule::create( rulesElem, symbolMap, true, context );
   if ( !root )
     return nullptr;
 

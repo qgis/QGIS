@@ -700,7 +700,15 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
           //register formcontainers
           registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
+
+          //legend
+          for ( const QgsLegendSymbolItem &item : vlayer->renderer()->legendSymbolItems() )
+          {
+            translationContext->registerTranslation( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( vlayer->id() ), item.label() );
+          }
+
           break;
+
         }
 
         case Qgis::LayerType::Raster:
@@ -1809,7 +1817,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
       context.setProjectTranslator( this );
       context.setTransformContext( transformContext() );
       QString layerId = element.namedItem( QStringLiteral( "id" ) ).toElement().text();
-
+      context.setCurrentLayerId( layerId );
       if ( !addLayer( element, brokenNodes, context, flags, loadedProviders.take( layerId ) ) )
       {
         returnStatus = false;
@@ -3148,6 +3156,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
   context.setTransformContext( transformContext() );
+  context.setCurrentLayerId( layerNode.toElement().firstChildElement( QStringLiteral( "id" ) ).text() );
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
@@ -4058,6 +4067,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
   embeddedContext.setProjectTranslator( this );
   embeddedContext.setTransformContext( transformContext() );
+  embeddedContext.setCurrentLayerId( layerId );
 
   const QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )

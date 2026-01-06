@@ -202,7 +202,9 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
       {
         const int value = catElem.attribute( QStringLiteral( "value" ) ).toInt();
         const double size = catElem.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "0" ) ).toDouble();
-        const QString label = catElem.attribute( QStringLiteral( "label" ) );
+        const QString label = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ), catElem.attribute( QStringLiteral( "label" ) ) );
+        QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ) + " source " + catElem.attribute( QStringLiteral( "label" ) ), 3 );
+
         const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
         const QColor color = QgsColorUtils::colorFromString( catElem.attribute( QStringLiteral( "color" ) ) );
         categories.append( QgsPointCloudCategory( value, color, label, render, size ) );

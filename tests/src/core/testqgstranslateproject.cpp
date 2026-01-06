@@ -18,9 +18,11 @@
 #include "qgsattributeeditorelement.h"
 #include "qgslayertree.h"
 #include "qgslayertreegroup.h"
+#include "qgslegendsymbolitem.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgsrenderer.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 #include "qgstranslationcontext.h"
@@ -123,6 +125,22 @@ void TestQgsTranslateProject::createTsFile()
   //Little bit of nothing
   QVERIFY( tsFileContent.contains( "<source>Little bit of nothing</source>" ) );
 
+  //LEGEND ITEMS
+  //lines:
+  QVERIFY( tsFileContent.contains( "<source>Arterial</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway</source>" ) );
+  //purple lines:
+  QVERIFY( tsFileContent.contains( "<source>Arterial purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Low Highway purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>High Highway purple</source>" ) );
+  //purple points:
+  QVERIFY( tsFileContent.contains( "<source>From 1 to 1</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 1 to 3</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 3 to 3.6</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 3.6 to 10</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 10 to 20</source>" ) );
+
   //FIELDNAMES AND ALIASES
   //Lines:
   //Name (Alias: Runwayid)
@@ -215,6 +233,47 @@ void TestQgsTranslateProject::translateProject()
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Bisschen nichts" ) ) );
   //Purple Marks -> Lila Markierungen
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Lila Markierungen" ) ) );
+
+  //LEGEND ITEMS
+  //lines:
+  QList<QString> legendItemsOfLines;
+  for ( const QgsLegendSymbolItem &item : lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfLines.append( item.label() );
+  }
+  QVERIFY( legendItemsOfLines.contains( QStringLiteral( "Hauptstrasse" ) ) ); //Arterial
+  QVERIFY( legendItemsOfLines.contains( QStringLiteral( "Autobahn" ) ) );     //Highway
+  //purple lines:
+  QList<QString> legendItemsOfPurpleLine;
+  for ( const QgsLegendSymbolItem &item : purple_lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfPurpleLine.append( item.label() );
+  }
+  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Lila Hauptstrasse" ) ) );   //Arterial purple
+  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Lila Autobahn" ) ) );       //Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Tiefe Lila Autobahn" ) ) ); //Low Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Hohe Lila Autobahn" ) ) );  //High Highway purple
+
+  //purple points:
+  QList<QString> legendItemsOfPurplePoints;
+  for ( const QgsLegendSymbolItem &item : purple_points_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfPurplePoints.append( item.label() );
+  }
+  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 1 bis 1" ) ) );    //From 1 to 1
+  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 1 bis 3" ) ) );    //From 1 to 3
+  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 3 bis 3.6" ) ) );  //From 3 to 3.6
+  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 3.6 bis 10" ) ) ); //From 3.6 to 10
+  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 10 bis 20" ) ) );  //From 10 to 20
+
+  //lines:
+  QList<QString> legendItemsOfLine;
+  for ( const QgsLegendSymbolItem &item : lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfLine.append( item.label() );
+  }
+  QVERIFY( legendItemsOfLine.contains( QStringLiteral( "Hauptstrasse" ) ) ); //Arterial
+  QVERIFY( legendItemsOfLine.contains( QStringLiteral( "Autobahn" ) ) );     //Highway
 
   //FIELDNAMES AND ALIASES
   //Lines:

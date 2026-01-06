@@ -835,7 +835,9 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
           value = values;
       }
       QString symbolName = catElem.attribute( QStringLiteral( "symbol" ) );
-      QString label = catElem.attribute( QStringLiteral( "label" ) );
+      QString label = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ), catElem.attribute( QStringLiteral( "label" ) ) );
+      QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ) + " source " + catElem.attribute( QStringLiteral( "label" ) ), 3 );
+
       bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
       QString uuid = catElem.attribute( QStringLiteral( "uuid" ), QString::number( i++ ) );
       while ( usedUuids.contains( uuid ) )
