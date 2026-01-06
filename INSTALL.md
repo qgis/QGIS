@@ -459,14 +459,14 @@ dpkg-buildpackage -us -uc -b
 ## 3.10. On Fedora Linux
 
 We assume that you have the source code of QGIS ready and created a
-new subdirectory called `build` or `build-qt6` in it.
+new subdirectory called `build` in it.
 
 ### 3.10.1. Install build dependencies
 
 To save ~ 700 MB, if you want to install PROJ without its optional grids, first do:
 
 ```bash
-dnf5 install -y --setopt=install_weak_deps=False proj-devel
+dnf install -y --setopt=install_weak_deps=False proj-devel
 ```
 
 Installation of all needed build dependencies:
@@ -492,10 +492,9 @@ dnf install nodejs yarnpkg
 Additionally, the cmake flag `WITH_SERVER_LANDINGPAGE_WEBAPP` needs to be turned on.
 
 Make sure that your build directory is completely empty when you enter the
-following command. Do never try to "re-use" an existing build directory.
+following command.
 If you want to use `ccmake` or other interactive tools, run the following
-command in the empty build directory once before starting to use the interactive
-tools.
+command in the empty build directory once before starting to use the interactive tools.
 
 ```bash
 cmake ..
