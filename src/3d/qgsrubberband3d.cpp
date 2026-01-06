@@ -498,7 +498,6 @@ void QgsRubberBand3D::updateMarkerMaterial()
   else if ( !mMarkerEnabled && mMarkerMaterial )
   {
     mMarkerEntity->removeComponent( mMarkerMaterial );
-    QObject::disconnect( mEngine, nullptr, mMarkerMaterial, nullptr );
     mMarkerMaterial->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
     mMarkerMaterial->deleteLater();
     mMarkerMaterial = nullptr;
