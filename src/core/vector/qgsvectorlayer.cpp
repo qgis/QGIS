@@ -2807,6 +2807,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         if ( widgetType == QLatin1String( "ValueRelation" ) )
         {
           optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
+          optionsMap[ QStringLiteral( "Description" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationdescription" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ),  optionsMap[QStringLiteral( "Description" )].toString() );
         }
         if ( widgetType == QLatin1String( "ValueMap" ) )
         {

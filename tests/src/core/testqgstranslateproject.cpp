@@ -184,6 +184,10 @@ void TestQgsTranslateProject::createTsFile()
   //ValueRelation value
   QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationvalue</name>" ) );
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //ValueRelation description
+  QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationdescription</name>" ) );
+  QVERIFY( tsFileContent.contains( "<source>'The cabin Crew Member is now a '||\"RunwayId\"</source>" ) );
+
 
   //ValueMap with descriptions
   QVERIFY( tsFileContent.contains( ":fields:Name:valuemapdescriptions</name>" ) );
@@ -330,7 +334,9 @@ void TestQgsTranslateProject::translateProject()
 
   //WIDGETS
   //ValueRelation value is not anymore Name but Runwayid
-  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString(), QStringLiteral( "Runwayid" ) );
+  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString(), QStringLiteral( "Pistenid" ) );
+  //ValueRelation description is not anymore 'The cabin Crew Member is now a '||"RunwayId" but 'Das Mitglied des Kabinenpersonals ist jetzt eine '||"Pistenid"
+  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).editorWidgetSetup().config().value( QStringLiteral( "Description" ) ).toString(), QStringLiteral( "'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\"" ) );
 
   //ValueMap with descriptions
   const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };

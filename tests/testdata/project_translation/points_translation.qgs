@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="Metadata Title" saveDateTime="2026-01-05T13:33:59" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
+<qgis projectname="Metadata Title" saveDateTime="2026-01-06T13:30:58" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
   <homePath path=""/>
   <title>Metadata Title</title>
   <transaction mode="Disabled"/>
@@ -84,9 +84,9 @@
   <snapping-settings enabled="0" intersection-snapping="0" maxScale="0" minScale="0" mode="2" scaleDependencyMode="0" self-snapping="0" tolerance="0" type="1" unit="2">
     <individual-layer-settings>
       <layer-setting enabled="0" id="lines_5238db60_470c_41a5_b1d1_059e70f93b99" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
+      <layer-setting enabled="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
       <layer-setting enabled="0" id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
       <layer-setting enabled="0" id="points_240d6bd6_9203_470a_994a_aae13cd9fa04" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
-      <layer-setting enabled="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations>
@@ -1512,7 +1512,7 @@ def my_form_open(dialog, layer, feature):
           </config>
         </widget>
       </widgets>
-      <previewExpression>"Value"</previewExpression>
+      <previewExpression>Value</previewExpression>
       <mapTip enabled="1"></mapTip>
     </maplayer>
     <maplayer autoRefreshMode="Disabled" autoRefreshTime="0" geometry="Point" hasScaleBasedVisibilityFlag="0" labelsEnabled="0" layerType="Vector" legendPlaceholderImage="" maxScale="1" minScale="100000000" readOnly="0" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" simplifyAlgorithm="0" simplifyDrawingHints="0" simplifyDrawingTol="1" simplifyLocal="1" simplifyMaxScale="1" styleCategories="AllStyleCategories" symbologyReferenceScale="-1" type="vector" wkbType="Point">
@@ -1998,7 +1998,7 @@ def my_form_open(dialog, layer, feature):
         </colorramp>
         <classificationMethod id="Quantile">
           <symmetricMode astride="0" enabled="0" symmetrypoint="0"/>
-          <labelFormat format="From %1 to %2" labelprecision="2" trimtrailingzeroes="1"/>
+          <labelFormat format="From %1 to %2" labelprecision="2" trimtrailingzeroes="0"/>
           <parameters>
             <Option/>
           </parameters>
@@ -2075,8 +2075,8 @@ def my_form_open(dialog, layer, feature):
           <Option name="QFieldSync/tracking_time_requirement_interval_seconds" type="int" value="30"/>
           <Option name="QFieldSync/value_map_button_interface_threshold" type="int" value="0"/>
           <Option name="embeddedWidgets/count" type="QString" value="0"/>
-          <Option name="variableNames"/>
-          <Option name="variableValues"/>
+          <Option name="variableNames" type="invalid"/>
+          <Option name="variableValues" type="invalid"/>
         </Option>
       </customproperties>
       <blendMode>0</blendMode>
@@ -2192,7 +2192,7 @@ def my_form_open(dialog, layer, feature):
                 <Option name="AllowMulti" type="bool" value="false"/>
                 <Option name="AllowNull" type="bool" value="false"/>
                 <Option name="CompleterMatchFlags" type="int" value="2"/>
-                <Option name="Description" type="invalid"/>
+                <Option name="Description" type="QString" value=""/>
                 <Option name="DisplayGroupName" type="bool" value="false"/>
                 <Option name="FilterExpression" type="invalid"/>
                 <Option name="Group" type="invalid"/>
@@ -2799,8 +2799,8 @@ def my_form_open(dialog, layer, feature):
             <Option type="QString" value="&quot;Class&quot;"/>
           </Option>
           <Option name="embeddedWidgets/count" type="QString" value="0"/>
-          <Option name="variableNames" type="invalid"/>
-          <Option name="variableValues" type="invalid"/>
+          <Option name="variableNames"/>
+          <Option name="variableValues"/>
         </Option>
       </customproperties>
       <blendMode>0</blendMode>
@@ -2905,7 +2905,23 @@ def my_form_open(dialog, layer, feature):
         <field configurationFlags="NoFlag" name="Importance">
           <editWidget type="RelationReference">
             <config>
-              <Option/>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" type="bool" value="false"/>
+                <Option name="AllowNULL" type="bool" value="true"/>
+                <Option name="FetchLimitActive" type="bool" value="true"/>
+                <Option name="FetchLimitNumber" type="int" value="100"/>
+                <Option name="MapIdentification" type="bool" value="false"/>
+                <Option name="OrderDescending" type="bool" value="false"/>
+                <Option name="OrderExpression" type="QString" value=""/>
+                <Option name="ReadOnly" type="bool" value="false"/>
+                <Option name="ReferencedLayerDataSource" type="QString" value="/home/dave/dev/qgis/QGIS/tests/testdata/lines.shp"/>
+                <Option name="ReferencedLayerId" type="QString" value="lines_a677672a_bf5d_410d_98c9_d326a5719a1b"/>
+                <Option name="ReferencedLayerName" type="QString" value="lines"/>
+                <Option name="ReferencedLayerProviderKey" type="QString" value="ogr"/>
+                <Option name="Relation" type="QString" value="points_240_Importance_lines_a677_Value"/>
+                <Option name="ShowForm" type="bool" value="false"/>
+                <Option name="ShowOpenFormButton" type="bool" value="true"/>
+              </Option>
             </config>
           </editWidget>
         </field>
@@ -2923,10 +2939,10 @@ def my_form_open(dialog, layer, feature):
                 <Option name="AllowMulti" type="bool" value="false"/>
                 <Option name="AllowNull" type="bool" value="false"/>
                 <Option name="CompleterMatchFlags" type="int" value="2"/>
-                <Option name="Description" type="invalid"/>
+                <Option name="Description" type="QString" value="'The cabin Crew Member is now a '||&quot;RunwayId&quot;"/>
                 <Option name="DisplayGroupName" type="bool" value="false"/>
-                <Option name="FilterExpression" type="invalid"/>
-                <Option name="Group" type="invalid"/>
+                <Option name="FilterExpression" type="QString" value=""/>
+                <Option name="Group" type="QString" value=""/>
                 <Option name="Key" type="QString" value="Value"/>
                 <Option name="Layer" type="QString" value="lines_a677672a_bf5d_410d_98c9_d326a5719a1b"/>
                 <Option name="LayerName" type="QString" value="lines"/>
@@ -2935,11 +2951,11 @@ def my_form_open(dialog, layer, feature):
                 <Option name="NofColumns" type="int" value="1"/>
                 <Option name="OrderByDescending" type="bool" value="false"/>
                 <Option name="OrderByField" type="bool" value="false"/>
-                <Option name="OrderByFieldName" type="QString" value="Name"/>
+                <Option name="OrderByFieldName" type="QString" value="Value"/>
                 <Option name="OrderByKey" type="bool" value="true"/>
                 <Option name="OrderByValue" type="bool" value="false"/>
                 <Option name="UseCompleter" type="bool" value="false"/>
-                <Option name="Value" type="QString" value="Name"/>
+                <Option name="Value" type="QString" value="Value"/>
               </Option>
             </config>
           </editWidget>
@@ -2961,6 +2977,7 @@ def my_form_open(dialog, layer, feature):
         <alias field="Staff" index="5" name=""/>
       </aliases>
       <splitPolicies>
+        <policy field="Importance" policy="DefaultValue"/>
         <policy field="Cabin Crew" policy="DefaultValue"/>
       </splitPolicies>
       <defaults>
@@ -3315,7 +3332,7 @@ def my_form_open(dialog, layer, feature):
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmax="-74.02270271788401601" xmin="-117.80092642654159363" ymax="42.71432786276906768" ymin="17.43896554392901521">
+    <DefaultViewExtent xmax="-77.24514790554583499" xmin="-114.57848123887977465" ymax="45.57279410703438316" ymin="14.58049929966369795">
       <spatialrefsys nativeFormat="Wkt">
         <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],MEMBER["World Geodetic System 1984 (G2296)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
@@ -3380,7 +3397,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings autoAddTrackVertices="0" autoCommitFeatures="0" destinationFollowsActiveLayer="1" destinationLayer="lines_5238db60_470c_41a5_b1d1_059e70f93b99" destinationLayerName="purple lines" destinationLayerProvider="ogr" destinationLayerSource="/home/dave/dev/qgis/QGIS/tests/testdata/lines.shp">
+  <ProjectGpsSettings autoAddTrackVertices="0" autoCommitFeatures="0" destinationFollowsActiveLayer="1" destinationLayer="points_240d6bd6_9203_470a_994a_aae13cd9fa04" destinationLayerName="points" destinationLayerProvider="ogr" destinationLayerSource="/home/dave/dev/qgis/QGIS/tests/testdata/points.shp">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>
