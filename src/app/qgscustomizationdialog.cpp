@@ -39,7 +39,7 @@
 #include <QAbstractItemModelTester>
 #endif
 
-const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( QStringLiteral( "last-save-directory" ), sTreeCustomization, QDir::homePath(), QStringLiteral( "Last directory used when saving a customization XML file" ) );
+const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( u"last-save-directory"_s, sTreeCustomization, QDir::homePath(), u"Last directory used when saving a customization XML file"_s );
 
 QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgisApp *qgisApp, Mode mode, QObject *parent )
   : QAbstractItemModel( parent )
@@ -299,7 +299,7 @@ const std::unique_ptr<QgsCustomization> &QgsCustomizationDialog::QgsCustomizatio
 void QgsCustomizationDialog::onSaveFile( bool )
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Choose a customization XML file" ), sSettingLastSaveDir->value(), tr( "Customization files (*.xml)" ) );
-  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "xml" ) );
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << u"xml"_s );
 
   if ( fileName.isEmpty() )
     return;
@@ -371,7 +371,7 @@ void QgsCustomizationDialog::enableCustomization( bool checked )
 
 void QgsCustomizationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#sec-customization" ) );
+  QgsHelp::openHelp( u"introduction/qgis_configuration.html#sec-customization"_s );
 }
 
 void QgsCustomizationDialog::onActionCatchToggled( bool triggered )

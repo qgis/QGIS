@@ -1459,12 +1459,11 @@ int main( int argc, char *argv[] )
     customizationfile = profileFolder + QDir::separator() + u"QGIS"_s + QDir::separator() + u"QGISCUSTOMIZATION.xml"_s;
   }
 
-  auto customization = std::make_unique<QgsCustomization>( profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION.xml" ) );
+  auto customization = std::make_unique<QgsCustomization>( customizationfile );
   if ( !hasCustomization )
   {
     customization->setEnabled( false );
   }
-
 
   //set up splash screen
   QString splashPath( customization->splashPath() );

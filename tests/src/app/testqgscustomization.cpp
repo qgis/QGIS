@@ -32,7 +32,7 @@ class TestQgsCustomization : public QgsTest
 
   public:
     TestQgsCustomization()
-      : QgsTest( QStringLiteral( "Customization Tests" ) ) {}
+      : QgsTest( u"Customization Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -202,7 +202,7 @@ void TestQgsCustomization::init()
 
   QgsBrowserGuiModel *browserModel = new QgsBrowserGuiModel( this );
   mQgisApp->mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), browserModel, mQgisApp.get() );
-  mQgisApp->mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
+  mQgisApp->mBrowserWidget->setObjectName( u"Browser"_s );
 
 
   // add a test tool bar to test action with menu
@@ -590,7 +590,7 @@ void TestQgsCustomization::testClone()
   setAllVisible( false );
 
   // copy customization
-  std::unique_ptr<QgsCustomization> customization( new QgsCustomization( *mQgisApp->customization() ) );
+  auto customization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
 
   // test item visiblity
   QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" ) );
@@ -728,15 +728,15 @@ void TestQgsCustomization::testModel()
   // Uncheck ToolBars/mLayerToolBar/mActionAddRasterLayer item
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
-    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), u"ToolBars"_s );
     QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex layerToolBarIndex = items.first();
-    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), u"mLayerToolBar"_s );
     items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex addRasterLayerIndex = items.first();
-    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), u"mActionAddRasterLayer"_s );
 
     model.setData( addRasterLayerIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
     QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
@@ -753,15 +753,15 @@ void TestQgsCustomization::testModel()
 
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
-    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), u"ToolBars"_s );
     QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex layerToolBarIndex = items.first();
-    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), u"mLayerToolBar"_s );
     items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex addRasterLayerIndex = items.first();
-    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), u"mActionAddRasterLayer"_s );
 
     QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Checked );
   }
@@ -769,15 +769,15 @@ void TestQgsCustomization::testModel()
   // Uncheck ToolBars/mLayerToolBar/mActionAddRasterLayer item
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
-    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), u"ToolBars"_s );
     QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex layerToolBarIndex = items.first();
-    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), u"mLayerToolBar"_s );
     items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex addRasterLayerIndex = items.first();
-    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), u"mActionAddRasterLayer"_s );
 
     model.setData( addRasterLayerIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
     QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
@@ -791,15 +791,15 @@ void TestQgsCustomization::testModel()
 
   {
     QModelIndex toolBarsIndex = model.index( 4, 0 );
-    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "ToolBars" ) );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), u"ToolBars"_s );
     QModelIndexList items = model.match( model.index( 0, 0, toolBarsIndex ), Qt::DisplayRole, "mLayerToolBar", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex layerToolBarIndex = items.first();
-    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mLayerToolBar" ) );
+    QCOMPARE( model.data( layerToolBarIndex, Qt::ItemDataRole::DisplayRole ), u"mLayerToolBar"_s );
     items = model.match( model.index( 0, 0, layerToolBarIndex ), Qt::DisplayRole, "mActionAddRasterLayer", 1 );
     QCOMPARE( items.count(), 1 );
     QModelIndex addRasterLayerIndex = items.first();
-    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), QStringLiteral( "mActionAddRasterLayer" ) );
+    QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::DisplayRole ), u"mActionAddRasterLayer"_s );
 
     model.setData( addRasterLayerIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
     QCOMPARE( model.data( addRasterLayerIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );

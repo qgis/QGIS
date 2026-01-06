@@ -154,8 +154,8 @@ unsigned long QgsCustomization::Item::childrenCount() const
 void QgsCustomization::Item::writeXml( QDomDocument &doc, QDomElement &parent ) const
 {
   QDomElement itemElem = doc.createElement( xmlTag() );
-  itemElem.setAttribute( QStringLiteral( "name" ), mName );
-  itemElem.setAttribute( QStringLiteral( "visible" ), mVisible );
+  itemElem.setAttribute( u"name"_s, mName );
+  itemElem.setAttribute( u"visible"_s, mVisible );
 
   for ( const std::unique_ptr<Item> &childItem : mChildItemList )
   {
@@ -167,8 +167,8 @@ void QgsCustomization::Item::writeXml( QDomDocument &doc, QDomElement &parent ) 
 
 QString QgsCustomization::Item::readXml( const QDomElement &elem )
 {
-  mVisible = elem.attribute( QStringLiteral( "visible" ) ) == QStringLiteral( "1" );
-  mName = elem.attribute( QStringLiteral( "name" ) );
+  mVisible = elem.attribute( u"visible"_s ) == "1"_L1;
+  mName = elem.attribute( u"name"_s );
   if ( mName.isEmpty() )
   {
     return QObject::tr( "Invalid XML file : empty name for tag '%1'" ).arg( elem.tagName() );
@@ -181,7 +181,7 @@ QString QgsCustomization::Item::readXml( const QDomElement &elem )
     {
       return QObject::tr( "Invalid XML file : failed to create an item '%1(%2)' as a child of item '%3(%4)'" )
         .arg( childElem.tagName() )
-        .arg( childElem.attribute( QStringLiteral( "name" ) ) )
+        .arg( childElem.attribute( u"name"_s ) )
         .arg( xmlTag() )
         .arg( mName );
     }
@@ -223,7 +223,7 @@ QgsCustomization::Action::Action( const QString &name, const QString &title, Ite
 
 QString QgsCustomization::Action::xmlTag() const
 {
-  return QStringLiteral( "Action" );
+  return u"Action"_s;
 };
 
 void QgsCustomization::Action::setQAction( QAction *qaction, qsizetype qActionIndex )
@@ -252,7 +252,7 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::clone( QgsCust
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::createChildItem( const QDomElement &childElem )
 {
   // Action with a menu can have child action
-  if ( childElem.tagName() == QStringLiteral( "Action" ) )
+  if ( childElem.tagName() == "Action"_L1 )
     return std::make_unique<Action>( this );
   else
     return nullptr;
@@ -286,14 +286,14 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menu::clone( QgsCustom
 
 QString QgsCustomization::Menu::xmlTag() const
 {
-  return QStringLiteral( "Menu" );
+  return u"Menu"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menu::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "Action" ) )
+  if ( childElem.tagName() == "Action"_L1 )
     return std::make_unique<QgsCustomization::Action>( this );
-  else if ( childElem.tagName() == QStringLiteral( "Menu" ) )
+  else if ( childElem.tagName() == "Menu"_L1 )
     return std::make_unique<QgsCustomization::Menu>( this );
   else
     return nullptr;
@@ -327,14 +327,14 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBar::clone( QgsCus
 
 QString QgsCustomization::ToolBar::xmlTag() const
 {
-  return QStringLiteral( "ToolBar" );
+  return u"ToolBar"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBar::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "Action" ) )
+  if ( childElem.tagName() == "Action"_L1 )
     return std::make_unique<Action>( this );
-  if ( childElem.tagName() == QStringLiteral( "Menu" ) )
+  if ( childElem.tagName() == "Menu"_L1 )
     return std::make_unique<Menu>( this );
   else
     return nullptr;
@@ -367,12 +367,12 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::clone( QgsCu
 
 QString QgsCustomization::ToolBars::xmlTag() const
 {
-  return QStringLiteral( "ToolBars" );
+  return u"ToolBars"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "ToolBar" ) )
+  if ( childElem.tagName() == "ToolBar"_L1 )
     return std::make_unique<ToolBar>( this );
   else
     return nullptr;
@@ -396,12 +396,12 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::clone( QgsCusto
 
 QString QgsCustomization::Menus::xmlTag() const
 {
-  return QStringLiteral( "Menus" );
+  return u"Menus"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "Menu" ) )
+  if ( childElem.tagName() == "Menu"_L1 )
     return std::make_unique<Menu>( this );
   else
     return nullptr;
@@ -421,7 +421,7 @@ QgsCustomization::Dock::Dock( const QString &name, const QString &title, Item *p
 
 QString QgsCustomization::Dock::xmlTag() const
 {
-  return QStringLiteral( "Dock" );
+  return u"Dock"_s;
 };
 
 void QgsCustomization::Dock::copyItemAttributes( const Item *other )
@@ -469,12 +469,12 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Docks::clone( QgsCusto
 
 QString QgsCustomization::Docks::xmlTag() const
 {
-  return QStringLiteral( "Docks" );
+  return u"Docks"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Docks::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "Dock" ) )
+  if ( childElem.tagName() == "Dock"_L1 )
     return std::make_unique<Dock>( this );
   else
     return nullptr;
@@ -502,7 +502,7 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItem::clone( Qg
 
 QString QgsCustomization::BrowserItem::xmlTag() const
 {
-  return QStringLiteral( "BrowserItem" );
+  return u"BrowserItem"_s;
 };
 
 ////////////////
@@ -523,12 +523,12 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItems::clone( Q
 
 QString QgsCustomization::BrowserItems::xmlTag() const
 {
-  return QStringLiteral( "BrowserItems" );
+  return u"BrowserItems"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItems::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "BrowserItem" ) )
+  if ( childElem.tagName() == "BrowserItem"_L1 )
     return std::make_unique<BrowserItem>( this );
   else
     return nullptr;
@@ -552,7 +552,7 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidget::clone
 
 QString QgsCustomization::StatusBarWidget::xmlTag() const
 {
-  return QStringLiteral( "StatusBarWidget" );
+  return u"StatusBarWidget"_s;
 };
 
 ////////////////
@@ -573,12 +573,12 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidgets::clon
 
 QString QgsCustomization::StatusBarWidgets::xmlTag() const
 {
-  return QStringLiteral( "StatusBarWidgets" );
+  return u"StatusBarWidgets"_s;
 };
 
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidgets::createChildItem( const QDomElement &childElem )
 {
-  if ( childElem.tagName() == QStringLiteral( "StatusBarWidget" ) )
+  if ( childElem.tagName() == "StatusBarWidget"_L1 )
     return std::make_unique<StatusBarWidget>( this );
   else
     return nullptr;
@@ -720,7 +720,7 @@ void QgsCustomization::addActions( Item *item, QWidget *widget ) const
       }
       else
       {
-        std::unique_ptr<Action> action = std::make_unique<Action>( it.name, it.title, item );
+        auto action = std::make_unique<Action>( it.name, it.title, item );
         item->addItem( std::move( action ) );
       }
 
@@ -751,7 +751,7 @@ void QgsCustomization::loadApplicationToolBars()
     ToolBar *t = mToolBars->getChild<ToolBar>( name );
     if ( !t )
     {
-      std::unique_ptr<ToolBar> toolBar = std::make_unique<ToolBar>( tb->objectName(), tb->windowTitle(), mToolBars.get() );
+      auto toolBar = std::make_unique<ToolBar>( tb->objectName(), tb->windowTitle(), mToolBars.get() );
       mToolBars->addItem( std::move( toolBar ) );
       t = mToolBars->lastChild<ToolBar>();
     }
@@ -795,7 +795,7 @@ void QgsCustomization::loadApplicationDocks()
     Dock *d = mDocks->getChild<Dock>( name );
     if ( !d )
     {
-      std::unique_ptr<Dock> dock = std::make_unique<Dock>( name, dw->windowTitle(), mDocks.get() );
+      auto dock = std::make_unique<Dock>( name, dw->windowTitle(), mDocks.get() );
       mDocks->addItem( std::move( dock ) );
       d = mDocks->lastChild<Dock>();
     }
@@ -810,16 +810,16 @@ void QgsCustomization::loadApplicationBrowserItems()
   {
     mBrowserItems = std::make_unique<BrowserItems>();
     const QList<QPair<QString, QString>> staticItems = {
-      { QStringLiteral( "special:Home" ), QObject::tr( "Home Folder" ) },
-      { QStringLiteral( "special:ProjectHome" ), QObject::tr( "Project Home Folder" ) },
-      { QStringLiteral( "special:Favorites" ), QObject::tr( "Favorites Folder" ) },
-      { QStringLiteral( "special:Drives" ), QObject::tr( "Drive Folders (e.g. C:\\)" ) },
-      { QStringLiteral( "special:Volumes" ), QObject::tr( "Volume Folder (MacOS only)" ) }
+      { u"special:Home"_s, QObject::tr( "Home Folder" ) },
+      { u"special:ProjectHome"_s, QObject::tr( "Project Home Folder" ) },
+      { u"special:Favorites"_s, QObject::tr( "Favorites Folder" ) },
+      { u"special:Drives"_s, QObject::tr( "Drive Folders (e.g. C:\\)" ) },
+      { u"special:Volumes"_s, QObject::tr( "Volume Folder (MacOS only)" ) }
     };
 
     for ( QPair<QString, QString> staticItem : staticItems )
     {
-      std::unique_ptr<BrowserItem> browserItem = std::make_unique<BrowserItem>( staticItem.first, staticItem.second, mBrowserItems.get() );
+      auto browserItem = std::make_unique<BrowserItem>( staticItem.first, staticItem.second, mBrowserItems.get() );
       mBrowserItems->addItem( std::move( browserItem ) );
     }
   }
@@ -833,7 +833,7 @@ void QgsCustomization::loadApplicationBrowserItems()
     {
       if ( !mBrowserItems->getChild<BrowserItem>( name ) )
       {
-        std::unique_ptr<BrowserItem> browserItem = std::make_unique<BrowserItem>( name, QObject::tr( "Data Item Provider: %1" ).arg( name ), mBrowserItems.get() );
+        auto browserItem = std::make_unique<BrowserItem>( name, QObject::tr( "Data Item Provider: %1" ).arg( name ), mBrowserItems.get() );
         mBrowserItems->addItem( std::move( browserItem ) );
       }
     }
@@ -861,7 +861,7 @@ void QgsCustomization::loadApplicationStatusBarWidgets()
     StatusBarWidget *s = mStatusBarWidgets->getChild<StatusBarWidget>( name );
     if ( !s )
     {
-      std::unique_ptr<StatusBarWidget> statusBarWidget = std::make_unique<StatusBarWidget>( name, mStatusBarWidgets.get() );
+      auto statusBarWidget = std::make_unique<StatusBarWidget>( name, mStatusBarWidgets.get() );
       mStatusBarWidgets->addItem( std::move( statusBarWidget ) );
     }
   }
@@ -1013,7 +1013,7 @@ void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWi
     Action *action = dynamic_cast<Action *>( childItem.get() );
     if ( !action )
     {
-      QgsDebugError( QStringLiteral( "Invalid child type, Action expected" ) );
+      QgsDebugError( u"Invalid child type, Action expected"_s );
       continue;
     }
 
@@ -1081,13 +1081,13 @@ void QgsCustomization::applyToToolBars() const
 
 QString QgsCustomization::writeXML( const QString &fileName ) const
 {
-  QDomDocument doc( QStringLiteral( "Customization" ) );
-  QDomElement root = doc.createElement( QStringLiteral( "Customization" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( CUSTOMIZATION_CURRENT_VERSION ) );
-  root.setAttribute( QStringLiteral( "enabled" ), mEnabled );
+  QDomDocument doc( u"Customization"_s );
+  QDomElement root = doc.createElement( u"Customization"_s );
+  root.setAttribute( u"version"_s, QStringLiteral( CUSTOMIZATION_CURRENT_VERSION ) );
+  root.setAttribute( u"enabled"_s, mEnabled );
 
   if ( !mSplashPath.isEmpty() )
-    root.setAttribute( QStringLiteral( "splashPath" ), mSplashPath );
+    root.setAttribute( u"splashPath"_s, mSplashPath );
 
   doc.appendChild( root );
 
@@ -1125,7 +1125,7 @@ QString QgsCustomization::writeFile( const QString &filePath ) const
 
 QString QgsCustomization::readXml( const QString &fileName )
 {
-  QDomDocument doc( QStringLiteral( "customization" ) );
+  QDomDocument doc( u"customization"_s );
   QFile f( fileName );
   if ( !f.open( QFile::ReadOnly ) )
   {
@@ -1139,31 +1139,31 @@ QString QgsCustomization::readXml( const QString &fileName )
   f.close();
 
   QDomElement docEl = doc.documentElement();
-  if ( docEl.tagName() != QLatin1String( "Customization" ) )
+  if ( docEl.tagName() != "Customization"_L1 )
   {
     return QObject::tr( "Invalid XML file : root tag must be 'Customization'" );
   }
 
-  mEnabled = docEl.attribute( QStringLiteral( "enabled" ) ) == QStringLiteral( "1" );
-  if ( docEl.hasAttribute( QStringLiteral( "splashPath" ) ) )
-    mSplashPath = docEl.attribute( QStringLiteral( "splashPath" ) );
+  mEnabled = docEl.attribute( u"enabled"_s ) == "1"_L1;
+  if ( docEl.hasAttribute( u"splashPath"_s ) )
+    mSplashPath = docEl.attribute( u"splashPath"_s );
 
-  const QString version = docEl.attribute( QStringLiteral( "version" ) );
-  if ( version != QLatin1String( CUSTOMIZATION_CURRENT_VERSION ) && version != QLatin1String( "1" ) )
+  const QString version = docEl.attribute( u"version"_s );
+  if ( version != QLatin1String( CUSTOMIZATION_CURRENT_VERSION ) && version != "1"_L1 )
   {
     return QObject::tr( "Invalid XML file : incorrect version" );
   }
 
   mBrowserItems = std::make_unique<BrowserItems>();
-  mBrowserItems->readXml( docEl.firstChildElement( QStringLiteral( "BrowserItems" ) ) );
+  mBrowserItems->readXml( docEl.firstChildElement( u"BrowserItems"_s ) );
   mDocks = std::make_unique<Docks>();
-  mDocks->readXml( docEl.firstChildElement( QStringLiteral( "Docks" ) ) );
+  mDocks->readXml( docEl.firstChildElement( u"Docks"_s ) );
   mMenus = std::make_unique<Menus>();
-  mMenus->readXml( docEl.firstChildElement( QStringLiteral( "Menus" ) ) );
+  mMenus->readXml( docEl.firstChildElement( u"Menus"_s ) );
   mStatusBarWidgets = std::make_unique<StatusBarWidgets>();
-  mStatusBarWidgets->readXml( docEl.firstChildElement( QStringLiteral( "StatusBarWidgets" ) ) );
+  mStatusBarWidgets->readXml( docEl.firstChildElement( u"StatusBarWidgets"_s ) );
   mToolBars = std::make_unique<ToolBars>();
-  mToolBars->readXml( docEl.firstChildElement( QStringLiteral( "ToolBars" ) ) );
+  mToolBars->readXml( docEl.firstChildElement( u"ToolBars"_s ) );
 
   return QString();
 }
@@ -1184,7 +1184,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   mEnabled = QSettings().value( "UI/Customization/enabled", false ).toBool();
 
   QSettings settings( filePath, QSettings::IniFormat );
-  mSplashPath = settings.value( QStringLiteral( "/Customization/splashpath" ), QgsApplication::splashPath() ).toString();
+  mSplashPath = settings.value( u"/Customization/splashpath"_s, QgsApplication::splashPath() ).toString();
 
   mBrowserItems = std::make_unique<BrowserItems>();
   mDocks = std::make_unique<Docks>();
@@ -1193,7 +1193,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   mToolBars = std::make_unique<ToolBars>();
 
   // menus
-  settings.beginGroup( QStringLiteral( "Customization/Menus" ) );
+  settings.beginGroup( u"Customization/Menus"_s );
 
   for ( const QString &key : settings.allKeys() )
   {
@@ -1224,7 +1224,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   settings.endGroup();
 
   // toolbars
-  settings.beginGroup( QStringLiteral( "Customization/Toolbars" ) );
+  settings.beginGroup( u"Customization/Toolbars"_s );
 
   for ( const QString &key : settings.allKeys() )
   {
@@ -1255,7 +1255,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   settings.endGroup();
 
   // dock widgets
-  settings.beginGroup( QStringLiteral( "Customization/Docks" ) );
+  settings.beginGroup( u"Customization/Docks"_s );
   for ( const QString &key : settings.allKeys() )
   {
     Item *rootItem = docks().get();
@@ -1280,7 +1280,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   settings.endGroup();
 
   statusBarWidgets()->setVisible( settings.value( "Customization/StatusBar", true ).toBool() );
-  settings.beginGroup( QStringLiteral( "Customization/StatusBar" ) );
+  settings.beginGroup( u"Customization/StatusBar"_s );
 
   for ( const QString &key : settings.allKeys() )
   {
@@ -1305,7 +1305,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
 
   settings.endGroup();
 
-  settings.beginGroup( QStringLiteral( "Customization/Browser" ) );
+  settings.beginGroup( u"Customization/Browser"_s );
 
   for ( const QString &key : settings.allKeys() )
   {
