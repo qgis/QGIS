@@ -10190,7 +10190,7 @@ void TestProcessingGui::testSinkWrapper()
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/bb.shp"_s );
         wrapper.setWidgetValue( u"/aa.shp"_s, context );
         QCOMPARE( spy.count(), 2 );
-        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( u"/aa.shp"_s ) );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/aa.shp"_s );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/aa.shp"_s );
         // test that setting value that only is layer name works
         QString layerName = u"new name"_s;
