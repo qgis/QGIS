@@ -349,7 +349,9 @@ void QgsProcessingMultipleInputPanelWidget::addFiles()
   else
     filter = QObject::tr( "All files (*.*)" );
 
-  const QStringList filenames = QFileDialog::getOpenFileNames( this, tr( "Select File(s)" ), path, filter );
+  QString selectedFilter = filter.split( QStringLiteral( ";;" ) ).at( 0 );
+
+  const QStringList filenames = QFileDialog::getOpenFileNames( this, tr( "Select File(s)" ), path, filter, &selectedFilter );
   if ( filenames.empty() )
     return;
 

@@ -757,7 +757,9 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
   else
     filter = QObject::tr( "All files (*.*)" );
 
-  const QString filename = QFileDialog::getOpenFileName( this, tr( "Select File" ), path, filter );
+  QString selectedFilter = filter.split( QStringLiteral( ";;" ) ).at( 0 );
+
+  const QString filename = QFileDialog::getOpenFileName( this, tr( "Select File" ), path, filter, &selectedFilter );
   if ( filename.isEmpty() )
     return;
 
