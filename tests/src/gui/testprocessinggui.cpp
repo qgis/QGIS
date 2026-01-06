@@ -565,8 +565,7 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   TestParamDefinition customParam( u"custom"_s, u"custom"_s );
   wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, Qgis::ProcessingMode::Standard );
   QVERIFY( !wrapper );
-  customParam.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"str"_s } } ) }
-  } );
+  customParam.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"str"_s } } ) } } );
   wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, Qgis::ProcessingMode::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), u"custom"_s );
@@ -1241,8 +1240,7 @@ void TestProcessingGui::testStringWrapper()
   // with value hints
   //
   param = QgsProcessingParameterString( u"string"_s, u"string"_s, QVariant() );
-  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) }
-  } );
+  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) } } );
 
   QgsProcessingStringWidgetWrapper wrapperHints( &param );
 
@@ -1280,8 +1278,7 @@ void TestProcessingGui::testStringWrapper()
 
   // with value hints, optional param
   param = QgsProcessingParameterString( u"string"_s, u"string"_s, QVariant(), false, true );
-  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) }
-  } );
+  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) } } );
 
   QgsProcessingStringWidgetWrapper wrapperHintsOptional( &param );
 
@@ -9364,7 +9361,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + u"/test.shp"_s ) );
 
   // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
-  QString layerName = QStringLiteral( "new layer" );
+  QString layerName = u"new layer"_s;
   panel.setValue( layerName );
   v = panel.value();
   QCOMPARE( changedSpy.count(), 6 );
@@ -9373,7 +9370,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
 
   QgsProcessingOutputLayerDefinition paramDef = QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT );
-  QString destName = QStringLiteral( "new layer name" );
+  QString destName = u"new layer name"_s;
   paramDef.destinationName = destName;
 
   panel.setValue( paramDef );
@@ -10194,7 +10191,7 @@ void TestProcessingGui::testSinkWrapper()
         wrapper.setWidgetValue( u"/aa.shp"_s, context );
         QCOMPARE( spy.count(), 2 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( u"/aa.shp"_s ) );
-        QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/aa.shp"_s );
         // test that setting value that only is layer name works
         QString layerName = u"new name"_s;
         wrapper.setWidgetValue( layerName, context );
@@ -10579,8 +10576,7 @@ void TestProcessingGui::testAlignRasterLayersWrapper()
 void TestProcessingGui::testRasterOptionsWrapper()
 {
   QgsProcessingParameterString param( u"string"_s, u"string"_s );
-  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) }
-  } );
+  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } );
 
   QgsProcessingContext context;
   QgsProcessingRasterOptionsWidgetWrapper wrapper( &param );

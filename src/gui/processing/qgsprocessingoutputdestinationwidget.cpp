@@ -49,7 +49,7 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   setupUi( this );
 
   mActionTemporaryOutputIcon = new QAction(
-    QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ),
+    QgsApplication::getThemeIcon( u"/mActionCreateMemory.svg"_s ),
     tr( "Temporary Output" ),
     this
   );
@@ -671,7 +671,7 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   mUseTemporary = text.isEmpty();
   mUseRemapping = false;
 
-  if ( couldBeTemporaryLayerName( text ) || text == QLatin1String( "memory:" ) )
+  if ( couldBeTemporaryLayerName( text ) || text == "memory:"_L1 )
   {
     leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     mUseTemporary = true;
@@ -800,14 +800,14 @@ void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
 
 QString QgsProcessingLayerOutputDestinationWidget::memoryProviderLayerName( const QString &value ) const
 {
-  if ( value == QLatin1String( "memory:" ) )
+  if ( value == "memory:"_L1 )
     return QString();
 
   QString provider;
   QString uri;
   bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
 
-  if ( hasProviderAndUri && provider == QLatin1String( "memory" ) )
+  if ( hasProviderAndUri && provider == "memory"_L1 )
   {
     return uri;
   }
@@ -823,14 +823,14 @@ bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const
   if ( value.isEmpty() )
     return true;
 
-  if ( value == QLatin1String( "memory:" ) )
+  if ( value == "memory:"_L1 )
     return false;
 
   QString provider;
   QString uri;
-  bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
+  const bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
 
-  if ( provider == QLatin1String( "memory" ) )
+  if ( provider == "memory"_L1 )
     return true;
 
   if ( hasProviderAndUri )
