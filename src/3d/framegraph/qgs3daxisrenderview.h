@@ -60,7 +60,6 @@ class Qgs3DAxis;
 class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
 {
   public:
-
     /**
      * Constructor for Qgs3DAxisRenderView with the specified \a parent object.
      */

@@ -24,7 +24,7 @@
 
 QString QgsPdalAssignProjectionAlgorithm::name() const
 {
-  return QStringLiteral( "assignprojection" );
+  return u"assignprojection"_s;
 }
 
 QString QgsPdalAssignProjectionAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalAssignProjectionAlgorithm::group() const
 
 QString QgsPdalAssignProjectionAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalAssignProjectionAlgorithm::tags() const
@@ -64,27 +64,27 @@ QgsPdalAssignProjectionAlgorithm *QgsPdalAssignProjectionAlgorithm::createInstan
 
 void QgsPdalAssignProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Desired CRS" ), QStringLiteral( "EPSG:4326" ) ) );
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Desired CRS" ), u"EPSG:4326"_s ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
 }
 
 QStringList QgsPdalAssignProjectionAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
 
-  QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--assign-crs=%1" ).arg( crs.authid() ) };
+  QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--assign-crs=%1"_s.arg( crs.authid() ) };
 
   applyThreadsParameter( args, context );
   return args;

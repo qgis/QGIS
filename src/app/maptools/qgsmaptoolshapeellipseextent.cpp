@@ -25,7 +25,7 @@
 
 #include "moc_qgsmaptoolshapeellipseextent.cpp"
 
-const QString QgsMapToolShapeEllipseExtentMetadata::TOOL_ID = QStringLiteral( "ellipse-from-extent" );
+const QString QgsMapToolShapeEllipseExtentMetadata::TOOL_ID = u"ellipse-from-extent"_s;
 
 QString QgsMapToolShapeEllipseExtentMetadata::id() const
 {
@@ -39,7 +39,7 @@ QString QgsMapToolShapeEllipseExtentMetadata::name() const
 
 QIcon QgsMapToolShapeEllipseExtentMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionEllipseExtent.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionEllipseExtent.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeEllipseExtentMetadata::category() const

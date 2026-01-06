@@ -340,7 +340,7 @@ void QgsElevationMap::combine( const QgsElevationMap &otherElevationMap, Qgis::E
 {
   if ( otherElevationMap.mElevationImage.size() != mElevationImage.size() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Elevation map with different sizes can not be combined" ), 4 );
+    QgsDebugMsgLevel( u"Elevation map with different sizes can not be combined"_s, 4 );
     return;
   }
 

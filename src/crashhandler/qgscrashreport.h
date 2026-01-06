@@ -27,7 +27,6 @@
 class QgsCrashReport
 {
   public:
-
     /**
      * Include information to generate user friendly crash report for QGIS.
      */

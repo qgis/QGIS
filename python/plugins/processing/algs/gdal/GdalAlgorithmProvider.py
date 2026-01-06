@@ -76,6 +76,7 @@ from .rasterize_over import rasterize_over
 from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
 from .ClipVectorByMask import ClipVectorByMask
+from .DatasetIdentify import DatasetIdentify
 from .Dissolve import Dissolve
 from .ExecuteSql import ExecuteSql
 from .OffsetCurve import OffsetCurve
@@ -85,6 +86,7 @@ from .OgrToPostGis import OgrToPostGis
 from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .OneSideBuffer import OneSideBuffer
 from .PointsAlongLines import PointsAlongLines
+from .CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
 
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 
@@ -188,6 +190,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ExtractProjection(),
             rasterize_over(),
             rasterize_over_fixed_value(),
+            CreateCloudOptimizedGeoTIFF(),
             # ----- OGR tools -----
             Buffer(),
             ClipVectorByExtent(),
@@ -202,6 +205,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             OneSideBuffer(),
             PointsAlongLines(),
             # Ogr2OgrTableToPostGisList(),
+            DatasetIdentify(),
         ]
 
         if int(gdal.VersionInfo()) > 3010000:

@@ -112,7 +112,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     explicit QgsPointCloudLayer( const QString &uri = QString(),
                                  const QString &baseName = QString(),
-                                 const QString &providerLib = QStringLiteral( "pointcloud" ),
+                                 const QString &providerLib = u"pointcloud"_s,
                                  const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
 
     ~QgsPointCloudLayer() override;
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsPointCloudLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

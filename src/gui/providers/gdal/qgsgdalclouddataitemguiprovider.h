@@ -31,7 +31,7 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "GDAL Cloud" ); }
+    QString name() override { return u"GDAL Cloud"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

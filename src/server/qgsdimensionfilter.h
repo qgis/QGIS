@@ -34,7 +34,6 @@
 class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
 {
   public:
-
     /**
      * Creates a new dimension filter object with a list of filters to be applied to
      * vector layers.
@@ -43,6 +42,7 @@ class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
 
     bool isFilterThreadSafe() const override { return false; }
 
+    using QgsFeatureFilterProvider::filterFeatures;
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
     QgsDimensionFilter *clone() const override;

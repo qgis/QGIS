@@ -36,7 +36,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 class PolarPlot(QgisAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
-    NAME_FIELD = "NAME_FIELD"
     VALUE_FIELD = "VALUE_FIELD"
 
     def group(self):
@@ -52,13 +51,6 @@ class PolarPlot(QgisAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
         )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.NAME_FIELD,
-                self.tr("Category name field"),
-                parentLayerParameterName=self.INPUT,
-            )
-        )  # FIXME unused?
         self.addParameter(
             QgsProcessingParameterField(
                 self.VALUE_FIELD,
@@ -83,6 +75,11 @@ class PolarPlot(QgisAlgorithm):
     def shortDescription(self):
         return self.tr(
             "Generates a polar plot based on the value of an input vector layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates a polar plot based on the value of an input vector layer."
         )
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -117,9 +114,6 @@ class PolarPlot(QgisAlgorithm):
                 self.invalidSourceError(parameters, self.INPUT)
             )
 
-        namefieldname = self.parameterAsString(
-            parameters, self.NAME_FIELD, context
-        )  # NOQA  FIXME unused?
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)

@@ -33,8 +33,8 @@ class QgsExtractVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
     QgsExtractVerticesAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmExtractVertices.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmExtractVertices.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

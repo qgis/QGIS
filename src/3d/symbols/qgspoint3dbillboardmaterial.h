@@ -42,7 +42,6 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     Q_OBJECT
 
   public:
-
     /**
      * Material modes.
      *

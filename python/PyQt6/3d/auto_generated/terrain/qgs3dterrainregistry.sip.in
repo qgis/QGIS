@@ -27,7 +27,6 @@ Stores metadata about one 3D terrain class.
 #include "qgs3dterrainregistry.h"
 %End
   public:
-
     Qgs3DTerrainAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for Qgs3DTerrainAbstractMetadata, with the specified

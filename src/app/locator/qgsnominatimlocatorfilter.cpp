@@ -31,10 +31,10 @@
 
 #include "moc_qgsnominatimlocatorfilter.cpp"
 
-const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( QStringLiteral( "country-codes" ), sTreeAppLocatorFilters, QString(), QStringLiteral( "Country codes" ) );
+const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( u"country-codes"_s, sTreeAppLocatorFilters, QString(), u"Country codes"_s );
 
 QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
-  : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( ">" ), geocoder, canvas )
+  : QgsGeocoderLocatorFilter( u"nominatimgeocoder"_s, tr( "Nominatim Geocoder" ), u">"_s, geocoder, canvas )
 {
   setFetchResultsDelay( 1000 );
   setUseWithoutPrefix( false );
@@ -67,7 +67,7 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
     QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
     QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
     connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [] {
-      QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
+      QDesktopServices::openUrl( u"https://nominatim.org/"_s );
     } );
     messageWidget->layout()->addWidget( learnMoreButton );
     QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Info );

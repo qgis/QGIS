@@ -35,7 +35,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCalloutWidget.
      * \param vl associated map layer
@@ -92,7 +91,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
     virtual void setGeometryType( Qgis::GeometryType type ) = 0;
 
   protected:
-
     /**
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions

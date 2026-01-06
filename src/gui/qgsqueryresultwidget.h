@@ -118,7 +118,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNode *sTreeSqlQueries = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "sql-queries" ) );
+    static inline QgsSettingsTreeNode *sTreeSqlQueries = QgsSettingsTree::sTreeGui->createChildNode( u"sql-queries"_s );
     static const QgsSettingsEntryString *settingLastSourceFolder;
 ///@endcond PRIVATE
 #endif
@@ -264,7 +264,6 @@ class GUI_EXPORT QgsQueryResultPanelWidget : public QgsPanelWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Creates a QgsQueryResultPanelWidget with the given \a connection, ownership is transferred to the widget.
      */
@@ -433,7 +432,6 @@ class GUI_EXPORT QgsQueryResultDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsQueryResultDialog.
      *
@@ -468,7 +466,6 @@ class GUI_EXPORT QgsQueryResultMainWindow : public QMainWindow
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsQueryResultMainWindow.
      *

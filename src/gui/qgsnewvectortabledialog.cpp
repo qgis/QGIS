@@ -65,7 +65,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     catch ( QgsProviderConnectionException &ex )
     {
       // This should never happen but it's not critical, we can safely continue.
-      QgsDebugError( QStringLiteral( "Error retrieving tables from connection: %1" ).arg( ex.what() ) );
+      QgsDebugError( u"Error retrieving tables from connection: %1"_s.arg( ex.what() ) );
     }
   };
 
@@ -74,7 +74,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     validate();
   } );
 
-  mTableName->setText( QStringLiteral( "new_table_name" ) );
+  mTableName->setText( u"new_table_name"_s );
   mFieldsTableView->setModel( mFieldModel );
   QgsNewVectorTableDialogFieldsDelegate *delegate { new QgsNewVectorTableDialogFieldsDelegate( mConnection->nativeTypes(), this ) };
   mFieldsTableView->setItemDelegate( delegate );
@@ -147,7 +147,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
   };
 
-  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), static_cast<quint32>( Qgis::WkbType::NoGeometry ) );
+  mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( u"mIconTableLayer.svg"_s ), tr( "No Geometry" ), static_cast<quint32>( Qgis::WkbType::NoGeometry ) );
   if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePoint ) )
     addGeomItem( Qgis::WkbType::Point );
   addGeomItem( Qgis::WkbType::MultiPoint );
@@ -209,7 +209,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   // Actions
   connect( mAddFieldBtn, &QPushButton::clicked, this, [this, defaultFieldType, defaultFieldTypeName] {
     QgsFields fieldList { fields() };
-    QgsField newField { QStringLiteral( "new_field_name" ), defaultFieldType, defaultFieldTypeName };
+    QgsField newField { u"new_field_name"_s, defaultFieldType, defaultFieldTypeName };
     fieldList.append( newField );
     setFields( fieldList );
     selectRow( fieldList.count() - 1 );
@@ -416,7 +416,7 @@ void QgsNewVectorTableDialog::validate()
   const bool isValid { mValidationErrors.isEmpty() };
   if ( !isValid )
   {
-    mValidationResults->setText( mValidationErrors.join( QLatin1String( "<br>" ) ) );
+    mValidationResults->setText( mValidationErrors.join( "<br>"_L1 ) );
   }
 
   mValidationFrame->setVisible( !isValid );
@@ -765,7 +765,7 @@ QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( const
     }
   }
   // This should never happen!
-  QgsDebugError( QStringLiteral( "Cannot get field native type for: %1" ).arg( typeName ) );
+  QgsDebugError( u"Cannot get field native type for: %1"_s.arg( typeName ) );
   return mNativeTypes.first();
 }
 
@@ -776,7 +776,7 @@ QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( int r
     return nativeType( mFields.at( row ).typeName() );
   }
   // This should never happen!
-  QgsDebugError( QStringLiteral( "Cannot get field for row: %1" ).arg( row ) );
+  QgsDebugError( u"Cannot get field for row: %1"_s.arg( row ) );
   return mNativeTypes.first();
 }
 

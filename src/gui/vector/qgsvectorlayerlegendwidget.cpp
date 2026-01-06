@@ -76,7 +76,7 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
 
   mPlaceholderImageLabel = new QLabel( tr( "Legend placeholder image" ) );
   mImageSourceLineEdit = new QgsImageSourceLineEdit();
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"lastLegendPlaceholderDir"_s );
   if ( mLayer )
   {
     mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );

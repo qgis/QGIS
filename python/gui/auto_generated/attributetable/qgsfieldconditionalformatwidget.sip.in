@@ -19,19 +19,18 @@ A widget for customizing conditional formatting options.
 #include "qgsfieldconditionalformatwidget.h"
 %End
   public:
-
     explicit QgsFieldConditionalFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldConditionalFormatWidget.
 %End
 
- void viewRules() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 4.0."/;
+ void viewRules() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 5.0."/;
 %Docstring
 Switches the widget to the rules page.
 
 .. deprecated:: 3.40
 
-   No longer used, will be removed in QGIS 4.0.
+   No longer used, will be removed in QGIS 5.0.
 %End
 
     void setLayer( QgsVectorLayer *layer );
@@ -54,13 +53,13 @@ where ``index`` is the index of the conditional style to edit and
    No longer used, use :py:class:`QgsEditConditionalFormatRuleWidget`.loadStyle instead.
 %End
 
- void reset() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 4.0."/;
+ void reset() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 5.0."/;
 %Docstring
 Resets the formatting options to their default state.
 
 .. deprecated:: 3.40
 
-   No longer used, will be removed in QGIS 4.0.
+   No longer used, will be removed in QGIS 5.0.
 %End
 
     void setPresets( const QList<QgsConditionalStyle> &styles );
@@ -101,7 +100,6 @@ A widget for customizing an individual conditional formatting rule.
 #include "qgsfieldconditionalformatwidget.h"
 %End
   public:
-
     explicit QgsEditConditionalFormatRuleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for :py:class:`QgsFieldConditionalFormatWidget`, with the

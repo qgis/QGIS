@@ -36,7 +36,7 @@ QgsVtpkVectorTileSourceWidget::QgsVtpkVectorTileSourceWidget( QWidget *parent )
 
   mFileWidget = new QgsFileWidget();
   mFileWidget->setDialogTitle( tr( "Select VTPK Dataset" ) );
-  mFileWidget->setFilter( tr( "VTPK Files" ) + QStringLiteral( " (*.vtpk *.VTPK)" ) );
+  mFileWidget->setFilter( tr( "VTPK Files" ) + u" (*.vtpk *.VTPK)"_s );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   layout->addWidget( mFileWidget );
@@ -53,14 +53,14 @@ void QgsVtpkVectorTileSourceWidget::setSourceUri( const QString &uri )
     uri
   );
 
-  mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
+  mFileWidget->setFilePath( mSourceParts.value( u"path"_s ).toString() );
   mIsValid = true;
 }
 
 QString QgsVtpkVectorTileSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
-  parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
+  parts.insert( u"path"_s, mFileWidget->filePath() );
   return QgsProviderRegistry::instance()->encodeUri(
     QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
     parts

@@ -23,7 +23,6 @@ A generic widget allowing users to pick a Coordinate Reference System
 #include "qgsprojectionselectiondialog.h"
 %End
   public:
-
     QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsCrsSelectionWidget, with the specified ``parent``
@@ -173,7 +172,6 @@ instead.
 #include "qgsprojectionselectiondialog.h"
 %End
   public:
-
     QgsProjectionSelectionDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionDialog.

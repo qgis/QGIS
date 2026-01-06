@@ -24,7 +24,7 @@ class TestQgsDiagramProperties : public QgsTest
 
   public:
     TestQgsDiagramProperties()
-      : QgsTest( QStringLiteral( "Labeling Widget Tests" ) ) {}
+      : QgsTest( u"Labeling Widget Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -49,7 +49,7 @@ void TestQgsDiagramProperties::initTestCase()
 
   //create a point layer that will be used in all tests...
   const QString myPointsFileName = mTestDataDir + "stacked_diagrams.gpkg|layername=centroids";
-  mPointsLayer = new QgsVectorLayer( myPointsFileName, QStringLiteral( "population" ), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( myPointsFileName, u"population"_s, u"ogr"_s );
 
   QgsProject::instance()->addMapLayer( mPointsLayer );
 }
@@ -85,7 +85,7 @@ void TestQgsDiagramProperties::testDataDefinedButtonsPreserved()
   QCOMPARE( widget->mShowDiagramDDBtn->toProperty(), QgsProperty() );
 
   // Modify and check that we have it now
-  widget->mShowDiagramDDBtn->setToProperty( QgsProperty::fromField( QStringLiteral( "show_diagrams" ), true ) );
+  widget->mShowDiagramDDBtn->setToProperty( QgsProperty::fromField( u"show_diagrams"_s, true ) );
   emit widget->mShowDiagramDDBtn->changed();
   QCOMPARE( widget->mDataDefinedProperties.count(), 1 );
   QVERIFY( widget->mDataDefinedProperties.isActive( QgsDiagramLayerSettings::Property::Show ) );
@@ -103,7 +103,7 @@ void TestQgsDiagramProperties::testDataDefinedButtonsPreserved()
   QgsProperty property = widget->mShowDiagramDDBtn->toProperty();
   QVERIFY( property.isActive() );
   QCOMPARE( property.propertyType(), Qgis::PropertyType::Field );
-  QCOMPARE( property.field(), QStringLiteral( "show_diagrams" ) );
+  QCOMPARE( property.field(), u"show_diagrams"_s );
 
   // Open a new widget and sync to settings (used for instance by stacked diagrams)
   delete widget;
@@ -117,7 +117,7 @@ void TestQgsDiagramProperties::testDataDefinedButtonsPreserved()
   property = widget->mShowDiagramDDBtn->toProperty();
   QVERIFY( property.isActive() );
   QCOMPARE( property.propertyType(), Qgis::PropertyType::Field );
-  QCOMPARE( property.field(), QStringLiteral( "show_diagrams" ) );
+  QCOMPARE( property.field(), u"show_diagrams"_s );
 
   delete widget;
 }

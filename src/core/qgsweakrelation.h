@@ -469,9 +469,9 @@ class CORE_EXPORT QgsWeakRelation
 
     QString str;
     if ( leftIdentifier.isEmpty() && rightIdentifier.isEmpty() )
-      str = QStringLiteral( "<QgsWeakRelation: %1>" ).arg( sipCpp->id() );
+      str = u"<QgsWeakRelation: %1>"_s.arg( sipCpp->id() );
     else
-      str = QStringLiteral( "<QgsWeakRelation: %1 - %2 -> %3>" ).arg( sipCpp->id(), leftIdentifier, rightIdentifier );
+      str = u"<QgsWeakRelation: %1 - %2 -> %3>"_s.arg( sipCpp->id(), leftIdentifier, rightIdentifier );
 
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

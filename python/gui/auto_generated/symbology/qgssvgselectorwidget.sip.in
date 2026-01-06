@@ -30,7 +30,6 @@ GUI.
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
     QgsSvgSelectorFilterModel( QObject *parent /TransferThis/, const QString &path = QString(), int iconSize = 30 );
 %Docstring
 Constructor for creating a model for SVG files in a specific path.
@@ -56,7 +55,6 @@ GUI.
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
     QgsSvgSelectorListModel( QObject *parent /TransferThis/, int iconSize = 30 );
 %Docstring
 Constructor for QgsSvgSelectorListModel. All SVGs in folders from the
@@ -225,7 +223,6 @@ A dialog for selection of an SVG file.
 #include "qgssvgselectorwidget.h"
 %End
   public:
-
     QgsSvgSelectorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok, Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
 Constructor for QgsSvgSelectorDialog.

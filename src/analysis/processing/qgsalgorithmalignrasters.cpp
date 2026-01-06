@@ -30,7 +30,7 @@ Qgis::ProcessingAlgorithmFlags QgsAlignRastersAlgorithm::flags() const
 
 QString QgsAlignRastersAlgorithm::name() const
 {
-  return QStringLiteral( "alignrasters" );
+  return u"alignrasters"_s;
 }
 
 QString QgsAlignRastersAlgorithm::displayName() const
@@ -50,7 +50,7 @@ QString QgsAlignRastersAlgorithm::group() const
 
 QString QgsAlignRastersAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return u"rastertools"_s;
 }
 
 QString QgsAlignRastersAlgorithm::shortHelpString() const
@@ -70,7 +70,7 @@ QgsAlignRastersAlgorithm *QgsAlignRastersAlgorithm::createInstance() const
 
 bool QgsAlignRastersAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
 {
-  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
+  const QVariant layersVariant = parameters.value( parameterDefinition( u"LAYERS"_s )->name() );
   const QList<QgsAlignRasterData::RasterItem> items = QgsProcessingParameterAlignRasterLayers::parameterAsItems( layersVariant, context );
   bool unconfiguredLayers = false;
   for ( const QgsAlignRasterData::RasterItem &item : items )
@@ -91,26 +91,26 @@ bool QgsAlignRastersAlgorithm::checkParameterValues( const QVariantMap &paramete
 
 void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterAlignRasterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ) ) );
+  addParameter( new QgsProcessingParameterAlignRasterLayers( u"LAYERS"_s, QObject::tr( "Input layers" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"REFERENCE_LAYER"_s, QObject::tr( "Reference layer" ) ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Override reference CRS" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_X" ), QObject::tr( "Override reference cell size X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CELL_SIZE_Y" ), QObject::tr( "Override reference cell size Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_X" ), QObject::tr( "Override reference grid offset X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRID_OFFSET_Y" ), QObject::tr( "Override reference grid offset Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Clip to extent" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Override reference CRS" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterNumber( u"CELL_SIZE_X"_s, QObject::tr( "Override reference cell size X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( u"CELL_SIZE_Y"_s, QObject::tr( "Override reference cell size Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( u"GRID_OFFSET_X"_s, QObject::tr( "Override reference grid offset X" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterNumber( u"GRID_OFFSET_Y"_s, QObject::tr( "Override reference grid offset Y" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 1e-9 ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Clip to extent" ), QVariant(), true ) );
 
-  addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Aligned rasters" ) ) );
+  addOutput( new QgsProcessingOutputMultipleLayers( u"OUTPUT_LAYERS"_s, QObject::tr( "Aligned rasters" ) ) );
 }
 
 QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REFERENCE_LAYER" ), context );
+  QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, u"REFERENCE_LAYER"_s, context );
   if ( !referenceLayer )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"REFERENCE_LAYER"_s ) );
 
-  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
+  const QVariant layersVariant = parameters.value( parameterDefinition( u"LAYERS"_s )->name() );
   const QList<QgsAlignRasterData::RasterItem> items = QgsProcessingParameterAlignRasterLayers::parameterAsItems( layersVariant, context );
   QStringList outputLayers;
   outputLayers.reserve( items.size() );
@@ -126,41 +126,41 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
   QSizeF customCellSize;
   QPointF customGridOffset( -1, -1 );
 
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
     customCRSWkt = crs.toWkt( Qgis::CrsWktVariant::PreferredGdal );
   }
 
-  bool hasXValue = parameters.value( QStringLiteral( "CELL_SIZE_X" ) ).isValid();
-  bool hasYValue = parameters.value( QStringLiteral( "CELL_SIZE_Y" ) ).isValid();
+  bool hasXValue = parameters.value( u"CELL_SIZE_X"_s ).isValid();
+  bool hasYValue = parameters.value( u"CELL_SIZE_Y"_s ).isValid();
   if ( ( hasXValue && !hasYValue ) || ( !hasXValue && hasYValue ) )
   {
     throw QgsProcessingException( QObject::tr( "Either set both X and Y cell size values or keep both as 'Not set'." ) );
   }
   else if ( hasXValue && hasYValue )
   {
-    double xSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE_X" ), context );
-    double ySize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE_Y" ), context );
+    double xSize = parameterAsDouble( parameters, u"CELL_SIZE_X"_s, context );
+    double ySize = parameterAsDouble( parameters, u"CELL_SIZE_Y"_s, context );
     customCellSize = QSizeF( xSize, ySize );
   }
 
-  hasXValue = parameters.value( QStringLiteral( "GRID_OFFSET_X" ) ).isValid();
-  hasYValue = parameters.value( QStringLiteral( "GRID_OFFSET_Y" ) ).isValid();
+  hasXValue = parameters.value( u"GRID_OFFSET_X"_s ).isValid();
+  hasYValue = parameters.value( u"GRID_OFFSET_Y"_s ).isValid();
   if ( ( hasXValue && !hasYValue ) || ( !hasXValue && hasYValue ) )
   {
     throw QgsProcessingException( QObject::tr( "Either set both X and Y grid offset values or keep both as 'Not set'." ) );
   }
   else if ( hasXValue && hasYValue )
   {
-    double xSize = parameterAsDouble( parameters, QStringLiteral( "GRID_OFFSET_X" ), context );
-    double ySize = parameterAsDouble( parameters, QStringLiteral( "GRID_OFFSET_Y" ), context );
+    double xSize = parameterAsDouble( parameters, u"GRID_OFFSET_X"_s, context );
+    double ySize = parameterAsDouble( parameters, u"GRID_OFFSET_Y"_s, context );
     customGridOffset = QPointF( xSize, ySize );
   }
 
-  if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
+  if ( parameters.value( u"EXTENT"_s ).isValid() )
   {
-    QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
+    QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
     rasterAlign.setClipExtent( extent );
   }
 
@@ -193,7 +193,7 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
+  outputs.insert( u"OUTPUT_LAYERS"_s, outputLayers );
   return outputs;
 }
 

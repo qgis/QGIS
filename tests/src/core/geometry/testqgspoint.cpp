@@ -87,21 +87,21 @@ void TestQgsPoint::constructorv2()
 
   QVERIFY( pt.isEmpty() );
   QCOMPARE( pt.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( pt.asWkt(), QStringLiteral( "Point EMPTY" ) );
+  QCOMPARE( pt.asWkt(), u"Point EMPTY"_s );
   QVERIFY( pt.isValid( error ) );
 
   pt.setX( 1.0 );
 
   QVERIFY( pt.isEmpty() );
   QCOMPARE( pt.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( pt.asWkt(), QStringLiteral( "Point EMPTY" ) );
+  QCOMPARE( pt.asWkt(), u"Point EMPTY"_s );
   QVERIFY( pt.isValid( error ) );
 
   pt.setY( 2.0 );
 
   QVERIFY( !pt.isEmpty() );
   QCOMPARE( pt.wkbType(), Qgis::WkbType::Point );
-  QCOMPARE( pt.asWkt(), QStringLiteral( "Point (1 2)" ) );
+  QCOMPARE( pt.asWkt(), u"Point (1 2)"_s );
 }
 
 void TestQgsPoint::constructor()
@@ -1005,8 +1005,8 @@ void TestQgsPoint::transformWithClass()
 
 void TestQgsPoint::crsTransform()
 {
-  QgsCoordinateReferenceSystem sourceSrs( QStringLiteral( "EPSG:3994" ) );
-  QgsCoordinateReferenceSystem destSrs( QStringLiteral( "EPSG:4202" ) ); // want a transform with ellipsoid change
+  QgsCoordinateReferenceSystem sourceSrs( u"EPSG:3994"_s );
+  QgsCoordinateReferenceSystem destSrs( u"EPSG:4202"_s ); // want a transform with ellipsoid change
   QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   QgsPoint pt( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 );
@@ -1141,10 +1141,10 @@ void TestQgsPoint::toFromWkt()
   QVERIFY( pt2.fromWkt( wkt ) );
   QVERIFY( pt2 == pt1 );
 
-  QVERIFY( pt2.fromWkt( QStringLiteral( "Point(1 2 3)" ) ) );
+  QVERIFY( pt2.fromWkt( u"Point(1 2 3)"_s ) );
   QVERIFY( pt2 == QgsPoint( Qgis::WkbType::PointZ, 1.0, 2.0, 3.0 ) );
 
-  QVERIFY( pt2.fromWkt( QStringLiteral( "Point(1 2 3 4)" ) ) );
+  QVERIFY( pt2.fromWkt( u"Point(1 2 3 4)"_s ) );
   QVERIFY( pt2 == QgsPoint( Qgis::WkbType::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
 
   //bad WKT
@@ -1152,12 +1152,12 @@ void TestQgsPoint::toFromWkt()
   QVERIFY( !pt2.fromWkt( "Point(1 )" ) );
 
   // with rounding
-  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 1 ), QStringLiteral( "Point (12345.7 12345.7)" ) );
-  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 2 ), QStringLiteral( "Point (12345.68 12345.68)" ) );
-  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 0 ), QStringLiteral( "Point (12346 12346)" ) );
-  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -1 ), QStringLiteral( "Point (12350 12350)" ) );
-  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -2 ), QStringLiteral( "Point (12300 12300)" ) );
-  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -3 ), QStringLiteral( "Point (12000 12000)" ) );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 1 ), u"Point (12345.7 12345.7)"_s );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 2 ), u"Point (12345.68 12345.68)"_s );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 0 ), u"Point (12346 12346)"_s );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -1 ), u"Point (12350 12350)"_s );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -2 ), u"Point (12300 12300)"_s );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -3 ), u"Point (12000 12000)"_s );
 }
 
 void TestQgsPoint::exportImport()
@@ -1165,62 +1165,62 @@ void TestQgsPoint::exportImport()
   //asGML2
   QgsPoint exportPoint( 1, 2 );
   QgsPoint exportPointFloat( 1 / 3.0, 2 / 3.0 );
-  QDomDocument doc( QStringLiteral( "gml" ) );
+  QDomDocument doc( u"gml"_s );
 
-  QString expectedGML2( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates></Point>" ) );
+  QString expectedGML2( u"<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates></Point>"_s );
   QGSCOMPAREGML( elemToString( exportPoint.asGml2( doc ) ), expectedGML2 );
 
-  QString expectedGML2prec3( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667</coordinates></Point>" ) );
+  QString expectedGML2prec3( u"<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667</coordinates></Point>"_s );
   QGSCOMPAREGML( elemToString( exportPointFloat.asGml2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
-  QString expectedGML3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" ) );
+  QString expectedGML3( u"<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>"_s );
   QCOMPARE( elemToString( exportPoint.asGml3( doc ) ), expectedGML3 );
 
-  QString expectedGML3prec3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>" ) );
+  QString expectedGML3prec3( u"<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>"_s );
   QCOMPARE( elemToString( exportPointFloat.asGml3( doc, 3 ) ), expectedGML3prec3 );
 
   QgsPoint exportPointZ( 1, 2, 3 );
 
-  QString expectedGML3Z( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">1 2 3</pos></Point>" ) );
+  QString expectedGML3Z( u"<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">1 2 3</pos></Point>"_s );
   QGSCOMPAREGML( elemToString( exportPointZ.asGml3( doc, 3 ) ), expectedGML3Z );
 
   //asGML2 inverted axis
   QgsPoint exportPointInvertedAxis( 1, 2 );
   QgsPoint exportPointFloatInvertedAxis( 1 / 3.0, 2 / 3.0 );
-  QDomDocument docInvertedAxis( QStringLiteral( "gml" ) );
+  QDomDocument docInvertedAxis( u"gml"_s );
 
-  QString expectedGML2InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates></Point>" ) );
-  QGSCOMPAREGML( elemToString( exportPointInvertedAxis.asGml2( docInvertedAxis, 17, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML2InvertedAxis );
+  QString expectedGML2InvertedAxis( u"<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates></Point>"_s );
+  QGSCOMPAREGML( elemToString( exportPointInvertedAxis.asGml2( docInvertedAxis, 17, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML2InvertedAxis );
 
-  QString expectedGML2prec3InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.333</coordinates></Point>" ) );
-  QGSCOMPAREGML( elemToString( exportPointFloatInvertedAxis.asGml2( docInvertedAxis, 3, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML2prec3InvertedAxis );
+  QString expectedGML2prec3InvertedAxis( u"<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.333</coordinates></Point>"_s );
+  QGSCOMPAREGML( elemToString( exportPointFloatInvertedAxis.asGml2( docInvertedAxis, 3, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML2prec3InvertedAxis );
 
   //asGML3 inverted axis
-  QString expectedGML3InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">2 1</pos></Point>" ) );
-  QCOMPARE( elemToString( exportPointInvertedAxis.asGml3( docInvertedAxis, 17, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3InvertedAxis );
+  QString expectedGML3InvertedAxis( u"<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">2 1</pos></Point>"_s );
+  QCOMPARE( elemToString( exportPointInvertedAxis.asGml3( docInvertedAxis, 17, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3InvertedAxis );
 
-  QString expectedGML3prec3InvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.667 0.333</pos></Point>" ) );
-  QCOMPARE( elemToString( exportPointFloatInvertedAxis.asGml3( docInvertedAxis, 3, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3prec3InvertedAxis );
+  QString expectedGML3prec3InvertedAxis( u"<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.667 0.333</pos></Point>"_s );
+  QCOMPARE( elemToString( exportPointFloatInvertedAxis.asGml3( docInvertedAxis, 3, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3prec3InvertedAxis );
 
   QgsPoint exportPointZInvertedAxis( 1, 2, 3 );
 
-  QString expectedGML3ZInvertedAxis( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">2 1 3</pos></Point>" ) );
-  QGSCOMPAREGML( elemToString( exportPointZInvertedAxis.asGml3( docInvertedAxis, 3, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3ZInvertedAxis );
+  QString expectedGML3ZInvertedAxis( u"<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">2 1 3</pos></Point>"_s );
+  QGSCOMPAREGML( elemToString( exportPointZInvertedAxis.asGml3( docInvertedAxis, 3, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX ) ), expectedGML3ZInvertedAxis );
 
 
   //asJSON
-  QString expectedJson( QStringLiteral( "{\"coordinates\":[1.0,2.0,3.0],\"type\":\"Point\"}" ) );
+  QString expectedJson( u"{\"coordinates\":[1.0,2.0,3.0],\"type\":\"Point\"}"_s );
   QCOMPARE( exportPointZ.asJson(), expectedJson );
 
-  QString expectedJsonPrec3( QStringLiteral( "{\"coordinates\":[0.333,0.667],\"type\":\"Point\"}" ) );
+  QString expectedJsonPrec3( u"{\"coordinates\":[0.333,0.667],\"type\":\"Point\"}"_s );
   QCOMPARE( exportPointFloat.asJson( 3 ), expectedJsonPrec3 );
 
   //asKML
-  QString expectedKml( QStringLiteral( "<Point><coordinates>1,2</coordinates></Point>" ) );
+  QString expectedKml( u"<Point><coordinates>1,2</coordinates></Point>"_s );
   QCOMPARE( exportPoint.asKml(), expectedKml );
 
-  QString expectedKmlPrec3( QStringLiteral( "<Point><coordinates>0.333,0.667</coordinates></Point>" ) );
+  QString expectedKmlPrec3( u"<Point><coordinates>0.333,0.667</coordinates></Point>"_s );
   QCOMPARE( exportPointFloat.asKml( 3 ), expectedKmlPrec3 );
 }
 
@@ -1232,13 +1232,13 @@ void TestQgsPoint::cast()
   QVERIFY( QgsPoint::cast( &mc1 ) );
 
   QgsPoint mc2;
-  mc2.fromWkt( QStringLiteral( "PointZ(1 2 3)" ) );
+  mc2.fromWkt( u"PointZ(1 2 3)"_s );
   QVERIFY( QgsPoint::cast( &mc2 ) );
 
-  mc2.fromWkt( QStringLiteral( "PointM(1 2 3)" ) );
+  mc2.fromWkt( u"PointM(1 2 3)"_s );
   QVERIFY( QgsPoint::cast( &mc2 ) );
 
-  mc2.fromWkt( QStringLiteral( "PointZM(1 2 3 4)" ) );
+  mc2.fromWkt( u"PointZM(1 2 3 4)"_s );
   QVERIFY( QgsPoint::cast( &mc2 ) );
 }
 

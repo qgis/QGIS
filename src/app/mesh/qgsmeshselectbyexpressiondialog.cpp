@@ -33,9 +33,9 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
 
   setWindowTitle( tr( "Select Mesh Elements by Expression" ) );
 
-  mActionSelect = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ), tr( "Select" ), this );
-  mActionAddToSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ), tr( "Add to current selection" ), this );
-  mActionRemoveFromSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ), tr( "Remove from current selection" ), this );
+  mActionSelect = new QAction( QgsApplication::getThemeIcon( u"/mIconExpressionSelect.svg"_s ), tr( "Select" ), this );
+  mActionAddToSelection = new QAction( QgsApplication::getThemeIcon( u"/mIconSelectAdd.svg"_s ), tr( "Add to current selection" ), this );
+  mActionRemoveFromSelection = new QAction( QgsApplication::getThemeIcon( u"/mIconSelectRemove.svg"_s ), tr( "Remove from current selection" ), this );
 
   mButtonSelect->addAction( mActionSelect );
   mButtonSelect->setDefaultAction( mActionSelect );
@@ -46,8 +46,8 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
   mComboBoxElementType->addItem( tr( "Select by Faces" ), QgsMesh::Face );
   QgsSettings settings;
   QgsMesh::ElementType elementType = QgsMesh::Vertex;
-  if ( settings.contains( QStringLiteral( "/meshSelection/elementType" ) ) )
-    elementType = static_cast<QgsMesh::ElementType>( settings.value( QStringLiteral( "/meshSelection/elementType" ) ).toInt() );
+  if ( settings.contains( u"/meshSelection/elementType"_s ) )
+    elementType = static_cast<QgsMesh::ElementType>( settings.value( u"/meshSelection/elementType"_s ).toInt() );
 
   int comboIndex = mComboBoxElementType->findData( elementType );
 
@@ -87,22 +87,22 @@ QString QgsMeshSelectByExpressionDialog::expression() const
 
 void QgsMeshSelectByExpressionDialog::showHelp() const
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#select-mesh-elements" ) );
+  QgsHelp::openHelp( u"working_with_mesh/mesh_properties.html#select-mesh-elements"_s );
 }
 
 void QgsMeshSelectByExpressionDialog::saveRecent() const
 {
-  mExpressionBuilder->expressionTree()->saveToRecent( mExpressionBuilder->expressionText(), QStringLiteral( "mesh_vertex_selection" ) );
+  mExpressionBuilder->expressionTree()->saveToRecent( mExpressionBuilder->expressionText(), u"mesh_vertex_selection"_s );
 }
 
 void QgsMeshSelectByExpressionDialog::onElementTypeChanged() const
 {
   QgsMesh::ElementType elementType = currentElementType();
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/meshSelection/elementType" ), elementType );
+  settings.setValue( u"/meshSelection/elementType"_s, elementType );
 
   QgsExpressionContext expressionContext( { QgsExpressionContextUtils::meshExpressionScope( elementType ) } );
-  mExpressionBuilder->init( expressionContext, QStringLiteral( "mesh_vertex_selection" ), QgsExpressionBuilderWidget::LoadAll );
+  mExpressionBuilder->init( expressionContext, u"mesh_vertex_selection"_s, QgsExpressionBuilderWidget::LoadAll );
 }
 
 QgsMesh::ElementType QgsMeshSelectByExpressionDialog::currentElementType() const

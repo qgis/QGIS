@@ -134,7 +134,6 @@ class QgsMeshZValueDataset : public QgsMeshDataset
 class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
-
     /**
      * Constructor
      *

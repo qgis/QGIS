@@ -36,11 +36,11 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   : QStandardItemModel( parent )
 {
   const QStringList paths = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
-  const QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ), QString( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) ) ).toString();
+  const QString templateDirName = QgsSettings().value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + u"project_templates"_s ) ).toString();
 
   for ( const QString &templatePath : paths )
   {
-    const QString path = templatePath + QDir::separator() + QStringLiteral( "project_templates" );
+    const QString path = templatePath + QDir::separator() + u"project_templates"_s;
     addTemplateDirectory( path );
   }
 
@@ -59,9 +59,9 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   const double devicePixelRatio = qobject_cast<QGuiApplication *>( QCoreApplication::instance() )->devicePixelRatio();
   QImage image( QSize( 250 * devicePixelRatio, 177 * devicePixelRatio ), QImage::Format_ARGB32 );
   const QgsSettings settings;
-  const int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  const int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  const int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  const int myRed = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
+  const int myGreen = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
+  const int myBlue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
   image.fill( QColor( myRed, myGreen, myBlue ) );
   QPainter painter( &image );
   painter.setOpacity( 0.5 );
@@ -89,7 +89,7 @@ void QgsTemplateProjectsModel::addTemplateDirectory( const QString &path )
 void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 {
   const QDir dir = QDir( path );
-  const QFileInfoList files = dir.entryInfoList( QStringList() << QStringLiteral( "*.qgs" ) << QStringLiteral( "*.qgz" ) );
+  const QFileInfoList files = dir.entryInfoList( QStringList() << u"*.qgs"_s << u"*.qgz"_s );
 
   // Remove any template from this directory
   for ( int i = rowCount() - 1; i >= 0; --i )
@@ -112,7 +112,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 
     QgsZipUtils::unzip( file.filePath(), mTemporaryDir.filePath( fileId ), files );
 
-    const QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + QStringLiteral( "preview.png" ) );
+    const QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + u"preview.png"_s );
 
     const QgsProjectPreviewImage thumbnail( filename );
 

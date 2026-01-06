@@ -106,7 +106,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   {
     if ( !mTreeView )
     {
-      mTreeView = widget->findChild<QgsLayerTreeView *>( QStringLiteral( "theLayerTreeView" ) );
+      mTreeView = widget->findChild<QgsLayerTreeView *>( u"theLayerTreeView"_s );
     }
   }
 
@@ -258,7 +258,7 @@ bool QgsVirtualLayerSourceSelect::preFlight()
   if ( !def.toString().isEmpty() )
   {
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    auto vl = std::make_unique<QgsVectorLayer>( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options );
+    auto vl = std::make_unique<QgsVectorLayer>( def.toString(), u"test"_s, u"virtual"_s, options );
     if ( vl->isValid() )
     {
       const QStringList fieldNames = vl->fields().names();
@@ -271,7 +271,7 @@ bool QgsVirtualLayerSourceSelect::preFlight()
         QStringList bulletedFieldNames;
         for ( const QString &fieldName : fieldNames )
         {
-          bulletedFieldNames.append( QLatin1String( "<li>" ) + fieldName + QLatin1String( "</li>" ) );
+          bulletedFieldNames.append( "<li>"_L1 + fieldName + "</li>"_L1 );
         }
         QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
       }
@@ -326,12 +326,12 @@ void QgsVirtualLayerSourceSelect::addLayerPrivate( bool browseForLayer )
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( key );
     providerCombo->addItem( metadata->icon(), metadata->description(), key );
   }
-  providerCombo->setCurrentIndex( providerCombo->findData( QStringLiteral( "ogr" ) ) );
+  providerCombo->setCurrentIndex( providerCombo->findData( u"ogr"_s ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Provider, providerCombo );
 
   QComboBox *encodingCombo = new QComboBox();
   encodingCombo->addItems( QgsVectorDataProvider::availableEncodings() );
-  const QString defaultEnc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+  const QString defaultEnc = QgsSettings().value( u"/UI/encoding"_s, "System" ).toString();
   encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Encoding, encodingCombo );
 
@@ -361,7 +361,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   const QVector<QgsVectorLayer *> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer *>();
   for ( QgsVectorLayer *vl : vectorLayers )
   {
-    if ( vl && vl->providerType() == QLatin1String( "virtual" ) )
+    if ( vl && vl->providerType() == "virtual"_L1 )
     {
       // store layer's id as user data
       mLayerNameCombo->addItem( vl->name(), vl->id() );
@@ -369,13 +369,13 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   }
 
   if ( mLayerNameCombo->count() == 0 )
-    mLayerNameCombo->addItem( QStringLiteral( "virtual_layer" ) );
+    mLayerNameCombo->addItem( u"virtual_layer"_s );
 
   // select the current layer, if any
   if ( mTreeView )
   {
     QList<QgsMapLayer *> selected = mTreeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
+    if ( selected.size() == 1 && selected[0]->type() == Qgis::LayerType::Vector && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == "virtual"_L1 )
     {
       mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
     }
@@ -385,7 +385,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   QsciAPIs *apis = new QsciAPIs( mQueryEdit->lexer() );
 
   Q_INIT_RESOURCE( sqlfunctionslist );
-  QFile fFile( QStringLiteral( ":/sqlfunctions/list.txt" ) );
+  QFile fFile( u":/sqlfunctions/list.txt"_s );
   if ( fFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream in( &fFile );
@@ -456,7 +456,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
     return;
   }
 
-  QString layerName = QStringLiteral( "virtual_layer" );
+  QString layerName = u"virtual_layer"_s;
   QString id;
   bool replace = false;
   const int idx = mLayerNameCombo->currentIndex();
@@ -486,14 +486,14 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
   {
     if ( replace )
     {
-      emit replaceVectorLayer( id, def.toString(), layerName, QStringLiteral( "virtual" ) );
+      emit replaceVectorLayer( id, def.toString(), layerName, u"virtual"_s );
     }
     else
     {
       Q_NOWARN_DEPRECATED_PUSH
-      emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
+      emit addVectorLayer( def.toString(), layerName, u"virtual"_s );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::Vector, def.toString(), layerName, QStringLiteral( "virtual" ) );
+      emit addLayer( Qgis::LayerType::Vector, def.toString(), layerName, u"virtual"_s );
     }
   }
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
@@ -504,7 +504,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
 
 void QgsVirtualLayerSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-virtual-layers" ) );
+  QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-virtual-layers"_s );
 }
 
 void QgsVirtualLayerSourceSelect::rowSourceChanged()
@@ -524,14 +524,14 @@ void QgsVirtualLayerSourceSelect::rowSourceChanged()
       if ( mLayersTable->item( row, LayerColumn::Name )->text().isEmpty() )
       {
         const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( widget->provider(), widget->source() );
-        if ( !sourceParts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
+        if ( !sourceParts.value( u"layerName"_s ).toString().isEmpty() )
         {
-          const QString layerName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+          const QString layerName = sourceParts.value( u"layerName"_s ).toString();
           mLayersTable->item( row, LayerColumn::Name )->setText( layerName );
         }
-        else if ( !sourceParts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+        else if ( !sourceParts.value( u"path"_s ).toString().isEmpty() )
         {
-          const QFileInfo fi( sourceParts.value( QStringLiteral( "path" ) ).toString() );
+          const QFileInfo fi( sourceParts.value( u"path"_s ).toString() );
           if ( !fi.baseName().isEmpty() )
           {
             mLayersTable->item( row, LayerColumn::Name )->setText( fi.baseName() );
@@ -591,11 +591,11 @@ void QgsVirtualLayerSourceWidget::browseForLayer()
 
   QString source = mLineEdit->text();
   const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( mProvider, source );
-  if ( sourceParts.contains( QStringLiteral( "path" ) ) )
+  if ( sourceParts.contains( u"path"_s ) )
   {
-    const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+    const QString path = sourceParts.value( u"path"_s ).toString();
     const QString closestPath = QFile::exists( path ) ? path : QgsFileUtils::findClosestExistingPath( path );
-    source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(), path ) );
+    source.replace( path, u"<a href=\"%1\">%2</a>"_s.arg( QUrl::fromLocalFile( closestPath ).toString(), path ) );
   }
   dlg.setDescription( tr( "Current source: %1" ).arg( source ) );
 

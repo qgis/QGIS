@@ -33,7 +33,6 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new QgsRasterAttributeTableModel from raster attribute table \a rat and optional \a parent.
      */

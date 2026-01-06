@@ -36,15 +36,16 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-
     /**
      * Constructor for QgsGridFileWriter, for the specified \a interpolator.
      *
      * The \a outputPath argument is used to set the output file path.
      *
      * The \a extent and \a nCols, \a nRows arguments dictate the extent and size of the output raster.
+     *
+     * The \a outputFormat (available since QGIS 4.0), if not explicitly set, is inferred from the \a outputPath extension.
      */
-    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
+    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, const QString &outputFormat = QString() );
 
     /**
      * Writes the grid file.
@@ -98,6 +99,8 @@ class ANALYSIS_EXPORT QgsGridFileWriter
 
     double mCellSizeX = 0;
     double mCellSizeY = 0;
+
+    QString mOutputFormat;
 
     QStringList mCreationOptions;
     double mNoDataValue = -9999.0;

@@ -59,7 +59,7 @@ class QgsOapifProvider final : public QgsVectorDataProvider
     QString subsetStringHelpUrl() const override;
     bool supportsSubsetString() const override;
 
-    QString storageType() const override { return QStringLiteral( "OGC API - Features" ); }
+    QString storageType() const override { return u"OGC API - Features"_s; }
 
     /* Inherited from QgsDataProvider */
 
@@ -87,7 +87,7 @@ class QgsOapifProvider final : public QgsVectorDataProvider
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
     //Editing operations
-
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &ids ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;

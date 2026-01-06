@@ -26,7 +26,6 @@ removing.
 #include "qgsrelationwidgetregistry.h"
 %End
   public:
-
     QgsRelationWidgetRegistry();
 %Docstring
 Constructor

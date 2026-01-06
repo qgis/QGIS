@@ -248,7 +248,7 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     int maxTileHeight() const { return mMaxTileHeight; }
 
-    // TODO QGIS 4.0: rename list to options to have more semantic argument name
+    // TODO QGIS 5.0: rename list to options to have more semantic argument name
 
     /**
      * Sets a list of data source creation options to use when
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
 
-    // TODO QGIS 4.0: rename list to options to have more semantic argument name
+    // TODO QGIS 5.0: rename list to options to have more semantic argument name
 
     /**
      * Sets a \a list of configuration options to use when
@@ -432,8 +432,8 @@ class CORE_EXPORT QgsRasterFileWriter
 
     Qgis::RasterExportType mMode = Qgis::RasterExportType::Raw;
     QString mOutputUrl;
-    QString mOutputProviderKey = QStringLiteral( "gdal" );
-    QString mOutputFormat = QStringLiteral( "GTiff" );
+    QString mOutputProviderKey = u"gdal"_s;
+    QString mOutputFormat = u"GTiff"_s;
     QStringList mCreationOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsRasterFileWriter
     int mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
-    QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
+    QString mPyramidsResampling = u"AVERAGE"_s;
     Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     QStringList mPyramidsConfigOptions;

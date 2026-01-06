@@ -91,7 +91,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       break;
   }
 
-  QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( QStringLiteral( "chart" ) );
+  QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
   context.painter()->save();
@@ -173,8 +173,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         path.moveTo( center );
         path.arcTo( boundingBox, -degreesStart, -degreesForward );
 
-        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
-        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
+        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_category"_s, categories[pair.first], true ) );
+        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, pair.second, true ) );
         symbol->setColor( categoriesColor[categories[pair.first]] );
         symbol->renderPolygon( path.toFillPolygon(), nullptr, nullptr, context );
 
@@ -236,8 +236,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
               break;
           }
 
-          chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
-          chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
+          chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_category"_s, categories[pair.first], true ) );
+          chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, pair.second, true ) );
           QgsTextRenderer::drawText( QPointF( labelX, labelY + labelYAdjustment ), 0, horizontalAlignment, { text }, context, mLabelTextFormat );
 
           ySum += pair.second;
@@ -307,11 +307,11 @@ bool QgsPieChartPlot::writeXml( QDomElement &element, QDomDocument &document, co
 {
   Qgs2DPlot::writeXml( element, document, context );
 
-  QDomElement fillSymbolsElement = document.createElement( QStringLiteral( "fillSymbols" ) );
+  QDomElement fillSymbolsElement = document.createElement( u"fillSymbols"_s );
   for ( int i = 0; i < static_cast<int>( mFillSymbols.size() ); i++ )
   {
-    QDomElement fillSymbolElement = document.createElement( QStringLiteral( "fillSymbol" ) );
-    fillSymbolElement.setAttribute( QStringLiteral( "index" ), QString::number( i ) );
+    QDomElement fillSymbolElement = document.createElement( u"fillSymbol"_s );
+    fillSymbolElement.setAttribute( u"index"_s, QString::number( i ) );
     if ( mFillSymbols[i] )
     {
       fillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mFillSymbols[i].get(), document, context ) );
@@ -320,11 +320,11 @@ bool QgsPieChartPlot::writeXml( QDomElement &element, QDomDocument &document, co
   }
   element.appendChild( fillSymbolsElement );
 
-  QDomElement colorRampsElement = document.createElement( QStringLiteral( "colorRamps" ) );
+  QDomElement colorRampsElement = document.createElement( u"colorRamps"_s );
   for ( int i = 0; i < static_cast<int>( mColorRamps.size() ); i++ )
   {
-    QDomElement colorRampElement = document.createElement( QStringLiteral( "colorRamp" ) );
-    colorRampElement.setAttribute( QStringLiteral( "index" ), QString::number( i ) );
+    QDomElement colorRampElement = document.createElement( u"colorRamp"_s );
+    colorRampElement.setAttribute( u"index"_s, QString::number( i ) );
     if ( mColorRamps[i] )
     {
       colorRampElement.appendChild( QgsSymbolLayerUtils::saveColorRamp( QString(), mColorRamps[i].get(), document ) );
@@ -333,18 +333,18 @@ bool QgsPieChartPlot::writeXml( QDomElement &element, QDomDocument &document, co
   }
   element.appendChild( colorRampsElement );
 
-  QDomElement textFormatElement = document.createElement( QStringLiteral( "textFormat" ) );
+  QDomElement textFormatElement = document.createElement( u"textFormat"_s );
   textFormatElement.appendChild( mLabelTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElement );
 
   if ( mNumericFormat )
   {
-    QDomElement numericFormatElement = document.createElement( QStringLiteral( "numericFormat" ) );
+    QDomElement numericFormatElement = document.createElement( u"numericFormat"_s );
     mNumericFormat->writeXml( numericFormatElement, document, context );
     element.appendChild( numericFormatElement );
   }
 
-  element.setAttribute( QStringLiteral( "pieChartLabelType" ), qgsEnumValueToKey( mLabelType ) );
+  element.setAttribute( u"pieChartLabelType"_s, qgsEnumValueToKey( mLabelType ) );
 
   return true;
 }
@@ -353,16 +353,16 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
 {
   Qgs2DPlot::readXml( element, context );
 
-  const QDomNodeList fillSymbolsList = element.firstChildElement( QStringLiteral( "fillSymbols" ) ).childNodes();
+  const QDomNodeList fillSymbolsList = element.firstChildElement( u"fillSymbols"_s ).childNodes();
   for ( int i = 0; i < fillSymbolsList.count(); i++ )
   {
     const QDomElement fillSymbolElement = fillSymbolsList.at( i ).toElement();
-    const int index = fillSymbolElement.attribute( QStringLiteral( "index" ), QStringLiteral( "-1" ) ).toInt();
+    const int index = fillSymbolElement.attribute( u"index"_s, u"-1"_s ).toInt();
     if ( index >= 0 )
     {
       if ( fillSymbolElement.hasChildNodes() )
       {
-        const QDomElement symbolElement = fillSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
+        const QDomElement symbolElement = fillSymbolElement.firstChildElement( u"symbol"_s );
         setFillSymbolAt( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
       }
       else
@@ -372,16 +372,16 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
     }
   }
 
-  const QDomNodeList colorRampsList = element.firstChildElement( QStringLiteral( "colorRamps" ) ).childNodes();
+  const QDomNodeList colorRampsList = element.firstChildElement( u"colorRamps"_s ).childNodes();
   for ( int i = 0; i < colorRampsList.count(); i++ )
   {
     const QDomElement colorRampElement = colorRampsList.at( i ).toElement();
-    const int index = colorRampElement.attribute( QStringLiteral( "index" ), QStringLiteral( "-1" ) ).toInt();
+    const int index = colorRampElement.attribute( u"index"_s, u"-1"_s ).toInt();
     if ( index >= 0 )
     {
       if ( colorRampElement.hasChildNodes() )
       {
-        QDomElement rampElement = colorRampElement.firstChildElement( QStringLiteral( "colorramp" ) );
+        QDomElement rampElement = colorRampElement.firstChildElement( u"colorramp"_s );
         setColorRampAt( index, QgsSymbolLayerUtils::loadColorRamp( rampElement ).release() );
       }
       else
@@ -391,10 +391,10 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
     }
   }
 
-  const QDomElement textFormatElement = element.firstChildElement( QStringLiteral( "textFormat" ) );
+  const QDomElement textFormatElement = element.firstChildElement( u"textFormat"_s );
   mLabelTextFormat.readXml( textFormatElement, context );
 
-  const QDomElement numericFormatElement = element.firstChildElement( QStringLiteral( "numericFormat" ) );
+  const QDomElement numericFormatElement = element.firstChildElement( u"numericFormat"_s );
   if ( !numericFormatElement.isNull() )
   {
     mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElement, context ) );
@@ -404,7 +404,7 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
     mNumericFormat.reset();
   }
 
-  mLabelType = qgsEnumKeyToValue( element.attribute( QStringLiteral( "pieChartLabelType" ) ), Qgis::PieChartLabelType::NoLabels );
+  mLabelType = qgsEnumKeyToValue( element.attribute( u"pieChartLabelType"_s ), Qgis::PieChartLabelType::NoLabels );
 
   return true;
 }

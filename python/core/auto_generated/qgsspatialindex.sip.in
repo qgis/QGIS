@@ -101,6 +101,7 @@ The ``flags`` argument is ignored.
 .. versionadded:: 3.4
 %End
 
+
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 %Docstring

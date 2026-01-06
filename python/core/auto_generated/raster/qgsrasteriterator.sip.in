@@ -228,10 +228,14 @@ raster.
 .. versionadded:: 3.42
 %End
 
-    double progress( int bandNumber ) const;
+    double progress( int bandNumber, double currentBlockProgress = -1 ) const;
 %Docstring
 Returns the raster iteration progress as a fraction from 0 to 1.0, for
 the specified ``bandNumber``.
+
+The optional ``currentBlockProgress`` argument was added in QGIS 4.0,
+and can be set to a fraction from 0 to 1.0 to reflect progress through
+the current block.
 
 .. versionadded:: 3.42
 %End

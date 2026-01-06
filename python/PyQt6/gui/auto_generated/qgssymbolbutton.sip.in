@@ -23,7 +23,6 @@ detailed symbol editor dialog (or panel widget) when clicked.
 #include "qgssymbolbutton.h"
 %End
   public:
-
     QgsSymbolButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new symbol button. Use ``dialogTitle`` string to define the

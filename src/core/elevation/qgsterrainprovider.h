@@ -42,15 +42,15 @@ class CORE_EXPORT QgsAbstractTerrainProvider
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type().compare( QLatin1String( "flat" ) ) == 0 )
+    if ( sipCpp->type().compare( "flat"_L1 ) == 0 )
     {
       sipType = sipType_QgsFlatTerrainProvider;
     }
-    else if ( sipCpp->type().compare( QLatin1String( "raster" ) ) == 0 )
+    else if ( sipCpp->type().compare( "raster"_L1 ) == 0 )
     {
       sipType = sipType_QgsRasterDemTerrainProvider;
     }
-    else if ( sipCpp->type().compare( QLatin1String( "mesh" ) ) == 0 )
+    else if ( sipCpp->type().compare( "mesh"_L1 ) == 0 )
     {
       sipType = sipType_QgsMeshTerrainProvider;
     }

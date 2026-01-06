@@ -134,7 +134,7 @@ class CORE_EXPORT QgsSettingsTreeNode
     % MethodCode
     const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
-    QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
+    QString str = u"<QgsSettingsTreeNode (%1): %2>"_s.arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

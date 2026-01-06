@@ -24,7 +24,7 @@
 
 QString QgsDefineProjectionAlgorithm::name() const
 {
-  return QStringLiteral( "definecurrentprojection" );
+  return u"definecurrentprojection"_s;
 }
 
 QString QgsDefineProjectionAlgorithm::displayName() const
@@ -44,7 +44,7 @@ QString QgsDefineProjectionAlgorithm::group() const
 
 QString QgsDefineProjectionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsDefineProjectionAlgorithm::shortHelpString() const
@@ -67,36 +67,36 @@ QgsDefineProjectionAlgorithm *QgsDefineProjectionAlgorithm::createInstance() con
 
 void QgsDefineProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input shapefile" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "CRS" ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with projection" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input shapefile" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "CRS" ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Layer with projection" ) ) );
 }
 
 bool QgsDefineProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
+  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
   mLayerId = layer->id();
 
-  if ( layer->providerType().compare( QStringLiteral( "ogr" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  if ( layer->providerType().compare( u"ogr"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
     QString layerPath;
     if ( parts.size() > 0 )
     {
-      layerPath = parts.value( QStringLiteral( "path" ) ).toString();
+      layerPath = parts.value( u"path"_s ).toString();
     }
 
-    if ( !layerPath.isEmpty() && layerPath.endsWith( QStringLiteral( ".shp" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    if ( !layerPath.isEmpty() && layerPath.endsWith( u".shp"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     {
       const QString filePath = layerPath.chopped( 4 );
       const QString wkt = crs.toWkt( Qgis::CrsWktVariant::Wkt1Esri );
 
-      QFile prjFile( filePath + QLatin1String( ".prj" ) );
+      QFile prjFile( filePath + ".prj"_L1 );
       if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
       {
         QTextStream stream( &prjFile );
@@ -107,7 +107,7 @@ bool QgsDefineProjectionAlgorithm::prepareAlgorithm( const QVariantMap &paramete
         feedback->pushWarning( QObject::tr( "Failed to open .prj file for writing." ) );
       }
 
-      QFile qpjFile( filePath + QLatin1String( ".qpj" ) );
+      QFile qpjFile( filePath + ".qpj"_L1 );
       if ( qpjFile.exists() )
       {
         qpjFile.remove();
@@ -136,7 +136,7 @@ QVariantMap QgsDefineProjectionAlgorithm::processAlgorithm( const QVariantMap &p
   Q_UNUSED( feedback );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 

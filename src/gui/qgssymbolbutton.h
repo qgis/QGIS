@@ -49,7 +49,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
 
   public:
-
     /**
      * Construct a new symbol button.
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.

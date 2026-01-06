@@ -23,7 +23,7 @@
 
 QString QgsTruncateTableAlgorithm::name() const
 {
-  return QStringLiteral( "truncatetable" );
+  return u"truncatetable"_s;
 }
 
 QString QgsTruncateTableAlgorithm::displayName() const
@@ -43,13 +43,13 @@ QString QgsTruncateTableAlgorithm::group() const
 
 QString QgsTruncateTableAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsTruncateTableAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm truncates a layer, by deleting all features from within the layer." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "Warning — this algorithm modifies the layer in place, and deleted features cannot be restored!" );
 }
 
@@ -70,13 +70,13 @@ QgsTruncateTableAlgorithm *QgsTruncateTableAlgorithm::createInstance() const
 
 void QgsTruncateTableAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Truncated layer" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Truncated layer" ) ) );
 }
 
 QVariantMap QgsTruncateTableAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -87,7 +87,7 @@ QVariantMap QgsTruncateTableAlgorithm::processAlgorithm( const QVariantMap &para
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), layer->id() );
+  outputs.insert( u"OUTPUT"_s, layer->id() );
   return outputs;
 }
 

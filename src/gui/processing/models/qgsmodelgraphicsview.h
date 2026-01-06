@@ -45,7 +45,6 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelGraphicsView, with the specified \a parent widget.
      */

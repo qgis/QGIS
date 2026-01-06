@@ -33,17 +33,17 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
   //for certain driver types, OGR forwards SQL through to the underlying provider. In these cases
   //the syntax may differ from OGR SQL, so we don't support compilation for these drivers
   //see http://www.gdal.org/ogr_sql.html
-  if ( mSource->mDriverName == QLatin1String( "MySQL" ) )
+  if ( mSource->mDriverName == "MySQL"_L1 )
     return Fail;
-  else if ( mSource->mDriverName == QLatin1String( "PostgreSQL" ) )
+  else if ( mSource->mDriverName == "PostgreSQL"_L1 )
     return Fail;
-  else if ( mSource->mDriverName == QLatin1String( "OCI" ) )
+  else if ( mSource->mDriverName == "OCI"_L1 )
     return Fail;
-  else if ( mSource->mDriverName == QLatin1String( "ODBC" ) )
+  else if ( mSource->mDriverName == "ODBC"_L1 )
     return Fail;
-  else if ( mSource->mDriverName == QLatin1String( "PGeo" ) )
+  else if ( mSource->mDriverName == "PGeo"_L1 )
     return Fail;
-  else if ( mSource->mDriverName == QLatin1String( "MSSQLSpatial" ) )
+  else if ( mSource->mDriverName == "MSSQLSpatial"_L1 )
     return Fail;
 
   return QgsSqlExpressionCompiler::compile( exp );
@@ -82,7 +82,7 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
-      if ( fd->name() == QLatin1String( "make_datetime" ) || fd->name() == QLatin1String( "make_date" ) || fd->name() == QLatin1String( "make_time" ) )
+      if ( fd->name() == "make_datetime"_L1 || fd->name() == "make_date"_L1 || fd->name() == "make_time"_L1 )
       {
         const auto constList = n->args()->list();
         for ( const QgsExpressionNode *ln : constList )
@@ -127,24 +127,24 @@ QString QgsOgrExpressionCompiler::sqlFunctionFromFunctionName( const QString &fn
 QStringList QgsOgrExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == QLatin1String( "make_datetime" ) )
+  if ( fnName == "make_datetime"_L1 )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) )
+    args = QStringList( u"'%1-%2-%3T%4:%5:%6Z'"_s.arg( args[0].rightJustified( 4, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) )
                         .arg( args[3].rightJustified( 2, '0' ) )
                         .arg( args[4].rightJustified( 2, '0' ) )
                         .arg( args[5].rightJustified( 2, '0' ) ) );
   }
-  else if ( fnName == QLatin1String( "make_date" ) )
+  else if ( fnName == "make_date"_L1 )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) )
+    args = QStringList( u"'%1-%2-%3'"_s.arg( args[0].rightJustified( 4, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) ) );
   }
-  else if ( fnName == QLatin1String( "make_time" ) )
+  else if ( fnName == "make_time"_L1 )
   {
-    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) )
+    args = QStringList( u"'%1:%2:%3'"_s.arg( args[0].rightJustified( 2, '0' ) )
                         .arg( args[1].rightJustified( 2, '0' ) )
                         .arg( args[2].rightJustified( 2, '0' ) ) );
   }
@@ -171,12 +171,12 @@ QString QgsOgrExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 
 QString QgsOgrExpressionCompiler::castToReal( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS float)" ).arg( value );
+  return u"CAST((%1) AS float)"_s.arg( value );
 }
 
 QString QgsOgrExpressionCompiler::castToInt( const QString &value ) const
 {
-  return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
+  return u"CAST((%1) AS integer)"_s.arg( value );
 }
 
 ///@endcond

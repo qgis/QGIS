@@ -35,7 +35,6 @@ instead they are constructed through the central registry, via calls to
 #include "qgsprocessingmodelerparameterwidget.h"
 %End
   public:
-
     QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingModelerParameterWidget, for the specified

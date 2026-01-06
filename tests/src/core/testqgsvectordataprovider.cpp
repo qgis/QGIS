@@ -73,19 +73,19 @@ void TestQgsVectorDataProvider::initTestCase()
 
   // load layers
   const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
-  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerPoints = new QgsVectorLayer( layerPointsUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerPoints );
   QVERIFY( vlayerPoints->isValid() );
 
-  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerLines = new QgsVectorLayer( layerLinesUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerLines );
   QVERIFY( vlayerLines->isValid() );
 
-  vlayerPoints3D = new QgsVectorLayer( layerPoints3DUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerPoints3D = new QgsVectorLayer( layerPoints3DUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerPoints3D );
   QVERIFY( vlayerPoints3D->isValid() );
 
-  vlayerLines3D = new QgsVectorLayer( layerLines3DUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerLines3D = new QgsVectorLayer( layerLines3DUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerLines3D );
   QVERIFY( vlayerLines3D->isValid() );
 }

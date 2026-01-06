@@ -129,7 +129,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         BoolOption( const QString &docString, bool defaultValue )
-          : SetOption( docString, QStringList() << QStringLiteral( "YES" ) << QStringLiteral( "NO" ), defaultValue ? "YES" : "NO" )
+          : SetOption( docString, QStringList() << u"YES"_s << u"NO"_s, defaultValue ? "YES" : "NO" )
         {}
     };
 
@@ -880,6 +880,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     Qgis::VectorFileWriterCapabilities capabilities() const;
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
 

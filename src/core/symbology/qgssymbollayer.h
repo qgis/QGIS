@@ -986,6 +986,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     Qgis::VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
+    using QgsSymbolLayer::toSld;
     bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
@@ -1245,7 +1246,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    // TODO QGIS 4.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
+    // TODO QGIS 5.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
     // only apply to simple line symbol layers and do not belong here.
 
     /**

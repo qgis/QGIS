@@ -37,7 +37,6 @@
 class GUI_EXPORT QgsSensorAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsSensorAbstractGuiMetadata with the specified class \a type.
      *
@@ -63,7 +62,7 @@ class GUI_EXPORT QgsSensorAbstractGuiMetadata
     /**
      * Returns an icon representing creation of the sensor type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mSensor.svg" ) ); }
+    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( u"/mSensor.svg"_s ); }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -116,7 +115,6 @@ typedef std::function<QgsAbstractSensorWidget *( QgsAbstractSensor *sensor )> Qg
 class GUI_EXPORT QgsSensorGuiMetadata : public QgsSensorAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsSensorGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the configuration widget creation function.
@@ -184,7 +182,6 @@ class GUI_EXPORT QgsSensorGuiRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty sensor GUI registry.
      *

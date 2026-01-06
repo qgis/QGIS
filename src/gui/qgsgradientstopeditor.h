@@ -34,7 +34,6 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGradientStopEditor.
      * \param parent parent widget
@@ -161,7 +160,6 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     void dropEvent( QDropEvent *e ) override;
 
   private:
-
     /**
      * Generates a checkboard pattern pixmap for use as a background to transparent colors
      * \returns checkerboard pixmap

@@ -31,7 +31,6 @@ the coordinates the layout space.
       sipType = 0;
 %End
   public:
-
     QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEvent *event, bool snap = false );
 %Docstring
 Constructor for QgsLayoutViewMouseEvent. Should only be required to be

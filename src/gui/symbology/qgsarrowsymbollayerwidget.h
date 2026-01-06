@@ -33,7 +33,6 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget : public QgsSymbolLayerWidget, privat
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

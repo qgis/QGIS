@@ -94,7 +94,6 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel : public QSortFil
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given \a parent object.
      */

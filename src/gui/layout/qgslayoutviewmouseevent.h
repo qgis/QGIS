@@ -43,7 +43,6 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Constructor for QgsLayoutViewMouseEvent. Should only be required to be called from the QgsLayoutView.
      * \param view The view in which the event occurred.

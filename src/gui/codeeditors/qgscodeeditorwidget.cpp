@@ -84,7 +84,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     mShowReplaceBarButton->setToolTip( tr( "Replace" ) );
     mShowReplaceBarButton->setCheckable( true );
     mShowReplaceBarButton->setAutoRaise( true );
-    mShowReplaceBarButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionReplace.svg" ) ) );
+    mShowReplaceBarButton->setIcon( QgsApplication::getThemeIcon( u"mActionReplace.svg"_s ) );
     layoutFind->addWidget( mShowReplaceBarButton, 0, 0 );
 
     connect( mShowReplaceBarButton, &QCheckBox::toggled, this, &QgsCodeEditorWidget::setReplaceBarVisible );
@@ -107,41 +107,41 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mCaseSensitiveButton->setToolTip( tr( "Case Sensitive" ) );
   mCaseSensitiveButton->setCheckable( true );
   mCaseSensitiveButton->setAutoRaise( true );
-  mCaseSensitiveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchCaseSensitive.svg" ) ) );
+  mCaseSensitiveButton->setIcon( QgsApplication::getThemeIcon( u"mIconSearchCaseSensitive.svg"_s ) );
   findButtonLayout->addWidget( mCaseSensitiveButton );
 
   mWholeWordButton = new QToolButton();
   mWholeWordButton->setToolTip( tr( "Whole Word" ) );
   mWholeWordButton->setCheckable( true );
   mWholeWordButton->setAutoRaise( true );
-  mWholeWordButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWholeWord.svg" ) ) );
+  mWholeWordButton->setIcon( QgsApplication::getThemeIcon( u"mIconSearchWholeWord.svg"_s ) );
   findButtonLayout->addWidget( mWholeWordButton );
 
   mRegexButton = new QToolButton();
   mRegexButton->setToolTip( tr( "Use Regular Expressions" ) );
   mRegexButton->setCheckable( true );
   mRegexButton->setAutoRaise( true );
-  mRegexButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchRegex.svg" ) ) );
+  mRegexButton->setIcon( QgsApplication::getThemeIcon( u"mIconSearchRegex.svg"_s ) );
   findButtonLayout->addWidget( mRegexButton );
 
   mWrapAroundButton = new QToolButton();
   mWrapAroundButton->setToolTip( tr( "Wrap Around" ) );
   mWrapAroundButton->setCheckable( true );
   mWrapAroundButton->setAutoRaise( true );
-  mWrapAroundButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWrapAround.svg" ) ) );
+  mWrapAroundButton->setIcon( QgsApplication::getThemeIcon( u"mIconSearchWrapAround.svg"_s ) );
   findButtonLayout->addWidget( mWrapAroundButton );
 
   mFindPrevButton = new QToolButton();
   mFindPrevButton->setEnabled( false );
   mFindPrevButton->setToolTip( tr( "Find Previous" ) );
-  mFindPrevButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSearchPrevEditorConsole.svg" ) ) );
+  mFindPrevButton->setIcon( QgsApplication::getThemeIcon( u"console/iconSearchPrevEditorConsole.svg"_s ) );
   mFindPrevButton->setAutoRaise( true );
   findButtonLayout->addWidget( mFindPrevButton );
 
   mFindNextButton = new QToolButton();
   mFindNextButton->setEnabled( false );
   mFindNextButton->setToolTip( tr( "Find Next" ) );
-  mFindNextButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSearchNextEditorConsole.svg" ) ) );
+  mFindNextButton->setIcon( QgsApplication::getThemeIcon( u"console/iconSearchNextEditorConsole.svg"_s ) );
   mFindNextButton->setAutoRaise( true );
   findButtonLayout->addWidget( mFindNextButton );
 
@@ -217,7 +217,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
     "QToolButton::menu-button { border:none; background-color: rgba(0, 0, 0, 0); }"
   );
   closeFindButton->setCursor( Qt::PointingHandCursor );
-  closeFindButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
+  closeFindButton->setIcon( QgsApplication::getThemeIcon( u"/mIconClose.svg"_s ) );
 
   const int iconSize = std::max( 18.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.9 );
   closeFindButton->setIconSize( QSize( iconSize, iconSize ) );
@@ -499,9 +499,9 @@ bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
 
   if ( !externalEditorCommand.isEmpty() )
   {
-    externalEditorCommand = externalEditorCommand.replace( QLatin1String( "<file>" ), mFilePath );
-    externalEditorCommand = externalEditorCommand.replace( QLatin1String( "<line>" ), QString::number( line + 1 ) );
-    externalEditorCommand = externalEditorCommand.replace( QLatin1String( "<col>" ), QString::number( column + 1 ) );
+    externalEditorCommand = externalEditorCommand.replace( "<file>"_L1, mFilePath );
+    externalEditorCommand = externalEditorCommand.replace( "<line>"_L1, QString::number( line + 1 ) );
+    externalEditorCommand = externalEditorCommand.replace( "<col>"_L1, QString::number( column + 1 ) );
 
     const QStringList commandParts = QProcess::splitCommand( externalEditorCommand );
     if ( QProcess::startDetached( commandParts.at( 0 ), commandParts.mid( 1 ), dir.absolutePath() ) )
@@ -517,8 +517,8 @@ bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
     if ( fi.exists() )
     {
       const QString command = fi.fileName();
-      const bool isTerminalEditor = command.compare( QLatin1String( "nano" ), Qt::CaseInsensitive ) == 0
-                                    || command.contains( QLatin1String( "vim" ), Qt::CaseInsensitive );
+      const bool isTerminalEditor = command.compare( "nano"_L1, Qt::CaseInsensitive ) == 0
+                                    || command.contains( "vim"_L1, Qt::CaseInsensitive );
 
       if ( !isTerminalEditor && QProcess::startDetached( editorCommand, { mFilePath }, dir.absolutePath() ) )
       {
@@ -548,71 +548,71 @@ bool QgsCodeEditorWidget::shareOnGist( bool isPublic )
   switch ( mEditor->language() )
   {
     case Qgis::ScriptLanguage::Python:
-      defaultFileName = QStringLiteral( "pyqgis_snippet.py" );
+      defaultFileName = u"pyqgis_snippet.py"_s;
       break;
 
     case Qgis::ScriptLanguage::Css:
-      defaultFileName = QStringLiteral( "qgis_snippet.css" );
+      defaultFileName = u"qgis_snippet.css"_s;
       break;
 
     case Qgis::ScriptLanguage::QgisExpression:
-      defaultFileName = QStringLiteral( "qgis_snippet" );
+      defaultFileName = u"qgis_snippet"_s;
       break;
 
     case Qgis::ScriptLanguage::Html:
-      defaultFileName = QStringLiteral( "qgis_snippet.html" );
+      defaultFileName = u"qgis_snippet.html"_s;
       break;
 
     case Qgis::ScriptLanguage::JavaScript:
-      defaultFileName = QStringLiteral( "qgis_snippet.js" );
+      defaultFileName = u"qgis_snippet.js"_s;
       break;
 
     case Qgis::ScriptLanguage::Json:
-      defaultFileName = QStringLiteral( "qgis_snippet.json" );
+      defaultFileName = u"qgis_snippet.json"_s;
       break;
 
     case Qgis::ScriptLanguage::R:
-      defaultFileName = QStringLiteral( "qgis_snippet.r" );
+      defaultFileName = u"qgis_snippet.r"_s;
       break;
 
     case Qgis::ScriptLanguage::Sql:
-      defaultFileName = QStringLiteral( "qgis_snippet.sql" );
+      defaultFileName = u"qgis_snippet.sql"_s;
       break;
 
     case Qgis::ScriptLanguage::Batch:
-      defaultFileName = QStringLiteral( "qgis_snippet.bat" );
+      defaultFileName = u"qgis_snippet.bat"_s;
       break;
 
     case Qgis::ScriptLanguage::Bash:
-      defaultFileName = QStringLiteral( "qgis_snippet.sh" );
+      defaultFileName = u"qgis_snippet.sh"_s;
       break;
 
     case Qgis::ScriptLanguage::Unknown:
-      defaultFileName = QStringLiteral( "qgis_snippet.txt" );
+      defaultFileName = u"qgis_snippet.txt"_s;
       break;
   }
   const QString filename = mFilePath.isEmpty() ? defaultFileName : QFileInfo( mFilePath ).fileName();
 
   const QString contents = mEditor->hasSelectedText() ? mEditor->selectedText() : mEditor->text();
   const QVariantMap data {
-    { QStringLiteral( "description" ), "Gist created by PyQGIS Console" },
-    { QStringLiteral( "public" ), isPublic },
-    { QStringLiteral( "files" ), QVariantMap { { filename, QVariantMap { { QStringLiteral( "content" ), contents } } } } }
+    { u"description"_s, "Gist created by PyQGIS Console" },
+    { u"public"_s, isPublic },
+    { u"files"_s, QVariantMap { { filename, QVariantMap { { u"content"_s, contents } } } } }
   };
 
   QNetworkRequest request;
-  request.setUrl( QUrl( QStringLiteral( "https://api.github.com/gists" ) ) );
-  request.setRawHeader( "Authorization", QStringLiteral( "token %1" ).arg( accessToken ).toLocal8Bit() );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/json" ) );
+  request.setUrl( QUrl( u"https://api.github.com/gists"_s ) );
+  request.setRawHeader( "Authorization", u"token %1"_s.arg( accessToken ).toLocal8Bit() );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json"_L1 );
   request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCodeEditorWidget" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsCodeEditorWidget"_s );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( request, QgsJsonUtils::jsonFromVariant( data ).dump().c_str() );
   connect( reply, &QNetworkReply::finished, this, [this, reply] {
     if ( reply->error() == QNetworkReply::NoError )
     {
       const QVariantMap replyJson = QgsJsonUtils::parseJson( reply->readAll() ).toMap();
-      const QString link = replyJson.value( QStringLiteral( "html_url" ) ).toString();
+      const QString link = replyJson.value( u"html_url"_s ).toString();
       QDesktopServices::openUrl( QUrl( link ) );
     }
     else
@@ -816,7 +816,7 @@ bool QgsCodeEditorWidget::findText( bool forward, bool findFirst )
 
   if ( !found )
   {
-    const QString styleError = QStringLiteral( "QLineEdit {background-color: #d65253;  color: #ffffff;}" );
+    const QString styleError = u"QLineEdit {background-color: #d65253;  color: #ffffff;}"_s;
     mLineEditFind->setStyleSheet( styleError );
   }
   else

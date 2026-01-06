@@ -22,7 +22,6 @@ A widget for configuring common properties for
 #include "qgsannotationitemcommonpropertieswidget.h"
 %End
   public:
-
     QgsAnnotationItemCommonPropertiesWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsAnnotationItemCommonPropertiesWidget.

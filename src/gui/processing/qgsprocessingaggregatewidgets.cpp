@@ -296,9 +296,9 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
     aggregate.source = QgsExpression::quotedColumnRef( f.name() );
 
     if ( f.isNumeric() )
-      aggregate.aggregate = QStringLiteral( "sum" );
+      aggregate.aggregate = u"sum"_s;
     else if ( f.type() == QMetaType::Type::QString || ( f.type() == QMetaType::Type::QVariantList && f.subType() == QMetaType::Type::QString ) )
-      aggregate.aggregate = QStringLiteral( "concatenate" );
+      aggregate.aggregate = u"concatenate"_s;
 
     aggregate.delimiter = ',';
 
@@ -591,8 +591,8 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
   static QStringList sAggregates;
   static std::once_flag initialized;
   std::call_once( initialized, []() {
-    sAggregates << QStringLiteral( "first_value" )
-                << QStringLiteral( "last_value" );
+    sAggregates << u"first_value"_s
+                << u"last_value"_s;
 
     const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
     for ( const QgsExpressionFunction *function : functions )
@@ -600,10 +600,10 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
       if ( !function || function->isDeprecated() || function->name().isEmpty() || function->name().at( 0 ) == '_' )
         continue;
 
-      if ( function->groups().contains( QLatin1String( "Aggregates" ) ) )
+      if ( function->groups().contains( "Aggregates"_L1 ) )
       {
-        if ( function->name() == QLatin1String( "aggregate" )
-             || function->name() == QLatin1String( "relation_aggregate" ) )
+        if ( function->name() == "aggregate"_L1
+             || function->name() == "relation_aggregate"_L1 )
           continue;
 
         sAggregates.append( function->name() );

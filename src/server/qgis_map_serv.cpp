@@ -48,7 +48,7 @@ int main( int argc, char *argv[] )
 {
   if ( argc >= 2 )
   {
-    if ( argv[1] == QLatin1String( "--version" ) || argv[1] == QLatin1String( "-v" ) )
+    if ( argv[1] == "--version"_L1 || argv[1] == "-v"_L1 )
     {
       std::cout << QgsCommandLineUtils::allVersions().toStdString();
       return 0;
@@ -73,7 +73,7 @@ int main( int argc, char *argv[] )
     QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::MessageLevel::Info );
   }
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
-  const QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "server" ) );
+  const QgsApplication app( argc, argv, withDisplay, QString(), u"server"_s );
   QgsServer server;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   server.initPython();

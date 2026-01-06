@@ -98,7 +98,26 @@ bool loadPolygons(const std::string &polygonFile, pdal::Options& crop_opts, BOX2
                 fullEnvelope = envelope;
             else
                 fullEnvelope.Merge(envelope);
-            crop_opts.add(pdal::Option("polygon", pdal::Polygon(hGeometry)));
+
+            char* wkt_ptr = nullptr;
+            OGR_G_ExportToWkt(hGeometry, &wkt_ptr);
+            const std::string wkt(wkt_ptr);
+            CPLFree(wkt_ptr);
+
+            SpatialReference pdalSrs;
+            if ( OGRSpatialReferenceH srs = OGR_G_GetSpatialReference(hGeometry) )
+            {
+                char *srsWkt_ptr = nullptr;
+                const OGRErr err = OSRExportToWkt(srs, &srsWkt_ptr);
+                if ( err== OGRERR_NONE )
+                {
+                  const std::string srsWkt = std::string(srsWkt_ptr);
+                  pdalSrs = SpatialReference( srsWkt );
+                }
+                CPLFree(srsWkt_ptr);
+            }
+
+            crop_opts.add(pdal::Option("polygon", pdal::Polygon(wkt, pdalSrs)));
         }
         OGR_F_Destroy( hFeature );
     }
@@ -116,7 +135,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "");
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -146,9 +165,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const pd
 
     last = &manager->makeFilter( "filters.crop", *last, crop_opts );
 
-    pdal::Options writer_opts;
-    writer_opts.add(pdal::Option("forward", "all"));
-    manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
+    makeWriter(manager.get(), tile->outputFilename, last);
 
     return manager;
 }
@@ -222,29 +239,5 @@ void Clip::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
     if (tileOutputFiles.empty())
         return;
 
-    // now build a new output VPC
-    std::vector<std::string> args;
-    args.push_back("--output=" + outputFile);
-    for (std::string f : tileOutputFiles)
-        args.push_back(f);
-    
-    if (ends_with(outputFile, ".vpc"))
-    {
-        // now build a new output VPC
-        buildVpc(args);
-    }
-    else
-    {
-        // merge all the output files into a single file        
-        Merge merge;
-        // for copc set isStreaming to false
-        if (ends_with(outputFile, ".copc.laz"))
-        {
-            merge.isStreaming = false;
-        }
-        runAlg(args, merge);
-
-        // remove files as they are not needed anymore - they are merged
-        removeFiles(tileOutputFiles, true);
-    }
+    buildOutput(outputFile, tileOutputFiles);
 }

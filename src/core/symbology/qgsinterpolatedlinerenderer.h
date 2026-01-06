@@ -327,7 +327,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
      */
     Q_DECL_DEPRECATED QString endValueExpressionForWidth() const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 -- rename to avoid collision with base class methods
+    // TODO QGIS 5.0 -- rename to avoid collision with base class methods
 
     /**
      * Sets the width unit.

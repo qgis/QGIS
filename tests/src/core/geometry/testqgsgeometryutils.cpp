@@ -76,7 +76,6 @@ class TestQgsGeometryUtils : public QObject
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
     void testPointFractionAlongLine();
-    void testPointsAreCollinear();
     void interpolatePointOnArc();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
@@ -94,6 +93,7 @@ class TestQgsGeometryUtils : public QObject
     void transferFirstMValueToPoint();
     void transferFirstZOrMValueToPoint_qgspointsequence();
     void transferFirstZOrMValueToPoint_qgsgeometry();
+    void testPointsAreCollinear();
 };
 
 
@@ -1170,18 +1170,18 @@ void TestQgsGeometryUtils::testGml()
 {
   const QgsPoint point = QgsPoint( 1, 2 );
   QDomDocument doc;
-  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ) );
-  const QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, u"gml"_s );
+  const QString expectedGML2( u"<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
-  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
-  const QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX );
+  const QString expectedGML2_inverted( u"<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
 
-  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
-  const QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, u"gml"_s, false, QgsAbstractGeometry::AxisOrder::XY );
+  const QString expectedGML3( u"<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
-  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
-  const QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, u"gml"_s, false, QgsAbstractGeometry::AxisOrder::YX );
+  const QString expectedGML3_inverted( u"<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
 }
 
@@ -1383,20 +1383,6 @@ void TestQgsGeometryUtils::testPointFractionAlongLine()
   QGSCOMPARENEAR( QgsGeometryUtilsBase::pointFractionAlongLine( 0, 10, 20, 30, 20, 30 ), 1.0, 0.00001 );
   QGSCOMPARENEAR( QgsGeometryUtilsBase::pointFractionAlongLine( 0, 10, 20, 10, 10, 10 ), 0.5, 0.00001 );
   QGSCOMPARENEAR( QgsGeometryUtilsBase::pointFractionAlongLine( 40000.0, 40000.00001, 40000.00002, 40000.00001, 40000.00001, 40000.00001 ), 0.5, 0.0000002 );
-}
-
-void TestQgsGeometryUtils::testPointsAreCollinear()
-{
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 0, 10, 10, 10, 20, 10, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 10, 0, 10, 20, 10, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 15, 10, 10, 0, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 15, 0, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 15, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 10, 10, 20, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 20, 10, 10, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 20, 10, 0, 10, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 15, 20, 10, 10, 10, 20, 0.00001 ) );
 }
 
 void TestQgsGeometryUtils::interpolatePointOnArc()
@@ -1978,6 +1964,26 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgsgeometry()
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
+}
+
+void TestQgsGeometryUtils::testPointsAreCollinear()
+{
+  // 2D version
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10 ), QgsPoint( 10, 10 ), QgsPoint( 20, 10 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3 ), QgsPoint( 2, 7 ), QgsPoint( 2, -5 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3 ), QgsPoint( 4, 3 ), QgsPoint( 7, 2 ), 0.00001 ) );
+
+  // 3D version
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0 ), QgsPoint( 10, 10, 0 ), QgsPoint( 20, 10, 0 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 2 ), QgsPoint( 10, 10, 2 ), QgsPoint( 20, 10, 2 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2 ), QgsPoint( 2, 2, 3 ), QgsPoint( 2, 2, 5 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2 ), QgsPoint( 2, 2, 3 ), QgsPoint( 2, 3, 5 ), 0.00001 ) );
+
+  // Measure components are ignored
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 3, 3, Qgis::WkbType::PointM ), QgsPoint( 10, 10, 3, 3, Qgis::WkbType::PointM ), QgsPoint( 20, 10, 3, 3, Qgis::WkbType::PointM ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 4, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 7, 2, 2, 2, Qgis::WkbType::PointM ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0, 2 ), QgsPoint( 10, 10, 0, 17 ), QgsPoint( 20, 10, 0, 43 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2, 2 ), QgsPoint( 2, 2, 3, 2 ), QgsPoint( 2, 3, 5, 2 ), 0.00001 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

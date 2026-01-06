@@ -63,10 +63,10 @@ class CORE_EXPORT QgsDefaultValue
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsDefaultValue: %1>" ).arg(
-                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + QStringLiteral( "..." )
+    const QString str = sipCpp->isValid() ? u"<QgsDefaultValue: %1>"_s.arg(
+                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + u"..."_s
                           : sipCpp->expression() )
-                        : QStringLiteral( "<QgsDefaultValue: invalid>" );
+                        : u"<QgsDefaultValue: invalid>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

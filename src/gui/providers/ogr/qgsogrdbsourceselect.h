@@ -40,7 +40,6 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     Q_OBJECT
 
   public:
-
     /**
      * Construct a DB Source Select with \a theOgrDriverName specified (i.e. "GPKG", "SQLite" etc.)
      * and \a theName as string for describing the layers managed by the source select (e.g. : "GeoPackage" etc.)

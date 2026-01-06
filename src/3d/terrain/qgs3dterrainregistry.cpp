@@ -33,11 +33,11 @@
 
 Qgs3DTerrainRegistry::Qgs3DTerrainRegistry()
 {
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "flat" ), QObject::tr( "Flat Terrain" ), &QgsFlatTerrainSettings::create, &QgsFlatTerrainGenerator::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "dem" ), QObject::tr( "DEM (Raster Layer)" ), &QgsDemTerrainSettings::create, &QgsDemTerrainGenerator::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "online" ), QObject::tr( "Online" ), &QgsOnlineDemTerrainSettings::create, &QgsOnlineTerrainGenerator::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "mesh" ), QObject::tr( "Mesh" ), &QgsMeshTerrainSettings::create, &QgsMeshTerrainGenerator::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "quantizedmesh" ), QObject::tr( "Quantized Mesh" ), &QgsQuantizedMeshTerrainSettings::create, &QgsQuantizedMeshTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( u"flat"_s, QObject::tr( "Flat Terrain" ), &QgsFlatTerrainSettings::create, &QgsFlatTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( u"dem"_s, QObject::tr( "DEM (Raster Layer)" ), &QgsDemTerrainSettings::create, &QgsDemTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( u"online"_s, QObject::tr( "Online" ), &QgsOnlineDemTerrainSettings::create, &QgsOnlineTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( u"mesh"_s, QObject::tr( "Mesh" ), &QgsMeshTerrainSettings::create, &QgsMeshTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( u"quantizedmesh"_s, QObject::tr( "Quantized Mesh" ), &QgsQuantizedMeshTerrainSettings::create, &QgsQuantizedMeshTerrainGenerator::create ) );
 }
 
 Qgs3DTerrainRegistry::~Qgs3DTerrainRegistry()
@@ -73,13 +73,13 @@ QgsTerrainGenerator *Qgs3DTerrainRegistry::createTerrainGenerator( const QString
 
 QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( QgsProjectElevationProperties *properties )
 {
-  if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
+  if ( properties->terrainProvider()->type() == "flat"_L1 )
   {
     auto flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
     flatTerrain->setElevationOffset( properties->terrainProvider()->offset() );
     return flatTerrain.release();
   }
-  else if ( properties->terrainProvider()->type() == QLatin1String( "raster" ) )
+  else if ( properties->terrainProvider()->type() == "raster"_L1 )
   {
     QgsRasterDemTerrainProvider *rasterProvider = qgis::down_cast<QgsRasterDemTerrainProvider *>( properties->terrainProvider() );
 
@@ -89,7 +89,7 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( Q
     demTerrain->setVerticalScale( properties->terrainProvider()->scale() );
     return demTerrain.release();
   }
-  else if ( properties->terrainProvider()->type() == QLatin1String( "mesh" ) )
+  else if ( properties->terrainProvider()->type() == "mesh"_L1 )
   {
     QgsMeshTerrainProvider *meshProvider = qgis::down_cast<QgsMeshTerrainProvider *>( properties->terrainProvider() );
 

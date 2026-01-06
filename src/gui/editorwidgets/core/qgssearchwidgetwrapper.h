@@ -42,7 +42,6 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Flags which indicate what types of filtering and searching is possible using the widget
      */
@@ -122,7 +121,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      */
     virtual bool applyDirectly() = 0;
 
-    // TODO QGIS 4.0 - make pure virtual
+    // TODO QGIS 5.0 - make pure virtual
 
     /**
      * Creates a filter expression based on the current state of the search widget
@@ -133,7 +132,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     virtual QString createExpression( FilterFlags flags ) const
     {
       Q_UNUSED( flags )
-      return QStringLiteral( "TRUE" );
+      return u"TRUE"_s;
     }
 
     /**

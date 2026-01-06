@@ -60,7 +60,7 @@ void QgsOapifQueryablesRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing Queryables response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing Queryables response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );

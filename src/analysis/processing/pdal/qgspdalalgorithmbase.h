@@ -31,7 +31,6 @@
 class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-
     /**
      * Builds a command line string to run required pdal_wrench tool.
      */

@@ -44,7 +44,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGeometrySnapperSingleSource
 {
   public:
-
     /**
      * Run the algorithm on given source and output results to the sink, using threshold value in the source's map units.
      * Returns number of modified geometries.

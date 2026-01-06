@@ -166,9 +166,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   const QgsSettings mySettings;
 
   // Restore state
-  mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
+  mDateTimeFormat = mySettings.value( u"dateTimeFormat"_s, "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
 
-  mBtnDebug->setVisible( mySettings.value( QStringLiteral( "showDebug" ), "false", QgsSettings::Gps ).toBool() ); // use a registry setting to control - power users/devs could set it
+  mBtnDebug->setVisible( mySettings.value( u"showDebug"_s, "false", QgsSettings::Gps ).toBool() ); // use a registry setting to control - power users/devs could set it
 
   // status = unknown
   setStatusIndicator( Qgis::GpsFixStatus::NoData );
@@ -299,8 +299,8 @@ void QgsGpsInformationWidget::updateTrackInformation()
   const double directTrackLength = mDigitizing->trackDistanceFromStart();
 
   const QgsSettings settings;
-  const bool keepBaseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
-  const int decimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+  const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
 
   if ( totalTrackLength > 0 )
   {
@@ -516,7 +516,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.direction ) )
     {
       mTxtDirection->setEnabled( true );
-      mTxtDirection->setText( QString::number( info.direction, 'f', 3 ) + QStringLiteral( "°" ) );
+      mTxtDirection->setText( QString::number( info.direction, 'f', 3 ) + u"°"_s );
     }
     else
     {

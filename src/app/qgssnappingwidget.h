@@ -52,7 +52,6 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param project The project with which this widget configuration will be synchronized

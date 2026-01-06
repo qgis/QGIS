@@ -52,7 +52,7 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
+    QString str = u"<QgsFieldDomainsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsFieldDomainItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

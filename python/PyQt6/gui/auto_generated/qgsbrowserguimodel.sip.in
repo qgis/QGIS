@@ -25,7 +25,6 @@ accessible to users.
 #include "qgsbrowserguimodel.h"
 %End
   public:
-
     explicit QgsBrowserGuiModel( QObject *parent = 0 );
 %Docstring
 Constructor for QgsBrowserGuiModel, with the specified ``parent``

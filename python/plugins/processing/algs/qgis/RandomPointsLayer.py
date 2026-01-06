@@ -120,6 +120,19 @@ class RandomPointsLayer(QgisAlgorithm):
     def displayName(self):
         return self.tr("Random points in layer bounds")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates a new point layer with a given number of random points, "
+            "all of them within the extent of a given layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a new point layer with a given number of random points, "
+            "all of them within the extent of a given layer. A distance factor can be specified, "
+            "to avoid points being too close to each other."
+        )
+
     def documentationFlags(self):
         return Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
 

@@ -44,7 +44,6 @@ namespace Qt3DRender
 class _3D_EXPORT QgsAbstractRenderView
 {
   public:
-
     /**
      * Constructor for QgsAbstractRenderView with the specified \a parent object.
      */

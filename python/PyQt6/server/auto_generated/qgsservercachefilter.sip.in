@@ -26,7 +26,6 @@ Defines cache interface for QGIS Server plugins.
 #include "qgsservercachefilter.h"
 %End
   public:
-
     QgsServerCacheFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor :py:class:`QgsServerInterface` passed to plugins

@@ -75,14 +75,14 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
 
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
-    const QVariant cafileval = QgsApplication::authManager()->authSetting( QStringLiteral( "cafile" ) );
+    const QVariant cafileval = QgsApplication::authManager()->authSetting( u"cafile"_s );
     if ( !QgsVariantUtils::isNull( cafileval ) )
     {
       leCaFile->setText( cafileval.toString() );
     }
 
     btnGroupByOrg->setChecked( false );
-    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "casortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( u"casortby"_s, QVariant( false ) );
     if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -273,14 +273,14 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
 
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( catype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     if ( cert.isBlacklisted()
          || cert.isNull()
          || cert.expiryDate() <= QDateTime::currentDateTime()
          || cert.effectiveDate() > QDateTime::currentDateTime() )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
 
     if ( trustedids.contains( id ) )
@@ -291,17 +291,17 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
            && cert.expiryDate() > QDateTime::currentDateTime()
            && cert.effectiveDate() <= QDateTime::currentDateTime() )
       {
-        item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateTrusted.svg" ) ) );
+        item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateTrusted.svg"_s ) );
       }
     }
     else if ( untrustedids.contains( id ) )
     {
       item->setForeground( 3, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
     else if ( mDefaultTrustPolicy == QgsAuthCertUtils::Untrusted )
     {
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -317,10 +317,10 @@ void QgsAuthAuthoritiesEditor::updateCertTrustPolicyCache()
 
 void QgsAuthAuthoritiesEditor::populateUtilitiesMenu()
 {
-  mActionDefaultTrustPolicy = new QAction( QStringLiteral( "Change default trust policy" ), this );
+  mActionDefaultTrustPolicy = new QAction( u"Change default trust policy"_s, this );
   connect( mActionDefaultTrustPolicy, &QAction::triggered, this, &QgsAuthAuthoritiesEditor::editDefaultTrustPolicy );
 
-  mActionShowTrustedCAs = new QAction( QStringLiteral( "Show trusted authorities/issuers" ), this );
+  mActionShowTrustedCAs = new QAction( u"Show trusted authorities/issuers"_s, this );
   connect( mActionShowTrustedCAs, &QAction::triggered, this, &QgsAuthAuthoritiesEditor::showTrustedCertificateAuthorities );
 
   mUtilitiesMenu = new QMenu( this );
@@ -344,7 +344,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   if ( !cacertscache.contains( digest ) )
   {
-    QgsDebugError( QStringLiteral( "Certificate Authority not in CA certs cache" ) );
+    QgsDebugError( u"Certificate Authority not in CA certs cache"_s );
     return;
   }
 
@@ -463,7 +463,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
+    QgsDebugMsgLevel( u"Current tree widget item not set"_s, 2 );
     return;
   }
 
@@ -481,7 +481,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( !mappedcerts.contains( digest ) )
   {
-    QgsDebugError( QStringLiteral( "Certificate Authority not in mapped database CAs" ) );
+    QgsDebugError( u"Certificate Authority not in mapped database CAs"_s );
     return;
   }
 
@@ -540,7 +540,7 @@ void QgsAuthAuthoritiesEditor::btnInfoCa_clicked()
 
 void QgsAuthAuthoritiesEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "casortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( u"casortby"_s, QVariant( checked ) ) )
   {
     logMessage( QObject::tr( "Could not store sort by preference" ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
   }
@@ -645,11 +645,11 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
     const QString &fn = dlg->certFileToImport();
     leCaFile->setText( fn );
 
-    if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
+    if ( !QgsApplication::authManager()->storeAuthSetting( u"cafile"_s, QVariant( fn ) ) )
     {
       logMessage( QObject::tr( "Could not store 'CA file path' in authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     }
-    if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( dlg->allowInvalidCerts() ) ) )
+    if ( !QgsApplication::authManager()->storeAuthSetting( u"cafileallowinvalid"_s, QVariant( dlg->allowInvalidCerts() ) ) )
     {
       logMessage( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     }
@@ -681,12 +681,12 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 
 void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 {
-  if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
+  if ( !QgsApplication::authManager()->removeAuthSetting( u"cafile"_s ) )
   {
     logMessage( QObject::tr( "Could not remove 'CA file path' from authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     return;
   }
-  if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
+  if ( !QgsApplication::authManager()->removeAuthSetting( u"cafileallowinvalid"_s ) )
   {
     logMessage( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication storage." ), QObject::tr( "Authorities Manager" ), Qgis::MessageLevel::Warning );
     return;
@@ -748,5 +748,5 @@ QgsMessageBar *QgsAuthAuthoritiesEditor::messageBar()
 int QgsAuthAuthoritiesEditor::messageTimeout()
 {
   const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( u"qgis/messageTimeout"_s, 5 ).toInt();
 }

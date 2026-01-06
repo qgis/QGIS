@@ -172,7 +172,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
     else
     {
       if ( item == schemaNameItem )
-        item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
+        item->setData( QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s ), Qt::DecorationRole );
 
       if ( item == schemaNameItem || item == tableItem || item == geomItem )
         item->setToolTip( tip );
@@ -255,17 +255,17 @@ QIcon QgsHanaTableModel::iconForWkbType( Qgis::WkbType type )
   switch ( QgsWkbTypes::geometryType( type ) )
   {
     case Qgis::GeometryType::Point:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconPointLayer.svg"_s );
     case Qgis::GeometryType::Line:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconLineLayer.svg"_s );
     case Qgis::GeometryType::Polygon:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconPolygonLayer.svg"_s );
     case Qgis::GeometryType::Null:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconTableLayer.svg"_s );
     case Qgis::GeometryType::Unknown:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+      return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s );
   }
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+  return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s );
 }
 
 bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
@@ -318,7 +318,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
         if ( i == DbtmSchema )
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s ), Qt::DecorationRole );
 
         if ( i == DbtmSchema || i == DbtmTable || i == DbtmGeomCol )
         {
@@ -347,7 +347,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   const QSet<QString> pkColumnsSelected( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
   if ( !pkColumnsAll.isEmpty() && !pkColumnsAll.intersects( pkColumnsSelected ) )
   {
-    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( u"no pk candidate selected"_s );
     return QString();
   }
 

@@ -35,7 +35,7 @@
 
 QString QgsMeshLayerProfileResults::type() const
 {
-  return QStringLiteral( "mesh" );
+  return u"mesh"_s;
 }
 
 QVector<QgsProfileIdentifyResults> QgsMeshLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
@@ -100,7 +100,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to mesh CRS" ) );
+    QgsDebugError( u"Error transforming profile line to mesh CRS"_s );
     return false;
   }
 

@@ -46,7 +46,6 @@ class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsLegendLayerTreeProxyModel, with the specified \a parent object.
      */

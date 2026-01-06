@@ -216,7 +216,7 @@ class CORE_EXPORT QgsTableCell
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
+    QString str = u"<QgsTableCell: %1>"_s.arg( sipCpp->content().toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

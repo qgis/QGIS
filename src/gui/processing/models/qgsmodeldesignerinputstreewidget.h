@@ -37,17 +37,12 @@ class QgsModelDesignerInputsTreeWidget : public QTreeWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerInputsTreeWidget with the specified \a parent widget.
      */
     explicit QgsModelDesignerInputsTreeWidget( QWidget *parent = nullptr );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
-#else
     QMimeData *mimeData( const QList<QTreeWidgetItem *> &items ) const override;
-#endif
 };
 
 ///@endcond

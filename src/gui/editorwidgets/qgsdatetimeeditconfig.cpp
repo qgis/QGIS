@@ -51,7 +51,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">"
                       "<a href=\"http://www.iso.org/iso/catalogue_detail?csnumber=40874\">" ) //#spellok
     + tr( "ISO 8601" )
-    + QStringLiteral( "</a> " )
+    + u"</a> "_s
     + tr( "extended format: either <code>yyyy-MM-dd</code> for dates or <code>yyyy-MM-ddTHH:mm:ss</code> (e.g. 2017-07-24T15:46:29), or with a time-zone suffix (Z for UTC otherwise an offset as [+|-]HH:mm) where appropriate for combined dates and times." )
     + QStringLiteral(
       "</span></p>"
@@ -157,7 +157,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">" )
     + tr( "the long localized day name (e.g. 'Monday' to '" )
-    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qt.html#DayOfWeek-enum\"><span style=\"font-family:'Arial,Open Sans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">Qt::Sunday</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">')." )
+    + u"</span><a href=\"http://qt-project.org/doc/qt-5/qt.html#DayOfWeek-enum\"><span style=\"font-family:'Arial,Open Sans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">Qt::Sunday</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">')."_s
     + tr( "Uses the system locale to localize the name, i.e. " )
     + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,Open Sans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
                       "</td>"
@@ -343,9 +343,9 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<td bgcolor=\"#f6f6f6\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#f6f6f6;\">" )
     + tr( "use AM/PM display." )
-    + QStringLiteral( "</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; font-style:italic; color:#66666e;\">A/AP</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\"> " )
+    + u"</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; font-style:italic; color:#66666e;\">A/AP</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\"> "_s
     + tr( "will be replaced by either" )
-    + QStringLiteral( "&quot;AM&quot;" )
+    + u"&quot;AM&quot;"_s
     + tr( "or" )
     + QStringLiteral( "&quot;PM&quot;.</span></p>"
                       "</td>"
@@ -359,9 +359,9 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">" )
     + tr( "use am/pm display." )
-    + QStringLiteral( "</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; font-style:italic; color:#66666e;\">a/ap</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\"> " )
+    + u"</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; font-style:italic; color:#66666e;\">a/ap</span><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\"> "_s
     + tr( "will be replaced by either " )
-    + QStringLiteral( "&quot;am&quot;" )
+    + u"&quot;am&quot;"_s
     + tr( "or" )
     + QStringLiteral( "&quot;pm&quot;.</span></p>"
                       "</td>"
@@ -514,24 +514,24 @@ QVariantMap QgsDateTimeEditConfig::config()
 {
   QVariantMap myConfig;
 
-  myConfig.insert( QStringLiteral( "field_format_overwrite" ), mFieldFormatGroupBox->isChecked() );
-  myConfig.insert( QStringLiteral( "field_iso_format" ), mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
-  myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
-  myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
-  myConfig.insert( QStringLiteral( "calendar_popup" ), mCalendarPopupCheckBox->isChecked() );
-  myConfig.insert( QStringLiteral( "allow_null" ), mAllowNullCheckBox->isChecked() );
+  myConfig.insert( u"field_format_overwrite"_s, mFieldFormatGroupBox->isChecked() );
+  myConfig.insert( u"field_iso_format"_s, mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
+  myConfig.insert( u"field_format"_s, mFieldFormatEdit->text() );
+  myConfig.insert( u"display_format"_s, mDisplayFormatEdit->text() );
+  myConfig.insert( u"calendar_popup"_s, mCalendarPopupCheckBox->isChecked() );
+  myConfig.insert( u"allow_null"_s, mAllowNullCheckBox->isChecked() );
 
   return myConfig;
 }
 
 void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
 {
-  mFieldFormatGroupBox->setChecked( config.value( QStringLiteral( "field_format_overwrite" ), false ).toBool() );
+  mFieldFormatGroupBox->setChecked( config.value( u"field_format_overwrite"_s, false ).toBool() );
   const QgsField fieldDef = layer()->fields().at( field() );
-  const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
+  const QString fieldFormat = config.value( u"field_format"_s, QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
   setFieldFormatCombo( fieldFormat );
 
-  const QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultDisplayFormat( fieldDef.type() ) ).toString();
+  const QString displayFormat = config.value( u"display_format"_s, QgsDateTimeFieldFormatter::defaultDisplayFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );
   if ( displayFormat == mFieldFormatEdit->text() )
   {
@@ -542,8 +542,8 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
     mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ), true ).toBool() );
-  mAllowNullCheckBox->setChecked( config.value( QStringLiteral( "allow_null" ), true ).toBool() );
+  mCalendarPopupCheckBox->setChecked( config.value( u"calendar_popup"_s, true ).toBool() );
+  mAllowNullCheckBox->setChecked( config.value( u"allow_null"_s, true ).toBool() );
 }
 
 void QgsDateTimeEditConfig::setFieldFormatCombo( const QString &fieldFormat )

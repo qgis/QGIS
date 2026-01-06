@@ -41,7 +41,6 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsInputControllerManager, with the specified \a parent object.
      *

@@ -45,17 +45,17 @@ QgsExpressionContext QgsPlotWidget::createExpressionContext() const
     context.appendScope( QgsExpressionContextUtils::globalScope() );
   }
 
-  auto plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
+  auto plotScope = std::make_unique<QgsExpressionContextScope>( u"plot"_s );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis"_s, QString(), true ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, 0.0, true ) );
   context.appendScope( plotScope.release() );
 
-  auto chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
-  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), QString(), true ) );
-  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), 0.0, true ) );
+  auto chartScope = std::make_unique<QgsExpressionContextScope>( u"chart"_s );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_category"_s, QString(), true ) );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, 0.0, true ) );
   context.appendScope( chartScope.release() );
 
-  context.setHighlightedVariables( { QStringLiteral( "plot_axis" ), QStringLiteral( "plot_axis_value" ), QStringLiteral( "chart_category" ), QStringLiteral( "chart_value" ) } );
+  context.setHighlightedVariables( { u"plot_axis"_s, u"plot_axis_value"_s, u"chart_category"_s, u"chart_value"_s } );
 
   return context;
 }
@@ -473,7 +473,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
 
 QgsPlot *QgsBarChartPlotWidget::createPlot()
 {
-  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "bar" ) );
+  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( u"bar"_s );
   QgsBarChartPlot *chartPlot = dynamic_cast<QgsBarChartPlot *>( plot );
   if ( !chartPlot )
   {
@@ -940,7 +940,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 
 QgsPlot *QgsLineChartPlotWidget::createPlot()
 {
-  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "line" ) );
+  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( u"line"_s );
   QgsLineChartPlot *chartPlot = dynamic_cast<QgsLineChartPlot *>( plot );
   if ( !chartPlot )
   {
@@ -1199,7 +1199,7 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
 
 QgsPlot *QgsPieChartPlotWidget::createPlot()
 {
-  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "pie" ) );
+  QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( u"pie"_s );
   QgsPieChartPlot *chartPlot = dynamic_cast<QgsPieChartPlot *>( plot );
   if ( !chartPlot )
   {

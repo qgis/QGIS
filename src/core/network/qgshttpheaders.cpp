@@ -134,7 +134,7 @@ bool QgsHttpHeaders::updateDomElement( QDomElement &el, QMap<QString, QString> &
 
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
-    namespaceDeclarations.insert( httpHeaderURIPrefix, QStringLiteral( "https://qgis.org/" ) + httpHeaderURIPrefix );
+    namespaceDeclarations.insert( httpHeaderURIPrefix, u"https://qgis.org/"_s + httpHeaderURIPrefix );
     el.setAttribute( QgsHttpHeaders::PARAM_PREFIX + ite.key().toUtf8(), ite.value().toString() );
   }
 
@@ -247,11 +247,11 @@ QString QgsHttpHeaders::toSpacedString() const
   QString out;
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
-    out += QStringLiteral( " %1%2='%3'" ).arg( QgsHttpHeaders::PARAM_PREFIX, ite.key(), ite.value().toString() );
+    out += u" %1%2='%3'"_s.arg( QgsHttpHeaders::PARAM_PREFIX, ite.key(), ite.value().toString() );
   }
 
   if ( !mHeaders [ QgsHttpHeaders::KEY_REFERER ].toString().isEmpty() )
-    out += QStringLiteral( " %1='%2'" ).arg( QgsHttpHeaders::KEY_REFERER, mHeaders [QgsHttpHeaders::KEY_REFERER].toString() );
+    out += u" %1='%2'"_s.arg( QgsHttpHeaders::KEY_REFERER, mHeaders [QgsHttpHeaders::KEY_REFERER].toString() );
 
   return out;
 }

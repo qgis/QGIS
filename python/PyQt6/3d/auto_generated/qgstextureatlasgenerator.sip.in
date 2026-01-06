@@ -119,7 +119,6 @@ containing the results.
 #include "qgstextureatlasgenerator.h"
 %End
   public:
-
     static QgsTextureAtlas createFromRects( const QVector< QRect > &rectangles, int maxSide = 1000 );
 %Docstring
 Creates a texture atlas for a set of ``rectangles``.

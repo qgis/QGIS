@@ -158,7 +158,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     */
     TopoSymbol topoSymbol( int lid );
 
-    static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ); }
+    static QString topoSymbolFieldName() { return u"topo_symbol"_s; }
 
     void printDebug();
 

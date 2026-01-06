@@ -40,7 +40,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-
     /**
      * Constructor for QgsDateTimeEdit.
      * The current date and time is used by default.
@@ -139,12 +138,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void showEvent( QShowEvent *event ) override;
 
 #ifndef SIP_RUN
-///@cond PRIVATE
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    ///@cond PRIVATE
     QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent );
-#else
-    QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent );
-#endif
 ///@endcond
 #endif
 
@@ -234,7 +229,6 @@ class GUI_EXPORT QgsTimeEdit : public QgsDateTimeEdit
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTimeEdit.
      * The current time is used by default.
@@ -279,7 +273,6 @@ class GUI_EXPORT QgsDateEdit : public QgsDateTimeEdit
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDateEdit.
      * The current time is used by default.

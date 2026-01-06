@@ -44,7 +44,7 @@ void QgsPdalAlgorithmBase::enableElevationPropertiesPostProcessor( bool enable )
 
 QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 {
-  QString wrenchExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_WRENCH_EXECUTABLE" ) );
+  QString wrenchExecutable = QProcessEnvironment::systemEnvironment().value( u"QGIS_WRENCH_EXECUTABLE"_s );
   if ( wrenchExecutable.isEmpty() )
   {
 #if defined( Q_OS_WIN )
@@ -58,30 +58,30 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 
 void QgsPdalAlgorithmBase::createCommonParameters()
 {
-  auto filterParam = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, Qgis::ExpressionType::PointCloud );
+  auto filterParam = std::make_unique<QgsProcessingParameterExpression>( u"FILTER_EXPRESSION"_s, QObject::tr( "Filter expression" ), QVariant(), u"INPUT"_s, true, Qgis::ExpressionType::PointCloud );
   filterParam->setFlags( filterParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( filterParam.release() );
 
-  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"FILTER_EXTENT"_s, QObject::tr( "Cropping extent" ), QVariant(), true );
   extentParam->setFlags( extentParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extentParam.release() );
 }
 
 void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoordinateReferenceSystem crs, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  const QString filterExpression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context ).trimmed();
+  const QString filterExpression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context ).trimmed();
   if ( !filterExpression.isEmpty() )
   {
     QgsPointCloudExpression exp( filterExpression );
-    arguments << QStringLiteral( "--filter=%1" ).arg( exp.asPdalExpression() );
+    arguments << u"--filter=%1"_s.arg( exp.asPdalExpression() );
   }
 
-  if ( parameters.value( QStringLiteral( "FILTER_EXTENT" ) ).isValid() )
+  if ( parameters.value( u"FILTER_EXTENT"_s ).isValid() )
   {
     if ( crs.isValid() )
     {
-      const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context, crs );
-      arguments << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
+      const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context, crs );
+      arguments << u"--bounds=([%1, %2], [%3, %4])"_s
                      .arg( extent.xMinimum() )
                      .arg( extent.xMaximum() )
                      .arg( extent.yMinimum() )
@@ -89,8 +89,8 @@ void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoo
     }
     else
     {
-      const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context );
-      arguments << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
+      const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context );
+      arguments << u"--bounds=([%1, %2], [%3, %4])"_s
                      .arg( extent.xMinimum() )
                      .arg( extent.xMaximum() )
                      .arg( extent.yMinimum() )
@@ -105,18 +105,18 @@ void QgsPdalAlgorithmBase::applyThreadsParameter( QStringList &arguments, QgsPro
 
   if ( numThreads )
   {
-    arguments << QStringLiteral( "--threads=%1" ).arg( numThreads );
+    arguments << u"--threads=%1"_s.arg( numThreads );
   }
 }
 
 QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, const QString &outputFileName, QgsProcessingContext &context )
 {
-  bool inputIsVpc = inputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
+  bool inputIsVpc = inputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive );
   bool isTempOutput = outputFileName.startsWith( QgsProcessingUtils::tempFolder(), Qt::CaseInsensitive );
   if ( inputIsVpc && isTempOutput )
   {
     QFileInfo fi( outputFileName );
-    QString newFileName = fi.path() + '/' + fi.completeBaseName() + QStringLiteral( ".vpc" );
+    QString newFileName = fi.path() + '/' + fi.completeBaseName() + u".vpc"_s;
 
     if ( context.willLoadLayerOnCompletion( outputFileName ) )
     {
@@ -132,8 +132,8 @@ QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, c
 
 void QgsPdalAlgorithmBase::checkOutputFormat( const QString &inputFileName, const QString &outputFileName )
 {
-  bool inputIsVpc = inputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
-  bool outputIsVpc = outputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
+  bool inputIsVpc = inputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive );
+  bool outputIsVpc = outputFileName.endsWith( u".vpc"_s, Qt::CaseInsensitive );
   if ( !inputIsVpc && outputIsVpc )
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to VPC if input is not a VPC. Please use LAS or LAZ as the output format. "
@@ -180,7 +180,7 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   {
     if ( arg.contains( re ) )
     {
-      logArgs << QStringLiteral( "\"%1\"" ).arg( arg );
+      logArgs << u"\"%1\""_s.arg( arg );
     }
     else
     {
@@ -296,7 +296,7 @@ QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVar
     return nullptr;
 
   // if COPC provider, return as it is
-  if ( layer->dataProvider()->name() == QLatin1String( "copc" ) )
+  if ( layer->dataProvider()->name() == "copc"_L1 )
   {
     return layer;
   }
@@ -325,7 +325,7 @@ QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
 {
   const QFileInfo fi( filename );
   const QDir directory = fi.absoluteDir();
-  const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.completeBaseName() );
+  const QString outputFile = u"%1/%2.copc.laz"_s.arg( directory.absolutePath() ).arg( fi.completeBaseName() );
   return outputFile;
 }
 

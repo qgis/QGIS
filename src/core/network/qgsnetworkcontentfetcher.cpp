@@ -43,7 +43,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
 {
   QNetworkRequest req( url );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsNetworkContentFetcher" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsNetworkContentFetcher"_s );
 
   fetchContent( req, authcfg );
 }

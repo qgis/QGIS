@@ -28,7 +28,7 @@
 
 bool QgsZipUtils::isZipFile( const QString &filename )
 {
-  return QFileInfo( filename ).suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0;
+  return QFileInfo( filename ).suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files, bool checkConsistency )
@@ -89,7 +89,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
           const QFileInfo newFile( QDir( dir ), fileName );
 
-          if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + QStringLiteral( "/" ) ).startsWith( QDir( dir ).absolutePath() + QStringLiteral( "/" ) ) )
+          if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + u"/"_s ).startsWith( QDir( dir ).absolutePath() + u"/"_s ) )
           {
             QgsMessageLog::logMessage( QObject::tr( "Skipped file %1 outside of the directory %2" ).arg(
                                          newFile.absoluteFilePath(),

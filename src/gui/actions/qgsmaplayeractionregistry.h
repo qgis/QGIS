@@ -42,7 +42,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapLayerActionRegistry.
      *

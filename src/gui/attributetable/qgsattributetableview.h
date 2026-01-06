@@ -110,7 +110,6 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     void closeCurrentEditor();
 
   protected:
-
     /**
      * Called for mouse press events on a table cell.
      * Disables selection change for these events.

@@ -41,7 +41,6 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingLayerOutputDestinationWidget, associated with the specified \a parameter.
      */
@@ -139,6 +138,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
     QgsRemappingSinkDefinition mRemapDefinition;
     bool mUseRemapping = false;
+
+    QString mFormat;
 
     QgsProcessingContext *mContext = nullptr;
 

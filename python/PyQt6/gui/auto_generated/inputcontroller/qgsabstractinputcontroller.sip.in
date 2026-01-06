@@ -31,7 +31,6 @@ Abstract base class for all input controllers.
       sipType = nullptr;
 %End
   public:
-
     QgsAbstractInputController( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractInputController, with the specified

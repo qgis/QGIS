@@ -25,7 +25,6 @@ typed text.
 #include "qgsfeaturelistcombobox.h"
 %End
   public:
-
     QgsFeatureListComboBox( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.

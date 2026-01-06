@@ -23,7 +23,6 @@ values of the "destination" fields.
 #include "qgsfieldmappingwidget.h"
 %End
   public:
-
     explicit QgsFieldMappingWidget(
       QWidget *parent = 0,
       const QgsFields &sourceFields = QgsFields(),

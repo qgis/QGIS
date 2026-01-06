@@ -27,7 +27,7 @@
     const int ec = ( expr );                                                                                                     \
     if ( ec != NANOARROW_OK )                                                                                                    \
     {                                                                                                                            \
-      throw QgsException( QStringLiteral( "nanoarrow error (%1): %2" ).arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
+      throw QgsException( u"nanoarrow error (%1): %2"_s.arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
     }                                                                                                                            \
   } while ( 0 )
 
@@ -37,7 +37,7 @@
     const int ec = ( expr );                                                    \
     if ( ec != NANOARROW_OK )                                                   \
     {                                                                           \
-      throw QgsException( QStringLiteral( "nanoarrow error (%1)" ).arg( ec ) ); \
+      throw QgsException( u"nanoarrow error (%1)"_s.arg( ec ) ); \
     }                                                                           \
   } while ( 0 )
 
@@ -95,11 +95,17 @@ const struct ArrowSchema *QgsArrowSchema::schema() const
 
 unsigned long long QgsArrowSchema::cSchemaAddress() const
 {
+  // In the event QGIS is built on platform where unsigned long long is insufficient to
+  // represent a uintptr_t, ensure compilation fails
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   return reinterpret_cast<unsigned long long>( &mSchema );
 }
 
 void QgsArrowSchema::exportToAddress( unsigned long long otherAddress )
 {
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   struct ArrowSchema *otherArrowSchema = reinterpret_cast<struct ArrowSchema *>( otherAddress );
   QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &mSchema, otherArrowSchema ) );
 }
@@ -153,11 +159,17 @@ const struct ArrowArray *QgsArrowArray::array() const
 
 unsigned long long QgsArrowArray::cArrayAddress() const
 {
+  // In the event QGIS is built on platform where unsigned long long is insufficient to
+  // represent a uintptr_t, ensure compilation fails
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   return reinterpret_cast<unsigned long long>( &mArray );
 }
 
 void QgsArrowArray::exportToAddress( unsigned long long otherAddress )
 {
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
   struct ArrowArray *otherArrowArray = reinterpret_cast<struct ArrowArray *>( otherAddress );
   ArrowArrayMove( &mArray, otherArrowArray );
 }
@@ -165,6 +177,61 @@ void QgsArrowArray::exportToAddress( unsigned long long otherAddress )
 bool QgsArrowArray::isValid() const
 {
   return mArray.release;
+}
+
+QgsArrowArrayStream::QgsArrowArrayStream( QgsArrowArrayStream &&other )
+{
+  if ( mArrayStream.release )
+  {
+    ArrowArrayStreamRelease( &mArrayStream );
+  }
+
+  ArrowArrayStreamMove( other.arrayStream(), &mArrayStream );
+}
+
+QgsArrowArrayStream &QgsArrowArrayStream::operator=( QgsArrowArrayStream &&other )
+{
+  if ( this != &other )
+  {
+    ArrowArrayStreamMove( other.arrayStream(), &mArrayStream );
+  }
+
+  return *this;
+}
+
+QgsArrowArrayStream::~QgsArrowArrayStream()
+{
+  if ( mArrayStream.release )
+  {
+    ArrowArrayStreamRelease( &mArrayStream );
+  }
+}
+
+struct ArrowArrayStream *QgsArrowArrayStream::arrayStream()
+{
+  return &mArrayStream;
+}
+
+unsigned long long QgsArrowArrayStream::cArrayStreamAddress() const
+{
+  // In the event QGIS is built on platform where unsigned long long is insufficient to
+  // represent a uintptr_t, ensure compilation fails
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
+  return reinterpret_cast<unsigned long long>( &mArrayStream );
+}
+
+void QgsArrowArrayStream::exportToAddress( unsigned long long otherAddress )
+{
+  static_assert( sizeof( unsigned long long ) >= sizeof( uintptr_t ) );
+
+  struct ArrowArrayStream *otherArrowArrayStream = reinterpret_cast<struct ArrowArrayStream *>( otherAddress );
+  ArrowArrayStreamMove( &mArrayStream, otherArrowArrayStream );
+}
+
+bool QgsArrowArrayStream::isValid() const
+{
+  return mArrayStream.release;
 }
 
 namespace
@@ -269,7 +336,7 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col->children[0], NANOARROW_TYPE_STRING ) );
         return;
       default:
-        throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
+        throw QgsException( u"QgsArrowIterator can't infer field type '%1' for field '%2'"_s.arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
     }
   }
 
@@ -466,8 +533,53 @@ namespace
         break;
     }
 
-    throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( v.typeName() ).arg( ArrowTypeString( columnTypeView.type ) ) );
+    throw QgsException( u"Can't convert variant of type '%1' to Arrow type '%2'"_s.arg( v.typeName() ).arg( ArrowTypeString( columnTypeView.type ) ) );
   }
+
+  class ArrowIteratorArrayStreamImpl
+  {
+    public:
+      ArrowIteratorArrayStreamImpl( QgsArrowIterator iterator, int batchSize )
+        : mIterator( iterator ), mBatchSize( batchSize ) {}
+
+      int GetSchema( struct ArrowSchema *schema )
+      {
+        NANOARROW_RETURN_NOT_OK( ArrowSchemaDeepCopy( mIterator.schema(), schema ) );
+        return NANOARROW_OK;
+      }
+
+      int GetNext( struct ArrowArray *array )
+      {
+        try
+        {
+          QgsArrowArray batch = mIterator.nextFeatures( mBatchSize );
+          ArrowArrayMove( batch.array(), array );
+          return NANOARROW_OK;
+        }
+        catch ( QgsException &e )
+        {
+          mLastError = e.what().toStdString();
+          return EINVAL;
+        }
+        catch ( std::exception &e )
+        {
+          mLastError = e.what();
+          return EINVAL;
+        }
+        catch ( ... )
+        {
+          mLastError = "unknown error";
+          return EINVAL;
+        }
+      }
+
+      const char *GetLastError() const { return mLastError.c_str(); }
+
+    private:
+      QgsArrowIterator mIterator;
+      int mBatchSize { 65536 };
+      std::string mLastError {};
+  };
 
 } //namespace
 
@@ -476,14 +588,26 @@ QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
 {
 }
 
+struct ArrowSchema *QgsArrowIterator::schema()
+{
+  return mSchema.schema();
+}
+
 void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
 {
   if ( !schema.isValid() )
   {
-    throw QgsException( QStringLiteral( "Invalid or null ArrowSchema provided" ) );
+    throw QgsException( u"Invalid or null ArrowSchema provided"_s );
   }
 
   mSchema = schema;
+}
+
+QgsArrowArrayStream QgsArrowIterator::toArrayStream( int batchSize ) const
+{
+  QgsArrowArrayStream out;
+  nanoarrow::ArrayStreamFactory<ArrowIteratorArrayStreamImpl>::InitArrayStream( new ArrowIteratorArrayStreamImpl( *this, batchSize ), out.arrayStream() );
+  return out;
 }
 
 
@@ -491,12 +615,12 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
 {
   if ( n < 1 )
   {
-    throw QgsException( QStringLiteral( "QgsArrowIterator can't iterate over less than one feature" ) );
+    throw QgsException( u"QgsArrowIterator can't iterate over less than one feature"_s );
   }
 
   if ( !mSchema.isValid() )
   {
-    throw QgsException( QStringLiteral( "QgsArrowIterator schema not set" ) );
+    throw QgsException( u"QgsArrowIterator schema not set"_s );
   }
 
   // Check the schema and cache a few things about it before we loop over features.
@@ -511,7 +635,7 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
   QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &schemaView, schema, &error ), &error );
   if ( schemaView.type != NANOARROW_TYPE_STRUCT )
   {
-    throw QgsException( QStringLiteral( "QgsArrowIterator expected requested schema as struct but got '%1'" ).arg( ArrowTypeString( schemaView.type ) ) );
+    throw QgsException( u"QgsArrowIterator expected requested schema as struct but got '%1'"_s.arg( ArrowTypeString( schemaView.type ) ) );
   }
 
   std::vector<QString> columnNames( schema->n_children );
@@ -630,7 +754,7 @@ QgsArrowSchema QgsArrowIterator::inferSchema( const QgsFields &fields, bool hasG
     QString geometryColumnName = options.geometryColumnName();
     if ( geometryColumnName.isEmpty() )
     {
-      geometryColumnName = QStringLiteral( "geometry" );
+      geometryColumnName = u"geometry"_s;
     }
 
     inferGeometry( out.schema()->children[fields.count()], geometryColumnName, crs );

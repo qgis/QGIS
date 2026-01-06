@@ -128,7 +128,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
   QString myQuality;
   bool myParallel = false;
-  QString myPrintTime = QStringLiteral( "total" );
+  QString myPrintTime = u"total"_s;
 
   // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
@@ -136,7 +136,7 @@ int main( int argc, char *argv[] )
   // loaded, we let the layers define the initial extent.
   QString myInitialExtent;
   if ( argc == 1 )
-    myInitialExtent = QStringLiteral( "-1,-1,1,1" );
+    myInitialExtent = u"-1,-1,1,1"_s;
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QSettings INI file
@@ -249,21 +249,21 @@ int main( int argc, char *argv[] )
         return 2; // XXX need standard exit codes
 
       default:
-        QgsDebugError( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugError( u"%1: getopt returned character code %2"_s.arg( argv[0] ).arg( optionChar ) );
         return 1; // XXX need standard exit codes
     }
   }
 
   // Add any remaining args to the file list - we will attempt to load them
   // as layers in the map view further down....
-  QgsDebugMsgLevel( QStringLiteral( "Files specified on command line: %1" ).arg( optind ), 1 );
+  QgsDebugMsgLevel( u"Files specified on command line: %1"_s.arg( optind ), 1 );
   if ( optind < argc )
   {
     while ( optind < argc )
     {
 #ifdef QGISDEBUG
       const int idx = optind;
-      QgsDebugMsgLevel( QStringLiteral( "%1: %2" ).arg( idx ).arg( argv[idx] ), 1 );
+      QgsDebugMsgLevel( u"%1: %2"_s.arg( idx ).arg( argv[idx] ), 1 );
 #endif
       sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
     }
@@ -380,9 +380,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QgsApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
+  QgsApplication::setOrganizationName( u"QGIS"_s );
+  QgsApplication::setOrganizationDomain( u"qgis.org"_s );
+  QgsApplication::setApplicationName( u"QGIS3"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -465,7 +465,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < argc; i++ )
     {
       const QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) || arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+      if ( arg.endsWith( ".qgs"_L1, Qt::CaseInsensitive ) || arg.endsWith( ".qgz"_L1, Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -491,11 +491,11 @@ int main( int argc, char *argv[] )
     const QStringList list = myQuality.split( ',' );
     for ( const QString &q : list )
     {
-      if ( q == QLatin1String( "Antialiasing" ) )
+      if ( q == "Antialiasing"_L1 )
         hints |= QPainter::Antialiasing;
-      else if ( q == QLatin1String( "TextAntialiasing" ) )
+      else if ( q == "TextAntialiasing"_L1 )
         hints |= QPainter::TextAntialiasing;
-      else if ( q == QLatin1String( "SmoothPixmapTransform" ) )
+      else if ( q == "SmoothPixmapTransform"_L1 )
         hints |= QPainter::SmoothPixmapTransform;
       else
       {
@@ -503,7 +503,7 @@ int main( int argc, char *argv[] )
         return 1;
       }
     }
-    QgsDebugMsgLevel( QStringLiteral( "hints: %1" ).arg( static_cast<int>( hints ) ), 1 );
+    QgsDebugMsgLevel( u"hints: %1"_s.arg( static_cast<int>( hints ) ), 1 );
     qbench->setRenderHints( hints );
   }
 
@@ -512,13 +512,13 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsgLevel( QStringLiteral( "Number of files in myFileList: %1" ).arg( sFileList.count() ), 1 );
+  QgsDebugMsgLevel( u"Number of files in myFileList: %1"_s.arg( sFileList.count() ), 1 );
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Trying to load file : %1" ).arg( ( *myIterator ) ), 1 );
+    QgsDebugMsgLevel( u"Trying to load file : %1"_s.arg( ( *myIterator ) ), 1 );
     const QString myLayerName = *myIterator;
     // don't load anything with a .qgs or .qgz extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) && !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+    if ( !myLayerName.endsWith( ".qgs"_L1, Qt::CaseInsensitive ) && !myLayerName.endsWith( ".qgz"_L1, Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -561,7 +561,7 @@ int main( int argc, char *argv[] )
 
     if ( !ok )
     {
-      QgsDebugError( QStringLiteral( "Error while parsing initial extent!" ) );
+      QgsDebugError( u"Error while parsing initial extent!"_s );
     }
     else
     {

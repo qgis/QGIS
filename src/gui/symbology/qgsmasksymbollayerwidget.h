@@ -35,7 +35,6 @@ class GUI_EXPORT QgsMaskMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

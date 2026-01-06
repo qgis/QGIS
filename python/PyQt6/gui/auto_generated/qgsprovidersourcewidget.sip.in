@@ -23,7 +23,6 @@ URI.
 #include "qgsprovidersourcewidget.h"
 %End
   public:
-
     QgsProviderSourceWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderSourceWidget with the specified ``parent``

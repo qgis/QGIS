@@ -26,7 +26,6 @@ to invert the current color ramp and create new ramps.
 #include "qgscolorrampbutton.h"
 %End
   public:
-
     QgsColorRampButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new color ramp button. Use ``parent`` to attach a parent

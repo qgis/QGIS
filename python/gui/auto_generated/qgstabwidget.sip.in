@@ -18,7 +18,6 @@ A QTabWidget with additional methods to temporarily hide/show tabs.
 #include "qgstabwidget.h"
 %End
   public:
-
     QgsTabWidget( QWidget *parent = 0 );
 %Docstring
 Create a new QgsTabWidget with the optionally provided parent.

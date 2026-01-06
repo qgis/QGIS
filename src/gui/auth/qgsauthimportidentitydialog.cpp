@@ -22,6 +22,7 @@
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -55,7 +56,9 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
     connect( btnPkiPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+      QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-identities"_s );
+    } );
     mIdentityType = identitytype;
 
     populateIdentityType();
@@ -97,6 +100,7 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
 
     cmbIdentityTypes->setCurrentIndex( 0 );
     stkwBundleType->setCurrentIndex( 0 );
+    stkwBundleType->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
   }
   // else switch stacked widget, and populate/connect according to that type and widget
 }
@@ -145,11 +149,11 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg, QgsAuthIm
   switch ( valid )
   {
     case Valid:
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QTextEdit" ) );
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( u"QTextEdit"_s );
       txt = tr( "Valid: %1" ).arg( msg );
       break;
     case Invalid:
-      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QTextEdit" ) );
+      ss = QgsAuthGuiUtils::redTextStyleSheet( u"QTextEdit"_s );
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
@@ -324,7 +328,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   }
 
   QCA::ConvertResult res;
-  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, u"qca-ossl"_s ) );
 
   if ( res == QCA::ErrorFile )
   {
@@ -334,7 +338,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   else if ( res == QCA::ErrorPassphrase )
   {
     writeValidation( tr( "Incorrect bundle password" ), Invalid );
-    lePkiPkcs12KeyPass->setPlaceholderText( QStringLiteral( "Required passphrase" ) );
+    lePkiPkcs12KeyPass->setPlaceholderText( u"Required passphrase"_s );
     return false;
   }
   else if ( res == QCA::ErrorDecode )
@@ -411,7 +415,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
 {
   if ( !found )
   {
-    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) ) );
+    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s ) );
     widget->setToolTip( tr( "File not found" ) );
   }
   else
@@ -424,7 +428,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
 QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( u"UI/lastAuthImportBundleOpenFileDir"_s, QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac
@@ -433,7 +437,7 @@ QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, cons
 
   if ( !f.isEmpty() )
   {
-    settings.setValue( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( u"UI/lastAuthImportBundleOpenFileDir"_s, QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }

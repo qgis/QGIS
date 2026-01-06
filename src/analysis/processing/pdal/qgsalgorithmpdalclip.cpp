@@ -25,7 +25,7 @@
 
 QString QgsPdalClipAlgorithm::name() const
 {
-  return QStringLiteral( "clip" );
+  return u"clip"_s;
 }
 
 QString QgsPdalClipAlgorithm::displayName() const
@@ -40,7 +40,7 @@ QString QgsPdalClipAlgorithm::group() const
 
 QString QgsPdalClipAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalClipAlgorithm::tags() const
@@ -65,26 +65,26 @@ QgsPdalClipAlgorithm *QgsPdalClipAlgorithm::createInstance() const
 
 void QgsPdalClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "OVERLAY" ), QObject::tr( "Clipping polygons" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"OVERLAY"_s, QObject::tr( "Clipping polygons" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   createCommonParameters();
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Clipped" ) ) );
 }
 
 QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  QString overlayPath = parameterAsCompatibleSourceLayerPath( parameters, QStringLiteral( "OVERLAY" ), context, QgsVectorFileWriter::supportedFormatExtensions(), QgsVectorFileWriter::supportedFormatExtensions()[0], feedback );
+  QString overlayPath = parameterAsCompatibleSourceLayerPath( parameters, u"OVERLAY"_s, context, QgsVectorFileWriter::supportedFormatExtensions(), QgsVectorFileWriter::supportedFormatExtensions()[0], feedback );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QStringList args = { QStringLiteral( "clip" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--polygon=%1" ).arg( overlayPath ) };
+  QStringList args = { u"clip"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--polygon=%1"_s.arg( overlayPath ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

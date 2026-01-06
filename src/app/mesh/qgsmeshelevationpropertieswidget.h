@@ -84,8 +84,8 @@ class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private
     QgsMeshLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
     QgsMeshGroupFixedElevationRangeModel *mFixedRangePerGroupModel = nullptr;
-    QString mFixedRangeLowerExpression = QStringLiteral( "@group" );
-    QString mFixedRangeUpperExpression = QStringLiteral( "@group" );
+    QString mFixedRangeLowerExpression = u"@group"_s;
+    QString mFixedRangeUpperExpression = u"@group"_s;
 };
 
 

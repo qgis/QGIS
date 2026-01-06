@@ -26,7 +26,6 @@ properties of a Processing parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-
     QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates a new QgsProcessingAbstractParameterDefinitionWidget, with the
@@ -108,7 +107,6 @@ parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-
     QgsProcessingParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingParameterDefinitionWidget, for a parameter
@@ -158,7 +156,6 @@ parameter.
 #include "qgsprocessingparameterdefinitionwidget.h"
 %End
   public:
-
     QgsProcessingParameterDefinitionDialog( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingParameterDefinitionDialog, for a parameter

@@ -24,7 +24,7 @@
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( NoFlag, 0 )
 {
-  QgsProcessingParameterEnum *param = new QgsProcessingParameterEnum( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ), QObject::tr( "Handling of 0 or negative values" ), QStringList() << QObject::tr( "no handling (faster)" ) << QObject::tr( "discard (slower)" ) << QObject::tr( "prepend range (slower)" ), false, 0 );
+  QgsProcessingParameterEnum *param = new QgsProcessingParameterEnum( u"ZERO_NEG_VALUES_HANDLE"_s, QObject::tr( "Handling of 0 or negative values" ), QStringList() << QObject::tr( "no handling (faster)" ) << QObject::tr( "discard (slower)" ) << QObject::tr( "prepend range (slower)" ), false, 0 );
   addParameter( param );
 }
 
@@ -43,7 +43,7 @@ QString QgsClassificationLogarithmic::name() const
 
 QString QgsClassificationLogarithmic::id() const
 {
-  return QStringLiteral( "Logarithmic" );
+  return u"Logarithmic"_s;
 }
 
 QIcon QgsClassificationLogarithmic::icon() const
@@ -55,7 +55,7 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
 {
   Q_UNUSED( error )
   const QgsProcessingContext context;
-  const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ) );
+  const QgsProcessingParameterDefinition *def = parameterDefinition( u"ZERO_NEG_VALUES_HANDLE"_s );
   const NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
 
   double positiveMinimum = std::numeric_limits<double>::max();
@@ -134,7 +134,7 @@ QString QgsClassificationLogarithmic::valueToLabel( double value ) const
     }
     else
     {
-      return QString( QStringLiteral( "10^%L1" ) ).arg( std::log10( value ) );
+      return QString( u"10^%L1"_s ).arg( std::log10( value ) );
     }
   }
 }
@@ -161,7 +161,7 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
 bool QgsClassificationLogarithmic::valuesRequired() const
 {
   const QgsProcessingContext context;
-  const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ) );
+  const QgsProcessingParameterDefinition *def = parameterDefinition( u"ZERO_NEG_VALUES_HANDLE"_s );
   const NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
 
   return nvh != NegativeValueHandling::NoHandling;

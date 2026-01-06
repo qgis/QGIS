@@ -67,7 +67,7 @@ void QgsVectorLayerChunkLoader::start()
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
   if ( !handler )
   {
-    QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
+    QgsDebugError( u"Unknown 3D symbol type for vector layer: "_s + mFactory->mSymbol->type() );
     return;
   }
   mHandler.reset( handler );
@@ -86,7 +86,7 @@ void QgsVectorLayerChunkLoader::start()
   QSet<QString> attributeNames;
   if ( !mHandler->prepare( mRenderContext, attributeNames, chunkOrigin ) )
   {
-    QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+    QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
     return;
   }
 
@@ -105,7 +105,7 @@ void QgsVectorLayerChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
-    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"VL chunk load"_s );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
@@ -185,7 +185,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   {
     // TODO: add support for handling of vector layers
     // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
-    QgsDebugError( QStringLiteral( "Vector layers in globe scenes are not supported yet!" ) );
+    QgsDebugError( u"Vector layers in globe scenes are not supported yet!"_s );
     setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, leafLevel );
     return;
   }
@@ -261,7 +261,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+      QgsDebugMsgLevel( u"QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1"_s.arg( symbolType ), 2 );
     }
   }
 
@@ -270,7 +270,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
 
 void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
+  QgsDebugMsgLevel( u"QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged"_s, 2 );
   float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
   if ( !applyTerrainOffset() )
   {
@@ -287,7 +287,7 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3
 QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin )
 {
   Q_UNUSED( context )
-  QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
+  QgsDebugMsgLevel( u"Ray cast on vector layer"_s, 2 );
 #ifdef QGISDEBUG
   int nodeUsed = 0;
   int nodesAll = 0;
@@ -355,10 +355,10 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
     QgsRayCastHit hit;
     hit.setDistance( minDist );
     hit.setMapCoordinates( Qgs3DUtils::worldToMapCoordinates( intersectionPoint, origin ) );
-    hit.setProperties( { { QStringLiteral( "fid" ), nearestFid } } );
+    hit.setProperties( { { u"fid"_s, nearestFid } } );
     result.append( hit );
   }
-  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
+  QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
   return result;
 }
 

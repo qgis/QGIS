@@ -40,20 +40,20 @@ QString QgsBatchGeocodeAlgorithm::group() const
 
 QString QgsBatchGeocodeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 void QgsBatchGeocodeAlgorithm::initParameters( const QVariantMap &configuration )
 {
-  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+  mIsInPlace = configuration.value( u"IN_PLACE"_s ).toBool();
 
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Address field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::String ) );
+  addParameter( new QgsProcessingParameterField( u"FIELD"_s, QObject::tr( "Address field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::String ) );
 
   if ( mIsInPlace )
   {
     const QgsFields newFields = mGeocoder->appendedFields();
     for ( const QgsField &newField : newFields )
-      addParameter( new QgsProcessingParameterField( newField.name(), QObject::tr( "%1 field" ).arg( newField.name() ), newField.name(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+      addParameter( new QgsProcessingParameterField( newField.name(), QObject::tr( "%1 field" ).arg( newField.name() ), newField.name(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   }
 }
 
@@ -78,7 +78,7 @@ QString QgsBatchGeocodeAlgorithm::outputName() const
 
 bool QgsBatchGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mAddressField = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  mAddressField = parameterAsString( parameters, u"FIELD"_s, context );
 
   if ( mIsInPlace )
   {

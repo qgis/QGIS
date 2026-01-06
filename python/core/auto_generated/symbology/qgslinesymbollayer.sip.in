@@ -987,6 +987,12 @@ Returns the unit for for blank segments start and end distances
     virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
 
+    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
+%Docstring
+Copies all common properties of this layer to another templated symbol
+layer ``destLayer``.
+%End
+
   protected:
 
     virtual void setSymbolLineAngle( double angle ) = 0;
@@ -1026,18 +1032,13 @@ If ``selected`` is ``True`` then the symbol will be drawn using the
 style.
 %End
 
-    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
-%Docstring
-Copies all common properties of this layer to another templated symbol
-layer.
-%End
-
     static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 %Docstring
 Sets all common symbol properties in the ``destLayer``, using the
 settings serialized in the ``properties`` map.
 %End
 
+  protected:
 
 };
 

@@ -31,7 +31,7 @@ QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface *input,
     QgsContrastEnhancement *redEnhancement,
     QgsContrastEnhancement *greenEnhancement,
     QgsContrastEnhancement *blueEnhancement )
-  : QgsRasterRenderer( input, QStringLiteral( "multibandcolor" ) )
+  : QgsRasterRenderer( input, u"multibandcolor"_s )
   , mRedBand( redBand )
   , mGreenBand( greenBand )
   , mBlueBand( blueBand )
@@ -111,13 +111,13 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
   }
 
   //red band, green band, blue band
-  const int redBand = elem.attribute( QStringLiteral( "redBand" ), QStringLiteral( "-1" ) ).toInt();
-  const int greenBand = elem.attribute( QStringLiteral( "greenBand" ), QStringLiteral( "-1" ) ).toInt();
-  const int blueBand = elem.attribute( QStringLiteral( "blueBand" ), QStringLiteral( "-1" ) ).toInt();
+  const int redBand = elem.attribute( u"redBand"_s, u"-1"_s ).toInt();
+  const int greenBand = elem.attribute( u"greenBand"_s, u"-1"_s ).toInt();
+  const int blueBand = elem.attribute( u"blueBand"_s, u"-1"_s ).toInt();
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
-  const QDomElement redContrastElem = elem.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  const QDomElement redContrastElem = elem.firstChildElement( u"redContrastEnhancement"_s );
   if ( !redContrastElem.isNull() )
   {
     redContrastEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
@@ -126,7 +126,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
   }
 
   QgsContrastEnhancement *greenContrastEnhancement = nullptr;
-  const QDomElement greenContrastElem = elem.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  const QDomElement greenContrastElem = elem.firstChildElement( u"greenContrastEnhancement"_s );
   if ( !greenContrastElem.isNull() )
   {
     greenContrastEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
@@ -135,7 +135,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
   }
 
   QgsContrastEnhancement *blueContrastEnhancement = nullptr;
-  const QDomElement blueContrastElem = elem.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  const QDomElement blueContrastElem = elem.firstChildElement( u"blueContrastEnhancement"_s );
   if ( !blueContrastElem.isNull() )
   {
     blueContrastEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
@@ -208,7 +208,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     if ( !bandBlocks[*bandIt] )
     {
       // We should free the allocated mem from block().
-      QgsDebugError( QStringLiteral( "No input band" ) );
+      QgsDebugError( u"No input band"_s );
       --bandIt;
       for ( ; bandIt != bands.constBegin(); --bandIt )
       {
@@ -425,28 +425,28 @@ void QgsMultiBandColorRenderer::writeXml( QDomDocument &doc, QDomElement &parent
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
+  QDomElement rasterRendererElem = doc.createElement( u"rasterrenderer"_s );
   _writeXml( doc, rasterRendererElem );
-  rasterRendererElem.setAttribute( QStringLiteral( "redBand" ), mRedBand );
-  rasterRendererElem.setAttribute( QStringLiteral( "greenBand" ), mGreenBand );
-  rasterRendererElem.setAttribute( QStringLiteral( "blueBand" ), mBlueBand );
+  rasterRendererElem.setAttribute( u"redBand"_s, mRedBand );
+  rasterRendererElem.setAttribute( u"greenBand"_s, mGreenBand );
+  rasterRendererElem.setAttribute( u"blueBand"_s, mBlueBand );
 
   //contrast enhancement
   if ( mRedContrastEnhancement )
   {
-    QDomElement redContrastElem = doc.createElement( QStringLiteral( "redContrastEnhancement" ) );
+    QDomElement redContrastElem = doc.createElement( u"redContrastEnhancement"_s );
     mRedContrastEnhancement->writeXml( doc, redContrastElem );
     rasterRendererElem.appendChild( redContrastElem );
   }
   if ( mGreenContrastEnhancement )
   {
-    QDomElement greenContrastElem = doc.createElement( QStringLiteral( "greenContrastEnhancement" ) );
+    QDomElement greenContrastElem = doc.createElement( u"greenContrastEnhancement"_s );
     mGreenContrastEnhancement->writeXml( doc, greenContrastElem );
     rasterRendererElem.appendChild( greenContrastElem );
   }
   if ( mBlueContrastEnhancement )
   {
-    QDomElement blueContrastElem = doc.createElement( QStringLiteral( "blueContrastEnhancement" ) );
+    QDomElement blueContrastElem = doc.createElement( u"blueContrastEnhancement"_s );
     mBlueContrastEnhancement->writeXml( doc, blueContrastElem );
     rasterRendererElem.appendChild( blueContrastElem );
   }
@@ -551,7 +551,7 @@ bool QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 #endif
 
   // look for RasterSymbolizer tag
-  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  QDomNodeList elements = element.elementsByTagName( u"sld:RasterSymbolizer"_s );
   if ( elements.size() == 0 )
     return false;
 
@@ -561,15 +561,15 @@ bool QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // add Channel Selection tags
   // Need to insert channelSelection in the correct sequence as in SLD standard e.g.
   // after opacity or geometry or as first element after sld:RasterSymbolizer
-  QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
-  elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Opacity" ) );
+  QDomElement channelSelectionElem = doc.createElement( u"sld:ChannelSelection"_s );
+  elements = rasterSymbolizerElem.elementsByTagName( u"sld:Opacity"_s );
   if ( elements.size() != 0 )
   {
     rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
   }
   else
   {
-    elements = rasterSymbolizerElem.elementsByTagName( QStringLiteral( "sld:Geometry" ) );
+    elements = rasterSymbolizerElem.elementsByTagName( u"sld:Geometry"_s );
     if ( elements.size() != 0 )
     {
       rasterSymbolizerElem.insertAfter( channelSelectionElem, elements.at( 0 ) );
@@ -581,7 +581,7 @@ bool QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   }
 
   // for each mapped band
-  static QStringList tags { QStringLiteral( "sld:RedChannel" ), QStringLiteral( "sld:GreenChannel" ), QStringLiteral( "sld:BlueChannel" ) };
+  static QStringList tags { u"sld:RedChannel"_s, u"sld:GreenChannel"_s, u"sld:BlueChannel"_s };
 
   QList<QgsContrastEnhancement *> contrastEnhancements;
   contrastEnhancements.append( mRedContrastEnhancement.get() );
@@ -599,7 +599,7 @@ bool QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     channelSelectionElem.appendChild( channelElem );
 
     // set band
-    QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+    QDomElement sourceChannelNameElem = doc.createElement( u"sld:SourceChannelName"_s );
     sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( *bandIt ) ) );
     channelElem.appendChild( sourceChannelNameElem );
 
@@ -608,7 +608,7 @@ bool QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     // because min/max values can vary depending on band.
     if ( contrastEnhancements[ tagCounter ] )
     {
-      QDomElement contrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
+      QDomElement contrastEnhancementElem = doc.createElement( u"sld:ContrastEnhancement"_s );
       contrastEnhancements[ tagCounter ]->toSld( doc, contrastEnhancementElem );
       channelElem.appendChild( contrastEnhancementElem );
     }

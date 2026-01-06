@@ -76,21 +76,21 @@ QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
 
         if ( !relationError.isEmpty() )
         {
-          children.push_back( new QgsErrorItem( this, relationError, path() + QStringLiteral( "/relationerror" ) ) );
+          children.push_back( new QgsErrorItem( this, relationError, path() + u"/relationerror"_s ) );
         }
       }
     }
   }
   catch ( const QgsProviderConnectionException &ex )
   {
-    children.push_back( new QgsErrorItem( this, ex.what(), path() + QStringLiteral( "/error" ) ) );
+    children.push_back( new QgsErrorItem( this, ex.what(), path() + u"/error"_s ) );
   }
   return children;
 }
 
 QIcon QgsRelationshipsItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconBrowserRelations.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconBrowserRelations.svg"_s );
 }
 
 QString QgsRelationshipsItem::connectionUri() const
@@ -114,7 +114,7 @@ QgsRelationshipItem::QgsRelationshipItem( QgsDataItem *parent, const QgsWeakRela
 
 QIcon QgsRelationshipItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconBrowserRelations.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconBrowserRelations.svg"_s );
 }
 
 const QgsWeakRelation &QgsRelationshipItem::relation() const

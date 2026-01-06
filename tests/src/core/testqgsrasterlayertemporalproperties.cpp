@@ -84,11 +84,11 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
 
   QDomImplementation DomImplementation;
   const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
   );
   QDomDocument doc( documentType );
 
-  QDomElement node = doc.createElement( QStringLiteral( "temp" ) );
+  QDomElement node = doc.createElement( u"temp"_s );
   // read none existent node
   temporalProperties.readXml( node.toElement(), QgsReadWriteContext() );
 
@@ -108,7 +108,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QCOMPARE( temporalProperties2.intervalHandlingMethod(), Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange );
 
   temporalProperties.setIsActive( false );
-  QDomElement node2 = doc.createElement( QStringLiteral( "temp" ) );
+  QDomElement node2 = doc.createElement( u"temp"_s );
   temporalProperties.writeXml( node2, doc, QgsReadWriteContext() );
   QgsRasterLayerTemporalProperties temporalProperties3;
   temporalProperties3.readXml( node2, QgsReadWriteContext() );
@@ -118,7 +118,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
 
   temporalProperties.setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   temporalProperties.setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
-  QDomElement node3 = doc.createElement( QStringLiteral( "temp" ) );
+  QDomElement node3 = doc.createElement( u"temp"_s );
   temporalProperties.writeXml( node3, doc, QgsReadWriteContext() );
   QgsRasterLayerTemporalProperties temporalProperties4;
   temporalProperties4.readXml( node3, QgsReadWriteContext() );

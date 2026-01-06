@@ -24,7 +24,7 @@ class TestQgsMapLayerServerConfig(QgisTestCase):
 
     def test_deprecated_function(self):
         """Test deprecated function about metadata url in QgsMapLayer."""
-        # Remove in QGIS 4.0
+        # Remove in QGIS 5.0
         layer = QgsVectorLayer("Point?field=fldtxt:string", "layer_1", "memory")
 
         self.assertEqual("", layer.metadataUrl())

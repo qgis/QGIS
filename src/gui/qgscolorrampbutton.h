@@ -46,7 +46,6 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
-
     /**
      * Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.

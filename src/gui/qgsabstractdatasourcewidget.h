@@ -48,7 +48,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Sets a browser \a model to use with the widget.
      *

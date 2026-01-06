@@ -30,17 +30,17 @@ class TestQgsHstoreUtils : public QObject
 void TestQgsHstoreUtils::testHstore()
 {
   QVariantMap map;
-  map[QStringLiteral( "1" )] = "one";
-  map[QStringLiteral( "2" )] = "two";
-  map[QStringLiteral( "3" )] = "three";
+  map[u"1"_s] = "one";
+  map[u"2"_s] = "two";
+  map[u"3"_s] = "three";
 
-  QCOMPARE( QgsHstoreUtils::parse( QStringLiteral( "1=>one,2=>two,3=>three" ) ), map );
-  QCOMPARE( QgsHstoreUtils::build( map ), QStringLiteral( "\"1\"=>\"one\",\"2\"=>\"two\",\"3\"=>\"three\"" ) );
+  QCOMPARE( QgsHstoreUtils::parse( u"1=>one,2=>two,3=>three"_s ), map );
+  QCOMPARE( QgsHstoreUtils::build( map ), u"\"1\"=>\"one\",\"2\"=>\"two\",\"3\"=>\"three\""_s );
 
   map.clear();
-  map[QStringLiteral( "1" )] = "one";
+  map[u"1"_s] = "one";
   // if a key is missing its closing quote, the map construction process will stop and a partial map is returned
-  QCOMPARE( QgsHstoreUtils::parse( QStringLiteral( "\"1\"=>\"one\",\"2=>\"two\"" ) ), QVariantMap( map ) );
+  QCOMPARE( QgsHstoreUtils::parse( u"\"1\"=>\"one\",\"2=>\"two\""_s ), QVariantMap( map ) );
 }
 
 QGSTEST_MAIN( TestQgsHstoreUtils )

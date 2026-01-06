@@ -37,7 +37,6 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFocusWatcher.
      * \param parent parent widget to catch focus events for. This class will automatically be

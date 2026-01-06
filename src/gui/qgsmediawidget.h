@@ -39,7 +39,6 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * The mode determines the user interface elements visible within the widget.
     */

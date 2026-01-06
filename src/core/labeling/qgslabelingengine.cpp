@@ -272,7 +272,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
     catch ( std::exception &e )
     {
       Q_UNUSED( e )
-      QgsDebugMsgLevel( QStringLiteral( "Ignoring feature %1 due PAL exception:" ).arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
+      QgsDebugMsgLevel( u"Ignoring feature %1 due PAL exception:"_s.arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
       continue;
     }
   }
@@ -291,7 +291,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   std::unique_ptr< QgsScopedRuntimeProfile > registeringProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    registeringProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Registering labels" ), QStringLiteral( "rendering" ) );
+    registeringProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Registering labels" ), u"rendering"_s );
   }
 
   QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
@@ -373,11 +373,11 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
     QgsFeature f;
     f.setGeometry( mapBoundaryGeom );
     QVariantMap properties;
-    properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
-    properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-    properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "#0000ff" ) );
-    properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-    properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+    properties.insert( u"style"_s, u"no"_s );
+    properties.insert( u"style_border"_s, u"solid"_s );
+    properties.insert( u"color_border"_s, u"#0000ff"_s );
+    properties.insert( u"width_border"_s, u"0.3"_s );
+    properties.insert( u"joinstyle"_s, u"miter"_s );
     std::unique_ptr< QgsFillSymbol > boundarySymbol( QgsFillSymbol::createSimple( properties ) );
     boundarySymbol->startRender( context );
     boundarySymbol->renderFeature( f, context );
@@ -454,7 +454,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   // sort labels
   std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mLayerRenderingOrderIds ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
+  QgsDebugMsgLevel( u"LABELING work:  %1 ms ... labels# %2"_s.arg( t.elapsed() ).arg( mLabels.size() ), 4 );
 }
 
 void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &layerId )
@@ -465,7 +465,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   std::unique_ptr< QgsScopedRuntimeProfile > drawingProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    drawingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering labels" ), QStringLiteral( "rendering" ) );
+    drawingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering labels" ), u"rendering"_s );
   }
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
@@ -668,7 +668,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   // Reset composition mode for further drawing operations
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
-  QgsDebugMsgLevel( QStringLiteral( "LABELING draw:  %1 ms" ).arg( t.elapsed() ), 4 );
+  QgsDebugMsgLevel( u"LABELING draw:  %1 ms"_s.arg( t.elapsed() ), 4 );
 }
 
 void QgsLabelingEngine::cleanup()
@@ -957,43 +957,43 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<Qgis::Lab
     switch ( position )
     {
       case Qgis::LabelPredefinedPointPosition::TopLeft:
-        predefinedOrderString << QStringLiteral( "TL" );
+        predefinedOrderString << u"TL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopSlightlyLeft:
-        predefinedOrderString << QStringLiteral( "TSL" );
+        predefinedOrderString << u"TSL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopMiddle:
-        predefinedOrderString << QStringLiteral( "T" );
+        predefinedOrderString << u"T"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopSlightlyRight:
-        predefinedOrderString << QStringLiteral( "TSR" );
+        predefinedOrderString << u"TSR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopRight:
-        predefinedOrderString << QStringLiteral( "TR" );
+        predefinedOrderString << u"TR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::MiddleLeft:
-        predefinedOrderString << QStringLiteral( "L" );
+        predefinedOrderString << u"L"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::MiddleRight:
-        predefinedOrderString << QStringLiteral( "R" );
+        predefinedOrderString << u"R"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomLeft:
-        predefinedOrderString << QStringLiteral( "BL" );
+        predefinedOrderString << u"BL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft:
-        predefinedOrderString << QStringLiteral( "BSL" );
+        predefinedOrderString << u"BSL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomMiddle:
-        predefinedOrderString << QStringLiteral( "B" );
+        predefinedOrderString << u"B"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomSlightlyRight:
-        predefinedOrderString << QStringLiteral( "BSR" );
+        predefinedOrderString << u"BSR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomRight:
-        predefinedOrderString << QStringLiteral( "BR" );
+        predefinedOrderString << u"BR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::OverPoint:
-        predefinedOrderString << QStringLiteral( "O" );
+        predefinedOrderString << u"O"_s;
         break;
     }
   }
@@ -1008,31 +1008,31 @@ QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPo
   for ( const QString &position : predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
-    if ( cleaned == QLatin1String( "TL" ) )
+    if ( cleaned == "TL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopLeft;
-    else if ( cleaned == QLatin1String( "TSL" ) )
+    else if ( cleaned == "TSL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft;
-    else if ( cleaned == QLatin1String( "T" ) )
+    else if ( cleaned == "T"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopMiddle;
-    else if ( cleaned == QLatin1String( "TSR" ) )
+    else if ( cleaned == "TSR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopSlightlyRight;
-    else if ( cleaned == QLatin1String( "TR" ) )
+    else if ( cleaned == "TR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopRight;
-    else if ( cleaned == QLatin1String( "L" ) )
+    else if ( cleaned == "L"_L1 )
       result << Qgis::LabelPredefinedPointPosition::MiddleLeft;
-    else if ( cleaned == QLatin1String( "R" ) )
+    else if ( cleaned == "R"_L1 )
       result << Qgis::LabelPredefinedPointPosition::MiddleRight;
-    else if ( cleaned == QLatin1String( "BL" ) )
+    else if ( cleaned == "BL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomLeft;
-    else if ( cleaned == QLatin1String( "BSL" ) )
+    else if ( cleaned == "BSL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft;
-    else if ( cleaned == QLatin1String( "B" ) )
+    else if ( cleaned == "B"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomMiddle;
-    else if ( cleaned == QLatin1String( "BSR" ) )
+    else if ( cleaned == "BSR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
-    else if ( cleaned == QLatin1String( "BR" ) )
+    else if ( cleaned == "BR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomRight;
-    else if ( cleaned == QLatin1String( "O" ) )
+    else if ( cleaned == "O"_L1 )
       result << Qgis::LabelPredefinedPointPosition::OverPoint;
   }
   return result;
@@ -1042,13 +1042,13 @@ QString QgsLabelingUtils::encodeLinePlacementFlags( Qgis::LabelLinePlacementFlag
 {
   QStringList parts;
   if ( flags & Qgis::LabelLinePlacementFlag::OnLine )
-    parts << QStringLiteral( "OL" );
+    parts << u"OL"_s;
   if ( flags & Qgis::LabelLinePlacementFlag::AboveLine )
-    parts << QStringLiteral( "AL" );
+    parts << u"AL"_s;
   if ( flags & Qgis::LabelLinePlacementFlag::BelowLine )
-    parts << QStringLiteral( "BL" );
+    parts << u"BL"_s;
   if ( !( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) )
-    parts << QStringLiteral( "LO" );
+    parts << u"LO"_s;
   return parts.join( ',' );
 }
 
@@ -1060,13 +1060,13 @@ Qgis::LabelLinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const 
   for ( const QString &flag : flagList )
   {
     QString cleaned = flag.trimmed().toUpper();
-    if ( cleaned == QLatin1String( "OL" ) )
+    if ( cleaned == "OL"_L1 )
       flags |= Qgis::LabelLinePlacementFlag::OnLine;
-    else if ( cleaned == QLatin1String( "AL" ) )
+    else if ( cleaned == "AL"_L1 )
       flags |= Qgis::LabelLinePlacementFlag::AboveLine;
-    else if ( cleaned == QLatin1String( "BL" ) )
+    else if ( cleaned == "BL"_L1 )
       flags |= Qgis::LabelLinePlacementFlag::BelowLine;
-    else if ( cleaned == QLatin1String( "LO" ) )
+    else if ( cleaned == "LO"_L1 )
       foundLineOrientationFlag = true;
   }
   if ( !foundLineOrientationFlag )

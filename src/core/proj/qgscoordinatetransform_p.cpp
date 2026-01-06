@@ -137,7 +137,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   {
     // Pass through with no projection since we have no idea what the layer
     // coordinates are and projecting them may not be appropriate
-    QgsDebugMsgLevel( QStringLiteral( "Source CRS is invalid!" ), 4 );
+    QgsDebugMsgLevel( u"Source CRS is invalid!"_s, 4 );
     return false;
   }
 
@@ -146,7 +146,7 @@ bool QgsCoordinateTransformPrivate::initialize()
     //No destination projection is set so we set the default output projection to
     //be the same as input proj.
     mDestCRS = mSourceCRS;
-    QgsDebugMsgLevel( QStringLiteral( "Destination CRS is invalid!" ), 4 );
+    QgsDebugMsgLevel( u"Destination CRS is invalid!"_s, 4 );
     return false;
   }
 
@@ -162,7 +162,7 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   mGeographicToWebMercator =
     mSourceCRS.isGeographic() &&
-    mDestCRS.authid() == QLatin1String( "EPSG:3857" );
+    mDestCRS.authid() == "EPSG:3857"_L1;
 
   mHasVerticalComponent = mSourceCRS.hasVerticalAxis() && mDestCRS.hasVerticalAxis();
 
@@ -207,20 +207,20 @@ bool QgsCoordinateTransformPrivate::initialize()
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   if ( mIsValid )
   {
-    QgsDebugMsgLevel( QStringLiteral( "------------------------------------------------------------" ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "The OGR Coordinate transformation for this layer was set to" ), 2 );
+    QgsDebugMsgLevel( u"------------------------------------------------------------"_s, 2 );
+    QgsDebugMsgLevel( u"The OGR Coordinate transformation for this layer was set to"_s, 2 );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Input", mSourceCRS, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Output", mDestCRS, __FILE__, __FUNCTION__, __LINE__ );
-    QgsDebugMsgLevel( QStringLiteral( "------------------------------------------------------------" ), 2 );
+    QgsDebugMsgLevel( u"------------------------------------------------------------"_s, 2 );
   }
   else
   {
-    QgsDebugError( QStringLiteral( "The OGR Coordinate transformation FAILED TO INITIALIZE!" ) );
+    QgsDebugError( u"The OGR Coordinate transformation FAILED TO INITIALIZE!"_s );
   }
 #else
   if ( !mIsValid )
   {
-    QgsDebugError( QStringLiteral( "Coordinate transformation failed to initialize!" ) );
+    QgsDebugError( u"Coordinate transformation failed to initialize!"_s );
   }
 #endif
 
@@ -483,7 +483,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     else
     {
       // strip proj prefixes from error string, so that it's nicer for users
-      nonAvailableError = nonAvailableError.remove( QStringLiteral( "internal_proj_create_operations: " ) );
+      nonAvailableError = nonAvailableError.remove( u"internal_proj_create_operations: "_s );
     }
   }
 

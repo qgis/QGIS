@@ -60,7 +60,6 @@ class QgsPreviewQuad : public Qt3DCore::QEntity
     Q_OBJECT
 
   public:
-
     /**
      * \brief Construct an object that displays a texture for debugging purposes (example: depth buffer)
      * \param texture The texture to be rendered

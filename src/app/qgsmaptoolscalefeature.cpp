@@ -481,7 +481,7 @@ void QgsMapToolScaleFeature::createScalingWidget()
 
   deleteScalingWidget();
 
-  mScalingWidget = new QgsScaleMagnetWidget( QStringLiteral( "Scaling:" ) );
+  mScalingWidget = new QgsScaleMagnetWidget( u"Scaling:"_s );
   QgisApp::instance()->addUserInputWidget( mScalingWidget );
   mScalingWidget->setFocus( Qt::TabFocusReason );
 

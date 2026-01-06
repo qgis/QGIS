@@ -21,6 +21,7 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgssymbollayer.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qobjectuniqueptr.h"
 
 #include <QStandardItemModel>
 #include <QWidget>
@@ -28,6 +29,9 @@
 class QgsVectorLayer;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
+
+template<class T>
+class GUI_EXPORT QgsMapToolEditBlankSegments;
 
 /**
  * \ingroup gui
@@ -39,7 +43,6 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSymbolLayerWidget.
      * \param vl associated vector layer
@@ -69,10 +72,9 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     /**
      * Returns the vector layer associated with the widget.
      */
-    const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
   protected:
-
     /**
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions
@@ -127,7 +129,6 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSimpleLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -191,7 +192,6 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSimpleMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -254,7 +254,6 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSimpleFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -305,7 +304,6 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFilledMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -359,7 +357,6 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGradientFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -416,7 +413,6 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsShapeburstFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -458,6 +454,7 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 #include "ui_widget_templatedline.h"
 
 class QgsTemplatedLineSymbolLayerBase;
+class QgsMapToolEditBlankSegmentsBase;
 
 /**
  * \ingroup gui
@@ -470,7 +467,6 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     Q_OBJECT
 
   public:
-
     /**
      * Templated symbol type
      */
@@ -519,11 +515,19 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void mOffsetAlongLineUnitWidget_changed();
     void hashLengthUnitWidgetChanged();
     void averageAngleUnitChanged();
+    void blankSegmentsUnitChanged();
     void setAverageAngle( double val );
+    void toggleMapToolEditBlankSegments( bool toggled );
+
+    void updateBlankSegmentsWidget();
 
   private:
+    // Returns blank segments field index, -1 if no dd property field has been set
+    int blankSegmentsFieldIndex() const;
+
     QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
     TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
+    QObjectUniquePtr<QgsMapToolEditBlankSegmentsBase> mMapToolEditBlankSegments;
 };
 
 /**
@@ -536,7 +540,6 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsTemplatedLineSymbolL
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMarkerLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -562,7 +565,6 @@ class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsTemplatedLineSymbolL
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsHashedLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -593,7 +595,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSvgMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -622,7 +623,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 
   protected:
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
 
     /**
      * This method does nothing anymore, the loading is automatic
@@ -678,7 +679,6 @@ class GUI_EXPORT QgsRasterMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -733,7 +733,6 @@ class GUI_EXPORT QgsAnimatedMarkerSymbolLayerWidget : public QgsSymbolLayerWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnimatedMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -790,7 +789,6 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -841,7 +839,6 @@ class GUI_EXPORT QgsRasterLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -885,7 +882,6 @@ class GUI_EXPORT QgsLineburstSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLineburstSymbolLayerWidget.
      * \param vl associated vector layer
@@ -925,7 +921,6 @@ class GUI_EXPORT QgsFilledLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFilledLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -965,7 +960,6 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSVGFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1024,7 +1018,6 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLinePatternFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1068,7 +1061,6 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget : public QgsSymbolLayerWid
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPointPatternFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1122,7 +1114,6 @@ class GUI_EXPORT QgsRandomMarkerFillSymbolLayerWidget : public QgsSymbolLayerWid
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRandomMarkerFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1168,7 +1159,6 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFontMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1261,7 +1251,6 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCentroidFillSymbolLayerWidget.
      * \param vl associated vector layer
@@ -1307,7 +1296,6 @@ class GUI_EXPORT QgsLinearReferencingSymbolLayerWidget : public QgsSymbolLayerWi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLinearReferencingSymbolLayerWidget.
      */
@@ -1349,7 +1337,6 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGeometryGeneratorSymbolLayerWidget.
      * \param vl associated vector layer

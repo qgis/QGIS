@@ -26,7 +26,6 @@ symbol layer type.
 #include "qgslayerpropertieswidget.h"
 %End
   public:
-
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayerPropertiesWidget.

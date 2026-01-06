@@ -27,7 +27,7 @@
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::name() const
 {
-  return QStringLiteral( "antimeridiansplit" );
+  return u"antimeridiansplit"_s;
 }
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::displayName() const
@@ -47,7 +47,7 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::group() const
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::shortDescription() const

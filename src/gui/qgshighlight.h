@@ -180,6 +180,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     void applyDefaultStyle();
 
   protected:
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *p ) override;
 
     //! recalculates needed rectangle

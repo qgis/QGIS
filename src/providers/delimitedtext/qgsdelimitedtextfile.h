@@ -353,7 +353,6 @@ class QgsDelimitedTextFile : public QObject
     void updateFile();
 
   private:
-
     /**
      * Open the file
      *

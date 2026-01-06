@@ -200,31 +200,31 @@ void QgsLayoutFrame::drawBackground( QgsRenderContext &context )
 
 bool QgsLayoutFrame::writePropertiesToElement( QDomElement &parentElement, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  parentElement.setAttribute( QStringLiteral( "multiFrame" ), mMultiFrameUuid );
-  parentElement.setAttribute( QStringLiteral( "multiFrameTemplateUuid" ), mMultiFrameUuid );
-  parentElement.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
-  parentElement.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
-  parentElement.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
-  parentElement.setAttribute( QStringLiteral( "sectionHeight" ), QString::number( mSection.height() ) );
-  parentElement.setAttribute( QStringLiteral( "hidePageIfEmpty" ), mHidePageIfEmpty );
-  parentElement.setAttribute( QStringLiteral( "hideBackgroundIfEmpty" ), mHideBackgroundIfEmpty );
+  parentElement.setAttribute( u"multiFrame"_s, mMultiFrameUuid );
+  parentElement.setAttribute( u"multiFrameTemplateUuid"_s, mMultiFrameUuid );
+  parentElement.setAttribute( u"sectionX"_s, QString::number( mSection.x() ) );
+  parentElement.setAttribute( u"sectionY"_s, QString::number( mSection.y() ) );
+  parentElement.setAttribute( u"sectionWidth"_s, QString::number( mSection.width() ) );
+  parentElement.setAttribute( u"sectionHeight"_s, QString::number( mSection.height() ) );
+  parentElement.setAttribute( u"hidePageIfEmpty"_s, mHidePageIfEmpty );
+  parentElement.setAttribute( u"hideBackgroundIfEmpty"_s, mHideBackgroundIfEmpty );
   return true;
 }
 
 bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
 {
-  const double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
-  const double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
-  const double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
-  const double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
+  const double x = itemElem.attribute( u"sectionX"_s ).toDouble();
+  const double y = itemElem.attribute( u"sectionY"_s ).toDouble();
+  const double width = itemElem.attribute( u"sectionWidth"_s ).toDouble();
+  const double height = itemElem.attribute( u"sectionHeight"_s ).toDouble();
   mSection = QRectF( x, y, width, height );
-  mHidePageIfEmpty = itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt();
-  mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  mHidePageIfEmpty = itemElem.attribute( u"hidePageIfEmpty"_s, u"0"_s ).toInt();
+  mHideBackgroundIfEmpty = itemElem.attribute( u"hideBackgroundIfEmpty"_s, u"0"_s ).toInt();
 
-  mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrame" ) );
+  mMultiFrameUuid = itemElem.attribute( u"multiFrame"_s );
   if ( mMultiFrameUuid.isEmpty( ) )
   {
-    mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrameTemplateUuid" ) );
+    mMultiFrameUuid = itemElem.attribute( u"multiFrameTemplateUuid"_s );
   }
   mMultiFrame = mLayout->multiFrameByUuid( mMultiFrameUuid );
   return true;

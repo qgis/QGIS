@@ -124,7 +124,7 @@ inline Vector3D *NormVecDecorator::getNormal( int n ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return nullptr;
   }
 }

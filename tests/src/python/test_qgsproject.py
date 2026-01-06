@@ -599,6 +599,9 @@ class TestQgsProject(QgisTestCase):
         layer_was_added_spy = QSignalSpy(QgsProject.instance().layerWasAdded)
         layers_added_spy = QSignalSpy(QgsProject.instance().layersAdded)
         legend_layers_added_spy = QSignalSpy(QgsProject.instance().legendLayersAdded)
+        layers_added_without_legend_spy = QSignalSpy(
+            QgsProject.instance().layersAddedWithoutLegend
+        )
 
         l1 = createLayer("test")
         QgsProject.instance().addMapLayer(l1)
@@ -608,12 +611,14 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 1)
         self.assertEqual(len(layers_added_spy), 1)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 0)
 
         # layer not added to legend
         QgsProject.instance().addMapLayer(createLayer("test2"), False)
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
         # try readding a layer already in the registry
         QgsProject.instance().addMapLayer(l1)
@@ -621,6 +626,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
     def test_addMapLayers(self):
         """test adding multiple map layers to registry"""

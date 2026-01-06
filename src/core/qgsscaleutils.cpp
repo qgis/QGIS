@@ -24,21 +24,21 @@
 bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage )
 {
   QDomDocument doc;
-  QDomElement root = doc.createElement( QStringLiteral( "qgsScales" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  QDomElement root = doc.createElement( u"qgsScales"_s );
+  root.setAttribute( u"version"_s, u"1.0"_s );
   doc.appendChild( root );
 
   for ( int i = 0; i < scales.count(); ++i )
   {
-    QDomElement el = doc.createElement( QStringLiteral( "scale" ) );
-    el.setAttribute( QStringLiteral( "value" ), scales.at( i ) );
+    QDomElement el = doc.createElement( u"scale"_s );
+    el.setAttribute( u"value"_s, scales.at( i ) );
     root.appendChild( el );
   }
 
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    errorMessage = QStringLiteral( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() );
+    errorMessage = u"Cannot write file %1:\n%2."_s.arg( fileName, file.errorString() );
     return false;
   }
 
@@ -52,7 +52,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    errorMessage = QStringLiteral( "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() );
+    errorMessage = u"Cannot read file %1:\n%2."_s.arg( fileName, file.errorString() );
     return false;
   }
 
@@ -63,7 +63,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-    errorMessage = QStringLiteral( "Parse error at line %1, column %2:\n%3" )
+    errorMessage = u"Parse error at line %1, column %2:\n%3"_s
                    .arg( errorLine )
                    .arg( errorColumn )
                    .arg( errorStr );
@@ -71,16 +71,16 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   }
 
   const QDomElement root = doc.documentElement();
-  if ( root.tagName() != QLatin1String( "qgsScales" ) )
+  if ( root.tagName() != "qgsScales"_L1 )
   {
-    errorMessage = QStringLiteral( "The file is not an scales exchange file." );
+    errorMessage = u"The file is not an scales exchange file."_s;
     return false;
   }
 
   QDomElement child = root.firstChildElement();
   while ( !child.isNull() )
   {
-    scales.append( child.attribute( QStringLiteral( "value" ) ) );
+    scales.append( child.attribute( u"value"_s ) );
     child = child.nextSiblingElement();
   }
 

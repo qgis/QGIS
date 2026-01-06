@@ -65,7 +65,7 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDe
       // default to descending sort by phenomenonTime
       return QgsSensorThingsExpansionDefinition(
                Qgis::SensorThingsEntity::Observation,
-               QStringLiteral( "phenomenonTime" ), Qt::SortOrder::DescendingOrder
+               u"phenomenonTime"_s, Qt::SortOrder::DescendingOrder
              );
 
     case Qgis::SensorThingsEntity::Datastream:
@@ -133,14 +133,14 @@ QString QgsSensorThingsExpansionDefinition::toString() const
   QStringList parts;
   parts.append( qgsEnumValueToKey( mChildEntity ) );
   if ( !mOrderBy.isEmpty() )
-    parts.append( QStringLiteral( "orderby=%1,%2" ).arg( mOrderBy, mSortOrder == Qt::SortOrder::AscendingOrder ? QStringLiteral( "asc" ) : QStringLiteral( "desc" ) ) );
+    parts.append( u"orderby=%1,%2"_s.arg( mOrderBy, mSortOrder == Qt::SortOrder::AscendingOrder ? u"asc"_s : u"desc"_s ) );
   if ( mLimit >= 0 )
-    parts.append( QStringLiteral( "limit=%1" ).arg( mLimit ) );
+    parts.append( u"limit=%1"_s.arg( mLimit ) );
   if ( !mFilter.trimmed().isEmpty() )
   {
     QString escapedFilter = mFilter;
-    escapedFilter.replace( ':', QLatin1String( "\\colon" ) );
-    parts.append( QStringLiteral( "filter=%1" ).arg( escapedFilter ) );
+    escapedFilter.replace( ':', "\\colon"_L1 );
+    parts.append( u"filter=%1"_s.arg( escapedFilter ) );
   }
   return parts.join( ':' );
 }
@@ -156,15 +156,15 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::fromStrin
   for ( int i = 1; i < parts.count(); ++i )
   {
     const QString &part = parts.at( i );
-    const thread_local QRegularExpression orderByRegEx( QStringLiteral( "^orderby=(.*),(.*?)$" ) );
-    const thread_local QRegularExpression orderLimitRegEx( QStringLiteral( "^limit=(\\d+)$" ) );
-    const thread_local QRegularExpression filterRegEx( QStringLiteral( "^filter=(.*)$" ) );
+    const thread_local QRegularExpression orderByRegEx( u"^orderby=(.*),(.*?)$"_s );
+    const thread_local QRegularExpression orderLimitRegEx( u"^limit=(\\d+)$"_s );
+    const thread_local QRegularExpression filterRegEx( u"^filter=(.*)$"_s );
 
     const QRegularExpressionMatch orderByMatch = orderByRegEx.match( part );
     if ( orderByMatch.hasMatch() )
     {
       definition.setOrderBy( orderByMatch.captured( 1 ) );
-      definition.setSortOrder( orderByMatch.captured( 2 ) == QLatin1String( "asc" ) ? Qt::SortOrder::AscendingOrder : Qt::SortOrder::DescendingOrder );
+      definition.setSortOrder( orderByMatch.captured( 2 ) == "asc"_L1 ? Qt::SortOrder::AscendingOrder : Qt::SortOrder::DescendingOrder );
       continue;
     }
 
@@ -179,7 +179,7 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::fromStrin
     if ( filterMatch.hasMatch() )
     {
       QString filter = filterMatch.captured( 1 );
-      filter.replace( QLatin1String( "\\colon" ), QLatin1String( ":" ) );
+      filter.replace( "\\colon"_L1, ":"_L1 );
       definition.setFilter( filter );
       continue;
     }
@@ -219,22 +219,22 @@ QString QgsSensorThingsExpansionDefinition::asQueryString( Qgis::SensorThingsEnt
     }
   }
 
-  QString res = QStringLiteral( "$expand=%1" ).arg( childEntityString );
+  QString res = u"$expand=%1"_s.arg( childEntityString );
 
   QStringList queryOptions;
   if ( !mOrderBy.isEmpty() )
-    queryOptions.append( QStringLiteral( "$orderby=%1%2" ).arg( mOrderBy, mSortOrder == Qt::SortOrder::AscendingOrder ? QString() : QStringLiteral( " desc" ) ) );
+    queryOptions.append( u"$orderby=%1%2"_s.arg( mOrderBy, mSortOrder == Qt::SortOrder::AscendingOrder ? QString() : u" desc"_s ) );
 
   if ( mLimit > -1 )
-    queryOptions.append( QStringLiteral( "$top=%1" ).arg( mLimit ) );
+    queryOptions.append( u"$top=%1"_s.arg( mLimit ) );
 
   if ( !mFilter.isEmpty() )
-    queryOptions.append( QStringLiteral( "$filter=%1" ).arg( mFilter ) );
+    queryOptions.append( u"$filter=%1"_s.arg( mFilter ) );
 
   queryOptions.append( additionalOptions );
 
   if ( !queryOptions.isEmpty() )
-    res.append( QStringLiteral( "(%1)" ).arg( queryOptions.join( ';' ) ) );
+    res.append( u"(%1)"_s.arg( queryOptions.join( ';' ) ) );
 
   return res;
 }
@@ -273,23 +273,23 @@ void QgsSensorThingsExpansionDefinition::setOrderBy( const QString &field )
 Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &type )
 {
   const QString trimmed = type.trimmed();
-  if ( trimmed.compare( QLatin1String( "Thing" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Thing"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Thing;
-  if ( trimmed.compare( QLatin1String( "Location" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Location"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Location;
-  if ( trimmed.compare( QLatin1String( "HistoricalLocation" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "HistoricalLocation"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::HistoricalLocation;
-  if ( trimmed.compare( QLatin1String( "Datastream" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Datastream"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Datastream;
-  if ( trimmed.compare( QLatin1String( "Sensor" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Sensor"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Sensor;
-  if ( trimmed.compare( QLatin1String( "ObservedProperty" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "ObservedProperty"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::ObservedProperty;
-  if ( trimmed.compare( QLatin1String( "Observation" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Observation"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Observation;
-  if ( trimmed.compare( QLatin1String( "FeatureOfInterest" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "FeatureOfInterest"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::FeatureOfInterest;
-  if ( trimmed.compare( QLatin1String( "MultiDatastream" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "MultiDatastream"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::MultiDatastream;
 
   return Qgis::SensorThingsEntity::Invalid;
@@ -326,23 +326,23 @@ QString QgsSensorThingsUtils::displayString( Qgis::SensorThingsEntity type, bool
 Qgis::SensorThingsEntity QgsSensorThingsUtils::entitySetStringToEntity( const QString &type )
 {
   const QString trimmed = type.trimmed();
-  if ( trimmed.compare( QLatin1String( "Things" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Things"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Thing;
-  if ( trimmed.compare( QLatin1String( "Locations" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Locations"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Location;
-  if ( trimmed.compare( QLatin1String( "HistoricalLocations" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "HistoricalLocations"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::HistoricalLocation;
-  if ( trimmed.compare( QLatin1String( "Datastreams" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Datastreams"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Datastream;
-  if ( trimmed.compare( QLatin1String( "Sensors" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Sensors"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Sensor;
-  if ( trimmed.compare( QLatin1String( "ObservedProperties" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "ObservedProperties"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::ObservedProperty;
-  if ( trimmed.compare( QLatin1String( "Observations" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "Observations"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::Observation;
-  if ( trimmed.compare( QLatin1String( "FeaturesOfInterest" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "FeaturesOfInterest"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::FeatureOfInterest;
-  if ( trimmed.compare( QLatin1String( "MultiDatastreams" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmed.compare( "MultiDatastreams"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::SensorThingsEntity::MultiDatastream;
 
   return Qgis::SensorThingsEntity::Invalid;
@@ -355,23 +355,23 @@ QString QgsSensorThingsUtils::entityToSetString( Qgis::SensorThingsEntity type )
     case Qgis::SensorThingsEntity::Invalid:
       return QString();
     case Qgis::SensorThingsEntity::Thing:
-      return QStringLiteral( "Things" );
+      return u"Things"_s;
     case Qgis::SensorThingsEntity::Location:
-      return QStringLiteral( "Locations" );
+      return u"Locations"_s;
     case Qgis::SensorThingsEntity::HistoricalLocation:
-      return QStringLiteral( "HistoricalLocations" );
+      return u"HistoricalLocations"_s;
     case Qgis::SensorThingsEntity::Datastream:
-      return QStringLiteral( "Datastreams" );
+      return u"Datastreams"_s;
     case Qgis::SensorThingsEntity::Sensor:
-      return QStringLiteral( "Sensors" );
+      return u"Sensors"_s;
     case Qgis::SensorThingsEntity::ObservedProperty:
-      return QStringLiteral( "ObservedProperties" );
+      return u"ObservedProperties"_s;
     case Qgis::SensorThingsEntity::Observation:
-      return QStringLiteral( "Observations" );
+      return u"Observations"_s;
     case Qgis::SensorThingsEntity::FeatureOfInterest:
-      return QStringLiteral( "FeaturesOfInterest" );
+      return u"FeaturesOfInterest"_s;
     case Qgis::SensorThingsEntity::MultiDatastream:
-      return QStringLiteral( "MultiDatastreams" );
+      return u"MultiDatastreams"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -385,95 +385,95 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
 
     case Qgis::SensorThingsEntity::Thing:
       // https://docs.ogc.org/is/18-088/18-088.html#thing
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"description"_s,
+               u"properties"_s,
            };
 
     case Qgis::SensorThingsEntity::Location:
       // https://docs.ogc.org/is/18-088/18-088.html#location
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"description"_s,
+               u"properties"_s,
            };
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
       // https://docs.ogc.org/is/18-088/18-088.html#historicallocation
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "time" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"time"_s,
            };
 
     case Qgis::SensorThingsEntity::Datastream:
       // https://docs.ogc.org/is/18-088/18-088.html#datastream
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "unitOfMeasurement" ),
-               QStringLiteral( "observationType" ),
-               QStringLiteral( "properties" ),
-               QStringLiteral( "phenomenonTime" ),
-               QStringLiteral( "resultTime" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"description"_s,
+               u"unitOfMeasurement"_s,
+               u"observationType"_s,
+               u"properties"_s,
+               u"phenomenonTime"_s,
+               u"resultTime"_s,
            };
 
     case Qgis::SensorThingsEntity::Sensor:
       // https://docs.ogc.org/is/18-088/18-088.html#sensor
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "metadata" ),
-               QStringLiteral( "properties" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"description"_s,
+               u"metadata"_s,
+               u"properties"_s,
            };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       // https://docs.ogc.org/is/18-088/18-088.html#observedproperty
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "definition" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"definition"_s,
+               u"description"_s,
+               u"properties"_s,
            };
 
     case Qgis::SensorThingsEntity::Observation:
       // https://docs.ogc.org/is/18-088/18-088.html#observation
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "phenomenonTime" ),
-               QStringLiteral( "result" ),
-               QStringLiteral( "resultTime" ),
-               QStringLiteral( "resultQuality" ),
-               QStringLiteral( "validTime" ),
-               QStringLiteral( "parameters" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"phenomenonTime"_s,
+               u"result"_s,
+               u"resultTime"_s,
+               u"resultQuality"_s,
+               u"validTime"_s,
+               u"parameters"_s,
            };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // https://docs.ogc.org/is/18-088/18-088.html#featureofinterest
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"description"_s,
+               u"properties"_s,
            };
 
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "unitOfMeasurements" ),
-               QStringLiteral( "observationType" ),
-               QStringLiteral( "multiObservationDataTypes" ),
-               QStringLiteral( "properties" ),
-               QStringLiteral( "phenomenonTime" ),
-               QStringLiteral( "resultTime" ),
+      return { u"id"_s,
+               u"selfLink"_s,
+               u"name"_s,
+               u"description"_s,
+               u"unitOfMeasurements"_s,
+               u"observationType"_s,
+               u"multiObservationDataTypes"_s,
+               u"properties"_s,
+               u"phenomenonTime"_s,
+               u"resultTime"_s,
            };
   }
 
@@ -485,8 +485,8 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
   QgsFields fields;
 
   // common fields: https://docs.ogc.org/is/18-088/18-088.html#common-control-information
-  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "selfLink" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( u"id"_s, QMetaType::Type::QString ) );
+  fields.append( QgsField( u"selfLink"_s, QMetaType::Type::QString ) );
 
   switch ( type )
   {
@@ -495,97 +495,97 @@ QgsFields QgsSensorThingsUtils::fieldsForEntityType( Qgis::SensorThingsEntity ty
 
     case Qgis::SensorThingsEntity::Thing:
       // https://docs.ogc.org/is/18-088/18-088.html#thing
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::Location:
       // https://docs.ogc.org/is/18-088/18-088.html#location
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
       // https://docs.ogc.org/is/18-088/18-088.html#historicallocation
-      fields.append( QgsField( QStringLiteral( "time" ), QMetaType::Type::QDateTime ) );
+      fields.append( QgsField( u"time"_s, QMetaType::Type::QDateTime ) );
       break;
 
     case Qgis::SensorThingsEntity::Datastream:
       // https://docs.ogc.org/is/18-088/18-088.html#datastream
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "unitOfMeasurement" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "observationType" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"unitOfMeasurement"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"observationType"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       if ( includeRangeFieldProxies )
       {
-        fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"phenomenonTimeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"phenomenonTimeEnd"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"resultTimeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"resultTimeEnd"_s, QMetaType::Type::QDateTime ) );
       }
       break;
 
     case Qgis::SensorThingsEntity::Sensor:
       // https://docs.ogc.org/is/18-088/18-088.html#sensor
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "metadata" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"metadata"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       // https://docs.ogc.org/is/18-088/18-088.html#observedproperty
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "definition" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"definition"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::Observation:
       // https://docs.ogc.org/is/18-088/18-088.html#observation
       if ( includeRangeFieldProxies )
       {
-        fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"phenomenonTimeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"phenomenonTimeEnd"_s, QMetaType::Type::QDateTime ) );
       }
 
       // TODO -- handle type correctly
-      fields.append( QgsField( QStringLiteral( "result" ), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"result"_s, QMetaType::Type::QString ) );
 
-      fields.append( QgsField( QStringLiteral( "resultTime" ), QMetaType::Type::QDateTime ) );
-      fields.append( QgsField( QStringLiteral( "resultQuality" ), QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"resultTime"_s, QMetaType::Type::QDateTime ) );
+      fields.append( QgsField( u"resultQuality"_s, QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
       if ( includeRangeFieldProxies )
       {
-        fields.append( QgsField( QStringLiteral( "validTimeStart" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "validTimeEnd" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"validTimeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"validTimeEnd"_s, QMetaType::Type::QDateTime ) );
       }
-      fields.append( QgsField( QStringLiteral( "parameters" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"parameters"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // https://docs.ogc.org/is/18-088/18-088.html#featureofinterest
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       break;
 
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
-      fields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "unitOfMeasurements" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "observationType" ), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "multiObservationDataTypes" ), QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
-      fields.append( QgsField( QStringLiteral( "properties" ), QMetaType::Type::QVariantMap, QStringLiteral( "json" ), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"description"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"unitOfMeasurements"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"observationType"_s, QMetaType::Type::QString ) );
+      fields.append( QgsField( u"multiObservationDataTypes"_s, QMetaType::Type::QStringList, QString(), 0, 0, QString(), QMetaType::Type::QString ) );
+      fields.append( QgsField( u"properties"_s, QMetaType::Type::QVariantMap, u"json"_s, 0, 0, QString(), QMetaType::Type::QString ) );
       if ( includeRangeFieldProxies )
       {
-        fields.append( QgsField( QStringLiteral( "phenomenonTimeStart" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "phenomenonTimeEnd" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "resultTimeStart" ), QMetaType::Type::QDateTime ) );
-        fields.append( QgsField( QStringLiteral( "resultTimeEnd" ), QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"phenomenonTimeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"phenomenonTimeEnd"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"resultTimeStart"_s, QMetaType::Type::QDateTime ) );
+        fields.append( QgsField( u"resultTimeEnd"_s, QMetaType::Type::QDateTime ) );
       }
       break;
   }
@@ -607,7 +607,7 @@ QgsFields QgsSensorThingsUtils::fieldsForExpandedEntityType( Qgis::SensorThingsE
     for ( const QgsField &expandedField : expandedFields )
     {
       QgsField renamedExpandedField = expandedField;
-      renamedExpandedField.setName( QStringLiteral( "%1_%2" ).arg( path, expandedField.name() ) );
+      renamedExpandedField.setName( u"%1_%2"_s.arg( path, expandedField.name() ) );
       fields.append( renamedExpandedField );
     }
   }
@@ -627,14 +627,14 @@ QString QgsSensorThingsUtils::geometryFieldForEntityType( Qgis::SensorThingsEnti
       return QString();
 
     case Qgis::SensorThingsEntity::Location:
-      return QStringLiteral( "location" );
+      return u"location"_s;
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
-      return QStringLiteral( "feature" );
+      return u"feature"_s;
 
     case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::MultiDatastream:
-      return QStringLiteral( "observedArea" );
+      return u"observedArea"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -687,13 +687,13 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityT
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
     case Qgis::GeometryType::Point:
-      geometryTypeString = QStringLiteral( "Point" );
+      geometryTypeString = u"Point"_s;
       break;
     case Qgis::GeometryType::Polygon:
-      geometryTypeString = QStringLiteral( "Polygon" );
+      geometryTypeString = u"Polygon"_s;
       break;
     case Qgis::GeometryType::Line:
-      geometryTypeString = QStringLiteral( "LineString" );
+      geometryTypeString = u"LineString"_s;
       break;
 
     case Qgis::GeometryType::Unknown:
@@ -705,7 +705,7 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityT
   if ( filterTarget.isEmpty() )
     return QString();
 
-  return QStringLiteral( "%1/type eq '%2' or %1/geometry/type eq '%2'" ).arg( filterTarget, geometryTypeString );
+  return u"%1/type eq '%2' or %1/geometry/type eq '%2'"_s.arg( filterTarget, geometryTypeString );
 }
 
 QString QgsSensorThingsUtils::filterForExtent( const QString &geometryField, const QgsRectangle &extent )
@@ -713,7 +713,7 @@ QString QgsSensorThingsUtils::filterForExtent( const QString &geometryField, con
   // TODO -- confirm using 'geography' is always correct here
   return ( extent.isNull() || geometryField.isEmpty() )
          ? QString()
-         : QStringLiteral( "geo.intersects(%1, geography'%2')" ).arg( geometryField, extent.asWktPolygon() );
+         : u"geo.intersects(%1, geography'%2')"_s.arg( geometryField, extent.asWktPolygon() );
 }
 
 QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
@@ -729,13 +729,13 @@ QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
   if ( nonEmptyFilters.size() == 1 )
     return nonEmptyFilters.at( 0 );
 
-  return QStringLiteral( "(" ) + nonEmptyFilters.join( QLatin1String( ") and (" ) ) + QStringLiteral( ")" );
+  return u"("_s + nonEmptyFilters.join( ") and ("_L1 ) + u")"_s;
 }
 
 QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback, const QString &authCfg )
 {
   QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsUtils" ) )
+  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsUtils"_s )
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( authCfg );
@@ -748,7 +748,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     case QgsBlockingNetworkRequest::NetworkError:
     case QgsBlockingNetworkRequest::TimeoutError:
     case QgsBlockingNetworkRequest::ServerExceptionError:
-      QgsDebugError( QStringLiteral( "Connection failed: %1" ).arg( networkRequest.errorMessage() ) );
+      QgsDebugError( u"Connection failed: %1"_s.arg( networkRequest.errorMessage() ) );
       return {};
   }
 
@@ -759,7 +759,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     auto rootContent = nlohmann::json::parse( content.content().toStdString() );
     if ( !rootContent.contains( "value" ) )
     {
-      QgsDebugError( QStringLiteral( "No 'value' array in response" ) );
+      QgsDebugError( u"No 'value' array in response"_s );
       return {};
     }
 
@@ -785,29 +785,29 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
 
     if ( !foundMatchingEntity )
     {
-      QgsDebugError( QStringLiteral( "Could not find url for %1" ).arg( qgsEnumValueToKey( type ) ) );
+      QgsDebugError( u"Could not find url for %1"_s.arg( qgsEnumValueToKey( type ) ) );
       return {};
     }
   }
   catch ( const nlohmann::json::parse_error &ex )
   {
-    QgsDebugError( QStringLiteral( "Error parsing response: %1" ).arg( ex.what() ) );
+    QgsDebugError( u"Error parsing response: %1"_s.arg( ex.what() ) );
     return {};
   }
 
   auto getCountForType = [entityBaseUri, type, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long
   {
     // return no features, just the total count
-    QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( entityBaseUri );
+    QString countUri = u"%1?$top=0&$count=true"_s.arg( entityBaseUri );
     Qgis::WkbType wkbType = geometryType == Qgis::GeometryType::Polygon ? Qgis::WkbType::Polygon : ( geometryType == Qgis::GeometryType::Line ? Qgis::WkbType::LineString : Qgis::WkbType::Point );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( type, wkbType );
     if ( !typeFilter.isEmpty() )
-      countUri += QStringLiteral( "&$filter=" ) + typeFilter;
+      countUri += u"&$filter="_s + typeFilter;
 
     const QUrl url( countUri );
 
     QNetworkRequest request( url );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
+    QgsSetRequestInitiatorClass( request, u"QgsSensorThingsSharedData"_s );
 
     QgsBlockingNetworkRequest networkRequest;
     networkRequest.setAuthCfg( authCfg );
@@ -819,7 +819,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     // Handle network errors
     if ( error != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+      QgsDebugError( u"Network error: %1"_s.arg( networkRequest.errorMessage() ) );
       return -1;
     }
     else
@@ -830,7 +830,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
         auto rootContent = nlohmann::json::parse( content.content().toStdString() );
         if ( !rootContent.contains( "@iot.count" ) )
         {
-          QgsDebugError( QStringLiteral( "No '@iot.count' value in response" ) );
+          QgsDebugError( u"No '@iot.count' value in response"_s );
           return -1;
         }
 
@@ -838,7 +838,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
       }
       catch ( const nlohmann::json::parse_error &ex )
       {
-        QgsDebugError( QStringLiteral( "Error parsing response: %1" ).arg( ex.what() ) );
+        QgsDebugError( u"Error parsing response: %1"_s.arg( ex.what() ) );
         return -1;
       }
     }

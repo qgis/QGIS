@@ -24,7 +24,6 @@ A widget for configuration of the properties of a
 #include "qgsfielddomainwidget.h"
 %End
   public:
-
     QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldDomainWidget for the given domain ``type``, with
@@ -88,7 +87,6 @@ A dialog for configuration of the properties of a
 #include "qgsfielddomainwidget.h"
 %End
   public:
-
     explicit QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsFieldDomainDialog for the given domain ``type``, with

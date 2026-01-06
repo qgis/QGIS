@@ -22,7 +22,7 @@
 #include "qgssymbollayerutils.h"
 
 QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol )
-  : QgsFeatureRenderer( QStringLiteral( "embeddedSymbol" ) )
+  : QgsFeatureRenderer( u"embeddedSymbol"_s )
   , mDefaultSymbol( defaultSymbol )
 {
   Q_ASSERT( mDefaultSymbol );
@@ -104,26 +104,26 @@ QgsFeatureRenderer::Capabilities QgsEmbeddedSymbolRenderer::capabilities()
 
 QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  QDomElement symbolsElem = element.firstChildElement( QStringLiteral( "symbols" ) );
+  QDomElement symbolsElem = element.firstChildElement( u"symbols"_s );
   if ( symbolsElem.isNull() )
     return nullptr;
 
   QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
 
-  if ( !symbolMap.contains( QStringLiteral( "0" ) ) )
+  if ( !symbolMap.contains( u"0"_s ) )
     return nullptr;
 
-  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( symbolMap.take( QStringLiteral( "0" ) ) );
+  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( symbolMap.take( u"0"_s ) );
   return r;
 }
 
 QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  if ( renderer->type() == QLatin1String( "embeddedSymbol" ) )
+  if ( renderer->type() == "embeddedSymbol"_L1 )
   {
     return dynamic_cast<QgsEmbeddedSymbolRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == QLatin1String( "singleSymbol" ) )
+  else if ( renderer->type() == "singleSymbol"_L1 )
   {
     auto symbolRenderer = std::make_unique< QgsEmbeddedSymbolRenderer >( static_cast< const QgsSingleSymbolRenderer * >( renderer )->symbol()->clone() );
     renderer->copyRendererData( symbolRenderer.get() );
@@ -138,11 +138,11 @@ QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const
 QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "embeddedSymbol" ) );
+  rendererElem.setAttribute( u"type"_s, u"embeddedSymbol"_s );
 
   QgsSymbolMap symbols;
-  symbols[QStringLiteral( "0" )] = mDefaultSymbol.get();
-  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
+  symbols[u"0"_s] = mDefaultSymbol.get();
+  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, u"symbols"_s, doc, context );
   rendererElem.appendChild( symbolsElem );
 
   saveRendererData( doc, rendererElem, context );

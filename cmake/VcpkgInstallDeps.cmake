@@ -74,7 +74,7 @@ function(fixup_shebang INPUT_FILE OUTPUT_VARIABLE)
   set(${OUTPUT_VARIABLE} ${OUTPUT_FILE} PARENT_SCOPE)
 endfunction()
 
-if(NOT MSVC)
+if(NOT MSVC AND NOT EMSCRIPTEN)
   set(BUNDLED_PROGRAMS
     "tools/gdal/gdal_contour"
     "tools/gdal/gdal_create"

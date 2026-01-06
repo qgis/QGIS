@@ -57,11 +57,11 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   mTreeView->expand( firstGroup );
 
   QgsSettings settings;
-  mSplitter->restoreState( settings.value( QStringLiteral( "history/splitterState%1" ).arg( providerId ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"history/splitterState%1"_s.arg( providerId ) ).toByteArray() );
 
   connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "history/splitterState%1" ).arg( providerId ), mSplitter->saveState() );
+    settings.setValue( u"history/splitterState%1"_s.arg( providerId ), mSplitter->saveState() );
   } );
 }
 

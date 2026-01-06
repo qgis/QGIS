@@ -145,9 +145,12 @@ class QgsElevationProfileWidget : public QWidget
     void onProjectElevationPropertiesChanged();
     void showSubsectionsTriggered();
     void editSubsectionsSymbology();
+    void syncProjectToggled( bool active );
 
   private:
     void setMainCanvas( QgsMapCanvas *canvas );
+    void setupLayerTreeView( bool resetTree = true );
+    static void copyProjectTree( QgsLayerTree *destination );
 
     QgsElevationProfileCanvas *mCanvas = nullptr;
     QPointer< QgsElevationProfile > mProfile;
@@ -170,6 +173,8 @@ class QgsElevationProfileWidget : public QWidget
     QAction *mLockRatioAction = nullptr;
     QAction *mShowSubsectionsAction = nullptr;
     QAction *mSubsectionsSymbologyAction = nullptr;
+    QAction *mSyncLayerTreeAction = nullptr;
+    QAction *mActionAddGroup = nullptr;
     QMenu *mDistanceUnitMenu = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
@@ -199,6 +204,8 @@ class QgsElevationProfileWidget : public QWidget
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
 
     std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
+
+    QPointer< QgsLayerTree > mLayerTree;
 };
 
 

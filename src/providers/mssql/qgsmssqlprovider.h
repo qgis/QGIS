@@ -106,6 +106,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     bool deleteFeatures( const QgsFeatureIds &id ) override;

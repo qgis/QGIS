@@ -47,9 +47,9 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
   buttonGroup->setExclusive( true );
 
   QgsSettings settings;
-  const double lastWidth = settings.value( QStringLiteral( "LayoutDesigner/lastItemWidth" ), QStringLiteral( "50" ) ).toDouble();
-  const double lastHeight = settings.value( QStringLiteral( "LayoutDesigner/lastItemHeight" ), QStringLiteral( "50" ) ).toDouble();
-  const Qgis::LayoutUnit lastSizeUnit = settings.enumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), Qgis::LayoutUnit::Millimeters );
+  const double lastWidth = settings.value( u"LayoutDesigner/lastItemWidth"_s, u"50"_s ).toDouble();
+  const double lastHeight = settings.value( u"LayoutDesigner/lastItemHeight"_s, u"50"_s ).toDouble();
+  const Qgis::LayoutUnit lastSizeUnit = settings.enumValue( u"LayoutDesigner/lastSizeUnit"_s, Qgis::LayoutUnit::Millimeters );
   setItemSize( QgsLayoutSize( lastWidth, lastHeight, lastSizeUnit ) );
 
   mPosUnitsComboBox->linkToWidget( mXPosSpin );
@@ -192,5 +192,5 @@ void QgsLayoutItemPropertiesDialog::setLayout( QgsLayout *layout )
 
 void QgsLayoutItemPropertiesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_items_options.html#creating-a-layout-item" ) );
+  QgsHelp::openHelp( u"print_composer/composer_items/composer_items_options.html#creating-a-layout-item"_s );
 }

@@ -24,7 +24,7 @@
 
 #include "moc_qgsmaptoolshaperegularpolygoncenterpoint.cpp"
 
-const QString QgsMapToolShapeRegularPolygonCenterPointMetadata::TOOL_ID = QStringLiteral( "regular-polygon-from-center-point" );
+const QString QgsMapToolShapeRegularPolygonCenterPointMetadata::TOOL_ID = u"regular-polygon-from-center-point"_s;
 
 QString QgsMapToolShapeRegularPolygonCenterPointMetadata::id() const
 {
@@ -38,7 +38,7 @@ QString QgsMapToolShapeRegularPolygonCenterPointMetadata::name() const
 
 QIcon QgsMapToolShapeRegularPolygonCenterPointMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRegularPolygonCenterPoint.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRegularPolygonCenterPoint.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRegularPolygonCenterPointMetadata::category() const

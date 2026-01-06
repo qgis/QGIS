@@ -158,7 +158,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see vectorLayerTools()
      */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
-    // TODO QGIS 4.0 - rename vlTools to tools
+    // TODO QGIS 5.0 - rename vlTools to tools
 
     /**
      * Returns the associated vector layer tools.

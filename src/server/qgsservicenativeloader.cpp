@@ -38,7 +38,6 @@ typedef void unloadHook_t( QgsServiceModule * );
 class QgsServiceNativeModuleEntry
 {
   public:
-
     /**
      * Constructor for QgsServiceNativeModuleEntry.
      * \param location Relative path of the module
@@ -90,7 +89,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
   }
 
   QLibrary lib( location );
-  //QgsDebugMsgLevel( QStringLiteral( "Loading native module %1" ).arg( location ), 2 );
+  //QgsDebugMsgLevel( u"Loading native module %1"_s.arg( location ), 2 );
   qDebug() << QString( "Loading native module %1" ).arg( location );
   if ( !lib.load() )
   {

@@ -43,13 +43,6 @@ def __qcolor_repr__(self: QColor):
 # PyQt doesn't provide __repr__ for QColor, but it's highly desirable!
 QColor.__repr__ = __qcolor_repr__
 
-if (QT_VERSION < 0x060000):
-  from PyQt5.QtWidgets import QAction as _QAction, QActionGroup as _QActionGroup, QShortcut as _QShortcut
-  QAction = _QAction
-  QActionGroup = _QActionGroup
-  QShortcut = _QShortcut
-
-
 if @QT_VERSION_MAJOR@ == 6:
   # patch back in Qt flags removed in PyQt
   QFileSystemModel.Options = lambda flags=0: QFileSystemModel.Option(flags)

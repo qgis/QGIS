@@ -84,7 +84,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   QString bearingLineSymbolXml = QgsGpsCanvasBridge::settingBearingLineSymbol->value();
   if ( bearingLineSymbolXml.isEmpty() )
   {
-    bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
+    bearingLineSymbolXml = settings.value( u"bearingLineSymbol"_s, QVariant(), QgsSettings::Gps ).toString();
   }
 
   if ( !bearingLineSymbolXml.isEmpty() )
@@ -116,18 +116,18 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsOptionsWidget::refreshDevices );
 
-  mCboAcquisitionInterval->addItem( QStringLiteral( "0" ), 0 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "2" ), 2 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "5" ), 5 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "10" ), 10 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "15" ), 15 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "30" ), 30 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "60" ), 60 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "0" ), 0 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "3" ), 3 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
+  mCboAcquisitionInterval->addItem( u"0"_s, 0 );
+  mCboAcquisitionInterval->addItem( u"2"_s, 2 );
+  mCboAcquisitionInterval->addItem( u"5"_s, 5 );
+  mCboAcquisitionInterval->addItem( u"10"_s, 10 );
+  mCboAcquisitionInterval->addItem( u"15"_s, 15 );
+  mCboAcquisitionInterval->addItem( u"30"_s, 30 );
+  mCboAcquisitionInterval->addItem( u"60"_s, 60 );
+  mCboDistanceThreshold->addItem( u"0"_s, 0 );
+  mCboDistanceThreshold->addItem( u"3"_s, 3 );
+  mCboDistanceThreshold->addItem( u"5"_s, 5 );
+  mCboDistanceThreshold->addItem( u"10"_s, 10 );
+  mCboDistanceThreshold->addItem( u"15"_s, 15 );
 
   mAcquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
   mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
@@ -190,36 +190,36 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   else
   {
     // legacy settings
-    const QString portMode = settings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
+    const QString portMode = settings.value( u"portMode"_s, "scanPorts", QgsSettings::Gps ).toString();
 
-    if ( portMode == QLatin1String( "scanPorts" ) )
+    if ( portMode == "scanPorts"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Automatic;
     }
-    else if ( portMode == QLatin1String( "internalGPS" ) )
+    else if ( portMode == "internalGPS"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Internal;
     }
-    else if ( portMode == QLatin1String( "explicitPort" ) )
+    else if ( portMode == "explicitPort"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Serial;
     }
-    else if ( portMode == QLatin1String( "gpsd" ) )
+    else if ( portMode == "gpsd"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Gpsd;
     }
 
-    gpsdHost = settings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString();
-    gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
-    gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
+    gpsdHost = settings.value( u"gpsdHost"_s, "localhost", QgsSettings::Gps ).toString();
+    gpsdPort = settings.value( u"gpsdPort"_s, 2947, QgsSettings::Gps ).toInt();
+    gpsdDevice = settings.value( u"gpsdDevice"_s, QVariant(), QgsSettings::Gps ).toString();
 
     acquisitionInterval = QgsGpsLogger::settingsAcquisitionInterval->value();
     distanceThreshold = QgsGpsLogger::settingsDistanceThreshold->value();
 
-    bearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
+    bearingFromTravelDirection = settings.value( u"calculateBearingFromTravel"_s, "false", QgsSettings::Gps ).toBool();
 
-    recenteringThreshold = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
-    rotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
+    recenteringThreshold = settings.value( u"mapExtentMultiplier"_s, "50", QgsSettings::Gps ).toInt();
+    rotateInterval = settings.value( u"rotateMapInterval"_s, 0, QgsSettings::Gps ).toInt();
 
     applyLeapSeconds = QgsGpsLogger::settingsApplyLeapSeconds->value();
     leapSeconds = QgsGpsLogger::settingsLeapSecondsCorrection->value();
@@ -316,7 +316,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
 QString QgsGpsOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#gps-options" );
+  return u"introduction/qgis_configuration.html#gps-options"_s;
 }
 
 void QgsGpsOptionsWidget::apply()
@@ -324,7 +324,7 @@ void QgsGpsOptionsWidget::apply()
   if ( QgsSymbol *markerSymbol = mGpsMarkerSymbolButton->symbol() )
   {
     QDomDocument doc;
-    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "location-marker-symbol" ), markerSymbol, doc, QgsReadWriteContext() );
+    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( u"location-marker-symbol"_s, markerSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
     QgsGpsMarker::settingLocationMarkerSymbol->setValue( doc.toString( 0 ) );
   }
@@ -333,7 +333,7 @@ void QgsGpsOptionsWidget::apply()
   if ( QgsSymbol *lineSymbol = mBearingLineStyleButton->symbol() )
   {
     QDomDocument doc;
-    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-bearing-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
+    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( u"gps-bearing-symbol"_s, lineSymbol, doc, QgsReadWriteContext() );
     doc.appendChild( elem );
     QgsGpsCanvasBridge::settingBearingLineSymbol->setValue( doc.toString( 0 ) );
   }
@@ -415,7 +415,7 @@ void QgsGpsOptionsWidget::refreshDevices()
   {
     // legacy setting
     const QgsSettings settings;
-    serialDevice = settings.value( QStringLiteral( "lastPort" ), "", QgsSettings::Gps ).toString();
+    serialDevice = settings.value( u"lastPort"_s, "", QgsSettings::Gps ).toString();
   }
 
   const int idx = mCboDevices->findData( serialDevice );
@@ -444,13 +444,13 @@ void QgsGpsOptionsWidget::updateTimeZones()
 // QgsGpsOptionsFactory
 //
 QgsGpsOptionsFactory::QgsGpsOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "GPS" ), QIcon(), QStringLiteral( "gps" ) )
+  : QgsOptionsWidgetFactory( tr( "GPS" ), QIcon(), u"gps"_s )
 {
 }
 
 QIcon QgsGpsOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGps.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGps.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsGpsOptionsFactory::createWidget( QWidget *parent ) const
@@ -460,5 +460,5 @@ QgsOptionsPageWidget *QgsGpsOptionsFactory::createWidget( QWidget *parent ) cons
 
 QString QgsGpsOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsLocatorSettings" );
+  return u"mOptionsLocatorSettings"_s;
 }

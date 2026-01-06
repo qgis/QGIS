@@ -42,21 +42,21 @@ QgsMeshTerrainSettings *QgsMeshTerrainSettings::clone() const
 
 QString QgsMeshTerrainSettings::type() const
 {
-  return QStringLiteral( "mesh" );
+  return u"mesh"_s;
 }
 
 void QgsMeshTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  if ( element.hasAttribute( QStringLiteral( "layer" ) ) )
+  if ( element.hasAttribute( u"layer"_s ) )
   {
-    mLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "layer" ) ) );
+    mLayer = QgsMapLayerRef( element.attribute( u"layer"_s ) );
     mSymbol->readXml( element.firstChildElement( "symbol" ), context );
   }
   else
   {
     // restore old project
-    const QDomElement elemTerrainGenerator = element.firstChildElement( QStringLiteral( "generator" ) );
-    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( QStringLiteral( "layer" ) ) );
+    const QDomElement elemTerrainGenerator = element.firstChildElement( u"generator"_s );
+    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( u"layer"_s ) );
     mSymbol->readXml( elemTerrainGenerator.firstChildElement( "symbol" ), context );
   }
 
@@ -65,7 +65,7 @@ void QgsMeshTerrainSettings::readXml( const QDomElement &element, const QgsReadW
 
 void QgsMeshTerrainSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+  element.setAttribute( u"layer"_s, mLayer.layerId );
 
   {
     QDomElement elemSymbol = element.ownerDocument().createElement( "symbol" );

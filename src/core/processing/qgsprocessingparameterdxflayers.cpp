@@ -85,21 +85,21 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
       {
         const QVariantMap layerMap = variantLayer.toMap();
 
-        if ( !layerMap.contains( QStringLiteral( "layer" ) ) &&
-             !layerMap.contains( QStringLiteral( "attributeIndex" ) ) &&
-             !layerMap.contains( QStringLiteral( "overriddenLayerName" ) ) &&
-             !layerMap.contains( QStringLiteral( "buildDataDefinedBlocks" ) ) &&
-             !layerMap.contains( QStringLiteral( "dataDefinedBlocksMaximumNumberOfClasses" ) ) )
+        if ( !layerMap.contains( u"layer"_s ) &&
+             !layerMap.contains( u"attributeIndex"_s ) &&
+             !layerMap.contains( u"overriddenLayerName"_s ) &&
+             !layerMap.contains( u"buildDataDefinedBlocks"_s ) &&
+             !layerMap.contains( u"dataDefinedBlocksMaximumNumberOfClasses"_s ) )
           return false;
 
         if ( !context )
           return true;
 
-        vectorLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context ) );
+        vectorLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerMap.value( u"layer"_s ).toString(), *context ) );
         if ( !vectorLayer || !vectorLayer->isSpatial() )
           return false;
 
-        if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
+        if ( layerMap.value( u"attributeIndex"_s ).toInt() >= vectorLayer->fields().count() )
           return false;
       }
       else
@@ -142,18 +142,18 @@ QString QgsProcessingParameterDxfLayers::valueAsPythonString( const QVariant &va
   for ( const QgsDxfExport::DxfLayer &layer : layers )
   {
     QStringList layerDefParts;
-    layerDefParts << QStringLiteral( "'layer': " ) + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer.layer()->source() ) );
+    layerDefParts << u"'layer': "_s + QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer.layer()->source() ) );
 
     if ( layer.layerOutputAttributeIndex() >= -1 )
-      layerDefParts << QStringLiteral( "'attributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.layerOutputAttributeIndex() );
+      layerDefParts << u"'attributeIndex': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.layerOutputAttributeIndex() );
 
-    layerDefParts << QStringLiteral( "'overriddenLayerName': " ) + QgsProcessingUtils::stringToPythonLiteral( layer.overriddenName() );
+    layerDefParts << u"'overriddenLayerName': "_s + QgsProcessingUtils::stringToPythonLiteral( layer.overriddenName() );
 
-    layerDefParts << QStringLiteral( "'buildDataDefinedBlocks': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.buildDataDefinedBlocks() );
+    layerDefParts << u"'buildDataDefinedBlocks': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.buildDataDefinedBlocks() );
 
-    layerDefParts << QStringLiteral( "'dataDefinedBlocksMaximumNumberOfClasses': " ) + QgsProcessingUtils::variantToPythonLiteral( layer.dataDefinedBlocksMaximumNumberOfClasses() );
+    layerDefParts << u"'dataDefinedBlocksMaximumNumberOfClasses': "_s + QgsProcessingUtils::variantToPythonLiteral( layer.dataDefinedBlocksMaximumNumberOfClasses() );
 
-    const QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
+    const QString layerDef = u"{%1}"_s.arg( layerDefParts.join( ',' ) );
     parts << layerDef;
   }
   return parts.join( ',' ).prepend( '[' ).append( ']' );
@@ -165,7 +165,7 @@ QString QgsProcessingParameterDxfLayers::asPythonString( QgsProcessing::PythonOu
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterDxfLayers('%1', %2)" )
+      QString code = u"QgsProcessingParameterDxfLayers('%1', %2)"_s
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
@@ -229,7 +229,7 @@ QList<QgsDxfExport::DxfLayer> QgsProcessingParameterDxfLayers::parameterAsLayers
 
 QgsDxfExport::DxfLayer QgsProcessingParameterDxfLayers::variantMapAsLayer( const QVariantMap &layerVariantMap, QgsProcessingContext &context )
 {
-  const QVariant layerVariant = layerVariantMap[ QStringLiteral( "layer" ) ];
+  const QVariant layerVariant = layerVariantMap[ u"layer"_s ];
 
   QgsVectorLayer *inputLayer = nullptr;
   if ( ( inputLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )
@@ -246,10 +246,10 @@ QgsDxfExport::DxfLayer QgsProcessingParameterDxfLayers::variantMapAsLayer( const
   }
 
   QgsDxfExport::DxfLayer dxfLayer( inputLayer,
-                                   layerVariantMap[ QStringLiteral( "attributeIndex" ) ].toInt(),
-                                   layerVariantMap[ QStringLiteral( "buildDataDefinedBlocks" ) ].toBool(),
-                                   layerVariantMap[ QStringLiteral( "dataDefinedBlocksMaximumNumberOfClasses" ) ].toInt(),
-                                   layerVariantMap[ QStringLiteral( "overriddenLayerName" ) ].toString() );
+                                   layerVariantMap[ u"attributeIndex"_s ].toInt(),
+                                   layerVariantMap[ u"buildDataDefinedBlocks"_s ].toBool(),
+                                   layerVariantMap[ u"dataDefinedBlocksMaximumNumberOfClasses"_s ].toInt(),
+                                   layerVariantMap[ u"overriddenLayerName"_s ].toString() );
   return dxfLayer;
 }
 
@@ -259,10 +259,10 @@ QVariantMap QgsProcessingParameterDxfLayers::layerAsVariantMap( const QgsDxfExpo
   if ( !layer.layer() )
     return vm;
 
-  vm[ QStringLiteral( "layer" )] = layer.layer()->id();
-  vm[ QStringLiteral( "attributeIndex" ) ] = layer.layerOutputAttributeIndex();
-  vm[ QStringLiteral( "overriddenLayerName" ) ] = layer.overriddenName();
-  vm[ QStringLiteral( "buildDataDefinedBlocks" ) ] = layer.buildDataDefinedBlocks();
-  vm[ QStringLiteral( "dataDefinedBlocksMaximumNumberOfClasses" ) ] = layer.dataDefinedBlocksMaximumNumberOfClasses();
+  vm[ u"layer"_s] = layer.layer()->id();
+  vm[ u"attributeIndex"_s ] = layer.layerOutputAttributeIndex();
+  vm[ u"overriddenLayerName"_s ] = layer.overriddenName();
+  vm[ u"buildDataDefinedBlocks"_s ] = layer.buildDataDefinedBlocks();
+  vm[ u"dataDefinedBlocksMaximumNumberOfClasses"_s ] = layer.dataDefinedBlocksMaximumNumberOfClasses();
   return vm;
 }

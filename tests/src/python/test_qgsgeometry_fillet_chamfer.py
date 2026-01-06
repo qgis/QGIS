@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsGeometry.
+"""Qgis Unit tests for QgsGeometry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -819,7 +819,7 @@ class TestQgsGeometry(QgisTestCase):
         self.assertFalse(result.isEmpty())
 
         # After fix, the exact tangent points are now included
-        expected_wkt = "Polygon ((0 0, 0.9 0, 0.92 0, 0.93 0.01, 0.95 0.01, 0.96 0.02, 0.98 0.04, 0.99 0.05, 0.99 0.07, 1 0.08, 1 0.1, 1 1, 0 1, 0 0))"
+        expected_wkt = "Polygon ((0 0, 0.9 0, 0.92 0, 0.94 0.01, 0.96 0.02, 0.97 0.03, 0.98 0.04, 0.99 0.06, 1 0.08, 1 0.1, 1 1, 0 1, 0 0))"
         self.assertEqual(result.asWkt(2), expected_wkt)
 
     def test_polygon_geometry_handling_fillet_first_vertex(self):

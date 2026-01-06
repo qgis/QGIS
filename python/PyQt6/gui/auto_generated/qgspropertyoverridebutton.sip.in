@@ -30,7 +30,6 @@ layouts.
 #include "qgspropertyoverridebutton.h"
 %End
   public:
-
     QgsPropertyOverrideButton( QWidget *parent /TransferThis/ = 0, const QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsPropertyOverrideButton.

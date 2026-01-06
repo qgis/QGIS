@@ -84,7 +84,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     QStringList watchedDirs()
     {
       QStringList l;
-      l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" );
+      l << u"cellhd"_s << u"vector"_s << u"tgis"_s;
       return l;
     }
     // names of

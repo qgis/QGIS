@@ -680,7 +680,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool removeEntry( const QString &scope, const QString &key );
 
     /**
-     * Returns a list of child keys with values which exist within the the specified \a scope and \a key.
+     * Returns a list of child keys with values which exist within the specified \a scope and \a key.
      *
      * This method does not return keys that contain other keys. See subkeyList() to retrieve keys
      * which contain other keys.
@@ -690,7 +690,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /**
-     * Returns a list of child keys which contain other keys that exist within the the specified \a scope and \a key.
+     * Returns a list of child keys which contain other keys that exist within the specified \a scope and \a key.
      *
      * This method only returns keys with keys, it will not return keys that contain only values. See
      * entryList() to retrieve keys with values.
@@ -1407,7 +1407,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void removeMapLayers( const QStringList &layerIds );
 
-    //TODO QGIS 4.0 - add PyName alias to avoid list type conversion error
+    //TODO QGIS 5.0 - add PyName alias to avoid list type conversion error
 
     /**
      * \brief
@@ -1826,8 +1826,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
+    QString str = u"<QgsProject: '%1'%2>"_s.arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? u" (singleton instance)"_s : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -2188,7 +2188,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerRemoved( const QString &layerId );
 
-    //TODO QGIS 4.0 - rename to past tense
+    //TODO QGIS 5.0 - rename to past tense
 
     /**
      * Emitted when all layers are removed, before layersWillBeRemoved() and
@@ -2219,14 +2219,27 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void layerWasAdded( QgsMapLayer *layer );
 
     /**
-     * Emitted, when a layer was added to the registry and the legend.
+     * Emitted when \a layers were added to the registry and the legend.
+     *
      * Layers can also be private layers, which are signalled by
      * layersAdded() and layerWasAdded() but will not be
      * advertised by this signal.
      *
      * \param layers List of QgsMapLayer which were added to the legend.
+     *
+     * \see layersAddedWithoutLegend()
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Emitted when \a layers were added to the registry without adding to the legend.
+     *
+     * \param layers List of QgsMapLayer which were added to the project but not the legend.
+     *
+     * \see legendLayersAdded()
+     * \since QGIS 4.0
+     */
+    void layersAddedWithoutLegend( const QList<QgsMapLayer *> &layers );
 
     /**
      * Emitted when the project dirty status changes.
@@ -2271,7 +2284,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
-    // TODO QGIS 4.0 - rename b to dirty
+    // TODO QGIS 5.0 - rename b to dirty
 
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will

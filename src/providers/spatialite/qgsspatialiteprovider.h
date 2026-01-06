@@ -23,7 +23,6 @@ extern "C"
 #include <sys/types.h>
 #include <spatialite.h>
 #include <spatialite/gaiageo.h>
-
 }
 
 #include "qgsvectordataprovider.h"
@@ -112,6 +111,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
     bool isValid() const override;
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
@@ -173,7 +173,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
         QString errorMessage() const
         {
-          return !errMsg.isEmpty() ? errMsg : QStringLiteral( "unknown cause" );
+          return !errMsg.isEmpty() ? errMsg : u"unknown cause"_s;
         }
 
       private:

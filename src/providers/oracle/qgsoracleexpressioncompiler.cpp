@@ -56,28 +56,28 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
           switch ( bin->op() )
           {
             case QgsExpressionNodeBinaryOperator::boPow:
-              result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
+              result = u"power(%1,%2)"_s.arg( op1, op2 );
               return Complete;
 
             case QgsExpressionNodeBinaryOperator::boRegexp:
-              result = QStringLiteral( "regexp_like(%1,%2)" ).arg( op1, op2 );
+              result = u"regexp_like(%1,%2)"_s.arg( op1, op2 );
               return Complete;
 
             case QgsExpressionNodeBinaryOperator::boILike:
-              result = QStringLiteral( "lower(%1) LIKE lower(%2) ESCAPE '\\'" ).arg( op1, op2 );
+              result = u"lower(%1) LIKE lower(%2) ESCAPE '\\'"_s.arg( op1, op2 );
               return Complete;
 
             case QgsExpressionNodeBinaryOperator::boNotILike:
-              result = QStringLiteral( "NOT lower(%1) LIKE lower(%2) ESCAPE '\\'" ).arg( op1, op2 );
+              result = u"NOT lower(%1) LIKE lower(%2) ESCAPE '\\'"_s.arg( op1, op2 );
               return Complete;
 
             case QgsExpressionNodeBinaryOperator::boIntDiv:
-              result = QStringLiteral( "FLOOR(%1 / %2)" ).arg( op1, op2 );
+              result = u"FLOOR(%1 / %2)"_s.arg( op1, op2 );
               return Complete;
 
 
             case QgsExpressionNodeBinaryOperator::boMod:
-              result = QStringLiteral( "MOD(%1,%2)" ).arg( op1, op2 );
+              result = u"MOD(%1,%2)"_s.arg( op1, op2 );
               return Complete;
 
             default:
@@ -97,7 +97,7 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
-      if ( fd->name() == QLatin1String( "make_datetime" ) )
+      if ( fd->name() == "make_datetime"_L1 )
       {
         const auto constList = n->args()->list();
         for ( const QgsExpressionNode *ln : constList )
@@ -131,7 +131,7 @@ QString QgsOracleExpressionCompiler::quotedValue( const QVariant &value, bool &o
   {
     case QMetaType::Type::Bool:
       //no boolean literal support in Oracle, so fake it
-      return value.toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
+      return value.toBool() ? u"(1=1)"_s : u"(1=0)"_s;
 
     default:
       return QgsOracleConn::quotedValue( value );
@@ -166,9 +166,9 @@ QString QgsOracleExpressionCompiler::sqlFunctionFromFunctionName( const QString 
 QStringList QgsOracleExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == QLatin1String( "make_datetime" ) )
+  if ( fnName == "make_datetime"_L1 )
   {
-    args = QStringList( QStringLiteral( "TIMESTAMP '%1-%2-%3 %4:%5:%6'" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"TIMESTAMP '%1-%2-%3 %4:%5:%6'"_s.arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
   }
   return args;
 }

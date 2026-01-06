@@ -94,7 +94,6 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     Q_GADGET
 
   public:
-
     /**
      * A list of layers and feature ids for each of these layers.
      * In C++, the member `ids` can be accessed directly.
@@ -174,7 +173,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer peroperties
+      AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer properties
     };
     Q_DECLARE_FLAGS( Flags, Flag )
     Q_FLAG( Flags )
@@ -342,7 +341,6 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
-
     /**
      * Returns all layers and feature ids.
      *

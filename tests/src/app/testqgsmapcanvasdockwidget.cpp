@@ -56,9 +56,9 @@ TestQgsMapCanvasDockWidget::TestQgsMapCanvasDockWidget() = default;
 void TestQgsMapCanvasDockWidget::initTestCase()
 {
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -74,7 +74,7 @@ void TestQgsMapCanvasDockWidget::testNoSync()
 {
   // canvases should be completely independent
   QgsMapCanvas mainCanvas;
-  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
   mainCanvas.resize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -83,9 +83,9 @@ void TestQgsMapCanvasDockWidget::testNoSync()
   double testScalingFactor = 44823779 / mainCanvas.scale();
   QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
-  QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
+  QgsMapCanvasDockWidget dock( u"dock"_s );
   dock.setMainCanvas( &mainCanvas );
-  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
   dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -127,7 +127,7 @@ void TestQgsMapCanvasDockWidget::testNoSync()
 void TestQgsMapCanvasDockWidget::testScaleSync()
 {
   QgsMapCanvas mainCanvas;
-  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
   mainCanvas.setFixedSize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -136,9 +136,9 @@ void TestQgsMapCanvasDockWidget::testScaleSync()
   double testScalingFactor = 44823779 / mainCanvas.scale();
   QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
-  QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
+  QgsMapCanvasDockWidget dock( u"dock"_s );
   dock.setMainCanvas( &mainCanvas );
-  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
   dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -208,7 +208,7 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
 {
   // canvases should be completely independent
   QgsMapCanvas mainCanvas;
-  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
   mainCanvas.setFixedSize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -217,9 +217,9 @@ void TestQgsMapCanvasDockWidget::testCenterSync()
   double testScalingFactor = 44823779 / mainCanvas.scale();
   QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
-  QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
+  QgsMapCanvasDockWidget dock( u"dock"_s );
   dock.setMainCanvas( &mainCanvas );
-  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
   dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -272,7 +272,7 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
 {
   // canvases should be completely independent
   QgsMapCanvas mainCanvas;
-  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mainCanvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   mainCanvas.setFrameStyle( QFrame::NoFrame );
   mainCanvas.setFixedSize( 600, 600 );
   mainCanvas.setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );
@@ -281,9 +281,9 @@ void TestQgsMapCanvasDockWidget::testScaleAndCenterSync()
   double testScalingFactor = 44823779 / mainCanvas.scale();
   QGSCOMPARENEAR( mainCanvas.scale() * testScalingFactor, 44823779, 10000 );
 
-  QgsMapCanvasDockWidget dock( QStringLiteral( "dock" ) );
+  QgsMapCanvasDockWidget dock( u"dock"_s );
   dock.setMainCanvas( &mainCanvas );
-  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  dock.mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
   dock.mapCanvas()->setFrameStyle( QFrame::NoFrame );
   dock.setFixedSize( 600, 600 );
   dock.mapCanvas()->setExtent( QgsRectangle( -14839703, 2282029, -7723928, 6293534 ) );

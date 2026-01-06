@@ -22,7 +22,6 @@ Definition of a parameter with basic conversion methods.
 #include "qgsserverparameters.h"
 %End
   public:
-
     QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameterDefinition.
@@ -307,7 +306,6 @@ received from the client.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsServerParameters();
 %Docstring
 Constructor.
@@ -410,7 +408,6 @@ Returns VERSION parameter as a string or an empty string if not defined.
 %End
 
   protected:
-
     virtual bool loadParameter( const QString &name, const QString &value );
 %Docstring
 Loads a parameter with a specific value. This method should be

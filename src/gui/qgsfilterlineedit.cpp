@@ -139,7 +139,7 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
 
   if ( isNull() )
   {
-    setStyleSheet( QStringLiteral( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
+    setStyleSheet( u"QLineEdit { font: italic; color: gray; } %1"_s.arg( mStyleSheet ) );
     emit valueChanged( QString() );
   }
   else
@@ -185,7 +185,7 @@ void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
   if ( showSpinner )
   {
     if ( !mBusySpinnerAnimatedIcon )
-      mBusySpinnerAnimatedIcon = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), this );
+      mBusySpinnerAnimatedIcon = new QgsAnimatedIcon( QgsApplication::iconPath( u"/mIconLoading.gif"_s ), this );
 
     mBusySpinnerAnimatedIcon->connectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
   }

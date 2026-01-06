@@ -25,7 +25,7 @@ QgsAttributeEditorElement *QgsAttributeEditorSpacerElement::clone( QgsAttributeE
 void QgsAttributeEditorSpacerElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc );
-  elem.setAttribute( QStringLiteral( "drawLine" ), mDrawLine ? 1 : 0 );
+  elem.setAttribute( u"drawLine"_s, mDrawLine ? 1 : 0 );
 }
 
 void QgsAttributeEditorSpacerElement::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
@@ -36,14 +36,14 @@ void QgsAttributeEditorSpacerElement::loadConfiguration( const QDomElement &elem
   Q_UNUSED( fields );
 
   bool ok;
-  const bool drawLine = element.attribute( QStringLiteral( "drawLine" ) ).toInt( &ok );
+  const bool drawLine = element.attribute( u"drawLine"_s ).toInt( &ok );
   if ( ok )
     mDrawLine = drawLine;
 }
 
 QString QgsAttributeEditorSpacerElement::typeIdentifier() const
 {
-  return QStringLiteral( "attributeEditorSpacerElement" );
+  return u"attributeEditorSpacerElement"_s;
 }
 
 bool QgsAttributeEditorSpacerElement::drawLine() const
