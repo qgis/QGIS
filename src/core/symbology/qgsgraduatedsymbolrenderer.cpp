@@ -515,8 +515,8 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       double lowerValue = rangeElem.attribute( u"lower"_s ).toDouble();
       double upperValue = rangeElem.attribute( u"upper"_s ).toDouble();
       QString symbolName = rangeElem.attribute( u"symbol"_s );
-      QString label = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ), rangeElem.attribute( u"label"_s ) );
-      QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ) + " source " + rangeElem.attribute( u"label"_s ), 3 );
+      QString label = context.projectTranslator()->translate( u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ), rangeElem.attribute( u"label"_s ) );
+      QgsDebugMsgLevel( "context" + u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ) + " source " + rangeElem.attribute( u"label"_s ), 3 );
 
       bool render = rangeElem.attribute( u"render"_s, u"true"_s ) != "false"_L1;
       QString uuid = rangeElem.attribute( u"uuid"_s, QString::number( i++ ) );

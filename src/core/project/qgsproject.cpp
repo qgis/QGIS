@@ -675,14 +675,14 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
             //constraint description
             if ( !field.constraints().constraintDescription().isEmpty() )
-              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:constraintdescriptions" ).arg( vlayer->id() ), field.constraints().constraintDescription() );
+              translationContext->registerTranslation( u"project:layers:%1:constraintdescriptions"_s.arg( vlayer->id() ), field.constraints().constraintDescription() );
 
             //widget specific
             //value relation
             if ( field.editorWidgetSetup().type() == "ValueRelation"_L1 )
             {
-              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Value"_s ).toString() );
-              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationdescription" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Description"_s ).toString() );
+              translationContext->registerTranslation( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Value"_s ).toString() );
+              translationContext->registerTranslation( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Description"_s ).toString() );
             }
 
             //value map
@@ -706,7 +706,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
           //legend
           for ( const QgsLegendSymbolItem &item : vlayer->renderer()->legendSymbolItems() )
           {
-            translationContext->registerTranslation( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( vlayer->id() ), item.label() );
+            translationContext->registerTranslation( u"project:layers:%1:legendsymbollabels"_s.arg( vlayer->id() ), item.label() );
           }
 
           break;
@@ -3155,7 +3155,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
   context.setTransformContext( transformContext() );
-  context.setCurrentLayerId( layerNode.toElement().firstChildElement( QStringLiteral( "id" ) ).text() );
+  context.setCurrentLayerId( layerNode.toElement().firstChildElement( u"id"_s ).text() );
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {

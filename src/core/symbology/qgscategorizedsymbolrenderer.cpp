@@ -834,10 +834,10 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
         if ( !values.isEmpty() )
           value = values;
       }
-      
+
       QString symbolName = catElem.attribute( u"symbol"_s );
-      QString label = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ), catElem.attribute( u"label"_s ) );
-      QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ) + " source " + catElem.attribute( u"label"_s ), 3 );
+      QString label = context.projectTranslator()->translate( u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ), catElem.attribute( u"label"_s ) );
+      QgsDebugMsgLevel( "context" + u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ) + " source " + catElem.attribute( u"label"_s ), 3 );
 
       bool render = catElem.attribute( u"render"_s ) != "false"_L1;
       QString uuid = catElem.attribute( u"uuid"_s, QString::number( i++ ) );

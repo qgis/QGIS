@@ -236,7 +236,7 @@ void TestQgsTranslateProject::translateProject()
   //Little bit of nothing -> Bisschen nichts
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Bisschen nichts"_s ) );
   //Purple Marks -> Lila Markierungen
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Lila Markierungen" ) ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Lila Markierungen"_s ) );
 
   //LEGEND ITEMS
   //lines:
@@ -245,18 +245,18 @@ void TestQgsTranslateProject::translateProject()
   {
     legendItemsOfLines.append( item.label() );
   }
-  QVERIFY( legendItemsOfLines.contains( QStringLiteral( "Hauptstrasse" ) ) ); //Arterial
-  QVERIFY( legendItemsOfLines.contains( QStringLiteral( "Autobahn" ) ) );     //Highway
+  QVERIFY( legendItemsOfLines.contains( u"Hauptstrasse"_s ) ); //Arterial
+  QVERIFY( legendItemsOfLines.contains( u"Autobahn"_s ) );     //Highway
   //purple lines:
   QList<QString> legendItemsOfPurpleLine;
   for ( const QgsLegendSymbolItem &item : purple_lines_layer->renderer()->legendSymbolItems() )
   {
     legendItemsOfPurpleLine.append( item.label() );
   }
-  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Lila Hauptstrasse" ) ) );   //Arterial purple
-  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Lila Autobahn" ) ) );       //Highway purple
-  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Tiefe Lila Autobahn" ) ) ); //Low Highway purple
-  QVERIFY( legendItemsOfPurpleLine.contains( QStringLiteral( "Hohe Lila Autobahn" ) ) );  //High Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Hauptstrasse"_s ) );   //Arterial purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Autobahn"_s ) );       //Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Tiefe Lila Autobahn"_s ) ); //Low Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Hohe Lila Autobahn"_s ) );  //High Highway purple
 
   //purple points:
   QList<QString> legendItemsOfPurplePoints;
@@ -264,11 +264,11 @@ void TestQgsTranslateProject::translateProject()
   {
     legendItemsOfPurplePoints.append( item.label() );
   }
-  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 1 bis 1" ) ) );    //From 1 to 1
-  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 1 bis 3" ) ) );    //From 1 to 3
-  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 3 bis 3.6" ) ) );  //From 3 to 3.6
-  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 3.6 bis 10" ) ) ); //From 3.6 to 10
-  QVERIFY( legendItemsOfPurplePoints.contains( QStringLiteral( "Von 10 bis 20" ) ) );  //From 10 to 20
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 1"_s ) );    //From 1 to 1
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 3"_s ) );    //From 1 to 3
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3 bis 3.6"_s ) );  //From 3 to 3.6
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3.6 bis 10"_s ) ); //From 3.6 to 10
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 10 bis 20"_s ) );  //From 10 to 20
 
   //lines:
   QList<QString> legendItemsOfLine;
@@ -276,8 +276,8 @@ void TestQgsTranslateProject::translateProject()
   {
     legendItemsOfLine.append( item.label() );
   }
-  QVERIFY( legendItemsOfLine.contains( QStringLiteral( "Hauptstrasse" ) ) ); //Arterial
-  QVERIFY( legendItemsOfLine.contains( QStringLiteral( "Autobahn" ) ) );     //Highway
+  QVERIFY( legendItemsOfLine.contains( u"Hauptstrasse"_s ) ); //Arterial
+  QVERIFY( legendItemsOfLine.contains( u"Autobahn"_s ) );     //Highway
 
   //FIELDNAMES AND ALIASES
   //Lines:
@@ -302,7 +302,7 @@ void TestQgsTranslateProject::translateProject()
   //Pilots -> Piloten
   QCOMPARE( points_fields.field( u"Pilots"_s ).alias(), u"Piloten"_s );
   //Cabin Crew -> Kabinenpersonal
-  QCOMPARE( points_fields.field().alias(), u"Kabinenpersonal"_s );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).alias(), u"Kabinenpersonal"_s );
   //Staff -> Mitarbeiter
   QCOMPARE( points_fields.field( u"Staff"_s ).alias(), u"Mitarbeiter"_s );
 
@@ -334,11 +334,9 @@ void TestQgsTranslateProject::translateProject()
 
   //WIDGETS
   //ValueRelation value is not anymore Name but Runwayid
-  QCOMPARE( points_fields.field( 
-  
-  ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Pistenid"_s);
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Pistenid"_s );
   //ValueRelation description is not anymore 'The cabin Crew Member is now a '||"RunwayId" but 'Das Mitglied des Kabinenpersonals ist jetzt eine '||"Pistenid"
-  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( QStringLiteral( "Description" ) ).toString(), QStringLiteral( "'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\"" ) );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Description"_s ).toString(), u"'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\""_s );
 
   //ValueMap with descriptions
   const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };

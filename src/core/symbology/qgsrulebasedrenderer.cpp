@@ -802,8 +802,8 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   }
 
   QString filterExp = ruleElem.attribute( u"filter"_s );
-  QString label = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ), ruleElem.attribute( u"label"_s ) );
-  QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:legendsymbollabels" ).arg( context.currentLayerId() ) + " source " + ruleElem.attribute( u"label"_s ), 3 );
+  QString label = context.projectTranslator()->translate( u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ), ruleElem.attribute( u"label"_s ) );
+  QgsDebugMsgLevel( "context" + u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ) + " source " + ruleElem.attribute( u"label"_s ), 3 );
   QString description = ruleElem.attribute( u"description"_s );
   int scaleMinDenom = ruleElem.attribute( u"scalemindenom"_s, u"0"_s ).toInt();
   int scaleMaxDenom = ruleElem.attribute( u"scalemaxdenom"_s, u"0"_s ).toInt();
