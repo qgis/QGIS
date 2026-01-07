@@ -23,7 +23,7 @@
 class QgsCoordinateTransform;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Encapsulates the definition of a cross section in 3D map coordinates.
  *
  * Defined by a line (p1, p2) and a half-width (extent from the line).
@@ -31,14 +31,33 @@ class QgsCoordinateTransform;
 class _3D_EXPORT QgsCrossSection
 {
   public:
+    //! construct a default method
     QgsCrossSection() = default;
+
+    /**
+     * Constructs a cross section defined by two points and a half-width
+     * \since QGIS 4.0
+     */
     QgsCrossSection( const QgsPoint &p1, const QgsPoint &p2, double halfWidth );
 
+    /**
+     * Returns the start point of the cross section
+     * \since QGIS 4.0
+     */
     QgsPoint startPoint() const { return mStartPoint; }
+
+    /**
+     * Returns the end point of the cross section
+     * \since QGIS 4.0
+     */
     QgsPoint endPoint() const { return mEndPoint; }
 
     double halfWidth() const { return mHalfWidth; }
 
+    /**
+     * Sets the half-width of the cross section
+     * \since QGIS 4.0
+     */
     void setHalfWidth( const double halfWidth ) { mHalfWidth = halfWidth; }
 
     /**
@@ -48,8 +67,16 @@ class _3D_EXPORT QgsCrossSection
      */
     QgsGeometry asGeometry( const QgsCoordinateTransform *ct = nullptr ) const;
 
+    /**
+     * Nudges the cross section to the left by the specified distance
+     * \since QGIS 4.0
+     */
     void nudgeLeft( double distance );
 
+    /**
+     * Nudges the cross section to the right by the specified distance
+     * \since QGIS 4.0
+     */
     void nudgeRight( double distance );
 
   private:
