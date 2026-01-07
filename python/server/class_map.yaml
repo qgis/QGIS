@@ -13,6 +13,7 @@ QgsAccessControl.registerAccessControl: src/server/qgsaccesscontrol.h#L150
 QgsAccessControl.resolveFilterFeatures: src/server/qgsaccesscontrol.h#L89
 QgsAccessControl.unresolveFilterFeatures: src/server/qgsaccesscontrol.h#L94
 QgsAccessControl: src/server/qgsaccesscontrol.h#L34
+QgsAccessControlFilter.QgsAccessControlFilter: src/server/qgsaccesscontrolfilter.h#L64
 QgsAccessControlFilter.allowToEdit: src/server/qgsaccesscontrolfilter.h#L110
 QgsAccessControlFilter.authorizedLayerAttributes: src/server/qgsaccesscontrolfilter.h#L102
 QgsAccessControlFilter.cacheKey: src/server/qgsaccesscontrolfilter.h#L116

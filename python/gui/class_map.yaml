@@ -367,6 +367,7 @@ QgsAbstractInputController.clone: src/gui/inputcontroller/qgsabstractinputcontro
 QgsAbstractInputController.deviceId: src/gui/inputcontroller/qgsabstractinputcontroller.h#L66
 QgsAbstractInputController.type: src/gui/inputcontroller/qgsabstractinputcontroller.h#L71
 QgsAbstractInputController: src/gui/inputcontroller/qgsabstractinputcontroller.h#L32
+QgsAbstractMapToolHandler.QgsAbstractMapToolHandler: src/gui/qgsabstractmaptoolhandler.h#L71
 QgsAbstractMapToolHandler.action: src/gui/qgsabstractmaptoolhandler.h#L103
 QgsAbstractMapToolHandler.isCompatibleWithLayer: src/gui/qgsabstractmaptoolhandler.h#L110
 QgsAbstractMapToolHandler.mapTool: src/gui/qgsabstractmaptoolhandler.h#L98
@@ -455,6 +456,7 @@ QgsAbstractSensorWidget.createSensor: src/gui/sensor/qgssensorwidget.h#L49
 QgsAbstractSensorWidget.setSensor: src/gui/sensor/qgssensorwidget.h#L68
 QgsAbstractSensorWidget.updateSensor: src/gui/sensor/qgssensorwidget.h#L58
 QgsAbstractSensorWidget: src/gui/sensor/qgssensorwidget.h#L35
+QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L42
 QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L63
 QgsActionMenu.QgsActionMenu: src/gui/actions/qgsactionmenu.h#L73
 QgsActionMenu.expressionContextScope: src/gui/actions/qgsactionmenu.h#L109
@@ -631,6 +633,7 @@ QgsAdvancedDigitizingToolsRegistry.removeTool: src/gui/qgsadvanceddigitizingtool
 QgsAdvancedDigitizingToolsRegistry.toolMetadata: src/gui/qgsadvanceddigitizingtoolsregistry.h#L139
 QgsAdvancedDigitizingToolsRegistry.toolMetadataNames: src/gui/qgsadvanceddigitizingtoolsregistry.h#L142
 QgsAdvancedDigitizingToolsRegistry: src/gui/qgsadvanceddigitizingtoolsregistry.h#L120
+QgsAggregateMappingModel.QgsAggregateMappingModel: src/gui/processing/qgsprocessingaggregatewidgets.h#L65
 QgsAggregateMappingModel.appendField: src/gui/processing/qgsprocessingaggregatewidgets.h#L98
 QgsAggregateMappingModel.columnCount: src/gui/processing/qgsprocessingaggregatewidgets.h#L123
 QgsAggregateMappingModel.contextGenerator: src/gui/processing/qgsprocessingaggregatewidgets.h#L113
@@ -773,6 +776,8 @@ QgsAttributeEditorContext.setRelation: src/gui/qgsattributeeditorcontext.h#L180
 QgsAttributeEditorContext.setVectorLayerTools: src/gui/qgsattributeeditorcontext.h#L160
 QgsAttributeEditorContext.vectorLayerTools: src/gui/qgsattributeeditorcontext.h#L167
 QgsAttributeEditorContext: src/gui/qgsattributeeditorcontext.h#L41
+QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L408
+QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L491
 QgsAttributeForm.QgsAttributeForm: src/gui/qgsattributeform.h#L71
 QgsAttributeForm.addInterface: src/gui/qgsattributeform.h#L123
 QgsAttributeForm.aggregateFilter: src/gui/qgsattributeform.h#L188
@@ -905,6 +910,8 @@ QgsAttributeTableFilterModel.visibleReloaded: src/gui/attributetable/qgsattribut
 QgsAttributeTableFilterModel: src/gui/attributetable/qgsattributetablefiltermodel.h#L37
 QgsAttributeTableMapLayerAction.execute: src/gui/attributetable/qgsdualview.h#L503
 QgsAttributeTableMapLayerAction: src/gui/attributetable/qgsdualview.h#L490
+QgsAttributeTableModel.QgsAttributeTableModel: src/gui/attributetable/qgsattributetablemodel.h#L367
+QgsAttributeTableModel.QgsAttributeTableModel: src/gui/attributetable/qgsattributetablemodel.h#L416
 QgsAttributeTableModel.columnCount: src/gui/attributetable/qgsattributetablemodel.h#L91
 QgsAttributeTableModel.data: src/gui/attributetable/qgsattributetablemodel.h#L106
 QgsAttributeTableModel.executeAction: src/gui/attributetable/qgsattributetablemodel.h#L187
@@ -1789,6 +1796,7 @@ QgsCoordinateBoundsPreviewMapWidget.canvasRect: src/gui/proj/qgscoordinatebounds
 QgsCoordinateBoundsPreviewMapWidget.setCanvasRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L46
 QgsCoordinateBoundsPreviewMapWidget.setPreviewRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L58
 QgsCoordinateBoundsPreviewMapWidget: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L28
+QgsCoordinateOperationWidget.QgsCoordinateOperationWidget: src/gui/proj/qgscoordinateoperationwidget.h#L39
 QgsCoordinateOperationWidget.defaultOperation: src/gui/proj/qgscoordinateoperationwidget.h#L125
 QgsCoordinateOperationWidget.destinationCrs: src/gui/proj/qgscoordinateoperationwidget.h#L78
 QgsCoordinateOperationWidget.hasSelection: src/gui/proj/qgscoordinateoperationwidget.h#L115
@@ -2467,6 +2475,7 @@ QgsExpressionBuilderWidget.showEvent: src/gui/qgsexpressionbuilderwidget.h#L466
 QgsExpressionBuilderWidget.storeCurrentUserExpression: src/gui/qgsexpressionbuilderwidget.h#L387
 QgsExpressionBuilderWidget.updateFunctionFileList: src/gui/qgsexpressionbuilderwidget.h#L284
 QgsExpressionBuilderWidget: src/gui/qgsexpressionbuilderwidget.h#L46
+QgsExpressionHighlighter.QgsExpressionHighlighter: src/gui/qgsexpressionhighlighter.h#L46
 QgsExpressionHighlighter.addFields: src/gui/qgsexpressionhighlighter.h#L40
 QgsExpressionHighlighter.highlightBlock: src/gui/qgsexpressionhighlighter.h#L43
 QgsExpressionHighlighter: src/gui/qgsexpressionhighlighter.h#L34
@@ -2693,6 +2702,7 @@ QgsFeatureListComboBox.sortOrder: src/gui/qgsfeaturelistcombobox.h#L244
 QgsFeatureListComboBox.sourceLayer: src/gui/qgsfeaturelistcombobox.h#L58
 QgsFeatureListComboBox.sourceLayerChanged: src/gui/qgsfeaturelistcombobox.h#L264
 QgsFeatureListComboBox: src/gui/qgsfeaturelistcombobox.h#L37
+QgsFeatureListModel.QgsFeatureListModel: src/gui/attributetable/qgsfeaturelistmodel.h#L46
 QgsFeatureListModel.QgsFeatureListModel: src/gui/attributetable/qgsfeaturelistmodel.h#L67
 QgsFeatureListModel.columnCount: src/gui/attributetable/qgsfeaturelistmodel.h#L142
 QgsFeatureListModel.data: src/gui/attributetable/qgsfeaturelistmodel.h#L83
@@ -2892,6 +2902,7 @@ QgsFieldExpressionWidget.setRow: src/gui/qgsfieldexpressionwidget.h#L273
 QgsFieldExpressionWidget.updateLineEditStyle: src/gui/qgsfieldexpressionwidget.h#L308
 QgsFieldExpressionWidget: src/gui/qgsfieldexpressionwidget.h#L48
 QgsFieldMappingModel.ExpressionContextGenerator: src/gui/qgsfieldmappingmodel.h#L176
+QgsFieldMappingModel.QgsFieldMappingModel: src/gui/qgsfieldmappingmodel.h#L66
 QgsFieldMappingModel.appendField: src/gui/qgsfieldmappingmodel.h#L136
 QgsFieldMappingModel.columnCount: src/gui/qgsfieldmappingmodel.h#L169
 QgsFieldMappingModel.contextGenerator: src/gui/qgsfieldmappingmodel.h#L151
@@ -2994,6 +3005,7 @@ QgsFilledMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.
 QgsFilledMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L322
 QgsFilledMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L323
 QgsFilledMarkerSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L302
+QgsFilterLineEdit.QgsFilterLineEdit: src/gui/qgsfilterlineedit.h#L276
 QgsFilterLineEdit.clearMode: src/gui/qgsfilterlineedit.h#L94
 QgsFilterLineEdit.clearValue: src/gui/qgsfilterlineedit.h#L223
 QgsFilterLineEdit.cleared: src/gui/qgsfilterlineedit.h#L243
@@ -3519,6 +3531,7 @@ QgsIFeatureSelectionManager.selectedFeatureCount: src/gui/attributetable/qgsifea
 QgsIFeatureSelectionManager.selectionChanged: src/gui/attributetable/qgsifeatureselectionmanager.h#L82
 QgsIFeatureSelectionManager.setSelectedFeatures: src/gui/attributetable/qgsifeatureselectionmanager.h#L63
 QgsIFeatureSelectionManager: src/gui/attributetable/qgsifeatureselectionmanager.h#L32
+QgsIdentifyMenu.QgsIdentifyMenu: src/gui/qgsidentifymenu.h#L63
 QgsIdentifyMenu.QgsIdentifyMenu: src/gui/qgsidentifymenu.h#L96
 QgsIdentifyMenu.addCustomAction: src/gui/qgsidentifymenu.h#L164
 QgsIdentifyMenu.allowMultipleReturn: src/gui/qgsidentifymenu.h#L115
@@ -4739,6 +4752,8 @@ QgsMapToolExtent.flags: src/gui/maptools/qgsmaptoolextent.h#L40
 QgsMapToolExtent.ratio: src/gui/maptools/qgsmaptoolextent.h#L58
 QgsMapToolExtent.setRatio: src/gui/maptools/qgsmaptoolextent.h#L52
 QgsMapToolExtent: src/gui/maptools/qgsmaptoolextent.h#L32
+QgsMapToolIdentify.QgsMapToolIdentify: src/gui/maptools/qgsmaptoolidentify.h#L102
+QgsMapToolIdentify.QgsMapToolIdentify: src/gui/maptools/qgsmaptoolidentify.h#L80
 QgsMapToolIdentify.activate: src/gui/maptools/qgsmaptoolidentify.h#L119
 QgsMapToolIdentify.canvasMoveEvent: src/gui/maptools/qgsmaptoolidentify.h#L116
 QgsMapToolIdentify.canvasPressEvent: src/gui/maptools/qgsmaptoolidentify.h#L117
@@ -4980,6 +4995,7 @@ QgsModelComponentGraphicItem.updateButtonPositions: src/gui/processing/models/qg
 QgsModelComponentGraphicItem.updateStoredComponentPosition: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L367
 QgsModelComponentGraphicItem.view: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L110
 QgsModelComponentGraphicItem: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L49
+QgsModelDesignerDialog.QgsModelDesignerDialog: src/gui/processing/models/qgsmodeldesignerdialog.h#L244
 QgsModelDesignerDialog.abortUndoCommand: src/gui/processing/models/qgsmodeldesignerdialog.h#L79
 QgsModelDesignerDialog.actionOpen: src/gui/processing/models/qgsmodeldesignerdialog.h#L137
 QgsModelDesignerDialog.actionRun: src/gui/processing/models/qgsmodeldesignerdialog.h#L139
@@ -5030,6 +5046,7 @@ QgsModelDesignerSocketGraphicItem.isInput: src/gui/processing/models/qgsmodelgra
 QgsModelDesignerSocketGraphicItem.paint: src/gui/processing/models/qgsmodelgraphicitem.h#L172
 QgsModelDesignerSocketGraphicItem.socketColor: src/gui/processing/models/qgsmodelgraphicitem.h#L209
 QgsModelDesignerSocketGraphicItem: src/gui/processing/models/qgsmodelgraphicitem.h#L158
+QgsModelGraphicsScene.QgsModelGraphicsScene: src/gui/processing/models/qgsmodelgraphicsscene.h#L275
 QgsModelGraphicsScene.childAlgorithmItem: src/gui/processing/models/qgsmodelgraphicsscene.h#L127
 QgsModelGraphicsScene.componentAboutToChange: src/gui/processing/models/qgsmodelgraphicsscene.h#L207
 QgsModelGraphicsScene.componentChanged: src/gui/processing/models/qgsmodelgraphicsscene.h#L212
@@ -5281,6 +5298,7 @@ QgsNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L
 QgsNumericFormatWidget.registerExpressionContextGenerator: src/gui/numericformats/qgsnumericformatwidget.h#L69
 QgsNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L52
 QgsNumericFormatWidget: src/gui/numericformats/qgsnumericformatwidget.h#L36
+QgsOWSSourceSelect.QgsOWSSourceSelect: src/gui/qgsowssourceselect.h#L59
 QgsOWSSourceSelect.addDefaultServers: src/gui/qgsowssourceselect.h#L132
 QgsOWSSourceSelect.clearCrs: src/gui/qgsowssourceselect.h#L114
 QgsOWSSourceSelect.clearFormats: src/gui/qgsowssourceselect.h#L108
@@ -6048,6 +6066,7 @@ QgsPropertyAssistantWidget.registerExpressionContextGenerator: src/gui/qgsproper
 QgsPropertyAssistantWidget.setDockMode: src/gui/qgspropertyassistantwidget.h#L145
 QgsPropertyAssistantWidget.updateProperty: src/gui/qgspropertyassistantwidget.h#L132
 QgsPropertyAssistantWidget: src/gui/qgspropertyassistantwidget.h#L108
+QgsPropertyOverrideButton.QgsPropertyOverrideButton: src/gui/qgspropertyoverridebutton.h#L310
 QgsPropertyOverrideButton.aboutToShowMenu: src/gui/qgspropertyoverridebutton.h#L229
 QgsPropertyOverrideButton.activated: src/gui/qgspropertyoverridebutton.h#L240
 QgsPropertyOverrideButton.changed: src/gui/qgspropertyoverridebutton.h#L237
@@ -6365,20 +6384,21 @@ QgsRasterMinMaxWidget.setMapCanvas: src/gui/raster/qgsrasterminmaxwidget.h#L60
 QgsRasterMinMaxWidget.userHasSetManualMinMaxValues: src/gui/raster/qgsrasterminmaxwidget.h#L92
 QgsRasterMinMaxWidget.widgetChanged: src/gui/raster/qgsrasterminmaxwidget.h#L106
 QgsRasterMinMaxWidget: src/gui/raster/qgsrasterminmaxwidget.h#L38
-QgsRasterPyramidsOptionsWidget.apply: src/gui/qgsrasterpyramidsoptionswidget.h#L55
-QgsRasterPyramidsOptionsWidget.cbxPyramidsFormat_currentIndexChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L61
-QgsRasterPyramidsOptionsWidget.cbxPyramidsLevelsCustom_toggled: src/gui/qgsrasterpyramidsoptionswidget.h#L60
-QgsRasterPyramidsOptionsWidget.checkAllLevels: src/gui/qgsrasterpyramidsoptionswidget.h#L56
+QgsRasterPyramidsOptionsWidget.apply: src/gui/qgsrasterpyramidsoptionswidget.h#L62
+QgsRasterPyramidsOptionsWidget.cbxPyramidsFormat_currentIndexChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L68
+QgsRasterPyramidsOptionsWidget.cbxPyramidsLevelsCustom_toggled: src/gui/qgsrasterpyramidsoptionswidget.h#L67
+QgsRasterPyramidsOptionsWidget.checkAllLevels: src/gui/qgsrasterpyramidsoptionswidget.h#L63
 QgsRasterPyramidsOptionsWidget.configOptions: src/gui/qgsrasterpyramidsoptionswidget.h#L40
 QgsRasterPyramidsOptionsWidget.createOptionsWidget: src/gui/qgsrasterpyramidsoptionswidget.h#L41
-QgsRasterPyramidsOptionsWidget.overviewListChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L70
+QgsRasterPyramidsOptionsWidget.overviewListChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L77
 QgsRasterPyramidsOptionsWidget.pyramidsFormat: src/gui/qgsrasterpyramidsoptionswidget.h#L47
 QgsRasterPyramidsOptionsWidget.resamplingMethod: src/gui/qgsrasterpyramidsoptionswidget.h#L49
-QgsRasterPyramidsOptionsWidget.setOverviewList: src/gui/qgsrasterpyramidsoptionswidget.h#L62
+QgsRasterPyramidsOptionsWidget.setOverviewList: src/gui/qgsrasterpyramidsoptionswidget.h#L69
 QgsRasterPyramidsOptionsWidget.setRasterFileName: src/gui/qgsrasterpyramidsoptionswidget.h#L51
 QgsRasterPyramidsOptionsWidget.setRasterLayer: src/gui/qgsrasterpyramidsoptionswidget.h#L50
-QgsRasterPyramidsOptionsWidget.someValueChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L75
-QgsRasterPyramidsOptionsWidget.updateUi: src/gui/qgsrasterpyramidsoptionswidget.h#L63
+QgsRasterPyramidsOptionsWidget.someValueChanged: src/gui/qgsrasterpyramidsoptionswidget.h#L82
+QgsRasterPyramidsOptionsWidget.tuneForFormat: src/gui/qgsrasterpyramidsoptionswidget.h#L58
+QgsRasterPyramidsOptionsWidget.updateUi: src/gui/qgsrasterpyramidsoptionswidget.h#L70
 QgsRasterPyramidsOptionsWidget: src/gui/qgsrasterpyramidsoptionswidget.h#L32
 QgsRasterRendererWidget.contrastEnhancementAlgorithm: src/gui/raster/qgsrasterrendererwidget.h#L129
 QgsRasterRendererWidget.doComputations: src/gui/raster/qgsrasterrendererwidget.h#L120
@@ -7223,6 +7243,7 @@ QgsStyleItemsListWidget.setStyle: src/gui/qgsstyleitemslistwidget.h#L92
 QgsStyleItemsListWidget.setSymbolType: src/gui/qgsstyleitemslistwidget.h#L113
 QgsStyleItemsListWidget.showEvent: src/gui/qgsstyleitemslistwidget.h#L171
 QgsStyleItemsListWidget: src/gui/qgsstyleitemslistwidget.h#L76
+QgsStyleManagerDialog.QgsStyleManagerDialog: src/gui/symbology/qgsstylemanagerdialog.h#L384
 QgsStyleManagerDialog.activate: src/gui/symbology/qgsstylemanagerdialog.h#L144
 QgsStyleManagerDialog.addColorRamp: src/gui/symbology/qgsstylemanagerdialog.h#L287
 QgsStyleManagerDialog.addColorRampStatic: src/gui/symbology/qgsstylemanagerdialog.h#L109
@@ -7283,6 +7304,7 @@ QgsStyleSaveDialog.selectedType: src/gui/symbology/qgsstylesavedialog.h#L71
 QgsStyleSaveDialog.setDefaultTags: src/gui/symbology/qgsstylesavedialog.h#L55
 QgsStyleSaveDialog.tags: src/gui/symbology/qgsstylesavedialog.h#L60
 QgsStyleSaveDialog: src/gui/symbology/qgsstylesavedialog.h#L33
+QgsSublayersDialog.QgsSublayersDialog: src/gui/qgssublayersdialog.h#L78
 QgsSublayersDialog.addToGroupCheckbox: src/gui/qgssublayersdialog.h#L145
 QgsSublayersDialog.countColumn: src/gui/qgssublayersdialog.h#L150
 QgsSublayersDialog.exec: src/gui/qgssublayersdialog.h#L153
@@ -7485,6 +7507,7 @@ QgsTabPositionWidget.positionsChanged: src/gui/labeling/qgstabpositionwidget.h#L
 QgsTabPositionWidget.setPositions: src/gui/labeling/qgstabpositionwidget.h#L45
 QgsTabPositionWidget.setUnit: src/gui/labeling/qgstabpositionwidget.h#L57
 QgsTabPositionWidget: src/gui/labeling/qgstabpositionwidget.h#L33
+QgsTabWidget.QgsTabWidget: src/gui/qgstabwidget.h#L91
 QgsTabWidget.hideTab: src/gui/qgstabwidget.h#L44
 QgsTabWidget.realTabIndex: src/gui/qgstabwidget.h#L64
 QgsTabWidget.setTabStyle: src/gui/qgstabwidget.h#L86
