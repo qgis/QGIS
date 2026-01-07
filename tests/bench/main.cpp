@@ -49,6 +49,10 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
+#ifdef __EMSCRIPTEN__
+#include <qgssettingsregistrycore.h>
+#endif
+
 
 /**
  * Print usage text
@@ -363,6 +367,20 @@ int main( int argc, char *argv[] )
   // so that this program may be run with old libraries
   //QgsApplication myApp( argc, argv, false, configpath );
 
+#ifdef __EMSCRIPTEN__
+  // Set UTC timezone to avoid Emscripten mktime() issues with local timezones
+  setenv( "TZ", "UTC", 1 );
+
+  QgsApplication::setMaxThreads(4);
+  // QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue(false);
+#endif
+
+  // Set up the QSettings environment BEFORE creating QgsApplication
+  // Required for Qt WASM localStorage backend which needs org/app name set early
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
+
   QCoreApplication *myApp = nullptr;
 
 #if VERSION_INT >= 10900
@@ -383,6 +401,10 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationName( u"QGIS"_s );
   QgsApplication::setOrganizationDomain( u"qgis.org"_s );
   QgsApplication::setApplicationName( u"QGIS3"_s );
+
+#ifdef __EMSCRIPTEN__
+  QgsApplication::setPkgDataPath( "/qgis" );
+#endif
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -571,21 +593,36 @@ int main( int argc, char *argv[] )
     }
   }
 
+  QObject::connect( qbench, &QgsBench::renderingComplete, qbench, [=]() {
+    if ( !mySnapshotFileName.isEmpty() )
+    {
+      qbench->saveSnapsot( mySnapshotFileName );
+    }
+
+    if ( !myLogFileName.isEmpty() )
+    {
+      qbench->saveLog( myLogFileName );
+    }
+
+    qbench->printLog( myPrintTime );
+
+#ifdef __EMSCRIPTEN__
+    // On Emscripten, we don't exit - the app keeps running
+    Q_UNUSED( myApp )
+#else
+    delete qbench;
+    delete myApp;
+    QCoreApplication::exit( 0 );
+#endif
+  } );
+
   qbench->render();
 
-  if ( !mySnapshotFileName.isEmpty() )
-  {
-    qbench->saveSnapsot( mySnapshotFileName );
-  }
-
-  if ( !myLogFileName.isEmpty() )
-  {
-    qbench->saveLog( myLogFileName );
-  }
-
-  qbench->printLog( myPrintTime );
-
-  delete qbench;
-  delete myApp;
-  QCoreApplication::exit( 0 );
+#ifdef __EMSCRIPTEN__
+  // On Emscripten, return to let the event loop run
+  // The renderingComplete signal will handle cleanup
+  return 0;
+#else
+  return myApp->exec();
+#endif
 }

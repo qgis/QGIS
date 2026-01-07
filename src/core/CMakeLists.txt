@@ -2276,13 +2276,12 @@ if(MSVC)
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 else()
-  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
-    if(EMSCRIPTEN)
-      # use -O0 -g0 to avoid OOM during compilation of large generated qgsexpression_texts.cpp
-      set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O0 -g0")
-    else()
-      set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
-    endif()
+  if(EMSCRIPTEN)
+    # use -O0 -g0 to avoid OOM during compilation of large generated qgsexpression_texts.cpp
+    # This applies to all build types (Debug/Release) with Emscripten
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O0 -g0")
+  elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
     set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
   endif()
 endif()

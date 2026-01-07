@@ -185,24 +185,51 @@ void QgsBench::render()
   // TODO: do we need the other QPainter flags?
   mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mRendererHints.testFlag( QPainter::Antialiasing ) );
 
-  for ( int i = 0; i < mIterations; i++ )
+  // Reset iteration state and start async rendering
+  mCurrentIteration = 0;
+  mTimes.clear();
+  startNextRender();
+}
+
+void QgsBench::startNextRender()
+{
+  if ( mParallel )
+    mCurrentJob = new QgsMapRendererParallelJob( mMapSettings );
+  else
+    mCurrentJob = new QgsMapRendererSequentialJob( mMapSettings );
+
+  connect( mCurrentJob, &QgsMapRendererQImageJob::finished, this, &QgsBench::onRenderingFinished );
+
+  start();
+  mCurrentJob->start();
+
+#ifndef __EMSCRIPTEN__
+  mCurrentJob->waitForFinished();
+#endif
+}
+
+void QgsBench::onRenderingFinished()
+{
+  elapsed();
+
+  mImage = mCurrentJob->renderedImage();
+  delete mCurrentJob;
+  mCurrentJob = nullptr;
+
+  mCurrentIteration++;
+
+  if ( mCurrentIteration < mIterations )
   {
-    QgsMapRendererQImageJob *job = nullptr;
-    if ( mParallel )
-      job = new QgsMapRendererParallelJob( mMapSettings );
-    else
-      job = new QgsMapRendererSequentialJob( mMapSettings );
-
-    start();
-    job->start();
-    job->waitForFinished();
-    elapsed();
-
-    mImage = job->renderedImage();
-    delete job;
+    startNextRender();
   }
+  else
+  {
+    finalizeRendering();
+  }
+}
 
-
+void QgsBench::finalizeRendering()
+{
   mLogMap.insert( u"iterations"_s, mTimes.size() );
   mLogMap.insert( u"revision"_s, QGSVERSION );
 
@@ -254,6 +281,8 @@ void QgsBench::render()
     timesMap.insert( pre[t], map );
   }
   mLogMap.insert( u"times"_s, timesMap );
+
+  emit renderingComplete();
 }
 
 void QgsBench::saveSnapsot( const QString &fileName )

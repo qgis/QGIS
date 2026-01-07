@@ -18,6 +18,7 @@
 #define QGSBENCH_H
 
 #include "qgsmapsettings.h"
+#include "qgsmaprendererjob.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
@@ -60,10 +61,18 @@ class QgsBench : public QObject
 
     void setParallel( bool enabled ) { mParallel = enabled; }
 
+  signals:
+    void renderingComplete();
+
   public slots:
     void readProject( const QDomDocument &doc );
 
+  private slots:
+    void onRenderingFinished();
+
   private:
+    void startNextRender();
+    void finalizeRendering();
     // snapshot image width
     int mWidth;
 
@@ -94,6 +103,10 @@ class QgsBench : public QObject
     QgsMapSettings mMapSettings;
 
     bool mParallel = false;
+
+    // async rendering state
+    int mCurrentIteration = 0;
+    QgsMapRendererQImageJob *mCurrentJob = nullptr;
 };
 
 #endif // QGSBENCH_H
