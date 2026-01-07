@@ -269,23 +269,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
   mActionDisableClippingPlanes->setDisabled( true );
 
-  mClippingToleranceAction = new Qgs3DMapClippingToleranceWidgetSettingsAction( mCameraMenu );
-  mClippingToleranceAction->setDisabled( settingDynamicClipping->value() );
+  mClippingToleranceAction = new Qgs3DMapClippingToleranceWidgetSettingsAction( mCrossSectionMenu );
   connect( mClippingToleranceAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     settingClippingTolerance->setValue( value );
     updateClippingRubberBand();
   } );
-  mCameraMenu->addAction( mClippingToleranceAction );
+  mCrossSectionMenu->addAction( mClippingToleranceAction );
 
-  mActionDynamicClipping = new QAction( tr( "Use dynamic clipping" ), this );
-  mActionDynamicClipping->setCheckable( true );
-  mActionDynamicClipping->setChecked( settingDynamicClipping->value() );
-
-  mCameraMenu->addAction( mActionDynamicClipping );
-  connect( mActionDynamicClipping, &QAction::triggered, this, [this]( bool enabled ) {
-    setDynamicClipping( enabled );
-    settingDynamicClipping->setValue( enabled );
-    mClippingToleranceAction->setDisabled( enabled );
+  // we want dynamic tolerance (set with the 3rd point) when it is in an unlocked state
+  connect( mClippingToleranceAction, &Qgs3DMapClippingToleranceWidgetSettingsAction::lockStateChanged, this, [this]( bool locked ) {
+    setDynamicCrossSectionClippingTolerance( !locked );
+    settingDynamicClipping->setValue( !locked );
   } );
 
   mActionNudgeLeft = new QAction( QgsApplication::getThemeIcon( u"/mActionArrowLeft.svg"_s ), tr( "Nudge Left" ), this );
@@ -300,8 +294,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mActionNudgeLeft, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeLeft );
   connect( mActionNudgeRight, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeRight );
 
-  mCameraMenu->addAction( mActionNudgeLeft );
-  mCameraMenu->addAction( mActionNudgeRight );
+  mCrossSectionMenu->addAction( mActionNudgeLeft );
+  mCrossSectionMenu->addAction( mActionNudgeRight );
 
   // Effects Menu
   mEffectsMenu = new QMenu( this );
@@ -747,7 +741,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
   connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::finishedSuccessfully, this, [this]( const QgsGeometry &geom, const double width ) { onCrossSectionToolFinished( geom, width ); } );
-  setDynamicClipping( settingDynamicClipping->value() );
+  setDynamicCrossSectionClippingTolerance( settingDynamicClipping->value() );
 
   // none of the actions in the Camera menu are supported by globe yet, so just hide it completely
   mActionCamera->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
@@ -1294,6 +1288,7 @@ void Qgs3DMapCanvasWidget::disableCrossSection() const
 {
   mCanvas->disableCrossSection();
   mMapToolClippingPlanes->clear();
+  mCrossSectionRubberBand->reset( Qgis::GeometryType::Polygon );
 
   mActionNudgeLeft->setEnabled( false );
   mActionNudgeRight->setEnabled( false );
@@ -1334,7 +1329,7 @@ void Qgs3DMapCanvasWidget::updateClippingRubberBand()
   setCrossSectionRubberBandPolygonFromGeometry( mCrossSectionLine, distance );
 }
 
-void Qgs3DMapCanvasWidget::setDynamicClipping( bool enabled )
+void Qgs3DMapCanvasWidget::setDynamicCrossSectionClippingTolerance( bool enabled )
 {
   mMapToolClippingPlanes->setDynamicCapture( enabled );
 }
@@ -1369,8 +1364,32 @@ Qgs3DMapClippingToleranceWidgetSettingsAction::Qgs3DMapClippingToleranceWidgetSe
   mToleranceWidget->setSingleStep( 1.0 );
 
   QLabel *label = new QLabel( tr( "Tolerance" ) );
+
+  mLockButton = new QToolButton();
+  mLockButton->setEnabled( true );
+  mLockButton->setCheckable( true );
+  mLockButton->setAutoRaise( true );
+  mLockButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+
+  auto refreshLockButton = [this]( bool locked ) {
+    mLockButton->setIcon( QIcon( QgsApplication::iconPath( locked ? u"locked.svg"_s : u"unlocked.svg"_s ) ) );
+    mToleranceWidget->setEnabled( locked );
+    mLockButton->setToolTip( locked ? tr( "Locked: spinbox enabled, cross section width from tolerance.\nClick to unlock for width from 3rd point." ) : tr( "Unlocked: spinbox disabled, cross section width from 3rd point.\nClick to lock for tolerance width." ) );
+  };
+
+  const bool isLocked = Qgs3DMapCanvasWidget::settingDynamicClipping->value();
+
+  mLockButton->setChecked( isLocked );
+  refreshLockButton( isLocked );
+
+  QObject::connect( mLockButton, &QToolButton::toggled, this, [this, refreshLockButton]( bool locked ) {
+    refreshLockButton( locked );
+    emit lockStateChanged( locked );
+  } );
+
   gLayout->addWidget( label, 0, 0 );
   gLayout->addWidget( mToleranceWidget, 0, 1 );
+  gLayout->addWidget( mLockButton, 0, 2 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
