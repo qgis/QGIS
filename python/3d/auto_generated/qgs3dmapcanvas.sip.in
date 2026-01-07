@@ -88,19 +88,12 @@ intersected 3d entities.
 .. versionadded:: 4.0
 %End
 
-    void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
+    void enableCrossSection( bool setSideView = true );
 %Docstring
 Enables cross section mode for the 3D map canvas. The 3D scene will be
 clipped by four clipping planes, defined by a cross section line segment
-from ``startPoint`` to ``endPoint`` and two parallel segments at
-distance ``tolerance`` to each side.
+and two parallel segments at cross section half width to each side.
 
-:param startPoint: The start point of the cross section line in 3D map
-                   coordinates.
-:param endPoint: The end point of the cross section line in 3D map
-                 coordinates.
-:param tolerance: The distance in meters between the cross section line
-                  and the left and right clipping planes.
 :param setSideView: When ``True``, the camera will be moved to look at
                     the scene from the right side of the cross section
                     line.
@@ -130,13 +123,13 @@ has other clipping planes applied
 .. versionadded:: 4.0
 %End
 
-    void nudgeCameraXY( double dx, double dy );
+
+    QgsCrossSection crossSection() const;
 %Docstring
-Nudges the camera position by ``dx`` and ``dy`` in world coordinates.
+Returns the current cross section definition for the 3D map canvas.
 
 .. versionadded:: 4.0
 %End
-
     void crossSectionEnabledChanged( bool enabled );
 %Docstring
 Emitted when the cross section mode is enabled or disabled

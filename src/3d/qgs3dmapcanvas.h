@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_3d.h"
+#include "qgscrosssection.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
 
@@ -120,17 +121,14 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     /**
      * Enables cross section mode for the 3D map canvas.
-     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment from \a startPoint to \a endPoint and
-     * two parallel segments at distance \a tolerance to each side.
+     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment and
+     * two parallel segments at cross section half width to each side.
      *
-     * \param startPoint The start point of the cross section line in 3D map coordinates.
-     * \param endPoint The end point of the cross section line in 3D map coordinates.
-     * \param tolerance The distance in meters between the cross section line and the left and right clipping planes.
      * \param setSideView When TRUE, the camera will be moved to look at the scene from the right side of the cross section line.
      * \see disableCrossSection()
      * \since QGIS 4.0
      */
-    void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
+    void enableCrossSection( bool setSideView = true );
 
     /**
      * \brief disableCrossSection Disables the cross section mode and removes the scene's clipping planes
@@ -148,17 +146,25 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     bool crossSectionEnabled() const;
 
     /**
-     * Nudges the camera position by \a dx and \a dy in world coordinates.
+     * Sets the cross section definition for the 3D map canvas.
      * \since QGIS 4.0
      */
-    void nudgeCameraXY( double dx, double dy );
+    void setCrossSection( const QgsCrossSection &crossSection ) SIP_SKIP;
+
+    /**
+     * Returns the current cross section definition for the 3D map canvas.
+     * \since QGIS 4.0
+     */
+    QgsCrossSection crossSection() const { return mCrossSection; }
+    SIP_SKIP
 
 #ifndef SIP_RUN
 
     /**
      * Sets the specified root entity of the scene.
      */
-    void setRootEntity( Qt3DCore::QEntity *root );
+    void
+      setRootEntity( Qt3DCore::QEntity *root );
 
     /**
      * Activates the specified activeFrameGraph.
@@ -307,6 +313,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     //! This holds and owns the rubber bands for highlighting identified features
     QMap<QgsMapLayer *, QgsRubberBand3D *> mHighlights;
+
+    QgsCrossSection mCrossSection;
 };
 
 #endif //QGS3DMAPCANVAS_H

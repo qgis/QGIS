@@ -357,6 +357,14 @@ world position from a pixel's coordinates and depth
 .. versionadded:: 3.24
 %End
 
+    void moveCenterPoint( const QVector3D &posDiff );
+%Docstring
+Moves camera position by the given difference vector in world
+coordinates
+
+.. versionadded:: 4.0
+%End
+
   private:
     QgsCameraController();
     QgsCameraController( const QgsCameraController &other );

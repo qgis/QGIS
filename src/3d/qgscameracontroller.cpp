@@ -480,7 +480,7 @@ void QgsCameraController::updateCameraFromPose()
   }
 }
 
-void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
+void QgsCameraController::moveCenterPoint( const QVector3D &posDiff )
 {
   mCameraPose.setCenterPoint( mCameraPose.centerPoint() + posDiff );
   updateCameraFromPose();
@@ -1114,7 +1114,7 @@ void QgsCameraController::walkView( double tx, double ty, double tz )
     cameraPosDiff += static_cast<float>( tz ) * QVector3D( 0.0f, 0.0f, 1.0f );
   }
 
-  moveCameraPositionBy( cameraPosDiff );
+  moveCenterPoint( cameraPosDiff );
 }
 
 void QgsCameraController::applyFlyModeKeyMovements()
@@ -1197,14 +1197,14 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     const QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
     const QVector3D cameraPosDiff = -dx * cameraLeft - dy * cameraUp;
-    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 10.0 );
+    moveCenterPoint( mCameraMovementSpeed * cameraPosDiff / 10.0 );
   }
   else if ( hasRightButton )
   {
     // right button drag = camera dolly
     const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     const QVector3D cameraPosDiff = dy * cameraFront;
-    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 5.0 );
+    moveCenterPoint( mCameraMovementSpeed * cameraPosDiff / 5.0 );
   }
   else
   {
