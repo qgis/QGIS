@@ -23,6 +23,9 @@
 
 #include <gdal_utils.h>
 
+#include "vpc.hpp"
+#include "alg.hpp"
+
 using namespace pdal;
 
 
@@ -119,14 +122,29 @@ void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vecto
             p.add([pipeline]() {
 
                 MyTable table(CHUNK_SIZE);
-                pipeline->executeStream(table);
-
+                try
+                {
+                    pipeline->executeStream(table);
+                }
+                catch ( pdal::pdal_error& e )
+                {
+                    std::cerr << "Error in wrench execution: " << e.what() << std::endl;
+                    std::exit(EXIT_FAILURE);
+                }
             });
         }
         else
         {
             p.add([pipeline, &pipelines, i]() {
-                pipeline->execute();
+                try
+                {
+                    pipeline->execute();
+                }
+                catch ( pdal::pdal_error& e )
+                {
+                    std::cerr << "Error in wrench execution: " << e.what() << std::endl;
+                    std::exit(EXIT_FAILURE);
+                }
                 pipelines[i].reset();  // to free the point table and views (meshes, rasters)
                 sProgressBar.add();
             });
@@ -260,5 +278,81 @@ BOX2D intersectTileBoxWithFilterBox(const BOX2D &tileBox, const BOX2D &filterBox
     else
     {
         return BOX2D();  // invalid box
+    }
+}
+
+pdal::Stage &makeReader(pdal::PipelineManager *manager, const std::string &inputFile, pdal::Options options)
+{   
+    pdal::Stage &reader = manager->makeReader( inputFile, "" );
+
+    pdal::Options reader_opts;
+    
+    // for LAS/LAZ files if the version 1.2, the extra dimensions will not be read, 
+    // need to enable use_eb_vlr to read those dimensions
+    if (!ends_with(inputFile, ".copc.laz") && (ends_with(inputFile, ".laz") || ends_with(inputFile, ".las")))
+    {
+        reader_opts.add(pdal::Option("use_eb_vlr", true));
+    }
+
+    reader_opts.add(options);
+
+    reader.addOptions(reader_opts);
+
+    return reader;
+}
+
+pdal::Stage &makeWriter(pdal::PipelineManager *manager, const std::string &outputFile, pdal::Stage *parent, pdal::Options options)
+{   
+    pdal::Stage *writerPtr = nullptr;
+    if (parent)
+    {
+        writerPtr = &manager->makeWriter(outputFile, "", *parent);
+    }
+    else
+    {
+        writerPtr = &manager->makeWriter(outputFile, "");
+    }
+
+    pdal::Stage &writer = *writerPtr;
+
+    // these are for writers.las and writers.copc to forward all dimensions
+    // if other writers are to be supported, this needs to be adjusted or make specific based on outputFile extension
+    pdal::Options writer_opts;
+    writer_opts.add(pdal::Option("forward", "all"));
+    writer_opts.add(pdal::Option("extra_dims", "all"));
+
+    writer_opts.add(options);
+
+    writer.addOptions(writer_opts);
+
+    return writer;
+}
+
+void buildOutput(std::string outputFile, std::vector<std::string> &tileOutputFiles)
+{
+    std::vector<std::string> args;
+    args.push_back("--output=" + outputFile);
+    for (std::string f : tileOutputFiles)
+        args.push_back(f);
+
+    if (ends_with(outputFile, ".vpc"))
+    {
+        // now build a new output VPC
+        buildVpc(args);
+    }
+    else
+    {
+        // merge all the output files into a single file        
+        Merge merge;
+        // for copc set isStreaming to false
+        if (ends_with(outputFile, ".copc.laz"))
+        {
+            merge.isStreaming = false;
+        }
+
+        runAlg(args, merge);
+
+        // remove files as they are not needed anymore - they are merged
+        removeFiles(tileOutputFiles, true);
     }
 }
