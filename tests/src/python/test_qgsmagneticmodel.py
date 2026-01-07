@@ -94,6 +94,7 @@ class TestQgsMagneticModel(QgisTestCase):
         not QgsMagneticModel("wmm2025").isValid(), "WMM2025 is not available"
     )
     def test_expression_functions(self):
+        # bad model name
         exp = QgsExpression(
             "magnetic_declination('xxxxxx', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
         )
@@ -102,7 +103,75 @@ class TestQgsMagneticModel(QgisTestCase):
         self.assertEqual(
             exp.evalErrorString()[:36], "Cannot evaluate magnetic declination"
         )
+        exp = QgsExpression(
+            "magnetic_inclination('xxxxxx', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString()[:36], "Cannot evaluate magnetic inclination"
+        )
+        exp = QgsExpression(
+            "magnetic_declination_rate_of_change('xxxxxx', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString()[:51],
+            "Cannot evaluate magnetic declination rate of change",
+        )
+        exp = QgsExpression(
+            "magnetic_inclination_rate_of_change('xxxxxx', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString()[:51],
+            "Cannot evaluate magnetic inclination rate of change",
+        )
 
+        # bad dates
+        exp = QgsExpression(
+            "magnetic_declination('wmm2025', 'not a date', -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString(),
+            "Function `magnetic_declination` requires a valid date",
+        )
+
+        exp = QgsExpression(
+            "magnetic_declination_rate_of_change('wmm2025', 'not a date', -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString(),
+            "Function `magnetic_declination_rate_of_change` requires a valid date",
+        )
+
+        exp = QgsExpression(
+            "magnetic_inclination('wmm2025', 'not a date', -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString(),
+            "Function `magnetic_inclination` requires a valid date",
+        )
+
+        exp = QgsExpression(
+            "magnetic_inclination_rate_of_change('wmm2025', 'not a date', -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString(),
+            "Function `magnetic_inclination_rate_of_change` requires a valid date",
+        )
+
+        # good values
         exp = QgsExpression(
             "magnetic_declination('wmm2025', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
         )
