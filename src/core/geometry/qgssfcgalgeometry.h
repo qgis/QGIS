@@ -21,8 +21,6 @@
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 
-SIP_IF_MODULE( HAVE_SFCGAL_SIP )
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
