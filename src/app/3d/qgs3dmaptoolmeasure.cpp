@@ -153,7 +153,7 @@ void Qgs3DMapToolMeasure::restart()
   mPoints.clear();
   zMean = std::numeric_limits<float>::quiet_NaN();
   mDone = false;
-  mDialog->resetTable();
+  mDialog->resetFields();
 
   mRubberBand->reset();
   mRubberBand->setHideLastMarker( true );
