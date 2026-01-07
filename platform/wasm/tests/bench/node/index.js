@@ -198,13 +198,13 @@ globalThis.screen = window.screen;
     console.log("Initializing QGIS Bench...");
 
     const args = [
-      //'--help'
-      
+      '--help'
+      /*
       '--parallel',
       '--iterations', '0',
       '--project', '/project/project.qgs',
       '--snapshot', '/download/snapshot.png'
-      
+      */      
     ]
 
 
