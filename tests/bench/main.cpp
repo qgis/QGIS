@@ -371,15 +371,15 @@ int main( int argc, char *argv[] )
   // Set UTC timezone to avoid Emscripten mktime() issues with local timezones
   setenv( "TZ", "UTC", 1 );
 
-  QgsApplication::setMaxThreads(4);
+  QgsApplication::setMaxThreads( 4 );
   // QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue(false);
 #endif
 
   // Set up the QSettings environment BEFORE creating QgsApplication
   // Required for Qt WASM localStorage backend which needs org/app name set early
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS3"_s );
 
   QCoreApplication *myApp = nullptr;
 

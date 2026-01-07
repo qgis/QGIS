@@ -17,8 +17,8 @@
 #ifndef QGSBENCH_H
 #define QGSBENCH_H
 
-#include "qgsmapsettings.h"
 #include "qgsmaprendererjob.h"
+#include "qgsmapsettings.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
