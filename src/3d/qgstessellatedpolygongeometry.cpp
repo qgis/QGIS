@@ -50,10 +50,10 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   mPositionAttribute->setByteOffset( 0 );
   addAttribute( mPositionAttribute );
 
-  mIndexAttribute = new Qt3DQAttribute( this );
+  mIndexAttribute = new Qt3DCore::QAttribute( this );
   mIndexAttribute->setName( "indexBuffer" );
-  mIndexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
-  mIndexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedInt );
+  mIndexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedInt );
   mIndexAttribute->setBuffer( mIndexBuffer );
   addAttribute( mIndexAttribute );
 
