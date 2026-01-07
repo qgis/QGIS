@@ -21,6 +21,7 @@
 #include "qgsexception.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
+
 #include <qbytearray.h>
 
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images

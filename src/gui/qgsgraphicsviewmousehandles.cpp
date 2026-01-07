@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgsgraphicsviewmousehandles.cpp"
+#include "qgsgraphicsviewmousehandles.h"
+
+#include <limits>
 
 #include "qgis.h"
-#include "qgsgraphicsviewmousehandles.h"
 #include "qgslayoututils.h"
 #include "qgsrendercontext.h"
 
-#include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgsgraphicsviewmousehandles.cpp"
 
 ///@cond PRIVATE
 
@@ -89,7 +91,7 @@ QRectF QgsGraphicsViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 
 void QgsGraphicsViewMouseHandles::rotateItem( QGraphicsItem *, double, double, double )
 {
-  QgsDebugError( QStringLiteral( "Rotation is not implemented for this class" ) );
+  QgsDebugError( u"Rotation is not implemented for this class"_s );
 }
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )

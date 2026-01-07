@@ -27,25 +27,26 @@
  *
  */
 
-#include "pal.h"
-#include "layer.h"
 #include "feature.h"
+
+#include <cmath>
+
 #include "geomfunction.h"
 #include "labelposition.h"
+#include "layer.h"
+#include "pal.h"
 #include "pointset.h"
-
 #include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgsgeos.h"
-#include "qgstextlabelfeature.h"
-#include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
 #include "qgspolygon.h"
+#include "qgstextlabelfeature.h"
 #include "qgstextrendererutils.h"
 
 #include <QLinkedList>
-#include <cmath>
 
 using namespace pal;
 
@@ -1810,7 +1811,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
   QLinkedList<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
 #if 0
-  QgsDebugMsgLevel( QStringLiteral( "PAL split polygons resulted in:" ), 2 );
+  QgsDebugMsgLevel( u"PAL split polygons resulted in:"_s, 2 );
   for ( PointSet *ps : shapes_final )
   {
     QgsDebugMsgLevel( ps->toWkt(), 2 );

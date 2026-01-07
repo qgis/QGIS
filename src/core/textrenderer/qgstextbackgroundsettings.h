@@ -16,17 +16,17 @@
 #ifndef QGSTEXTBACKGROUNDSETTINGS_H
 #define QGSTEXTBACKGROUNDSETTINGS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmapunitscale.h"
 
-#include <QString>
-#include <QPointF>
-#include <QSizeF>
-#include <QPainter>
 #include <QDomElement>
+#include <QPainter>
+#include <QPointF>
 #include <QSharedDataPointer>
+#include <QSizeF>
+#include <QString>
 
 class QgsMarkerSymbol;
 class QgsFillSymbol;

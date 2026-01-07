@@ -15,11 +15,13 @@
 #ifndef QGSDBRELATIONSHIPWIDGET_H
 #define QGSDBRELATIONSHIPWIDGET_H
 
+#include "ui_qgsdbrelationshipwidgetbase.h"
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsdbrelationshipwidgetbase.h"
-#include "qgis.h"
 #include "qgsweakrelation.h"
+
 #include <QAbstractTableModel>
 #include <QDialog>
 

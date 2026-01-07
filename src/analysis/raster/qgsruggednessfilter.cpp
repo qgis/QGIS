@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsruggednessfilter.h"
+
 #include <cmath>
 
 QgsRuggednessFilter::QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )

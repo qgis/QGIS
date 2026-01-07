@@ -8,6 +8,7 @@
 
 
 
+
 class QgsMergedFeatureRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")

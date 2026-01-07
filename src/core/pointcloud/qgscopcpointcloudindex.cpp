@@ -18,37 +18,38 @@
 #include "qgscopcpointcloudindex.h"
 
 #include <fstream>
-#include <QFile>
-#include <QtDebug>
-#include <QQueue>
-#include <QMutexLocker>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <qnamespace.h>
+#include <memory>
 
+#include "lazperf/vlr.hpp"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsbox3d.h"
 #include "qgscachedpointcloudblockrequest.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscopcpointcloudblockrequest.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgspointcloudblockrequest.h"
-#include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
-#include "qgsauthmanager.h"
-
-#include "lazperf/vlr.hpp"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
 #include "qgssetrequestinitiator_p.h"
+
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMutexLocker>
+#include <QQueue>
+#include <QtDebug>
+#include <qnamespace.h>
 
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "copc" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "COPC point cloud provider" )
+#define PROVIDER_KEY u"copc"_s
+#define PROVIDER_DESCRIPTION u"COPC point cloud provider"_s
 
 QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
@@ -62,7 +63,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
   {
     mAuthCfg = authcfg;
     mAccessType = Qgis::PointCloudAccessType::Remote;
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url, authcfg ) ) );
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromUrl( url, authcfg ) );
     // now store the uri as it might have been updated due to redirects
     mUri = url.toString();
   }
@@ -77,7 +78,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
       mIsValid = false;
       return;
     }
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromFile( mCopcFile ) );
   }
 
   mIsValid = mLazInfo->isValid() && loadSchema( *mLazInfo.get() ) && loadHierarchy();
@@ -89,7 +90,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
 
 bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 {
-  QByteArray copcInfoVlrData = lazInfo.vlrData( QStringLiteral( "copc" ), 1 );
+  QByteArray copcInfoVlrData = lazInfo.vlrData( u"copc"_s, 1 );
   if ( copcInfoVlrData.isEmpty() )
   {
     mError = QObject::tr( "Invalid COPC file" );
@@ -124,10 +125,10 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 
 #ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
+  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( u"res at lvl0 %1"_s.arg( dx / mSpan ), 2 );
+  QgsDebugMsgLevel( u"res at lvl1 %1"_s.arg( dx / mSpan / 2 ), 2 );
+  QgsDebugMsgLevel( u"res at lvl2 %1 with node size %2"_s.arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 #endif
 
   return true;
@@ -176,7 +177,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
     block = blockRequest->takeBlock();
 
     if ( !block )
-      QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
+      QgsDebugError( u"Error downloading node %1 data, error : %2 "_s.arg( n.toString(), blockRequest->errorStr() ) );
   }
 
   storeNodeDataToCache( block.get(), n, request );
@@ -230,7 +231,7 @@ const QByteArray QgsCopcPointCloudIndex::rawNodeData( QgsPointCloudNodeId n ) co
     file.read( rawBlockData.data(), blockSize );
     if ( !file )
     {
-      QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mUri ) );
+      QgsDebugError( u"Could not read file %1"_s.arg( mUri ) );
       return {};
     }
     return rawBlockData;
@@ -451,23 +452,23 @@ QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length )
     mCopcFile.seekg( offset );
     mCopcFile.read( buffer.data(), length );
     if ( mCopcFile.eof() )
-      QgsDebugError( QStringLiteral( "Read past end of file (path %1 offset %2 length %3)" ).arg( mUri ).arg( offset ).arg( length ) );
+      QgsDebugError( u"Read past end of file (path %1 offset %2 length %3)"_s.arg( mUri ).arg( offset ).arg( length ) );
     if ( !mCopcFile )
-      QgsDebugError( QStringLiteral( "Error reading %1" ).arg( mUri ) );
+      QgsDebugError( u"Error reading %1"_s.arg( mUri ) );
     return buffer;
   }
   else
   {
     QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
-    QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsCopcPointCloudIndex" ) );
+    QgsSetRequestInitiatorClass( nr, u"QgsCopcPointCloudIndex"_s );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-    QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( offset ).arg( offset + length - 1 ).toLocal8Bit();
+    QByteArray queryRange = u"bytes=%1-%2"_s.arg( offset ).arg( offset + length - 1 ).toLocal8Bit();
     nr.setRawHeader( "Range", queryRange );
 
     if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( nr, mAuthCfg ) )
     {
-      QgsDebugError( QStringLiteral( "Network request update failed for authcfg: %1" ).arg( mAuthCfg ) );
+      QgsDebugError( u"Network request update failed for authcfg: %1"_s.arg( mAuthCfg ) );
       return {};
     }
 
@@ -479,7 +480,7 @@ QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length )
 
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugError( QStringLiteral( "Request failed: %1 (offset %1 length %2)" ).arg( mUri ).arg( offset ).arg( length ) );
+      QgsDebugError( u"Request failed: %1 (offset %1 length %2)"_s.arg( mUri ).arg( offset ).arg( length ) );
       return {};
     }
 
@@ -541,7 +542,7 @@ QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
 {
   return
   {
-    { QStringLiteral( "CopcGpsTimeFlag" ), mLazInfo.get()->header().global_encoding & 1 },
+    { u"CopcGpsTimeFlag"_s, mLazInfo.get()->header().global_encoding & 1 },
   };
 }
 

@@ -15,12 +15,12 @@
 #ifndef QGSPOINT3DBILLBOARDMATERIAL_H
 #define QGSPOINT3DBILLBOARDMATERIAL_H
 
+#include "qgis_3d.h"
+#include "qgsmaterial.h"
+
 #include <QObject>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
-
-#include "qgis_3d.h"
-#include "qgsmaterial.h"
 
 #define SIP_NO_FILE
 

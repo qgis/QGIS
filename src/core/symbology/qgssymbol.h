@@ -16,8 +16,8 @@
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgspropertycollection.h"
 #include "qgsrendercontext.h"
 #include "qgsscreenproperties.h"
@@ -848,12 +848,12 @@ class CORE_EXPORT QgsSymbol
      * Sets the vector \a layer associated with the symbol.
      *
      * \note the layer will be NULLPTR after stopRender
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED const QgsVectorLayer *layer() const SIP_DEPRECATED;
 

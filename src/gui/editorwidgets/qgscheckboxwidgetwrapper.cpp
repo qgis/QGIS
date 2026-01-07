@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxwidgetwrapper.h"
+
 #include "moc_qgscheckboxwidgetwrapper.cpp"
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
@@ -25,7 +26,7 @@ QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *layer, int f
 
 QVariant QgsCheckboxWidgetWrapper::value() const
 {
-  if ( config( QStringLiteral( "AllowNullState" ) ).toBool() && mCheckBox && mCheckBox->checkState() == Qt::PartiallyChecked )
+  if ( config( u"AllowNullState"_s ).toBool() && mCheckBox && mCheckBox->checkState() == Qt::PartiallyChecked )
   {
     return QVariant();
   }
@@ -45,11 +46,11 @@ QVariant QgsCheckboxWidgetWrapper::value() const
   {
     if ( mGroupBox )
     {
-      return mGroupBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+      return mGroupBox->isChecked() ? config( u"CheckedState"_s ) : config( u"UncheckedState"_s );
     }
     else if ( mCheckBox )
     {
-      return mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
+      return mCheckBox->isChecked() ? config( u"CheckedState"_s ) : config( u"UncheckedState"_s );
     }
   }
 
@@ -104,7 +105,7 @@ void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVaria
 {
   Qt::CheckState state = Qt::Unchecked;
 
-  if ( config( QStringLiteral( "AllowNullState" ) ).toBool() && value.isNull() )
+  if ( config( u"AllowNullState"_s ).toBool() && value.isNull() )
   {
     state = Qt::PartiallyChecked;
   }
@@ -116,7 +117,7 @@ void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVaria
     }
     else
     {
-      state = value == config( QStringLiteral( "CheckedState" ) ) ? Qt::Checked : Qt::Unchecked;
+      state = value == config( u"CheckedState"_s ) ? Qt::Checked : Qt::Unchecked;
     }
   }
 

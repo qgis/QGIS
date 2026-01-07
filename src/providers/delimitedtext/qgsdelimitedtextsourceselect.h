@@ -15,18 +15,18 @@
 
 #include "ui_qgsdelimitedtextsourceselectbase.h"
 
-#include <QTextStream>
-#include <QThread>
-
-#include "qgshelp.h"
-#include "qgsguiutils.h"
-#include "qgsfeedback.h"
-#include "qgsfields.h"
-#include "qgstaskmanager.h"
-#include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsdelimitedtextfile.h"
 #include "qgsdelimitedtextprovider.h"
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsproviderregistry.h"
+#include "qgstaskmanager.h"
+
+#include <QTextStream>
+#include <QThread>
 
 class QButtonGroup;
 class QgisInterface;
@@ -41,11 +41,11 @@ class QgsDelimitedTextFileScanTask : public QgsTask
 
   public:
     QgsDelimitedTextFileScanTask( const QString &dataSource )
-      : QgsTask( QStringLiteral( "delimited text scan %1" ).arg( dataSource ) )
+      : QgsTask( u"delimited text scan %1"_s.arg( dataSource ) )
       , mDataSource( dataSource ) {
       };
 
-    ~QgsDelimitedTextFileScanTask()
+    ~QgsDelimitedTextFileScanTask() override
     {
     }
 

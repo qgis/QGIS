@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectionhandler.h"
-#include "moc_qgsmaptoolselectionhandler.cpp"
+
+#include "qgisapp.h"
+#include "qgsdoublespinbox.h"
+#include "qgsidentifymenu.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 
 #include <QBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 
-#include "qgisapp.h"
-#include "qgsdoublespinbox.h"
-#include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
-#include "qgsrubberband.h"
-#include "qgssnapindicator.h"
-#include "qgsidentifymenu.h"
+#include "moc_qgsmaptoolselectionhandler.cpp"
 
 /// @cond private
 
@@ -289,7 +290,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Could not transform geometry to map CRS" ) );
+        QgsDebugError( u"Could not transform geometry to map CRS"_s );
       }
 
       setSelectedGeometry( geom, e->modifiers() );

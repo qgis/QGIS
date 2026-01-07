@@ -13,9 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QQuickWindow>
-#include <QSGSimpleTextureNode>
-#include <QScreen>
+#include "qgsquickmapcanvasmap.h"
 
 #include "qgis.h"
 #include "qgsannotationlayer.h"
@@ -29,13 +27,15 @@
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
+#include "qgsquickmapsettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsquickmapcanvasmap.h"
-#include "moc_qgsquickmapcanvasmap.cpp"
-#include "qgsquickmapsettings.h"
+#include <QQuickWindow>
+#include <QSGSimpleTextureNode>
+#include <QScreen>
 
+#include "moc_qgsquickmapcanvasmap.cpp"
 
 QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   : QQuickItem( parent )
@@ -188,7 +188,7 @@ void QgsQuickMapCanvasMap::renderJobFinished()
   const QgsMapRendererJob::Errors errors = mJob->errors();
   for ( const QgsMapRendererJob::Error &error : errors )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "%1 :: %2" ).arg( error.layerID, error.message ), tr( "Rendering" ) );
+    QgsMessageLog::logMessage( u"%1 :: %2"_s.arg( error.layerID, error.message ), tr( "Rendering" ) );
   }
 
   // take labeling results before emitting renderComplete, so labeling map tools
@@ -420,15 +420,9 @@ QSGNode *QgsQuickMapCanvasMap::updatePaintNode( QSGNode *oldNode, QQuickItem::Up
   return node;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-void QgsQuickMapCanvasMap::geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry )
-{
-  QQuickItem::geometryChanged( newGeometry, oldGeometry );
-#else
 void QgsQuickMapCanvasMap::geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry )
 {
   QQuickItem::geometryChange( newGeometry, oldGeometry );
-#endif
   if ( newGeometry.size() != oldGeometry.size() )
   {
     mMapSettings->setOutputSize( newGeometry.size().toSize() );
@@ -572,8 +566,8 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
 
     if ( invalidateLabels )
     {
-      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
-      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+      mCache->clearCacheImage( u"_labels_"_s );
+      mCache->clearCacheImage( u"_preview_labels_"_s );
     }
   }
 }
@@ -618,8 +612,8 @@ void QgsQuickMapCanvasMap::clearElevationCache()
 
     if ( invalidateLabels )
     {
-      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
-      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+      mCache->clearCacheImage( u"_labels_"_s );
+      mCache->clearCacheImage( u"_preview_labels_"_s );
     }
   }
 }

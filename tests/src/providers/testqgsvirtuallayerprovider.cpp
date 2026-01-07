@@ -13,20 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <fstream>
 #include <limits>
 
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QQueue>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <fstream>
-#include <QVector>
 #include <QTest>
-#include <QStandardPaths>
-#include <QQueue>
+#include <QVector>
 
 //qgis includes...
 #include "qgis.h"
@@ -47,7 +48,7 @@ class TestQgsVirtualLayerProvider : public QgsTest
 
   public:
     TestQgsVirtualLayerProvider()
-      : QgsTest( QStringLiteral( "Virtual Layer Provider Tests" ) ) {}
+      : QgsTest( u"Virtual Layer Provider Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdbfilterproxymodel.h"
+
 #include "moc_qgsdbfilterproxymodel.cpp"
 
 QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject *parent ): QSortFilterProxyModel( parent )
@@ -44,10 +45,6 @@ void QgsDatabaseFilterProxyModel::_setFilterWildcard( const QString &pattern )
 
 void QgsDatabaseFilterProxyModel::_setFilterRegExp( const QString &pattern )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QSortFilterProxyModel::setFilterRegExp( pattern );
-#else
   QSortFilterProxyModel::setFilterRegularExpression( pattern );
-#endif
   emit layoutChanged();
 }

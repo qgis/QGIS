@@ -15,28 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialog>
-#include <QMenu>
-
 #include "qgsmaptoolannotation.h"
-#include "moc_qgsmaptoolannotation.cpp"
+
 #include "qgsannotation.h"
-#include "qgsformannotationdialog.h"
+#include "qgsannotationmanager.h"
+#include "qgsapplication.h"
+#include "qgsexception.h"
 #include "qgsformannotation.h"
+#include "qgsformannotationdialog.h"
 #include "qgshtmlannotation.h"
 #include "qgshtmlannotationdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgstextannotationdialog.h"
-#include "qgstextannotation.h"
-#include "qgssvgannotationdialog.h"
-#include "qgssvgannotation.h"
-#include "qgsproject.h"
-#include "qgsexception.h"
-#include "qgsannotationmanager.h"
 #include "qgsmapmouseevent.h"
-#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgssvgannotation.h"
+#include "qgssvgannotationdialog.h"
+#include "qgstextannotation.h"
+#include "qgstextannotationdialog.h"
 
+#include <QDialog>
+#include <QMenu>
+
+#include "moc_qgsmaptoolannotation.cpp"
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -166,14 +167,14 @@ bool QgsMapToolAnnotation::populateContextMenuWithEvent( QMenu *menu, QgsMapMous
     return true;
   }
   menu->addSeparator();
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ), tr( "Edit" ), this, [this, existingItem]() {
+  menu->addAction( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ), tr( "Edit" ), this, [this, existingItem]() {
     QDialog *dialog = createItemEditor( existingItem );
     if ( dialog )
     {
       dialog->exec();
     }
   } );
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete" ), this, [existingItem]() {
+  menu->addAction( QgsApplication::getThemeIcon( u"/mActionDeleteSelected.svg"_s ), tr( "Delete" ), this, [existingItem]() {
     QgsProject::instance()->annotationManager()->removeAnnotation( existingItem->annotation() );
   } );
 

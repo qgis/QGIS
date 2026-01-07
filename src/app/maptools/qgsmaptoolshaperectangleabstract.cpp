@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectangleabstract.h"
-#include "moc_qgsmaptoolshaperectangleabstract.cpp"
+
+#include "qgisapp.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
+#include "qgslinestring.h"
 #include "qgsmaptoolcapture.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
 
+#include "moc_qgsmaptoolshaperectangleabstract.cpp"
 
 void QgsMapToolShapeRectangleAbstract::addRectangleToParentTool()
 {

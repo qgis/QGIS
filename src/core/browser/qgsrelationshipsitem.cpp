@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsrelationshipsitem.h"
-#include "moc_qgsrelationshipsitem.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
-#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsrelationshipsitem.cpp"
 
 QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
     const QString &path,
@@ -74,21 +76,21 @@ QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
 
         if ( !relationError.isEmpty() )
         {
-          children.push_back( new QgsErrorItem( this, relationError, path() + QStringLiteral( "/relationerror" ) ) );
+          children.push_back( new QgsErrorItem( this, relationError, path() + u"/relationerror"_s ) );
         }
       }
     }
   }
   catch ( const QgsProviderConnectionException &ex )
   {
-    children.push_back( new QgsErrorItem( this, ex.what(), path() + QStringLiteral( "/error" ) ) );
+    children.push_back( new QgsErrorItem( this, ex.what(), path() + u"/error"_s ) );
   }
   return children;
 }
 
 QIcon QgsRelationshipsItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconBrowserRelations.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconBrowserRelations.svg"_s );
 }
 
 QString QgsRelationshipsItem::connectionUri() const
@@ -112,7 +114,7 @@ QgsRelationshipItem::QgsRelationshipItem( QgsDataItem *parent, const QgsWeakRela
 
 QIcon QgsRelationshipItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconBrowserRelations.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconBrowserRelations.svg"_s );
 }
 
 const QgsWeakRelation &QgsRelationshipItem::relation() const

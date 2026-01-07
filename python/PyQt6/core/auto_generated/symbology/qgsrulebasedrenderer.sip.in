@@ -10,7 +10,6 @@
 
 
 
-
 class QgsRuleBasedRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
@@ -78,7 +77,7 @@ symbol.
     typedef QList<QgsRuleBasedRenderer::Rule *> RuleList;
 
     class Rule
-{
+    {
 %Docstring(signature="appended")
 Represents an individual rule for a rule-based renderer.
 
@@ -89,9 +88,6 @@ zero, there is no lower/upper bound for scales. A rule matches if both
 filter and scale range match.
 %End
 
-%TypeHeaderCode
-#include "qgsrulebasedrenderer.h"
-%End
       public:
         enum RenderResult /BaseType=IntEnum/
         {

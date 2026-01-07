@@ -6,6 +6,7 @@
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsarchive.sip
+%Include auto_generated/qgsarrowiterator.sip
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsauxiliarystorage.sip
@@ -96,6 +97,7 @@
 %Include auto_generated/qgslocaldefaultsettings.sip
 %Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
+%Include auto_generated/qgsmagneticmodel.sip
 %Include auto_generated/qgsmapclippingregion.sip
 %Include auto_generated/qgsmapclippingutils.sip
 %Include auto_generated/qgsmapdecoration.sip
@@ -248,13 +250,7 @@
 %Include auto_generated/annotations/qgsrenderedannotationitemdetails.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
 %Include auto_generated/annotations/qgstextannotation.sip
-%Include auto_generated/auth/qgsauthcertutils.sip
-%Include auto_generated/auth/qgsauthconfig.sip
-%Include auto_generated/auth/qgsauthconfigurationstorage.sip
-%Include auto_generated/auth/qgsauthconfigurationstorageregistry.sip
 %Include auto_generated/auth/qgsauthmanager.sip
-%Include auto_generated/auth/qgsauthmethod.sip
-%Include auto_generated/auth/qgsauthconfigurationstoragedb.sip
 %Include auto_generated/browser/qgsbrowsermodel.sip
 %Include auto_generated/browser/qgsbrowserproxymodel.sip
 %Include auto_generated/browser/qgsconnectionsitem.sip
@@ -390,7 +386,6 @@
 %Include auto_generated/gps/qgsgpsinformation.sip
 %Include auto_generated/gps/qgsgpslogger.sip
 %Include auto_generated/gps/qgsnmeaconnection.sip
-%Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/gps/qgssatelliteinformation.sip
 %Include auto_generated/gps/qgsvectorlayergpslogger.sip
@@ -516,6 +511,7 @@
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
 %Include auto_generated/mesh/qgsmeshlayerlabeling.sip
 %Include auto_generated/mesh/qgsmeshutils.sip
+%Include auto_generated/multimedia/qgsvideoexporter.sip
 %Include auto_generated/painting/qgsgeometrypaintdevice.sip
 %Include auto_generated/painting/qgsmaskpaintdevice.sip
 %Include auto_generated/painting/qgsnullpainterdevice.sip
@@ -842,6 +838,12 @@
 %Include auto_generated/vectortile/qgsvectortileutils.sip
 %Include auto_generated/vectortile/qgsvectortilewriter.sip
 %Include auto_generated/vectortile/qgsvtpktiles.sip
+%Include auto_generated/auth/qgsauthcertutils.sip
+%Include auto_generated/auth/qgsauthconfig.sip
+%Include auto_generated/auth/qgsauthconfigurationstorage.sip
+%Include auto_generated/auth/qgsauthconfigurationstorageregistry.sip
+%Include auto_generated/auth/qgsauthmethod.sip
+%Include auto_generated/auth/qgsauthconfigurationstoragedb.sip
 %If ( HAVE_WEBENGINE_SIP )
 %Include auto_generated/web/qgswebenginepage.sip
 %End

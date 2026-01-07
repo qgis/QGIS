@@ -16,24 +16,25 @@
  ***************************************************************************/
 
 #include "qgscircularstring.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
-
 #include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsfeedback.h"
 
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCircularString::QgsCircularString()
 {
@@ -220,7 +221,7 @@ int QgsCircularString::compareToSameClass( const QgsAbstractGeometry *other ) co
 
 QString QgsCircularString::geometryType() const
 {
-  return QStringLiteral( "CircularString" );
+  return u"CircularString"_s;
 }
 
 int QgsCircularString::dimension() const
@@ -485,7 +486,7 @@ bool QgsCircularString::fromWkt( const QString &wkt )
   parts.second = parts.second.remove( '(' ).remove( ')' );
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
@@ -522,7 +523,7 @@ QString QgsCircularString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += QLatin1String( "EMPTY" );
+    wkt += "EMPTY"_L1;
   else
   {
     QgsPointSequence pts;
@@ -545,13 +546,13 @@ QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const Q
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemCurve = doc.createElementNS( ns, QStringLiteral( "Curve" ) );
+  QDomElement elemCurve = doc.createElementNS( ns, u"Curve"_s );
 
   if ( isEmpty() )
     return elemCurve;
 
-  QDomElement elemSegments = doc.createElementNS( ns, QStringLiteral( "segments" ) );
-  QDomElement elemArcString = doc.createElementNS( ns, QStringLiteral( "ArcString" ) );
+  QDomElement elemSegments = doc.createElementNS( ns, u"segments"_s );
+  QDomElement elemArcString = doc.createElementNS( ns, u"ArcString"_s );
   elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D(), axisOrder ) );
   elemSegments.appendChild( elemArcString );
   elemCurve.appendChild( elemSegments );
@@ -1140,7 +1141,7 @@ void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::Trans
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else

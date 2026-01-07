@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgslightswidget.h"
-#include "moc_qgslightswidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
+
+#include "moc_qgslightswidget.cpp"
 
 QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   : QWidget( parent )
@@ -132,7 +133,7 @@ int QgsLightsWidget::lightSourceCount() const
 
 void QgsLightsWidget::setPointLightCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  labelPointLightCrs->setText( tr( "Coordinates in 3D map CRS" ) + QStringLiteral( " (%1)" ).arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
+  labelPointLightCrs->setText( tr( "Coordinates in 3D map CRS" ) + u" (%1)"_s.arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
   labelPointLightCrs->setToolTip( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) );
 }
 
@@ -352,7 +353,7 @@ QVariant QgsLightsModel::data( const QModelIndex &index, int role ) const
       return lightListRow;
 
     case Qt::DecorationRole:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mActionHighlightFeature.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mActionHighlightFeature.svg"_s );
 
     default:
       break;

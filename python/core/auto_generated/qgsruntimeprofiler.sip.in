@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsRuntimeProfiler : QAbstractItemModel
 {
 %Docstring(signature="appended")

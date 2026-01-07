@@ -16,16 +16,16 @@
  ***************************************************************************/
 
 #include "qgslayoutpicturewidget.h"
-#include "moc_qgslayoutpicturewidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsfilecontentsourcelineedit.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
-#include "qgslayout.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgssvgcache.h"
 #include "qgssettings.h"
+#include "qgssvgcache.h"
 #include "qgssvgselectorwidget.h"
-#include "qgsfilecontentsourcelineedit.h"
 
 #include <QDoubleValidator>
 #include <QFileDialog>
@@ -36,6 +36,8 @@
 #include <QProgressDialog>
 #include <QSvgRenderer>
 
+#include "moc_qgslayoutpicturewidget.cpp"
+
 QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   : QgsLayoutItemBaseWidget( nullptr, picture )
   , mPicture( picture )
@@ -44,7 +46,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
 
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastSVGMarkerDir"_s );
   mSvgSelectorWidget->initParametersModel( layoutObject(), coverageLayer() );
 
   mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
@@ -78,16 +80,16 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
 
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastComposerPictureDir" ) );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( u"/UI/lastComposerPictureDir"_s );
 
   setPanelTitle( tr( "Picture Properties" ) );
 
   mFillColorButton->setAllowOpacity( true );
   mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
-  mFillColorButton->setContext( QStringLiteral( "composer" ) );
+  mFillColorButton->setContext( u"composer"_s );
   mStrokeColorButton->setAllowOpacity( true );
   mStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
+  mStrokeColorButton->setContext( u"composer"_s );
 
   mFillColorDDBtn->registerLinkedWidget( mFillColorButton );
   mStrokeColorDDBtn->registerLinkedWidget( mStrokeColorButton );

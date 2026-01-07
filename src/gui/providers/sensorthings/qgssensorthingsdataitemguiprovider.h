@@ -21,12 +21,11 @@
 
 #include "qgsdataitemguiprovider.h"
 
-
 class QgsSensorThingsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "SensorThings" ); }
+    QString name() override { return u"SensorThings"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspiediagram.h"
+
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QPainter>
 
-const QString QgsPieDiagram::DIAGRAM_NAME_PIE = QStringLiteral( "Pie" );
+const QString QgsPieDiagram::DIAGRAM_NAME_PIE = u"Pie"_s;
 
 QgsPieDiagram::QgsPieDiagram()
 {

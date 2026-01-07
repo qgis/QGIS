@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayouthtmlwidget.h"
-#include "moc_qgslayouthtmlwidget.cpp"
+
+#include "qgscodeeditorcss.h"
+#include "qgscodeeditorhtml.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressionfinder.h"
+#include "qgslayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
-#include "qgslayout.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgscodeeditorhtml.h"
-#include "qgscodeeditorcss.h"
-#include "qgssettings.h"
 #include "qgslayoutundostack.h"
-#include "qgsexpressionfinder.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QUrl>
+
+#include "moc_qgslayouthtmlwidget.cpp"
 
 QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemHtml *>( frame->multiFrame() ) : nullptr )
@@ -161,15 +163,15 @@ void QgsLayoutHtmlWidget::mUrlLineEdit_editingFinished()
 void QgsLayoutHtmlWidget::mFileToolButton_clicked()
 {
   QgsSettings s;
-  const QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
-  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
+  const QString lastDir = s.value( u"/UI/lastHtmlDir"_s, QDir::homePath() ).toString();
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, u"HTML (*.html *.htm);;All files (*.*)"_s );
   if ( !file.isEmpty() )
   {
     const QUrl url = QUrl::fromLocalFile( file );
     mUrlLineEdit->setText( url.toString() );
     mUrlLineEdit_editingFinished();
     mHtml->update();
-    s.setValue( QStringLiteral( "/UI/lastHtmlDir" ), QFileInfo( file ).absolutePath() );
+    s.setValue( u"/UI/lastHtmlDir"_s, QFileInfo( file ).absolutePath() );
   }
 }
 
@@ -350,7 +352,7 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
   QgsVectorLayer *layer = coverageLayer();
 
   const QgsExpressionContext context = mHtml->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

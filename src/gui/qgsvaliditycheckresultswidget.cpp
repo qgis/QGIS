@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgsvaliditycheckresultswidget.h"
-#include "moc_qgsvaliditycheckresultswidget.cpp"
-#include "qgsvaliditycheckregistry.h"
+
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
 #include "qgsproxyprogresstask.h"
-#include <QProgressDialog>
+#include "qgsvaliditycheckregistry.h"
+
 #include <QDialogButtonBox>
+#include <QProgressDialog>
 #include <QPushButton>
+
+#include "moc_qgsvaliditycheckresultswidget.cpp"
 
 //
 // QgsValidityCheckResultsModel
@@ -76,10 +79,10 @@ QVariant QgsValidityCheckResultsModel::data( const QModelIndex &index, int role 
       switch ( res.type )
       {
         case QgsValidityCheckResult::Critical:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mIconCritical.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mIconCritical.svg"_s );
 
         case QgsValidityCheckResult::Warning:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s );
       }
       break;
 

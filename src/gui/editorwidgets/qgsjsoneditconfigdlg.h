@@ -18,8 +18,8 @@
 
 #include "ui_qgsjsoneditconfigdlg.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 

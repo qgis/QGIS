@@ -14,6 +14,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.core import Qgis
 from qgis.gui import QgsAlignmentComboBox
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -57,6 +58,52 @@ class TestQgsAlignmentComboBox(QgisTestCase):
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignRight
         )
         self.assertEqual(len(spy), 3)
+
+    def testQgisHorizontalEnumGettersSetters(self):
+        """
+        test widget getters for Qgis horizontal alignment enum
+        """
+        w = QgsAlignmentComboBox()
+        w.setAvailableAlignments(
+            Qt.AlignmentFlag.AlignRight
+            | Qt.AlignmentFlag.AlignJustify
+            | Qt.AlignmentFlag.AlignLeft
+            | Qt.AlignmentFlag.AlignHCenter
+        )
+
+        w.setCurrentAlignment(Qgis.TextHorizontalAlignment.Left)
+        self.assertEqual(w.horizontalAlignment(), Qgis.TextHorizontalAlignment.Left)
+
+        w.setCurrentAlignment(Qgis.TextHorizontalAlignment.Right)
+        self.assertEqual(w.horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
+
+        w.setCurrentAlignment(Qgis.TextHorizontalAlignment.Center)
+        self.assertEqual(w.horizontalAlignment(), Qgis.TextHorizontalAlignment.Center)
+
+        w.setCurrentAlignment(Qgis.TextHorizontalAlignment.Justify)
+        self.assertEqual(w.horizontalAlignment(), Qgis.TextHorizontalAlignment.Justify)
+
+    def testQgisVerticalEnumGettersSetters(self):
+        """
+        test widget getters for Qgis vertical alignment enum
+        """
+        w = QgsAlignmentComboBox()
+        w.setAvailableAlignments(
+            Qt.AlignmentFlag.AlignTop
+            | Qt.AlignmentFlag.AlignVCenter
+            | Qt.AlignmentFlag.AlignBottom
+        )
+
+        w.setCurrentAlignment(Qgis.TextVerticalAlignment.Top)
+        self.assertEqual(w.verticalAlignment(), Qgis.TextVerticalAlignment.Top)
+
+        w.setCurrentAlignment(Qgis.TextVerticalAlignment.VerticalCenter)
+        self.assertEqual(
+            w.verticalAlignment(), Qgis.TextVerticalAlignment.VerticalCenter
+        )
+
+        w.setCurrentAlignment(Qgis.TextVerticalAlignment.Bottom)
+        self.assertEqual(w.verticalAlignment(), Qgis.TextVerticalAlignment.Bottom)
 
 
 if __name__ == "__main__":

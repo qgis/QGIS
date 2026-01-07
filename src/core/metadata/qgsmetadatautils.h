@@ -18,8 +18,8 @@
 #ifndef QGSMETADATAUTILS_H
 #define QGSMETADATAUTILS_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsLayerMetadata;
 class QDomDocument;

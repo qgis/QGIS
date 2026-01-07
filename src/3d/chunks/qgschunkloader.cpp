@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgschunkloader.h"
-#include "moc_qgschunkloader.cpp"
+
 #include "qgschunknode.h"
 
 #include <QVector>
+
+#include "moc_qgschunkloader.cpp"
+
 ///@cond PRIVATE
 
 QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;

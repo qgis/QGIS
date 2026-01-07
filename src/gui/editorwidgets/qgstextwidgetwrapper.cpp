@@ -15,11 +15,14 @@
  ***************************************************************************/
 
 #include "qgstextwidgetwrapper.h"
-#include "moc_qgstextwidgetwrapper.cpp"
-#include "qgsexpressioncontextutils.h"
+
 #include "qgsattributeform.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsvaluerelationfieldformatter.h"
+
 #include <QScreen>
+
+#include "moc_qgstextwidgetwrapper.cpp"
 
 QgsTextWidgetWrapper::QgsTextWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -65,7 +68,7 @@ void QgsTextWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setText( QgsExpression::replaceExpressionText( mText, &mTextContext ) );
   mWidget->setOpenExternalLinks( true );
 
-  const thread_local QRegularExpression sRegEx { QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+  const thread_local QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
   mNeedsGeometry = false;
   QRegularExpressionMatchIterator matchIt { sRegEx.globalMatch( mText ) };
@@ -91,7 +94,7 @@ void QgsTextWidgetWrapper::setText( const QString &text )
   mText = text;
 
   bool ok = false;
-  const thread_local QRegularExpression sRegEx( QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
+  const thread_local QRegularExpression sRegEx( u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
   QRegularExpressionMatchIterator matchIt = sRegEx.globalMatch( mText );
   while ( !ok && matchIt.hasNext() )
   {

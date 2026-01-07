@@ -18,10 +18,11 @@
 #ifndef QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 #define QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 
-#include <QObject>
-#include <QMap>
-#include <QSet>
 #include "qgscoordinatereferencesystem.h"
+
+#include <QMap>
+#include <QObject>
+#include <QSet>
 
 class QgsCelestialBody;
 class QgsProjOperation;
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
 
-    ~QgsCoordinateReferenceSystemRegistry();
+    ~QgsCoordinateReferenceSystemRegistry() override;
 
     /**
      * \brief Contains details of a custom (user defined) CRS.

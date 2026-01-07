@@ -15,16 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterlayerprofilegenerator.h"
-#include "qgsprofilerequest.h"
+
 #include "qgscurve.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsrasteriterator.h"
+#include "qgsfillsymbol.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
 #include "qgsprofilepoint.h"
-#include "qgsfillsymbol.h"
+#include "qgsprofilerequest.h"
+#include "qgsrasteriterator.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
 #include "qgsthreadingutils.h"
 
 #include <QPolygonF>
@@ -36,7 +37,7 @@
 
 QString QgsRasterLayerProfileResults::type() const
 {
-  return QStringLiteral( "raster" );
+  return u"raster"_s;
 }
 
 QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
@@ -127,7 +128,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to raster CRS" ) );
+    QgsDebugError( u"Error transforming profile line to raster CRS"_s );
     return false;
   }
 

@@ -16,14 +16,16 @@
 #ifndef QGSANNOTATIONITEMGUIREGISTRY_H
 #define QGSANNOTATIONITEMGUIREGISTRY_H
 
+#include <functional>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsannotationitemregistry.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include "qgsannotationitemregistry.h"
-#include "qgis.h"
+
 #include <QIcon>
-#include <functional>
 
 class QgsAnnotationLayer;
 class QgsAnnotationItem;

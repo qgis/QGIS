@@ -18,10 +18,10 @@
 #ifndef QGSREADWRITECONTEXT_H
 #define QGSREADWRITECONTEXT_H
 
-#include "qgspathresolver.h"
 #include "qgis.h"
-#include "qgsprojecttranslator.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgspathresolver.h"
+#include "qgsprojecttranslator.h"
 
 class QgsReadWriteContextCategoryPopper;
 
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsReadWriteContext
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+        QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -112,7 +112,8 @@ class CORE_EXPORT QgsReadWriteContext
      * \endcode
      * \since QGIS 3.2
      */
-    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const SIP_PYNAME( _enterCategory );
+    [[maybe_unused]] [[nodiscard]] QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const SIP_PYNAME( _enterCategory );
+
 
     /**
      * Returns the stored messages and remove them

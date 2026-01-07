@@ -15,20 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmessagelog.h"
 #include "qgscompoundcurve.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
+#include "qgsmessagelog.h"
 #include "qgswkbptr.h"
-#include "qgsfeedback.h"
 
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCompoundCurve::QgsCompoundCurve()
 {
@@ -80,7 +82,7 @@ int QgsCompoundCurve::compareToSameClass( const QgsAbstractGeometry *other ) con
 
 QString QgsCompoundCurve::geometryType() const
 {
-  return QStringLiteral( "CompoundCurve" );
+  return u"CompoundCurve"_s;
 }
 
 int QgsCompoundCurve::dimension() const
@@ -215,11 +217,11 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -290,10 +292,10 @@ QString QgsCompoundCurve::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr();
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     for ( const QgsCurve *curve : mCurves )
     {
       QString childWkt = curve->asWkt( precision );
@@ -323,14 +325,14 @@ QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QS
 
 QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
+  QDomElement compoundCurveElem = doc.createElementNS( ns, u"CompositeCurve"_s );
 
   if ( isEmpty() )
     return compoundCurveElem;
 
   for ( const QgsCurve *curve : mCurves )
   {
-    QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+    QDomElement curveMemberElem = doc.createElementNS( ns, u"curveMember"_s );
     QDomElement curveElem = curve->asGml3( doc, precision, ns, axisOrder );
     curveMemberElem.appendChild( curveElem );
     compoundCurveElem.appendChild( curveMemberElem );

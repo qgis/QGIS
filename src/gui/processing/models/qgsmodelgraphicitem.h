@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsmodelcomponentgraphicitem.h"
+
 #include <QGraphicsObject>
 #include <QPicture>
 
@@ -171,7 +172,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
-     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets 
+     * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets
      * or QgsModelDesignerSocketGraphicItem::mOutSockets array
      */
     int index() const { return mIndex; };
@@ -186,7 +187,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
     /**
      * Returns whether the socket is an input socket or not.
-     * 
+     *
      * Convenient function around mEdge member
      */
     bool isInput() const { return mEdge == Qt::TopEdge; };
@@ -201,11 +202,27 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      */
     QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
 
+    /*
+     * Returns the color of the socket based on the type of data the param corresponds to.
+     * \since QGIS 4.0
+     */
+    QColor socketColor() const;
+
+    /*
+     * Returns TRUE if the parameter is set to the default parameter value.
+     * \since QGIS 4.0
+     */
+    bool isDefaultParameterValue() const;
+
+  signals:
+
+
   private:
     QgsModelComponentGraphicItem *mComponentItem = nullptr;
     QgsProcessingModelComponent *mComponent = nullptr;
     int mIndex = -1;
     Qt::Edge mEdge = Qt::Edge::TopEdge;
+    float mSocketOutlineWidth = 1.5;
 };
 
 ///@endcond

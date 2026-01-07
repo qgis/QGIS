@@ -18,13 +18,13 @@
 #ifndef QGSELLIPSE_H
 #define QGSELLIPSE_H
 
-#include <QString>
-
 #include "qgis_core.h"
+#include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
 #include "qgsrectangle.h"
+
+#include <QString>
 
 /**
  * \ingroup core
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsEllipse
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsEllipse: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

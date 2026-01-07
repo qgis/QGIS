@@ -17,11 +17,11 @@
 #define QGSMAPTOOLIDENTIFYACTION_H
 
 #include "qgis.h"
+#include "qgis_app.h"
 #include "qgsmaptoolidentify.h"
 
 #include <QObject>
 #include <QPointer>
-#include "qgis_app.h"
 
 class QgisInterface;
 class QgsIdentifyResultsDialog;

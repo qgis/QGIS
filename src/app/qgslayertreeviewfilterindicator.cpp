@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewfilterindicator.h"
-#include "moc_qgslayertreeviewfilterindicator.cpp"
 
+#include "qgisapp.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgisapp.h"
-#include "qgsstringutils.h"
 #include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayertreeviewfilterindicator.cpp"
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -49,7 +50,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorFilter.svg" );
+  return u"/mIndicatorFilter.svg"_s;
 }
 
 QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer )
@@ -76,7 +77,7 @@ QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer
     filter = QgsStringUtils::truncateMiddleOfString( filter, 1024 );
   }
 
-  return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), filter.toHtmlEscaped() );
+  return u"<b>%1:</b><br>%2"_s.arg( tr( "Filter" ), filter.toHtmlEscaped() );
 }
 
 void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer )

@@ -240,17 +240,6 @@
 #define SIP_TYPEHINT(type)
 
 /*
- * Sip supports the final keyword since version 4.19.0, earlier than that
- * we will have build issues because it tries to override final methods.
- */
-#if SIP_VERSION < 0x041300
-#if defined FINAL
-#undef FINAL
-#endif
-#define FINAL override
-#endif
-
-/*
  * Define Python special method (bool, repr, etc.) using the given method or code
  * sipify.py will create a dedicated python file named according to the class
  * and located in python/{module}/auto_additions/{classname}.py
@@ -273,7 +262,7 @@
  * If OUTSIDE_CLASS is defined, the enum has been unnested
  * from the class, and it will be used for monkey patching
  * e.g. QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
- * These macros should be removed in QGIS 4
+ * These macros should be removed in QGIS 5
  */
 #define SIP_MONKEYPATCH_SCOPEENUM
 #define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)

@@ -13,27 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererwidget.h"
-#include "moc_qgsrendererwidget.cpp"
 
-#include "qgsdatadefinedsizelegendwidget.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
-#include "qgssymbollevelsdialog.h"
-#include "qgssymbollayer.h"
+#include "qgsdatadefinedsizelegendwidget.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgssymbollevelsdialog.h"
 #include "qgstemporalcontroller.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
+#include "qgsvectorlayer.h"
 
-#include <QMessageBox>
+#include <QClipboard>
 #include <QInputDialog>
 #include <QMenu>
-#include <QClipboard>
+#include <QMessageBox>
+
+#include "moc_qgsrendererwidget.cpp"
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   : mLayer( layer )
@@ -122,7 +123,7 @@ void QgsRendererWidget::changeSymbolColor()
   else
   {
     // modal dialog version... yuck
-    const QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
+    const QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, u"Change Symbol Color"_s, true );
     if ( color.isValid() )
     {
       for ( QgsSymbol *symbol : symbolList )
@@ -422,13 +423,13 @@ QgsExpressionContext QgsRendererWidget::createExpressionContext() const
   QStringList highlights;
   highlights << QgsExpressionContext::EXPR_ORIGINAL_VALUE;
 
-  if ( expContext.hasVariable( QStringLiteral( "zoom_level" ) ) )
+  if ( expContext.hasVariable( u"zoom_level"_s ) )
   {
-    highlights << QStringLiteral( "zoom_level" );
+    highlights << u"zoom_level"_s;
   }
-  if ( expContext.hasVariable( QStringLiteral( "vector_tile_zoom" ) ) )
+  if ( expContext.hasVariable( u"vector_tile_zoom"_s ) )
   {
-    highlights << QStringLiteral( "vector_tile_zoom" );
+    highlights << u"vector_tile_zoom"_s;
   }
 
   expContext.setHighlightedVariables( highlights );

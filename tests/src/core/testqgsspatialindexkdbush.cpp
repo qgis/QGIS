@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindexkdbush.h"
+#include "qgsspatialindexkdbush_p.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsspatialindexkdbush_p.h"
+
+#include <QObject>
+#include <QString>
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -81,7 +81,7 @@ class TestQgsSpatialIndexKdBush : public QObject
 
     void testQuery()
     {
-      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), u"memory"_s );
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
       const QgsSpatialIndexKDBush index( *vl->dataProvider() );
@@ -115,7 +115,7 @@ class TestQgsSpatialIndexKdBush : public QObject
 
     void testCopy()
     {
-      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), u"memory"_s );
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
 
@@ -145,7 +145,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( indexCopy->d->ref == 1 );
 
       // assignment operator
-      auto vl2 = std::make_unique<QgsVectorLayer>( "Point", QString(), QStringLiteral( "memory" ) );
+      auto vl2 = std::make_unique<QgsVectorLayer>( "Point", QString(), u"memory"_s );
       QgsSpatialIndexKDBush index3( *vl2->dataProvider() );
       QVERIFY( index3.size() == 0 );
       fids = index3.intersects( QgsRectangle( 0, 0, 10, 10 ) );

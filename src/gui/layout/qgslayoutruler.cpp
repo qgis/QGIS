@@ -13,17 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutruler.h"
-#include "moc_qgslayoutruler.cpp"
-#include "qgslayout.h"
+
+#include <cmath>
+#include <memory>
+
 #include "qgis.h"
+#include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutview.h"
 #include "qgslogger.h"
-#include "qgslayoutpagecollection.h"
+
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>
-#include <QPainter>
 #include <QMenu>
-#include <cmath>
+#include <QPainter>
+
+#include "moc_qgslayoutruler.cpp"
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
@@ -39,12 +44,12 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
 
   //calculate minimum size required for ruler text
   mRulerFont.setPointSize( RULER_FONT_SIZE );
-  mRulerFontMetrics.reset( new QFontMetrics( mRulerFont ) );
+  mRulerFontMetrics = std::make_unique<QFontMetrics>( mRulerFont );
 
   //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
-  mScaleMinPixelsWidth = mRulerFontMetrics->boundingRect( QStringLiteral( "000" ) ).width() * 2.5;
+  mScaleMinPixelsWidth = mRulerFontMetrics->boundingRect( u"000"_s ).width() * 2.5;
   //minimum ruler height is twice the font height in pixels
   mRulerMinSize = mRulerFontMetrics->height() * 1.5;
 
@@ -790,13 +795,13 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
         {
           //mouse is creating a horizontal guide
           const double posOnPage = layout->pageCollection()->positionOnPage( scenePos ).y();
-          guide.reset( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ), page ) );
+          guide = std::make_unique<QgsLayoutGuide>( Qt::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ), page );
           break;
         }
         case Qt::Vertical:
         {
           //mouse is creating a vertical guide
-          guide.reset( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ), page ) );
+          guide = std::make_unique<QgsLayoutGuide>( Qt::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ), page );
           break;
         }
       }

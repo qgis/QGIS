@@ -14,22 +14,22 @@
  ***************************************************************************/
 
 #include "qgswmsdataitemguiproviders.h"
-#include "moc_qgswmsdataitemguiproviders.cpp"
-
-#include "qgswmsdataitems.h"
 
 #include "qgsapplication.h"
-#include "qgswmsconnection.h"
-#include "qgsxyzconnectiondialog.h"
-#include "qgsxyzconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgswmssourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgswmsconnection.h"
+#include "qgswmsdataitems.h"
 #include "qgswmsnewconnection.h"
+#include "qgswmssourceselect.h"
+#include "qgsxyzconnection.h"
+#include "qgsxyzconnectiondialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgswmsdataitemguiproviders.cpp"
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {
@@ -108,12 +108,12 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wms" ) } );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { u"wms"_s } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QStringList detailsParameters { QStringLiteral( "wms" ), connectionName };
-  const QStringList newDetailsParameters { QStringLiteral( "wms" ), newConnectionName };
+  const QStringList detailsParameters { u"wms"_s, connectionName };
+  const QStringList newDetailsParameters { u"wms"_s, newConnectionName };
 
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 

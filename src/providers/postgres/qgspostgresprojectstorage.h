@@ -16,10 +16,9 @@
 #define QGSPOSTGRESPROJECTSTORAGE_H
 
 #include "qgsconfig.h"
-#include "qgsprojectstorage.h"
 
 #include "qgsdatasourceuri.h"
-
+#include "qgsprojectstorage.h"
 
 //! Stores information parsed from postgres project URI
 typedef struct
@@ -38,7 +37,7 @@ typedef struct
 class QgsPostgresProjectStorage : public QgsProjectStorage
 {
   public:
-    QString type() override { return QStringLiteral( "postgresql" ); }
+    QString type() override { return u"postgresql"_s; }
 
     QStringList listProjects( const QString &uri ) override;
 

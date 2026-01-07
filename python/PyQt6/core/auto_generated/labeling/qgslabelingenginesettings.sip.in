@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelingEngineSettings
 {
 %Docstring(signature="appended")

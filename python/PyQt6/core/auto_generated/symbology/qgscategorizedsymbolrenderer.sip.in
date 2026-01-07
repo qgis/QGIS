@@ -501,7 +501,7 @@ respective field configuration.
 .. versionadded:: 3.6
 %End
 
-    static QString displayString( const QVariant &value, int precision = -1 );
+ static QString displayString( const QVariant &value, int precision = -1 ) /Deprecated="Since 4.0. Use QgsVariantUtils.displayString() instead."/;
 %Docstring
 Returns a localized representation of ``value`` with the given
 ``precision``, if precision is -1 then precision is guessed from the
@@ -512,6 +512,10 @@ default QVariant.toString output.
    Precision is ignored for integers.
 
 .. versionadded:: 3.22.1
+
+.. deprecated:: 4.0
+
+   Use :py:func:`QgsVariantUtils.displayString()` instead.
 %End
 
 
@@ -525,11 +529,11 @@ default QVariant.toString output.
 hashtable for faster access to symbols
 %End
 
- QgsSymbol *skipRender() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 4.0."/;
+ QgsSymbol *skipRender() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.40
 
-   No longer used, will be removed in QGIS 4.0.
+   No longer used, will be removed in QGIS 5.0.
 %End
 
  QgsSymbol *symbolForValue( const QVariant &value ) const /Deprecated="Since 3.40. Use variant which takes a second bool argument instead."/;

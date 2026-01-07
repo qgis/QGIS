@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRasterChecker
 {
 %Docstring(signature="appended")

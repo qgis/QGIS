@@ -13,11 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -30,8 +25,10 @@
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrasterlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
 
 class TestQgs3DExporter : public QgsTest
 {
@@ -39,7 +36,7 @@ class TestQgs3DExporter : public QgsTest
 
   public:
     TestQgs3DExporter()
-      : QgsTest( QStringLiteral( "3D Exporter Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Exporter Tests"_s, u"3d"_s )
     {}
 
   private slots:

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapcanvas.h"
@@ -27,11 +27,9 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
-#include <memory>
-
 
 class TestQgs3DCameraController : public QgsTest
 {
@@ -39,7 +37,7 @@ class TestQgs3DCameraController : public QgsTest
 
   public:
     TestQgs3DCameraController()
-      : QgsTest( QStringLiteral( "3D Camera Controller Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Camera Controller Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -1243,7 +1241,7 @@ void TestQgs3DCameraController::testResetViewPointCloud()
 
 void TestQgs3DCameraController::testChangeNavigationMode()
 {
-  auto canvas3D = std::unique_ptr<Qgs3DMapCanvas>( new Qgs3DMapCanvas() );
+  auto canvas3D = std::make_unique<Qgs3DMapCanvas>();
   canvas3D->show();
   QVERIFY( QTest::qWaitForWindowExposed( canvas3D.get() ) );
 

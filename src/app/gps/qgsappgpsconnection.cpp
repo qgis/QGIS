@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsappgpsconnection.h"
-#include "moc_qgsappgpsconnection.cpp"
+
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsgpsconnection.h"
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
-#include "qgisapp.h"
-#include "qgsstatusbar.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgsstatusbar.h"
+
+#include "moc_qgsappgpsconnection.cpp"
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
@@ -96,29 +98,29 @@ void QgsAppGpsConnection::connectGps()
   {
     // legacy settings
     QgsSettings settings;
-    const QString portMode = settings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
+    const QString portMode = settings.value( u"portMode"_s, "scanPorts", QgsSettings::Gps ).toString();
 
-    if ( portMode == QLatin1String( "scanPorts" ) )
+    if ( portMode == "scanPorts"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Automatic;
     }
-    else if ( portMode == QLatin1String( "internalGPS" ) )
+    else if ( portMode == "internalGPS"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Internal;
     }
-    else if ( portMode == QLatin1String( "explicitPort" ) )
+    else if ( portMode == "explicitPort"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Serial;
     }
-    else if ( portMode == QLatin1String( "gpsd" ) )
+    else if ( portMode == "gpsd"_L1 )
     {
       connectionType = Qgis::GpsConnectionType::Gpsd;
     }
 
-    gpsdHost = settings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString();
-    gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
-    gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
-    serialDevice = settings.value( QStringLiteral( "lastPort" ), "", QgsSettings::Gps ).toString();
+    gpsdHost = settings.value( u"gpsdHost"_s, "localhost", QgsSettings::Gps ).toString();
+    gpsdPort = settings.value( u"gpsdPort"_s, 2947, QgsSettings::Gps ).toInt();
+    gpsdDevice = settings.value( u"gpsdDevice"_s, QVariant(), QgsSettings::Gps ).toString();
+    serialDevice = settings.value( u"lastPort"_s, "", QgsSettings::Gps ).toString();
   }
 
   switch ( connectionType )
@@ -126,7 +128,7 @@ void QgsAppGpsConnection::connectGps()
     case Qgis::GpsConnectionType::Automatic:
       break;
     case Qgis::GpsConnectionType::Internal:
-      port = QStringLiteral( "internalGPS" );
+      port = u"internalGPS"_s;
       break;
     case Qgis::GpsConnectionType::Serial:
       port = QgsGpsConnection::settingsGpsSerialDevice->value();
@@ -141,7 +143,7 @@ void QgsAppGpsConnection::connectGps()
       break;
     case Qgis::GpsConnectionType::Gpsd:
     {
-      port = QStringLiteral( "%1:%2:%3" ).arg( gpsdHost ).arg( gpsdPort ).arg( gpsdDevice );
+      port = u"%1:%2:%3"_s.arg( gpsdHost ).arg( gpsdPort ).arg( gpsdDevice );
       break;
     }
   }
@@ -153,7 +155,7 @@ void QgsAppGpsConnection::connectGps()
   QgisApp::instance()->statusBarIface()->clearMessage();
   showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "Firing up GPS detector" ), 2 );
+  QgsDebugMsgLevel( u"Firing up GPS detector"_s, 2 );
 
   // note -- QgsGpsDetector internally uses deleteLater to clean itself up!
   mDetector = new QgsGpsDetector( port, false );
@@ -184,7 +186,7 @@ void QgsAppGpsConnection::onTimeOut()
   if ( sender() != mDetector )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "GPS detector reported timeout" ), 2 );
+  QgsDebugMsgLevel( u"GPS detector reported timeout"_s, 2 );
   disconnectGps();
   emit connectionTimedOut();
 
@@ -197,7 +199,7 @@ void QgsAppGpsConnection::onConnectionDetected()
   if ( sender() != mDetector )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "GPS detector GOT a connection" ), 2 );
+  QgsDebugMsgLevel( u"GPS detector GOT a connection"_s, 2 );
   setConnectionPrivate( mDetector->takeConnection() );
 }
 
@@ -242,7 +244,7 @@ void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
   mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
   connect( configureButton, &QPushButton::clicked, configureButton, [] {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"mGpsOptions"_s );
   } );
   mConnectionMessageItem->layout()->addWidget( configureButton );
   QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, Qgis::MessageLevel::Critical );

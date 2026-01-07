@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmeshspatialindex.h"
+
+#include <memory>
+#include <spatialindex/SpatialIndex.h>
+
+#include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsspatialindexutils.h"
-#include "qgslogger.h"
-#include "qgsfeedback.h"
 
-#include <spatialindex/SpatialIndex.h>
 #include <QMutex>
 #include <QMutexLocker>
-#include <memory>
 
 using namespace SpatialIndex;
 
@@ -432,16 +434,16 @@ void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
   catch ( Tools::Exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugError( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
+    QgsDebugError( u"Tools::Exception caught: "_s.arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugError( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
+    QgsDebugError( u"std::exception caught: "_s.arg( e.what() ) );
   }
   catch ( ... )
   {
-    QgsDebugError( QStringLiteral( "unknown spatial index exception caught" ) );
+    QgsDebugError( u"unknown spatial index exception caught"_s );
   }
 }
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgpsconnectionregistry.h"
+
 #include "qgsgpsconnection.h"
 
 QgsGpsConnectionRegistry::~QgsGpsConnectionRegistry()

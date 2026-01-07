@@ -17,20 +17,21 @@
 #ifndef QGSCALLOUT_H
 #define QGSCALLOUT_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsreadwritecontext.h"
-#include "qgspropertycollection.h"
-#include "qgsmapunitscale.h"
 #include "qgscalloutposition.h"
-#include "qgsmargins.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmapunitscale.h"
+#include "qgsmargins.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
 
 #include <QPainter>
-#include <QString>
 #include <QRectF>
-#include <memory>
+#include <QString>
 
 class QgsLineSymbol;
 class QgsMarkerSymbol;
@@ -316,7 +317,7 @@ class CORE_EXPORT QgsCallout
     void render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext );
 
     /**
-     * Returns TRUE if the the callout is enabled.
+     * Returns TRUE if the callout is enabled.
      * \see setEnabled()
      */
     bool enabled() const { return mEnabled; }

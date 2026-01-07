@@ -15,22 +15,22 @@
 #ifndef QGSWMSCAPABILITIES_H
 #define QGSWMSCAPABILITIES_H
 
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsauthorizationsettings.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgshttpheaders.h"
+#include "qgsinterval.h"
+#include "qgsrasteriterator.h"
+#include "qgsrectangle.h"
+#include "qgstemporalutils.h"
+
 #include <QHash>
 #include <QMap>
 #include <QNetworkRequest>
 #include <QSet>
 #include <QStringList>
 #include <QVector>
-
-#include "qgsauthmanager.h"
-#include "qgsrectangle.h"
-#include "qgsrasteriterator.h"
-#include "qgsapplication.h"
-#include "qgsinterval.h"
-#include "qgstemporalutils.h"
-#include "qgshttpheaders.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgsauthorizationsettings.h"
 
 class QNetworkReply;
 
@@ -384,7 +384,7 @@ struct QgsWmsLayerProperty
    */
     QString preferredAvailableCrs() const
     {
-      static QSet<QString> sSkipList { QStringLiteral( "EPSG:900913" ) };
+      static QSet<QString> sSkipList { u"EPSG:900913"_s };
       for ( const QString &candidate : crs )
       {
         if ( sSkipList.contains( candidate ) )

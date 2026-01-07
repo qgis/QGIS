@@ -18,8 +18,8 @@
 #ifndef QGSFEATUREEXPRESSIONFILTERPROVIDER_H
 #define QGSFEATUREEXPRESSIONFILTERPROVIDER_H
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_core.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QMap>
 

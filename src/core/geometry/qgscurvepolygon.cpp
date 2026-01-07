@@ -16,22 +16,24 @@
  ***************************************************************************/
 
 #include "qgscurvepolygon.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
+#include "qgsmulticurve.h"
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
-#include "qgsmulticurve.h"
-#include "qgsfeedback.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsCurvePolygon::QgsCurvePolygon()
 {
@@ -52,7 +54,7 @@ QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
 
 QString QgsCurvePolygon::geometryType() const
 {
-  return QStringLiteral( "CurvePolygon" );
+  return u"CurvePolygon"_s;
 }
 
 int QgsCurvePolygon::dimension() const
@@ -139,15 +141,15 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatCurveType = QgsWkbTypes::flatType( curveType );
     if ( flatCurveType == Qgis::WkbType::LineString )
     {
-      currentCurve.reset( new QgsLineString() );
+      currentCurve = std::make_unique<QgsLineString>( );
     }
     else if ( flatCurveType == Qgis::WkbType::CircularString )
     {
-      currentCurve.reset( new QgsCircularString() );
+      currentCurve = std::make_unique<QgsCircularString>( );
     }
     else if ( flatCurveType == Qgis::WkbType::CompoundCurve )
     {
-      currentCurve.reset( new QgsCompoundCurve() );
+      currentCurve = std::make_unique<QgsCompoundCurve>( );
     }
     else
     {
@@ -180,11 +182,11 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -289,10 +291,10 @@ QString QgsCurvePolygon::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     if ( mExteriorRing )
     {
       QString childWkt = mExteriorRing->asWkt( precision );
@@ -328,24 +330,24 @@ QString QgsCurvePolygon::asWkt( int precision ) const
 QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
-  QDomElement elemPolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
+  QDomElement elemPolygon = doc.createElementNS( ns, u"Polygon"_s );
 
   if ( isEmpty() )
     return elemPolygon;
 
-  QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, QStringLiteral( "outerBoundaryIs" ) );
+  QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, u"outerBoundaryIs"_s );
   std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
   QDomElement outerRing = exteriorLineString->asGml2( doc, precision, ns, axisOrder );
-  outerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
+  outerRing.toElement().setTagName( u"LinearRing"_s );
   elemOuterBoundaryIs.appendChild( outerRing );
   elemPolygon.appendChild( elemOuterBoundaryIs );
   std::unique_ptr< QgsLineString > interiorLineString;
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
+    QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, u"innerBoundaryIs"_s );
     interiorLineString.reset( interiorRing( i )->curveToLine() );
     QDomElement innerRing = interiorLineString->asGml2( doc, precision, ns, axisOrder );
-    innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
+    innerRing.toElement().setTagName( u"LinearRing"_s );
     elemInnerBoundaryIs.appendChild( innerRing );
     elemPolygon.appendChild( elemInnerBoundaryIs );
   }
@@ -354,7 +356,7 @@ QDomElement QgsCurvePolygon::asGml2( QDomDocument &doc, int precision, const QSt
 
 QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemCurvePolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
+  QDomElement elemCurvePolygon = doc.createElementNS( ns, u"Polygon"_s );
 
   if ( isEmpty() )
     return elemCurvePolygon;
@@ -362,18 +364,18 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   const auto exportRing = [&doc, precision, &ns, axisOrder]( const QgsCurve * ring )
   {
     QDomElement ringElem = ring->asGml3( doc, precision, ns, axisOrder );
-    if ( ringElem.tagName() == QLatin1String( "LineString" ) )
+    if ( ringElem.tagName() == "LineString"_L1 )
     {
-      ringElem.setTagName( QStringLiteral( "LinearRing" ) );
+      ringElem.setTagName( u"LinearRing"_s );
     }
-    else if ( ringElem.tagName() == QLatin1String( "CompositeCurve" ) )
+    else if ( ringElem.tagName() == "CompositeCurve"_L1 )
     {
-      ringElem.setTagName( QStringLiteral( "Ring" ) );
+      ringElem.setTagName( u"Ring"_s );
     }
-    else if ( ringElem.tagName() == QLatin1String( "Curve" ) )
+    else if ( ringElem.tagName() == "Curve"_L1 )
     {
-      QDomElement ringElemNew = doc.createElementNS( ns, QStringLiteral( "Ring" ) );
-      QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+      QDomElement ringElemNew = doc.createElementNS( ns, u"Ring"_s );
+      QDomElement curveMemberElem = doc.createElementNS( ns, u"curveMember"_s );
       ringElemNew.appendChild( curveMemberElem );
       curveMemberElem.appendChild( ringElem );
       ringElem = std::move( ringElemNew );
@@ -381,13 +383,13 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
     return ringElem;
   };
 
-  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  QDomElement elemExterior = doc.createElementNS( ns, u"exterior"_s );
   elemExterior.appendChild( exportRing( exteriorRing() ) );
   elemCurvePolygon.appendChild( elemExterior );
 
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
+    QDomElement elemInterior = doc.createElementNS( ns, u"interior"_s );
     elemInterior.appendChild( exportRing( interiorRing( i ) ) );
     elemCurvePolygon.appendChild( elemInterior );
   }
@@ -423,21 +425,21 @@ json QgsCurvePolygon::asJsonObject( int precision ) const
 QString QgsCurvePolygon::asKml( int precision ) const
 {
   QString kml;
-  kml.append( QLatin1String( "<Polygon>" ) );
+  kml.append( "<Polygon>"_L1 );
   if ( mExteriorRing )
   {
-    kml.append( QLatin1String( "<outerBoundaryIs>" ) );
+    kml.append( "<outerBoundaryIs>"_L1 );
     kml.append( mExteriorRing->asKml( precision ) );
-    kml.append( QLatin1String( "</outerBoundaryIs>" ) );
+    kml.append( "</outerBoundaryIs>"_L1 );
   }
   const QVector<QgsCurve *> &interiorRings = mInteriorRings;
   for ( const QgsCurve *ring : interiorRings )
   {
-    kml.append( QLatin1String( "<innerBoundaryIs>" ) );
+    kml.append( "<innerBoundaryIs>"_L1 );
     kml.append( ring->asKml( precision ) );
-    kml.append( QLatin1String( "</innerBoundaryIs>" ) );
+    kml.append( "</innerBoundaryIs>"_L1 );
   }
-  kml.append( QLatin1String( "</Polygon>" ) );
+  kml.append( "</Polygon>"_L1 );
   return kml;
 }
 
@@ -652,6 +654,7 @@ bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
 
 bool QgsCurvePolygon::boundingBoxIntersects( const QgsBox3D &box3d ) const
 {
+  // SIMILAR LOGIC IN boundingBoxIntersects(const QgsRectangle& box), update that if you change this!
   if ( !mExteriorRing && mInteriorRings.empty() )
     return false;
 
@@ -681,6 +684,45 @@ bool QgsCurvePolygon::boundingBoxIntersects( const QgsBox3D &box3d ) const
   // so here we fall back to the non-optimised base class check which has to first calculate
   // the overall bounding box of the polygon..
   return QgsSurface::boundingBoxIntersects( box3d );
+
+  // SIMILAR LOGIC IN boundingBoxIntersects(const QgsRectangle& box), update that if you change this!
+}
+
+bool QgsCurvePolygon::boundingBoxIntersects( const QgsRectangle &box ) const
+{
+  // SIMILAR LOGIC IN boundingBoxIntersects(const QgsBox3D &box3d), update that if you change this!
+
+  if ( !mExteriorRing && mInteriorRings.empty() )
+    return false;
+
+  // if we already have the bounding box calculated, then this check is trivial!
+  if ( !mBoundingBox.isNull() )
+  {
+    return mBoundingBox.toRectangle().intersects( box );
+  }
+
+  // loop through each ring and test the bounding box intersection.
+  // This gives us a chance to use optimisations which may be present on the individual
+  // ring geometry subclasses, and at worst it will cause a calculation of the bounding box
+  // of each individual ring geometry which we would have to do anyway... (and these
+  // bounding boxes are cached, so would be reused without additional expense)
+  if ( mExteriorRing && mExteriorRing->boundingBoxIntersects( box ) )
+    return true;
+
+  for ( const QgsCurve *ring : mInteriorRings )
+  {
+    if ( ring->boundingBoxIntersects( box ) )
+      return true;
+  }
+
+  // even if we don't intersect the bounding box of any rings, we may still intersect the
+  // bounding box of the overall polygon (we are considering worst case scenario here and
+  // the polygon is invalid, with rings outside the exterior ring!)
+  // so here we fall back to the non-optimised base class check which has to first calculate
+  // the overall bounding box of the polygon..
+  return QgsSurface::boundingBoxIntersects( box );
+
+  // SIMILAR LOGIC IN boundingBoxIntersects(const QgsBox3D &box3d), update that if you change this!
 }
 
 QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const

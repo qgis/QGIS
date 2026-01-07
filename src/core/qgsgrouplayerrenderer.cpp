@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsgrouplayerrenderer.h"
-#include "qgsgrouplayer.h"
+
+#include <optional>
+
 #include "qgsfeedback.h"
+#include "qgsgrouplayer.h"
+#include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include <optional>
 
 QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -44,7 +46,7 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming extent of %1 to destination CRS" ).arg( childLayer->id() ) );
+      QgsDebugError( u"Error transforming extent of %1 to destination CRS"_s.arg( childLayer->id() ) );
       continue;
     }
 

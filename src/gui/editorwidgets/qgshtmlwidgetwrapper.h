@@ -16,10 +16,10 @@
 #ifndef QGSHTMLWIDGETWRAPPER_H
 #define QGSHTMLWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgswebview.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgswebview.h"
+#include "qgswidgetwrapper.h"
 
 /**
  * \ingroup gui
@@ -64,9 +64,6 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
   private slots:
     //! sets the html context with the current values
     void setHtmlContext();
-#ifdef WITH_QTWEBKIT
-    void fixHeight();
-#endif
 
   private:
     //! checks if HTML contains geometry related expression

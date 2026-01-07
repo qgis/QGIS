@@ -13,12 +13,14 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsfieldmodel.h"
+
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
+
 #include <QFont>
 #include <QIcon>
 
-#include "qgsfieldmodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "moc_qgsfieldmodel.cpp"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
@@ -475,20 +477,20 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
   QString toolTip;
   if ( !field.alias().isEmpty() )
   {
-    toolTip = QStringLiteral( "<b>%1</b> (%2)" ).arg( field.alias(), field.name() );
+    toolTip = u"<b>%1</b> (%2)"_s.arg( field.alias(), field.name() );
   }
   else
   {
-    toolTip = QStringLiteral( "<b>%1</b>" ).arg( field.name() );
+    toolTip = u"<b>%1</b>"_s.arg( field.name() );
   }
 
-  toolTip += QStringLiteral( "<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>" ).arg( field.displayType( true ) );
+  toolTip += u"<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>"_s.arg( field.displayType( true ) );
 
   const QString comment = field.comment();
 
   if ( ! comment.isEmpty() )
   {
-    toolTip += QStringLiteral( "<br><em>%1</em>" ).arg( comment );
+    toolTip += u"<br><em>%1</em>"_s.arg( comment );
   }
 
   return toolTip;
@@ -509,7 +511,7 @@ QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVec
 
   if ( !expressionString.isEmpty() )
   {
-    toolTip += QStringLiteral( "<br><font style='font-family:monospace;'>%3</font>" ).arg( expressionString );
+    toolTip += u"<br><font style='font-family:monospace;'>%3</font>"_s.arg( expressionString );
   }
 
   return toolTip;

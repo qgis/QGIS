@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsprocessingfavoritealgorithmmanager.h"
-#include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
-#include "qgssettingstree.h"
+
 #include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
+#include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
 
 ///@cond PRIVATE
 
-const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( QStringLiteral( "favorite-algorithms" ), QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
+const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( u"favorite-algorithms"_s, QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
 
 QgsProcessingFavoriteAlgorithmManager::QgsProcessingFavoriteAlgorithmManager( QObject *parent )
   : QObject( parent )

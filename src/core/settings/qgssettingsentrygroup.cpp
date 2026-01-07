@@ -15,12 +15,13 @@
 
 
 #include "qgssettingsentrygroup.h"
+
+#include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgssettingsentry.h"
-#include "qgslogger.h"
 
-#include <QRegularExpression>
 #include <QDir>
+#include <QRegularExpression>
 
 QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings )
   : QgsSettingsEntryGroup( settings, true )
@@ -34,7 +35,7 @@ QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *
   for ( const auto *setting : std::as_const( mSettings ) )
   {
     QString otherBaseKey = setting->definitionKey();
-    otherBaseKey = otherBaseKey.left( otherBaseKey.lastIndexOf( QLatin1Char( '/' ) ) );
+    otherBaseKey = otherBaseKey.left( otherBaseKey.lastIndexOf( '/'_L1 ) );
     if ( mDefinitionBaseKey.isEmpty() )
     {
       mDefinitionBaseKey = otherBaseKey;
@@ -59,7 +60,7 @@ QString QgsSettingsEntryGroup::baseKey( const QStringList &dynamicKeyPartList ) 
   if ( dynamicKeyPartList.isEmpty() )
   {
     if ( hasDynamicKey() )
-      QgsDebugError( QStringLiteral( "Settings group '%1' have a dynamic key but the dynamic key part was not provided" ).arg( key ) );
+      QgsDebugError( u"Settings group '%1' have a dynamic key but the dynamic key part was not provided"_s.arg( key ) );
 
     return key;
   }
@@ -67,13 +68,13 @@ QString QgsSettingsEntryGroup::baseKey( const QStringList &dynamicKeyPartList ) 
   {
     if ( !hasDynamicKey() )
     {
-      QgsDebugError( QStringLiteral( "Settings group '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( key ) );
+      QgsDebugError( u"Settings group '%1' don't have a dynamic key, the provided dynamic key part will be ignored"_s.arg( key ) );
       return key;
     }
 
     for ( int i = 0; i < dynamicKeyPartList.size(); i++ )
     {
-      key.replace( QStringLiteral( "%" ).append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
+      key.replace( u"%"_s.append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
 
@@ -84,10 +85,10 @@ void QgsSettingsEntryGroup::removeAllSettingsAtBaseKey( const QStringList &dynam
 {
   QString key = baseKey( dynamicKeyPartList );
   // https://regex101.com/r/kICr42/1
-  const thread_local QRegularExpression regularExpression( QStringLiteral( "^(\\/?(qgis\\/?)?)?$" ) );
+  const thread_local QRegularExpression regularExpression( u"^(\\/?(qgis\\/?)?)?$"_s );
   if ( key.contains( regularExpression ) )
   {
-    QgsDebugError( QStringLiteral( "Preventing mass removal of settings at key %1" ).arg( key ) );
+    QgsDebugError( u"Preventing mass removal of settings at key %1"_s.arg( key ) );
     return;
   }
 
@@ -108,6 +109,6 @@ void QgsSettingsEntryGroup::removeAllChildrenSettings( const QStringList &dynami
 
 bool QgsSettingsEntryGroup::hasDynamicKey() const
 {
-  const thread_local QRegularExpression regularExpression( QStringLiteral( "%\\d+" ) );
+  const thread_local QRegularExpression regularExpression( u"%\\d+"_s );
   return mDefinitionBaseKey.contains( regularExpression );
 }

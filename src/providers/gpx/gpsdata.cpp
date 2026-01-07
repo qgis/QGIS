@@ -15,30 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "gpsdata.h"
+
+#include <cstring>
 #include <limits>
 #include <stdexcept>
-#include <cstring>
+
+#include "qgslogger.h"
 
 #include <QFile>
-#include <QTextCodec>
-#include <QTextStream>
+#include <QMutexLocker>
 #include <QObject>
 #include <QSet>
-#include <QMutexLocker>
-
-#include "gpsdata.h"
-#include "qgslogger.h"
+#include <QTextCodec>
+#include <QTextStream>
 
 #define OUTPUT_PRECISION 12
 
 QString QgsGpsObject::xmlify( const QString &str )
 {
   QString tmp = str;
-  tmp.replace( '&', QLatin1String( "&amp;" ) );
-  tmp.replace( '<', QLatin1String( "&lt;" ) );
-  tmp.replace( '>', QLatin1String( "&gt;" ) );
-  tmp.replace( '\"', QLatin1String( "&quot;" ) );
-  tmp.replace( '\'', QLatin1String( "&apos;" ) );
+  tmp.replace( '&', "&amp;"_L1 );
+  tmp.replace( '<', "&lt;"_L1 );
+  tmp.replace( '>', "&gt;"_L1 );
+  tmp.replace( '\"', "&quot;"_L1 );
+  tmp.replace( '\'', "&apos;"_L1 );
   return tmp;
 }
 
@@ -353,9 +354,6 @@ void QgsGpsData::removeTracks( const QgsFeatureIds &ids )
 
 void QgsGpsData::writeXml( QTextStream &stream )
 {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
-#endif
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
          << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();

@@ -167,12 +167,11 @@ connect to and access the data.
 
     virtual bool supportsEditing() const;
 
-    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
-
+    QString loadDefaultStyle( bool &resultFlag /Out/ ) final;
 
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 %Docstring
-Adds datasets to the mesh from file with ``path``. Use the the time
+Adds datasets to the mesh from file with ``path``. Use the time
 ``defaultReferenceTime`` as reference time is not provided in the file
 
 :param path: the path to the datasets file

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
 
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "vector-tile" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile = QgsSettingsTree::sTreeConnections->createNamedListNode( u"vector-tile"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryInteger *settingsZmin;
@@ -55,8 +55,8 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     QgsVectorTileProviderConnection( const QString &name );
     QgsVectorTileProviderConnection( const QString &uri, const QVariantMap &configuration );
 
-    virtual void store( const QString &name ) const override;
-    virtual void remove( const QString &name ) const override;
+    void store( const QString &name ) const override;
+    void remove( const QString &name ) const override;
 
     /**
      * Vector tile service type.

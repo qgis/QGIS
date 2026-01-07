@@ -20,11 +20,11 @@
 #include "qgis_core.h"
 #include "qgsgrouplayer.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemmapoverview.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsmaplayerref.h"
 #include "qgsmaprenderercustompainterjob.h"
-#include "qgslayoutitemmapgrid.h"
-#include "qgslayoutitemmapoverview.h"
 #include "qgsmaprendererstagedrenderjob.h"
 #include "qgstemporalrangeobject.h"
 

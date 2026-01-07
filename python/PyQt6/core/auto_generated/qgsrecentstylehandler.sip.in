@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRecentStyleHandler
 {
 %Docstring(signature="appended")

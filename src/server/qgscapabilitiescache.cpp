@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgscapabilitiescache.h"
-#include "moc_qgscapabilitiescache.cpp"
 
 #include <QCoreApplication>
 #include <QFileInfo>
+
+#include "moc_qgscapabilitiescache.cpp"
 
 #if defined( Q_OS_LINUX )
 #include <sys/vfs.h>
@@ -63,7 +64,7 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFile
     mFileSystemWatcher.removePath( capIt.key() );
     mCachedCapabilities.erase( capIt );
 
-    QgsMessageLog::logMessage( QStringLiteral( "Removed cached WMS capabilities document because all %1 cache slots were taken" ).arg( mCacheSize ), QStringLiteral( "Server" ) );
+    QgsMessageLog::logMessage( u"Removed cached WMS capabilities document because all %1 cache slots were taken"_s.arg( mCacheSize ), u"Server"_s );
   }
 
   if ( !mCachedCapabilities.contains( configFilePath ) )
@@ -94,13 +95,13 @@ void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Remove capabilities cache entry because file changed" ), 2 );
+  QgsDebugMsgLevel( u"Remove capabilities cache entry because file changed"_s, 2 );
   removeCapabilitiesDocument( path );
 }
 
 void QgsCapabilitiesCache::removeOutdatedEntries()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Checking for outdated entries" ), 2 );
+  QgsDebugMsgLevel( u"Checking for outdated entries"_s, 2 );
   for ( auto it = mCachedCapabilitiesTimestamps.constBegin(); it != mCachedCapabilitiesTimestamps.constEnd(); it++ )
   {
     const QString configFilePath = it.key();

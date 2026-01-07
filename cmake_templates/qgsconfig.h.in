@@ -8,7 +8,7 @@
 // <int>.<int>.<int>-<any text>.
 // or else upgrading old project file will not work
 // reliably.
-// TODO QGIS 4: remove in favor of _QGIS_VERSION
+// TODO QGIS 5: remove in favor of _QGIS_VERSION
 #define VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
 #define _QGIS_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-${RELEASE_NAME}"
 
@@ -18,7 +18,7 @@
 //As a short term fix I (Tim) am defining the version in top level cmake. It would be good to
 //reinstate this more generic approach below at some point though
 //#define VERSION_INT ${CPACK_PACKAGE_VERSION_MAJOR}${CPACK_PACKAGE_VERSION_MINOR}${CPACK_PACKAGE_VERSION_PATCH}
-// TODO QGIS 4: Remove in favor of _QGIS_VERSION_INT
+// TODO QGIS 5: Remove in favor of _QGIS_VERSION_INT
 #define VERSION_INT ${QGIS_VERSION_INT}
 #define _QGIS_VERSION_INT ${QGIS_VERSION_INT}
 #define ABISYM(x) x ## ${QGIS_VERSION_INT}
@@ -111,17 +111,17 @@
 
 #cmakedefine ENABLE_TESTS
 
-#cmakedefine HAS_KDE_QT5_PDF_TRANSFORM_FIX
-#cmakedefine HAS_KDE_QT5_SMALL_CAPS_FIX
-#cmakedefine HAS_KDE_QT5_FONT_STRETCH_FIX
-
 #cmakedefine HAVE_PDF4QT
 
 #cmakedefine HAVE_CRASH_HANDLER
 
 #cmakedefine HAVE_WEBENGINE
 
-#cmakedefine SFCGAL_VERSION_MAJOR_INT ${SFCGAL_VERSION_MAJOR_INT}
+#cmakedefine HAVE_EXIV2
+
+#cmakedefine HAVE_AUTH
+
+#define SFCGAL_VERSION_MAJOR_INT ${SFCGAL_VERSION_MAJOR_INT}
 #define SFCGAL_VERSION_MINOR_INT ${SFCGAL_VERSION_MINOR_INT}
 #define SFCGAL_VERSION_PATCH_INT ${SFCGAL_VERSION_PATCH_INT}
 

@@ -20,30 +20,31 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
-#include <QFont>
-#include <QFontDatabase>
-#include <QColor>
-#include <QHash>
-#include <QList>
-#include <QPainter>
-#include <QRectF>
-#include <QMap>
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsfields.h"
-#include "qgspointxy.h"
-#include "qgsmapunitscale.h"
-#include "qgsstringutils.h"
-#include "qgstextformat.h"
-#include "qgspropertycollection.h"
-#include "qgslabelplacementsettings.h"
-#include "qgslabelobstaclesettings.h"
-#include "qgslabelthinningsettings.h"
-#include "qgslabellinesettings.h"
-#include "qgslabelpointsettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexpression.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
+#include "qgslabellinesettings.h"
+#include "qgslabelobstaclesettings.h"
+#include "qgslabelplacementsettings.h"
+#include "qgslabelpointsettings.h"
+#include "qgslabelthinningsettings.h"
+#include "qgsmapunitscale.h"
+#include "qgspointxy.h"
+#include "qgspropertycollection.h"
+#include "qgsstringutils.h"
+#include "qgstextformat.h"
+
+#include <QColor>
+#include <QFont>
+#include <QFontDatabase>
+#include <QHash>
+#include <QList>
+#include <QMap>
+#include <QPainter>
+#include <QRectF>
+#include <QString>
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -645,7 +646,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \warning This method only returns an approximate label size, and eg will not consider
      * HTML formatted text correctly.
      *
-     * \deprecated QGIS 3.40. Will be removed from public API in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed from public API in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr ) SIP_DEPRECATED;
 

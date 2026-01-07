@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgslocaldefaultsettings.h"
+
+#include <memory>
+
+#include "qgis.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"
-#include "qgis.h"
 #include "qgsreadwritecontext.h"
 
 #include <QSettings>
-#include <memory>
 
 void QgsLocalDefaultSettings::setBearingFormat( const QgsBearingNumericFormat *format )
 {
   const QVariantMap config = format->configuration( QgsReadWriteContext() );
 
   QSettings s;
-  s.beginGroup( QStringLiteral( "defaults/bearing_format" ) );
+  s.beginGroup( u"defaults/bearing_format"_s );
   for ( auto it = config.constBegin(); it != config.constEnd(); ++it )
   {
     s.setValue( it.key(), it.value() );
@@ -39,7 +41,7 @@ QgsBearingNumericFormat *QgsLocalDefaultSettings::bearingFormat()
 {
   QVariantMap config;
   QSettings s;
-  s.beginGroup( QStringLiteral( "defaults/bearing_format" ) );
+  s.beginGroup( u"defaults/bearing_format"_s );
   const QStringList keys = s.childKeys();
   for ( const QString &key : keys )
   {
@@ -58,7 +60,7 @@ void QgsLocalDefaultSettings::setGeographicCoordinateFormat( const QgsGeographic
   const QVariantMap config = format->configuration( QgsReadWriteContext() );
 
   QSettings s;
-  s.beginGroup( QStringLiteral( "defaults/coordinate_format" ) );
+  s.beginGroup( u"defaults/coordinate_format"_s );
   for ( auto it = config.constBegin(); it != config.constEnd(); ++it )
   {
     s.setValue( it.key(), it.value() );
@@ -70,7 +72,7 @@ QgsGeographicCoordinateNumericFormat *QgsLocalDefaultSettings::geographicCoordin
 {
   QVariantMap config;
   QSettings s;
-  s.beginGroup( QStringLiteral( "defaults/coordinate_format" ) );
+  s.beginGroup( u"defaults/coordinate_format"_s );
   const QStringList keys = s.childKeys();
   for ( const QString &key : keys )
   {

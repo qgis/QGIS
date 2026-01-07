@@ -17,10 +17,10 @@
 #define QGSWFSNEWCONNECTION_H
 
 #include "qgsnewhttpconnection.h"
-#include "qgswfsgetcapabilities.h"
-#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgswfsgetcapabilities.h"
 
 class QgsWFSNewConnection : public QgsNewHttpConnection
 {

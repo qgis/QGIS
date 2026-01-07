@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include <cstdio>
+#include "qgsimagewarper.h"
 
+#include <cmath>
 #include <cpl_conv.h>
 #include <cpl_string.h>
+#include <cstdio>
 #include <gdal.h>
 #include <gdalwarper.h>
 #include <ogr_spatialref.h>
 
-#include <QFile>
-
-#include "qgsimagewarper.h"
-#include "moc_qgsimagewarper.cpp"
+#include "qgsfeedback.h"
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 #include "qgsogrutils.h"
-#include "qgsfeedback.h"
+
+#include <QFile>
+
+#include "moc_qgsimagewarper.cpp"
 
 QgsImageWarper::QgsImageWarper()
 {
@@ -167,7 +168,7 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QSt
     // Asserts are bad as they just crash out, changed to just return false. TS
     if ( adfGeoTransform[0] <= 0.0 || adfGeoTransform[5] >= 0.0 )
     {
-      QgsDebugError( QStringLiteral( "Image is not north up after GDALSuggestedWarpOutput, bailing out." ) );
+      QgsDebugError( u"Image is not north up after GDALSuggestedWarpOutput, bailing out."_s );
       return QgsImageWarper::Result::InvalidParameters;
     }
     // Find suggested output image extent (in georeferenced units)

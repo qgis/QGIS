@@ -17,19 +17,19 @@
 #ifndef QGSSYMBOLLAYERUTILS_H
 #define QGSSYMBOLLAYERUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include <QFont>
-#include <QColor>
-#include <QPainter>
-#include "qgis.h"
-#include "qgsmapunitscale.h"
-#include "qgscolorramp.h"
 #include "qgsarrowsymbollayer.h"
+#include "qgscolorramp.h"
+#include "qgsmapunitscale.h"
 #include "qgssymbol.h"
 
+#include <QColor>
 #include <QFile>
+#include <QFont>
+#include <QMap>
+#include <QPainter>
 
 #define FONTMARKER_CHR_FIX  "~!_#!#_!~"
 
@@ -1160,9 +1160,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     {
       const QString exprString = property.asExpression();
       return QgsProperty::fromExpression(
-               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
+               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : u"'0'"_s ) +
                "|| ',' || " +
-               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
+               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : u"'0'"_s ) );
     }
 #endif
     ///@endcond

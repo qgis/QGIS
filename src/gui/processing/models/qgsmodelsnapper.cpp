@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgsmodelsnapper.h"
-#include "qgssettings.h"
+
 #include <cmath>
+
+#include "qgssettings.h"
 
 QgsModelSnapper::QgsModelSnapper()
 {
   const QgsSettings s;
-  mTolerance = s.value( QStringLiteral( "/Processing/Modeler/snapTolerancePixels" ), 40 ).toInt();
+  mTolerance = s.value( u"/Processing/Modeler/snapTolerancePixels"_s, 40 ).toInt();
 }
 
 void QgsModelSnapper::setSnapTolerance( const int snapTolerance )

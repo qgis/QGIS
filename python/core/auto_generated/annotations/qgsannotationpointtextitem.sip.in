@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAnnotationPointTextItem : QgsAnnotationItem
 {
 %Docstring(signature="appended")

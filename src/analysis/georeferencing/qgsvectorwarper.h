@@ -18,9 +18,9 @@
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
-#include "qgsgcptransformer.h"
-#include "qgsgcppoint.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgcppoint.h"
+#include "qgsgcptransformer.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayerfeatureiterator.h"
 

@@ -15,16 +15,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsecenter2points.h"
-#include "moc_qgsmaptoolshapeellipsecenter2points.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include <memory>
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeEllipseCenter2PointsMetadata::TOOL_ID = QStringLiteral( "ellipse-center-2-points" );
+#include "moc_qgsmaptoolshapeellipsecenter2points.cpp"
+
+const QString QgsMapToolShapeEllipseCenter2PointsMetadata::TOOL_ID = u"ellipse-center-2-points"_s;
 
 QString QgsMapToolShapeEllipseCenter2PointsMetadata::id() const
 {
@@ -38,7 +41,7 @@ QString QgsMapToolShapeEllipseCenter2PointsMetadata::name() const
 
 QIcon QgsMapToolShapeEllipseCenter2PointsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionEllipseCenter2Points.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionEllipseCenter2Points.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeEllipseCenter2PointsMetadata::category() const

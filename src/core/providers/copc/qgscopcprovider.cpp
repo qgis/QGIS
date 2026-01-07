@@ -15,23 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgscopcprovider.h"
-#include "moc_qgscopcprovider.cpp"
-#include "qgscopcpointcloudindex.h"
-#include "qgsruntimeprofiler.h"
+
+#include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscopcpointcloudindex.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsthreadingutils.h"
 
 #include <QIcon>
 
+#include "moc_qgscopcprovider.cpp"
+
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "copc" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "COPC point cloud data provider" )
+#define PROVIDER_KEY u"copc"_s
+#define PROVIDER_DESCRIPTION u"COPC point cloud data provider"_s
 
 QgsCopcProvider::QgsCopcProvider(
   const QString &uri,
@@ -40,8 +42,8 @@ QgsCopcProvider::QgsCopcProvider(
   : QgsPointCloudDataProvider( uri, options, flags ), mIndex( new QgsCopcPointCloudIndex )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
-  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+  if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), u"projectload"_s );
 
   loadIndex( );
   if ( !mIndex.isValid() )
@@ -89,14 +91,14 @@ QString QgsCopcProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "copc" );
+  return u"copc"_s;
 }
 
 QString QgsCopcProvider::description() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "Point Clouds COPC" );
+  return u"Point Clouds COPC"_s;
 }
 
 QgsPointCloudIndex QgsCopcProvider::index() const
@@ -124,8 +126,8 @@ void QgsCopcProvider::loadIndex( )
 
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( PROVIDER_KEY );
   const QVariantMap decodedUri = metadata->decodeUri( dataSourceUri() );
-  const QString authcfg = decodedUri.value( QStringLiteral( "authcfg" ) ).toString();
-  const QString path = decodedUri.value( QStringLiteral( "path" ) ).toString();
+  const QString authcfg = decodedUri.value( u"authcfg"_s ).toString();
+  const QString path = decodedUri.value( u"path"_s ).toString();
   mIndex.load( path, authcfg );
 }
 
@@ -157,7 +159,7 @@ QgsCopcProviderMetadata::QgsCopcProviderMetadata():
 
 QIcon QgsCopcProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s );
 }
 
 QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -168,11 +170,11 @@ QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, co
 QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( u"file-name"_s ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );
-    details.setProviderKey( QStringLiteral( "copc" ) );
+    details.setProviderKey( u"copc"_s );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
     return {details};
@@ -186,7 +188,7 @@ QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const
 int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( u"file-name"_s ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return 100;
 
   return 0;
@@ -195,7 +197,7 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 QList<Qgis::LayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( u"file-name"_s ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return QList< Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
   return QList< Qgis::LayerType>();
@@ -203,11 +205,11 @@ QList<Qgis::LayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QSt
 
 QString QgsCopcProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  QString uri = parts.value( QStringLiteral( "path" ) ).toString();
+  QString uri = parts.value( u"path"_s ).toString();
 
-  const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
+  const QString authcfg = parts.value( u"authcfg"_s ).toString();
   if ( !authcfg.isEmpty() )
-    uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+    uri += u" authcfg='%1'"_s.arg( authcfg );
 
   return uri;
 }
@@ -216,18 +218,18 @@ QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
 
-  const thread_local QRegularExpression rx( QStringLiteral( " authcfg='([^']*)'" ) );
+  const thread_local QRegularExpression rx( u" authcfg='([^']*)'"_s );
   const QRegularExpressionMatch match = rx.match( uri );
   if ( match.hasMatch() )
-    uriComponents.insert( QStringLiteral( "authcfg" ), match.captured( 1 ) );
+    uriComponents.insert( u"authcfg"_s, match.captured( 1 ) );
 
   QString path = uri;
   path.remove( rx );
   path = path.trimmed();
   const QUrl url = QUrl::fromUserInput( path );
 
-  uriComponents.insert( QStringLiteral( "path" ), path );
-  uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
+  uriComponents.insert( u"path"_s, path );
+  uriComponents.insert( u"file-name"_s, url.fileName() );
 
   return uriComponents;
 }
@@ -245,7 +247,7 @@ QString QgsCopcProviderMetadata::filters( Qgis::FileFilterType type )
       return QString();
 
     case Qgis::FileFilterType::PointCloud:
-      return QObject::tr( "COPC Point Clouds" ) + QStringLiteral( " (*.copc.laz *.COPC.LAZ)" );
+      return QObject::tr( "COPC Point Clouds" ) + u" (*.copc.laz *.COPC.LAZ)"_s;
   }
   return QString();
 }

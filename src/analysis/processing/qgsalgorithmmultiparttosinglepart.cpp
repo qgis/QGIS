@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmultiparttosinglepart.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsMultipartToSinglepartAlgorithm::name() const
 {
-  return QStringLiteral( "multiparttosingleparts" );
+  return u"multiparttosingleparts"_s;
 }
 
 QString QgsMultipartToSinglepartAlgorithm::displayName() const
@@ -52,7 +53,7 @@ QString QgsMultipartToSinglepartAlgorithm::group() const
 
 QString QgsMultipartToSinglepartAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const

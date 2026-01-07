@@ -29,29 +29,16 @@
 
 #define SIP_NO_FILE
 
-#include <Qt3DExtras/qt3dextras_global.h>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QGeometry>
-#else
-#include <Qt3DCore/QGeometry>
-#endif
-#include <QSize>
-
 #include <QImage>
+#include <QSize>
+#include <Qt3DCore/QGeometry>
+#include <Qt3DExtras/qt3dextras_global.h>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-namespace Qt3DRender
-{
-  class QAttribute;
-  class QBuffer;
-} // namespace Qt3DRender
-#else
 namespace Qt3DCore
 {
   class QAttribute;
   class QBuffer;
 } // namespace Qt3DCore
-#endif
 
 class QgsRay3D;
 class QgsRayCastContext;
@@ -60,11 +47,7 @@ class QgsRayCastContext;
  * \ingroup qgis_3d
  * \brief Stores attributes and vertex/index buffers for one terrain tile based on DEM.
  */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-class DemTerrainTileGeometry : public Qt3DRender::QGeometry
-#else
 class DemTerrainTileGeometry : public Qt3DCore::QGeometry
-#endif
 {
     Q_OBJECT
 
@@ -77,17 +60,10 @@ class DemTerrainTileGeometry : public Qt3DCore::QGeometry
 
     bool rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QAttribute *positionAttribute() { return mPositionAttribute; }
-    Qt3DRender::QAttribute *normalAttribute() { return mNormalAttribute; }
-    Qt3DRender::QAttribute *texCoordsAttribute() { return mTexCoordAttribute; }
-    Qt3DRender::QAttribute *indexAttribute() { return mIndexAttribute; }
-#else
     Qt3DCore::QAttribute *positionAttribute() { return mPositionAttribute; }
     Qt3DCore::QAttribute *normalAttribute() { return mNormalAttribute; }
     Qt3DCore::QAttribute *texCoordsAttribute() { return mTexCoordAttribute; }
     Qt3DCore::QAttribute *indexAttribute() { return mIndexAttribute; }
-#endif
 
   private:
     void init();
@@ -97,21 +73,12 @@ class DemTerrainTileGeometry : public Qt3DCore::QGeometry
     float mVertScale;
     float mSkirtHeight;
     QByteArray mHeightMap;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QAttribute *mNormalAttribute = nullptr;
-    Qt3DRender::QAttribute *mTexCoordAttribute = nullptr;
-    Qt3DRender::QAttribute *mIndexAttribute = nullptr;
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-    Qt3DRender::QBuffer *mIndexBuffer = nullptr;
-#else
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mNormalAttribute = nullptr;
     Qt3DCore::QAttribute *mTexCoordAttribute = nullptr;
     Qt3DCore::QAttribute *mIndexAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
     Qt3DCore::QBuffer *mIndexBuffer = nullptr;
-#endif
 };
 
 /// @endcond

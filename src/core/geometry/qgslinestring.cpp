@@ -16,25 +16,26 @@
  ***************************************************************************/
 
 #include "qgslinestring.h"
+
+#include <cmath>
+#include <limits>
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
-#include "qgswkbptr.h"
 #include "qgslinesegment.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsfeedback.h"
+#include "qgswkbptr.h"
 
-#include <nlohmann/json.hpp>
-#include <cmath>
-#include <memory>
-#include <QPainter>
-#include <limits>
 #include <QDomDocument>
 #include <QJsonObject>
-
-#include "qgsbox3d.h"
+#include <QPainter>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -406,7 +407,7 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 
   if ( !mBoundingBox.isNull() )
   {
-    return mBoundingBox.intersects( rectangle );
+    return mBoundingBox.toRectangle().intersects( rectangle );
   }
   const int nb = mX.size();
 
@@ -433,11 +434,14 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   // and save future calls to calculate the bounding box!
   double xmin = std::numeric_limits<double>::max();
   double ymin = std::numeric_limits<double>::max();
+  double zmin = -std::numeric_limits<double>::max();
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
+  double zmax = -std::numeric_limits<double>::max();
 
   const double *x = mX.constData();
   const double *y = mY.constData();
+  const double *z = is3D() ? mZ.constData() : nullptr;
   bool foundPointInRectangle = false;
   for ( int i = 0; i < nb; ++i )
   {
@@ -447,6 +451,12 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
     const double py = *y++;
     ymin = std::min( ymin, py );
     ymax = std::max( ymax, py );
+    if ( z )
+    {
+      const double pz = *z++;
+      zmin = std::min( zmin, pz );
+      zmax = std::max( zmax, pz );
+    }
 
     if ( !foundPointInRectangle && rectangle.contains( px, py ) )
     {
@@ -464,7 +474,7 @@ bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 
   // at this stage we now know the overall bounding box of the linestring, so let's cache
   // it so we don't ever have to calculate this again. We've done all the hard work anyway!
-  mBoundingBox = QgsRectangle( xmin, ymin, xmax, ymax, false );
+  mBoundingBox = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax, false );
 
   if ( foundPointInRectangle )
     return true;
@@ -844,7 +854,7 @@ bool QgsLineString::fromWkt( const QString &wkt )
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
   parts.second = parts.second.remove( '(' ).remove( ')' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
@@ -889,7 +899,7 @@ QString QgsLineString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += QLatin1String( "EMPTY" );
+    wkt += "EMPTY"_L1;
   else
   {
     QgsPointSequence pts;
@@ -904,7 +914,7 @@ QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QStri
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+  QDomElement elemLineString = doc.createElementNS( ns, u"LineString"_s );
 
   if ( isEmpty() )
     return elemLineString;
@@ -919,7 +929,7 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+  QDomElement elemLineString = doc.createElementNS( ns, u"LineString"_s );
 
   if ( isEmpty() )
     return elemLineString;
@@ -944,53 +954,53 @@ QString QgsLineString::asKml( int precision ) const
   QString kml;
   if ( isRing() )
   {
-    kml.append( QLatin1String( "<LinearRing>" ) );
+    kml.append( "<LinearRing>"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "<LineString>" ) );
+    kml.append( "<LineString>"_L1 );
   }
   bool z = is3D();
-  kml.append( QLatin1String( "<altitudeMode>" ) );
+  kml.append( "<altitudeMode>"_L1 );
   if ( z )
   {
-    kml.append( QLatin1String( "absolute" ) );
+    kml.append( "absolute"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "clampToGround" ) );
+    kml.append( "clampToGround"_L1 );
   }
-  kml.append( QLatin1String( "</altitudeMode>" ) );
-  kml.append( QLatin1String( "<coordinates>" ) );
+  kml.append( "</altitudeMode>"_L1 );
+  kml.append( "<coordinates>"_L1 );
 
   int nPoints = mX.size();
   for ( int i = 0; i < nPoints; ++i )
   {
     if ( i > 0 )
     {
-      kml.append( QLatin1String( " " ) );
+      kml.append( " "_L1 );
     }
     kml.append( qgsDoubleToString( mX[i], precision ) );
-    kml.append( QLatin1String( "," ) );
+    kml.append( ","_L1 );
     kml.append( qgsDoubleToString( mY[i], precision ) );
     if ( z )
     {
-      kml.append( QLatin1String( "," ) );
+      kml.append( ","_L1 );
       kml.append( qgsDoubleToString( mZ[i], precision ) );
     }
     else
     {
-      kml.append( QLatin1String( ",0" ) );
+      kml.append( ",0"_L1 );
     }
   }
-  kml.append( QLatin1String( "</coordinates>" ) );
+  kml.append( "</coordinates>"_L1 );
   if ( isRing() )
   {
-    kml.append( QLatin1String( "</LinearRing>" ) );
+    kml.append( "</LinearRing>"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "</LineString>" ) );
+    kml.append( "</LineString>"_L1 );
   }
   return kml;
 }
@@ -1944,7 +1954,7 @@ int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
 
 QString QgsLineString::geometryType() const
 {
-  return QStringLiteral( "LineString" );
+  return u"LineString"_s;
 }
 
 int QgsLineString::dimension() const
@@ -1969,7 +1979,7 @@ void QgsLineString::transform( const QgsCoordinateTransform &ct, Qgis::Transform
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else

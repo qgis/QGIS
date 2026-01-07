@@ -14,21 +14,23 @@
  ***************************************************************************/
 
 #include "qgsannotationitempropertieswidget.h"
-#include "moc_qgsannotationitempropertieswidget.cpp"
-#include "qgsapplication.h"
-#include "qgsmaplayer.h"
-#include "qgsannotationlayer.h"
-#include "qgsannotationitemwidget.h"
+
 #include "qgsannotationitem.h"
-#include "qgsgui.h"
 #include "qgsannotationitemguiregistry.h"
+#include "qgsannotationitemwidget.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsmaplayer.h"
 #include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
-#include <QStackedWidget>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QStackedWidget>
+
+#include "moc_qgsannotationitempropertieswidget.cpp"
 
 QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -226,7 +228,7 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
 QgsAnnotationItemPropertiesWidgetFactory::QgsAnnotationItemPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Annotation" ) );
 }
 

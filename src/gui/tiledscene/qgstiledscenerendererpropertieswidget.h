@@ -16,10 +16,10 @@
 #ifndef QGSTILEDSCENERENDERERPROPERTIESWIDGET_H
 #define QGSTILEDSCENERENDERERPROPERTIESWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-
 #include "ui_qgstiledscenerendererpropsdialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
 
 class QgsTiledSceneLayer;

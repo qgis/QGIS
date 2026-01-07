@@ -18,18 +18,19 @@
 #ifndef QGSPOSTGRESCONN_H
 #define QGSPOSTGRESCONN_H
 
-#include <QString>
-#include <QStringList>
-#include <QVector>
-#include <QMap>
-#include <QMutex>
+#include "qgsconfig.h"
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgswkbtypes.h"
-#include "qgsconfig.h"
-#include "qgsvectordataprovider.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsvectordataprovider.h"
+#include "qgswkbtypes.h"
+
+#include <QMap>
+#include <QMutex>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 extern "C"
 {
@@ -150,8 +151,8 @@ struct QgsPostgresLayerProperty
         sridString += QString::number( srid );
       }
 
-      return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
-        .arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( QLatin1Char( '|' ) ), sql )
+      return u"%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8"_s
+        .arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( '|'_L1 ), sql )
         .arg( nSpCols );
     }
 #endif
@@ -498,44 +499,44 @@ class QgsPostgresConn : public QObject
     static QString connectionInfo( const QgsDataSourceUri &uri, const bool expandAuthCfg = true );
 
   private:
-    int mRef;
-    int mOpenCursors;
+    int mRef = 1;
+    int mOpenCursors = 0;
     PGconn *mConn = nullptr;
     QString mConnInfo;
     QgsDataSourceUri mUri;
 
     //! GEOS capability
-    mutable bool mGeosAvailable;
+    mutable bool mGeosAvailable = false;
 
     //! PROJ capability
-    mutable bool mProjAvailable;
+    mutable bool mProjAvailable = false;
 
     //! Topology capability
-    mutable bool mTopologyAvailable;
+    mutable bool mTopologyAvailable = false;
 
     //! PostGIS version string
     mutable QString mPostgisVersionInfo;
 
     //! Are mPostgisVersionMajor, mPostgisVersionMinor, mGeosAvailable, mTopologyAvailable valid?
-    mutable bool mGotPostgisVersion;
+    mutable bool mGotPostgisVersion = false;
 
     //! PostgreSQL version
-    mutable int mPostgresqlVersion;
+    mutable int mPostgresqlVersion = 0;
 
     //! PostGIS major version
-    mutable int mPostgisVersionMajor;
+    mutable int mPostgisVersionMajor = 0;
 
     //! PostGIS minor version
-    mutable int mPostgisVersionMinor;
+    mutable int mPostgisVersionMinor = 0;
 
     //! pointcloud support available
-    mutable bool mPointcloudAvailable;
+    mutable bool mPointcloudAvailable = false;
 
     //! raster support available
-    mutable bool mRasterAvailable;
+    mutable bool mRasterAvailable = false;
 
     //! encode wkb in hex
-    mutable bool mUseWkbHex;
+    mutable bool mUseWkbHex = false;
 
     bool mReadOnly;
 
@@ -573,7 +574,7 @@ class QgsPostgresConn : public QObject
      * XXX to little-endian; but the inverse transaction is possible, too, and
      * XXX that's not reflected in this variable
      */
-    bool mSwapEndian;
+    bool mSwapEndian = false;
     void deduceEndian();
 
     static QAtomicInt sNextCursorId;

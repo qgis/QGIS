@@ -15,28 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayerprofilegenerator.h"
+
+#include <memory>
+
 #include "qgsabstractgeometry.h"
-#include "qgspolyhedralsurface.h"
-#include "qgsprofilerequest.h"
+#include "qgscoordinatetransform.h"
 #include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
+#include "qgsprofilepoint.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
+#include "qgsterrainprovider.h"
+#include "qgstessellator.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
-#include "qgscoordinatetransform.h"
-#include "qgsgeos.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsterrainprovider.h"
-#include "qgspolygon.h"
-#include "qgstessellator.h"
-#include "qgsmultipolygon.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmultipoint.h"
-#include "qgsmultilinestring.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsprofilepoint.h"
-#include "qgsprofilesnapping.h"
-#include "qgsexpressioncontextutils.h"
+
 #include <QPolygonF>
 
 //
@@ -45,7 +49,7 @@
 
 QString QgsVectorLayerProfileResults::type() const
 {
-  return QStringLiteral( "vector" );
+  return u"vector"_s;
 }
 
 QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
@@ -105,7 +109,7 @@ QVector<QgsProfileIdentifyResults> QgsVectorLayerProfileResults::identify( const
 
   QVector< QVariantMap> idsList;
   for ( auto it = ids.constBegin(); it != ids.constEnd(); ++it )
-    idsList.append( QVariantMap( {{QStringLiteral( "id" ), *it}} ) );
+    idsList.append( QVariantMap( {{u"id"_s, *it}} ) );
 
   return { QgsProfileIdentifyResults( mLayer, idsList ) };
 }
@@ -118,21 +122,21 @@ QVector<QgsProfileIdentifyResults> QgsVectorLayerProfileResults::identify( const
     auto it = features.find( featureId );
     if ( it == features.end() )
     {
-      features[ featureId ] = QVariantMap( {{QStringLiteral( "id" ), featureId },
-        {QStringLiteral( "delta" ), delta },
-        {QStringLiteral( "distance" ), distance },
-        {QStringLiteral( "elevation" ), elevation }
+      features[ featureId ] = QVariantMap( {{u"id"_s, featureId },
+        {u"delta"_s, delta },
+        {u"distance"_s, distance },
+        {u"elevation"_s, elevation }
       } );
     }
     else
     {
-      const double currentDelta = it.value().value( QStringLiteral( "delta" ) ).toDouble();
+      const double currentDelta = it.value().value( u"delta"_s ).toDouble();
       if ( delta < currentDelta )
       {
-        *it = QVariantMap( {{QStringLiteral( "id" ), featureId },
-          {QStringLiteral( "delta" ), delta },
-          {QStringLiteral( "distance" ), distance },
-          {QStringLiteral( "elevation" ), elevation }
+        *it = QVariantMap( {{u"id"_s, featureId },
+          {u"delta"_s, delta },
+          {u"distance"_s, distance },
+          {u"elevation"_s, elevation }
         } );
       }
     }
@@ -632,7 +636,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsVectorLayerProfileResults::asIndi
 
       QgsAbstractProfileResults::Feature outFeature;
       outFeature.layerIdentifier = mId;
-      outFeature.attributes = {{QStringLiteral( "id" ), feature.featureId }};
+      outFeature.attributes = {{u"id"_s, feature.featureId }};
       switch ( type )
       {
         case Qgis::ProfileExportType::Features3D:
@@ -802,7 +806,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to vector CRS" ) );
+    QgsDebugError( u"Error transforming profile line to vector CRS"_s );
     return false;
   }
 
@@ -817,7 +821,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   mResults->mLayer = mLayer;
   mResults->copyPropertiesFromGenerator( this );
 
-  mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
+  mProfileCurveEngine = std::make_unique<QgsGeos>( mProfileCurve.get() );
   mProfileCurveEngine->prepareGeometry();
 
   if ( tolerance() == 0.0 ) // geos does not handle very well buffer with 0 size
@@ -829,7 +833,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
     mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( tolerance(), 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   }
 
-  mProfileBufferedCurveEngine.reset( new QgsGeos( mProfileBufferedCurve.get() ) );
+  mProfileBufferedCurveEngine = std::make_unique<QgsGeos>( mProfileBufferedCurve.get() );
   mProfileBufferedCurveEngine->prepareGeometry();
 
   mDataDefinedProperties.prepare( mExpressionContext );
@@ -1439,7 +1443,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
             *outZ++ = inZ[i];
           }
           std::unique_ptr< QgsPolygon > shiftedPoly;
-          shiftedPoly.reset( new QgsPolygon( new QgsLineString( newX, newY, newZ ) ) );
+          shiftedPoly = std::make_unique<QgsPolygon>( new QgsLineString( newX, newY, newZ ) );
 
           intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
           if ( intersection )
@@ -1447,7 +1451,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 #ifdef QGISDEBUG
           else
           {
-            QgsDebugMsgLevel( QStringLiteral( "processPolygon after shift bad geom! error: %1" ).arg( error ), 0 );
+            QgsDebugMsgLevel( u"processPolygon after shift bad geom! error: %1"_s.arg( error ), 0 );
           }
 #endif
         }
@@ -1533,7 +1537,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           else
           {
             // curved geometries, not supported yet, but not possible through the GUI anyway
-            QgsDebugError( QStringLiteral( "Collinear triangles with curved profile lines are not supported yet" ) );
+            QgsDebugError( u"Collinear triangles with curved profile lines are not supported yet"_s );
           }
         }
         else // not collinear
@@ -1587,7 +1591,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         }
         else
         {
-          QgsDebugError( QStringLiteral( "Unhandled Geometry type: %1" ).arg( ( *it )->wktTypeStr() ) );
+          QgsDebugError( u"Unhandled Geometry type: %1"_s.arg( ( *it )->wktTypeStr() ) );
         }
       }
     }

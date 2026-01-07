@@ -23,17 +23,17 @@ QgsMeshTimeSettings::QgsMeshTimeSettings() = default;
 QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
-  QDomElement elem = doc.createElement( QStringLiteral( "mesh-time-settings" ) );
-  elem.setAttribute( QStringLiteral( "relative-time-format" ), mRelativeTimeFormat );
-  elem.setAttribute( QStringLiteral( "absolute-time-format" ), mAbsoluteTimeFormat );
+  QDomElement elem = doc.createElement( u"mesh-time-settings"_s );
+  elem.setAttribute( u"relative-time-format"_s, mRelativeTimeFormat );
+  elem.setAttribute( u"absolute-time-format"_s, mAbsoluteTimeFormat );
   return elem;
 }
 
 void QgsMeshTimeSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
-  mRelativeTimeFormat = elem.attribute( QStringLiteral( "relative-time-format" ) );
-  mAbsoluteTimeFormat = elem.attribute( QStringLiteral( "absolute-time-format" ) );
+  mRelativeTimeFormat = elem.attribute( u"relative-time-format"_s );
+  mAbsoluteTimeFormat = elem.attribute( u"absolute-time-format"_s );
 }
 
 QString QgsMeshTimeSettings::relativeTimeFormat() const

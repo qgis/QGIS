@@ -17,9 +17,10 @@
 #define QGSGEOPACKAGEPROJECTSTORAGE_H
 
 #include "qgsconfig.h"
-#include "qgsprojectstorage.h"
-#include "qgsdatasourceuri.h"
+
 #include "qgis_sip.h"
+#include "qgsdatasourceuri.h"
+#include "qgsprojectstorage.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -40,7 +41,7 @@ class CORE_EXPORT QgsGeoPackageProjectStorage : public QgsProjectStorage
 
     // QgsProjectStorage interface
   public:
-    QString type() override { return QStringLiteral( "geopackage" ); }
+    QString type() override { return u"geopackage"_s; }
     bool isSupportedUri( const QString &uri ) const override;
     QStringList listProjects( const QString &uri ) override;
     bool readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) override;
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsGeoPackageProjectStorage : public QgsProjectStorage
     bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override;
     static QString encodeUri( const QgsGeoPackageProjectUri &postUri );
     static QgsGeoPackageProjectUri decodeUri( const QString &uri );
-    virtual QString filePath( const QString &uri ) override;
+    QString filePath( const QString &uri ) override;
 
   private:
     QString _executeSql( const QString &uri, const QString &sql );

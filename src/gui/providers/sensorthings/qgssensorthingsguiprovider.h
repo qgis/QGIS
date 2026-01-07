@@ -20,8 +20,8 @@
 #define QGSSENSORTHINGSGUIPROVIDER_H
 
 #include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
 #include "qgsprovidersourcewidgetprovider.h"
+#include "qgssourceselectprovider.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

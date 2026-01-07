@@ -13,23 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
+#include "qgsguivectorlayertools.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappingutils.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
-#include "qgsguivectorlayertools.h"
 #include "testqgsmaptoolutils.h"
-
 
 /**
  * \ingroup UnitTests
@@ -71,16 +69,16 @@ void TestQgsMapToolMoveFeature::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -89,7 +87,7 @@ void TestQgsMapToolMoveFeature::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerBase = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946" ), QStringLiteral( "baselayer" ), QStringLiteral( "memory" ) );
+  mLayerBase = new QgsVectorLayer( u"Polygon?crs=EPSG:3946"_s, u"baselayer"_s, u"memory"_s );
   QVERIFY( mLayerBase->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 

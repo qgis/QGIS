@@ -9,7 +9,6 @@
 
 
 
-
 class QgsEmbeddedScriptEntity
 {
 %Docstring(signature="appended")

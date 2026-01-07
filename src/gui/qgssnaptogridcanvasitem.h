@@ -16,12 +16,12 @@
 #ifndef QGSSNAPTOGRIDCANVASITEM_H
 #define QGSSNAPTOGRIDCANVASITEM_H
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmapcanvasitem.h"
+
 #include <QObject>
 #include <QPen>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmapcanvasitem.h"
-#include "qgscoordinatetransform.h"
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode
@@ -68,6 +68,7 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
      */
     QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     /**

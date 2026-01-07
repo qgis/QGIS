@@ -14,13 +14,15 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultilinestring.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsabstractgeometry.h"
 #include "qgscurve.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"
 
-#include <nlohmann/json.hpp>
 #include <QJsonObject>
 
 QgsMultiLineString::QgsMultiLineString()
@@ -68,7 +70,7 @@ const QgsLineString *QgsMultiLineString::lineStringN( int index ) const
 
 QString QgsMultiLineString::geometryType() const
 {
-  return QStringLiteral( "MultiLineString" );
+  return u"MultiLineString"_s;
 }
 
 QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
@@ -91,12 +93,12 @@ void QgsMultiLineString::clear()
 
 bool QgsMultiLineString::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, {Qgis::WkbType::LineString }, QStringLiteral( "LineString" ) );
+  return fromCollectionWkt( wkt, {Qgis::WkbType::LineString }, u"LineString"_s );
 }
 
 QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+  QDomElement elemMultiLineString = doc.createElementNS( ns, u"MultiLineString"_s );
 
   if ( isEmpty() )
     return elemMultiLineString;
@@ -105,7 +107,7 @@ QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const 
   {
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
-      QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
+      QDomElement elemLineStringMember = doc.createElementNS( ns, u"lineStringMember"_s );
       elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiLineString.appendChild( elemLineStringMember );
     }
@@ -116,7 +118,7 @@ QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const 
 
 QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
+  QDomElement elemMultiCurve = doc.createElementNS( ns, u"MultiCurve"_s );
 
   if ( isEmpty() )
     return elemMultiCurve;
@@ -125,7 +127,7 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
   {
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
-      QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+      QDomElement elemCurveMember = doc.createElementNS( ns, u"curveMember"_s );
       elemCurveMember.appendChild( lineString->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiCurve.appendChild( elemCurveMember );
     }

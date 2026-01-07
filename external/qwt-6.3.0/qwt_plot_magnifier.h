@@ -33,7 +33,7 @@ class QWT_EXPORT QwtPlotMagnifier : public QwtMagnifier
 
   public:
     explicit QwtPlotMagnifier( QWidget* );
-    virtual ~QwtPlotMagnifier();
+    ~QwtPlotMagnifier() override;
 
     void setAxisEnabled( QwtAxisId, bool on );
     bool isAxisEnabled( QwtAxisId ) const;

@@ -16,17 +16,17 @@
  ***************************************************************************/
 
 
-#include <QApplication>
-#include <QToolButton>
-#include <QHBoxLayout>
-
 #include "qgslocatoroptionswidget.h"
-#include "moc_qgslocatoroptionswidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgslocatorwidget.h"
 #include "qgssettings.h"
 
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QToolButton>
+
+#include "moc_qgslocatoroptionswidget.cpp"
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
   : QTreeView( parent )
@@ -111,7 +111,7 @@ QWidget *QgsLocatorFiltersModel::configButton( const QModelIndex &index, QWidget
     connect( bt, &QToolButton::clicked, this, [filter, bt]() { filter->openConfigWidget( bt ); } );
     bt->setMaximumSize( mIconSize, mIconSize );
     bt->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    bt->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+    bt->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
     return w;
   }
   else

@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsstatusbar.h"
-#include "moc_qgsstatusbar.cpp"
+
+#include <QEvent>
 #include <QLayout>
 #include <QLineEdit>
 #include <QPalette>
-#include <QTimer>
-#include <QEvent>
 #include <QStatusBar>
+#include <QTimer>
+
+#include "moc_qgsstatusbar.cpp"
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )
@@ -38,7 +40,7 @@ QgsStatusBar::QgsStatusBar( QWidget *parent )
   QPalette pal = mLineEdit->palette();
   pal.setColor( QPalette::Disabled, QPalette::Text, palette().color( QPalette::WindowText ) );
   mLineEdit->setPalette( pal );
-  mLineEdit->setStyleSheet( QStringLiteral( "* { border: 0; background-color: rgba(0, 0, 0, 0); color: %1; }" ).arg( palette().color( QPalette::WindowText ).name() ) );
+  mLineEdit->setStyleSheet( u"* { border: 0; background-color: rgba(0, 0, 0, 0); color: %1; }"_s.arg( palette().color( QPalette::WindowText ).name() ) );
   mLayout->addWidget( mLineEdit, 10 );
   setLayout( mLayout );
 }

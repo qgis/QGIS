@@ -17,6 +17,7 @@
 
 #include "qgis_gui.h"
 #include "qgsfeatureid.h"
+
 #include <QModelIndex>
 
 /**

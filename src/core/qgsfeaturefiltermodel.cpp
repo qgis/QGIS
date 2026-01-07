@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturefiltermodel.h"
-#include "moc_qgsfeaturefiltermodel.cpp"
-#include "qgsfeatureexpressionvaluesgatherer.h"
 
-#include "qgsvectorlayer.h"
+#include "qgsfeatureexpressionvaluesgatherer.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfeaturefiltermodel.cpp"
 
 bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 {
@@ -38,7 +39,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QgsFeaturePickerModelBase( parent )
 {
   setFetchGeometry( false );
-  setFetchLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
+  setFetchLimit( QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() );
   setExtraIdentifierValueUnguarded( nullIdentifier() );
 }
 
@@ -61,7 +62,7 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
       conditions << QgsExpression::createFieldEqualityExpression( mIdentifierFields.at( i ), mExtraIdentifierValue.toList().at( i ) );
     }
   }
-  request.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
+  request.setFilterExpression( conditions.join( " AND "_L1 ) );
 }
 
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
@@ -80,9 +81,9 @@ QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( co
 
   QStringList values;
   for ( const QVariant &v : constValues )
-    values << QStringLiteral( "(%1)" ).arg( v.toString() );
+    values << u"(%1)"_s.arg( v.toString() );
 
-  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QLatin1Char( ' ' ) ), QgsFeature( sourceLayer() ? sourceLayer()->fields() : QgsFields() ) );
+  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( ' '_L1 ), QgsFeature( sourceLayer() ? sourceLayer()->fields() : QgsFields() ) );
 }
 
 bool QgsFeatureFilterModel::compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const

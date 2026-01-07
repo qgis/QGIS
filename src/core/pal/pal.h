@@ -33,17 +33,18 @@
 #define SIP_NO_FILE
 
 
+#include <ctime>
+#include <iostream>
+#include <unordered_map>
+
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgssettingstree.h"
 
 #include <QList>
-#include <iostream>
-#include <ctime>
 #include <QMutex>
 #include <QStringList>
-#include <unordered_map>
 
 class QgsSettingsEntryInteger;
 
@@ -86,7 +87,7 @@ namespace pal
       friend class Layer;
 
     public:
-      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( QStringLiteral( "pal" ) );
+      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( u"pal"_s );
 
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPoints;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;

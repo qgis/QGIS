@@ -19,10 +19,11 @@
 #ifndef QGSTREEWIDGETITEM_H
 #define QGSTREEWIDGETITEM_H
 
-#include <QTreeWidgetItem>
-#include "qgis_sip.h"
-#include <QObject>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QObject>
+#include <QTreeWidgetItem>
 
 /**
  * \ingroup gui

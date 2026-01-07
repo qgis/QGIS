@@ -1602,6 +1602,15 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
                 rl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
             )
 
+    def test_htmlMetadata_COG(self):
+        """Check if layer properties report COG layout"""
+        path = os.path.join(unitTestDataPath("raster"), "byte_cog.tif")
+        layer = QgsRasterLayer(path, QFileInfo(path).baseName())
+        self.assertIn(
+            '<tr><td class="highlight">Data layout</td><td>Cloud Optimized GeoTIFF (COG)</td></tr>',
+            layer.htmlMetadata(),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

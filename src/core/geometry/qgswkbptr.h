@@ -15,11 +15,12 @@
 #ifndef QGSWKBPTR_H
 #define QGSWKBPTR_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsexception.h"
-#include "qpolygon.h"
+
+#include <qpolygon.h>
 
 /**
  * \ingroup core

@@ -16,9 +16,12 @@
 #ifndef QGSRELATIONMANAGERDIALOG_H
 #define QGSRELATIONMANAGERDIALOG_H
 
-#include <QWidget>
 #include "ui_qgsrelationmanagerdialogbase.h"
+
 #include "qgis_app.h"
+
+#include <QStyledItemDelegate>
+#include <QWidget>
 
 class QgsRelation;
 class QgsPolymorphicRelation;
@@ -65,7 +68,7 @@ class RelationNameEditorDelegate : public QStyledItemDelegate
       , mEditableColumns( editableColumns )
     {}
 
-    virtual QWidget *createEditor( QWidget *parentWidget, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+    QWidget *createEditor( QWidget *parentWidget, const QStyleOptionViewItem &option, const QModelIndex &index ) const override
     {
       if ( mEditableColumns.contains( index.column() ) )
         return QStyledItemDelegate::createEditor( parentWidget, option, index );

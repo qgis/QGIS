@@ -9,7 +9,7 @@
 
 
 
-class QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes /Abstract/
+class QgsMeshAdvancedEditing : QgsTopologicalMesh::Changes /Abstract/
 {
 %Docstring(signature="appended")
 Abstract class that can be derived to implement advanced editing on

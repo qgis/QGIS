@@ -21,13 +21,13 @@
 
 QString QgsPointToLayerAlgorithm::name() const
 {
-  return QStringLiteral( "pointtolayer" );
+  return u"pointtolayer"_s;
 }
 
 void QgsPointToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPoint( QStringLiteral( "INPUT" ), QObject::tr( "Point" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Point" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterPoint( u"INPUT"_s, QObject::tr( "Point" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Point" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsPointToLayerAlgorithm::shortHelpString() const
@@ -49,29 +49,29 @@ QgsPointToLayerAlgorithm *QgsPointToLayerAlgorithm::createInstance() const
 
 QVariantMap QgsPointToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QgsCoordinateReferenceSystem crs = parameterAsPointCrs( parameters, QStringLiteral( "INPUT" ), context );
-  const QgsGeometry geom = QgsGeometry::fromPointXY( parameterAsPoint( parameters, QStringLiteral( "INPUT" ), context ) );
+  const QgsCoordinateReferenceSystem crs = parameterAsPointCrs( parameters, u"INPUT"_s, context );
+  const QgsGeometry geom = QgsGeometry::fromPointXY( parameterAsPoint( parameters, u"INPUT"_s, context ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"id"_s, QMetaType::Type::Int ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, crs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Point, crs ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
   f.setGeometry( geom );
   if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
   sink->finalize();
 
   feedback->setProgress( 100 );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

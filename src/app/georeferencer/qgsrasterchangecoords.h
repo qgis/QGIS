@@ -16,11 +16,11 @@
 #ifndef QGSRASTERCHANGECOORDS_H
 #define QGSRASTERCHANGECOORDS_H
 
-#include <QVector>
-
 #include "qgis_app.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
+
+#include <QVector>
 
 class APP_EXPORT QgsRasterChangeCoords
 {

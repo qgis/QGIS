@@ -14,24 +14,27 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoollink.h"
-#include "moc_qgsmodelviewtoollink.cpp"
-#include "qgsprocessingmodelerparameterwidget.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingguiregistry.h"
-#include "qgsprocessingmodelchildalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtoolselect.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewrubberband.h"
-#include "qgsmodelgraphicitem.h"
 
+#include <memory>
+
+#include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtoolselect.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelerparameterwidget.h"
+
+#include "moc_qgsmodelviewtoollink.cpp"
 
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )
 {
   setCursor( Qt::PointingHandCursor );
-  mBezierRubberBand.reset( new QgsModelViewBezierRubberBand( view ) );
+  mBezierRubberBand = std::make_unique<QgsModelViewBezierRubberBand>( view );
 
   mBezierRubberBand->setBrush( QBrush( QColor( 0, 0, 0, 63 ) ) );
   mBezierRubberBand->setPen( QPen( QBrush( QColor( 0, 0, 0, 100 ) ), 0, Qt::SolidLine ) );
@@ -123,8 +126,9 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   /**
    * Reorder input and output socket
    * whether the user dragged :
-   *    - From an input socket to an output socket
-   *    - From an output socket to an input socket
+   *
+   * - From an input socket to an output socket
+   * - From an output socket to an input socket
    *
    * In the code, we always come back to the first case
    */
@@ -138,7 +142,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   if ( !inputChildAlgorithm )
   {
     // Should not happen, but checking is cheap!
-    QgsDebugError( QStringLiteral( "Input is not a QgsProcessingModelChildAlgorithm" ) );
+    QgsDebugError( u"Input is not a QgsProcessingModelChildAlgorithm"_s );
     return;
   }
 
@@ -288,7 +292,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             auto algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() );
             if ( !algSource )
             {
-              QgsDebugError( QStringLiteral( "algSource not set, aborting!" ) );
+              QgsDebugError( u"algSource not set, aborting!"_s );
               return;
             }
             socketIndex = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
@@ -301,7 +305,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
           if ( !item )
           {
-            QgsDebugError( QStringLiteral( "item not set, aborting!" ) );
+            QgsDebugError( u"item not set, aborting!"_s );
             return;
           }
 

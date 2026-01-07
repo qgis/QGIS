@@ -16,11 +16,11 @@
 #ifndef QGSTRANSFORMSETTINGSDIALOG_H
 #define QGSTRANSFORMSETTINGSDIALOG_H
 
-#include <QDialog>
+#include "ui_qgstransformsettingsdialogbase.h"
 
 #include "qgsgeorefmainwindow.h"
 
-#include "ui_qgstransformsettingsdialogbase.h"
+#include <QDialog>
 
 class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSettingsDialog
 {

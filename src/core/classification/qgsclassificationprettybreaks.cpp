@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationprettybreaks.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
 
+#include "qgsapplication.h"
+#include "qgssymbollayerutils.h"
+
+#include <QObject>
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
   : QgsClassificationMethod( SymmetricModeAvailable )
@@ -33,7 +33,7 @@ QString QgsClassificationPrettyBreaks::name() const
 
 QString QgsClassificationPrettyBreaks::id() const
 {
-  return QStringLiteral( "Pretty" );
+  return u"Pretty"_s;
 }
 
 QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error )

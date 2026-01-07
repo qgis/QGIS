@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle2points.h"
-#include "moc_qgsmaptoolshapecircle2points.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsmaptoolshapecircle2points.cpp"
 
 QString QgsMapToolShapeCircle2PointsMetadata::id() const
 {
@@ -33,7 +35,7 @@ QString QgsMapToolShapeCircle2PointsMetadata::name() const
 
 QIcon QgsMapToolShapeCircle2PointsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle2Points.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle2Points.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle2PointsMetadata::category() const

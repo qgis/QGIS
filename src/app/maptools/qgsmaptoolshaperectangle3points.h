@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPERECTANGLE3POINTS_H
 #define QGSMAPTOOLSHAPERECTANGLE3POINTS_H
 
-#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeRectangle3PointsMetadata : public QgsMapToolShapeMetadata

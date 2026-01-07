@@ -17,14 +17,17 @@
  ***************************************************************************/
 
 #include "qgsservercachemanager.h"
-#include "qgsserverprojectutils.h"
-#include "qgsmessagelog.h"
+
+#include <memory>
+
 #include "qgis.h"
+#include "qgsmessagelog.h"
+#include "qgsserverprojectutils.h"
 
 QgsServerCacheManager::QgsServerCacheManager( const QgsServerSettings &settings )
   : mSettings( settings )
 {
-  mPluginsServerCaches.reset( new QgsServerCacheFilterMap() );
+  mPluginsServerCaches = std::make_unique<QgsServerCacheFilterMap>();
 }
 
 QgsServerCacheManager::QgsServerCacheManager( const QgsServerCacheManager &copy )
@@ -32,7 +35,7 @@ QgsServerCacheManager::QgsServerCacheManager( const QgsServerCacheManager &copy 
 {
   if ( copy.mPluginsServerCaches )
   {
-    mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
+    mPluginsServerCaches = std::make_unique<QgsServerCacheFilterMap>( *copy.mPluginsServerCaches );
   }
   else
   {
@@ -44,7 +47,7 @@ QgsServerCacheManager &QgsServerCacheManager::operator=( const QgsServerCacheMan
 {
   if ( copy.mPluginsServerCaches )
   {
-    mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
+    mPluginsServerCaches = std::make_unique<QgsServerCacheFilterMap>( *copy.mPluginsServerCaches );
   }
   else
   {

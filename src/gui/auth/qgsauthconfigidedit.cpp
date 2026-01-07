@@ -14,16 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthconfigidedit.h"
-#include "moc_qgsauthconfigidedit.cpp"
 #include "ui_qgsauthconfigidedit.h"
+#include "qgsauthconfigidedit.h"
 
+#include "qgsapplication.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
-#include "qgsapplication.h"
 
 #include <QRegularExpression>
 
+#include "moc_qgsauthconfigidedit.cpp"
 
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
   : QWidget( parent )
@@ -94,9 +94,9 @@ void QgsAuthConfigIdEdit::clear()
 
 void QgsAuthConfigIdEdit::updateValidityStyle( bool valid )
 {
-  QString ss( QStringLiteral( "QLineEdit{" ) );
-  ss += valid ? QString() : QStringLiteral( "color: %1;" ).arg( QgsAuthGuiUtils::redColor().name() );
-  ss += !btnLock->isChecked() ? QString() : QStringLiteral( "background-color: %1;" ).arg( QgsAuthGuiUtils::yellowColor().name() );
+  QString ss( u"QLineEdit{"_s );
+  ss += valid ? QString() : u"color: %1;"_s.arg( QgsAuthGuiUtils::redColor().name() );
+  ss += !btnLock->isChecked() ? QString() : u"background-color: %1;"_s.arg( QgsAuthGuiUtils::yellowColor().name() );
   ss += '}';
 
   leAuthCfg->setStyleSheet( ss );

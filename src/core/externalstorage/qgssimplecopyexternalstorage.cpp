@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssimplecopyexternalstorage_p.h"
-
-#include "qgscopyfiletask.h"
 #include "qgsapplication.h"
+#include "qgscopyfiletask.h"
+#include "qgssimplecopyexternalstorage_p.h"
 
 #include <QFileInfo>
 
@@ -99,7 +98,7 @@ QString QgsSimpleCopyExternalStorageFetchedContent::filePath() const
 
 QString QgsSimpleCopyExternalStorage::type() const
 {
-  return QStringLiteral( "SimpleCopy" );
+  return u"SimpleCopy"_s;
 };
 
 QString QgsSimpleCopyExternalStorage::displayName() const

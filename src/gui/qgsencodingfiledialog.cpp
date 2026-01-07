@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
-#include "moc_qgsencodingfiledialog.cpp"
-#include "qgsproject.h"
+
 #include "qgslogger.h"
-#include "qgsvectordataprovider.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsvectordataprovider.h"
 
 #include <QComboBox>
-#include <QPushButton>
+#include <QDialogButtonBox>
 #include <QLabel>
 #include <QLayout>
+#include <QPushButton>
 #include <QTextCodec>
-#include <QDialogButtonBox>
+
+#include "moc_qgsencodingfiledialog.cpp"
 
 QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &caption, const QString &directory, const QString &filter, const QString &encoding )
   : QFileDialog( parent, caption, directory, filter )
@@ -46,7 +48,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &ca
   if ( encoding.isEmpty() )
   {
     const QgsSettings settings;
-    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+    enc = settings.value( u"UI/encoding"_s, "System" ).toString();
   }
 
   // The specified decoding is added if not existing already, and then set current.
@@ -77,8 +79,8 @@ QString QgsEncodingFileDialog::encoding() const
 void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
-  QgsDebugMsgLevel( QStringLiteral( "Set encoding %1 as default." ).arg( encoding() ), 2 );
+  settings.setValue( u"UI/encoding"_s, encoding() );
+  QgsDebugMsgLevel( u"Set encoding %1 as default."_s.arg( encoding() ), 2 );
 }
 
 void QgsEncodingFileDialog::addCancelAll()
@@ -138,7 +140,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   if ( encoding.isEmpty() )
   {
     const QgsSettings settings;
-    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+    enc = settings.value( u"UI/encoding"_s, "System" ).toString();
   }
 
   setEncoding( enc );

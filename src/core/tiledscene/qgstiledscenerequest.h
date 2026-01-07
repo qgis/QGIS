@@ -19,8 +19,8 @@
 #ifndef QGSTILEDSCENEREQUEST_H
 #define QGSTILEDSCENEREQUEST_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsorientedbox3d.h"

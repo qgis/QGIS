@@ -13,21 +13,18 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsgeometryutils.h"
-
-#include "testqgsmaptoolutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptooladdfeature.h"
+#include "qgsmaptoolshaperectangle3points.h"
 #include "qgsmaptoolshaperectanglecenter.h"
 #include "qgsmaptoolshaperectangleextent.h"
-#include "qgsmaptoolshaperectangle3points.h"
-
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolRectangle : public QObject
 {
@@ -75,10 +72,10 @@ void TestQgsMapToolRectangle::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   // make testing layers
-  mLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayer = new QgsVectorLayer( u"LineStringZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayer->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
 

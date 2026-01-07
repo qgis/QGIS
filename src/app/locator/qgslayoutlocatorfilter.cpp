@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgslayoutlocatorfilter.h"
-#include "moc_qgslayoutlocatorfilter.cpp"
-#include "qgsproject.h"
-#include "qgsmasterlayoutinterface.h"
-#include "qgslayoutmanager.h"
-#include "qgisapp.h"
 
+#include "qgisapp.h"
+#include "qgslayoutmanager.h"
+#include "qgsmasterlayoutinterface.h"
+#include "qgsproject.h"
+#include "qgsstringutils.h"
+
+#include "moc_qgslayoutlocatorfilter.cpp"
 
 QgsLayoutLocatorFilter::QgsLayoutLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -51,7 +53,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
       emit resultFetched( result );

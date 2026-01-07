@@ -16,10 +16,10 @@
 #ifndef QGSGRAPHANALYZER_H
 #define QGSGRAPHANALYZER_H
 
-#include <QVector>
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
+
+#include <QVector>
 
 class QgsGraph;
 

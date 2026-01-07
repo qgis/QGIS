@@ -15,14 +15,16 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecirclecenterpoint.h"
-#include "moc_qgsmaptoolshapecirclecenterpoint.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeCircleCenterPointMetadata::TOOL_ID = QStringLiteral( "circle-by-a-center-point-and-another-point" );
+#include "moc_qgsmaptoolshapecirclecenterpoint.cpp"
+
+const QString QgsMapToolShapeCircleCenterPointMetadata::TOOL_ID = u"circle-by-a-center-point-and-another-point"_s;
 
 QString QgsMapToolShapeCircleCenterPointMetadata::id() const
 {
@@ -36,7 +38,7 @@ QString QgsMapToolShapeCircleCenterPointMetadata::name() const
 
 QIcon QgsMapToolShapeCircleCenterPointMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircleCenterPoint.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircleCenterPoint.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircleCenterPointMetadata::category() const

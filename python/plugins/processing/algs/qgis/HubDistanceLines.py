@@ -124,6 +124,19 @@ class HubDistanceLines(QgisAlgorithm):
     def displayName(self):
         return self.tr("Distance to nearest hub (line to hub)")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates lines that join each feature from an input vector to the nearest feature in a destination layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "Given an origin and a destination layers, this algorithm computes "
+            "the distance between origin features and their closest destination one. "
+            "Distance calculations are based on the feature's center.\n"
+            "The resulting layer contains lines linking each origin point with its nearest destination feature."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         if parameters[self.INPUT] == parameters[self.HUBS]:
             raise QgsProcessingException(

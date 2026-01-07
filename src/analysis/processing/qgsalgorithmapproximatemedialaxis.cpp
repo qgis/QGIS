@@ -17,7 +17,9 @@
 
 
 #include "qgsalgorithmapproximatemedialaxis.h"
+
 #include "qgsexception.h"
+
 #ifdef WITH_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif
@@ -26,7 +28,7 @@
 
 QString QgsApproximateMedialAxisAlgorithm::name() const
 {
-  return QStringLiteral( "approximatemedialaxis" );
+  return u"approximatemedialaxis"_s;
 }
 
 QString QgsApproximateMedialAxisAlgorithm::displayName() const
@@ -46,7 +48,7 @@ QString QgsApproximateMedialAxisAlgorithm::group() const
 
 QString QgsApproximateMedialAxisAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsApproximateMedialAxisAlgorithm::shortHelpString() const
@@ -71,7 +73,7 @@ QgsApproximateMedialAxisAlgorithm *QgsApproximateMedialAxisAlgorithm::createInst
 QgsFields QgsApproximateMedialAxisAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "length" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"length"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 

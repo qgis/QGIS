@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtessellate.h"
-#include "qgstessellator.h"
+
+#include <geos_c.h>
+
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include <geos_c.h>
+#include "qgstessellator.h"
 
 ///@cond PRIVATE
 
 QString QgsTessellateAlgorithm::name() const
 {
-  return QStringLiteral( "tessellate" );
+  return u"tessellate"_s;
 }
 
 QString QgsTessellateAlgorithm::displayName() const
@@ -45,7 +47,7 @@ QString QgsTessellateAlgorithm::group() const
 
 QString QgsTessellateAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsTessellateAlgorithm::outputName() const
@@ -66,7 +68,7 @@ Qgis::WkbType QgsTessellateAlgorithm::outputWkbType( Qgis::WkbType inputWkbType 
 QString QgsTessellateAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm tessellates a polygon geometry layer, dividing the geometries into triangular components." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The output layer consists of multipolygon geometries for each input feature, with each multipolygon consisting of multiple triangle component polygons." );
 }
 

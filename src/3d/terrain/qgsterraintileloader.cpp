@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsterraintileloader.h"
-#include "moc_qgsterraintileloader.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmaterial.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
-#include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmaterial.h"
 #include "qgstexturematerial.h"
 
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
+
+#include "moc_qgsterraintileloader.cpp"
 
 /// @cond PRIVATE
 

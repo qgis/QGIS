@@ -18,6 +18,7 @@
 #ifdef WITH_SFCGAL
 
 #include "qgssfcgalgeometry.h"
+
 #include "qgsvector3d.h"
 #include "qgswkbptr.h"
 
@@ -162,7 +163,7 @@ QString QgsSfcgalGeometry::geometryType() const
         out = "cone";
         break;
       default:
-        sfcgal::errorHandler()->addText( QStringLiteral( "Type '%1' is unknown." ).arg( mPrimType ) );
+        sfcgal::errorHandler()->addText( u"Type '%1' is unknown."_s.arg( mPrimType ) );
     }
   }
   else

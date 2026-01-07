@@ -16,12 +16,12 @@
 #ifndef QGSABSTRACTDATABASEPROVIDERCONNECTION_H
 #define QGSABSTRACTDATABASEPROVIDERCONNECTION_H
 
+#include "qgis_core.h"
+#include "qgsabstractlayermetadataprovider.h"
 #include "qgsabstractproviderconnection.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
-#include "qgsabstractlayermetadataprovider.h"
 
 #include <QObject>
 
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
+        QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>"_s.arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifdef SIP_RUN
           SIP_PYOBJECT __repr__();
           % MethodCode
-          QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>" ).arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
+          QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>"_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
           sipRes = PyUnicode_FromString( str.toUtf8().constData() );
           % End
 #endif
@@ -548,7 +548,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SinglePolygon = 1 << 7,          //!< Supports single polygon types (as distinct from multi polygon types) \since QGIS 3.28
       PolyhedralSurfaces = 1 << 8,     //!< Supports polyhedral surfaces (PolyhedralSurface, TIN) types (as distinct from multi polygon types) \since QGIS 3.40
     };
-    // TODO QGIS 4.0 -- remove SinglePart
+    // TODO QGIS 5.0 -- remove SinglePart
 
     Q_ENUM( GeometryColumnCapability )
     Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )
@@ -1022,6 +1022,30 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.26
      */
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Update an existing field \a domain in the database, the domain is identified by name.
+     *
+     * \param domain field domain to update
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 4.0
+     */
+    virtual void updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes the field domain with the specified \a name from the provider.
+     *
+     * \param name name of the field domain to be deleted
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomainNames()
+     * \since QGIS 4.0
+     */
+    virtual void deleteFieldDomain( const QString &name, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Sets the \a alias for the existing field with the specified name.

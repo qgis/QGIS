@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
@@ -33,7 +33,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140
+        uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1
         with:
           cmakeVersion: 3.31.6
 
@@ -83,6 +83,7 @@ jobs:
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
+                -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
                 -D ENABLE_TESTS=OFF \
                 -D USE_CCACHE=ON \
@@ -115,14 +116,14 @@ jobs:
 
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: qgis-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: build-logs-x64-windows
@@ -130,7 +131,7 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6

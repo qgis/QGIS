@@ -19,12 +19,11 @@
 #define QGSPROCESSINGUTILS_H
 
 #include "qgis_core.h"
-
-#include "qgsrasterlayer.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsprocessing.h"
 #include "qgsproxyfeaturesink.h"
+#include "qgsrasterlayer.h"
 #include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;
@@ -549,6 +548,18 @@ class CORE_EXPORT QgsProcessingUtils
      * \since QGIS 3.10
      */
     static QString defaultVectorExtension();
+
+    /**
+     * Returns the default raster format to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns the user-set default format from the processing settings, or
+     * a fallback value of "GTiff".
+     *
+     * \see defaultRasterExtension()
+     * \since QGIS 4.0
+     */
+    static QString defaultRasterFormat();
 
     /**
      * Returns the default raster extension to use, in the absence of all other constraints (e.g.

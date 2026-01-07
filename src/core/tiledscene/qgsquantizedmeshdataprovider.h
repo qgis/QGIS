@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
@@ -27,7 +29,7 @@
 #include "qgstiledscenedataprovider.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiles.h"
-#include <optional>
+
 #include <qmap.h>
 #include <qvector.h>
 
@@ -138,7 +140,7 @@ class QgsQuantizedMeshProviderMetadata : public QgsProviderMetadata
     QgsQuantizedMeshProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri,
                                      const QgsDataProvider::ProviderOptions &providerOptions,
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
 };
 
 ///@endcond

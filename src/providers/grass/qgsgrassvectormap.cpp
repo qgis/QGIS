@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassvectormap.h"
+
+#include "qgsgrass.h"
+#include "qgsgrassundocommand.h"
+#include "qgsgrassvectormaplayer.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgspoint.h"
-
-#include "qgslogger.h"
-#include "qgsgrass.h"
-#include "qgsgrassvectormap.h"
 #include "moc_qgsgrassvectormap.cpp"
-#include "qgsgrassvectormaplayer.h"
-#include "qgsgrassundocommand.h"
 
 extern "C"
 {
@@ -42,13 +43,6 @@ extern "C"
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
   : mGrassObject( grassObject )
-  , mValid( false )
-  , mOpen( false )
-  , mFrozen( false )
-  , mIsEdited( false )
-  , mVersion( 0 )
-  , mIs3d( false )
-  , mOldNumLines( 0 )
 {
   QgsDebugMsgLevel( "grassObject = " + grassObject.toString(), 2 );
   openMap();
@@ -152,7 +146,7 @@ bool QgsGrassVectorMap::openMap()
   }
   else if ( level == 1 )
   {
-    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ), QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ), QMessageBox::Ok | QMessageBox::Cancel );
+    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, u"Warning"_s, QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ), QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel )
     {
@@ -169,7 +163,7 @@ bool QgsGrassVectorMap::openMap()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    QgsGrass::warning( QStringLiteral( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+    QgsGrass::warning( u"Cannot open GRASS vector: %1"_s.arg( e.what() ) );
     QgsGrass::unlock();
     return false;
   }
@@ -182,7 +176,7 @@ bool QgsGrassVectorMap::openMap()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      QgsGrass::warning( QStringLiteral( "Cannot build topology: %1" ).arg( e.what() ) );
+      QgsGrass::warning( u"Cannot build topology: %1"_s.arg( e.what() ) );
       QgsGrass::unlock();
       return false;
     }

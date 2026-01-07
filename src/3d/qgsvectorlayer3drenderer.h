@@ -18,10 +18,9 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsphongmaterialsettings.h"
 
 #include <QObject>

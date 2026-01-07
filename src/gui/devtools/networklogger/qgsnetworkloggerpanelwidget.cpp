@@ -13,25 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsnetworkloggerpanelwidget.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
-#include "qgsnetworkloggerpanelwidget.h"
-#include "moc_qgsnetworkloggerpanelwidget.cpp"
-#include "qgsnetworkloggernode.h"
 #include "qgsnetworklogger.h"
+#include "qgsnetworkloggernode.h"
 #include "qgssettings.h"
 
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QToolButton>
-#include <QCheckBox>
 #include <QTextStream>
+#include <QToolButton>
 
-#include <nlohmann/json.hpp>
+#include "moc_qgsnetworkloggerpanelwidget.cpp"
 
 //
 // QgsNetworkLoggerTreeView
@@ -186,7 +188,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   connect( mActionShowCached, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowCached );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsNetworkLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, [this]( bool enabled ) {
-    QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
+    QgsSettings().setValue( u"logNetworkRequests"_s, enabled, QgsSettings::App );
     mLogger->enableLogging( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [this]() {
@@ -219,7 +221,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   settingsButton->setToolTip( tr( "Settings" ) );
   settingsButton->setMenu( settingsMenu );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mToolbar->addWidget( settingsButton );
 
   settingsMenu->addAction( mActionShowSuccessful );

@@ -16,27 +16,28 @@
  ***************************************************************************/
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
-#include "moc_qgsmaptoolsdigitizingtechniquemanager.cpp"
+
 #include "qgisapp.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptoolshapecircle2points.h"
 #include "qgsmaptoolshaperegistry.h"
-#include "qgsgui.h"
-#include "qgsmapcanvas.h"
-#include "qgsspinbox.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
-
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsspinbox.h"
 
 #include <QAction>
-#include <QToolButton>
-#include <QMenu>
 #include <QActionGroup>
+#include <QMenu>
+#include <QToolButton>
 
-const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( QStringLiteral( "technique" ), QgsSettingsTree::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
-const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent = new QgsSettingsEntryString( QStringLiteral( "current" ), sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
-const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForCategory = new QgsSettingsEntryString( QStringLiteral( "default" ), sTreeShapeMapToolsCategories, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
+#include "moc_qgsmaptoolsdigitizingtechniquemanager.cpp"
+
+const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( u"technique"_s, QgsSettingsTree::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent = new QgsSettingsEntryString( u"current"_s, sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
+const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForCategory = new QgsSettingsEntryString( u"default"_s, sTreeShapeMapToolsCategories, QString(), QObject::tr( "Default map tool for given shape category" ) ) SIP_SKIP;
 
 QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )

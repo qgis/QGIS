@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsscrollarea.h"
-#include "moc_qgsscrollarea.cpp"
 
+#include <QAbstractButton>
+#include <QAbstractItemView>
+#include <QAbstractSlider>
+#include <QAbstractSpinBox>
+#include <QComboBox>
+#include <QDateTimeEdit>
 #include <QEvent>
 #include <QMouseEvent>
 #include <QScrollBar>
-#include <QAbstractItemView>
-#include <QComboBox>
-#include <QAbstractSpinBox>
-#include <QAbstractButton>
-#include <QAbstractSlider>
-#include <QDateTimeEdit>
+
+#include "moc_qgsscrollarea.cpp"
 
 // milliseconds to swallow child wheel events for after a scroll occurs
 constexpr qint64 TIMEOUT = 1000;

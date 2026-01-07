@@ -16,9 +16,10 @@
 #ifndef QGSPROCESSINGFEATURESOURCEOPTIONSWIDGET_H
 #define QGSPROCESSINGFEATURESOURCEOPTIONSWIDGET_H
 
+#include "ui_qgsprocessingfeaturesourceoptionsbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingfeaturesourceoptionsbase.h"
 
 #define SIP_NO_FILE
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCurve: QgsAbstractGeometry /Abstract/
 {
 %Docstring(signature="appended")

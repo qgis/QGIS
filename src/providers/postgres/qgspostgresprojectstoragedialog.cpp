@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresprojectstoragedialog.h"
-#include "moc_qgspostgresprojectstoragedialog.cpp"
 
+#include "qgsapplication.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
-
-#include "qgsapplication.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgspostgresprojectstoragedialog.cpp"
 
 QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )
@@ -134,7 +134,7 @@ void QgsPostgresProjectStorageDialog::populateProjects()
   mExistingProjects.clear();
 
   QString uri = currentProjectUri();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"postgresql"_s );
   Q_ASSERT( storage );
   mExistingProjects = storage->listProjects( uri );
   mCboProject->addItems( mExistingProjects );
@@ -171,7 +171,7 @@ void QgsPostgresProjectStorageDialog::removeProject()
   if ( res != QMessageBox::Yes )
     return;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"postgresql"_s );
   Q_ASSERT( storage );
   storage->removeProject( currentProjectUri() );
   populateProjects();

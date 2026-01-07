@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLabelingEngineRuleWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

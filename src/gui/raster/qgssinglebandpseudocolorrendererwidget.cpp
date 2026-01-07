@@ -16,29 +16,30 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrendererwidget.h"
-#include "moc_qgssinglebandpseudocolorrendererwidget.cpp"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrastershader.h"
-#include "qgsrasterminmaxwidget.h"
+
 #include "qgsdoublevalidator.h"
-#include "qgssettings.h"
-#include "qgsmapcanvas.h"
 #include "qgsguiutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+#include "qgsrastershader.h"
+#include "qgssettings.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 
 #include <QCursor>
-#include <QPushButton>
-#include <QInputDialog>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QTextStream>
 #include <QTreeView>
 
+#include "moc_qgssinglebandpseudocolorrendererwidget.cpp"
+
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxOrigin( 0 )
 {
   const QgsSettings settings;
 
@@ -177,7 +178,7 @@ void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
+  QgsDebugMsgLevel( u"theBandNo = %1 min = %2 max = %3"_s.arg( bandNo ).arg( min ).arg( max ), 2 );
 
   const QString oldMinTextvalue = mMinLineEdit->text();
   const QString oldMaxTextvalue = mMaxLineEdit->text();

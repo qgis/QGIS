@@ -21,12 +21,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QList>
-#include <QVector>
-#include "qgslabelposition.h"
 #include "qgscalloutposition.h"
 #include "qgsgenericspatialindex.h"
+#include "qgslabelposition.h"
 #include "qgsmapsettings.h"
+
+#include <QList>
+#include <QVector>
 
 class QgsPointXY;
 
@@ -37,7 +38,7 @@ namespace pal
 }
 #endif
 
-// TODO QGIS 4.0 - this should be private, not exposed to SIP
+// TODO QGIS 5.0 - this should be private, not exposed to SIP
 
 /**
  * \ingroup core

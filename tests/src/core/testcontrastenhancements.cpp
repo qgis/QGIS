@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
+
 #include <QApplication>
 #include <QDesktopServices>
-
+#include <QObject>
 
 //qgis includes...
 #include <qgsrasterlayer.h>
@@ -34,7 +34,7 @@ class TestContrastEnhancements : public QgsTest
     Q_OBJECT
   public:
     TestContrastEnhancements()
-      : QgsTest( QStringLiteral( "Raster Contrast Enhancement Tests" ) ) {}
+      : QgsTest( u"Raster Contrast Enhancement Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

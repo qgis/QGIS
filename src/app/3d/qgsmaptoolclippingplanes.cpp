@@ -15,20 +15,21 @@
 
 
 #include "qgsmaptoolclippingplanes.h"
-#include "moc_qgsmaptoolclippingplanes.cpp"
+
+#include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
-#include "qgs3dmapcanvaswidget.h"
-#include "qgs3dmapscene.h"
-#include "qgisapp.h"
-#include "qgscoordinatetransform.h"
 #include "qgsrubberband.h"
 
 #include <QVector4D>
 
+#include "moc_qgsmaptoolclippingplanes.cpp"
 
 QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
   : QgsMapTool( canvas ), m3DCanvasWidget( mapCanvas )
@@ -104,7 +105,7 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not reproject cross section coordinates to 3d map crs." ) );
+      QgsDebugError( u"Could not reproject cross section coordinates to 3d map crs."_s );
     }
   }
   else
@@ -138,7 +139,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       catch ( const QgsCsException & )
       {
         crossSectionPolygon.set( nullptr );
-        QgsDebugError( QStringLiteral( "Could not reproject cross-section extent to 3d map canvas crs." ) );
+        QgsDebugError( u"Could not reproject cross-section extent to 3d map canvas crs."_s );
       }
 
       if ( !crossSectionPolygon.intersects( m3DCanvasWidget->mapCanvas3D()->scene()->sceneExtent() ) )
@@ -171,7 +172,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
         );
 
         const QgsSettings settings;
-        QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+        QColor highlightColor = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
         highlightColor.setAlphaF( 0.5 );
         mRubberBandPolygon->setColor( highlightColor );
 

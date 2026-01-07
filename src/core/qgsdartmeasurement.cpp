@@ -26,13 +26,13 @@ QgsDartMeasurement::QgsDartMeasurement( const QString &name, Type type, const QS
 
 const QString QgsDartMeasurement::toString() const
 {
-  QString elementName = QStringLiteral( "DartMeasurement" );
+  QString elementName = u"DartMeasurement"_s;
   if ( mType == ImagePng )
   {
-    elementName = QStringLiteral( "DartMeasurementFile" );
+    elementName = u"DartMeasurementFile"_s;
   }
 
-  QString dashMessage = QStringLiteral( "<%1 name=\"%2\" type=\"%3\">%4</%1>" )
+  QString dashMessage = u"<%1 name=\"%2\" type=\"%3\">%4</%1>"_s
                         .arg( elementName,
                               mName,
                               typeToString( mType ),
@@ -53,15 +53,15 @@ const QString QgsDartMeasurement::typeToString( QgsDartMeasurement::Type type )
   switch ( type )
   {
     case Text:
-      str = QStringLiteral( "text/text" );
+      str = u"text/text"_s;
       break;
 
     case ImagePng:
-      str = QStringLiteral( "image/png" );
+      str = u"image/png"_s;
       break;
 
     case Integer:
-      str = QStringLiteral( "numeric/integer" );
+      str = u"numeric/integer"_s;
       break;
   }
 

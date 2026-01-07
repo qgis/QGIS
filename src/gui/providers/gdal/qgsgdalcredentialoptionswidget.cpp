@@ -17,18 +17,20 @@
  ***************************************************************************/
 
 #include "qgsgdalcredentialoptionswidget.h"
-#include "moc_qgsgdalcredentialoptionswidget.cpp"
-#include "qgsgdalguiutils.h"
-#include "qgsapplication.h"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
 
-#include <gdal.h>
 #include <cpl_minixml.h>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QHoverEvent>
+#include <gdal.h>
 
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgsgdalguiutils.h"
+#include "qgsspinbox.h"
+
+#include <QComboBox>
+#include <QHoverEvent>
+#include <QLineEdit>
+
+#include "moc_qgsgdalcredentialoptionswidget.cpp"
 
 //
 // QgsGdalCredentialOptionsModel
@@ -110,8 +112,8 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
           return option.first;
 
         case Column::Value:
-          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QLatin1String( "YES" ) ? tr( "Yes" ) : option.second == QLatin1String( "NO" ) ? tr( "No" )
-                                                                                                                                                                    : option.second )
+          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == "YES"_L1 ? tr( "Yes" ) : option.second == "NO"_L1 ? tr( "No" )
+                                                                                                                                        : option.second )
                                                                  : option.second;
 
         default:
@@ -325,7 +327,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
       const QStringList availableKeys = model->availableKeys();
       for ( const QString &key : availableKeys )
       {
-        if ( key == QLatin1String( "GDAL_HTTP_MAX_RETRY" ) && combo->count() > 0 )
+        if ( key == "GDAL_HTTP_MAX_RETRY"_L1 && combo->count() > 0 )
         {
           // add separator before generic settings
           combo->insertSeparator( combo->count() );
@@ -499,7 +501,7 @@ QgsGdalCredentialOptionsWidget::QgsGdalCredentialOptionsWidget( QWidget *parent 
 {
   setupUi( this );
 
-  mLabelInfo->setText( tr( "Consult the <a href=\"%1\">GDAL documentation</a> for credential options." ).arg( QLatin1String( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems" ) ) );
+  mLabelInfo->setText( tr( "Consult the <a href=\"%1\">GDAL documentation</a> for credential options." ).arg( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems"_L1 ) );
   mLabelInfo->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mLabelInfo->setOpenExternalLinks( true );
 
@@ -547,7 +549,7 @@ void QgsGdalCredentialOptionsWidget::setHandler( const QString &handler )
     return;
   }
 
-  const QString vsiPrefix = QStringLiteral( "/%1/" ).arg( mHandler );
+  const QString vsiPrefix = u"/%1/"_s.arg( mHandler );
   const char *pszVsiOptions( VSIGetFileSystemOptions( vsiPrefix.toLocal8Bit().constData() ) );
   if ( !pszVsiOptions )
     return;

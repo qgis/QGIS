@@ -19,13 +19,14 @@
 #ifndef QGSORIENTEDBOX3D_H
 #define QGSORIENTEDBOX3D_H
 
+#include <limits>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsvector3d.h"
 
 #include <QList>
-#include <limits>
 
 class QgsBox3D;
 class QgsCoordinateTransform;
@@ -176,7 +177,7 @@ class CORE_EXPORT QgsOrientedBox3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>" )
+    QString str = u"<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>"_s
                   .arg( sipCpp->centerX() )
                   .arg( sipCpp->centerY() )
                   .arg( sipCpp->centerZ() )

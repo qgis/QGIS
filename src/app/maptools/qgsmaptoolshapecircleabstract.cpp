@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircleabstract.h"
-#include "moc_qgsmaptoolshapecircleabstract.cpp"
-#include "qgsmaptoolcapture.h"
+
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolcapture.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+
+#include "moc_qgsmaptoolshapecircleabstract.cpp"
 
 void QgsMapToolShapeCircleAbstract::clean()
 {

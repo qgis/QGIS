@@ -18,15 +18,17 @@
 #ifndef QGSCOLORRAMPSHADERWIDGET_H
 #define QGSCOLORRAMPSHADERWIDGET_H
 
-#include <QStyledItemDelegate>
-#include <QPointer>
-
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgscolorramplegendnodesettings.h"
-#include "qgsrectangle.h"
-#include "qgscolorrampshader.h"
+#include "qgsconfig.h"
 #include "ui_qgscolorrampshaderwidgetbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorramplegendnodesettings.h"
+#include "qgscolorrampshader.h"
+#include "qgsrectangle.h"
+
+#include <QPointer>
+#include <QStyledItemDelegate>
 
 class QgsRasterDataProvider;
 class QgsLocaleAwareNumericLineEditDelegate;
@@ -44,7 +46,7 @@ class QgsLocaleAwareNumericLineEditDelegate;
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, private Ui::QgsColorRampShaderWidgetBase
 {
     Q_OBJECT
 

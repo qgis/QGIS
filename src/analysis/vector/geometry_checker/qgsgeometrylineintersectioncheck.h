@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Intersection" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryLineIntersectionCheck" ); }
+    static QString factoryId() { return u"QgsGeometryLineIntersectionCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;

@@ -23,25 +23,25 @@
 #ifndef QGSRASTERDATAPROVIDER_H
 #define QGSRASTERDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include <cmath>
 
-#include <QDateTime>
-#include <QVariant>
-#include <QImage>
-
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsrasterattributetable.h"
 #include "qgsfields.h"
+#include "qgsrasterattributetable.h"
+#include "qgsrasterdataproviderelevationproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsrasterinterface.h"
+#include "qgsrasteriterator.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
-#include "qgsrasteriterator.h"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
-#include "qgsrasterdataproviderelevationproperties.h"
+
+#include <QDateTime>
+#include <QImage>
+#include <QVariant>
 
 class QImage;
 class QByteArray;
@@ -106,6 +106,31 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                            Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     QgsRasterDataProvider *clone() const override = 0;
+
+
+    /**
+     * Returns whether closeWithProgress() will actually report closing progress.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool hasReportsDuringClose() const SIP_SKIP;
+
+    /**
+     * Close the provider with feedback.
+     *
+     * Only implemented at time of writing for GDAL COG driver in GDAL >= 3.13.
+     * For other providers/drivers, this method does nothing.
+     *
+     * Use with great caution. After that method has been called, the only valid
+     * action on the provider is to destroy it. Other method calls will likely
+     * result in a crash.
+     *
+     * \param feedback Feedback object on which to report the progress, or nullptr.
+     * \returns true if the closing was successful.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool closeWithProgress( QgsFeedback *feedback ) SIP_SKIP;
 
     /**
      * Returns flags containing the supported capabilities of the data provider.
@@ -272,7 +297,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( format )
       Q_UNUSED( configOptions )
       Q_UNUSED( feedback )
-      return QStringLiteral( "FAILED_NOT_SUPPORTED" );
+      return u"FAILED_NOT_SUPPORTED"_s;
     }
 
     /**
@@ -439,7 +464,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     //! Creates a new dataset with mDataSourceURI
     static QgsRasterDataProvider *create( const QString &providerKey,
@@ -508,7 +533,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Validates creation options for a specific dataset and destination format.

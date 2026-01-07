@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsProjectElevationProperties : QObject
 {
 %Docstring(signature="appended")

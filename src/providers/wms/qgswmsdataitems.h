@@ -15,12 +15,12 @@
 #ifndef QGSWMSDATAITEMS_H
 #define QGSWMSDATAITEMS_H
 
+#include "qgsconnectionsitem.h"
 #include "qgsdatacollectionitem.h"
-#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgslayeritem.h"
 #include "qgswmsprovider.h"
-#include "qgsconnectionsitem.h"
 
 class QgsWmsCapabilitiesDownload;
 
@@ -33,6 +33,8 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+
+    using QgsDataCollectionItem::refresh;
     void refresh() override;
 
   public slots:
@@ -167,7 +169,7 @@ class QgsWMTSRootItem : public QgsConnectionsRootItem
 class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "WMS" ); }
+    QString name() override { return u"WMS"_s; }
     QString dataProviderKey() const override;
     Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

@@ -17,13 +17,12 @@
 #ifndef QGSAUTHAPIHEADERMETHOD_H
 #define QGSAUTHAPIHEADERMETHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthApiHeaderMethod : public QgsAuthMethod
 {

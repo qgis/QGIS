@@ -17,12 +17,13 @@
 #ifndef QGSAUTHSERVERSEDITOR_H
 #define QGSAUTHSERVERSEDITOR_H
 
-#include <QWidget>
-#include "qgis_sip.h"
-
 #include "ui_qgsauthserverseditor.h"
-#include "qgsauthmanager.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthmanager.h"
+
+#include <QWidget>
 
 class QgsMessageBar;
 

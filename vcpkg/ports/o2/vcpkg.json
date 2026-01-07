@@ -1,6 +1,6 @@
 {
   "name": "o2",
-  "version": "1",
+  "version": "1.1",
   "description": "OAuth 2.0 for Qt",
   "homepage": "https://github.com/qgis/o2",
   "license": "BSD-2-Clause",

@@ -17,9 +17,9 @@
 #ifndef QGS_GEOMETRY_CHECKER_SETUP_TAB_H
 #define QGS_GEOMETRY_CHECKER_SETUP_TAB_H
 
-#include <QMutex>
-
 #include "ui_qgsgeometrycheckersetuptab.h"
+
+#include <QMutex>
 
 class QgisInterface;
 class QgsVectorLayer;

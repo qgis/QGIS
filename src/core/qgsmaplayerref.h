@@ -18,13 +18,14 @@
 
 #define SIP_NO_FILE
 
-#include <QPointer>
-#include <QDomElement>
-
-#include "qgsmaplayer.h"
-#include "qgsdataprovider.h"
-#include "qgsproject.h"
 #include <utility>
+
+#include "qgsdataprovider.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+
+#include <QDomElement>
+#include <QPointer>
 
 /**
  * Internal structure to keep weak pointer to QgsMapLayer or layerId
@@ -305,10 +306,10 @@ struct _LayerRef
   {
     Q_UNUSED( context )
 
-    layerId = element.attribute( QStringLiteral( "id" ) );
-    name = element.attribute( QStringLiteral( "name" ) );
-    source = element.attribute( QStringLiteral( "source" ) );
-    provider = element.attribute( QStringLiteral( "provider" ) );
+    layerId = element.attribute( u"id"_s );
+    name = element.attribute( u"name"_s );
+    source = element.attribute( u"source"_s );
+    provider = element.attribute( u"provider"_s );
     return true;
   }
 
@@ -322,10 +323,10 @@ struct _LayerRef
   {
     Q_UNUSED( context )
 
-    element.setAttribute( QStringLiteral( "id" ), layerId );
-    element.setAttribute( QStringLiteral( "name" ), name );
-    element.setAttribute( QStringLiteral( "source" ), source );
-    element.setAttribute( QStringLiteral( "provider" ), provider );
+    element.setAttribute( u"id"_s, layerId );
+    element.setAttribute( u"name"_s, name );
+    element.setAttribute( u"source"_s, source );
+    element.setAttribute( u"provider"_s, provider );
   }
 
 };

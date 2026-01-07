@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsrangerequestcache.h"
+
 #include "qgsnetworkdiskcache.h"
 
-#include <QtDebug>
-#include <QFile>
-#include <QDir>
 #include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QtDebug>
 
 QgsRangeRequestCache::QgsRangeRequestCache()
 {
@@ -88,7 +89,7 @@ void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
 
 QString QgsRangeRequestCache::rangeFileName( const QNetworkRequest &request ) const
 {
-  return mCacheDir + QStringLiteral( "%1-%2" ).arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
+  return mCacheDir + u"%1-%2"_s.arg( qHash( request.url().toString() ) ).arg( QString::fromUtf8( request.rawHeader( "Range" ) ) );
 }
 
 QByteArray QgsRangeRequestCache::readFile( const QString &fileName )

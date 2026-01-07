@@ -14,20 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayertreeregistrybridge.h"
-#include "moc_qgslayertreeregistrybridge.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
-#include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
+
+#include "moc_qgslayertreeregistrybridge.cpp"
 
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent )
   : QObject( parent )
   , mRoot( root )
   , mProject( project )
-  , mRegistryRemovingLayers( false )
-  , mEnabled( true )
-  , mNewLayersVisible( true )
   , mInsertionPointGroup( root )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
@@ -95,8 +93,8 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     const QString projectFile = mProject->layerIsEmbedded( nodeLayer->layerId() );
     if ( !projectFile.isEmpty() )
     {
-      nodeLayer->setCustomProperty( QStringLiteral( "embedded" ), 1 );
-      nodeLayer->setCustomProperty( QStringLiteral( "embedded_project" ), projectFile );
+      nodeLayer->setCustomProperty( u"embedded"_s, 1 );
+      nodeLayer->setCustomProperty( u"embedded_project"_s, projectFile );
     }
   }
 
@@ -123,7 +121,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
 
 void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList &layerIds )
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ), 4 );
+  QgsDebugMsgLevel( u"%1 layers will be removed, enabled:%2"_s.arg( layerIds.count() ).arg( mEnabled ), 4 );
 
   if ( !mEnabled )
     return;
@@ -187,7 +185,7 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
       toRemove << layerId;
   mLayerIdsForRemoval.clear();
 
-  QgsDebugMsgLevel( QStringLiteral( "%1 layers will be removed" ).arg( toRemove.count() ), 4 );
+  QgsDebugMsgLevel( u"%1 layers will be removed"_s.arg( toRemove.count() ), 4 );
 
   // delay the removal of layers from the registry. There may be other slots connected to map layer registry's signals
   // that might disrupt the execution flow - e.g. a processEvents() call may force update of layer tree view with

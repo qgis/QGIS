@@ -15,24 +15,27 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle2tangentspoint.h"
-#include "moc_qgsmaptoolshapecircle2tangentspoint.cpp"
-#include "qgsgeometryrubberband.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgssnappingutils.h"
-#include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
-#include "qgslinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgsdoublespinbox.h"
-#include "qgsgeometryutils.h"
-#include <memory>
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebar.h"
-#include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
 
-const QString QgsMapToolShapeCircle2TangentsPointMetadata::TOOL_ID = QStringLiteral( "circle-from-2-tangents-1-point" );
+#include <memory>
+
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgsgeometryrubberband.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolcapture.h"
+#include "qgsmessagebar.h"
+#include "qgsmultipolygon.h"
+#include "qgspoint.h"
+#include "qgssnappingutils.h"
+
+#include "moc_qgsmaptoolshapecircle2tangentspoint.cpp"
+
+const QString QgsMapToolShapeCircle2TangentsPointMetadata::TOOL_ID = u"circle-from-2-tangents-1-point"_s;
 
 QString QgsMapToolShapeCircle2TangentsPointMetadata::id() const
 {
@@ -46,7 +49,7 @@ QString QgsMapToolShapeCircle2TangentsPointMetadata::name() const
 
 QIcon QgsMapToolShapeCircle2TangentsPointMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle2TangentsPoint.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle2TangentsPoint.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle2TangentsPointMetadata::category() const

@@ -17,11 +17,11 @@
 #define QGSOPACITYWIDGETPLUGIN_H
 
 
+#include "qgis_customwidgets.h"
+
 #include <QtGlobal>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#include "qgis_customwidgets.h"
-
 
 class CUSTOMWIDGETS_EXPORT QgsOpacityWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

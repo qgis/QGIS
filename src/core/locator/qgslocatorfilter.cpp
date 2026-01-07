@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QThread>
-
 #include "qgslocatorfilter.h"
-#include "moc_qgslocatorfilter.cpp"
-#include "qgsstringutils.h"
+
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
+#include "qgsstringutils.h"
 
+#include <QThread>
+
+#include "moc_qgslocatorfilter.cpp"
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
@@ -98,7 +99,7 @@ void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
 
 void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel level )
 {
-  QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), QStringLiteral( "Locator bar" ), level );
+  QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), u"Locator bar"_s, level );
 }
 
 

@@ -15,7 +15,6 @@
 
 #include "qgsabstract3dsymbol.h"
 
-
 QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 
@@ -40,7 +39,7 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  const QString origin = QStringLiteral( "symbol3d" );
+  const QString origin = u"symbol3d"_s;
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {

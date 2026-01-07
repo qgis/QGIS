@@ -112,7 +112,7 @@ class QWT_EXPORT QwtPlainTextEngine : public QwtTextEngine
 {
   public:
     QwtPlainTextEngine();
-    virtual ~QwtPlainTextEngine();
+    ~QwtPlainTextEngine() override;
 
     virtual double heightForWidth( const QFont& font, int flags,
         const QString& text, double width ) const QWT_OVERRIDE;

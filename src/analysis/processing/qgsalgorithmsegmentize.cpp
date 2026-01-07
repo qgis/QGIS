@@ -21,7 +21,7 @@
 
 QString QgsSegmentizeByMaximumDistanceAlgorithm::name() const
 {
-  return QStringLiteral( "segmentizebymaxdistance" );
+  return u"segmentizebymaxdistance"_s;
 }
 
 QString QgsSegmentizeByMaximumDistanceAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsSegmentizeByMaximumDistanceAlgorithm::group() const
 
 QString QgsSegmentizeByMaximumDistanceAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSegmentizeByMaximumDistanceAlgorithm::outputName() const
@@ -75,10 +75,10 @@ QList<int> QgsSegmentizeByMaximumDistanceAlgorithm::inputLayerTypes() const
 
 void QgsSegmentizeByMaximumDistanceAlgorithm::initParameters( const QVariantMap & )
 {
-  auto tolerance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum offset distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
+  auto tolerance = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Maximum offset distance" ), 1.0, u"INPUT"_s, false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
-  tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum offset distance" ), QgsPropertyDefinition::DoublePositive ) );
-  tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Maximum offset distance" ), QgsPropertyDefinition::DoublePositive ) );
+  tolerance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( tolerance.release() );
 }
 
@@ -90,10 +90,10 @@ bool QgsSegmentizeByMaximumDistanceAlgorithm::supportInPlaceEdit( const QgsMapLa
 
 bool QgsSegmentizeByMaximumDistanceAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  mTolerance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   if ( mDynamicTolerance )
-    mToleranceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    mToleranceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -116,7 +116,7 @@ QgsFeatureList QgsSegmentizeByMaximumDistanceAlgorithm::processFeature( const Qg
 
 QString QgsSegmentizeByMaximumAngleAlgorithm::name() const
 {
-  return QStringLiteral( "segmentizebymaxangle" );
+  return u"segmentizebymaxangle"_s;
 }
 
 QString QgsSegmentizeByMaximumAngleAlgorithm::displayName() const
@@ -136,7 +136,7 @@ QString QgsSegmentizeByMaximumAngleAlgorithm::group() const
 
 QString QgsSegmentizeByMaximumAngleAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSegmentizeByMaximumAngleAlgorithm::outputName() const
@@ -171,10 +171,10 @@ QList<int> QgsSegmentizeByMaximumAngleAlgorithm::inputLayerTypes() const
 
 void QgsSegmentizeByMaximumAngleAlgorithm::initParameters( const QVariantMap & )
 {
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ANGLE" ), QObject::tr( "Maximum angle between vertices (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0, 360.0 );
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( u"ANGLE"_s, QObject::tr( "Maximum angle between vertices (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0, 360.0 );
   tolerance->setIsDynamic( true );
-  tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Maximum angle between vertices (degrees)" ), QgsPropertyDefinition::DoublePositive ) );
-  tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"ANGLE"_s, QObject::tr( "Maximum angle between vertices (degrees)" ), QgsPropertyDefinition::DoublePositive ) );
+  tolerance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( tolerance.release() );
 }
 
@@ -186,10 +186,10 @@ bool QgsSegmentizeByMaximumAngleAlgorithm::supportInPlaceEdit( const QgsMapLayer
 
 bool QgsSegmentizeByMaximumAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsDouble( parameters, QStringLiteral( "ANGLE" ), context );
-  mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE" ) );
+  mTolerance = parameterAsDouble( parameters, u"ANGLE"_s, context );
+  mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, u"ANGLE"_s );
   if ( mDynamicTolerance )
-    mToleranceProperty = parameters.value( QStringLiteral( "ANGLE" ) ).value<QgsProperty>();
+    mToleranceProperty = parameters.value( u"ANGLE"_s ).value<QgsProperty>();
 
   return true;
 }

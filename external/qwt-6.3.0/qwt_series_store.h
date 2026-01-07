@@ -73,7 +73,7 @@ class QwtSeriesStore : public virtual QwtAbstractSeriesStore
     explicit QwtSeriesStore();
 
     //! Destructor
-    ~QwtSeriesStore();
+    ~QwtSeriesStore() override;
 
     /*!
        Assign a series of samples

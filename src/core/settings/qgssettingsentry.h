@@ -16,14 +16,14 @@
 #ifndef QGSSETTINGSENTRY_H
 #define QGSSETTINGSENTRY_H
 
-#include <QString>
-#include <QColor>
 #include <limits>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QColor>
+#include <QString>
 
 class QgsSettingsTreeNode;
 
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSettingsEntryBase
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : mName( key )
-      , mKey( QStringLiteral( "%1/%2" ).arg( section, key ) )
+      , mKey( u"%1/%2"_s.arg( section, key ) )
       , mDefaultValue( defaultValue )
       , mDescription( description )
       , mOptions( options )
@@ -419,7 +419,7 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
     {}
 
 
-    virtual Qgis::SettingsType settingsType() const override = 0;
+    Qgis::SettingsType settingsType() const override = 0;
 
     /**
      * Returns settings value.

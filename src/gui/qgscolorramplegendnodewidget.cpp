@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgscolorramplegendnodewidget.h"
-#include "moc_qgscolorramplegendnodewidget.cpp"
+
 #include "qgshelp.h"
-#include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"
+#include "qgsnumericformatselectorwidget.h"
+
 #include <QDialogButtonBox>
+
+#include "moc_qgscolorramplegendnodewidget.cpp"
 
 QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent, Capabilities capabilities )
   : QgsPanelWidget( parent )
@@ -175,7 +178,7 @@ QgsColorRampLegendNodeDialog::QgsColorRampLegendNodeDialog( const QgsColorRampLe
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-legend-settings" ) );
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-legend-settings"_s );
   } );
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
   vLayout->addWidget( mButtonBox );

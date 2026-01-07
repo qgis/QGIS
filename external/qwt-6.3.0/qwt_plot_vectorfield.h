@@ -92,7 +92,7 @@ class QWT_EXPORT QwtPlotVectorField
     explicit QwtPlotVectorField( const QString& title = QString() );
     explicit QwtPlotVectorField( const QwtText& title );
 
-    virtual ~QwtPlotVectorField();
+    ~QwtPlotVectorField() override;
 
     void setPaintAttribute( PaintAttribute, bool on = true );
     bool testPaintAttribute( PaintAttribute ) const;

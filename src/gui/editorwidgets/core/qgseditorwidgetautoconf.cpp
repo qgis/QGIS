@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgseditorwidgetautoconf.h"
+
 #include "qgseditorwidgetregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsgui.h"
+#include "qgsvectordataprovider.h"
 
 /**
  * \ingroup gui
@@ -89,7 +90,7 @@ QgsEditorWidgetAutoConf::QgsEditorWidgetAutoConf()
 
 QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
-  QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QVariantMap() );
+  QgsEditorWidgetSetup result( u"TextEdit"_s, QVariantMap() );
 
   const int fieldIndex = vl->fields().indexFromName( fieldName );
   if ( fieldIndex >= 0 )

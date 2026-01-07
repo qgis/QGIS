@@ -14,21 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablewidget.h"
-#include "moc_qgsrasterattributetablewidget.cpp"
-#include "qgsrasterattributetable.h"
-#include "qgsrasterlayer.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsmessagebar.h"
-#include "qgsrasterattributetableaddcolumndialog.h"
-#include "qgsrasterattributetableaddrowdialog.h"
 #include "qgscolorbutton.h"
 #include "qgsgradientcolorrampdialog.h"
+#include "qgsmessagebar.h"
+#include "qgsrasterattributetable.h"
+#include "qgsrasterattributetableaddcolumndialog.h"
+#include "qgsrasterattributetableaddrowdialog.h"
+#include "qgsrasterlayer.h"
 
-#include <QToolBar>
 #include <QAction>
-#include <QSortFilterProxyModel>
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QSortFilterProxyModel>
+#include <QToolBar>
+
+#include "moc_qgsrasterattributetablewidget.cpp"
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
   : QgsPanelWidget( parent )
@@ -134,7 +138,7 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
 
   if ( mAttributeTableBuffer )
   {
-    mModel.reset( new QgsRasterAttributeTableModel( mAttributeTableBuffer.get() ) );
+    mModel = std::make_unique<QgsRasterAttributeTableModel>( mAttributeTableBuffer.get() );
     mModel->setEditable( mEditable );
 
     connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {
@@ -244,7 +248,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
     QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( mCurrentBand ) };
     if ( !attributeTable )
     {
-      QgsDebugError( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
+      QgsDebugError( u"Error saving RAT: RAT for band %1 is unexpectedly gone!"_s.arg( mCurrentBand ) );
     }
     else
     {
@@ -256,7 +260,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
 
       if ( newPath.isEmpty() && !nativeRatSupported )
       {
-        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(), QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(), u"VAT DBF Files (*.vat.dbf)"_s );
         if ( newPath.isEmpty() )
         {
           // Aborted by user

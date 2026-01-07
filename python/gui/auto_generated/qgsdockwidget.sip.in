@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDockWidget : QDockWidget
 {
 %Docstring(signature="appended")

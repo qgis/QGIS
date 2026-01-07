@@ -16,13 +16,13 @@
 #ifndef QGSLABELSETTINGSWIDGETBASE_H
 #define QGSLABELSETTINGSWIDGETBASE_H
 
-#include "qgssymbolwidgetcontext.h"
-#include "qgspallabeling.h"
-#include "qgspropertycollection.h"
-#include "qgspanelwidget.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspallabeling.h"
+#include "qgspanelwidget.h"
+#include "qgspropertycollection.h"
+#include "qgssymbolwidgetcontext.h"
 
 #include <QDialog>
 
@@ -35,7 +35,7 @@ class QgsPropertyOverrideButton;
  * \brief Base class for widgets which allow customization of label engine properties, such as label placement settings.
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 

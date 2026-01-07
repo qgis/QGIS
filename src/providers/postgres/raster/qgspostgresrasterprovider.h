@@ -16,13 +16,13 @@
 #ifndef QGSPOSTGRESRASTERPROVIDER_H
 #define QGSPOSTGRESRASTERPROVIDER_H
 
-#include "qgsrasterdataprovider.h"
+#include <exception>
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsprovidermetadata.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresrastershareddata.h"
-
-#include <exception>
+#include "qgsprovidermetadata.h"
+#include "qgsrasterdataprovider.h"
 
 /**
  * The QgsPostgresRasterProvider class implements a raster data provider for PostGIS
@@ -35,33 +35,34 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     explicit QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    virtual ~QgsPostgresRasterProvider() override = default;
+    ~QgsPostgresRasterProvider() override = default;
 
   public:
     // QgsDataProvider interface
     Qgis::DataProviderFlags flags() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsRectangle extent() const override;
-    virtual bool isValid() const override;
-    virtual QString name() const override;
-    virtual QString description() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+    QString name() const override;
+    QString description() const override;
 
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
     // QgsRasterInterface interface
-    virtual Qgis::DataType dataType( int bandNo ) const override;
-    virtual int bandCount() const override;
-    virtual QgsPostgresRasterProvider *clone() const override;
-    virtual Qgis::DataType sourceDataType( int bandNo ) const override;
-    virtual int xBlockSize() const override;
-    virtual int yBlockSize() const override;
-    virtual QgsRasterBandStats bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback ) override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    int bandCount() const override;
+    QgsPostgresRasterProvider *clone() const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
+    int xBlockSize() const override;
+    int yBlockSize() const override;
+    QgsRasterBandStats bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback ) override;
 
     // QgsRasterDataProvider interface
-    virtual QString htmlMetadata() const override;
-    virtual QString lastErrorTitle() override;
-    virtual QString lastError() override;
+    QString htmlMetadata() const override;
+    QString lastErrorTitle() override;
+    QString lastError() override;
     Qgis::RasterInterfaceCapabilities capabilities() const override;
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
@@ -269,7 +270,7 @@ class QgsPostgresRasterProviderMetadata : public QgsProviderMetadata
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
-    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;

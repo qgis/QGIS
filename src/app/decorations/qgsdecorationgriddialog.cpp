@@ -16,17 +16,17 @@
  ***************************************************************************/
 
 #include "qgsdecorationgriddialog.h"
-#include "moc_qgsdecorationgriddialog.cpp"
 
-#include "qgsdecorationgrid.h"
-
-#include "qgshelp.h"
-#include "qgssymbol.h"
-#include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
+#include "qgsdecorationgrid.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgssymbol.h"
+#include "qgssymbolselectordialog.h"
+
+#include "moc_qgsdecorationgriddialog.cpp"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
@@ -151,7 +151,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 
 void QgsDecorationGridDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#grid-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#grid-decoration"_s );
 }
 
 void QgsDecorationGridDialog::buttonBox_accepted()

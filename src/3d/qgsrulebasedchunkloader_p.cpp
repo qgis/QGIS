@@ -14,26 +14,25 @@
  ***************************************************************************/
 
 #include "qgsrulebasedchunkloader_p.h"
-#include "moc_qgsrulebasedchunkloader_p.cpp"
-#include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
-
 #include "qgsrulebased3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerchunkloader_p.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsrulebasedchunkloader_p.cpp"
 
 ///@cond PRIVATE
 
@@ -92,7 +91,7 @@ void QgsRuleBasedChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
-    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"RB chunk load"_s );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
@@ -255,7 +254,7 @@ bool QgsRuleBasedChunkedEntity::applyTerrainOffset() const
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+          QgsDebugMsgLevel( u"QgsRuleBasedChunkedEntityChunkedEntity::applyTerrainOffset, unhandled symbol type %1"_s.arg( symbolType ), 2 );
         }
       }
     }

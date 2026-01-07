@@ -17,8 +17,12 @@
 #define QGSGEOPACKAGEPROJECTSTORAGEGUIPROVIDER_H
 
 
-#include "qgsprojectstorageguiprovider.h"
 #include "qgis_sip.h"
+#include "qgsprojectstorageguiprovider.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -26,7 +30,7 @@
 class QgsGeoPackageProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 {
   public:
-    QString type() override { return QStringLiteral( "geopackage" ); }
+    QString type() override { return u"geopackage"_s; }
     QString visibleName() override;
     QString showLoadGui() override;
     QString showSaveGui() override;

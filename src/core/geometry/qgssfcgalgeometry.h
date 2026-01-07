@@ -23,10 +23,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+SIP_IF_MODULE( HAVE_SFCGAL_SIP )
+
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
 #include "qgslinestring.h"
+#include "qgspoint.h"
 #include "qgssfcgalengine.h"
+
 #include <QtGui/qmatrix4x4.h>
 
 /**
@@ -664,7 +668,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsSfcgalException if an error was encountered during the operation
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
      */
-    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() SIP_THROW( QgsSfcgalException ) const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Returns the primitive transform matrix.

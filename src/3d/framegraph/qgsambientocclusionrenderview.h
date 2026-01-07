@@ -47,10 +47,11 @@ class QgsAmbientOcclusionBlurEntity;
  *
  * \note Not available in Python bindings
  *
- * This renderview create 2 passes with their own entity: 
- *  - the first pass computes the ambient occlusion (creates a QgsAmbientOcclusionRenderEntity)
- *  - the second generates a blur (creates a QgsAmbientOcclusionBlurEntity)
- * 
+ * This renderview create 2 passes with their own entity:
+ *
+ * - the first pass computes the ambient occlusion (creates a QgsAmbientOcclusionRenderEntity)
+ * - the second generates a blur (creates a QgsAmbientOcclusionBlurEntity)
+ *
  * \since QGIS 3.44
  */
 class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
@@ -71,8 +72,8 @@ class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
     //! Returns blur pass texture
     Qt3DRender::QTexture2D *blurredFactorMapTexture() const;
 
-    virtual void updateWindowResize( int width, int height ) override;
-    virtual void setEnabled( bool enable ) override;
+    void updateWindowResize( int width, int height ) override;
+    void setEnabled( bool enable ) override;
 
   private:
     Qt3DRender::QLayer *mAOPassLayer = nullptr;
