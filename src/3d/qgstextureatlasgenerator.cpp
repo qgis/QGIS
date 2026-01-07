@@ -27,9 +27,8 @@
 class QgsTextureRect
 {
   public:
-    QgsTextureRect( const rectpack2D::rect_xywh &rect, int id, const QImage &image = QImage() )
+    QgsTextureRect( const rectpack2D::rect_xywh &rect, const QImage &image = QImage() )
       : rect( rect )
-      , id( id )
       , image( image )
     {
     }
@@ -50,7 +49,6 @@ class QgsTextureRect
     }
 
     rectpack2D::rect_xywh rect;
-    int id = 0;
     QImage image;
 };
 
@@ -130,7 +128,7 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromRects( const QVector<QRect> 
   int index = 0;
   for ( const QRect &rect : rectangles )
   {
-    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ), index++ ) );
+    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ) ) );
   }
   return generateAtlas( std::move( rects ), maxSide );
 }
@@ -142,7 +140,7 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromImages( const QVector<QImage
   int index = 0;
   for ( const QImage &image : images )
   {
-    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), index++, image ) );
+    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), image ) );
   }
   return generateAtlas( std::move( rects ), maxSide );
 }
