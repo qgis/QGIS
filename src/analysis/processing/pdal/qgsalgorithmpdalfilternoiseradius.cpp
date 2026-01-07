@@ -49,11 +49,9 @@ QStringList QgsPdalFilterNoiseRadiusAlgorithm::tags() const
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Filter noise in a point cloud using radius algorithm." )
+  return QObject::tr( "This algorithm filters noise in a point cloud using radius algorithm." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Points are marked as noise if they have fewer than the minimum number of neighbors within the specified radius." )
-         + QStringLiteral( "\n\n" )
-         + QObject::tr( "If 'Remove noise points' is enabled, noise points will be removed from the output, otherwise they are classified but retained." );
+         + QObject::tr( "Points are marked as noise if they have fewer than the minimum number of neighbors within the specified radius." );
 }
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::shortDescription() const

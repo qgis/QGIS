@@ -49,7 +49,7 @@ QStringList QgsPdalHeightAboveGroundDelaunayAlgorithm::tags() const
 
 QString QgsPdalHeightAboveGroundDelaunayAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using a Delaunay algorithm." )
+  return QObject::tr( "This algorithm calculates the height of points above the ground surface in a point cloud using a Delaunay algorithm." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The algorithm uses ground-classified points (classification value 2) to create a triangulated irregular network (TIN) from specified number of neighbors, then computes the height above this surface for all points." )
          + QStringLiteral( "\n\n" )

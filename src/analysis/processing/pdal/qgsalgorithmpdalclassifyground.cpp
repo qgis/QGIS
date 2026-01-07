@@ -49,7 +49,7 @@ QStringList QgsPdalClassifyGroundAlgorithm::tags() const
 
 QString QgsPdalClassifyGroundAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Classifies ground points using the Simple Morphological Filter (SMRF) algorithm." )
+  return QObject::tr( "This algorithm classifies ground points using the Simple Morphological Filter (SMRF) algorithm." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Parameters:" )
          + QStringLiteral( "\n\n" )

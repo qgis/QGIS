@@ -53,7 +53,7 @@ QStringList QgsPdalTransformAlgorithm::tags() const
 
 QString QgsPdalTransformAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Transforms point cloud coordinates using translation, rotation, and scaling operations using a 4x4 transformation matrix." )
+  return QObject::tr( "This algorithm transforms point cloud coordinates using translation, rotation, and scaling operations using a 4x4 transformation matrix." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The algorithm applies transformations in the following order: translation, rotation (using Euler angles), then scaling." )
          + QStringLiteral( "\n\n" )

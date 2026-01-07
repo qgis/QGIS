@@ -49,7 +49,7 @@ QStringList QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::tags() const
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Calculates the height of points above the ground surface in a point cloud using a nearest neighbor algorithm." )
+  return QObject::tr( "This algorithm calculates the height of points above the ground surface in a point cloud using a nearest neighbor algorithm." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "For each point, the algorithm finds the specified number of nearest ground-classified points (classification value 2) and interpolates the ground elevation from them using inverse distance weighting." )
          + QStringLiteral( "\n\n" )

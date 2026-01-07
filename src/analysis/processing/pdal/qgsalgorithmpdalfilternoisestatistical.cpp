@@ -49,11 +49,9 @@ QStringList QgsPdalFilterNoiseStatisticalAlgorithm::tags() const
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Filter noise in a point cloud using a statistical outlier removal algorithm." )
+  return QObject::tr( "This algorithm filters noise in a point cloud using a statistical outlier removal algorithm." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "For each point, the algorithm computes the mean distance to its K nearest neighbors. Points whose mean distance exceeds a threshold (mean distance + multiplier × standard deviation) are classified as noise." )
-         + QStringLiteral( "\n\n" )
-         + QObject::tr( "If 'Remove noise points' is enabled, noise points will be removed from the output, otherwise they are classified but retained." );
+         + QObject::tr( "For each point, the algorithm computes the mean distance to its K nearest neighbors. Points whose mean distance exceeds a threshold (mean distance + multiplier × standard deviation) are classified as noise." );
 }
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::shortDescription() const
