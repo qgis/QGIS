@@ -137,6 +137,7 @@ QgsAbstractContentCacheEntry.dump: src/core/qgsabstractcontentcache.h#L104
 QgsAbstractContentCacheEntry.isEqual: src/core/qgsabstractcontentcache.h#L113
 QgsAbstractContentCacheEntry: src/core/qgsabstractcontentcache.h#L51
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.__repr__: src/core/providers/qgsabstractdatabaseproviderconnection.h#L299
+QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection: src/core/providers/qgsabstractdatabaseproviderconnection.h#L296
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.__iter__: src/core/providers/qgsabstractdatabaseproviderconnection.h#L136
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.__next__: src/core/providers/qgsabstractdatabaseproviderconnection.h#L141
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.__repr__: src/core/providers/qgsabstractdatabaseproviderconnection.h#L285
@@ -166,6 +167,11 @@ QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.setQ
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.setSchema: src/core/providers/qgsabstractdatabaseproviderconnection.h#L371
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.setTableName: src/core/providers/qgsabstractdatabaseproviderconnection.h#L329
 QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection.tableName: src/core/providers/qgsabstractdatabaseproviderconnection.h#L322
+QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection: src/core/providers/qgsabstractdatabaseproviderconnection.h#L253
+QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection: src/core/providers/qgsabstractdatabaseproviderconnection.h#L281
+QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection: src/core/providers/qgsabstractdatabaseproviderconnection.h#L486
+QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection: src/core/providers/qgsabstractdatabaseproviderconnection.h#L633
+QgsAbstractDatabaseProviderConnection.QgsAbstractDatabaseProviderConnection: src/core/providers/qgsabstractdatabaseproviderconnection.h#L86
 QgsAbstractDatabaseProviderConnection.addField: src/core/providers/qgsabstractdatabaseproviderconnection.h#L742
 QgsAbstractDatabaseProviderConnection.addFieldDomain: src/core/providers/qgsabstractdatabaseproviderconnection.h#L1024
 QgsAbstractDatabaseProviderConnection.addRelationship: src/core/providers/qgsabstractdatabaseproviderconnection.h#L1230
@@ -413,6 +419,9 @@ QgsAbstractMeshLayerLabeling.subProviders: src/core/mesh/qgsmeshlayerlabeling.h#
 QgsAbstractMeshLayerLabeling.toSld: src/core/mesh/qgsmeshlayerlabeling.h#L126
 QgsAbstractMeshLayerLabeling.type: src/core/mesh/qgsmeshlayerlabeling.h#L52
 QgsAbstractMeshLayerLabeling: src/core/mesh/qgsmeshlayerlabeling.h#L44
+QgsAbstractMetadataBase.QgsAbstractMetadataBase: src/core/metadata/qgsabstractmetadatabase.h#L143
+QgsAbstractMetadataBase.QgsAbstractMetadataBase: src/core/metadata/qgsabstractmetadatabase.h#L213
+QgsAbstractMetadataBase.QgsAbstractMetadataBase: src/core/metadata/qgsabstractmetadatabase.h#L89
 QgsAbstractMetadataBase.abstract: src/core/metadata/qgsabstractmetadatabase.h#L353
 QgsAbstractMetadataBase.addContact: src/core/metadata/qgsabstractmetadatabase.h#L486
 QgsAbstractMetadataBase.addHistoryItem: src/core/metadata/qgsabstractmetadatabase.h#L380
@@ -468,6 +477,7 @@ QgsAbstractProfileGenerator.generateProfile: src/core/elevation/qgsabstractprofi
 QgsAbstractProfileGenerator.sourceId: src/core/elevation/qgsabstractprofilegenerator.h#L427
 QgsAbstractProfileGenerator.takeResults: src/core/elevation/qgsabstractprofilegenerator.h#L452
 QgsAbstractProfileGenerator: src/core/elevation/qgsabstractprofilegenerator.h#L414
+QgsAbstractProfileResults.QgsAbstractProfileResults: src/core/elevation/qgsabstractprofilegenerator.h#L200
 QgsAbstractProfileResults.copyPropertiesFromGenerator: src/core/elevation/qgsabstractprofilegenerator.h#L275
 QgsAbstractProfileResults.renderResults: src/core/elevation/qgsabstractprofilegenerator.h#L245
 QgsAbstractProfileResults.sampledPoints: src/core/elevation/qgsabstractprofilegenerator.h#L226
@@ -568,6 +578,7 @@ QgsAbstractReportSection.type: src/core/layout/qgsabstractreportsection.h#L85
 QgsAbstractReportSection.writePropertiesToElement: src/core/layout/qgsabstractreportsection.h#L347
 QgsAbstractReportSection.writeXml: src/core/layout/qgsabstractreportsection.h#L295
 QgsAbstractReportSection: src/core/layout/qgsabstractreportsection.h#L56
+QgsAbstractSensor.QgsAbstractSensor: src/core/sensor/qgsabstractsensor.h#L76
 QgsAbstractSensor.QgsAbstractSensor: src/core/sensor/qgsabstractsensor.h#L92
 QgsAbstractSensor.connectSensor: src/core/sensor/qgsabstractsensor.h#L129
 QgsAbstractSensor.data: src/core/sensor/qgsabstractsensor.h#L139
@@ -686,6 +697,8 @@ QgsActionScopeRegistry.actionScopesChanged: src/core/actions/qgsactionscoperegis
 QgsActionScopeRegistry.registerActionScope: src/core/actions/qgsactionscoperegistry.h#L70
 QgsActionScopeRegistry.unregisterActionScope: src/core/actions/qgsactionscoperegistry.h#L76
 QgsActionScopeRegistry: src/core/actions/qgsactionscoperegistry.h#L44
+QgsAggregateCalculator.QgsAggregateCalculator: src/core/qgsaggregatecalculator.h#L50
+QgsAggregateCalculator.QgsAggregateCalculator: src/core/qgsaggregatecalculator.h#L61
 QgsAggregateCalculator.calculate: src/core/qgsaggregatecalculator.h#L155
 QgsAggregateCalculator.delimiter: src/core/qgsaggregatecalculator.h#L142
 QgsAggregateCalculator.displayName: src/core/qgsaggregatecalculator.h#L170
@@ -698,6 +711,7 @@ QgsAggregateCalculator.setFilter: src/core/qgsaggregatecalculator.h#L115
 QgsAggregateCalculator.setParameters: src/core/qgsaggregatecalculator.h#L108
 QgsAggregateCalculator.stringToAggregate: src/core/qgsaggregatecalculator.h#L164
 QgsAggregateCalculator: src/core/qgsaggregatecalculator.h#L42
+QgsAlignRasterData.QgsAlignRasterData: src/core/qgsalignrasterdata.h#L32
 QgsAlignRasterData: src/core/qgsalignrasterdata.h#L27
 QgsAnimatedIcon.connectFrameChanged: src/core/qgsanimatedicon.h#L103
 QgsAnimatedIcon.disconnectFrameChanged: src/core/qgsanimatedicon.h#L109
@@ -840,6 +854,7 @@ QgsAnnotationItemRegistry.populate: src/core/annotations/qgsannotationitemregist
 QgsAnnotationItemRegistry.typeAdded: src/core/annotations/qgsannotationitemregistry.h#L198
 QgsAnnotationItemRegistry: src/core/annotations/qgsannotationitemregistry.h#L144
 QgsAnnotationLayer.QgsAnnotationLayer.LayerOptions: src/core/annotations/qgsannotationlayer.h#L65
+QgsAnnotationLayer.QgsAnnotationLayer: src/core/annotations/qgsannotationlayer.h#L57
 QgsAnnotationLayer.__repr__: src/core/annotations/qgsannotationlayer.h#L84
 QgsAnnotationLayer.addItem: src/core/annotations/qgsannotationlayer.h#L103
 QgsAnnotationLayer.applyEdit: src/core/annotations/qgsannotationlayer.h#L161
@@ -1316,6 +1331,7 @@ QgsAttributeEditorContainer.setVisibilityExpression: src/core/editform/qgsattrib
 QgsAttributeEditorContainer.type: src/core/editform/qgsattributeeditorcontainer.h#L67
 QgsAttributeEditorContainer.visibilityExpression: src/core/editform/qgsattributeeditorcontainer.h#L157
 QgsAttributeEditorContainer: src/core/editform/qgsattributeeditorcontainer.h#L28
+QgsAttributeEditorElement.QgsAttributeEditorElement: src/core/editform/qgsattributeeditorelement.h#L74
 QgsAttributeEditorElement.clone: src/core/editform/qgsattributeeditorelement.h#L163
 QgsAttributeEditorElement.create: src/core/editform/qgsattributeeditorelement.h#L128
 QgsAttributeEditorElement.horizontalStretch: src/core/editform/qgsattributeeditorelement.h#L184
@@ -1363,6 +1379,7 @@ QgsAttributeEditorTextElement.clone: src/core/editform/qgsattributeeditortextele
 QgsAttributeEditorTextElement.setText: src/core/editform/qgsattributeeditortextelement.h#L52
 QgsAttributeEditorTextElement.text: src/core/editform/qgsattributeeditortextelement.h#L47
 QgsAttributeEditorTextElement: src/core/editform/qgsattributeeditortextelement.h#L28
+QgsAttributeTableConfig.QgsAttributeTableConfig: src/core/qgsattributetableconfig.h#L51
 QgsAttributeTableConfig.__len__: src/core/qgsattributetableconfig.h#L103
 QgsAttributeTableConfig.actionWidgetStyle: src/core/qgsattributetableconfig.h#L143
 QgsAttributeTableConfig.actionWidgetVisible: src/core/qgsattributetableconfig.h#L133
@@ -1429,6 +1446,8 @@ QgsAuthConfigSslServer.sslPeerVerifyMode: src/core/auth/qgsauthconfig.h#L370
 QgsAuthConfigSslServer.sslProtocol: src/core/auth/qgsauthconfig.h#L358
 QgsAuthConfigSslServer.version: src/core/auth/qgsauthconfig.h#L387
 QgsAuthConfigSslServer: src/core/auth/qgsauthconfig.h#L341
+QgsAuthConfigurationStorage.QgsAuthConfigurationStorage: src/core/auth/qgsauthconfigurationstorage.h#L44
+QgsAuthConfigurationStorage.QgsAuthConfigurationStorage: src/core/auth/qgsauthconfigurationstorage.h#L54
 QgsAuthConfigurationStorage.authMethodConfigs: src/core/auth/qgsauthconfigurationstorage.h#L164
 QgsAuthConfigurationStorage.authMethodConfigsWithPayload: src/core/auth/qgsauthconfigurationstorage.h#L174
 QgsAuthConfigurationStorage.authSettingExists: src/core/auth/qgsauthconfigurationstorage.h#L241
@@ -2188,6 +2207,7 @@ QgsCelestialBody.authority: src/core/proj/qgscelestialbody.h#L50
 QgsCelestialBody.isValid: src/core/proj/qgscelestialbody.h#L40
 QgsCelestialBody.name: src/core/proj/qgscelestialbody.h#L45
 QgsCelestialBody: src/core/proj/qgscelestialbody.h#L32
+QgsCentroidFillSymbolLayer.QgsCentroidFillSymbolLayer: src/core/symbology/qgsfillsymbollayer.h#L2595
 QgsCentroidFillSymbolLayer.canCauseArtifactsBetweenAdjacentTiles: src/core/symbology/qgsfillsymbollayer.h#L2527
 QgsCentroidFillSymbolLayer.clipOnCurrentPartOnly: src/core/symbology/qgsfillsymbollayer.h#L2566
 QgsCentroidFillSymbolLayer.clipPoints: src/core/symbology/qgsfillsymbollayer.h#L2550
@@ -2220,6 +2240,8 @@ QgsCentroidFillSymbolLayer.toSld: src/core/symbology/qgsfillsymbollayer.h#L2514
 QgsCentroidFillSymbolLayer.toSld: src/core/symbology/qgsfillsymbollayer.h#L2515
 QgsCentroidFillSymbolLayer.usesMapUnits: src/core/symbology/qgsfillsymbollayer.h#L2522
 QgsCentroidFillSymbolLayer: src/core/symbology/qgsfillsymbollayer.h#L2490
+QgsCesiumUtils.QgsCesiumUtils: src/core/tiledscene/qgscesiumutils.h#L101
+QgsCesiumUtils.QgsCesiumUtils: src/core/tiledscene/qgscesiumutils.h#L119
 QgsCesiumUtils.extractGltfFromB3dm: src/core/tiledscene/qgscesiumutils.h#L114
 QgsCesiumUtils.extractGltfFromTileContent: src/core/tiledscene/qgscesiumutils.h#L134
 QgsCesiumUtils.parseBox: src/core/tiledscene/qgscesiumutils.h#L76
@@ -2506,6 +2528,7 @@ QgsColorRampLegendNodeSettings.textFormat: src/core/layertree/qgscolorramplegend
 QgsColorRampLegendNodeSettings.useContinuousLegend: src/core/layertree/qgscolorramplegendnodesettings.h#L212
 QgsColorRampLegendNodeSettings.writeXml: src/core/layertree/qgscolorramplegendnodesettings.h#L138
 QgsColorRampLegendNodeSettings: src/core/layertree/qgscolorramplegendnodesettings.h#L38
+QgsColorRampShader.QgsColorRampShader: src/core/raster/qgscolorrampshader.h#L88
 QgsColorRampShader.classificationMode: src/core/raster/qgscolorrampshader.h#L220
 QgsColorRampShader.classifyColorRamp: src/core/raster/qgscolorrampshader.h#L179
 QgsColorRampShader.classifyColorRamp: src/core/raster/qgscolorrampshader.h#L187
@@ -3179,6 +3202,7 @@ QgsDataCollectionItem.iconDataCollection: src/core/browser/qgsdatacollectionitem
 QgsDataCollectionItem.iconDir: src/core/browser/qgsdatacollectionitem.h#L68
 QgsDataCollectionItem.openDirIcon: src/core/browser/qgsdatacollectionitem.h#L88
 QgsDataCollectionItem: src/core/browser/qgsdatacollectionitem.h#L30
+QgsDataDefinedSizeLegend.QgsDataDefinedSizeLegend: src/core/qgsdatadefinedsizelegend.h#L70
 QgsDataDefinedSizeLegend.collapsedLegendImage: src/core/qgsdatadefinedsizelegend.h#L159
 QgsDataDefinedSizeLegend.drawCollapsedLegend: src/core/qgsdatadefinedsizelegend.h#L156
 QgsDataDefinedSizeLegend.font: src/core/qgsdatadefinedsizelegend.h#L131
@@ -3283,6 +3307,7 @@ QgsDataItemProviderRegistry.providerAdded: src/core/browser/qgsdataitemproviderr
 QgsDataItemProviderRegistry.providerWillBeRemoved: src/core/browser/qgsdataitemproviderregistry.h#L93
 QgsDataItemProviderRegistry.removeProvider: src/core/browser/qgsdataitemproviderregistry.h#L71
 QgsDataItemProviderRegistry: src/core/browser/qgsdataitemproviderregistry.h#L38
+QgsDataProvider.QgsDataProvider: src/core/providers/qgsdataprovider.h#L92
 QgsDataProvider.appendError: src/core/providers/qgsdataprovider.h#L710
 QgsDataProvider.crs: src/core/providers/qgsdataprovider.h#L116
 QgsDataProvider.dataChanged: src/core/providers/qgsdataprovider.h#L688
@@ -3469,6 +3494,11 @@ QgsDatumEnsembleMember.name: src/core/proj/qgsdatums.h#L41
 QgsDatumEnsembleMember.remarks: src/core/proj/qgsdatums.h#L51
 QgsDatumEnsembleMember.scope: src/core/proj/qgsdatums.h#L46
 QgsDatumEnsembleMember: src/core/proj/qgsdatums.h#L34
+QgsDatumTransform.QgsDatumTransform: src/core/proj/qgsdatumtransform.h#L131
+QgsDatumTransform.QgsDatumTransform: src/core/proj/qgsdatumtransform.h#L155
+QgsDatumTransform.QgsDatumTransform: src/core/proj/qgsdatumtransform.h#L179
+QgsDatumTransform.QgsDatumTransform: src/core/proj/qgsdatumtransform.h#L51
+QgsDatumTransform.QgsDatumTransform: src/core/proj/qgsdatumtransform.h#L92
 QgsDatumTransform.datumTransformInfo: src/core/proj/qgsdatumtransform.h#L316
 QgsDatumTransform.datumTransformToProj: src/core/proj/qgsdatumtransform.h#L296
 QgsDatumTransform.projStringToDatumTransformId: src/core/proj/qgsdatumtransform.h#L305
@@ -3659,6 +3689,8 @@ QgsDxfExport.QgsDxfExport.layer: src/core/dxf/qgsdxfexport.h#L88
 QgsDxfExport.QgsDxfExport.layerOutputAttributeIndex: src/core/dxf/qgsdxfexport.h#L95
 QgsDxfExport.QgsDxfExport.overriddenName: src/core/dxf/qgsdxfexport.h#L123
 QgsDxfExport.QgsDxfExport.splitLayerAttribute: src/core/dxf/qgsdxfexport.h#L103
+QgsDxfExport.QgsDxfExport: src/core/dxf/qgsdxfexport.h#L575
+QgsDxfExport.QgsDxfExport: src/core/dxf/qgsdxfexport.h#L77
 QgsDxfExport.addLayers: src/core/dxf/qgsdxfexport.h#L240
 QgsDxfExport.clipValueToMapUnitScale: src/core/dxf/qgsdxfexport.h#L540
 QgsDxfExport.closestColorMatch: src/core/dxf/qgsdxfexport.h#L347
@@ -3706,6 +3738,8 @@ QgsDxfExport.writeText: src/core/dxf/qgsdxfexport.h#L517
 QgsDxfExport.writeToFile: src/core/dxf/qgsdxfexport.h#L248
 QgsDxfExport: src/core/dxf/qgsdxfexport.h#L62
 QgsEditFormConfig.QgsEditFormConfig: src/core/editform/qgseditformconfig.h#L321
+QgsEditFormConfig.QgsEditFormConfig: src/core/editform/qgseditformconfig.h#L47
+QgsEditFormConfig.QgsEditFormConfig: src/core/editform/qgseditformconfig.h#L58
 QgsEditFormConfig.addTab: src/core/editform/qgseditformconfig.h#L101
 QgsEditFormConfig.attributeEditorElementFromDomElement: src/core/editform/qgseditformconfig.h#L316
 QgsEditFormConfig.clearTabs: src/core/editform/qgseditformconfig.h#L111
@@ -3932,6 +3966,8 @@ QgsEllipseSymbolLayer.writeDxf: src/core/symbology/qgsellipsesymbollayer.h#L86
 QgsEllipseSymbolLayer.writeSldMarker: src/core/symbology/qgsellipsesymbollayer.h#L83
 QgsEllipseSymbolLayer.writeSldMarker: src/core/symbology/qgsellipsesymbollayer.h#L84
 QgsEllipseSymbolLayer: src/core/symbology/qgsellipsesymbollayer.h#L32
+QgsEllipsoidUtils.QgsEllipsoidUtils: src/core/proj/qgsellipsoidutils.h#L40
+QgsEllipsoidUtils.QgsEllipsoidUtils: src/core/proj/qgsellipsoidutils.h#L64
 QgsEllipsoidUtils.acronyms: src/core/proj/qgsellipsoidutils.h#L101
 QgsEllipsoidUtils.ellipsoidParameters: src/core/proj/qgsellipsoidutils.h#L87
 QgsEllipsoidUtils: src/core/proj/qgsellipsoidutils.h#L33
@@ -3980,6 +4016,7 @@ QgsExifTools.readTag: src/core/raster/qgsexiftools.h#L48
 QgsExifTools.readTags: src/core/raster/qgsexiftools.h#L42
 QgsExifTools.tagImage: src/core/raster/qgsexiftools.h#L110
 QgsExifTools: src/core/raster/qgsexiftools.h#L32
+QgsExpression.QgsExpression: src/core/expression/qgsexpression.h#L197
 QgsExpression.__repr__: src/core/expression/qgsexpression.h#L799
 QgsExpression.addVariableHelpText: src/core/expression/qgsexpression.h#L713
 QgsExpression.areaUnits: src/core/expression/qgsexpression.h#L539
@@ -4086,6 +4123,7 @@ QgsExpressionContext.variablesToMap: src/core/qgsexpressioncontext.h#L518
 QgsExpressionContext: src/core/qgsexpressioncontext.h#L473
 QgsExpressionContextGenerator.createExpressionContext: src/core/qgsexpressioncontextgenerator.h#L44
 QgsExpressionContextGenerator: src/core/qgsexpressioncontextgenerator.h#L35
+QgsExpressionContextScope.QgsExpressionContextScope: src/core/qgsexpressioncontext.h#L122
 QgsExpressionContextScope.addFunction: src/core/qgsexpressioncontext.h#L294
 QgsExpressionContextScope.addHiddenVariable: src/core/qgsexpressioncontext.h#L413
 QgsExpressionContextScope.addLayerStore: src/core/qgsexpressioncontext.h#L436
@@ -4156,6 +4194,7 @@ QgsExpressionContextUtils.setProjectVariable: src/core/expression/qgsexpressionc
 QgsExpressionContextUtils.setProjectVariables: src/core/expression/qgsexpressioncontextutils.h#L133
 QgsExpressionContextUtils.updateSymbolScope: src/core/expression/qgsexpressioncontextutils.h#L204
 QgsExpressionContextUtils: src/core/expression/qgsexpressioncontextutils.h#L47
+QgsExpressionFieldBuffer.QgsExpressionFieldBuffer: src/core/qgsexpressionfieldbuffer.h#L37
 QgsExpressionFieldBuffer.addExpression: src/core/qgsexpressionfieldbuffer.h#L56
 QgsExpressionFieldBuffer.readXml: src/core/qgsexpressionfieldbuffer.h#L91
 QgsExpressionFieldBuffer.removeExpression: src/core/qgsexpressionfieldbuffer.h#L63
@@ -4197,6 +4236,7 @@ QgsExpressionNode.NodeList.hasNamedNodes: src/core/expression/qgsexpressionnode.
 QgsExpressionNode.NodeList.names: src/core/expression/qgsexpressionnode.h#L163
 QgsExpressionNode.NodeList.reserve: src/core/expression/qgsexpressionnode.h#L142
 QgsExpressionNode.NodeList: src/core/expression/qgsexpressionnode.h#L120
+QgsExpressionNode.QgsExpressionNode: src/core/expression/qgsexpressionnode.h#L95
 QgsExpressionNode.cachedStaticValue: src/core/expression/qgsexpressionnode.h#L333
 QgsExpressionNode.clone: src/core/expression/qgsexpressionnode.h#L217
 QgsExpressionNode.dump: src/core/expression/qgsexpressionnode.h#L201
@@ -5901,6 +5941,7 @@ QgsGraduatedSymbolRenderer.updateSymbols: src/core/symbology/qgsgraduatedsymbolr
 QgsGraduatedSymbolRenderer.useSymmetricMode: src/core/symbology/qgsgraduatedsymbolrenderer.h#L170
 QgsGraduatedSymbolRenderer: src/core/symbology/qgsgraduatedsymbolrenderer.h#L36
 QgsGroupLayer.QgsGroupLayer.LayerOptions: src/core/qgsgrouplayer.h#L59
+QgsGroupLayer.QgsGroupLayer: src/core/qgsgrouplayer.h#L51
 QgsGroupLayer.__repr__: src/core/qgsgrouplayer.h#L77
 QgsGroupLayer.clone: src/core/qgsgrouplayer.h#L84
 QgsGroupLayer.createMapRenderer: src/core/qgsgrouplayer.h#L85
@@ -6140,6 +6181,10 @@ QgsImageOperation.GaussianBlurOperation: src/core/effects/qgsimageoperation.h#L4
 QgsImageOperation.GrayscalePixelOperation: src/core/effects/qgsimageoperation.h#L304
 QgsImageOperation.HueSaturationPixelOperation: src/core/effects/qgsimageoperation.h#L337
 QgsImageOperation.MultiplyOpacityPixelOperation: src/core/effects/qgsimageoperation.h#L362
+QgsImageOperation.QgsImageOperation: src/core/effects/qgsimageoperation.h#L122
+QgsImageOperation.QgsImageOperation: src/core/effects/qgsimageoperation.h#L220
+QgsImageOperation.QgsImageOperation: src/core/effects/qgsimageoperation.h#L236
+QgsImageOperation.QgsImageOperation: src/core/effects/qgsimageoperation.h#L268
 QgsImageOperation.ShadeFromArrayOperation: src/core/effects/qgsimageoperation.h#L393
 QgsImageOperation.StackBlurLineOperation: src/core/effects/qgsimageoperation.h#L420
 QgsImageOperation.adjustBrightnessContrast: src/core/effects/qgsimageoperation.h#L91
@@ -6521,6 +6566,9 @@ QgsLayerItem.uri: src/core/browser/qgslayeritem.h#L71
 QgsLayerItem: src/core/browser/qgslayeritem.h#L30
 QgsLayerMetadata.QgsLayerMetadata.setSpatialExtents: src/core/metadata/qgslayermetadata.h#L104
 QgsLayerMetadata.QgsLayerMetadata.setTemporalExtents: src/core/metadata/qgslayermetadata.h#L119
+QgsLayerMetadata.QgsLayerMetadata: src/core/metadata/qgslayermetadata.h#L137
+QgsLayerMetadata.QgsLayerMetadata: src/core/metadata/qgslayermetadata.h#L62
+QgsLayerMetadata.QgsLayerMetadata: src/core/metadata/qgslayermetadata.h#L90
 QgsLayerMetadata.addConstraint: src/core/metadata/qgslayermetadata.h#L199
 QgsLayerMetadata.clone: src/core/metadata/qgslayermetadata.h#L172
 QgsLayerMetadata.combine: src/core/metadata/qgslayermetadata.h#L318
@@ -6795,6 +6843,8 @@ QgsLayerTreeModel.supportedDropActions: src/core/layertree/qgslayertreemodel.h#L
 QgsLayerTreeModel.testFlag: src/core/layertree/qgslayertreemodel.h#L123
 QgsLayerTreeModel.waitForHitTestBlocking: src/core/layertree/qgslayertreemodel.h#L327
 QgsLayerTreeModel: src/core/layertree/qgslayertreemodel.h#L57
+QgsLayerTreeModelLegendNode.QgsLayerTreeModelLegendNode: src/core/layertree/qgslayertreemodellegendnode.h#L176
+QgsLayerTreeModelLegendNode.QgsLayerTreeModelLegendNode: src/core/layertree/qgslayertreemodellegendnode.h#L267
 QgsLayerTreeModelLegendNode.QgsLayerTreeModelLegendNode: src/core/layertree/qgslayertreemodellegendnode.h#L361
 QgsLayerTreeModelLegendNode.__repr__: src/core/layertree/qgslayertreemodellegendnode.h#L315
 QgsLayerTreeModelLegendNode.checkAllItems: src/core/layertree/qgslayertreemodellegendnode.h#L330
@@ -6865,6 +6915,7 @@ QgsLayerTreeNode.willRemoveChildren: src/core/layertree/qgslayertreenode.h#L283
 QgsLayerTreeNode.writeCommonXml: src/core/layertree/qgslayertreenode.h#L309
 QgsLayerTreeNode.writeXml: src/core/layertree/qgslayertreenode.h#L192
 QgsLayerTreeNode: src/core/layertree/qgslayertreenode.h#L77
+QgsLayerTreeRegistryBridge.QgsLayerTreeRegistryBridge: src/core/layertree/qgslayertreeregistrybridge.h#L55
 QgsLayerTreeRegistryBridge.QgsLayerTreeRegistryBridge: src/core/layertree/qgslayertreeregistrybridge.h#L66
 QgsLayerTreeRegistryBridge.addedLayersToLayerTree: src/core/layertree/qgslayertreeregistrybridge.h#L111
 QgsLayerTreeRegistryBridge.groupRemovedChildren: src/core/layertree/qgslayertreeregistrybridge.h#L118
@@ -7021,6 +7072,11 @@ QgsLayoutEffect.compositionMode: src/core/layout/qgslayouteffect.h#L60
 QgsLayoutEffect.draw: src/core/layout/qgslayouteffect.h#L64
 QgsLayoutEffect.setCompositionMode: src/core/layout/qgslayouteffect.h#L51
 QgsLayoutEffect: src/core/layout/qgslayouteffect.h#L36
+QgsLayoutExporter.QgsLayoutExporter: src/core/layout/qgslayoutexporter.h#L169
+QgsLayoutExporter.QgsLayoutExporter: src/core/layout/qgslayoutexporter.h#L277
+QgsLayoutExporter.QgsLayoutExporter: src/core/layout/qgslayoutexporter.h#L455
+QgsLayoutExporter.QgsLayoutExporter: src/core/layout/qgslayoutexporter.h#L511
+QgsLayoutExporter.QgsLayoutExporter: src/core/layout/qgslayoutexporter.h#L71
 QgsLayoutExporter.computeWorldFileParameters: src/core/layout/qgslayoutexporter.h#L678
 QgsLayoutExporter.computeWorldFileParameters: src/core/layout/qgslayoutexporter.h#L685
 QgsLayoutExporter.containsAdvancedEffects: src/core/layout/qgslayoutexporter.h#L704
@@ -7120,6 +7176,7 @@ QgsLayoutGuideProxyModel.lessThan: src/core/layout/qgslayoutguidecollection.h#L3
 QgsLayoutGuideProxyModel.setPage: src/core/layout/qgslayoutguidecollection.h#L339
 QgsLayoutGuideProxyModel: src/core/layout/qgslayoutguidecollection.h#L323
 QgsLayoutItem.QgsLayoutItem: src/core/layout/qgslayoutitem.h#L349
+QgsLayoutItem.QgsLayoutItem: src/core/layout/qgslayoutitem.h#L527
 QgsLayoutItem.accept: src/core/layout/qgslayoutitem.h#L1016
 QgsLayoutItem.adjustPointForReferencePosition: src/core/layout/qgslayoutitem.h#L1250
 QgsLayoutItem.applyDataDefinedSize: src/core/layout/qgslayoutitem.h#L1293
@@ -7234,6 +7291,7 @@ QgsLayoutItemAbstractMetadata.type: src/core/layout/qgslayoutitemregistry.h#L66
 QgsLayoutItemAbstractMetadata.visibleName: src/core/layout/qgslayoutitemregistry.h#L72
 QgsLayoutItemAbstractMetadata.visiblePluralName: src/core/layout/qgslayoutitemregistry.h#L78
 QgsLayoutItemAbstractMetadata: src/core/layout/qgslayoutitemregistry.h#L45
+QgsLayoutItemAttributeTable.QgsLayoutItemAttributeTable: src/core/layout/qgslayoutitemattributetable.h#L362
 QgsLayoutItemAttributeTable.conditionalCellStyle: src/core/layout/qgslayoutitemattributetable.h#L280
 QgsLayoutItemAttributeTable.create: src/core/layout/qgslayoutitemattributetable.h#L63
 QgsLayoutItemAttributeTable.createExpressionContext: src/core/layout/qgslayoutitemattributetable.h#L284
@@ -7641,6 +7699,9 @@ QgsLayoutItemMapAtlasClippingSettings.setLayersToClip: src/core/layout/qgslayout
 QgsLayoutItemMapAtlasClippingSettings.setRestrictToLayers: src/core/layout/qgslayoutitemmap.h#L124
 QgsLayoutItemMapAtlasClippingSettings.writeXml: src/core/layout/qgslayoutitemmap.h#L151
 QgsLayoutItemMapAtlasClippingSettings: src/core/layout/qgslayoutitemmap.h#L41
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L901
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L943
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L955
 QgsLayoutItemMapGrid.accept: src/core/layout/qgslayoutitemmapgrid.h#L878
 QgsLayoutItemMapGrid.annotationDirection: src/core/layout/qgslayoutitemmapgrid.h#L574
 QgsLayoutItemMapGrid.annotationDisplay: src/core/layout/qgslayoutitemmapgrid.h#L529
@@ -9033,6 +9094,7 @@ QgsLocatorFilter.triggerResult: src/core/locator/qgslocatorfilter.h#L291
 QgsLocatorFilter.triggerResultFromAction: src/core/locator/qgslocatorfilter.h#L315
 QgsLocatorFilter.useWithoutPrefix: src/core/locator/qgslocatorfilter.h#L332
 QgsLocatorFilter: src/core/locator/qgslocatorfilter.h#L176
+QgsLocatorModel.QgsLocatorModel: src/core/locator/qgslocatormodel.h#L124
 QgsLocatorModel.addResult: src/core/locator/qgslocatormodel.h#L105
 QgsLocatorModel.clear: src/core/locator/qgslocatormodel.h#L84
 QgsLocatorModel.columnCount: src/core/locator/qgslocatormodel.h#L95
@@ -9061,6 +9123,7 @@ QgsLocatorModelBridge: src/core/locator/qgslocatormodelbridge.h#L42
 QgsLocatorProxyModel.QgsLocatorProxyModel: src/core/locator/qgslocatormodel.h#L222
 QgsLocatorProxyModel.lessThan: src/core/locator/qgslocatormodel.h#L223
 QgsLocatorProxyModel: src/core/locator/qgslocatormodel.h#L213
+QgsLocatorResult.QgsLocatorResult: src/core/locator/qgslocatorfilter.h#L125
 QgsLocatorResult.setUserData: src/core/locator/qgslocatorfilter.h#L74
 QgsLocatorResult.userData: src/core/locator/qgslocatorfilter.h#L67
 QgsLocatorResult: src/core/locator/qgslocatorfilter.h#L38
@@ -9195,6 +9258,7 @@ QgsMapHitTest.legendKeyVisible: src/core/qgsmaphittest.h#L105
 QgsMapHitTest.run: src/core/qgsmaphittest.h#L69
 QgsMapHitTest.symbolVisible: src/core/qgsmaphittest.h#L97
 QgsMapHitTest: src/core/qgsmaphittest.h#L43
+QgsMapHitTestTask.QgsMapHitTestTask: src/core/qgsmaphittest.h#L193
 QgsMapHitTestTask.cancel: src/core/qgsmaphittest.h#L183
 QgsMapHitTestTask.run: src/core/qgsmaphittest.h#L187
 QgsMapHitTestTask: src/core/qgsmaphittest.h#L156
@@ -9454,6 +9518,7 @@ QgsMapLayerElevationProperties.zScale: src/core/qgsmaplayerelevationproperties.h
 QgsMapLayerElevationProperties.zScaleChanged: src/core/qgsmaplayerelevationproperties.h#L295
 QgsMapLayerElevationProperties: src/core/qgsmaplayerelevationproperties.h#L44
 QgsMapLayerFactory.QgsMapLayerFactory.LayerOptions: src/core/qgsmaplayerfactory.h#L72
+QgsMapLayerFactory.QgsMapLayerFactory: src/core/qgsmaplayerfactory.h#L64
 QgsMapLayerFactory.createLayer: src/core/qgsmaplayerfactory.h#L102
 QgsMapLayerFactory.typeFromString: src/core/qgsmaplayerfactory.h#L50
 QgsMapLayerFactory.typeToString: src/core/qgsmaplayerfactory.h#L57
@@ -9656,6 +9721,7 @@ QgsMapLayerUtils.updateLayerSourcePath: src/core/qgsmaplayerutils.h#L74
 QgsMapLayerUtils: src/core/qgsmaplayerutils.h#L38
 QgsMapRendererAbstractCustomPainterJob.preparePainter: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L49
 QgsMapRendererAbstractCustomPainterJob: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L31
+QgsMapRendererCache.QgsMapRendererCache: src/core/maprenderer/qgsmaprenderercache.h#L179
 QgsMapRendererCache.cacheImage: src/core/maprenderer/qgsmaprenderercache.h#L139
 QgsMapRendererCache.clear: src/core/maprenderer/qgsmaprenderercache.h#L56
 QgsMapRendererCache.clearCacheImage: src/core/maprenderer/qgsmaprenderercache.h#L164
@@ -9679,6 +9745,7 @@ QgsMapRendererCustomPainterJob.usedCachedLabels: src/core/maprenderer/qgsmaprend
 QgsMapRendererCustomPainterJob.waitForFinished: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L71
 QgsMapRendererCustomPainterJob.waitForFinishedWithEventLoop: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L91
 QgsMapRendererCustomPainterJob: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L62
+QgsMapRendererJob.QgsMapRendererJob: src/core/maprenderer/qgsmaprendererjob.h#L378
 QgsMapRendererJob.cancel: src/core/maprenderer/qgsmaprendererjob.h#L315
 QgsMapRendererJob.cancelWithoutBlocking: src/core/maprenderer/qgsmaprendererjob.h#L322
 QgsMapRendererJob.composeImage: src/core/maprenderer/qgsmaprendererjob.h#L624
@@ -10059,6 +10126,8 @@ QgsMatrix4x4.translate: src/core/qgsmatrix4x4.h#L75
 QgsMatrix4x4: src/core/qgsmatrix4x4.h#L37
 QgsMemoryProviderUtils.createMemoryLayer: src/core/providers/memory/qgsmemoryproviderutils.h#L50
 QgsMemoryProviderUtils: src/core/providers/memory/qgsmemoryproviderutils.h#L36
+QgsMergedFeatureRenderer.QgsMergedFeatureRenderer: src/core/symbology/qgsmergedfeaturerenderer.h#L136
+QgsMergedFeatureRenderer.QgsMergedFeatureRenderer: src/core/symbology/qgsmergedfeaturerenderer.h#L161
 QgsMergedFeatureRenderer.accept: src/core/symbology/qgsmergedfeaturerenderer.h#L100
 QgsMergedFeatureRenderer.capabilities: src/core/symbology/qgsmergedfeaturerenderer.h#L83
 QgsMergedFeatureRenderer.checkLegendSymbolItem: src/core/symbology/qgsmergedfeaturerenderer.h#L99
@@ -10117,6 +10186,7 @@ QgsMesh3DDataBlock.setVerticalLevelsCount: src/core/mesh/qgsmeshdataset.h#L297
 QgsMesh3DDataBlock.value: src/core/mesh/qgsmeshdataset.h#L332
 QgsMesh3DDataBlock.volumesCount: src/core/mesh/qgsmeshdataset.h#L287
 QgsMesh3DDataBlock: src/core/mesh/qgsmeshdataset.h#L253
+QgsMesh: src/core/mesh/qgsmeshdataprovider.h#L50
 QgsMeshAdvancedEditing.clear: src/core/mesh/qgsmeshadvancedediting.h#L55
 QgsMeshAdvancedEditing.isFinished: src/core/mesh/qgsmeshadvancedediting.h#L61
 QgsMeshAdvancedEditing.message: src/core/mesh/qgsmeshadvancedediting.h#L52
@@ -10283,9 +10353,12 @@ QgsMeshEditForceByPolylines.addLinesFromGeometries: src/core/mesh/qgsmeshforceby
 QgsMeshEditForceByPolylines.isFinished: src/core/mesh/qgsmeshforcebypolylines.h#L150
 QgsMeshEditForceByPolylines.text: src/core/mesh/qgsmeshforcebypolylines.h#L149
 QgsMeshEditForceByPolylines: src/core/mesh/qgsmeshforcebypolylines.h#L143
+QgsMeshEditRefineFaces.QgsMeshEditRefineFaces: src/core/mesh/qgsmeshadvancedediting.h#L108
+QgsMeshEditRefineFaces.QgsMeshEditRefineFaces: src/core/mesh/qgsmeshadvancedediting.h#L117
 QgsMeshEditRefineFaces.text: src/core/mesh/qgsmeshadvancedediting.h#L103
 QgsMeshEditRefineFaces: src/core/mesh/qgsmeshadvancedediting.h#L97
 QgsMeshEditingError: src/core/mesh/qgsmesheditor.h#L42
+QgsMeshEditor.QgsMeshEditor: src/core/mesh/qgsmesheditor.h#L341
 QgsMeshEditor.addFace: src/core/mesh/qgsmesheditor.h#L138
 QgsMeshEditor.addPointsAsVertices: src/core/mesh/qgsmesheditor.h#L196
 QgsMeshEditor.addVertexWithDelaunayRefinement: src/core/mesh/qgsmesheditor.h#L319
@@ -10327,6 +10400,7 @@ QgsMeshElevationAveragingMethod.startElevation: src/core/mesh/qgsmesh3daveraging
 QgsMeshElevationAveragingMethod.writeXml: src/core/mesh/qgsmesh3daveraging.h#L382
 QgsMeshElevationAveragingMethod: src/core/mesh/qgsmesh3daveraging.h#L368
 QgsMeshLayer.QgsMeshLayer.LayerOptions: src/core/mesh/qgsmeshlayer.h#L117
+QgsMeshLayer.QgsMeshLayer: src/core/mesh/qgsmeshlayer.h#L108
 QgsMeshLayer.QgsMeshLayer: src/core/mesh/qgsmeshlayer.h#L159
 QgsMeshLayer.__repr__: src/core/mesh/qgsmeshlayer.h#L168
 QgsMeshLayer.activeScalarDatasetAtTime: src/core/mesh/qgsmeshlayer.h#L632
@@ -10685,6 +10759,7 @@ QgsMessageOutputConsole.setMessage: src/core/qgsmessageoutput.h#L105
 QgsMessageOutputConsole.setTitle: src/core/qgsmessageoutput.h#L109
 QgsMessageOutputConsole.showMessage: src/core/qgsmessageoutput.h#L112
 QgsMessageOutputConsole: src/core/qgsmessageoutput.h#L97
+QgsMetadataSearchContext: src/core/metadata/qgsabstractlayermetadataprovider.h#L35
 QgsMetadataUtils.convertFromEsri: src/core/metadata/qgsmetadatautils.h#L41
 QgsMetadataUtils: src/core/metadata/qgsmetadatautils.h#L34
 QgsMimeDataUtils.QgsMimeDataUtils.Uri: src/core/qgsmimedatautils.h#L46
@@ -10696,6 +10771,7 @@ QgsMimeDataUtils.QgsMimeDataUtils.mapLayer: src/core/qgsmimedatautils.h#L93
 QgsMimeDataUtils.QgsMimeDataUtils.meshLayer: src/core/qgsmimedatautils.h#L82
 QgsMimeDataUtils.QgsMimeDataUtils.rasterLayer: src/core/qgsmimedatautils.h#L75
 QgsMimeDataUtils.QgsMimeDataUtils.vectorLayer: src/core/qgsmimedatautils.h#L68
+QgsMimeDataUtils.QgsMimeDataUtils: src/core/qgsmimedatautils.h#L41
 QgsMimeDataUtils.decodeUriList: src/core/qgsmimedatautils.h#L180
 QgsMimeDataUtils.encodeUriList: src/core/qgsmimedatautils.h#L176
 QgsMimeDataUtils.hasOriginatedFromCurrentAppInstance: src/core/qgsmimedatautils.h#L193
@@ -11035,6 +11111,8 @@ QgsObjectCustomProperties: src/core/qgsobjectcustomproperties.h#L35
 QgsObjectEntityVisitorInterface.visitEmbeddedScript: src/core/qgsobjectvisitor.h#L109
 QgsObjectEntityVisitorInterface: src/core/qgsobjectvisitor.h#L91
 QgsObjectVisitorContext: src/core/qgsobjectvisitor.h#L75
+QgsOfflineEditing.QgsOfflineEditing: src/core/qgsofflineediting.h#L162
+QgsOfflineEditing.QgsOfflineEditing: src/core/qgsofflineediting.h#L171
 QgsOfflineEditing.convertToOfflineProject: src/core/qgsofflineediting.h#L70
 QgsOfflineEditing.isOfflineProject: src/core/qgsofflineediting.h#L73
 QgsOfflineEditing.layerProgressUpdated: src/core/qgsofflineediting.h#L95
@@ -11045,6 +11123,7 @@ QgsOfflineEditing.progressUpdated: src/core/qgsofflineediting.h#L109
 QgsOfflineEditing.synchronize: src/core/qgsofflineediting.h#L80
 QgsOfflineEditing.warning: src/core/qgsofflineediting.h#L119
 QgsOfflineEditing: src/core/qgsofflineediting.h#L36
+QgsOgcUtils.QgsOgcUtils: src/core/qgsogcutils.h#L63
 QgsOgcUtils.SQLStatementToOgcFilter: src/core/qgsogcutils.h#L292
 QgsOgcUtils.colorFromOgcFill: src/core/qgsogcutils.h#L163
 QgsOgcUtils.elseFilterExpression: src/core/qgsogcutils.h#L230
@@ -11191,6 +11270,7 @@ QgsPalLayerSettings.unplacedVisibility: src/core/labeling/qgspallabeling.h#L894
 QgsPalLayerSettings.writeXml: src/core/labeling/qgspallabeling.h#L695
 QgsPalLayerSettings: src/core/labeling/qgspallabeling.h#L89
 QgsPalettedRasterRenderer.MultiValueClass: src/core/raster/qgspalettedrasterrenderer.h#L64
+QgsPalettedRasterRenderer.QgsPalettedRasterRenderer: src/core/raster/qgspalettedrasterrenderer.h#L41
 QgsPalettedRasterRenderer.accept: src/core/raster/qgspalettedrasterrenderer.h#L160
 QgsPalettedRasterRenderer.band: src/core/raster/qgspalettedrasterrenderer.h#L149
 QgsPalettedRasterRenderer.block: src/core/raster/qgspalettedrasterrenderer.h#L110
@@ -11468,6 +11548,7 @@ QgsPointCloudAttributeByRampRenderer.setMaximum: src/core/pointcloud/qgspointclo
 QgsPointCloudAttributeByRampRenderer.setMinimum: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L125
 QgsPointCloudAttributeByRampRenderer.type: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L70
 QgsPointCloudAttributeByRampRenderer: src/core/pointcloud/qgspointcloudattributebyramprenderer.h#L61
+QgsPointCloudAttributeCollection.QgsPointCloudAttributeCollection: src/core/pointcloud/qgspointcloudattribute.h#L197
 QgsPointCloudAttributeCollection.count: src/core/pointcloud/qgspointcloudattribute.h#L164
 QgsPointCloudAttributeCollection.extend: src/core/pointcloud/qgspointcloudattribute.h#L156
 QgsPointCloudAttributeCollection.find: src/core/pointcloud/qgspointcloudattribute.h#L176
@@ -11500,6 +11581,7 @@ QgsPointCloudAttributeProxyModel.setFilters: src/core/pointcloud/qgspointcloudat
 QgsPointCloudAttributeProxyModel.sourceAttributeModel: src/core/pointcloud/qgspointcloudattributemodel.h#L174
 QgsPointCloudAttributeProxyModel: src/core/pointcloud/qgspointcloudattributemodel.h#L146
 QgsPointCloudAttributeStatistics.singleClassCount: src/core/pointcloud/qgspointcloudstatistics.h#L62
+QgsPointCloudAttributeStatistics: src/core/pointcloud/qgspointcloudstatistics.h#L45
 QgsPointCloudBlock.attributes: src/core/pointcloud/qgspointcloudblock.h#L69
 QgsPointCloudBlock.clone: src/core/pointcloud/qgspointcloudblock.h#L53
 QgsPointCloudBlock.data: src/core/pointcloud/qgspointcloudblock.h#L56
@@ -11599,6 +11681,7 @@ QgsPointCloudIndex.zMin: src/core/pointcloud/qgspointcloudindex.h#L563
 QgsPointCloudIndex: src/core/pointcloud/qgspointcloudindex.h#L409
 QgsPointCloudLayer.QgsPointCloudLayer.LayerOptions: src/core/pointcloud/qgspointcloudlayer.h#L62
 QgsPointCloudLayer.QgsPointCloudLayer: src/core/pointcloud/qgspointcloudlayer.h#L113
+QgsPointCloudLayer.QgsPointCloudLayer: src/core/pointcloud/qgspointcloudlayer.h#L54
 QgsPointCloudLayer.__repr__: src/core/pointcloud/qgspointcloudlayer.h#L124
 QgsPointCloudLayer.attributes: src/core/pointcloud/qgspointcloudlayer.h#L169
 QgsPointCloudLayer.chunkAttributeValuesChanged: src/core/pointcloud/qgspointcloudlayer.h#L378
@@ -11864,6 +11947,7 @@ QgsPointDisplacementRenderer.startRender: src/core/symbology/qgspointdisplacemen
 QgsPointDisplacementRenderer.stopRender: src/core/symbology/qgspointdisplacementrenderer.h#L53
 QgsPointDisplacementRenderer: src/core/symbology/qgspointdisplacementrenderer.h#L30
 QgsPointDistanceRenderer.QgsPointDistanceRenderer.symbol: src/core/symbology/qgspointdistancerenderer.h#L64
+QgsPointDistanceRenderer.QgsPointDistanceRenderer: src/core/symbology/qgspointdistancerenderer.h#L47
 QgsPointDistanceRenderer.accept: src/core/symbology/qgspointdistancerenderer.h#L110
 QgsPointDistanceRenderer.capabilities: src/core/symbology/qgspointdistancerenderer.h#L91
 QgsPointDistanceRenderer.checkLegendSymbolItem: src/core/symbology/qgspointdistancerenderer.h#L108
@@ -11920,6 +12004,8 @@ QgsPointLocator.QgsPointLocator.point: src/core/qgspointlocator.h#L236
 QgsPointLocator.QgsPointLocator.type: src/core/qgspointlocator.h#L205
 QgsPointLocator.QgsPointLocator.vertexIndex: src/core/qgspointlocator.h#L239
 QgsPointLocator.QgsPointLocator: src/core/qgspointlocator.h#L118
+QgsPointLocator.QgsPointLocator: src/core/qgspointlocator.h#L185
+QgsPointLocator.QgsPointLocator: src/core/qgspointlocator.h#L356
 QgsPointLocator.cachedGeometryCount: src/core/qgspointlocator.h#L455
 QgsPointLocator.destinationCrs: src/core/qgspointlocator.h#L132
 QgsPointLocator.destroyIndex: src/core/qgspointlocator.h#L484
@@ -12190,6 +12276,7 @@ QgsProcessingAlgRunnerTask.executed: src/core/processing/qgsprocessingalgrunnert
 QgsProcessingAlgRunnerTask.finished: src/core/processing/qgsprocessingalgrunnertask.h#L73
 QgsProcessingAlgRunnerTask.run: src/core/processing/qgsprocessingalgrunnertask.h#L72
 QgsProcessingAlgRunnerTask: src/core/processing/qgsprocessingalgrunnertask.h#L34
+QgsProcessingAlgorithm.QgsProcessingAlgorithm: src/core/processing/qgsprocessingalgorithm.h#L334
 QgsProcessingAlgorithm.addOutput: src/core/processing/qgsprocessingalgorithm.h#L576
 QgsProcessingAlgorithm.addParameter: src/core/processing/qgsprocessingalgorithm.h#L549
 QgsProcessingAlgorithm.asMap: src/core/processing/qgsprocessingalgorithm.h#L487
@@ -13345,6 +13432,7 @@ QgsProcessingParameterString.type: src/core/processing/qgsprocessingparameters.h
 QgsProcessingParameterString.typeName: src/core/processing/qgsprocessingparameters.h#L3058
 QgsProcessingParameterString.valueAsPythonString: src/core/processing/qgsprocessingparameters.h#L3061
 QgsProcessingParameterString: src/core/processing/qgsprocessingparameters.h#L3044
+QgsProcessingParameterTinInputLayers.QgsProcessingParameterTinInputLayers: src/core/processing/qgsprocessingparametertininputlayers.h#L44
 QgsProcessingParameterTinInputLayers.asPythonString: src/core/processing/qgsprocessingparametertininputlayers.h#L60
 QgsProcessingParameterTinInputLayers.checkValueIsAcceptable: src/core/processing/qgsprocessingparametertininputlayers.h#L56
 QgsProcessingParameterTinInputLayers.clone: src/core/processing/qgsprocessingparametertininputlayers.h#L54
@@ -13627,6 +13715,7 @@ QgsProfileGenerationContext: src/core/elevation/qgsabstractprofilegenerator.h#L2
 QgsProfileIdentifyContext: src/core/elevation/qgsabstractprofilegenerator.h#L123
 QgsProfileIdentifyResults.layer: src/core/elevation/qgsabstractprofilegenerator.h#L168
 QgsProfileIdentifyResults: src/core/elevation/qgsabstractprofilegenerator.h#L156
+QgsProfilePlotRenderer.QgsProfilePlotRenderer: src/core/elevation/qgsprofilerenderer.h#L256
 QgsProfilePlotRenderer.cancelGeneration: src/core/elevation/qgsprofilerenderer.h#L114
 QgsProfilePlotRenderer.cancelGenerationWithoutBlocking: src/core/elevation/qgsprofilerenderer.h#L121
 QgsProfilePlotRenderer.generateSynchronously: src/core/elevation/qgsprofilerenderer.h#L108
@@ -14040,6 +14129,7 @@ QgsProjectPropertyValue.readXml: src/core/project/qgsprojectproperty.h#L147
 QgsProjectPropertyValue.value: src/core/project/qgsprojectproperty.h#L141
 QgsProjectPropertyValue.writeXml: src/core/project/qgsprojectproperty.h#L148
 QgsProjectPropertyValue: src/core/project/qgsprojectproperty.h#L126
+QgsProjectServerValidator.QgsProjectServerValidator: src/core/project/qgsprojectservervalidator.h#L62
 QgsProjectServerValidator.displayValidationError: src/core/project/qgsprojectservervalidator.h#L57
 QgsProjectServerValidator.validate: src/core/project/qgsprojectservervalidator.h#L92
 QgsProjectServerValidator: src/core/project/qgsprojectservervalidator.h#L32
@@ -14400,6 +14490,7 @@ QgsProviderSqlQueryBuilder.createLimitQueryForTable: src/core/providers/qgsprovi
 QgsProviderSqlQueryBuilder.quoteIdentifier: src/core/providers/qgsprovidersqlquerybuilder.h#L50
 QgsProviderSqlQueryBuilder: src/core/providers/qgsprovidersqlquerybuilder.h#L33
 QgsProviderSublayerDetails.QgsProviderSublayerDetails.LayerOptions: src/core/providers/qgsprovidersublayerdetails.h#L102
+QgsProviderSublayerDetails.QgsProviderSublayerDetails: src/core/providers/qgsprovidersublayerdetails.h#L94
 QgsProviderSublayerDetails.__repr__: src/core/providers/qgsprovidersublayerdetails.h#L261
 QgsProviderSublayerDetails.description: src/core/providers/qgsprovidersublayerdetails.h#L151
 QgsProviderSublayerDetails.driverName: src/core/providers/qgsprovidersublayerdetails.h#L181
@@ -14534,6 +14625,7 @@ QgsRandomColorRamp.type: src/core/qgscolorrampimpl.h#L516
 QgsRandomColorRamp.typeString: src/core/qgscolorrampimpl.h#L514
 QgsRandomColorRamp.value: src/core/qgscolorrampimpl.h#L497
 QgsRandomColorRamp: src/core/qgscolorrampimpl.h#L489
+QgsRandomMarkerFillSymbolLayer.QgsRandomMarkerFillSymbolLayer: src/core/symbology/qgsfillsymbollayer.h#L2460
 QgsRandomMarkerFillSymbolLayer.canCauseArtifactsBetweenAdjacentTiles: src/core/symbology/qgsfillsymbollayer.h#L2327
 QgsRandomMarkerFillSymbolLayer.clipPoints: src/core/symbology/qgsfillsymbollayer.h#L2381
 QgsRandomMarkerFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L2326
@@ -14730,6 +14822,8 @@ QgsRasterContourRenderer.setDownscale: src/core/raster/qgsrastercontourrenderer.
 QgsRasterContourRenderer.setInputBand: src/core/raster/qgsrastercontourrenderer.h#L55
 QgsRasterContourRenderer.writeXml: src/core/raster/qgsrastercontourrenderer.h#L48
 QgsRasterContourRenderer: src/core/raster/qgsrastercontourrenderer.h#L30
+QgsRasterDataProvider.QgsRasterDataProvider: src/core/raster/qgsrasterdataprovider.h#L474
+QgsRasterDataProvider.QgsRasterDataProvider: src/core/raster/qgsrasterdataprovider.h#L486
 QgsRasterDataProvider.attributeTable: src/core/raster/qgsrasterdataprovider.h#L681
 QgsRasterDataProvider.bandDescription: src/core/raster/qgsrasterdataprovider.h#L746
 QgsRasterDataProvider.bandOffset: src/core/raster/qgsrasterdataprovider.h#L158
@@ -14834,6 +14928,7 @@ QgsRasterDemTerrainProvider: src/core/elevation/qgsterrainprovider.h#L217
 QgsRasterDrawer.draw: src/core/raster/qgsrasterdrawer.h#L63
 QgsRasterDrawer.draw: src/core/raster/qgsrasterdrawer.h#L72
 QgsRasterDrawer: src/core/raster/qgsrasterdrawer.h#L38
+QgsRasterFileWriter.QgsRasterFileWriter: src/core/raster/qgsrasterfilewriter.h#L313
 QgsRasterFileWriter.buildPyramidsFlag: src/core/raster/qgsrasterfilewriter.h#L193
 QgsRasterFileWriter.createMultiBandRaster: src/core/raster/qgsrasterfilewriter.h#L78
 QgsRasterFileWriter.createOneBandRaster: src/core/raster/qgsrasterfilewriter.h#L66
@@ -14955,6 +15050,7 @@ QgsRasterInterface.xSize: src/core/raster/qgsrasterinterface.h#L255
 QgsRasterInterface.yBlockSize: src/core/raster/qgsrasterinterface.h#L252
 QgsRasterInterface.ySize: src/core/raster/qgsrasterinterface.h#L256
 QgsRasterInterface: src/core/raster/qgsrasterinterface.h#L135
+QgsRasterIterator.QgsRasterIterator: src/core/raster/qgsrasteriterator.h#L249
 QgsRasterIterator.blockCount: src/core/raster/qgsrasteriterator.h#L229
 QgsRasterIterator.blockCountHeight: src/core/raster/qgsrasteriterator.h#L220
 QgsRasterIterator.blockCountWidth: src/core/raster/qgsrasteriterator.h#L211
@@ -14974,6 +15070,7 @@ QgsRasterIterator.stopRasterRead: src/core/raster/qgsrasteriterator.h#L169
 QgsRasterIterator.subRegion: src/core/raster/qgsrasteriterator.h#L93
 QgsRasterIterator: src/core/raster/qgsrasteriterator.h#L35
 QgsRasterLayer.QgsRasterLayer.LayerOptions: src/core/raster/qgsrasterlayer.h#L119
+QgsRasterLayer.QgsRasterLayer: src/core/raster/qgsrasterlayer.h#L113
 QgsRasterLayer.QgsRasterLayer: src/core/raster/qgsrasterlayer.h#L163
 QgsRasterLayer.__repr__: src/core/raster/qgsrasterlayer.h#L171
 QgsRasterLayer.accept: src/core/raster/qgsrasterlayer.h#L454
@@ -15205,6 +15302,7 @@ QgsRasterMinMaxOrigin.statAccuracyString: src/core/raster/qgsrasterminmaxorigin.
 QgsRasterMinMaxOrigin.stdDevFactor: src/core/raster/qgsrasterminmaxorigin.h#L70
 QgsRasterMinMaxOrigin.writeXml: src/core/raster/qgsrasterminmaxorigin.h#L95
 QgsRasterMinMaxOrigin: src/core/raster/qgsrasterminmaxorigin.h#L34
+QgsRasterNuller.QgsRasterNuller: src/core/raster/qgsrasternuller.h#L37
 QgsRasterNuller.bandCount: src/core/raster/qgsrasternuller.h#L45
 QgsRasterNuller.block: src/core/raster/qgsrasternuller.h#L49
 QgsRasterNuller.clone: src/core/raster/qgsrasternuller.h#L43
@@ -15372,6 +15470,8 @@ QgsRasterSymbolLegendNode.setData: src/core/layertree/qgslayertreemodellegendnod
 QgsRasterSymbolLegendNode: src/core/layertree/qgslayertreemodellegendnode.h#L661
 QgsRasterTransparency.QgsRasterTransparency.__repr__: src/core/raster/qgsrastertransparency.h#L147
 QgsRasterTransparency.QgsRasterTransparency.__repr__: src/core/raster/qgsrastertransparency.h#L230
+QgsRasterTransparency.QgsRasterTransparency: src/core/raster/qgsrastertransparency.h#L163
+QgsRasterTransparency.QgsRasterTransparency: src/core/raster/qgsrastertransparency.h#L46
 QgsRasterTransparency.alphaValue: src/core/raster/qgsrastertransparency.h#L283
 QgsRasterTransparency.alphaValue: src/core/raster/qgsrastertransparency.h#L307
 QgsRasterTransparency.initializeTransparentPixelList: src/core/raster/qgsrastertransparency.h#L253
@@ -15384,6 +15484,7 @@ QgsRasterTransparency.setTransparentSingleValuePixelList: src/core/raster/qgsras
 QgsRasterTransparency.setTransparentThreeValuePixelList: src/core/raster/qgsrastertransparency.h#L270
 QgsRasterTransparency.writeXml: src/core/raster/qgsrastertransparency.h#L327
 QgsRasterTransparency: src/core/raster/qgsrastertransparency.h#L35
+QgsRasterViewPort: src/core/raster/qgsrasterviewport.h#L34
 QgsRay3D.angleToPoint: src/core/geometry/qgsray3d.h#L86
 QgsRay3D.direction: src/core/geometry/qgsray3d.h#L50
 QgsRay3D.directionInversed: src/core/geometry/qgsray3d.h#L57
@@ -15399,6 +15500,7 @@ QgsReadWriteContext.QgsReadWriteContext.__repr__: src/core/qgsreadwritecontext.h
 QgsReadWriteContext.QgsReadWriteContext.categories: src/core/qgsreadwritecontext.h#L57
 QgsReadWriteContext.QgsReadWriteContext.level: src/core/qgsreadwritecontext.h#L54
 QgsReadWriteContext.QgsReadWriteContext.message: src/core/qgsreadwritecontext.h#L51
+QgsReadWriteContext.QgsReadWriteContext: src/core/qgsreadwritecontext.h#L41
 QgsReadWriteContext.enterCategory: src/core/qgsreadwritecontext.h#L115
 QgsReadWriteContext.projectTranslator: src/core/qgsreadwritecontext.h#L128
 QgsReadWriteContext.pushMessage: src/core/qgsreadwritecontext.h#L102
@@ -15741,6 +15843,7 @@ QgsRenderContext: src/core/qgsrendercontext.h#L62
 QgsRenderedAnnotationItemDetails.__repr__: src/core/annotations/qgsrenderedannotationitemdetails.h#L39
 QgsRenderedAnnotationItemDetails.itemId: src/core/annotations/qgsrenderedannotationitemdetails.h#L49
 QgsRenderedAnnotationItemDetails: src/core/annotations/qgsrenderedannotationitemdetails.h#L29
+QgsRenderedFeatureHandlerInterface.QgsRenderedFeatureHandlerInterface: src/core/qgsrenderedfeaturehandlerinterface.h#L52
 QgsRenderedFeatureHandlerInterface.handleRenderedFeature: src/core/qgsrenderedfeaturehandlerinterface.h#L88
 QgsRenderedFeatureHandlerInterface: src/core/qgsrenderedfeaturehandlerinterface.h#L47
 QgsRenderedItemDetails.boundingBox: src/core/qgsrendereditemdetails.h#L66
@@ -15927,6 +16030,9 @@ QgsRuleBasedLabeling.toSld: src/core/labeling/qgsrulebasedlabeling.h#L410
 QgsRuleBasedLabeling.type: src/core/labeling/qgsrulebasedlabeling.h#L390
 QgsRuleBasedLabeling: src/core/labeling/qgsrulebasedlabeling.h#L41
 QgsRuleBasedRenderer.QgsRuleBasedRenderer.RenderLevel: src/core/symbology/qgsrulebasedrenderer.h#L101
+QgsRuleBasedRenderer.QgsRuleBasedRenderer: src/core/symbology/qgsrulebasedrenderer.h#L54
+QgsRuleBasedRenderer.QgsRuleBasedRenderer: src/core/symbology/qgsrulebasedrenderer.h#L68
+QgsRuleBasedRenderer.QgsRuleBasedRenderer: src/core/symbology/qgsrulebasedrenderer.h#L97
 QgsRuleBasedRenderer.Rule.accept: src/core/symbology/qgsrulebasedrenderer.h#L475
 QgsRuleBasedRenderer.Rule.active: src/core/symbology/qgsrulebasedrenderer.h#L259
 QgsRuleBasedRenderer.Rule.appendChild: src/core/symbology/qgsrulebasedrenderer.h#L430
@@ -16247,6 +16353,7 @@ QgsSVGFillSymbolLayer: src/core/symbology/qgsfillsymbollayer.h#L1174
 QgsSatelliteInfo.constellation: src/core/gps/qgssatelliteinformation.h#L95
 QgsSatelliteInfo: src/core/gps/qgssatelliteinformation.h#L33
 QgsScaleBarRenderer.QgsScaleBarRenderer.isValid: src/core/scalebar/qgsscalebarrenderer.h#L97
+QgsScaleBarRenderer.QgsScaleBarRenderer: src/core/scalebar/qgsscalebarrenderer.h#L70
 QgsScaleBarRenderer.applyDefaultSettings: src/core/scalebar/qgsscalebarrenderer.h#L171
 QgsScaleBarRenderer.calculateBoxSize: src/core/scalebar/qgsscalebarrenderer.h#L152
 QgsScaleBarRenderer.calculateBoxSize: src/core/scalebar/qgsscalebarrenderer.h#L160
@@ -16473,11 +16580,13 @@ QgsSerialPortSensor.setPortName: src/core/sensor/qgsiodevicesensor.h#L262
 QgsSerialPortSensor.type: src/core/sensor/qgsiodevicesensor.h#L251
 QgsSerialPortSensor.writePropertiesToElement: src/core/sensor/qgsiodevicesensor.h#L293
 QgsSerialPortSensor: src/core/sensor/qgsiodevicesensor.h#L231
+QgsServerMetadataUrlProperties.QgsServerMetadataUrlProperties: src/core/qgsmaplayerserverproperties.h#L50
 QgsServerMetadataUrlProperties.addMetadataUrl: src/core/qgsmaplayerserverproperties.h#L104
 QgsServerMetadataUrlProperties.layer: src/core/qgsmaplayerserverproperties.h#L106
 QgsServerMetadataUrlProperties.setMetadataUrls: src/core/qgsmaplayerserverproperties.h#L98
 QgsServerMetadataUrlProperties: src/core/qgsmaplayerserverproperties.h#L39
 QgsServerWmsDimensionProperties.QgsServerWmsDimensionProperties.WmsDimensionInfo: src/core/qgsmaplayerserverproperties.h#L180
+QgsServerWmsDimensionProperties.QgsServerWmsDimensionProperties: src/core/qgsmaplayerserverproperties.h#L162
 QgsServerWmsDimensionProperties.addWmsDimension: src/core/qgsmaplayerserverproperties.h#L227
 QgsServerWmsDimensionProperties.layer: src/core/qgsmaplayerserverproperties.h#L250
 QgsServerWmsDimensionProperties.removeWmsDimension: src/core/qgsmaplayerserverproperties.h#L234
@@ -17120,6 +17229,7 @@ QgsSnappingConfig.typeFlag: src/core/qgssnappingconfig.h#L248
 QgsSnappingConfig.units: src/core/qgssnappingconfig.h#L311
 QgsSnappingConfig.writeProject: src/core/qgssnappingconfig.h#L407
 QgsSnappingConfig: src/core/qgssnappingconfig.h#L36
+QgsSnappingUtils.QgsSnappingUtils: src/core/qgssnappingutils.h#L121
 QgsSnappingUtils.addExtraSnapLayer: src/core/qgssnappingutils.h#L203
 QgsSnappingUtils.clearAllLocators: src/core/qgssnappingutils.h#L260
 QgsSnappingUtils.config: src/core/qgssnappingutils.h#L179
@@ -17227,6 +17337,7 @@ QgsStacCollectionList.prevUrl: src/core/stac/qgsstaccollectionlist.h#L90
 QgsStacCollectionList.rootUrl: src/core/stac/qgsstaccollectionlist.h#L80
 QgsStacCollectionList.url: src/core/stac/qgsstaccollectionlist.h#L75
 QgsStacCollectionList: src/core/stac/qgsstaccollectionlist.h#L33
+QgsStacConnection.QgsStacConnection: src/core/stac/qgsstacconnection.h#L71
 QgsStacConnection.addConnection: src/core/stac/qgsstacconnection.h#L97
 QgsStacConnection.connection: src/core/stac/qgsstacconnection.h#L93
 QgsStacConnection.connectionList: src/core/stac/qgsstacconnection.h#L91
@@ -17574,6 +17685,8 @@ QgsStyleColorRampEntity.type: src/core/symbology/qgsstyle.h#L1441
 QgsStyleColorRampEntity: src/core/symbology/qgsstyle.h#L1428
 QgsStyleEntityInterface.type: src/core/symbology/qgsstyle.h#L1386
 QgsStyleEntityInterface: src/core/symbology/qgsstyle.h#L1348
+QgsStyleEntityVisitorInterface.QgsStyleEntityVisitorInterface: src/core/symbology/qgsstyleentityvisitor.h#L110
+QgsStyleEntityVisitorInterface.QgsStyleEntityVisitorInterface: src/core/symbology/qgsstyleentityvisitor.h#L60
 QgsStyleEntityVisitorInterface.visit: src/core/symbology/qgsstyleentityvisitor.h#L157
 QgsStyleEntityVisitorInterface.visitEnter: src/core/symbology/qgsstyleentityvisitor.h#L173
 QgsStyleEntityVisitorInterface.visitExit: src/core/symbology/qgsstyleentityvisitor.h#L187
@@ -18127,6 +18240,7 @@ QgsTableCell.setVerticalAlignment: src/core/qgstablecell.h#L169
 QgsTableCell.textFormat: src/core/qgstablecell.h#L107
 QgsTableCell.verticalAlignment: src/core/qgstablecell.h#L160
 QgsTableCell: src/core/qgstablecell.h#L37
+QgsTask.QgsTask: src/core/qgstaskmanager.h#L334
 QgsTask.addSubTask: src/core/qgstaskmanager.h#L193
 QgsTask.begun: src/core/qgstaskmanager.h#L244
 QgsTask.canCancel: src/core/qgstaskmanager.h#L106
@@ -18152,6 +18266,8 @@ QgsTask.unhold: src/core/qgstaskmanager.h#L164
 QgsTask.waitForFinished: src/core/qgstaskmanager.h#L219
 QgsTask: src/core/qgstaskmanager.h#L54
 QgsTaskManager.QgsTaskManager.TaskDefinition: src/core/qgstaskmanager.h#L420
+QgsTaskManager.QgsTaskManager: src/core/qgstaskmanager.h#L410
+QgsTaskManager.QgsTaskManager: src/core/qgstaskmanager.h#L601
 QgsTaskManager.addTask: src/core/qgstaskmanager.h#L449
 QgsTaskManager.addTask: src/core/qgstaskmanager.h#L459
 QgsTaskManager.allTasksFinished: src/core/qgstaskmanager.h#L577
@@ -18285,6 +18401,7 @@ QgsTemporalRangeObject.isTemporal: src/core/qgstemporalrangeobject.h#L61
 QgsTemporalRangeObject.setIsTemporal: src/core/qgstemporalrangeobject.h#L52
 QgsTemporalRangeObject.setTemporalRange: src/core/qgstemporalrangeobject.h#L73
 QgsTemporalRangeObject: src/core/qgstemporalrangeobject.h#L33
+QgsTemporalUtils.QgsTemporalUtils: src/core/qgstemporalutils.h#L147
 QgsTemporalUtils.calculateFrameTime: src/core/qgstemporalutils.h#L239
 QgsTemporalUtils.calculateTemporalRangeForProject: src/core/qgstemporalutils.h#L131
 QgsTemporalUtils.exportAnimation: src/core/qgstemporalutils.h#L216
@@ -18633,6 +18750,10 @@ QgsTextMaskSettings.type: src/core/textrenderer/qgstextmasksettings.h#L80
 QgsTextMaskSettings.updateDataDefinedProperties: src/core/textrenderer/qgstextmasksettings.h#L207
 QgsTextMaskSettings.writeXml: src/core/textrenderer/qgstextmasksettings.h#L188
 QgsTextMaskSettings: src/core/textrenderer/qgstextmasksettings.h#L42
+QgsTextRenderer.QgsTextRenderer: src/core/textrenderer/qgstextrenderer.h#L358
+QgsTextRenderer.QgsTextRenderer: src/core/textrenderer/qgstextrenderer.h#L513
+QgsTextRenderer.QgsTextRenderer: src/core/textrenderer/qgstextrenderer.h#L525
+QgsTextRenderer.QgsTextRenderer: src/core/textrenderer/qgstextrenderer.h#L537
 QgsTextRenderer.calculateScaleFactorForFormat: src/core/textrenderer/qgstextrenderer.h#L345
 QgsTextRenderer.convertQtHAlignment: src/core/textrenderer/qgstextrenderer.h#L51
 QgsTextRenderer.convertQtVAlignment: src/core/textrenderer/qgstextrenderer.h#L59
@@ -18774,6 +18895,7 @@ QgsTiledSceneIndex.retrieveContent: src/core/tiledscene/qgstiledsceneindex.h#L22
 QgsTiledSceneIndex.rootTile: src/core/tiledscene/qgstiledsceneindex.h#L174
 QgsTiledSceneIndex: src/core/tiledscene/qgstiledsceneindex.h#L146
 QgsTiledSceneLayer.QgsTiledSceneLayer.LayerOptions: src/core/tiledscene/qgstiledscenelayer.h#L52
+QgsTiledSceneLayer.QgsTiledSceneLayer: src/core/tiledscene/qgstiledscenelayer.h#L44
 QgsTiledSceneLayer.QgsTiledSceneLayer: src/core/tiledscene/qgstiledscenelayer.h#L79
 QgsTiledSceneLayer.__repr__: src/core/tiledscene/qgstiledscenelayer.h#L90
 QgsTiledSceneLayer.clone: src/core/tiledscene/qgstiledscenelayer.h#L97
@@ -19030,6 +19152,7 @@ QgsTransformEffect.translateX: src/core/effects/qgstransformeffect.h#L75
 QgsTransformEffect.translateY: src/core/effects/qgstransformeffect.h#L95
 QgsTransformEffect.type: src/core/effects/qgstransformeffect.h#L50
 QgsTransformEffect: src/core/effects/qgstransformeffect.h#L36
+QgsTranslationContext.QgsTranslationContext: src/core/qgstranslationcontext.h#L41
 QgsTranslationContext.fileName: src/core/qgstranslationcontext.h#L70
 QgsTranslationContext.project: src/core/qgstranslationcontext.h#L57
 QgsTranslationContext.registerTranslation: src/core/qgstranslationcontext.h#L83
@@ -19104,6 +19227,8 @@ QgsUdpSocketSensor.setPort: src/core/sensor/qgsiodevicesensor.h#L197
 QgsUdpSocketSensor.type: src/core/sensor/qgsiodevicesensor.h#L176
 QgsUdpSocketSensor.writePropertiesToElement: src/core/sensor/qgsiodevicesensor.h#L199
 QgsUdpSocketSensor: src/core/sensor/qgsiodevicesensor.h#L156
+QgsUnitTypes.QgsUnitTypes: src/core/qgsunittypes.h#L49
+QgsUnitTypes.QgsUnitTypes: src/core/qgsunittypes.h#L67
 QgsUnitTypes.areaToDistanceUnit: src/core/qgsunittypes.h#L228
 QgsUnitTypes.decodeAngleUnit: src/core/qgsunittypes.h#L381
 QgsUnitTypes.decodeAreaUnit: src/core/qgsunittypes.h#L181
@@ -19211,6 +19336,7 @@ QgsValueMapFieldFormatter.id: src/core/fieldformatter/qgsvaluemapfieldformatter.
 QgsValueMapFieldFormatter.representValue: src/core/fieldformatter/qgsvaluemapfieldformatter.h#L58
 QgsValueMapFieldFormatter.sortValue: src/core/fieldformatter/qgsvaluemapfieldformatter.h#L60
 QgsValueMapFieldFormatter: src/core/fieldformatter/qgsvaluemapfieldformatter.h#L41
+QgsValueRelationFieldFormatter.QgsValueRelationFieldFormatter: src/core/fieldformatter/qgsvaluerelationfieldformatter.h#L38
 QgsValueRelationFieldFormatter.availableValues: src/core/fieldformatter/qgsvaluerelationfieldformatter.h#L163
 QgsValueRelationFieldFormatter.createCache: src/core/fieldformatter/qgsvaluerelationfieldformatter.h#L69
 QgsValueRelationFieldFormatter.createCache: src/core/fieldformatter/qgsvaluerelationfieldformatter.h#L87
@@ -19261,6 +19387,7 @@ QgsVector3D.y: src/core/qgsvector3d.h#L49
 QgsVector3D.z: src/core/qgsvector3d.h#L51
 QgsVector3D: src/core/qgsvector3d.h#L29
 QgsVector: src/core/qgsvector.h#L30
+QgsVectorDataProvider.QgsVectorDataProvider: src/core/vector/qgsvectordataprovider.h#L446
 QgsVectorDataProvider.addAttributes: src/core/vector/qgsvectordataprovider.h#L265
 QgsVectorDataProvider.addFeatures: src/core/vector/qgsvectordataprovider.h#L233
 QgsVectorDataProvider.aggregate: src/core/vector/qgsvectordataprovider.h#L217
@@ -19388,6 +19515,10 @@ QgsVectorFileWriter.HiddenOption.HiddenOption: src/core/qgsvectorfilewriter.h#L1
 QgsVectorFileWriter.HiddenOption: src/core/qgsvectorfilewriter.h#L140
 QgsVectorFileWriter.IntOption: src/core/qgsvectorfilewriter.h#L113
 QgsVectorFileWriter.Option: src/core/qgsvectorfilewriter.h#L63
+QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L1027
+QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L151
+QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L764
+QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L810
 QgsVectorFileWriter.SaveVectorOptions: src/core/qgsvectorfilewriter.h#L455
 QgsVectorFileWriter.SetOption: src/core/qgsvectorfilewriter.h#L79
 QgsVectorFileWriter.StringOption: src/core/qgsvectorfilewriter.h#L98
@@ -19439,6 +19570,8 @@ QgsVectorLayer.QgsVectorLayer.DeleteContext: src/core/vector/qgsvectorlayer.h#L5
 QgsVectorLayer.QgsVectorLayer.LayerOptions: src/core/vector/qgsvectorlayer.h#L434
 QgsVectorLayer.QgsVectorLayer.LayerOptions: src/core/vector/qgsvectorlayer.h#L444
 QgsVectorLayer.QgsVectorLayer.handledFeatures: src/core/vector/qgsvectorlayer.h#L560
+QgsVectorLayer.QgsVectorLayer: src/core/vector/qgsvectorlayer.h#L428
+QgsVectorLayer.QgsVectorLayer: src/core/vector/qgsvectorlayer.h#L541
 QgsVectorLayer.QgsVectorLayer: src/core/vector/qgsvectorlayer.h#L580
 QgsVectorLayer.__repr__: src/core/vector/qgsvectorlayer.h#L589
 QgsVectorLayer.accept: src/core/vector/qgsvectorlayer.h#L2570
@@ -19871,6 +20004,7 @@ QgsVectorLayerExporter.ExportOptions.setSelectedOnly: src/core/vector/qgsvectorl
 QgsVectorLayerExporter.ExportOptions.setTransformContext: src/core/vector/qgsvectorlayerexporter.h#L137
 QgsVectorLayerExporter.ExportOptions.transformContext: src/core/vector/qgsvectorlayerexporter.h#L144
 QgsVectorLayerExporter.ExportOptions: src/core/vector/qgsvectorlayerexporter.h#L106
+QgsVectorLayerExporter.QgsVectorLayerExporter: src/core/vector/qgsvectorlayerexporter.h#L83
 QgsVectorLayerExporter.addFeature: src/core/vector/qgsvectorlayerexporter.h#L339
 QgsVectorLayerExporter.addFeatures: src/core/vector/qgsvectorlayerexporter.h#L338
 QgsVectorLayerExporter.attributeEditCapabilities: src/core/vector/qgsvectorlayerexporter.h#L335
@@ -19896,6 +20030,7 @@ QgsVectorLayerFeatureCounter.symbolsCounted: src/core/vector/qgsvectorlayerfeatu
 QgsVectorLayerFeatureCounter: src/core/vector/qgsvectorlayerfeaturecounter.h#L33
 QgsVectorLayerFeatureIterator.QgsVectorLayerFeatureIterator.addJoinedAttributesCached: src/core/vector/qgsvectorlayerfeatureiterator.h#L210
 QgsVectorLayerFeatureIterator.QgsVectorLayerFeatureIterator.addJoinedAttributesDirect: src/core/vector/qgsvectorlayerfeatureiterator.h#L211
+QgsVectorLayerFeatureIterator.QgsVectorLayerFeatureIterator: src/core/vector/qgsvectorlayerfeatureiterator.h#L174
 QgsVectorLayerFeatureIterator.close: src/core/vector/qgsvectorlayerfeatureiterator.h#L166
 QgsVectorLayerFeatureIterator.fetchFeature: src/core/vector/qgsvectorlayerfeatureiterator.h#L218
 QgsVectorLayerFeatureIterator.isValid: src/core/vector/qgsvectorlayerfeatureiterator.h#L214
@@ -20155,6 +20290,7 @@ QgsVectorLayerUtils.valueExists: src/core/vector/qgsvectorlayerutils.h#L173
 QgsVectorLayerUtils: src/core/vector/qgsvectorlayerutils.h#L49
 QgsVectorLayerXyPlotDataGatherer.QgsVectorLayerXyPlotDataGatherer.XySeriesDetails: src/core/plot/qgsvectorlayerplotdatagatherer.h#L104
 QgsVectorLayerXyPlotDataGatherer.QgsVectorLayerXyPlotDataGatherer: src/core/plot/qgsvectorlayerplotdatagatherer.h#L115
+QgsVectorLayerXyPlotDataGatherer.QgsVectorLayerXyPlotDataGatherer: src/core/plot/qgsvectorlayerplotdatagatherer.h#L98
 QgsVectorLayerXyPlotDataGatherer.data: src/core/plot/qgsvectorlayerplotdatagatherer.h#L129
 QgsVectorLayerXyPlotDataGatherer.run: src/core/plot/qgsvectorlayerplotdatagatherer.h#L127
 QgsVectorLayerXyPlotDataGatherer.setPredefinedCategories: src/core/plot/qgsvectorlayerplotdatagatherer.h#L125
@@ -20242,6 +20378,7 @@ QgsVectorTileLabeling.type: src/core/vectortile/qgsvectortilelabeling.h#L88
 QgsVectorTileLabeling.writeXml: src/core/vectortile/qgsvectortilelabeling.h#L100
 QgsVectorTileLabeling: src/core/vectortile/qgsvectortilelabeling.h#L69
 QgsVectorTileLayer.QgsVectorTileLayer.LayerOptions: src/core/vectortile/qgsvectortilelayer.h#L109
+QgsVectorTileLayer.QgsVectorTileLayer: src/core/vectortile/qgsvectortilelayer.h#L101
 QgsVectorTileLayer.QgsVectorTileLayer: src/core/vectortile/qgsvectortilelayer.h#L116
 QgsVectorTileLayer.__repr__: src/core/vectortile/qgsvectortilelayer.h#L120
 QgsVectorTileLayer.clone: src/core/vectortile/qgsvectortilelayer.h#L129
@@ -20342,6 +20479,7 @@ QgsVertexId.isValid: src/core/geometry/qgsvertexid.h#L85
 QgsVertexId.partEqual: src/core/geometry/qgsvertexid.h#L62
 QgsVertexId.ringEqual: src/core/geometry/qgsvertexid.h#L71
 QgsVertexId.vertexEqual: src/core/geometry/qgsvertexid.h#L80
+QgsVertexId: src/core/geometry/qgsvertexid.h#L29
 QgsVertexIterator.__iter__: src/core/geometry/qgsabstractgeometry.h#L1238
 QgsVertexIterator.__next__: src/core/geometry/qgsabstractgeometry.h#L1243
 QgsVertexIterator.hasNext: src/core/geometry/qgsabstractgeometry.h#L1232
