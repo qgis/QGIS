@@ -125,7 +125,6 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromRects( const QVector<QRect> 
 {
   std::vector< QgsTextureRect > rects;
   rects.reserve( rectangles.size() );
-  int index = 0;
   for ( const QRect &rect : rectangles )
   {
     rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ) ) );
@@ -137,7 +136,6 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromImages( const QVector<QImage
 {
   std::vector< QgsTextureRect > rects;
   rects.reserve( images.size() );
-  int index = 0;
   for ( const QImage &image : images )
   {
     rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), image ) );
