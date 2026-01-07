@@ -117,7 +117,6 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
-    // not a dynamic capture, we should return a line geometry
     if ( mRubberBandPoints->numberOfVertices() == 1 && !mToleranceLocked )
     {
       QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
@@ -138,7 +137,6 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
         QgsDebugError( u"Could not reproject cross section coordinates to 3d map crs."_s );
       }
     }
-    // dynamic capture, we return a polygon
     else if ( mRubberBandPoints->numberOfVertices() == 2 )
     {
       QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
@@ -153,7 +151,6 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
       catch ( const QgsCsException & )
       {
-        crossSectionPolygon.set( nullptr );
         QgsDebugError( u"Could not reproject cross-section extent to 3d map canvas crs."_s );
         return;
       }

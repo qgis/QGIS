@@ -65,7 +65,7 @@
 #include "moc_qgs3dmapcanvaswidget.cpp"
 
 const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
-const QgsSettingsEntryBool *Qgs3DMapCanvasWidget::settingDynamicClipping = new QgsSettingsEntryBool( u"cross-section-tolerance-locked"_s, QgsSettingsTree::sTree3DMap, true, u"Whether cross section tolerance is locked"_s );
+const QgsSettingsEntryBool *Qgs3DMapCanvasWidget::settingCrossSectionToleranceLocked = new QgsSettingsEntryBool( u"cross-section-tolerance-locked"_s, QgsSettingsTree::sTree3DMap, true, u"Whether cross section tolerance is locked"_s );
 
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
