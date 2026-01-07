@@ -3382,6 +3382,9 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    <property name="toolTip">
     <string>Create a new interactive elevation profile chart</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+E</string>
+   </property>
   </action>
   <action name="mActionDonate">
    <property name="text">
