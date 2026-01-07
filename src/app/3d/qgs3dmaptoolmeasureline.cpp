@@ -136,10 +136,12 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   if ( mPoints.size() == 1 )
   {
     mRubberBand->addPoint( newPoint );
+    zMean = static_cast<float>( newPoint.z() );
   }
   else
   {
     mRubberBand->moveLastPoint( newPoint );
+    zMean += ( static_cast<float>( newPoint.z() ) - zMean ) / static_cast<float>( mPoints.size() );
   }
   mRubberBand->addPoint( newPoint );
 }
@@ -147,6 +149,7 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
 void Qgs3DMapToolMeasureLine::restart()
 {
   mPoints.clear();
+  zMean = std::numeric_limits<float>::quiet_NaN();
   mDone = false;
   mDialog->resetTable();
 
@@ -195,7 +198,7 @@ void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
   if ( mPoints.isEmpty() || mDone )
     return;
 
-  const QgsPoint pointMap = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
+  const QgsPoint pointMap = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings(), zMean );
   mRubberBand->moveLastPoint( pointMap );
 }
 
