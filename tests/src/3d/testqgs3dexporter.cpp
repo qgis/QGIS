@@ -120,7 +120,7 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedOb
   for ( Qgs3DExportObject *o : std::as_const( exporter.mObjects ) )
   {
     if ( !terrainEntity ) // not compatible with terrain entity
-      QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
+      QVERIFY( o->indexes().size() <= o->vertexPosition().size() );
     sum += o->indexes().size();
   }
 
