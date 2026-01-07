@@ -12836,6 +12836,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
     {
       canvas3D->measurementLineTool()->updateSettings();
+      canvas3D->measurementAreaTool()->updateSettings();
       canvas3D->mapCanvas3D()->mapSettings()->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
       canvas3D->mapCanvas3D()->mapSettings()->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
 
