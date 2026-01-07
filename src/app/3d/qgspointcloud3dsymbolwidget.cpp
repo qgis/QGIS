@@ -157,9 +157,19 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
     else
     {
       mZoomOutOptions->setEnabled( false );
+      mZoomOutMultiplier->setEnabled( false );
     }
 
+    whileBlocking( mZoomOutMultiplier )->setRange( 0, static_cast<int>( mZoomOutScale.size() - 1 ) );
+    mZoomOutMultiplier->setSingleStep( 1 );
+    mZoomOutMultiplier->setPageStep( 1 );
+    mZoomOutMultiplier->setTickInterval( 1 );
+    mZoomOutMultiplier->setTickPosition( QSlider::TicksBelow );
+
+    setZoomOutMultiplier( mZoomOutScale[mZoomOutScale.size() / 2] );
+
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+    connect( mZoomOutMultiplier, &QSlider::valueChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   }
   else
   {
@@ -698,6 +708,27 @@ void QgsPointCloud3DSymbolWidget::setZoomOutBehavior( const Qgis::PointCloudZoom
 Qgis::PointCloudZoomOutRenderBehavior QgsPointCloud3DSymbolWidget::zoomOutBehavior() const
 {
   return mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>();
+}
+
+void QgsPointCloud3DSymbolWidget::setZoomOutMultiplier( double multiplier )
+{
+  int idx = 0;
+  for ( size_t i = 0; i < mZoomOutScale.size(); ++i )
+  {
+    if ( multiplier <= mZoomOutScale[i] )
+    {
+      idx = i;
+      break;
+    }
+  }
+
+  whileBlocking( mZoomOutMultiplier )->setValue( idx );
+}
+
+double QgsPointCloud3DSymbolWidget::zoomOutMultiplier() const
+{
+  const int idx = std::clamp( mZoomOutMultiplier->value(), 0, static_cast<int>( mZoomOutScale.size() ) - 1 );
+  return mZoomOutScale[idx];
 }
 
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )

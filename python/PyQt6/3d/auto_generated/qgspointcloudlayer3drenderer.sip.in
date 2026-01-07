@@ -121,6 +121,20 @@ Returns the renderer behavior when zoomed out
 .. versionadded:: 3.42
 %End
 
+    void setZoomOutMultiplier( double multiplier );
+%Docstring
+Sets the zoom out multiplier for zoomed out rendering of the overview
+
+.. versionadded:: 4.0
+%End
+
+    double zoomOutMultiplier() const;
+%Docstring
+Returns the zoom out multiplier for zoomed out rendering of the overview
+
+.. versionadded:: 4.0
+%End
+
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
     QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );
