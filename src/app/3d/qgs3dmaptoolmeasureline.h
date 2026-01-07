@@ -78,6 +78,9 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     //! Check if mouse was moved between mousePress and mouseRelease
     bool mMouseHasMoved = false;
     QPoint mMouseClickPos;
+
+    //! Z value for computing map coordinates on mouse move
+    float zMean = std::numeric_limits<float>::quiet_NaN();
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H
