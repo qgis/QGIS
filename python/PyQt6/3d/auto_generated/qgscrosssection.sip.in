@@ -48,6 +48,11 @@ Returns the end point of the cross section
 %End
 
     double halfWidth() const;
+%Docstring
+Returns the half-width of the cross section
+
+.. versionadded:: 4.0
+%End
 
     void setHalfWidth( const double halfWidth );
 %Docstring

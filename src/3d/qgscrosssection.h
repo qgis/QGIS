@@ -52,6 +52,10 @@ class _3D_EXPORT QgsCrossSection
      */
     QgsPoint endPoint() const { return mEndPoint; }
 
+    /**
+     * Returns the half-width of the cross section
+     * \since QGIS 4.0
+     */
     double halfWidth() const { return mHalfWidth; }
 
     /**
