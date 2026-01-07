@@ -186,7 +186,6 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 {
-  QgsDebugMsgLevel( u"QgsPGSchemaItem::createChildren() called for schema: %1"_s.arg( mName ), 2 );
   QVector<QgsDataItem *> items;
 
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );

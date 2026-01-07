@@ -207,7 +207,7 @@ void QgsDataItem::populate( bool foreground )
     // The watcher must not be created with item (in constructor) because the item may be created in thread and the watcher created in thread does not work correctly.
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >>( this );
+      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >> ( this );
     }
 
     connect( mFutureWatcher.get(), &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
@@ -308,7 +308,7 @@ void QgsDataItem::refresh()
     setState( Qgis::BrowserItemState::Populating );
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >>( this );
+      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >> ( this );
     }
     connect( mFutureWatcher.get(), &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
     mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
@@ -361,25 +361,16 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
     const int index = findItem( mChildren, child );
     if ( index >= 0 )
     {
-      // Child already exists - update its tooltip with fresh data from newly created item
-      QgsDataItem *existingItem = mChildren.value( index );
-
-      // Update tooltip if the new item has a non-empty tooltip and it differs from existing
-      if ( !child->toolTip().isEmpty() && existingItem->toolTip() != child->toolTip() )
-      {
-        existingItem->setToolTip( child->toolTip() );
-      }
-
       // Refresh recursively (some providers may create more generations of descendants)
       if ( !( child->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
       {
         // The child cannot createChildren() itself
-        existingItem->refresh( child->children() );
+        mChildren.value( index )->refresh( child->children() );
       }
-      else if ( existingItem->state() == Qgis::BrowserItemState::Populated
+      else if ( mChildren.value( index )->state() == Qgis::BrowserItemState::Populated
                 && ( child->capabilities2() & Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed ) )
       {
-        existingItem->refresh();
+        mChildren.value( index )->refresh();
       }
 
       child->deleteLater();
@@ -608,4 +599,3 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }
-
