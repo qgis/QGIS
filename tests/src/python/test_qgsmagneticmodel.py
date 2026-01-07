@@ -7,10 +7,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime
-from qgis.core import (
-    Qgis,
-    QgsMagneticModel,
-)
+from qgis.core import Qgis, QgsMagneticModel, QgsExpression
 from qgis.testing import start_app, QgisTestCase
 import unittest
 
@@ -92,6 +89,43 @@ class TestQgsMagneticModel(QgisTestCase):
         self.assertAlmostEqual(ft, -7.982860984120447, 5)
         self.assertAlmostEqual(dt, 0.019881621989770698, 5)
         self.assertAlmostEqual(it, 0.0064706436479898075, 5)
+
+    @unittest.skipIf(
+        not QgsMagneticModel("wmm2025").isValid(), "WMM2025 is not available"
+    )
+    def test_expression_functions(self):
+        exp = QgsExpression(
+            "magnetic_declination('xxxxxx', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertIsNone(res)
+        self.assertEqual(
+            exp.evalErrorString()[:36], "Cannot evaluate magnetic declination"
+        )
+
+        exp = QgsExpression(
+            "magnetic_declination('wmm2025', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertAlmostEqual(res, 7.873899808374294, 5)
+
+        exp = QgsExpression(
+            "magnetic_declination_rate_of_change('wmm2025', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertAlmostEqual(res, 0.019881621989770698, 5)
+
+        exp = QgsExpression(
+            "magnetic_inclination('wmm2025', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertAlmostEqual(res, -67.0097378346844, 5)
+
+        exp = QgsExpression(
+            "magnetic_inclination_rate_of_change('wmm2025', make_datetime(2026,7,1,12,0,0), -35, 138, 0)"
+        )
+        res = exp.evaluate()
+        self.assertAlmostEqual(res, 0.0064706436479898075, 5)
 
 
 if __name__ == "__main__":
