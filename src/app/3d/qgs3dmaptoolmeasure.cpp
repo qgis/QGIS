@@ -147,7 +147,7 @@ void Qgs3DMapToolMeasure::restart()
 {
   mPoints.clear();
   mDone = false;
-  mDialog->resetTable();
+  mDialog->resetFields();
 
   if ( mRubberBand )
   {
