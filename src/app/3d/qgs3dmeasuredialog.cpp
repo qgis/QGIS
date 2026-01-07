@@ -173,7 +173,7 @@ void Qgs3DMeasureDialog::reject()
 void Qgs3DMeasureDialog::restart()
 {
   mTool->restart();
-  resetTable();
+  resetFields();
 }
 
 void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
@@ -294,7 +294,7 @@ void Qgs3DMeasureDialog::updateTable()
   }
 }
 
-void Qgs3DMeasureDialog::resetTable()
+void Qgs3DMeasureDialog::resetFields()
 {
   mTable->clear();
   mTotal = 0.;
