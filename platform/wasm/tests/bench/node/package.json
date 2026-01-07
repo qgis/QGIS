@@ -1,0 +1,17 @@
+{
+  "name": "qgis-wasm-node-runner",
+  "version": "1.0.0",
+  "description": "Node.js runner for QGIS WebAssembly using jsdom",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js"
+  },
+  "dependencies": {
+    "jsdom": "^24.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
