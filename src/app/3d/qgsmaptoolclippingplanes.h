@@ -51,9 +51,13 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     void clearHighLightedArea() const;
     //! Returns the Geometry of clipped area
     QgsGeometry clippedPolygon() const;
+    //! Sets the type of capture: dynamic requires third point, static required just two points
+    void setDynamicCapture( bool enable );
+    //!Returns the current capture type, true for dynamic, false for static
+    bool isDynamicCapture() { return mDynamicCapture; }
 
   signals:
-    void finishedSuccessfully();
+    void finishedSuccessfully( const QgsGeometry &geom, const double width );
 
   private:
     void clearRubberBand() const;
@@ -63,7 +67,8 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
     std::unique_ptr<QgsCoordinateTransform> mCt;
     Qgs3DMapCanvasWidget *m3DCanvasWidget = nullptr;
-    double mRectangleWidth = 0;
+    bool mDynamicCapture = true;
+    double mRectangleWidth = 0.0;
 };
 
 #endif //QGSMAPTOOLCLIPPINGPLANES_H

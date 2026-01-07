@@ -127,7 +127,34 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
-    if ( mRubberBandPoints->numberOfVertices() == 2 )
+    // not a dynamic capture, we should return a line geometry
+    if ( mRubberBandPoints->numberOfVertices() == 1 && !mDynamicCapture )
+    {
+      QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
+      QgsPointXY pt1 = point;
+
+      try
+      {
+        const QgsPointXY startPointMap3d = mCt->transform( pt0 );
+        const QgsPointXY endPointMap3d = mCt->transform( pt1 );
+        QgsVector vec( endPointMap3d - startPointMap3d );
+        vec = vec.normalized().perpVector();
+
+        const QVector<QgsPointXY> points3DMap( { startPointMap3d + vec, endPointMap3d + vec } );
+
+        // build a geometry and transform it back to 2d map canvas coordinates
+        QgsGeometry geom( new QgsLineString( points3DMap ) );
+        geom.transform( *mCt, Qgis::TransformDirection::Reverse );
+
+        emit finishedSuccessfully( geom, 0 );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( u"Could not reproject cross section coordinates to 3d map crs."_s );
+      }
+    }
+    // dynamic capture, we return a polygon
+    else if ( mRubberBandPoints->numberOfVertices() == 2 )
     {
       //check if cross-section is in canvas extents
       QgsGeometry crossSectionPolygon = mRubberBandPolygon->asGeometry();
@@ -176,7 +203,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
         highlightColor.setAlphaF( 0.5 );
         mRubberBandPolygon->setColor( highlightColor );
 
-        emit finishedSuccessfully();
+        emit finishedSuccessfully( geom, mRectangleWidth );
       }
     }
     else
@@ -215,4 +242,9 @@ void QgsMapToolClippingPlanes::clearHighLightedArea() const
 QgsGeometry QgsMapToolClippingPlanes::clippedPolygon() const
 {
   return mRubberBandPolygon->asGeometry();
+}
+
+void QgsMapToolClippingPlanes::setDynamicCapture( const bool enable )
+{
+  mDynamicCapture = enable;
 }

@@ -51,6 +51,7 @@
 #include "qgspointcloudquerybuilder.h"
 #include "qgsrubberband.h"
 #include "qgssettings.h"
+#include "qgssettingstree.h"
 #include "qgsshortcutsmanager.h"
 
 #include <QAction>
@@ -61,6 +62,9 @@
 #include <QWidget>
 
 #include "moc_qgs3dmapcanvaswidget.cpp"
+
+const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
+const QgsSettingsEntryBool *Qgs3DMapCanvasWidget::settingDynamicClipping = new QgsSettingsEntryBool( u"enable-dynamic-clipping"_s, QgsSettingsTree::sTree3DMap, true, u"Whether dynamic clipping is set for 3D cross section"_s );
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
@@ -284,8 +288,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mClippingToleranceAction->setDisabled( enabled );
   } );
 
-  mActionNudgeLeft = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ), tr( "Nudge Left" ), this );
-  mActionNudgeRight = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ), tr( "Nudge Right" ), this );
+  mActionNudgeLeft = new QAction( QgsApplication::getThemeIcon( u"/mActionArrowLeft.svg"_s ), tr( "Nudge Left" ), this );
+  mActionNudgeRight = new QAction( QgsApplication::getThemeIcon( u"/mActionArrowRight.svg"_s ), tr( "Nudge Right" ), this );
 
   mActionNudgeLeft->setDisabled( true );
   mActionNudgeRight->setDisabled( true );
@@ -469,6 +473,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
 {
+  if ( mCrossSectionRubberBand )
+    mCrossSectionRubberBand.reset();
+
   delete mDockableWidgetHelper;
 }
 
@@ -739,7 +746,8 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
-  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::finishedSuccessfully, this, &Qgs3DMapCanvasWidget::onCrossSectionToolFinished );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::finishedSuccessfully, this, [this]( const QgsGeometry &geom, const double width ) { onCrossSectionToolFinished( geom, width ); } );
+  setDynamicClipping( settingDynamicClipping->value() );
 
   // none of the actions in the Camera menu are supported by globe yet, so just hide it completely
   mActionCamera->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
@@ -761,6 +769,11 @@ void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged );
+
+  mCrossSectionRubberBand.reset( new QgsRubberBand( mMainCanvas, Qgis::GeometryType::Polygon ) );
+  QColor polygonColor = QColorConstants::Red.lighter();
+  polygonColor.setAlphaF( 0.5 );
+  mCrossSectionRubberBand->setColor( polygonColor );
 
   if ( !mViewFrustumHighlight )
   {
@@ -1239,7 +1252,22 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
-void Qgs3DMapCanvasWidget::onCrossSectionToolFinished()
+void Qgs3DMapCanvasWidget::setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width )
+{
+  if ( !geom.isNull() && !geom.isEmpty() && geom.type() == Qgis::GeometryType::Line )
+  {
+    const QgsPolylineXY points = geom.asPolyline();
+    const QgsPointXY pt1 = points[0];
+    const QgsPointXY pt2 = points[1];
+
+    mCrossSectionLine = geom;
+    const QgsGeometry buffered = geom.buffer( width, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 );
+    mCrossSectionRubberBand->setToGeometry( buffered );
+    mCanvas->enableCrossSection( pt1, pt2, width, true );
+  }
+}
+
+void Qgs3DMapCanvasWidget::onCrossSectionToolFinished( const QgsGeometry &geom, const double width )
 {
   this->activateWindow();
   this->raise();
@@ -1249,12 +1277,66 @@ void Qgs3DMapCanvasWidget::onCrossSectionToolFinished()
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolClippingPlanes.get() );
+
+  mMapToolClippingPlanes->clear();
+
+  mActionNudgeLeft->setEnabled( true );
+  mActionNudgeRight->setEnabled( true );
+
+  mClippingTolerance = width;
+
+  const double geomWidth = mClippingTolerance > 0 ? mClippingTolerance : mClippingToleranceAction->toleranceSpinBox()->value();
+  if ( geomWidth > 0 )
+    setCrossSectionRubberBandPolygonFromGeometry( geom, geomWidth );
 }
 
 void Qgs3DMapCanvasWidget::disableCrossSection() const
 {
   mCanvas->disableCrossSection();
-  mMapToolClippingPlanes->clearHighLightedArea();
+  mMapToolClippingPlanes->clear();
+
+  mActionNudgeLeft->setEnabled( false );
+  mActionNudgeRight->setEnabled( false );
+}
+
+void Qgs3DMapCanvasWidget::nudgeLeft()
+{
+  nudgeCurve( Qgis::BufferSide::Left );
+}
+
+void Qgs3DMapCanvasWidget::nudgeRight()
+{
+  nudgeCurve( Qgis::BufferSide::Right );
+}
+
+void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
+{
+  if ( mCrossSectionLine.isNull() || mCrossSectionLine.isEmpty() )
+    return;
+
+  double distance;
+  if ( mMapToolClippingPlanes->isDynamicCapture() && mClippingTolerance > 0 )
+    distance = mClippingTolerance * 2;
+  else
+    distance = mClippingToleranceAction->toleranceSpinBox()->value() * 2;
+
+  const QgsGeometry nudgedLine = mCrossSectionLine.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
+
+  setCrossSectionRubberBandPolygonFromGeometry( nudgedLine, distance / 2 );
+}
+
+void Qgs3DMapCanvasWidget::updateClippingRubberBand()
+{
+  if ( mCrossSectionLine.isNull() || mCrossSectionLine.isEmpty() )
+    return;
+
+  const double distance = mClippingToleranceAction->toleranceSpinBox()->value();
+  setCrossSectionRubberBandPolygonFromGeometry( mCrossSectionLine, distance );
+}
+
+void Qgs3DMapCanvasWidget::setDynamicClipping( bool enabled )
+{
+  mMapToolClippingPlanes->setDynamicCapture( enabled );
 }
 
 void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const
