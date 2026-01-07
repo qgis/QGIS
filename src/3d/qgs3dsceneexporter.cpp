@@ -611,8 +611,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
         tempFeatToAdd += feat;
 
         // keep the feature triangle indexes
-        const uint startIdx = triangleIndex[idx] * 3;
-        const uint endIdx = idx < triangleIndex.size() - 1 ? triangleIndex[idx + 1] * 3 : std::numeric_limits<uint>::max();
+        const uint startIdx = triangleIndex[idx];
+        const uint endIdx = idx < triangleIndex.size() - 1 ? triangleIndex[idx + 1] : std::numeric_limits<uint>::max();
 
         if ( startIdx < endIdx ) // keep only valid intervals
           triangleIndexStartingIndiceToKeep.append( std::pair<uint, uint>( startIdx, endIdx ) );
@@ -705,23 +705,25 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     int intervalIdx = 0;
     const int triangleIndexStartingIndiceToKeepSize = triangleIndexStartingIndiceToKeep.size();
     const uint indexDataTmpSize = static_cast<uint>( indexDataTmp.size() );
-    for ( uint i = 0; i < indexDataTmpSize; ++i )
+    for ( uint i = 0; i + 2 < indexDataTmpSize; i += 3 )
     {
-      uint idx = indexDataTmp[static_cast<int>( i )];
+      const uint triangleIdx = i / 3;
+
       // search for valid triangle index interval
       while ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-              && idx > triangleIndexStartingIndiceToKeep[intervalIdx].first
-              && idx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
+              && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
         intervalIdx++;
       }
 
-      // keep only the one within the triangle index interval
+      // keep only triangles within the triangle index interval
       if ( intervalIdx < triangleIndexStartingIndiceToKeepSize
-           && idx >= triangleIndexStartingIndiceToKeep[intervalIdx].first
-           && idx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
+           && triangleIdx >= triangleIndexStartingIndiceToKeep[intervalIdx].first
+           && triangleIdx < triangleIndexStartingIndiceToKeep[intervalIdx].second )
       {
-        indexData.push_back( idx );
+        indexData.push_back( indexDataTmp[static_cast<int>( i )] );
+        indexData.push_back( indexDataTmp[static_cast<int>( i + 1 )] );
+        indexData.push_back( indexDataTmp[static_cast<int>( i + 2 )] );
       }
     }
   }
