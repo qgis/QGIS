@@ -79,7 +79,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
   public:
     static const QgsSettingsEntryDouble *settingClippingTolerance;
-    static const QgsSettingsEntryBool *settingDynamicClipping;
+    static const QgsSettingsEntryBool *settingCrossSectionToleranceLocked;
 
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget() override;
@@ -153,13 +153,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void onPointCloudChangeAttributeSettingsChanged();
 
-    void onCrossSectionToolFinished( const QgsGeometry &geom, const double width );
+    void onCrossSectionToolFinished();
 
   private:
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
     void setClippingTolerance( double tolerance );
-    void setCrossSectionRubberBandPolygonFromGeometry( const QgsGeometry &geom, const double width, bool setSideView );
-    void setDynamicCrossSectionClippingTolerance( bool enabled );
+    void lockCrossSectionTolerance( bool enabled );
     void updateClippingRubberBand();
 
     QString mCanvasName;

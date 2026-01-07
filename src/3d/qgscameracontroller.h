@@ -321,6 +321,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void depthBufferCaptured( const QImage &depthImage );
 
+    /**
+     * Moves camera position by the given difference vector in world coordinates
+     * \since QGIS 4.0
+     */
+    void moveCenterPoint( const QVector3D &posDiff );
+
   private:
 #ifdef SIP_RUN
     QgsCameraController();
@@ -328,7 +334,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 #endif
 
     void updateCameraFromPose();
-    void moveCameraPositionBy( const QVector3D &posDiff );
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
 
