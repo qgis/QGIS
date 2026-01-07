@@ -152,6 +152,16 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
       mZoomOutOptions->setEnabled( false );
     }
 
+    whileBlocking( mZoomOutMultiplier )->setRange( 0, static_cast<int>( mZoomOutScale.size() - 1 ) );
+    mZoomOutMultiplier->setSingleStep( 1 );
+    mZoomOutMultiplier->setPageStep( 1 );
+    mZoomOutMultiplier->setTickInterval( 1 );
+    mZoomOutMultiplier->setTickPosition( QSlider::TicksBelow );
+
+    setZoomOutMultiplier( mZoomOutScale[mZoomOutScale.size() / 2] );
+
+    connect( mZoomOutMultiplier, &QSlider::valueChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
       switch ( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() )
       {
@@ -221,6 +231,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
+    mZoomOutMultiplier->setValue( mLayer->renderer()->zoomOutMultiplier() );
 
     mTriangulateGroupBox->setChecked( mLayer->renderer()->renderAsTriangles() );
     mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
@@ -289,6 +300,8 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
   mLayer->renderer()->setZoomOutBehavior( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() );
+
+  mLayer->renderer()->setZoomOutMultiplier( zoomOutMultiplier() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -362,4 +375,25 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
     emit widgetChanged();
+}
+
+void QgsPointCloudRendererPropertiesWidget::setZoomOutMultiplier( double threshold )
+{
+  int idx = 0;
+  for ( size_t i = 0; i < mZoomOutScale.size(); ++i )
+  {
+    if ( threshold <= mZoomOutScale[i] )
+    {
+      idx = i;
+      break;
+    }
+  }
+
+  whileBlocking( mZoomOutMultiplier )->setValue( idx );
+}
+
+double QgsPointCloudRendererPropertiesWidget::zoomOutMultiplier() const
+{
+  const int idx = std::clamp( mZoomOutMultiplier->value(), 0, static_cast<int>( mZoomOutScale.size() ) - 1 );
+  return mZoomOutScale[idx];
 }

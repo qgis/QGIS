@@ -716,6 +716,18 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
+    /**
+     * Sets the zoom out multiplier for overview rendering
+     * \since QGIS 4.0
+     */
+    void setZoomOutMultiplier( const double value );
+
+    /**
+      * Returns the zoom out multiplier for overview rendering
+      * \since QGIS 4.0
+      */
+    double zoomOutMultiplier() const { return mZoomOutMultiplier; }
+
   protected:
 
     /**
@@ -859,6 +871,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsTextFormat mLabelTextFormat;
 
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
+    double mZoomOutMultiplier = 1.0;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

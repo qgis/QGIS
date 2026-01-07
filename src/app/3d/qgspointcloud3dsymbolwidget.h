@@ -49,6 +49,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior );
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const;
 
+    void setZoomOutMultiplier( double threshold );
+    double zoomOutMultiplier() const;
+
     void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:
@@ -77,6 +80,8 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setColorRampMinMax( double min, double max );
 
   private:
+    const std::array<double, 7> mZoomOutScale = { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0 };
+
     int mBlockChangedSignals = 0;
     int mDisableMinMaxWidgetRefresh = 0;
     QgsPointCloudClassifiedRendererWidget *mClassifiedRendererWidget = nullptr;
