@@ -2023,7 +2023,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   startProfile( tr( "Welcome screen" ) );
   QgsWelcomeScreen::registerTypes();
 
-  mWelcomeScreen = new QgsWelcomeScreen( options.testFlag( AppOption::SkipVersionCheck ), this->centralWidget() );
+  mWelcomeScreen = new QgsWelcomeScreen( options.testFlag( AppOption::SkipVersionCheck ), this->centralWidget()->window() );
   connect( mWelcomeScreen, &QgsWelcomeScreen::projectRemoved, this, [this]( int row ) {
     mRecentProjects.removeAt( row );
     saveRecentProjects();

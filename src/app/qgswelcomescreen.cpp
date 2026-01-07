@@ -81,6 +81,7 @@ void QgsWelcomeScreenController::hideScene()
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
 {
+  setWindowFlag( Qt::SubWindow );
   setAttribute( Qt::WA_AlwaysStackOnTop );
   setAttribute( Qt::WA_TranslucentBackground );
   setClearColor( Qt::transparent );
@@ -127,9 +128,12 @@ bool QgsWelcomeScreen::eventFilter( QObject *object, QEvent *event )
 {
   bool result = QWidget::eventFilter( object, event );
 
-  if ( object == parent() )
+  if ( event->type() == QEvent::Resize )
   {
-    refreshGeometry();
+    if ( isVisible() && object == parent() )
+    {
+      refreshGeometry();
+    }
   }
 
   return result;
@@ -139,7 +143,11 @@ void QgsWelcomeScreen::refreshGeometry()
 {
   if ( QWidget *parentWidget = qobject_cast<QWidget *>( parent() ) )
   {
-    setGeometry( 20, 20, parentWidget->width() - 40, parentWidget->height() - 40 );
+    const int adjustedWidth = std::min( mOriginalWidth, parentWidget->width() - 80 );
+    const int adjustedHeight = std::min( mOriginalHeight, parentWidget->height() - 80 );
+    const int adjustedX = ( parentWidget->width() - adjustedWidth ) / 2;
+    const int adjustedY = ( parentWidget->height() - adjustedHeight ) / 2;
+    setGeometry( adjustedX, adjustedY, adjustedWidth, adjustedHeight );
   }
 }
 
@@ -148,7 +156,10 @@ void QgsWelcomeScreen::showScene()
   if ( source().isEmpty() )
   {
     setSource( QUrl( "qrc:/qt/qml/org/qgis/app/qml/WelcomeScreen.qml" ) );
+    mOriginalWidth = width();
+    mOriginalHeight = height();
   }
+  refreshGeometry();
   show();
 }
 
