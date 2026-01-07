@@ -9886,7 +9886,8 @@ bool QgsExpression::unregisterFunction( const QString &name )
 
 void QgsExpression::cleanRegisteredFunctions()
 {
-  for ( QgsExpressionFunction *func : *sOwnedFunctions() )
+  const QList<QgsExpressionFunction *> &ownedFunctions = *sOwnedFunctions();
+  for ( QgsExpressionFunction *func : std::as_const( ownedFunctions ) )
   {
     sBuiltinFunctions()->removeAll( func->name() );
     for ( QString alias : func->aliases() )
@@ -10238,4 +10239,3 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }
-
