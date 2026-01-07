@@ -203,6 +203,17 @@ QString QgsHanaLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
+bool QgsHanaLayerItem::equal( const QgsDataItem *other )
+{
+  // Call parent class first
+  if ( !QgsLayerItem::equal( other ) )
+    return false;
+
+  // Also compare tooltips (which contain table comments)
+  const QgsHanaLayerItem *o = qobject_cast<const QgsHanaLayerItem *>( other );
+  return o && toolTip() == o->toolTip();
+}
+
 // ---------------------------------------------------------------------------
 QgsHanaSchemaItem::QgsHanaSchemaItem(
   QgsDataItem *parent,
@@ -215,8 +226,6 @@ QgsHanaSchemaItem::QgsHanaSchemaItem(
 {
   mIconName = u"mIconDbSchema.svg"_s;
   mSchemaName = name;
-  // Enable recursive refresh so that refreshing the connection also refreshes schema children (layer items)
-  mCapabilities |= Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
 }
 
 QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()

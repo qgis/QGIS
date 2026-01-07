@@ -97,6 +97,8 @@ class QgsHanaLayerItem : public QgsLayerItem
 
     QString comments() const override;
 
+    bool equal( const QgsDataItem *other ) override;
+
     const QgsHanaLayerProperty &layerInfo() const { return mLayerProperty; }
 
   private:
