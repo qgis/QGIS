@@ -129,6 +129,9 @@ class QgsWelcomeScreen : public QQuickWidget
     QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
 
     QgsVersionInfo *mVersionInfo = nullptr;
+
+    int mOriginalWidth = 0;
+    int mOriginalHeight = 0;
 };
 
 #endif // QGSWELCOMESCREEN_H
