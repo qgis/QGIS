@@ -103,6 +103,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void toggleAnimations();
     void cameraControl();
     void identify();
+    void measureArea();
     void measureLine();
     void changePointCloudAttributeByPaintbrush();
     void changePointCloudAttributeByPolygon();
@@ -152,7 +153,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QLabel *mLabelNavigationSpeed = nullptr;
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
-    Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    Qgs3DMapToolMeasure *mMapToolMeasureLine = nullptr;
+    Qgs3DMapToolMeasure *mMapToolMeasureArea = nullptr;
     Qgs3DMapToolPointCloudChangeAttribute *mMapToolChangeAttribute = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     std::unique_ptr<QgsMapToolClippingPlanes> mMapToolClippingPlanes;
