@@ -379,6 +379,10 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
         usedFields.push_back( qgis::setToList( exp.referencedColumns() ).constFirst() );
       }
     }
+    else
+    {
+      f.expression = findExpressionForDestinationField( f, usedFields );
+    }
     mMapping.push_back( f );
   }
   endResetModel();
@@ -421,6 +425,10 @@ void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destination
           usedFields.push_back( referencedCols.constFirst() );
         }
       }
+    }
+    else
+    {
+      f.expression = findExpressionForDestinationField( f, usedFields );
     }
     mMapping.push_back( f );
   }
