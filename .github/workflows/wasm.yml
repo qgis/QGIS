@@ -119,8 +119,9 @@ jobs:
 
           # Run qgis_bench with --help and capture output
           # --help returns exit code 2, so we capture it
+          # Note: Large WASM modules require extra memory for V8 compilation
           set +e
-          OUTPUT=$(node index.js ../../../../../build/output/bin/qgis_bench.js 2>&1)
+          OUTPUT=$(node --max-old-space-size=4096 index.js ../../../../../build/output/bin/qgis_bench.js 2>&1)
           EXIT_CODE=$?
           set -e
 
