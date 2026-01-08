@@ -335,7 +335,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   // Add floater config actions
   {
-    QAction *action = new QAction( tr( "Show floater" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Floater" ), mFloaterActionsMenu );
     action->setCheckable( true );
     action->setChecked( mFloater->active() );
     mFloaterActionsMenu->addAction( action );
@@ -348,7 +348,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mFloaterActionsMenu->addSeparator();
 
   {
-    QAction *action = new QAction( tr( "Show distance" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Distance" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -361,7 +361,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show angle" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -374,7 +374,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show XY coordinates" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show XY Coordinates" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -391,7 +391,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show Z value" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Z Value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -405,7 +405,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show M value" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show M Value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -419,7 +419,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show bearing/azimuth" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Bearing/Azimuth" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -433,7 +433,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show common snapping angle" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Common Snapping Angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
@@ -447,7 +447,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
-    QAction *action = new QAction( tr( "Show weight" ), mFloaterActionsMenu );
+    QAction *action = new QAction( tr( "Show Weight" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [this]( bool checked ) {
