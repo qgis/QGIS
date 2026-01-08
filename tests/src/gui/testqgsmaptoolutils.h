@@ -62,9 +62,9 @@ class TestQgsMapToolAdvancedDigitizingUtils
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
-    void mouseMove( double mapX, double mapY )
+    void mouseMove( double mapX, double mapY, Qt::MouseButton button = Qt::NoButton )
     {
-      QgsMapMouseEvent e( mMapTool->canvas(), QEvent::MouseMove, mapToScreen( mapX, mapY ) );
+      QgsMapMouseEvent e( mMapTool->canvas(), QEvent::MouseMove, mapToScreen( mapX, mapY ), button, button );
       mMapTool->canvasMoveEvent( &e );
     }
 
@@ -163,9 +163,9 @@ class TestQgsMapToolUtils
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
-    void mouseMove( double mapX, double mapY )
+    void mouseMove( double mapX, double mapY, Qt::MouseButton button = Qt::NoButton )
     {
-      QgsMapMouseEvent e( mMapTool->canvas(), QEvent::MouseMove, mapToScreen( mapX, mapY ) );
+      QgsMapMouseEvent e( mMapTool->canvas(), QEvent::MouseMove, mapToScreen( mapX, mapY ), button, button );
       mMapTool->canvasMoveEvent( &e );
     }
 

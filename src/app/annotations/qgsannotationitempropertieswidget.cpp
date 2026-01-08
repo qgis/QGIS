@@ -45,9 +45,9 @@ QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotat
   mPageNoItem->setSizePolicy( sizePolicy );
   QVBoxLayout *verticalLayout = new QVBoxLayout();
   verticalLayout->setContentsMargins( 0, 0, 0, 0 );
-  QLabel *label = new QLabel();
-  label->setText( tr( "No item selected." ) );
-  verticalLayout->addWidget( label );
+  mLabel = new QLabel();
+  mLabel->setText( tr( "No item selected." ) );
+  verticalLayout->addWidget( mLabel );
   mPageNoItem->setLayout( verticalLayout );
   mStack->addWidget( mPageNoItem );
   mStack->setCurrentWidget( mPageNoItem );
@@ -218,6 +218,14 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
       delete prevWidget;
     }
     mStack->setCurrentWidget( mPageNoItem );
+  }
+}
+
+void QgsAnnotationItemPropertiesWidget::setLabelMessage( const QString &message )
+{
+  if ( mLabel )
+  {
+    mLabel->setText( message );
   }
 }
 
