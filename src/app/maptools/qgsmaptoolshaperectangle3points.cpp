@@ -165,7 +165,12 @@ void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, Q
             mRectangle = QgsQuadrilateral::rectangleFrom3Points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadrilateral::Projected );
             break;
         }
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
+        const QgsGeometry newGeometry( mRectangle.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

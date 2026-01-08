@@ -18,6 +18,7 @@
 #include "qgsmaptoolshapeabstract.h"
 
 #include "qgsgeometryrubberband.h"
+#include "qgsmapcanvas.h"
 
 #include <QKeyEvent>
 
@@ -55,4 +56,9 @@ void QgsMapToolShapeAbstract::undo()
     clean();
   else if ( mPoints.count() > 1 )
     mPoints.removeLast();
+}
+
+void QgsMapToolShapeAbstract::setTransientGeometry( const QgsGeometry &geometry )
+{
+  emit transientGeometryChanged( QgsReferencedGeometry( geometry, mParentTool->canvas()->mapSettings().destinationCrs() ) );
 }
