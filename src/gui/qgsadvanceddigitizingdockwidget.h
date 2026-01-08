@@ -749,6 +749,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void valueBearingChanged( const QString &value );
 
     /**
+     * Emitted whenever the total summed area \a value changes.
+     * Could be used by widgets that must reflect the current advanced digitizing state.
+     * \note unstable API (will likely change)
+     * \since QGIS 4.0
+     */
+    void valueAreaChanged( const QString &value );
+
+    /**
+     * Emitted whenever the total length (or perimeter) \a value changes.
+     * Could be used by widgets that must reflect the current advanced digitizing state.
+     * \note unstable API (will likely change)
+     * \since QGIS 4.0
+     */
+    void valueTotalLengthChanged( const QString &value );
+
+    /**
     * Emitted whenever the X parameter is \a locked.
     * Could be used by widgets that must reflect the current advanced digitizing state.
     * \note unstable API (will likely change)

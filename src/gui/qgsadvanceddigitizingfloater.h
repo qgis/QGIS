@@ -55,6 +55,8 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
       CommonAngleSnapping = 1 << 6, //!< Common angles
       Distance = 1 << 7,            //!< Distance (segment length)
       Bearing = 1 << 8,             //!< Segment bearing
+      Area = 1 << 9,                //!< Total area \since QGIS 4.0
+      TotalLength = 1 << 10,        //!< Total length (or perimeter) \since QGIS 4.0
     };
     Q_DECLARE_FLAGS( FloaterItems, FloaterItem )
     Q_FLAG( FloaterItem )
@@ -80,7 +82,24 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * \param item floater item
     * \since QGIS 3.32
     */
-    bool itemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item ) const;
+    bool itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem item ) const;
+
+    /**
+     * Returns the measurement display type for a floater \a item.
+     *
+     * If the \a item does not support measurement types (see itemSupportsMeasurementType()), Qgis::CadMeasurementDisplayType::Hidden will
+     * be returned. For these items use itemVisibility() instead.
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::CadMeasurementDisplayType itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem item ) const;
+
+    /**
+     * Returns TRUE if a floater \a item supports display in different Qgis::CadMeasurementDisplayType values.
+     *
+     * \since QGIS 4.0
+     */
+    static bool itemSupportsMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem item );
 
   public slots:
 
@@ -100,7 +119,14 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * \param visible
     * \since QGIS 3.32
     */
-    void setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible );
+    void setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem item, bool visible );
+
+    /**
+     * Set whether the measurement display \a type for a floater \a item.
+     *
+     * \since QGIS 4.0
+     */
+    void setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem item, Qgis::CadMeasurementDisplayType type );
 
   private slots:
 
@@ -112,6 +138,8 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     void changeDistance( const QString &text );
     void changeAngle( const QString &text );
     void changeBearing( const QString &text );
+    void changeArea( const QString &text );
+    void changeTotalLength( const QString &text );
     void changeLockX( bool locked );
     void changeLockY( bool locked );
     void changeLockZ( bool locked );
