@@ -72,6 +72,8 @@ void QgsMap3DExportWidget::loadSettings()
   // Do not enable terrain options if terrain rendering is disabled
   if ( mScene->mapSettings()->terrainRenderingEnabled() )
   {
+    ui->terrainGroup->setEnabled( true );
+    ui->terrainGroup->setChecked( true );
     ui->terrainTextureResolutionLabel->setEnabled( true );
     ui->terrainTextureResolutionSpinBox->setEnabled( true );
 
@@ -91,12 +93,9 @@ void QgsMap3DExportWidget::loadSettings()
   }
   else
   {
-    ui->terrainResolutionLabel->setEnabled( false );
-    ui->terrainResolutionSpinBox->setEnabled( false );
-    ui->terrainResolutionSpinBox->setToolTip( tr( "Enable terrain rendering to use this option." ) );
-    ui->terrainTextureResolutionLabel->setEnabled( false );
-    ui->terrainTextureResolutionSpinBox->setEnabled( false );
-    ui->terrainTextureResolutionSpinBox->setToolTip( tr( "Enable terrain rendering to use this option." ) );
+    ui->terrainGroup->setEnabled( false );
+    ui->terrainGroup->setChecked( false );
+    ui->terrainGroup->setToolTip( tr( "Enable terrain rendering to use this option." ) );
   }
 }
 
@@ -110,6 +109,7 @@ void QgsMap3DExportWidget::settingsChanged()
   mExportSettings->setExportTextures( ui->exportTexturesCheckBox->isChecked() );
   mExportSettings->setTerrainTextureResolution( ui->terrainTextureResolutionSpinBox->value() );
   mExportSettings->setScale( ui->scaleSpinBox->value() );
+  mExportSettings->setTerrainExportEnabled( ui->terrainGroup->isEnabled() && ui->terrainGroup->isChecked() );
 }
 
 bool QgsMap3DExportWidget::exportScene()
