@@ -99,6 +99,18 @@ QgsPoint::QgsPoint( Qgis::WkbType wkbType, double x, double y, double z, double 
   mWkbType = wkbType;
 }
 
+QgsPoint::QgsPoint( const QVector3D &vect, double m )
+  : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( m )
+{
+  mWkbType = Qgis::WkbType::Point;
+}
+
+QgsPoint::QgsPoint( const QgsVector3D &vect, double m )
+  : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( m )
+{
+  mWkbType = Qgis::WkbType::Point;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

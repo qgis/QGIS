@@ -114,6 +114,8 @@ type will be set based on the following rules:
 
 
 
+
+
   public:
     virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
 
@@ -212,6 +214,21 @@ Sets the point's m-value.
     QPointF toQPointF() const /HoldGIL/;
 %Docstring
 Returns the point as a QPointF.
+%End
+
+    QVector3D toVector3D() const /HoldGIL/;
+%Docstring
+Returns the point as a QVector3D.
+%End
+
+    QVector4D toVector4D() const /HoldGIL/;
+%Docstring
+Returns the point as a QVector3D.
+%End
+
+    QgsVector3D toQgsVector3D() const /HoldGIL/;
+%Docstring
+Returns the point as a :py:class:`QgsVector3D`.
 %End
 
     double distance( double x, double y ) const /HoldGIL/;

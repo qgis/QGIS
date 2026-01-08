@@ -149,6 +149,20 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( Qgis::WkbType wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
+    /**
+     * Create a new point from a QVector3D.
+     *
+     * \note Not available in Python bindings
+     */
+    explicit QgsPoint( const QVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector3D.
+     *
+     * \note Not available in Python bindings
+     */
+    explicit QgsPoint( const QgsVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+
 #ifndef SIP_RUN
   private:
     bool fuzzyHelper( double epsilon,
@@ -376,6 +390,30 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QPointF toQPointF() const SIP_HOLDGIL
     {
       return QPointF( mX, mY );
+    }
+
+    /**
+     * Returns the point as a QVector3D.
+     */
+    QVector3D toVector3D() const SIP_HOLDGIL
+    {
+      return QVector3D( mX, mY, mZ );
+    }
+
+    /**
+     * Returns the point as a QVector3D.
+     */
+    QVector4D toVector4D() const SIP_HOLDGIL
+    {
+      return QVector4D( mX, mY, mZ, mM );
+    }
+
+    /**
+     * Returns the point as a QgsVector3D.
+     */
+    QgsVector3D toQgsVector3D() const SIP_HOLDGIL
+    {
+      return QgsVector3D( mX, mY, mZ );
     }
 
     /**
