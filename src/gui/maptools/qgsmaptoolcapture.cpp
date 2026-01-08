@@ -124,7 +124,9 @@ void QgsMapToolCapture::activate()
   QgsMapToolAdvancedDigitizing::activate();
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+  {
+    setCurrentShapeMapToolIsActivated( true );
+  }
 }
 
 void QgsMapToolCapture::deactivate()
@@ -137,7 +139,9 @@ void QgsMapToolCapture::deactivate()
   mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->deactivate();
+  {
+    setCurrentShapeMapToolIsActivated( false );
+  }
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -392,6 +396,20 @@ void QgsMapToolCapture::resetRubberBand()
   mRubberBand->addGeometry( QgsGeometry( lineString ), layer() );
 }
 
+void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
+{
+  if ( activated )
+  {
+    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+  }
+  else
+  {
+    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    mCurrentShapeMapTool->deactivate();
+  }
+}
+
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {
   return mRubberBand.release();
@@ -422,7 +440,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
   {
-    mCurrentShapeMapTool->deactivate();
+    setCurrentShapeMapToolIsActivated( false );
     clean();
   }
 
@@ -451,7 +469,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
   if ( technique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
     clean();
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    setCurrentShapeMapToolIsActivated( true );
   }
 }
 
@@ -462,7 +480,9 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
     if ( shapeMapToolMetadata && mCurrentShapeMapTool->id() == shapeMapToolMetadata->id() )
       return;
     if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
-      mCurrentShapeMapTool->deactivate();
+    {
+      setCurrentShapeMapToolIsActivated( false );
+    }
     mCurrentShapeMapTool->deleteLater();
   }
 
@@ -472,7 +492,9 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
   {
     clean();
     if ( mCurrentShapeMapTool )
-      mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    {
+      setCurrentShapeMapToolIsActivated( true );
+    }
   }
 }
 
