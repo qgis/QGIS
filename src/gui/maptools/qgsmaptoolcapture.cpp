@@ -278,7 +278,17 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
     std::unique_ptr< QgsCurve > tracedCurve( mTempRubberBand->curve() );
     tracedCurve->transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
     tempCurve->addCurve( tracedCurve.release() );
-    emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+    if ( mCaptureMode == CapturePolygon )
+    {
+      tempCurve->close();
+      auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+      curvePolygon->setExteriorRing( tempCurve.release() );
+      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+    }
+    else
+    {
+      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+    }
   }
   catch ( QgsCsException &e )
   {
@@ -577,7 +587,19 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         mAllowAddingStreamingPoints = true;
         addVertex( mapPoint );
         mAllowAddingStreamingPoints = false;
-        emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( mCaptureCurve.clone() ), targetCrs ) );
+
+        std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+        if ( mCaptureMode == CapturePolygon )
+        {
+          auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+          tempCurve->close();
+          curvePolygon->setExteriorRing( tempCurve.release() );
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+        }
+        else
+        {
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+        }
       }
       else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
       {
@@ -634,7 +656,17 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
             QgsDebugError( e.what() );
           }
 
-          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+          if ( mCaptureMode == CapturePolygon )
+          {
+            auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+            tempCurve->close();
+            curvePolygon->setExteriorRing( tempCurve.release() );
+            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+          }
+          else
+          {
+            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+          }
         }
         else if ( mTempRubberBand )
           mTempRubberBand->movePoint( mapPoint );
