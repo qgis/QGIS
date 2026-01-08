@@ -30,6 +30,11 @@ jobs:
       - name: ♻️ Check disk space
         run: df . -h
 
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 8
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
