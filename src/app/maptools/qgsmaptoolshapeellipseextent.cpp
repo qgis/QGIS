@@ -101,7 +101,12 @@ void QgsMapToolShapeEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
         if ( qgsDoubleNear( mParentTool->canvas()->rotation(), 0.0 ) )
         {
           mEllipse = QgsEllipse::fromExtent( mPoints.at( 0 ), point );
-          mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
+          const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
+          if ( !newGeometry.isEmpty() )
+          {
+            mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+            setTransientGeometry( newGeometry );
+          }
         }
         else
         {
@@ -109,7 +114,12 @@ void QgsMapToolShapeEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
           const double angle = mPoints.at( 0 ).azimuth( point );
 
           mEllipse = QgsEllipse::fromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
-          mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
+          const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
+          if ( !newGeometry.isEmpty() )
+          {
+            mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+            setTransientGeometry( newGeometry );
+          }
         }
       }
       break;
