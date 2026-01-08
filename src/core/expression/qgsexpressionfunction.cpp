@@ -10166,8 +10166,10 @@ void QgsExpression::cleanRegisteredFunctions()
   for ( QgsExpressionFunction *func : std::as_const( ownedFunctions ) )
   {
     sBuiltinFunctions()->removeAll( func->name() );
-    for ( QString alias : func->aliases() )
+    for ( const QString &alias : func->aliases() )
+    {
       sBuiltinFunctions()->removeAll( alias );
+    }
 
     sFunctions()->removeAll( func );
   }
