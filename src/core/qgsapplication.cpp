@@ -1146,13 +1146,20 @@ void QgsApplication::setUITheme( const QString &themeName )
     QTextStream in( &palettefile );
     while ( !in.atEnd() )
     {
-      QString line = in.readLine();
-      QStringList parts = line.split( ':' );
+      const QString line = in.readLine();
+      const QStringList parts = line.split( ' ' )[0].split( ':' );
       if ( parts.count() == 2 )
       {
-        int role = parts.at( 0 ).trimmed().toInt();
-        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        const int role = parts.at( 0 ).trimmed().toInt();
+        const QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
         pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+      else if ( parts.count() == 3 )
+      {
+        const int role = parts.at( 0 ).trimmed().toInt();
+        const int group = parts.at( 1 ).trimmed().toInt();
+        const QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 2 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorGroup >( group ), static_cast< QPalette::ColorRole >( role ), color );
       }
     }
     palettefile.close();
