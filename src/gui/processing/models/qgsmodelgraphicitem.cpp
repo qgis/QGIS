@@ -318,8 +318,8 @@ void QgsModelDesignerFeatureCountGraphicItem::paint( QPainter *painter, const QS
   backgroundColor.setAlpha( 220 ); // Add some transparency so we still see the arrow underneath
   painter->setBrush( QBrush( backgroundColor ) );
   painter->setPen( Qt::PenStyle::NoPen );
-  double radius = 5;
-  painter->drawRoundedRect( boundingRect(), radius, radius );
+  constexpr double RADIUS = 5;
+  painter->drawRoundedRect( boundingRect(), RADIUS, RADIUS );
 
   // And finally draw the text on top
   setDefaultTextColor( QApplication::palette().color( QPalette::Text ) );
