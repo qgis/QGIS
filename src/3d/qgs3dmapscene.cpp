@@ -1133,6 +1133,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   exporter.setExportTextures( exportSettings.exportTextures() );
   exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
   exporter.setScale( exportSettings.scale() );
+  exporter.setTerrainExportEnabled( exportSettings.terrainExportEnabled() );
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
   {
