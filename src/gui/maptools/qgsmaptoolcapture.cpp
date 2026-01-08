@@ -264,6 +264,27 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   mTempRubberBand->addPoint( QgsPoint( points[points.size() - 1] ) );
 
   tracer->reportError( QgsTracer::ErrNone, false ); // clear messagebar if there was any error
+
+  QgsCoordinateReferenceSystem targetCrs = mCanvas->mapSettings().destinationCrs();
+  if ( QgsMapLayer *l = layer() )
+  {
+    // if we have a layer, then the geometry will be in the layer's CRS, not the canvas'
+    targetCrs = l->crs();
+  }
+
+  std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+  try
+  {
+    std::unique_ptr< QgsCurve > tracedCurve( mTempRubberBand->curve() );
+    tracedCurve->transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
+    tempCurve->addCurve( tracedCurve.release() );
+    emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( e.what() );
+  }
+
   return true;
 }
 
