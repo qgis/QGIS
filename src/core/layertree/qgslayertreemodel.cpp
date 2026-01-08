@@ -16,11 +16,13 @@
 #include "qgslayertreemodel.h"
 
 #include "qgsapplication.h"
+#include "qgscolorramplegendnode.h"
 #include "qgsiconutils.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreefiltersettings.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayoutitemlegend.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -691,6 +693,7 @@ void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *set
       auto blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
       blockingHitTest->run();
       mHitTestResults = blockingHitTest->results();
+      mHitTestResultsRendererUpdatedCanvas = blockingHitTest->resultsRenderersUpdatedCanvas();
       handleHitTestResults();
     }
   }
@@ -722,6 +725,31 @@ void QgsLayerTreeModel::handleHitTestResults()
     refreshLayerLegend( nodeLayer );
 
   setAutoCollapseLegendNodes( bkAutoCollapse );
+
+  // update any color ramp legend nodes with new min/max from hit test
+  if ( !mHitTestResultsRendererUpdatedCanvas.isEmpty() )
+  {
+    const QList<QgsLayerTreeLayer *> treeLayers = rootGroup()->findLayers();
+
+    for ( QgsLayerTreeLayer *layerTreeLayer : treeLayers )
+    {
+      const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerLegendNodes( layerTreeLayer );
+
+      if ( mHitTestResultsRendererUpdatedCanvas.contains( layerTreeLayer->layerId() ) )
+      {
+        QPair<double, double> limits = mHitTestResultsRendererUpdatedCanvas.value( layerTreeLayer->layerId() );
+
+        for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
+        {
+          if ( auto *colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( legendNode ) )
+          {
+            colorRampNode->setMinimum( limits.first );
+            colorRampNode->setMaximum( limits.second );
+          }
+        }
+      }
+    }
+  }
 }
 
 void QgsLayerTreeModel::setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale )
@@ -963,6 +991,8 @@ void QgsLayerTreeModel::hitTestTaskCompleted()
   if ( mHitTestTask )
   {
     mHitTestResults = mHitTestTask->results();
+    mHitTestResultsRendererUpdatedCanvas = mHitTestTask->resultsRenderersUpdatedCanvas();
+
     handleHitTestResults();
     emit hitTestCompleted();
   }
