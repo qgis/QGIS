@@ -253,7 +253,7 @@ void QgsMapToolFeatureArray::updateRubberband()
       {
         result = geom.transform( QgsCoordinateTransform( mFeatureLayer->crs(), canvas()->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() ) );
       }
-      catch ( QgsCsException )
+      catch ( QgsCsException & )
       {
         ; // result will remain NothingHappened
       }
