@@ -1,0 +1,646 @@
+/********************************* GENERAL *********************************/
+
+QDockWidget, QDockWidgetGroupWindow
+{
+  padding: 0.2em;
+}
+
+QWidget[autoFillBackground=true],
+QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QDockWidgetGroupWindow, QTabWidget, QGroupBox, QToolBar, QMenuBar
+{
+  background-color: palette(window);
+  color: palette(window-text);
+}
+
+QMessageBox
+{
+  background: url(@theme_path/images/dialog_bg.svg);
+}
+
+/********************************* ITEM VIEWS *********************************/
+
+QAbstractItemView
+{
+  background-color: palette(base);
+  show-decoration-selected: 1;
+}
+QAbstractItemView::item
+{
+  border: 1px solid transparent;
+  color: palette(window-text);
+}
+QAbstractItemView::item:hover
+{
+  background: @highlightmuted;
+}
+QAbstractItemView::item:selected:!focus
+{
+  background: transparent;
+  border: 1px solid palette(highlight);
+}
+/* options tabs are always drawn fully regardless of focus */
+/* layer tree items are always drawn fully regardless of focus */
+QAbstractItemView::item:selected:focus, QAbstractItemView::branch:selected:focus,
+#mOptionsTreeView::item:selected, #mOptionsTreeView::branch:selected,
+#mOptionsListWidget::item:selected,
+QgsLayerTreeView::item:selected, QgsLayerTreeView::branch:selected
+{
+  background: palette(highlight);
+  color: palette(highlighted-text);
+  border: 1px solid transparent;
+}
+
+QTreeView::branch:closed:has-children
+{
+  border-image: none;
+  image: url(@theme_path/icons/caret-right.svg);
+}
+QTreeView::branch:closed:has-children:selected
+{
+  image: url(@theme_path/icons/caret-right-dark.svg);
+}
+QTreeView::branch:open:has-children
+{
+  border-image: none;
+  image: url(@theme_path/icons/caret-down.svg);
+}
+QTreeView::branch:open:has-children:selected
+{
+  image: url(@theme_path/icons/caret-down-dark.svg);
+}
+
+QTreeView::indicator
+{
+  border: none;
+  background: transparent;
+  width: 0.8em;
+  height: 0.8em;
+}
+QTreeView::indicator:disabled
+{
+  background: transparent;
+}
+QTreeView::indicator:intermediary
+{
+  image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTreeView::indicator:checked
+{
+  image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+QTreeView::indicator:checked:disabled
+{
+  image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+QTreeView::indicator:unchecked
+{
+  image: none;
+}
+
+QgsLayerTreeView::item,
+QTreeView#viewGraduated::item,
+QTreeView#viewCategories::item,
+QTreeView#viewRules::item,
+QTreeView#mSubDiagramsView::item
+{
+  padding: 0.1em 0em 0.1em 0em;
+}
+
+QgsLayerTreeView::indicator:unchecked,
+QTreeView#viewGraduated::indicator:unchecked,
+QTreeView#viewCategories::indicator:unchecked,
+QTreeView#viewRules::indicator:unchecked,
+QTreeView#mSubDiagramsView::indicator:unchecked
+{
+  border: none;
+  background-color: transparent;
+  image: url(@theme_path/icons/eye-blocked.svg);
+}
+QgsLayerTreeView::indicator:checked,
+QTreeView#viewGraduated::indicator:checked,
+QTreeView#viewCategories::indicator:checked,
+QTreeView#viewRules::indicator:checked,
+QTreeView#mSubDiagramsView::indicator:checked
+{
+  border: none;
+  background-color: transparent;
+  image: url(@theme_path/icons/eye.svg);
+}
+
+#mOptionsSplitter::handle
+{
+  margin-left: 0.4em;
+}
+#mOptionsFrame
+{
+  padding: 0.4em;
+  padding-left: 0.2em;
+}
+QDialogButtonBox
+{
+  margin-top: 0.2em;
+}
+
+/********************************* MENUS *********************************/
+
+QMenu::icon
+{
+  padding-left: 0.3em;
+}
+QMenu::item
+{
+  padding: 0.2em 1.3em 0.2em 0.4em;
+}
+QMenu::item:disabled
+{
+  color: #4d6370;
+}
+QMenu::item:selected
+{
+  background-color: @highlightmuted;
+}
+QMenu::item:checked
+{
+  text-decoration: underline;
+}
+QMenu::indicator:non-exclusive:checked
+{
+  image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+QMenu::indicator:non-exclusive:checked:disabled
+{
+  image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+QMenu::separator
+{
+    height: 2px;
+    background: #223745;
+}
+QMenu::icon:checked
+{
+  /* mirror styling of checked tool buttons */
+  background: @controlactive;
+  border-radius: 5px;
+  margin-left: 1px;
+}
+
+/********************************* BUTTONS *********************************/
+
+QPushButton, QToolButton
+{
+  background: @controlnormal;
+  color: palette(button-text);
+  border: none;
+  border-radius: 5px;
+
+  padding: 0.2em 0.4em;
+}
+QToolBar QToolButton, QStatusBar QToolButton
+{
+  background: transparent;
+  color: palette(button-text);
+  border: none;
+  border-radius: 5px;
+
+  padding: 0.12em;
+}
+QToolButton::menu-button
+{
+  background-color: transparent;
+  width: 0.8em;
+  border-radius: 5px;
+}
+QToolButton[popupMode="1"]
+{
+  padding-right: 0.9em;
+}
+QPushButton:checked:disabled, QToolButton:checked:disabled
+{
+  background: transparent;
+  border: 1px solid palette(button);
+}
+QPushButton:hover
+{
+  background: @controlhover;
+}
+QToolBar QToolButton:hover, QStatusBar QToolButton:hover
+QToolBar QToolButton::menu-button:hover, QStatusBar QToolButton::menu-button:hover
+{
+  background: palette(base);
+}
+QPushButton:checked, QToolButton:checked, QPushButton:pressed, QToolButton:pressed, QToolButton::menu-button:pressed
+{
+  background: @controlactive;
+}
+QPushButton:disabled, QToolButton:disabled
+{
+  background: @controldisabled;
+  color: #67b03a;
+}
+QPushButton:disabled:checked, QToolButton:disabled:checked
+{
+  background: @controlactivedisabled;
+}
+QToolBar QToolButton:disabled, QStatusBar QToolButton:disabled
+{
+  background: transparent;
+}
+QPushButton:focus, QToolButton:focus
+{
+  outline: 1px solid palette(highlight);
+  outline-radius: 5px;
+}
+
+/********************************* RADIO BUTTON & CHECKBOX *********************************/
+
+QRadioButton::indicator
+{
+  color: palette(window-text);
+  background: palette(base);
+  border: 0.2em solid palette(base);
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 0.4em;
+}
+QRadioButton:disabled
+{
+  color: @textmuted;
+}
+QRadioButton::indicator:hover
+{
+  background: @highlightmuted;
+}
+QRadioButton::indicator:disabled
+{
+  background: palette(base);
+  border: 0.2em solid palette(base);
+}
+QRadioButton::indicator:checked
+{
+  background: palette(highlight);
+}
+QRadioButton::indicator:checked:disabled
+{
+  background: @highlightmuted;
+}
+QRadioButton::indicator:focus
+{
+  outline: 1px solid palette(highlight);
+  outline-radius: 0.4em;
+}
+
+QCheckBox::indicator, QGroupBox::indicator
+{
+  color: palette(window-text);
+  background: palette(base);
+  width: 0.8em;
+  height: 0.8em;
+}
+QCheckBox:disabled
+{
+  color: @textmuted;
+}
+QCheckBox::indicator:disabled, QGroupBox::indicator:disabled
+{
+  background: palette(base);
+}
+QCheckBox::indicator:intermediary
+{
+  image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QCheckBox::indicator:unchecked, QGroupBox::indicator:unchecked
+{
+  image: none;
+}
+QCheckBox::indicator:checked, QGroupBox::indicator:checked
+{
+  image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+QCheckBox::indicator:checked:disabled, QGroupBox::indicator:checked:disabled
+{
+  image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+QCheckBox::indicator:focus, QGroupBox::indicator:focus
+{
+  outline: 1px solid palette(highlight);
+  outline-radius: 0.4em;
+}
+
+/********************************* COMBO BOX *********************************/
+
+QComboBox
+{
+  color: palette(button-text);
+  background: @controlnormal;
+  border: none;
+  border-radius: 5px;
+
+  padding: 0.2em 0.2em;
+}
+QComboBox:editable
+{
+  color: palette(window-text);
+  background: palette(base);
+  border: none;
+}
+QComboBox:editable:focus, QComboBox:editable:on
+{
+  background: black;
+}
+QComboBox:editable:disabled
+{
+  background: palette(alternate-base);
+  color: @textmuted;
+}
+QComboBox:!editable:disabled
+{
+  background: @controldisabled;
+}
+QComboBox::drop-down
+{
+  subcontrol-origin: border;
+  subcontrol-position: top right;
+  width: 16px;
+
+  background: transparent;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+QComboBox::drop-down:editable
+{
+  background: @controlnormal;
+}
+QComboBox:!editable:hover,
+QComboBox::drop-down:editable:hover
+{
+  background: @controlhover;
+}
+QComboBox:!editable:on, QComboBox::drop-down:on
+{
+  background: @controlactive;
+}
+QComboBox::drop-down:disabled
+{
+  background: @controldisabled;
+}
+QComboBox::down-arrow
+{
+    image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QComboBox:focus
+{
+  outline: 1px solid palette(highlight);
+  outline-radius: 5px;
+}
+
+/********************************* SPIN BOX *********************************/
+
+QAbstractSpinBox
+{
+  padding: 0.2em 0.2em;
+  background: palette(base);
+  border: none;
+  border-radius: 5px;
+  selection-background-color: palette(highlight);
+  color: palette(button-text);
+}
+QAbstractSpinBox:focus
+{
+  background-color: black;
+}
+QAbstractSpinBox::up-button
+{
+  subcontrol-origin: border;
+  subcontrol-position: top right;
+  margin-bottom: -1px;
+  width: 0.8em;
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #67b03a, stop: 1 #589632);
+  border: none;
+  border-top-right-radius: 5px;
+}
+QAbstractSpinBox::up-button:hover
+{
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #7fc355, stop: 1 #589632);
+}
+QAbstractSpinBox::up-button:disabled
+{
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #9967b03a, stop: 1 #99589632);
+}
+QAbstractSpinBox::down-button
+{
+  subcontrol-origin: border;
+  subcontrol-position: bottom right;
+  margin-top: -1px;
+  width: 0.8em;
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #589632, stop: 1 #497d29);
+  border: none;
+  border-bottom-right-radius: 5px;
+}
+QAbstractSpinBox::down-button:hover
+{
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #589632, stop: 1 #3a6321);
+}
+QAbstractSpinBox::down-button:disabled
+{
+  background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #99589632, stop: 1 #99497d29);
+}
+QAbstractSpinBox::up-arrow
+{
+    image: url(@theme_path/icons/arrow-up.svg);
+    width: 0.8em;
+    height: 1.0em;
+}
+QAbstractSpinBox::down-arrow
+{
+    image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.0em;
+}
+
+/********************************* TEXT EDIT *********************************/
+
+QLineEdit
+{
+  color: palette(button-text);
+  background-color: palette(base);
+  border: none;
+  border-radius: 5px;
+
+  padding: 0.2em 0.2em;
+}
+QLineEdit:focus
+{
+  background-color: black;
+}
+QLineEdit:disabled, QAbstractSpinBox:disabled
+{
+  background-color: palette(alternate-base);
+  color: @textmuted;
+}
+QLineEdit, QComboBox:editable
+{
+  placeholder-text-color: @textmuted;
+}
+
+/********************************* GROUP BOX & FRAME *********************************/
+
+QSlider::groove
+{
+  background: palette(base);
+}
+QSlider::groove:focus
+{
+  background: black;
+}
+QSlider::groove:disabled
+{
+  background: palette(alternate-base);
+}
+QSlider::groove:horizontal
+{
+  height: 0.4em;
+  margin: 0.2em 1px;
+}
+QSlider::groove:vertical
+{
+  width: 0.4em;
+  margin: 1px 0.2em;
+}
+QSlider::sub-page[invertedAppearance="false"]
+{
+  background: palette(button);
+}
+QSlider::sub-page[invertedAppearance="false"]:disabled
+{
+  background: @controlflatdisabled;
+}
+QSlider::add-page[invertedAppearance="true"]
+{
+  background: palette(button);
+}
+QSlider::add-page[invertedAppearance="true"]:disabled
+{
+  background: @controlflatdisabled;
+}
+QSlider::sub-page:horizontal, QSlider::add-page:horizontal
+{
+  height: 0.4em;
+  margin: 0.2em 1px;
+  margin-right: 0.45em;
+}
+QSlider::sub-page:vertical, QSlider::add-page:vertical
+{
+  width: 0.4em;
+  margin: 1px 0.2em;
+  margin-bottom: 0.45em;
+}
+QSlider::handle
+{
+  border-radius: 5px;
+  background: @controlnormal;
+}
+QSlider::handle:hover
+{
+  background: @controlhover;
+}
+QSlider::handle:pressed
+{
+  background: @controlactive;
+}
+QSlider::handle:disabled
+{
+  background: @controldisabled;
+}
+QSlider::handle:horizontal
+{
+  width: 0.8em;
+  margin: -0.2em -1px;
+}
+QSlider::handle:vertical
+{
+  height: 0.8em;
+  margin: -1px -0.2em;
+}
+
+/********************************* TAB BAR & WIDGET *********************************/
+
+QTabWidget::pane
+{
+  background: transparent;
+  border: none;
+  border-top: 2px solid palette(window-text);
+  top: -2px;
+  padding-top: 10px;
+}
+QTabBar
+{
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+QTabBar::tab
+{
+  background: transparent;
+  color: palette(window-text);
+  border: none;
+  border-bottom: 2px solid transparent;
+  min-width: 8ex;
+  padding: 0.2em;
+}
+QTabBar::tab:hover
+{
+  color: palette(highlight);
+  border-bottom-color: palette(highlight);
+}
+QTabBar::tab:selected
+{
+  color: palette(highlight);
+  border-bottom-color: palette(highlight);
+}
+QTabBar::tab:disabled
+{
+  color: @textmuted;
+}
+
+/********************************* GROUP BOX & FRAME *********************************/
+
+.QFrame, QGroupBox
+{
+  background: transparent;
+  border: 1px solid @textmuted;
+  border-radius: 5px;
+}
+.QFrame[frameShape="NoFrame"]
+{
+  border: none;
+}
+QGroupBox
+{
+  margin-top: 1.2em; /* space for title */
+}
+QGroupBox::title
+{
+  subcontrol-origin: margin;
+  subcontrol-position: top left;
+  padding: 0 3px;
+}
+
+/********************************* EXTRAS & SMALL FIXES *********************************/
+
+QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar
+{
+  alignment: center;
+  border-bottom: 2px solid palette(window-text);
+}
+QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab:selected
+{
+  background: @highlightmuted;
+}
+QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab
+{
+  min-width: 0;
+  width: 1.2em;
+  margin-top: 10px;
+}
+
