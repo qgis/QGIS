@@ -81,7 +81,7 @@ namespace QgsRasterAnalysisUtils
       std::vector<int> bands { 1 };
   };
 
-  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
+  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
 
   /**
    * Returns a vector of double values obtained from a stack of input QgsRasterBlocks

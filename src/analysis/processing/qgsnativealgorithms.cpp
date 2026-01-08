@@ -94,6 +94,7 @@
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
 #include "qgsalgorithmdxfexport.h"
+#include "qgsalgorithmexecuteandloadpostgisquery.h"
 #include "qgsalgorithmexecutepostgisquery.h"
 #include "qgsalgorithmexecutespatialitequery.h"
 #include "qgsalgorithmexecutespatialitequeryregistered.h"
@@ -431,6 +432,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
   addAlgorithm( new QgsDxfExportAlgorithm() );
+  addAlgorithm( new QgsExecuteAndLoadPostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecutePostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecuteRegisteredSpatialiteQueryAlgorithm() );
   addAlgorithm( new QgsExecuteSpatialiteQueryAlgorithm() );
@@ -560,6 +562,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomPointsInPolygonsAlgorithm() );
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
+  addAlgorithm( new QgsRandomSelectionAlgorithm() );
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorModelerAlgorithm() );
