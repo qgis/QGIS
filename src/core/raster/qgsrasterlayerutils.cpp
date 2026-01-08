@@ -187,7 +187,7 @@ void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
   max = std::numeric_limits<double>::quiet_NaN();
   if ( !provider )
     return;
-
+  QGIS_CHECK_OTHER_QOBJECT_THREAD_ACCESS( provider );
   if ( limits == Qgis::RasterRangeLimit::MinimumMaximum )
   {
     QgsRasterBandStats myRasterBandStats = provider->bandStatistics( band, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, extent, sampleSize );
