@@ -40,6 +40,7 @@ class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapMouseEvent;
 class QgsUserInputWidget;
+class QgsReferencedGeometry;
 
 /**
  * \ingroup gui
@@ -656,6 +657,19 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \since QGIS 3.32
      */
     QString formatCommonAngleSnapping( double angle );
+
+  public slots:
+
+    /**
+     * Updates properties associated with the transient geometry from the active map tool.
+     *
+     * Transient geometry includes non-finalized changes, e.g. the current mouse hover state.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.0
+     */
+    void updateTransientGeometryProperties( const QgsReferencedGeometry &geometry ) SIP_SKIP;
 
   signals:
 
