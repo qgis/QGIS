@@ -151,6 +151,20 @@ class TestQgsVector3D(QgisTestCase):
         self.assertAlmostEqual(vector.length(), 5.0169711978)
         self.assertAlmostEqual(vector.lengthSquared(), 25.17)
 
+    def testToQgsPoint(self):
+        vector = QgsVector3D()
+        point = vector.toQgsPoint()
+        self.assertEqual(point.x(), 0.0)
+        self.assertEqual(point.y(), 0.0)
+        self.assertEqual(point.z(), 0.0)
+
+        vector.setY(-2.0)
+        vector.setZ(41.0)
+        point = vector.toQgsPoint()
+        self.assertEqual(point.x(), 0.0)
+        self.assertEqual(point.y(), -2.0)
+        self.assertEqual(point.z(), 41.0)
+
 
 if __name__ == "__main__":
     unittest.main()

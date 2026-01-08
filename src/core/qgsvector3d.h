@@ -21,6 +21,8 @@
 
 #include <QVector3D>
 
+class QgsPoint;
+
 /**
  * \ingroup core
  * \brief A 3D vector (similar to QVector3D) with the difference that it uses double precision
@@ -220,6 +222,13 @@ class CORE_EXPORT QgsVector3D
      * \since QGIS 3.24
      */
     QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast< float >( mX ), static_cast< float >( mY ), static_cast< float >( mZ ) ); }
+
+    /**
+     * Converts the current object into a QgsPoint representation
+     *
+     * \since QGIS 4.0
+     */
+    QgsPoint toQgsPoint() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

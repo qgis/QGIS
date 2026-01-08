@@ -9,6 +9,7 @@
 
 
 
+
 class QgsVector3D
 {
 %Docstring(signature="appended")
@@ -148,6 +149,13 @@ Converts the current object to QVector3D
    the conversion may decrease the accuracy (double to float values conversion)
 
 .. versionadded:: 3.24
+%End
+
+    QgsPoint toQgsPoint() const /HoldGIL/;
+%Docstring
+Converts the current object into a :py:class:`QgsPoint` representation
+
+.. versionadded:: 4.0
 %End
 
     SIP_PYOBJECT __repr__();
