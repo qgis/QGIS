@@ -110,9 +110,6 @@ jobs:
 
       - name: Test qgis_bench --help
         run: |
-          # Use Node.js from emsdk
-          export PATH="${EMSDK}/node/22.16.0_64bit/bin:$PATH"
-
           # Install test dependencies
           cd platform/wasm/tests/bench/node
           npm install
@@ -121,7 +118,7 @@ jobs:
           # --help returns exit code 2, so we capture it
           # Note: Large WASM modules require extra memory for V8 compilation
           set +e
-          OUTPUT=$(node --max-old-space-size=4096 index.js ../../../../../build/output/bin/qgis_bench.js 2>&1)
+          OUTPUT=$(node --max-old-space-size=8192 index.js ../../../../../build/output/bin/qgis_bench.js 2>&1)
           EXIT_CODE=$?
           set -e
 
