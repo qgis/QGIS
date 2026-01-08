@@ -43,8 +43,11 @@ class TestQgsMapToolCapture : public QObject
     void addVertexNonVectorLayer();
     void addVertexNonVectorLayerTransform();
     void testTransientGeometrySignalSegmentDigitizing();
+    void testTransientGeometrySignalSegmentDigitizingPolygon();
     void testTransientGeometrySignalStreamDigitizing();
+    void testTransientGeometrySignalStreamDigitizingPolygon();
     void testTransientGeometrySignalTracing();
+    void testTransientGeometrySignalTracingPolygon();
 };
 
 void TestQgsMapToolCapture::initTestCase()
@@ -259,6 +262,45 @@ void TestQgsMapToolCapture::testTransientGeometrySignalSegmentDigitizing()
   QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000))"_s );
 }
 
+void TestQgsMapToolCapture::testTransientGeometrySignalSegmentDigitizingPolygon()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  canvas.setLayers( { layer } );
+  canvas.setCurrentLayer( layer );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0),(0 0, 223000 111000, 0 0)))"_s );
+
+  utils.mouseClick( 2, 1, Qt::LeftButton );
+
+  utils.mouseMove( 2, 2 );
+
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000, 0 0)))"_s );
+}
+
 void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizing()
 {
   QgsProject::instance()->clear();
@@ -300,6 +342,49 @@ void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizing()
   utils.mouseMove( 2, 3 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000),(223000 223000, 223000 334000))"_s );
+}
+
+void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizingPolygon()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  canvas.setLayers( { layer } );
+  canvas.setCurrentLayer( layer );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::Streaming );
+
+  QSignalSpy spy( &tool, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000, 0 0)))"_s );
+
+  utils.mouseMove( 2, 2 );
+
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000, 0 0)))"_s );
+
+  utils.mouseMove( 2, 3 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000),(223000 223000, 223000 334000, 0 0)))"_s );
 }
 
 void TestQgsMapToolCapture::testTransientGeometrySignalTracing()
@@ -352,6 +437,58 @@ void TestQgsMapToolCapture::testTransientGeometrySignalTracing()
   utils.mouseMove( 2, 3 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve ((1 1),(1 1, 2 3))"_s );
+}
+
+void TestQgsMapToolCapture::testTransientGeometrySignalTracingPolygon()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  // Create a layer with a feature to trace against
+  QgsVectorLayer *layer = new QgsVectorLayer( u"LineString?crs=EPSG:4326"_s, u"trace_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (1 1, 5 1, 5 5)"_s ) );
+  layer->dataProvider()->addFeature( f );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  canvas.setLayers( { layer } );
+  canvas.setCurrentLayer( layer );
+
+  QgsSnappingConfig snappingConfig;
+  snappingConfig.setEnabled( true );
+  snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
+  snappingConfig.setTolerance( 20 );
+  snappingConfig.setUnits( Qgis::MapToolUnit::Pixels );
+
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( &canvas, this );
+  snappingUtils->setConfig( snappingConfig );
+  snappingUtils->locatorForLayer( layer )->init();
+  canvas.setSnappingUtils( snappingUtils );
+
+  QgsMapCanvasTracer *tracer = new QgsMapCanvasTracer( &canvas );
+  ( void ) tracer;
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseMove( 5, 5 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CurvePolygon (CompoundCurve ((1 1),(1 1, 1 1, 5 1, 5 5, 5 5, 1 1)))"_s );
+
+  utils.mouseMove( 2, 3 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CurvePolygon (CompoundCurve ((1 1),(1 1, 2 3, 1 1)))"_s );
 }
 
 QGSTEST_MAIN( TestQgsMapToolCapture )
