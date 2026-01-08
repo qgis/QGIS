@@ -118,6 +118,7 @@ void QgsMapToolAdvancedDigitizing::activate()
 {
   QgsMapToolEdit::activate();
   connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
+  connect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, mCadDockWidget, &QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties );
   mCadDockWidget->enable();
   mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
   QgsVectorLayer *layer = currentVectorLayer();
@@ -133,6 +134,7 @@ void QgsMapToolAdvancedDigitizing::deactivate()
 {
   QgsMapToolEdit::deactivate();
   disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
+  disconnect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, mCadDockWidget, &QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties );
   mCadDockWidget->disable();
   delete mSnapToGridCanvasItem;
   mSnapToGridCanvasItem = nullptr;
