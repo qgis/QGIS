@@ -29,7 +29,7 @@ to the system's :py:func:`QgsApplication.messageLog()` instance.
 
   public slots:
 
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::MessageType type );
 %Docstring
 Logs a ``message`` to the viewer.
 %End
