@@ -188,9 +188,9 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( u"layer"_s ), mLayerRef.layerId );
+  elem.setAttribute( u"layer"_s, mLayerRef.layerId );
   elem.setAttribute( u"max-screen-error"_s, maximumScreenError() );
-  elem.setAttribute( u"show-bounding-boxes"_s, showBoundingBoxes() ? u"1"_s : u"0"_s ) );
+  elem.setAttribute( u"show-bounding-boxes"_s, showBoundingBoxes() ? u"1"_s : u"0"_s );
   elem.setAttribute( u"point-budget"_s, mPointBudget );
   elem.setAttribute( u"zoom-out-behavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
   elem.setAttribute( u"zoom-out-multiplier"_s, mZoomOutMultiplier );
