@@ -23,6 +23,7 @@
 #include "testqgsmaptoolutils.h"
 
 #include <QCoreApplication>
+#include <QSignalSpy>
 
 class TestQgsMapToolCapture : public QObject
 {
@@ -40,6 +41,7 @@ class TestQgsMapToolCapture : public QObject
     void addPointNoLayerSnapping();
     void addVertexNonVectorLayer();
     void addVertexNonVectorLayerTransform();
+    void testTransientGeometrySignalSegmentDigitizing();
 };
 
 void TestQgsMapToolCapture::initTestCase()
@@ -213,6 +215,45 @@ void TestQgsMapToolCapture::addVertexNonVectorLayerTransform()
   QCOMPARE( tool.nextPoint( QgsPoint( 5, 6 ), layerPoint ), 0 );
   QGSCOMPARENEAR( layerPoint.x(), 556597, 10 );
   QGSCOMPARENEAR( layerPoint.y(), 669141, 10 );
+}
+
+void TestQgsMapToolCapture::testTransientGeometrySignalSegmentDigitizing()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( u"test"_s, QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
+  layer->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  canvas.setLayers( { layer } );
+  canvas.setCurrentLayer( layer );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CaptureLine );
+  canvas.setMapTool( &tool );
+
+  QSignalSpy spy( &tool, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0),(0 0, 223000 111000))"_s );
+
+  utils.mouseClick( 2, 1, Qt::LeftButton );
+
+  utils.mouseMove( 2, 2 );
+
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000))"_s );
 }
 
 QGSTEST_MAIN( TestQgsMapToolCapture )
