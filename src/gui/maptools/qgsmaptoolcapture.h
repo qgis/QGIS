@@ -389,6 +389,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Reset the
     void resetRubberBand();
 
+    void setCurrentShapeMapToolIsActivated( bool activated );
+
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
