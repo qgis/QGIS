@@ -46,7 +46,6 @@ It proxies display and actions to
     typedef QFlags<QgsAdvancedDigitizingFloater::FloaterItem> FloaterItems;
 
 
-
     explicit QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
 Create an advanced digitizing floater widget
