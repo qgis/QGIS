@@ -7578,6 +7578,21 @@ Qgis.CadConstraintType.__doc__ = """Advanced digitizing constraint type.
 # --
 Qgis.CadConstraintType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CadMeasurementDisplayType.Hidden.__doc__ = "Hide measurement"
+Qgis.CadMeasurementDisplayType.Cartesian.__doc__ = "Use Cartesian measurements"
+Qgis.CadMeasurementDisplayType.Ellipsoidal.__doc__ = "Use Ellipsoidal measurements"
+Qgis.CadMeasurementDisplayType.__doc__ = """Advanced digitizing measurement display types.
+
+.. versionadded:: 4.0
+
+* ``Hidden``: Hide measurement
+* ``Cartesian``: Use Cartesian measurements
+* ``Ellipsoidal``: Use Ellipsoidal measurements
+
+"""
+# --
+Qgis.CadMeasurementDisplayType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ = "If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed."
 Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ = "If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider."
 Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions.__doc__ = "If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored"
