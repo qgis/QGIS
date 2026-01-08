@@ -556,6 +556,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         mAllowAddingStreamingPoints = true;
         addVertex( mapPoint );
         mAllowAddingStreamingPoints = false;
+        emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( mCaptureCurve.clone() ), targetCrs ) );
       }
       else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
       {
