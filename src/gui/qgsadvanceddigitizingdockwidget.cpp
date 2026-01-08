@@ -33,6 +33,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmessagebaritem.h"
 #include "qgsproject.h"
+#include "qgsreferencedgeometry.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -483,6 +484,10 @@ QString QgsAdvancedDigitizingDockWidget::formatCommonAngleSnapping( double angle
     return tr( "Do Not Snap to Common Angles" );
   else
     return QString( tr( "%1, %2, %3, %4°…" ) ).arg( angle, 0, 'f', 1 ).arg( angle * 2, 0, 'f', 1 ).arg( angle * 3, 0, 'f', 1 ).arg( angle * 4, 0, 'f', 1 );
+}
+
+void QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties( const QgsReferencedGeometry &geometry )
+{
 }
 
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )

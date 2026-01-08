@@ -737,6 +737,9 @@ Returns the formatted label for common angle snapping option.
 .. versionadded:: 3.32
 %End
 
+  public slots:
+
+
   signals:
 
     void pushWarning( const QString &message );
