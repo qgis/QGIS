@@ -447,6 +447,88 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   {
+    QMenu *menu = new QMenu( tr( "Show Area" ), mFloaterActionsMenu );
+    mFloaterActionsMenu->addMenu( menu );
+
+    QAction *actionHidden = new QAction( tr( "Hidden" ), mFloaterActionsMenu );
+    actionHidden->setData( QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
+    actionHidden->setCheckable( true );
+    menu->addAction( actionHidden );
+
+    QAction *actionEllipsoidal = new QAction( tr( "Show Ellipsoidal Area" ), mFloaterActionsMenu );
+    actionEllipsoidal->setData( QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
+    actionEllipsoidal->setCheckable( true );
+    menu->addAction( actionEllipsoidal );
+
+    QAction *actionCartesian = new QAction( tr( "Show Cartesian Area" ), mFloaterActionsMenu );
+    actionCartesian->setData( QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+    actionCartesian->setCheckable( true );
+    menu->addAction( actionCartesian );
+
+    QActionGroup *group = new QActionGroup( menu );
+    group->addAction( actionHidden );
+    group->addAction( actionEllipsoidal );
+    group->addAction( actionCartesian );
+
+    const Qgis::CadMeasurementDisplayType areaDisplay = QgsSettings().enumValue( u"/Cad/AreaShowInFloater"_s, Qgis::CadMeasurementDisplayType::Hidden );
+    for ( QAction *action : group->actions() )
+    {
+      if ( action->data().value< Qgis::CadMeasurementDisplayType >() == areaDisplay )
+      {
+        action->setChecked( true );
+      }
+      connect( action, &QAction::toggled, this, [this, action]( bool checked ) {
+        if ( checked )
+        {
+          mFloater->setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem::Area, action->data().value< Qgis::CadMeasurementDisplayType >() );
+        }
+      } );
+    }
+    mFloater->setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem::Area, areaDisplay );
+  }
+
+  {
+    QMenu *menu = new QMenu( tr( "Show Total Length/Perimeter" ), mFloaterActionsMenu );
+    mFloaterActionsMenu->addMenu( menu );
+
+    QAction *actionHidden = new QAction( tr( "Hidden" ), mFloaterActionsMenu );
+    actionHidden->setData( QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
+    actionHidden->setCheckable( true );
+    menu->addAction( actionHidden );
+
+    QAction *actionEllipsoidal = new QAction( tr( "Show Ellipsoidal Lengths" ), mFloaterActionsMenu );
+    actionEllipsoidal->setData( QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
+    actionEllipsoidal->setCheckable( true );
+    menu->addAction( actionEllipsoidal );
+
+    QAction *actionCartesian = new QAction( tr( "Show Cartesian Lengths" ), mFloaterActionsMenu );
+    actionCartesian->setData( QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+    actionCartesian->setCheckable( true );
+    menu->addAction( actionCartesian );
+
+    QActionGroup *group = new QActionGroup( menu );
+    group->addAction( actionHidden );
+    group->addAction( actionEllipsoidal );
+    group->addAction( actionCartesian );
+
+    const Qgis::CadMeasurementDisplayType lengthDisplay = QgsSettings().enumValue( u"/Cad/TotalLengthShowInFloater"_s, Qgis::CadMeasurementDisplayType::Hidden );
+    for ( QAction *action : group->actions() )
+    {
+      if ( action->data().value< Qgis::CadMeasurementDisplayType >() == lengthDisplay )
+      {
+        action->setChecked( true );
+      }
+      connect( action, &QAction::toggled, this, [this, action]( bool checked ) {
+        if ( checked )
+        {
+          mFloater->setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength, action->data().value< Qgis::CadMeasurementDisplayType >() );
+        }
+      } );
+    }
+    mFloater->setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength, lengthDisplay );
+  }
+
+  {
     QAction *action = new QAction( tr( "Show Weight" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
@@ -488,6 +570,119 @@ QString QgsAdvancedDigitizingDockWidget::formatCommonAngleSnapping( double angle
 
 void QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties( const QgsReferencedGeometry &geometry )
 {
+  if ( !mFloater->active() || ( !mFloater->itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Area ) && !mFloater->itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ) ) )
+  {
+    // nothing to do -- we aren't showing the floater, or both the area and total length fields are hidden
+    return;
+  }
+
+  // transform to map crs
+  QgsGeometry g = geometry;
+  const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
+  const QgsCoordinateTransform ct( geometry.crs(), mapCrs, QgsProject::instance()->transformContext() );
+  try
+  {
+    g.transform( ct );
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( u"Error transforming transient geometry: %1"_s.arg( e.what() ) );
+    emit valueAreaChanged( QString() );
+    emit valueTotalLengthChanged( QString() );
+    return;
+  }
+
+  std::unique_ptr< QgsDistanceArea > distanceArea;
+  auto createDistanceArea = [mapCrs, &distanceArea] {
+    // reuse existing if we've already created one
+    if ( distanceArea )
+      return;
+
+    distanceArea = std::make_unique< QgsDistanceArea >();
+    distanceArea->setSourceCrs( mapCrs, QgsProject::instance()->transformContext() );
+    distanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
+  };
+
+  if ( g.type() == Qgis::GeometryType::Polygon && mFloater->itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Area ) )
+  {
+    QString areaString;
+    const Qgis::CadMeasurementDisplayType measureType = mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area );
+    switch ( measureType )
+    {
+      case Qgis::CadMeasurementDisplayType::Hidden:
+        break;
+
+      case Qgis::CadMeasurementDisplayType::Cartesian:
+      {
+        if ( mapCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
+        {
+          areaString = tr( "%1 %2" ).arg(
+            QString::number( g.area(), 'f', mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
+            QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mapCrs.mapUnits() ) )
+          );
+        }
+        else
+        {
+          areaString = QString::number( g.area(), 'f', 4 );
+        }
+        break;
+      }
+
+      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      {
+        createDistanceArea();
+        const double area = distanceArea->measureArea( g );
+        areaString = distanceArea->formatArea( area, mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->areaUnits() );
+        break;
+      }
+    }
+
+    emit valueAreaChanged( areaString );
+  }
+  else
+  {
+    emit valueAreaChanged( QString() );
+  }
+
+  if ( mFloater->itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ) )
+  {
+    const Qgis::CadMeasurementDisplayType measureType = mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength );
+    QString totalLengthString;
+    switch ( measureType )
+    {
+      case Qgis::CadMeasurementDisplayType::Hidden:
+        break;
+
+      case Qgis::CadMeasurementDisplayType::Cartesian:
+      {
+        if ( mapCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
+        {
+          totalLengthString = tr( "%1 %2" ).arg(
+            QString::number( g.length(), 'f', mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
+            QgsUnitTypes::toAbbreviatedString( mapCrs.mapUnits() )
+          );
+        }
+        else
+        {
+          totalLengthString = QString::number( g.length(), 'f', 4 );
+        }
+        break;
+      }
+      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      {
+        createDistanceArea();
+        const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
+        totalLengthString = distanceArea->formatDistance( length, mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->distanceUnits() );
+        break;
+      }
+    }
+
+    emit valueTotalLengthChanged( totalLengthString );
+  }
+  else
+  {
+    emit valueTotalLengthChanged( QString() );
+  }
 }
 
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )

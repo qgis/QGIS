@@ -9,6 +9,8 @@ QgsAdvancedDigitizingFloater.FloaterItem.CommonAngleSnapping.__doc__ = "Common a
 QgsAdvancedDigitizingFloater.FloaterItem.Distance.__doc__ = "Distance (segment length)"
 QgsAdvancedDigitizingFloater.FloaterItem.Bearing.__doc__ = "Segment bearing"
 QgsAdvancedDigitizingFloater.FloaterItem.Weight.__doc__ = "Weight for NURBSCurve \n.. versionadded:: 4.0"
+QgsAdvancedDigitizingFloater.FloaterItem.Area.__doc__ = "Total area \n.. versionadded:: 4.0"
+QgsAdvancedDigitizingFloater.FloaterItem.TotalLength.__doc__ = "Total length (or perimeter) \n.. versionadded:: 4.0"
 QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = """Available floater items
 
 * ``XCoordinate``: X coordinate
@@ -23,6 +25,14 @@ QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = """Available floater items
 
   .. versionadded:: 4.0
 
+* ``Area``: Total area
+
+  .. versionadded:: 4.0
+
+* ``TotalLength``: Total length (or perimeter)
+
+  .. versionadded:: 4.0
+
 
 """
 # --
@@ -30,6 +40,7 @@ QgsAdvancedDigitizingFloater.FloaterItems = lambda flags=0: QgsAdvancedDigitizin
 QgsAdvancedDigitizingFloater.FloaterItem.baseClass = QgsAdvancedDigitizingFloater
 FloaterItem = QgsAdvancedDigitizingFloater  # dirty hack since SIP seems to introduce the flags in module
 try:
+    QgsAdvancedDigitizingFloater.itemSupportsMeasurementType = staticmethod(QgsAdvancedDigitizingFloater.itemSupportsMeasurementType)
     QgsAdvancedDigitizingFloater.__overridden_methods__ = ['eventFilter']
 except (NameError, AttributeError):
     pass

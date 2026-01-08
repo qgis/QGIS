@@ -894,6 +894,31 @@ used by widgets that must reflect the current weight value.
 .. versionadded:: 4.0
 %End
 
+    void valueAreaChanged( const QString &value );
+%Docstring
+Emitted whenever the total summed area ``value`` changes. Could be used
+by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
+    void valueTotalLengthChanged( const QString &value );
+%Docstring
+Emitted whenever the total length (or perimeter) ``value`` changes.
+Could be used by widgets that must reflect the current advanced
+digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
     void lockXChanged( bool locked );
 %Docstring
 Emitted whenever the X parameter is ``locked``. Could be used by widgets
