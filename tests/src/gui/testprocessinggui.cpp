@@ -49,6 +49,7 @@
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagebar.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelundocommand.h"
@@ -11495,6 +11496,64 @@ void TestProcessingGui::testModelGraphicsView()
   }
   // should not exist
   QVERIFY( !layerCommentItem );
+
+
+  // adding a layer and running the model to get feature count
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point", "v1", "memory" );
+  QgsFeature f( 10001 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // run
+  QgsProcessingContext context2;
+  context2.setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+  context2.setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  params.insert( u"LAYER"_s, layer->id() );
+
+  // start with no initial state
+  bool ok = false;
+  model1.run( params, context2, &feedback, &ok );
+  QVERIFY( ok );
+
+  // Set last result then recreate items
+  scene2.setLastRunResult( context2.modelResult(), context2 );
+
+  scene2.createItems( &model1, context2 );
+  QList<QGraphicsItem *> items2 = scene2.items();
+  QgsModelDesignerFeatureCountGraphicItem *layerItemFeatureCount = nullptr;
+  for ( QGraphicsItem *item : items2 )
+  {
+    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    {
+      layerItemFeatureCount = featureCount;
+      QCOMPARE( featureCount->toPlainText(), "[1]" );
+      break;
+    }
+  }
+  QVERIFY( layerItemFeatureCount );
+
+  // hiding feature count decoration
+  scene2.setFlags( QgsModelGraphicsScene::FlagHideFeatureCount );
+  scene2.clear();
+  scene2.createItems( &model1, context2 );
+  QList<QGraphicsItem *> items3 = scene2.items();
+  layerItemFeatureCount = nullptr;
+  for ( QGraphicsItem *item : items3 )
+  {
+    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    {
+      layerItemFeatureCount = featureCount;
+      break;
+    }
+  }
+  // should not exist
+  QVERIFY( !layerItemFeatureCount );
+
 
   //check model bounds
   scene2.updateBounds();
