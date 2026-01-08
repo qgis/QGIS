@@ -104,6 +104,38 @@ jobs:
           -DNUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
           -DNUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build QGIS for WASM 
+      - name: Build QGIS for WASM
         run: |
           cmake --build build --target qgis_bench
+
+      - name: Test qgis_bench --help
+        run: |
+          # Use Node.js from emsdk
+          export PATH="${EMSDK}/node/22.16.0_64bit/bin:$PATH"
+
+          # Install test dependencies
+          cd platform/wasm/tests/bench/node
+          npm install
+
+          # Run qgis_bench with --help and capture output
+          # --help returns exit code 2, so we capture it
+          set +e
+          OUTPUT=$(node index.js ../../../../../build/output/bin/qgis_bench.js 2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          echo "$OUTPUT"
+
+          # Check exit code (--help returns 2)
+          if [ $EXIT_CODE -ne 2 ]; then
+            echo "ERROR: Expected exit code 2, got $EXIT_CODE"
+            exit 1
+          fi
+
+          # Check output contains expected string
+          if echo "$OUTPUT" | grep -q "QGIS (QGIS) Benchmark is console application for QGIS benchmarking"; then
+            echo "SUCCESS: Help output verified"
+          else
+            echo "ERROR: Expected help text not found in output"
+            exit 1
+          fi

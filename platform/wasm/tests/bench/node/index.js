@@ -138,8 +138,10 @@ globalThis.screen = window.screen;
 (async () => {
   console.log('Browser environment ready. Booting QGIS WebAssembly...');
 
-  const qgisBenchPath = path.resolve(__dirname, '../../../../../../build/debug/output/bin/qgis_bench.js');
-  const qtLoaderPath = path.resolve(__dirname, '../../../../../../build/debug/output/bin/qtloader.js');
+  // Accept qgis_bench.js path as argument, or use default local dev path
+  const defaultPath = path.resolve(__dirname, '../../../../../../build/debug/output/bin/qgis_bench.js');
+  const qgisBenchPath = process.argv[2] ? path.resolve(process.argv[2]) : defaultPath;
+  const qtLoaderPath = path.join(path.dirname(qgisBenchPath), 'qtloader.js');
   console.log('QGIS Bench path:', qgisBenchPath);
   console.log('Qt Loader path:', qtLoaderPath);
 
@@ -231,6 +233,7 @@ globalThis.screen = window.screen;
       preRun: [function (module) {
         console.log('QGIS Bench is starting...');
 
+        /*
         // Create directories for project files and output
         try {
           module.FS.mkdir('/project');
@@ -261,6 +264,7 @@ globalThis.screen = window.screen;
         } catch (e) {
           console.error('Failed to setup filesystem:', e);
         }
+        */
       }],
     });
   } catch (e) {
