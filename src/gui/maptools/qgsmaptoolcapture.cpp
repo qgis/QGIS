@@ -533,6 +533,13 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     const QgsPoint mapPoint = QgsPoint( point );
 
+    QgsCoordinateReferenceSystem targetCrs = mCanvas->mapSettings().destinationCrs();
+    if ( QgsMapLayer *l = layer() )
+    {
+      // if we have a layer, then the geometry will be in the layer's CRS, not the canvas'
+      targetCrs = l->crs();
+    }
+
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
       bool hasTrace = false;
@@ -553,7 +560,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
       {
         // Store the intermediate point for circular string to retrieve after tracing mouse move if
-        // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
+        // the digitizing type is circular and the temp rubber band is effectively circular and if this point is existing
         // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
         if ( mLineDigitizingType == Qgis::WkbType::CircularString && mTempRubberBand->stringType() == Qgis::WkbType::CircularString && mTempRubberBand->curveIsComplete() )
           mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
@@ -590,6 +597,22 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           // fix existing rubber band after tracing - the last point may have been moved if using offset
           if ( mRubberBand->numberOfVertices() )
             mRubberBand->movePoint( mapPt );
+
+          std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+
+          // add mouse hover point to current captured geometry
+          try
+          {
+            QgsPoint hoverPointTargetCrs = mapPoint;
+            hoverPointTargetCrs.transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
+            tempCurve->addCurve( new QgsLineString( tempCurve->endPoint(), hoverPointTargetCrs ) );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugError( e.what() );
+          }
+
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
         }
         else if ( mTempRubberBand )
           mTempRubberBand->movePoint( mapPoint );
