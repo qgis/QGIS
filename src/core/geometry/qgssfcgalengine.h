@@ -39,7 +39,7 @@ class QgsSfcgalGeometry;
 /// compute SFCGAL integer version from major, minor and patch number
 #define SFCGAL_MAKE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
 /// compute current SFCGAL integer version
-#define SFCGAL_VERSION SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
+#define SFCGAL_VERSION_NUM SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
 #define CHECK_NOT_NULL( ptr, defaultObj )                                              \
@@ -104,7 +104,7 @@ namespace sfcgal
 namespace sfcgal
 {
   // ==== SFCGAL primitive
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   //! Shortcut to SFCGAL primitive
   using primitive = sfcgal_primitive_t;
   //! Shortcut to SFCGAL primitive type
@@ -668,7 +668,7 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 
     /**
      * Apply 3D matrix transform \a mat to geometry \a geom
