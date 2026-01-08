@@ -72,10 +72,22 @@ void QgsMap3DExportWidget::loadSettings()
   // Do not enable terrain options if terrain rendering is disabled
   if ( mScene->mapSettings()->terrainRenderingEnabled() )
   {
-    ui->terrainResolutionLabel->setEnabled( true );
-    ui->terrainResolutionSpinBox->setEnabled( true );
     ui->terrainTextureResolutionLabel->setEnabled( true );
     ui->terrainTextureResolutionSpinBox->setEnabled( true );
+
+    // Only Dem and Online types handle terrain resolution
+    const QgsTerrainGenerator *terrainGenerator = mScene->mapSettings()->terrainGenerator();
+    if ( terrainGenerator->type() == QgsTerrainGenerator::Dem || terrainGenerator->type() == QgsTerrainGenerator::Online )
+    {
+      ui->terrainResolutionLabel->setEnabled( true );
+      ui->terrainResolutionSpinBox->setEnabled( true );
+    }
+    else
+    {
+      ui->terrainResolutionLabel->setEnabled( false );
+      ui->terrainResolutionSpinBox->setEnabled( false );
+      ui->terrainResolutionSpinBox->setToolTip( tr( "This option is unavailable for the %1 terrain type." ).arg( terrainGenerator->typeToString( terrainGenerator->type() ) ) );
+    }
   }
   else
   {
