@@ -47,18 +47,17 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     //! Available floater items
     enum class FloaterItem : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      XCoordinate = 1 << 1,
-      YCoordinate = 1 << 2,
-      MCoordinate = 1 << 3,
-      ZCoordinate = 1 << 4,
-      Angle = 1 << 5,
-      CommonAngleSnapping = 1 << 6,
-      Distance = 1 << 7,
-      Bearing = 1 << 8,
+      XCoordinate = 1 << 1,         //!< X coordinate
+      YCoordinate = 1 << 2,         //!< Y coordinate
+      MCoordinate = 1 << 3,         //!< M coordinate
+      ZCoordinate = 1 << 4,         //!< Z coordinate
+      Angle = 1 << 5,               //!< Angle between segments
+      CommonAngleSnapping = 1 << 6, //!< Common angles
+      Distance = 1 << 7,            //!< Distance (segment length)
+      Bearing = 1 << 8,             //!< Segment bearing
     };
     Q_DECLARE_FLAGS( FloaterItems, FloaterItem )
     Q_FLAG( FloaterItem )
-
 
     /**
      * Create an advanced digitizing floater widget
