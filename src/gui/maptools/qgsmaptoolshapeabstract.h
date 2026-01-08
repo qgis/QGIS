@@ -22,6 +22,7 @@
 #include "qgis_gui.h"
 #include "qgsabstractgeometry.h"
 #include "qgsmaptoolcapture.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QIcon>
 #include <QString>
@@ -103,10 +104,31 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     //! Called to undo last action (last point added)
     virtual void undo();
 
+  signals:
+
+    /**
+     * Emitted whenever the \a geometry associated with the tool is changed, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * \since QGIS 4.0
+     */
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
+
   private:
     QString mId;
 
   protected:
+    /**
+     * Sets the current \a geometry, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * Subclasses should call this during their cadCanvasMoveEvent() implementations, whenever the transient
+     * geometry changes as a result of a mouse move.
+     *
+     * \a geometry should be in the current map canvas CRS.
+     *
+     * \since QGIS 4.0
+     */
+    void setTransientGeometry( const QgsGeometry &geometry );
+
     QgsMapToolCapture *mParentTool = nullptr;
 
     //! points (in map coordinates)
