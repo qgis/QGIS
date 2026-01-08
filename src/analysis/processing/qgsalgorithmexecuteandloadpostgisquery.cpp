@@ -104,7 +104,7 @@ QVariantMap QgsExecuteAndLoadPostgisQueryAlgorithm::processAlgorithm( const QVar
   const QString geomField = parameterAsString( parameters, u"GEOMETRY_FIELD"_s, context );
 
   QgsDataSourceUri uri( conn->uri() );
-  uri.setDataSource( "", u"(%1)"_s.arg( sql ), geomField, "", idField );
+  uri.setDataSource( QString(), u"(%1)"_s.arg( sql ), geomField, QString(), idField );
 
   auto layer = std::make_unique<QgsVectorLayer>( uri.uri(), u"layername"_s, u"postgres"_s );
   if ( !layer->isValid() )
