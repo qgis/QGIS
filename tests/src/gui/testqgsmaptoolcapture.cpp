@@ -419,8 +419,8 @@ void TestQgsMapToolCapture::testTransientGeometrySignalTracing()
   snappingUtils->locatorForLayer( layer )->init();
   canvas.setSnappingUtils( snappingUtils );
 
-  QgsMapCanvasTracer *tracer = new QgsMapCanvasTracer( &canvas );
-  ( void ) tracer;
+  auto tracer = std::make_unique< QgsMapCanvasTracer >( &canvas );
+
   QgsAdvancedDigitizingDockWidget cadDock( &canvas );
   QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CaptureLine );
   canvas.setMapTool( &tool );
