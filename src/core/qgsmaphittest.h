@@ -15,12 +15,17 @@
 #ifndef QGSMAPHITTEST_H
 #define QGSMAPHITTEST_H
 
+#include <utility>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
 #include "qgslayertreefiltersettings.h"
 #include "qgsmapsettings.h"
+#include "qgsmeshlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterminmaxorigin.h"
 #include "qgstaskmanager.h"
 
 #include <QSet>
@@ -89,6 +94,38 @@ class CORE_EXPORT QgsMapHitTest
     ///@endcond PRIVATE
 
     /**
+     * Returns the hit test results, for layers with UpdatedCanvas renderers (raster/mesh layers).
+     * Results are given as QMap of layer IDs to pairs of (min, max) values.
+     *
+     * \since QGIS 4.0
+     */
+    QMap<QString, std::pair<double, double>> resultsRenderersUpdatedCanvas() const SIP_SKIP { return mHitTestRenderersUpdatedCanvas; }
+
+
+#ifdef SIP_RUN
+    /**
+     * Returns the hit test results, for layers with UpdatedCanvas renderers (raster/mesh layers).
+     * Results are given as QMap of layer IDs to pairs of (min, max) values.
+     *
+     * \since QGIS 4.0
+     */
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas );
+    % MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+    sipRes = PyDict_New();
+
+    for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+    {
+      PyObject *tuple = PyTuple_New( 2 );
+      PyTuple_SET_ITEM( tuple, 0, PyFloat_FromDouble( it.value().first ) );
+      PyTuple_SET_ITEM( tuple, 1, PyFloat_FromDouble( it.value().second ) );
+      PyDict_SetItem( sipRes, PyUnicode_FromString( it.key().toUtf8().constData() ), tuple );
+      Py_DECREF( tuple );
+    }
+    % End
+#endif
+
+    /**
      * Tests whether a symbol is visible for a specified layer.
      * \param symbol symbol to find
      * \param layer vector layer
@@ -135,6 +172,43 @@ class CORE_EXPORT QgsMapHitTest
                                   QgsFeedback *feedback,
                                   const QgsGeometry &visibleExtent );
 
+    /**
+     * Runs test for minimum and maximum value for a raster data provider
+     * \param provider raster data provider
+     * \param layerId associated layer id
+     * \param band raster band to calculate min/max on
+     * \param minMaxOrigin min/max origin settings
+     * \param rangeLimit range limit settings
+     * \param transform coordinate transform to map CRS
+     * \param context render context
+     * \param feedback optional feedback argument for cancel support
+     * \note not available in Python bindings
+     */
+    void runHitTestRasterSource( QgsRasterDataProvider *provider,
+                                 const QString &layerId,
+                                 const int band,
+                                 const QgsRasterMinMaxOrigin minMaxOrigin,
+                                 const Qgis::RasterRangeLimit rangeLimit,
+                                 const QgsCoordinateTransform &transform,
+                                 QgsRenderContext &context,
+                                 QgsFeedback *feedback );
+
+    /**
+     * Runs test for visible symbols from a mesh layer
+     * \param layer mesh layer
+     * \param layerId associated layer id
+     * \param datasetIndex dataset index within the mesh layer
+     * \param transform coordinate transform to map CRS
+     * \param context render context
+     * \param feedback optional feedback argument for cancel support
+     * \note not available in Python bindings
+     */
+    void runHitTestMeshSource( QgsMeshLayer *layer,
+                               const QString &layerId,
+                               const QgsMeshDatasetIndex datasetIndex,
+                               const QgsCoordinateTransform &transform,
+                               QgsRenderContext &context,
+                               QgsFeedback *feedback );
     //! The hit test
     HitTest mHitTest;
 
@@ -142,6 +216,8 @@ class CORE_EXPORT QgsMapHitTest
     HitTest mHitTestRuleKey;
 
     QgsLayerTreeFilterSettings mSettings;
+
+    QMap<QString, std::pair<double, double>> mHitTestRenderersUpdatedCanvas;
 
     friend class QgsMapHitTestTask;
 };
@@ -182,6 +258,37 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
 
     void cancel() override;
 
+    /**
+     * Returns the hit test results, for layers with UpdatedCanvas renderers (raster/mesh layers).
+     * Results are given as QMap of layer IDs to pairs of (min, max) values.
+     *
+     * \since QGIS 4.0
+     */
+    QMap<QString, QPair<double, double>> resultsRenderersUpdatedCanvas() const SIP_SKIP { return mResultsRenderersUpdatedCanvas; };
+
+#ifdef SIP_RUN
+    /**
+     * Returns the hit test results, for layers with UpdatedCanvas renderers (raster/mesh layers).
+     * Results are given as QMap of layer IDs to pairs of (min, max) values.
+     *
+     * \since QGIS 4.0
+     */
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas );
+    % MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+    sipRes = PyDict_New();
+
+    for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+    {
+      PyObject *tuple = PyTuple_New( 2 );
+      PyTuple_SET_ITEM( tuple, 0, PyFloat_FromDouble( it.value().first ) );
+      PyTuple_SET_ITEM( tuple, 1, PyFloat_FromDouble( it.value().second ) );
+      PyDict_SetItem( sipRes, PyUnicode_FromString( it.key().toUtf8().constData() ), tuple );
+      Py_DECREF( tuple );
+    }
+    % End
+#endif
+
   protected:
 
     bool run() override;
@@ -201,11 +308,40 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
       std::unique_ptr< QgsExpressionContextScope > layerScope;
     };
 
+    struct PreparedRasterData
+    {
+      std::unique_ptr< QgsRasterDataProvider > provider;
+      QString layerId;
+      int band;
+      QgsRasterMinMaxOrigin minMaxOrigin;
+      Qgis::RasterRangeLimit rangeLimit;
+      QgsCoordinateTransform transform;
+    };
+
+    struct PreparedMeshData
+    {
+      QString layerId;
+      QString name;
+      QString source;
+      QStringList extraDatasetUris;
+      QgsMeshRendererSettings rendererSettings;
+      QString providerKey;
+      QgsCoordinateReferenceSystem crs;
+      QgsMeshDatasetIndex datasetIndex;
+      QgsCoordinateTransform transform;
+    };
+
     std::vector< PreparedLayerData > mPreparedData;
+
+    std::vector< PreparedRasterData > mPreparedRasterData;
+
+    std::vector< PreparedMeshData > mPreparedMeshData;
 
     QgsLayerTreeFilterSettings mSettings;
 
     QMap<QString, QSet<QString>> mResults;
+
+    QMap<QString, QPair<double, double>> mResultsRenderersUpdatedCanvas;
 
     std::unique_ptr< QgsFeedback > mFeedback;
 };
