@@ -1254,6 +1254,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   addDockWidget( Qt::LeftDockWidgetArea, mVertexEditorDock );
   mVertexEditorDock->hide();
 
+  // ordering here is important - icons created before this call will not be overridden by themes
+  functionProfile( &QgisApp::readSettings, this, u"Read settings"_s );
+
   mMapTools = std::make_unique<QgsAppMapTools>( mMapCanvas, mAdvancedDigitizingDockWidget );
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
@@ -1713,8 +1716,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     delete mActionShowPythonDialog;
     mActionShowPythonDialog = nullptr;
   }
-
-  functionProfile( &QgisApp::readSettings, this, u"Read theme settings"_s );
 
   // Update recent project list (as possible custom project storages are now registered by plugins)
   mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
