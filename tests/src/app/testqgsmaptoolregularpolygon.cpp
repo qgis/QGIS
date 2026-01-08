@@ -26,6 +26,8 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+
 class TestQgsMapToolRegularPolygon : public QObject
 {
     Q_OBJECT
@@ -47,6 +49,9 @@ class TestQgsMapToolRegularPolygon : public QObject
     void testRegularPolygonFromCenterAndCorner();
     void testRegularPolygonFromCenterAndCornerWithDeletedVertex();
     void testRegularPolygonFromCenterAndCornerNotEnoughPoints();
+    void testTransientGeometrySignal2Points();
+    void testTransientGeometrySignalCenterPoint();
+    void testTransientGeometrySignalCenterCorner();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -314,6 +319,75 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCornerNotEnoug
   mLayer->rollBack();
 }
 
+void TestQgsMapToolRegularPolygon::testTransientGeometrySignal2Points()
+{
+  mLayer->startEditing();
+
+  QgsMapToolShapeRegularPolygon2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"Polygon Z ((0 0 0, 2 1 0, 3.9 -0.2 0, 3.7 -2.5 0, 1.7 -3.5 0, -0.1 -2.2 0, 0 0 0))"_s );
+
+  utils.mouseMove( 3, 2 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"Polygon Z ((0 0 0, 3 2 0, 6.2 0.4 0, 6.5 -3.2 0, 3.5 -5.2 0, 0.2 -3.6 0, 0 0 0))"_s );
+
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  mLayer->rollBack();
+}
+
+void TestQgsMapToolRegularPolygon::testTransientGeometrySignalCenterPoint()
+{
+  mLayer->startEditing();
+
+  QgsMapToolShapeRegularPolygonCenterPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"Polygon Z ((1.4 2.2 0, 2.6 -0.2 0, 1.2 -2.3 0, -1.4 -2.2 0, -2.6 0.2 0, -1.2 2.3 0, 1.4 2.2 0))"_s );
+
+  utils.mouseMove( 3, 2 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"Polygon Z ((1.8 3.7 0, 4.2 0.3 0, 2.3 -3.5 0, -1.8 -3.7 0, -4.2 -0.3 0, -2.3 3.5 0, 1.8 3.7 0))"_s );
+
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  mLayer->rollBack();
+}
+
+void TestQgsMapToolRegularPolygon::testTransientGeometrySignalCenterCorner()
+{
+  mLayer->startEditing();
+
+  QgsMapToolShapeRegularPolygonCenterCornerMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"Polygon Z ((2 1 0, 1.9 -1.2 0, -0.1 -2.2 0, -2 -1 0, -1.9 1.2 0, 0.1 2.2 0, 2 1 0))"_s );
+
+  utils.mouseMove( 3, 2 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"Polygon Z ((3 2 0, 3.2 -1.6 0, 0.2 -3.6 0, -3 -2 0, -3.2 1.6 0, -0.2 3.6 0, 3 2 0))"_s );
+
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  mLayer->rollBack();
+}
 
 QGSTEST_MAIN( TestQgsMapToolRegularPolygon )
 #include "testqgsmaptoolregularpolygon.moc"
