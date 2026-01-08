@@ -68,6 +68,7 @@ class _3D_EXPORT QgsCrossSection
      * Returns the cross section extent as a geometry (Polygon or LineString).
      * If a coordinate transform is provided, the geometry is transformed.
      * The transform should be from the cross section CRS (3D map CRS) to the destination CRS (2D map canvas CRS).
+     * \since QGIS 4.0
      */
     QgsGeometry asGeometry( const QgsCoordinateTransform *ct = nullptr ) const;
 
