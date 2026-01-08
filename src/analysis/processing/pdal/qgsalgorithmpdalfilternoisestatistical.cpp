@@ -56,7 +56,7 @@ QString QgsPdalFilterNoiseStatisticalAlgorithm::shortHelpString() const
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filter noise in a point cloud using a statistical outlier removal algorithm." );
+  return QObject::tr( "Filters noise in a point cloud using a statistical outlier removal algorithm." );
 }
 
 QgsPdalFilterNoiseStatisticalAlgorithm *QgsPdalFilterNoiseStatisticalAlgorithm::createInstance() const

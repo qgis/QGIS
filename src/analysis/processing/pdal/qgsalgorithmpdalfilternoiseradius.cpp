@@ -56,7 +56,7 @@ QString QgsPdalFilterNoiseRadiusAlgorithm::shortHelpString() const
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filter noise in a point cloud using radius algorithm." );
+  return QObject::tr( "Filters noise in a point cloud using radius algorithm." );
 }
 
 QgsPdalFilterNoiseRadiusAlgorithm *QgsPdalFilterNoiseRadiusAlgorithm::createInstance() const
