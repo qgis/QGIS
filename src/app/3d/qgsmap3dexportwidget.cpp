@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
 #include "qgssettings.h"
 
 #include <QFileDialog>
@@ -67,6 +68,24 @@ void QgsMap3DExportWidget::loadSettings()
   ui->exportNormalsCheckBox->setChecked( mExportSettings->exportNormals() );
   ui->exportTexturesCheckBox->setChecked( mExportSettings->exportTextures() );
   ui->scaleSpinBox->setValue( mExportSettings->scale() );
+
+  // Do not enable terrain options if terrain rendering is disabled
+  if ( mScene->mapSettings()->terrainRenderingEnabled() )
+  {
+    ui->terrainResolutionLabel->setEnabled( true );
+    ui->terrainResolutionSpinBox->setEnabled( true );
+    ui->terrainTextureResolutionLabel->setEnabled( true );
+    ui->terrainTextureResolutionSpinBox->setEnabled( true );
+  }
+  else
+  {
+    ui->terrainResolutionLabel->setEnabled( false );
+    ui->terrainResolutionSpinBox->setEnabled( false );
+    ui->terrainResolutionSpinBox->setToolTip( tr( "Enable terrain rendering to use this option." ) );
+    ui->terrainTextureResolutionLabel->setEnabled( false );
+    ui->terrainTextureResolutionSpinBox->setEnabled( false );
+    ui->terrainTextureResolutionSpinBox->setToolTip( tr( "Enable terrain rendering to use this option." ) );
+  }
 }
 
 void QgsMap3DExportWidget::settingsChanged()
