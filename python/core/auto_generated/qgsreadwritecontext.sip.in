@@ -144,7 +144,7 @@ Sets data coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
-    const QString &currentLayerId() const;
+    const QString currentLayerId() const;
 %Docstring
 Returns the currently used layer id as string.
 

@@ -704,13 +704,14 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
           registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
 
           //legend
-          for ( const QgsLegendSymbolItem &item : vlayer->renderer()->legendSymbolItems() )
+          if ( vlayer->renderer() )
           {
-            translationContext->registerTranslation( u"project:layers:%1:legendsymbollabels"_s.arg( vlayer->id() ), item.label() );
+            for ( const QgsLegendSymbolItem &item : vlayer->renderer()->legendSymbolItems() )
+            {
+              translationContext->registerTranslation( u"project:layers:%1:legendsymbollabels"_s.arg( vlayer->id() ), item.label() );
+            }
           }
-
           break;
-
         }
 
         case Qgis::LayerType::Raster:

@@ -1060,9 +1060,7 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
   // Constraint expressions
   QDomElement constraintExpressionElem = doc.createElement( u"constraintExpression"_s );
   constraintExpressionElem.setAttribute( u"exp"_s, field.constraints().constraintExpression() );
-  QgsReadWriteContext context;
-  const QString translatedDesc = context.projectTranslator()->translate( u"project:layers:%1:constraintdescriptions"_s.arg( mLayer->id() ), field.constraints().constraintDescription() );
-  constraintExpressionElem.setAttribute( u"desc"_s, translatedDesc );
+  constraintExpressionElem.setAttribute( u"desc"_s, field.constraints().constraintDescription() );
   documentElement.appendChild( constraintExpressionElem );
 
   // Widget general settings
@@ -1125,6 +1123,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
   if ( doc.setContent( mimeData->data( u"application/x-qgsattributetabledesignerelementclipboard"_s ) ) )
   {
+    QgsReadWriteContext context;
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() != "FormWidgetClipboard"_L1 )
       return;
@@ -1149,7 +1148,6 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
         {
           const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
           QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-          QgsReadWriteContext context;
           // translate widget configuration strings
           if ( widgetType == "ValueRelation"_L1 )
           {
@@ -1263,7 +1261,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
       if ( !constraintExpressionElement.isNull() )
       {
         QString expression = constraintExpressionElement.attribute( u"exp"_s, QString() );
-        QString description = constraintExpressionElement.attribute( u"desc"_s, QString() );
+        QString description = context.projectTranslator()->translate( u"project:layers:%1:constraintdescriptions"_s.arg( mLayer->id() ), constraintExpressionElement.attribute( u"desc"_s, QString() ) );
         fieldConstraints.setConstraintExpression( expression, description );
       }
     }

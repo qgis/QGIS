@@ -157,7 +157,7 @@ class CORE_EXPORT QgsReadWriteContext
      * Returns the currently used layer id as string.
      * \since QGIS 4.0
      */
-    const QString &currentLayerId() const { return mCurrentLayerId; }
+    const QString currentLayerId() const { return mCurrentLayerId; }
 
     /**
      * Sets the current layer id.
