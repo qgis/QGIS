@@ -217,7 +217,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
         connect( showProjectVersions, &QAction::triggered, this, [projectItem] {
           QgsPostgresProjectVersionsDialog dlg = QgsPostgresProjectVersionsDialog( projectItem->connectionName(), projectItem->schemaName(), projectItem->name(), nullptr );
           if ( dlg.exec() == QDialog::Accepted )
-          // TODO handle currently opened project here
+          // TODO if provider would have access to QgsInterface we could handle closing currently open project correctly, right now the project is just closed
           {
             const QString uri = dlg.selectedProjectUri();
             if ( !uri.isEmpty() )
