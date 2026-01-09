@@ -116,6 +116,7 @@ try:
     QgsApplication.authConfigurationStorageRegistry = staticmethod(QgsApplication.authConfigurationStorageRegistry)
     QgsApplication.processingRegistry = staticmethod(QgsApplication.processingRegistry)
     QgsApplication.pageSizeRegistry = staticmethod(QgsApplication.pageSizeRegistry)
+    QgsApplication.applicationThemeRegistry = staticmethod(QgsApplication.applicationThemeRegistry)
     QgsApplication.actionScopeRegistry = staticmethod(QgsApplication.actionScopeRegistry)
     QgsApplication.connectionRegistry = staticmethod(QgsApplication.connectionRegistry)
     QgsApplication.profiler = staticmethod(QgsApplication.profiler)

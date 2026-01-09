@@ -965,6 +965,14 @@ page sizes.
 %End
 
 
+    static QgsApplicationThemeRegistry *applicationThemeRegistry() /KeepReference/;
+%Docstring
+Returns the application's theme registry, used for styling the user
+interface.
+
+.. versionadded:: 4.0
+%End
+
     static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
 Returns the action scope registry.

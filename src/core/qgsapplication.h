@@ -57,6 +57,7 @@ class QgsClassificationMethodRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
+class QgsApplicationThemeRegistry;
 class QgsUserProfile;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
@@ -907,6 +908,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \note not available in Python bindings
      */
     static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
+
+    /**
+     * Returns the application's theme registry, used for styling the user interface.
+     * \since QGIS 4.0
+     */
+    static QgsApplicationThemeRegistry *applicationThemeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the action scope registry.
