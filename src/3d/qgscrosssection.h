@@ -27,6 +27,7 @@ class QgsCoordinateTransform;
  * \brief Encapsulates the definition of a cross section in 3D map coordinates.
  *
  * Defined by a line (p1, p2) and a half-width (extent from the line).
+ * \since QGIS 4.0
  */
 class _3D_EXPORT QgsCrossSection
 {
