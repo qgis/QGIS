@@ -79,7 +79,7 @@ void QgsMap3DExportWidget::loadSettings()
 
     // Only Dem and Online types handle terrain resolution
     const QgsTerrainGenerator *terrainGenerator = mScene->mapSettings()->terrainGenerator();
-    if ( terrainGenerator->type() == QgsTerrainGenerator::Dem || terrainGenerator->type() == QgsTerrainGenerator::Online )
+    if ( terrainGenerator->capabilities().testFlag( QgsTerrainGenerator::Capability::SupportsTileResolution ) )
     {
       ui->terrainResolutionLabel->setEnabled( true );
       ui->terrainResolutionSpinBox->setEnabled( true );
