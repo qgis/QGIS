@@ -541,6 +541,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QMap<QString, QSet<QString>> mHitTestResults;
 
+    QMap<QString, QPair<double, double>> mHitTestResultsRendererUpdatedCanvas;
+
     std::unique_ptr< QgsLayerTreeFilterSettings > mFilterSettings;
 
     double mLegendMapViewMupp = 0;
