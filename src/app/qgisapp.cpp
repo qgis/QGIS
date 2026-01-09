@@ -8879,7 +8879,7 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
     QProgressDialog progress( tr( "Collecting patches…" ), tr( "Abort" ), 0, featureList.size(), this );
     progress.setWindowModality( Qt::WindowModal );
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
     auto resultTin = std::make_unique<QgsTriangulatedSurface>();
     // Preserve Z/M from layer type
@@ -8892,7 +8892,6 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
     {
       if ( progress.wasCanceled() )
       {
-        QApplication::restoreOverrideCursor();
         canceled = true;
         return QgsGeometry();
       }
@@ -8920,7 +8919,6 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
       }
     }
 
-    QApplication::restoreOverrideCursor();
     progress.setValue( featureList.size() );
     return QgsGeometry( std::move( resultTin ) );
   }
