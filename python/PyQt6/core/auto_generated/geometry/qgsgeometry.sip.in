@@ -2257,7 +2257,8 @@ This method works only with (multi)polygon geometry types.
 
 .. versionadded:: 3.10
 %End
-%MethodCode const Qgis::GeometryType type = sipCpp->type();
+%MethodCode
+    const Qgis::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
@@ -2405,7 +2406,8 @@ This method works only with single-point geometry types.
 
 :raises ValueError: if the geometry is null
 %End
-%MethodCode if ( sipCpp->isNull() )
+%MethodCode
+    if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
       sipIsErr = 1;
@@ -2440,7 +2442,8 @@ This method works only with single-line (or single-curve).
 
 :raises ValueError: if the geometry is null
 %End
-%MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+%MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polyline." ).toUtf8().constData() );
@@ -2474,7 +2477,8 @@ geometry types.
 
 :raises ValueError: if the geometry is null
 %End
-%MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+%MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polygon." ).toUtf8().constData() );
@@ -2505,7 +2509,8 @@ This method works only with multi-point geometry types.
 
 :raises ValueError: if the geometry is null
 %End
-%MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+%MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipoint." ).toUtf8().constData() );
@@ -2539,7 +2544,8 @@ types.
 
 :raises ValueError: if the geometry is null
 %End
-%MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+%MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multilinestring." ).toUtf8().constData() );
@@ -2573,7 +2579,8 @@ geometry types.
 
 :raises ValueError: if the geometry is null
 %End
-%MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+%MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipolygon." ).toUtf8().constData() );

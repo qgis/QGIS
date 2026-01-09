@@ -2154,7 +2154,8 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.10
      */
     SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const SIP_TYPEHINT( QgsPolylineXY );
-    % MethodCode const Qgis::GeometryType type = sipCpp->type();
+    % MethodCode
+    const Qgis::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Cannot generate points inside a null geometry."_s.toUtf8().constData() );
@@ -2306,7 +2307,8 @@ class CORE_EXPORT QgsGeometry
      * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
-    % MethodCode if ( sipCpp->isNull() )
+    % MethodCode
+    if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a point."_s.toUtf8().constData() );
       sipIsErr = 1;
@@ -2352,7 +2354,8 @@ class CORE_EXPORT QgsGeometry
     * \throws ValueError if the geometry is null
     */
     SIP_PYOBJECT asPolyline() const SIP_TYPEHINT( QgsPolylineXY );
-    % MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+    % MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polyline."_s.toUtf8().constData() );
@@ -2396,7 +2399,8 @@ class CORE_EXPORT QgsGeometry
     * \throws ValueError if the geometry is null
     */
     SIP_PYOBJECT asPolygon() const SIP_TYPEHINT( QgsPolygonXY );
-    % MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+    % MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polygon."_s.toUtf8().constData() );
@@ -2438,7 +2442,8 @@ class CORE_EXPORT QgsGeometry
     * \throws ValueError if the geometry is null
     */
     SIP_PYOBJECT asMultiPoint() const SIP_TYPEHINT( QgsMultiPointXY );
-    % MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+    % MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipoint."_s.toUtf8().constData() );
@@ -2482,7 +2487,8 @@ class CORE_EXPORT QgsGeometry
     * \throws ValueError if the geometry is null
     */
     SIP_PYOBJECT asMultiPolyline() const SIP_TYPEHINT( QgsMultiPolylineXY );
-    % MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+    % MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multilinestring."_s.toUtf8().constData() );
@@ -2526,7 +2532,8 @@ class CORE_EXPORT QgsGeometry
     * \throws ValueError if the geometry is null
     */
     SIP_PYOBJECT asMultiPolygon() const SIP_TYPEHINT( QgsMultiPolygonXY );
-    % MethodCode const Qgis::WkbType type = sipCpp->wkbType();
+    % MethodCode
+    const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
       PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipolygon."_s.toUtf8().constData() );
