@@ -102,13 +102,19 @@ QgsPoint::QgsPoint( Qgis::WkbType wkbType, double x, double y, double z, double 
 QgsPoint::QgsPoint( const QVector3D &vect, double m )
   : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( m )
 {
-  mWkbType = Qgis::WkbType::Point;
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::Point, !std::isnan( mZ ), !std::isnan( mM ) );
+}
+
+QgsPoint::QgsPoint( const QVector4D &vect )
+  : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( vect.w() )
+{
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::Point, !std::isnan( mZ ), !std::isnan( mM ) );
 }
 
 QgsPoint::QgsPoint( const QgsVector3D &vect, double m )
   : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( m )
 {
-  mWkbType = Qgis::WkbType::Point;
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::Point, !std::isnan( mZ ), !std::isnan( mM ) );
 }
 
 /***************************************************************************

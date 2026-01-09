@@ -153,13 +153,23 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Create a new point from a QVector3D.
      *
      * \note Not available in Python bindings
+     * \since QGIS 4.0
      */
     explicit QgsPoint( const QVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector4D.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QVector4D &vect ) SIP_SKIP;
 
     /**
      * Create a new point from a QVector3D.
      *
      * \note Not available in Python bindings
+     * \since QGIS 4.0
      */
     explicit QgsPoint( const QgsVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
@@ -394,6 +404,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the point as a QVector3D.
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
+     * \since QGIS 4.0
      */
     QVector3D toVector3D() const SIP_HOLDGIL
     {
@@ -401,7 +413,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 
     /**
-     * Returns the point as a QVector3D.
+     * Returns the point as a QVector4D.
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
+     * \since QGIS 4.0
      */
     QVector4D toVector4D() const SIP_HOLDGIL
     {
@@ -410,6 +424,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the point as a QgsVector3D.
+     * \since QGIS 4.0
      */
     QgsVector3D toQgsVector3D() const SIP_HOLDGIL
     {
