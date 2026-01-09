@@ -3939,6 +3939,19 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GeometryBackend.QGIS.__doc__ = "Use internal implementation"
+Qgis.GeometryBackend.GEOS.__doc__ = "Use GEOS implementation"
+Qgis.GeometryBackend.__doc__ = """Geometry backend for :py:class:`QgsGeometry`.
+
+.. versionadded:: 3.46
+
+* ``QGIS``: Use internal implementation
+* ``GEOS``: Use GEOS implementation
+
+"""
+# --
+Qgis.GeometryBackend.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.JoinStyle3D.Round.__doc__ = "Smooth, rounded buffer around the input geometry"
 Qgis.JoinStyle3D.Flat.__doc__ = "Flat ends and constant width along the linestring"
 Qgis.JoinStyle3D.CylindersAndSpheres.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
