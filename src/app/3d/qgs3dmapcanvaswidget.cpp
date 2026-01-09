@@ -1328,7 +1328,7 @@ void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
   mCrossSectionRubberBand->setToGeometry( crossSection.asGeometry( &ct ) );
   mCanvas->enableCrossSection( false );
 
-  mCanvas->scene()->cameraController()->moveCenterPoint( QVector3D( cameraOffset.x(), cameraOffset.y(), 0 ) );
+  mCanvas->scene()->cameraController()->moveCenterPoint( QVector3D( static_cast<float>( cameraOffset.x() ), static_cast<float>( cameraOffset.y() ), 0 ) );
 }
 
 void Qgs3DMapCanvasWidget::updateClippingRubberBand()
