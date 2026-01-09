@@ -411,6 +411,61 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
   return collected;
 }
 
+QgsGeometry QgsGeometry::collectTinPatches( const QVector<QgsGeometry> &geometries )
+{
+  auto resultTin = std::make_unique<QgsTriangulatedSurface>();
+  bool first = true;
+
+  for ( const QgsGeometry &geom : geometries )
+  {
+    if ( geom.isNull() )
+      continue;
+
+    const QgsAbstractGeometry *abstractGeom = geom.constGet();
+
+    if ( const QgsTriangulatedSurface *tin = qgsgeometry_cast<const QgsTriangulatedSurface *>( abstractGeom ) )
+    {
+      // Preserve Z/M from first valid geometry
+      if ( first )
+      {
+        if ( tin->is3D() )
+          resultTin->addZValue( 0 );
+        if ( tin->isMeasure() )
+          resultTin->addMValue( 0 );
+        first = false;
+      }
+
+      // Copy all patches (triangles) from the TIN
+      for ( int j = 0; j < tin->numPatches(); ++j )
+      {
+        if ( const QgsPolygon *patch = tin->patchN( j ) )
+        {
+          resultTin->addPatch( patch->clone() );
+        }
+      }
+    }
+    else if ( const QgsTriangle *triangle = qgsgeometry_cast<const QgsTriangle *>( abstractGeom ) )
+    {
+      // Preserve Z/M from first valid geometry
+      if ( first )
+      {
+        if ( triangle->is3D() )
+          resultTin->addZValue( 0 );
+        if ( triangle->isMeasure() )
+          resultTin->addMValue( 0 );
+        first = false;
+      }
+
+      resultTin->addPatch( triangle->clone() );
+    }
+  }
+
+  if ( resultTin->numPatches() == 0 )
+    return QgsGeometry();
+
+  return QgsGeometry( std::move( resultTin ) );
+}
+
 QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius )
 {
   const double startAngle = azimuth - angularWidth * 0.5;

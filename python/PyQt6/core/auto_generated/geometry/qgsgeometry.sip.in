@@ -288,6 +288,30 @@ surface geometry.
 Creates a new multipart geometry from a list of QgsGeometry objects
 %End
 
+    static QgsGeometry collectTinPatches( const QVector<QgsGeometry> &geometries );
+%Docstring
+Collects all patches from a list of TIN or Triangle geometries into a
+single TIN geometry.
+
+This method iterates through the input ``geometries`` and extracts all
+triangle patches, combining them into a single
+:py:class:`QgsTriangulatedSurface`. Input geometries can be either
+:py:class:`QgsTriangulatedSurface` (TIN) or :py:class:`QgsTriangle`
+objects. Other geometry types are ignored.
+
+The resulting TIN will preserve Z and M values if present in the first
+valid input geometry.
+
+:param geometries: list of input geometries (should be TIN or Triangle
+                   types)
+
+:return: a QgsGeometry containing a QgsTriangulatedSurface with all
+         collected patches, or a null geometry if no valid TIN/Triangle
+         geometries were found
+
+.. versionadded:: 4.0
+%End
+
     static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth, double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
@@ -2894,8 +2918,7 @@ The coordinates at which the error is located and should be visualized.
 
         SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-          = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
 %End
 
