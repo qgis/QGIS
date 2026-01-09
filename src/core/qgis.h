@@ -166,6 +166,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( MessageLevel )
 
     /**
+     * \brief Format of strings
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsMessageOutput.MessageType
+     */
+    enum class StringFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMessageOutput, MessageType ) : int
+    {
+      PlainText SIP_MONKEYPATCH_COMPAT_NAME( MessageText ), //!< Plain text
+      Html SIP_MONKEYPATCH_COMPAT_NAME( MessageHtml ), //!< HTML formatted text
+    };
+    Q_ENUM( StringFormat )
+
+    /**
      * \brief Flags controlling behavior of network requests.
      *
      * \since QGIS 4.0

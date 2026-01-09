@@ -59,9 +59,10 @@ class CORE_EXPORT QgsMessageLog : public QObject
      * If \a notifyUser is TRUE, then the message should be brought to the user's attention by various UI hints.
      * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
      * only respect notification hints for certain message levels.
+     * The \a type argument was added in QGIS 4.0
      */
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
-                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
+                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat type = Qgis::StringFormat::PlainText);
 
   signals:
 
@@ -70,8 +71,17 @@ class CORE_EXPORT QgsMessageLog : public QObject
      *
      * This signal is emitted for all messages received by the log, regardless of the \a notifyUser flag's
      * value for the message.
+     *
+     * \deprecated QGIS 4.0. Use messageReceivedWithType() instead.
      */
-    void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    Q_DECL_DEPRECATED void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level ) SIP_DEPRECATED;
+
+    /**
+     * Emitted whenever the log receives a \a message with a \a type.
+     *
+     * This signal is emitted in addition to the messageReceived signal.
+     */
+    void messageReceivedWithType( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type );
 
     //TODO QGIS 5.0 - remove received argument
 
@@ -87,7 +97,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
   private:
 
-    void emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser = true );
+    void emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser = true, Qgis::StringFormat type = Qgis::StringFormat::PlainText );
 
     int mAdviseBlockCount = 0;
 
@@ -171,6 +181,16 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
      * \param level the log level of the message
      */
     virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+
+    /**
+     * Logs a message to stderr.
+     *
+     * \param message the message to format
+     * \param tag the tag of the message
+     * \param level the log level of the message
+     * \param type the string format (currently ignored)
+     */
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type );
 };
 
 #endif
