@@ -343,6 +343,23 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
     /**
+     * Collects all patches from a list of TIN or Triangle geometries into a single TIN geometry.
+     *
+     * This method iterates through the input \a geometries and extracts all triangle patches,
+     * combining them into a single QgsTriangulatedSurface. Input geometries can be either
+     * QgsTriangulatedSurface (TIN) or QgsTriangle objects. Other geometry types are ignored.
+     *
+     * The resulting TIN will preserve Z and M values if present in the first valid input geometry.
+     *
+     * \param geometries list of input geometries (should be TIN or Triangle types)
+     * \returns a QgsGeometry containing a QgsTriangulatedSurface with all collected patches,
+     *          or a null geometry if no valid TIN/Triangle geometries were found
+     *
+     * \since QGIS 4.0
+     */
+    static QgsGeometry collectTinPatches( const QVector<QgsGeometry> &geometries );
+
+    /**
      * Creates a wedge shaped buffer from a \a center point.
      *
      * The \a azimuth gives the angle (in degrees) for the middle of the wedge to point.

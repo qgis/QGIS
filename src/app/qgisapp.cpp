@@ -8885,51 +8885,16 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   // Special handling for TIN: collect patches instead of geometric union
   if ( layerFlatType == Qgis::WkbType::TIN )
   {
-    QProgressDialog progress( tr( "Collecting patches…" ), tr( "Abort" ), 0, featureList.size(), this );
-    progress.setWindowModality( Qt::WindowModal );
-
     QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
-    auto resultTin = std::make_unique<QgsTriangulatedSurface>();
-    // Preserve Z/M from layer type
-    if ( QgsWkbTypes::hasZ( vl->wkbType() ) )
-      resultTin->addZValue( 0 );
-    if ( QgsWkbTypes::hasM( vl->wkbType() ) )
-      resultTin->addMValue( 0 );
-
-    for ( int i = 0; i < featureList.size(); ++i )
+    QVector<QgsGeometry> geometries;
+    geometries.reserve( featureList.size() );
+    for ( const QgsFeature &feature : std::as_const( featureList ) )
     {
-      if ( progress.wasCanceled() )
-      {
-        canceled = true;
-        return QgsGeometry();
-      }
-      progress.setValue( i );
-
-      const QgsGeometry &geom = featureList.at( i ).geometry();
-      if ( geom.isNull() )
-        continue;
-
-      const QgsAbstractGeometry *abstractGeom = geom.constGet();
-      if ( const QgsTriangulatedSurface *tin = qgsgeometry_cast<const QgsTriangulatedSurface *>( abstractGeom ) )
-      {
-        // Copy all patches (triangles) from the TIN
-        for ( int j = 0; j < tin->numPatches(); ++j )
-        {
-          if ( const QgsPolygon *patch = tin->patchN( j ) )
-          {
-            resultTin->addPatch( patch->clone() );
-          }
-        }
-      }
-      else if ( const QgsTriangle *triangle = qgsgeometry_cast<const QgsTriangle *>( abstractGeom ) )
-      {
-        resultTin->addPatch( triangle->clone() );
-      }
+      geometries.append( feature.geometry() );
     }
 
-    progress.setValue( featureList.size() );
-    return QgsGeometry( std::move( resultTin ) );
+    return QgsGeometry::collectTinPatches( geometries );
   }
 
   // Standard handling for other geometry types: use GEOS combine
