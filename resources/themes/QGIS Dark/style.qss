@@ -186,16 +186,7 @@ QMenu::icon:checked
 
 /********************************* BUTTONS *********************************/
 
-QPushButton, QToolButton
-{
-  background: @controlnormal;
-  color: palette(button-text);
-  border: none;
-  border-radius: 5px;
-
-  padding: 0.2em 0.4em;
-}
-QToolBar QToolButton, QStatusBar QToolButton
+QToolButton
 {
   background: transparent;
   color: palette(button-text);
@@ -203,6 +194,15 @@ QToolBar QToolButton, QStatusBar QToolButton
   border-radius: 5px;
 
   padding: 0.12em;
+}
+QPushButton, QgsColorButton
+{
+  background: @controlnormal;
+  color: palette(button-text);
+  border: none;
+  border-radius: 5px;
+
+  padding: 0.2em 0.4em;
 }
 QToolButton::menu-button
 {
@@ -219,20 +219,23 @@ QPushButton:checked:disabled, QToolButton:checked:disabled
   background: transparent;
   border: 1px solid palette(button);
 }
-QPushButton:hover
-{
-  background: @controlhover;
-}
-QToolBar QToolButton:hover, QStatusBar QToolButton:hover
-QToolBar QToolButton::menu-button:hover, QStatusBar QToolButton::menu-button:hover
+QToolButton:hover, QToolButton::menu-button:hover
 {
   background: palette(base);
+}
+QPushButton:hover, QgsColorButton
+{
+  background: @controlhover;
 }
 QPushButton:checked, QToolButton:checked, QPushButton:pressed, QToolButton:pressed, QToolButton::menu-button:pressed
 {
   background: @controlactive;
 }
-QPushButton:disabled, QToolButton:disabled
+QToolButton:disabled, QToolButton:disabled
+{
+  background: transparent;
+}
+QPushButton:disabled, QgsColorButton:disabled
 {
   background: @controldisabled;
   color: #67b03a;
@@ -240,10 +243,6 @@ QPushButton:disabled, QToolButton:disabled
 QPushButton:disabled:checked, QToolButton:disabled:checked
 {
   background: @controlactivedisabled;
-}
-QToolBar QToolButton:disabled, QStatusBar QToolButton:disabled
-{
-  background: transparent;
 }
 QPushButton:focus, QToolButton:focus
 {
@@ -465,6 +464,7 @@ QLineEdit
 {
   color: palette(button-text);
   background-color: palette(base);
+  placeholder-text-color: palette(placeholder-text);
   border: none;
   border-radius: 5px;
 
@@ -484,7 +484,7 @@ QLineEdit, QComboBox:editable
   placeholder-text-color: @textmuted;
 }
 
-/********************************* GROUP BOX & FRAME *********************************/
+/********************************* SLIDER *********************************/
 
 QSlider::groove
 {
@@ -500,39 +500,31 @@ QSlider::groove:disabled
 }
 QSlider::groove:horizontal
 {
-  height: 0.4em;
+  height: 0.2em;
   margin: 0.2em 1px;
 }
 QSlider::groove:vertical
 {
-  width: 0.4em;
+  width: 0.2em;
   margin: 1px 0.2em;
 }
-QSlider::sub-page[invertedAppearance="false"]
+QSlider::sub-page[invertedAppearance="false"], QSlider::add-page[invertedAppearance="true"]
 {
   background: palette(button);
 }
-QSlider::sub-page[invertedAppearance="false"]:disabled
-{
-  background: @controlflatdisabled;
-}
-QSlider::add-page[invertedAppearance="true"]
-{
-  background: palette(button);
-}
-QSlider::add-page[invertedAppearance="true"]:disabled
+QSlider::sub-page[invertedAppearance="false"]:disabled, QSlider::add-page[invertedAppearance="true"]:disabled
 {
   background: @controlflatdisabled;
 }
 QSlider::sub-page:horizontal, QSlider::add-page:horizontal
 {
-  height: 0.4em;
+  height: 0.2em;
   margin: 0.2em 1px;
   margin-right: 0.45em;
 }
 QSlider::sub-page:vertical, QSlider::add-page:vertical
 {
-  width: 0.4em;
+  width: 0.2em;
   margin: 1px 0.2em;
   margin-bottom: 0.45em;
 }
@@ -556,12 +548,61 @@ QSlider::handle:disabled
 QSlider::handle:horizontal
 {
   width: 0.8em;
-  margin: -0.2em -1px;
+  margin: -0.3em -1px;
 }
 QSlider::handle:vertical
 {
   height: 0.8em;
-  margin: -1px -0.2em;
+  margin: -1px -0.3em;
+}
+
+/********************************* SCROLLBAR *********************************/
+
+QScrollBar
+{
+  background: palette(base);
+  border: none;
+}
+QScrollBar:horizontal
+{
+  height: 10px;
+  margin: 0;
+}
+QScrollBar:vertical
+{
+  width: 10px;
+  margin: 0;
+}
+QScrollBar::handle
+{
+  background: #808080;
+  border: none;
+  border-radius: 5px;
+}
+QScrollBar::handle:hover
+{
+  background: #909090;
+}
+QScrollBar::handle:pressed
+{
+  background: #a0a0a0;
+}
+QScrollBar::handle:disabled
+{
+  background: palette(window);
+}
+QScrollBar::handle:horizontal
+{
+  min-width: 20px;
+}
+QScrollBar::handle:vertical
+{
+  min-height: 20px;
+}
+QScrollBar::add-line, QScrollBar::sub-line
+{
+  height: 0;
+  width: 0;
 }
 
 /********************************* TAB BAR & WIDGET *********************************/
