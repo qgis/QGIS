@@ -622,7 +622,7 @@ QVector<float> QgsTessellator::vertexBuffer() const
     const VertexPoint &vertex = it.key();
     uint32_t index = it.value();
 
-    int offset = stride() / sizeof( float );
+    size_t offset = stride() / sizeof( float );
 
     vertexData[ index * offset ] = vertex.position.x();
     vertexData[ index * offset + 1 ] = vertex.position.y();
@@ -708,7 +708,7 @@ void QgsTessellator::addTriangleVertices(
     // NOLINTBEGIN(bugprone-branch-clone)
     if ( mOutputZUp )
     {
-      vertexPoint.position = QVector3D( fx, fy, fz );
+      vertexPoint.position = QVector3D( static_cast<float>( fx ), static_cast<float>( fy ), static_cast<float>( fz ) );
       if ( mAddNormals )
       {
         vertexPoint.normal = normal;
@@ -716,7 +716,7 @@ void QgsTessellator::addTriangleVertices(
     }
     else
     {
-      vertexPoint.position = QVector3D( fx, fz, -fy );
+      vertexPoint.position = QVector3D( static_cast<float>( fx ), static_cast<float>( fz ), static_cast<float>( -fy ) );
       if ( mAddNormals )
       {
         vertexPoint.normal = QVector3D( normal.x(), normal.z(), - normal.y() );

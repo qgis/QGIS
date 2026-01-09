@@ -1715,14 +1715,14 @@ return sipGetState(sipTransferObj);
     {
         PyObject *item = PyList_GET_ITEM(sipPy, i);
         unsigned long val = PyLong_AsUnsignedLong(item);
-        
+
         if (PyErr_Occurred())
         {
             delete qvec;
             *sipIsErr = 1;
             return 0;
         }
-        
+
         qvec->append(static_cast<uint32_t>(val));
     }
 
