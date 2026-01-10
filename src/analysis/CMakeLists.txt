@@ -303,6 +303,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
+  processing/qgsalgorithmvalidatenetwork.cpp
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmvirtualrastercalculator.cpp
   processing/qgsalgorithmvoronoipolygons.cpp
