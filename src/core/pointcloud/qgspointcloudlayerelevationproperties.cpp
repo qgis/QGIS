@@ -20,7 +20,14 @@
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvirtualpointcloudprovider.h"
 
 #include <QString>
@@ -33,6 +40,9 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
   : QgsMapLayerElevationProperties( parent )
 {
   mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+  setDefaultProfileLineSymbol( mPointColor );
+  setDefaultProfileFillSymbol( mPointColor );
+  setDefaultProfileMarkerSymbol( mPointColor );
 
   if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
   {
@@ -43,6 +53,110 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
     } );
   }
 }
+
+QgsLineSymbol *QgsPointCloudLayerElevationProperties::profileLineSymbol() const
+{
+  return mProfileLineSymbol.get();
+}
+
+void QgsPointCloudLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  mProfileLineSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+QgsFillSymbol *QgsPointCloudLayerElevationProperties::profileFillSymbol() const
+{
+  return mProfileFillSymbol.get();
+}
+
+void QgsPointCloudLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  mProfileFillSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+QgsMarkerSymbol *QgsPointCloudLayerElevationProperties::profileMarkerSymbol() const
+{
+  return mProfileMarkerSymbol.get();
+}
+
+void QgsPointCloudLayerElevationProperties::setProfileMarkerSymbol( QgsMarkerSymbol *symbol )
+{
+  if ( !symbol )
+    return;
+
+  mProfileMarkerSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology )
+{
+  if ( mSymbology == symbology )
+    return;
+
+  mSymbology = symbology;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+double QgsPointCloudLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsPointCloudLayerElevationProperties::setElevationLimit( double limit )
+{
+  if ( qgsDoubleNear( mElevationLimit, limit ) )
+    return;
+
+  mElevationLimit = limit;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setShowMarkerSymbolInSurfacePlots( bool show )
+{
+  if ( show == mShowMarkerSymbolInSurfacePlots )
+    return;
+
+  mShowMarkerSymbolInSurfacePlots = show;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
+{
+  auto profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
+  mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
+}
+
+void QgsPointCloudLayerElevationProperties::setDefaultProfileMarkerSymbol( const QColor &color )
+{
+  auto profileMarkerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Diamond, 3 );
+  profileMarkerLayer->setColor( color );
+  profileMarkerLayer->setStrokeWidth( 0.2 );
+  profileMarkerLayer->setStrokeColor( color.darker( 140 ) );
+  mProfileMarkerSymbol = std::make_unique< QgsMarkerSymbol>( QgsSymbolLayerList( { profileMarkerLayer.release() } ) );
+}
+
+void QgsPointCloudLayerElevationProperties::setDefaultProfileFillSymbol( const QColor &color )
+{
+  auto profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
+  profileFillLayer->setStrokeWidth( 0.2 );
+  profileFillLayer->setStrokeColor( color.darker( 140 ) );
+  mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
+}
+
 
 bool QgsPointCloudLayerElevationProperties::hasElevation() const
 {
@@ -62,6 +176,22 @@ QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parent
   element.setAttribute( u"point_color"_s, QgsColorUtils::colorToString( mPointColor ) );
   element.setAttribute( u"respect_layer_colors"_s, mRespectLayerColors ? u"1"_s : u"0"_s );
   element.setAttribute( u"opacity_by_distance"_s, mApplyOpacityByDistanceEffect ? u"1"_s : u"0"_s );
+  element.setAttribute( u"render_type"_s, qgsEnumValueToKey( mRenderType ) );
+  if ( !std::isnan( mElevationLimit ) )
+    element.setAttribute( u"elevationLimit"_s, qgsDoubleToString( mElevationLimit ) );
+  element.setAttribute( u"showMarkerSymbolInSurfacePlots"_s, mShowMarkerSymbolInSurfacePlots ? u"1"_S : u"0"_s );
+
+  QDomElement profileLineSymbolElement = document.createElement( u"profileLineSymbol"_s );
+  profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
+  element.appendChild( profileLineSymbolElement );
+
+  QDomElement profileFillSymbolElement = document.createElement( u"profileFillSymbol"_s );
+  profileFillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileFillSymbol.get(), document, context ) );
+  element.appendChild( profileFillSymbolElement );
+
+  QDomElement profileMarkerSymbolElement = document.createElement( u"profileMarkerSymbol"_s );
+  profileMarkerSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileMarkerSymbol.get(), document, context ) );
+  element.appendChild( profileMarkerSymbolElement );
 
   parentElement.appendChild( element );
   return element;
@@ -91,8 +221,33 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   {
     mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   }
+
   mRespectLayerColors = elevationElement.attribute( u"respect_layer_colors"_s, u"1"_s ).toInt();
   mApplyOpacityByDistanceEffect = elevationElement.attribute( u"opacity_by_distance"_s ).toInt();
+  mRenderType = qgsEnumKeyToValue( elevationElement.attribute( u"render_type"_s ), Qgis::PointCloudProfileType::IndividualPoints );
+  if ( elevationElement.hasAttribute( u"elevationLimit"_s ) )
+    mElevationLimit = elevationElement.attribute( u"elevationLimit"_s ).toDouble();
+  else
+    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+
+  mShowMarkerSymbolInSurfacePlots = elevationElement.attribute( u"showMarkerSymbolInSurfacePlots"_s, u"0"_s ).toInt();
+
+  const QColor color = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+
+  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( u"profileLineSymbol"_s ).firstChildElement( u"symbol"_s );
+  mProfileLineSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context );
+  if ( !mProfileLineSymbol )
+    setDefaultProfileLineSymbol( color );
+
+  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( u"profileFillSymbol"_s ).firstChildElement( u"symbol"_s );
+  mProfileFillSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context );
+  if ( !mProfileFillSymbol )
+    setDefaultProfileFillSymbol( color );
+
+  const QDomElement profileMarkerSymbolElement = elevationElement.firstChildElement( u"profileMarkerSymbol"_s ).firstChildElement( u"symbol"_s );
+  mProfileMarkerSymbol = QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( profileMarkerSymbolElement, context );
+  if ( !mProfileMarkerSymbol )
+    setDefaultProfileMarkerSymbol( color );
 
   return true;
 }
@@ -109,7 +264,12 @@ QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::cl
   res->mPointSymbol = mPointSymbol;
   res->mPointColor = mPointColor;
   res->mRespectLayerColors = mRespectLayerColors;
+  res->mRenderType = mRenderType;
   res->mApplyOpacityByDistanceEffect = mApplyOpacityByDistanceEffect;
+
+  res->setProfileLineSymbol( mProfileLineSymbol->clone() );
+  res->setProfileFillSymbol( mProfileFillSymbol->clone() );
+  res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
 
   return res.release();
 }
