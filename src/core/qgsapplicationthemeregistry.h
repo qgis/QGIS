@@ -26,10 +26,11 @@
  * \ingroup core
  * \class QgsApplicationThemeRegistry
  * \brief Registry of user interface themes.
- * \since QGIS 4.0
  *
  * A registry of user interface themes. This class should be accessed via
  * QgsApplication::userInterfaceThemeRegistry().
+ *
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsApplicationThemeRegistry
 {
@@ -70,6 +71,9 @@ class CORE_EXPORT QgsApplicationThemeRegistry
      */
     QString themeFolder( const QString &name ) const;
 
+    /**
+     * Returns a map of user interface theme names and folders.
+     */
     QHash<QString, QString> themeFolders() const;
 
   private:

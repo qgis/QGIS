@@ -15,10 +15,10 @@ class QgsApplicationThemeRegistry
 %Docstring(signature="appended")
 Registry of user interface themes.
 
-.. versionadded:: 4.0
-
 A registry of user interface themes. This class should be accessed via
 :py:func:`QgsApplication.userInterfaceThemeRegistry()`.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
@@ -64,6 +64,9 @@ Returns the user interface theme folder for a matching ``name``.
 %End
 
     QHash<QString, QString> themeFolders() const;
+%Docstring
+Returns a map of user interface theme names and folders.
+%End
 
 };
 
