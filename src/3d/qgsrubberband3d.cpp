@@ -54,12 +54,12 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *en
       setupMarker( parentEntity );
       break;
     case Qgis::GeometryType::Line:
-      setupLine( parentEntity, engine );
+      setupLine( parentEntity );
       setupMarker( parentEntity );
       break;
     case Qgis::GeometryType::Polygon:
       setupMarker( parentEntity );
-      setupLine( parentEntity, engine );
+      setupLine( parentEntity );
       setupPolygon( parentEntity );
       break;
     case Qgis::GeometryType::Null:
@@ -86,7 +86,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
   mMarkerEntity->addComponent( mMarkerTransform );
 }
 
-void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine )
+void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
 {
   mLineEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
 
@@ -109,10 +109,10 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DE
   mLineMaterial->setLineWidth( mWidth );
   mLineMaterial->setLineColor( mColor );
 
-  QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this, engine] {
-    mLineMaterial->setViewportSize( engine->size() );
+  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] {
+    mLineMaterial->setViewportSize( mEngine->size() );
   } );
-  mLineMaterial->setViewportSize( engine->size() );
+  mLineMaterial->setViewportSize( mEngine->size() );
 
   mLineEntity->addComponent( mLineMaterial );
 
@@ -437,7 +437,7 @@ void QgsRubberBand3D::updateGeometry()
   {
     mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
     mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );
-    mLineGeometryRenderer->setVertexCount( lineData.indexes.count() );
+    mLineGeometryRenderer->setVertexCount( static_cast<int>( lineData.indexes.count() ) );
     mLineTransform->setGeoTranslation( dataOrigin );
   }
 
@@ -449,7 +449,7 @@ void QgsRubberBand3D::updateGeometry()
     lineData.vertices.pop_back();
 
   mMarkerGeometry->setPositions( lineData.vertices );
-  mMarkerGeometryRenderer->setVertexCount( lineData.vertices.count() );
+  mMarkerGeometryRenderer->setVertexCount( static_cast<int>( lineData.vertices.count() ) );
   mMarkerTransform->setGeoTranslation( dataOrigin );
 
   if ( mGeometryType == Qgis::GeometryType::Polygon )
@@ -467,7 +467,7 @@ void QgsRubberBand3D::updateGeometry()
       }
       // extract vertex buffer data from tessellator
       const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
-      const int vertexCount = data.count() / tessellator.stride();
+      const int vertexCount = static_cast<int>( data.count() ) / tessellator.stride();
       mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
       mPolygonTransform->setGeoTranslation( mMapSettings->origin() );
     }
@@ -498,7 +498,6 @@ void QgsRubberBand3D::updateMarkerMaterial()
   else if ( !mMarkerEnabled && mMarkerMaterial )
   {
     mMarkerEntity->removeComponent( mMarkerMaterial );
-    QObject::disconnect( mEngine, nullptr, mMarkerMaterial, nullptr );
     mMarkerMaterial->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
     mMarkerMaterial->deleteLater();
     mMarkerMaterial = nullptr;
