@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>QGIS Bench</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+      ul { list-style: none; padding: 0; }
+      li { margin: 0.5rem 0; }
+      a { color: #589632; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code { background: #f0f0f0; padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+    </style>
+  </head>
+  <body>
+    <h1>QGIS Bench</h1>
+    <h2>WebAssembly build with Emscripten</h2>
+    <ul id="links"></ul>
+
+    <script>
+      const FS_BASE = "/upload";
+      const BASE_URL = "https://raw.githubusercontent.com/boardend/qgis-js-projects/main";
+
+      const configs = [
+        { label: '--help', args: ['--help'], files: [] },
+        { label: '--parallel', args: ['--parallel'], files: [] },
+        {
+          label: '"World GPKG" project from boardend/qgis-js-projects',
+          args: [
+            '--parallel',
+            '--project', `${FS_BASE}/project.qgz`,
+          ],
+          files: [
+            `${BASE_URL}/demo/World%20GPKG/project.qgz`,
+            `${BASE_URL}/demo/World%20GPKG/world_map.gpkg`,
+          ]
+        },
+        {
+          label: '"Zurich SHP" project from boardend/qgis-js-projects',
+          args: [
+            '--parallel',
+            '--iterations', '2',
+            '--project', `${FS_BASE}/project.qgz`,
+            '--snapshot', '/download/snapshot.png'
+          ],
+          files: [
+            `${BASE_URL}/demo/Zurich%20SHP/project.qgz`,
+            `${BASE_URL}/demo/Zurich%20SHP/stzh.adm_stadtkreise_a.cpg`,
+            `${BASE_URL}/demo/Zurich%20SHP/stzh.adm_stadtkreise_a.dbf`,
+            `${BASE_URL}/demo/Zurich%20SHP/stzh.adm_stadtkreise_a.prj`,
+            `${BASE_URL}/demo/Zurich%20SHP/stzh.adm_stadtkreise_a.shp`,
+            `${BASE_URL}/demo/Zurich%20SHP/stzh.adm_stadtkreise_a.shx`,
+          ]
+        },
+        {
+          label: 'tests/testdata/qgis_server_accesscontrol/project_shp.qgs',
+          args: [
+            '--parallel',
+            '--iterations', '2',
+            '--project', `${FS_BASE}/project_shp.qgs`,
+            '--snapshot', '/download/snapshot.png'
+          ],
+          files: [
+            `/qgis/tests/testdata/qgis_server_accesscontrol/project_shp.qgs`,
+          ]
+        },
+      ];
+
+      const ul = document.getElementById('links');
+      configs.forEach(({ label, args, files }) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        const params = new URLSearchParams();
+
+        args.forEach(arg => params.append('arg', arg));
+        files.forEach(file => params.append('file', file));
+
+        const queryString = params.toString();
+        a.href = queryString ? `qgis_bench.html?${queryString}` : 'qgis_bench.html';
+        a.innerHTML = label;
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+    </script>
+  </body>
+</html>

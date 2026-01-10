@@ -53,9 +53,15 @@ const QString QgsUserProfile::name() const
 
 void QgsUserProfile::initSettings() const
 {
+#ifdef __EMSCRIPTEN__
+  // On WASM, Qt uses localStorage for QSettings - no custom path needed
+  // QSettings::setPath triggers Qt's prefix resolution which fails on WASM
+  Q_UNUSED( folder() )
+#else
   // tell QSettings to use INI format and save the file in custom config path
   QSettings::setDefaultFormat( QSettings::IniFormat );
   QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, folder() );
+#endif
 }
 
 const QString QgsUserProfile::alias() const
