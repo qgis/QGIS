@@ -1818,3 +1818,23 @@ bool QgsGeometryUtils::checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, Q
 
   return false;
 }
+double QgsGeometryUtils::interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y )
+{
+  const double x1 = a.x(), y1 = a.y(), z1 = a.z();
+  const double x2 = b.x(), y2 = b.y(), z2 = b.z();
+  const double x3 = c.x(), y3 = c.y(), z3 = c.z();
+
+  const double denom = ( ( y2 - y3 ) * ( x1 - x3 ) + ( x3 - x2 ) * ( y1 - y3 ) );
+  if ( qgsDoubleNear( denom, 0.0 ) )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  const double w1 = ( ( y2 - y3 ) * ( x - x3 ) + ( x3 - x2 ) * ( y - y3 ) ) / denom;
+  const double w2 = ( ( y3 - y1 ) * ( x - x3 ) + ( x1 - x3 ) * ( y - y3 ) ) / denom;
+  const double w3 = 1.0 - w1 - w2;
+
+  const double eps = 1e-9;
+  if ( w1 < -eps || w2 < -eps || w3 < -eps )
+    return std::numeric_limits<double>::quiet_NaN();
+
+  return w1 * z1 + w2 * z2 + w3 * z3;
+};

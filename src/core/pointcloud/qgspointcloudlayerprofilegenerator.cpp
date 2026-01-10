@@ -16,8 +16,11 @@
  ***************************************************************************/
 #include "qgspointcloudlayerprofilegenerator.h"
 
+#include "delaunator.hpp"
 #include "qgscoordinatetransform.h"
 #include "qgscurve.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
 #include "qgspointcloudblockrequest.h"
@@ -29,6 +32,7 @@
 #include "qgsprofilerequest.h"
 #include "qgsprofilesnapping.h"
 #include "qgsproject.h"
+#include "qgstriangle.h"
 
 //
 // QgsPointCloudLayerProfileGenerator
@@ -348,11 +352,6 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mRenderer( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
   , mMaximumScreenError( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenError() )
   , mMaximumScreenErrorUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenErrorUnit() )
-  , mPointSize( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSize() )
-  , mPointSizeUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSizeUnit() )
-  , mPointSymbol( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSymbol() )
-  , mPointColor( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointColor() )
-  , mOpacityByDistanceEffect( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
   , mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
@@ -364,16 +363,16 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mZScale( layer->elevationProperties()->zScale() )
   , mStepDistance( request.stepDistance() )
 {
-  if ( mIndex )
-  {
-    mScale = mIndex.scale();
-    mOffset = mIndex.offset();
-  }
 }
 
 QString QgsPointCloudLayerProfileGenerator::sourceId() const
 {
   return mId;
+}
+
+QString QgsPointCloudLayerProfileGenerator::type() const
+{
+  return u"pointcloud"_s;
 }
 
 Qgis::ProfileGeneratorFlags QgsPointCloudLayerProfileGenerator::flags() const
@@ -423,12 +422,13 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   // we need to transform the profile curve and max search extent to the layer's CRS
   QgsGeos originalCurveGeos( sourceCurve );
   originalCurveGeos.prepareGeometry();
-  mSearchGeometryInLayerCrs.reset( originalCurveGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  std::unique_ptr< QgsAbstractGeometry > searchGeometryInLayerCrs;
+  searchGeometryInLayerCrs.reset( originalCurveGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
 
   try
   {
-    mSearchGeometryInLayerCrs->transform( mLayerToTargetTransform, Qgis::TransformDirection::Reverse );
+    searchGeometryInLayerCrs->transform( mLayerToTargetTransform, Qgis::TransformDirection::Reverse );
   }
   catch ( QgsCsException & )
   {
@@ -439,9 +439,9 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   if ( mFeedback->isCanceled() )
     return false;
 
-  mSearchGeometryInLayerCrsGeometryEngine = std::make_unique< QgsGeos >( mSearchGeometryInLayerCrs.get() );
+  mSearchGeometryInLayerCrsGeometryEngine = std::make_unique< QgsGeos >( searchGeometryInLayerCrs.get() );
   mSearchGeometryInLayerCrsGeometryEngine->prepareGeometry();
-  mMaxSearchExtentInLayerCrs = mSearchGeometryInLayerCrs->boundingBox();
+  mMaxSearchExtentInLayerCrs = searchGeometryInLayerCrs->boundingBox();
 
   double maximumErrorPixels = context.convertDistanceToPixels( mMaximumScreenError, mMaximumScreenErrorUnit );
   if ( maximumErrorPixels < 0.0 )
@@ -794,4 +794,574 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
   }
 }
 
+QgsTriangulatedPointCloudLayerProfileGenerator::QgsTriangulatedPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
+  : QgsAbstractProfileSurfaceGenerator( request )
+  , mLayer( layer )
+  , mIndex( layer->index() )
+  , mSubIndexes( layer->dataProvider()->subIndexes() )
+  , mLayerAttributes( layer->attributes() )
+  , mRenderer( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
+  , mMaximumScreenError( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenError() )
+  , mMaximumScreenErrorUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenErrorUnit() )
+  , mId( layer->id() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
+  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+  , mTolerance( request.tolerance() )
+  , mSourceCrs( layer->crs3D() )
+  , mTargetCrs( request.crs() )
+  , mTransformContext( request.transformContext() )
+  , mZOffset( layer->elevationProperties()->zOffset() )
+  , mZScale( layer->elevationProperties()->zScale() )
+  , mProfileMarkerSymbol( qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->profileMarkerSymbol()->clone() )
+  , mShowMarkerSymbolInSurfacePlots( qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->showMarkerSymbolInSurfacePlots() )
+{
+  mSymbology = qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
 
+  mLineSymbol.reset( qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
+  mFillSymbol.reset( qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
+}
+
+QString QgsTriangulatedPointCloudLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
+
+QString QgsTriangulatedPointCloudLayerProfileGenerator::type() const
+{
+  return u"triangulatedpointcloud"_s;
+}
+
+Qgis::ProfileGeneratorFlags QgsTriangulatedPointCloudLayerProfileGenerator::flags() const
+{
+  return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit;
+}
+
+QgsTriangulatedPointCloudLayerProfileGenerator::~QgsTriangulatedPointCloudLayerProfileGenerator() = default;
+
+bool QgsTriangulatedPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenerationContext &context )
+{
+  mGatheredPoints.clear();
+  if ( !mLayer || !mProfileCurve || mFeedback->isCanceled() )
+    return false;
+
+  QVector<QgsPointCloudIndex> indexes;
+  if ( mIndex && mIndex.isValid() )
+    indexes.append( mIndex );
+
+  // Gather all relevant sub-indexes
+  const QgsRectangle profileCurveBbox = mProfileCurve->boundingBox();
+  for ( const QgsPointCloudSubIndex &subidx : mSubIndexes )
+  {
+    QgsPointCloudIndex index = subidx.index();
+    if ( index && index.isValid() && subidx.polygonBounds().intersects( profileCurveBbox ) )
+      indexes.append( subidx.index() );
+  }
+
+  if ( indexes.empty() )
+    return false;
+
+  const double startDistanceOffset = std::max( !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0, 0.0 );
+  const double endDistance = context.distanceRange().upper();
+
+  std::unique_ptr< QgsCurve > trimmedCurve;
+  QgsCurve *sourceCurve = nullptr;
+  if ( startDistanceOffset > 0 || endDistance < mProfileCurve->length() )
+  {
+    trimmedCurve.reset( mProfileCurve->curveSubstring( startDistanceOffset, endDistance ) );
+    sourceCurve = trimmedCurve.get();
+  }
+  else
+  {
+    sourceCurve = mProfileCurve.get();
+  }
+
+  // we need to transform the profile curve and max search extent to the layer's CRS
+  QgsGeos originalCurveGeos( sourceCurve );
+  originalCurveGeos.prepareGeometry();
+  std::unique_ptr< QgsAbstractGeometry > searchGeometryInLayerCrs;
+  searchGeometryInLayerCrs.reset( originalCurveGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  mLayerToTargetTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
+
+  try
+  {
+    searchGeometryInLayerCrs->transform( mLayerToTargetTransform, Qgis::TransformDirection::Reverse );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( u"Error transforming profile line to layer CRS"_s );
+    return false;
+  }
+
+  if ( mFeedback->isCanceled() )
+    return false;
+
+  mSearchGeometryInLayerCrsGeometryEngine = std::make_unique< QgsGeos >( searchGeometryInLayerCrs.get() );
+  mSearchGeometryInLayerCrsGeometryEngine->prepareGeometry();
+  mMaxSearchExtentInLayerCrs = searchGeometryInLayerCrs->boundingBox();
+
+  double maximumErrorPixels = context.convertDistanceToPixels( mMaximumScreenError, mMaximumScreenErrorUnit );
+  if ( maximumErrorPixels < 0.0 )
+  {
+    QgsDebugError( u"Invalid maximum error in pixels"_s );
+    return false;
+  }
+
+  const double toleranceInPixels = context.convertDistanceToPixels( mTolerance, Qgis::RenderUnit::MapUnits );
+  // ensure that the maximum error is compatible with the tolerance size -- otherwise if the tolerance size
+  // is much smaller than the maximum error, we don't dig deep enough into the point cloud nodes to find
+  // points which are inside the tolerance.
+  // "4" is a magic number here, based purely on what "looks good" in the profile results!
+  if ( toleranceInPixels / 4 < maximumErrorPixels )
+    maximumErrorPixels = toleranceInPixels / 4;
+
+  QgsPointCloudRequest request;
+  QgsPointCloudAttributeCollection attributes;
+  attributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Y"_s, QgsPointCloudAttribute::Int32 ) );
+  attributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
+
+  if ( mRenderer )
+  {
+    mPreparedRendererData = mRenderer->prepare();
+    if ( mPreparedRendererData )
+    {
+      const QSet< QString > rendererAttributes = mPreparedRendererData->usedAttributes();
+      for ( const QString &attribute : std::as_const( rendererAttributes ) )
+      {
+        if ( attributes.indexOf( attribute ) >= 0 )
+          continue; // don't re-add attributes we are already going to fetch
+
+        const int layerIndex = mLayerAttributes.indexOf( attribute );
+        if ( layerIndex < 0 )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Required attribute %1 not found in layer" ).arg( attribute ), QObject::tr( "Point Cloud" ) );
+          continue;
+        }
+
+        attributes.push_back( mLayerAttributes.at( layerIndex ) );
+      }
+    }
+  }
+  else
+  {
+    mPreparedRendererData.reset();
+  }
+
+  request.setAttributes( attributes );
+
+  mResults = std::make_unique< QgsTriangulatedPointCloudLayerProfileResults >();
+  mResults->copyPropertiesFromGenerator( this );  // TODO: this fails because mLineSymbol doesn't exist in the generator, uncomment when you fix this
+
+  QgsCoordinateTransform extentTransform = mLayerToTargetTransform;
+  extentTransform.setBallparkTransformsAreAppropriate( true );
+
+  const double mapUnitsPerPixel = context.mapUnitsPerDistancePixel();
+  if ( mapUnitsPerPixel < 0.0 )
+  {
+    QgsDebugError( u"Invalid map units per pixel ratio"_s );
+    return false;
+  }
+
+  for ( QgsPointCloudIndex pc : std::as_const( indexes ) )
+  {
+    const QgsPointCloudNode root = pc.getNode( pc.root() );
+    const QgsRectangle rootNodeExtentLayerCoords = root.bounds().toRectangle();
+    QgsRectangle rootNodeExtentInCurveCrs;
+    try
+    {
+      rootNodeExtentInCurveCrs = extentTransform.transformBoundingBox( rootNodeExtentLayerCoords );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugError( u"Could not transform node extent to curve CRS"_s );
+      rootNodeExtentInCurveCrs = rootNodeExtentLayerCoords;
+    }
+
+    const double rootErrorInMapCoordinates = rootNodeExtentInCurveCrs.width() / pc.span(); // in curve coords
+    if ( rootErrorInMapCoordinates < 0.0 )
+    {
+      QgsDebugError( u"Invalid root node error"_s );
+      return false;
+    }
+
+    double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+    const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc.root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
+
+    if ( nodes.empty() )
+    {
+      return false;
+    }
+
+    switch ( pc.accessType() )
+    {
+      case Qgis::PointCloudAccessType::Local:
+      {
+        visitNodesSync( nodes, pc, request, context.elevationRange() );
+        break;
+      }
+      case Qgis::PointCloudAccessType::Remote:
+      {
+        visitNodesAsync( nodes, pc, request, context.elevationRange() );
+        break;
+      }
+    }
+
+    if ( mFeedback->isCanceled() )
+      return false;
+  }
+
+  if ( mGatheredPoints.size() < 3 )
+  {
+    mResults = nullptr;
+    return false;
+  }
+
+  std::unique_ptr<delaunator::Delaunator> triangulator;
+  std::vector<double> vertices;
+  std::vector<double> zValues;
+
+  for ( QgsPoint point : mGatheredPoints )
+  {
+    vertices.push_back( point.x() );
+    vertices.push_back( -point.y() ); // flipping y to have correctly oriented triangles from delaunator
+    zValues.push_back( point.z() );
+  }
+
+  triangulator.reset( new delaunator::Delaunator( vertices ) );
+  const std::vector<size_t> &triangleIndexes = triangulator->triangles;
+
+  QgsPointSequence profilePoints;
+  QString lastError;
+  for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
+  {
+    const size_t idx0 = triangleIndexes[i];
+    const size_t idx1 = triangleIndexes[i + 1];
+    const size_t idx2 = triangleIndexes[i + 2];
+
+    const QgsPoint pt0( vertices[2 * idx0], -vertices[2 * idx0 + 1], zValues[idx0] );
+    const QgsPoint pt1( vertices[2 * idx1], -vertices[2 * idx1 + 1], zValues[idx1] );
+    const QgsPoint pt2( vertices[2 * idx2], -vertices[2 * idx2 + 1], zValues[idx2] );
+
+    const QgsTriangle triangle( pt0, pt1, pt2 );
+
+    QgsGeos geosPoly( &triangle );
+    geosPoly.prepareGeometry();
+
+    std::unique_ptr<QgsAbstractGeometry> intersectingGeom( geosPoly.intersection( sourceCurve ) );
+    if ( !intersectingGeom )
+      continue;
+
+    // probably not needed, but we may end up with something else, better to check
+    if ( QgsWkbTypes::flatType( intersectingGeom->wkbType() ) != Qgis::WkbType::LineString )
+      continue;
+
+    const QgsLineString *linestring = qgsgeometry_cast<const QgsLineString *>( intersectingGeom.get() );
+    for ( const QgsPoint &p : { linestring->startPoint(), linestring->endPoint() } )
+    {
+      const double z = QgsGeometryUtils::interpolateZ( pt0, pt1, pt2, p.x(), p.y() );
+      if ( std::isnan( z ) )
+        continue;
+
+      const double distanceAlong = originalCurveGeos.lineLocatePoint( p, &lastError );
+      if ( std::isnan( distanceAlong ) )
+        continue;
+
+      QgsPoint profilePoint( p.x(), p.y(), z, distanceAlong );
+      profilePoints.append( profilePoint );
+    }
+
+    if ( mFeedback->isCanceled() )
+      return false;
+  }
+
+  std::sort( profilePoints.begin(), profilePoints.end(),
+  []( const QgsPoint & a, const QgsPoint & b ) { return a.m() < b.m(); } );
+
+  if ( mResults )
+  {
+    for ( const QgsPoint &pp : std::as_const( profilePoints ) )
+    {
+      const double z = pp.z();
+      const double distanceAlong = pp.m();
+
+      mResults->minZ = std::min( z, mResults->minZ );
+      mResults->maxZ = std::max( z, mResults->maxZ );
+      mResults->mDistanceToHeightMap.insert( distanceAlong, z );
+    }
+  }
+
+  return true;
+}
+
+QgsAbstractProfileResults *QgsTriangulatedPointCloudLayerProfileGenerator::takeResults()
+{
+  return mResults.release();
+}
+
+QgsFeedback *QgsTriangulatedPointCloudLayerProfileGenerator::feedback() const
+{
+  return mFeedback.get();
+}
+
+QVector<QgsPointCloudNodeId> QgsTriangulatedPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
+{
+  QVector<QgsPointCloudNodeId> nodes;
+
+  if ( mFeedback->isCanceled() )
+  {
+    return nodes;
+  }
+
+  QgsPointCloudNode node = pc.getNode( n );
+  QgsBox3D nodeBounds = node.bounds();
+  const QgsDoubleRange nodeZRange( nodeBounds.zMinimum(), nodeBounds.zMaximum() );
+  if ( !zRange.isInfinite() && !zRange.overlaps( nodeZRange ) )
+    return nodes;
+
+  if ( !mMaxSearchExtentInLayerCrs.intersects( nodeBounds.toRectangle() ) )
+    return nodes;
+
+  const QgsGeometry nodeMapGeometry = QgsGeometry::fromRect( nodeBounds.toRectangle() );
+  if ( !mSearchGeometryInLayerCrsGeometryEngine->intersects( nodeMapGeometry.constGet() ) )
+    return nodes;
+
+  if ( node.pointCount() > 0 )
+    nodes.append( n );
+
+  double childrenErrorPixels = nodeErrorPixels / 2.0;
+  if ( childrenErrorPixels < maxErrorPixels )
+    return nodes;
+
+  for ( const QgsPointCloudNodeId &nn : node.children() )
+  {
+    nodes += traverseTree( pc, nn, maxErrorPixels, childrenErrorPixels, zRange );
+  }
+
+  return nodes;
+}
+
+int QgsTriangulatedPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+{
+  int nodesDrawn = 0;
+  for ( const QgsPointCloudNodeId &n : nodes )
+  {
+    if ( mFeedback->isCanceled() )
+      break;
+
+    std::unique_ptr<QgsPointCloudBlock> block( pc.nodeData( n, request ) );
+
+    if ( !block )
+      continue;
+
+    visitBlock( block.get(), zRange );
+
+    ++nodesDrawn;
+  }
+  return nodesDrawn;
+}
+
+int QgsTriangulatedPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+{
+  if ( nodes.isEmpty() )
+    return 0;
+
+  int nodesDrawn = 0;
+
+  // see notes about this logic in QgsPointCloudLayerRenderer::renderNodesAsync
+
+  // Async loading of nodes
+  QVector<QgsPointCloudBlockRequest *> blockRequests;
+  QEventLoop loop;
+  QObject::connect( mFeedback.get(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+
+  for ( int i = 0; i < nodes.size(); ++i )
+  {
+    const QgsPointCloudNodeId &n = nodes[i];
+    const QString nStr = n.toString();
+    QgsPointCloudBlockRequest *blockRequest = pc.asyncNodeData( n, request );
+    blockRequests.append( blockRequest );
+    QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop,
+                      [ this, &nodesDrawn, &loop, &blockRequests, &zRange, nStr, blockRequest ]()
+    {
+      blockRequests.removeOne( blockRequest );
+
+      // If all blocks are loaded, exit the event loop
+      if ( blockRequests.isEmpty() )
+        loop.exit();
+
+      std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+
+      blockRequest->deleteLater();
+
+      if ( mFeedback->isCanceled() )
+      {
+        return;
+      }
+
+      if ( !block )
+      {
+        QgsDebugError( u"Unable to load node %1, error: %2"_s.arg( nStr, blockRequest->errorStr() ) );
+        return;
+      }
+
+      visitBlock( block.get(), zRange );
+      ++nodesDrawn;
+    } );
+  }
+
+  // Wait for all point cloud nodes to finish loading
+  if ( !blockRequests.isEmpty() )
+    loop.exec();
+
+  // Generation may have got canceled and the event loop exited before finished()
+  // was called for all blocks, so let's clean up anything that is left
+  for ( QgsPointCloudBlockRequest *blockRequest : std::as_const( blockRequests ) )
+  {
+    std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+    block.reset();
+    blockRequest->deleteLater();
+  }
+
+  return nodesDrawn;
+}
+
+void QgsTriangulatedPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange )
+{
+  const char *ptr = block->data();
+  int count = block->pointCount();
+
+  const QgsPointCloudAttributeCollection request = block->attributes();
+
+  const std::size_t recordSize = request.pointRecordSize();
+
+  const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+  int xOffset = 0, yOffset = 0, zOffset = 0;
+  const QgsPointCloudAttribute::DataType xType = blockAttributes.find( u"X"_s, xOffset )->type();
+  const QgsPointCloudAttribute::DataType yType = blockAttributes.find( u"Y"_s, yOffset )->type();
+  const QgsPointCloudAttribute::DataType zType = blockAttributes.find( u"Z"_s, zOffset )->type();
+
+  bool useRenderer = false;
+  if ( mPreparedRendererData )
+  {
+    useRenderer = mPreparedRendererData->prepareBlock( block );
+  }
+
+  QColor color;
+  const bool reproject = !mLayerToTargetTransform.isShortCircuited();
+  for ( int i = 0; i < count; ++i )
+  {
+    if ( mFeedback->isCanceled() )
+    {
+      break;
+    }
+
+    double x, y, z;
+    QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, block->scale(), block->offset(), x, y, z );
+    QgsPoint res( x, y, z * mZScale + mZOffset );
+    if ( !zRange.contains( res.z() ) )
+      continue;
+
+    if ( useRenderer )
+    {
+      color = mPreparedRendererData->pointColor( block, i, res.z() );
+      if ( !color.isValid() )
+        continue;
+    }
+
+    if ( mSearchGeometryInLayerCrsGeometryEngine->contains( res.x(), res.y() ) )
+    {
+      if ( reproject )
+      {
+        try
+        {
+          double x = res.x(), y = res.y(), z = res.z();
+          mLayerToTargetTransform.transformInPlace( x, y, z );
+          res.setX( x );
+          res.setY( y );
+          res.setZ( z );
+        }
+        catch ( QgsCsException & )
+        {
+          continue;
+        }
+      }
+
+      mGatheredPoints.append( res );
+    }
+  }
+}
+
+QString QgsTriangulatedPointCloudLayerProfileResults::type() const
+{
+  return u"triangulatedpointcloud"_s;
+}
+
+QVector<QgsProfileIdentifyResults> QgsTriangulatedPointCloudLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  const QVector<QgsProfileIdentifyResults> noLayerResults = QgsAbstractProfileSurfaceResults::identify( point, context );
+
+  // we have to make a new list, with the correct layer reference set
+  QVector<QgsProfileIdentifyResults> res;
+  res.reserve( noLayerResults.size() );
+  for ( const QgsProfileIdentifyResults &result : noLayerResults )
+  {
+    res.append( QgsProfileIdentifyResults( mLayer, result.results() ) );
+  }
+  return res;
+}
+
+void QgsTriangulatedPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
+{
+  QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( generator );
+  const QgsTriangulatedPointCloudLayerProfileGenerator *pcGenerator = qgis::down_cast<  const QgsTriangulatedPointCloudLayerProfileGenerator * >( generator );
+
+  mLayer = pcGenerator->mLayer;
+  mLayerId = pcGenerator->mId;
+  mCurveCrs = pcGenerator->mTargetCrs;
+  mProfileCurve.reset( pcGenerator->mProfileCurve->clone() );
+  mTolerance = pcGenerator->mTolerance;
+
+  mMarkerSymbol.reset( pcGenerator->mProfileMarkerSymbol->clone() );
+  mShowMarkerSymbolInSurfacePlots = pcGenerator->mShowMarkerSymbolInSurfacePlots;
+
+  mZOffset = pcGenerator->mZOffset;
+  mZScale = pcGenerator->mZScale;
+}
+
+void QgsTriangulatedPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &context )
+{
+  QgsAbstractProfileSurfaceResults::renderResults( context );
+  if ( !mShowMarkerSymbolInSurfacePlots )
+    return;
+
+  QPainter *painter = context.renderContext().painter();
+  if ( !painter )
+    return;
+
+  const QgsScopedQPainterState painterState( painter );
+
+  painter->setBrush( Qt::NoBrush );
+  painter->setPen( Qt::NoPen );
+
+  const double minDistance = context.distanceRange().lower();
+  const double maxDistance = context.distanceRange().upper();
+  const double minZ = context.elevationRange().lower();
+  const double maxZ = context.elevationRange().upper();
+
+  const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
+  QPainterPath clipPath;
+  clipPath.addPolygon( context.worldTransform().map( visibleRegion ) );
+  painter->setClipPath( clipPath, Qt::ClipOperation::IntersectClip );
+
+  mMarkerSymbol->startRender( context.renderContext() );
+
+  for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+  {
+    if ( std::isnan( pointIt.value() ) )
+      continue;
+
+    mMarkerSymbol->renderPoint( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ), nullptr, context.renderContext() );
+  }
+  mMarkerSymbol->stopRender( context.renderContext() );
+}
