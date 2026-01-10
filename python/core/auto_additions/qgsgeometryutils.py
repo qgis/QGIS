@@ -74,6 +74,7 @@ try:
     QgsGeometryUtils.chamferVertex = staticmethod(QgsGeometryUtils.chamferVertex)
     QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
     QgsGeometryUtils.checkWeaklyFor3DPlane = staticmethod(QgsGeometryUtils.checkWeaklyFor3DPlane)
+    QgsGeometryUtils.interpolateZ = staticmethod(QgsGeometryUtils.interpolateZ)
     QgsGeometryUtils.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

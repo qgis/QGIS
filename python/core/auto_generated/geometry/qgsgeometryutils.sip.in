@@ -1481,6 +1481,22 @@ points. If successful, the points are returned in ptA, ptB, and ptC.
 .. versionadded:: 4.0
 %End
 
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+%Docstring
+Interpolates the Z value at the given (x, y) location within the
+triangle defined by points a, b, and c.
+
+:param a: First vertex of the triangle.
+:param b: Second vertex of the triangle.
+:param c: Third vertex of the triangle.
+:param x: X coordinate of the point to interpolate.
+:param y: Y coordinate of the point to interpolate.
+
+:return: The interpolated Z value at the specified (x, y) location.
+
+.. versionadded:: 4.0
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
