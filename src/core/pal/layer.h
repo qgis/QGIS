@@ -42,7 +42,6 @@
 #include "qgslabelobstaclesettings.h"
 
 #include <QHash>
-#include <QLinkedList>
 #include <QMutex>
 
 class QgsLabelFeature;
