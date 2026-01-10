@@ -184,6 +184,7 @@
 #include "qgsalgorithmmultiringconstantbuffer.h"
 #include "qgsalgorithmmultiunion.h"
 #include "qgsalgorithmnearestneighbouranalysis.h"
+#include "qgsalgorithmnetworkextractendpoints.h"
 #include "qgsalgorithmoffsetlines.h"
 #include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
@@ -460,6 +461,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
   addAlgorithm( new QgsExtractLabelsAlgorithm() );
   addAlgorithm( new QgsExtractMValuesAlgorithm() );
+  addAlgorithm( new QgsExtractNetworkEndpointsAlgorithm() );
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsExtractSpecificVerticesAlgorithm() );
   addAlgorithm( new QgsExtractWithinDistanceAlgorithm() );

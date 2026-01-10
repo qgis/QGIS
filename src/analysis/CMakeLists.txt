@@ -198,6 +198,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiunion.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
   processing/qgsalgorithmnetworkanalysisbase.cpp
+  processing/qgsalgorithmnetworkextractendpoints.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
