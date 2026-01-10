@@ -299,7 +299,11 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
 
     mChunkUpdaterFactory = std::make_unique<QgsChunkUpdaterFactory>( mChunkLoaderFactory );
 
-    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
+    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QString uri, const QgsPointCloudNodeId &n ) {
+      const QString indexUri = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex.uri();
+      if ( indexUri != uri )
+        return;
+
       QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
       if ( node )
       {
@@ -317,7 +321,11 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 
 void QgsPointCloudLayerChunkedEntity::updateIndex()
 {
-  static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
+  QString uri = "";
+  QgsPointCloudIndex pc = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex;
+  if ( pc.isValid() )
+    uri = pc.uri();
+  static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index( uri );
 }
 
 QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
