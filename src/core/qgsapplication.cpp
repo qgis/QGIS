@@ -1123,6 +1123,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     setThemeName( u"default"_s );
     qApp->setStyleSheet( QString() );
+    instance()->themeChanged();
     return;
   }
 
@@ -1133,7 +1134,29 @@ void QgsApplication::setUITheme( const QString &themeName )
   if ( !file.open( QIODevice::ReadOnly ) || ( variableInfo.exists() && !variablesfile.open( QIODevice::ReadOnly ) ) )
   {
     qApp->setStyleSheet( QString() );
+    instance()->themeChanged();
     return;
+  }
+
+  QFile palettefile( path + "/palette.txt" );
+  QFileInfo paletteInfo( palettefile );
+  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  {
+    QPalette pal = qApp->palette();
+    QTextStream in( &palettefile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      QStringList parts = line.split( ':' );
+      if ( parts.count() == 2 )
+      {
+        int role = parts.at( 0 ).trimmed().toInt();
+        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+    }
+    palettefile.close();
+    qApp->setPalette( pal );
   }
 
   QString styledata = file.readAll();
@@ -1177,28 +1200,8 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   qApp->setStyleSheet( styledata );
 
-  QFile palettefile( path + "/palette.txt" );
-  QFileInfo paletteInfo( palettefile );
-  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
-  {
-    QPalette pal = qApp->palette();
-    QTextStream in( &palettefile );
-    while ( !in.atEnd() )
-    {
-      QString line = in.readLine();
-      QStringList parts = line.split( ':' );
-      if ( parts.count() == 2 )
-      {
-        int role = parts.at( 0 ).trimmed().toInt();
-        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
-        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
-      }
-    }
-    palettefile.close();
-    qApp->setPalette( pal );
-  }
-
   setThemeName( themeName );
+  instance()->themeChanged();
 }
 
 QHash<QString, QString> QgsApplication::uiThemes()

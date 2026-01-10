@@ -1174,6 +1174,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void localeChanged();
 
+    /**
+     * Emitted when the application theme has changed.
+     *
+     * \since QGIS 4.0
+     */
+    void themeChanged();
 
   private:
 
