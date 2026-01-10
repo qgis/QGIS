@@ -216,8 +216,9 @@ bool QgsPointCloudLayerRenderer::render()
         visibleIndexes.append( si );
       }
     }
-    const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth ||
-                           renderExtent.height() > mAverageSubIndexHeight;
+    const double zoomOutMultiplier = mRenderer->zoomOutMultiplier();
+    const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth * zoomOutMultiplier ||
+                           renderExtent.height() > mAverageSubIndexHeight * zoomOutMultiplier;
     // if the overview of virtual point cloud exists, and we are zoomed out, we render just overview
     if ( mOverviewIndex && mOverviewIndex->isValid() && zoomedOut &&
          mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )

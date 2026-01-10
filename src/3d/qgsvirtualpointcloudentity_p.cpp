@@ -139,6 +139,11 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
 {
   QgsVector3D cameraPosMapCoords = QgsVector3D( sceneContext.cameraPos ) + mapSettings()->origin();
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
+
+  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  const double zoomOutMultiplier = rendererBehavior ? rendererBehavior->zoomOutMultiplier() : 1;
+  qsizetype subIndexesRendered = 0;
+
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     // If the chunked entity needs an update, do it even if it's occluded,
@@ -162,6 +167,18 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
     constexpr float THRESHOLD = .2;
 
+    QgsBox3D scaledBox = box3D;
+    scaledBox.scale( zoomOutMultiplier );
+    const bool zoomedOut = !scaledBox.contains( cameraPosMapCoords.x(), cameraPosMapCoords.y(), cameraPosMapCoords.z() );
+
+    if ( zoomedOut )
+    {
+      setRenderSubIndexAsBbox( i, true );
+      continue;
+    }
+
+    subIndexesRendered += 1;
+
     // always display as bbox for the initial temporary camera pos (0, 0, 0)
     // then once the camera changes we display as bbox depending on screen space error
     const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < THRESHOLD;
@@ -174,9 +191,13 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   }
   updateBboxEntity();
 
-  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
   if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
+    // no need to render the overview if all sub indexes are shown
+    if ( subIndexesRendered == mChunkedEntitiesMap.size() )
+      mOverviewEntity->setEnabled( false );
+    else
+      mOverviewEntity->setEnabled( true );
     mOverviewEntity->handleSceneUpdate( sceneContext );
   }
 }
