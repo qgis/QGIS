@@ -33,6 +33,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   bool res = false;
   if ( !layer || !layer->isEditable() )
   {
+    request = QgsFeatureRequest();
     return false;
   }
 

@@ -78,6 +78,8 @@ Creates a polyhedral surface from a multiPolygon.
 
     virtual double area() const /HoldGIL/;
 
+    virtual double area3D() const /HoldGIL/;
+
     virtual double perimeter() const /HoldGIL/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

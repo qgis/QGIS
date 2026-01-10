@@ -29,6 +29,7 @@
 #include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
+#include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgswkbptr.h"
 
@@ -1432,6 +1433,88 @@ void QgsCircularString::sumUpArea( double &sum ) const
 
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
+}
+
+void QgsCircularString::sumUpArea3D( double &sum ) const
+{
+  if ( mHasCachedSummedUpArea3D )
+  {
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  // No Z component. Fallback to the 2D version
+  if ( mZ.isEmpty() )
+  {
+    double area2D = 0;
+    sumUpArea( area2D );
+    mSummedUpArea3D = area2D;
+    mHasCachedSummedUpArea3D = true;
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  // FIXME: Implement proper 3D shoelace formula for circular strings
+  // workaround: project points to 2D plane and apply standard 2D shoelace formula
+  mSummedUpArea3D = 0;
+
+  // Build an orthonormal reference frame (ux, uy, uz) from three 3D points
+  QgsPoint ptA;
+  QgsPoint ptB;
+  QgsPoint ptC;
+  if ( !QgsGeometryUtils::checkWeaklyFor3DPlane( this, ptA, ptB, ptC ) )
+  {
+    mHasCachedSummedUpArea3D = true;
+    return;
+  }
+
+  QgsVector3D ux( ptB.x() - ptA.x(), ptB.y() - ptA.y(), ptB.z() - ptA.z() );
+  QgsVector3D uz = QgsVector3D::crossProduct( ux, QgsVector3D( ptC.x() - ptA.x(), ptC.y() - ptA.y(), ptC.z() - ptA.z() ) );
+  ux.normalize();
+  uz.normalize();
+  QgsVector3D uy = QgsVector3D::crossProduct( uz, ux );
+
+  double normalSign = 1.0;
+  // Ensure a consistent orientation: prioritize Z+, then Y+, then X+
+  if ( !qgsDoubleNear( uz.z(), 0.0 ) )
+  {
+    if ( uz.z() < 0 )
+      normalSign = -1.0;
+  }
+  else if ( !qgsDoubleNear( uz.y(), 0.0 ) )
+  {
+    if ( uz.y() < 0 )
+      normalSign = -1.0;
+  }
+  else
+  {
+    if ( uz.x() < 0 )
+      normalSign = -1.0;
+  }
+
+  // Project points onto the orthonormal plane (ux, uy) and compute 2D sumUpArea
+  const int nrPoints = numPoints();
+  QVector<double> projX;
+  QVector<double> projY;
+  projX.reserve( nrPoints );
+  projY.reserve( nrPoints );
+  for ( int i = 0; i < nrPoints; i++ )
+  {
+    const double vecAX = mX[i] - ptA.x();
+    const double vecAY = mY[i] - ptA.y();
+    const double vecAZ = mZ[i] - ptA.z();
+
+    projX.push_back( vecAX * ux.x() + vecAY * ux.y() + vecAZ * ux.z() );
+    projY.push_back( vecAX * uy.x() + vecAY * uy.y() + vecAZ * uy.z() );
+  }
+
+  QgsCircularString projectedCurve( projX, projY );
+  projectedCurve.sumUpArea( mSummedUpArea3D );
+
+  // take into account normal sign
+  mSummedUpArea3D *= normalSign;
+  mHasCachedSummedUpArea3D = true;
+  sum += mSummedUpArea3D;
 }
 
 bool QgsCircularString::hasCurvedSegments() const

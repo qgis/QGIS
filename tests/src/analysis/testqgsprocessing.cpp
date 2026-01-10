@@ -256,6 +256,15 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       parameters.insert( u"raster2"_s, u"test.bmp"_s );
       QgsProcessingContext context;
       QCOMPARE( parameterAsOutputRasterFormat( parameters, u"raster2"_s, context ), u"BMP"_s );
+
+      // test that parameterAsOutputRasterFormat() does not cause a temporary
+      // output to be loaded
+      QgsProject p;
+      QgsProcessingOutputLayerDefinition fs( QgsProcessing::TEMPORARY_OUTPUT );
+      fs.destinationProject = &p;
+      parameters.insert( u"raster2"_s, QVariant::fromValue( fs ) );
+      QCOMPARE( parameterAsOutputRasterFormat( parameters, u"raster2"_s, context ), u"GTiff"_s );
+      QCOMPARE( context.layersToLoadOnCompletion().size(), 0 );
     }
 
     void runOutputChecks()

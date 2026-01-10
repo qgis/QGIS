@@ -157,7 +157,7 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
   qgssize falseCount = 0;
   const qgssize layerSize = static_cast<qgssize>( mLayerWidth ) * static_cast<qgssize>( mLayerHeight );
 
-  QgsRasterAnalysisUtils::applyRasterLogicOperator( mInputs, provider.get(), mNoDataValue, mTreatNodataAsFalse, mLayerWidth, mLayerHeight, mExtent, feedback, mExtractValFunc, noDataCount, trueCount, falseCount );
+  QgsRasterAnalysisUtils::applyRasterLogicOperator( mInputs, std::move( provider ), mNoDataValue, mTreatNodataAsFalse, mLayerWidth, mLayerHeight, mExtent, feedback, mExtractValFunc, noDataCount, trueCount, falseCount );
 
   QVariantMap outputs;
   outputs.insert( u"EXTENT"_s, mExtent.toString() );

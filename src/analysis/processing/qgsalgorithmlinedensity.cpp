@@ -184,6 +184,9 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
   provider->setNoDataValue( 1, -9999 );
 
+  const bool hasReportsDuringClose = provider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   const qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
@@ -260,7 +263,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         rasterDataLine->setValue( 0, col, 0.0 );
       }
 
-      feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * 100 );
+      feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * maxProgressDuringBlockWriting );
       cellcnt++;
     }
     if ( !provider->writeBlock( rasterDataLine.get(), 1, 0, row ) )
@@ -270,6 +273,17 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
     //'carriage return and newline' for search geometry
     mSearchGeometry.translate( ( cols - 1 ) * -mPixelSize, -mPixelSize );
+  }
+
+  if ( hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
   }
 
   QVariantMap outputs;

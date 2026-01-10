@@ -7336,7 +7336,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel );
+    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel, nullptr );
     widget->setPanelTitle( mParam->description() );
     widget->setProject( mProject );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {

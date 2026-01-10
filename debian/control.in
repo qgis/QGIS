@@ -65,9 +65,9 @@ Build-Depends:
  libsfcgal-dev (>= 2.0.0),
  libgeographiclib-dev,
  libcups2-dev,
- locales
 #oracle# oracle-instantclient-basiclite, oracle-instantclient-devel,
 #pdal# libpdal-dev, pdal,
+ locales
 #apidoc#Build-Depends-indep:
 #apidoc# doxygen
 Build-Conflicts:

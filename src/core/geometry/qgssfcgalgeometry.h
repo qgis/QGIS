@@ -692,7 +692,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     sfcgal::shared_geom mSfcgalGeom;
     bool mIsPrimitive = false;
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
     void setPrimitiveTranslate( const QgsVector3D &translation );
     void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
     void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
