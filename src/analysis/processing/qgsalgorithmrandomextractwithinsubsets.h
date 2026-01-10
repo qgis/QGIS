@@ -37,11 +37,12 @@ class QgsRandomExtractWithinSubsetsAlgorithmBase : public QgsProcessingAlgorithm
 
   protected:
     /**
-     * Selects \a count random feature IDs from the \a source.
+     * Selects a \a value number/percentage of random feature IDs from the \a source.
      */
-    void sampleFeatureIds( QgsFeatureSource *source, const long long count, const QString &fieldName, QgsProcessingFeedback *feedback );
+    void sampleFeatureIds( QgsFeatureSource *source, const double value, const QString &fieldName, QgsProcessingFeedback *feedback );
 
     QgsFeatureIds mSelectedFeatureIds;
+    int mMethod = 0;
 };
 
 /**
