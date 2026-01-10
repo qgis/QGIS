@@ -24,15 +24,15 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QTemporaryDir>
 
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {
   Q_UNUSED( errClass )
-  const QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
-  if ( errNo != 6 && !re.exactMatch( msg ) )
+  const QRegularExpression re( QRegularExpression::anchoredPattern( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" ) );
+  if ( errNo != 6 && !re.match( msg ).hasMatch() )
   {
     std::cerr << msg;
   }

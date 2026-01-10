@@ -44,7 +44,6 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QPushButton>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
