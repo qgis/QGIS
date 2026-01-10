@@ -203,6 +203,7 @@
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmraiseexception.h"
 #include "qgsalgorithmrandomextract.h"
+#include "qgsalgorithmrandomextractwithinsubsets.h"
 #include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrandompointsinpolygons.h"
 #include "qgsalgorithmrandompointsonlines.h"
@@ -554,6 +555,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomBinomialRasterAlgorithm() );
   addAlgorithm( new QgsRandomExponentialRasterAlgorithm() );
   addAlgorithm( new QgsRandomExtractAlgorithm() );
+  addAlgorithm( new QgsRandomExtractWithinSubsetsAlgorithm() );
   addAlgorithm( new QgsRandomGammaRasterAlgorithm() );
   addAlgorithm( new QgsRandomGeometricRasterAlgorithm() );
   addAlgorithm( new QgsRandomNegativeBinomialRasterAlgorithm() );
@@ -563,6 +565,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
   addAlgorithm( new QgsRandomSelectionAlgorithm() );
+  addAlgorithm( new QgsRandomSelectionWithinSubsetsAlgorithm() );
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorModelerAlgorithm() );
