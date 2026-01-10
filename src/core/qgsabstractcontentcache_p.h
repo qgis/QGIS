@@ -41,7 +41,7 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
   }
 
   // maybe it's an embedded base64 string
-  if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  if ( path.startsWith( "base64:"_L1, Qt::CaseInsensitive ) )
   {
     const QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
     return QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
@@ -63,7 +63,7 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
   }
 
   // maybe it's a url...
-  if ( !path.contains( QLatin1String( "://" ) ) ) // otherwise short, relative SVG paths might be considered URLs
+  if ( !path.contains( "://"_L1 ) ) // otherwise short, relative SVG paths might be considered URLs
   {
     return missingContent;
   }
@@ -75,7 +75,7 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
   }
 
   // check whether it's a url pointing to a local file
-  if ( url.scheme().compare( QLatin1String( "file" ), Qt::CaseInsensitive ) == 0 )
+  if ( url.scheme().compare( "file"_L1, Qt::CaseInsensitive ) == 0 )
   {
     file.setFileName( url.toLocalFile() );
     if ( file.exists() )
@@ -141,7 +141,7 @@ QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QB
   mPendingRemoteUrls.insert( path );
   //fire up task to fetch content in background
   QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsAbstractContentCache<%1>" ).arg( mTypeString ) );
+  QgsSetRequestInitiatorClass( request, u"QgsAbstractContentCache<%1>"_s.arg( mTypeString ) );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 

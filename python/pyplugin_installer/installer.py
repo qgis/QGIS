@@ -359,7 +359,7 @@ class QgsPluginInstaller(QObject):
     # ----------------------------------------- #
     def exportSettingsGroup(self):
         """Return QgsSettings settingsGroup value"""
-        # todo QGIS 4 remove
+        # todo QGIS 5 remove
         return "plugin-manager"
 
     # ----------------------------------------- #

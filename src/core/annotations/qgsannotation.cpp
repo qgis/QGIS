@@ -37,12 +37,12 @@ QgsAnnotation::QgsAnnotation( QObject *parent )
   , mMarkerSymbol( new QgsMarkerSymbol() )
 {
   QVariantMap props;
-  props.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  props.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  props.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  props.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  props.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  props.insert( u"color"_s, u"white"_s );
+  props.insert( u"style"_s, u"solid"_s );
+  props.insert( u"style_border"_s, u"solid"_s );
+  props.insert( u"color_border"_s, u"black"_s );
+  props.insert( u"width_border"_s, u"0.3"_s );
+  props.insert( u"joinstyle"_s, u"miter"_s );
   mFillSymbol = QgsFillSymbol::createSimple( props );
 }
 
@@ -195,24 +195,24 @@ void QgsAnnotation::setAssociatedFeature( const QgsFeature &feature )
 bool QgsAnnotation::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   // NOTE: if visitEnter returns false it means "don't visit the annotation", not "abort all further visitations"
-  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, QStringLiteral( "annotation" ), tr( "Annotation" ) ) ) )
+  if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, u"annotation"_s, tr( "Annotation" ) ) ) )
     return true;
 
   if ( mMarkerSymbol )
   {
     QgsStyleSymbolEntity entity( mMarkerSymbol.get() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "marker" ), QObject::tr( "Marker" ) ) ) )
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"marker"_s, QObject::tr( "Marker" ) ) ) )
       return false;
   }
 
   if ( mFillSymbol )
   {
     QgsStyleSymbolEntity entity( mFillSymbol.get() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "fill" ), QObject::tr( "Fill" ) ) ) )
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"fill"_s, QObject::tr( "Fill" ) ) ) )
       return false;
   }
 
-  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, QStringLiteral( "annotation" ), tr( "Annotation" ) ) ) )
+  if ( !visitor->visitExit( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Annotation, u"annotation"_s, tr( "Annotation" ) ) ) )
     return false;
 
   return true;
@@ -268,27 +268,27 @@ void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc, const Q
   {
     return;
   }
-  QDomElement annotationElem = doc.createElement( QStringLiteral( "AnnotationItem" ) );
-  annotationElem.setAttribute( QStringLiteral( "mapPositionFixed" ), mHasFixedMapPosition );
-  annotationElem.setAttribute( QStringLiteral( "mapPosX" ), qgsDoubleToString( mMapPosition.x() ) );
-  annotationElem.setAttribute( QStringLiteral( "mapPosY" ), qgsDoubleToString( mMapPosition.y() ) );
+  QDomElement annotationElem = doc.createElement( u"AnnotationItem"_s );
+  annotationElem.setAttribute( u"mapPositionFixed"_s, mHasFixedMapPosition );
+  annotationElem.setAttribute( u"mapPosX"_s, qgsDoubleToString( mMapPosition.x() ) );
+  annotationElem.setAttribute( u"mapPosY"_s, qgsDoubleToString( mMapPosition.y() ) );
   if ( mMapPositionCrs.isValid() )
     mMapPositionCrs.writeXml( annotationElem, doc );
-  annotationElem.setAttribute( QStringLiteral( "offsetXMM" ), qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
-  annotationElem.setAttribute( QStringLiteral( "offsetYMM" ), qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
-  annotationElem.setAttribute( QStringLiteral( "frameWidthMM" ), qgsDoubleToString( mFrameSize.width() ) );
-  annotationElem.setAttribute( QStringLiteral( "frameHeightMM" ), qgsDoubleToString( mFrameSize.height() ) );
-  annotationElem.setAttribute( QStringLiteral( "canvasPosX" ), qgsDoubleToString( mRelativePosition.x() ) );
-  annotationElem.setAttribute( QStringLiteral( "canvasPosY" ), qgsDoubleToString( mRelativePosition.y() ) );
-  annotationElem.setAttribute( QStringLiteral( "contentsMargin" ), mContentsMargins.toString() );
-  annotationElem.setAttribute( QStringLiteral( "visible" ), isVisible() );
+  annotationElem.setAttribute( u"offsetXMM"_s, qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
+  annotationElem.setAttribute( u"offsetYMM"_s, qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
+  annotationElem.setAttribute( u"frameWidthMM"_s, qgsDoubleToString( mFrameSize.width() ) );
+  annotationElem.setAttribute( u"frameHeightMM"_s, qgsDoubleToString( mFrameSize.height() ) );
+  annotationElem.setAttribute( u"canvasPosX"_s, qgsDoubleToString( mRelativePosition.x() ) );
+  annotationElem.setAttribute( u"canvasPosY"_s, qgsDoubleToString( mRelativePosition.y() ) );
+  annotationElem.setAttribute( u"contentsMargin"_s, mContentsMargins.toString() );
+  annotationElem.setAttribute( u"visible"_s, isVisible() );
   if ( mMapLayer )
   {
-    annotationElem.setAttribute( QStringLiteral( "mapLayer" ), mMapLayer->id() );
+    annotationElem.setAttribute( u"mapLayer"_s, mMapLayer->id() );
   }
   if ( mMarkerSymbol )
   {
-    const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.get(), doc, context );
+    const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( u"marker symbol"_s, mMarkerSymbol.get(), doc, context );
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
@@ -296,8 +296,8 @@ void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc, const Q
   }
   if ( mFillSymbol )
   {
-    QDomElement fillElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
-    const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mFillSymbol.get(), doc, context );
+    QDomElement fillElem = doc.createElement( u"fillSymbol"_s );
+    const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( u"fill symbol"_s, mFillSymbol.get(), doc, context );
     if ( !symbolElem.isNull() )
     {
       fillElem.appendChild( symbolElem );
@@ -314,15 +314,15 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     return;
   }
   QPointF pos;
-  pos.setX( annotationElem.attribute( QStringLiteral( "canvasPosX" ), QStringLiteral( "0" ) ).toDouble() );
-  pos.setY( annotationElem.attribute( QStringLiteral( "canvasPosY" ), QStringLiteral( "0" ) ).toDouble() );
+  pos.setX( annotationElem.attribute( u"canvasPosX"_s, u"0"_s ).toDouble() );
+  pos.setY( annotationElem.attribute( u"canvasPosY"_s, u"0"_s ).toDouble() );
   if ( pos.x() >= 1 || pos.x() < 0 || pos.y() < 0 || pos.y() >= 1 )
     mRelativePosition = QPointF();
   else
     mRelativePosition = pos;
   QgsPointXY mapPos;
-  mapPos.setX( annotationElem.attribute( QStringLiteral( "mapPosX" ), QStringLiteral( "0" ) ).toDouble() );
-  mapPos.setY( annotationElem.attribute( QStringLiteral( "mapPosY" ), QStringLiteral( "0" ) ).toDouble() );
+  mapPos.setX( annotationElem.attribute( u"mapPosX"_s, u"0"_s ).toDouble() );
+  mapPos.setY( annotationElem.attribute( u"mapPosY"_s, u"0"_s ).toDouble() );
   mMapPosition = mapPos;
 
   if ( !mMapPositionCrs.readXml( annotationElem ) )
@@ -330,36 +330,36 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     mMapPositionCrs = QgsCoordinateReferenceSystem();
   }
 
-  mContentsMargins = QgsMargins::fromString( annotationElem.attribute( QStringLiteral( "contentsMargin" ) ) );
+  mContentsMargins = QgsMargins::fromString( annotationElem.attribute( u"contentsMargin"_s ) );
   const double dpiScale = 25.4 / QgsPainting::qtDefaultDpiX();
-  if ( annotationElem.hasAttribute( QStringLiteral( "frameWidthMM" ) ) )
-    mFrameSize.setWidth( annotationElem.attribute( QStringLiteral( "frameWidthMM" ), QStringLiteral( "5" ) ).toDouble() );
+  if ( annotationElem.hasAttribute( u"frameWidthMM"_s ) )
+    mFrameSize.setWidth( annotationElem.attribute( u"frameWidthMM"_s, u"5"_s ).toDouble() );
   else
-    mFrameSize.setWidth( dpiScale * annotationElem.attribute( QStringLiteral( "frameWidth" ), QStringLiteral( "50" ) ).toDouble() );
-  if ( annotationElem.hasAttribute( QStringLiteral( "frameHeightMM" ) ) )
-    mFrameSize.setHeight( annotationElem.attribute( QStringLiteral( "frameHeightMM" ), QStringLiteral( "3" ) ).toDouble() );
+    mFrameSize.setWidth( dpiScale * annotationElem.attribute( u"frameWidth"_s, u"50"_s ).toDouble() );
+  if ( annotationElem.hasAttribute( u"frameHeightMM"_s ) )
+    mFrameSize.setHeight( annotationElem.attribute( u"frameHeightMM"_s, u"3"_s ).toDouble() );
   else
-    mFrameSize.setHeight( dpiScale * annotationElem.attribute( QStringLiteral( "frameHeight" ), QStringLiteral( "50" ) ).toDouble() );
+    mFrameSize.setHeight( dpiScale * annotationElem.attribute( u"frameHeight"_s, u"50"_s ).toDouble() );
 
-  if ( annotationElem.hasAttribute( QStringLiteral( "offsetXMM" ) ) )
-    mOffsetFromReferencePoint.setX( annotationElem.attribute( QStringLiteral( "offsetXMM" ), QStringLiteral( "0" ) ).toDouble() );
+  if ( annotationElem.hasAttribute( u"offsetXMM"_s ) )
+    mOffsetFromReferencePoint.setX( annotationElem.attribute( u"offsetXMM"_s, u"0"_s ).toDouble() );
   else
-    mOffsetFromReferencePoint.setX( dpiScale * annotationElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble() );
-  if ( annotationElem.hasAttribute( QStringLiteral( "offsetYMM" ) ) )
-    mOffsetFromReferencePoint.setY( annotationElem.attribute( QStringLiteral( "offsetYMM" ), QStringLiteral( "0" ) ).toDouble() );
+    mOffsetFromReferencePoint.setX( dpiScale * annotationElem.attribute( u"offsetX"_s, u"0"_s ).toDouble() );
+  if ( annotationElem.hasAttribute( u"offsetYMM"_s ) )
+    mOffsetFromReferencePoint.setY( annotationElem.attribute( u"offsetYMM"_s, u"0"_s ).toDouble() );
   else
-    mOffsetFromReferencePoint.setY( dpiScale * annotationElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble() );
+    mOffsetFromReferencePoint.setY( dpiScale * annotationElem.attribute( u"offsetY"_s, u"0"_s ).toDouble() );
 
-  mHasFixedMapPosition = annotationElem.attribute( QStringLiteral( "mapPositionFixed" ), QStringLiteral( "1" ) ).toInt();
-  mVisible = annotationElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
-  if ( annotationElem.hasAttribute( QStringLiteral( "mapLayer" ) ) )
+  mHasFixedMapPosition = annotationElem.attribute( u"mapPositionFixed"_s, u"1"_s ).toInt();
+  mVisible = annotationElem.attribute( u"visible"_s, u"1"_s ).toInt();
+  if ( annotationElem.hasAttribute( u"mapLayer"_s ) )
   {
-    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( QStringLiteral( "mapLayer" ) ) ); // skip-keyword-check
+    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( u"mapLayer"_s ) ); // skip-keyword-check
   }
 
   //marker symbol
   {
-    const QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
+    const QDomElement symbolElem = annotationElem.firstChildElement( u"symbol"_s );
     if ( !symbolElem.isNull() )
     {
       std::unique_ptr< QgsMarkerSymbol > symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
@@ -371,10 +371,10 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   }
 
   mFillSymbol.reset( nullptr );
-  const QDomElement fillElem = annotationElem.firstChildElement( QStringLiteral( "fillSymbol" ) );
+  const QDomElement fillElem = annotationElem.firstChildElement( u"fillSymbol"_s );
   if ( !fillElem.isNull() )
   {
-    const QDomElement symbolElem = fillElem.firstChildElement( QStringLiteral( "symbol" ) );
+    const QDomElement symbolElem = fillElem.firstChildElement( u"symbol"_s );
     if ( !symbolElem.isNull() )
     {
       std::unique_ptr< QgsFillSymbol  >symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );
@@ -387,21 +387,21 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   if ( !mFillSymbol )
   {
     QColor frameColor;
-    frameColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameColor" ), QStringLiteral( "#000000" ) ) );
-    frameColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
+    frameColor.setNamedColor( annotationElem.attribute( u"frameColor"_s, u"#000000"_s ) );
+    frameColor.setAlpha( annotationElem.attribute( u"frameColorAlpha"_s, u"255"_s ).toInt() );
     QColor frameBackgroundColor;
-    frameBackgroundColor.setNamedColor( annotationElem.attribute( QStringLiteral( "frameBackgroundColor" ) ) );
-    frameBackgroundColor.setAlpha( annotationElem.attribute( QStringLiteral( "frameBackgroundColorAlpha" ), QStringLiteral( "255" ) ).toInt() );
-    double frameBorderWidth = annotationElem.attribute( QStringLiteral( "frameBorderWidth" ), QStringLiteral( "0.5" ) ).toDouble();
+    frameBackgroundColor.setNamedColor( annotationElem.attribute( u"frameBackgroundColor"_s ) );
+    frameBackgroundColor.setAlpha( annotationElem.attribute( u"frameBackgroundColorAlpha"_s, u"255"_s ).toInt() );
+    double frameBorderWidth = annotationElem.attribute( u"frameBorderWidth"_s, u"0.5"_s ).toDouble();
     // need to roughly convert border width from pixels to mm - just assume 96 dpi
     frameBorderWidth = frameBorderWidth * 25.4 / 96.0;
     QVariantMap props;
-    props.insert( QStringLiteral( "color" ), frameBackgroundColor.name() );
-    props.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-    props.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-    props.insert( QStringLiteral( "color_border" ), frameColor.name() );
-    props.insert( QStringLiteral( "width_border" ), QString::number( frameBorderWidth ) );
-    props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+    props.insert( u"color"_s, frameBackgroundColor.name() );
+    props.insert( u"style"_s, u"solid"_s );
+    props.insert( u"style_border"_s, u"solid"_s );
+    props.insert( u"color_border"_s, frameColor.name() );
+    props.insert( u"width_border"_s, QString::number( frameBorderWidth ) );
+    props.insert( u"joinstyle"_s, u"miter"_s );
     mFillSymbol = QgsFillSymbol::createSimple( props );
   }
 

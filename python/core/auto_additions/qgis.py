@@ -1705,7 +1705,7 @@ QgsDataItem.NoCapabilities.is_monkey_patched = True
 QgsDataItem.NoCapabilities.__doc__ = "Item has no capabilities"
 QgsDataItem.SetCrs = Qgis.BrowserItemCapability.SetCrs
 QgsDataItem.SetCrs.is_monkey_patched = True
-QgsDataItem.SetCrs.__doc__ = "Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0"
+QgsDataItem.SetCrs.__doc__ = "Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0"
 QgsDataItem.Fertile = Qgis.BrowserItemCapability.Fertile
 QgsDataItem.Fertile.is_monkey_patched = True
 QgsDataItem.Fertile.__doc__ = "Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors."
@@ -1735,7 +1735,7 @@ Qgis.BrowserItemCapability.__doc__ = """Browser item capabilities.
 .. versionadded:: 3.20
 
 * ``NoCapabilities``: Item has no capabilities
-* ``SetCrs``: Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+* ``SetCrs``: Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
 * ``Fertile``: Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
 * ``Fast``: CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
 * ``Collapse``: The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -8677,10 +8677,10 @@ QgsRasterInterface.Size.is_monkey_patched = True
 QgsRasterInterface.Size.__doc__ = "Original data source size (and thus resolution) is known, it is not always available, for example for WMS"
 QgsRasterInterface.Create = Qgis.RasterInterfaceCapability.Create
 QgsRasterInterface.Create.is_monkey_patched = True
-QgsRasterInterface.Create.__doc__ = "Create new datasets (Unused and deprecated -- will be removed in QGIS 4)"
+QgsRasterInterface.Create.__doc__ = "Create new datasets (Unused and deprecated -- will be removed in QGIS 5)"
 QgsRasterInterface.Remove = Qgis.RasterInterfaceCapability.Remove
 QgsRasterInterface.Remove.is_monkey_patched = True
-QgsRasterInterface.Remove.__doc__ = "Delete datasets (Unused and deprecated -- will be removed in QGIS 4)"
+QgsRasterInterface.Remove.__doc__ = "Delete datasets (Unused and deprecated -- will be removed in QGIS 5)"
 QgsRasterInterface.BuildPyramids = Qgis.RasterInterfaceCapability.BuildPyramids
 QgsRasterInterface.BuildPyramids.is_monkey_patched = True
 QgsRasterInterface.BuildPyramids.__doc__ = "Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability.BuildPyramids instead)"
@@ -8712,8 +8712,8 @@ Qgis.RasterInterfaceCapability.__doc__ = """Raster interface capabilities.
 
 * ``NoCapabilities``: No capabilities
 * ``Size``: Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-* ``Create``: Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
-* ``Remove``: Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
+* ``Create``: Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+* ``Remove``: Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
 * ``BuildPyramids``: Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability.BuildPyramids instead)
 * ``Identify``: At least one identify format supported
 * ``IdentifyValue``: Numerical values
@@ -12165,6 +12165,19 @@ Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTesse
 Qgis.ExtrusionFace.baseClass = Qgis
 Qgis.ExtrusionFaces.baseClass = Qgis
 ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.TriangulationAlgorithm.ConstrainedDelaunay.__doc__ = ""
+Qgis.TriangulationAlgorithm.Earcut.__doc__ = ""
+Qgis.TriangulationAlgorithm.__doc__ = """Triangulation algorithms.
+
+.. versionadded:: 4.0
+
+* ``ConstrainedDelaunay``: 
+* ``Earcut``: 
+
+"""
+# --
+Qgis.TriangulationAlgorithm.baseClass = Qgis
 from enum import Enum
 
 
@@ -12202,7 +12215,7 @@ Qgis.LayoutRenderFlag.__or__ = lambda flag1, flag2: Qgis.LayoutRenderFlags(_forc
 Qgis.CurvedTextFlag.__or__ = lambda flag1, flag2: Qgis.CurvedTextFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.MapGridFrameSideFlag.__or__ = lambda flag1, flag2: Qgis.MapGridFrameSideFlags(_force_int(flag1) | _force_int(flag2))
 try:
-    Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
+    Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}
     Qgis.version = staticmethod(Qgis.version)
     Qgis.versionInt = staticmethod(Qgis.versionInt)

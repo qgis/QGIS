@@ -68,15 +68,15 @@ void TestQgsMapToolDeleteRing::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -85,15 +85,15 @@ void TestQgsMapToolDeleteRing::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerMultiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=EPSG:3946" ), QStringLiteral( "multipolygon" ), QStringLiteral( "memory" ) );
+  mLayerMultiPolygon = new QgsVectorLayer( u"MultiPolygon?crs=EPSG:3946"_s, u"multipolygon"_s, u"memory"_s );
   QVERIFY( mLayerMultiPolygon->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerMultiPolygon );
 
   mLayerMultiPolygon->startEditing();
   QgsFeature f1, f2, f3;
-  mWkt1 = QStringLiteral( "MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0),(1 1, 1 6, 3 6, 3 1, 1 1)))" );
-  mWkt2 = QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(1 2, 1 1, 2 1, 2 2, 1 2),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))" );
-  mWkt3 = QStringLiteral( "MultiPolygon (((6 4, 7 4, 7 3, 6 3, 6 4)))" );
+  mWkt1 = u"MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0),(1 1, 1 6, 3 6, 3 1, 1 1)))"_s;
+  mWkt2 = u"MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(1 2, 1 1, 2 1, 2 2, 1 2),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))"_s;
+  mWkt3 = u"MultiPolygon (((6 4, 7 4, 7 3, 6 3, 6 4)))"_s;
   f1.setGeometry( QgsGeometry::fromWkt( mWkt1 ) );
   f2.setGeometry( QgsGeometry::fromWkt( mWkt2 ) );
   f3.setGeometry( QgsGeometry::fromWkt( mWkt3 ) );
@@ -156,13 +156,13 @@ void TestQgsMapToolDeleteRing::testDeleteRing()
   click( 2, 3.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), u"MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0)))"_s );
 
   // further clicking does nothing
   click( 2, 3.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), u"MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0)))"_s );
 }
 
 void TestQgsMapToolDeleteRing::testDeleteRingInPart()
@@ -179,22 +179,22 @@ void TestQgsMapToolDeleteRing::testDeleteRingInPart()
   click( 1.5, 1.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), u"MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))"_s );
 
   click( 1.5, 5.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(5 6, 5 5, 6 5, 6 6, 5 6)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), u"MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(5 6, 5 5, 6 5, 6 6, 5 6)))"_s );
 
   click( 5.5, 1.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0)),((0 4, 0 7, 7 7, 7 4, 0 4),(5 6, 5 5, 6 5, 6 6, 5 6)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), u"MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0)),((0 4, 0 7, 7 7, 7 4, 0 4),(5 6, 5 5, 6 5, 6 6, 5 6)))"_s );
 
   click( 5.5, 5.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0)),((0 4, 0 7, 7 7, 7 4, 0 4)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), u"MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0)),((0 4, 0 7, 7 7, 7 4, 0 4)))"_s );
 }
 
 void TestQgsMapToolDeleteRing::testDeleteRingSelected()
@@ -205,7 +205,7 @@ void TestQgsMapToolDeleteRing::testDeleteRingSelected()
   click( 1.5, 1.5 );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), u"MultiPolygon (((0 0, 4 0, 4 7, 0 7, 0 0)))"_s );
   QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), mWkt2 );
   QCOMPARE( mLayerMultiPolygon->getFeature( 3 ).geometry().asWkt(), mWkt3 );
   mLayerMultiPolygon->undoStack()->undo();
@@ -216,7 +216,7 @@ void TestQgsMapToolDeleteRing::testDeleteRingSelected()
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 3 );
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), mWkt1 );
-  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), u"MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(5 1, 6 1, 6 2, 5 2, 5 1)),((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))"_s );
   QCOMPARE( mLayerMultiPolygon->getFeature( 3 ).geometry().asWkt(), mWkt3 );
   mLayerMultiPolygon->undoStack()->undo();
   mLayerMultiPolygon->removeSelection();

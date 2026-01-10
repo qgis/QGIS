@@ -466,7 +466,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     {
       entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
 
-      if ( !entry->path.startsWith( QLatin1String( "base64:" ) ) )
+      if ( !entry->path.startsWith( "base64:"_L1 ) )
       {
         entry->fileModified = QFileInfo( entry->path ).lastModified();
         entry->fileModifiedLastCheckTimer.start();
@@ -528,12 +528,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      */
     void printEntryList()
     {
-      QgsDebugMsgLevel( QStringLiteral( "****************cache entry list*************************" ), 1 );
+      QgsDebugMsgLevel( u"****************cache entry list*************************"_s, 1 );
       QgsDebugMsgLevel( "Cache size: " + QString::number( mTotalSize ), 1 );
       T *entry = mLeastRecentEntry;
       while ( entry )
       {
-        QgsDebugMsgLevel( QStringLiteral( "***Entry:" ), 1 );
+        QgsDebugMsgLevel( u"***Entry:"_s, 1 );
         entry->dump();
         entry = static_cast< T * >( entry->nextEntry );
       }

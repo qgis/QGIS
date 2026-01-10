@@ -158,7 +158,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
   if ( provider )
   {
     const QgsRasterRangeList noDataRangeList = provider->userNoDataValues( 1 );
-    QgsDebugMsgLevel( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ), 2 );
+    QgsDebugMsgLevel( u"noDataRangeList.size = %1"_s.arg( noDataRangeList.size() ), 2 );
     if ( !noDataRangeList.isEmpty() )
     {
       const double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
@@ -183,7 +183,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
 void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &text )
 {
   Q_UNUSED( text )
-  QgsDebugMsgLevel( QStringLiteral( "text = %1" ).arg( text ), 2 );
+  QgsDebugMsgLevel( u"text = %1"_s.arg( text ), 2 );
 
   switch ( mCurrentMode )
   {
@@ -208,7 +208,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
         if ( row != -1 )
           break;
       }
-      QgsDebugMsgLevel( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ), 2 );
+      QgsDebugMsgLevel( u"row = %1 column =%2"_s.arg( row ).arg( column ), 2 );
 
       if ( column == static_cast<int>( SingleBandTableColumns::From ) )
       {
@@ -217,7 +217,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
           return;
 
         const bool toChanged = mTransparencyToEdited.value( row );
-        QgsDebugMsgLevel( QStringLiteral( "toChanged = %1" ).arg( toChanged ), 2 );
+        QgsDebugMsgLevel( u"toChanged = %1"_s.arg( toChanged ), 2 );
         if ( !toChanged )
         {
           toLineEdit->setText( lineEdit->text() );
@@ -306,11 +306,11 @@ void QgsRasterTransparencyWidget::pbnDefaultValues_clicked()
 void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 {
   const QgsSettings myQSettings;
-  const QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
+  const QString myLastDir = myQSettings.value( u"lastRasterFileFilterDir"_s, QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save Pixel Values as File" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
-    if ( !myFileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
+    if ( !myFileName.endsWith( ".txt"_L1, Qt::CaseInsensitive ) )
     {
       myFileName = myFileName + ".txt";
     }
@@ -363,7 +363,7 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
   bool myImportError = false;
   QString myBadLines;
   const QgsSettings myQSettings;
-  const QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
+  const QString myLastDir = myQSettings.value( u"lastRasterFileFilterDir"_s, QDir::homePath() ).toString();
   const QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Pixel Values from File" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
 
@@ -633,7 +633,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
           return; // Don't add nodata, transparent anyway
         }
         const double value = myPixelMap.value( bandNo ).toDouble();
-        QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 2 );
+        QgsDebugMsgLevel( u"value = %1"_s.arg( value, 0, 'g', 17 ), 2 );
         values.append( value );
       }
     }
@@ -752,7 +752,7 @@ void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
 
 void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, double value )
 {
-  QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 2 );
+  QgsDebugMsgLevel( u"value = %1"_s.arg( value, 0, 'g', 17 ), 2 );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )
     return;

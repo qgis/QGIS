@@ -60,12 +60,12 @@ class QgsLandingPageApi : public QgsServerOgcApi
       // Valid paths
       return path.isEmpty()
              || path == '/'
-             || path.startsWith( QLatin1String( "/map/" ) )
-             || path.startsWith( QLatin1String( "/index." ) )
+             || path.startsWith( "/map/"_L1 )
+             || path.startsWith( "/index."_L1 )
              // Static
-             || path.startsWith( QLatin1String( "/css/" ) )
-             || path.startsWith( QLatin1String( "/js/" ) )
-             || path == QLatin1String( "favicon.ico" );
+             || path.startsWith( "/css/"_L1 )
+             || path.startsWith( "/js/"_L1 )
+             || path == "favicon.ico"_L1;
     }
 };
 
@@ -89,7 +89,7 @@ class QgsProjectLoaderFilter : public QgsServerFilter
     {
       mEnvWasChanged = false;
       const auto handler { serverInterface()->requestHandler() };
-      if ( handler->path().startsWith( QStringLiteral( "%1/project/" ).arg( QgsLandingPageHandler::prefix( serverInterface()->serverSettings() ) ) ) )
+      if ( handler->path().startsWith( u"%1/project/"_s.arg( QgsLandingPageHandler::prefix( serverInterface()->serverSettings() ) ) ) )
       {
         const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
         if ( !projectPath.isEmpty() )
@@ -98,11 +98,11 @@ class QgsProjectLoaderFilter : public QgsServerFilter
           mOriginalProjectFromEnv = qgetenv( "QGIS_PROJECT_FILE" );
           qputenv( "QGIS_PROJECT_FILE", projectPath.toUtf8() );
           serverInterface()->setConfigFilePath( projectPath.toUtf8() );
-          QgsMessageLog::logMessage( QStringLiteral( "Project from URL set to: %1" ).arg( projectPath ), QStringLiteral( "Landing Page Plugin" ), Qgis::MessageLevel::Info );
+          QgsMessageLog::logMessage( u"Project from URL set to: %1"_s.arg( projectPath ), u"Landing Page Plugin"_s, Qgis::MessageLevel::Info );
         }
         else
         {
-          QgsMessageLog::logMessage( QStringLiteral( "Could not get project from URL: %1" ).arg( handler->url() ), QStringLiteral( "Landing Page Plugin" ), Qgis::MessageLevel::Info );
+          QgsMessageLog::logMessage( u"Could not get project from URL: %1"_s.arg( handler->url() ), u"Landing Page Plugin"_s, Qgis::MessageLevel::Info );
         }
       }
     };
@@ -133,12 +133,12 @@ class QgsLandingPageModule : public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsLandingPageApi *landingPageApi = new QgsLandingPageApi { serverIface, QStringLiteral( "/" ), QStringLiteral( "Landing Page" ), QStringLiteral( "1.0.0" ) };
+      QgsLandingPageApi *landingPageApi = new QgsLandingPageApi { serverIface, u"/"_s, u"Landing Page"_s, u"1.0.0"_s };
       // Register handlers
       landingPageApi->registerHandler<QgsServerStaticHandler>(
-        QStringLiteral( "%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" )
+        u"%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$"_s
           .arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ),
-        QStringLiteral( "landingpage" )
+        u"landingpage"_s
       );
       landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
       landingPageApi->registerHandler<QgsLandingPageMapHandler>( serverIface->serverSettings() );

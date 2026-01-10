@@ -46,7 +46,7 @@ namespace QgsWcs
         : mServerIface( serverIface )
       {}
 
-      QString name() const override { return QStringLiteral( "WCS" ); }
+      QString name() const override { return u"WCS"_s; }
       QString version() const override { return implementationVersion(); }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
@@ -63,10 +63,10 @@ namespace QgsWcs
         }
 
         // Get the request
-        const QString req = params.value( QStringLiteral( "REQUEST" ) );
+        const QString req = params.value( u"REQUEST"_s );
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
+          throw QgsServiceException( u"OperationNotSupported"_s, u"Please add or check the value of the REQUEST parameter"_s, 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -84,7 +84,7 @@ namespace QgsWcs
         else
         {
           // Operation not supported
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+          throw QgsServiceException( u"OperationNotSupported"_s, u"Request %1 is not supported"_s.arg( req ), 501 );
         }
       }
 
@@ -106,7 +106,7 @@ class QgsWcsModule : public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsgLevel( QStringLiteral( "WCSModule::registerSelf called" ), 2 );
+      QgsDebugMsgLevel( u"WCSModule::registerSelf called"_s, 2 );
       registry.registerService( new QgsWcs::Service( serverIface ) );
     }
 };

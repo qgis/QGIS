@@ -29,27 +29,27 @@
 Qgis::LayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {
   ok = true;
-  if ( string.compare( QLatin1String( "vector" ), Qt::CaseInsensitive ) == 0 )
+  if ( string.compare( "vector"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Vector;
-  else if ( string.compare( QLatin1String( "raster" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "raster"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Raster;
-  else if ( string.compare( QLatin1String( "mesh" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "mesh"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Mesh;
-  else if ( string.compare( QLatin1String( "vector-tile" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "vector-tile"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::VectorTile;
-  else if ( string.compare( QLatin1String( "point-cloud" ), Qt::CaseInsensitive ) == 0 ||
+  else if ( string.compare( "point-cloud"_L1, Qt::CaseInsensitive ) == 0 ||
             // We accept "pointcloud" for backward compatibility with the
             // MIME related code, which spelled it that way before 3.42.0 where
             // we have delegated to QgsMapLayerFactory::typeToString()
-            string.compare( QLatin1String( "pointcloud" ), Qt::CaseInsensitive ) == 0 )
+            string.compare( "pointcloud"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::PointCloud;
-  else if ( string.compare( QLatin1String( "plugin" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "plugin"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Plugin;
-  else if ( string.compare( QLatin1String( "annotation" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "annotation"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Annotation;
-  else if ( string.compare( QLatin1String( "group" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "group"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::Group;
-  else if ( string.compare( QLatin1String( "tiled-scene" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( "tiled-scene"_L1, Qt::CaseInsensitive ) == 0 )
     return Qgis::LayerType::TiledScene;
 
   ok = false;
@@ -61,23 +61,23 @@ QString QgsMapLayerFactory::typeToString( Qgis::LayerType type )
   switch ( type )
   {
     case Qgis::LayerType::Vector:
-      return QStringLiteral( "vector" );
+      return u"vector"_s;
     case Qgis::LayerType::Raster:
-      return QStringLiteral( "raster" );
+      return u"raster"_s;
     case Qgis::LayerType::Plugin:
-      return QStringLiteral( "plugin" );
+      return u"plugin"_s;
     case Qgis::LayerType::Mesh:
-      return QStringLiteral( "mesh" );
+      return u"mesh"_s;
     case Qgis::LayerType::VectorTile:
-      return QStringLiteral( "vector-tile" );
+      return u"vector-tile"_s;
     case Qgis::LayerType::Annotation:
-      return QStringLiteral( "annotation" );
+      return u"annotation"_s;
     case Qgis::LayerType::PointCloud:
-      return QStringLiteral( "point-cloud" );
+      return u"point-cloud"_s;
     case Qgis::LayerType::Group:
-      return QStringLiteral( "group" );
+      return u"group"_s;
     case Qgis::LayerType::TiledScene:
-      return QStringLiteral( "tiled-scene" );
+      return u"tiled-scene"_s;
   }
   return QString();
 }

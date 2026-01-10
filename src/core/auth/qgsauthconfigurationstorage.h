@@ -497,7 +497,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * \param level Message log level
      * \see QgsMessageLog
      */
-    void messageLog( const QString &message, const QString &tag = QStringLiteral( "Authentication" ), Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+    void messageLog( const QString &message, const QString &tag = u"Authentication"_s, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Emitted when the storage was updated.

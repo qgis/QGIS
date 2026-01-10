@@ -44,7 +44,7 @@ class TestQgs25DRenderer : public QgsTest
     Q_OBJECT
   public:
     TestQgs25DRenderer()
-      : QgsTest( QStringLiteral( "25D Renderer Tests" ), QStringLiteral( "25d_renderer" ) )
+      : QgsTest( u"25D Renderer Tests"_s, u"25d_renderer"_s )
     {}
 
   private slots:
@@ -76,15 +76,15 @@ void TestQgs25DRenderer::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   //need a very high height to check for stacking
-  QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_height" ), 8 );
-  QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_angle" ), 45 );
+  QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, u"qgis_25d_height"_s, 8 );
+  QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, u"qgis_25d_angle"_s, 45 );
 }
 
 void TestQgs25DRenderer::cleanupTestCase()
@@ -126,7 +126,7 @@ void TestQgs25DRenderer::renderLayout()
 
   map->setExtent( mpPolysLayer->extent() );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "25d_composer" ), &l, 0, 100 );
+  QGSVERIFYLAYOUTCHECK( u"25d_composer"_s, &l, 0, 100 );
 }
 
 QGSTEST_MAIN( TestQgs25DRenderer )

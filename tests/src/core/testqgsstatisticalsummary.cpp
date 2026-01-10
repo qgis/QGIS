@@ -347,24 +347,24 @@ void TestQgsStatisticSummary::noValues()
 
 void TestQgsStatisticSummary::shortName()
 {
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Count ), QStringLiteral( "count" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::CountMissing ), QStringLiteral( "countmissing" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Sum ), QStringLiteral( "sum" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Mean ), QStringLiteral( "mean" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Median ), QStringLiteral( "median" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::StDev ), QStringLiteral( "stdev" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::StDevSample ), QStringLiteral( "stdevsample" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Min ), QStringLiteral( "min" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Max ), QStringLiteral( "max" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Range ), QStringLiteral( "range" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Minority ), QStringLiteral( "minority" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Majority ), QStringLiteral( "majority" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Variety ), QStringLiteral( "variety" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::FirstQuartile ), QStringLiteral( "q1" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::ThirdQuartile ), QStringLiteral( "q3" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::InterQuartileRange ), QStringLiteral( "iqr" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::First ), QStringLiteral( "first" ) );
-  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Last ), QStringLiteral( "last" ) );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Count ), u"count"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::CountMissing ), u"countmissing"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Sum ), u"sum"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Mean ), u"mean"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Median ), u"median"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::StDev ), u"stdev"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::StDevSample ), u"stdevsample"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Min ), u"min"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Max ), u"max"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Range ), u"range"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Minority ), u"minority"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Majority ), u"majority"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Variety ), u"variety"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::FirstQuartile ), u"q1"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::ThirdQuartile ), u"q3"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::InterQuartileRange ), u"iqr"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::First ), u"first"_s );
+  QCOMPARE( QgsStatisticalSummary::shortName( Qgis::Statistic::Last ), u"last"_s );
 }
 
 QGSTEST_MAIN( TestQgsStatisticSummary )

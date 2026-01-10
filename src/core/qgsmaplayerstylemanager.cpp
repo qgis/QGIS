@@ -45,7 +45,7 @@ void QgsMapLayerStyleManager::reset()
 
 void QgsMapLayerStyleManager::readXml( const QDomElement &mgrElement )
 {
-  mCurrentStyle = mgrElement.attribute( QStringLiteral( "current" ) );
+  mCurrentStyle = mgrElement.attribute( u"current"_s );
   if ( mCurrentStyle.isEmpty() )
   {
     // For old project made with QGIS 2, we migrate to "default".
@@ -53,10 +53,10 @@ void QgsMapLayerStyleManager::readXml( const QDomElement &mgrElement )
   }
 
   mStyles.clear();
-  QDomElement ch = mgrElement.firstChildElement( QStringLiteral( "map-layer-style" ) );
+  QDomElement ch = mgrElement.firstChildElement( u"map-layer-style"_s );
   while ( !ch.isNull() )
   {
-    QString name = ch.attribute( QStringLiteral( "name" ) );
+    QString name = ch.attribute( u"name"_s );
     if ( name.isEmpty() )
     {
       // For old project made with QGIS 2, we migrate to "default".
@@ -66,20 +66,20 @@ void QgsMapLayerStyleManager::readXml( const QDomElement &mgrElement )
     style.readXml( ch );
     mStyles.insert( name, style );
 
-    ch = ch.nextSiblingElement( QStringLiteral( "map-layer-style" ) );
+    ch = ch.nextSiblingElement( u"map-layer-style"_s );
   }
 }
 
 void QgsMapLayerStyleManager::writeXml( QDomElement &mgrElement ) const
 {
   QDomDocument doc = mgrElement.ownerDocument();
-  mgrElement.setAttribute( QStringLiteral( "current" ), mCurrentStyle );
+  mgrElement.setAttribute( u"current"_s, mCurrentStyle );
 
   const auto constStyles = styles();
   for ( const QString &name : constStyles )
   {
-    QDomElement ch = doc.createElement( QStringLiteral( "map-layer-style" ) );
-    ch.setAttribute( QStringLiteral( "name" ), name );
+    QDomElement ch = doc.createElement( u"map-layer-style"_s );
+    ch.setAttribute( u"name"_s, name );
     mStyles[name].writeXml( ch );
     mgrElement.appendChild( ch );
   }

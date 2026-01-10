@@ -28,10 +28,10 @@ class APP_EXPORT QgsSettingsLocatorFilter : public QgsLocatorFilter
   public:
     QgsSettingsLocatorFilter( QObject *parent = nullptr );
     QgsSettingsLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "optionpages" ); }
+    QString name() const override { return u"optionpages"_s; }
     QString displayName() const override { return tr( "Settings" ); }
     Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "set" ); }
+    QString prefix() const override { return u"set"_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

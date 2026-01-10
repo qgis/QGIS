@@ -23,7 +23,7 @@
 
 QString QgsSingleSidedBufferAlgorithm::name() const
 {
-  return QStringLiteral( "singlesidedbuffer" );
+  return u"singlesidedbuffer"_s;
 }
 
 QString QgsSingleSidedBufferAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsSingleSidedBufferAlgorithm::group() const
 
 QString QgsSingleSidedBufferAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSingleSidedBufferAlgorithm::shortHelpString() const
@@ -91,29 +91,29 @@ QgsSingleSidedBufferAlgorithm *QgsSingleSidedBufferAlgorithm::createInstance() c
 
 void QgsSingleSidedBufferAlgorithm::initParameters( const QVariantMap & )
 {
-  auto bufferParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10, QStringLiteral( "INPUT" ) );
+  auto bufferParam = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Distance" ), 10, u"INPUT"_s );
   bufferParam->setIsDynamic( true );
-  bufferParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
-  bufferParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  bufferParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Distance"_s, QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
+  bufferParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( bufferParam.release() );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "JOIN_STYLE" ), QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITER_LIMIT" ), QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 ) );
+  addParameter( new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 ) );
+  addParameter( new QgsProcessingParameterEnum( u"JOIN_STYLE"_s, QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"MITER_LIMIT"_s, QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 ) );
 }
 
 bool QgsSingleSidedBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  mDistance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    mDistanceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
 
-  mSide = static_cast<Qgis::BufferSide>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
-  mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  mJoinStyle = static_cast<Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
-  mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
+  mSide = static_cast<Qgis::BufferSide>( parameterAsInt( parameters, u"SIDE"_s, context ) );
+  mSegments = parameterAsInt( parameters, u"SEGMENTS"_s, context );
+  mJoinStyle = static_cast<Qgis::JoinStyle>( 1 + parameterAsInt( parameters, u"JOIN_STYLE"_s, context ) );
+  mMiterLimit = parameterAsDouble( parameters, u"MITER_LIMIT"_s, context );
 
   return true;
 }

@@ -41,7 +41,7 @@ class TestQgsMapRotation : public QgsTest
     Q_OBJECT
   public:
     TestQgsMapRotation()
-      : QgsTest( QStringLiteral( "Map Rotation Tests" ), QStringLiteral( "maprotation" ) )
+      : QgsTest( u"Map Rotation Tests"_s, u"maprotation"_s )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -83,12 +83,12 @@ void TestQgsMapRotation::initTestCase()
   //create a point layer that will be used in all tests...
   const QString myPointsFileName = mTestDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
 
   //create a line layer that will be used in all tests...
   const QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   const QFileInfo myLinesFileInfo( myLinesFileName );
-  mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(), myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(), myLinesFileInfo.completeBaseName(), u"ogr"_s );
 
   // This is needed to correctly set rotation center,
   // the actual size doesn't matter as QgsRenderChecker will
@@ -96,7 +96,7 @@ void TestQgsMapRotation::initTestCase()
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
   mMapSettings->setOutputDpi( 96 );
 
-  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
+  QgsFontUtils::loadStandardTestFonts( QStringList() << u"Bold"_s );
 }
 
 TestQgsMapRotation::~TestQgsMapRotation() = default;
@@ -180,11 +180,11 @@ void TestQgsMapRotation::linesLayer()
 
   //use test font
   QVERIFY( mLinesLayer->labeling() );
-  QVERIFY( mLinesLayer->labeling()->type() == QLatin1String( "simple" ) );
+  QVERIFY( mLinesLayer->labeling()->type() == "simple"_L1 );
   const QgsVectorLayerSimpleLabeling *labeling = static_cast<const QgsVectorLayerSimpleLabeling *>( mLinesLayer->labeling() );
   QgsPalLayerSettings palSettings = labeling->settings();
   QgsTextFormat format = palSettings.format();
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
   format.setSize( 16 );
   palSettings.setFormat( format );
   mLinesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( palSettings ) );

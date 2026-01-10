@@ -678,6 +678,11 @@ def read_line():
             f"OVR: {CONTEXT.is_override_or_make_private} CLSS: {CONTEXT.actual_class}/{len(CONTEXT.classname)} :: {new_line}"
         )
 
+    # SIP doesn't like Qt 6.4 u""_s, ""_L1 or ''_L1 literals
+    new_line = re.sub(r'u("(?:(?:\\.|[^"\\])*)")_s', r"QStringLiteral( \1 )", new_line)
+    new_line = re.sub(r'("(?:(?:\\.|[^"\\])*)")_L1', r"QLatin1String( \1 )", new_line)
+    new_line = re.sub(r"('(?:(?:\\.|[^'\\])*)')_L1", r"QLatin1Char( \1 )", new_line)
+
     new_line = replace_macros(new_line)
     return new_line
 
@@ -2114,45 +2119,34 @@ def try_process_sip_skip():
         return True
 
 
-def process_struct_decl():
-    struct_match = re.match(
-        r"^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$", CONTEXT.current_line
-    )
-    if struct_match:
-        dbg_info("  going to struct => public")
-        CONTEXT.class_and_struct.append(struct_match.group("structname"))
-        CONTEXT.classname.append(
-            CONTEXT.classname[-1]
-            if CONTEXT.classname
-            else struct_match.group("structname")
-        )  # fake new class since struct has considered similarly
-        if CONTEXT.access[-1] != Visibility.Private:
-            CONTEXT.all_fully_qualified_class_names.append(
-                CONTEXT.current_fully_qualified_struct_name()
-            )
-        CONTEXT.access.append(Visibility.Public)
-        CONTEXT.exported.append(CONTEXT.exported[-1])
-        CONTEXT.bracket_nesting_idx.append(0)
-
-
 def process_class_decl():
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
     class_pattern = re.compile(
-        r"""^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
+        r"""^(\s*(?P<kind>class|struct))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
     )
     class_pattern_match = class_pattern.match(CONTEXT.current_line)
 
     if class_pattern_match:
         dbg_info("class definition started")
-        CONTEXT.exported.append(0)
         CONTEXT.bracket_nesting_idx.append(0)
         template_inheritance_template = []
         template_inheritance_class1 = []
         template_inheritance_class2 = []
         template_inheritance_class3 = []
 
-        CONTEXT.classname.append(class_pattern_match.group("classname"))
+        if class_pattern_match.group("kind") == "class":
+            CONTEXT.classname.append(class_pattern_match.group("classname"))
+            CONTEXT.exported.append(0)
+        else:
+            assert class_pattern_match.group("kind") == "struct"
+            CONTEXT.classname.append(
+                CONTEXT.classname[-1]
+                if CONTEXT.classname
+                else class_pattern_match.group("classname")
+            )
+            CONTEXT.exported.append(CONTEXT.exported[-1])
+
         CONTEXT.class_and_struct.append(class_pattern_match.group("classname"))
         if CONTEXT.access[-1] != Visibility.Private:
             CONTEXT.all_fully_qualified_class_names.append(
@@ -2222,36 +2216,54 @@ def process_class_decl():
             CONTEXT.current_line += class_pattern_match.group("annot")
             CONTEXT.current_line = fix_annotations(CONTEXT.current_line)
 
-        CONTEXT.current_line += "\n{\n"
+        # Get indentation from opening bracket on next line
+        bracket_line = CONTEXT.input_lines[CONTEXT.line_idx]
+        if not re.match(r"^\s*{\s*$", bracket_line):
+            exit_with_error("expecting { after class definition")
+        CONTEXT.current_line += f"\n{bracket_line}"
+
         if CONTEXT.comment.strip():
-            validate_docstring(CONTEXT.comment)
-            # find out how long the first paragraph in the class docstring is.
-            paragraphs = split_to_paragraphs(CONTEXT.comment)
+            # SIP 4 doesn't support docstrings on structs
+            # TODO: Delete this condition when we finally drop ancient versions of SIP.
+            if class_pattern_match.group("kind") == "struct":
+                class_name = CONTEXT.current_fully_qualified_struct_name()
+                CONTEXT.struct_docstrings[class_name] = CONTEXT.comment
+            else:
+                validate_docstring(CONTEXT.comment)
+                # find out how long the first paragraph in the class docstring is.
+                paragraphs = split_to_paragraphs(CONTEXT.comment)
 
-            first_paragraph = wrap_docstring_paragraph(paragraphs[0])
-            if re.search(
-                r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
-                first_paragraph,
-            ):
-                exit_with_error(
-                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                first_paragraph = wrap_docstring_paragraph(paragraphs[0])
+                if re.search(
+                    r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
+                    first_paragraph,
+                ):
+                    exit_with_error(
+                        f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                    )
+                if first_paragraph.strip()[-1] != ".":
+                    exit_with_error(
+                        f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
+                    )
+
+                docstring = first_paragraph
+                for paragraph in paragraphs[1:]:
+                    docstring += "\n\n" + wrap_docstring_paragraph(paragraph)
+
+                CONTEXT.current_line += (
+                    '\n%Docstring(signature="appended")\n' + docstring + "\n%End\n"
                 )
-            if first_paragraph.strip()[-1] != ".":
-                exit_with_error(
-                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
-                )
 
-            docstring = first_paragraph
-            for paragraph in paragraphs[1:]:
-                docstring += "\n\n" + wrap_docstring_paragraph(paragraph)
-
+        # Nested classes don't need this #include, since SIP will also include
+        # the one defined on the parent class
+        write_include = len(CONTEXT.class_and_struct) <= 1
+        write_header_code = write_include or template_inheritance_template
+        if write_header_code:
+            CONTEXT.current_line += "\n%TypeHeaderCode"
+        if write_include:
             CONTEXT.current_line += (
-                '%Docstring(signature="appended")\n' + docstring + "\n%End\n"
+                f'\n#include "{os.path.basename(CONTEXT.header_file)}"'
             )
-
-        CONTEXT.current_line += (
-            f'\n%TypeHeaderCode\n#include "{os.path.basename(CONTEXT.header_file)}"'
-        )
 
         # for template based inheritance, add a typedef to define the base type,
         # since SIP doesn't allow inheriting from template classes directly
@@ -2292,15 +2304,16 @@ def process_class_decl():
         CONTEXT.access[-1] = Visibility.Private  # private by default
         write_output("CLS", f"{CONTEXT.current_line}\n")
 
-        # Skip opening curly bracket, incrementing hereunder
-        skip = read_line()
-        if not re.match(r"^\s*{\s*$", skip):
-            exit_with_error("expecting { after class definition")
+        # Increment bracket count and skip line for previously-handled bracket
+        read_line()
         CONTEXT.bracket_nesting_idx[-1] += 1
 
         CONTEXT.reset_method_state()
-        CONTEXT.header_code = True
-        CONTEXT.access[-1] = Visibility.Private
+        CONTEXT.header_code = write_header_code
+        if class_pattern_match.group("kind") == "class":
+            CONTEXT.access[-1] = Visibility.Private
+        else:
+            CONTEXT.access[-1] = Visibility.Public
         return True
 
 
@@ -3580,8 +3593,6 @@ def process_input():
         if try_process_sip_skip():
             continue
         if detect_comment_block():
-            continue
-        if process_struct_decl():
             continue
         if process_class_decl():
             continue

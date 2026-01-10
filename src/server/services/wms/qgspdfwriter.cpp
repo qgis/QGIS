@@ -39,7 +39,7 @@ namespace QgsWms
     QTemporaryFile tmpFile;
     if ( !tmpFile.open() )
     {
-      QgsDebugError( QStringLiteral( "Can't open temporary file" ) );
+      QgsDebugError( u"Can't open temporary file"_s );
       // TODO return error to the user?
     }
     QgsRenderer renderer( context );

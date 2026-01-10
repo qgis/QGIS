@@ -97,11 +97,9 @@
                 echo " 2.  cmake \
                   -G Ninja \
                   -D CMAKE_BUILD_TYPE=Debug \
-                  -D BUILD_WITH_QT6=True \
                   -D WITH_3D=True \
                   -D WITH_PDAL=True \
                   -D WITH_QTWEBENGINE=True \
-                  -D WITH_QTWEBKIT=False \
                   -D CMAKE_INSTALL_PREFIX=\$(pwd)/app \
                   -D QT_PLUGINS_DIR=${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix} .."
                 echo " 3.  ninja"

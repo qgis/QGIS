@@ -46,13 +46,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   public:
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( QStringLiteral( "news-feed" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( u"news-feed"_s );
     static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
     static const QgsSettingsEntryString *settingsFeedLanguage;
     static const QgsSettingsEntryDouble *settingsFeedLatitude;
     static const QgsSettingsEntryDouble *settingsFeedLongitude;
 
-    static inline QgsSettingsTreeNamedListNode *sTreeNewsFeedEntries = sTreeNewsFeed->createNamedListNode( QStringLiteral( "entries" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeNewsFeedEntries = sTreeNewsFeed->createNamedListNode( u"entries"_s );
     static const QgsSettingsEntryString *settingsFeedEntryTitle;
     static const QgsSettingsEntryString *settingsFeedEntryImageUrl;
     static const QgsSettingsEntryString *settingsFeedEntryContent;

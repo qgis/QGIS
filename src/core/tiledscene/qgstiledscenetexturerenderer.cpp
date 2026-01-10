@@ -30,7 +30,7 @@ QgsTiledSceneTextureRenderer::~QgsTiledSceneTextureRenderer() = default;
 
 QString QgsTiledSceneTextureRenderer::type() const
 {
-  return QStringLiteral( "texture" );
+  return u"texture"_s;
 }
 
 QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
@@ -47,10 +47,10 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &elemen
 {
   auto r = std::make_unique< QgsTiledSceneTextureRenderer >();
   {
-    const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
+    const QDomElement fillSymbolElem = element.firstChildElement( u"fillSymbol"_s );
     if ( !fillSymbolElem.isNull() )
     {
-      const QDomElement symbolElem = fillSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
+      const QDomElement symbolElem = fillSymbolElem.firstChildElement( u"symbol"_s );
       std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
       if ( fillSymbol )
         r->mFillSymbol = std::move( fillSymbol );
@@ -65,12 +65,12 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &elemen
 std::unique_ptr<QgsFillSymbol> QgsTiledSceneTextureRenderer::createDefaultFillSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "224,224,224" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "124,124,124" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.1" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "round" ) );
+  properties.insert( u"color"_s, u"224,224,224"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"solid"_s );
+  properties.insert( u"color_border"_s, u"124,124,124"_s );
+  properties.insert( u"width_border"_s, u"0.1"_s );
+  properties.insert( u"joinstyle"_s, u"round"_s );
 
   return QgsFillSymbol::createSimple( properties );
 }
@@ -87,12 +87,12 @@ void QgsTiledSceneTextureRenderer::setFillSymbol( QgsFillSymbol *symbol )
 
 QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement rendererElem = doc.createElement( QStringLiteral( "renderer" ) );
+  QDomElement rendererElem = doc.createElement( u"renderer"_s );
 
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "texture" ) );
+  rendererElem.setAttribute( u"type"_s, u"texture"_s );
 
   {
-    QDomElement fillSymbolElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
+    QDomElement fillSymbolElem = doc.createElement( u"fillSymbol"_s );
     const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QString(),
                                       mFillSymbol.get(),
                                       doc,

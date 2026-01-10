@@ -53,7 +53,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRaster( QgsFeedback *feedbac
     {
       try
       {
-        QgsDebugMsgLevel( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName() ), 2 );
+        QgsDebugMsgLevel( u"Running OpenCL program: %1"_s.arg( openClProgramBaseName() ), 2 );
         return processRasterGPU( source, feedback );
       }
       catch ( cl::Error &e )
@@ -211,8 +211,8 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
-  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 #else
   constexpr double maxProgressDuringBlockWriting = 100.0;
 #endif
@@ -288,14 +288,14 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
       // Read scanline2: first real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
       queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
       // Read scanline3: second real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
       queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
     }
@@ -316,7 +316,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
-          QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+          QgsDebugError( u"Raster IO Error"_s );
         }
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
@@ -328,7 +328,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
     std::rotate( rowIndex.begin(), rowIndex.begin() + 1, rowIndex.end() );
   }
@@ -340,7 +340,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &so
     return QgsNineCellFilter::Result::Canceled;
   }
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  else if ( closeReportsProgress && feedback )
+  else if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
     if ( GDALDatasetRunCloseWithoutDestroyingEx(
@@ -384,8 +384,8 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
-  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 #else
   constexpr double maxProgressDuringBlockWriting = 100.0;
 #endif
@@ -442,7 +442,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
       // Read scanline2
       if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine2[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
     }
     else
@@ -466,7 +466,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
     {
       if ( GDALRasterIO( rasterBand, GF_Read, 0, yIndex + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
     }
     // Set first and last extra columns to nodata
@@ -484,7 +484,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, yIndex, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
   }
 
@@ -500,7 +500,7 @@ QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feed
     return QgsNineCellFilter::Result::Canceled;
   }
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  else if ( closeReportsProgress && feedback )
+  else if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
     if ( GDALDatasetRunCloseWithoutDestroyingEx(

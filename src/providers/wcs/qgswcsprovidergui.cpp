@@ -28,10 +28,10 @@
 class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "wcs" ); }
+    QString providerKey() const override { return u"wcs"_s; }
     QString text() const override { return QObject::tr( "WCS" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 30; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddWcsLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWCSSourceSelect( parent, fl, widgetMode );
@@ -43,19 +43,19 @@ QgsWcsSourceWidgetProvider::QgsWcsSourceWidgetProvider() {}
 
 QString QgsWcsSourceWidgetProvider::providerKey() const
 {
-  return QStringLiteral( "wcs" );
+  return u"wcs"_s;
 }
 bool QgsWcsSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
 {
-  return layer->providerType() == QLatin1String( "wcs" );
+  return layer->providerType() == "wcs"_L1;
 }
 
 QgsProviderSourceWidget *QgsWcsSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )
 {
-  if ( layer->providerType() != QLatin1String( "wcs" ) )
+  if ( layer->providerType() != "wcs"_L1 )
     return nullptr;
 
-  QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ), parent );
+  QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( "wcs"_L1, parent );
 
   return sourceWidget;
 }

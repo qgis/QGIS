@@ -153,12 +153,12 @@ namespace QgsWmts
       if ( !value.isEmpty() )
       {
         const QString name = QgsWmtsParameter::name( parameter.first );
-        log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
+        log( u" - %1 : %2"_s.arg( name, value ) );
       }
     }
 
     if ( !version().isEmpty() )
-      log( QStringLiteral( " - VERSION : %1" ).arg( version() ) );
+      log( u" - VERSION : %1"_s.arg( version() ) );
   }
 
   QString QgsWmtsParameters::layer() const
@@ -179,9 +179,9 @@ namespace QgsWmts
       return Format::NONE;
 
     Format f = Format::PNG;
-    if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
-         || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
-         || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    if ( fStr.compare( "jpg"_L1, Qt::CaseInsensitive ) == 0
+         || fStr.compare( "jpeg"_L1, Qt::CaseInsensitive ) == 0
+         || fStr.compare( "image/jpeg"_L1, Qt::CaseInsensitive ) == 0 )
       f = Format::JPG;
 
     return f;
@@ -235,13 +235,13 @@ namespace QgsWmts
     if ( fStr.isEmpty() )
       return f;
 
-    if ( fStr.startsWith( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) )
+    if ( fStr.startsWith( "text/xml"_L1, Qt::CaseInsensitive ) )
       f = Format::XML;
-    else if ( fStr.startsWith( QLatin1String( "text/html" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( "text/html"_L1, Qt::CaseInsensitive ) )
       f = Format::HTML;
-    else if ( fStr.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( "text/plain"_L1, Qt::CaseInsensitive ) )
       f = Format::TEXT;
-    else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
+    else if ( fStr.startsWith( "application/vnd.ogc.gml"_L1, Qt::CaseInsensitive ) )
       f = Format::GML;
     else
       f = Format::NONE;
@@ -255,7 +255,7 @@ namespace QgsWmts
       return -1;
 
     const QString fStr = infoFormatAsString();
-    if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ), Qt::CaseInsensitive ) )
+    if ( fStr.startsWith( "application/vnd.ogc.gml/3"_L1, Qt::CaseInsensitive ) )
       return 3;
     else
       return 2;

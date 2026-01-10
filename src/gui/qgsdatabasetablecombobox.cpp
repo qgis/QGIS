@@ -77,7 +77,7 @@ void QgsDatabaseTableComboBox::init()
   QToolButton *refreshButton = new QToolButton();
   refreshButton->setAutoRaise( true );
   refreshButton->setToolTip( tr( "Refresh tables" ) );
-  refreshButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( u"mActionRefresh.svg"_s ) );
   l->addWidget( refreshButton );
   setLayout( l );
 

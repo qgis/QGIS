@@ -25,7 +25,7 @@
 
 QString QgsPdalFilterAlgorithm::name() const
 {
-  return QStringLiteral( "filter" );
+  return u"filter"_s;
 }
 
 QString QgsPdalFilterAlgorithm::displayName() const
@@ -40,7 +40,7 @@ QString QgsPdalFilterAlgorithm::group() const
 
 QString QgsPdalFilterAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointcloudextraction" );
+  return u"pointcloudextraction"_s;
 }
 
 QStringList QgsPdalFilterAlgorithm::tags() const
@@ -65,41 +65,41 @@ QgsPdalFilterAlgorithm *QgsPdalFilterAlgorithm::createInstance() const
 
 void QgsPdalFilterAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), false, Qgis::ExpressionType::PointCloud ) );
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"FILTER_EXPRESSION"_s, QObject::tr( "Filter expression" ), QVariant(), u"INPUT"_s, false, Qgis::ExpressionType::PointCloud ) );
+  addParameter( new QgsProcessingParameterExtent( u"FILTER_EXTENT"_s, QObject::tr( "Cropping extent" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered" ) ) );
 }
 
 QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ) };
+  QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
 
-  const QString filterExpression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context ).trimmed();
+  const QString filterExpression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context ).trimmed();
   if ( !filterExpression.isEmpty() )
   {
     QgsPointCloudExpression exp( filterExpression );
-    args << QStringLiteral( "--filter=%1" ).arg( exp.asPdalExpression() );
+    args << u"--filter=%1"_s.arg( exp.asPdalExpression() );
   }
 
-  if ( parameters.value( QStringLiteral( "FILTER_EXTENT" ) ).isValid() )
+  if ( parameters.value( u"FILTER_EXTENT"_s ).isValid() )
   {
     if ( layer->crs().isValid() )
     {
-      const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context, layer->crs() );
-      args << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
+      const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context, layer->crs() );
+      args << u"--bounds=([%1, %2], [%3, %4])"_s
                 .arg( extent.xMinimum() )
                 .arg( extent.xMaximum() )
                 .arg( extent.yMinimum() )
@@ -107,8 +107,8 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
     }
     else
     {
-      const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context );
-      args << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
+      const QgsRectangle extent = parameterAsExtent( parameters, u"FILTER_EXTENT"_s, context );
+      args << u"--bounds=([%1, %2], [%3, %4])"_s
                 .arg( extent.xMinimum() )
                 .arg( extent.xMaximum() )
                 .arg( extent.yMinimum() )

@@ -62,9 +62,9 @@ void TestQgisAppPython::initTestCase()
   qputenv( "QGIS_PLUGINPATH", pluginPath );
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   qDebug() << "TestQgisAppPython::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -88,57 +88,57 @@ void TestQgisAppPython::hasPython()
 
 void TestQgisAppPython::plugins()
 {
-  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "PluginPathTest" ) ) );
-  QVERIFY( !mQgisApp->mPythonUtils->isPluginLoaded( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( u"PluginPathTest"_s ) );
+  QVERIFY( !mQgisApp->mPythonUtils->isPluginLoaded( u"PluginPathTest"_s ) );
   QVERIFY( mQgisApp->mPythonUtils->listActivePlugins().isEmpty() );
   // load plugin
-  QVERIFY( !mQgisApp->mPythonUtils->unloadPlugin( QStringLiteral( "PluginPathTest" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->loadPlugin( QStringLiteral( "PluginPathTest" ) ) );
-  QVERIFY( !mQgisApp->mPythonUtils->isPluginLoaded( QStringLiteral( "PluginPathTest" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->startPlugin( QStringLiteral( "PluginPathTest" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->isPluginLoaded( QStringLiteral( "PluginPathTest" ) ) );
-  QCOMPARE( mQgisApp->mPythonUtils->listActivePlugins(), QStringList() << QStringLiteral( "PluginPathTest" ) );
+  QVERIFY( !mQgisApp->mPythonUtils->unloadPlugin( u"PluginPathTest"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->loadPlugin( u"PluginPathTest"_s ) );
+  QVERIFY( !mQgisApp->mPythonUtils->isPluginLoaded( u"PluginPathTest"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->startPlugin( u"PluginPathTest"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->isPluginLoaded( u"PluginPathTest"_s ) );
+  QCOMPARE( mQgisApp->mPythonUtils->listActivePlugins(), QStringList() << u"PluginPathTest"_s );
 }
 
 void TestQgisAppPython::pythonPlugin()
 {
-  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "ProcessingPluginTest" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->loadPlugin( QStringLiteral( "ProcessingPluginTest" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->startProcessingPlugin( QStringLiteral( "ProcessingPluginTest" ) ) );
-  QVERIFY( !mQgisApp->mPythonUtils->startProcessingPlugin( QStringLiteral( "PluginPathTest" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( u"ProcessingPluginTest"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->loadPlugin( u"ProcessingPluginTest"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->startProcessingPlugin( u"ProcessingPluginTest"_s ) );
+  QVERIFY( !mQgisApp->mPythonUtils->startProcessingPlugin( u"PluginPathTest"_s ) );
 }
 
 void TestQgisAppPython::pluginMetadata()
 {
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "not a plugin" ), QStringLiteral( "name" ) ), QStringLiteral( "__error__" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "invalid" ) ), QStringLiteral( "__error__" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "name" ) ), QStringLiteral( "plugin path test" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "qgisMinimumVersion" ) ), QStringLiteral( "2.0" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "description" ) ), QStringLiteral( "desc" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "version" ) ), QStringLiteral( "0.1" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "author" ) ), QStringLiteral( "HM/Oslandia" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "email" ) ), QStringLiteral( "hugo.mercier@oslandia.com" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "PluginPathTest" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "__error__" ) );
-  QVERIFY( !mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "x" ) ) );
-  QVERIFY( !mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "PluginPathTest" ) ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"not a plugin"_s, u"name"_s ), u"__error__"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"invalid"_s ), u"__error__"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"name"_s ), u"plugin path test"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"qgisMinimumVersion"_s ), u"2.0"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"description"_s ), u"desc"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"version"_s ), u"0.1"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"author"_s ), u"HM/Oslandia"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"email"_s ), u"hugo.mercier@oslandia.com"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"PluginPathTest"_s, u"hasProcessingProvider"_s ), u"__error__"_s );
+  QVERIFY( !mQgisApp->mPythonUtils->pluginHasProcessingProvider( u"x"_s ) );
+  QVERIFY( !mQgisApp->mPythonUtils->pluginHasProcessingProvider( u"PluginPathTest"_s ) );
 
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest" ), QStringLiteral( "name" ) ), QStringLiteral( "processing plugin test" ) );
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "yes" ) );
-  QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "ProcessingPluginTest" ) ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"ProcessingPluginTest"_s, u"name"_s ), u"processing plugin test"_s );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"ProcessingPluginTest"_s, u"hasProcessingProvider"_s ), u"yes"_s );
+  QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( u"ProcessingPluginTest"_s ) );
   // hasProcessingProvider also accepts true/True
-  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( QStringLiteral( "ProcessingPluginTest2" ), QStringLiteral( "hasProcessingProvider" ) ), QStringLiteral( "True" ) );
-  QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( QStringLiteral( "ProcessingPluginTest2" ) ) );
+  QCOMPARE( mQgisApp->mPythonUtils->getPluginMetadata( u"ProcessingPluginTest2"_s, u"hasProcessingProvider"_s ), u"True"_s );
+  QVERIFY( mQgisApp->mPythonUtils->pluginHasProcessingProvider( u"ProcessingPluginTest2"_s ) );
 }
 
 void TestQgisAppPython::pythonPluginDependencyOrder()
 {
-  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "PluginPathTest" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "dependent_plugin_1" ) ) );
-  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( QStringLiteral( "dependent_plugin_2" ) ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( u"PluginPathTest"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( u"dependent_plugin_1"_s ) );
+  QVERIFY( mQgisApp->mPythonUtils->pluginList().contains( u"dependent_plugin_2"_s ) );
 
-  const int indexIndependentPlugin = mQgisApp->mPythonUtils->pluginList().indexOf( QLatin1String( "PluginPathTest" ) );
-  const int indexDependentPlugin1 = mQgisApp->mPythonUtils->pluginList().indexOf( QLatin1String( "dependent_plugin_1" ) );
-  const int indexDependentPlugin2 = mQgisApp->mPythonUtils->pluginList().indexOf( QLatin1String( "dependent_plugin_2" ) );
+  const int indexIndependentPlugin = mQgisApp->mPythonUtils->pluginList().indexOf( "PluginPathTest"_L1 );
+  const int indexDependentPlugin1 = mQgisApp->mPythonUtils->pluginList().indexOf( "dependent_plugin_1"_L1 );
+  const int indexDependentPlugin2 = mQgisApp->mPythonUtils->pluginList().indexOf( "dependent_plugin_2"_L1 );
 
   // Dependent plugins should appear in this list after their dependencies,
   // since that's the order in which they'll be loaded to QGIS

@@ -24,7 +24,7 @@
 
 #include "moc_qgsmaptoolshapeellipsecenterpoint.cpp"
 
-const QString QgsMapToolShapeEllipseCenterPointMetadata::TOOL_ID = QStringLiteral( "ellipse-center-point" );
+const QString QgsMapToolShapeEllipseCenterPointMetadata::TOOL_ID = u"ellipse-center-point"_s;
 
 QString QgsMapToolShapeEllipseCenterPointMetadata::id() const
 {
@@ -38,7 +38,7 @@ QString QgsMapToolShapeEllipseCenterPointMetadata::name() const
 
 QIcon QgsMapToolShapeEllipseCenterPointMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionEllipseCenterPoint.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionEllipseCenterPoint.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeEllipseCenterPointMetadata::category() const

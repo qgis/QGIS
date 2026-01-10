@@ -44,7 +44,7 @@ QgsAnnotationPointTextItem::~QgsAnnotationPointTextItem() = default;
 
 QString QgsAnnotationPointTextItem::type() const
 {
-  return QStringLiteral( "pointtext" );
+  return u"pointtext"_s;
 }
 
 void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback *feedback )
@@ -94,14 +94,14 @@ void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback 
 
 bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
-  element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
-  element.setAttribute( QStringLiteral( "text" ), mText );
-  element.setAttribute( QStringLiteral( "angle" ), qgsDoubleToString( mAngle ) );
-  element.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
-  element.setAttribute( QStringLiteral( "rotationMode" ), qgsEnumValueToKey( mRotationMode ) );
+  element.setAttribute( u"x"_s, qgsDoubleToString( mPoint.x() ) );
+  element.setAttribute( u"y"_s, qgsDoubleToString( mPoint.y() ) );
+  element.setAttribute( u"text"_s, mText );
+  element.setAttribute( u"angle"_s, qgsDoubleToString( mAngle ) );
+  element.setAttribute( u"alignment"_s, QString::number( mAlignment ) );
+  element.setAttribute( u"rotationMode"_s, qgsEnumValueToKey( mRotationMode ) );
 
-  QDomElement textFormatElem = document.createElement( QStringLiteral( "pointTextFormat" ) );
+  QDomElement textFormatElem = document.createElement( u"pointTextFormat"_s );
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElem );
 
@@ -116,17 +116,17 @@ QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::create()
 
 bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const double x = element.attribute( QStringLiteral( "x" ) ).toDouble();
-  const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
+  const double x = element.attribute( u"x"_s ).toDouble();
+  const double y = element.attribute( u"y"_s ).toDouble();
   mPoint = QgsPointXY( x, y );
-  mText = element.attribute( QStringLiteral( "text" ) );
-  mAngle = element.attribute( QStringLiteral( "angle" ) ).toDouble();
-  mAlignment = static_cast< Qt::Alignment >( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
-  mRotationMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "rotationMode" ) ), Qgis::SymbolRotationMode::IgnoreMapRotation );
-  const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "pointTextFormat" ) );
+  mText = element.attribute( u"text"_s );
+  mAngle = element.attribute( u"angle"_s ).toDouble();
+  mAlignment = static_cast< Qt::Alignment >( element.attribute( u"alignment"_s ).toInt() );
+  mRotationMode = qgsEnumKeyToValue( element.attribute( u"rotationMode"_s ), Qgis::SymbolRotationMode::IgnoreMapRotation );
+  const QDomElement textFormatElem = element.firstChildElement( u"pointTextFormat"_s );
   if ( !textFormatElem.isNull() )
   {
-    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( u"text-style"_s );
     const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mTextFormat.readXml( textFormatElem, context );
   }

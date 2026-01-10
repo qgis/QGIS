@@ -30,15 +30,15 @@
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mBaseColorParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColor" ), QColor( "grey" ), this ) )
-  , mMetalnessParameter( new Qt3DRender::QParameter( QStringLiteral( "metalness" ), 0.0f, this ) )
-  , mRoughnessParameter( new Qt3DRender::QParameter( QStringLiteral( "roughness" ), 0.0f, this ) )
-  , mBaseColorMapParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColorMap" ), QVariant(), this ) )
-  , mMetalnessMapParameter( new Qt3DRender::QParameter( QStringLiteral( "metalnessMap" ), QVariant(), this ) )
-  , mRoughnessMapParameter( new Qt3DRender::QParameter( QStringLiteral( "roughnessMap" ), QVariant(), this ) )
-  , mAmbientOcclusionMapParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientOcclusionMap" ), QVariant(), this ) )
-  , mNormalMapParameter( new Qt3DRender::QParameter( QStringLiteral( "normalMap" ), QVariant(), this ) )
-  , mTextureScaleParameter( new Qt3DRender::QParameter( QStringLiteral( "texCoordScale" ), 1.0f, this ) )
+  , mBaseColorParameter( new Qt3DRender::QParameter( u"baseColor"_s, QColor( "grey" ), this ) )
+  , mMetalnessParameter( new Qt3DRender::QParameter( u"metalness"_s, 0.0f, this ) )
+  , mRoughnessParameter( new Qt3DRender::QParameter( u"roughness"_s, 0.0f, this ) )
+  , mBaseColorMapParameter( new Qt3DRender::QParameter( u"baseColorMap"_s, QVariant(), this ) )
+  , mMetalnessMapParameter( new Qt3DRender::QParameter( u"metalnessMap"_s, QVariant(), this ) )
+  , mRoughnessMapParameter( new Qt3DRender::QParameter( u"roughnessMap"_s, QVariant(), this ) )
+  , mAmbientOcclusionMapParameter( new Qt3DRender::QParameter( u"ambientOcclusionMap"_s, QVariant(), this ) )
+  , mNormalMapParameter( new Qt3DRender::QParameter( u"normalMap"_s, QVariant(), this ) )
+  , mTextureScaleParameter( new Qt3DRender::QParameter( u"texCoordScale"_s, 1.0f, this ) )
   , mMetalRoughEffect( new Qt3DRender::QEffect( this ) )
   , mMetalRoughGL3Technique( new Qt3DRender::QTechnique( this ) )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
@@ -211,7 +211,7 @@ void QgsMetalRoughMaterial::init()
   QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::normalChanged );
   connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
 
-  mMetalRoughGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
+  mMetalRoughGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
 
   updateFragmentShader();
 
@@ -221,8 +221,8 @@ void QgsMetalRoughMaterial::init()
   mMetalRoughGL3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
 
   mFilterKey->setParent( this );
-  mFilterKey->setName( QStringLiteral( "renderingStyle" ) );
-  mFilterKey->setValue( QStringLiteral( "forward" ) );
+  mFilterKey->setName( u"renderingStyle"_s );
+  mFilterKey->setValue( u"forward"_s );
 
   mMetalRoughGL3Technique->addFilterKey( mFilterKey );
   mMetalRoughGL3RenderPass->setShaderProgram( mMetalRoughGL3Shader );
@@ -245,7 +245,7 @@ void QgsMetalRoughMaterial::init()
 void QgsMetalRoughMaterial::updateFragmentShader()
 {
   // pre-process fragment shader and add #defines based on whether using maps for some properties
-  QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/metalrough.frag" ) ) );
+  QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/metalrough.frag"_s ) );
   QStringList defines;
   if ( mUsingBaseColorMap )
     defines += "BASE_COLOR_MAP";

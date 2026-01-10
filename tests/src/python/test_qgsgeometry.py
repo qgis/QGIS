@@ -1386,6 +1386,23 @@ class TestQgsGeometry(QgisTestCase):
                     f"Length {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n",
                 )
 
+                # test area3D calculation
+                exp = float(row["area_3d"])
+                result = geom.constGet().area3D()
+                self.assertAlmostEqual(
+                    result,
+                    exp,
+                    5,
+                    f"Area 3D {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n",
+                )
+                result = geom.area3D()
+                self.assertAlmostEqual(
+                    result,
+                    exp,
+                    5,
+                    f"Area 3D {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n",
+                )
+
                 # test length calculation
                 exp = float(row["length"])
                 result = geom.constGet().length()
@@ -13846,7 +13863,7 @@ class TestQgsGeometry(QgisTestCase):
     def testSplitGeometry(self):
         """
         splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
-        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 4.0
+        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 5.0
         this could be potentially removed in favor of the existing cpp test which will be sufficient
         """
         square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")

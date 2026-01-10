@@ -37,13 +37,15 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
 {
 }
 
+QgsHttpExternalStorageStoreTask::~QgsHttpExternalStorageStoreTask() = default;
+
 bool QgsHttpExternalStorageStoreTask::run()
 {
   QgsBlockingNetworkRequest request;
   request.setAuthCfg( mAuthCfg );
 
   QNetworkRequest req( mUrl );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHttpExternalStorageStoreTask" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsHttpExternalStorageStoreTask"_s );
 
   QFile f( mFilePath );
   if ( !f.open( QIODevice::ReadOnly ) )
@@ -200,7 +202,7 @@ void QgsHttpExternalStorageFetchedContent::cancel()
 
 QString QgsWebDavExternalStorage::type() const
 {
-  return QStringLiteral( "WebDAV" );
+  return u"WebDAV"_s;
 };
 
 QString QgsWebDavExternalStorage::displayName() const
@@ -225,7 +227,7 @@ QgsExternalStorageFetchedContent *QgsWebDavExternalStorage::doFetch( const QStri
 
 QString QgsAwsS3ExternalStorage::type() const
 {
-  return QStringLiteral( "AWSS3" );
+  return u"AWSS3"_s;
 };
 
 QString QgsAwsS3ExternalStorage::displayName() const

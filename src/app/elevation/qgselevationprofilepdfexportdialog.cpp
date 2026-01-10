@@ -46,7 +46,7 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   }
   mPageSizeComboBox->addItem( tr( "Custom" ) );
 
-  const QgsPageSize a4Size = QgsApplication::pageSizeRegistry()->find( QStringLiteral( "A4" ) ).at( 0 );
+  const QgsPageSize a4Size = QgsApplication::pageSizeRegistry()->find( u"A4"_s ).at( 0 );
   mWidthSpin->setValue( a4Size.size.width() );
   mHeightSpin->setValue( a4Size.size.height() );
   mSizeUnitsComboBox->setUnit( a4Size.size.units() );
@@ -64,7 +64,7 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   connect( mWidthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
   connect( mHeightSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
 
-  whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( QStringLiteral( "A4" ) ) );
+  whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( u"A4"_s ) );
   mLockAspectRatio->setEnabled( false );
   mLockAspectRatio->setLocked( false );
   mSizeUnitsComboBox->setEnabled( false );

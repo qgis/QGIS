@@ -50,9 +50,9 @@ class TestQgsAuthCrypto : public QObject
     static const QString CRYPT;
 };
 
-const QString TestQgsAuthCrypto::PASS = QStringLiteral( "password" );
-const QString TestQgsAuthCrypto::SALT = QStringLiteral( "f48b706946df69d4d2b45bd0603c95af" );
-const QString TestQgsAuthCrypto::HASH = QStringLiteral( "0be18c3f1bf872194d6042f5f4a0c116" );
+const QString TestQgsAuthCrypto::PASS = u"password"_s;
+const QString TestQgsAuthCrypto::SALT = u"f48b706946df69d4d2b45bd0603c95af"_s;
+const QString TestQgsAuthCrypto::HASH = u"0be18c3f1bf872194d6042f5f4a0c116"_s;
 const QString TestQgsAuthCrypto::CIV = QStringLiteral(
   "1c18c442b6723ee465bcbb60568412179fcc3313eb0187b4546ca96d869fbdc1"
 );

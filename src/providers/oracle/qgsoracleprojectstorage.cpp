@@ -27,7 +27,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-#define ORIGINATOR_CLASS QStringLiteral( "QgsOracleProjectStorage" )
+#define ORIGINATOR_CLASS u"QgsOracleProjectStorage"_s
 #define QUERY_ORIGIN QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" )
 #define LoggedExecStatic( query, sql, args, uri ) QgsOracleProvider::execLoggedStatic( query, sql, args, uri, ORIGINATOR_CLASS, QUERY_ORIGIN )
 
@@ -38,9 +38,9 @@ static bool parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::
 
   const QJsonObject docObj = doc.object();
   metadata.lastModified = QDateTime();
-  if ( docObj.contains( QStringLiteral( "last_modified_time" ) ) )
+  if ( docObj.contains( u"last_modified_time"_s ) )
   {
-    const QString lastModifiedTimeStr = docObj[QStringLiteral( "last_modified_time" )].toString();
+    const QString lastModifiedTimeStr = docObj[u"last_modified_time"_s].toString();
     if ( !lastModifiedTimeStr.isEmpty() )
     {
       QDateTime lastModifiedUtc = QDateTime::fromString( lastModifiedTimeStr, Qt::ISODate );
@@ -55,7 +55,7 @@ static bool parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::
 static bool projectsTableExists( QgsOracleConn *conn, const QString &owner, const QString &uri )
 {
   QSqlQuery qry( *conn );
-  const QString sql = QStringLiteral( "SELECT 1 FROM all_tables WHERE owner=? AND table_name='qgis_projects'" );
+  const QString sql = u"SELECT 1 FROM all_tables WHERE owner=? AND table_name='qgis_projects'"_s;
 
   if ( !LoggedExecStatic( qry, sql, QVariantList() << owner, uri ) )
     return false;
@@ -78,7 +78,7 @@ QStringList QgsOracleProjectStorage::listProjects( const QString &uri )
 
   if ( projectsTableExists( pconn.get(), projectUri.owner, uri ) )
   {
-    const QString sql( QStringLiteral( "SELECT name FROM %1.\"qgis_projects\"" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
+    const QString sql( u"SELECT name FROM %1.\"qgis_projects\""_s.arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
     QSqlQuery qry( *pconn.get() );
     if ( !LoggedExecStatic( qry, sql, QVariantList(), uri ) )
       return lst;
@@ -113,7 +113,7 @@ bool QgsOracleProjectStorage::readProject( const QString &uri, QIODevice *device
     return false;
   }
 
-  const QString sql( QStringLiteral( "SELECT content FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
+  const QString sql( u"SELECT content FROM %1.\"qgis_projects\" WHERE name = ?"_s.arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
   QSqlQuery qry( *pconn.get() );
   if ( !LoggedExecStatic( qry, sql, QVariantList() << projectUri.projectName, uri ) )
     return false;
@@ -155,7 +155,7 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
 
     // TODO for Oracle version starting at 21c, we could use JSON native support type : https://blogs.oracle.com/database/post/json-datatype-support-in-oracle-21c
     // For now, the official supported version is 18.4 (the one we use for tests)
-    const QString sql = QStringLiteral( "CREATE TABLE %1.\"qgis_projects\"(name VARCHAR2(2047) PRIMARY KEY, metadata CLOB, content BLOB)" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) );
+    const QString sql = u"CREATE TABLE %1.\"qgis_projects\"(name VARCHAR2(2047) PRIMARY KEY, metadata CLOB, content BLOB)"_s.arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) );
     QSqlQuery qry( *pconn.get() );
     if ( !LoggedExecStatic( qry, sql, QVariantList(), uri ) )
       return false;
@@ -164,7 +164,7 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  const QString metadataExpr = QStringLiteral( "%1 || to_char(current_timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS.FF5') || %2 || sys_context('USERENV', 'CURRENT_USER') || %3" ).arg( QgsOracleConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsOracleConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsOracleConn::quotedValue( "\" }" ) );
+  const QString metadataExpr = u"%1 || to_char(current_timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS.FF5') || %2 || sys_context('USERENV', 'CURRENT_USER') || %3"_s.arg( QgsOracleConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsOracleConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsOracleConn::quotedValue( "\" }" ) );
 
   const QString sql( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
                                      "USING dual "
@@ -173,19 +173,19 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
                                      "WHEN NOT MATCHED THEN INSERT VALUES (:projectname, %2, :content)" )
                        .arg( QgsOracleConn::quotedIdentifier( projectUri.owner ), metadataExpr ) );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, uri, QStringLiteral( "oracle" ), ORIGINATOR_CLASS, QUERY_ORIGIN };
+  QgsDatabaseQueryLogWrapper logWrapper { sql, uri, u"oracle"_s, ORIGINATOR_CLASS, QUERY_ORIGIN };
 
   // Upsert into projects table
   QSqlQuery qry( *pconn.get() );
   if ( !qry.prepare( sql ) )
   {
-    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+    QgsDebugError( u"SQL: %1\nERROR: %2"_s
                      .arg( qry.lastQuery(), qry.lastError().text() ) );
     return false;
   }
 
-  qry.bindValue( QStringLiteral( ":projectname" ), projectUri.projectName );
-  qry.bindValue( QStringLiteral( ":content" ), content );
+  qry.bindValue( u":projectname"_s, projectUri.projectName );
+  qry.bindValue( u":content"_s, content );
 
   if ( !qry.exec() )
   {
@@ -215,7 +215,7 @@ bool QgsOracleProjectStorage::removeProject( const QString &uri )
   if ( projectsTableExists( pconn.get(), projectUri.owner, uri ) )
   {
     QSqlQuery qry( *pconn.get() );
-    const QString sql( QStringLiteral( "DELETE FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
+    const QString sql( u"DELETE FROM %1.\"qgis_projects\" WHERE name = ?"_s.arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
     return LoggedExecStatic( qry, sql, QVariantList() << projectUri.projectName, uri );
   }
 
@@ -236,7 +236,7 @@ bool QgsOracleProjectStorage::readProjectStorageMetadata( const QString &uri, Qg
   if ( !projectsTableExists( pconn.get(), projectUri.owner, uri ) )
     return false;
 
-  const QString sql( QStringLiteral( "SELECT metadata FROM %1.\"qgis_projects\" WHERE name = ?" ).arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
+  const QString sql( u"SELECT metadata FROM %1.\"qgis_projects\" WHERE name = ?"_s.arg( QgsOracleConn::quotedIdentifier( projectUri.owner ) ) );
   QSqlQuery qry( *pconn.get() );
 
   if ( !LoggedExecStatic( qry, sql, QVariantList() << projectUri.projectName, uri ) )
@@ -259,7 +259,7 @@ QString QgsOracleProjectStorage::encodeUri( const QgsOracleProjectUri &postUri )
   QUrl u;
   QUrlQuery urlQuery;
 
-  u.setScheme( QStringLiteral( "oracle" ) );
+  u.setScheme( u"oracle"_s );
   u.setHost( postUri.connInfo.host() );
   if ( !postUri.connInfo.port().isEmpty() )
     u.setPort( postUri.connInfo.port().toInt() );
@@ -267,15 +267,15 @@ QString QgsOracleProjectStorage::encodeUri( const QgsOracleProjectUri &postUri )
   u.setPassword( postUri.connInfo.password() );
 
   if ( !postUri.connInfo.service().isEmpty() )
-    urlQuery.addQueryItem( QStringLiteral( "service" ), postUri.connInfo.service() );
+    urlQuery.addQueryItem( u"service"_s, postUri.connInfo.service() );
   if ( !postUri.connInfo.authConfigId().isEmpty() )
-    urlQuery.addQueryItem( QStringLiteral( "authcfg" ), postUri.connInfo.authConfigId() );
+    urlQuery.addQueryItem( u"authcfg"_s, postUri.connInfo.authConfigId() );
 
-  urlQuery.addQueryItem( QStringLiteral( "dbname" ), postUri.connInfo.database() );
+  urlQuery.addQueryItem( u"dbname"_s, postUri.connInfo.database() );
 
-  urlQuery.addQueryItem( QStringLiteral( "schema" ), postUri.owner );
+  urlQuery.addQueryItem( u"schema"_s, postUri.owner );
   if ( !postUri.projectName.isEmpty() )
-    urlQuery.addQueryItem( QStringLiteral( "project" ), postUri.projectName );
+    urlQuery.addQueryItem( u"project"_s, postUri.projectName );
 
   u.setQuery( urlQuery );
 
@@ -295,15 +295,15 @@ QgsOracleProjectUri QgsOracleProjectStorage::decodeUri( const QString &uri )
   const QString port = u.port() != -1 ? QString::number( u.port() ) : QString();
   const QString username = u.userName();
   const QString password = u.password();
-  const QString authConfigId = urlQuery.queryItemValue( QStringLiteral( "authcfg" ) );
-  const QString dbName = urlQuery.queryItemValue( QStringLiteral( "dbname" ) );
-  const QString service = urlQuery.queryItemValue( QStringLiteral( "service" ) );
+  const QString authConfigId = urlQuery.queryItemValue( u"authcfg"_s );
+  const QString dbName = urlQuery.queryItemValue( u"dbname"_s );
+  const QString service = urlQuery.queryItemValue( u"service"_s );
   if ( !service.isEmpty() )
     projectUri.connInfo.setConnection( service, dbName, username, password, QgsDataSourceUri::SslPrefer /* meaningless for oracle */, authConfigId );
   else
     projectUri.connInfo.setConnection( host, port, dbName, username, password, QgsDataSourceUri::SslPrefer /* meaningless for oracle */, authConfigId );
 
-  projectUri.owner = urlQuery.queryItemValue( QStringLiteral( "schema" ) );
-  projectUri.projectName = urlQuery.queryItemValue( QStringLiteral( "project" ) );
+  projectUri.owner = urlQuery.queryItemValue( u"schema"_s );
+  projectUri.projectName = urlQuery.queryItemValue( u"project"_s );
   return projectUri;
 }

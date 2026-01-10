@@ -30,7 +30,7 @@
 #include <QDomElement>
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
-  : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
+  : QgsFeatureRenderer( u"heatmapRenderer"_s )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
   mLegendSettings.setMinimumLabel( QObject::tr( "Minimum" ) );
@@ -281,7 +281,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
 
 QString QgsHeatmapRenderer::dump() const
 {
-  return QStringLiteral( "[HEATMAP]" );
+  return u"[HEATMAP]"_s;
 }
 
 QgsHeatmapRenderer *QgsHeatmapRenderer::clone() const
@@ -318,15 +318,15 @@ QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element, const QgsR
 {
   Q_UNUSED( context )
   QgsHeatmapRenderer *r = new QgsHeatmapRenderer();
-  r->setRadius( element.attribute( QStringLiteral( "radius" ), QStringLiteral( "50.0" ) ).toFloat() );
-  r->setRadiusUnit( static_cast< Qgis::RenderUnit >( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
-  r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "radius_map_unit_scale" ), QString() ) ) );
-  r->setMaximumValue( element.attribute( QStringLiteral( "max_value" ), QStringLiteral( "0.0" ) ).toFloat() );
-  r->setRenderQuality( element.attribute( QStringLiteral( "quality" ), QStringLiteral( "0" ) ).toInt() );
-  r->setWeightExpression( element.attribute( QStringLiteral( "weight_expression" ) ) );
+  r->setRadius( element.attribute( u"radius"_s, u"50.0"_s ).toFloat() );
+  r->setRadiusUnit( static_cast< Qgis::RenderUnit >( element.attribute( u"radius_unit"_s, u"0"_s ).toInt() ) );
+  r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"radius_map_unit_scale"_s, QString() ) ) );
+  r->setMaximumValue( element.attribute( u"max_value"_s, u"0.0"_s ).toFloat() );
+  r->setRenderQuality( element.attribute( u"quality"_s, u"0"_s ).toInt() );
+  r->setWeightExpression( element.attribute( u"weight_expression"_s ) );
 
-  QDomElement sourceColorRampElem = element.firstChildElement( QStringLiteral( "colorramp" ) );
-  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+  QDomElement sourceColorRampElem = element.firstChildElement( u"colorramp"_s );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( u"name"_s ) == "[source]"_L1 )
   {
     r->setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ).release() );
   }
@@ -341,17 +341,17 @@ QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element, const QgsR
 QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "heatmapRenderer" ) );
-  rendererElem.setAttribute( QStringLiteral( "radius" ), QString::number( mRadius ) );
-  rendererElem.setAttribute( QStringLiteral( "radius_unit" ), QString::number( static_cast< int >( mRadiusUnit ) ) );
-  rendererElem.setAttribute( QStringLiteral( "radius_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRadiusMapUnitScale ) );
-  rendererElem.setAttribute( QStringLiteral( "max_value" ), QString::number( mExplicitMax ) );
-  rendererElem.setAttribute( QStringLiteral( "quality" ), QString::number( mRenderQuality ) );
-  rendererElem.setAttribute( QStringLiteral( "weight_expression" ), mWeightExpressionString );
+  rendererElem.setAttribute( u"type"_s, u"heatmapRenderer"_s );
+  rendererElem.setAttribute( u"radius"_s, QString::number( mRadius ) );
+  rendererElem.setAttribute( u"radius_unit"_s, QString::number( static_cast< int >( mRadiusUnit ) ) );
+  rendererElem.setAttribute( u"radius_map_unit_scale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mRadiusMapUnitScale ) );
+  rendererElem.setAttribute( u"max_value"_s, QString::number( mExplicitMax ) );
+  rendererElem.setAttribute( u"quality"_s, QString::number( mRenderQuality ) );
+  rendererElem.setAttribute( u"weight_expression"_s, mWeightExpressionString );
 
   if ( mGradientRamp )
   {
-    const QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
+    const QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( u"[source]"_s, mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
   mLegendSettings.writeXml( doc, rendererElem, context );
@@ -391,7 +391,7 @@ QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext & ) con
 
 QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  if ( renderer->type() == QLatin1String( "heatmapRenderer" ) )
+  if ( renderer->type() == "heatmapRenderer"_L1 )
   {
     return dynamic_cast<QgsHeatmapRenderer *>( renderer->clone() );
   }

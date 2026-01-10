@@ -30,14 +30,14 @@ QVariantMap QgsJsonEditConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "DefaultView" ), mDefaultViewComboBox->currentIndex() );
-  cfg.insert( QStringLiteral( "FormatJson" ), mFormatJsonComboBox->currentIndex() );
+  cfg.insert( u"DefaultView"_s, mDefaultViewComboBox->currentIndex() );
+  cfg.insert( u"FormatJson"_s, mFormatJsonComboBox->currentIndex() );
 
   return cfg;
 }
 
 void QgsJsonEditConfigDlg::setConfig( const QVariantMap &config )
 {
-  mDefaultViewComboBox->setCurrentIndex( config.value( QStringLiteral( "DefaultView" ) ).toInt() );
-  mFormatJsonComboBox->setCurrentIndex( config.value( QStringLiteral( "FormatJson" ) ).toInt() );
+  mDefaultViewComboBox->setCurrentIndex( config.value( u"DefaultView"_s ).toInt() );
+  mFormatJsonComboBox->setCurrentIndex( config.value( u"FormatJson"_s ).toInt() );
 }

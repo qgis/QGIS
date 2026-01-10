@@ -223,5 +223,5 @@ void QgsMapThemes::menuAboutToShow()
 
 void QgsMapThemes::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#configuring-map-themes" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#configuring-map-themes"_s );
 }

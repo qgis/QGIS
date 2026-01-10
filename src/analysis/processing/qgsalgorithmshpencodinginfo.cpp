@@ -23,7 +23,7 @@
 
 QString QgsShapefileEncodingInfoAlgorithm::name() const
 {
-  return QStringLiteral( "shpencodinginfo" );
+  return u"shpencodinginfo"_s;
 }
 
 QString QgsShapefileEncodingInfoAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsShapefileEncodingInfoAlgorithm::group() const
 
 QString QgsShapefileEncodingInfoAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsShapefileEncodingInfoAlgorithm::shortHelpString() const
@@ -65,16 +65,16 @@ QgsShapefileEncodingInfoAlgorithm *QgsShapefileEncodingInfoAlgorithm::createInst
 
 void QgsShapefileEncodingInfoAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "Shapefiles (%1)" ).arg( QLatin1String( "*.shp *.SHP" ) ) ) );
+  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input layer" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "Shapefiles (%1)" ).arg( "*.shp *.SHP"_L1 ) ) );
 
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "ENCODING" ), QObject::tr( "Shapefile Encoding" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "CPG_ENCODING" ), QObject::tr( "CPG Encoding" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "LDID_ENCODING" ), QObject::tr( "LDID Encoding" ) ) );
+  addOutput( new QgsProcessingOutputString( u"ENCODING"_s, QObject::tr( "Shapefile Encoding" ) ) );
+  addOutput( new QgsProcessingOutputString( u"CPG_ENCODING"_s, QObject::tr( "CPG Encoding" ) ) );
+  addOutput( new QgsProcessingOutputString( u"LDID_ENCODING"_s, QObject::tr( "LDID Encoding" ) ) );
 }
 
 bool QgsShapefileEncodingInfoAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
+  const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
 
   mCpgEncoding = QgsOgrUtils::readShapefileEncodingFromCpg( path );
   if ( mCpgEncoding.isEmpty() )
@@ -95,9 +95,9 @@ bool QgsShapefileEncodingInfoAlgorithm::prepareAlgorithm( const QVariantMap &par
 QVariantMap QgsShapefileEncodingInfoAlgorithm::processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "ENCODING" ), mCpgEncoding.isEmpty() ? mLdidEncoding : mCpgEncoding );
-  outputs.insert( QStringLiteral( "CPG_ENCODING" ), mCpgEncoding );
-  outputs.insert( QStringLiteral( "LDID_ENCODING" ), mLdidEncoding );
+  outputs.insert( u"ENCODING"_s, mCpgEncoding.isEmpty() ? mLdidEncoding : mCpgEncoding );
+  outputs.insert( u"CPG_ENCODING"_s, mCpgEncoding );
+  outputs.insert( u"LDID_ENCODING"_s, mLdidEncoding );
   return outputs;
 }
 

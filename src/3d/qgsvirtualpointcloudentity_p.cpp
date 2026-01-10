@@ -87,6 +87,15 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
 }
 
+QgsVirtualPointCloudEntity::~QgsVirtualPointCloudEntity()
+{
+  qDeleteAll( mChunkedEntitiesMap );
+  mChunkedEntitiesMap.clear();
+
+  delete mOverviewEntity;
+  mOverviewEntity = nullptr;
+}
+
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
 {
   return mChunkedEntitiesMap.values();

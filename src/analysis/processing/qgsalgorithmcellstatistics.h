@@ -54,14 +54,15 @@ class QgsCellStatisticsAlgorithmBase : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelX = 0;
     double mRasterUnitsPerPixelY = 0;
     std::unique_ptr<QgsRasterDataProvider> mOutputRasterDataProvider;
+    double mMaxProgressDuringBlockWriting = 100;
 };
 
 class QgsCellStatisticsAlgorithm : public QgsCellStatisticsAlgorithmBase
 {
   public:
     QgsCellStatisticsAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCellStatistics.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCellStatistics.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCellStatistics.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmCellStatistics.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -83,8 +84,8 @@ class QgsCellStatisticsPercentileAlgorithm : public QgsCellStatisticsAlgorithmBa
 {
   public:
     QgsCellStatisticsPercentileAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCellStatisticsPercentile.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCellStatisticsPercentile.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCellStatisticsPercentile.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmCellStatisticsPercentile.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -107,8 +108,8 @@ class QgsCellStatisticsPercentRankFromValueAlgorithm : public QgsCellStatisticsA
 {
   public:
     QgsCellStatisticsPercentRankFromValueAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCellStatisticsPercentRank.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCellStatisticsPercentRank.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCellStatisticsPercentRank.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmCellStatisticsPercentRank.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -131,8 +132,8 @@ class QgsCellStatisticsPercentRankFromRasterAlgorithm : public QgsCellStatistics
 {
   public:
     QgsCellStatisticsPercentRankFromRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCellStatisticsPercentRank.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCellStatisticsPercentRank.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCellStatisticsPercentRank.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmCellStatisticsPercentRank.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

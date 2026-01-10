@@ -142,7 +142,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   if ( !inputChildAlgorithm )
   {
     // Should not happen, but checking is cheap!
-    QgsDebugError( QStringLiteral( "Input is not a QgsProcessingModelChildAlgorithm" ) );
+    QgsDebugError( u"Input is not a QgsProcessingModelChildAlgorithm"_s );
     return;
   }
 
@@ -292,7 +292,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             auto algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() );
             if ( !algSource )
             {
-              QgsDebugError( QStringLiteral( "algSource not set, aborting!" ) );
+              QgsDebugError( u"algSource not set, aborting!"_s );
               return;
             }
             socketIndex = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
@@ -305,7 +305,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
           if ( !item )
           {
-            QgsDebugError( QStringLiteral( "item not set, aborting!" ) );
+            QgsDebugError( u"item not set, aborting!"_s );
             return;
           }
 

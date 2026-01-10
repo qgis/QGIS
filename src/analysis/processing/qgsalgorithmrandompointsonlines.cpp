@@ -26,7 +26,7 @@
 
 QString QgsRandomPointsOnLinesAlgorithm::name() const
 {
-  return QStringLiteral( "randompointsonlines" );
+  return u"randompointsonlines"_s;
 }
 
 QString QgsRandomPointsOnLinesAlgorithm::displayName() const
@@ -46,7 +46,7 @@ QString QgsRandomPointsOnLinesAlgorithm::group() const
 
 QString QgsRandomPointsOnLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
@@ -55,13 +55,13 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   auto numberPointsParam = std::make_unique<QgsProcessingParameterNumber>( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 );
   numberPointsParam->setIsDynamic( true );
   numberPointsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsPropertyDefinition::IntegerPositive ) );
-  numberPointsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  numberPointsParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( numberPointsParam.release() );
 
   auto minDistParam = std::make_unique<QgsProcessingParameterDistance>( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 );
   minDistParam->setIsDynamic( true );
   minDistParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MIN_DISTANCE, QObject::tr( "Minimum distance between points (per feature)" ), QgsPropertyDefinition::DoublePositive ) );
-  minDistParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  minDistParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( minDistParam.release() );
 
   auto minDistGlobalParam = std::make_unique<QgsProcessingParameterDistance>( MIN_DISTANCE_GLOBAL, QObject::tr( "Global minimum distance between points" ), 0, INPUT, true, 0 );
@@ -72,7 +72,7 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   maxAttemptsParam->setFlags( maxAttemptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   maxAttemptsParam->setIsDynamic( true );
   maxAttemptsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
-  maxAttemptsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  maxAttemptsParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( maxAttemptsParam.release() );
 
   auto randomSeedParam = std::make_unique<QgsProcessingParameterNumber>( SEED, QObject::tr( "Random seed" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 1 );
@@ -181,7 +181,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );
 
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "rand_point_id" ), QMetaType::Type::LongLong ) );
+  fields.append( QgsField( u"rand_point_id"_s, QMetaType::Type::LongLong ) );
   if ( mIncludeLineAttr )
     fields.extend( lineSource->fields() );
 
@@ -331,7 +331,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
               throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
           }
           if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
           totNPoints++;
           pointsAddedForThisFeature++;
           pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature - distCheckIterations );

@@ -24,27 +24,27 @@
 QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QgsPanelWidget( parent )
 {
-  setObjectName( QStringLiteral( "UndoWidget" ) );
+  setObjectName( u"UndoWidget"_s );
   resize( 200, 223 );
   setMinimumSize( QSize( 200, 220 ) );
   mDockWidgetContents = new QWidget( this );
-  mDockWidgetContents->setObjectName( QStringLiteral( "dockWidgetContents" ) );
+  mDockWidgetContents->setObjectName( u"dockWidgetContents"_s );
   mGridLayout = new QGridLayout( mDockWidgetContents );
-  mGridLayout->setObjectName( QStringLiteral( "gridLayout" ) );
+  mGridLayout->setObjectName( u"gridLayout"_s );
   mGridLayout->setContentsMargins( 0, 0, 0, 0 );
   QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
 
   mGridLayout->addItem( spacerItem, 0, 0, 1, 1 );
 
   mUndoButton = new QPushButton( mDockWidgetContents );
-  mUndoButton->setObjectName( QStringLiteral( "undoButton" ) );
-  mUndoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionUndo.svg" ) ) );
+  mUndoButton->setObjectName( u"undoButton"_s );
+  mUndoButton->setIcon( QgsApplication::getThemeIcon( u"mActionUndo.svg"_s ) );
 
   mGridLayout->addWidget( mUndoButton, 1, 0, 1, 1 );
 
   mRedoButton = new QPushButton( mDockWidgetContents );
-  mRedoButton->setObjectName( QStringLiteral( "redoButton" ) );
-  mRedoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRedo.svg" ) ) );
+  mRedoButton->setObjectName( u"redoButton"_s );
+  mRedoButton->setIcon( QgsApplication::getThemeIcon( u"mActionRedo.svg"_s ) );
 
   mGridLayout->addWidget( mRedoButton, 1, 1, 1, 1 );
 
@@ -118,12 +118,12 @@ void QgsUndoWidget::indexChanged( int curIndx )
 
   if ( offset != 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "curIndx : %1" ).arg( curIndx ), 4 );
-    QgsDebugMsgLevel( QStringLiteral( "offset  : %1" ).arg( offset ), 4 );
-    QgsDebugMsgLevel( QStringLiteral( "curCount: %1" ).arg( curCount ), 4 );
+    QgsDebugMsgLevel( u"curIndx : %1"_s.arg( curIndx ), 4 );
+    QgsDebugMsgLevel( u"offset  : %1"_s.arg( offset ), 4 );
+    QgsDebugMsgLevel( u"curCount: %1"_s.arg( curCount ), 4 );
     if ( lastRedo )
     {
-      QgsDebugMsgLevel( QStringLiteral( "lastRedo: true" ), 4 );
+      QgsDebugMsgLevel( u"lastRedo: true"_s, 4 );
     }
   }
 
@@ -168,7 +168,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
 
   mUndoView = new QUndoView( mDockWidgetContents );
   mUndoView->setStack( undoStack );
-  mUndoView->setObjectName( QStringLiteral( "undoView" ) );
+  mUndoView->setObjectName( u"undoView"_s );
   mGridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   //  setWidget( dockWidgetContents );
   connect( mUndoStack, &QUndoStack::canUndoChanged, this, &QgsUndoWidget::undoChanged );

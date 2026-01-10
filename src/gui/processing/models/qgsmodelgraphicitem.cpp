@@ -147,12 +147,12 @@ QgsModelDesignerFoldButtonGraphicItem::QgsModelDesignerFoldButtonGraphicItem( QG
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
   , mFolded( folded )
 {
-  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelerExpand.svg" ) ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mIconModelerExpand.svg"_s ) );
   QPainter painter( &mPlusPicture );
   svg.render( &painter );
   painter.end();
 
-  QSvgRenderer svg2( QgsApplication::iconPath( QStringLiteral( "mIconModelerCollapse.svg" ) ) );
+  QSvgRenderer svg2( QgsApplication::iconPath( u"mIconModelerCollapse.svg"_s ) );
   painter.begin( &mMinusPicture );
   svg2.render( &painter );
   painter.end();
@@ -291,6 +291,48 @@ bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
   }
 
   return isDefaultValue;
+}
+
+
+QgsModelDesignerFeatureCountGraphicItem::QgsModelDesignerFeatureCountGraphicItem( QgsModelArrowItem *link, const QString &text )
+  : QGraphicsTextItem( text )
+  , mLink( link )
+{
+  connect( link, &QgsModelArrowItem::painterPathUpdated, this, &QgsModelDesignerFeatureCountGraphicItem::setPosition );
+
+  QFont font = this->font();
+  font.setPointSize( FONT_SIZE );
+  setFont( font );
+
+  setZValue( QgsModelGraphicsScene::ZValues::ArrowDecoration );
+  setPosition();
+}
+
+void QgsModelDesignerFeatureCountGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *widget )
+{
+  const bool isDarkTheme = QApplication::palette().color( QPalette::Window ).lightness() < 128;
+  QPalette::ColorRole bgPalette = isDarkTheme ? QPalette::Dark : QPalette::Light;
+
+  // First draw a rounded rectangle as background
+  QColor backgroundColor = QApplication::palette().color( bgPalette );
+  backgroundColor.setAlpha( 220 ); // Add some transparency so we still see the arrow underneath
+  painter->setBrush( QBrush( backgroundColor ) );
+  painter->setPen( Qt::PenStyle::NoPen );
+  constexpr double RADIUS = 5;
+  painter->drawRoundedRect( boundingRect(), RADIUS, RADIUS );
+
+  // And finally draw the text on top
+  setDefaultTextColor( QApplication::palette().color( QPalette::Text ) );
+  QGraphicsTextItem::paint( painter, itemStyle, widget );
+}
+
+void QgsModelDesignerFeatureCountGraphicItem::setPosition()
+{
+  QPointF middlePos = mLink->path().pointAtPercent( 0.5 );
+  QRectF rect = boundingRect();
+  QPointF offset = rect.center();
+  setPos( middlePos - offset );
+  update();
 }
 
 ///@endcond

@@ -194,11 +194,11 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     }
 
     qreal wordSpaceFix = qreal( 0.0 );
-    if ( graphemes[i] == QLatin1String( " " ) )
+    if ( graphemes[i] == " "_L1 )
     {
       // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
       int nxt = i + 1;
-      wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
+      wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != " "_L1 ) ? wordSpacing : qreal( 0.0 );
     }
 
     // this workaround only works for clusters with a single character. Not sure how it should be handled

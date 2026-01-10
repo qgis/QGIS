@@ -30,10 +30,10 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
   public:
     QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsActiveLayerFeaturesLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "features" ); }
+    QString name() const override { return u"features"_s; }
     QString displayName() const override { return tr( "Active Layer Features" ); }
     Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "f" ); }
+    QString prefix() const override { return u"f"_s; }
 
     QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

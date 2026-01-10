@@ -32,7 +32,7 @@ class TestQgsChunkedEntity : public QgsTest
 
   public:
     TestQgsChunkedEntity()
-      : QgsTest( QStringLiteral( "3D Rendering Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Rendering Tests"_s, u"3d"_s )
     {}
 
   private slots:

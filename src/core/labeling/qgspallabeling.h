@@ -646,7 +646,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \warning This method only returns an approximate label size, and eg will not consider
      * HTML formatted text correctly.
      *
-     * \deprecated QGIS 3.40. Will be removed from public API in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed from public API in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr ) SIP_DEPRECATED;
 

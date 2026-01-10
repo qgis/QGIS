@@ -69,8 +69,8 @@ QList<QgsMapLayerServerProperties::WmsDimensionInfo> QgsServerApiUtils::temporal
   QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { serverProperties->wmsDimensions() };
   // Filter only date and time
   dimensions.erase( std::remove_if( dimensions.begin(), dimensions.end(), []( QgsMapLayerServerProperties::WmsDimensionInfo &dim ) {
-                      return dim.name.toLower() != QStringLiteral( "time" )
-                             && dim.name.toLower() != QLatin1String( "date" );
+                      return dim.name.toLower() != u"time"_s
+                             && dim.name.toLower() != "date"_L1;
                     } ),
                     dimensions.end() );
 
@@ -82,7 +82,7 @@ QList<QgsMapLayerServerProperties::WmsDimensionInfo> QgsServerApiUtils::temporal
     {
       if ( f.isDateOrTime() )
       {
-        dimensions.append( QgsMapLayerServerProperties::WmsDimensionInfo( f.type() == QMetaType::Type::QDateTime ? QStringLiteral( "time" ) : QStringLiteral( "date" ), f.name() ) );
+        dimensions.append( QgsMapLayerServerProperties::WmsDimensionInfo( f.type() == QMetaType::Type::QDateTime ? u"time"_s : u"date"_s, f.name() ) );
         break;
       }
     }
@@ -95,7 +95,7 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
 {
   auto parseDate = []( const QString &date ) -> T2 {
     T2 result;
-    if ( date == QLatin1String( ".." ) || date.isEmpty() )
+    if ( date == ".."_L1 || date.isEmpty() )
     {
       return result;
     }
@@ -104,7 +104,7 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
       T2 result { T2::fromString( date, Qt::DateFormat::ISODate ) };
       if ( !result.isValid() )
       {
-        throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid date/datetime." ).arg( date ) );
+        throw QgsServerApiBadRequestException( u"%1 is not a valid date/datetime."_s.arg( date ) );
       }
       return result;
     }
@@ -112,14 +112,14 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
   const QStringList parts { interval.split( '/' ) };
   if ( parts.size() != 2 )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ) );
+    throw QgsServerApiBadRequestException( u"%1 is not a valid datetime interval."_s.arg( interval ), u"Server"_s );
   }
   // cppcheck-suppress containerOutOfBounds
   T result { parseDate( parts[0] ), parseDate( parts[1] ) };
   // Check validity
   if ( result.isEmpty() )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval (empty)." ).arg( interval ), QStringLiteral( "Server" ) );
+    throw QgsServerApiBadRequestException( u"%1 is not a valid datetime interval (empty)."_s.arg( interval ), u"Server"_s );
   }
   return result;
 }
@@ -172,11 +172,11 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       // Cast to query type but only downcast
       if ( fieldType != queryType || fieldType == QMetaType::Type::QDate )
       {
-        return QStringLiteral( "to_date( %1 )" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+        return u"to_date( %1 )"_s.arg( QgsExpression::quotedColumnRef( fieldName ) );
       }
       else
       {
-        return QStringLiteral( "%2( %1 )" ).arg( QgsExpression::quotedColumnRef( fieldName ) ).arg( queryType == QMetaType::Type::QDate ? QStringLiteral( "to_date" ) : QStringLiteral( "to_datetime" ) );
+        return u"%2( %1 )"_s.arg( QgsExpression::quotedColumnRef( fieldName ) ).arg( queryType == QMetaType::Type::QDate ? u"to_date"_s : u"to_datetime"_s );
       }
     }
     else if ( fieldType == queryType || fieldType == QMetaType::Type::QDate )
@@ -185,7 +185,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     }
     else
     {
-      return QStringLiteral( "%2( %1 )" ).arg( QgsExpression::quotedColumnRef( fieldName ) ).arg( queryType == QMetaType::Type::QDate ? QStringLiteral( "to_date" ) : QStringLiteral( "to_datetime" ) );
+      return u"%2( %1 )"_s.arg( QgsExpression::quotedColumnRef( fieldName ) ).arg( queryType == QMetaType::Type::QDate ? u"to_date"_s : u"to_datetime"_s );
     }
   };
 
@@ -193,11 +193,11 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   auto quoteValue = []( const QString &value ) -> QString {
     if ( value.length() == 10 )
     {
-      return QStringLiteral( "to_date( %1 )" ).arg( QgsExpression::quotedValue( value ) );
+      return u"to_date( %1 )"_s.arg( QgsExpression::quotedValue( value ) );
     }
     else
     {
-      return QStringLiteral( "to_datetime( %1 )" ).arg( QgsExpression::quotedValue( value ) );
+      return u"to_datetime( %1 )"_s.arg( QgsExpression::quotedValue( value ) );
     }
   };
 
@@ -211,12 +211,12 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       // Overlap of two intervals
       if ( !fieldEndCasted.isEmpty() )
       {
-        result = QStringLiteral( "( %1 IS NULL OR %2 <= %6 ) AND ( %4 IS NULL OR %5 >= %3 )" )
+        result = u"( %1 IS NULL OR %2 <= %6 ) AND ( %4 IS NULL OR %5 >= %3 )"_s
                    .arg( fieldBegin, fieldBeginCasted, quoteValue( queryBegin ), fieldEnd, fieldEndCasted, quoteValue( queryEnd ) );
       }
       else // Overlap of single value
       {
-        result = QStringLiteral( "( %1 IS NULL OR ( %2 <= %3 AND %3 <= %4 ) )" )
+        result = u"( %1 IS NULL OR ( %2 <= %3 AND %3 <= %4 ) )"_s
                    .arg( fieldBegin, quoteValue( queryBegin ), fieldBeginCasted, quoteValue( queryEnd ) );
       }
     }
@@ -224,16 +224,16 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     {
       if ( !fieldEndCasted.isEmpty() )
       {
-        result = QStringLiteral( "( %1 IS NULL OR %2 >= %3 )" ).arg( fieldEnd, fieldEndCasted, quoteValue( queryBegin ) );
+        result = u"( %1 IS NULL OR %2 >= %3 )"_s.arg( fieldEnd, fieldEndCasted, quoteValue( queryBegin ) );
       }
       else
       {
-        result = QStringLiteral( "( %1 IS NULL OR %2 >= %3 )" ).arg( fieldBegin, fieldBeginCasted, quoteValue( queryBegin ) );
+        result = u"( %1 IS NULL OR %2 >= %3 )"_s.arg( fieldBegin, fieldBeginCasted, quoteValue( queryBegin ) );
       }
     }
     else // <=
     {
-      result = QStringLiteral( "( %1 IS NULL OR %2 <= %3 )" ).arg( fieldBegin, fieldBeginCasted, quoteValue( queryEnd ) );
+      result = u"( %1 IS NULL OR %2 <= %3 )"_s.arg( fieldBegin, fieldBeginCasted, quoteValue( queryEnd ) );
     }
     return result;
   };
@@ -244,7 +244,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   {
     const QStringList parts { interval.split( '/' ) };
     testType = parts[0];
-    if ( testType.isEmpty() || testType == QLatin1String( ".." ) )
+    if ( testType.isEmpty() || testType == ".."_L1 )
     {
       // cppcheck-suppress containerOutOfBounds
       testType = parts[1];
@@ -264,7 +264,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       for ( const auto &dimension : std::as_const( dimensions ) )
       {
         // Determine the field type from the dimension name "time"/"date"
-        const QMetaType::Type fieldType { dimension.name.toLower() == QLatin1String( "time" ) ? QMetaType::Type::QDateTime : QMetaType::Type::QDate };
+        const QMetaType::Type fieldType { dimension.name.toLower() == "time"_L1 ? QMetaType::Type::QDateTime : QMetaType::Type::QDate };
 
         const auto fieldBeginCasted { refFieldCast( dimension.fieldName, queryType, fieldType ) };
         if ( fieldBeginCasted.isEmpty() )
@@ -293,7 +293,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       for ( const auto &dimension : std::as_const( dimensions ) )
       {
         // Determine the field type from the dimension name "time"/"date"
-        const QMetaType::Type fieldType { dimension.name.toLower() == QLatin1String( "time" ) ? QMetaType::Type::QDateTime : QMetaType::Type::QDate };
+        const QMetaType::Type fieldType { dimension.name.toLower() == "time"_L1 ? QMetaType::Type::QDateTime : QMetaType::Type::QDate };
 
         const auto fieldfBeginCasted { refFieldCast( dimension.fieldName, queryType, fieldType ) };
         if ( fieldfBeginCasted.isEmpty() )
@@ -335,7 +335,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     for ( const auto &dimension : std::as_const( dimensions ) )
     {
       // Determine the field type from the dimension name "time"/"date"
-      const bool fieldIsDateTime { dimension.name.toLower() == QLatin1String( "time" ) };
+      const bool fieldIsDateTime { dimension.name.toLower() == "time"_L1 };
       const QMetaType::Type fieldType { fieldIsDateTime ? QMetaType::Type::QDateTime : QMetaType::Type::QDate };
 
       const auto fieldRefBegin { refFieldCast( dimension.fieldName, queryType, fieldType ) };
@@ -361,7 +361,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         {
           castedInterval = QDate::fromString( castedInterval, Qt::DateFormat::ISODate ).toString( Qt::DateFormat::ISODate );
         }
-        castedValue = QStringLiteral( "to_date( %1 )" ).arg( QgsExpression::quotedValue( castedInterval ) );
+        castedValue = u"to_date( %1 )"_s.arg( QgsExpression::quotedValue( castedInterval ) );
       }
       else
       {
@@ -371,16 +371,16 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
         {
           castedInterval = QDateTime::fromString( castedInterval, Qt::DateFormat::ISODate ).toString( Qt::DateFormat::ISODate );
         }
-        castedValue = QStringLiteral( "to_datetime( %1 )" ).arg( QgsExpression::quotedValue( castedInterval ) );
+        castedValue = u"to_datetime( %1 )"_s.arg( QgsExpression::quotedValue( castedInterval ) );
       }
 
       if ( !fieldRefEnd.isEmpty() )
       {
-        condition = QStringLiteral( "( %1 IS NULL OR %2 <= %3 ) AND ( %5 IS NULL OR %3 <= %4 )" ).arg( fieldBegin, fieldRefBegin, castedValue, fieldRefEnd, fieldEnd );
+        condition = u"( %1 IS NULL OR %2 <= %3 ) AND ( %5 IS NULL OR %3 <= %4 )"_s.arg( fieldBegin, fieldRefBegin, castedValue, fieldRefEnd, fieldEnd );
       }
       else
       {
-        condition = QStringLiteral( "( %1 IS NULL OR %2 = %3 )" )
+        condition = u"( %1 IS NULL OR %2 = %3 )"_s
                       .arg( fieldBegin, fieldRefBegin, castedValue );
       }
       conditions.push_back( condition );
@@ -388,7 +388,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   }
   if ( !conditions.isEmpty() )
   {
-    expression.setExpression( conditions.join( QLatin1String( " AND " ) ) );
+    expression.setExpression( conditions.join( " AND "_L1 ) );
   }
   return expression;
 }
@@ -396,9 +396,9 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
 json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )
 {
   auto extent { layer->extent() };
-  if ( layer->crs().authid() != QLatin1String( "EPSG:4326" ) )
+  if ( layer->crs().authid() != "EPSG:4326"_L1 )
   {
-    static const QgsCoordinateReferenceSystem targetCrs( QStringLiteral( "EPSG:4326" ) );
+    static const QgsCoordinateReferenceSystem targetCrs( u"EPSG:4326"_s );
     const QgsCoordinateTransform ct( layer->crs(), targetCrs, layer->transformContext() );
     extent = ct.transform( extent );
   }
@@ -495,8 +495,8 @@ json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
     }
     catch ( std::exception &ex )
     {
-      const QString errorMessage { QStringLiteral( "Error creating temporal extent: %1" ).arg( ex.what() ) };
-      QgsMessageLog::logMessage( errorMessage, QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      const QString errorMessage { u"Error creating temporal extent: %1"_s.arg( ex.what() ) };
+      QgsMessageLog::logMessage( errorMessage, u"Server"_s, Qgis::MessageLevel::Critical );
       throw QgsServerApiInternalServerError( errorMessage );
     }
   }
@@ -518,7 +518,7 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
   const auto parts { QUrl( bboxCrs ).path().split( '/' ) };
   if ( parts.count() == 6 )
   {
-    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "urn:ogc:def:crs:%1:%2:%3" ).arg( parts[3], parts[4], parts[5] ) );
+    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"urn:ogc:def:crs:%1:%2:%3"_s.arg( parts[3], parts[4], parts[5] ) );
   }
   else
   {
@@ -545,19 +545,19 @@ QString QgsServerApiUtils::fieldName( const QString &name, const QgsVectorLayer 
       return field.name();
     }
   }
-  throw QgsServerApiBadRequestException { QStringLiteral( "Field '%1' is not a valid field name for layer: %2" ).arg( name, layer->name() ) };
+  throw QgsServerApiBadRequestException { u"Field '%1' is not a valid field name for layer: %2"_s.arg( name, layer->name() ) };
 }
 
 QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
-  return result.replace( '\'', QLatin1String( "\'" ) );
+  return result.replace( '\'', "\'"_L1 );
 }
 
 QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
 {
   // This must be always available in OGC APIs
-  QStringList result { { QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) } };
+  QStringList result { { u"http://www.opengis.net/def/crs/OGC/1.3/CRS84"_s } };
   if ( project )
   {
     const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
@@ -585,7 +585,7 @@ QString QgsServerApiUtils::appendMapParameter( const QString &path, const QUrl &
   const auto constItems { QUrlQuery( requestUrl ).queryItems() };
   for ( const auto &i : constItems )
   {
-    if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+    if ( i.first.compare( u"MAP"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
       qi.push_back( i );
     }
@@ -596,7 +596,7 @@ QString QgsServerApiUtils::appendMapParameter( const QString &path, const QUrl &
     {
       result += '?';
     }
-    result.append( QStringLiteral( "MAP=%1" ).arg( qi.first().second ) );
+    result.append( u"MAP=%1"_s.arg( qi.first().second ) );
   }
   return result;
 }

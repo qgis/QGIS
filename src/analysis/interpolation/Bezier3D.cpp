@@ -47,7 +47,7 @@ void Bezier3D::calcFirstDer( float t, Vector3D *v )
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning: null pointer" ) );
+    QgsDebugError( u"warning: null pointer"_s );
   }
 }
 
@@ -70,7 +70,7 @@ void Bezier3D::calcPoint( float t, QgsPoint *p )
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning: null pointer" ) );
+    QgsDebugError( u"warning: null pointer"_s );
   }
 }
 
@@ -102,7 +102,7 @@ void Bezier3D::calcSecDer( float t, Vector3D *v )
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning: null pointer" ) );
+    QgsDebugError( u"warning: null pointer"_s );
   }
 }
 
@@ -126,6 +126,6 @@ void Bezier3D::changeDirection() //does this work correctly? more testing is nee
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning: null pointer" ) );
+    QgsDebugError( u"warning: null pointer"_s );
   }
 }

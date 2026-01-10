@@ -48,7 +48,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &ca
   if ( encoding.isEmpty() )
   {
     const QgsSettings settings;
-    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+    enc = settings.value( u"UI/encoding"_s, "System" ).toString();
   }
 
   // The specified decoding is added if not existing already, and then set current.
@@ -79,8 +79,8 @@ QString QgsEncodingFileDialog::encoding() const
 void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
-  QgsDebugMsgLevel( QStringLiteral( "Set encoding %1 as default." ).arg( encoding() ), 2 );
+  settings.setValue( u"UI/encoding"_s, encoding() );
+  QgsDebugMsgLevel( u"Set encoding %1 as default."_s.arg( encoding() ), 2 );
 }
 
 void QgsEncodingFileDialog::addCancelAll()
@@ -140,7 +140,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   if ( encoding.isEmpty() )
   {
     const QgsSettings settings;
-    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+    enc = settings.value( u"UI/encoding"_s, "System" ).toString();
   }
 
   setEncoding( enc );

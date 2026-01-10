@@ -18,7 +18,7 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
-const QString QgsValueMapFieldFormatter::NULL_VALUE = QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
+const QString QgsValueMapFieldFormatter::NULL_VALUE = u"{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"_s;
 
 QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()
 {
@@ -27,7 +27,7 @@ QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()
 
 QString QgsValueMapFieldFormatter::id() const
 {
-  return QStringLiteral( "ValueMap" );
+  return u"ValueMap"_s;
 }
 
 QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
@@ -40,7 +40,7 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   else
     valueInternalText = value.toString();
 
-  const QVariant v = config.value( QStringLiteral( "map" ) );
+  const QVariant v = config.value( u"map"_s );
   const QVariantList list = v.toList();
   if ( !list.empty() )
   {
@@ -54,13 +54,13 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fi
           return it.key();
       }
     }
-    return QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) );
+    return u"(%1)"_s.arg( layer->fields().at( fieldIndex ).displayString( value ) );
   }
   else
   {
     // old style config
     const QVariantMap map = v.toMap();
-    return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
+    return map.key( valueInternalText, QVariant( u"(%1)"_s.arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
   }
 }
 
@@ -74,7 +74,7 @@ QVariantList QgsValueMapFieldFormatter::availableValues( const QVariantMap &conf
   Q_UNUSED( context )
 
   QVariantList values;
-  const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+  const QList<QVariant> valueList = config.value( u"map"_s ).toList();
   for ( const QVariant &item : valueList )
   {
     values.append( item.toMap().constBegin().value() );

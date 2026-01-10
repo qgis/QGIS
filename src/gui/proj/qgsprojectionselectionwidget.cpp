@@ -43,7 +43,7 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
 #endif
 
   const QgsSettings settings;
-  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( u"/projections/defaultProjectCrs"_s, Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
   connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this] {
     mCurrentCrs.updateDefinition();
@@ -436,7 +436,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent, Qgs
   QHBoxLayout *warningLayout = new QHBoxLayout();
   warningLayout->setContentsMargins( 0, 0, 0, 0 );
   mWarningLabel = new QLabel();
-  const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+  const QIcon icon = QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
   const int size = static_cast<int>( std::max( 24.0, mCrsComboBox->minimumSize().height() * 0.5 ) );
   mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
   warningLayout->insertSpacing( 0, labelMargin / 2 );
@@ -448,7 +448,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent, Qgs
   layout->addSpacing( labelMargin / 2 );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSetProjection.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"mActionSetProjection.svg"_s ) );
   mButton->setToolTip( tr( "Select CRS" ) );
   layout->addWidget( mButton );
 
@@ -759,7 +759,7 @@ void QgsProjectionSelectionWidget::updateWarning()
 
   try
   {
-    const double crsAccuracyWarningThreshold = QgsSettings().value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble();
+    const double crsAccuracyWarningThreshold = QgsSettings().value( u"/projections/crsAccuracyWarningThreshold"_s, 0.0, QgsSettings::App ).toDouble();
 
     const QgsDatumEnsemble ensemble = crs().datumEnsemble();
     if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble || ( ensemble.accuracy() > 0 && ensemble.accuracy() < crsAccuracyWarningThreshold ) )
@@ -770,13 +770,13 @@ void QgsProjectionSelectionWidget::updateWarning()
     {
       mWarningLabelContainer->show();
 
-      QString warning = QStringLiteral( "<p>" );
+      QString warning = u"<p>"_s;
 
       QString id;
       if ( !ensemble.code().isEmpty() )
-        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        id = u"<i>%1</i> (%2:%3)"_s.arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
+        id = u"<i>%1</i>”"_s.arg( ensemble.name() );
 
       if ( ensemble.accuracy() > 0 )
       {
@@ -786,23 +786,23 @@ void QgsProjectionSelectionWidget::updateWarning()
       {
         warning = tr( "The selected CRS is based on %1, which has a limited accuracy." ).arg( id );
       }
-      warning += QStringLiteral( "</p><p>" ) + tr( "Use an alternative CRS if accurate positioning is required." ) + QStringLiteral( "</p>" );
+      warning += u"</p><p>"_s + tr( "Use an alternative CRS if accurate positioning is required." ) + u"</p>"_s;
 
       const QList<QgsDatumEnsembleMember> members = ensemble.members();
       if ( !members.isEmpty() )
       {
-        warning += QStringLiteral( "<p>" ) + tr( "%1 consists of the datums:" ).arg( ensemble.name() ) + QStringLiteral( "</p><ul>" );
+        warning += u"<p>"_s + tr( "%1 consists of the datums:" ).arg( ensemble.name() ) + u"</p><ul>"_s;
 
         for ( const QgsDatumEnsembleMember &member : members )
         {
           if ( !member.code().isEmpty() )
-            id = QStringLiteral( "%1 (%2:%3)" ).arg( member.name(), member.authority(), member.code() );
+            id = u"%1 (%2:%3)"_s.arg( member.name(), member.authority(), member.code() );
           else
             id = member.name();
-          warning += QStringLiteral( "<li>%1</li>" ).arg( id );
+          warning += u"<li>%1</li>"_s.arg( id );
         }
 
-        warning += QLatin1String( "</ul>" );
+        warning += "</ul>"_L1;
       }
 
       mWarningLabel->setToolTip( warning );

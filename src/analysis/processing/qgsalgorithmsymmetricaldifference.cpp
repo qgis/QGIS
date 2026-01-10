@@ -21,7 +21,7 @@
 
 QString QgsSymmetricalDifferenceAlgorithm::name() const
 {
-  return QStringLiteral( "symmetricaldifference" );
+  return u"symmetricaldifference"_s;
 }
 
 QString QgsSymmetricalDifferenceAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsSymmetricalDifferenceAlgorithm::group() const
 
 QString QgsSymmetricalDifferenceAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoroverlay" );
+  return u"vectoroverlay"_s;
 }
 
 QString QgsSymmetricalDifferenceAlgorithm::shortHelpString() const
@@ -68,16 +68,16 @@ QgsProcessingAlgorithm *QgsSymmetricalDifferenceAlgorithm::createInstance() cons
 
 void QgsSymmetricalDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"OVERLAY"_s, QObject::tr( "Overlay layer" ) ) );
 
-  auto prefix = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  auto prefix = std::make_unique<QgsProcessingParameterString>( u"OVERLAY_FIELDS_PREFIX"_s, QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( prefix.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Symmetrical difference" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Symmetrical difference" ) ) );
 
-  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "GRID_SIZE" ), QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  auto gridSize = std::make_unique<QgsProcessingParameterNumber>( u"GRID_SIZE"_s, QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }
@@ -85,13 +85,13 @@ void QgsSymmetricalDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  std::unique_ptr<QgsFeatureSource> sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
+  std::unique_ptr<QgsFeatureSource> sourceB( parameterAsSource( parameters, u"OVERLAY"_s, context ) );
   if ( !sourceB )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"OVERLAY"_s ) );
 
   const Qgis::WkbType geomTypeA = QgsWkbTypes::promoteNonPointTypesToMulti( sourceA->wkbType() );
   const Qgis::WkbType geomTypeB = QgsWkbTypes::promoteNonPointTypesToMulti( sourceB->wkbType() );
@@ -99,24 +99,24 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   if ( geomTypeA != geomTypeB )
     feedback->pushWarning( QObject::tr( "Performing symmetrical difference between layers with different geometry types (INPUT has %1 and OVERLAY has %2) can lead to unexpected results" ).arg( QgsWkbTypes::displayString( sourceA->wkbType() ), QgsWkbTypes::displayString( sourceB->wkbType() ) ) );
 
-  const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
+  const QString overlayFieldsPrefix = parameterAsString( parameters, u"OVERLAY_FIELDS_PREFIX"_s, context );
   const QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomTypeA, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, geomTypeA, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
 
   long count = 0;
   const long total = sourceA->featureCount() + sourceB->featureCount();
 
   QgsGeometryParameters geometryParameters;
-  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  if ( parameters.value( u"GRID_SIZE"_s ).isValid() )
   {
-    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+    geometryParameters.setGridSize( parameterAsDouble( parameters, u"GRID_SIZE"_s, context ) );
   }
 
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB, geometryParameters, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );

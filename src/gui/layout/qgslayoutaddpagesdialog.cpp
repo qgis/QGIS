@@ -40,7 +40,7 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
     mPageSizeComboBox->addItem( size.displayName, size.name );
   }
   mPageSizeComboBox->addItem( tr( "Custom" ) );
-  mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( QStringLiteral( "A4" ) ) );
+  mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( u"A4"_s ) );
   pageSizeChanged( mPageSizeComboBox->currentIndex() );
   orientationChanged( 1 );
 
@@ -168,5 +168,5 @@ void QgsLayoutAddPagesDialog::setToCustomSize()
 
 void QgsLayoutAddPagesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#working-with-the-page-properties" ) );
+  QgsHelp::openHelp( u"print_composer/overview_composer.html#working-with-the-page-properties"_s );
 }

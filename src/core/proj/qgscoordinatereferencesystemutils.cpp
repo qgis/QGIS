@@ -210,285 +210,285 @@ QString QgsCoordinateReferenceSystemUtils::crsTypeToString( Qgis::CrsType type )
 
 QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &projection )
 {
-  if ( projection == QLatin1String( "adams_ws2" ) )
+  if ( projection == "adams_ws2"_L1 )
     return QObject::tr( "Adams World in a Square II" );
-  if ( projection == QLatin1String( "aea" ) )
+  if ( projection == "aea"_L1 )
     return QObject::tr( "Albers Equal Area" );
-  if ( projection == QLatin1String( "aeqd" ) )
+  if ( projection == "aeqd"_L1 )
     return QObject::tr( "Azimuthal Equidistant" );
-  if ( projection == QLatin1String( "airy" ) )
+  if ( projection == "airy"_L1 )
     return QObject::tr( "Airy" );
-  if ( projection == QLatin1String( "aitoff" ) )
+  if ( projection == "aitoff"_L1 )
     return QObject::tr( "Aitoff" );
-  if ( projection == QLatin1String( "alsk" ) )
+  if ( projection == "alsk"_L1 )
     return QObject::tr( "Modified Stererographics of Alaska" );
-  if ( projection == QLatin1String( "apian" ) )
+  if ( projection == "apian"_L1 )
     return QObject::tr( "Apian Globular I" );
-  if ( projection == QLatin1String( "august" ) )
+  if ( projection == "august"_L1 )
     return QObject::tr( "August Epicycloidal" );
-  if ( projection == QLatin1String( "bacon" ) )
+  if ( projection == "bacon"_L1 )
     return QObject::tr( "Bacon Globular" );
-  if ( projection == QLatin1String( "bipc" ) )
+  if ( projection == "bipc"_L1 )
     return QObject::tr( "Bipolar Conic of Western Hemisphere" );
-  if ( projection == QLatin1String( "boggs" ) )
+  if ( projection == "boggs"_L1 )
     return QObject::tr( "Boggs Eumorphic" );
-  if ( projection == QLatin1String( "bonne" ) )
+  if ( projection == "bonne"_L1 )
     return QObject::tr( "Bonne (Werner lat_1=90)" );
-  if ( projection == QLatin1String( "cass" ) )
+  if ( projection == "cass"_L1 )
     return QObject::tr( "Cassini" );
-  if ( projection == QLatin1String( "cc" ) )
+  if ( projection == "cc"_L1 )
     return QObject::tr( "Central Cylindrical" );
-  if ( projection == QLatin1String( "cea" ) )
+  if ( projection == "cea"_L1 )
     return QObject::tr( "Equal Area Cylindrical" );
-  if ( projection == QLatin1String( "chamb" ) )
+  if ( projection == "chamb"_L1 )
     return QObject::tr( "Chamberlin Trimetric" );
-  if ( projection == QLatin1String( "col_urban" ) )
+  if ( projection == "col_urban"_L1 )
     return QObject::tr( "Colombia Urban" );
-  if ( projection == QLatin1String( "collg" ) )
+  if ( projection == "collg"_L1 )
     return QObject::tr( "Collignon" );
-  if ( projection == QLatin1String( "comill" ) )
+  if ( projection == "comill"_L1 )
     return QObject::tr( "Compact Miller" );
-  if ( projection == QLatin1String( "crast" ) )
+  if ( projection == "crast"_L1 )
     return QObject::tr( "Craster Parabolic (Putnins P4)" );
-  if ( projection == QLatin1String( "denoy" ) )
+  if ( projection == "denoy"_L1 )
     return QObject::tr( "Denoyer Semi-Elliptical" );
-  if ( projection == QLatin1String( "eck1" ) )
+  if ( projection == "eck1"_L1 )
     return QObject::tr( "Eckert I" );
-  if ( projection == QLatin1String( "eck2" ) )
+  if ( projection == "eck2"_L1 )
     return QObject::tr( "Eckert II" );
-  if ( projection == QLatin1String( "eck3" ) )
+  if ( projection == "eck3"_L1 )
     return QObject::tr( "Eckert III" );
-  if ( projection == QLatin1String( "eck4" ) )
+  if ( projection == "eck4"_L1 )
     return QObject::tr( "Eckert IV" );
-  if ( projection == QLatin1String( "eck5" ) )
+  if ( projection == "eck5"_L1 )
     return QObject::tr( "Eckert V" );
-  if ( projection == QLatin1String( "eck6" ) )
+  if ( projection == "eck6"_L1 )
     return QObject::tr( "Eckert VI" );
-  if ( projection == QLatin1String( "eqc" ) )
+  if ( projection == "eqc"_L1 )
     return QObject::tr( "Equidistant Cylindrical (Plate Carrée)" );
-  if ( projection == QLatin1String( "eqdc" ) )
+  if ( projection == "eqdc"_L1 )
     return QObject::tr( "Equidistant Conic" );
-  if ( projection == QLatin1String( "eqearth" ) )
+  if ( projection == "eqearth"_L1 )
     return QObject::tr( "Equal Earth" );
-  if ( projection == QLatin1String( "euler" ) )
+  if ( projection == "euler"_L1 )
     return QObject::tr( "Euler" );
-  if ( projection == QLatin1String( "fahey" ) )
+  if ( projection == "fahey"_L1 )
     return QObject::tr( "Fahey" );
-  if ( projection == QLatin1String( "fouc" ) )
+  if ( projection == "fouc"_L1 )
     return QObject::tr( "Foucaut" );
-  if ( projection == QLatin1String( "fouc_s" ) )
+  if ( projection == "fouc_s"_L1 )
     return QObject::tr( "Foucaut Sinusoidal" );
-  if ( projection == QLatin1String( "gall" ) )
+  if ( projection == "gall"_L1 )
     return QObject::tr( "Gall (Gall Stereographic)" );
-  if ( projection == QLatin1String( "geocent" ) )
+  if ( projection == "geocent"_L1 )
     return QObject::tr( "Geocentric" );
-  if ( projection == QLatin1String( "geos" ) )
+  if ( projection == "geos"_L1 )
     return QObject::tr( "Geostationary Satellite View" );
-  if ( projection == QLatin1String( "gins8" ) )
+  if ( projection == "gins8"_L1 )
     return QObject::tr( "Ginsburg VIII (TsNIIGAiK)" );
-  if ( projection == QLatin1String( "gn_sinu" ) )
+  if ( projection == "gn_sinu"_L1 )
     return QObject::tr( "General Sinusoidal Series" );
-  if ( projection == QLatin1String( "gnom" ) )
+  if ( projection == "gnom"_L1 )
     return QObject::tr( "Gnomonic" );
-  if ( projection == QLatin1String( "goode" ) )
+  if ( projection == "goode"_L1 )
     return QObject::tr( "Goode Homolosine" );
-  if ( projection == QLatin1String( "gs48" ) )
+  if ( projection == "gs48"_L1 )
     return QObject::tr( "Modified Stererographics of 48 U.S." );
-  if ( projection == QLatin1String( "gs50" ) )
+  if ( projection == "gs50"_L1 )
     return QObject::tr( "Modified Stererographics of 50 U.S." );
-  if ( projection == QLatin1String( "hammer" ) )
+  if ( projection == "hammer"_L1 )
     return QObject::tr( "Hammer & Eckert-Greifendorff" );
-  if ( projection == QLatin1String( "hatano" ) )
+  if ( projection == "hatano"_L1 )
     return QObject::tr( "Hatano Asymmetrical Equal Area" );
-  if ( projection == QLatin1String( "igh" ) )
+  if ( projection == "igh"_L1 )
     return QObject::tr( "Interrupted Goode Homolosine" );
-  if ( projection == QLatin1String( "igh_o" ) )
+  if ( projection == "igh_o"_L1 )
     return QObject::tr( "Interrupted Goode Homolosine (Oceanic View)" );
-  if ( projection == QLatin1String( "imw_p" ) )
+  if ( projection == "imw_p"_L1 )
     return QObject::tr( "International Map of the World Polyconic" );
-  if ( projection == QLatin1String( "kav5" ) )
+  if ( projection == "kav5"_L1 )
     return QObject::tr( "Kavraisky V" );
-  if ( projection == QLatin1String( "kav7" ) )
+  if ( projection == "kav7"_L1 )
     return QObject::tr( "Kavraisky VII" );
-  if ( projection == QLatin1String( "krovak" ) )
+  if ( projection == "krovak"_L1 )
     return QObject::tr( "Krovak" );
-  if ( projection == QLatin1String( "labrd" ) )
+  if ( projection == "labrd"_L1 )
     return QObject::tr( "Laborde" );
-  if ( projection == QLatin1String( "laea" ) )
+  if ( projection == "laea"_L1 )
     return QObject::tr( "Lambert Azimuthal Equal Area" );
-  if ( projection == QLatin1String( "lagrng" ) )
+  if ( projection == "lagrng"_L1 )
     return QObject::tr( "Lagrange" );
-  if ( projection == QLatin1String( "larr" ) )
+  if ( projection == "larr"_L1 )
     return QObject::tr( "Larrivee" );
-  if ( projection == QLatin1String( "lask" ) )
+  if ( projection == "lask"_L1 )
     return QObject::tr( "Laskowski" );
-  if ( projection == QLatin1String( "longlat" ) )
+  if ( projection == "longlat"_L1 )
     return QObject::tr( "Long/lat (Geodetic Alias)" );
-  if ( projection == QLatin1String( "latlong" ) )
+  if ( projection == "latlong"_L1 )
     return QObject::tr( "Lat/long (Geodetic Alias)" );
-  if ( projection == QLatin1String( "lcc" ) )
+  if ( projection == "lcc"_L1 )
     return QObject::tr( "Lambert Conformal Conic" );
-  if ( projection == QLatin1String( "lcca" ) )
+  if ( projection == "lcca"_L1 )
     return QObject::tr( "Lambert Conformal Conic Alternative" );
-  if ( projection == QLatin1String( "leac" ) )
+  if ( projection == "leac"_L1 )
     return QObject::tr( "Lambert Equal Area Conic" );
-  if ( projection == QLatin1String( "lee_os" ) )
+  if ( projection == "lee_os"_L1 )
     return QObject::tr( "Lee Oblated Stereographic" );
-  if ( projection == QLatin1String( "loxim" ) )
+  if ( projection == "loxim"_L1 )
     return QObject::tr( "Loximuthal" );
-  if ( projection == QLatin1String( "lsat" ) ) //#spellok
+  if ( projection == "lsat"_L1 ) //#spellok
     return QObject::tr( "Space Oblique for LANDSAT" );
-  if ( projection == QLatin1String( "mbt_s" ) )
+  if ( projection == "mbt_s"_L1 )
     return QObject::tr( "McBryde-Thomas Flat-Polar Sine (No. 1)" );
-  if ( projection == QLatin1String( "mbt_fps" ) )
+  if ( projection == "mbt_fps"_L1 )
     return QObject::tr( "McBryde-Thomas Flat-Pole Sine (No. 2)" );
-  if ( projection == QLatin1String( "mbtfpp" ) )
+  if ( projection == "mbtfpp"_L1 )
     return QObject::tr( "McBride-Thomas Flat-Polar Parabolic" );
-  if ( projection == QLatin1String( "mbtfpq" ) )
+  if ( projection == "mbtfpq"_L1 )
     return QObject::tr( "McBryde-Thomas Flat-Polar Quartic" );
-  if ( projection == QLatin1String( "mbtfps" ) )
+  if ( projection == "mbtfps"_L1 )
     return QObject::tr( "McBryde-Thomas Flat-Polar Sinusoidal" );
-  if ( projection == QLatin1String( "merc" ) )
+  if ( projection == "merc"_L1 )
     return QObject::tr( "Mercator" );
-  if ( projection == QLatin1String( "mil_os" ) )
+  if ( projection == "mil_os"_L1 )
     return QObject::tr( "Miller Oblated Stereographic" );
-  if ( projection == QLatin1String( "mill" ) )
+  if ( projection == "mill"_L1 )
     return QObject::tr( "Miller Cylindrical" );
-  if ( projection == QLatin1String( "mod_krovak" ) )
+  if ( projection == "mod_krovak"_L1 )
     return QObject::tr( "Modified Krovak" );
-  if ( projection == QLatin1String( "moll" ) )
+  if ( projection == "moll"_L1 )
     return QObject::tr( "Mollweide" );
-  if ( projection == QLatin1String( "murd1" ) )
+  if ( projection == "murd1"_L1 )
     return QObject::tr( "Murdoch I" );
-  if ( projection == QLatin1String( "murd2" ) )
+  if ( projection == "murd2"_L1 )
     return QObject::tr( "Murdoch II" );
-  if ( projection == QLatin1String( "murd3" ) )
+  if ( projection == "murd3"_L1 )
     return QObject::tr( "Murdoch III" );
-  if ( projection == QLatin1String( "natearth" ) )
+  if ( projection == "natearth"_L1 )
     return QObject::tr( "Natural Earth" );
-  if ( projection == QLatin1String( "natearth2" ) )
+  if ( projection == "natearth2"_L1 )
     return QObject::tr( "Natural Earth II" );
-  if ( projection == QLatin1String( "nell" ) )
+  if ( projection == "nell"_L1 )
     return QObject::tr( "Nell" );
-  if ( projection == QLatin1String( "nell_h" ) )
+  if ( projection == "nell_h"_L1 )
     return QObject::tr( "Nell-Hammer" );
-  if ( projection == QLatin1String( "nicol" ) )
+  if ( projection == "nicol"_L1 )
     return QObject::tr( "Nicolosi Globular" );
-  if ( projection == QLatin1String( "nsper" ) )
+  if ( projection == "nsper"_L1 )
     return QObject::tr( "Near-sided Perspective" );
-  if ( projection == QLatin1String( "nzmg" ) )
+  if ( projection == "nzmg"_L1 )
     return QObject::tr( "New Zealand Map Grid" );
-  if ( projection == QLatin1String( "ob_tran" ) )
+  if ( projection == "ob_tran"_L1 )
     return QObject::tr( "General Oblique Transformation" );
-  if ( projection == QLatin1String( "ocea" ) )
+  if ( projection == "ocea"_L1 )
     return QObject::tr( "Oblique Cylindrical Equal Area" );
-  if ( projection == QLatin1String( "oea" ) )
+  if ( projection == "oea"_L1 )
     return QObject::tr( "Oblated Equal Area" );
-  if ( projection == QLatin1String( "omerc" ) )
+  if ( projection == "omerc"_L1 )
     return QObject::tr( "Oblique Mercator" );
-  if ( projection == QLatin1String( "ortel" ) )
+  if ( projection == "ortel"_L1 )
     return QObject::tr( "Ortelius Oval" );
-  if ( projection == QLatin1String( "ortho" ) )
+  if ( projection == "ortho"_L1 )
     return QObject::tr( "Orthographic" );
-  if ( projection == QLatin1String( "patterson" ) )
+  if ( projection == "patterson"_L1 )
     return QObject::tr( "Patterson" );
-  if ( projection == QLatin1String( "pconic" ) )
+  if ( projection == "pconic"_L1 )
     return QObject::tr( "Perspective Conic" );
-  if ( projection == QLatin1String( "peirce_q" ) )
+  if ( projection == "peirce_q"_L1 )
     return QObject::tr( "Peirce Quincuncial" );
-  if ( projection == QLatin1String( "poly" ) )
+  if ( projection == "poly"_L1 )
     return QObject::tr( "Polyconic (American)" );
-  if ( projection == QLatin1String( "putp1" ) )
+  if ( projection == "putp1"_L1 )
     return QObject::tr( "Putnins P1" );
-  if ( projection == QLatin1String( "putp2" ) )
+  if ( projection == "putp2"_L1 )
     return QObject::tr( "Putnins P2" );
-  if ( projection == QLatin1String( "putp3" ) )
+  if ( projection == "putp3"_L1 )
     return QObject::tr( "Putnins P3" );
-  if ( projection == QLatin1String( "putp3p" ) )
+  if ( projection == "putp3p"_L1 )
     return QObject::tr( "Putnins P3'" );
-  if ( projection == QLatin1String( "putp4p" ) )
+  if ( projection == "putp4p"_L1 )
     return QObject::tr( "Putnins P4'" );
-  if ( projection == QLatin1String( "putp5" ) )
+  if ( projection == "putp5"_L1 )
     return QObject::tr( "Putnins P5" );
-  if ( projection == QLatin1String( "putp5p" ) )
+  if ( projection == "putp5p"_L1 )
     return QObject::tr( "Putnins P5'" );
-  if ( projection == QLatin1String( "putp6" ) )
+  if ( projection == "putp6"_L1 )
     return QObject::tr( "Putnins P6" );
-  if ( projection == QLatin1String( "putp6p" ) )
+  if ( projection == "putp6p"_L1 )
     return QObject::tr( "Putnins P6'" );
-  if ( projection == QLatin1String( "qua_aut" ) )
+  if ( projection == "qua_aut"_L1 )
     return QObject::tr( "Quartic Authalic" );
-  if ( projection == QLatin1String( "robin" ) )
+  if ( projection == "robin"_L1 )
     return QObject::tr( "Robinson" );
-  if ( projection == QLatin1String( "rouss" ) )
+  if ( projection == "rouss"_L1 )
     return QObject::tr( "Roussilhe Stereographic" );
-  if ( projection == QLatin1String( "rpoly" ) )
+  if ( projection == "rpoly"_L1 )
     return QObject::tr( "Rectangular Polyconic" );
-  if ( projection == QLatin1String( "sinu" ) )
+  if ( projection == "sinu"_L1 )
     return QObject::tr( "Sinusoidal (Sanson-Flamsteed)" );
-  if ( projection == QLatin1String( "spilhaus" ) )
+  if ( projection == "spilhaus"_L1 )
     return QObject::tr( "Spilhaus" );
-  if ( projection == QLatin1String( "somerc" ) )
+  if ( projection == "somerc"_L1 )
     return QObject::tr( "Swiss Oblique Mercator" );
-  if ( projection == QLatin1String( "stere" ) )
+  if ( projection == "stere"_L1 )
     return QObject::tr( "Stereographic" );
-  if ( projection == QLatin1String( "sterea" ) )
+  if ( projection == "sterea"_L1 )
     return QObject::tr( "Oblique Stereographic Alternative" );
-  if ( projection == QLatin1String( "tcc" ) )
+  if ( projection == "tcc"_L1 )
     return QObject::tr( "Transverse Central Cylindrical" );
-  if ( projection == QLatin1String( "tcea" ) )
+  if ( projection == "tcea"_L1 )
     return QObject::tr( "Transverse Cylindrical Equal Area" );
-  if ( projection == QLatin1String( "times" ) )
+  if ( projection == "times"_L1 )
     return QObject::tr( "Times" );
-  if ( projection == QLatin1String( "tissot" ) )
+  if ( projection == "tissot"_L1 )
     return QObject::tr( "Tissot" );
-  if ( projection == QLatin1String( "tmerc" ) )
+  if ( projection == "tmerc"_L1 )
     return QObject::tr( "Transverse Mercator" );
-  if ( projection == QLatin1String( "tpeqd" ) )
+  if ( projection == "tpeqd"_L1 )
     return QObject::tr( "Two Point Equidistant" );
-  if ( projection == QLatin1String( "tpers" ) )
+  if ( projection == "tpers"_L1 )
     return QObject::tr( "Tilted Perspective" );
-  if ( projection == QLatin1String( "ups" ) )
+  if ( projection == "ups"_L1 )
     return QObject::tr( "Universal Polar Stereographic" );
-  if ( projection == QLatin1String( "urm5" ) )
+  if ( projection == "urm5"_L1 )
     return QObject::tr( "Urmaev V" );
-  if ( projection == QLatin1String( "urmfps" ) )
+  if ( projection == "urmfps"_L1 )
     return QObject::tr( "Urmaev Flat-Polar Sinusoidal" );
-  if ( projection == QLatin1String( "utm" ) )
+  if ( projection == "utm"_L1 )
     return QObject::tr( "Universal Transverse Mercator (UTM)" );
-  if ( projection == QLatin1String( "vandg" ) )
+  if ( projection == "vandg"_L1 )
     return QObject::tr( "van der Grinten (I)" );
-  if ( projection == QLatin1String( "vandg2" ) )
+  if ( projection == "vandg2"_L1 )
     return QObject::tr( "van der Grinten II" );
-  if ( projection == QLatin1String( "vandg3" ) )
+  if ( projection == "vandg3"_L1 )
     return QObject::tr( "van der Grinten III" );
-  if ( projection == QLatin1String( "vandg4" ) )
+  if ( projection == "vandg4"_L1 )
     return QObject::tr( "van der Grinten IV" );
-  if ( projection == QLatin1String( "vitk1" ) )
+  if ( projection == "vitk1"_L1 )
     return QObject::tr( "Vitkovsky I" );
-  if ( projection == QLatin1String( "wag1" ) )
+  if ( projection == "wag1"_L1 )
     return QObject::tr( "Wagner I (Kavraisky VI)" );
-  if ( projection == QLatin1String( "wag2" ) )
+  if ( projection == "wag2"_L1 )
     return QObject::tr( "Wagner II" );
-  if ( projection == QLatin1String( "wag3" ) )
+  if ( projection == "wag3"_L1 )
     return QObject::tr( "Wagner III" );
-  if ( projection == QLatin1String( "wag4" ) )
+  if ( projection == "wag4"_L1 )
     return QObject::tr( "Wagner IV" );
-  if ( projection == QLatin1String( "wag5" ) )
+  if ( projection == "wag5"_L1 )
     return QObject::tr( "Wagner V" );
-  if ( projection == QLatin1String( "wag6" ) )
+  if ( projection == "wag6"_L1 )
     return QObject::tr( "Wagner VI" );
-  if ( projection == QLatin1String( "wag7" ) )
+  if ( projection == "wag7"_L1 )
     return QObject::tr( "Wagner VII" );
-  if ( projection == QLatin1String( "weren" ) )
+  if ( projection == "weren"_L1 )
     return QObject::tr( "Werenskiold I" );
-  if ( projection == QLatin1String( "wink1" ) )
+  if ( projection == "wink1"_L1 )
     return QObject::tr( "Winkel I" );
-  if ( projection == QLatin1String( "wink2" ) )
+  if ( projection == "wink2"_L1 )
     return QObject::tr( "Winkel II" );
-  if ( projection == QLatin1String( "wintri" ) )
+  if ( projection == "wintri"_L1 )
     return QObject::tr( "Winkel Tripel" );
-  if ( projection == QLatin1String( "gstmerc" ) )
+  if ( projection == "gstmerc"_L1 )
     return QObject::tr( "Gauss-Schreiber" );
   return QString();
 }

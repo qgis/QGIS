@@ -38,7 +38,7 @@ class TestQgsProcessingSfcgalAlgs : public QgsTest
 
   public:
     TestQgsProcessingSfcgalAlgs()
-      : QgsTest( QStringLiteral( "Processing SFCGAL Algorithms Test" ) )
+      : QgsTest( u"Processing SFCGAL Algorithms Test"_s )
     {}
 
   private slots:
@@ -60,9 +60,9 @@ void TestQgsProcessingSfcgalAlgs::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 
@@ -70,7 +70,7 @@ void TestQgsProcessingSfcgalAlgs::initTestCase()
 
   const QString polysFileName = dataDir + "/polys.shp";
   const QFileInfo polyFileInfo( polysFileName );
-  mPolygonLayer = new QgsVectorLayer( polyFileInfo.filePath(), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  mPolygonLayer = new QgsVectorLayer( polyFileInfo.filePath(), u"polygons"_s, u"ogr"_s );
   QVERIFY( mPolygonLayer->isValid() );
 
   // Register the layer with the registry
@@ -116,22 +116,22 @@ QgsGeometry TestQgsProcessingSfcgalAlgs::openWktFile( const QString &wktFile )
 
 void TestQgsProcessingSfcgalAlgs::medialAxis()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:approximatemedialaxis" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:approximatemedialaxis"_s ) );
   QVERIFY( alg != nullptr );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mPolygonLayer ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( mPolygonLayer ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   QgsProcessingFeedback feedback;
   QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *outputLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( outputLayer );
   QVERIFY( outputLayer->isValid() );
   QCOMPARE( outputLayer->featureCount(), 10 );

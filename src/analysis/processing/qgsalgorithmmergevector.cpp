@@ -24,7 +24,7 @@
 
 QString QgsMergeVectorAlgorithm::name() const
 {
-  return QStringLiteral( "mergevectorlayers" );
+  return u"mergevectorlayers"_s;
 }
 
 QString QgsMergeVectorAlgorithm::displayName() const
@@ -44,17 +44,17 @@ QString QgsMergeVectorAlgorithm::group() const
 
 QString QgsMergeVectorAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 void QgsMergeVectorAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Destination CRS" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Merged" ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Destination CRS" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Merged" ) ) );
 
   // new boolean parameter to add source layer information
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ADD_SOURCE_FIELDS" ), QObject::tr( "Add source layer information (layer name and path)" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"ADD_SOURCE_FIELDS"_s, QObject::tr( "Add source layer information (layer name and path)" ), true ) );
 }
 
 QString QgsMergeVectorAlgorithm::shortDescription() const
@@ -86,14 +86,14 @@ QgsMergeVectorAlgorithm *QgsMergeVectorAlgorithm::createInstance() const
 
 QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
 
-  const bool addSourceFields = parameterAsBool( parameters, QStringLiteral( "ADD_SOURCE_FIELDS" ), context );
+  const bool addSourceFields = parameterAsBool( parameters, u"ADD_SOURCE_FIELDS"_s, context );
 
   QgsFields outputFields;
   long totalFeatureCount = 0;
   Qgis::WkbType outputType = Qgis::WkbType::Unknown;
-  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, u"CRS"_s, context );
 
   if ( outputCrs.isValid() )
     feedback->pushInfo( QObject::tr( "Using specified destination CRS %1" ).arg( outputCrs.authid() ) );
@@ -208,23 +208,23 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   bool addPathField = false;
   if ( addSourceFields ) // add source layer information
   {
-    if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
+    if ( outputFields.lookupField( u"layer"_s ) < 0 )
     {
-      outputFields.append( QgsField( QStringLiteral( "layer" ), QMetaType::Type::QString, QString() ) );
+      outputFields.append( QgsField( u"layer"_s, QMetaType::Type::QString, QString() ) );
       addLayerField = true;
     }
 
-    if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
+    if ( outputFields.lookupField( u"path"_s ) < 0 )
     {
-      outputFields.append( QgsField( QStringLiteral( "path" ), QMetaType::Type::QString, QString() ) );
+      outputFields.append( QgsField( u"path"_s, QMetaType::Type::QString, QString() ) );
       addPathField = true;
     }
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const bool hasZ = QgsWkbTypes::hasZ( outputType );
   const bool hasM = QgsWkbTypes::hasM( outputType );
@@ -283,12 +283,12 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       QgsAttributes destAttributes;
       for ( const QgsField &destField : outputFields )
       {
-        if ( addLayerField && destField.name() == QLatin1String( "layer" ) )
+        if ( addLayerField && destField.name() == "layer"_L1 )
         {
           destAttributes.append( layerName );
           continue;
         }
-        else if ( addPathField && destField.name() == QLatin1String( "path" ) )
+        else if ( addPathField && destField.name() == "path"_L1 )
         {
           destAttributes.append( layerSource );
           continue;
@@ -305,7 +305,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       f.setAttributes( destAttributes );
 
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       i += 1;
       feedback->setProgress( i * step );
     }
@@ -317,7 +317,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 

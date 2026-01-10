@@ -106,11 +106,11 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
         }
         else
         {
-          msg += QStringLiteral( "<p> <h3> %1 </h3> " ).arg( tr( "Scalar dataset" ) );
+          msg += u"<p> <h3> %1 </h3> "_s.arg( tr( "Scalar dataset" ) );
           msg += metadata( mActiveScalarDatasetGroup );
-          msg += QStringLiteral( "</p> <p> <h3> %1 </h3>" ).arg( tr( "Vector dataset" ) );
+          msg += u"</p> <p> <h3> %1 </h3>"_s.arg( tr( "Vector dataset" ) );
           msg += metadata( mActiveVectorDatasetGroup );
-          msg += QLatin1String( "</p>" );
+          msg += "</p>"_L1;
         }
       }
       else
@@ -138,7 +138,7 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
 {
   QString msg;
-  msg += QLatin1String( "<table>" );
+  msg += "<table>"_L1;
 
   QString definedOnMesh;
   if ( mMeshLayer->contains( QgsMesh::ElementType::Face ) )
@@ -160,7 +160,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   {
     definedOnMesh = tr( "invalid mesh" );
   }
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
            .arg( tr( "Mesh type" ) )
            .arg( definedOnMesh );
 
@@ -181,26 +181,26 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       definedOn = tr( "edges" );
       break;
   }
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
            .arg( tr( "Data type" ) )
            .arg( definedOn );
 
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
            .arg( tr( "Is vector" ) )
            .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
-    if ( it.key() == QLatin1String( "classification" ) )
+    if ( it.key() == "classification"_L1 )
     {
-      msg += QStringLiteral( "<tr><td>%1</td></tr>" ).arg( tr( "Classified values" ) );
+      msg += u"<tr><td>%1</td></tr>"_s.arg( tr( "Classified values" ) );
       continue;
     }
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
+    msg += u"<tr><td>%1</td><td>%2</td></tr>"_s.arg( it.key() ).arg( it.value() );
   }
 
-  msg += QLatin1String( "</table>" );
+  msg += "</table>"_L1;
 
   return msg;
 }

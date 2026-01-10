@@ -67,18 +67,6 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setHtml( mHtmlCode.replace( "\n", " " ) );
 
-#ifdef WITH_QTWEBKIT
-
-  const int horizontalDpi = mWidget->logicalDpiX();
-
-  mWidget->setZoomFactor( horizontalDpi / 96.0 );
-
-  QWebPage *page = mWidget->page();
-  connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-  connect( page, &QWebPage::loadFinished, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-
-#endif
-
   checkGeometryNeeds();
 }
 
@@ -109,7 +97,7 @@ void QgsHtmlWidgetWrapper::checkGeometryNeeds()
 
   auto frame = webView.page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, &evaluator] {
-    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), &evaluator );
+    frame->addToJavaScriptWindowObject( u"expression"_s, &evaluator );
   } );
 
   webView.setHtml( mHtmlCode );
@@ -154,20 +142,11 @@ void QgsHtmlWidgetWrapper::setHtmlContext()
   htmlExpression->setExpressionContext( expressionContext );
   auto frame = mWidget->page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] {
-    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), htmlExpression );
+    frame->addToJavaScriptWindowObject( u"expression"_s, htmlExpression );
   } );
 
   mWidget->setHtml( mHtmlCode );
 }
-
-#ifdef WITH_QTWEBKIT
-void QgsHtmlWidgetWrapper::fixHeight()
-{
-  QWebPage *page = mWidget->page();
-  const int docHeight { page->mainFrame()->contentsSize().height() };
-  mWidget->setFixedHeight( docHeight );
-}
-#endif
 
 void QgsHtmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {

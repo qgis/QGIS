@@ -28,22 +28,22 @@ class DummyColorScheme : public QgsColorScheme
   public:
     DummyColorScheme() = default;
 
-    QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    QString schemeName() const override { return u"Dummy scheme"_s; }
 
     QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override
     {
       QList<QPair<QColor, QString>> colors;
-      if ( context == QLatin1String( "testscheme" ) )
+      if ( context == "testscheme"_L1 )
       {
-        colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
+        colors << qMakePair( QColor( 255, 255, 0 ), u"schemetest"_s );
       }
       else if ( baseColor.isValid() )
       {
-        colors << qMakePair( baseColor, QStringLiteral( "base" ) );
+        colors << qMakePair( baseColor, u"base"_s );
       }
       else
       {
-        colors << qMakePair( QColor( 255, 0, 0 ), QStringLiteral( "red" ) ) << qMakePair( QColor( 0, 255, 0 ), QString() );
+        colors << qMakePair( QColor( 255, 0, 0 ), u"red"_s ) << qMakePair( QColor( 0, 255, 0 ), QString() );
       }
       return colors;
     }
@@ -127,7 +127,7 @@ void TestQgsColorScheme::colorsWithBase()
 void TestQgsColorScheme::colorsWithScheme()
 {
   const std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
-  const QgsNamedColorList colors = dummyScheme->fetchColors( QStringLiteral( "testscheme" ) );
+  const QgsNamedColorList colors = dummyScheme->fetchColors( u"testscheme"_s );
   QCOMPARE( colors.length(), 1 );
   QCOMPARE( colors.at( 0 ).first, QColor( 255, 255, 0 ) );
   QCOMPARE( colors.at( 0 ).second, QString( "schemetest" ) );

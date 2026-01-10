@@ -836,7 +836,7 @@ bool QgsGeometry::addTopologicalPoint( const QgsPoint &point, double snappingTol
 
   if ( !insertVertex( point, segmentAfterVertex ) )
   {
-    QgsDebugError( QStringLiteral( "failed to insert topo point" ) );
+    QgsDebugError( u"failed to insert topo point"_s );
     return false;
   }
 
@@ -2301,6 +2301,16 @@ double QgsGeometry::area() const
   }
 
   return d->geometry->area();
+}
+
+double QgsGeometry::area3D() const
+{
+  if ( !d->geometry )
+  {
+    throw QgsInvalidArgumentException( "Cannot compute 3D area: geometry is null." );
+  }
+
+  return d->geometry->area3D();
 }
 
 double QgsGeometry::length() const
@@ -4577,10 +4587,10 @@ bool QgsGeometry::Error::hasWhere() const
 
 QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1 starts: %2" ).arg( qgsEnumValueToKey( op ) ).arg( asWkt( 2 ) ), 3 );
+  QgsDebugMsgLevel( u"%1 starts: %2"_s.arg( qgsEnumValueToKey( op ) ).arg( asWkt( 2 ) ), 3 );
   if ( isNull() )
   {
-    mLastError = QStringLiteral( "Operation '%1' needs non-null geometry." ).arg( qgsEnumValueToKey( op ) );
+    mLastError = u"Operation '%1' needs non-null geometry."_s.arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 
@@ -4591,7 +4601,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   QgsVertexId vertexId;
   if ( !vertexIdFromVertexNr( vertexIndex, vertexId ) )
   {
-    mLastError = QStringLiteral( "Invalid vertex index" );
+    mLastError = u"Invalid vertex index"_s;
     return QgsGeometry();
   }
   int resolvedVertexIndex = vertexId.vertex;
@@ -4629,7 +4639,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     }
     if ( !poly )
     {
-      mLastError = QStringLiteral( "Could not get polygon geometry." );
+      mLastError = u"Could not get polygon geometry."_s;
       return QgsGeometry();
     }
 
@@ -4645,7 +4655,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 
   if ( !curve )
   {
-    mLastError = QStringLiteral( "Operation '%1' needs curve geometry." ).arg( qgsEnumValueToKey( op ) );
+    mLastError = u"Operation '%1' needs curve geometry."_s.arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 
@@ -4659,7 +4669,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   }
   catch ( QgsInvalidArgumentException &e )
   {
-    mLastError = QStringLiteral( "%1 Requested vertex: %2 was resolved as: [part: %3, ring: %4, vertex: %5]" ) //
+    mLastError = u"%1 Requested vertex: %2 was resolved as: [part: %3, ring: %4, vertex: %5]"_s //
                  .arg( e.what() )
                  .arg( vertexIndex )
                  .arg( modifiedPart )
@@ -4670,7 +4680,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 
   if ( !result )
   {
-    mLastError = QStringLiteral( "Operation '%1' generates a null geometry." ).arg( qgsEnumValueToKey( op ) );
+    mLastError = u"Operation '%1' generates a null geometry."_s.arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 
@@ -4765,7 +4775,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 
   QgsGeometry finalResult( std::move( finalGeom ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "Final result Wkt: %1" ).arg( finalResult.asWkt( 2 ) ), 3 );
+  QgsDebugMsgLevel( u"Final result Wkt: %1"_s.arg( finalResult.asWkt( 2 ) ), 3 );
 
   return finalResult;
 }

@@ -295,19 +295,19 @@ void TestQgsGdalUtils::testVrtMatchesLayerType()
 void TestQgsGdalUtils::testMultilayerExtensions()
 {
   const QStringList extensions = QgsGdalUtils::multiLayerFileExtensions();
-  QVERIFY( extensions.contains( QStringLiteral( "gpkg" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "sqlite" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "db" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "kml" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "ods" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "osm" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "mdb" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "xls" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "xlsx" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "gpx" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "pdf" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "nc" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "gdb" ) ) );
+  QVERIFY( extensions.contains( u"gpkg"_s ) );
+  QVERIFY( extensions.contains( u"sqlite"_s ) );
+  QVERIFY( extensions.contains( u"db"_s ) );
+  QVERIFY( extensions.contains( u"kml"_s ) );
+  QVERIFY( extensions.contains( u"ods"_s ) );
+  QVERIFY( extensions.contains( u"osm"_s ) );
+  QVERIFY( extensions.contains( u"mdb"_s ) );
+  QVERIFY( extensions.contains( u"xls"_s ) );
+  QVERIFY( extensions.contains( u"xlsx"_s ) );
+  QVERIFY( extensions.contains( u"gpx"_s ) );
+  QVERIFY( extensions.contains( u"pdf"_s ) );
+  QVERIFY( extensions.contains( u"nc"_s ) );
+  QVERIFY( extensions.contains( u"gdb"_s ) );
 }
 
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )

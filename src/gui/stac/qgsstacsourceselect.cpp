@@ -135,7 +135,7 @@ void QgsStacSourceSelect::onItemsViewScroll( int value )
 {
   if ( !mNextPageUrl.isEmpty() && value == mItemsView->verticalScrollBar()->maximum() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Scrolled to end, fetching next page" ), 3 );
+    QgsDebugMsgLevel( u"Scrolled to end, fetching next page"_s, 3 );
     fetchNextResultPage();
   }
 }
@@ -281,7 +281,7 @@ void QgsStacSourceSelect::cmbConnections_currentTextChanged( const QString &text
 
 void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString error )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Finished object request %1" ).arg( requestId ), 2 );
+  QgsDebugMsgLevel( u"Finished object request %1"_s.arg( requestId ), 2 );
   std::unique_ptr<QgsStacCatalog> cat( mStac->takeStacObject< QgsStacCatalog >( requestId ) );
 
   if ( !cat )
@@ -290,9 +290,9 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     return;
   }
 
-  const bool supportsCollections = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/collections" ) );
-  const bool supportsSearch = cat->conformsTo( QStringLiteral( "https://api.stacspec.org/v1.0.0/item-search" ) );
-  QgsDebugMsgLevel( QStringLiteral( "STAC catalog supports API: %1" ).arg( supportsCollections && supportsSearch ), 2 );
+  const bool supportsCollections = cat->conformsTo( u"https://api.stacspec.org/v1.0.0/collections"_s );
+  const bool supportsSearch = cat->conformsTo( u"https://api.stacspec.org/v1.0.0/item-search"_s );
+  QgsDebugMsgLevel( u"STAC catalog supports API: %1"_s.arg( supportsCollections && supportsSearch ), 2 );
   QString collectionsUrl;
 
   if ( supportsCollections && supportsSearch )
@@ -301,15 +301,15 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     {
       // collections endpoint should have a "data" relation according to spec but some servers don't
       // so let's be less strict and only check the href and optionally the media type
-      if ( QUrl( l.href() ).path().endsWith( "/collections" ) &&     // allow query parameters in the url
-           ( l.mediaType().isEmpty() ||                              // media type is optional
-             l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
-             l.mediaType() == QLatin1String( "application/geo+json" ) ) )
+      if ( QUrl( l.href() ).path().endsWith( "/collections" ) && // allow query parameters in the url
+           ( l.mediaType().isEmpty() ||                          // media type is optional
+             l.mediaType() == "application/json"_L1 ||           // but if it's there it should be json or geojson
+             l.mediaType() == "application/geo+json"_L1 ) )
         collectionsUrl = l.href();
-      else if ( l.relation() == "search" &&                               // relation needs to be "search" according to spec
-                ( l.mediaType().isEmpty() ||                              // media type is optional
-                  l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
-                  l.mediaType() == QLatin1String( "application/geo+json" ) ) )
+      else if ( l.relation() == "search" &&                 // relation needs to be "search" according to spec
+                ( l.mediaType().isEmpty() ||                // media type is optional
+                  l.mediaType() == "application/json"_L1 || // but if it's there it should be json or geojson
+                  l.mediaType() == "application/geo+json"_L1 ) )
         mSearchUrl = l.href();
 
       if ( !collectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
@@ -331,7 +331,7 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
 
 void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString error )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Finished collections request %1" ).arg( requestId ), 2 );
+  QgsDebugMsgLevel( u"Finished collections request %1"_s.arg( requestId ), 2 );
   std::unique_ptr<QgsStacCollectionList> cols( mStac->takeCollections( requestId ) );
 
   if ( !cols )
@@ -363,7 +363,7 @@ void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString e
 
 void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QString error )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Finished item collection request %1" ).arg( requestId ), 2 );
+  QgsDebugMsgLevel( u"Finished item collection request %1"_s.arg( requestId ), 2 );
   std::unique_ptr<QgsStacItemCollection> col( mStac->takeItemCollection( requestId ) );
 
   if ( !col )
@@ -421,7 +421,7 @@ void QgsStacSourceSelect::search()
   {
     const QSet<QString> collectionsSet = mParametersDialog->selectedCollections();
     collections = QStringList( collectionsSet.constBegin(), collectionsSet.constEnd() );
-    const QList<QPair<QString, QString>> collectionsParameters = { qMakePair( QStringLiteral( "collections" ), collections.join( "," ) ) };
+    const QList<QPair<QString, QString>> collectionsParameters = { qMakePair( u"collections"_s, collections.join( "," ) ) };
     q.setQueryItems( collectionsParameters );
   }
 
@@ -431,11 +431,11 @@ void QgsStacSourceSelect::search()
     const QgsRectangle bbox = geom.boundingBox();
     if ( bbox == QgsGeometry::fromRect( bbox ).boundingBox() )
     {
-      q.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bbox.xMinimum() ).arg( bbox.yMinimum() ).arg( bbox.xMaximum() ).arg( bbox.yMaximum() ) );
+      q.addQueryItem( u"bbox"_s, u"%1,%2,%3,%4"_s.arg( bbox.xMinimum() ).arg( bbox.yMinimum() ).arg( bbox.xMaximum() ).arg( bbox.yMaximum() ) );
     }
     else
     {
-      q.addQueryItem( QStringLiteral( "intersects" ), geom.asJson() );
+      q.addQueryItem( u"intersects"_s, geom.asJson() );
     }
   }
 
@@ -452,12 +452,12 @@ void QgsStacSourceSelect::search()
     }
     else
     {
-      dateString = QStringLiteral( "%1/%2" ).arg(
-        fromDate.isNull() ? QStringLiteral( ".." ) : fromDate.toString( Qt::ISODateWithMs ),
-        toDate.isNull() ? QStringLiteral( ".." ) : toDate.toString( Qt::ISODateWithMs )
+      dateString = u"%1/%2"_s.arg(
+        fromDate.isNull() ? u".."_s : fromDate.toString( Qt::ISODateWithMs ),
+        toDate.isNull() ? u".."_s : toDate.toString( Qt::ISODateWithMs )
       );
     }
-    q.addQueryItem( QStringLiteral( "datetime" ), dateString );
+    q.addQueryItem( u"datetime"_s, dateString );
   }
 
   QUrl searchUrl( mSearchUrl );
@@ -483,7 +483,7 @@ void QgsStacSourceSelect::onSearchParametersDialogClosed( int result )
 
 void QgsStacSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
 }
 
 void QgsStacSourceSelect::updateFilterPreview()
@@ -628,24 +628,24 @@ void QgsStacSourceSelect::loadUri( const QgsMimeDataUtils::Uri &uri )
   const QString authcfg = mStac->authCfg();
   if ( !authcfg.isEmpty() )
   {
-    layerUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+    layerUri += u" authcfg='%1'"_s.arg( authcfg );
   }
 
-  if ( uri.layerType == QLatin1String( "raster" ) )
+  if ( uri.layerType == "raster"_L1 )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit addRasterLayer( layerUri, uri.name, uri.providerKey );
     Q_NOWARN_DEPRECATED_POP
     emit addLayer( Qgis::LayerType::Raster, layerUri, uri.name, uri.providerKey );
   }
-  else if ( uri.layerType == QLatin1String( "pointcloud" ) )
+  else if ( uri.layerType == "pointcloud"_L1 )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit addPointCloudLayer( layerUri, uri.name, uri.providerKey );
     Q_NOWARN_DEPRECATED_POP
     emit addLayer( Qgis::LayerType::PointCloud, layerUri, uri.name, uri.providerKey );
   }
-  else if ( uri.layerType == QLatin1String( "vector" ) )
+  else if ( uri.layerType == "vector"_L1 )
   {
     Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( layerUri, uri.name, uri.providerKey );

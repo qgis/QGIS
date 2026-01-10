@@ -40,16 +40,16 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( QgsAbstractSensor *item = qobject_cast< QgsAbstractSensor * >( sipCpp ) )
     {
-      if ( item->type() == QLatin1String( "tcp_socket" ) && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
+      if ( item->type() == "tcp_socket"_L1 && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsTcpSocketSensor;
       }
-      else if ( item->type() == QLatin1String( "udp_socket" ) && dynamic_cast<QgsUdpSocketSensor *>( item ) != NULL )
+      else if ( item->type() == "udp_socket"_L1 && dynamic_cast<QgsUdpSocketSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsUdpSocketSensor;
       }
 #if defined( HAVE_QTSERIALPORT )
-      else if ( item->type() == QLatin1String( "serial_port" ) && dynamic_cast<QgsSerialPortSensor *>( item ) != NULL )
+      else if ( item->type() == "serial_port"_L1 && dynamic_cast<QgsSerialPortSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsSerialPortSensor;
       }

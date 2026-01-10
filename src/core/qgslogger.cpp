@@ -73,21 +73,21 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
   {
     if ( qApp && qApp->thread() != QThread::currentThread() )
     {
-      m.prepend( QStringLiteral( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
+      m.prepend( u"[thread:0x%1] "_s.arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
     }
 
-    m.prepend( QStringLiteral( "[%1ms] " ).arg( sTime()->elapsed() ) );
+    m.prepend( u"[%1ms] "_s.arg( sTime()->elapsed() ) );
     sTime()->restart();
 
     if ( function )
     {
-      m.prepend( QStringLiteral( " (%1) " ).arg( function ) );
+      m.prepend( u" (%1) "_s.arg( function ) );
     }
 
     if ( line != -1 )
     {
 #ifndef _MSC_VER
-      m.prepend( QStringLiteral( ":%1 :" ).arg( line ) );
+      m.prepend( u":%1 :"_s.arg( line ) );
 #else
       m.prepend( QString( "(%1) :" ).arg( line ) );
 #endif
@@ -120,12 +120,12 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
 
 void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line )
 {
-  debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
+  debug( u"%1: %2"_s.arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
 void QgsLogger::debug( const QString &var, double val, int debuglevel, const char *file, const char *function, int line )
 {
-  debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
+  debug( u"%1: %2"_s.arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
 void QgsLogger::warning( const QString &msg )

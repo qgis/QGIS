@@ -40,7 +40,7 @@ void QgsWFSFeatureHitsAsyncRequest::launchGet( const QUrl &url )
 
 void QgsWFSFeatureHitsAsyncRequest::launchPost( const QUrl &url, const QByteArray &data )
 {
-  sendPOST( url, QStringLiteral( "application/xml; charset=utf-8" ), data, false, /* synchronous */
+  sendPOST( url, u"application/xml; charset=utf-8"_s, data, false, /* synchronous */
             { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
 }
 

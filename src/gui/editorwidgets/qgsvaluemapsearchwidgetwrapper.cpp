@@ -159,8 +159,8 @@ void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 
-  str = QStringLiteral( "%1 = '%2'" )
-          .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+  str = u"%1 = '%2'"_s
+          .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
 
   mExpression = str;
 }

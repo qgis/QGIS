@@ -19,6 +19,8 @@
 #include "qgsannotationlayer.h"
 #include "qgsfileutils.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsiconutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
 #include "qgsmimedatautils.h"
@@ -60,6 +62,10 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   mSelectionList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSelectionList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mSelectionList->setDragDropMode( QAbstractItemView::InternalMove );
+  mSelectionList->setIconSize( QSize( QgsGuiUtils::scaleIconSize( 16 ), QgsGuiUtils::scaleIconSize( 16 ) ) );
+
+  mModel = new QStandardItemModel( this );
+  mSelectionList->setModel( mModel );
 
   mButtonSelectAll = new QPushButton( tr( "Select All" ) );
   mButtonBox->addButton( mButtonSelectAll, QDialogButtonBox::ActionRole );
@@ -179,8 +185,6 @@ QList<QStandardItem *> QgsProcessingMultipleSelectionPanelWidget::currentItems()
 
 void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions )
 {
-  mModel = new QStandardItemModel( this );
-
   QVariantList remainingOptions = availableOptions;
 
   // we add selected options first, keeping the existing order of options
@@ -198,8 +202,6 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
   {
     addOption( option, mValueFormatter( option ), false );
   }
-
-  mSelectionList->setModel( mModel );
 }
 
 QList<int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeData( const QMimeData *data ) const
@@ -260,7 +262,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   }
 }
 
-void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle )
+void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon icon )
 {
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
@@ -278,6 +280,8 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );
   item->setDropEnabled( false );
+  if ( !icon.isNull() )
+    item->setData( icon, Qt::DecorationRole );
   mModel->appendRow( item.release() );
 }
 
@@ -326,6 +330,8 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
   connect( addDirButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addDirectory );
   buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
   setAcceptDrops( true );
+
+  // Populate "layers" from model sources
   for ( const QgsProcessingModelChildParameterSource &source : modelSources )
   {
     addOption( QVariant::fromValue( source ), source.friendlyIdentifier( model ), false, true );
@@ -341,7 +347,7 @@ void QgsProcessingMultipleInputPanelWidget::setProject( QgsProject *project )
 void QgsProcessingMultipleInputPanelWidget::addFiles()
 {
   QgsSettings settings;
-  QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
+  QString path = settings.value( u"/Processing/LastInputPath"_s, QDir::homePath() ).toString();
 
   QString filter;
   if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter ) )
@@ -353,7 +359,7 @@ void QgsProcessingMultipleInputPanelWidget::addFiles()
   if ( filenames.empty() )
     return;
 
-  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( filenames.at( 0 ) ).path() );
+  settings.setValue( u"/Processing/LastInputPath"_s, QFileInfo( filenames.at( 0 ) ).path() );
 
   for ( const QString &file : filenames )
   {
@@ -366,13 +372,13 @@ void QgsProcessingMultipleInputPanelWidget::addFiles()
 void QgsProcessingMultipleInputPanelWidget::addDirectory()
 {
   QgsSettings settings;
-  const QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
+  const QString path = settings.value( u"/Processing/LastInputPath"_s, QDir::homePath() ).toString();
 
   const QString dir = QFileDialog::getExistingDirectory( this, tr( "Select Directory" ), path );
   if ( dir.isEmpty() )
     return;
 
-  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), dir );
+  settings.setValue( u"/Processing/LastInputPath"_s, dir );
 
   QStringList nameFilters;
   if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter ) )
@@ -380,9 +386,9 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
     const QStringList extensions = QgsFileUtils::extensionsFromFilter( generator->createFileFilter() );
     for ( const QString &extension : extensions )
     {
-      nameFilters << QStringLiteral( "*.%1" ).arg( extension );
-      nameFilters << QStringLiteral( "*.%1" ).arg( extension.toUpper() );
-      nameFilters << QStringLiteral( "*.%1" ).arg( extension.toLower() );
+      nameFilters << u"*.%1"_s.arg( extension );
+      nameFilters << u"*.%1"_s.arg( extension.toUpper() );
+      nameFilters << u"*.%1"_s.arg( extension.toLower() );
     }
   }
 
@@ -390,15 +396,15 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
   while ( it.hasNext() )
   {
     const QString fullPath = it.next();
-    if ( fullPath.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
+    if ( fullPath.endsWith( ".dbf"_L1, Qt::CaseInsensitive ) )
     {
-      if ( QFileInfo::exists( QStringLiteral( "%1.shp" ).arg( fullPath.chopped( 4 ) ) ) || QFileInfo::exists( QStringLiteral( "%1.SHP" ).arg( fullPath.chopped( 4 ) ) ) )
+      if ( QFileInfo::exists( u"%1.shp"_s.arg( fullPath.chopped( 4 ) ) ) || QFileInfo::exists( u"%1.SHP"_s.arg( fullPath.chopped( 4 ) ) ) )
       {
         // Skip DBFs that are sidecar files to a Shapefile
         continue;
       }
     }
-    else if ( fullPath.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) || fullPath.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) )
+    else if ( fullPath.endsWith( ".aux.xml"_L1, Qt::CaseInsensitive ) || fullPath.endsWith( ".shp.xml"_L1, Qt::CaseInsensitive ) )
     {
       // Skip XMLs that are sidecar files  to datasets
       continue;
@@ -495,13 +501,13 @@ QStringList QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( c
           break;
       }
       if ( acceptable )
-        res.append( u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri );
+        res.append( u.providerKey != "ogr"_L1 ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri );
     }
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Raster )
-              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster ) && u.providerKey == QLatin1String( "gdal" ) )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Raster ) && u.providerKey == "gdal"_L1 )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::Mesh )
-              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) && u.providerKey == QLatin1String( "mdal" ) )
+              && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::Mesh ) && u.providerKey == "mdal"_L1 )
       res.append( u.uri );
     else if ( ( parameter->layerType() == Qgis::ProcessingSourceType::MapLayer || parameter->layerType() == Qgis::ProcessingSourceType::PointCloud )
               && u.layerType == QgsMapLayerFactory::typeToString( Qgis::LayerType::PointCloud ) )
@@ -625,32 +631,35 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
   auto addLayer = [&]( const QgsMapLayer *layer ) {
     const QString authid = layer->crs().authid();
     QString title;
-    if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_CRS_DEF" ), true ).toBool() && !authid.isEmpty() )
-      title = QStringLiteral( "%1 [%2]" ).arg( layer->name(), authid );
+    if ( settings.value( u"Processing/Configuration/SHOW_CRS_DEF"_s, true ).toBool() && !authid.isEmpty() )
+      title = u"%1 [%2]"_s.arg( layer->name(), authid );
     else
       title = layer->name();
 
+    QIcon icon = QgsIconUtils::iconForLayer( layer );
 
     QString id = layer->id();
     if ( layer == project->mainAnnotationLayer() )
-      id = QStringLiteral( "main" );
+      id = u"main"_s;
 
     for ( int i = 0; i < mModel->rowCount(); ++i )
     {
-      // try to match project layers to current layers
+      // try to match project layers to current layers, also assign its icon if found
       if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
       {
         id = layer->id();
+        mModel->item( i )->setData( QgsIconUtils::iconForLayer( layer ), Qt::DecorationRole );
         break;
       }
       else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
       {
         id = layer->source();
+        mModel->item( i )->setData( QgsIconUtils::iconForLayer( layer ), Qt::DecorationRole );
         break;
       }
     }
 
-    addOption( id, title, false, true );
+    addOption( id, title, false, true, icon );
   };
 
   switch ( mParameter->layerType() )
@@ -805,7 +814,7 @@ QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsPro
 {
   setWindowTitle( tr( "Multiple Selection" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model );
+  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model, nullptr );
   vLayout->addWidget( mWidget );
   mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
   connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );

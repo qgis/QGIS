@@ -27,20 +27,20 @@ void QgsAbstractTerrainSettings::resolveReferences( const QgsProject * )
 
 void QgsAbstractTerrainSettings::writeCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
 {
-  element.setAttribute( QStringLiteral( "exaggeration" ), mTerrainVerticalScale );
-  element.setAttribute( QStringLiteral( "texture-size" ), mMapTileResolution );
-  element.setAttribute( QStringLiteral( "max-terrain-error" ), mMaxTerrainScreenError );
-  element.setAttribute( QStringLiteral( "max-ground-error" ), mMaxTerrainGroundError );
-  element.setAttribute( QStringLiteral( "elevation-offset" ), mTerrainElevationOffset );
+  element.setAttribute( u"exaggeration"_s, mTerrainVerticalScale );
+  element.setAttribute( u"texture-size"_s, mMapTileResolution );
+  element.setAttribute( u"max-terrain-error"_s, mMaxTerrainScreenError );
+  element.setAttribute( u"max-ground-error"_s, mMaxTerrainGroundError );
+  element.setAttribute( u"elevation-offset"_s, mTerrainElevationOffset );
 }
 
 void QgsAbstractTerrainSettings::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
 {
-  mTerrainVerticalScale = element.attribute( QStringLiteral( "exaggeration" ), QStringLiteral( "1" ) ).toDouble();
-  mMapTileResolution = element.attribute( QStringLiteral( "texture-size" ), QStringLiteral( "512" ) ).toInt();
-  mMaxTerrainScreenError = element.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toDouble();
-  mMaxTerrainGroundError = element.attribute( QStringLiteral( "max-ground-error" ), QStringLiteral( "1" ) ).toDouble();
-  mTerrainElevationOffset = element.attribute( QStringLiteral( "elevation-offset" ), QStringLiteral( "0.0" ) ).toDouble();
+  mTerrainVerticalScale = element.attribute( u"exaggeration"_s, u"1"_s ).toDouble();
+  mMapTileResolution = element.attribute( u"texture-size"_s, u"512"_s ).toInt();
+  mMaxTerrainScreenError = element.attribute( u"max-terrain-error"_s, u"3"_s ).toDouble();
+  mMaxTerrainGroundError = element.attribute( u"max-ground-error"_s, u"1"_s ).toDouble();
+  mTerrainElevationOffset = element.attribute( u"elevation-offset"_s, u"0.0"_s ).toDouble();
 }
 
 void QgsAbstractTerrainSettings::copyCommonProperties( const QgsAbstractTerrainSettings *source )

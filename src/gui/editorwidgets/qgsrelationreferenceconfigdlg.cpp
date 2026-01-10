@@ -44,9 +44,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   for ( const QgsRelation &relation : constReferencingRelations )
   {
     if ( relation.name().isEmpty() )
-      mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
+      mComboRelation->addItem( u"%1 (%2)"_s.arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     else
-      mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.name(), relation.referencedLayerId() ), relation.id() );
+      mComboRelation->addItem( u"%1 (%2)"_s.arg( relation.name(), relation.referencedLayerId() ), relation.id() );
 
     QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboRelation->model() );
     QStandardItem *item = model->item( model->rowCount() - 1 );
@@ -87,10 +87,10 @@ void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
   context << QgsExpressionContextUtils::formScope();
   context << QgsExpressionContextUtils::parentFormScope();
 
-  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) << QStringLiteral( "current_parent_value" ) );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" ) << QStringLiteral( "current_feature" ) << QStringLiteral( "form_mode" ) << QStringLiteral( "current_parent_geometry" ) << QStringLiteral( "current_parent_feature" ) );
+  context.setHighlightedFunctions( QStringList() << u"current_value"_s << u"current_parent_value"_s );
+  context.setHighlightedVariables( QStringList() << u"current_geometry"_s << u"current_feature"_s << u"form_mode"_s << u"current_parent_geometry"_s << u"current_parent_feature"_s );
 
-  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, u"generic"_s, context );
   dlg.setWindowTitle( tr( "Edit Filter Expression" ) );
 
   if ( dlg.exec() == QDialog::Accepted )
@@ -103,31 +103,31 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
 {
   // Only unset allowNull if it was in the config or the default value that was
   // calculated from the field constraints when the widget was created will be overridden
-  mAllowNullWasSetByConfig = config.contains( QStringLiteral( "AllowNULL" ) );
+  mAllowNullWasSetByConfig = config.contains( u"AllowNULL"_s );
   if ( mAllowNullWasSetByConfig )
   {
-    mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
+    mCbxAllowNull->setChecked( config.value( u"AllowNULL"_s, false ).toBool() );
   }
-  mCbxShowForm->setChecked( config.value( QStringLiteral( "ShowForm" ), false ).toBool() );
-  mCbxShowOpenFormButton->setChecked( config.value( QStringLiteral( "ShowOpenFormButton" ), true ).toBool() );
+  mCbxShowForm->setChecked( config.value( u"ShowForm"_s, false ).toBool() );
+  mCbxShowOpenFormButton->setChecked( config.value( u"ShowOpenFormButton"_s, true ).toBool() );
 
-  if ( config.contains( QStringLiteral( "Relation" ) ) )
+  if ( config.contains( u"Relation"_s ) )
   {
-    mComboRelation->setCurrentIndex( mComboRelation->findData( config.value( QStringLiteral( "Relation" ) ).toString() ) );
+    mComboRelation->setCurrentIndex( mComboRelation->findData( config.value( u"Relation"_s ).toString() ) );
     relationChanged( mComboRelation->currentIndex() );
   }
 
-  mCbxMapIdentification->setChecked( config.value( QStringLiteral( "MapIdentification" ), false ).toBool() );
-  mCbxAllowAddFeatures->setChecked( config.value( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
-  mCbxReadOnly->setChecked( config.value( QStringLiteral( "ReadOnly" ), false ).toBool() );
-  mFetchLimitCheckBox->setChecked( config.value( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool() );
-  mFetchLimit->setValue( config.value( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
+  mCbxMapIdentification->setChecked( config.value( u"MapIdentification"_s, false ).toBool() );
+  mCbxAllowAddFeatures->setChecked( config.value( u"AllowAddFeatures"_s, false ).toBool() );
+  mCbxReadOnly->setChecked( config.value( u"ReadOnly"_s, false ).toBool() );
+  mFetchLimitCheckBox->setChecked( config.value( u"FetchLimitActive"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ).toInt() > 0 ).toBool() );
+  mFetchLimit->setValue( config.value( u"FetchLimitNumber"_s, QgsSettings().value( u"maxEntriesRelationWidget"_s, 100, QgsSettings::Gui ) ).toInt() );
 
-  mOrderByExpressionWidget->setExpression( config.value( QStringLiteral( "OrderExpression" ) ).toString() );
-  mOrderByDescending->setChecked( config.value( QStringLiteral( "OrderDescending" ), false ).toBool() );
+  mOrderByExpressionWidget->setExpression( config.value( u"OrderExpression"_s ).toString() );
+  mOrderByDescending->setChecked( config.value( u"OrderDescending"_s, false ).toBool() );
 
-  mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
-  if ( config.contains( QStringLiteral( "FilterFields" ) ) )
+  mFilterExpression->setPlainText( config.value( u"FilterExpression"_s ).toString() );
+  if ( config.contains( u"FilterFields"_s ) )
   {
     mFilterGroupBox->setChecked( true );
     const auto constToStringList = config.value( "FilterFields" ).toStringList();
@@ -136,7 +136,7 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
       addFilterField( fld );
     }
 
-    mCbxChainFilters->setChecked( config.value( QStringLiteral( "ChainFilters" ) ).toBool() );
+    mCbxChainFilters->setChecked( config.value( u"ChainFilters"_s ).toBool() );
   }
 }
 
@@ -185,18 +185,18 @@ void QgsRelationReferenceConfigDlg::mRemoveFilterButton_clicked()
 QVariantMap QgsRelationReferenceConfigDlg::config()
 {
   QVariantMap myConfig;
-  myConfig.insert( QStringLiteral( "AllowNULL" ), mCbxAllowNull->isChecked() );
-  myConfig.insert( QStringLiteral( "ShowForm" ), mCbxShowForm->isChecked() );
-  myConfig.insert( QStringLiteral( "ShowOpenFormButton" ), mCbxShowOpenFormButton->isChecked() );
-  myConfig.insert( QStringLiteral( "MapIdentification" ), mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
-  myConfig.insert( QStringLiteral( "ReadOnly" ), mCbxReadOnly->isChecked() );
-  myConfig.insert( QStringLiteral( "Relation" ), mComboRelation->currentData() );
-  myConfig.insert( QStringLiteral( "AllowAddFeatures" ), mCbxAllowAddFeatures->isChecked() );
-  myConfig.insert( QStringLiteral( "FetchLimitActive" ), mFetchLimitCheckBox->isChecked() );
-  myConfig.insert( QStringLiteral( "FetchLimitNumber" ), mFetchLimit->value() );
+  myConfig.insert( u"AllowNULL"_s, mCbxAllowNull->isChecked() );
+  myConfig.insert( u"ShowForm"_s, mCbxShowForm->isChecked() );
+  myConfig.insert( u"ShowOpenFormButton"_s, mCbxShowOpenFormButton->isChecked() );
+  myConfig.insert( u"MapIdentification"_s, mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
+  myConfig.insert( u"ReadOnly"_s, mCbxReadOnly->isChecked() );
+  myConfig.insert( u"Relation"_s, mComboRelation->currentData() );
+  myConfig.insert( u"AllowAddFeatures"_s, mCbxAllowAddFeatures->isChecked() );
+  myConfig.insert( u"FetchLimitActive"_s, mFetchLimitCheckBox->isChecked() );
+  myConfig.insert( u"FetchLimitNumber"_s, mFetchLimit->value() );
 
-  myConfig.insert( QStringLiteral( "OrderExpression" ), mOrderByExpressionWidget->currentField() );
-  myConfig.insert( QStringLiteral( "OrderDescending" ), mOrderByDescending->isChecked() );
+  myConfig.insert( u"OrderExpression"_s, mOrderByExpressionWidget->currentField() );
+  myConfig.insert( u"OrderDescending"_s, mOrderByDescending->isChecked() );
 
   if ( mFilterGroupBox->isChecked() )
   {
@@ -206,19 +206,19 @@ QVariantMap QgsRelationReferenceConfigDlg::config()
     {
       filterFields << mFilterFieldsList->item( i )->data( Qt::UserRole ).toString();
     }
-    myConfig.insert( QStringLiteral( "FilterFields" ), filterFields );
+    myConfig.insert( u"FilterFields"_s, filterFields );
 
-    myConfig.insert( QStringLiteral( "ChainFilters" ), mCbxChainFilters->isChecked() );
-    myConfig.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
+    myConfig.insert( u"ChainFilters"_s, mCbxChainFilters->isChecked() );
+    myConfig.insert( u"FilterExpression"_s, mFilterExpression->toPlainText() );
   }
 
   if ( mReferencedLayer )
   {
     // Store referenced layer data source and provider
-    myConfig.insert( QStringLiteral( "ReferencedLayerDataSource" ), mReferencedLayer->publicSource() );
-    myConfig.insert( QStringLiteral( "ReferencedLayerProviderKey" ), mReferencedLayer->providerType() );
-    myConfig.insert( QStringLiteral( "ReferencedLayerId" ), mReferencedLayer->id() );
-    myConfig.insert( QStringLiteral( "ReferencedLayerName" ), mReferencedLayer->name() );
+    myConfig.insert( u"ReferencedLayerDataSource"_s, mReferencedLayer->publicSource() );
+    myConfig.insert( u"ReferencedLayerProviderKey"_s, mReferencedLayer->providerType() );
+    myConfig.insert( u"ReferencedLayerId"_s, mReferencedLayer->id() );
+    myConfig.insert( u"ReferencedLayerName"_s, mReferencedLayer->name() );
     mReferencedLayer->setDisplayExpression( mExpressionWidget->currentField() );
   }
 

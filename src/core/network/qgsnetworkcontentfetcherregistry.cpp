@@ -195,7 +195,7 @@ void QgsFetchedContent::taskCompleted()
               QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
       if ( !mFile->open() )
       {
-        QgsDebugError( QStringLiteral( "Can't open temporary file %1" ).arg( mFile->fileName() ) );
+        QgsDebugError( u"Can't open temporary file %1"_s.arg( mFile->fileName() ) );
         mStatus = QgsFetchedContent::Failed;
         return;
       }

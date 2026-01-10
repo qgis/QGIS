@@ -82,24 +82,24 @@ QDomDocument QgsWfsDescribeFeatureTypeGml::createDescribeFeatureTypeDocument( Qg
   auto outputFormat = wfsParameters.outputFormat();
 
   //xsd:schema
-  QDomElement schemaElement = doc.createElement( QStringLiteral( "schema" ) /*xsd:schema*/ );
-  schemaElement.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema" ) );
-  schemaElement.setAttribute( QStringLiteral( "xmlns:xsd" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema" ) );
-  schemaElement.setAttribute( QStringLiteral( "xmlns:ogc" ), OGC_NAMESPACE );
-  schemaElement.setAttribute( QStringLiteral( "xmlns:gml" ), GML_NAMESPACE );
-  schemaElement.setAttribute( QStringLiteral( "xmlns:qgs" ), QGS_NAMESPACE );
-  schemaElement.setAttribute( QStringLiteral( "targetNamespace" ), QGS_NAMESPACE );
-  schemaElement.setAttribute( QStringLiteral( "elementFormDefault" ), QStringLiteral( "qualified" ) );
-  schemaElement.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  QDomElement schemaElement = doc.createElement( u"schema"_s /*xsd:schema*/ );
+  schemaElement.setAttribute( u"xmlns"_s, u"http://www.w3.org/2001/XMLSchema"_s );
+  schemaElement.setAttribute( u"xmlns:xsd"_s, u"http://www.w3.org/2001/XMLSchema"_s );
+  schemaElement.setAttribute( u"xmlns:ogc"_s, OGC_NAMESPACE );
+  schemaElement.setAttribute( u"xmlns:gml"_s, GML_NAMESPACE );
+  schemaElement.setAttribute( u"xmlns:qgs"_s, QGS_NAMESPACE );
+  schemaElement.setAttribute( u"targetNamespace"_s, QGS_NAMESPACE );
+  schemaElement.setAttribute( u"elementFormDefault"_s, u"qualified"_s );
+  schemaElement.setAttribute( u"version"_s, u"1.0"_s );
   doc.appendChild( schemaElement );
 
   //xsd:import
-  QDomElement importElement = doc.createElement( QStringLiteral( "import" ) /*xsd:import*/ );
-  importElement.setAttribute( QStringLiteral( "namespace" ), GML_NAMESPACE );
+  QDomElement importElement = doc.createElement( u"import"_s /*xsd:import*/ );
+  importElement.setAttribute( u"namespace"_s, GML_NAMESPACE );
   if ( outputFormat == QgsWfsParameters::Format::GML2 )
-    importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/2.1.2/feature.xsd" ) );
+    importElement.setAttribute( u"schemaLocation"_s, u"http://schemas.opengis.net/gml/2.1.2/feature.xsd"_s );
   else if ( outputFormat == QgsWfsParameters::Format::GML3 )
-    importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" ) );
+    importElement.setAttribute( u"schemaLocation"_s, u"http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"_s );
   schemaElement.appendChild( importElement );
 
   QStringList typeNameList = getRequestTypeNames( request, wfsParameters );
@@ -124,7 +124,7 @@ QDomDocument QgsWfsDescribeFeatureTypeGml::createDescribeFeatureTypeDocument( Qg
     {
       if ( !typeNameList.isEmpty() )
       {
-        throw QgsSecurityAccessException( QStringLiteral( "Feature access permission denied" ) );
+        throw QgsSecurityAccessException( u"Feature access permission denied"_s );
       }
       else
       {
@@ -154,38 +154,38 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
   const QString typeName = layer->serverProperties()->wfsTypeName();
 
   //xsd:element
-  QDomElement elementElem = doc.createElement( QStringLiteral( "element" ) /*xsd:element*/ );
-  elementElem.setAttribute( QStringLiteral( "name" ), typeName );
-  elementElem.setAttribute( QStringLiteral( "type" ), "qgs:" + typeName + "Type" );
-  elementElem.setAttribute( QStringLiteral( "substitutionGroup" ), QStringLiteral( "gml:_Feature" ) );
+  QDomElement elementElem = doc.createElement( u"element"_s /*xsd:element*/ );
+  elementElem.setAttribute( u"name"_s, typeName );
+  elementElem.setAttribute( u"type"_s, "qgs:" + typeName + "Type" );
+  elementElem.setAttribute( u"substitutionGroup"_s, u"gml:_Feature"_s );
   parentElement.appendChild( elementElem );
 
   //xsd:complexType
-  QDomElement complexTypeElem = doc.createElement( QStringLiteral( "complexType" ) /*xsd:complexType*/ );
-  complexTypeElem.setAttribute( QStringLiteral( "name" ), typeName + "Type" );
+  QDomElement complexTypeElem = doc.createElement( u"complexType"_s /*xsd:complexType*/ );
+  complexTypeElem.setAttribute( u"name"_s, typeName + "Type" );
   parentElement.appendChild( complexTypeElem );
 
   //xsd:complexType
-  QDomElement complexContentElem = doc.createElement( QStringLiteral( "complexContent" ) /*xsd:complexContent*/ );
+  QDomElement complexContentElem = doc.createElement( u"complexContent"_s /*xsd:complexContent*/ );
   complexTypeElem.appendChild( complexContentElem );
 
   //xsd:extension
-  QDomElement extensionElem = doc.createElement( QStringLiteral( "extension" ) /*xsd:extension*/ );
-  extensionElem.setAttribute( QStringLiteral( "base" ), QStringLiteral( "gml:AbstractFeatureType" ) );
+  QDomElement extensionElem = doc.createElement( u"extension"_s /*xsd:extension*/ );
+  extensionElem.setAttribute( u"base"_s, u"gml:AbstractFeatureType"_s );
   complexContentElem.appendChild( extensionElem );
 
   //xsd:sequence
-  QDomElement sequenceElem = doc.createElement( QStringLiteral( "sequence" ) /*xsd:sequence*/ );
+  QDomElement sequenceElem = doc.createElement( u"sequence"_s /*xsd:sequence*/ );
   extensionElem.appendChild( sequenceElem );
 
   //xsd:element
   if ( layer->isSpatial() )
   {
-    QDomElement geomElem = doc.createElement( QStringLiteral( "element" ) /*xsd:element*/ );
-    geomElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-    geomElem.setAttribute( QStringLiteral( "type" ), getGmlGeometryType( layer ) );
-    geomElem.setAttribute( QStringLiteral( "minOccurs" ), QStringLiteral( "0" ) );
-    geomElem.setAttribute( QStringLiteral( "maxOccurs" ), QStringLiteral( "1" ) );
+    QDomElement geomElem = doc.createElement( u"element"_s /*xsd:element*/ );
+    geomElem.setAttribute( u"name"_s, u"geometry"_s );
+    geomElem.setAttribute( u"type"_s, getGmlGeometryType( layer ) );
+    geomElem.setAttribute( u"minOccurs"_s, u"0"_s );
+    geomElem.setAttribute( u"maxOccurs"_s, u"1"_s );
     sequenceElem.appendChild( geomElem );
   }
 
@@ -207,14 +207,14 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
     getFieldAttributes( field, attributeName, attributeType );
 
     //xsd:element
-    QDomElement attElem = doc.createElement( QStringLiteral( "element" ) /*xsd:element*/ );
+    QDomElement attElem = doc.createElement( u"element"_s /*xsd:element*/ );
 
-    attElem.setAttribute( QStringLiteral( "name" ), attributeName );
-    attElem.setAttribute( QStringLiteral( "type" ), attributeType );
+    attElem.setAttribute( u"name"_s, attributeName );
+    attElem.setAttribute( u"type"_s, attributeType );
 
     if ( !( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) )
     {
-      attElem.setAttribute( QStringLiteral( "nillable" ), QStringLiteral( "true" ) );
+      attElem.setAttribute( u"nillable"_s, u"true"_s );
     }
 
     sequenceElem.appendChild( attElem );
@@ -222,7 +222,7 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
     const QString alias = field.alias();
     if ( !alias.isEmpty() )
     {
-      attElem.setAttribute( QStringLiteral( "alias" ), alias );
+      attElem.setAttribute( u"alias"_s, alias );
     }
   }
 }
@@ -238,39 +238,39 @@ QString QgsWfsDescribeFeatureTypeGml::getGmlGeometryType( const QgsVectorLayer *
         case Qgis::WkbType::PointZ:
         case Qgis::WkbType::Point25D:
         case Qgis::WkbType::Point:
-          return QStringLiteral( "gml:PointPropertyType" );
+          return u"gml:PointPropertyType"_s;
 
         case Qgis::WkbType::LineStringZ:
         case Qgis::WkbType::LineString25D:
         case Qgis::WkbType::LineString:
-          return QStringLiteral( "gml:LineStringPropertyType" );
+          return u"gml:LineStringPropertyType"_s;
 
         case Qgis::WkbType::PolygonZ:
         case Qgis::WkbType::Polygon25D:
         case Qgis::WkbType::Polygon:
-          return QStringLiteral( "gml:PolygonPropertyType" );
+          return u"gml:PolygonPropertyType"_s;
 
         case Qgis::WkbType::MultiPointZ:
         case Qgis::WkbType::MultiPoint25D:
         case Qgis::WkbType::MultiPoint:
-          return QStringLiteral( "gml:MultiPointPropertyType" );
+          return u"gml:MultiPointPropertyType"_s;
 
         case Qgis::WkbType::MultiCurveZ:
         case Qgis::WkbType::MultiCurve:
         case Qgis::WkbType::MultiLineString25D:
         case Qgis::WkbType::MultiLineStringZ:
         case Qgis::WkbType::MultiLineString:
-          return QStringLiteral( "gml:MultiLineStringPropertyType" );
+          return u"gml:MultiLineStringPropertyType"_s;
 
         case Qgis::WkbType::MultiSurfaceZ:
         case Qgis::WkbType::MultiSurface:
         case Qgis::WkbType::MultiPolygon25D:
         case Qgis::WkbType::MultiPolygon:
         case Qgis::WkbType::MultiPolygonZ:
-          return QStringLiteral( "gml:MultiPolygonPropertyType" );
+          return u"gml:MultiPolygonPropertyType"_s;
 
         default:
-          return QStringLiteral( "gml:GeometryPropertyType" );
+          return u"gml:GeometryPropertyType"_s;
       }
     case QgsWfsParameters::Format::GML3:
       switch ( wkbType )
@@ -278,39 +278,39 @@ QString QgsWfsDescribeFeatureTypeGml::getGmlGeometryType( const QgsVectorLayer *
         case Qgis::WkbType::PointZ:
         case Qgis::WkbType::Point25D:
         case Qgis::WkbType::Point:
-          return QStringLiteral( "gml:PointPropertyType" );
+          return u"gml:PointPropertyType"_s;
 
         case Qgis::WkbType::LineString25D:
         case Qgis::WkbType::LineString:
         case Qgis::WkbType::LineStringZ:
-          return QStringLiteral( "gml:LineStringPropertyType" );
+          return u"gml:LineStringPropertyType"_s;
 
         case Qgis::WkbType::Polygon25D:
         case Qgis::WkbType::Polygon:
         case Qgis::WkbType::PolygonZ:
-          return QStringLiteral( "gml:PolygonPropertyType" );
+          return u"gml:PolygonPropertyType"_s;
 
         case Qgis::WkbType::MultiPoint25D:
         case Qgis::WkbType::MultiPoint:
-          return QStringLiteral( "gml:MultiPointPropertyType" );
+          return u"gml:MultiPointPropertyType"_s;
 
         case Qgis::WkbType::MultiCurve:
         case Qgis::WkbType::MultiCurveZ:
         case Qgis::WkbType::MultiLineString25D:
         case Qgis::WkbType::MultiLineString:
         case Qgis::WkbType::MultiLineStringZ:
-          return QStringLiteral( "gml:MultiCurvePropertyType" );
+          return u"gml:MultiCurvePropertyType"_s;
 
         case Qgis::WkbType::MultiSurface:
         case Qgis::WkbType::MultiPolygon25D:
         case Qgis::WkbType::MultiPolygon:
         case Qgis::WkbType::MultiPolygonZ:
-          return QStringLiteral( "gml:MultiSurfacePropertyType" );
+          return u"gml:MultiSurfacePropertyType"_s;
 
         default:
-          return QStringLiteral( "gml:GeometryPropertyType" );
+          return u"gml:GeometryPropertyType"_s;
       }
     default:
-      return QStringLiteral( "gml:GeometryPropertyType" );
+      return u"gml:GeometryPropertyType"_s;
   }
 }

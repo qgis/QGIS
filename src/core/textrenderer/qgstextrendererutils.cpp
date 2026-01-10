@@ -23,23 +23,23 @@ QgsTextBackgroundSettings::ShapeType QgsTextRendererUtils::decodeShapeType( cons
   QgsTextBackgroundSettings::ShapeType shpkind = QgsTextBackgroundSettings::ShapeRectangle;
   const QString skind = string.trimmed();
 
-  if ( skind.compare( QLatin1String( "Square" ), Qt::CaseInsensitive ) == 0 )
+  if ( skind.compare( "Square"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shpkind = QgsTextBackgroundSettings::ShapeSquare;
   }
-  else if ( skind.compare( QLatin1String( "Ellipse" ), Qt::CaseInsensitive ) == 0 )
+  else if ( skind.compare( "Ellipse"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shpkind = QgsTextBackgroundSettings::ShapeEllipse;
   }
-  else if ( skind.compare( QLatin1String( "Circle" ), Qt::CaseInsensitive ) == 0 )
+  else if ( skind.compare( "Circle"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shpkind = QgsTextBackgroundSettings::ShapeCircle;
   }
-  else if ( skind.compare( QLatin1String( "SVG" ), Qt::CaseInsensitive ) == 0 )
+  else if ( skind.compare( "SVG"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shpkind = QgsTextBackgroundSettings::ShapeSVG;
   }
-  else if ( skind.compare( QLatin1String( "marker" ), Qt::CaseInsensitive ) == 0 )
+  else if ( skind.compare( "marker"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shpkind = QgsTextBackgroundSettings::ShapeMarkerSymbol;
   }
@@ -52,7 +52,7 @@ QgsTextBackgroundSettings::SizeType QgsTextRendererUtils::decodeBackgroundSizeTy
   // "Buffer"
   QgsTextBackgroundSettings::SizeType sizType = QgsTextBackgroundSettings::SizeBuffer;
 
-  if ( stype.compare( QLatin1String( "Fixed" ), Qt::CaseInsensitive ) == 0 )
+  if ( stype.compare( "Fixed"_L1, Qt::CaseInsensitive ) == 0 )
   {
     sizType = QgsTextBackgroundSettings::SizeFixed;
   }
@@ -65,11 +65,11 @@ QgsTextBackgroundSettings::RotationType QgsTextRendererUtils::decodeBackgroundRo
   // "Sync"
   QgsTextBackgroundSettings::RotationType rottype = QgsTextBackgroundSettings::RotationSync;
 
-  if ( rotstr.compare( QLatin1String( "Offset" ), Qt::CaseInsensitive ) == 0 )
+  if ( rotstr.compare( "Offset"_L1, Qt::CaseInsensitive ) == 0 )
   {
     rottype = QgsTextBackgroundSettings::RotationOffset;
   }
-  else if ( rotstr.compare( QLatin1String( "Fixed" ), Qt::CaseInsensitive ) == 0 )
+  else if ( rotstr.compare( "Fixed"_L1, Qt::CaseInsensitive ) == 0 )
   {
     rottype = QgsTextBackgroundSettings::RotationFixed;
   }
@@ -82,15 +82,15 @@ QgsTextShadowSettings::ShadowPlacement QgsTextRendererUtils::decodeShadowPlaceme
   // "Lowest"
   QgsTextShadowSettings::ShadowPlacement shdwtype = QgsTextShadowSettings::ShadowLowest;
 
-  if ( str.compare( QLatin1String( "Text" ), Qt::CaseInsensitive ) == 0 )
+  if ( str.compare( "Text"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shdwtype = QgsTextShadowSettings::ShadowText;
   }
-  else if ( str.compare( QLatin1String( "Buffer" ), Qt::CaseInsensitive ) == 0 )
+  else if ( str.compare( "Buffer"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shdwtype = QgsTextShadowSettings::ShadowBuffer;
   }
-  else if ( str.compare( QLatin1String( "Background" ), Qt::CaseInsensitive ) == 0 )
+  else if ( str.compare( "Background"_L1, Qt::CaseInsensitive ) == 0 )
   {
     shdwtype = QgsTextShadowSettings::ShadowShape;
   }
@@ -102,11 +102,11 @@ QString QgsTextRendererUtils::encodeTextOrientation( Qgis::TextOrientation orien
   switch ( orientation )
   {
     case Qgis::TextOrientation::Horizontal:
-      return QStringLiteral( "horizontal" );
+      return u"horizontal"_s;
     case Qgis::TextOrientation::Vertical:
-      return QStringLiteral( "vertical" );
+      return u"vertical"_s;
     case Qgis::TextOrientation::RotationBased:
-      return QStringLiteral( "rotation-based" );
+      return u"rotation-based"_s;
   }
   return QString();
 }
@@ -118,11 +118,11 @@ Qgis::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString
 
   const QString cleaned = name.toLower().trimmed();
 
-  if ( cleaned == QLatin1String( "horizontal" ) )
+  if ( cleaned == "horizontal"_L1 )
     return Qgis::TextOrientation::Horizontal;
-  else if ( cleaned == QLatin1String( "vertical" ) )
+  else if ( cleaned == "vertical"_L1 )
     return Qgis::TextOrientation::Vertical;
-  else if ( cleaned == QLatin1String( "rotation-based" ) )
+  else if ( cleaned == "rotation-based"_L1 )
     return Qgis::TextOrientation::RotationBased;
 
   if ( ok )

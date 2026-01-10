@@ -77,7 +77,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
 
   if ( fieldRadio->isChecked() && style.rule().isEmpty() )
   {
-    ruleWidget->setRule( QStringLiteral( "@value " ) );
+    ruleWidget->setRule( u"@value "_s );
   }
 
   connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::panelAccepted, this, [this, ruleWidget] {
@@ -339,10 +339,10 @@ QgsConditionalStyle QgsEditConditionalFormatRuleWidget::currentStyle() const
 void QgsEditConditionalFormatRuleWidget::setExpression()
 {
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 0, true ) );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "value" ) );
+  context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"value"_s, 0, true ) );
+  context.setHighlightedVariables( QStringList() << u"value"_s );
 
-  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, u"generic"_s, context );
   dlg.setWindowTitle( tr( "Conditional Style Rule Expression" ) );
 
   if ( dlg.exec() )
@@ -394,7 +394,7 @@ void QgsEditConditionalFormatRuleWidget::setPresets( const QList<QgsConditionalS
   {
     if ( style.isValid() )
     {
-      QStandardItem *item = new QStandardItem( QStringLiteral( "abc - 123" ) );
+      QStandardItem *item = new QStandardItem( u"abc - 123"_s );
       if ( style.validBackgroundColor() )
         item->setBackground( style.backgroundColor() );
       if ( style.validTextColor() )

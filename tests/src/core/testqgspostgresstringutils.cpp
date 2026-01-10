@@ -33,16 +33,16 @@ class TestQgsPostgresStringUtils : public QObject
 void TestQgsPostgresStringUtils::testPgArrayStringToListAndBack()
 {
   QVariantList vl;
-  vl.push_back( QStringLiteral( "one" ) );
-  vl.push_back( QStringLiteral( "}two{" ) );
-  vl.push_back( QStringLiteral( "thr\"ee" ) );
-  vl.push_back( QStringLiteral( "fo,ur" ) );
-  vl.push_back( QStringLiteral( "fiv'e" ) );
+  vl.push_back( u"one"_s );
+  vl.push_back( u"}two{"_s );
+  vl.push_back( u"thr\"ee"_s );
+  vl.push_back( u"fo,ur"_s );
+  vl.push_back( u"fiv'e"_s );
   vl.push_back( 6 );
-  vl.push_back( QStringLiteral( "and 7garcìa][" ) );
-  vl.push_back( QStringLiteral( "...all the etceteras" ) );
+  vl.push_back( u"and 7garcìa]["_s );
+  vl.push_back( u"...all the etceteras"_s );
 
-  const QString string = QStringLiteral( "{\"one\",\"}two{\",\"thr\\\"ee\",\"fo,ur\",\"fiv'e\",6,\"and 7garcìa][\",\"...all the etceteras\"}" );
+  const QString string = u"{\"one\",\"}two{\",\"thr\\\"ee\",\"fo,ur\",\"fiv'e\",6,\"and 7garcìa][\",\"...all the etceteras\"}"_s;
   QCOMPARE( QgsPostgresStringUtils::parseArray( string ), vl );
 
   // and back
@@ -53,18 +53,18 @@ void TestQgsPostgresStringUtils::testUnquotedPgArrayStringToListAndBack()
 {
   //there might have been used
   QVariantList vl;
-  vl.push_back( QStringLiteral( "one" ) );
-  vl.push_back( QStringLiteral( "two" ) );
-  vl.push_back( QStringLiteral( "three" ) );
-  vl.push_back( QStringLiteral( "four" ) );
-  vl.push_back( QStringLiteral( "five" ) );
-  vl.push_back( QStringLiteral( "that genius" ) );
+  vl.push_back( u"one"_s );
+  vl.push_back( u"two"_s );
+  vl.push_back( u"three"_s );
+  vl.push_back( u"four"_s );
+  vl.push_back( u"five"_s );
+  vl.push_back( u"that genius"_s );
 
-  const QString fallback_string = QStringLiteral( "{one,two,three,four,five,that genius}" );
+  const QString fallback_string = u"{one,two,three,four,five,that genius}"_s;
   QCOMPARE( QgsPostgresStringUtils::parseArray( fallback_string ), vl );
 
   // and back including quotes
-  const QString new_string = QStringLiteral( "{\"one\",\"two\",\"three\",\"four\",\"five\",\"that genius\"}" );
+  const QString new_string = u"{\"one\",\"two\",\"three\",\"four\",\"five\",\"that genius\"}"_s;
   QCOMPARE( QgsPostgresStringUtils::buildArray( vl ), new_string );
 }
 
@@ -77,7 +77,7 @@ void TestQgsPostgresStringUtils::testNumberArrayStringToListAndBack()
   vl.push_back( 3 );
   vl.push_back( 4 );
 
-  const QString number_string = QStringLiteral( "{1,2,3,4}" );
+  const QString number_string = u"{1,2,3,4}"_s;
   QCOMPARE( QgsPostgresStringUtils::parseArray( number_string ), vl );
 
   // and back without quotes
@@ -88,11 +88,11 @@ void TestQgsPostgresStringUtils::testMultidimensionalPgArrayStringToListAndBack(
 {
   //there might have been used
   QVariantList vl;
-  vl.push_back( QStringLiteral( "{one one third,one two third,one three third}" ) );
-  vl.push_back( QStringLiteral( "{\"two one third\",\"two two third\",\"two three third\"}" ) );
-  vl.push_back( QStringLiteral( "{three one third,three two third,three three third}" ) );
+  vl.push_back( u"{one one third,one two third,one three third}"_s );
+  vl.push_back( u"{\"two one third\",\"two two third\",\"two three third\"}"_s );
+  vl.push_back( u"{three one third,three two third,three three third}"_s );
 
-  const QString string = QStringLiteral( "{{one one third,one two third,one three third},{\"two one third\",\"two two third\",\"two three third\"},{three one third,three two third,three three third}}" );
+  const QString string = u"{{one one third,one two third,one three third},{\"two one third\",\"two two third\",\"two three third\"},{three one third,three two third,three three third}}"_s;
   QCOMPARE( QgsPostgresStringUtils::parseArray( string ), vl );
 
   // and back without quotes

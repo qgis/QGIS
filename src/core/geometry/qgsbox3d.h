@@ -151,7 +151,7 @@ class CORE_EXPORT QgsBox3D
     }
     else // Invalid ctor arguments
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Invalid type in constructor arguments."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -481,7 +481,7 @@ class CORE_EXPORT QgsBox3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsBox3D(%1, %2, %3, %4, %5, %6)>" )
+    QString str = u"<QgsBox3D(%1, %2, %3, %4, %5, %6)>"_s
                   .arg( sipCpp->xMinimum() )
                   .arg( sipCpp->yMinimum() )
                   .arg( sipCpp->zMinimum() )

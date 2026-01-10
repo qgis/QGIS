@@ -65,15 +65,15 @@ void TestQgsMapToolAddPart::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -82,7 +82,7 @@ void TestQgsMapToolAddPart::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerMultiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=EPSG:3946" ), QStringLiteral( "multipolygon" ), QStringLiteral( "memory" ) );
+  mLayerMultiPolygon = new QgsVectorLayer( u"MultiPolygon?crs=EPSG:3946"_s, u"multipolygon"_s, u"memory"_s );
   QVERIFY( mLayerMultiPolygon->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerMultiPolygon );
 
@@ -236,7 +236,7 @@ void TestQgsMapToolAddPart::testAddPartToSingleGeometryLess()
   {
     for ( const QString &geomType : it.key() )
     {
-      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "%1?crs=EPSG:3946" ).arg( geomType ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( u"%1?crs=EPSG:3946"_s.arg( geomType ), u"layer"_s, u"memory"_s );
       QVERIFY( vl->isValid() );
       QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << vl );
 
@@ -279,7 +279,7 @@ void TestQgsMapToolAddPart::testAddPartToSingleGeometryLess()
 void TestQgsMapToolAddPart::testAddPartToMultiLineString()
 {
   // Test for issue #64265: Add Part tool reverses line parts
-  QgsVectorLayer *layerMultiLine = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=EPSG:3946" ), QStringLiteral( "multilinestring" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layerMultiLine = new QgsVectorLayer( u"MultiLineString?crs=EPSG:3946"_s, u"multilinestring"_s, u"memory"_s );
   QVERIFY( layerMultiLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layerMultiLine );
 

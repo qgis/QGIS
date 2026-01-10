@@ -31,6 +31,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgslinesegment.h"
+#include "qgsvector3d.h"
 #include "qgswkbptr.h"
 
 #include <QDomDocument>
@@ -854,7 +855,7 @@ bool QgsLineString::fromWkt( const QString &wkt )
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
   parts.second = parts.second.remove( '(' ).remove( ')' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
@@ -899,7 +900,7 @@ QString QgsLineString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += QLatin1String( "EMPTY" );
+    wkt += "EMPTY"_L1;
   else
   {
     QgsPointSequence pts;
@@ -914,7 +915,7 @@ QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QStri
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+  QDomElement elemLineString = doc.createElementNS( ns, u"LineString"_s );
 
   if ( isEmpty() )
     return elemLineString;
@@ -929,7 +930,7 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+  QDomElement elemLineString = doc.createElementNS( ns, u"LineString"_s );
 
   if ( isEmpty() )
     return elemLineString;
@@ -954,53 +955,53 @@ QString QgsLineString::asKml( int precision ) const
   QString kml;
   if ( isRing() )
   {
-    kml.append( QLatin1String( "<LinearRing>" ) );
+    kml.append( "<LinearRing>"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "<LineString>" ) );
+    kml.append( "<LineString>"_L1 );
   }
   bool z = is3D();
-  kml.append( QLatin1String( "<altitudeMode>" ) );
+  kml.append( "<altitudeMode>"_L1 );
   if ( z )
   {
-    kml.append( QLatin1String( "absolute" ) );
+    kml.append( "absolute"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "clampToGround" ) );
+    kml.append( "clampToGround"_L1 );
   }
-  kml.append( QLatin1String( "</altitudeMode>" ) );
-  kml.append( QLatin1String( "<coordinates>" ) );
+  kml.append( "</altitudeMode>"_L1 );
+  kml.append( "<coordinates>"_L1 );
 
   int nPoints = mX.size();
   for ( int i = 0; i < nPoints; ++i )
   {
     if ( i > 0 )
     {
-      kml.append( QLatin1String( " " ) );
+      kml.append( " "_L1 );
     }
     kml.append( qgsDoubleToString( mX[i], precision ) );
-    kml.append( QLatin1String( "," ) );
+    kml.append( ","_L1 );
     kml.append( qgsDoubleToString( mY[i], precision ) );
     if ( z )
     {
-      kml.append( QLatin1String( "," ) );
+      kml.append( ","_L1 );
       kml.append( qgsDoubleToString( mZ[i], precision ) );
     }
     else
     {
-      kml.append( QLatin1String( ",0" ) );
+      kml.append( ",0"_L1 );
     }
   }
-  kml.append( QLatin1String( "</coordinates>" ) );
+  kml.append( "</coordinates>"_L1 );
   if ( isRing() )
   {
-    kml.append( QLatin1String( "</LinearRing>" ) );
+    kml.append( "</LinearRing>"_L1 );
   }
   else
   {
-    kml.append( QLatin1String( "</LineString>" ) );
+    kml.append( "</LineString>"_L1 );
   }
   return kml;
 }
@@ -1954,7 +1955,7 @@ int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
 
 QString QgsLineString::geometryType() const
 {
-  return QStringLiteral( "LineString" );
+  return u"LineString"_s;
 }
 
 int QgsLineString::dimension() const
@@ -2291,6 +2292,90 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
+}
+
+void QgsLineString::sumUpArea3D( double &sum ) const
+{
+  if ( mHasCachedSummedUpArea3D )
+  {
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  // No Z component. Fallback to the 2D version
+  if ( mZ.isEmpty() )
+  {
+    double area2D = 0;
+    sumUpArea( area2D );
+    mSummedUpArea3D = area2D;
+    mHasCachedSummedUpArea3D = true;
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  mSummedUpArea3D = 0;
+
+  // Look for a reference unit normal
+  QgsPoint ptA;
+  QgsPoint ptB;
+  QgsPoint ptC;
+  if ( !QgsGeometryUtils::checkWeaklyFor3DPlane( this, ptA, ptB, ptC ) )
+  {
+    mHasCachedSummedUpArea3D = true;
+    return;
+  }
+
+  QgsVector3D vAB = QgsVector3D( ptB.x() - ptA.x(), ptB.y() - ptA.y(), ptB.z() - ptA.z() );
+  QgsVector3D vAC = QgsVector3D( ptC.x() - ptA.x(), ptC.y() - ptA.y(), ptC.z() - ptA.z() );
+  QgsVector3D planeNormal = QgsVector3D::crossProduct( vAB, vAC );
+
+  // Ensure a Consistent orientation: prioritize Z+, then Y+, then X+
+  if ( !qgsDoubleNear( planeNormal.z(), 0.0 ) )
+  {
+    if ( planeNormal.z() < 0 )
+    {
+      planeNormal = -planeNormal;
+    }
+  }
+  else if ( !qgsDoubleNear( planeNormal.y(), 0.0 ) )
+  {
+    if ( planeNormal.y() < 0 )
+      planeNormal = -planeNormal;
+  }
+  else
+  {
+    if ( planeNormal.x() < 0 )
+      planeNormal = - planeNormal;
+  }
+  planeNormal.normalize();
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const double *z = mZ.constData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = *z++;
+
+  double normalX = 0.0;
+  double normalY = 0.0;
+  double normalZ = 0.0;
+
+  for ( unsigned int i = 1; i < mX.size(); ++i )
+  {
+    normalX += prevY * ( *z - prevZ ) - prevZ * ( *y - prevY );
+    normalY += prevZ * ( *x - prevX ) - prevX * ( *z - prevZ );
+    normalZ += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
+
+    prevX = *x++;
+    prevY = *y++;
+    prevZ = *z++;
+  }
+
+  mSummedUpArea3D = 0.5 * ( normalX * planeNormal.x() + normalY * planeNormal.y() + normalZ * planeNormal.z() );
+
+  mHasCachedSummedUpArea3D = true;
+  sum += mSummedUpArea3D;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )

@@ -51,7 +51,7 @@ QgsFractionNumericFormat::QgsFractionNumericFormat()
 
 QString QgsFractionNumericFormat::id() const
 {
-  return QStringLiteral( "fraction" );
+  return u"fraction"_s;
 }
 
 QString QgsFractionNumericFormat::visibleName() const
@@ -118,11 +118,11 @@ QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFo
     else if ( mUseDedicatedUnicode && num == 1 && den == 10 )
       res = QChar( 0x2152 ); //⅒
     else if ( mUseUnicodeSuperSubscript )
-      res = num == 0 ? QString() : QStringLiteral( "%1%2%3" ).arg( toUnicodeSuperscript( QString::number( num ) ),
+      res = num == 0 ? QString() : u"%1%2%3"_s.arg( toUnicodeSuperscript( QString::number( num ) ),
             QChar( 0x002F ), // "SOLIDUS" character
             toUnicodeSubscript( QString::number( den ) ) );
     else
-      res = num == 0 ? QString() : QStringLiteral( "%2/%3" ).arg( num ).arg( den );
+      res = num == 0 ? QString() : u"%2/%3"_s.arg( num ).arg( den );
     if ( fixed )
     {
       os << std::fixed << std::setprecision( 0 );
@@ -166,11 +166,11 @@ QgsNumericFormat *QgsFractionNumericFormat::create( const QVariantMap &configura
 QVariantMap QgsFractionNumericFormat::configuration( const QgsReadWriteContext & ) const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "show_thousand_separator" ), mShowThousandsSeparator );
-  res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
-  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
-  res.insert( QStringLiteral( "use_dedicated_unicode" ), mUseDedicatedUnicode );
-  res.insert( QStringLiteral( "use_unicode_supersubscript" ), mUseUnicodeSuperSubscript );
+  res.insert( u"show_thousand_separator"_s, mShowThousandsSeparator );
+  res.insert( u"show_plus"_s, mShowPlusSign );
+  res.insert( u"thousand_separator"_s, mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
+  res.insert( u"use_dedicated_unicode"_s, mUseDedicatedUnicode );
+  res.insert( u"use_unicode_supersubscript"_s, mUseUnicodeSuperSubscript );
   return res;
 }
 
@@ -201,11 +201,11 @@ void QgsFractionNumericFormat::setUseUnicodeSuperSubscript( bool enabled )
 
 void QgsFractionNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext & )
 {
-  mShowThousandsSeparator = configuration.value( QStringLiteral( "show_thousand_separator" ), true ).toBool();
-  mShowPlusSign = configuration.value( QStringLiteral( "show_plus" ), false ).toBool();
-  mThousandsSeparator = configuration.value( QStringLiteral( "thousand_separator" ), QChar() ).toChar();
-  mUseDedicatedUnicode = configuration.value( QStringLiteral( "use_dedicated_unicode" ), false ).toBool();
-  mUseUnicodeSuperSubscript = configuration.value( QStringLiteral( "use_unicode_supersubscript" ), true ).toBool();
+  mShowThousandsSeparator = configuration.value( u"show_thousand_separator"_s, true ).toBool();
+  mShowPlusSign = configuration.value( u"show_plus"_s, false ).toBool();
+  mThousandsSeparator = configuration.value( u"thousand_separator"_s, QChar() ).toChar();
+  mUseDedicatedUnicode = configuration.value( u"use_dedicated_unicode"_s, false ).toBool();
+  mUseUnicodeSuperSubscript = configuration.value( u"use_unicode_supersubscript"_s, true ).toBool();
 }
 
 bool QgsFractionNumericFormat::showThousandsSeparator() const

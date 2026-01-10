@@ -167,14 +167,14 @@ bool QgsMapToolAnnotation::populateContextMenuWithEvent( QMenu *menu, QgsMapMous
     return true;
   }
   menu->addSeparator();
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ), tr( "Edit" ), this, [this, existingItem]() {
+  menu->addAction( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ), tr( "Edit" ), this, [this, existingItem]() {
     QDialog *dialog = createItemEditor( existingItem );
     if ( dialog )
     {
       dialog->exec();
     }
   } );
-  menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete" ), this, [existingItem]() {
+  menu->addAction( QgsApplication::getThemeIcon( u"/mActionDeleteSelected.svg"_s ), tr( "Delete" ), this, [existingItem]() {
     QgsProject::instance()->annotationManager()->removeAnnotation( existingItem->annotation() );
   } );
 

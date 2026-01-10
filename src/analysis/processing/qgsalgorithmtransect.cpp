@@ -24,7 +24,7 @@
 
 QString QgsTransectAlgorithm::name() const
 {
-  return QStringLiteral( "transect" );
+  return u"transect"_s;
 }
 
 QString QgsTransectAlgorithm::displayName() const
@@ -36,7 +36,7 @@ QString QgsTransectAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates transects on vertices for (multi)linestrings.\n" )
          + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" )
          + QObject::tr( "- TR_FID: ID of the original feature\n" )
          + QObject::tr( "- TR_ID: ID of the transect. Each transect have an unique ID\n" )

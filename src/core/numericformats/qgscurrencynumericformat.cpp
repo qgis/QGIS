@@ -19,7 +19,7 @@
 #include "qgis.h"
 
 QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
-  : mPrefix( QStringLiteral( "$" ) )
+  : mPrefix( u"$"_s )
 {
   setNumberDecimalPlaces( 2 );
   setShowTrailingZeros( true );
@@ -27,7 +27,7 @@ QgsCurrencyNumericFormat::QgsCurrencyNumericFormat()
 
 QString QgsCurrencyNumericFormat::id() const
 {
-  return QStringLiteral( "currency" );
+  return u"currency"_s;
 }
 
 QString QgsCurrencyNumericFormat::visibleName() const
@@ -63,12 +63,12 @@ QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configura
 {
   auto res = std::make_unique< QgsCurrencyNumericFormat >();
   res->setConfiguration( configuration, context );
-  res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
-  res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();
+  res->mPrefix = configuration.value( u"prefix"_s, u"$"_s ).toString();
+  res->mSuffix = configuration.value( u"suffix"_s, QString() ).toString();
 
   // override base class default for number of decimal places -- we want to default to 2, showing trailing zeros
-  res->setNumberDecimalPlaces( configuration.value( QStringLiteral( "decimals" ), 2 ).toInt() );
-  res->setShowTrailingZeros( configuration.value( QStringLiteral( "show_trailing_zeros" ), true ).toBool() );
+  res->setNumberDecimalPlaces( configuration.value( u"decimals"_s, 2 ).toInt() );
+  res->setShowTrailingZeros( configuration.value( u"show_trailing_zeros"_s, true ).toBool() );
   res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
 
   return res.release();
@@ -77,8 +77,8 @@ QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configura
 QVariantMap QgsCurrencyNumericFormat::configuration( const QgsReadWriteContext &context ) const
 {
   QVariantMap res = QgsBasicNumericFormat::configuration( context );
-  res.insert( QStringLiteral( "prefix" ), mPrefix );
-  res.insert( QStringLiteral( "suffix" ), mSuffix );
+  res.insert( u"prefix"_s, mPrefix );
+  res.insert( u"suffix"_s, mSuffix );
   return res;
 }
 

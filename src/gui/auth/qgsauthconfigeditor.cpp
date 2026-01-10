@@ -106,12 +106,12 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     // set up utility actions menu
     mActionImportAuthenticationConfigs = new QAction( tr( "Import Authentication Configurations from File…" ), this );
     mActionExportSelectedAuthenticationConfigs = new QAction( tr( "Export Selected Authentication Configurations to File…" ), this );
-    mActionSetMasterPassword = new QAction( QStringLiteral( "Input Master Password…" ), this );
-    mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear Cached Master Password" ), this );
-    mActionResetMasterPassword = new QAction( QStringLiteral( "Reset Master Password…" ), this );
-    mActionClearCachedAuthConfigs = new QAction( QStringLiteral( "Clear Cached Authentication Configurations" ), this );
-    mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all Authentication Configurations…" ), this );
-    mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase Authentication Database…" ), this );
+    mActionSetMasterPassword = new QAction( u"Input Master Password…"_s, this );
+    mActionClearCachedMasterPassword = new QAction( u"Clear Cached Master Password"_s, this );
+    mActionResetMasterPassword = new QAction( u"Reset Master Password…"_s, this );
+    mActionClearCachedAuthConfigs = new QAction( u"Clear Cached Authentication Configurations"_s, this );
+    mActionRemoveAuthConfigs = new QAction( u"Remove all Authentication Configurations…"_s, this );
+    mActionEraseAuthDatabase = new QAction( u"Erase Authentication Database…"_s, this );
 
     connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::exportSelectedAuthenticationConfigs );
     connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::setMasterPassword );

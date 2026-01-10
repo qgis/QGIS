@@ -262,7 +262,7 @@ QString QgsScaleComboBox::toString( double scale, RatioMode mode )
   }
   if ( scale == 0 )
   {
-    return QStringLiteral( "0" );
+    return u"0"_s;
   }
 
   switch ( mode )
@@ -270,11 +270,11 @@ QString QgsScaleComboBox::toString( double scale, RatioMode mode )
     case RatioMode::ForceUnitNumerator:
       if ( scale <= 1 )
       {
-        return QStringLiteral( "%1:1" ).arg( QLocale().toString( static_cast<int>( std::round( 1.0 / scale ) ) ) );
+        return u"%1:1"_s.arg( QLocale().toString( static_cast<int>( std::round( 1.0 / scale ) ) ) );
       }
       else
       {
-        return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast<float>( std::round( scale ) ), 'f', 0 ) );
+        return u"1:%1"_s.arg( QLocale().toString( static_cast<float>( std::round( scale ) ), 'f', 0 ) );
       }
 
     case RatioMode::Flexible:
@@ -282,7 +282,7 @@ QString QgsScaleComboBox::toString( double scale, RatioMode mode )
       qlonglong numerator = 0;
       qlonglong denominator = 0;
       QgsMathUtils::doubleToRational( 1.0 / scale, numerator, denominator, 0.01 );
-      return QStringLiteral( "%1:%2" ).arg(
+      return u"%1:%2"_s.arg(
         QLocale().toString( numerator ),
         QLocale().toString( denominator )
       );

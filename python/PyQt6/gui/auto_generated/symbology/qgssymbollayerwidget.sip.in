@@ -10,7 +10,10 @@
 
 
 
-class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
+template<T>
+class QgsMapToolEditBlankSegments;
+
+class QgsSymbolLayerWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Abstract base class for widgets used to configure
@@ -50,7 +53,7 @@ associated map canvas and expression contexts.
 .. seealso:: :py:func:`setContext`
 %End
 
-    const QgsVectorLayer *vectorLayer() const;
+    QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
 %End

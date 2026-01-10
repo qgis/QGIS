@@ -34,11 +34,11 @@ QString QgsTicksScaleBarRenderer::id() const
   switch ( mTickPosition )
   {
     case TicksUp:
-      return QStringLiteral( "Line Ticks Up" );
+      return u"Line Ticks Up"_s;
     case TicksDown:
-      return QStringLiteral( "Line Ticks Down" );
+      return u"Line Ticks Down"_s;
     case TicksMiddle:
-      return QStringLiteral( "Line Ticks Middle" );
+      return u"Line Ticks Middle"_s;
   }
   return QString();  // to make gcc happy
 }

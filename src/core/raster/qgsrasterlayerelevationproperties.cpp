@@ -46,35 +46,35 @@ bool QgsRasterLayerElevationProperties::hasElevation() const
 
 QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mMode ) );
-  element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+  QDomElement element = document.createElement( u"elevation"_s );
+  element.setAttribute( u"enabled"_s, mEnabled ? u"1"_s : u"0"_s );
+  element.setAttribute( u"mode"_s, qgsEnumValueToKey( mMode ) );
+  element.setAttribute( u"symbology"_s, qgsEnumValueToKey( mSymbology ) );
   if ( !std::isnan( mElevationLimit ) )
-    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
+    element.setAttribute( u"elevationLimit"_s, qgsDoubleToString( mElevationLimit ) );
 
   writeCommonProperties( element, document, context );
 
   switch ( mMode )
   {
     case Qgis::RasterElevationMode::FixedElevationRange:
-      element.setAttribute( QStringLiteral( "lower" ), qgsDoubleToString( mFixedRange.lower() ) );
-      element.setAttribute( QStringLiteral( "upper" ), qgsDoubleToString( mFixedRange.upper() ) );
-      element.setAttribute( QStringLiteral( "includeLower" ), mFixedRange.includeLower() ? "1" : "0" );
-      element.setAttribute( QStringLiteral( "includeUpper" ), mFixedRange.includeUpper() ? "1" : "0" );
+      element.setAttribute( u"lower"_s, qgsDoubleToString( mFixedRange.lower() ) );
+      element.setAttribute( u"upper"_s, qgsDoubleToString( mFixedRange.upper() ) );
+      element.setAttribute( u"includeLower"_s, mFixedRange.includeLower() ? "1" : "0" );
+      element.setAttribute( u"includeUpper"_s, mFixedRange.includeUpper() ? "1" : "0" );
       break;
 
     case Qgis::RasterElevationMode::FixedRangePerBand:
     {
-      QDomElement ranges = document.createElement( QStringLiteral( "ranges" ) );
+      QDomElement ranges = document.createElement( u"ranges"_s );
       for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
       {
-        QDomElement range = document.createElement( QStringLiteral( "range" ) );
-        range.setAttribute( QStringLiteral( "band" ), it.key() );
-        range.setAttribute( QStringLiteral( "lower" ), qgsDoubleToString( it.value().lower() ) );
-        range.setAttribute( QStringLiteral( "upper" ), qgsDoubleToString( it.value().upper() ) );
-        range.setAttribute( QStringLiteral( "includeLower" ), it.value().includeLower() ? "1" : "0" );
-        range.setAttribute( QStringLiteral( "includeUpper" ), it.value().includeUpper() ? "1" : "0" );
+        QDomElement range = document.createElement( u"range"_s );
+        range.setAttribute( u"band"_s, it.key() );
+        range.setAttribute( u"lower"_s, qgsDoubleToString( it.value().lower() ) );
+        range.setAttribute( u"upper"_s, qgsDoubleToString( it.value().upper() ) );
+        range.setAttribute( u"includeLower"_s, it.value().includeLower() ? "1" : "0" );
+        range.setAttribute( u"includeUpper"_s, it.value().includeUpper() ? "1" : "0" );
         ranges.appendChild( range );
       }
       element.appendChild( ranges );
@@ -85,15 +85,15 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
       break;
 
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
-      element.setAttribute( QStringLiteral( "band" ), mBandNumber );
+      element.setAttribute( u"band"_s, mBandNumber );
       break;
   }
 
-  QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
+  QDomElement profileLineSymbolElement = document.createElement( u"profileLineSymbol"_s );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
   element.appendChild( profileLineSymbolElement );
 
-  QDomElement profileFillSymbolElement = document.createElement( QStringLiteral( "profileFillSymbol" ) );
+  QDomElement profileFillSymbolElement = document.createElement( u"profileFillSymbol"_s );
   profileFillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileFillSymbol.get(), document, context ) );
   element.appendChild( profileFillSymbolElement );
 
@@ -103,12 +103,12 @@ QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElem
 
 bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mEnabled = elevationElement.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mMode = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "mode" ) ), Qgis::RasterElevationMode::RepresentsElevationSurface );
-  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
-  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
-    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  const QDomElement elevationElement = element.firstChildElement( u"elevation"_s ).toElement();
+  mEnabled = elevationElement.attribute( u"enabled"_s, u"0"_s ).toInt();
+  mMode = qgsEnumKeyToValue( elevationElement.attribute( u"mode"_s ), Qgis::RasterElevationMode::RepresentsElevationSurface );
+  mSymbology = qgsEnumKeyToValue( elevationElement.attribute( u"symbology"_s ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( u"elevationLimit"_s ) )
+    mElevationLimit = elevationElement.attribute( u"elevationLimit"_s ).toDouble();
   else
     mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
@@ -118,10 +118,10 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   {
     case Qgis::RasterElevationMode::FixedElevationRange:
     {
-      const double lower = elevationElement.attribute( QStringLiteral( "lower" ) ).toDouble();
-      const double upper = elevationElement.attribute( QStringLiteral( "upper" ) ).toDouble();
-      const bool includeLower = elevationElement.attribute( QStringLiteral( "includeLower" ) ).toInt();
-      const bool includeUpper = elevationElement.attribute( QStringLiteral( "includeUpper" ) ).toInt();
+      const double lower = elevationElement.attribute( u"lower"_s ).toDouble();
+      const double upper = elevationElement.attribute( u"upper"_s ).toDouble();
+      const bool includeLower = elevationElement.attribute( u"includeLower"_s ).toInt();
+      const bool includeUpper = elevationElement.attribute( u"includeUpper"_s ).toInt();
       mFixedRange = QgsDoubleRange( lower, upper, includeLower, includeUpper );
       break;
     }
@@ -130,15 +130,15 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
     {
       mRangePerBand.clear();
 
-      const QDomNodeList ranges = elevationElement.firstChildElement( QStringLiteral( "ranges" ) ).childNodes();
+      const QDomNodeList ranges = elevationElement.firstChildElement( u"ranges"_s ).childNodes();
       for ( int i = 0; i < ranges.size(); ++i )
       {
         const QDomElement rangeElement = ranges.at( i ).toElement();
-        const int band = rangeElement.attribute( QStringLiteral( "band" ) ).toInt();
-        const double lower = rangeElement.attribute( QStringLiteral( "lower" ) ).toDouble();
-        const double upper = rangeElement.attribute( QStringLiteral( "upper" ) ).toDouble();
-        const bool includeLower = rangeElement.attribute( QStringLiteral( "includeLower" ) ).toInt();
-        const bool includeUpper = rangeElement.attribute( QStringLiteral( "includeUpper" ) ).toInt();
+        const int band = rangeElement.attribute( u"band"_s ).toInt();
+        const double lower = rangeElement.attribute( u"lower"_s ).toDouble();
+        const double upper = rangeElement.attribute( u"upper"_s ).toDouble();
+        const bool includeLower = rangeElement.attribute( u"includeLower"_s ).toInt();
+        const bool includeUpper = rangeElement.attribute( u"includeUpper"_s ).toInt();
         mRangePerBand.insert( band, QgsDoubleRange( lower, upper, includeLower, includeUpper ) );
       }
       break;
@@ -148,18 +148,18 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
       break;
 
     case Qgis::RasterElevationMode::RepresentsElevationSurface:
-      mBandNumber = elevationElement.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt();
+      mBandNumber = elevationElement.attribute( u"band"_s, u"1"_s ).toInt();
       break;
   }
 
   const QColor defaultColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
-  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( u"profileLineSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileLineSymbol = QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( defaultColor );
 
-  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( u"profileFillSymbol"_s ).firstChildElement( u"symbol"_s );
   mProfileFillSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( defaultColor );
@@ -211,7 +211,7 @@ QString QgsRasterLayerElevationProperties::htmlSummary() const
       break;
   }
 
-  return QStringLiteral( "<li>%1</li>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
+  return u"<li>%1</li>"_s.arg( properties.join( "</li><li>"_L1 ) );
 }
 
 bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer ) const
@@ -238,9 +238,9 @@ bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange 
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
         QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), rl->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), rl->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, 1, true, false, tr( "Band number" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, rl->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, rl->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
         context.appendScope( bandScope );
 
         QgsProperty lowerProperty = mDataDefinedProperties.property( Property::RasterPerBandLowerElevation );
@@ -249,9 +249,9 @@ bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange 
         upperProperty.prepare( context );
         for ( int band = 1; band <= rl->bandCount(); ++band )
         {
-          bandScope->setVariable( QStringLiteral( "band" ), band );
-          bandScope->setVariable( QStringLiteral( "band_name" ), rl->dataProvider()->displayBandName( band ) );
-          bandScope->setVariable( QStringLiteral( "band_description" ), rl->dataProvider()->bandDescription( band ) );
+          bandScope->setVariable( u"band"_s, band );
+          bandScope->setVariable( u"band_name"_s, rl->dataProvider()->displayBandName( band ) );
+          bandScope->setVariable( u"band_description"_s, rl->dataProvider()->bandDescription( band ) );
 
           bool ok = false;
           const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
@@ -319,9 +319,9 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
         QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), rl->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), rl->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, 1, true, false, tr( "Band number" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, rl->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, rl->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
         context.appendScope( bandScope );
 
         QgsProperty lowerProperty = mDataDefinedProperties.property( Property::RasterPerBandLowerElevation );
@@ -332,9 +332,9 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
         double maxUpper = std::numeric_limits<double>::lowest();
         for ( int band = 1; band <= rl->bandCount(); ++band )
         {
-          bandScope->setVariable( QStringLiteral( "band" ), band );
-          bandScope->setVariable( QStringLiteral( "band_name" ), rl->dataProvider()->displayBandName( band ) );
-          bandScope->setVariable( QStringLiteral( "band_description" ), rl->dataProvider()->bandDescription( band ) );
+          bandScope->setVariable( u"band"_s, band );
+          bandScope->setVariable( u"band_name"_s, rl->dataProvider()->displayBandName( band ) );
+          bandScope->setVariable( u"band_description"_s, rl->dataProvider()->bandDescription( band ) );
 
           bool ok = false;
           const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
@@ -398,9 +398,9 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
         QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), rl->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), rl->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, 1, true, false, tr( "Band number" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, rl->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, rl->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
         context.appendScope( bandScope );
 
         QgsProperty lowerProperty = mDataDefinedProperties.property( Property::RasterPerBandLowerElevation );
@@ -409,9 +409,9 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
         upperProperty.prepare( context );
         for ( int band = 1; band <= rl->bandCount(); ++band )
         {
-          bandScope->setVariable( QStringLiteral( "band" ), band );
-          bandScope->setVariable( QStringLiteral( "band_name" ), rl->dataProvider()->displayBandName( band ) );
-          bandScope->setVariable( QStringLiteral( "band_description" ), rl->dataProvider()->bandDescription( band ) );
+          bandScope->setVariable( u"band"_s, band );
+          bandScope->setVariable( u"band_name"_s, rl->dataProvider()->displayBandName( band ) );
+          bandScope->setVariable( u"band_description"_s, rl->dataProvider()->bandDescription( band ) );
 
           bool ok = false;
           const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
@@ -513,9 +513,9 @@ QgsDoubleRange QgsRasterLayerElevationProperties::elevationRangeForPixelValue( Q
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
         QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), layer->dataProvider()->displayBandName( band ), true, false, tr( "Band name" ) ) );
-        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), layer->dataProvider()->bandDescription( band ), true, false, tr( "Band description" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, layer->dataProvider()->displayBandName( band ), true, false, tr( "Band name" ) ) );
+        bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, layer->dataProvider()->bandDescription( band ), true, false, tr( "Band description" ) ) );
         context.appendScope( bandScope );
 
         QgsProperty lowerProperty = mDataDefinedProperties.property( Property::RasterPerBandLowerElevation );
@@ -597,9 +597,9 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
 
         for ( int band = 1; band <= layer->bandCount(); ++band )
         {
-          bandScope->setVariable( QStringLiteral( "band" ), band );
-          bandScope->setVariable( QStringLiteral( "band_name" ), layer->dataProvider()->displayBandName( band ) );
-          bandScope->setVariable( QStringLiteral( "band_description" ), layer->dataProvider()->bandDescription( band ) );
+          bandScope->setVariable( u"band"_s, band );
+          bandScope->setVariable( u"band_name"_s, layer->dataProvider()->displayBandName( band ) );
+          bandScope->setVariable( u"band_description"_s, layer->dataProvider()->bandDescription( band ) );
 
           bool ok = false;
           const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
@@ -717,25 +717,25 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   // Check the layer's name for DEM-ish hints.
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
-  static const QStringList sPartialCandidates{ QStringLiteral( "dem" ),
-      QStringLiteral( "dtm" ),
-      QStringLiteral( "dsm" ),
-      QStringLiteral( "height" ),
-      QStringLiteral( "elev" ),
-      QStringLiteral( "srtm" ),
-      QStringLiteral( "dted" ),
+  static const QStringList sPartialCandidates{ u"dem"_s,
+      u"dtm"_s,
+      u"dsm"_s,
+      u"height"_s,
+      u"elev"_s,
+      u"srtm"_s,
+      u"dted"_s,
       // French hints
-      QStringLiteral( "mne" ),
-      QStringLiteral( "mnt" ),
-      QStringLiteral( "mns" ),
-      QStringLiteral( "rge" ),
-      QStringLiteral( "alti" ),
+      u"mne"_s,
+      u"mnt"_s,
+      u"mns"_s,
+      u"rge"_s,
+      u"alti"_s,
       // German hints
-      QStringLiteral( "dhm" ),
-      QStringLiteral( "dgm" ),
-      QStringLiteral( "dom" ),
-      QStringLiteral( "Höhe" ),
-      QStringLiteral( "Hoehe" ) };
+      u"dhm"_s,
+      u"dgm"_s,
+      u"dom"_s,
+      u"Höhe"_s,
+      u"Hoehe"_s };
   const QString layerName = layer->name();
   for ( const QString &candidate : sPartialCandidates )
   {
@@ -744,10 +744,10 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   }
 
   // these candidates must occur with word boundaries (we don't want to find "aster" in "raster"!)
-  static const QStringList sWordCandidates{ QStringLiteral( "aster" ) };
+  static const QStringList sWordCandidates{ u"aster"_s };
   for ( const QString &candidate : sWordCandidates )
   {
-    const thread_local QRegularExpression re( QStringLiteral( "\\b%1\\b" ).arg( candidate ) );
+    const thread_local QRegularExpression re( u"\\b%1\\b"_s.arg( candidate ) );
     if ( re.match( layerName, Qt::CaseInsensitive ).hasMatch() )
       return true;
   }

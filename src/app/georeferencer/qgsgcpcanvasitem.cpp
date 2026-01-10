@@ -73,13 +73,13 @@ void QgsGCPCanvasItem::paint( QPainter *p )
     return;
 
   const QgsSettings s;
-  const bool showIDs = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool();
-  const bool showCoords = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool();
+  const bool showIDs = s.value( u"/Plugin-GeoReferencer/Config/ShowId"_s ).toBool();
+  const bool showCoords = s.value( u"/Plugin-GeoReferencer/Config/ShowCoords"_s ).toBool();
 
   QString msg;
   if ( showIDs && showCoords )
   {
-    msg = QStringLiteral( "%1\nX %2\nY %3" ).arg( QString::number( id ), QString::number( worldCoords.x(), 'f' ), QString::number( worldCoords.y(), 'f' ) );
+    msg = u"%1\nX %2\nY %3"_s.arg( QString::number( id ), QString::number( worldCoords.x(), 'f' ), QString::number( worldCoords.y(), 'f' ) );
   }
   else if ( showIDs )
   {
@@ -87,13 +87,13 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   }
   else if ( showCoords )
   {
-    msg = QStringLiteral( "X %1\nY %2" ).arg( QString::number( worldCoords.x(), 'f' ), QString::number( worldCoords.y(), 'f' ) );
+    msg = u"X %1\nY %2"_s.arg( QString::number( worldCoords.x(), 'f' ), QString::number( worldCoords.y(), 'f' ) );
   }
 
   if ( !msg.isEmpty() )
   {
     p->setBrush( mLabelBrush );
-    QFont textFont( QStringLiteral( "helvetica" ) );
+    QFont textFont( u"helvetica"_s );
     textFont.setPixelSize( fontSizePainterUnits( 12, context ) );
     p->setFont( textFont );
     const QRectF textBounds = p->boundingRect( 3 * context.scaleFactor(), 3 * context.scaleFactor(), 5 * context.scaleFactor(), 5 * context.scaleFactor(), Qt::AlignLeft, msg );

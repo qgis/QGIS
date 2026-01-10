@@ -49,7 +49,7 @@
 
 QString QgsVectorLayerProfileResults::type() const
 {
-  return QStringLiteral( "vector" );
+  return u"vector"_s;
 }
 
 QVector<QgsGeometry> QgsVectorLayerProfileResults::asGeometries() const
@@ -109,7 +109,7 @@ QVector<QgsProfileIdentifyResults> QgsVectorLayerProfileResults::identify( const
 
   QVector< QVariantMap> idsList;
   for ( auto it = ids.constBegin(); it != ids.constEnd(); ++it )
-    idsList.append( QVariantMap( {{QStringLiteral( "id" ), *it}} ) );
+    idsList.append( QVariantMap( {{u"id"_s, *it}} ) );
 
   return { QgsProfileIdentifyResults( mLayer, idsList ) };
 }
@@ -122,21 +122,21 @@ QVector<QgsProfileIdentifyResults> QgsVectorLayerProfileResults::identify( const
     auto it = features.find( featureId );
     if ( it == features.end() )
     {
-      features[ featureId ] = QVariantMap( {{QStringLiteral( "id" ), featureId },
-        {QStringLiteral( "delta" ), delta },
-        {QStringLiteral( "distance" ), distance },
-        {QStringLiteral( "elevation" ), elevation }
+      features[ featureId ] = QVariantMap( {{u"id"_s, featureId },
+        {u"delta"_s, delta },
+        {u"distance"_s, distance },
+        {u"elevation"_s, elevation }
       } );
     }
     else
     {
-      const double currentDelta = it.value().value( QStringLiteral( "delta" ) ).toDouble();
+      const double currentDelta = it.value().value( u"delta"_s ).toDouble();
       if ( delta < currentDelta )
       {
-        *it = QVariantMap( {{QStringLiteral( "id" ), featureId },
-          {QStringLiteral( "delta" ), delta },
-          {QStringLiteral( "distance" ), distance },
-          {QStringLiteral( "elevation" ), elevation }
+        *it = QVariantMap( {{u"id"_s, featureId },
+          {u"delta"_s, delta },
+          {u"distance"_s, distance },
+          {u"elevation"_s, elevation }
         } );
       }
     }
@@ -636,7 +636,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsVectorLayerProfileResults::asIndi
 
       QgsAbstractProfileResults::Feature outFeature;
       outFeature.layerIdentifier = mId;
-      outFeature.attributes = {{QStringLiteral( "id" ), feature.featureId }};
+      outFeature.attributes = {{u"id"_s, feature.featureId }};
       switch ( type )
       {
         case Qgis::ProfileExportType::Features3D:
@@ -806,7 +806,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to vector CRS" ) );
+    QgsDebugError( u"Error transforming profile line to vector CRS"_s );
     return false;
   }
 
@@ -1451,7 +1451,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 #ifdef QGISDEBUG
           else
           {
-            QgsDebugMsgLevel( QStringLiteral( "processPolygon after shift bad geom! error: %1" ).arg( error ), 0 );
+            QgsDebugMsgLevel( u"processPolygon after shift bad geom! error: %1"_s.arg( error ), 0 );
           }
 #endif
         }
@@ -1537,7 +1537,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           else
           {
             // curved geometries, not supported yet, but not possible through the GUI anyway
-            QgsDebugError( QStringLiteral( "Collinear triangles with curved profile lines are not supported yet" ) );
+            QgsDebugError( u"Collinear triangles with curved profile lines are not supported yet"_s );
           }
         }
         else // not collinear
@@ -1591,7 +1591,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         }
         else
         {
-          QgsDebugError( QStringLiteral( "Unhandled Geometry type: %1" ).arg( ( *it )->wktTypeStr() ) );
+          QgsDebugError( u"Unhandled Geometry type: %1"_s.arg( ( *it )->wktTypeStr() ) );
         }
       }
     }

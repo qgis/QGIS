@@ -50,7 +50,7 @@ QString QgsVectorDataProvider::storageType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "Generic vector file" );
+  return u"Generic vector file"_s;
 }
 
 bool QgsVectorDataProvider::empty() const
@@ -283,7 +283,7 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
   {
     mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
   }
-  if ( !mEncoding && e != QLatin1String( "System" ) )
+  if ( !mEncoding && e != "System"_L1 )
   {
     if ( !e.isEmpty() )
     {
@@ -410,7 +410,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Feature Symbology" );
   }
 
-  return abilitiesList.join( QLatin1String( ", " ) );
+  return abilitiesList.join( ", "_L1 );
 }
 
 Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const
@@ -479,7 +479,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "field name = %1 type = %2 length = %3 precision = %4" )
+  QgsDebugMsgLevel( u"field name = %1 type = %2 length = %3 precision = %4"_s
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
@@ -487,7 +487,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 
   for ( const NativeType &nativeType : mNativeTypes )
   {
-    QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
+    QgsDebugMsgLevel( u"native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5"_s
                       .arg( QVariant::typeToName( nativeType.mType ) )
                       .arg( nativeType.mMinLen )
                       .arg( nativeType.mMaxLen )
@@ -519,11 +519,11 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
+    QgsDebugMsgLevel( u"native type matches"_s, 3 );
     return true;
   }
 
-  QgsDebugError( QStringLiteral( "no sufficient native type found" ) );
+  QgsDebugError( u"no sufficient native type found"_s );
   return false;
 }
 
@@ -581,7 +581,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   request.setSubsetOfAttributes( keys );
   request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   const QString fieldName = fields().at( index ).name();
-  request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
+  request.setFilterExpression( u"\"%1\" ILIKE '%%2%'"_s.arg( fieldName, substring ) );
   QgsFeatureIterator fi = getFeatures( request );
 
   QSet<QString> set;

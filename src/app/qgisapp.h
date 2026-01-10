@@ -1281,7 +1281,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parameter is used in the Map Legend so it should be formed in a meaningful
      * way.
      */
-    QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey = QLatin1String( "gdal" ) );
+    QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey = "gdal"_L1 );
 
     /**
      * Add a vector layer directly without prompting user for location
@@ -1291,7 +1291,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parameter is used in the Map Legend so it should be formed in a meaningful
      * way.
      */
-    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey = QLatin1String( "ogr" ) );
+    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey = "ogr"_L1 );
 
     /**
      * Adds a mesh layer directly without prompting user for location
@@ -1856,6 +1856,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void moveFeature();
     //! activates the copy and move feature tool
     void moveFeatureCopy();
+    //! activates the feature array copy tool
+    void featureArray();
     //! activates the offset curve tool
     void offsetCurve();
     //! activates the chamfer fillet tool
@@ -2590,6 +2592,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerTreeView *mLayerTreeView = nullptr;
     //! Keep track of whether ongoing dataset(s) is/are being dropped through the table of contents
     bool mLayerTreeDrop = false;
+
+    bool mInitializationHasCompleted = false;
+    QStringList mDeferredFileOpenPaths;
 
     //! Helper class that connects layer tree with map canvas
     QgsLayerTreeMapCanvasBridge *mLayerTreeCanvasBridge = nullptr;

@@ -98,7 +98,7 @@ void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, u"*.ui"_s );
   if ( filename.isEmpty() )
   {
     return;
@@ -123,7 +123,7 @@ void QgsFormAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsFormAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsFormAnnotationDialog::onSettingsChanged()

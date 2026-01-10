@@ -140,9 +140,9 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
 
       for ( int band : temporalBands )
       {
-        bandScope->setVariable( QStringLiteral( "band" ), band );
-        bandScope->setVariable( QStringLiteral( "band_name" ), layer->dataProvider()->displayBandName( band ) );
-        bandScope->setVariable( QStringLiteral( "band_description" ), layer->dataProvider()->bandDescription( band ) );
+        bandScope->setVariable( u"band"_s, band );
+        bandScope->setVariable( u"band_name"_s, layer->dataProvider()->displayBandName( band ) );
+        bandScope->setVariable( u"band_description"_s, layer->dataProvider()->bandDescription( band ) );
 
         bool ok = false;
         const double lower = lowerProperty.valueAsDouble( context, 0, &ok );

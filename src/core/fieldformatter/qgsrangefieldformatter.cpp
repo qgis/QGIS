@@ -26,7 +26,7 @@
 
 QString QgsRangeFieldFormatter::id() const
 {
-  return QStringLiteral( "Range" );
+  return u"Range"_s;
 }
 
 QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
@@ -44,14 +44,14 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
   const QgsField field = layer->fields().at( fieldIndex );
 
   if ( field.type() == QMetaType::Type::Double &&
-       config.contains( QStringLiteral( "Precision" ) ) &&
+       config.contains( u"Precision"_s ) &&
        value.isValid( ) )
   {
     bool ok;
     const double val( value.toDouble( &ok ) );
     if ( ok )
     {
-      const int precision( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+      const int precision( config[ u"Precision"_s ].toInt( &ok ) );
       if ( ok )
       {
         // TODO: make the format configurable!

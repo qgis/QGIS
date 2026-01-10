@@ -31,7 +31,7 @@ class TestQgsRasterBlock : public QgsTest
     Q_OBJECT
   public:
     TestQgsRasterBlock()
-      : QgsTest( QStringLiteral( "Raster block" ) )
+      : QgsTest( u"Raster block"_s )
     {}
 
   private slots:
@@ -64,7 +64,7 @@ void TestQgsRasterBlock::initTestCase()
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString band1byteRaster = mTestDataDir + "/raster/band1_byte_ct_epsg4326.tif";
 
-  mpRasterLayer = new QgsRasterLayer( band1byteRaster, QStringLiteral( "band1_byte" ) );
+  mpRasterLayer = new QgsRasterLayer( band1byteRaster, u"band1_byte"_s );
 
   QVERIFY( mpRasterLayer && mpRasterLayer->isValid() );
 }
@@ -178,7 +178,7 @@ void TestQgsRasterBlock::testWrite()
 
   // create a GeoTIFF - this will create data provider in editable mode
   const QString filename = tmpFile.fileName();
-  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::DataType::Byte, 10, 10, tform, mpRasterLayer->crs() );
+  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( u"gdal"_s, filename, u"GTiff"_s, 1, Qgis::DataType::Byte, 10, 10, tform, mpRasterLayer->crs() );
 
   QgsRasterBlock *block = mpRasterLayer->dataProvider()->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
 
@@ -201,7 +201,7 @@ void TestQgsRasterBlock::testWrite()
   delete dp;
 
   // newly open raster and verify the write was permanent
-  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, u"tmp"_s, u"gdal"_s );
   QVERIFY( rlayer->isValid() );
   QgsRasterBlock *block3 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
   const QByteArray newData3 = block3->data();
@@ -255,17 +255,17 @@ void TestQgsRasterBlock::testPrintValueDouble_data()
   QTest::addColumn<QLocale::Language>( "language" );
   QTest::addColumn<QString>( "expected" );
 
-  QTest::newRow( "English double" ) << 123456.789 << true << QLocale::Language::English << QStringLiteral( "123,456.789" );
-  QTest::newRow( "English int" ) << 123456.0 << true << QLocale::Language::English << QStringLiteral( "123,456" );
-  QTest::newRow( "English int no locale" ) << 123456.0 << false << QLocale::Language::English << QStringLiteral( "123456" );
-  QTest::newRow( "English double no locale" ) << 123456.789 << false << QLocale::Language::English << QStringLiteral( "123456.789" );
-  QTest::newRow( "English negative double" ) << -123456.789 << true << QLocale::Language::English << QStringLiteral( "-123,456.789" );
+  QTest::newRow( "English double" ) << 123456.789 << true << QLocale::Language::English << u"123,456.789"_s;
+  QTest::newRow( "English int" ) << 123456.0 << true << QLocale::Language::English << u"123,456"_s;
+  QTest::newRow( "English int no locale" ) << 123456.0 << false << QLocale::Language::English << u"123456"_s;
+  QTest::newRow( "English double no locale" ) << 123456.789 << false << QLocale::Language::English << u"123456.789"_s;
+  QTest::newRow( "English negative double" ) << -123456.789 << true << QLocale::Language::English << u"-123,456.789"_s;
 
-  QTest::newRow( "Italian double" ) << 123456.789 << true << QLocale::Language::Italian << QStringLiteral( "123.456,789" );
-  QTest::newRow( "Italian int" ) << 123456.0 << true << QLocale::Language::Italian << QStringLiteral( "123.456" );
-  QTest::newRow( "Italian int no locale" ) << 123456.0 << false << QLocale::Language::Italian << QStringLiteral( "123456" );
-  QTest::newRow( "Italian double no locale" ) << 123456.789 << false << QLocale::Language::Italian << QStringLiteral( "123456.789" );
-  QTest::newRow( "Italian negative double" ) << -123456.789 << true << QLocale::Language::Italian << QStringLiteral( "-123.456,789" );
+  QTest::newRow( "Italian double" ) << 123456.789 << true << QLocale::Language::Italian << u"123.456,789"_s;
+  QTest::newRow( "Italian int" ) << 123456.0 << true << QLocale::Language::Italian << u"123.456"_s;
+  QTest::newRow( "Italian int no locale" ) << 123456.0 << false << QLocale::Language::Italian << u"123456"_s;
+  QTest::newRow( "Italian double no locale" ) << 123456.789 << false << QLocale::Language::Italian << u"123456.789"_s;
+  QTest::newRow( "Italian negative double" ) << -123456.789 << true << QLocale::Language::Italian << u"-123.456,789"_s;
 }
 
 
@@ -284,7 +284,7 @@ void TestQgsRasterBlock::testPrintValueDouble()
 
 void TestQgsRasterBlock::testMinimumMaximum()
 {
-  QgsRasterLayer rl( copyTestData( QStringLiteral( "raster/dem.tif" ) ), QStringLiteral( "dem" ) );
+  QgsRasterLayer rl( copyTestData( u"raster/dem.tif"_s ), u"dem"_s );
   QVERIFY( rl.isValid() );
 
   QgsRasterDataProvider *provider = rl.dataProvider();
@@ -375,17 +375,17 @@ void TestQgsRasterBlock::testPrintValueFloat_data()
   QTest::addColumn<QLocale::Language>( "language" );
   QTest::addColumn<QString>( "expected" );
 
-  QTest::newRow( "English float" ) << 123456.789f << true << QLocale::Language::English << QStringLiteral( "123,456.79" );
-  QTest::newRow( "English int" ) << 123456.f << true << QLocale::Language::English << QStringLiteral( "123,456" );
-  QTest::newRow( "English int no locale" ) << 123456.f << false << QLocale::Language::English << QStringLiteral( "123456" );
-  QTest::newRow( "English float no locale" ) << 123456.789f << false << QLocale::Language::English << QStringLiteral( "123456.79" );
-  QTest::newRow( "English negative float" ) << -123456.789f << true << QLocale::Language::English << QStringLiteral( "-123,456.79" );
+  QTest::newRow( "English float" ) << 123456.789f << true << QLocale::Language::English << u"123,456.79"_s;
+  QTest::newRow( "English int" ) << 123456.f << true << QLocale::Language::English << u"123,456"_s;
+  QTest::newRow( "English int no locale" ) << 123456.f << false << QLocale::Language::English << u"123456"_s;
+  QTest::newRow( "English float no locale" ) << 123456.789f << false << QLocale::Language::English << u"123456.79"_s;
+  QTest::newRow( "English negative float" ) << -123456.789f << true << QLocale::Language::English << u"-123,456.79"_s;
 
-  QTest::newRow( "Italian float" ) << 123456.789f << true << QLocale::Language::Italian << QStringLiteral( "123.456,79" );
-  QTest::newRow( "Italian int" ) << 123456.f << true << QLocale::Language::Italian << QStringLiteral( "123.456" );
-  QTest::newRow( "Italian int no locale" ) << 123456.f << false << QLocale::Language::Italian << QStringLiteral( "123456" );
-  QTest::newRow( "Italian float no locale" ) << 123456.789f << false << QLocale::Language::Italian << QStringLiteral( "123456.79" );
-  QTest::newRow( "Italian negative float" ) << -123456.789f << true << QLocale::Language::Italian << QStringLiteral( "-123.456,79" );
+  QTest::newRow( "Italian float" ) << 123456.789f << true << QLocale::Language::Italian << u"123.456,79"_s;
+  QTest::newRow( "Italian int" ) << 123456.f << true << QLocale::Language::Italian << u"123.456"_s;
+  QTest::newRow( "Italian int no locale" ) << 123456.f << false << QLocale::Language::Italian << u"123456"_s;
+  QTest::newRow( "Italian float no locale" ) << 123456.789f << false << QLocale::Language::Italian << u"123456.79"_s;
+  QTest::newRow( "Italian negative float" ) << -123456.789f << true << QLocale::Language::Italian << u"-123.456,79"_s;
 }
 
 void TestQgsRasterBlock::testPrintValueFloat()

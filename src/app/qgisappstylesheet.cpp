@@ -45,9 +45,9 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // constructor to set reasonable non-Qt defaults for the app stylesheet
   QgsSettings settings;
 
-  opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "/qgis/stylesheet/toolbarSpacing" ), QString() ) );
+  opts.insert( u"toolbarSpacing"_s, settings.value( u"/qgis/stylesheet/toolbarSpacing"_s, QString() ) );
 
-  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/qgis/toolbarIconSize" ), QGIS_ICON_SIZE ) );
+  opts.insert( u"iconSize"_s, settings.value( u"/qgis/toolbarIconSize"_s, QGIS_ICON_SIZE ) );
 
   return opts;
 }
@@ -59,15 +59,15 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
 
   if ( mMacStyle )
   {
-    ss += QLatin1String( "QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab," );
-    ss += QLatin1String( "QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab" );
-    ss += QLatin1String( "QTabBar::tab { width: 1.2em; }" );
+    ss += "QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,"_L1;
+    ss += "QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab"_L1;
+    ss += "QTabBar::tab { width: 1.2em; }"_L1;
   }
 
-  ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
+  ss += "QGroupBox{ font-weight: 600; }"_L1;
 
-  const QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
-  if ( themeName == QLatin1String( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
+  const QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
+  if ( themeName == "default"_L1 || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style
     const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
@@ -108,14 +108,14 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
                              "}" )
                .arg( frameMargin );
 
-    const QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
+    const QString toolbarSpacing = opts.value( u"toolbarSpacing"_s, QString() ).toString();
     if ( !toolbarSpacing.isEmpty() )
     {
       bool ok = false;
       const int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
       if ( ok )
       {
-        style += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
+        style += u"QToolBar > QToolButton { padding: %1px; } "_s.arg( toolbarSpacingInt );
       }
     }
     ss += style;
@@ -130,7 +130,7 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
             .arg( palette.highlight().color().name(), palette.highlightedText().color().name() );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
+  QgsDebugMsgLevel( u"Stylesheet built: %1"_s.arg( ss ), 2 );
 
   emit appStyleSheetChanged( ss );
 }
@@ -145,13 +145,13 @@ void QgisAppStyleSheet::setUserFontSize( double size )
   QgsSettings settings;
   if ( size == mDefaultFont.pointSizeF() || size < 0 )
   {
-    settings.remove( QStringLiteral( "/app/fontPointSize" ) );
+    settings.remove( u"/app/fontPointSize"_s );
     mUserFontSize = -1;
   }
   else
   {
     mUserFontSize = size;
-    settings.setValue( QStringLiteral( "/app/fontPointSize" ), mUserFontSize );
+    settings.setValue( u"/app/fontPointSize"_s, mUserFontSize );
   }
 }
 
@@ -160,20 +160,20 @@ void QgisAppStyleSheet::setUserFontFamily( const QString &family )
   QgsSettings settings;
   if ( family == mDefaultFont.family() || family.isEmpty() )
   {
-    settings.remove( QStringLiteral( "/app/fontFamily" ) );
+    settings.remove( u"/app/fontFamily"_s );
     mUserFontFamily.clear();
   }
   else
   {
     mUserFontFamily = family;
-    settings.setValue( QStringLiteral( "/app/fontFamily" ), mUserFontFamily );
+    settings.setValue( u"/app/fontFamily"_s, mUserFontFamily );
   }
 }
 
 void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
+  settings.beginGroup( u"qgis/stylesheet"_s );
 
   QMap<QString, QVariant>::const_iterator opt = opts.constBegin();
   while ( opt != opts.constEnd() )
@@ -188,10 +188,10 @@ void QgisAppStyleSheet::setActiveValues()
 {
   QgsAppStyle *style = dynamic_cast<QgsAppStyle *>( qApp->style() );
   mStyle = style ? style->baseStyle() : qApp->style()->objectName(); // active style name (lowercase)
-  QgsDebugMsgLevel( QStringLiteral( "Style name: %1" ).arg( mStyle ), 2 );
+  QgsDebugMsgLevel( u"Style name: %1"_s.arg( mStyle ), 2 );
 
-  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
-  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) );    // oxygen
+  mMacStyle = mStyle.contains( "macintosh"_L1 ); // macintosh (aqua)
+  mOxyStyle = mStyle.contains( "oxygen"_L1 );    // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 
@@ -204,7 +204,7 @@ void QgisAppStyleSheet::setActiveValues()
   }
   else
   {
-    const double fontSize = settings.value( QStringLiteral( "/app/fontPointSize" ), mDefaultFont.pointSizeF() ).toDouble();
+    const double fontSize = settings.value( u"/app/fontPointSize"_s, mDefaultFont.pointSizeF() ).toDouble();
     if ( fontSize != mDefaultFont.pointSizeF() )
     {
       mUserFontSize = fontSize;
@@ -215,7 +215,7 @@ void QgisAppStyleSheet::setActiveValues()
     }
   }
 
-  QString fontFamily = settings.value( QStringLiteral( "/app/fontFamily" ), mDefaultFont.family() ).toString();
+  QString fontFamily = settings.value( u"/app/fontFamily"_s, mDefaultFont.family() ).toString();
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
