@@ -203,17 +203,6 @@ QString QgsHanaLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
-bool QgsHanaLayerItem::equal( const QgsDataItem *other )
-{
-  // Call parent class first
-  if ( !QgsLayerItem::equal( other ) )
-    return false;
-
-  // Also compare tooltips (which contain table comments)
-  const QgsHanaLayerItem *o = qobject_cast<const QgsHanaLayerItem *>( other );
-  return o && toolTip() == o->toolTip();
-}
-
 // ---------------------------------------------------------------------------
 QgsHanaSchemaItem::QgsHanaSchemaItem(
   QgsDataItem *parent,
