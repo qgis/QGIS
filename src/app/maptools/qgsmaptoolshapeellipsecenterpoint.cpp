@@ -89,6 +89,11 @@ void QgsMapToolShapeEllipseCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e,
   if ( mTempRubberBand )
   {
     mEllipse = QgsEllipse::fromCenterPoint( mPoints.at( 0 ), point );
-    mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
+    const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }

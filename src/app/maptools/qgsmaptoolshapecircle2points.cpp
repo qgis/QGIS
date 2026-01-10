@@ -83,5 +83,10 @@ void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
     return;
 
   mCircle = QgsCircle::from2Points( mPoints.at( 0 ), mParentTool->mapPoint( *e ) );
-  mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
+  const QgsGeometry newGeometry( mCircle.toCircularString( true ) );
+  if ( !newGeometry.isEmpty() )
+  {
+    mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+    setTransientGeometry( newGeometry );
+  }
 }
