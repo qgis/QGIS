@@ -70,6 +70,18 @@ Qgis.AuthConfigurationStorageCapabilities.baseClass = Qgis
 AuthConfigurationStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 Qgis.MessageLevel.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MessageType.MessageText.__doc__ = "Text message"
+Qgis.MessageType.MessageHtml.__doc__ = "HTML message"
+Qgis.MessageType.__doc__ = """Type of message
+This will be used both for message log and message bar in application.
+
+* ``MessageText``: Text message
+* ``MessageHtml``: HTML message
+
+"""
+# --
+Qgis.MessageType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.NetworkRequestFlag.DisableMessageLogging.__doc__ = "If present, indicates that no message logging should be performed when network errors are encountered"
 Qgis.NetworkRequestFlag.__doc__ = """Flags controlling behavior of network requests.
 
