@@ -70,9 +70,45 @@ ignored and not included in the index.
 %End
 
 
+    QgsSpatialIndexKDBush();
+%Docstring
+Constructs an empty index.
+
+The index must be manually populated by calls to
+:py:func:`~QgsSpatialIndexKDBush.addFeature` followed by
+:py:func:`~QgsSpatialIndexKDBush.finalize`.
+
+.. versionadded:: 4.0
+%End
+
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
 
     ~QgsSpatialIndexKDBush();
+
+    bool addFeature( QgsFeatureId id, const QgsPointXY &point );
+%Docstring
+Adds a single ``feature`` to the index.
+
+.. note::
+
+   A call to :py:func:`~QgsSpatialIndexKDBush.finalize` must be made after all features have been added. It is not
+   possible to add features after finalizing the spatial index.
+
+:return: ``True`` if feature was successfully added to index.
+
+.. versionadded:: 4.0
+%End
+
+    void finalize();
+%Docstring
+Finalizes the index after manually adding features.
+
+This method must be called after adding all features via
+:py:func:`~QgsSpatialIndexKDBush.addFeature` and before performing any
+queries on the index.
+
+.. versionadded:: 4.0
+%End
 
     QList<QgsSpatialIndexKDBushData> intersects( const QgsRectangle &rectangle ) const;
 %Docstring

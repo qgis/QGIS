@@ -223,14 +223,56 @@ QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorit
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsFeedback::cancel, Qt::DirectConnection );
     connect( this, &QgsFeedback::progressChanged, this, &QgsProcessingMultiStepFeedback::updateOverallProgress );
   }
+
+  // initialize with equal weights
+  const double equalWeight = mChildSteps > 0 ? 1.0 / mChildSteps : 0.0;
+  for ( int i = 0; i < mChildSteps; ++i )
+  {
+    mStepWeights << equalWeight;
+  }
 }
 
 void QgsProcessingMultiStepFeedback::setCurrentStep( int step )
 {
   mCurrentStep = step;
 
+  // calculate the base progress (sum of all previous steps)
+  mCurrentStepBaseProgress = 0.0;
+  for ( int i = 0; i < mCurrentStep && i < mStepWeights.count(); ++i )
+  {
+    mCurrentStepBaseProgress += mStepWeights.at( i ) * 100.0;
+  }
+
   if ( mFeedback )
-    mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
+    mFeedback->setProgress( mCurrentStepBaseProgress );
+}
+
+void QgsProcessingMultiStepFeedback::setStepWeights( const QList<double> &weights )
+{
+  if ( weights.size() != mChildSteps )
+  {
+    return;
+  }
+
+  const double totalWeight = std::reduce( weights.begin(), weights.end() );
+
+  mStepWeights.clear();
+  if ( totalWeight > 0.0 )
+  {
+    for ( double w : weights )
+    {
+      mStepWeights << ( w / totalWeight );
+    }
+  }
+  else
+  {
+    // fallback to equal weights if total weight is 0
+    const double equalWeight = mChildSteps > 0 ? 1.0 / mChildSteps : 0.0;
+    for ( int i = 0; i < mChildSteps; ++i )
+    {
+      mStepWeights << equalWeight;
+    }
+  }
 }
 
 void QgsProcessingMultiStepFeedback::setProgressText( const QString &text )
@@ -297,8 +339,10 @@ QString QgsProcessingMultiStepFeedback::textLog() const
 
 void QgsProcessingMultiStepFeedback::updateOverallProgress( double progress )
 {
-  const double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
-  const double currentAlgorithmProgress = progress / mChildSteps;
-  if ( mFeedback )
-    mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
+  if ( !mFeedback )
+    return;
+
+  const double currentStepWeight = mStepWeights.value( mCurrentStep, 0 );
+
+  mFeedback->setProgress( mCurrentStepBaseProgress + progress * currentStepWeight );
 }

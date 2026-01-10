@@ -101,10 +101,40 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     explicit QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsFeedback *feedback = nullptr );
 #endif
 
+    /**
+     * Constructs an empty index.
+     *
+     * The index must be manually populated by calls to addFeature() followed by finalize().
+     *
+     * \since QGIS 4.0
+     */
+    QgsSpatialIndexKDBush();
+
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
     QgsSpatialIndexKDBush &operator=( const QgsSpatialIndexKDBush &other );
 
     ~QgsSpatialIndexKDBush();
+
+    /**
+     * Adds a single \a feature to the index.
+     *
+     * \note A call to finalize() must be made after all features have been added. It is not
+     * possible to add features after finalizing the spatial index.
+     *
+     * \returns TRUE if feature was successfully added to index.
+     * \since QGIS 4.0
+     */
+    bool addFeature( QgsFeatureId id, const QgsPointXY &point );
+
+    /**
+     * Finalizes the index after manually adding features.
+     *
+     * This method must be called after adding all features via addFeature() and before
+     * performing any queries on the index.
+     *
+     * \since QGIS 4.0
+     */
+    void finalize();
 
     /**
      * Returns the list of features which fall within the specified \a rectangle.
