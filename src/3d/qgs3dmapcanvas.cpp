@@ -192,10 +192,14 @@ QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastC
   return res;
 }
 
-void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double width, bool setSideView )
+void Qgs3DMapCanvas::enableCrossSection( bool setSideView )
 {
-  if ( !mScene )
+  if ( !mScene || mCrossSection.halfWidth() <= 0.0 )
     return;
+
+  const QgsPoint startPoint = mCrossSection.startPoint();
+  const QgsPoint endPoint = mCrossSection.endPoint();
+  const double width = mCrossSection.halfWidth();
 
   const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
   const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
@@ -228,6 +232,11 @@ void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const Qgs
 
   mScene->enableClipping( clippingPlanes );
   emit crossSectionEnabledChanged( true );
+}
+
+void Qgs3DMapCanvas::setCrossSection( const QgsCrossSection &crossSection )
+{
+  mCrossSection = crossSection;
 }
 
 void Qgs3DMapCanvas::disableCrossSection()
