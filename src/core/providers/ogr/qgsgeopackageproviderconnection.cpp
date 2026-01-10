@@ -27,7 +27,6 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
-#include <QTextCodec>
 
 ///@cond PRIVATE
 

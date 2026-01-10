@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
-#include <QTextCodec>
 
 #include "moc_qgsencodingfiledialog.cpp"
 

@@ -54,7 +54,6 @@
 #include <QTextStream>
 #include <QTemporaryFile>
 #include <QHash>
-#include <QTextCodec>
 #include <QElapsedTimer>
 #include <QRegularExpression>
 

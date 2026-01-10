@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 
 #include <QObject>
-#include <QTextCodec>
 
 #include "moc_qgsgrassfeatureiterator.cpp"
 

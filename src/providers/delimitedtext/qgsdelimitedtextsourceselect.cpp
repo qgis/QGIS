@@ -27,7 +27,6 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegularExpression>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QUrl>
 #include <QUrlQuery>

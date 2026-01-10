@@ -32,7 +32,6 @@
 #include "qgswkbtypes.h"
 
 #include <QFile>
-#include <QTextCodec>
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature

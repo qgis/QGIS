@@ -27,8 +27,6 @@
 // fails. [gsherman]
 #include <QApplication>
 #include <QFile>
-#include <QTextCodec>
-#include <QTextStream>
 #include <QObject>
 #include <QIcon>
 

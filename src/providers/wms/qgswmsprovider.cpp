@@ -71,7 +71,6 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QStringBuilder>
-#include <QTextCodec>
 #include <QThread>
 #include <QTimer>
 #include <QUrl>

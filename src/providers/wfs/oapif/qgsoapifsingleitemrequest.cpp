@@ -22,8 +22,6 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 
-#include <QTextCodec>
-
 #include "moc_qgsoapifsingleitemrequest.cpp"
 
 QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &baseUri, const QString &url )

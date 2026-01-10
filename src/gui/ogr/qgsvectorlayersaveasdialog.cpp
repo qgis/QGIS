@@ -39,7 +39,6 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QSpinBox>
-#include <QTextCodec>
 
 #include "moc_qgsvectorlayersaveasdialog.cpp"
 
