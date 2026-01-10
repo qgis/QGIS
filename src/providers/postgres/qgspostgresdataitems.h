@@ -97,6 +97,8 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QString comments() const override;
 
+    bool equal( const QgsDataItem *other ) override;
+
     const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
 
     QVector<QgsDataItem *> createChildren() override;

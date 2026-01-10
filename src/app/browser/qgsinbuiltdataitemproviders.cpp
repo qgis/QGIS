@@ -2104,6 +2104,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         }
         else if ( context.messageBar() )
         {
+          if ( item->parent() )
+            item->parent()->refresh();
           context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
         }
       } );

@@ -207,7 +207,7 @@ void QgsDataItem::populate( bool foreground )
     // The watcher must not be created with item (in constructor) because the item may be created in thread and the watcher created in thread does not work correctly.
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >>( this );
+      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >> ( this );
     }
 
     connect( mFutureWatcher.get(), &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
@@ -308,7 +308,7 @@ void QgsDataItem::refresh()
     setState( Qgis::BrowserItemState::Populating );
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >>( this );
+      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >> ( this );
     }
     connect( mFutureWatcher.get(), &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
     mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
@@ -599,4 +599,3 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }
-

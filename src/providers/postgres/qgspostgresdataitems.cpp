@@ -124,6 +124,17 @@ QString QgsPGLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
+bool QgsPGLayerItem::equal( const QgsDataItem *other )
+{
+  // Call parent class first
+  if ( !QgsLayerItem::equal( other ) )
+    return false;
+
+  // Also compare tooltips (which contain table comments)
+  const QgsPGLayerItem *o = qobject_cast<const QgsPGLayerItem *>( other );
+  return o && toolTip() == o->toolTip();
+}
+
 QString QgsPGLayerItem::createUri()
 {
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
