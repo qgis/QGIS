@@ -1500,6 +1500,13 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y Y coordinate of the point to interpolate.
      * \return The interpolated Z value at the specified (x, y) location.
      *
+     * Interpolates the Z value at point (x, y) inside the triangle defined by points a, b, and c.
+     * \param a first triangle vertex
+     * \param b second triangle vertex
+     * \param c third triangle vertex
+     * \param x x-coordinate of the point to interpolate
+     * \param y y-coordinate of the point to interpolate
+     * \returns interpolated Z value
      * \since QGIS 4.0
      */
     static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
