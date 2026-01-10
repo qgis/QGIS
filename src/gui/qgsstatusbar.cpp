@@ -17,6 +17,8 @@
 
 #include "qgsstatusbar.h"
 
+#include "qgsapplication.h"
+
 #include <QEvent>
 #include <QLayout>
 #include <QLineEdit>
@@ -37,12 +39,19 @@ QgsStatusBar::QgsStatusBar( QWidget *parent )
   mLineEdit->setDisabled( true );
   mLineEdit->setFrame( false );
   mLineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+  applyWidgetStyle();
+  mLayout->addWidget( mLineEdit, 10 );
+  setLayout( mLayout );
+
+  connect( QgsApplication::instance(), &QgsApplication::themeChanged, this, &QgsStatusBar::applyWidgetStyle );
+}
+
+void QgsStatusBar::applyWidgetStyle()
+{
   QPalette pal = mLineEdit->palette();
   pal.setColor( QPalette::Disabled, QPalette::Text, palette().color( QPalette::WindowText ) );
   mLineEdit->setPalette( pal );
   mLineEdit->setStyleSheet( u"* { border: 0; background-color: rgba(0, 0, 0, 0); color: %1; }"_s.arg( palette().color( QPalette::WindowText ).name() ) );
-  mLayout->addWidget( mLineEdit, 10 );
-  setLayout( mLayout );
 }
 
 void QgsStatusBar::addPermanentWidget( QWidget *widget, int stretch, Anchor anchor )

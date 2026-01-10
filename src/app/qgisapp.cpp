@@ -1270,7 +1270,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
 
-  functionProfile( &QgisApp::readSettings, this, u"Read settings"_s );
   functionProfile( &QgisApp::createToolBars, this, u"Toolbars"_s );
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
@@ -1714,6 +1713,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     delete mActionShowPythonDialog;
     mActionShowPythonDialog = nullptr;
   }
+
+  functionProfile( &QgisApp::readSettings, this, u"Read theme settings"_s );
 
   // Update recent project list (as possible custom project storages are now registered by plugins)
   mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
@@ -2875,7 +2876,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
 void QgisApp::readSettings()
 {
   QgsSettings settings;
-  QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
+  const QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
   setTheme( themeName );
 
   // Read legacy settings
@@ -3980,7 +3981,7 @@ void QgisApp::createStatusBar()
   statusBarFont.setPointSize( fontSize );
   statusBar()->setFont( statusBarFont );
 
-  mStatusBar = new QgsStatusBar();
+  mStatusBar = new QgsStatusBar( this );
   mStatusBar->setParentStatusBar( QMainWindow::statusBar() );
   mStatusBar->setFont( statusBarFont );
 
@@ -4185,8 +4186,8 @@ void QgisApp::setTheme( const QString &themeName )
 
   QString theme = themeName;
 
-  mStyleSheetBuilder->updateStyleSheet();
   QgsApplication::setUITheme( theme );
+  mStyleSheetBuilder->updateStyleSheet();
 
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNew.svg"_s ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileOpen.svg"_s ) );

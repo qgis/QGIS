@@ -5,6 +5,7 @@
 %Include auto_generated/qgsalignrasterdata.sip
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
+%Include auto_generated/qgsapplicationthemeregistry.sip
 %Include auto_generated/qgsarchive.sip
 %Include auto_generated/qgsarrowiterator.sip
 %Include auto_generated/qgsattributes.sip

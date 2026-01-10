@@ -17,6 +17,7 @@
 #include "qgscodeeditor.h"
 
 #include "qgsapplication.h"
+#include "qgsapplicationthemeregistry.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
 #include "qgsfontutils.h"
@@ -29,6 +30,7 @@
 
 #include <QClipboard>
 #include <QDebug>
+#include <QFileInfo>
 #include <QFocusEvent>
 #include <QFont>
 #include <QFontDatabase>
@@ -1112,7 +1114,14 @@ void QgsCodeEditor::insertText( const QString &text )
 
 QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme )
 {
-  if ( theme.isEmpty() && QgsApplication::themeName() == "default"_L1 )
+  bool useDefault = QgsApplication::themeName() == "default"_L1;
+  if ( !useDefault )
+  {
+    QFileInfo info( QgsApplication::instance()->applicationThemeRegistry()->themeFolder( QgsApplication::themeName() ) + "/qscintilla.ini" );
+    useDefault = !info.exists();
+  }
+
+  if ( theme.isEmpty() && useDefault )
   {
     // if using default theme, take certain colors from the palette
     const QPalette pal = qApp->palette();
@@ -1130,7 +1139,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
   else if ( theme.isEmpty() )
   {
     // non default theme (e.g. Blend of Gray). Take colors from theme ini file...
-    const QSettings ini( QgsApplication::uiThemes().value( QgsApplication::themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
+    const QSettings ini( QgsApplication::instance()->applicationThemeRegistry()->themeFolder( QgsApplication::themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
 
     static const QMap<QgsCodeEditorColorScheme::ColorRole, QString> sColorRoleToIniKey {
       { QgsCodeEditorColorScheme::ColorRole::Default, u"python/defaultFontColor"_s },
