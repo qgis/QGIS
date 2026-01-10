@@ -818,7 +818,7 @@ void Qgs3DMapCanvasWidget::configure()
 
 void Qgs3DMapCanvasWidget::exportScene()
 {
-  QDialog dlg;
+  QDialog dlg( this );
   dlg.setWindowTitle( tr( "Export 3D Scene" ) );
   dlg.setObjectName( u"3DSceneExportDialog"_s );
   QgsGui::enableAutoGeometryRestore( &dlg );

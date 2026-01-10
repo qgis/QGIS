@@ -96,3 +96,8 @@ void QgsOnlineTerrainGenerator::updateGenerator()
 
   mHeightMapGenerator = std::make_unique<QgsDemHeightMapGenerator>( nullptr, mTerrainTilingScheme, mResolution, mTransformContext );
 }
+
+QgsTerrainGenerator::Capabilities QgsOnlineTerrainGenerator::capabilities() const
+{
+  return QgsTerrainGenerator::Capability::SupportsTileResolution;
+}
