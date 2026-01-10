@@ -1,0 +1,34 @@
+// lines without any colon are ignored
+// each line has two or three components separated by colons role - group - color
+// content after a space on a line is ignored
+// group can be 0 (normal), 1 (disabled) or 2 (inactive)
+
+0:0:#ffffff WindowText
+0:1:#4d6370 WindowText
+0:2:#ffffff WindowText
+9:0:#00101a Base
+9:1:#00101a Base
+9:2:#00101a Base
+16:0:#001827 AlternateBase
+16:1:#001827 AlternateBase
+16:2:#001827 AlternateBase
+10:0:#002033 Window
+10:1:#002033 Window
+10:2:#002033 Window
+1:#589632 Button
+2:#67b03a Light
+5:#589632 Mid
+4:#497d29 Dark
+8:#ffffff ButtonText
+7:#f0e64a BrightText
+12:0:#ee7913 Highlight
+12:1:transparent Highlight
+12:2:#99ee7913 Highlight
+13:0:#ffffff HighlightedText
+13:1:#ffffff HighlightedText
+13:2:#ffffff HighlightedText
+14:#ee7913 Link
+15:#f0e64a LinkVisited
+18:#00101a ToolTipBase
+19:#ffffff ToolTipText
+20:#4d6370 PlaceholderText

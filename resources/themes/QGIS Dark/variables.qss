@@ -1,0 +1,8 @@
+@controlnormal: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #67b03a, stop: 0.5 #589632, stop: 1 #497d29)
+@controldisabled: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #9967b03a, stop: 0.5 #99589632, stop: 1 #99497d29)
+@controlflatdisabled: #99589632
+@controlhover: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #67b03a, stop: 0.5 #589632, stop: 1 #3a6321)
+@controlactivedisabled: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 1 #9967b03a, stop: 0.5 #99589632, stop: 0 #99497d29)
+@controlactive: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 1 #67b03a, stop: 0.5 #589632, stop: 0 #497d29)
+@highlightmuted: rgba(238, 121, 19, 40%)
+@textmuted: #4d6370

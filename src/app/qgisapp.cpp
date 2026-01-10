@@ -1249,6 +1249,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   addDockWidget( Qt::LeftDockWidgetArea, mVertexEditorDock );
   mVertexEditorDock->hide();
 
+  functionProfile( &QgisApp::readSettings, this, u"Read settings"_s );
+
   mMapTools = std::make_unique<QgsAppMapTools>( mMapCanvas, mAdvancedDigitizingDockWidget );
   mDigitizingTechniqueManager = new QgsMapToolsDigitizingTechniqueManager( this );
 
@@ -1270,7 +1272,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
 
-  functionProfile( &QgisApp::readSettings, this, u"Read settings"_s );
   functionProfile( &QgisApp::createToolBars, this, u"Toolbars"_s );
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
