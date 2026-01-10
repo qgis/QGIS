@@ -102,7 +102,12 @@ void QgsMapToolShapeEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *
       case 2:
       {
         mEllipse = QgsEllipse::fromCenter2Points( mPoints.at( 0 ), mPoints.at( 1 ), point );
-        mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
+        const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

@@ -15,6 +15,7 @@
 
 #include "qgsadvanceddigitizingfloater.h"
 
+#include "qgsapplication.h"
 #include "qgsfocuswatcher.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
@@ -63,6 +64,8 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueMChanged, this, &QgsAdvancedDigitizingFloater::changeM );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueAngleChanged, this, &QgsAdvancedDigitizingFloater::changeAngle );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueBearingChanged, this, &QgsAdvancedDigitizingFloater::changeBearing );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueAreaChanged, this, &QgsAdvancedDigitizingFloater::changeArea );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueTotalLengthChanged, this, &QgsAdvancedDigitizingFloater::changeTotalLength );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueCommonAngleSnappingChanged, this, &QgsAdvancedDigitizingFloater::changeCommonAngleSnapping );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::commonAngleSnappingShowInFloaterChanged, this, &QgsAdvancedDigitizingFloater::enabledCommonAngleSnapping );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueDistanceChanged, this, &QgsAdvancedDigitizingFloater::changeDistance );
@@ -182,9 +185,20 @@ bool QgsAdvancedDigitizingFloater::active()
   return mActive;
 }
 
-bool QgsAdvancedDigitizingFloater::itemVisibility( const FloaterItem &item ) const
+bool QgsAdvancedDigitizingFloater::itemVisibility( FloaterItem item ) const
 {
   return mItemsVisibility.testFlag( item );
+}
+
+Qgis::CadMeasurementDisplayType QgsAdvancedDigitizingFloater::itemMeasurementDisplayType( FloaterItem item ) const
+{
+  if ( !itemSupportsMeasurementType( item ) )
+  {
+    return Qgis::CadMeasurementDisplayType::Hidden;
+  }
+
+  const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
+  return QgsSettings().enumValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), Qgis::CadMeasurementDisplayType::Hidden );
 }
 
 void QgsAdvancedDigitizingFloater::setActive( bool active )
@@ -196,8 +210,14 @@ void QgsAdvancedDigitizingFloater::setActive( bool active )
   hideIfDisabled();
 }
 
-void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible )
+void QgsAdvancedDigitizingFloater::setItemVisibility( FloaterItem item, bool visible )
 {
+  if ( itemSupportsMeasurementType( item ) )
+  {
+    // use setItemMeasurementType instead
+    return;
+  }
+
   const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
   QgsSettings().setValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), visible );
   mItemsVisibility.setFlag( item, visible );
@@ -227,7 +247,101 @@ void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizin
     case FloaterItem::Bearing:
       enabledChangedBearing( visible );
       break;
+    case FloaterItem::Area:
+    case FloaterItem::TotalLength:
+      break;
   }
+}
+
+void QgsAdvancedDigitizingFloater::setItemMeasurementType( FloaterItem item, Qgis::CadMeasurementDisplayType type )
+{
+  if ( !itemSupportsMeasurementType( item ) )
+  {
+    // use setItemVisibility instead
+    return;
+  }
+
+  const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
+  QgsSettings().setEnumValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), type );
+  switch ( type )
+  {
+    case Qgis::CadMeasurementDisplayType::Hidden:
+      mItemsVisibility.setFlag( item, false );
+      break;
+
+    case Qgis::CadMeasurementDisplayType::Cartesian:
+    case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      mItemsVisibility.setFlag( item, true );
+      break;
+  }
+
+  QPixmap pixmap;
+  const QColor iconColor = palette().color( QPalette::ColorRole::WindowText );
+  switch ( type )
+  {
+    case Qgis::CadMeasurementDisplayType::Hidden:
+      break;
+
+    case Qgis::CadMeasurementDisplayType::Cartesian:
+      pixmap = QgsApplication::getThemeIcon( u"mIconFloaterCartesian.svg"_s, iconColor, iconColor ).pixmap( QSize( 10, 10 ) );
+      break;
+    case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      pixmap = QgsApplication::getThemeIcon( u"mIconFloaterEllipsoid.svg"_s, iconColor, iconColor ).pixmap( QSize( 10, 10 ) );
+      break;
+  }
+
+  switch ( item )
+  {
+    case FloaterItem::XCoordinate:
+    case FloaterItem::YCoordinate:
+    case FloaterItem::MCoordinate:
+    case FloaterItem::ZCoordinate:
+    case FloaterItem::Angle:
+    case FloaterItem::Distance:
+    case FloaterItem::CommonAngleSnapping:
+    case FloaterItem::Bearing:
+      break;
+
+    case FloaterItem::Area:
+    {
+      const bool show = itemVisibility( FloaterItem::Area );
+      mTotalAreaLineEdit->setVisible( show );
+      mAreaLabel->setVisible( show );
+      mAreaMeasurementTypeLabel->setVisible( show );
+      mAreaMeasurementTypeLabel->setPixmap( pixmap );
+      adjustSize();
+      break;
+    }
+    case FloaterItem::TotalLength:
+      const bool show = itemVisibility( FloaterItem::TotalLength );
+      mTotalLengthLineEdit->setVisible( show );
+      mTotalLengthLabel->setVisible( show );
+      mLengthMeasurementTypeLabel->setVisible( show );
+      mLengthMeasurementTypeLabel->setPixmap( pixmap );
+      adjustSize();
+      break;
+  }
+}
+
+bool QgsAdvancedDigitizingFloater::itemSupportsMeasurementType( FloaterItem item )
+{
+  switch ( item )
+  {
+    case FloaterItem::XCoordinate:
+    case FloaterItem::YCoordinate:
+    case FloaterItem::MCoordinate:
+    case FloaterItem::ZCoordinate:
+    case FloaterItem::Angle:
+    case FloaterItem::CommonAngleSnapping:
+    case FloaterItem::Distance:
+    case FloaterItem::Bearing:
+      return false;
+
+    case FloaterItem::Area:
+    case FloaterItem::TotalLength:
+      return true;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsAdvancedDigitizingFloater::updatePos( const QPoint &pos )
@@ -282,6 +396,16 @@ void QgsAdvancedDigitizingFloater::changeAngle( const QString &text )
 void QgsAdvancedDigitizingFloater::changeBearing( const QString &text )
 {
   mBearingLineEdit->setText( text );
+}
+
+void QgsAdvancedDigitizingFloater::changeArea( const QString &text )
+{
+  mTotalAreaLineEdit->setText( text );
+}
+
+void QgsAdvancedDigitizingFloater::changeTotalLength( const QString &text )
+{
+  mTotalLengthLineEdit->setText( text );
 }
 
 void QgsAdvancedDigitizingFloater::changeLockX( bool locked )

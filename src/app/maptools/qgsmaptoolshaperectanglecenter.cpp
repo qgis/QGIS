@@ -99,7 +99,12 @@ void QgsMapToolShapeRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
         const double angle = mPoints.at( 0 ).azimuth( point );
 
         mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ).project( -dist, angle ), mPoints.at( 0 ).project( dist, angle ) );
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
+        const QgsGeometry newGeometry( mRectangle.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

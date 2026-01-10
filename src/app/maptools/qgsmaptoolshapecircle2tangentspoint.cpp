@@ -144,8 +144,7 @@ void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *
       mTempRubberBand->show();
     }
   }
-
-  if ( mPoints.size() == 4 && !mCenters.isEmpty() )
+  else if ( mPoints.size() == 4 && !mCenters.isEmpty() )
   {
     QgsPoint center = QgsPoint( mCenters.at( 0 ) );
     const double currentDist = mapPoint.distanceSquared( center );
@@ -157,7 +156,12 @@ void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *
     }
 
     mCircle = QgsCircle( center, mRadius );
-    mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
+    const QgsGeometry newGeometry( mCircle.toCircularString( true ) );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }
 
