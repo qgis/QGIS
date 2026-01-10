@@ -46,8 +46,6 @@
 #include "qgstextlabelfeature.h"
 #include "qgstextrendererutils.h"
 
-#include <QLinkedList>
-
 using namespace pal;
 
 FeaturePart::FeaturePart( QgsLabelFeature *feat, const GEOSGeometry *geom )
@@ -1809,7 +1807,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   if ( pal->isCanceled() )
     return 0;
 
-  QLinkedList<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
+  QVector<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
 #if 0
   QgsDebugMsgLevel( u"PAL split polygons resulted in:"_s, 2 );
   for ( PointSet *ps : shapes_final )
