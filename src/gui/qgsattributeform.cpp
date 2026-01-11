@@ -203,6 +203,10 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
       case QgsAttributeEditorContext::IdentifyMode:
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
+
+      case QgsAttributeEditorContext::PreviewMode:
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
+        break;
     }
   }
   //update all form editor widget modes to match
@@ -213,7 +217,7 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
     w->setContext( newContext );
   }
 
-  bool relationWidgetsVisible = ( mMode != QgsAttributeEditorContext::AggregateSearchMode );
+  bool relationWidgetsVisible = ( mMode != QgsAttributeEditorContext::AggregateSearchMode && mMode != QgsAttributeEditorContext::PreviewMode );
   for ( QgsAttributeFormRelationEditorWidget *w : findChildren<QgsAttributeFormRelationEditorWidget *>() )
   {
     w->setVisible( relationWidgetsVisible );
@@ -256,6 +260,11 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
 
     case QgsAttributeEditorContext::IdentifyMode:
       setFeature( mFeature );
+      synchronizeState();
+      mSearchButtonBox->setVisible( false );
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
@@ -308,6 +317,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
     case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::PreviewMode:
     {
       resetValues();
 
@@ -569,9 +579,10 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   if ( !mDefaultValueDependencies.contains( originIdx ) )
     return;
 
-  if ( !mFeature.isValid()
-       && mMode != QgsAttributeEditorContext::AddFeatureMode )
+  if ( !mFeature.isValid() && ( mMode != QgsAttributeEditorContext::AddFeatureMode || mMode != QgsAttributeEditorContext::PreviewMode ) )
+  {
     return;
+  }
 
   // create updated Feature
   QgsFeature updatedFeature = getUpdatedFeature();
@@ -918,6 +929,9 @@ bool QgsAttributeForm::saveWithDetails( QString *error )
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
       break;
+
+    case QgsAttributeEditorContext::PreviewMode:
+      return true;
   }
 
   mIsSaving = true;
@@ -943,6 +957,9 @@ bool QgsAttributeForm::saveWithDetails( QString *error )
 
     case QgsAttributeEditorContext::MultiEditMode:
       success = saveMultiEdits();
+      break;
+
+    case QgsAttributeEditorContext::PreviewMode:
       break;
   }
 
@@ -1070,6 +1087,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     case QgsAttributeEditorContext::IdentifyMode:
     case QgsAttributeEditorContext::AddFeatureMode:
     case QgsAttributeEditorContext::FixAttributeMode:
+    case QgsAttributeEditorContext::PreviewMode:
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
@@ -1587,10 +1605,11 @@ bool QgsAttributeForm::needsGeometry() const
 
 void QgsAttributeForm::synchronizeState()
 {
-  bool isEditable = ( mFeature.isValid()
-                      || mMode == QgsAttributeEditorContext::AddFeatureMode
-                      || mMode == QgsAttributeEditorContext::MultiEditMode )
-                    && mLayer->isEditable();
+  bool isEditable = ( ( mFeature.isValid()
+                        || mMode == QgsAttributeEditorContext::AddFeatureMode
+                        || mMode == QgsAttributeEditorContext::MultiEditMode )
+                      && mLayer->isEditable() )
+                    || mMode == QgsAttributeEditorContext::PreviewMode;
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
@@ -1600,7 +1619,9 @@ void QgsAttributeForm::synchronizeState()
       const QList<QgsAttributeFormEditorWidget *> formWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
 
       for ( QgsAttributeFormEditorWidget *formWidget : formWidgets )
+      {
         formWidget->setConstraintResultVisible( isEditable );
+      }
 
       eww->setConstraintResultVisible( isEditable );
 
@@ -1659,7 +1680,9 @@ void QgsAttributeForm::synchronizeState()
   // change OK button status
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
+  {
     okButton->setEnabled( isEditable );
+  }
 }
 
 void QgsAttributeForm::init()
@@ -2992,6 +3015,7 @@ void QgsAttributeForm::layerSelectionChanged()
     case QgsAttributeEditorContext::FixAttributeMode:
     case QgsAttributeEditorContext::SearchMode:
     case QgsAttributeEditorContext::AggregateSearchMode:
+    case QgsAttributeEditorContext::PreviewMode:
       break;
 
     case QgsAttributeEditorContext::MultiEditMode:
@@ -3223,7 +3247,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
 bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
 {
-  return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature );
+  return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature, mMode == QgsAttributeEditorContext::PreviewMode );
 }
 
 void QgsAttributeForm::updateFieldDependencies()

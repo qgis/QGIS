@@ -51,6 +51,7 @@ class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
 class QgsFieldConstraintIndicatorProvider;
 class QgsFieldDefaultValueIndicatorProvider;
+class QgsVectorLayerProperties;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -67,7 +68,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( u"attributes-form"_s );
     static const QgsSettingsEntryBool *settingShowAliases;
 
-    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsVectorLayerProperties *vectorLayerProperties = nullptr );
 
     void init();
 
@@ -111,6 +112,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void updateButtons();
 
     QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayerProperties *mVectorLayerProperties = nullptr;
 
     QgsAttributesFormBaseView *mAvailableWidgetsView = nullptr;
     QgsAttributesFormBaseView *mFormLayoutView = nullptr;
@@ -143,6 +145,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void updatedFields();
 
     void updateFilteredItems( const QString &filterText );
+
+    void previewForm();
 
   private:
     //! this will clean the right panel

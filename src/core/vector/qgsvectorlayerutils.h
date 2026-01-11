@@ -331,7 +331,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.10
      */
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, bool forceIsEditable = false );
 
     /**
      * Returns TRUE if the field at index \a fieldIndex from \a layer

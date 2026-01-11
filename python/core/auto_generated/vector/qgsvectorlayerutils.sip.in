@@ -325,7 +325,7 @@ compatibility logic.
 .. versionadded:: 3.4
 %End
 
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, bool forceIsEditable = false );
 %Docstring
 Tests whether a field is editable for a particular ``feature``.
 

@@ -222,6 +222,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
   private slots:
     void openPanel( QgsPanelWidget *panel );
 
+    friend class QgsAttributesFormProperties;
     friend class QgsAppScreenShots;
     friend class TestQgsLayerPropertiesDialogs;
 };

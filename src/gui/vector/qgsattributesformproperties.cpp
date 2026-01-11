@@ -18,6 +18,8 @@
 #include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
 #include "qgsapplication.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsattributeformcontaineredit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgsattributesformtreeviewindicatorprovider.h"
@@ -30,6 +32,8 @@
 #include "qgsfieldcombobox.h"
 #include "qgsgui.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsxmlutils.h"
 
 #include "moc_qgsattributesformproperties.cpp"
@@ -40,9 +44,10 @@
 
 const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( u"show-aliases"_s, sTreeAttributesForm, false, u"Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels."_s );
 
-QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
+QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent, QgsVectorLayerProperties *vectorLayerProperties )
   : QWidget( parent )
   , mLayer( layer )
+  , mVectorLayerProperties( vectorLayerProperties )
 {
   if ( !layer )
     return;
@@ -141,6 +146,15 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // Assign initial size to splitter widgets. By doing so, we can
   // show an eventual horizontal scrollbar in the right-hand side panel
   splitter->setSizes( { widget->minimumSizeHint().width(), 600 } );
+
+  if ( mVectorLayerProperties )
+  {
+    connect( mFormPreviewButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::previewForm );
+  }
+  else
+  {
+    mFormPreviewButton->setVisible( false );
+  }
 }
 
 void QgsAttributesFormProperties::init()
@@ -1360,4 +1374,27 @@ void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool e
     disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
     mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
   }
+}
+
+void QgsAttributesFormProperties::previewForm()
+{
+  if ( !mVectorLayerProperties )
+  {
+    return;
+  }
+
+  QgsReadWriteContext readWriteContext;
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomDocument layerDocument;
+  QDomElement layerElement = layerDocument.createElement( "maplayer"_L1 );
+  mLayer->writeLayerXml( layerElement, layerDocument, readWriteContext );
+
+  mVectorLayerProperties->apply();
+
+  QgsFeature feature = QgsVectorLayerUtils::createFeature( mLayer );
+  QgsAttributeDialog form( mLayer, &feature, false, this, true );
+  form.setMode( QgsAttributeEditorContext::PreviewMode );
+  form.exec();
+
+  mLayer->readLayerXml( layerElement, readWriteContext );
 }
