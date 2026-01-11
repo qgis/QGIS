@@ -833,6 +833,22 @@ LineString with less than 2 vertices), the geometry is cleared instead.
          this geometry or if the geometry is null, ``True`` if the
          vertex was successfully deleted or the geometry was cleared.
 %End
+    
+    bool deleteVertices( const QList<int> atVertices );
+%Docstring
+Deletes vertices at the given positions (first number is index 0)
+
+:return: ``False`` if a position does not correspond to a valid vertex
+         on this geometry (including if this geometry is a Point), or if
+         the number of remaining vertices in the linestring would be
+         less than two. It is up to the caller to distinguish between
+         these error conditions. (Or maybe we add another method to this
+         object to help make the distinction?)
+
+.. seealso:: :py:func:`deleteVertex`
+
+.. versionadded:: 4.0
+%End
 
     bool toggleCircularAtVertex( int atVertex );
 %Docstring

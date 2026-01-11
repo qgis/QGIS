@@ -519,6 +519,17 @@ Deletes a vertex within the geometry
 .. seealso:: :py:func:`moveVertex`
 %End
 
+    virtual bool deleteVertices( QList<QgsVertexId> positions ) = 0;
+%Docstring
+Deletes vertices within the geometry
+
+:param positions: list of vertex ids for vertices to delete
+
+:return: ``True`` if delete was successful
+
+.. seealso:: :py:func:`deleteVertex`
+%End
+
     virtual double length() const;
 %Docstring
 Returns the planar, 2-dimensional length of the geometry.

@@ -170,6 +170,8 @@ deleted.
 
     virtual bool deleteVertex( QgsVertexId position );
 
+    virtual bool deleteVertices( QList<QgsVertexId> positions );
+
 
     virtual QgsCoordinateSequence coordinateSequence() const;
 
