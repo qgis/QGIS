@@ -214,6 +214,7 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstr
   public:
 
     QString type() const override;
+    using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
