@@ -11,6 +11,7 @@
         "baseline": "c8ff38b5c7e84ed2380f14cffb137bf76f9d6418",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
+          "arrow",
           "python3",
           "py-*",
           "gdal",
