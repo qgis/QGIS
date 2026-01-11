@@ -467,7 +467,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
       }
     }
 
-    multiFeedback.setProgress( i * topoStep );
+    multiFeedback.setProgress( static_cast< double >( i ) * topoStep );
     if ( nodeErrorSink )
     {
       nodeErrorSink->finalize();
