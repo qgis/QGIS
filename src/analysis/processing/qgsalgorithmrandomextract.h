@@ -37,7 +37,7 @@ class QgsRandomExtractSelectAlgorithmBase : public QgsProcessingAlgorithm
 
   protected:
     /**
-     * Selectes \a count random feature IDs from the \a source.
+     * Selects \a count random feature IDs from the \a source.
      */
     void sampleFeatureIds( QgsFeatureSource *source, const long long count, QgsProcessingFeedback *feedback );
 
