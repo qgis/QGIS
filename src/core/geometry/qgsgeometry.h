@@ -173,6 +173,36 @@ class CORE_EXPORT QgsGeometryParameters
  * methods for working with geodesic calculations and spatial operations on geometries,
  * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
  * are required.
+  *
+ * \note Polyline vs MultiLineString behavior
+ *
+ * In the QGIS API and PyQGIS, there is an important distinction between
+ * geometry construction methods and vector layer geometry types which
+ * can be confusing.
+ *
+ * A Polyline represents a single-part line geometry composed of one
+ * continuous sequence of vertices. Geometry construction methods such as
+ * fromPolyline() or fromPolylineXY() create single-part line geometries.
+ *
+ * A MultiLineString represents a multipart line geometry composed of
+ * multiple independent line parts. When creating a vector layer intended
+ * to store line features, QGIS requires the geometry type to be specified
+ * as MultiLineString.
+ *
+ * Even when a geometry consists of a single line part, QGIS may silently
+ * promote a single-part polyline to a multipart geometry when adding it
+ * to a layer. No error or warning is raised in this case.
+ *
+ * When working with line geometries in PyQGIS, it is therefore recommended
+ * to explicitly handle both single-part and multipart geometries.
+ *
+ * \code{.py}
+ * geom = feature.geometry()
+ * if geom.isMultipart():
+ *     lines = geom.asMultiPolyline()
+ * else:
+ *     line = geom.asPolyline()
+ * \endcode
  */
 class CORE_EXPORT QgsGeometry
 {
