@@ -92,7 +92,7 @@ QString QgsRasterLayerProfileGenerator::sourceId() const
 
 QString QgsRasterLayerProfileGenerator::type() const
 {
-  return QStringLiteral( "raster" );
+  return u"raster"_s;
 }
 
 Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
