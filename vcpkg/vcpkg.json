@@ -2,7 +2,7 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
+      "baseline": "bf4d0b470612b845487623b85af9c04c96acf36a",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
@@ -33,6 +33,7 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
+
     "expat",
     {
       "name": "gdal",
@@ -112,6 +113,12 @@
     "bindings": {
       "description": "Determines whether Python bindings should be built",
       "dependencies": [
+        {
+          "name": "arrow",
+          "features": [
+            "python"
+          ]
+        },
         {
           "name": "gdal",
           "features": [
