@@ -486,5 +486,3 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
 }
 
 ///@endcond
-
-///@endcond
