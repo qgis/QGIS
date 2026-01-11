@@ -179,7 +179,7 @@ QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parent
   element.setAttribute( u"render_type"_s, qgsEnumValueToKey( mRenderType ) );
   if ( !std::isnan( mElevationLimit ) )
     element.setAttribute( u"elevationLimit"_s, qgsDoubleToString( mElevationLimit ) );
-  element.setAttribute( u"showMarkerSymbolInSurfacePlots"_s, mShowMarkerSymbolInSurfacePlots ? u"1"_S : u"0"_s );
+  element.setAttribute( u"showMarkerSymbolInSurfacePlots"_s, mShowMarkerSymbolInSurfacePlots ? u"1"_s : u"0"_s );
 
   QDomElement profileLineSymbolElement = document.createElement( u"profileLineSymbol"_s );
   profileLineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mProfileLineSymbol.get(), document, context ) );
