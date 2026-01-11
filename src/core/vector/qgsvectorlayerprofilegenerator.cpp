@@ -726,7 +726,7 @@ QString QgsVectorLayerProfileGenerator::sourceId() const
 
 QString QgsVectorLayerProfileGenerator::type() const
 {
-  return QStringLiteral( "vector" );
+  return u"vector"_s;
 }
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
