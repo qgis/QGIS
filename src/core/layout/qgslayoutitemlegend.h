@@ -26,6 +26,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayoutitem.h"
 #include "qgslegendsettings.h"
+#include "qgssettingsentryenumflag.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
@@ -154,6 +155,13 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     Q_OBJECT
 
   public:
+
+    /**
+     * Settings entry - Whether to force rasterized clipping masks, regardless of output format.
+     *
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode > *settingDefaultLegendSyncMode SIP_SKIP;
 
     /**
      * Constructor for QgsLayoutItemLegend, with the specified parent \a layout.
