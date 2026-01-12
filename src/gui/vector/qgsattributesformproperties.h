@@ -68,6 +68,12 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( u"attributes-form"_s );
     static const QgsSettingsEntryBool *settingShowAliases;
 
+    /**
+     * The QgsAttributesFormProperties constructor.
+     * \param layer The vector layer being configured
+     * \param parent The parent QObject
+     * \param vectorLayerProperties The vector layer properties dialog, an optional parameter used to generate preview forms (since QGIS 4.0)
+     */
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsVectorLayerProperties *vectorLayerProperties = nullptr );
 
     void init();
