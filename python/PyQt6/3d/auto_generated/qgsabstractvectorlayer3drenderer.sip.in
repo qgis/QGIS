@@ -14,6 +14,22 @@ class QgsVectorLayer3DTilingSettings
 %Docstring(signature="appended")
 Defines configuration of how a vector layer gets tiled for 3D rendering.
 
+Root node has the layer's extent and geometry error is set as a fraction
+of the extent (see :py:func:`~maximumLeafExtent`) Child nodes are
+created using quadtree approach - a node gets four children, each having
+their width/height (2D extent) and geometry error halved.
+
+For example a root tile that is 1'000 meters wide will get geometry
+error set as 10 meters.
+
+When loading data for each tile, we fetch up to
+:py:func:`~maximumChunkFeatures` features. If the limit is hit, we will
+recursively create children, so that user gets to see more features when
+zoomed in. If the geographical extent is very large (see
+:py:func:`~maximumLeafExtent`), we would still recursively create
+children, even if the limit of features is not hit, to avoid jitter due
+to numerical precision issues.
+
 .. versionadded:: 3.12
 %End
 
@@ -58,7 +74,12 @@ debugging)
     int maximumChunkFeatures() const;
 %Docstring
 Returns the maximum number of features that will be fetched in any
-chunk.
+chunk. If more features than the maximum belong to the chunk, further
+features will become available in child nodes. This is meant as a
+control for performance - fewer features mean faster load times, but
+user needs to zoom in more to see everything.
+
+.. seealso:: :py:func:`setMaximumChunkFeatures`
 
 .. versionadded:: 4.0
 %End
@@ -66,6 +87,12 @@ chunk.
     void setMaximumChunkFeatures( int value );
 %Docstring
 Sets the maximum number of features that will be fetched in any chunk.
+If more features than the maximum belong to the chunk, further features
+will become available in child nodes. This is meant as a control for
+performance - fewer features mean faster load times, but user needs to
+zoom in more to see everything.
+
+.. seealso:: :py:func:`maximumChunkFeatures`
 
 .. versionadded:: 4.0
 %End
@@ -78,6 +105,8 @@ Writes content of the object to XML
 %Docstring
 Reads content of the object from XML
 %End
+
+
 
 };
 

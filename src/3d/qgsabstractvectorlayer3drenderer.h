@@ -27,6 +27,17 @@ class QgsVectorLayer;
  * \ingroup qgis_3d
  * \brief Defines configuration of how a vector layer gets tiled for 3D rendering.
  *
+ * Root node has the layer's extent and geometry error is set as a fraction of the extent (see maximumLeafExtent())
+ * Child nodes are created using quadtree approach - a node gets four children, each having their width/height (2D extent)
+ * and geometry error halved.
+ *
+ * For example a root tile that is 1'000 meters wide will get geometry error set as 10 meters.
+ *
+ * When loading data for each tile, we fetch up to maximumChunkFeatures() features. If the limit is hit, we will recursively
+ * create children, so that user gets to see more features when zoomed in.
+ * If the geographical extent is very large (see maximumLeafExtent()), we would still recursively create children, even if
+ * the limit of features is not hit, to avoid jitter due to numerical precision issues.
+ *
  * \since QGIS 3.12
  */
 class _3D_EXPORT QgsVectorLayer3DTilingSettings
@@ -55,12 +66,18 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
 
     /**
      * Returns the maximum number of features that will be fetched in any chunk.
+     * If more features than the maximum belong to the chunk, further features will become available in child nodes.
+     * This is meant as a control for performance - fewer features mean faster load times, but user needs to zoom in more to see everything.
+     * \see setMaximumChunkFeatures()
      * \since QGIS 4.0
      */
     int maximumChunkFeatures() const { return mMaxChunkFeatures; }
 
     /**
      * Sets the maximum number of features that will be fetched in any chunk.
+     * If more features than the maximum belong to the chunk, further features will become available in child nodes.
+     * This is meant as a control for performance - fewer features mean faster load times, but user needs to zoom in more to see everything.
+     * \see maximumChunkFeatures()
      * \since QGIS 4.0
      */
     void setMaximumChunkFeatures( int value ) { mMaxChunkFeatures = value; }
@@ -69,6 +86,23 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
     void writeXml( QDomElement &elem ) const;
     //! Reads content of the object from XML
     void readXml( const QDomElement &elem );
+
+    /**
+     * This is the ratio of tile's largest size to geometry error and is used when setting the root tile's error.
+     * The choice of 1/100 was relatively arbitrary and based on test data.
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static double tileGeometryErrorRatio() SIP_SKIP { return 0.01; }
+
+    /**
+     * This is the maximum width or height a tile can have and still be considered a leaf node.
+     * Children will be generated for tiles larger than this, even if their chunks did not reach the maximumChunkFeatures limit.
+     * We want to avoid having huge leaf nodes so we don't have float precision issues
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static double maximumLeafExtent() SIP_SKIP { return 500'000; }
 
   private:
     int mZoomLevelsCount = 3;

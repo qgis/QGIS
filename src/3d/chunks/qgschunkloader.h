@@ -101,7 +101,7 @@ class QgsChunkLoaderFactory : public QObject
     /**
      * Requests that node has enough hierarchy information to create children in createChildren().
      * This function must not block, only start any requests in background. When the hierarchy
-     * information is ready, the signal childrenPrepared() must be emitted.
+     * information is ready, the signal childrenPrepared() may be emitted so that the entity gets updated.
      *
      * The default implementation does nothing. This only needs to be implemented when the factory
      * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.

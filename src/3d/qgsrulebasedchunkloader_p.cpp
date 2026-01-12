@@ -97,14 +97,14 @@ void QgsRuleBasedChunkLoader::start()
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
-    int fc = 0;
+    int featureCount = 0;
     bool featureLimitReached = false;
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
         break;
 
-      if ( ++fc > mFactory->mMaxFeatures )
+      if ( ++featureCount > mFactory->mMaxFeatures )
       {
         featureLimitReached = true;
         break;
@@ -116,9 +116,8 @@ void QgsRuleBasedChunkLoader::start()
     if ( !featureLimitReached )
     {
       QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
-      // we want to avoid having huge leaf nodes so we don't have float precision issues
-      constexpr int MAX_LEAF_SIZE = 500'000;
-      if ( fc == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < MAX_LEAF_SIZE )
+
+      if ( featureCount == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
         mNodeIsLeaf = true;
     }
   } );
@@ -205,8 +204,8 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
   QgsBox3D rootBox3D( context.extent(), zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
-  // We are quite arbitrarily setting the root error to be 1/100th of the bbox's largest side
-  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) / 100 );
+
+  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
   setupQuadtree( rootBox3D, rootError );
 }
 
