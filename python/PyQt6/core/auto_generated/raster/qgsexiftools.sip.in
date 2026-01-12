@@ -61,16 +61,13 @@ Returns ``True`` if the image at ``imagePath`` contains a valid geotag.
 %End
 
     class GeoTagDetails
-{
+    {
 %Docstring(signature="appended")
 Extended image geotag details.
 
 .. versionadded:: 3.6
 %End
 
-%TypeHeaderCode
-#include "qgsexiftools.h"
-%End
       public:
 
         GeoTagDetails();

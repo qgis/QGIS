@@ -1023,6 +1023,7 @@ QString QgsExpression::group( const QString &name )
     sGroups()->insert( u"Rasters"_s, tr( "Rasters" ) );
     sGroups()->insert( u"Record and Attributes"_s, tr( "Record and Attributes" ) );
     sGroups()->insert( u"String"_s, tr( "String" ) );
+    sGroups()->insert( u"MagneticModels"_s, tr( "Magnetic Models" ) );
     sGroups()->insert( u"Variables"_s, tr( "Variables" ) );
     sGroups()->insert( u"Recent (%1)"_s, tr( "Recent (%1)" ) );
     sGroups()->insert( u"UserGroup"_s, tr( "User expressions" ) );

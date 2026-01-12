@@ -1773,3 +1773,48 @@ bool QgsGeometryUtils::pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &
     return QgsGeometryUtilsBase::pointsAreCollinear( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pt3.x(), pt3.y(), epsilon );
   }
 }
+
+bool QgsGeometryUtils::checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1, QgsPoint &pt2, QgsPoint &pt3, double epsilon )
+{
+  if ( !geom || !geom->is3D() || geom->nCoordinates() < 3  || qgsgeometry_cast< const QgsGeometryCollection * >( geom ) )
+  {
+    return false;
+  }
+
+  const QgsCurve *ring = nullptr;
+  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
+  {
+    ring = curve;
+  }
+  else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom ) )
+  {
+    // curve polygon case, consider exterior ring only
+    ring = curvePolygon->exteriorRing();
+  }
+
+  if ( ring )
+  {
+    QgsVertexIterator ringIt = ring->vertices();
+    pt1 = ringIt.next();
+
+    // Find a second distinct point
+    while ( ringIt.hasNext() )
+    {
+      pt2 = ringIt.next();
+      if ( !pt2.fuzzyEqual( pt1, epsilon ) )
+      {
+        // Find a third non-collinear point
+        while ( ringIt.hasNext() )
+        {
+          pt3 = ringIt.next();
+          if ( !QgsGeometryUtils::pointsAreCollinear( pt1, pt2, pt3, epsilon ) )
+          {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+}

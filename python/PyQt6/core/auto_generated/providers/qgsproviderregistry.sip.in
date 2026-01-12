@@ -398,16 +398,13 @@ the specified layer ``type``.
 %End
 
     class ProviderCandidateDetails
-{
+    {
 %Docstring(signature="appended")
 Contains information pertaining to a candidate provider.
 
 .. versionadded:: 3.18
 %End
 
-%TypeHeaderCode
-#include "qgsproviderregistry.h"
-%End
       public:
 
         ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes );
@@ -457,7 +454,7 @@ URI then all of these providers will be returned.
 %End
 
     class UnusableUriDetails
-{
+    {
 %Docstring(signature="appended")
 Contains information about unusable URIs which aren't handled by any
 registered providers.
@@ -470,9 +467,6 @@ used on their QGIS build.
 .. versionadded:: 3.18.1
 %End
 
-%TypeHeaderCode
-#include "qgsproviderregistry.h"
-%End
       public:
 
         UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() );
@@ -501,7 +495,7 @@ which are usually valid options for opening the URI.
     };
 
     class UnusableUriHandlerInterface
-{
+    {
 %Docstring(signature="appended")
 An interface used to handle unusable URIs which aren't handled by any
 registered providers, and construct user-friendly warnings as to why the
@@ -515,9 +509,6 @@ used on their QGIS build.
 .. versionadded:: 3.18.1
 %End
 
-%TypeHeaderCode
-#include "qgsproviderregistry.h"
-%End
       public:
 
         virtual ~UnusableUriHandlerInterface();

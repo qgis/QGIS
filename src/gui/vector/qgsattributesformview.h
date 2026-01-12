@@ -33,7 +33,7 @@ class QgsAttributesFormTreeViewIndicator;
  * \ingroup gui
  * \since QGIS 3.44
  */
-class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 

@@ -181,6 +181,8 @@ circular string.
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
+    virtual void sumUpArea3D( double &sum /Out/ ) const;
+
     virtual bool hasCurvedSegments() const;
 
     virtual double vertexAngle( QgsVertexId vertex ) const;

@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see outputFormat()
      */
-    void setOutputFormat( const QString &format ) { mOutputFormat = format; }
+    void setOutputFormat( const QString &format );
 
     /**
      * Returns the output format.
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see buildPyramidsFlag()
      */
-    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f ) { mBuildPyramidsFlag = f; }
+    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption flag );
 
     /**
      * Returns the list of pyramids which will be created for the output file.
@@ -378,7 +378,8 @@ class CORE_EXPORT QgsRasterFileWriter
         Qgis::DataType destDataType,
         const QList<bool> &destHasNoDataValueList,
         const QList<double> &destNoDataValueList,
-        QgsRasterDataProvider *destProvider,
+        // This method can nullify the passed destProvider
+        std::unique_ptr<QgsRasterDataProvider> &destProvider,
         QgsRasterBlockFeedback *feedback = nullptr );
 
     Qgis::RasterFileWriterResult writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
@@ -400,7 +401,7 @@ class CORE_EXPORT QgsRasterFileWriter
     bool writeVRT( const QString &file );
     //add file entry to vrt
     void addToVRT( const QString &filename, int band, int xSize, int ySize, int xOffset, int yOffset );
-    void buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
+    bool buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
 
     //! Create provider and datasource for a part image (vrt mode)
     QgsRasterDataProvider *createPartProvider( const QgsRectangle &extent, int nCols, int iterCols, int iterRows,
@@ -444,6 +445,7 @@ class CORE_EXPORT QgsRasterFileWriter
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling = u"AVERAGE"_s;
+    bool mBuildPyramidsFlagSet = false;
     Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     QStringList mPyramidsConfigOptions;

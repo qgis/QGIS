@@ -108,7 +108,12 @@ void QgsMapToolShapeEllipseFoci::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMap
       case 2:
       {
         mEllipse = QgsEllipse::fromFoci( mPoints.at( 0 ), mPoints.at( 1 ), point );
-        mTempRubberBand->setGeometry( mEllipse.toPolygon() );
+        const QgsGeometry newGeometry( mEllipse.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

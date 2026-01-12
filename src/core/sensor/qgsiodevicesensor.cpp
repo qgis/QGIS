@@ -16,6 +16,7 @@
 
 #include "qgsiodevicesensor.h"
 
+#include "qgslogger.h"
 #include "qgssensorregistry.h"
 
 #include <QDomElement>
@@ -247,6 +248,12 @@ void QgsUdpSocketSensor::setPort( int port )
 
 void QgsUdpSocketSensor::handleConnect()
 {
+#ifdef QT_NO_NETWORKINTERFACE
+  Q_UNUSED( mHostName )
+  Q_UNUSED( mPort )
+  setStatus( Qgis::DeviceConnectionStatus::Disconnected );
+  QgsDebugError( u"Qt is built without network interface support, cannot use UDP sockets."_s );
+#else
   if ( mHostName.isEmpty() || mPort == 0 )
   {
     setStatus( Qgis::DeviceConnectionStatus::Disconnected );
@@ -256,6 +263,7 @@ void QgsUdpSocketSensor::handleConnect()
   mBuffer->open( QIODevice::ReadWrite );
   mUdpSocket->bind( QHostAddress( mHostName ), mPort, QAbstractSocket::ShareAddress | QAbstractSocket::ReuseAddressHint );
   mUdpSocket->joinMulticastGroup( QHostAddress( mHostName ) );
+#endif
 }
 
 void QgsUdpSocketSensor::handleDisconnect()

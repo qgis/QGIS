@@ -293,6 +293,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     double length() const override SIP_HOLDGIL;
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
 
     bool hasCurvedSegments() const override SIP_HOLDGIL;

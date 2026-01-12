@@ -105,6 +105,30 @@ Sets the node's ``settings``.
 .. seealso:: :py:func:`settings`
 %End
 
+    void setMinimum( double minimum );
+%Docstring
+Sets the node's minimum value.
+
+.. versionadded:: 4.0
+%End
+    void setMaximum( double maximum );
+%Docstring
+Sets the node's maximum value.
+
+.. versionadded:: 4.0
+%End
+    double minimum() const;
+%Docstring
+Returns the node's minimum value.
+
+.. versionadded:: 4.0
+%End
+    double maximum() const;
+%Docstring
+Returns the node's maximum value.
+
+.. versionadded:: 4.0
+%End
 };
 
 

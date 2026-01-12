@@ -145,8 +145,13 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
     {
       const QgsPoint pos = getFirstPointOnParallels( mPoints.at( 0 ), mPoints.at( 1 ), mPosPoints.at( 0 ), mPoints.at( 2 ), mPoints.at( 3 ), mPosPoints.at( 1 ), QgsPoint( p1 ), QgsPoint( p2 ) );
       mCircle = QgsCircle::from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), QgsPoint( p1 ), QgsPoint( p2 ), 1E-8, pos );
-      mTempRubberBand->setGeometry( mCircle.toLineString() );
-      mTempRubberBand->show();
+      const QgsGeometry newGeometry( mCircle.toLineString() );
+      if ( !newGeometry.isEmpty() )
+      {
+        mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+        setTransientGeometry( newGeometry );
+        mTempRubberBand->show();
+      }
     }
     else
     {

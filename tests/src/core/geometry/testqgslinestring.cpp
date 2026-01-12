@@ -89,6 +89,7 @@ class TestQgsLineString : public QObject
     void centroid();
     void closestSegment();
     void sumUpArea();
+    void sumUpArea3D();
     void boundingBox();
     void boundingBox3D();
     void angle();
@@ -132,6 +133,7 @@ void TestQgsLineString::constructorEmpty()
   QCOMPARE( ls.dimension(), 1 );
   QVERIFY( !ls.hasCurvedSegments() );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 }
 
@@ -460,6 +462,7 @@ void TestQgsLineString::addVertex()
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString );
   QVERIFY( !ls.hasCurvedSegments() );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   //adding first vertex should set linestring z/m type
@@ -513,6 +516,7 @@ void TestQgsLineString::addVertex()
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString ); //should still be 2d
   QVERIFY( !ls.is3D() );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   ls = QgsLineString();
@@ -961,6 +965,7 @@ void TestQgsLineString::close()
   QVERIFY( !ls.isClosed() );
   QCOMPARE( ls.numPoints(), 4 );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   ls.close();
@@ -972,6 +977,7 @@ void TestQgsLineString::close()
   QCOMPARE( ls.partCount(), 1 );
   QCOMPARE( ls.pointN( 4 ), QgsPoint( 1, 2 ) );
   QCOMPARE( ls.area(), 0.0 );
+  QCOMPARE( ls.area3D(), 0.0 );
   QCOMPARE( ls.perimeter(), 0.0 );
 
   //try closing already closed line, should be no change
@@ -2130,6 +2136,59 @@ void TestQgsLineString::sumUpArea()
     QGSCOMPARENEAR( area, accuracyMeterPow, epsilonArea );
     shift = shift * 10.0;
   }
+}
+
+void TestQgsLineString::sumUpArea3D()
+{
+  QgsLineString ls;
+
+  double area3D = 0.0;
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 0.0 );
+
+  ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10, 3 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 0.0 );
+
+  ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10, 1 ) << QgsPoint( 10, 10, 2 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 0.0 );
+
+  // Cube 5x5 positive
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 5, 5, 0 ) << QgsPoint( 0, 5, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 25.0 );
+
+  // Cube 5x5 invert points : negative
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 5, 0 ) << QgsPoint( 5, 5, 0 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 0, 0, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, -25.0 );
+
+  // Cube 5x5 - X rotation - negative normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 5, 0, 5 ) << QgsPoint( 0, 0, 5 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, -25.0 );
+
+  // Cube 5x5 - X rotation - invert points: positive normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 5 ) << QgsPoint( 5, 0, 5 ) << QgsPoint( 5, 0, 0 ) << QgsPoint( 0, 0, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 25.0 );
+
+  // Cube 5x5 - Y rotation - positive normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 0, -5 ) << QgsPoint( 0, 5, -5 ) << QgsPoint( 0, 5, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, 25.0 );
+
+  // Cube 5x5 - Y rotation - invert points: negative normal
+  area3D = 0.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( 0, 5, 0 ) << QgsPoint( 0, 5, -5 ) << QgsPoint( 0, 0, -5 ) << QgsPoint( 0, 0, 0 ) );
+  ls.sumUpArea3D( area3D );
+  QCOMPARE( area3D, -25.0 );
 }
 
 void TestQgsLineString::boundingBox()

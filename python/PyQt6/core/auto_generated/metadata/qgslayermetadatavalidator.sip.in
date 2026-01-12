@@ -24,14 +24,11 @@ Abstract base class for metadata validators.
   public:
 
     class ValidationResult
-{
+    {
 %Docstring(signature="appended")
 Contains the parameters describing a metadata validation failure.
 %End
 
-%TypeHeaderCode
-#include "qgslayermetadatavalidator.h"
-%End
       public:
 
         ValidationResult( const QString &section, const QString &note, const QVariant &identifier = QVariant() );

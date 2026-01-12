@@ -31,7 +31,7 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the vertex tool
+ * This is a unit test for the move feature tool
  */
 class TestQgsMapToolMoveFeature : public QObject
 {

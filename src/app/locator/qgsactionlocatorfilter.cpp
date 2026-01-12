@@ -17,6 +17,8 @@
 
 #include "qgsactionlocatorfilter.h"
 
+#include "qgsstringutils.h"
+
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
@@ -108,7 +110,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     result.displayString = searchText;
     result.setUserData( QVariant::fromValue( action ) );
     result.icon = action->icon();
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
     {
