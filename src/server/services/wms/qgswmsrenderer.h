@@ -70,7 +70,6 @@ namespace QgsWms
   class QgsRenderer
   {
     public:
-
       /**
        * Constructor for QgsRenderer.
        * \param context The rendering context.

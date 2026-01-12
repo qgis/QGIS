@@ -55,15 +55,14 @@
 #include "qgsmaprenderertask.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshlayertemporalproperties.h"
-#include "qgstriangularmesh.h"
 #include "qgsrenderer.h"
 #include "qgsscalecalculator.h"
 #include "qgsserverapiutils.h"
@@ -71,6 +70,7 @@
 #include "qgsserverfeatureid.h"
 #include "qgsserverprojectutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgstriangularmesh.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -1738,9 +1738,7 @@ namespace QgsWms
               meshLayer->updateTriangularMesh( renderContext.coordinateTransform() );
             }
             ( void ) featureInfoFromMeshLayer( meshLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
-
           }
-
         }
       }
       if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
@@ -1984,12 +1982,12 @@ namespace QgsWms
         int gmlVersion = mWmsParameters.infoFormatVersion();
         QString typeName = mContext.layerNickname( *layer );
         QDomElement elem = createFeatureGML(
-                             &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
+          &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-                             ,
-                             &attributes
+          ,
+          &attributes
 #endif
-                           );
+        );
         QDomElement featureMemberElem = infoDocument.createElement( u"gml:featureMember"_s /*wfs:FeatureMember*/ );
         featureMemberElem.appendChild( elem );
         layerElement.appendChild( featureMemberElem );
@@ -2010,7 +2008,7 @@ namespace QgsWms
                                     ,
                                     &attributes
 #endif
-                                  );
+          );
         }
         else
         {
@@ -2021,7 +2019,7 @@ namespace QgsWms
                                        ,
                                        &attributes
 #endif
-                                     );
+            );
           }
         }
 
@@ -2336,8 +2334,8 @@ namespace QgsWms
 
     const Qgis::RasterIdentifyFormat identifyFormat(
       static_cast<bool>( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature )
-      ? Qgis::RasterIdentifyFormat::Feature
-      : Qgis::RasterIdentifyFormat::Value
+        ? Qgis::RasterIdentifyFormat::Feature
+        : Qgis::RasterIdentifyFormat::Value
     );
 
     QgsRasterIdentifyResult identifyResult;
@@ -2380,8 +2378,8 @@ namespace QgsWms
         }
         feature.setFields( fields );
         QDomElement elem = createFeatureGML(
-                             &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
-                           );
+          &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
+        );
         layerElement.appendChild( elem );
       }
       else
@@ -2410,8 +2408,8 @@ namespace QgsWms
             for ( const QgsFeature &feature : storeFeatures )
             {
               QDomElement elem = createFeatureGML(
-                                   &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
-                                 );
+                &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
+              );
               layerElement.appendChild( elem );
             }
           }
@@ -2826,7 +2824,7 @@ namespace QgsWms
           <th>%1</th>
           <td>%2</td>
         </tr>)HTML" )
-                  .arg( name, value );
+                                                           .arg( name, value );
 
               featureInfoString.append( featureInfoAttributeString );
             }
@@ -2834,7 +2832,7 @@ namespace QgsWms
             {
               featureInfoString.append( QStringLiteral( R"HTML(
       %1)HTML" )
-                                        .arg( value ) );
+                                          .arg( value ) );
               break;
             }
           }
@@ -2882,7 +2880,7 @@ namespace QgsWms
           <th>%1</th>
           <td>%2</td>
         </tr>)HTML" )
-                  .arg( name, value );
+                                                           .arg( name, value );
 
 
               featureInfoString.append( featureInfoAttributeString );
@@ -2891,7 +2889,7 @@ namespace QgsWms
             {
               featureInfoString.append( QStringLiteral( R"HTML(
       %1)HTML" )
-                                        .arg( value ) );
+                                          .arg( value ) );
               break;
             }
           }
@@ -2974,8 +2972,7 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const
   {
-    json json
-    {
+    json json {
       { "type", "FeatureCollection" },
       { "features", json::array() },
     };
@@ -3125,11 +3122,10 @@ namespace QgsWms
         }
 
         json["features"].push_back(
-        {
-          { "type", "Feature" },
-          { "id", layerName.toStdString() },
-          { "properties", properties }
-        }
+          { { "type", "Feature" },
+            { "id", layerName.toStdString() },
+            { "properties", properties }
+          }
         );
       }
     }
@@ -3179,7 +3175,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     QgsEditFormConfig editConfig { layer ? layer->editFormConfig() : QgsEditFormConfig() };
-    const bool honorFormConfig { layer &&QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) &&editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
+    const bool honorFormConfig { layer && QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
 
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
@@ -3219,8 +3215,7 @@ namespace QgsWms
 
     // find if an attribute is in any form tab
     std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
-    findAttributeInTree = [&findAttributeInTree, &layer]( const QString & attributeName, const QgsAttributeEditorElement * group ) -> bool
-    {
+    findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
       const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
       if ( container )
       {
@@ -3750,15 +3745,15 @@ namespace QgsWms
           if ( !testFilterStringSafety( filter.mFilter ) )
           {
             throw QgsSecurityException( QStringLiteral( "The filter string %1"
-                                        " has been rejected because of security reasons."
-                                        " Note: Text strings have to be enclosed in single or double quotes."
-                                        " A space between each word / special character is mandatory."
-                                        " Allowed Keywords and special characters are"
-                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
-                                        " Not allowed are semicolons in the filter expression." )
-                                        .arg(
-                                          filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ? QString() : mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' )
-                                        ) );
+                                                        " has been rejected because of security reasons."
+                                                        " Note: Text strings have to be enclosed in single or double quotes."
+                                                        " A space between each word / special character is mandatory."
+                                                        " Allowed Keywords and special characters are"
+                                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
+                                                        " Not allowed are semicolons in the filter expression." )
+                                          .arg(
+                                            filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ? QString() : mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' )
+                                          ) );
           }
 
           QString newSubsetString = filter.mFilter;
