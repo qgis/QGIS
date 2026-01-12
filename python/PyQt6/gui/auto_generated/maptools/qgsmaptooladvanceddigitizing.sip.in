@@ -135,6 +135,7 @@ The default is that a snap indicator is not used.
 .. versionadded:: 3.40
 %End
 
+
   protected:
     void setAdvancedDigitizingAllowed( bool allowed );
 %Docstring
