@@ -2572,6 +2572,12 @@ The development version
       SymbolLabel,
     };
 
+    enum class LegendSyncMode /BaseType=IntEnum/
+    {
+      AllProjectLayers,
+      Manual,
+    };
+
     enum class LegendJsonRenderFlag /BaseType=IntFlag/
     {
       ShowRuleDetails,

@@ -4588,6 +4588,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LegendComponent )
 
     /**
+     * Legend synchronization mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LegendSyncMode : int
+    {
+      AllProjectLayers, //!< Synchronize to all project layers.
+      Manual, //!< No automatic synchronization of legend layers. The legend will be manually populated.
+    };
+    Q_ENUM( LegendSyncMode )
+
+    /**
      * Legend JSON export flags.
      *
      * Flags to control JSON attributes when exporting a legend in JSON format.

@@ -200,15 +200,39 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * Sets whether the legend content should auto update to reflect changes in the project's
      * layer tree.
      * \see autoUpdateModel()
+     * \deprecated QGIS 4.0. Use setSyncMode() instead.
      */
-    void setAutoUpdateModel( bool autoUpdate );
+    Q_DECL_DEPRECATED void setAutoUpdateModel( bool autoUpdate ) SIP_DEPRECATED;
 
     /**
      * Returns whether the legend content should auto update to reflect changes in the project's
      * layer tree.
      * \see setAutoUpdateModel()
+     * \deprecated QGIS 4.0. Use syncMode() instead.
      */
-    bool autoUpdateModel() const;
+    Q_DECL_DEPRECATED bool autoUpdateModel() const SIP_DEPRECATED;
+
+    /**
+     * Sets the legend's synchronization \a mode.
+     *
+     * Depending on the \a mode, this sets whether the legend content should auto update to reflect
+     * changes in the project's layer tree.
+     *
+     * \see syncMode()
+     * \since QGIS 4.0
+     */
+    void setSyncMode( Qgis::LegendSyncMode mode );
+
+    /**
+     * Returns the legend's synchronization mode.
+     *
+     * Depending on the mode, this reflects whether the legend content should auto update to reflect
+     * changes in the project's layer tree.
+     *
+     * \see setSyncMode()
+     * \since QGIS 4.0
+     */
+    Qgis::LegendSyncMode syncMode() const;
 
     /**
      * Set whether legend items should be filtered to show just the ones visible in the associated map.
@@ -709,6 +733,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTree > mCustomLayerTree;
+
+    Qgis::LegendSyncMode mSyncMode = Qgis::LegendSyncMode::AllProjectLayers;
+
     bool mDeferLegendModelInitialization = true;
 
     QgsLegendSettings mSettings;

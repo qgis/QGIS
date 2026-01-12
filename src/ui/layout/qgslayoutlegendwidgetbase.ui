@@ -198,22 +198,9 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
-              <property name="toolTip">
-               <string>Keeps the legend contents synchronized with the main application legend. Customization is not possible and must be done in the main application.</string>
-              </property>
-              <property name="text">
-               <string>Auto update</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item>
              <spacer name="horizontalSpacer_3">
               <property name="orientation">
@@ -239,26 +226,7 @@
             </item>
            </layout>
           </item>
-          <item>
-           <widget class="QgsLayerTreeView" name="mItemTreeView">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>250</height>
-             </size>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::ContiguousSelection</enum>
-            </property>
-            <property name="headerHidden">
-             <bool>true</bool>
-            </property>
-            <attribute name="headerVisible">
-             <bool>false</bool>
-            </attribute>
-           </widget>
-          </item>
-          <item>
+          <item row="3" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="spacing">
              <number>3</number>
@@ -513,7 +481,7 @@
             </item>
            </layout>
           </item>
-          <item>
+          <item row="4" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="topMargin">
              <number>0</number>
@@ -537,7 +505,7 @@
             </item>
            </layout>
           </item>
-          <item>
+          <item row="5" column="0">
            <widget class="QCheckBox" name="mFilterLegendByAtlasCheckBox">
             <property name="toolTip">
              <string>Filter out legend elements that lie outside the current atlas feature.</string>
@@ -546,6 +514,28 @@
              <string>Only show items inside current atlas feature</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QgsLayerTreeView" name="mItemTreeView">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>250</height>
+             </size>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::ContiguousSelection</enum>
+            </property>
+            <property name="headerHidden">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QComboBox" name="mSyncModeCombo"/>
           </item>
          </layout>
         </widget>
@@ -1444,9 +1434,10 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -1454,14 +1445,10 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -1476,15 +1463,19 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsLayoutItemComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1515,7 +1506,7 @@
   <tabstop>mMaxWidthSpinBox</tabstop>
   <tabstop>mLegendAutoWrapWidthDDBtn</tabstop>
   <tabstop>mLegendItemColGroupBox</tabstop>
-  <tabstop>mCheckBoxAutoUpdate</tabstop>
+  <tabstop>mSyncModeCombo</tabstop>
   <tabstop>mUpdateAllPushButton</tabstop>
   <tabstop>mItemTreeView</tabstop>
   <tabstop>mExpandAllToolButton</tabstop>
