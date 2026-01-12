@@ -956,9 +956,9 @@ QgsAttributeMap QgsVectorLayerUtils::QgsFeatureData::attributes() const
   return mAttributes;
 }
 
-bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, bool forceIsEditable )
+bool _fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() )
 {
-  return ( layer->isEditable() || forceIsEditable ) &&
+  return ( layer->isEditable() || ( flags & QgsVectorLayerUtils::FieldIsEditableFlag::IgnoreLayerEditability ) ) &&
          !layer->editFormConfig().readOnly( fieldIndex ) &&
          // Provider permissions
          layer->dataProvider() &&
@@ -1016,7 +1016,7 @@ bool QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( const QgsVectorLayer
   }
 }
 
-bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, bool forceIsEditable )
+bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags )
 {
   if ( layer->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
@@ -1034,10 +1034,10 @@ bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fiel
         return false;
     }
 
-    return _fieldIsEditable( info->joinLayer(), srcFieldIndex, feature, false );
+    return _fieldIsEditable( info->joinLayer(), srcFieldIndex, feature );
   }
 
-  return _fieldIsEditable( layer, fieldIndex, feature, forceIsEditable );
+  return _fieldIsEditable( layer, fieldIndex, feature, flags );
 }
 
 

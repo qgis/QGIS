@@ -1383,6 +1383,8 @@ void QgsAttributesFormProperties::previewForm()
     return;
   }
 
+  auto projectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
   QDomDocument layerDocument;
@@ -1397,4 +1399,6 @@ void QgsAttributesFormProperties::previewForm()
   form.exec();
 
   mLayer->readLayerXml( layerElement, readWriteContext );
+
+  projectDirtyBlocker.reset();
 }
