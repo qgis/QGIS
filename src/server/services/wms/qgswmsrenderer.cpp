@@ -1989,7 +1989,7 @@ namespace QgsWms
                              ,
                              &attributes
 #endif
-        );
+                           );
         QDomElement featureMemberElem = infoDocument.createElement( u"gml:featureMember"_s /*wfs:FeatureMember*/ );
         featureMemberElem.appendChild( elem );
         layerElement.appendChild( featureMemberElem );
@@ -2974,7 +2974,8 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const
   {
-    json json {
+    json json
+    {
       { "type", "FeatureCollection" },
       { "features", json::array() },
     };
@@ -3124,7 +3125,8 @@ namespace QgsWms
         }
 
         json["features"].push_back(
-          { { "type", "Feature" },
+        {
+          { "type", "Feature" },
           { "id", layerName.toStdString() },
           { "properties", properties }
         }
@@ -3177,7 +3179,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     QgsEditFormConfig editConfig { layer ? layer->editFormConfig() : QgsEditFormConfig() };
-    const bool honorFormConfig { layer && QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
+    const bool honorFormConfig { layer &&QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) &&editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
 
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
@@ -3217,7 +3219,8 @@ namespace QgsWms
 
     // find if an attribute is in any form tab
     std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
-    findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
+    findAttributeInTree = [&findAttributeInTree, &layer]( const QString & attributeName, const QgsAttributeEditorElement * group ) -> bool
+    {
       const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
       if ( container )
       {
