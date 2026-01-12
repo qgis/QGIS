@@ -31,8 +31,9 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfieldcombobox.h"
 #include "qgsgui.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgssettingsregistrycore.h"
-#include "qgsvectorlayerproperties.h"
+#include "qgssourcefieldsproperties.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsxmlutils.h"
 
@@ -44,10 +45,10 @@
 
 const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( u"show-aliases"_s, sTreeAttributesForm, false, u"Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels."_s );
 
-QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent, QgsVectorLayerProperties *vectorLayerProperties )
+QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent, QgsSourceFieldsProperties *sourceFieldsProperties )
   : QWidget( parent )
   , mLayer( layer )
-  , mVectorLayerProperties( vectorLayerProperties )
+  , mSourceFieldsProperties( sourceFieldsProperties )
 {
   if ( !layer )
     return;
@@ -147,7 +148,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // show an eventual horizontal scrollbar in the right-hand side panel
   splitter->setSizes( { widget->minimumSizeHint().width(), 600 } );
 
-  if ( mVectorLayerProperties )
+  if ( mSourceFieldsProperties )
   {
     connect( mFormPreviewButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::previewForm );
   }
@@ -809,9 +810,14 @@ void QgsAttributesFormProperties::store()
 void QgsAttributesFormProperties::apply()
 {
   mBlockUpdates++;
-  store();
+  applyToLayer( mLayer );
+  mBlockUpdates--;
+}
 
-  QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
+void QgsAttributesFormProperties::applyToLayer( QgsVectorLayer *layer )
+{
+  store();
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
 
   const QModelIndex fieldContainer = mAvailableWidgetsModel->fieldContainer();
   QModelIndex index;
@@ -822,7 +828,7 @@ void QgsAttributesFormProperties::apply()
     const QgsAttributesFormData::FieldConfig cfg = index.data( QgsAttributesFormModel::ItemFieldConfigRole ).value<QgsAttributesFormData::FieldConfig>();
 
     const QString fieldName = index.data( QgsAttributesFormModel::ItemNameRole ).toString();
-    const int idx = mLayer->fields().indexOf( fieldName );
+    const int idx = layer->fields().indexOf( fieldName );
 
     //continue in case field does not exist anymore
     if ( idx < 0 )
@@ -837,41 +843,41 @@ void QgsAttributesFormProperties::apply()
       editFormConfig.setDataDefinedFieldProperties( fieldName, cfg.mDataDefinedProperties );
     }
 
-    mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
+    layer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     const QgsFieldConstraints constraints = cfg.mFieldConstraints;
-    mLayer->setConstraintExpression( idx, constraints.constraintExpression(), constraints.constraintDescription() );
+    layer->setConstraintExpression( idx, constraints.constraintExpression(), constraints.constraintDescription() );
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+      layer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
+      layer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
     }
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintUnique )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+      layer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
+      layer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
     }
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+      layer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
+      layer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
     }
 
-    mLayer->setFieldAlias( idx, cfg.mAlias );
-    mLayer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
-    mLayer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
-    mLayer->setFieldMergePolicy( idx, cfg.mMergePolicy );
+    layer->setFieldAlias( idx, cfg.mAlias );
+    layer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
+    layer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
+    layer->setFieldMergePolicy( idx, cfg.mMergePolicy );
 
-    mLayer->setDefaultValueDefinition( idx, QgsDefaultValue( cfg.mDefaultValueExpression, cfg.mApplyDefaultValueOnUpdate ) );
+    layer->setDefaultValueDefinition( idx, QgsDefaultValue( cfg.mDefaultValueExpression, cfg.mApplyDefaultValueOnUpdate ) );
   }
 
   // // tabs and groups
@@ -921,10 +927,8 @@ void QgsAttributesFormProperties::apply()
     }
   }
 
-  mLayer->setEditFormConfig( editFormConfig );
-  mBlockUpdates--;
+  layer->setEditFormConfig( editFormConfig );
 }
-
 
 void QgsAttributesFormProperties::updatedFields()
 {
@@ -1378,27 +1382,23 @@ void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool e
 
 void QgsAttributesFormProperties::previewForm()
 {
-  if ( !mVectorLayerProperties )
+  if ( !mSourceFieldsProperties )
   {
     return;
   }
 
   auto projectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
 
-  QgsReadWriteContext readWriteContext;
-  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QDomDocument layerDocument;
-  QDomElement layerElement = layerDocument.createElement( "maplayer"_L1 );
-  mLayer->writeLayerXml( layerElement, layerDocument, readWriteContext );
+  std::unique_ptr<QgsVectorLayer> vlayer;
+  vlayer.reset( QgsMemoryProviderUtils::createMemoryLayer( "preview"_L1, mLayer->fields(), mLayer->wkbType(), mLayer->crs() ) );
 
-  mVectorLayerProperties->apply();
+  mSourceFieldsProperties->applyToLayer( vlayer.get() );
+  applyToLayer( vlayer.get() );
 
-  QgsFeature feature = QgsVectorLayerUtils::createFeature( mLayer );
-  QgsAttributeDialog form( mLayer, &feature, false, this, true );
+  QgsFeature feature = QgsVectorLayerUtils::createFeature( vlayer.get() );
+  QgsAttributeDialog form( vlayer.get(), &feature, false, this, true );
   form.setMode( QgsAttributeEditorContext::PreviewMode );
   form.exec();
-
-  mLayer->readLayerXml( layerElement, readWriteContext );
 
   projectDirtyBlocker.reset();
 }

@@ -51,7 +51,7 @@ class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
 class QgsFieldConstraintIndicatorProvider;
 class QgsFieldDefaultValueIndicatorProvider;
-class QgsVectorLayerProperties;
+class QgsSourceFieldsProperties;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -72,9 +72,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
      * The QgsAttributesFormProperties constructor.
      * \param layer The vector layer being configured
      * \param parent The parent QObject
-     * \param vectorLayerProperties The vector layer properties dialog, an optional parameter used to generate preview forms (since QGIS 4.0)
+     * \param sourceFieldsProperties The source fields properties widget, an optional parameter used to generate preview forms (since QGIS 4.0)
      */
-    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsVectorLayerProperties *vectorLayerProperties = nullptr );
+    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsSourceFieldsProperties *sourceFieldsProperties = nullptr );
 
     void init();
 
@@ -118,7 +118,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void updateButtons();
 
     QgsVectorLayer *mLayer = nullptr;
-    QgsVectorLayerProperties *mVectorLayerProperties = nullptr;
 
     QgsAttributesFormBaseView *mAvailableWidgetsView = nullptr;
     QgsAttributesFormBaseView *mFormLayoutView = nullptr;
@@ -188,6 +187,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
     void setFormLayoutIndicatorProvidersEnabled( bool enabled );
 
+    void applyToLayer( QgsVectorLayer *layer );
+
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel = nullptr;
     QgsAttributesFormLayoutModel *mFormLayoutModel = nullptr;
     QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel = nullptr;
@@ -211,6 +212,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
     QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
+
+    QgsSourceFieldsProperties *mSourceFieldsProperties = nullptr;
 
     friend class TestQgsAttributesFormProperties;
 };
