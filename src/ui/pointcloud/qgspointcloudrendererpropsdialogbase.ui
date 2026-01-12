@@ -181,29 +181,12 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="mLabels">
             <property name="text">
-             <string>When zoomed out</string>
+             <string>Show tile labels</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QgsFontButton" name="mLabelOptions">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Level of Detail:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="mZoomOutOptions"/>
           </item>
           <item row="1" column="1">
            <spacer name="horizontalSpacer">
@@ -218,20 +201,33 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="mLabels">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Show tile labels</string>
+             <string>When zoomed out</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QComboBox" name="mZoomOutOptions"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QgsFontButton" name="mLabelOptions">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Overview switching scale</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1" colspan="2">
-            <widget class="QSlider" name="mZoomOutMultiplier">
-              <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
-              </property>
-            </widget>
-            </item>
+           <widget class="QComboBox" name="mOverviewSwitchingScale"/>
+          </item>
          </layout>
         </widget>
        </item>

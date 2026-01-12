@@ -141,7 +141,7 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
 
   const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
-  const double zoomOutMultiplier = rendererBehavior ? rendererBehavior->zoomOutMultiplier() : 1;
+  const double overviewSwitchingScale = rendererBehavior ? rendererBehavior->overviewSwitchingScale() : 1;
   qsizetype subIndexesRendered = 0;
 
   for ( int i = 0; i < subIndexes.size(); ++i )
@@ -168,7 +168,7 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     constexpr float THRESHOLD = .2;
 
     QgsBox3D scaledBox = box3D;
-    scaledBox.scale( zoomOutMultiplier );
+    scaledBox.scale( overviewSwitchingScale );
     const bool zoomedOut = !scaledBox.contains( cameraPosMapCoords.x(), cameraPosMapCoords.y(), cameraPosMapCoords.z() );
 
     if ( zoomedOut )

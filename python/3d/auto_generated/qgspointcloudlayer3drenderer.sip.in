@@ -121,16 +121,16 @@ Returns the renderer behavior when zoomed out
 .. versionadded:: 3.42
 %End
 
-    void setZoomOutMultiplier( double multiplier );
+    void setOverviewSwitchingScale( double scale );
 %Docstring
-Sets the zoom out multiplier for zoomed out rendering of the overview
+Sets the overview switching scale
 
 .. versionadded:: 4.0
 %End
 
-    double zoomOutMultiplier() const;
+    double overviewSwitchingScale() const;
 %Docstring
-Returns the zoom out multiplier for zoomed out rendering of the overview
+Returns the overview switching scale
 
 .. versionadded:: 4.0
 %End
