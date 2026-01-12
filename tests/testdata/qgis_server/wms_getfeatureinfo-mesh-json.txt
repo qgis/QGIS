@@ -1,2 +1,2 @@
 *****
-Content-Type: application/json; charset=utf-8{"features": [{"id": "CCMP_Wind_Analysis_wind_speed", "properties": {"Time": "2025-03-25T00:00:00", "number of observations used to derive wind vector components": "1", "wind speed at 10 meters": "8.64361", "wind vector component at 10 meters": "1"}, "type": "Feature"}], "type": "FeatureCollection"}
+Content-Type: application/json; charset=utf-8{"features": [{"id": "landsat", "properties": {"GDAL Band Number 1": "125.729"}, "type": "Feature"}], "type": "FeatureCollection"}

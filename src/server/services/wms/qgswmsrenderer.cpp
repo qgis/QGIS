@@ -61,6 +61,9 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgstriangularmesh.h"
 #include "qgsrenderer.h"
 #include "qgsscalecalculator.h"
 #include "qgsserverapiutils.h"
@@ -1986,16 +1989,8 @@ namespace QgsWms
                              ,
                              &attributes
 #endif
-<<<<<<< HEAD
         );
         QDomElement featureMemberElem = infoDocument.createElement( u"gml:featureMember"_s /*wfs:FeatureMember*/ );
-||||||| parent of b3afdad933d (Compute vector values)
-        );
-        QDomElement featureMemberElem = infoDocument.createElement( QStringLiteral( "gml:featureMember" ) /*wfs:FeatureMember*/ );
-=======
-                           );
-        QDomElement featureMemberElem = infoDocument.createElement( QStringLiteral( "gml:featureMember" ) /*wfs:FeatureMember*/ );
->>>>>>> b3afdad933d (Compute vector values)
         featureMemberElem.appendChild( elem );
         layerElement.appendChild( featureMemberElem );
         continue;
@@ -2198,13 +2193,13 @@ namespace QgsWms
       return false;
     }
 
-    bool isTemporal = layer->temporalProperties()->isActive();
+    const bool isTemporal = layer->temporalProperties()->isActive();
     QgsDateTimeRange range, layerRange;
-    const QString dateFormat = QStringLiteral( "yyyy-MM-ddTHH:mm:ss" );
+    const QString dateFormat = u"yyyy-MM-ddTHH:mm:ss"_s;
 
     QList<QgsMeshDatasetIndex> datasetIndexList;
-    int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
-    int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
+    const int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
+    const int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
 
     const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
 
@@ -2246,7 +2241,7 @@ namespace QgsWms
       }
     }
 
-    double searchRadius = Qgis::DEFAULT_SEARCH_RADIUS_MM * renderContext.scaleFactor() * renderContext.mapToPixel().mapUnitsPerPixel();
+    const double searchRadius = Qgis::DEFAULT_SEARCH_RADIUS_MM * renderContext.scaleFactor() * renderContext.mapToPixel().mapUnitsPerPixel();
 
     double scalarDoubleValue = 0.0;
 
@@ -2262,38 +2257,38 @@ namespace QgsWms
 
       if ( groupMeta.isScalar() )
       {
-        const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, *infoPoint, searchRadius ); //
+        const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, *infoPoint, searchRadius );
         scalarDoubleValue = scalarValue.scalar();
-        attribute.insert( "Scalar Value", std::isnan( scalarDoubleValue ) ? "no data" : QLocale().toString( scalarDoubleValue ) );
+        attribute.insert( u"Scalar Value"_s, std::isnan( scalarDoubleValue ) ? u"no data"_s : QLocale().toString( scalarDoubleValue ) );
       }
 
       if ( groupMeta.isVector() )
       {
-        const QgsMeshDatasetValue vectorValue = layer->datasetValue( index, *infoPoint, searchRadius ); //
+        const QgsMeshDatasetValue vectorValue = layer->datasetValue( index, *infoPoint, searchRadius );
         const double vectorX = vectorValue.x();
         const double vectorY = vectorValue.y();
         if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
         {
-          attribute.insert( "Vector Value", "no data" );
+          attribute.insert( u"Vector Value"_s, u"no data"_s );
         }
         else
         {
-          attribute.insert( "Vector Magnitude", QLocale().toString( vectorValue.scalar() ) );
-          derivedAttributes.insert( "Vector x-component", QLocale().toString( vectorY ) );
-          derivedAttributes.insert( "Vector y-component", QLocale().toString( vectorX ) );
+          attribute.insert( u"Vector Magnitude"_s, QLocale().toString( vectorValue.scalar() ) );
+          derivedAttributes.insert( u"Vector x-component"_s, QLocale().toString( vectorY ) );
+          derivedAttributes.insert( u"Vector y-component"_s, QLocale().toString( vectorX ) );
         }
       }
 
       const QgsMeshDatasetMetadata &meta = layer->datasetMetadata( index );
 
       if ( groupMeta.isTemporal() )
-        derivedAttributes.insert( "Time Step", layer->formatTime( meta.time() ) );
-      derivedAttributes.insert( "Source", groupMeta.uri() );
+        derivedAttributes.insert( u"Time Step"_s, layer->formatTime( meta.time() ) );
+      derivedAttributes.insert( u"Source"_s, groupMeta.uri() );
 
-      QString resultName = groupMeta.name();
+      const QString resultName = groupMeta.name();
 
-      QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
-      attributeElement.setAttribute( QStringLiteral( "name" ), resultName );
+      QDomElement attributeElement = infoDocument.createElement( u"Attribute"_s );
+      attributeElement.setAttribute( u"name"_s, resultName );
 
       QString value;
       if ( !QgsVariantUtils::isNull( scalarDoubleValue ) )
@@ -2301,13 +2296,13 @@ namespace QgsWms
         value = QString::number( scalarDoubleValue );
       }
 
-      attributeElement.setAttribute( QStringLiteral( "value" ), value );
+      attributeElement.setAttribute( u"value"_s, value );
       layerElement.appendChild( attributeElement );
 
       if ( isTemporal )
       {
-        QDomElement attributeElementTime = infoDocument.createElement( QStringLiteral( "Attribute" ) );
-        attributeElementTime.setAttribute( QStringLiteral( "name" ), "Time" );
+        QDomElement attributeElementTime = infoDocument.createElement( u"Attribute"_s );
+        attributeElementTime.setAttribute( u"name"_s, u"Time"_s );
         if ( range.isInstant() )
         {
           value = range.begin().toString( dateFormat );
@@ -2316,7 +2311,7 @@ namespace QgsWms
         {
           value = range.begin().toString( dateFormat ) + '/' + range.end().toString( dateFormat );
         }
-        attributeElementTime.setAttribute( QStringLiteral( "value" ), value );
+        attributeElementTime.setAttribute( u"value"_s, value );
         layerElement.appendChild( attributeElementTime );
       }
     }
@@ -2979,8 +2974,7 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const
   {
-    json json
-    {
+    json json {
       { "type", "FeatureCollection" },
       { "features", json::array() },
     };
@@ -3130,8 +3124,7 @@ namespace QgsWms
         }
 
         json["features"].push_back(
-        {
-          { "type", "Feature" },
+          { { "type", "Feature" },
           { "id", layerName.toStdString() },
           { "properties", properties }
         }
@@ -3184,7 +3177,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     QgsEditFormConfig editConfig { layer ? layer->editFormConfig() : QgsEditFormConfig() };
-    const bool honorFormConfig { layer &&QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) &&editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
+    const bool honorFormConfig { layer && QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
 
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
@@ -3224,8 +3217,7 @@ namespace QgsWms
 
     // find if an attribute is in any form tab
     std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
-    findAttributeInTree = [&findAttributeInTree, &layer]( const QString & attributeName, const QgsAttributeEditorElement * group ) -> bool
-    {
+    findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
       const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
       if ( container )
       {
