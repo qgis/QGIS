@@ -70,6 +70,7 @@ A layout item subclass for map legends.
 %End
   public:
 
+
     QgsLayoutItemLegend( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemLegend, with the specified parent

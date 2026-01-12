@@ -252,6 +252,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     QgsLayoutItemLegend *legend = qobject_cast<QgsLayoutItemLegend *>( item );
     Q_ASSERT( legend );
 
+    // set to default sync mode
+    legend->setSyncMode( QgsLayoutItemLegend::settingDefaultLegendSyncMode->value() );
+
     // try to find a good map to link the legend with by default
     legend->setLinkedMap( findSensibleDefaultLinkedMapItem( legend ) );
 

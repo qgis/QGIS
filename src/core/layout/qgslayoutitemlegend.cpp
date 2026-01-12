@@ -43,6 +43,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgssettingstree.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsvectorlayer.h"
 
@@ -100,6 +101,8 @@ bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
 //
 // QgsLayoutItemLegend
 //
+
+const QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode > *QgsLayoutItemLegend::settingDefaultLegendSyncMode = new QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode >( u"default-legend-sync-mode"_s, QgsSettingsTree::sTreeLayout, Qgis::LegendSyncMode::VisibleLayers, u"Default sync mode to use for legend content."_s );
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
