@@ -8179,12 +8179,14 @@ Prior to QGIS 3.42 this was available as :py:class:`QgsLegendStyle`.Style
 Qgis.LegendComponent.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LegendSyncMode.AllProjectLayers.__doc__ = "Synchronize to all project layers."
+Qgis.LegendSyncMode.VisibleLayers.__doc__ = "Synchronize to map layers. The legend will include layers which are included in the linked map only."
 Qgis.LegendSyncMode.Manual.__doc__ = "No automatic synchronization of legend layers. The legend will be manually populated."
 Qgis.LegendSyncMode.__doc__ = """Legend synchronization mode.
 
 .. versionadded:: 4.0
 
 * ``AllProjectLayers``: Synchronize to all project layers.
+* ``VisibleLayers``: Synchronize to map layers. The legend will include layers which are included in the linked map only.
 * ``Manual``: No automatic synchronization of legend layers. The legend will be manually populated.
 
 """

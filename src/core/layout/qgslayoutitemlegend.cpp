@@ -72,6 +72,15 @@ void QgsLegendFilterProxyModel::setIsDefaultLegend( bool isDefault )
   invalidateFilter();
 }
 
+void QgsLegendFilterProxyModel::setFilterToCheckedLayers( bool filter )
+{
+  if ( filter == mFilterToCheckedLayers )
+    return;
+
+  mFilterToCheckedLayers = filter;
+  invalidateFilter();
+}
+
 bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
 {
   if ( !layer )
@@ -81,6 +90,9 @@ bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
   {
     return false;
   }
+
+  if ( mFilterToCheckedLayers && !isLayerChecked( layer ) )
+    return false;
 
   return true;
 }
@@ -109,6 +121,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
+  connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::visibilityChanged, this, &QgsLayoutItemLegend::nodeVisibilityChanged );
 
   // If project colors change, we need to redraw legend, as legend symbols may rely on project colors
   connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this]
@@ -375,6 +388,32 @@ QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
 
   QgsLegendFilterProxyModel *proxy = new QgsLegendFilterProxyModel();
   proxy->setIsDefaultLegend( !static_cast< bool >( mCustomLayerTree ) );
+  switch ( mSyncMode )
+  {
+    case Qgis::LegendSyncMode::VisibleLayers:
+      if ( mMap )
+      {
+        QgsExpressionContext expressionContext = mMap->createExpressionContext();
+        const QList<QgsMapLayer *> visibleLayers = mMap->layersToRender( &expressionContext );
+        proxy->setCheckedLayers( visibleLayers );
+        proxy->setFilterToCheckedLayers( true );
+      }
+      else if ( const QgsLayout *l = layout() )
+      {
+        // no linked map, so use project layer tree
+        if ( QgsProject *p = l->project() )
+        {
+          proxy->setCheckedLayers( p->layerTreeRoot()->checkedLayers() );
+          proxy->setFilterToCheckedLayers( true );
+        }
+      }
+      break;
+
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::Manual:
+      break;
+  }
+
   res.setProxyModel( proxy );
 
   return res;
@@ -406,6 +445,7 @@ void QgsLayoutItemLegend::setSyncMode( Qgis::LegendSyncMode mode )
   switch ( mSyncMode )
   {
     case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
       setCustomLayerTree( nullptr );
       break;
 
@@ -464,12 +504,28 @@ void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const Q
   switch ( mSyncMode )
   {
     case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
     {
       // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
       // we must then call updateItem to reflect the changes
       updateFilterByMap( false );
       break;
     }
+    case Qgis::LegendSyncMode::Manual:
+      break;
+  }
+}
+
+void QgsLayoutItemLegend::nodeVisibilityChanged( QgsLayerTreeNode * )
+{
+  switch ( mSyncMode )
+  {
+    case Qgis::LegendSyncMode::VisibleLayers:
+    {
+      updateFilterByMap( false );
+      break;
+    }
+    case Qgis::LegendSyncMode::AllProjectLayers:
     case Qgis::LegendSyncMode::Manual:
       break;
   }

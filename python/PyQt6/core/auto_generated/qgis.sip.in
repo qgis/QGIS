@@ -2583,6 +2583,7 @@ The development version
     enum class LegendSyncMode /BaseType=IntEnum/
     {
       AllProjectLayers,
+      VisibleLayers,
       Manual,
     };
 

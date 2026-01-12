@@ -988,6 +988,7 @@ namespace QgsWms
       switch ( legend->syncMode() )
       {
         case Qgis::LegendSyncMode::AllProjectLayers:
+        case Qgis::LegendSyncMode::VisibleLayers:
         {
           // the legend has an auto-update model
           // we will update it with map's layers
