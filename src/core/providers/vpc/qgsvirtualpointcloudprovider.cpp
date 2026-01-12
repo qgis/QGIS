@@ -583,18 +583,17 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
 {
   Q_UNUSED( configuration )
 
-  if ( mAttributes.indexOf( "Red"_L1 ) >= 0 && mAttributes.indexOf( "Green"_L1 ) >= 0 && mAttributes.indexOf( "Blue"_L1 ) >= 0 )
+  if ( mRedMax != std::numeric_limits<double>::lowest() && mGreenMax != std::numeric_limits<double>::lowest() && mBlueMax != std::numeric_limits<double>::lowest() )
   {
     auto renderer = std::make_unique< QgsPointCloudRgbRenderer >();
-    if ( mRedMax == std::numeric_limits<double>::lowest() || mGreenMax == std::numeric_limits<double>::lowest() || mBlueMax == std::numeric_limits<double>::lowest() )
+    const int maxValue = std::max( mBlueMax, std::max( mRedMax, mGreenMax ) );
+
+    if ( maxValue == 0 )
     {
-      const int maxValue = std::max( mBlueMax, std::max( mRedMax, mGreenMax ) );
-
-      if ( maxValue == 0 )
-      {
-        renderer.reset();
-      }
-
+      renderer.reset();
+    }
+    else
+    {
       const int rangeGuess = maxValue > 255 ? 65535 : 255;
 
       if ( rangeGuess > 255 )
@@ -607,16 +606,6 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
         renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
         renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
       }
-    }
-    else
-    {
-      QgsContrastEnhancement contrast( Qgis::DataType::UInt16 );
-      contrast.setMinimumValue( std::numeric_limits<uint16_t>::lowest() );
-      contrast.setMaximumValue( std::numeric_limits<uint16_t>::max() );
-      contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
-      renderer->setRedContrastEnhancement( new QgsContrastEnhancement( contrast ) );
-      renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
-      renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
     }
 
     if ( renderer )
