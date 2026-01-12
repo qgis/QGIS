@@ -4595,6 +4595,7 @@ class CORE_EXPORT Qgis
     enum class LegendSyncMode : int
     {
       AllProjectLayers, //!< Synchronize to all project layers.
+      VisibleLayers, //!< Synchronize to map layers. The legend will include layers which are included in the linked map only.
       Manual, //!< No automatic synchronization of legend layers. The legend will be manually populated.
     };
     Q_ENUM( LegendSyncMode )

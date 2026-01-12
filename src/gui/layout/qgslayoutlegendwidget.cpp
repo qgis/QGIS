@@ -98,6 +98,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   setupUi( this );
 
   mSyncModeCombo->addItem( tr( "Synchronize to All Project Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::AllProjectLayers ) );
+  mSyncModeCombo->addItem( tr( "Synchronize to Visible Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::VisibleLayers ) );
   mSyncModeCombo->addItem( tr( "Manual" ), QVariant::fromValue( Qgis::LegendSyncMode::Manual ) );
 
   connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mWrapCharLineEdit_textChanged );
@@ -889,6 +890,7 @@ void QgsLayoutLegendWidget::syncModeChanged( bool userTriggered )
   switch ( mode )
   {
     case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
       allowEdits = false;
       break;
 
@@ -2205,6 +2207,7 @@ bool QgsLegendLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
         switch ( mSyncMode )
         {
           case Qgis::LegendSyncMode::AllProjectLayers:
+          case Qgis::LegendSyncMode::VisibleLayers:
             return false;
 
           case Qgis::LegendSyncMode::Manual:

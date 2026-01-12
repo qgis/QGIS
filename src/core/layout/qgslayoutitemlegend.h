@@ -126,11 +126,21 @@ class CORE_EXPORT QgsLegendFilterProxyModel : public QgsLayerTreeFilterProxyMode
      */
     void setIsDefaultLegend( bool isDefault );
 
+    /**
+     * Sets whether only checked layers should be shown.
+     *
+     * By default all layers are shown, regardless of their checked status.
+     *
+     * \see setCheckedLayers()
+     */
+    void setFilterToCheckedLayers( bool filter );
+
   private:
 
     bool layerShown( QgsMapLayer *layer ) const override;
 
     bool mIsDefaultLegend = true;
+    bool mFilterToCheckedLayers = false;
 
 };
 #endif
@@ -706,6 +716,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+    void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
     //! Clears any data cached for the legend model
     void clearLegendCachedData();
