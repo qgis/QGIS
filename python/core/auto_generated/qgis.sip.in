@@ -2580,6 +2580,12 @@ The development version
       SymbolLabel,
     };
 
+    enum class LegendSyncMode
+    {
+      AllProjectLayers,
+      Manual,
+    };
+
     enum class LegendJsonRenderFlag
     {
       ShowRuleDetails,

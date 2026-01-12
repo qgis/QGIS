@@ -394,52 +394,62 @@ const QgsLegendModel *QgsLayoutItemLegend::model() const
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
-  if ( autoUpdate == autoUpdateModel() )
+  setSyncMode( autoUpdate ? Qgis::LegendSyncMode::AllProjectLayers : Qgis::LegendSyncMode::Manual );
+}
+
+void QgsLayoutItemLegend::setSyncMode( Qgis::LegendSyncMode mode )
+{
+  if ( mode == mSyncMode )
     return;
 
-  if ( autoUpdate )
+  mSyncMode = mode;
+  switch ( mSyncMode )
   {
-    setCustomLayerTree( nullptr );
-  }
-  else
-  {
-    std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
+    case Qgis::LegendSyncMode::AllProjectLayers:
+      setCustomLayerTree( nullptr );
+      break;
 
-    // filter out excluded by default items
-    std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
-    filterNodeChildren = [&filterNodeChildren]( QgsLayerTreeGroup * group )
+    case Qgis::LegendSyncMode::Manual:
     {
-      if ( !group )
-        return;
+      std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
 
-      const QList<QgsLayerTreeNode *> children = group->children();
-      for ( QgsLayerTreeNode *child : children )
+      // filter out excluded by default items
+      std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
+      filterNodeChildren = [&filterNodeChildren]( QgsLayerTreeGroup * group )
       {
-        if ( !child )
+        if ( !group )
+          return;
+
+        const QList<QgsLayerTreeNode *> children = group->children();
+        for ( QgsLayerTreeNode *child : children )
         {
-          group->removeChildNode( child );
-          continue;
-        }
-        else if ( QgsLayerTree::isGroup( child ) )
-        {
-          filterNodeChildren( QgsLayerTree::toGroup( child ) );
-        }
-        else if ( QgsLayerTree::isLayer( child ) )
-        {
-          QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
-          if ( QgsMapLayer *mapLayer = layer->layer() )
+          if ( !child )
           {
-            if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+            group->removeChildNode( child );
+            continue;
+          }
+          else if ( QgsLayerTree::isGroup( child ) )
+          {
+            filterNodeChildren( QgsLayerTree::toGroup( child ) );
+          }
+          else if ( QgsLayerTree::isLayer( child ) )
+          {
+            QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
+            if ( QgsMapLayer *mapLayer = layer->layer() )
             {
-              group->removeChildNode( child );
+              if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+              {
+                group->removeChildNode( child );
+              }
             }
           }
         }
-      }
-    };
-    filterNodeChildren( customTree.get() );
+      };
+      filterNodeChildren( customTree.get() );
 
-    setCustomLayerTree( customTree.release() );
+      setCustomLayerTree( customTree.release() );
+      break;
+    }
   }
 
   adjustBoxSize();
@@ -451,17 +461,28 @@ void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const Q
   if ( key == "cached_name"_L1 )
     return;
 
-  if ( autoUpdateModel() )
+  switch ( mSyncMode )
   {
-    // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
-    // we must then call updateItem to reflect the changes
-    updateFilterByMap( false );
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    {
+      // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
+      // we must then call updateItem to reflect the changes
+      updateFilterByMap( false );
+      break;
+    }
+    case Qgis::LegendSyncMode::Manual:
+      break;
   }
 }
 
 bool QgsLayoutItemLegend::autoUpdateModel() const
 {
-  return !mCustomLayerTree;
+  return mSyncMode != Qgis::LegendSyncMode::Manual;
+}
+
+Qgis::LegendSyncMode QgsLayoutItemLegend::syncMode() const
+{
+  return mSyncMode;
 }
 
 void QgsLayoutItemLegend::setLegendFilterByMapEnabled( bool enabled )
@@ -813,6 +834,10 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
     // if not using auto-update - store the custom layer tree
     mCustomLayerTree->writeXml( legendElem, context );
   }
+  else
+  {
+    legendElem.setAttribute( u"syncMode"_s, qgsEnumValueToKey( mSyncMode ) );
+  }
 
   if ( mLegendFilterByMap )
   {
@@ -964,9 +989,13 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
     if ( mLayout )
       tree->resolveReferences( mLayout->project(), true );
     setCustomLayerTree( tree.release() );
+    mSyncMode = Qgis::LegendSyncMode::Manual;
   }
   else
+  {
     setCustomLayerTree( nullptr );
+    mSyncMode = qgsEnumKeyToValue( itemElem.attribute( u"syncMode"_s ), Qgis::LegendSyncMode::AllProjectLayers );
+  }
 
   return true;
 }

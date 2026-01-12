@@ -52,16 +52,15 @@ class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
     QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Sets whether the legend is showing the default legend for a project (as opposed
-     * to a customized legend).
+     * Sets the sync mode used for the legend.
      */
-    void setIsDefaultLegend( bool isDefault );
+    void setSyncMode( Qgis::LegendSyncMode mode );
 
   protected:
     bool nodeShown( QgsLayerTreeNode *node ) const override;
 
   private:
-    bool mIsDefaultLegend = true;
+    Qgis::LegendSyncMode mSyncMode = Qgis::LegendSyncMode::AllProjectLayers;
 };
 #endif
 
@@ -124,7 +123,7 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     void mBoxSpaceSpinBox_valueChanged( double d );
     void mColumnSpaceSpinBox_valueChanged( double d );
     void maxWidthChanged( double width );
-    void mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered = true );
+    void syncModeChanged( bool userTriggered );
     void composerMapChanged( QgsLayoutItem *item );
     void mCheckboxResizeContents_toggled( bool checked );
 
