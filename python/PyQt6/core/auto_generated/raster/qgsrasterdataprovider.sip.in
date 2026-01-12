@@ -86,6 +86,9 @@ QGIS 3.16 creation flags are specified within the ``flags`` value.
     virtual QgsRasterDataProvider *clone() const = 0;
 
 
+
+
+
     virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 %Docstring
 Returns flags containing the supported capabilities of the data

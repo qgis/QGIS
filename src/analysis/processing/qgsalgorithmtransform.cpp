@@ -30,7 +30,7 @@ void QgsTransformAlgorithm::initParameters( const QVariantMap & )
   addParameter( convertCurvesParam.release() );
 
   // Transform Z
-  auto transformZParam = std::make_unique<QgsProcessingParameterBoolean>( u"TRANSFORM_Z"_s, QObject::tr( "Also transform Z coordinates" ), false, true );
+  auto transformZParam = std::make_unique<QgsProcessingParameterBoolean>( u"TRANSFORM_Z"_s, QObject::tr( "Also transform Z coordinates" ), false );
   transformZParam->setHelp( QObject::tr( "If checked, the z coordinates will also be transformed. This requires that the z coordinates in the geometries represent height relative to the vertical datum of the source CRS (generally ellipsoidal heights) and are expressed in its vertical units (generally meters). If unchecked, then z coordinates will not be changed by the transform." ) );
   addParameter( transformZParam.release() );
 

@@ -2931,6 +2931,7 @@ void QgisApp::createActions()
 
   connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
   connect( mActionMoveFeatureCopy, &QAction::triggered, this, &QgisApp::moveFeatureCopy );
+  connect( mActionFeatureArray, &QAction::triggered, this, &QgisApp::featureArray );
   connect( mActionRotateFeature, &QAction::triggered, this, &QgisApp::rotateFeature );
   connect( mActionScaleFeature, &QAction::triggered, this, &QgisApp::scaleFeature );
   connect( mActionReshapeFeatures, &QAction::triggered, this, &QgisApp::reshapeFeatures );
@@ -3309,6 +3310,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionMoveFeature );
   mMapToolGroup->addAction( mActionMoveFeatureCopy );
+  mMapToolGroup->addAction( mActionFeatureArray );
   mMapToolGroup->addAction( mActionRotateFeature );
   mMapToolGroup->addAction( mActionScaleFeature );
   mMapToolGroup->addAction( mActionOffsetCurve );
@@ -3817,6 +3819,7 @@ void QgisApp::createToolBars()
   moveFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
   moveFeatureButton->addAction( mActionMoveFeature );
   moveFeatureButton->addAction( mActionMoveFeatureCopy );
+  moveFeatureButton->addAction( mActionFeatureArray );
   QAction *defAction = mActionMoveFeature;
   switch ( settings.value( u"UI/defaultMoveTool"_s, 0 ).toInt() )
   {
@@ -3825,6 +3828,9 @@ void QgisApp::createToolBars()
       break;
     case 1:
       defAction = mActionMoveFeatureCopy;
+      break;
+    case 2:
+      defAction = mActionFeatureArray;
       break;
   }
   moveFeatureButton->setDefaultAction( defAction );
@@ -4321,6 +4327,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionAddXyzLayer->setIcon( QgsApplication::getThemeIcon( u"/mActionAddXyzLayer.svg"_s ) );
   mActionAddVectorTileLayer->setIcon( QgsApplication::getThemeIcon( u"/mActionAddVectorTileLayer.svg"_s ) );
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( u"/mActionAddWcsLayer.svg"_s ) );
+  mActionFeatureArray->setIcon( QgsApplication::getThemeIcon( u"/mActionFeatureArrayPoint.svg"_s ) );
 #ifdef HAVE_SPATIALITE
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( u"/mActionAddWfsLayer.svg"_s ) );
 #endif
@@ -4524,6 +4531,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::AddFeature )->setAction( mActionAddFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeature )->setAction( mActionMoveFeature );
   mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy )->setAction( mActionMoveFeatureCopy );
+  mMapTools->mapTool( QgsAppMapTools::FeatureArrayCopy )->setAction( mActionFeatureArray );
   mMapTools->mapTool( QgsAppMapTools::RotateFeature )->setAction( mActionRotateFeature );
   mMapTools->mapTool( QgsAppMapTools::ScaleFeature )->setAction( mActionScaleFeature );
   mMapTools->mapTool( QgsAppMapTools::OffsetCurve )->setAction( mActionOffsetCurve );
@@ -8812,6 +8820,11 @@ void QgisApp::moveFeature()
 void QgisApp::moveFeatureCopy()
 {
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::MoveFeatureCopy ) );
+}
+
+void QgisApp::featureArray()
+{
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::FeatureArrayCopy ) );
 }
 
 void QgisApp::offsetCurve()
@@ -15160,6 +15173,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mMenuEditGeometry->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
+    mActionFeatureArray->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
     mActionScaleFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
@@ -15360,6 +15374,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionDeletePart->setEnabled( isEditable && canChangeGeometry );
         mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
         mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
+        mActionFeatureArray->setEnabled( isEditable && canChangeGeometry );
         mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
         mActionScaleFeature->setEnabled( isEditable && canChangeGeometry );
         mActionVertexTool->setEnabled( isEditable && canChangeGeometry );
@@ -15373,6 +15388,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           addFeatureText = tr( "Add Point Feature" );
           mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionMoveFeaturePoint.svg"_s ) );
           mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( u"/mActionMoveFeatureCopyPoint.svg"_s ) );
+          mActionFeatureArray->setIcon( QgsApplication::getThemeIcon( u"/mActionFeatureArrayPoint.svg"_s ) );
 
           mActionAddRing->setEnabled( false );
           mActionFillRing->setEnabled( false );
@@ -15404,6 +15420,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           addFeatureText = tr( "Add Line Feature" );
           mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionMoveFeatureLine.svg"_s ) );
           mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( u"/mActionMoveFeatureCopyLine.svg"_s ) );
+          mActionFeatureArray->setIcon( QgsApplication::getThemeIcon( u"/mActionFeatureArrayLine.svg"_s ) );
 
           mActionReshapeFeatures->setEnabled( isEditable && canChangeGeometry );
           mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
@@ -15424,6 +15441,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           addFeatureText = tr( "Add Polygon Feature" );
           mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( u"/mActionMoveFeature.svg"_s ) );
           mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( u"/mActionMoveFeatureCopy.svg"_s ) );
+          mActionFeatureArray->setIcon( QgsApplication::getThemeIcon( u"/mActionFeatureArray.svg"_s ) );
 
           mActionAddRing->setEnabled( isEditable && canChangeGeometry );
           mActionFillRing->setEnabled( isEditable && canChangeGeometry );
@@ -15546,6 +15564,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionVertexToolActiveLayer->setEnabled( false );
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
+      mActionFeatureArray->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
@@ -15637,6 +15656,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionVertexToolActiveLayer->setEnabled( false );
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
+      mActionFeatureArray->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
@@ -15721,6 +15741,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionVertexToolActiveLayer->setEnabled( false );
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
+      mActionFeatureArray->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
@@ -15798,6 +15819,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionVertexToolActiveLayer->setEnabled( false );
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
+      mActionFeatureArray->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
@@ -15869,6 +15891,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionVertexToolActiveLayer->setEnabled( false );
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
+      mActionFeatureArray->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
@@ -15940,6 +15963,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionVertexToolActiveLayer->setEnabled( false );
       mActionMoveFeature->setEnabled( false );
       mActionMoveFeatureCopy->setEnabled( false );
+      mActionFeatureArray->setEnabled( false );
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
@@ -17048,6 +17072,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( u"UI/defaultMoveTool"_s, 0 );
   else if ( action == mActionMoveFeatureCopy )
     settings.setValue( u"UI/defaultMoveTool"_s, 1 );
+  else if ( action == mActionFeatureArray )
+    settings.setValue( u"UI/defaultMoveTool"_s, 2 );
   else if ( action == mActionVertexTool )
     settings.setEnumValue( u"UI/defaultVertexTool"_s, QgsVertexTool::AllLayers );
   else if ( action == mActionVertexToolActiveLayer )

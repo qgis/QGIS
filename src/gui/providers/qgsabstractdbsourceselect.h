@@ -32,7 +32,7 @@ class QItemDelegate;
  * \brief Base class for database source widget selectors.
  * \since QGIS 3.24
  */
-class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, public Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
   public:

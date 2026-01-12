@@ -161,8 +161,8 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
   bool resultOk;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
-  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 #else
   constexpr double maxProgressDuringBlockWriting = 100.0;
 #endif
@@ -273,7 +273,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
     return RET_CANCELED;
   }
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  else if ( closeReportsProgress && feedback )
+  else if ( hasReportsDuringClose && feedback )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
     if ( GDALDatasetRunCloseWithoutDestroyingEx(

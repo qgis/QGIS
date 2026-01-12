@@ -80,15 +80,12 @@ Convenient method to return an icon corresponding to the enum type
 %End
 
     class IndividualLayerSettings
-{
+    {
 %Docstring(signature="appended")
 A container of advanced configuration (per layer) of the snapping of the
 project.
 %End
 
-%TypeHeaderCode
-#include "qgssnappingconfig.h"
-%End
       public:
 
  IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) /Deprecated="Since 3.12. Use the method with Qgis.SnappingTypes instead."/;

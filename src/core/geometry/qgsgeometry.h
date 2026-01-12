@@ -488,8 +488,24 @@ class CORE_EXPORT QgsGeometry
      * celestial body).
      *
      * \see length()
+     * \see area3D()
      */
     double area() const;
+
+    /**
+     * Returns the 3-dimensional surface area of the geometry.
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics.
+     *
+     * \warning This method assumes the horizontal and vertical coordinates are in the same unit.
+     *
+     * \throws QgsInvalidArgumentException if the area cannot be calculated.
+     * \see area()
+     *
+     * \since QGIS 4.0
+     */
+    double area3D() const SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Returns the planar, 2-dimensional length of geometry.
@@ -849,15 +865,16 @@ class CORE_EXPORT QgsGeometry
     bool moveVertex( const QgsPoint &p, int atVertex );
 
     /**
-     * Deletes the vertex at the given position number and item
-     * (first number is index 0)
-     * \returns FALSE if atVertex does not correspond to a valid vertex
-     * on this geometry (including if this geometry is a Point),
-     * or if the number of remaining vertices in the linestring
-     * would be less than two.
-     * It is up to the caller to distinguish between
-     * these error conditions.  (Or maybe we add another method to this
-     * object to help make the distinction?)
+     * Deletes the vertex at the given position number and item (first number is index 0)
+     *
+     * For Point geometries, this clears the geometry.
+     * For MultiPoint geometries, this removes the point geometry at the specified index.
+     * For other geometry types, this removes the vertex at the specified index.
+     * If the removal of the vertex would result in an invalid geometry (e.g. a LineString with less than 2 vertices),
+     * the geometry is cleared instead.
+     *
+     * \returns FALSE if atVertex does not correspond to a valid vertex on this geometry or if the geometry is null,
+     * TRUE if the vertex was successfully deleted or the geometry was cleared.
      */
     bool deleteVertex( int atVertex );
 

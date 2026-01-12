@@ -62,6 +62,7 @@ class TestQgsTriangle : public QObject
     void inscribedCircle();
     void circumscribedCircle();
     void boundary();
+    void area3D();
 };
 
 void TestQgsTriangle::constructor()
@@ -81,6 +82,7 @@ void TestQgsTriangle::constructor()
   QCOMPARE( tr.dimension(), 2 );
   QVERIFY( !tr.hasCurvedSegments() );
   QCOMPARE( tr.area(), 0.0 );
+  QCOMPARE( tr.area3D(), 0.0 );
   QCOMPARE( tr.perimeter(), 0.0 );
   QVERIFY( !tr.exteriorRing() );
   QVERIFY( !tr.interiorRing( 0 ) );
@@ -1043,6 +1045,15 @@ void TestQgsTriangle::boundary()
   QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 13, 3 ) );
   QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 9, 6 ) );
   QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 7, 4 ) );
+}
+
+void TestQgsTriangle::area3D()
+{
+  const QgsTriangle triangle1( QgsPoint( 0, 0, 0 ), QgsPoint( 0, 0, 1 ), QgsPoint( 0, 1, 0 ) );
+  QCOMPARE( triangle1.area3D(), 0.5 );
+
+  const QgsTriangle triangle2( QgsPoint( 0.0, 0.0, 0.0 ), QgsPoint( 0.0, 0.0, 4.0 ), QgsPoint( 0.0, 4.0, 0.0 ) );
+  QCOMPARE( triangle2.area3D(), 8.0 );
 }
 
 QGSTEST_MAIN( TestQgsTriangle )

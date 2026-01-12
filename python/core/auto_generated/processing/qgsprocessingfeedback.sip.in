@@ -213,6 +213,23 @@ Sets the ``step`` which is being executed. This is used to scale the
 current progress to account for progress through the overall process.
 %End
 
+    void setStepWeights( const QList<double> &weights );
+%Docstring
+Sets the relative ``weights`` for each step.
+
+The ``weights`` list size must match the number of steps defined in the
+constructor. Weights are normalized internally, so they do not need to
+sum to 1.0 or 100.0.
+
+If this is not called, all steps are assumed to have equal weight.
+
+.. warning::
+
+   step weights must be set in advance before the feedback is used to report any progress
+
+.. versionadded:: 4.0
+%End
+
     virtual void setProgressText( const QString &text );
 
     virtual void reportError( const QString &error, bool fatalError = false );

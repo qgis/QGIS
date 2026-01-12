@@ -18,6 +18,7 @@
 #include "qgssettingslocatorfilter.h"
 
 #include "qgisapp.h"
+#include "qgsstringutils.h"
 
 #include "moc_qgssettingslocatorfilter.cpp"
 
@@ -70,7 +71,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
       emit resultFetched( result );

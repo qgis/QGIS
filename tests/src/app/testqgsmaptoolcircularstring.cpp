@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+
 class TestQgsMapToolCircularString : public QObject
 {
     Q_OBJECT
@@ -40,6 +42,7 @@ class TestQgsMapToolCircularString : public QObject
     void testAddCircularStringRadiusWithDeletedVertex();
     void testAddCircularStringRadiusNotEnoughPoints();
     void testAddCircularStringAfterClassicDigitizing();
+    void testTransientGeometrySignal();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -237,5 +240,47 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
+
+void TestQgsMapToolCircularString::testTransientGeometrySignal()
+{
+  mLayer->startEditing();
+
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+
+  TestQgsMapToolAdvancedDigitizingUtils utilsClassic( mMapTool );
+  utilsClassic.mouseClick( 2, 1, Qt::LeftButton );
+  utilsClassic.mouseClick( 2, 0, Qt::LeftButton );
+  utilsClassic.mouseMove( 3, 2 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),(2 0 0, 3 2 nan))"_s );
+
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+
+  TestQgsMapToolAdvancedDigitizingUtils utilsCircular( mMapTool );
+  utilsCircular.mouseMove( 5, 5 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),(2 0 0, 5 5 nan))"_s );
+
+  utilsCircular.mouseClick( 5, 5, Qt::LeftButton );
+  QCOMPARE( spy.count(), 2 );
+
+  utilsCircular.mouseMove( 5, 6 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),(2 0 0, 5 6 nan))"_s );
+
+  utilsCircular.mouseClick( 5, 6, Qt::LeftButton );
+  QCOMPARE( spy.count(), 3 );
+
+  utilsCircular.mouseMove( 6, 7 );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.at( 3 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),CircularString Z (2 0 0, 5 5 0, 5 6 0),(5 6 0, 6 7 nan))"_s );
+
+  utilsClassic.mouseClick( 2, 1, Qt::RightButton );
+  mLayer->rollBack();
+}
+
 QGSTEST_MAIN( TestQgsMapToolCircularString )
 #include "testqgsmaptoolcircularstring.moc"

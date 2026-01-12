@@ -68,6 +68,7 @@ class TestQgsCompoundCurve : public QObject
     void centroid();
     void closestSegment();
     void sumUpArea();
+    void sumUpArea3D();
     void segmentLength();
     void angle();
     void boundary();
@@ -2065,6 +2066,52 @@ void TestQgsCompoundCurve::sumUpArea()
   ls.sumUpArea( lsArea );
 
   QGSCOMPARENEAR( ccArea, lsArea, 4 * std::numeric_limits<double>::epsilon() );
+}
+
+void TestQgsCompoundCurve::sumUpArea3D()
+{
+  QgsCompoundCurve cc;
+  QgsCircularString cs;
+
+  double area3D = 1.0; // sumUpArea3D adds to area, so start with non-zero value
+  cc.sumUpArea3D( area3D );
+
+  QCOMPARE( area3D, 1.0 );
+
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10, 1 ) );
+  cc.addCurve( cs.clone() );
+  cc.sumUpArea3D( area3D );
+
+  QCOMPARE( area3D, 1.0 );
+
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10, 2 ) << QgsPoint( 10, 10, 2 ) );
+  cc.addCurve( cs.clone() );
+  cc.sumUpArea3D( area3D );
+
+  QCOMPARE( area3D, 1.0 );
+
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 3 ) << QgsPoint( 2, 0, 3 ) << QgsPoint( 2, 2, 3 ) );
+  cc.addCurve( cs.clone() );
+  cc.sumUpArea3D( area3D );
+
+  QGSCOMPARENEAR( area3D, 4.141592, 1e-6 );
+
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 2, 0, 1 ) << QgsPoint( 2, 2, 1 ) << QgsPoint( 0, 2, 1 ) );
+  cc.addCurve( cs.clone() );
+  cc.sumUpArea3D( area3D );
+
+  QGSCOMPARENEAR( area3D, 7.283185, 1e-6 );
+
+  cc.clear();
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 3 ) << QgsPoint( 4, 0, 3 ) << QgsPoint( 12, 5, 3 ) );
+  cc.addCurve( cs.clone() );
+  area3D = 0.0;
+  cc.sumUpArea3D( area3D );
+
+  QGSCOMPARENEAR( area3D, 16.418923, 1e-6 );
 }
 
 void TestQgsCompoundCurve::segmentLength()
