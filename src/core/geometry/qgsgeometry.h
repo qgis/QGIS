@@ -425,7 +425,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \note Comparing two null geometries will return FALSE.
      *
-     * \deprecated QGIS 3.44. Will be removed in QGIS 4.02. Use isEqual which accepts Qgis::GeometryBackend.
+     * \deprecated QGIS 4.0. Will be removed in QGIS 5.0. Use isEqual which accepts Qgis::GeometryBackend.
      */
     Q_DECL_DEPRECATED bool equals( const QgsGeometry &geometry ) const SIP_DEPRECATED;
 
@@ -442,7 +442,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \note Comparing two null geometries will return FALSE.
      *
-     * \deprecated QGIS 3.44. Will be removed in QGIS 4.02. Use isEqual which accepts Qgis::GeometryBackend.
+     * \deprecated QGIS 4.0. Will be removed in QGIS 5.0. Use isEqual which accepts Qgis::GeometryBackend.
      */
     Q_DECL_DEPRECATED bool isGeosEqual( const QgsGeometry & ) const SIP_DEPRECATED;
 
@@ -454,7 +454,7 @@ class CORE_EXPORT QgsGeometry
      * - GEOS: this method performs a slow, topological check, where geometries are considered equal if all of the their component edges overlap. E.g. lines with the same vertex locations but opposite direction will be considered equal by this method.
      * - QGIS: this is a strict equality check, where the underlying geometries must have exactly the same type, component vertices and vertex order.
      *
-     * The QGIS internal implementation is choosen by default.
+     * The QGIS internal implementation is chosen by default.
      *
      * \note Comparing two null geometries will return FALSE.
      */
