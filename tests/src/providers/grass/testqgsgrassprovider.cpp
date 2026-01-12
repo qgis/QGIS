@@ -723,10 +723,13 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
 bool TestQgsGrassProvider::copyLocation( QString &tmpGisdbase )
 {
   // use QTemporaryFile to generate name (QTemporaryDir since 5.0)
-  QTemporaryFile *tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
-  tmpFile->open();
+  auto tmpFile = std::make_unique< QTemporaryFile >( QDir::tempPath() + "/qgis-grass-test" );
+  if ( !tmpFile->open() )
+  {
+    return false;
+  }
   tmpGisdbase = tmpFile->fileName();
-  delete tmpFile;
+  tmpFile.reset();
   reportRow( "tmpGisdbase: " + tmpGisdbase );
 
   QString error;
@@ -742,10 +745,13 @@ bool TestQgsGrassProvider::copyLocation( QString &tmpGisdbase )
 bool TestQgsGrassProvider::createTmpLocation( QString &tmpGisdbase, QString &tmpLocation, QString &tmpMapset )
 {
   // use QTemporaryFile to generate name (QTemporaryDir since 5.0)
-  QTemporaryFile *tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
-  tmpFile->open();
+  auto tmpFile = std::make_unique< QTemporaryFile >( QDir::tempPath() + "/qgis-grass-test" );
+  if ( !tmpFile->open() )
+  {
+    return false;
+  }
   tmpGisdbase = tmpFile->fileName();
-  delete tmpFile;
+  tmpFile.reset();
   //tmpGisdbase = QDir::tempPath() + "/qgis-grass-test/test"; // debug
   reportRow( "tmpGisdbase: " + tmpGisdbase );
   tmpLocation = u"test"_s;

@@ -9,6 +9,8 @@ QgsAlignRaster.QgsAlignRaster.isValid: src/analysis/raster/qgsalignraster.h#L66
 QgsAlignRaster.QgsAlignRaster.origin: src/analysis/raster/qgsalignraster.h#L81
 QgsAlignRaster.QgsAlignRaster.progress: src/analysis/raster/qgsalignraster.h#L123
 QgsAlignRaster.QgsAlignRaster.rasterSize: src/analysis/raster/qgsalignraster.h#L71
+QgsAlignRaster.QgsAlignRaster: src/analysis/raster/qgsalignraster.h#L116
+QgsAlignRaster.QgsAlignRaster: src/analysis/raster/qgsalignraster.h#L56
 QgsAlignRaster.alignedRasterExtent: src/analysis/raster/qgsalignraster.h#L214
 QgsAlignRaster.alignedRasterSize: src/analysis/raster/qgsalignraster.h#L208
 QgsAlignRaster.cellSize: src/analysis/raster/qgsalignraster.h#L154
@@ -92,6 +94,8 @@ QgsGcpTransformerInterface.minimumGcpCount: src/analysis/georeferencing/qgsgcptr
 QgsGcpTransformerInterface.transform: src/analysis/georeferencing/qgsgcptransformer.h#L102
 QgsGcpTransformerInterface.updateParametersFromGcps: src/analysis/georeferencing/qgsgcptransformer.h#L83
 QgsGcpTransformerInterface: src/analysis/georeferencing/qgsgcptransformer.h#L36
+QgsGeometryCheck.QgsGeometryCheck: src/analysis/vector/geometry_checker/qgsgeometrycheck.h#L104
+QgsGeometryCheck.QgsGeometryCheck: src/analysis/vector/geometry_checker/qgsgeometrycheck.h#L186
 QgsGeometryCheck.checkType: src/analysis/vector/geometry_checker/qgsgeometrycheck.h#L334
 QgsGeometryCheck.collectErrors: src/analysis/vector/geometry_checker/qgsgeometrycheck.h#L287
 QgsGeometryCheck.context: src/analysis/vector/geometry_checker/qgsgeometrycheck.h#L341
@@ -154,6 +158,7 @@ QgsGeometryCheckerUtils.LayerFeature.useMapCrs: src/analysis/vector/geometry_che
 QgsGeometryCheckerUtils.LayerFeature: src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h#L51
 QgsGeometryCheckerUtils.LayerFeatures: src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h#L116
 QgsGeometryCheckerUtils: src/analysis/vector/geometry_checker/qgsgeometrycheckerutils.h#L40
+QgsGeometrySnapper.QgsGeometrySnapper: src/analysis/vector/qgsgeometrysnapper.h#L93
 QgsGeometrySnapper.featureSnapped: src/analysis/vector/qgsgeometrysnapper.h#L90
 QgsGeometrySnapper.snapFeatures: src/analysis/vector/qgsgeometrysnapper.h#L80
 QgsGeometrySnapper.snapGeometry: src/analysis/vector/qgsgeometrysnapper.h#L73
@@ -220,9 +225,12 @@ QgsIDWInterpolator: src/analysis/interpolation/qgsidwinterpolator.h#L29
 QgsInternalGeometrySnapper.snapFeature: src/analysis/vector/qgsgeometrysnapper.h#L155
 QgsInternalGeometrySnapper.snappedGeometries: src/analysis/vector/qgsgeometrysnapper.h#L160
 QgsInternalGeometrySnapper: src/analysis/vector/qgsgeometrysnapper.h#L142
+QgsInterpolator.QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L100
 QgsInterpolator.cacheBaseData: src/analysis/interpolation/qgsinterpolator.h#L146
 QgsInterpolator.interpolatePoint: src/analysis/interpolation/qgsinterpolator.h#L131
 QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L71
+QgsInterpolatorVertexData: src/analysis/interpolation/qgsinterpolator.h#L41
+QgsKernelDensityEstimation.QgsKernelDensityEstimation: src/analysis/raster/qgskde.h#L70
 QgsKernelDensityEstimation.addFeature: src/analysis/raster/qgskde.h#L125
 QgsKernelDensityEstimation.finalise: src/analysis/raster/qgskde.h#L132
 QgsKernelDensityEstimation.prepare: src/analysis/raster/qgskde.h#L118
@@ -336,6 +344,7 @@ QgsRasterMatrix.squareRoot: src/analysis/raster/qgsrastermatrix.h#L131
 QgsRasterMatrix.subtract: src/analysis/raster/qgsrastermatrix.h#L104
 QgsRasterMatrix.tangens: src/analysis/raster/qgsrastermatrix.h#L136
 QgsRasterMatrix: src/analysis/raster/qgsrastermatrix.h#L29
+QgsRelief.QgsRelief: src/analysis/raster/qgsrelief.h#L43
 QgsRelief.addReliefColorClass: src/analysis/raster/qgsrelief.h#L70
 QgsRelief.clearReliefColors: src/analysis/raster/qgsrelief.h#L69
 QgsRelief.exportFrequencyDistributionToCsv: src/analysis/raster/qgsrelief.h#L81

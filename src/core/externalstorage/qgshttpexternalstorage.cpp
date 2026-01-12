@@ -37,6 +37,8 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
 {
 }
 
+QgsHttpExternalStorageStoreTask::~QgsHttpExternalStorageStoreTask() = default;
+
 bool QgsHttpExternalStorageStoreTask::run()
 {
   QgsBlockingNetworkRequest request;

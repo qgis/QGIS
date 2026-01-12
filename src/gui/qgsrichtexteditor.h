@@ -57,7 +57,7 @@ class QgsCodeEditorHTML;
  *
  * \since QGIS 3.20
  */
-class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEditorBase
+class GUI_EXPORT QgsRichTextEditor : public QWidget, private Ui::QgsRichTextEditorBase
 {
     Q_OBJECT
   public:

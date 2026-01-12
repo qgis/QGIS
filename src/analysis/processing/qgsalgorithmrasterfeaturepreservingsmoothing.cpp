@@ -214,11 +214,14 @@ QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( cons
 
   bool isNoData = false;
 
+  const bool hasReportsDuringClose = destProvider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop, &blockExtent, &tileCols, &tileRows, &tileLeft, &tileTop ) )
   {
     if ( feedback->isCanceled() )
       break;
-    feedback->setProgress( 100 * iter.progress( mBand, 0 ) );
+    feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, 0 ) );
     feedback->setProgressText( QObject::tr( "Calculating surface normals" ) );
 
     // copy raster values and NoData to buffers once in advance -- we will be retrieving
@@ -254,7 +257,7 @@ QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( cons
       if ( feedback->isCanceled() )
         break;
 
-      feedback->setProgress( 100 * iter.progress( mBand, r / static_cast< double >( iterRows ) / 3.0 ) );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, r / static_cast< double >( iterRows ) / 3.0 ) );
 
       for ( int c = 0; c < iterCols; ++c )
       {
@@ -291,7 +294,7 @@ QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( cons
       if ( feedback->isCanceled() )
         break;
 
-      feedback->setProgress( 100 * iter.progress( mBand, 1.0 / 3.0 + r / static_cast< double >( iterRows ) / 3.0 ) );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, 1.0 / 3.0 + r / static_cast< double >( iterRows ) / 3.0 ) );
 
       for ( int c = 0; c < iterCols; ++c )
       {
@@ -358,7 +361,7 @@ QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( cons
 
       for ( int r = 0; r < iterRows; ++r )
       {
-        feedback->setProgress( 100 * iter.progress( mBand, 2.0 / 3.0 + ( ( static_cast< double >( iteration ) / iterations ) + ( r / static_cast< double >( iterRows ) ) / iterations ) / 3.0 ) );
+        feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, 2.0 / 3.0 + ( ( static_cast< double >( iteration ) / iterations ) + ( r / static_cast< double >( iterRows ) ) / iterations ) / 3.0 ) );
         for ( int c = 0; c < iterCols; ++c )
         {
           const std::size_t idx = static_cast<std::size_t>( r ) * iterCols + c;
@@ -440,6 +443,17 @@ QVariantMap QgsRasterFeaturePreservingSmoothingAlgorithm::processAlgorithm( cons
     }
   }
   destProvider->setEditable( false );
+
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !destProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, outputFile );

@@ -129,6 +129,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsPolyhedralSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapHitTest
 {
 %Docstring(signature="appended")
@@ -63,6 +64,30 @@ symbol legend keys.
 .. versionadded:: 3.32
 %End
 
+
+
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const /PyName=resultsRenderersUpdatedCanvas,TypeHint="Dict[str, Tuple[float, float]]"/;
+%Docstring
+Returns the hit test results, for layers with UpdatedCanvas renderers
+(raster/mesh layers). Results are given as QMap of layer IDs to pairs of
+(min, max) values.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+    sipRes = PyDict_New();
+
+    for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+    {
+      PyObject *tuple = PyTuple_New( 2 );
+      PyTuple_SET_ITEM( tuple, 0, PyFloat_FromDouble( it.value().first ) );
+      PyTuple_SET_ITEM( tuple, 1, PyFloat_FromDouble( it.value().second ) );
+      PyDict_SetItem( sipRes, PyUnicode_FromString( it.key().toUtf8().constData() ), tuple );
+      Py_DECREF( tuple );
+    }
+%End
+
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 %Docstring
 Tests whether a symbol is visible for a specified layer.
@@ -115,6 +140,28 @@ symbol legend keys.
 
     virtual void cancel();
 
+
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const /PyName=resultsRenderersUpdatedCanvas,TypeHint="Dict[str, Tuple[float, float]]"/;
+%Docstring
+Returns the hit test results, for layers with UpdatedCanvas renderers
+(raster/mesh layers). Results are given as QMap of layer IDs to pairs of
+(min, max) values.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+    sipRes = PyDict_New();
+
+    for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+    {
+      PyObject *tuple = PyTuple_New( 2 );
+      PyTuple_SET_ITEM( tuple, 0, PyFloat_FromDouble( it.value().first ) );
+      PyTuple_SET_ITEM( tuple, 1, PyFloat_FromDouble( it.value().second ) );
+      PyDict_SetItem( sipRes, PyUnicode_FromString( it.key().toUtf8().constData() ), tuple );
+      Py_DECREF( tuple );
+    }
+%End
 
   protected:
 

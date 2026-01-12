@@ -21,6 +21,7 @@
 #include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgsprocessingregistry.h"
+#include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QMimeData>
@@ -899,9 +900,10 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
+        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
           {
             found = true;
             break;
@@ -954,9 +956,10 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
+        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
           {
             found = true;
             break;

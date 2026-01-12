@@ -756,7 +756,7 @@ bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, 
   {
     // both are groups -- ensure USER group comes last, and CUSTOM group comes first
     const QString leftGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
-    const QString rightGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
+    const QString rightGroupId = sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
     if ( leftGroupId == "USER"_L1 )
       return false;
     if ( rightGroupId == "USER"_L1 )

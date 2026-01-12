@@ -186,6 +186,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void exportToSvg();
     void exportAsPython();
     void toggleComments( bool show );
+    void toggleFeatureCount( bool show );
     void updateWindowTitle();
     void deleteSelected();
     void populateZoomToMenu();

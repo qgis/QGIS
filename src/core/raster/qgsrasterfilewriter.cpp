@@ -23,6 +23,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgdalutils.h"
+#include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
@@ -33,7 +34,6 @@
 #include "qgsreadwritelocker.h"
 
 #include <QCoreApplication>
-#include <QMessageBox>
 #include <QProgressDialog>
 #include <QRegularExpression>
 #include <QTextStream>
@@ -357,7 +357,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
       }
     }
 
-    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider.get(), feedback );
+    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
 
     if ( attempt == 0 && error == Qgis::RasterFileWriterResult::NoDataConflict )
     {
@@ -406,7 +406,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     Qgis::DataType destDataType,
     const QList<bool> &destHasNoDataValueList,
     const QList<double> &destNoDataValueList,
-    QgsRasterDataProvider *destProvider,
+    std::unique_ptr<QgsRasterDataProvider> &destProvider,
     QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( pipe )
@@ -448,11 +448,14 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     nParts = nPartsX * nPartsY;
   }
 
+  const bool hasReportsDuringClose = destProvider && destProvider->hasReportsDuringClose();
+
   // hmm why is there a for(;;) here ..
   // not good coding practice IMHO, it might be better to use [ for() and break ] or  [ while (test) ]
   Q_FOREVER
   {
-    for ( int i = 1; i <= nBands; ++i )
+    bool done = false;
+    for ( int i = 1; i <= nBands && !done; ++i )
     {
       QgsRasterBlock *block = nullptr;
       if ( !iter->readNextRasterPart( i, iterCols, iterRows, &block, iterLeft, iterTop ) )
@@ -464,27 +467,40 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
           writeVRT( vrtFilePath );
           if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
           {
-            buildPyramids( vrtFilePath );
+            if ( !buildPyramids( vrtFilePath ) )
+            {
+              return Qgis::RasterFileWriterResult::WriteError;
+            }
           }
         }
         else
         {
-          if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
+          if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes &&
+               // Pyramid creation is done by the driver itself
+               mOutputFormat != "COG"_L1 )
           {
-            buildPyramids( mOutputUrl, destProvider );
+            if ( !buildPyramids( mOutputUrl, destProvider.get() ) )
+            {
+              return Qgis::RasterFileWriterResult::WriteError;
+            }
           }
         }
 
         QgsDebugMsgLevel( u"Done"_s, 4 );
-        return Qgis::RasterFileWriterResult::Success; //reached last tile, bail out
+        done = true;
       }
       blockList[i - 1].reset( block );
       // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
     }
+    if ( done )
+    {
+      break;
+    }
 
     if ( feedback && fileIndex < ( nParts - 1 ) )
     {
-      feedback->setProgress( 100.0 * fileIndex / static_cast< double >( nParts ) );
+      const double maxProgress = hasReportsDuringClose ? 50.0 : 100.0;
+      feedback->setProgress( maxProgress * fileIndex / static_cast< double >( nParts ) );
       if ( feedback->isCanceled() )
       {
         break;
@@ -551,6 +567,21 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
       }
     }
     ++fileIndex;
+  }
+
+  // If the provider can report progress during closing (typically when generating COG files),
+  // report it, making feedback report percentage in the [50, 100] range.
+  if ( feedback && destProvider && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, 50.0, 100.0 ) );
+    if ( !destProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      destProvider->remove();
+      destProvider.reset();
+      return ( feedback && feedback->isCanceled() ) ?
+             Qgis::RasterFileWriterResult::Canceled :
+             Qgis::RasterFileWriterResult::WriteError;
+    }
   }
 
   QgsDebugMsgLevel( u"Done"_s, 4 );
@@ -648,6 +679,9 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
     nParts = nPartsX * nPartsY;
   }
 
+  const bool hasReportsDuringClose = !mTiledMode && destProvider && destProvider->hasReportsDuringClose();
+  const double maxProgress = hasReportsDuringClose ? 50.0 : 100.0;
+
   std::unique_ptr< QgsRasterBlock > inputBlock;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
@@ -658,7 +692,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
 
     if ( feedback && fileIndex < ( nParts - 1 ) )
     {
-      feedback->setProgress( 100.0 * fileIndex / static_cast< double >( nParts ) );
+      feedback->setProgress( maxProgress * fileIndex / static_cast< double >( nParts ) );
       if ( feedback->isCanceled() )
       {
         break;
@@ -720,27 +754,60 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
 
     ++fileIndex;
   }
-  destProvider.reset();
 
   if ( feedback )
   {
-    feedback->setProgress( 100.0 );
+    feedback->setProgress( maxProgress );
   }
 
   if ( mTiledMode )
   {
+    destProvider.reset();
+
     const QString vrtFilePath( mOutputUrl + '/' + vrtFileName() );
     writeVRT( vrtFilePath );
     if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
     {
-      buildPyramids( vrtFilePath );
+      if ( !buildPyramids( vrtFilePath ) )
+        return Qgis::RasterFileWriterResult::WriteError;
     }
   }
   else
   {
-    if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes )
+    // If the provider can report progress during closing (typically when generating COG files),
+    // report it, making feedback report percentage in the [50, 100] range.
+    if ( destProvider && hasReportsDuringClose )
     {
-      buildPyramids( mOutputUrl );
+      QgsFeedback closingProgress;
+      if ( feedback )
+      {
+        QObject::connect( &closingProgress, &QgsFeedback::progressChanged,
+                          feedback, [feedback]( double progress )
+        {
+          feedback->setProgress( 50.0 + progress * 0.5 );
+        } );
+        QObject::connect( &closingProgress, &QgsFeedback::canceled,
+                          feedback, &QgsFeedback::cancel );
+      }
+
+      if ( !destProvider->closeWithProgress( feedback ? &closingProgress : nullptr ) )
+      {
+        destProvider->remove();
+        destProvider.reset();
+        return ( feedback && feedback->isCanceled() ) ?
+               Qgis::RasterFileWriterResult::Canceled :
+               Qgis::RasterFileWriterResult::WriteError;
+      }
+    }
+
+    destProvider.reset();
+
+    if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::Yes &&
+         // Pyramid creation is done by the driver itself
+         mOutputFormat != "COG"_L1 )
+    {
+      if ( !buildPyramids( mOutputUrl ) )
+        return Qgis::RasterFileWriterResult::WriteError;
     }
   }
   return ( feedback && feedback->isCanceled() ) ? Qgis::RasterFileWriterResult::Canceled : Qgis::RasterFileWriterResult::Success;
@@ -793,7 +860,7 @@ void QgsRasterFileWriter::addToVRT( const QString &filename, int band, int xSize
   bandElem.appendChild( simpleSourceElem );
 }
 
-void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn )
+bool QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn )
 {
   QgsDebugMsgLevel( "filename = " + filename, 4 );
   // open new dataProvider so we can build pyramids with it
@@ -805,7 +872,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
     if ( !destProvider || !destProvider->isValid() )
     {
       delete destProvider;
-      return;
+      return false;
     }
   }
 
@@ -829,33 +896,33 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
   // TODO put this in provider or elsewhere
   if ( !res.isNull() )
   {
-    QString title, message;
+    QString message;
     if ( res == "ERROR_WRITE_ACCESS"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Write access denied. Adjust the file permissions and try again." );
     }
     else if ( res == "ERROR_WRITE_FORMAT"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "The file was not writable. Some formats do not "
                              "support pyramid overviews. Consult the GDAL documentation if in doubt." );
     }
     else if ( res == "FAILED_NOT_SUPPORTED"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     else if ( res == "ERROR_VIRTUAL"_L1 )
     {
-      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
-    QMessageBox::warning( nullptr, title, message );
+
+    QgsMessageLog::logMessage( message, QObject::tr( "Building Pyramids" ) );
+
     QgsDebugMsgLevel( res + " - " + message, 4 );
   }
   if ( !destProviderIn )
     delete destProvider;
+
+  return res.isNull();
 }
 
 #if 0
@@ -1002,6 +1069,21 @@ QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider( const QgsRectang
   return destProvider;
 }
 
+void QgsRasterFileWriter::setOutputFormat( const QString &format )
+{
+  mOutputFormat = format;
+  if ( !mBuildPyramidsFlagSet && format == "COG"_L1 )
+  {
+    setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption::Yes );
+  }
+}
+
+void QgsRasterFileWriter::setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption flag )
+{
+  mBuildPyramidsFlag = flag;
+  mBuildPyramidsFlagSet = true;
+}
+
 QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem &crs,
     double *geoTransform, int nBands, Qgis::DataType type,
     const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList )
@@ -1019,8 +1101,40 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
     if ( mBuildPyramidsFlag == -4 && mOutputProviderKey == "gdal" && mOutputFormat.compare( "gtiff"_L1, Qt::CaseInsensitive ) == 0 )
       mCreationOptions << "COPY_SRC_OVERVIEWS=YES";
 #endif
+    QStringList creationOptions( mCreationOptions );
+    if ( mOutputFormat == "COG"_L1 )
+    {
+      if ( mBuildPyramidsFlag == Qgis::RasterBuildPyramidOption::No )
+        creationOptions << u"OVERVIEWS=NO"_s;
+      else
+      {
+        creationOptions << u"OVERVIEW_RESAMPLING="_s + mPyramidsResampling;
+        for ( const QString &opt : std::as_const( mPyramidsConfigOptions ) )
+        {
+          const std::string optStr( opt.toStdString() );
+          char *key = nullptr;
+          const char *value = CPLParseNameValue( optStr.c_str(), &key );
+          if ( key && value )
+          {
+            if ( EQUAL( key, "JPEG_QUALITY_OVERVIEW" ) )
+            {
+              creationOptions << u"OVERVIEW_QUALITY="_s + value;
+            }
+            else if ( EQUAL( key, "COMPRESS_OVERVIEW" ) )
+            {
+              creationOptions << u"OVERVIEW_COMPRESS="_s + value;
+            }
+            else if ( EQUAL( key, "PREDICTOR_OVERVIEW" ) )
+            {
+              creationOptions << u"OVERVIEW_PREDICTOR="_s + value;
+            }
+          }
+          CPLFree( key );
+        }
+      }
+    }
 
-    QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, mCreationOptions );
+    QgsRasterDataProvider *destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, creationOptions );
 
     if ( !destProvider )
     {

@@ -19,6 +19,8 @@
 #include "qgsannotationlayer.h"
 #include "qgsfileutils.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsiconutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
 #include "qgsmimedatautils.h"
@@ -60,6 +62,10 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   mSelectionList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSelectionList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mSelectionList->setDragDropMode( QAbstractItemView::InternalMove );
+  mSelectionList->setIconSize( QSize( QgsGuiUtils::scaleIconSize( 16 ), QgsGuiUtils::scaleIconSize( 16 ) ) );
+
+  mModel = new QStandardItemModel( this );
+  mSelectionList->setModel( mModel );
 
   mButtonSelectAll = new QPushButton( tr( "Select All" ) );
   mButtonBox->addButton( mButtonSelectAll, QDialogButtonBox::ActionRole );
@@ -179,8 +185,6 @@ QList<QStandardItem *> QgsProcessingMultipleSelectionPanelWidget::currentItems()
 
 void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions )
 {
-  mModel = new QStandardItemModel( this );
-
   QVariantList remainingOptions = availableOptions;
 
   // we add selected options first, keeping the existing order of options
@@ -198,8 +202,6 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
   {
     addOption( option, mValueFormatter( option ), false );
   }
-
-  mSelectionList->setModel( mModel );
 }
 
 QList<int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeData( const QMimeData *data ) const
@@ -260,7 +262,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   }
 }
 
-void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle )
+void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon icon )
 {
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
@@ -278,6 +280,8 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );
   item->setDropEnabled( false );
+  if ( !icon.isNull() )
+    item->setData( icon, Qt::DecorationRole );
   mModel->appendRow( item.release() );
 }
 
@@ -326,6 +330,8 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
   connect( addDirButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addDirectory );
   buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
   setAcceptDrops( true );
+
+  // Populate "layers" from model sources
   for ( const QgsProcessingModelChildParameterSource &source : modelSources )
   {
     addOption( QVariant::fromValue( source ), source.friendlyIdentifier( model ), false, true );
@@ -630,6 +636,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
     else
       title = layer->name();
 
+    QIcon icon = QgsIconUtils::iconForLayer( layer );
 
     QString id = layer->id();
     if ( layer == project->mainAnnotationLayer() )
@@ -637,20 +644,22 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 
     for ( int i = 0; i < mModel->rowCount(); ++i )
     {
-      // try to match project layers to current layers
+      // try to match project layers to current layers, also assign its icon if found
       if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
       {
         id = layer->id();
+        mModel->item( i )->setData( QgsIconUtils::iconForLayer( layer ), Qt::DecorationRole );
         break;
       }
       else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
       {
         id = layer->source();
+        mModel->item( i )->setData( QgsIconUtils::iconForLayer( layer ), Qt::DecorationRole );
         break;
       }
     }
 
-    addOption( id, title, false, true );
+    addOption( id, title, false, true, icon );
   };
 
   switch ( mParameter->layerType() )
@@ -805,7 +814,7 @@ QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsPro
 {
   setWindowTitle( tr( "Multiple Selection" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model );
+  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model, nullptr );
   vLayout->addWidget( mWidget );
   mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
   connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );

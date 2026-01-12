@@ -184,14 +184,11 @@ Returns a quoted version of a string (in single quotes)
     };
 
     class Node
-{
+    {
 %Docstring(signature="appended")
 Abstract node class for SQL statement nodes.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
 %ConvertToSubClassCode
         switch ( sipCpp->nodeType() )
         {
@@ -252,14 +249,11 @@ For any implementation this should look like
     };
 
     class NodeList
-{
+    {
 %Docstring(signature="appended")
 A list of nodes.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
 
         NodeList();
@@ -299,14 +293,11 @@ Dump list
     };
 
     class NodeUnaryOperator : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Unary logical/arithmetical operator ( NOT, - ).
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeUnaryOperator( QgsSQLStatement::UnaryOperator op, QgsSQLStatement::Node *operand /Transfer/ );
 %Docstring
@@ -337,14 +328,11 @@ Operand
     };
 
     class NodeBinaryOperator : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Binary logical/arithmetical operator (AND, OR, =, +, ...).
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeBinaryOperator( QgsSQLStatement::BinaryOperator op, QgsSQLStatement::Node *opLeft /Transfer/, QgsSQLStatement::Node *opRight /Transfer/ );
 %Docstring
@@ -391,14 +379,11 @@ Is left associative ?
     };
 
     class NodeInOperator : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 An 'x IN (y, z)' operator.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeInOperator( QgsSQLStatement::Node *node /Transfer/, QgsSQLStatement::NodeList *list /Transfer/, bool notin = false );
 %Docstring
@@ -434,14 +419,11 @@ Values list
     };
 
     class NodeBetweenOperator : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 An 'X BETWEEN y and z' operator.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeBetweenOperator( QgsSQLStatement::Node *node /Transfer/, QgsSQLStatement::Node *minVal /Transfer/, QgsSQLStatement::Node *maxVal /Transfer/, bool notBetween = false );
 %Docstring
@@ -481,14 +463,11 @@ Maximum bound
     };
 
     class NodeFunction : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Function with a name and arguments node.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeFunction( const QString &name, QgsSQLStatement::NodeList *args  /Transfer/ );
 %Docstring
@@ -520,14 +499,11 @@ Returns arguments
     };
 
     class NodeLiteral : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Literal value (integer, integer64, double, string).
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeLiteral( const QVariant &value );
 %Docstring
@@ -551,14 +527,11 @@ The value of the literal.
     };
 
     class NodeColumnRef : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Reference to a column.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeColumnRef( const QString &name, bool star );
 %Docstring
@@ -610,14 +583,11 @@ Clone with same type return
     };
 
     class NodeSelectedColumn : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Selected column.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeSelectedColumn( QgsSQLStatement::Node *node /Transfer/ );
 %Docstring
@@ -657,14 +627,11 @@ Clone with same type return
     };
 
     class NodeCast : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 CAST operator.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeCast( QgsSQLStatement::Node *node /Transfer/, const QString &type );
 %Docstring
@@ -695,14 +662,11 @@ Type
     };
 
     class NodeTableDef : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Table definition.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeTableDef( const QString &name );
 %Docstring
@@ -753,14 +717,11 @@ Clone with same type return
     };
 
     class NodeJoin : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Join definition.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeJoin( QgsSQLStatement::NodeTableDef *tabledef /Transfer/, QgsSQLStatement::Node *onExpr /Transfer/, QgsSQLStatement::JoinType type );
 %Docstring
@@ -810,14 +771,11 @@ Clone with same type return
     };
 
     class NodeColumnSorted : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 Column in a ORDER BY.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeColumnSorted( QgsSQLStatement::NodeColumnRef *column /Transfer/, bool asc );
 %Docstring
@@ -852,14 +810,11 @@ Clone with same type return
     };
 
     class NodeSelect : QgsSQLStatement::Node
-{
+    {
 %Docstring(signature="appended")
 SELECT node.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         NodeSelect( const QList<QgsSQLStatement::NodeTableDef *> &tableList /Transfer/, const QList<QgsSQLStatement::NodeSelectedColumn *> &columns /Transfer/, bool distinct );
 %Docstring
@@ -924,15 +879,12 @@ Returns the list of order by columns
 
 
     class Visitor
-{
+    {
 %Docstring(signature="appended")
 Support for visitor pattern - algorithms dealing with the statement may
 be implemented without modifying the Node classes.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
         virtual ~Visitor();
         virtual void visit( const QgsSQLStatement::NodeUnaryOperator &n ) = 0;
@@ -990,14 +942,11 @@ Visit NodeCast
     };
 
     class RecursiveVisitor: QgsSQLStatement::Visitor
-{
+    {
 %Docstring(signature="appended")
 A visitor that recursively explores all children.
 %End
 
-%TypeHeaderCode
-#include "qgssqlstatement.h"
-%End
       public:
 
         RecursiveVisitor();

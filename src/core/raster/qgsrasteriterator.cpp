@@ -181,8 +181,6 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
     return false;
   }
 
-  mRasterPrevBlockInfos.insert( bandNumber, pInfo );
-
   //read data block
   tileTopLeftColumn = pInfo.currentCol;
   tileTopLeftRow = pInfo.currentRow;
@@ -196,6 +194,10 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
     tileColumns = ( tileColumns / mSnapToPixelFactor ) * mSnapToPixelFactor;
     tileRows = ( tileRows / mSnapToPixelFactor ) * mSnapToPixelFactor;
   }
+
+  pInfo.previousIteratedPixels = pInfo.iteratedPixels;
+  pInfo.currentBlockSize = static_cast< std::size_t>( tileColumns ) * static_cast< std::size_t >( tileRows );
+  pInfo.iteratedPixels += pInfo.currentBlockSize;
 
   const qgssize tileRight = tileTopLeftColumn + tileColumns;
   const qgssize tileBottom = tileTopLeftRow + tileRows;
@@ -265,23 +267,22 @@ double QgsRasterIterator::progress( int bandNumber, double currentBlockProgress 
     {
       return 0;
     }
-    return ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) )
-             * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) )
-           / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
+    const std::size_t totalSize = static_cast< std::size_t >( partIt->nCols ) * static_cast< std::size_t >( partIt->nRows );
+    return static_cast< double >( partIt->iteratedPixels ) / static_cast< double >( totalSize );
   }
   else
   {
-    const auto partIt = mRasterPrevBlockInfos.find( bandNumber );
-    if ( partIt == mRasterPrevBlockInfos.constEnd() )
+    const auto partIt = mRasterPartInfos.find( bandNumber );
+    if ( partIt == mRasterPartInfos.constEnd() )
     {
       return 0;
     }
 
-    const double currentBlockProgressFraction = currentBlockProgress / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
+    const std::size_t totalSize = static_cast< std::size_t >( partIt->nCols ) * static_cast< std::size_t >( partIt->nRows );
+    const double startOfBlockProgress = static_cast< double >( partIt->previousIteratedPixels ) / static_cast< double >( totalSize );
+    const double currentBlockProgressFraction = currentBlockProgress * static_cast< double >( partIt->currentBlockSize ) / static_cast< double >( totalSize );
 
-    return currentBlockProgressFraction + ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) )
-                                            * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) )
-           / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
+    return startOfBlockProgress + currentBlockProgressFraction;
   }
 }
 

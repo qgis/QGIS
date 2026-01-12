@@ -159,6 +159,18 @@ void QgsRasterPyramidsOptionsWidget::apply()
   mSaveOptionsWidget->apply();
 }
 
+void QgsRasterPyramidsOptionsWidget::tuneForFormat( const QString &driverName )
+{
+  const bool visible = ( driverName != "COG"_L1 );
+  labelOverviewFormat->setVisible( visible );
+  cbxPyramidsFormat->setVisible( visible );
+  labelLevels->setVisible( visible );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setVisible( visible );
+  cbxPyramidsLevelsCustom->setVisible( visible );
+  lePyramidsLevels->setVisible( visible );
+}
+
 void QgsRasterPyramidsOptionsWidget::checkAllLevels( bool checked )
 {
   for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )

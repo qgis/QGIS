@@ -154,7 +154,6 @@ Updates both the name text edit and the model name itself.
 
 class QgsModelChildDependenciesWidget : QWidget
 {
-
 %TypeHeaderCode
 #include "qgsmodeldesignerdialog.h"
 %End
