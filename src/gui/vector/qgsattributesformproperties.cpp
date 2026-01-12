@@ -1407,7 +1407,7 @@ void QgsAttributesFormProperties::previewForm()
 
   std::unique_ptr<QgsVectorLayer> vlayer;
   vlayer.reset( QgsMemoryProviderUtils::createMemoryLayer( "preview"_L1, fields, mLayer->wkbType(), mLayer->crs() ) );
-  for ( const QPair<QgsField, QString> &expressionField : expressionFields )
+  for ( const QPair<QgsField, QString> &expressionField : std::as_const( expressionFields ) )
   {
     vlayer->addExpressionField( expressionField.second, expressionField.first );
   }
