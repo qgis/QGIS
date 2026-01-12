@@ -379,6 +379,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString n
     return;
 
   leText->setText( name );
+  textChanged( name );
 
   mUseTemporary = true;
   mUseRemapping = false;
