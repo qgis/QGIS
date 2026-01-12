@@ -64,11 +64,16 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     void emitWidgetChanged();
 
   private:
-    static void initRendererWidgetFunctions();
-    void setZoomOutMultiplier( double multiplier );
-    double zoomOutMultiplier() const;
+    const QMap<double, QString> mOverviewSwitchingScaleMap {
+      { 5.0, "Much earlier" },
+      { 2.0, "Earlier" },
+      { 1.0, "Normal" },
+      { 0.5, "Later" }
+    };
 
-    const std::array<double, 8> mZoomOutScale = { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0 };
+    static void initRendererWidgetFunctions();
+    void setOverviewSwitchingScale( double scale );
+    double overviewSwitchingScale() const;
 
     QgsPointCloudLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;

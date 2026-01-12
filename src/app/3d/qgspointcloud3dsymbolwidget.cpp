@@ -152,24 +152,22 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
+
+        for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+        {
+          mOverviewSwitchingScale->addItem( it.value(), it.key() );
+        }
+        setOverviewSwitchingScale( 1.0 );
       }
     }
     else
     {
       mZoomOutOptions->setEnabled( false );
-      mZoomOutMultiplier->setEnabled( false );
+      mOverviewSwitchingScale->setEnabled( false );
     }
 
-    whileBlocking( mZoomOutMultiplier )->setRange( 0, static_cast<int>( mZoomOutScale.size() - 1 ) );
-    mZoomOutMultiplier->setSingleStep( 1 );
-    mZoomOutMultiplier->setPageStep( 1 );
-    mZoomOutMultiplier->setTickInterval( 1 );
-    mZoomOutMultiplier->setTickPosition( QSlider::TicksBelow );
-
-    setZoomOutMultiplier( mZoomOutScale[mZoomOutScale.size() / 2] );
-
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
-    connect( mZoomOutMultiplier, &QSlider::valueChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+    connect( mOverviewSwitchingScale, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   }
   else
   {
@@ -710,25 +708,14 @@ Qgis::PointCloudZoomOutRenderBehavior QgsPointCloud3DSymbolWidget::zoomOutBehavi
   return mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>();
 }
 
-void QgsPointCloud3DSymbolWidget::setZoomOutMultiplier( double multiplier )
+void QgsPointCloud3DSymbolWidget::setOverviewSwitchingScale( double scale )
 {
-  size_t idx = 0;
-  for ( size_t i = 0; i < mZoomOutScale.size(); ++i )
-  {
-    if ( multiplier <= mZoomOutScale[i] )
-    {
-      idx = i;
-      break;
-    }
-  }
-
-  whileBlocking( mZoomOutMultiplier )->setValue( idx );
+  mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
 }
 
-double QgsPointCloud3DSymbolWidget::zoomOutMultiplier() const
+double QgsPointCloud3DSymbolWidget::overviewSwitchingScale() const
 {
-  const int idx = std::clamp( mZoomOutMultiplier->value(), 0, static_cast<int>( mZoomOutScale.size() ) - 1 );
-  return mZoomOutScale[idx];
+  return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
 }
 
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )

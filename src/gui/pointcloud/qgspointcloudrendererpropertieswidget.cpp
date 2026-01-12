@@ -141,22 +141,21 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
+
+        for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+        {
+          mOverviewSwitchingScale->addItem( it.value(), it.key() );
+        }
+        setOverviewSwitchingScale( 1.0 );
       }
     }
     else
     {
       mZoomOutOptions->setEnabled( false );
+      mOverviewSwitchingScale->setEnabled( false );
     }
 
-    whileBlocking( mZoomOutMultiplier )->setRange( 0, static_cast<int>( mZoomOutScale.size() - 1 ) );
-    mZoomOutMultiplier->setSingleStep( 1 );
-    mZoomOutMultiplier->setPageStep( 1 );
-    mZoomOutMultiplier->setTickInterval( 1 );
-    mZoomOutMultiplier->setTickPosition( QSlider::TicksBelow );
-
-    setZoomOutMultiplier( mZoomOutScale[mZoomOutScale.size() / 2] );
-
-    connect( mZoomOutMultiplier, &QSlider::valueChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+    connect( mOverviewSwitchingScale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
       switch ( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() )
@@ -227,7 +226,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
-    setZoomOutMultiplier( mLayer->renderer()->zoomOutMultiplier() );
+    setOverviewSwitchingScale( mLayer->renderer()->overviewSwitchingScale() );
 
     mTriangulateGroupBox->setChecked( mLayer->renderer()->renderAsTriangles() );
     mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
@@ -297,7 +296,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
   mLayer->renderer()->setZoomOutBehavior( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() );
 
-  mLayer->renderer()->setZoomOutMultiplier( zoomOutMultiplier() );
+  mLayer->renderer()->setOverviewSwitchingScale( overviewSwitchingScale() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -373,23 +372,12 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
     emit widgetChanged();
 }
 
-void QgsPointCloudRendererPropertiesWidget::setZoomOutMultiplier( double multiplier )
+void QgsPointCloudRendererPropertiesWidget::setOverviewSwitchingScale( double scale )
 {
-  size_t idx = 0;
-  for ( size_t i = 0; i < mZoomOutScale.size(); ++i )
-  {
-    if ( multiplier <= mZoomOutScale[i] )
-    {
-      idx = i;
-      break;
-    }
-  }
-
-  whileBlocking( mZoomOutMultiplier )->setValue( idx );
+  mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
 }
 
-double QgsPointCloudRendererPropertiesWidget::zoomOutMultiplier() const
+double QgsPointCloudRendererPropertiesWidget::overviewSwitchingScale() const
 {
-  const int idx = std::clamp( mZoomOutMultiplier->value(), 0, static_cast<int>( mZoomOutScale.size() ) - 1 );
-  return mZoomOutScale[idx];
+  return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
 }

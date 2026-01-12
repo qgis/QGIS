@@ -147,7 +147,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
   r->setMaximumScreenError( mMaximumScreenError );
   r->setShowBoundingBoxes( mShowBoundingBoxes );
   r->setZoomOutBehavior( mZoomOutBehavior );
-  r->setZoomOutMultiplier( mZoomOutMultiplier );
+  r->setOverviewSwitchingScale( mOverviewSwitchingScale );
   return r;
 }
 
@@ -189,7 +189,7 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   elem.setAttribute( u"show-bounding-boxes"_s, showBoundingBoxes() ? u"1"_s : u"0"_s );
   elem.setAttribute( u"point-budget"_s, mPointBudget );
   elem.setAttribute( u"zoom-out-behavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
-  elem.setAttribute( u"zoom-out-multiplier"_s, mZoomOutMultiplier );
+  elem.setAttribute( u"overview-switching-scale"_s, mOverviewSwitchingScale );
 
   QDomElement elemSymbol = doc.createElement( u"symbol"_s );
   if ( mSymbol )
@@ -211,7 +211,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mMaximumScreenError = elem.attribute( u"max-screen-error"_s, u"3.0"_s ).toDouble();
   mPointBudget = elem.attribute( u"point-budget"_s, u"5000000"_s ).toInt();
   mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( u"zoom-out-behavior"_s ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
-  mZoomOutMultiplier = elem.attribute( u"zoom-out-multiplier"_s, u"1.0"_s ).toDouble();
+  mOverviewSwitchingScale = elem.attribute( u"overview-switching-scale"_s, u"1.0"_s ).toDouble();
 
   if ( symbolType == "single-color"_L1 )
     mSymbol = std::make_unique<QgsSingleColorPointCloud3DSymbol>();

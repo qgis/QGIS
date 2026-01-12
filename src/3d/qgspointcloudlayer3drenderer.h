@@ -316,16 +316,16 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
     /**
-      * Sets the zoom out multiplier for zoomed out rendering of the overview
+      * Sets the overview switching scale
       * \since QGIS 4.0
       */
-    void setZoomOutMultiplier( double multiplier ) { mZoomOutMultiplier = multiplier; }
+    void setOverviewSwitchingScale( double scale ) { mOverviewSwitchingScale = scale; }
 
     /**
-      * Returns the zoom out multiplier for zoomed out rendering of the overview
+      * Returns the overview switching scale
       * \since QGIS 4.0
       */
-    double zoomOutMultiplier() const { return mZoomOutMultiplier; }
+    double overviewSwitchingScale() const { return mOverviewSwitchingScale; }
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
@@ -334,7 +334,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     bool mShowBoundingBoxes = false;
     int mPointBudget = 5000000;
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
-    double mZoomOutMultiplier = 1.0;
+    double mOverviewSwitchingScale = 1.0;
 
   private:
 #ifdef SIP_RUN
