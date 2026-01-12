@@ -1283,6 +1283,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   functionProfile( &QgisApp::createToolBars, this, u"Toolbars"_s );
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
+  mMapCanvas->setStatusBar( mStatusBar );
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -4752,6 +4753,8 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
   mapCanvas->setProject( QgsProject::instance() );
+  mapCanvas->setStatusBar( mStatusBar );
+
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
 
