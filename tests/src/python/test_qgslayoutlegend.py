@@ -2502,6 +2502,239 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             self.render_layout_check("composer_legend_visible_layers2", layout)
         )
 
+    def test_reset_to_all_project_layers(self):
+        """
+        Test resetting a manual legend to all project layers
+        """
+        point_path = os.path.join(TEST_DATA_DIR, "points.shp")
+        point_layer1 = QgsVectorLayer(point_path, "layer 1", "ogr")
+        point_layer2 = QgsVectorLayer(point_path, "layer 2", "ogr")
+        point_layer3 = QgsVectorLayer(point_path, "layer 3", "ogr")
+        p = QgsProject()
+        p.addMapLayers([point_layer1, point_layer2, point_layer3])
+        p.layerTreeRoot().findLayer(point_layer1).setItemVisibilityChecked(False)
+
+        point_layer2.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault, True)
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#ff0000",
+                "outline_style": "no",
+                "size": "5",
+                "size_unit": "MM",
+            }
+        )
+
+        point_layer1.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer2.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer3.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle("")
+        layout.addLayoutItem(legend)
+        legend.setResizeToContents(True)
+        legend.setSyncMode(Qgis.LegendSyncMode.Manual)
+        # remove all rows
+        legend.model().removeRows(0, legend.model().rowCount())
+
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.SymbolLabel,
+            QgsFontUtils.getStandardTestFont("Bold", 16),
+        )
+
+        legend.refresh()
+        legend.setResizeToContents(True)
+        legend.updateLegend()
+
+        self.assertTrue(
+            self.render_layout_check("composer_legend_manual_empty", layout)
+        )
+
+        legend.resetManualLayers(Qgis.LegendSyncMode.AllProjectLayers)
+
+        self.assertTrue(
+            self.render_layout_check("composer_legend_all_project_layers1", layout)
+        )
+
+    def test_reset_layers_to_visible_linked_map(self):
+        """
+        Test layer legend content when set to VisibleLayers sync mode
+        """
+        point_path = os.path.join(TEST_DATA_DIR, "points.shp")
+        point_layer1 = QgsVectorLayer(point_path, "layer 1", "ogr")
+        point_layer2 = QgsVectorLayer(point_path, "layer 2", "ogr")
+        point_layer3 = QgsVectorLayer(point_path, "layer 3", "ogr")
+        p = QgsProject()
+        p.addMapLayers([point_layer1, point_layer2, point_layer3])
+        p.layerTreeRoot().findLayer(point_layer2).setItemVisibilityChecked(False)
+        p.layerTreeRoot().findLayer(point_layer3).setItemVisibilityChecked(False)
+
+        point_layer2.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault, True)
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#ff0000",
+                "outline_style": "no",
+                "size": "5",
+                "size_unit": "MM",
+            }
+        )
+
+        point_layer1.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer2.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer3.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setVisibility(False)
+        layout.addLayoutItem(map)
+        map.setKeepLayerSet(True)
+        map.setLayers([point_layer2, point_layer3])
+        map.setExtent(point_layer1.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle("")
+        layout.addLayoutItem(legend)
+        legend.setResizeToContents(True)
+        legend.setLinkedMap(map)
+        legend.setSyncMode(Qgis.LegendSyncMode.Manual)
+        # remove all rows
+        legend.model().removeRows(0, legend.model().rowCount())
+
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.SymbolLabel,
+            QgsFontUtils.getStandardTestFont("Bold", 16),
+        )
+
+        legend.refresh()
+        legend.setResizeToContents(True)
+        legend.updateLegend()
+
+        self.assertTrue(
+            self.render_layout_check("composer_legend_manual_empty", layout)
+        )
+
+        legend.resetManualLayers(Qgis.LegendSyncMode.VisibleLayers)
+
+        self.assertTrue(
+            self.render_layout_check("composer_legend_visible_layers1", layout)
+        )
+
+    def test_reset_layers_to_visible_no_linked_map(self):
+        """
+        Test layer legend content when set to VisibleLayers sync mode
+        """
+        point_path = os.path.join(TEST_DATA_DIR, "points.shp")
+        point_layer1 = QgsVectorLayer(point_path, "layer 1", "ogr")
+        point_layer2 = QgsVectorLayer(point_path, "layer 2", "ogr")
+        point_layer3 = QgsVectorLayer(point_path, "layer 3", "ogr")
+        p = QgsProject()
+        p.addMapLayers([point_layer1, point_layer2, point_layer3])
+        p.layerTreeRoot().findLayer(point_layer1).setItemVisibilityChecked(False)
+
+        point_layer2.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault, True)
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#ff0000",
+                "outline_style": "no",
+                "size": "5",
+                "size_unit": "MM",
+            }
+        )
+
+        point_layer1.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer2.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+        point_layer3.setRenderer(QgsSingleSymbolRenderer(marker_symbol.clone()))
+
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle("")
+        layout.addLayoutItem(legend)
+        legend.setResizeToContents(True)
+        legend.setSyncMode(Qgis.LegendSyncMode.Manual)
+        # remove all rows
+        legend.model().removeRows(0, legend.model().rowCount())
+
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Title, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Group, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Subgroup, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.Symbol, QgsFontUtils.getStandardTestFont("Bold", 16)
+        )
+        legend.setStyleFont(
+            QgsLegendStyle.Style.SymbolLabel,
+            QgsFontUtils.getStandardTestFont("Bold", 16),
+        )
+
+        legend.refresh()
+        legend.setResizeToContents(True)
+        legend.updateLegend()
+
+        self.assertTrue(
+            self.render_layout_check("composer_legend_manual_empty", layout)
+        )
+
+        legend.resetManualLayers(Qgis.LegendSyncMode.VisibleLayers)
+
+        self.assertTrue(
+            self.render_layout_check("composer_legend_visible_layers1", layout)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

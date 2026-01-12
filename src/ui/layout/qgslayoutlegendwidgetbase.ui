@@ -54,7 +54,7 @@
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -65,14 +65,14 @@
         <x>0</x>
         <y>0</y>
         <width>386</width>
-        <height>2334</height>
+        <height>2331</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mMainPropertiesColGroupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Main Properties</string>
@@ -187,7 +187,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mLegendItemColGroupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Legend Items</string>
@@ -199,33 +199,6 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QToolButton" name="mUpdateAllPushButton">
-              <property name="toolTip">
-               <string>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</string>
-              </property>
-              <property name="text">
-               <string>Update All</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
           <item row="3" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="spacing">
@@ -449,7 +422,7 @@
             <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -476,6 +449,23 @@
                 <width>20</width>
                 <height>20</height>
                </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QComboBox" name="mSyncModeCombo"/>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mResetLayersButton">
+              <property name="toolTip">
+               <string>Resets the whole legend, discarding any manual changes made to layer legend settings.</string>
+              </property>
+              <property name="text">
+               <string>Reset</string>
               </property>
              </widget>
             </item>
@@ -524,7 +514,7 @@
              </size>
             </property>
             <property name="selectionMode">
-             <enum>QAbstractItemView::ContiguousSelection</enum>
+             <enum>QAbstractItemView::SelectionMode::ContiguousSelection</enum>
             </property>
             <property name="headerHidden">
              <bool>true</bool>
@@ -534,16 +524,13 @@
             </attribute>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QComboBox" name="mSyncModeCombo"/>
-          </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mFontsColGroupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Fonts and Text Formatting</string>
@@ -709,7 +696,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mColumnsColGroupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Columns</string>
@@ -751,7 +738,7 @@
           <item row="0" column="3">
            <spacer name="horizontalSpacer_5">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -784,7 +771,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSymbolsColGroupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Symbol</string>
@@ -797,10 +784,10 @@
          </property>
          <layout class="QFormLayout" name="formLayout_3">
           <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
           </property>
           <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
           </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
@@ -881,7 +868,7 @@
                <item>
                 <spacer name="horizontalSpacer_2">
                  <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <enum>Qt::Orientation::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -975,7 +962,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSymbolsColGroupBox_2">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>WMS LegendGraphic</string>
@@ -988,10 +975,10 @@
          </property>
          <layout class="QFormLayout" name="formLayout_5">
           <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
           </property>
           <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_13">
@@ -1045,7 +1032,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSpacingColGroupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Spacing</string>
@@ -1507,7 +1494,7 @@
   <tabstop>mLegendAutoWrapWidthDDBtn</tabstop>
   <tabstop>mLegendItemColGroupBox</tabstop>
   <tabstop>mSyncModeCombo</tabstop>
-  <tabstop>mUpdateAllPushButton</tabstop>
+  <tabstop>mResetLayersButton</tabstop>
   <tabstop>mItemTreeView</tabstop>
   <tabstop>mExpandAllToolButton</tabstop>
   <tabstop>mCollapseAllToolButton</tabstop>

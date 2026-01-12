@@ -163,6 +163,20 @@ auto update to reflect changes in the project's layer tree.
 .. versionadded:: 4.0
 %End
 
+    void resetManualLayers( Qgis::LegendSyncMode mode );
+%Docstring
+Resets the current legend manual configuration, including layer set and
+settings.
+
+The ``mode`` argument controls the layers to include after resetting.
+
+.. note::
+
+   This method has no effect if the legend's :py:func:`~QgsLayoutItemLegend.syncMode` is not :py:class:`Qgis`.LegendSyncMode.Manual.
+
+.. versionadded:: 4.0
+%End
+
     Qgis::LegendSyncMode syncMode() const;
 %Docstring
 Returns the legend's synchronization mode.
