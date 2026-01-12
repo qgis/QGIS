@@ -9103,7 +9103,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     while ( i.hasNext() )
     {
       i.next();
-      QString defaultBackend = i.key() == u"overlay_equals"_s ? QString( "QGIS" ) : QString( "GEOS" );
+      QString defaultBackend = i.key() == "overlay_equals"_L1 ? QString( "QGIS" ) : QString( "GEOS" );
       QgsStaticExpressionFunction *fcnGeomOverlayFunc = new QgsStaticExpressionFunction( i.key(),
       {
         QgsExpressionFunction::Parameter( u"layer"_s ),
@@ -10298,4 +10298,3 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }
-
