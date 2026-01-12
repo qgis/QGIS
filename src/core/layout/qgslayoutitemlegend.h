@@ -242,6 +242,17 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSyncMode( Qgis::LegendSyncMode mode );
 
     /**
+     * Resets the current legend manual configuration, including layer set and settings.
+     *
+     * The \a mode argument controls the layers to include after resetting.
+     *
+     * \note This method has no effect if the legend's syncMode() is not Qgis::LegendSyncMode::Manual.
+     *
+     * \since QGIS 4.0
+     */
+    void resetManualLayers( Qgis::LegendSyncMode mode );
+
+    /**
      * Returns the legend's synchronization mode.
      *
      * Depending on the mode, this reflects whether the legend content should auto update to reflect

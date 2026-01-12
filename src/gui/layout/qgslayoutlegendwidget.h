@@ -80,8 +80,6 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
-    //! Updates the legend layers and groups
-    void updateLegend();
 
     //! Returns the legend item associated to this widget
     QgsLayoutItemLegend *legend() { return mLegend; }
@@ -140,7 +138,7 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     void mCountToolButton_clicked( bool checked );
     void mExpressionFilterButton_toggled( bool checked );
     void mFilterByMapCheckBox_toggled( bool checked );
-    void mUpdateAllPushButton_clicked();
+    void resetLayers( Qgis::LegendSyncMode mode );
     void mAddGroupToolButton_clicked();
     void mLayerExpressionButton_clicked();
 

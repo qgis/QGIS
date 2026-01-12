@@ -147,10 +147,19 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
   connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled );
-  connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
+
+  QMenu *resetMenu = new QMenu( mResetLayersButton );
+  QAction *resetToProjectLayersAction = new QAction( tr( "Reset to All Project Layers" ), resetMenu );
+  resetMenu->addAction( resetToProjectLayersAction );
+  connect( resetToProjectLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::AllProjectLayers ); } );
+  QAction *resetToVisibleLayersAction = new QAction( tr( "Reset to Visible Layers" ), resetMenu );
+  resetMenu->addAction( resetToVisibleLayersAction );
+  connect( resetToVisibleLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::VisibleLayers ); } );
+  mResetLayersButton->setMenu( resetMenu );
+  mResetLayersButton->setPopupMode( QToolButton::InstantPopup );
 
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, mButtonLinkedMaps, &QWidget::setEnabled );
   mButtonLinkedMaps->setEnabled( false );
@@ -901,7 +910,7 @@ void QgsLayoutLegendWidget::syncModeChanged( bool userTriggered )
 
   QList<QWidget *> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
+          << mEditPushButton << mCountToolButton << mResetLayersButton << mAddGroupToolButton
           << mExpressionFilterButton << mCollapseAllToolButton << mExpandAllToolButton;
   for ( QWidget *w : std::as_const( widgets ) )
     w->setEnabled( allowEdits );
@@ -1189,6 +1198,17 @@ void QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled( bool checked )
   mLegend->endCommand();
 }
 
+void QgsLayoutLegendWidget::resetLayers( Qgis::LegendSyncMode mode )
+{
+  if ( !mLegend )
+    return;
+
+  mLegend->beginCommand( tr( "Update Legend" ) );
+  mLegend->resetManualLayers( mode );
+  mLegend->update();
+  mLegend->endCommand();
+}
+
 void QgsLayoutLegendWidget::mExpressionFilterButton_toggled( bool checked )
 {
   if ( !mLegend )
@@ -1279,11 +1299,6 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   mLegend->endCommand();
 }
 
-void QgsLayoutLegendWidget::mUpdateAllPushButton_clicked()
-{
-  updateLegend();
-}
-
 void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
 {
   if ( mLegend )
@@ -1304,20 +1319,6 @@ void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
     mLegend->setLegendFilterOutAtlas( toggled );
     // force update of legend when in preview mode
     mLegend->refresh();
-  }
-}
-
-void QgsLayoutLegendWidget::updateLegend()
-{
-  if ( mLegend )
-  {
-    mLegend->beginCommand( tr( "Update Legend" ) );
-
-    // this will reset the model completely, losing any changes
-    mLegend->setSyncMode( Qgis::LegendSyncMode::AllProjectLayers );
-    mLegend->setSyncMode( Qgis::LegendSyncMode::Manual );
-    mLegend->update();
-    mLegend->endCommand();
   }
 }
 

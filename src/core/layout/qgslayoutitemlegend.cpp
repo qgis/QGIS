@@ -444,6 +444,7 @@ void QgsLayoutItemLegend::setSyncMode( Qgis::LegendSyncMode mode )
   if ( mode == mSyncMode )
     return;
 
+  const Qgis::LegendSyncMode oldMode = mSyncMode;
   mSyncMode = mode;
   switch ( mSyncMode )
   {
@@ -454,49 +455,79 @@ void QgsLayoutItemLegend::setSyncMode( Qgis::LegendSyncMode mode )
 
     case Qgis::LegendSyncMode::Manual:
     {
-      std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
-
-      // filter out excluded by default items
-      std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
-      filterNodeChildren = [&filterNodeChildren]( QgsLayerTreeGroup * group )
-      {
-        if ( !group )
-          return;
-
-        const QList<QgsLayerTreeNode *> children = group->children();
-        for ( QgsLayerTreeNode *child : children )
-        {
-          if ( !child )
-          {
-            group->removeChildNode( child );
-            continue;
-          }
-          else if ( QgsLayerTree::isGroup( child ) )
-          {
-            filterNodeChildren( QgsLayerTree::toGroup( child ) );
-          }
-          else if ( QgsLayerTree::isLayer( child ) )
-          {
-            QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
-            if ( QgsMapLayer *mapLayer = layer->layer() )
-            {
-              if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
-              {
-                group->removeChildNode( child );
-              }
-            }
-          }
-        }
-      };
-      filterNodeChildren( customTree.get() );
-
-      setCustomLayerTree( customTree.release() );
+      resetManualLayers( oldMode );
       break;
     }
   }
 
   adjustBoxSize();
   updateFilterByMap( false );
+}
+
+void QgsLayoutItemLegend::resetManualLayers( Qgis::LegendSyncMode mode )
+{
+  if ( mSyncMode != Qgis::LegendSyncMode::Manual )
+    return;
+
+  std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
+
+  QList<QgsMapLayer *> mapVisibleLayers;
+  if ( mode == Qgis::LegendSyncMode::VisibleLayers )
+  {
+    if ( mMap )
+    {
+      QgsExpressionContext expressionContext = mMap->createExpressionContext();
+      mapVisibleLayers = mMap->layersToRender( &expressionContext );
+    }
+    else if ( const QgsLayout *l = layout() )
+    {
+      // no linked map, so use project layer tree
+      if ( QgsProject *p = l->project() )
+      {
+        mapVisibleLayers = p->layerTreeRoot()->checkedLayers();
+      }
+    }
+  }
+
+  // filter out excluded by default items
+  std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
+  filterNodeChildren = [mapVisibleLayers, mode, &filterNodeChildren]( QgsLayerTreeGroup * group )
+  {
+    if ( !group )
+      return;
+
+    const QList<QgsLayerTreeNode *> children = group->children();
+    for ( QgsLayerTreeNode *child : children )
+    {
+      if ( !child )
+      {
+        group->removeChildNode( child );
+        continue;
+      }
+      else if ( QgsLayerTree::isGroup( child ) )
+      {
+        filterNodeChildren( QgsLayerTree::toGroup( child ) );
+      }
+      else if ( QgsLayerTree::isLayer( child ) )
+      {
+        QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
+        if ( QgsMapLayer *mapLayer = layer->layer() )
+        {
+          if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+          {
+            group->removeChildNode( child );
+          }
+          else if ( mode == Qgis::LegendSyncMode::VisibleLayers && !mapVisibleLayers.contains( mapLayer ) )
+          {
+            group->removeChildNode( child );
+          }
+        }
+      }
+    }
+  };
+  filterNodeChildren( customTree.get() );
+
+  setCustomLayerTree( customTree.release() );
 }
 
 void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString &key )
