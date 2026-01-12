@@ -576,113 +576,12 @@ void QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties( const Q
     return;
   }
 
-  // transform to map crs
-  QgsGeometry g = geometry;
-  const QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
-  const QgsCoordinateTransform ct( geometry.crs(), mapCrs, QgsProject::instance()->transformContext() );
-  try
-  {
-    g.transform( ct );
-  }
-  catch ( QgsCsException &e )
-  {
-    QgsDebugError( u"Error transforming transient geometry: %1"_s.arg( e.what() ) );
-    emit valueAreaChanged( QString() );
-    emit valueTotalLengthChanged( QString() );
-    return;
-  }
+  QString areaString;
+  QString totalLengthString;
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mMapCanvas->mapSettings().destinationCrs(), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area ), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ), areaString, totalLengthString );
 
-  std::unique_ptr< QgsDistanceArea > distanceArea;
-  auto createDistanceArea = [mapCrs, &distanceArea] {
-    // reuse existing if we've already created one
-    if ( distanceArea )
-      return;
-
-    distanceArea = std::make_unique< QgsDistanceArea >();
-    distanceArea->setSourceCrs( mapCrs, QgsProject::instance()->transformContext() );
-    distanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
-  };
-
-  if ( g.type() == Qgis::GeometryType::Polygon && mFloater->itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Area ) )
-  {
-    QString areaString;
-    const Qgis::CadMeasurementDisplayType measureType = mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area );
-    switch ( measureType )
-    {
-      case Qgis::CadMeasurementDisplayType::Hidden:
-        break;
-
-      case Qgis::CadMeasurementDisplayType::Cartesian:
-      {
-        if ( mapCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
-        {
-          areaString = tr( "%1 %2" ).arg(
-            QString::number( g.area(), 'f', mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
-            QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mapCrs.mapUnits() ) )
-          );
-        }
-        else
-        {
-          areaString = QString::number( g.area(), 'f', 4 );
-        }
-        break;
-      }
-
-      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
-      {
-        createDistanceArea();
-        const double area = distanceArea->measureArea( g );
-        areaString = distanceArea->formatArea( area, mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->areaUnits() );
-        break;
-      }
-    }
-
-    emit valueAreaChanged( areaString );
-  }
-  else
-  {
-    emit valueAreaChanged( QString() );
-  }
-
-  if ( mFloater->itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ) )
-  {
-    const Qgis::CadMeasurementDisplayType measureType = mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength );
-    QString totalLengthString;
-    switch ( measureType )
-    {
-      case Qgis::CadMeasurementDisplayType::Hidden:
-        break;
-
-      case Qgis::CadMeasurementDisplayType::Cartesian:
-      {
-        if ( mapCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
-        {
-          totalLengthString = tr( "%1 %2" ).arg(
-            QString::number( g.length(), 'f', mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
-            QgsUnitTypes::toAbbreviatedString( mapCrs.mapUnits() )
-          );
-        }
-        else
-        {
-          totalLengthString = QString::number( g.length(), 'f', 4 );
-        }
-        break;
-      }
-      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
-      {
-        createDistanceArea();
-        const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
-        totalLengthString = distanceArea->formatDistance( length, mapCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->distanceUnits() );
-        break;
-      }
-    }
-
-    emit valueTotalLengthChanged( totalLengthString );
-  }
-  else
-  {
-    emit valueTotalLengthChanged( QString() );
-  }
+  emit valueAreaChanged( areaString );
+  emit valueTotalLengthChanged( totalLengthString );
 }
 
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )

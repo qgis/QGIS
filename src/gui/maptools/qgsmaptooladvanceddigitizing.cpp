@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgssnaptogridcanvasitem.h"
+#include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
 #include "moc_qgsmaptooladvanceddigitizing.cpp"
@@ -151,6 +152,101 @@ QgsMapLayer *QgsMapToolAdvancedDigitizing::layer() const
 bool QgsMapToolAdvancedDigitizing::useSnappingIndicator() const
 {
   return static_cast<bool>( mSnapIndicator.get() );
+}
+
+void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString )
+{
+  areaString = QString();
+  totalLengthString = QString();
+
+  // transform to map crs
+  QgsGeometry g = geometry;
+  const QgsCoordinateTransform ct( geometry.crs(), destinationCrs, QgsProject::instance()->transformContext() );
+  try
+  {
+    g.transform( ct );
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( u"Error transforming transient geometry: %1"_s.arg( e.what() ) );
+    return;
+  }
+
+  std::unique_ptr< QgsDistanceArea > distanceArea;
+  auto createDistanceArea = [destinationCrs, &distanceArea] {
+    // reuse existing if we've already created one
+    if ( distanceArea )
+      return;
+
+    distanceArea = std::make_unique< QgsDistanceArea >();
+    distanceArea->setSourceCrs( destinationCrs, QgsProject::instance()->transformContext() );
+    distanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
+  };
+
+  if ( g.type() == Qgis::GeometryType::Polygon && areaType != Qgis::CadMeasurementDisplayType::Hidden )
+  {
+    switch ( areaType )
+    {
+      case Qgis::CadMeasurementDisplayType::Hidden:
+        break;
+
+      case Qgis::CadMeasurementDisplayType::Cartesian:
+      {
+        if ( destinationCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
+        {
+          areaString = tr( "%1 %2" ).arg(
+            QString::number( g.area(), 'f', destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
+            QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( destinationCrs.mapUnits() ) )
+          );
+        }
+        else
+        {
+          areaString = QString::number( g.area(), 'f', 4 );
+        }
+        break;
+      }
+
+      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      {
+        createDistanceArea();
+        const double area = distanceArea->measureArea( g );
+        areaString = distanceArea->formatArea( area, destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->areaUnits() );
+        break;
+      }
+    }
+  }
+
+  if ( totalLengthType != Qgis::CadMeasurementDisplayType::Hidden )
+  {
+    switch ( totalLengthType )
+    {
+      case Qgis::CadMeasurementDisplayType::Hidden:
+        break;
+
+      case Qgis::CadMeasurementDisplayType::Cartesian:
+      {
+        if ( destinationCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
+        {
+          totalLengthString = tr( "%1 %2" ).arg(
+            QString::number( g.length(), 'f', destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
+            QgsUnitTypes::toAbbreviatedString( destinationCrs.mapUnits() )
+          );
+        }
+        else
+        {
+          totalLengthString = QString::number( g.length(), 'f', 4 );
+        }
+        break;
+      }
+      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      {
+        createDistanceArea();
+        const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
+        totalLengthString = distanceArea->formatDistance( length, destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->distanceUnits() );
+        break;
+      }
+    }
+  }
 }
 
 void QgsMapToolAdvancedDigitizing::setUseSnappingIndicator( bool enabled )
