@@ -51,6 +51,7 @@ class TestQgsMapToolCapture : public QObject
     void testTransientGeometrySignalStreamDigitizingPolygon();
     void testTransientGeometrySignalTracing();
     void testTransientGeometrySignalTracingPolygon();
+    void testMeasures();
 };
 
 void TestQgsMapToolCapture::initTestCase()
@@ -491,6 +492,39 @@ void TestQgsMapToolCapture::testTransientGeometrySignalTracingPolygon()
   utils.mouseMove( 2, 3 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CurvePolygon (CompoundCurve ((1 1),(1 1, 2 3, 1 1)))"_s );
+}
+
+void TestQgsMapToolCapture::testMeasures()
+{
+  QString area;
+  QString distance;
+
+  QgsReferencedGeometry geometry( QgsGeometry::fromWkt( u"Polygon ((16565310 -3070136, 16565217 -3070603, 16565694 -3070576, 16565840 -3070228, 16565310 -3070136))"_s ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
+  QCOMPARE( area, QString() );
+  QCOMPARE( distance, QString() );
+
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Cartesian, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
+  QCOMPARE( area.left( 4 ), u"1665"_s );
+  QCOMPARE( area.right( 2 ), u"m\u00B2"_s );
+  QCOMPARE( distance, QString() );
+
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Cartesian, area, distance );
+  QCOMPARE( area, QString() );
+  QCOMPARE( distance.left( 3 ), u"166"_s );
+  QCOMPARE( distance.right( 1 ), u"m"_s );
+
+  QgsProject::instance()->setEllipsoid( u"EPSG:7030"_s );
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Ellipsoidal, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
+  QCOMPARE( area.left( 5 ), u"16.65"_s );
+  QCOMPARE( area.right( 2 ), u"ha"_s );
+  QCOMPARE( distance, QString() );
+
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Ellipsoidal, area, distance );
+  QCOMPARE( area, QString() );
+  QCOMPARE( distance.left( 5 ), u"1.669"_s );
+  QCOMPARE( distance.right( 2 ), u"km"_s );
 }
 
 QGSTEST_MAIN( TestQgsMapToolCapture )
