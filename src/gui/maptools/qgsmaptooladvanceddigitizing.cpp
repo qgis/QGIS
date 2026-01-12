@@ -19,7 +19,10 @@
 #include "qgsgeometryoptions.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssnaptogridcanvasitem.h"
+#include "qgsstatusbar.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
@@ -119,7 +122,7 @@ void QgsMapToolAdvancedDigitizing::activate()
 {
   QgsMapToolEdit::activate();
   connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
-  connect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, mCadDockWidget, &QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties );
+  connect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::onTransientGeometryChanged );
   mCadDockWidget->enable();
   mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
   QgsVectorLayer *layer = currentVectorLayer();
@@ -135,7 +138,7 @@ void QgsMapToolAdvancedDigitizing::deactivate()
 {
   QgsMapToolEdit::deactivate();
   disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
-  disconnect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, mCadDockWidget, &QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties );
+  disconnect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::onTransientGeometryChanged );
   mCadDockWidget->disable();
   delete mSnapToGridCanvasItem;
   mSnapToGridCanvasItem = nullptr;
@@ -290,6 +293,38 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
       mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
     }
   }
+}
+
+void QgsMapToolAdvancedDigitizing::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
+{
+  if ( mCadDockWidget )
+    mCadDockWidget->updateTransientGeometryProperties( geometry );
+
+  QgsStatusBar *statusBar = mCanvas ? mCanvas->statusBar() : nullptr;
+  if ( !statusBar )
+    return;
+
+  const Qgis::CadMeasurementDisplayType areaDisplayType = QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay->value();
+  const Qgis::CadMeasurementDisplayType totalLengthDisplayType = QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay->value();
+  if ( areaDisplayType == Qgis::CadMeasurementDisplayType::Hidden && totalLengthDisplayType == Qgis::CadMeasurementDisplayType::Hidden )
+    return;
+
+  QString areaString;
+  QString totalLengthString;
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mCanvas->mapSettings().destinationCrs(), areaDisplayType, totalLengthDisplayType, areaString, totalLengthString );
+
+  QStringList messageParts;
+  if ( !areaString.isEmpty() )
+    messageParts.append( tr( "Total area: %1" ).arg( areaString ) );
+  if ( !totalLengthString.isEmpty() )
+  {
+    if ( geometry.type() == Qgis::GeometryType::Polygon )
+      messageParts.append( tr( "Perimeter: %1" ).arg( totalLengthString ) );
+    else
+      messageParts.append( tr( "Total length: %1" ).arg( totalLengthString ) );
+  }
+
+  statusBar->showMessage( messageParts.join( ' ' ) );
 }
 
 bool QgsMapToolAdvancedDigitizing::snapToLayerGridEnabled() const
