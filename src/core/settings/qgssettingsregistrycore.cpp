@@ -107,6 +107,10 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingOffsetSho
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount = new QgsSettingsEntryInteger( u"tracing-max-feature-count"_s, QgsSettingsTree::sTreeDigitizing, 10000 );
 
+const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay = new QgsSettingsEntryEnumFlag<Qgis::CadMeasurementDisplayType>( u"status-bar-area-display"_s, QgsSettingsTree::sTreeDigitizing, Qgis::CadMeasurementDisplayType::Hidden, u"Area measurement to show in status bar while digitizing"_s );
+
+const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay = new QgsSettingsEntryEnumFlag<Qgis::CadMeasurementDisplayType>( u"status-bar-total-length-display"_s, QgsSettingsTree::sTreeDigitizing, Qgis::CadMeasurementDisplayType::Hidden, u"Total length/perimeter measurement to show in status bar while digitizing"_s );
+
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsGpsBabelPath = new QgsSettingsEntryString( u"gpsbabelPath"_s, QgsSettingsTree::sTreeGps, u"gpsbabel"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers = new QgsSettingsEntryBool( u"show-feature-count-for-new-layers"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, feature counts will be shown in the layer tree for all newly added layers."_s );

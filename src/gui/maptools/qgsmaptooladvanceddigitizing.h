@@ -239,6 +239,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
     void onCurrentLayerChanged();
 
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
+
   private:
     //! Whether to allow use of advanced digitizing dock at this point
     bool mAdvancedDigitizingAllowed = true;

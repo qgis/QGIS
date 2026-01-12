@@ -1100,6 +1100,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 
   //set elements in digitizing tab
+  mComboStatusAreaDisplay->addItem( tr( "Hidden" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
+  mComboStatusAreaDisplay->addItem( tr( "Show Cartesian Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+  mComboStatusAreaDisplay->addItem( tr( "Show Ellipsoidal Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
+  mComboStatusLengthDisplay->addItem( tr( "Hidden" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
+  mComboStatusLengthDisplay->addItem( tr( "Show Cartesian Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+  mComboStatusLengthDisplay->addItem( tr( "Show Ellipsoidal Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
+
   mLineWidthSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingLineWidth->value() );
   mLineColorToolButton->setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
   mLineColorToolButton->setAllowOpacity( true );
@@ -1189,6 +1196,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chkReuseLastValues->setChecked( QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value() );
   chkDisableAttributeValuesDlg->setChecked( QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value() );
   mValidateGeometries->setCurrentIndex( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() );
+  mComboStatusAreaDisplay->setCurrentIndex( mComboStatusAreaDisplay->findData( QVariant::fromValue( QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay->value() ) ) );
+  mComboStatusLengthDisplay->setCurrentIndex( mComboStatusLengthDisplay->findData( QVariant::fromValue( QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay->value() ) ) );
 
   mSnappingMainDialogComboBox->clear();
   mSnappingMainDialogComboBox->addItem( tr( "Dialog" ), "dialog" );
@@ -1836,6 +1845,9 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->setValue( chkReuseLastValues->isChecked() );
   QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->setValue( chkDisableAttributeValuesDlg->isChecked() );
   QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->setValue( mValidateGeometries->currentIndex() );
+
+  QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay->setValue( mComboStatusAreaDisplay->currentData().value< Qgis::CadMeasurementDisplayType >() );
+  QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay->setValue( mComboStatusLengthDisplay->currentData().value< Qgis::CadMeasurementDisplayType >() );
 
   QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( mOffsetJoinStyleComboBox->currentData().value<Qgis::JoinStyle>() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->setValue( mOffsetQuadSegSpinBox->value() );
