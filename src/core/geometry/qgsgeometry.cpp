@@ -3641,7 +3641,7 @@ bool QgsGeometry::isEqual( const QgsGeometry &g, Qgis::GeometryBackend backend )
     }
 
     default:
-      throw QgsNotSupportedException( QStringLiteral( "Geometry backend '%1' is not supported by this function." ).arg( qgsEnumValueToKey( backend ) ) );
+      throw QgsNotSupportedException( u"Geometry backend '%1' is not supported by this function."_s.arg( qgsEnumValueToKey( backend ) ) );
   }
 }
 
