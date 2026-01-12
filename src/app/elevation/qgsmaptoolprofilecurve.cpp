@@ -49,6 +49,7 @@ bool QgsMapToolProfileCurve::supportsTechnique( Qgis::CaptureTechnique technique
       return true;
 
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   BUILTIN_UNREACHABLE

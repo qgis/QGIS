@@ -86,6 +86,8 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique 
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
       return true;
+    case Qgis::CaptureTechnique::NurbsCurve:
+      return false;
   }
   BUILTIN_UNREACHABLE
 }

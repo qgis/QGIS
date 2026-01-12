@@ -55,6 +55,8 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( Qgis::CaptureTechnique techni
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
       return mode() != QgsMapToolCapture::CapturePoint;
+    case Qgis::CaptureTechnique::NurbsCurve:
+      return false;
   }
   return false;
 }
