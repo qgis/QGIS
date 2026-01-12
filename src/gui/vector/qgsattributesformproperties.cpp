@@ -1389,8 +1389,28 @@ void QgsAttributesFormProperties::previewForm()
 
   auto projectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
 
+
+  QgsFields fields;
+  QList<QPair<QgsField, QString>> expressionFields;
+
+  for ( int i = 0; i < mLayer->fields().size(); i++ )
+  {
+    if ( mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Expression )
+    {
+      expressionFields << qMakePair( mLayer->fields().at( i ), mLayer->expressionField( i ) );
+    }
+    else
+    {
+      fields.append( mLayer->fields().at( i ) );
+    }
+  }
+
   std::unique_ptr<QgsVectorLayer> vlayer;
-  vlayer.reset( QgsMemoryProviderUtils::createMemoryLayer( "preview"_L1, mLayer->fields(), mLayer->wkbType(), mLayer->crs() ) );
+  vlayer.reset( QgsMemoryProviderUtils::createMemoryLayer( "preview"_L1, fields, mLayer->wkbType(), mLayer->crs() ) );
+  for ( const QPair<QgsField, QString> &expressionField : expressionFields )
+  {
+    vlayer->addExpressionField( expressionField.second, expressionField.first );
+  }
 
   mSourceFieldsProperties->applyToLayer( vlayer.get() );
   applyToLayer( vlayer.get() );
