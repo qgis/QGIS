@@ -409,7 +409,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     QVector3D toVector3D() const SIP_HOLDGIL
     {
-      return QVector3D( mX, mY, mZ );
+      return QVector3D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ) ); //
     }
 
     /**
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     QVector4D toVector4D() const SIP_HOLDGIL
     {
-      return QVector4D( mX, mY, mZ, mM );
+      return QVector4D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ), static_cast<float>( mM ) );
     }
 
     /**
