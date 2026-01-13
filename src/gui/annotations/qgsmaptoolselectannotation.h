@@ -179,7 +179,7 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
     void onCanvasRefreshed();
 
   private:
-    qsizetype annotationItemRubberBandIndexFromId( const QString &layerId, const QString &itemId );
+    long long annotationItemRubberBandIndexFromId( const QString &layerId, const QString &itemId );
 
     void setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection = false );
     void setSelectedItemsFromRect( const QgsRectangle &mapRect, bool toggleSelection = false );
