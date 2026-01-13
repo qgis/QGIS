@@ -21,10 +21,21 @@
 
 void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
-  Q_UNUSED( properties )
-  Q_UNUSED( context )
+  if ( properties.isActive( QgsPalLayerSettings::Property::AllowDegradedPlacement ) )
+  {
+    context.setOriginalValueVariable( mAllowDegradedPlacement );
+    mAllowDegradedPlacement = properties.valueAsBool( QgsPalLayerSettings::Property::AllowDegradedPlacement, context, mAllowDegradedPlacement );
+  }
 
-  // temporarily avoid warnings
-  const int unused = 1;
-  ( void )unused;
+  if ( properties.isActive( QgsPalLayerSettings::Property::OverlapHandling ) )
+  {
+    const QString handlingString = properties.valueAsString( QgsPalLayerSettings::Property::OverlapHandling, context );
+    const QString cleanedString = handlingString.trimmed();
+    if ( cleanedString.compare( "prevent"_L1, Qt::CaseInsensitive ) == 0 )
+      mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
+    else if ( cleanedString.compare( "allowifneeded"_L1, Qt::CaseInsensitive ) == 0 )
+      mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapIfRequired;
+    else if ( cleanedString.compare( "alwaysallow"_L1, Qt::CaseInsensitive ) == 0 )
+      mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
+  }
 }
