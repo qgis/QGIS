@@ -85,7 +85,7 @@ namespace SpatialIndex SIP_SKIP
 {
   class IStorageManager;
   class ISpatialIndex;
-} //namespace SpatialIndex
+}
 
 /**
  * \ingroup core
@@ -104,6 +104,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Construct point locator for a \a layer.
      *
@@ -114,7 +115,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
      *
      * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
-    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(), const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(), const QgsRectangle *extent = nullptr );
+    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+                              const QgsRectangle *extent = nullptr );
 
     ~QgsPointLocator() override;
 
@@ -149,14 +152,14 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     enum Type SIP_ENUM_BASETYPE( IntFlag )
     {
-      Invalid = 0,                                            //!< Invalid
-      Vertex = 1 << 0,                                        //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
-      Edge = 1 << 1,                                          //!< Snapped to an edge
-      Area = 1 << 2,                                          //!< Snapped to an area
-      Centroid = 1 << 3,                                      //!< Snapped to a centroid
-      MiddleOfSegment = 1 << 4,                               //!< Snapped to the middle of a segment
-      LineEndpoint = 1 << 5,                                  //!< Start or end points of lines only \since QGIS 3.20
-      ControlPoint = 1 << 6,                                  //!< Snapped to a control point (for NURBS curves) \since QGIS 4.0
+      Invalid = 0, //!< Invalid
+      Vertex  = 1 << 0, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge    = 1 << 1, //!< Snapped to an edge
+      Area    = 1 << 2, //!< Snapped to an area
+      Centroid = 1 << 3, //!< Snapped to a centroid
+      MiddleOfSegment = 1 << 4, //!< Snapped to the middle of a segment
+      LineEndpoint = 1 << 5, //!< Start or end points of lines only \since QGIS 3.20
+      ControlPoint = 1 << 6, //!< Snapped to a control point (for NURBS curves) \since QGIS 4.0
       All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types. Note LineEndpoint and ControlPoint are not included as they have specific use cases.
     };
 
@@ -323,7 +326,16 @@ class CORE_EXPORT QgsPointLocator : public QObject
         // TODO c++20 - replace with = default
         bool operator==( const QgsPointLocator::Match &other ) const
         {
-          return mType == other.mType && mDist == other.mDist && mPoint == other.mPoint && mLayer == other.mLayer && mFid == other.mFid && mVertexIndex == other.mVertexIndex && mEdgePoints[0] == other.mEdgePoints[0] && mEdgePoints[1] == other.mEdgePoints[1] && mCentroid == other.mCentroid && mMiddleOfSegment == other.mMiddleOfSegment;
+          return mType == other.mType &&
+                 mDist == other.mDist &&
+                 mPoint == other.mPoint &&
+                 mLayer == other.mLayer &&
+                 mFid == other.mFid &&
+                 mVertexIndex == other.mVertexIndex &&
+                 mEdgePoints[0] == other.mEdgePoints[0] &&
+                 mEdgePoints[1] == other.mEdgePoints[1] &&
+                 mCentroid == other.mCentroid &&
+                 mMiddleOfSegment == other.mMiddleOfSegment;
         }
 
       protected:
@@ -494,6 +506,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
+
     /**
      * prepare index if need and returns TRUE if the index is ready to be used
      * \param relaxed TRUE if index build has to be non blocking

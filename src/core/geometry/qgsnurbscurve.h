@@ -76,7 +76,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \throws ValueError if t is not in range [0, 1]
      */
     SIP_PYOBJECT evaluate( double t ) const SIP_TYPEHINT( QgsPoint );
-    % MethodCode if ( a0 < 0.0 || a0 > 1.0 )
+    % MethodCode
+    if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;
@@ -278,7 +279,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \since QGIS 4.0
      */
     double weight( int index ) const SIP_HOLDGIL;
-    % MethodCode const int count = sipCpp->controlPoints().size();
+    % MethodCode
+    const int count = sipCpp->controlPoints().size();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -291,16 +293,16 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     % End
 
     /**
-    * Sets the \a weight at the specified control point \a index.
-    * Weight must be positive (> 0).
-    *
-    * \throws IndexError if no control point with the specified index exists.
-    * \throws ValueError if weight is not positive.
-    * \since QGIS 4.0
-    */
-    void
-    setWeight( int index, double weight );
-    % MethodCode const int count = sipCpp->controlPoints().size();
+     * Sets the \a weight at the specified control point \a index.
+     * Weight must be positive (> 0).
+     *
+     * \throws IndexError if no control point with the specified index exists.
+     * \throws ValueError if weight is not positive.
+     * \since QGIS 4.0
+     */
+    void setWeight( int index, double weight );
+    % MethodCode
+    const int count = sipCpp->controlPoints().size();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );

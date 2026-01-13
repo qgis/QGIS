@@ -19,7 +19,6 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
@@ -40,6 +39,7 @@
 #include "moc_qgspointlocator.cpp"
 
 using namespace SpatialIndex;
+
 
 
 static SpatialIndex::Point point2point( const QgsPointXY &point )
@@ -72,16 +72,12 @@ class QgsPointLocator_Stream : public IDataStream
     explicit QgsPointLocator_Stream( const QVector<RTree::Data *> &dataList )
       : mDataList( dataList )
       , mIt( mDataList )
-    {}
+    { }
 
     IData *getNext() override { return mIt.next(); }
     bool hasNext() override { return mIt.hasNext(); }
 
-    uint32_t size() override
-    {
-      Q_ASSERT( false && "not available" );
-      return 0;
-    }
+    uint32_t size() override { Q_ASSERT( false && "not available" ); return 0; }
     void rewind() override { Q_ASSERT( false && "not available" ); }
 
   private:
@@ -122,7 +118,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 
       const QgsPointXY pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
       if ( sqrDist < 0 )
-        return; // probably empty geometry
+        return;  // probably empty geometry
 
       const QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches
@@ -141,6 +137,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 };
 
 
+
 /**
  * \ingroup core
  * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
@@ -150,6 +147,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 {
   public:
+
     /**
      * \ingroup core
      * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
@@ -182,6 +180,7 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 
       if ( !mBest.isValid() || m.distance() < mBest.distance() )
         mBest = m;
+
     }
 
   private:
@@ -199,9 +198,10 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
-class QgsPointLocator_VisitorNearestMiddleOfSegment : public IVisitor
+class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 {
   public:
+
     /**
      * \ingroup core
      * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
@@ -243,6 +243,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment : public IVisitor
 
       if ( !mBest.isValid() || m.distance() < mBest.distance() )
         mBest = m;
+
     }
 
   private:
@@ -263,6 +264,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment : public IVisitor
 class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
 {
   public:
+
     /**
      * \ingroup core
      * \brief Helper class used when traversing the index looking for line endpoints (start or end vertex) - builds a list of matches.
@@ -406,7 +408,7 @@ class QgsPointLocator_VisitorNearestControlPoint : public IVisitor
         if ( !curve )
           return;
 
-        if ( const QgsNurbsCurve *nurbsCurve = qgsgeometry_cast< const QgsNurbsCurve * >( curve ) )
+        if ( const QgsNurbsCurve *nurbsCurve = qgsgeometry_cast<const QgsNurbsCurve *>( curve ) )
         {
           const QVector<QgsPoint> controlPoints = nurbsCurve->controlPoints();
           for ( int i = 0; i < controlPoints.size(); ++i )
@@ -430,7 +432,7 @@ class QgsPointLocator_VisitorNearestControlPoint : public IVisitor
           int controlPointNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
           {
-            if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( *partIt ) )
+            if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( *partIt ) )
             {
               extractControlPoints( curve, controlPointNum );
             }
@@ -549,7 +551,6 @@ class QgsPointLocator_VisitorArea : public IVisitor
         mList << m;
       }
     }
-
   private:
     QgsPointLocator *mLocator = nullptr;
     QgsPointLocator::MatchList &mList;
@@ -578,14 +579,14 @@ struct _CohenSutherland
 
   OutCode computeOutCode( double x, double y )
   {
-    OutCode code = INSIDE;      // initialized as being inside of clip window
-    if ( x < mRect.xMinimum() ) // to the left of clip window
+    OutCode code = INSIDE;  // initialized as being inside of clip window
+    if ( x < mRect.xMinimum() )         // to the left of clip window
       code |= LEFT;
-    else if ( x > mRect.xMaximum() ) // to the right of clip window
+    else if ( x > mRect.xMaximum() )    // to the right of clip window
       code |= RIGHT;
-    if ( y < mRect.yMinimum() ) // below the clip window
+    if ( y < mRect.yMinimum() )         // below the clip window
       code |= BOTTOM;
-    else if ( y > mRect.yMaximum() ) // above the clip window
+    else if ( y > mRect.yMaximum() )    // above the clip window
       code |= TOP;
     return code;
   }
@@ -716,6 +717,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       prevPoint = QgsPointXY( *it );
       it++;
       pointIndex += 1;
+
     }
   }
   return lst;
@@ -746,7 +748,7 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       if ( !geom )
         return; // should not happen, but be safe
 
-      const auto segmentsInRect { _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) };
+      const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
       for ( const QgsPointLocator::Match &m : segmentsInRect )
       {
         // in range queries the filter may reject some matches
@@ -887,7 +889,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
       if ( !geom )
         return; // should not happen, but be safe
 
-      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin(); itPart != geom->const_parts_end(); ++itPart )
+      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
       {
         QgsAbstractGeometry::vertex_iterator it = ( *itPart )->vertices_begin();
         QgsAbstractGeometry::vertex_iterator itPrevious = ( *itPart )->vertices_begin();
@@ -931,6 +933,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
     QStack<id_type> ids;
 
   public:
+
     void getNextEntry( const IEntry &entry, id_type &nextEntry, bool &hasNext ) override
     {
       const INode *n = dynamic_cast<const INode *>( &entry );
@@ -956,7 +959,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
         }
       }
 
-      if ( !ids.empty() )
+      if ( ! ids.empty() )
       {
         nextEntry = ids.back();
         ids.pop();
@@ -1032,6 +1035,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
     mContext = std::make_unique<QgsRenderContext>( *context );
     connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   }
+
 }
 
 void QgsPointLocator::onInitTaskFinished()
@@ -1103,6 +1107,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 
 void QgsPointLocator::waitForIndexingFinished()
 {
+
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
   mInitTask->waitForFinished();
@@ -1264,7 +1269,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   QgsPointLocator_Stream stream( dataList );
   try
   {
-    mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
+    mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
+                  leafCapacity, dimension, variant, indexId ) );
   }
   catch ( const std::exception &e )
   {
@@ -1409,6 +1415,7 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
     delete *it;
     mGeoms.erase( it );
   }
+
 }
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )

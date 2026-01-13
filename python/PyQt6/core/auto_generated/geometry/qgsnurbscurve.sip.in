@@ -63,7 +63,8 @@ algorithm for B-spline basis function evaluation.
 
 :raises ValueError: if t is not in range [0, 1]
 %End
-%MethodCode if ( a0 < 0.0 || a0 > 1.0 )
+%MethodCode
+    if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;
@@ -302,7 +303,8 @@ Returns the weight at the specified control point ``index``.
 
 .. versionadded:: 4.0
 %End
-%MethodCode const int count = sipCpp->controlPoints().size();
+%MethodCode
+    const int count = sipCpp->controlPoints().size();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -314,7 +316,7 @@ Returns the weight at the specified control point ``index``.
     }
 %End
 
-    void
+    void setWeight( int index, double weight );
 %Docstring
 Sets the ``weight`` at the specified control point ``index``. Weight
 must be positive (> 0).
@@ -325,8 +327,8 @@ must be positive (> 0).
 
 .. versionadded:: 4.0
 %End
-    setWeight( int index, double weight );
-%MethodCode const int count = sipCpp->controlPoints().size();
+%MethodCode
+    const int count = sipCpp->controlPoints().size();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
