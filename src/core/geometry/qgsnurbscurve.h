@@ -212,7 +212,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     /**
      * Returns the control points of the NURBS curve.
      */
-    const QVector<QgsPoint> &controlPoints() const SIP_HOLDGIL { return mControlPoints; }
+    QVector<QgsPoint> controlPoints() const SIP_HOLDGIL { return mControlPoints; }
 
     /**
      * Sets the control points of the NURBS curve.
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     /**
      * Returns the knot vector of the NURBS curve.
      */
-    const QVector<double> &knots() const SIP_HOLDGIL { return mKnots; }
+    QVector<double> knots() const SIP_HOLDGIL { return mKnots; }
 
     /**
      * Sets the knot vector of the NURBS curve.
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     /**
      * Returns the weight vector of the NURBS curve.
      */
-    const QVector<double> &weights() const SIP_HOLDGIL { return mWeights; }
+    QVector<double> weights() const SIP_HOLDGIL { return mWeights; }
 
     /**
      * Sets the weight vector of the NURBS curve.
