@@ -30,8 +30,11 @@ class Qgs3DMapToolMeasure : public Qgs3DMapTool
     Q_OBJECT
 
   public:
-    Qgs3DMapToolMeasure( Qgs3DMapCanvas *canvas );
+    Qgs3DMapToolMeasure( Qgs3DMapCanvas *canvas, bool measureArea );
     ~Qgs3DMapToolMeasure() override;
+
+    //! returns whether measuring distance or area
+    bool measureArea() const { return mMeasureArea; }
 
     //! When we have added our last point, and not following
     bool done() const { return mDone; }
@@ -81,6 +84,9 @@ class Qgs3DMapToolMeasure : public Qgs3DMapTool
 
     //! Z value for computing map coordinates on mouse move
     float zMean = std::numeric_limits<float>::quiet_NaN();
+
+    //! Indicates whether we're measuring distances or areas
+    bool mMeasureArea = false;
 };
 
 #endif // QGS3DMAPTOOLMEASURE_H
