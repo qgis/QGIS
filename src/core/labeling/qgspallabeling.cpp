@@ -3004,6 +3004,9 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // users with options they likely don't need to see...
   const double overrunSmoothDist = context.convertToMapUnits( 1, Qgis::RenderUnit::Millimeters );
 
+  QgsLabelPlacementSettings placementSettings = mPlacementSettings;
+  placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
   bool labelAll = labelPerPart && !hasDataDefinedPosition;
   if ( !hasDataDefinedPosition )
   {
@@ -3216,35 +3219,9 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
-  // data defined allow degraded placement
-  {
-    double allowDegradedPlacement = mPlacementSettings.allowDegradedPlacement();
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::AllowDegradedPlacement ) )
-    {
-      context.expressionContext().setOriginalValueVariable( allowDegradedPlacement );
-      allowDegradedPlacement = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::AllowDegradedPlacement, context.expressionContext(), allowDegradedPlacement );
-    }
-    labelFeature->setAllowDegradedPlacement( allowDegradedPlacement );
-  }
-
-  // data defined overlap handling
-  {
-    Qgis::LabelOverlapHandling overlapHandling = mPlacementSettings.overlapHandling();
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::OverlapHandling ) )
-    {
-      const QString handlingString = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::Property::OverlapHandling, context.expressionContext() );
-      const QString cleanedString = handlingString.trimmed();
-      if ( cleanedString.compare( "prevent"_L1, Qt::CaseInsensitive ) == 0 )
-        overlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
-      else if ( cleanedString.compare( "allowifneeded"_L1, Qt::CaseInsensitive ) == 0 )
-        overlapHandling = Qgis::LabelOverlapHandling::AllowOverlapIfRequired;
-      else if ( cleanedString.compare( "alwaysallow"_L1, Qt::CaseInsensitive ) == 0 )
-        overlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
-    }
-    labelFeature->setOverlapHandling( overlapHandling );
-  }
-
-  labelFeature->setPrioritization( mPlacementSettings.prioritization() );
+  labelFeature->setAllowDegradedPlacement( placementSettings.allowDegradedPlacement() );
+  labelFeature->setOverlapHandling( placementSettings.overlapHandling() );
+  labelFeature->setPrioritization( placementSettings.prioritization() );
 
   QgsLabelObstacleSettings os = mObstacleSettings;
   os.setIsObstacle( isObstacle );
