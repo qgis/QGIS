@@ -766,6 +766,13 @@ The development version
       OverPoint,
     };
 
+    enum class MultiPartLabelingBehavior /BaseType=IntEnum/
+    {
+      LabelLargestPartOnly,
+      LabelEveryPartWithEntireLabel,
+      SplitLabelTextLinesOverParts,
+    };
+
     enum class LabelOffsetType /BaseType=IntEnum/
       {
       FromPoint,

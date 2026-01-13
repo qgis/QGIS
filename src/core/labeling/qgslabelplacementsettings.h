@@ -88,6 +88,24 @@ class CORE_EXPORT QgsLabelPlacementSettings
     void setPrioritization( Qgis::LabelPrioritization prioritization ) { mPrioritization = prioritization; }
 
     /**
+     * Returns the multipart labeling behavior.
+     *
+     * \see setMultiPartBehavior()
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::MultiPartLabelingBehavior multiPartBehavior() const { return mMultiPartBehavior; }
+
+    /**
+     * Sets the multipart labeling \a behavior.
+     *
+     * \see multiPartBehavior()
+     *
+     * \since QGIS 4.0
+     */
+    void setMultiPartBehavior( Qgis::MultiPartLabelingBehavior behavior ) { mMultiPartBehavior = behavior; }
+
+    /**
      * Updates the placement settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
@@ -99,6 +117,8 @@ class CORE_EXPORT QgsLabelPlacementSettings
     Qgis::LabelPrioritization mPrioritization = Qgis::LabelPrioritization::PreferCloser;
 
     bool mAllowDegradedPlacement = false;
+
+    Qgis::MultiPartLabelingBehavior mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
 
 };
 
