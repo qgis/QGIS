@@ -680,7 +680,7 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \note Not available in Python bindings
      */
-    std::unique_ptr< QgsLabelFeature > registerFeatureWithDetails( const QgsFeature &feature, QgsRenderContext &context,
+    std::vector< std::unique_ptr< QgsLabelFeature > > registerFeatureWithDetails( const QgsFeature &feature, QgsRenderContext &context,
         QgsGeometry obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
 
 #endif

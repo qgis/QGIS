@@ -193,12 +193,15 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
 
 QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
   QList< QgsLabelFeature * > res;
-  if ( label )
+  for ( auto &it : labels )
   {
-    res << label.get();
-    mLabels << label.release();
+    if ( it )
+    {
+      res << it.get();
+      mLabels << it.release();
+    }
   }
   return res;
 }
