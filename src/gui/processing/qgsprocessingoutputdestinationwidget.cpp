@@ -113,6 +113,10 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     if ( value.toString() == "memory:"_L1 || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
     {
       saveToTemporary();
+      if ( !consideredEqualTemporaryOutputValues( mPreviousValueString, variantToString( value ) ) )
+      {
+        emit destinationChanged();
+      }
     }
     else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
