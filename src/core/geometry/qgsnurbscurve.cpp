@@ -604,19 +604,7 @@ bool QgsNurbsCurve::deleteVertex( QgsVertexId position )
     mWeights.remove( idx );
   }
 
-  const int n = mControlPoints.size();
-  const int knotsSize = n + mDegree + 1;
-  mKnots.clear();
-  mKnots.reserve( knotsSize );
-  for ( int i = 0; i < knotsSize; ++i )
-  {
-    if ( i <= mDegree )
-      mKnots.append( 0.0 );
-    else if ( i >= n )
-      mKnots.append( 1.0 );
-    else
-      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
-  }
+  generateUniformKnots();
 
   clearCache();
   return true;
@@ -638,6 +626,13 @@ void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )
   mControlPoints = newPts;
   mWeights = newWeights;
 
+  generateUniformKnots();
+
+  clearCache();
+}
+
+void QgsNurbsCurve::generateUniformKnots()
+{
   const int n = mControlPoints.size();
   const int knotsSize = n + mDegree + 1;
   mKnots.clear();
@@ -651,8 +646,6 @@ void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )
     else
       mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
   }
-
-  clearCache();
 }
 
 bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
@@ -1011,21 +1004,7 @@ bool QgsNurbsCurve::fromWkt( const QString &wkt )
   // If no knots were provided, create default knots (open uniform)
   if ( !hasKnots )
   {
-    const int n = controlPoints.size();
-    const int knotsSize = n + degree + 1;
-    mKnots.clear();
-    mKnots.reserve( knotsSize );
-
-    // Open uniform knot vector
-    for ( int i = 0; i < knotsSize; ++i )
-    {
-      if ( i <= degree )
-        mKnots.append( 0.0 );
-      else if ( i >= n )
-        mKnots.append( 1.0 );
-      else
-        mKnots.append( static_cast<double>( i - degree ) / ( n - degree ) );
-    }
+    generateUniformKnots();
   }
 
   return true;
@@ -1279,19 +1258,7 @@ bool QgsNurbsCurve::removeDuplicateNodes( double epsilon, bool useZValues )
   mWeights = newWeights;
 
   // Regenerate uniform knot vector for the new number of control points
-  const int n = mControlPoints.size();
-  const int knotsSize = n + mDegree + 1;
-  mKnots.clear();
-  mKnots.reserve( knotsSize );
-  for ( int i = 0; i < knotsSize; ++i )
-  {
-    if ( i <= mDegree )
-      mKnots.append( 0.0 );
-    else if ( i >= n )
-      mKnots.append( 1.0 );
-    else
-      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
-  }
+  generateUniformKnots();
 
   clearCache();
   return true;
@@ -1459,19 +1426,7 @@ bool QgsNurbsCurve::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   if ( idx <= mWeights.size() )
     mWeights.insert( idx, 1.0 );
 
-  const int n = mControlPoints.size();
-  const int knotsSize = n + mDegree + 1;
-  mKnots.clear();
-  mKnots.reserve( knotsSize );
-  for ( int i = 0; i < knotsSize; ++i )
-  {
-    if ( i <= mDegree )
-      mKnots.append( 0.0 );
-    else if ( i >= n )
-      mKnots.append( 1.0 );
-    else
-      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
-  }
+  generateUniformKnots();
 
   clearCache();
   return true;

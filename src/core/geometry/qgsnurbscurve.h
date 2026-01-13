@@ -76,8 +76,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \throws ValueError if t is not in range [0, 1]
      */
     SIP_PYOBJECT evaluate( double t ) const SIP_TYPEHINT( QgsPoint );
-    % MethodCode
-    if ( a0 < 0.0 || a0 > 1.0 )
+    % MethodCode if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;
@@ -279,8 +278,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \since QGIS 4.0
      */
     double weight( int index ) const SIP_HOLDGIL;
-    % MethodCode
-    const int count = sipCpp->controlPoints().size();
+    % MethodCode const int count = sipCpp->controlPoints().size();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -293,16 +291,16 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     % End
 
     /**
-     * Sets the \a weight at the specified control point \a index.
-     * Weight must be positive (> 0).
-     *
-     * \throws IndexError if no control point with the specified index exists.
-     * \throws ValueError if weight is not positive.
-     * \since QGIS 4.0
-     */
-    void setWeight( int index, double weight );
-    % MethodCode
-    const int count = sipCpp->controlPoints().size();
+    * Sets the \a weight at the specified control point \a index.
+    * Weight must be positive (> 0).
+    *
+    * \throws IndexError if no control point with the specified index exists.
+    * \throws ValueError if weight is not positive.
+    * \since QGIS 4.0
+    */
+    void
+    setWeight( int index, double weight );
+    % MethodCode const int count = sipCpp->controlPoints().size();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -350,6 +348,16 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     QgsBox3D calculateBoundingBox3D() const override;
 
   private:
+    /**
+     * Generates a uniform knot vector based on current degree and control points count.
+     * Clears the existing knot vector and generates a new one following the formula:
+     *
+     * - First (degree+1) knots are 0
+     * - Last (degree+1) knots are 1
+     * - Interior knots are uniformly spaced
+     */
+    void generateUniformKnots();
+
     QVector<QgsPoint> mControlPoints;       //! Control points defining the curve shape
     QVector<double> mKnots;                 //! Knot vector for B-spline basis functions
     QVector<double> mWeights;               //! Weight vector for rational curves
