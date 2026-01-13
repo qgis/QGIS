@@ -1470,6 +1470,8 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( characterCount == 0 )
     return 0;
 
+  // clang-tidy false positive
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( mLF->curvedLabelMode() )
   {
     case Qgis::CurvedLabelMode::Default:
@@ -1479,6 +1481,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
       return createCurvedCandidateWithCharactersAtVertices( lPos, mapShape, pal );
   }
+  // NOLINTEND(bugprone-branch-clone)
   BUILTIN_UNREACHABLE
 }
 

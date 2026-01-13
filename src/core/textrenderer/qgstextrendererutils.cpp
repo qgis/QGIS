@@ -197,7 +197,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   auto output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
 
-  if ( additionalCharacterSpacing || additionalWordSpacing )
+  if ( !qgsDoubleNear( additionalCharacterSpacing, 0 ) || !qgsDoubleNear( additionalWordSpacing, 0 ) )
     flags.setFlag( Qgis::CurvedTextFlag::ExtendLineToFitText );
 
   double offsetAlongSegment = offsetAlongLine;
@@ -444,6 +444,8 @@ bool QgsTextRendererUtils::nextCharPosition( double charWidth, const std::vector
     }
   }
 
+  // intentional for readability:
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( index >= numPoints )
   {
     // do not support extending the line start or end points via additional spacing
@@ -454,6 +456,7 @@ bool QgsTextRendererUtils::nextCharPosition( double charWidth, const std::vector
     // Not allowed to place across on 0 length segments or discontinuities
     return false;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   double segmentStartX = x[index - 1];
   double segmentStartY = y[index - 1];
