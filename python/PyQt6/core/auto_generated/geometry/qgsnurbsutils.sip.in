@@ -34,29 +34,12 @@ Extracts the first NURBS curve found in the ``geom`` (recursively).
 Returns ``None`` if no NURBS curve is found.
 %End
 
-    static const QgsNurbsCurve *findNurbsCurveForVertex(
-      const QgsAbstractGeometry *geom,
-      const QgsVertexId &vid,
-      int &localIndex /Out/ );
-%Docstring
-Finds the NURBS curve containing the vertex identified by ``vid``.
 
-:param geom: the geometry to search in
-:param vid: the vertex identifier to search for
-
-:return: - the NURBS curve containing the vertex, or ``None`` if the
-           vertex is not part of a NURBS curve
-         - localIndex: the control point index within the found NURBS
-           curve
-%End
-
-    static QgsNurbsCurve *findMutableNurbsCurveForVertex(
+    static QgsNurbsCurve *findNurbsCurveForVertex(
       QgsAbstractGeometry *geom,
       const QgsVertexId &vid,
       int &localIndex /Out/ );
 %Docstring
-Mutable version of :py:func:`~QgsNurbsUtils.findNurbsCurveForVertex`.
-
 Finds the NURBS curve containing the vertex identified by ``vid``.
 
 :param geom: the geometry to search in

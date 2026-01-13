@@ -53,15 +53,14 @@ class CORE_EXPORT QgsNurbsUtils
      * \param vid the vertex identifier to search for
      * \param localIndex will be set to the control point index within the found NURBS curve
      * \returns the NURBS curve containing the vertex, or NULLPTR if the vertex is not part of a NURBS curve
+     * \note Not available in Python bindings
      */
     static const QgsNurbsCurve *findNurbsCurveForVertex(
       const QgsAbstractGeometry *geom,
       const QgsVertexId &vid,
-      int &localIndex SIP_OUT );
+      int &localIndex ) SIP_SKIP;
 
     /**
-     * Mutable version of findNurbsCurveForVertex().
-     *
      * Finds the NURBS curve containing the vertex identified by \a vid.
      *
      * \param geom the geometry to search in
@@ -69,7 +68,7 @@ class CORE_EXPORT QgsNurbsUtils
      * \param localIndex will be set to the control point index within the found NURBS curve
      * \returns the NURBS curve containing the vertex, or NULLPTR if the vertex is not part of a NURBS curve
      */
-    static QgsNurbsCurve *findMutableNurbsCurveForVertex(
+    static QgsNurbsCurve *findNurbsCurveForVertex(
       QgsAbstractGeometry *geom,
       const QgsVertexId &vid,
       int &localIndex SIP_OUT );

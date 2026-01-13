@@ -168,7 +168,7 @@ const QgsNurbsCurve *QgsNurbsUtils::findNurbsCurveForVertex( const QgsAbstractGe
   return nullptr;
 }
 
-QgsNurbsCurve *QgsNurbsUtils::findMutableNurbsCurveForVertex( QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex )
+QgsNurbsCurve *QgsNurbsUtils::findNurbsCurveForVertex( QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex )
 {
-  return const_cast<QgsNurbsCurve *>( findNurbsCurveForVertex( geom, vid, localIndex ) );
+  return const_cast<QgsNurbsCurve *>( findNurbsCurveForVertex( const_cast<const QgsAbstractGeometry *>( geom ), vid, localIndex ) );
 }
