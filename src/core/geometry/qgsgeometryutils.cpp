@@ -550,19 +550,30 @@ QgsPoint QgsGeometryUtils::interpolatePointOnCubicBezier( const QgsPoint &p0, co
   const double x = t1_3 * p0.x() + 3.0 * t1_2 * t * p1.x() + 3.0 * t1 * t_2 * p2.x() + t_3 * p3.x();
   const double y = t1_3 * p0.y() + 3.0 * t1_2 * t * p1.y() + 3.0 * t1 * t_2 * p2.y() + t_3 * p3.y();
 
+  const bool hasZ = p0.is3D() && p1.is3D() && p2.is3D() && p3.is3D();
+  const bool hasM = p0.isMeasure() && p1.isMeasure() && p2.isMeasure() && p3.isMeasure();
+
   double z = std::numeric_limits<double>::quiet_NaN();
-  if ( p0.is3D() && p1.is3D() && p2.is3D() && p3.is3D() )
+  if ( hasZ )
   {
     z = t1_3 * p0.z() + 3.0 * t1_2 * t * p1.z() + 3.0 * t1 * t_2 * p2.z() + t_3 * p3.z();
   }
 
   double m = std::numeric_limits<double>::quiet_NaN();
-  if ( p0.isMeasure() && p1.isMeasure() && p2.isMeasure() && p3.isMeasure() )
+  if ( hasM )
   {
     m = t1_3 * p0.m() + 3.0 * t1_2 * t * p1.m() + 3.0 * t1 * t_2 * p2.m() + t_3 * p3.m();
   }
 
-  return QgsPoint( p0.wkbType(), x, y, z, m );
+  Qgis::WkbType wkbType = Qgis::WkbType::Point;
+  if ( hasZ && hasM )
+    wkbType = Qgis::WkbType::PointZM;
+  else if ( hasZ )
+    wkbType = Qgis::WkbType::PointZ;
+  else if ( hasM )
+    wkbType = Qgis::WkbType::PointM;
+
+  return QgsPoint( wkbType, x, y, z, m );
 }
 
 bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result, double radius, const QgsPoint &mousePos )
