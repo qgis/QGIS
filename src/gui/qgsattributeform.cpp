@@ -217,7 +217,7 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
     w->setContext( newContext );
   }
 
-  auto toggleRelationWidgetsVisibility = [this]( bool relationWidgetsVisible ) {
+  auto setRelationWidgetsVisible = [this]( bool relationWidgetsVisible ) {
     for ( QgsAttributeFormRelationEditorWidget *w : findChildren<QgsAttributeFormRelationEditorWidget *>() )
     {
       w->setVisible( relationWidgetsVisible );
@@ -227,53 +227,53 @@ void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
   switch ( mode )
   {
     case QgsAttributeEditorContext::SingleEditMode:
-      toggleRelationWidgetsVisibility( true );
+      setRelationWidgetsVisible( true );
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::AddFeatureMode:
-      toggleRelationWidgetsVisibility( true );
+      setRelationWidgetsVisible( true );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::FixAttributeMode:
-      toggleRelationWidgetsVisibility( true );
+      setRelationWidgetsVisible( true );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::MultiEditMode:
-      toggleRelationWidgetsVisibility( true );
+      setRelationWidgetsVisible( true );
       resetMultiEdit( false );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::SearchMode:
-      toggleRelationWidgetsVisibility( true );
+      setRelationWidgetsVisible( true );
       mSearchButtonBox->setVisible( true );
       synchronizeState();
       hideButtonBox();
       break;
 
     case QgsAttributeEditorContext::AggregateSearchMode:
-      toggleRelationWidgetsVisibility( false );
+      setRelationWidgetsVisible( false );
       mSearchButtonBox->setVisible( false );
       synchronizeState();
       hideButtonBox();
       break;
 
     case QgsAttributeEditorContext::IdentifyMode:
-      toggleRelationWidgetsVisibility( true );
+      setRelationWidgetsVisible( true );
       setFeature( mFeature );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
 
     case QgsAttributeEditorContext::PreviewMode:
-      toggleRelationWidgetsVisibility( false );
+      setRelationWidgetsVisible( false );
       synchronizeState();
       mSearchButtonBox->setVisible( false );
       break;
