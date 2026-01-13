@@ -5144,6 +5144,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CircularStringZM,
         )
         self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.singleType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurve,
         )
@@ -5390,6 +5406,22 @@ class TestQgsGeometry(QgisTestCase):
         )
         self.assertEqual(
             QgsWkbTypes.multiType(QgsWkbTypes.Type.CircularStringZM),
+            QgsWkbTypes.Type.MultiCurveZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.MultiCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.MultiCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.MultiCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurveZM),
             QgsWkbTypes.Type.MultiCurveZM,
         )
         self.assertEqual(
@@ -5673,6 +5705,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.MultiCurveZM,
         )
         self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.MultiCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.MultiCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.MultiCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.MultiCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.MultiCurve,
         )
@@ -5951,6 +5999,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CompoundCurveZM,
         )
         self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.CompoundCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.CompoundCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.CompoundCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.CompoundCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.curveType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurve,
         )
@@ -6198,6 +6262,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.LineStringZM,
         )
         self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.LineString,
+        )
+        self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.LineStringZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.LineStringM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.LineStringZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.linearType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.LineString,
         )
@@ -6412,6 +6492,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.flatType(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularString,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurve,
         )
         self.assertEqual(
             QgsWkbTypes.flatType(QgsWkbTypes.Type.CompoundCurve),
@@ -6666,6 +6762,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry,
         )
         self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
             QgsWkbTypes.geometryType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.GeometryType.LineGeometry,
         )
@@ -6890,6 +7002,18 @@ class TestQgsGeometry(QgisTestCase):
             "CircularStringZM",
         )
         self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurve), "NurbsCurve"
+        )
+        self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurveZ), "NurbsCurveZ"
+        )
+        self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurveM), "NurbsCurveM"
+        )
+        self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurveZM), "NurbsCurveZM"
+        )
+        self.assertEqual(
             QgsWkbTypes.displayString(QgsWkbTypes.Type.CompoundCurve), "CompoundCurve"
         )
         self.assertEqual(
@@ -7082,6 +7206,10 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CircularStringZM), 1
         )
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurve), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurveZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurveM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurveZM), 1)
         self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurve), 1)
         self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveZ), 1)
         self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveM), 1)
@@ -7184,6 +7312,10 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CircularStringZM), 4
         )
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurve), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurveZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurveM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurveZM), 4)
         self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurve), 2)
         self.assertEqual(
             QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurveZ), 3
@@ -7250,6 +7382,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollection)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularString)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurve)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurve)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygon)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurve)
@@ -7265,6 +7398,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonZ)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionZ)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurveZ)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveZ)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonZ)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveZ)
@@ -7279,6 +7413,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurveM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveM)
@@ -7293,6 +7428,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonZM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonZM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveZM)
@@ -7316,6 +7452,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygon)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollection)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurve)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurve)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygon)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurve)
@@ -7331,6 +7468,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonZ)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionZ)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurveZ)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveZ)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonZ)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveZ)
@@ -7345,6 +7483,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurveM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveM)
@@ -7359,6 +7498,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonZM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionZM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurveZM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveZM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveZM)
@@ -7452,6 +7592,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollection)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurve)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurve)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygon)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurve)
@@ -7467,6 +7608,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurveZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveZ)
@@ -7481,6 +7623,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurveM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveM)
@@ -7495,6 +7638,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveZM)
@@ -7518,6 +7662,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollection)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurve)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurve)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygon)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurve)
@@ -7533,6 +7678,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurveZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveZ)
@@ -7547,6 +7693,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurveM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveM)
@@ -7561,6 +7708,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveZM)
@@ -7691,6 +7839,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.addZ(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularStringZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZM,
         )
         self.assertEqual(
             QgsWkbTypes.addZ(QgsWkbTypes.Type.CompoundCurve),
@@ -8151,6 +8315,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CircularStringZM,
         )
         self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.addM(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurveM,
         )
@@ -8384,6 +8564,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CircularStringM,
         )
         self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
             QgsWkbTypes.dropZ(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurve,
         )
@@ -8614,6 +8810,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.dropM(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularStringZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZ,
         )
         self.assertEqual(
             QgsWkbTypes.dropM(QgsWkbTypes.Type.CompoundCurve),
@@ -9270,6 +9482,74 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZM, True, True),
             QgsWkbTypes.Type.CircularStringZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
         )
 
         self.assertEqual(
