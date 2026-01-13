@@ -58,7 +58,6 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
 
   connect( leText, &QLineEdit::textChanged, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
-  connect( leText, &QgsHighlightableLineEdit::cleared, this, [this] { leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition ); } );
 
   mMenu = new QMenu( this );
   connect( mMenu, &QMenu::aboutToShow, this, &QgsProcessingLayerOutputDestinationWidget::menuAboutToShow );
