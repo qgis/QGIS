@@ -32,8 +32,11 @@ class Qgs3DMapToolMeasure : public Qgs3DMapTool
     Q_OBJECT
 
   public:
-    Qgs3DMapToolMeasure( Qgs3DMapCanvasWidget *canvas );
+    Qgs3DMapToolMeasure( Qgs3DMapCanvasWidget *canvas, bool measureArea );
     ~Qgs3DMapToolMeasure() override;
+
+    //! returns true when measuring area or false for distance
+    bool measureArea() const { return mMeasureArea; }
 
     //! When we have added our last point, and not following
     bool done() const { return mDone; }
@@ -80,6 +83,9 @@ class Qgs3DMapToolMeasure : public Qgs3DMapTool
     //! Check if mouse was moved between mousePress and mouseRelease
     bool mMouseHasMoved = false;
     QPoint mMouseClickPos;
+
+    //! Indicates whether we're measuring distances or areas
+    bool mMeasureArea = false;
 };
 
 #endif // QGS3DMAPTOOLMEASURE_H
