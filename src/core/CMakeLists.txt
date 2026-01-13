@@ -422,6 +422,7 @@ set(QGIS_CORE_SRCS
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
   qgsapplication.cpp
+  qgsapplicationthemeregistry.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
   qgsarrowiterator.cpp
@@ -1132,6 +1133,7 @@ set(QGIS_CORE_HDRS
   qgsalignrasterdata.h
   qgsanimatedicon.h
   qgsapplication.h
+  qgsapplicationthemeregistry.h
   qgsarchive.h
   qgsarrowiterator.h
   qgsattributes.h
