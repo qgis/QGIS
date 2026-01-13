@@ -1472,8 +1472,27 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( characterCount == 0 )
     return 0;
 
+  switch ( mLF->curvedLabelMode() )
+  {
+    case Qgis::CurvedLabelMode::Default:
+      return createDefaultCurvedCandidatesAlongLine( lPos, mapShape, allowOverrun, pal );
+    case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+      return createCurvedCandidateWithCharactersAtVertices( lPos, mapShape, pal );
+    case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+      return 0;
+    case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+      return 0;
+  }
+  BUILTIN_UNREACHABLE
+}
+
+std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal )
+{
+  const QgsPrecalculatedTextMetrics *li = qgis::down_cast< QgsTextLabelFeature *>( mLF )->textMetrics();
+  const int characterCount = li->count();
+
   // TODO - we may need an explicit penalty for overhanging labels. Currently, they are penalized just because they
-  // are further from the line center, so non-overhanding placements are picked where possible.
+  // are further from the line center, so non-overhanging placements are picked where possible.
 
   double totalCharacterWidth = 0;
   for ( int i = 0; i < characterCount; ++i )
@@ -1779,6 +1798,100 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     lPos.emplace_back( std::move( backupPlacement ) );
 
   return positions.size();
+}
+
+std::size_t FeaturePart::createCurvedCandidateWithCharactersAtVertices( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal )
+{
+  const QgsPrecalculatedTextMetrics *metrics = qgis::down_cast< QgsTextLabelFeature * >( mLF )->textMetrics();
+
+  const int characterCount = metrics->count();
+  const int vertexCount = mapShape->getNumPoints();
+  if ( characterCount == 0 || vertexCount == 0 )
+    return 0;
+
+  const double distLabel = mLF->distLabel();
+
+  std::unique_ptr< LabelPosition > firstPosition;
+  LabelPosition *previousPosition = nullptr;
+
+  int vertexIndex = 0;
+  int characterIndex = -1;
+  for ( ; vertexIndex < vertexCount; ++vertexIndex )
+  {
+    if ( pal->isCanceled() )
+      return 0;
+
+    bool isWhiteSpace = true;
+    while ( isWhiteSpace )
+    {
+      characterIndex++;
+      if ( characterIndex >= characterCount )
+        break;
+
+      isWhiteSpace = metrics->grapheme( characterIndex ).trimmed().isEmpty() || metrics->grapheme( characterIndex ) == '\t';
+    }
+
+    if ( characterIndex >= characterCount )
+      break;
+
+    double x = mapShape->x[vertexIndex];
+    double y = mapShape->y[vertexIndex];
+
+    // use the angle of the segment starting at the current vertex
+    // if it is the last vertex then reuse the angle of the preceding segment
+    double angle = 0.0;
+    if ( vertexIndex < vertexCount - 1 )
+    {
+      angle = std::atan2( mapShape->y[vertexIndex + 1] - y, mapShape->x[vertexIndex + 1] - x );
+    }
+    else if ( vertexIndex > 0 )
+    {
+      angle = std::atan2( y - mapShape->y[vertexIndex - 1], x - mapShape->x[vertexIndex - 1] );
+    }
+    if ( !qgsDoubleNear( distLabel, 0.0 ) )
+    {
+      x -= std::sin( angle ) * distLabel;
+      y += std::cos( angle ) * distLabel;
+    }
+
+    const double width = metrics->characterWidth( characterIndex );
+    const double height = metrics->characterHeight( characterIndex );
+    auto currentPosition = std::make_unique< LabelPosition >( 0, x, y, width, height, angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
+    currentPosition->setPartId( characterIndex );
+
+    if ( !firstPosition )
+    {
+      firstPosition = std::move( currentPosition );
+      previousPosition = firstPosition.get();
+    }
+    else
+    {
+      LabelPosition *rawCurrent = currentPosition.get();
+      previousPosition->setNextPart( std::move( currentPosition ) );
+      previousPosition = rawCurrent;
+    }
+  }
+
+  if ( !firstPosition )
+    return 0;
+
+  if ( mLF->permissibleZonePrepared() )
+  {
+    bool within = true;
+    LabelPosition *currentPos = firstPosition.get();
+    while ( within && currentPos )
+    {
+      within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
+      currentPos = currentPos->nextPart();
+    }
+    if ( !within )
+    {
+      return 0;
+    }
+  }
+
+  lPos.emplace_back( std::move( firstPosition ) );
+  return 1;
 }
 
 /*
