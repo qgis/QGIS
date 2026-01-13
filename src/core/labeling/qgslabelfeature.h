@@ -586,18 +586,22 @@ class CORE_EXPORT QgsLabelFeature
     void setCurvedLabelMode( Qgis::CurvedLabelMode mode ) { mCurvedLabelMode = mode; }
 
     /**
-     * Returns TRUE if all parts of the feature should be labeled.
-     * \see setLabelAllParts()
-     * \since QGIS 3.10
+     * Returns the multipart labeling behavior.
+     *
+     * \see setMultiPartBehavior()
+     *
+     * \since QGIS 4.0
      */
-    bool labelAllParts() const { return mLabelAllParts; }
+    Qgis::MultiPartLabelingBehavior multiPartBehavior() const { return mMultiPartBehavior; }
 
     /**
-     * Sets whether all parts of the feature should be labeled.
-     * \see labelAllParts()
-     * \since QGIS 3.10
+     * Sets the multipart labeling \a behavior.
+     *
+     * \see multiPartBehavior()
+     *
+     * \since QGIS 4.0
      */
-    void setLabelAllParts( bool labelAllParts ) { mLabelAllParts = labelAllParts; }
+    void setMultiPartBehavior( Qgis::MultiPartLabelingBehavior behavior ) { mMultiPartBehavior = behavior; }
 
     /**
      * Sets an alternate label \a size to be used when a label rotation angle is between 45 to 135
@@ -803,7 +807,7 @@ class CORE_EXPORT QgsLabelFeature
 
     const QgsSymbol *mSymbol = nullptr;
 
-    bool mLabelAllParts = false;
+    Qgis::MultiPartLabelingBehavior mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
 
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelFeatureThinningSettings mThinningSettings;

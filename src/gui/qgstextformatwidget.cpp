@@ -320,6 +320,10 @@ void QgsTextFormatWidget::initWidget()
   mCurvedModeDescriptionLabel->setFont( font );
   updateCurvedLabelDescription();
 
+  mComboMultipartBehavior->addItem( tr( "Label Largest Part Only" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly ) );
+  mComboMultipartBehavior->addItem( tr( "Label Every Part with Entire Label" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel ) );
+  mComboMultipartBehavior->addItem( tr( "Split Label Text Lines over Parts" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts ) );
+
   updateAvailableShadowPositions();
 
   mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
@@ -475,7 +479,7 @@ void QgsTextFormatWidget::initWidget()
   QList<QWidget *> widgets;
   widgets << btnBufferColor
           << btnTextColor
-          << chkLabelPerFeaturePart
+          << mComboMultipartBehavior
           << chkLineAbove
           << chkLineBelow
           << chkLineOn

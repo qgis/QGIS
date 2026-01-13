@@ -601,12 +601,6 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Controls whether upside down labels are displayed and how they are handled.
     Qgis::UpsideDownLabelHandling upsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
-    /**
-     * TRUE if every part of a multi-part feature should be labeled. If FALSE,
-     * only the largest part will be labeled.
-     */
-    bool labelPerPart = false;
-
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex = 0;
 
@@ -931,8 +925,13 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPointXY ptOne;
     QgsGeometry extentGeom;
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
-    int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
-    int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
+#ifndef SIP_RUN
+    mutable int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
+    mutable int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
+#else
+    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+#endif
 
   private:
 
@@ -965,7 +964,7 @@ class CORE_EXPORT QgsPalLayerSettings
                                 QgsTextDocument &document,
                                 QgsTextDocumentMetrics &documentMetrics,
                                 QSizeF &size, QSizeF &rotatedSize,
-                                QRectF &outerBounds );
+                                QRectF &outerBounds ) const;
 
 
     enum DataDefinedValueType
@@ -1037,6 +1036,8 @@ class CORE_EXPORT QgsPalLayerSettings
      * Evaluates label geometry.
      */
     QgsGeometry evaluateLabelGeometry( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelLineSettings &lineSettings ) const;
+
+    std::unique_ptr< QgsTextLabelFeature> generateLabelFeature( QgsRenderContext &context, const QgsFeature &feature, int subPartId, QgsGeometry geom, const QgsGeometry &obstacleGeometry, QgsTextDocument doc, const QString &labelText, const QgsTextFormat &evaluatedFormat, const QgsSymbol *symbol, const QgsLabelLineSettings &lineSettings, const QgsLabelPointSettings &pointSettings, const QgsLabelPlacementSettings &placementSettings, bool isObstacle, bool doClip ) const;
 
     /**
      * Registers a feature as an obstacle only (no label rendered)

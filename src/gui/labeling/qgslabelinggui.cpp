@@ -507,7 +507,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mLineSettings = mSettings.lineSettings();
 
-  chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
+  mComboMultipartBehavior->setCurrentIndex( mComboMultipartBehavior->findData( QVariant::fromValue( mSettings.placementSettings().multiPartBehavior() ) ) );
 
   mComboOverlapHandling->setCurrentIndex( mComboOverlapHandling->findData( static_cast<int>( mSettings.placementSettings().overlapHandling() ) ) );
   mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
@@ -701,7 +701,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   mThinningSettings.setAllowDuplicateRemoval( mChkNoDuplicates->isChecked() );
 
-  lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
+  lyr.placementSettings().setMultiPartBehavior( mComboMultipartBehavior->currentData().value< Qgis::MultiPartLabelingBehavior >() );
   lyr.placementSettings().setOverlapHandling( static_cast<Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
   lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
   lyr.placementSettings().setPrioritization( mPrioritizationComboBox->currentData().value<Qgis::LabelPrioritization>() );

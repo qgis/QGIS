@@ -78,6 +78,24 @@ Sets the technique used to prioritize labels.
 .. versionadded:: 3.38
 %End
 
+    Qgis::MultiPartLabelingBehavior multiPartBehavior() const;
+%Docstring
+Returns the multipart labeling behavior.
+
+.. seealso:: :py:func:`setMultiPartBehavior`
+
+.. versionadded:: 4.0
+%End
+
+    void setMultiPartBehavior( Qgis::MultiPartLabelingBehavior behavior );
+%Docstring
+Sets the multipart labeling ``behavior``.
+
+.. seealso:: :py:func:`multiPartBehavior`
+
+.. versionadded:: 4.0
+%End
+
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
 Updates the placement settings to respect any data defined properties

@@ -1247,6 +1247,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelPredefinedPointPosition )
 
     /**
+     * Behavior modifier for labeling features with multi-part geometries.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MultiPartLabelingBehavior : int
+    {
+      LabelLargestPartOnly, //!< Place a label only on the largest part from the geometry
+      LabelEveryPartWithEntireLabel, //!< Place the (same) entire label over every part from the geometry
+      SplitLabelTextLinesOverParts, //!< Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+    };
+    Q_ENUM( MultiPartLabelingBehavior )
+
+    /**
      * Behavior modifier for label offset and distance, only applies in some
      * label placement modes.
      *
