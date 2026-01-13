@@ -567,6 +567,22 @@ class CORE_EXPORT QgsLabelFeature
     void setLineAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint point ) { mAnchorTextPoint = point; }
 
     /**
+     * Returns the mode which determine how curved labels are generated and placed.
+     *
+     * \see setCurvedLabelMode()
+     * \since QGIS 4.0
+     */
+    Qgis::CurvedLabelMode curvedLabelMode() const { return mCurvedLabelMode; }
+
+    /**
+     * Sets the \a mode which determine how curved labels are generated and placed.
+     *
+     * \see curvedLabelMode()
+     * \since QGIS 4.0
+     */
+    void setCurvedLabelMode( Qgis::CurvedLabelMode mode ) { mCurvedLabelMode = mode; }
+
+    /**
      * Returns TRUE if all parts of the feature should be labeled.
      * \see setLabelAllParts()
      * \since QGIS 3.10
@@ -792,6 +808,7 @@ class CORE_EXPORT QgsLabelFeature
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
     QgsLabelLineSettings::AnchorTextPoint mAnchorTextPoint = QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
+    Qgis::CurvedLabelMode mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
 
     Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
     bool mAllowDegradedPlacement = false;
