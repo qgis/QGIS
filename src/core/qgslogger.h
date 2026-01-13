@@ -154,8 +154,12 @@ class CORE_EXPORT QgsLogger
     static void logMessageToFile( const QString &message );
 
     /**
-     * Reads the environment variable QGIS_LOG_FILE. Returns an empty string if the variable is not set,
-     * otherwise returns a file name for writing log messages to.
+    * Reads the environment variable QGIS_LOG_FILE. Returns an empty string if the variable is not set,
+    * otherwise returns a file name for writing log messages to.
+    *
+    * \note Calling logFile() also initializes file logging and reads related environment variables
+    * (such as QGIS_DEBUG and QGIS_DEBUG_FILE). As a result, logFile() should be called before
+    * logMessageToFile() to ensure that messages are written to the log file.
     */
     static QString logFile();
 
