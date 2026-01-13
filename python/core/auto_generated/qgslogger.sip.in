@@ -89,9 +89,17 @@ any.
 
     static QString logFile();
 %Docstring
-Reads the environment variable QGIS_LOG_FILE. Returns an empty string if
-the variable is not set, otherwise returns a file name for writing log
-messages to.
+Reads the environment variable QGIS_LOG_FILE.
+
+Returns an empty string if the variable is not set, otherwise returns a
+file name for writing log messages to.
+
+.. note::
+
+   Calling :py:func:`~QgsLogger.logFile` also initializes file logging and reads related
+   environment variables such as QGIS_DEBUG and QGIS_DEBUG_FILE. As a result,
+   :py:func:`~QgsLogger.logFile` should be called before :py:func:`~QgsLogger.logMessageToFile` to ensure that messages
+   are written to the log file.
 %End
 
 };
