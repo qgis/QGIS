@@ -248,7 +248,10 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * Any Z or M values present in the input points will also be interpolated.
      *
-     * The cubic Bézier formula is: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+     * The cubic Bézier formula is:
+     * \code{.unparsed}
+     * B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+     * \endcode
      *
      * \since QGIS 4.0
      */
