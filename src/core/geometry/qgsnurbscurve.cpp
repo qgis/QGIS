@@ -655,6 +655,9 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
   if ( !wkb )
     return false;
 
+  // Store header endianness
+  const unsigned char headerEndianness = *static_cast<const unsigned char *>( wkb );
+
   Qgis::WkbType type = wkb.readHeader();
   if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::NurbsCurve )
     return false;
@@ -701,9 +704,9 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
     char pointEndianness;
     wkb >> pointEndianness;
 
-    // Validate endianness matches the WKB header (must be same)
-    // The endianness should be 0 (big-endian) or 1 (little-endian)
-    if ( pointEndianness != 0 && pointEndianness != 1 )
+    // Validate endianness: must be 0 (big-endian) or 1 (little-endian)
+    // and must match the WKB header endianness
+    if ( static_cast<unsigned char>( pointEndianness ) != headerEndianness )
       return false;
 
     // Read coordinates
@@ -1232,15 +1235,9 @@ bool QgsNurbsCurve::removeDuplicateNodes( double epsilon, bool useZValues )
 
   for ( int i = 1; i < mControlPoints.size(); ++i )
   {
-    double dist;
-    if ( useZValues && mControlPoints[i].is3D() && mControlPoints[i - 1].is3D() )
-    {
-      dist = mControlPoints[i].distance3D( mControlPoints[i - 1] );
-    }
-    else
-    {
-      dist = mControlPoints[i].distance( mControlPoints[i - 1] );
-    }
+    const double dist = ( useZValues && mControlPoints[i].is3D() && mControlPoints[i - 1].is3D() )
+                        ? mControlPoints[i].distance3D( mControlPoints[i - 1] )
+                        : mControlPoints[i].distance( mControlPoints[i - 1] );
 
     if ( dist >= epsilon )
     {
@@ -1696,11 +1693,11 @@ int QgsNurbsCurve::compareToSameClass( const QgsAbstractGeometry *other ) const
   {
     if ( mControlPoints[i].x() < otherCurve->mControlPoints[i].x() )
       return -1;
-    else if ( mControlPoints[i].x() > otherCurve->mControlPoints[i].x() )
+    if ( mControlPoints[i].x() > otherCurve->mControlPoints[i].x() )
       return 1;
-    else if ( mControlPoints[i].y() < otherCurve->mControlPoints[i].y() )
+    if ( mControlPoints[i].y() < otherCurve->mControlPoints[i].y() )
       return -1;
-    else if ( mControlPoints[i].y() > otherCurve->mControlPoints[i].y() )
+    if ( mControlPoints[i].y() > otherCurve->mControlPoints[i].y() )
       return 1;
   }
 
