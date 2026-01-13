@@ -1025,12 +1025,22 @@ QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float 
   return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
 }
 
-QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings )
+QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings, float zKnown )
 {
   const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera() );
+  const float rayDirectionZ = ray.direction().z();
+  float pointDistance;
 
-  // pick an arbitrary point mid-way between near and far plane
-  const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
+  // use the provided z
+  if ( !std::isnan( zKnown ) && !qgsFloatNear( rayDirectionZ, 0.0f ) )
+  {
+    pointDistance = ( static_cast<float>( zKnown ) - ray.origin().z() ) / rayDirectionZ;
+  }
+  else // pick an arbitrary point mid-way between near and far plane
+  {
+    pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
+  }
+
   const QVector3D worldPoint = ray.point( pointDistance );
   const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, mapSettings->origin() );
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
