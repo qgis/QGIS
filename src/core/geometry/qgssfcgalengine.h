@@ -37,9 +37,15 @@ class QgsGeometry;
 class QgsSfcgalGeometry;
 
 /// compute SFCGAL integer version from major, minor and patch number
+/// This is not available before SFCGAL version 2.3.
+#ifndef SFCGAL_MAKE_VERSION
 #define SFCGAL_MAKE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
+#endif
 /// compute current SFCGAL integer version
+/// This is not available before SFCGAL version 2.3.
+#ifndef SFCGAL_VERSION_NUM
 #define SFCGAL_VERSION_NUM SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
+#endif
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
 #define CHECK_NOT_NULL( ptr, defaultObj )                                              \
