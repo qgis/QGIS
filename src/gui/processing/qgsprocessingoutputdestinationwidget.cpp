@@ -57,7 +57,7 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   leText->setClearButtonEnabled( false );
   leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
 
-  connect( leText, &QLineEdit::textEdited, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
+  connect( leText, &QLineEdit::textChanged, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
   connect( leText, &QgsHighlightableLineEdit::cleared, this, [this] { leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition ); } );
 
   mMenu = new QMenu( this );
