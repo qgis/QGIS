@@ -1977,7 +1977,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   registerFeatureWithDetails( f, context, QgsGeometry(), nullptr );
 }
 
-std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
@@ -1987,15 +1987,19 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::IsObstacle ) )
     isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
 
+  std::vector<std::unique_ptr<QgsLabelFeature> > res;
   if ( !drawLabels )
   {
     if ( isObstacle )
     {
-      return registerObstacleFeature( f, context, obstacleGeometry );
+      std::unique_ptr< QgsLabelFeature > obstacle = registerObstacleFeature( f, context, obstacleGeometry );
+      if ( obstacle )
+        res.emplace_back( std::move( obstacle ) );
+      return res;
     }
     else
     {
-      return nullptr;
+      return res;
     }
   }
 
@@ -2027,7 +2031,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     context.expressionContext().setOriginalValueVariable( true );
     if ( !mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::Show, context.expressionContext(), true ) )
     {
-      return nullptr;
+      return {};
     }
   }
 
@@ -2055,7 +2059,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     // maxScale is inclusive ( < --> no label )
     if ( !qgsDoubleNear( maxScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( context.rendererScale(), maxScale ) )
     {
-      return nullptr;
+      return {};
     }
 
     // data defined min scale?
@@ -2075,7 +2079,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     // minScale is exclusive ( >= --> no label )
     if ( !qgsDoubleNear( minScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( context.rendererScale(), minScale ) )
     {
-      return nullptr;
+      return {};
     }
   }
 
@@ -2108,14 +2112,14 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
   if ( fontSize <= 0.0 )
   {
-    return nullptr;
+    return {};
   }
 
   int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, evaluatedFormat.sizeMapUnitScale() );
   // don't try to show font sizes less than 1 pixel (Qt complains)
   if ( fontPixelSize < 1 )
   {
-    return nullptr;
+    return {};
   }
   labelFont.setPixelSize( fontPixelSize );
 
@@ -2131,7 +2135,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
       if ( fontMinPixel > labelFont.pixelSize() || labelFont.pixelSize() > fontMaxPixel )
       {
-        return nullptr;
+        return {};
       }
     }
   }
@@ -2197,14 +2201,14 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     if ( exp->hasParserError() )
     {
       QgsDebugMsgLevel( u"Expression parser error:%1"_s.arg( exp->parserErrorString() ), 4 );
-      return nullptr;
+      return {};
     }
 
     QVariant result = exp->evaluate( &context.expressionContext() ); // expression prepared in QgsPalLabeling::prepareLayer()
     if ( exp->hasEvalError() )
     {
       QgsDebugMsgLevel( u"Expression parser eval error:%1"_s.arg( exp->evalErrorString() ), 4 );
-      return nullptr;
+      return {};
     }
     labelText = QgsVariantUtils::isNull( result ) ? QString() : result.toString();
   }
@@ -2420,7 +2424,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   QgsGeometry geom = feature.geometry();
   if ( geom.isNull() )
   {
-    return nullptr;
+    return {};
   }
 
   // simplify?
@@ -2584,7 +2588,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() );
 
     if ( geom.isEmpty() )
-      return nullptr;
+      return {};
   }
   geos_geom_clone = QgsGeos::asGeos( geom, 0, Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 
@@ -2610,12 +2614,12 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     else
     {
       if ( !checkMinimumSizeMM( context, geom, featureThinningSettings.minimumFeatureSize() ) )
-        return nullptr;
+        return {};
     }
   }
 
   if ( !geos_geom_clone )
-    return nullptr; // invalid geometry
+    return {}; // invalid geometry
 
   // likelihood exists label will be registered with PAL and may be drawn
   // check if max number of features to label (already registered with PAL) has been reached
@@ -2624,11 +2628,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   {
     if ( !featureThinningSettings.maximumNumberLabels() )
     {
-      return nullptr;
+      return {};
     }
     if ( mFeatsRegPal >= featureThinningSettings.maximumNumberLabels() )
     {
-      return nullptr;
+      return {};
     }
 
     int divNum = static_cast< int >( ( static_cast< double >( mFeaturesToLabel ) / featureThinningSettings.maximumNumberLabels() ) + 0.5 ); // NOLINT
@@ -2637,7 +2641,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       mFeatsSendingToPal += 1;
       if ( divNum &&  mFeatsSendingToPal % divNum )
       {
-        return nullptr;
+        return {};
       }
     }
   }
@@ -3247,7 +3251,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // add parameters for data defined labeling to label feature
   labelFeature->setDataDefinedValues( dataDefinedValues );
 
-  return labelFeature;
+  res.emplace_back( std::move( labelFeature ) );
+  return res;
 }
 
 std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
