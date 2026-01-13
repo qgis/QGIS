@@ -2245,6 +2245,23 @@ Qgis.LabelPlacement.__doc__ = """Placement modes which determine how label candi
 """
 # --
 Qgis.LabelPlacement.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CurvedLabelMode.Default.__doc__ = "Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing."
+Qgis.CurvedLabelMode.PlaceCharactersAtVertices.__doc__ = "Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored."
+Qgis.CurvedLabelMode.StretchCharacterSpacingToFitLine.__doc__ = "Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry."
+Qgis.CurvedLabelMode.StretchWordSpacingToFitLine.__doc__ = "Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry."
+Qgis.CurvedLabelMode.__doc__ = """Modes which determine how curved labels are generated and placed.
+
+.. versionadded:: 4.0
+
+* ``Default``: Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing.
+* ``PlaceCharactersAtVertices``: Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored.
+* ``StretchCharacterSpacingToFitLine``: Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+* ``StretchWordSpacingToFitLine``: Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+
+"""
+# --
+Qgis.CurvedLabelMode.baseClass = Qgis
 QgsPalLayerSettings.PredefinedPointPosition = Qgis.LabelPredefinedPointPosition
 # monkey patching scoped based enum
 QgsPalLayerSettings.TopLeft = Qgis.LabelPredefinedPointPosition.TopLeft

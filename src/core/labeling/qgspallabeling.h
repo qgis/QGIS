@@ -218,6 +218,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation \since QGIS 3.20
       LineAnchorType = 115, //!< Line anchor type \since QGIS 3.26
       LineAnchorTextPoint = 116, //!< Line anchor text point \since QGIS 3.26
+      CurvedLabelMode = 124, //!< Mode which determine how curved labels are generated and placed \since QGIS 4.0
 
       // rendering
       ScaleVisibility = 23,

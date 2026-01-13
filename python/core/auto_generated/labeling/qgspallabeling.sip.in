@@ -147,6 +147,7 @@ Contains settings for how a map layer will be labeled.
       LineAnchorClipping,
       LineAnchorType,
       LineAnchorTextPoint,
+      CurvedLabelMode,
 
       // rendering
       ScaleVisibility,
