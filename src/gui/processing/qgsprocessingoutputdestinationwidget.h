@@ -131,6 +131,16 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     bool couldBeTemporaryLayerName( const QString &value ) const;
     QString memoryProviderLayerName( const QString &value ) const;
 
+    /*
+    * Checks if two string descriptions of temporary outputs should be considered equal.
+    */
+    bool consideredEqualTemporaryOutputValues( const QString &val1, const QString &val2 ) const;
+
+    /*
+    * Converts a QVariant value to a string for comparison purposes, handling standard types nad QgsProcessingOutputLayerDefinition.
+    */
+    QString variantToString( const QVariant &value ) const;
+
     QString mimeDataToPath( const QMimeData *data );
 
     const QgsProcessingDestinationParameter *mParameter = nullptr;

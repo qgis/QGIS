@@ -848,4 +848,24 @@ bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const
   return true;
 }
 
+bool QgsProcessingLayerOutputDestinationWidget::consideredEqualTemporaryOutputValues( const QString &val1, const QString &val2 ) const
+{
+  if ( ( val1 == "memory:"_L1 && val2 == QgsProcessing::TEMPORARY_OUTPUT ) || ( val1 == QgsProcessing::TEMPORARY_OUTPUT && val2 == "memory:"_L1 ) || val1 == val2 )
+    return true;
+
+  return false;
+}
+
+QString QgsProcessingLayerOutputDestinationWidget::variantToString( const QVariant &value ) const
+{
+  if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
+  {
+    return value.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString();
+  }
+  else
+  {
+    return value.toString();
+  }
+}
+
 ///@endcond
