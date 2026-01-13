@@ -17,6 +17,8 @@
 
 #include "moc_qgsexpressionhighlighter.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   : QSyntaxHighlighter( parent )
 {
