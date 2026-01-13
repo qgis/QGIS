@@ -2309,13 +2309,13 @@ void QgsLineString::sumUpArea3D( double &sum ) const
   double prevZ = *z++;
 
   double normalX = 0.0;
-  double normalY = 0.0;
+  double normalY = 0.0;  // #spellok - Y component of normal vector
   double normalZ = 0.0;
 
   for ( unsigned int i = 1; i < mX.size(); ++i )
   {
     normalX += prevY * ( *z - prevZ ) - prevZ * ( *y - prevY );
-    normalY += prevZ * ( *x - prevX ) - prevX * ( *z - prevZ );
+    normalY += prevZ * ( *x - prevX ) - prevX * ( *z - prevZ );  // #spellok
     normalZ += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
 
     prevX = *x++;
@@ -2323,7 +2323,7 @@ void QgsLineString::sumUpArea3D( double &sum ) const
     prevZ = *z++;
   }
 
-  mSummedUpArea3D = 0.5 * ( normalX * planeNormal.x() + normalY * planeNormal.y() + normalZ * planeNormal.z() );
+  mSummedUpArea3D = 0.5 * ( normalX * planeNormal.x() + normalY * planeNormal.y() + normalZ * planeNormal.z() );  // #spellok
 
   mHasCachedSummedUpArea3D = true;
   sum += mSummedUpArea3D;
