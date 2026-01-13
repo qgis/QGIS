@@ -310,6 +310,16 @@ void QgsTextFormatWidget::initWidget()
   mPrioritizationComboBox->addItem( tr( "Prefer Closer Labels" ), QVariant::fromValue( Qgis::LabelPrioritization::PreferCloser ) );
   mPrioritizationComboBox->addItem( tr( "Prefer Position Ordering" ), QVariant::fromValue( Qgis::LabelPrioritization::PreferPositionOrdering ) );
 
+  mComboCurvedLabelMode->addItem( tr( "Default" ), QVariant::fromValue( Qgis::CurvedLabelMode::Default ) );
+  mComboCurvedLabelMode->addItem( tr( "Stretch Word Spacing" ), QVariant::fromValue( Qgis::CurvedLabelMode::StretchWordSpacingToFitLine ) );
+  mComboCurvedLabelMode->addItem( tr( "Stretch Character Spacing" ), QVariant::fromValue( Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine ) );
+  mComboCurvedLabelMode->addItem( tr( "Characters at Vertices" ), QVariant::fromValue( Qgis::CurvedLabelMode::PlaceCharactersAtVertices ) );
+  connect( mComboCurvedLabelMode, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::updateCurvedLabelDescription );
+  QFont font = mCurvedModeDescriptionLabel->font();
+  font.setItalic( true );
+  mCurvedModeDescriptionLabel->setFont( font );
+  updateCurvedLabelDescription();
+
   updateAvailableShadowPositions();
 
   mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
@@ -596,6 +606,7 @@ void QgsTextFormatWidget::initWidget()
           << mCheckAllowLabelsOutsidePolygons
           << mHtmlFormattingCheckBox
           << mPrioritizationComboBox
+          << mComboCurvedLabelMode
           << mTabDistanceUnitWidget
           << mTabStopDistanceSpin
           << mChkNoDuplicates;
@@ -940,6 +951,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::Property::PolygonLabelOutside );
   registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::Property::AllowDegradedPlacement );
   registerDataDefinedButton( mOverlapHandlingDBtn, QgsPalLayerSettings::Property::OverlapHandling );
+  registerDataDefinedButton( mCurvedLabelModeDDBtn, QgsPalLayerSettings::Property::CurvedLabelMode );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
@@ -1514,6 +1526,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showPrioritizationFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
+  bool showCurvedLabelModeFrame = false;
 
   const Qgis::LabelPlacement currentPlacement = static_cast<Qgis::LabelPlacement>( mPlacementModeComboBox->currentData().toInt() );
   const bool showPolygonPlacementOptions = ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
@@ -1553,6 +1566,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   {
     showLineFrame = true;
     showDistanceFrame = true;
+    showCurvedLabelModeFrame = currentPlacement == Qgis::LabelPlacement::Curved || currentPlacement == Qgis::LabelPlacement::PerimeterCurved;
     //showRotationFrame = true; // TODO: uncomment when supported
 
     const bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
@@ -1587,6 +1601,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );
   mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
+  mCurvedLabelModeFrame->setVisible( showCurvedLabelModeFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );
 
@@ -2088,6 +2103,28 @@ void QgsTextFormatWidget::overlapModeChanged()
   }
 
   mOverlapModeDescriptionLabel->setText( u"<i>%1</i>"_s.arg( description ) );
+}
+
+void QgsTextFormatWidget::updateCurvedLabelDescription()
+{
+  switch ( mComboCurvedLabelMode->currentData().value< Qgis::CurvedLabelMode >() )
+  {
+    case Qgis::CurvedLabelMode::Default:
+      mCurvedModeDescriptionLabel->hide();
+      break;
+    case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+      mCurvedModeDescriptionLabel->setText( tr( "Places individual characters from the label at each corresponding vertex in the line." ) );
+      mCurvedModeDescriptionLabel->show();
+      break;
+    case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+      mCurvedModeDescriptionLabel->setText( tr( "Stretches (or shrinks) character spacing so that the curved label fits the whole line." ) );
+      mCurvedModeDescriptionLabel->show();
+      break;
+    case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+      mCurvedModeDescriptionLabel->setText( tr( "Stretches (or shrinks) word spacing so that the curved label fits the whole line." ) );
+      mCurvedModeDescriptionLabel->show();
+      break;
+  }
 }
 
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
