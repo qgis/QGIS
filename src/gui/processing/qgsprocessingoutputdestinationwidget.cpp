@@ -99,9 +99,14 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
   if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && couldBeTemporaryLayerName( value.toString() ) ) )
   {
     if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
+    {
       skipOutput();
+      emit destinationChanged();
+    }
     else
+    {
       saveToTemporary( value.toString() );
+    }
   }
   else
   {
@@ -345,13 +350,13 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
 
 void QgsProcessingLayerOutputDestinationWidget::skipOutput()
 {
+  QgsSignalBlocker< QgsHighlightableLineEdit > blocker( leText );
   leText->setPlaceholderText( tr( "[Skip output]" ) );
   leText->clear();
   mUseTemporary = false;
   mUseRemapping = false;
 
   emit skipOutputChanged( true );
-  emit destinationChanged();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString name )
