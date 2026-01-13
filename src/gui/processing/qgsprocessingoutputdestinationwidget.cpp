@@ -127,13 +127,9 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
       }
       else
       {
-        const QVariant prev = QgsProcessingLayerOutputDestinationWidget::value();
         leText->setText( def.sink.staticValue().toString() );
-        mUseTemporary = false;
         if ( prevSkip )
           emit skipOutputChanged( false );
-        if ( prev != QgsProcessingLayerOutputDestinationWidget::value() )
-          emit destinationChanged();
       }
       mUseRemapping = def.useRemapping();
       mRemapDefinition = def.remappingDefinition();
@@ -141,24 +137,13 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     }
     else
     {
-      const QVariant prev = QgsProcessingLayerOutputDestinationWidget::value();
       leText->setText( value.toString() );
-      mUseTemporary = false;
       if ( prevSkip )
         emit skipOutputChanged( false );
-
-      if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
-      {
-        if ( prev.toString() != QgsProcessingLayerOutputDestinationWidget::value().toString() )
-          emit destinationChanged();
-      }
-      else
-      {
-        if ( prev.userType() != qMetaTypeId<QgsProcessingOutputLayerDefinition>() || !( prev.value<QgsProcessingOutputLayerDefinition>() == QgsProcessingLayerOutputDestinationWidget::value().value<QgsProcessingOutputLayerDefinition>() ) )
-          emit destinationChanged();
-      }
     }
   }
+
+  mPreviousValueString = variantToString( value );
 }
 
 QVariant QgsProcessingLayerOutputDestinationWidget::value() const
