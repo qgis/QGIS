@@ -379,13 +379,11 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString n
     return;
 
   leText->setText( name );
-  textChanged( name );
 
   mUseTemporary = true;
   mUseRemapping = false;
   if ( prevSkip )
     emit skipOutputChanged( false );
-  emit destinationChanged();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::selectDirectory()
@@ -403,7 +401,6 @@ void QgsProcessingLayerOutputDestinationWidget::selectDirectory()
     mUseTemporary = false;
     mUseRemapping = false;
     emit skipOutputChanged( false );
-    emit destinationChanged();
   }
 }
 
@@ -481,7 +478,6 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
-    textChanged( filename );
 
     settings.setValue( u"/Processing/LastOutputPath"_s, QFileInfo( filename ).path() );
     if ( !lastFormatPath.isEmpty() && !mFormat.isEmpty() )
@@ -490,7 +486,6 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
       settings.setValue( lastExtPath, QFileInfo( filename ).suffix().toLower() );
 
     emit skipOutputChanged( false );
-    emit destinationChanged();
   }
   // return dialog focus on Mac
   activateWindow();
@@ -535,12 +530,9 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   }
   uri.setGeometryColumn( geomColumn );
 
-  const QString providerUri = u"ogr:%1"_s.arg( uri.uri() );
-  leText->setText( providerUri );
-  textChanged( providerUri );
+  leText->setText( u"ogr:%1"_s.arg( uri.uri() ) );
 
   emit skipOutputChanged( false );
-  emit destinationChanged();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
@@ -570,23 +562,16 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
         uri.setTable( widget->table() );
         uri.setDatabase( widget->schema() );
         uri.setGeometryColumn( geomColumn );
-
-        const QString providerUri = u"ogr:%1"_s.arg( uri.uri() );
-        leText->setText( providerUri );
-        textChanged( providerUri );
+        leText->setText( u"ogr:%1"_s.arg( uri.uri() ) );
       }
       else
       {
         QgsDataSourceUri uri( widget->uri() );
         uri.setGeometryColumn( geomColumn );
-
-        const QString providerUri = QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() );
-        leText->setText( providerUri );
-        textChanged( providerUri );
+        leText->setText( QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() ) );
       }
 
       emit skipOutputChanged( false );
-      emit destinationChanged();
     };
 
     connect( widget, &QgsNewDatabaseTableNameWidget::tableNameChanged, this, [changed] { changed(); } );
@@ -692,7 +677,13 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
     leText->removeAction( mActionTemporaryOutputIcon );
   }
 
-  emit destinationChanged();
+  // emit destinationChanged only if the value actually changed
+  if ( mPreviousValueString != text )
+  {
+    emit destinationChanged();
+  }
+
+  mPreviousValueString = text;
 }
 
 

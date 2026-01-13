@@ -152,6 +152,9 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
     QAction *mActionTemporaryOutputIcon = nullptr;
 
+    // value used in leText in previous state, for comparison
+    QString mPreviousValueString = QgsProcessing::TEMPORARY_OUTPUT;
+
     friend class TestProcessingGui;
 };
 
