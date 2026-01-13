@@ -156,6 +156,11 @@ class TestQgsLabelingEngine : public QgsTest
     void testCurvedLabelCharactersAtVerticesShowPartial();
     void testCurvedLabelCharactersAtVerticesNoSimplification();
 
+    void testCurvedStretchCharacterSpacingPositive();
+    void testCurvedStretchCharacterSpacingNegative();
+    void testCurvedStretchWordSpacingPositive();
+    void testCurvedStretchWordSpacingNegative();
+
   private:
     QgsVectorLayer *vl = nullptr;
 
@@ -7256,6 +7261,218 @@ void TestQgsLabelingEngine::testCurvedLabelCharactersAtVerticesNoSimplification(
 
   QImage img = job.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_chars_at_vertices_no_simplify", "curved_chars_at_vertices_no_simplify", img, QString(), 20, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsLabelingEngine::testCurvedStretchCharacterSpacingPositive()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = u"'my test string'"_s;
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.lineSettings().setCurvedLabelMode( Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine );
+  settings.labelPerPart = false;
+  settings.maxCurvedCharAngleIn = 60;
+  settings.maxCurvedCharAngleOut = 60;
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190035.62814070351305418 5000016.93781406991183758, 190060.29522613066365011 5000004.67022613063454628, 190071.24371859297389165 4999986.59861809015274048, 190117.14824120604316704 4999979.21168341673910618, 190165.69095477386144921 4999985.14761306531727314, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 20 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_expand_character_spacing", "curved_expand_character_spacing", img, QString(), 20, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsLabelingEngine::testCurvedStretchCharacterSpacingNegative()
+{
+  // test line label anchor with curved labels
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = u"'this is a very very long string to fit in here so squash it'"_s;
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.lineSettings().setCurvedLabelMode( Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine );
+  settings.labelPerPart = false;
+  settings.maxCurvedCharAngleIn = 60;
+  settings.maxCurvedCharAngleOut = 60;
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190035.62814070351305418 5000016.93781406991183758, 190060.29522613066365011 5000004.67022613063454628, 190071.24371859297389165 4999986.59861809015274048, 190117.14824120604316704 4999979.21168341673910618, 190165.69095477386144921 4999985.14761306531727314, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 20 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_contract_character_spacing", "curved_contract_character_spacing", img, QString(), 20, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsLabelingEngine::testCurvedStretchWordSpacingPositive()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = u"'my test string'"_s;
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.lineSettings().setCurvedLabelMode( Qgis::CurvedLabelMode::StretchWordSpacingToFitLine );
+  settings.labelPerPart = false;
+  settings.maxCurvedCharAngleIn = 60;
+  settings.maxCurvedCharAngleOut = 60;
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190035.62814070351305418 5000016.93781406991183758, 190060.29522613066365011 5000004.67022613063454628, 190071.24371859297389165 4999986.59861809015274048, 190117.14824120604316704 4999979.21168341673910618, 190165.69095477386144921 4999985.14761306531727314, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 20 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_expand_word_spacing", "curved_expand_word_spacing", img, QString(), 20, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsLabelingEngine::testCurvedStretchWordSpacingNegative()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  QFont font = format.font();
+  font.setWordSpacing( 30 );
+  format.setFont( font );
+  settings.setFormat( format );
+
+  settings.fieldName = u"'my test string to contract space'"_s;
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.lineSettings().setCurvedLabelMode( Qgis::CurvedLabelMode::StretchWordSpacingToFitLine );
+  settings.labelPerPart = false;
+  settings.maxCurvedCharAngleIn = 60;
+  settings.maxCurvedCharAngleOut = 60;
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190035.62814070351305418 5000016.93781406991183758, 190060.29522613066365011 5000004.67022613063454628, 190071.24371859297389165 4999986.59861809015274048, 190117.14824120604316704 4999979.21168341673910618, 190165.69095477386144921 4999985.14761306531727314, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 20 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_contract_word_spacing", "curved_contract_word_spacing", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )
