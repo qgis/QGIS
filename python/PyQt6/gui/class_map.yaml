@@ -7193,7 +7193,7 @@ QgsSpinBox.valueFromText: src/gui/editorwidgets/qgsspinbox.h#L140
 QgsSpinBox.wheelEvent: src/gui/editorwidgets/qgsspinbox.h#L199
 QgsSpinBox: src/gui/editorwidgets/qgsspinbox.h#L44
 QgsStatusBar.addPermanentWidget: src/gui/qgsstatusbar.h#L72
-QgsStatusBar.changeEvent: src/gui/qgsstatusbar.h#L114
+QgsStatusBar.changeEvent: src/gui/qgsstatusbar.h#L113
 QgsStatusBar.clearMessage: src/gui/qgsstatusbar.h#L101
 QgsStatusBar.currentMessage: src/gui/qgsstatusbar.h#L84
 QgsStatusBar.removeWidget: src/gui/qgsstatusbar.h#L78
