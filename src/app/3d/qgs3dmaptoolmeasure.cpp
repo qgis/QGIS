@@ -33,8 +33,9 @@
 
 #include "moc_qgs3dmaptoolmeasure.cpp"
 
-Qgs3DMapToolMeasure::Qgs3DMapToolMeasure( Qgs3DMapCanvas *canvas )
+Qgs3DMapToolMeasure::Qgs3DMapToolMeasure( Qgs3DMapCanvas *canvas, bool measureArea )
   : Qgs3DMapTool( canvas )
+  , mMeasureArea( measureArea )
 {
   // Dialog
   mDialog = std::make_unique<Qgs3DMeasureDialog>( this );
@@ -46,7 +47,8 @@ Qgs3DMapToolMeasure::~Qgs3DMapToolMeasure() = default;
 
 void Qgs3DMapToolMeasure::activate()
 {
-  mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() );
+  const Qgis::GeometryType rubberbandType = mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
+  mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), rubberbandType );
 
   restart();
   updateSettings();
