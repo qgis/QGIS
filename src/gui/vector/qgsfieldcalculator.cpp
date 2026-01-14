@@ -48,7 +48,7 @@ constexpr int FTC_MINPREC_IDX = 4;
 constexpr int FTC_MAXPREC_IDX = 5;
 constexpr int FTC_SUBTYPE_IDX = 6;
 
-QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
+QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent, const int fieldIndex )
   : QDialog( parent )
   , mVectorLayer( vl )
   , mAttributeId( -1 )
@@ -79,7 +79,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, 1, true ) );
   expContext.setHighlightedVariables( QStringList() << u"row_number"_s );
 
-  populateFields();
+  populateFields( fieldIndex );
   populateOutputFieldTypes();
 
   connect( builder, &QgsExpressionBuilderWidget::expressionParsed, this, &QgsFieldCalculator::setDialogButtonState );
@@ -135,6 +135,12 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
     mNewFieldGroupBox->setToolTip( tr( "Not available for layer" ) );
     mUpdateExistingGroupBox->setChecked( true );
     mUpdateExistingGroupBox->setCheckable( false );
+  }
+
+  if ( fieldIndex != -1 )
+  {
+    mNewFieldGroupBox->setEnabled( false );
+    mUpdateExistingGroupBox->setEnabled( true );
   }
 
   if ( mUpdateExistingGroupBox->isEnabled() )
@@ -522,7 +528,7 @@ void QgsFieldCalculator::mExistingFieldComboBox_currentIndexChanged( const int i
   setDialogButtonState();
 }
 
-void QgsFieldCalculator::populateFields()
+void QgsFieldCalculator::populateFields( int fieldIndex )
 {
   if ( !mVectorLayer )
     return;
@@ -574,7 +580,7 @@ void QgsFieldCalculator::populateFields()
     font.setItalic( true );
     mExistingFieldComboBox->setItemData( mExistingFieldComboBox->count() - 1, font, Qt::FontRole );
   }
-  mExistingFieldComboBox->setCurrentIndex( -1 );
+  mExistingFieldComboBox->setCurrentIndex( fieldIndex );
 }
 
 void QgsFieldCalculator::setDialogButtonState()
