@@ -204,7 +204,6 @@ class CORE_EXPORT QgsGeometryParameters
  *     line = geom.asPolyline()
  * \endcode
  */
-
 class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
