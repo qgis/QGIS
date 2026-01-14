@@ -23,6 +23,7 @@ email                : sherman at mrcc.com
 
 #include "qgscplerrorhandler_p.h"
 #include "qgslogger.h"
+#include "qgstextcodec.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -63,15 +64,15 @@ email                : sherman at mrcc.com
 #include <limits>
 #include <memory>
 
-#include <QTextCodec>
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QTextCodec>
 
 #define TEXT_PROVIDER_KEY u"ogr"_s
 #define TEXT_PROVIDER_DESCRIPTION u"OGR data provider"_s
 
-bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
+bool QgsOgrProvider::convertField( QgsField &field, const QgsTextCodec &encoding )
 {
   OGRFieldType ogrType = OFTString; //default to string
   OGRFieldSubType ogrSubType = OFSTNone;
@@ -162,9 +163,9 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
   }
 
   if ( ogrSubType != OFSTNone )
-    field.setTypeName( encoding.toUnicode( OGR_GetFieldSubTypeName( ogrSubType ) ) );
+    field.setTypeName( encoding.decode( OGR_GetFieldSubTypeName( ogrSubType ) ) );
   else
-    field.setTypeName( encoding.toUnicode( OGR_GetFieldTypeName( ogrType ) ) );
+    field.setTypeName( encoding.decode( OGR_GetFieldTypeName( ogrType ) ) );
 
   field.setLength( ogrWidth );
   field.setPrecision( ogrPrecision );

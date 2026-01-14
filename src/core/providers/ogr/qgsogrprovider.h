@@ -28,6 +28,7 @@ class QgsOgrLayer;
 class QgsOgrTransaction;
 class QgsProviderSublayerDetails;
 class QgsDataProviderElevationProperties;
+class QgsTextCodec;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -172,7 +173,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes ) const;
 
     //! Convert a QgsField to work with OGR
-    static bool convertField( QgsField &field, const QTextCodec &encoding );
+    static bool convertField( QgsField &field, const QgsTextCodec &encoding );
 
     //! Clean shapefile from features which are marked as deleted
     void repack();

@@ -46,7 +46,6 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QStringList>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QTransform>
 #include <QVector>
@@ -794,9 +793,9 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
             { "ANSI_1258", "CP1258" },
           };
 
-          mCodec = QTextCodec::codecForName( encodingMap.value( v, u"CP1252"_s ).toLocal8Bit() );
+          mDecoder = QgsTextCodec::fromName( encodingMap.value( v, u"CP1252"_s ) );
 
-          QgsDebugMsgLevel( QString( "codec set to %1" ).arg( mCodec ? QString( mCodec->name() ) : u"(unset)"_s ), 2 );
+          QgsDebugMsgLevel( QString( "codec set to %1" ).arg( mDecoder ? QString( mDecoder->name() ) : u"(unset)"_s ), 2 );
         }
         break;
 
@@ -2874,8 +2873,8 @@ void QgsDwgImporter::progress( const QString &msg )
 
 QString QgsDwgImporter::decode( const std::string &s ) const
 {
-  if ( mCodec )
-    return mCodec->toUnicode( s.c_str() );
+  if ( mDecoder )
+    return mDecoder->decode( s.c_str() );
   else
     return s.c_str();
 }

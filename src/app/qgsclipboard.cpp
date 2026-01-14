@@ -45,7 +45,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QTextCodec>
 
 #include "moc_qgsclipboard.cpp"
 
@@ -300,7 +299,7 @@ void QgsClipboard::setSystemClipboard()
 QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const QgsFields &fields ) const
 {
   //first try using OGR to read string
-  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( string, fields, QTextCodec::codecForName( "System" ) );
+  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( string, fields, QStringConverter::System );
 
   if ( !features.isEmpty() )
     return features;
@@ -406,7 +405,7 @@ QgsFields QgsClipboard::retrieveFields() const
   QString string = cb->text( QClipboard::Clipboard );
 #endif
 
-  QgsFields f = QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
+  QgsFields f = QgsOgrUtils::stringToFields( string, QStringConverter::System );
   if ( f.size() < 1 )
   {
     if ( string.isEmpty() )

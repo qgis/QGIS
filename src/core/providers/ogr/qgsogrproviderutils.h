@@ -32,13 +32,14 @@ email                : nyall dot dawson at gmail dot com
 class QgsOgrLayer;
 class QgsCoordinateReferenceSystem;
 class QgsProviderSublayerDetails;
+class QgsTextCodec;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
 /**
- * Releases a QgsOgrLayer
- */
+* Releases a QgsOgrLayer
+*/
 struct QgsOgrLayerReleaser
 {
 
@@ -163,7 +164,7 @@ class CORE_EXPORT QgsOgrProviderUtils
      * Sets a subset string for an OGR \a layer.
      * Might return either layer, or a new OGR SQL result layer
      */
-    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString );
+    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, const QgsTextCodec &encoding, const QString &subsetString );
     static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
 
     /**

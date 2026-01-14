@@ -31,9 +31,9 @@
 #include "qgsogrutils.h"
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
+#include "qgstextcodec.h"
 
 class QgsSymbolLayer;
-class QTextCodec;
 class QgsFeatureIterator;
 
 /**
@@ -992,7 +992,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     WriterError mError;
     QString mErrorMessage;
 
-    QTextCodec *mCodec = nullptr;
+    QgsTextCodec mCodec;
 
     //! Geometry type which is being used
     Qgis::WkbType mWkbType;

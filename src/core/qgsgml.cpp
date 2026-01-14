@@ -28,6 +28,7 @@
 #include "qgsogrutils.h"
 #include "qgsrectangle.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgstextcodec.h"
 #include "qgswkbptr.h"
 
 #include <QBuffer>
@@ -38,7 +39,6 @@
 #include <QRegularExpression>
 #include <QSet>
 #include <QSettings>
-#include <QTextCodec>
 #include <QUrl>
 
 #include "moc_qgsgml.cpp"
@@ -468,7 +468,7 @@ bool QgsGmlStreamingParser::processData( const QByteArray &pdata, bool atEnd, QS
   if ( mCodec )
   {
     // convert data to UTF-8
-    QString strData = mCodec->toUnicode( pdata );
+    QString strData = mCodec->decode( pdata );
     data = strData.toUtf8();
   }
 
@@ -483,7 +483,7 @@ bool QgsGmlStreamingParser::processData( const QByteArray &pdata, bool atEnd, QS
           QRegularExpression::CaseInsensitiveOption );
       QRegularExpressionMatch match = reEncoding.match( pdata );
       const QString encoding = match.hasMatch() ? match.captured( 1 ) : QString();
-      mCodec = !encoding.isEmpty() ? QTextCodec::codecForName( encoding.toLatin1() ) : nullptr;
+      mCodec = !encoding.isEmpty() ? QgsTextCodec::fromName( encoding ) : std::optional<QgsTextCodec> {};
       if ( mCodec )
       {
         // recreate parser with UTF-8 encoding

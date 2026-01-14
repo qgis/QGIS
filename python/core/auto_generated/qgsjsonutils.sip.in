@@ -11,7 +11,6 @@
 
 
 
-
 class QgsJsonExporter
 {
 %Docstring(signature="appended")
@@ -322,7 +321,7 @@ Helper utilities for working with JSON and GeoJSON conversions.
 
   public:
 
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = 0 );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), const std::optional<QgsTextCodec> &encoding = std::nullopt );
 %Docstring
 Attempts to parse a GeoJSON ``string`` to a collection of features. It
 is possible to specify ``fields`` to parse specific fields, if not
@@ -339,7 +338,7 @@ which defaults to UTF-8 if it is `None`.
    this function is a wrapper around :py:func:`QgsOgrUtils.stringToFeatureList()`
 %End
 
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding = 0 );
+    static QgsFields stringToFields( const QString &string, const std::optional<QgsTextCodec> &encoding = std::nullopt );
 %Docstring
 Attempts to retrieve the fields from a GeoJSON ``string`` representing a
 collection of features. An ``encoding`` can be specified which defaults

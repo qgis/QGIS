@@ -25,7 +25,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 
-class QTextCodec;
+class QgsTextCodec;
 
 /**
  * \class QgsNetworkContentFetcher
@@ -130,9 +130,9 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     /**
      * Tries to create a text codec for decoding html content. Works around bugs in Qt's built in method.
      * \param array input html byte array
-     * \returns QTextCodec for html content, if detected
+     * \returns QgsTextCodec for html content, if detected
      */
-    QTextCodec *codecForHtml( QByteArray &array ) const;
+    QgsTextCodec codecForHtml( const QByteArray &array ) const;
 
   private slots:
 

@@ -32,6 +32,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgstextcodec.h"
 #include "qgsvectorfilewriter.h"
 
 #include "moc_qgsogrprovidermetadata.cpp"
@@ -589,7 +590,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
           if ( f )
           {
             bool ok = false;
-            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, nullptr, &ok );
+            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, {}, &ok );
             if ( ok )
             {
               existingRowId = res.toInt( &ok );
@@ -636,7 +637,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
             if ( f )
             {
               bool ok = false;
-              QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, nullptr, &ok );
+              QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, {}, &ok );
               if ( !ok )
               {
                 return false;

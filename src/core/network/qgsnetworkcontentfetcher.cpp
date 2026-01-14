@@ -23,10 +23,10 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgstextcodec.h"
 #include "qgsvariantutils.h"
 
 #include <QNetworkReply>
-#include <QTextCodec>
 
 #include "moc_qgsnetworkcontentfetcher.cpp"
 
@@ -114,8 +114,8 @@ QString QgsNetworkContentFetcher::contentAsString() const
   QByteArray array = mReply->readAll();
 
   //correctly encode reply as unicode
-  QTextCodec *codec = codecForHtml( array );
-  return codec->toUnicode( array );
+  const QgsTextCodec codec = codecForHtml( array );
+  return codec.decode( array );
 }
 
 void QgsNetworkContentFetcher::cancel()
@@ -136,17 +136,14 @@ bool QgsNetworkContentFetcher::wasCanceled() const
   return mIsCanceled;
 }
 
-QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
+QgsTextCodec QgsNetworkContentFetcher::codecForHtml( const QByteArray &array ) const
 {
-  //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
-  //see https://bugreports.qt.io/browse/QTBUG-41011
-  //so test for that ourselves
+  //QStringConverter::encodingForHtml only handles a small set of encodings
 
   //basic check
-  QTextCodec *codec = QTextCodec::codecForUtfText( array, nullptr );
-  if ( codec )
+  if ( const std::optional<QStringConverter::Encoding> encoding = QStringConverter::encodingForData( array ); encoding )
   {
-    return codec;
+    return encoding.value();
   }
 
   //check for meta charset tag
@@ -157,22 +154,20 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
     pos += int( strlen( "meta charset=" ) ) + 1;
     const int pos2 = header.indexOf( '\"', pos );
     const QByteArray cs = header.mid( pos, pos2 - pos );
-    codec = QTextCodec::codecForName( cs );
-    if ( codec )
+    if ( const std::optional<QgsTextCodec> codec = QgsTextCodec::fromName( cs ); codec )
     {
-      return codec;
+      return codec.value();
     }
   }
 
-  //fallback to QTextCodec::codecForHtml
-  codec = QTextCodec::codecForHtml( array, codec );
-  if ( codec )
+  //fallback to QStringConverter::encodingForHtml
+  if ( const std::optional<QStringConverter::Encoding> encoding = QStringConverter::encodingForHtml( array ); encoding )
   {
-    return codec;
+    return encoding.value();
   }
 
   //no luck, default to utf-8
-  return QTextCodec::codecForName( "UTF-8" );
+  return QStringConverter::Encoding::Utf8;
 }
 
 void QgsNetworkContentFetcher::contentLoaded( bool ok )

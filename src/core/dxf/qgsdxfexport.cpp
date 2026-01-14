@@ -56,7 +56,6 @@
 #include "qgswkbtypes.h"
 
 #include <QIODevice>
-#include <QTextCodec>
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )
@@ -2361,11 +2360,10 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 
 QString QgsDxfExport::dxfEncoding( const QString &name )
 {
-  const QByteArray codec = name.toLocal8Bit();
-  if ( QTextCodec::codecForName( codec ) )
+  if ( QgsTextCodec::availableCodecs().contains( name, Qt::CaseInsensitive ) )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcasecmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && name.compare( DXF_ENCODINGS[i][1], Qt::CaseInsensitive ) != 0; ++i )
       ;
 
     if ( i != static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
@@ -2380,16 +2378,16 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
 QStringList QgsDxfExport::encodings()
 {
   QStringList encodings;
-  const QList< QByteArray > codecs = QTextCodec::availableCodecs();
+  const QList< QString > codecs = QgsTextCodec::availableCodecs();
   encodings.reserve( codecs.size() );
-  for ( const QByteArray &codec : codecs )
+  for ( const QString &codec : codecs )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcasecmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && codec.compare( DXF_ENCODINGS[i][1], Qt::CaseInsensitive ) != 0; ++i )
       ;
 
     if ( i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
-      encodings << codec.data();
+      encodings << codec;
   }
 
   encodings.removeDuplicates();

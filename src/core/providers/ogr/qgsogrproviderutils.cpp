@@ -31,6 +31,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsprovidersublayerdetails.h"
 #include "qgssettings.h"
 #include "qgssqlstatement.h"
+#include "qgstextcodec.h"
 #include "qgsvariantutils.h"
 #include "qgsvectorfilewriter.h"
 
@@ -40,7 +41,6 @@ email                : nyall dot dawson at gmail dot com
 #include <QInputDialog>
 #include <QRegularExpression>
 #include <QStorageInfo>
-#include <QTextCodec>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -862,13 +862,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
 
   //create the attribute fields
 
-  QTextCodec *codec = QTextCodec::codecForName( encoding.toLocal8Bit().data() );
-  if ( !codec )
-  {
-    // fall back to "System" codec
-    codec = QTextCodec::codecForLocale();
-    Q_ASSERT( codec );
-  }
+  const QgsTextCodec codec = QgsTextCodec::fromName( encoding.toLocal8Bit().data() ).value_or( QStringConverter::Encoding::System );
 
   for ( QList<QPair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
@@ -890,7 +884,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       if ( precision < 0 )
         precision = 3;
 
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTReal );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTReal );
       OGR_Fld_SetWidth( field, width );
       OGR_Fld_SetPrecision( field, precision );
     }
@@ -899,7 +893,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       if ( width < 0 || width > 10 )
         width = 10;
 
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTInteger );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTInteger );
       // limit to 10.  otherwise OGR sets it to 11 and recognizes as OFTDouble later
       OGR_Fld_SetWidth( field, width );
     }
@@ -908,24 +902,24 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       if ( width < 0 || width > 255 )
         width = 255;
 
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTString );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTString );
       OGR_Fld_SetWidth( field, width );
     }
     else if ( fields[0] == "Date"_L1 )
     {
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDate );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTDate );
     }
     else if ( fields[0] == "Time"_L1 )
     {
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTTime );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTTime );
     }
     else if ( fields[0] == "DateTime"_L1 )
     {
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDateTime );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTDateTime );
     }
     else if ( fields[0] == "bool"_L1 )
     {
-      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTInteger );
+      field = OGR_Fld_Create( codec.encode( it->first ).constData(), OFTInteger );
       OGR_Fld_SetSubType( field, OFSTBoolean );
     }
     else
@@ -1403,7 +1397,7 @@ QString QgsOgrProviderUtils::cleanSubsetString( const QString &subsetString )
   return lines.join( QChar( '\n' ) ).trimmed();
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, const QgsTextCodec &encoding, const QString &subsetString )
 {
   const QString cleanedSubsetString {cleanSubsetString( subsetString )};
 
@@ -1413,26 +1407,26 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
 
   if ( driverName == "ODBC"_L1 ) //the odbc driver does not like schema names for subset
   {
-    QString layerNameString = encoding->toUnicode( layerName );
+    QString layerNameString = encoding.decode( layerName );
     int dotIndex = layerNameString.indexOf( '.' );
     if ( dotIndex > 1 )
     {
       QString modifiedLayerName = layerNameString.right( layerNameString.size() - dotIndex - 1 );
-      layerName = encoding->fromUnicode( modifiedLayerName );
+      layerName = encoding.encode( modifiedLayerName );
     }
   }
   OGRLayerH subsetLayer = nullptr;
   if ( cleanedSubsetString.startsWith( "SELECT "_L1, Qt::CaseInsensitive ) ||
        cleanedSubsetString.startsWith( "WITH "_L1, Qt::CaseInsensitive ) )
   {
-    QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
+    QByteArray sql = encoding.encode( cleanedSubsetString );
 
-    QgsDebugMsgLevel( u"SQL: %1"_s.arg( encoding->toUnicode( sql ) ), 2 );
+    QgsDebugMsgLevel( u"SQL: %1"_s.arg( encoding.decode( sql ) ), 2 );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
   {
-    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( cleanedSubsetString ).constData() ) != OGRERR_NONE )
+    if ( OGR_L_SetAttributeFilter( layer, encoding.encode( cleanedSubsetString ).constData() ) != OGRERR_NONE )
     {
       return nullptr;
     }

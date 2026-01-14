@@ -15,13 +15,13 @@
 
 #include <nlohmann/json.hpp>
 
+#include "qgstextcodec.h"
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifapirequest.h"
 #include "moc_qgsoapifapirequest.cpp"
-
-#include <QTextCodec>
 
 QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
@@ -86,12 +86,8 @@ void QgsOapifApiRequest::processReply()
 
   QgsDebugMsgLevel( u"parsing API response: "_s + buffer, 4 );
 
-  QTextCodec::ConverterState state;
-  QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
-  Q_ASSERT( codec );
-
-  const QString utf8Text = codec->toUnicode( buffer.constData(), buffer.size(), &state );
-  if ( state.invalidChars != 0 )
+  const QString utf8Text = QgsTextCodec( QStringConverter::Encoding::Utf8 ).decode( QByteArrayView( buffer.constData(), buffer.size() ) );
+  if ( utf8Text.isNull() )
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;

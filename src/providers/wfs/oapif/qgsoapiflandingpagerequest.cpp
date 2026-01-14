@@ -15,6 +15,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "qgstextcodec.h"
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
@@ -22,8 +24,6 @@ using namespace nlohmann;
 #include "moc_qgsoapiflandingpagerequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
-
-#include <QTextCodec>
 
 QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" ), mUri( uri )
@@ -68,12 +68,8 @@ void QgsOapifLandingPageRequest::processReply()
 
   QgsDebugMsgLevel( u"parsing GetLandingPage response: "_s + buffer, 4 );
 
-  QTextCodec::ConverterState state;
-  QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
-  Q_ASSERT( codec );
-
-  const QString utf8Text = codec->toUnicode( buffer.constData(), buffer.size(), &state );
-  if ( state.invalidChars != 0 )
+  const QString utf8Text = QgsTextCodec( QStringConverter::Encoding::Utf8 ).decode( QByteArrayView( buffer.constData(), buffer.size() ) );
+  if ( utf8Text.isNull() )
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;

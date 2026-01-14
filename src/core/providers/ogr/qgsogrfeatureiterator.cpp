@@ -29,9 +29,11 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssymbol.h"
+#include "qgstextcodec.h"
 #include "qgswkbtypes.h"
 
 #include <QFile>
+#include <QTextCodec>
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature

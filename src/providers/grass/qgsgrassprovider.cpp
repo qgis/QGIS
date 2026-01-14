@@ -44,6 +44,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QString>
+#include <QTextCodec>
 
 #include "moc_qgsgrassprovider.cpp"
 

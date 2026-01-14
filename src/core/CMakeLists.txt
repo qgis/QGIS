@@ -618,6 +618,7 @@ set(QGIS_CORE_SRCS
   qgstemporalrangeobject.cpp
   qgstemporalutils.cpp
   qgstessellator.cpp
+  qgstextcodec.cpp
   qgsthreadingutils.cpp
   qgstilecache.cpp
   qgstiledownloadmanager.cpp
@@ -1350,6 +1351,7 @@ set(QGIS_CORE_HDRS
   qgstemporalutils.h
   qgstessellator.h
   qgstestutils.h
+  qgstextcodec.h
   qgsthreadingutils.h
   qgstilecache.h
   qgstiledownloadmanager.h

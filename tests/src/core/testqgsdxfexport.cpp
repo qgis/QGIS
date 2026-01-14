@@ -229,7 +229,7 @@ void TestQgsDxfExport::testPoints()
 
   const QString file = getTempFileName( "point_dxf" );
   QFile dxfFile( file );
-  QCOMPARE( d.writeToFile( &dxfFile, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
+  QCOMPARE( d.writeToFile( &dxfFile, u"windows-1252"_s ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
   QVERIFY( !fileContainsText( file, u"nan.0"_s ) );
@@ -1987,13 +1987,13 @@ void TestQgsDxfExport::testWritingCodepage()
 
   const QString file1 = getTempFileName( "CP1252UpperCase_dxf" );
   QFile dxfFile1( file1 );
-  QCOMPARE( d.writeToFile( &dxfFile1, u"CP1252"_s ), QgsDxfExport::ExportResult::Success );
+  QCOMPARE( d.writeToFile( &dxfFile1, u"WINDOWS-1252"_s ), QgsDxfExport::ExportResult::Success );
   dxfFile1.close();
   QVERIFY( fileContainsText( file1, u"ANSI_1252"_s ) );
 
   const QString file2 = getTempFileName( "cp1252lowercase_dxf" );
   QFile dxfFile2( file2 );
-  QCOMPARE( d.writeToFile( &dxfFile2, u"cp1252"_s ), QgsDxfExport::ExportResult::Success );
+  QCOMPARE( d.writeToFile( &dxfFile2, u"windows-1252"_s ), QgsDxfExport::ExportResult::Success );
   dxfFile2.close();
   QVERIFY( fileContainsText( file2, u"ANSI_1252"_s ) );
 }

@@ -29,6 +29,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgssqlstatement.h"
+#include "qgstextcodec.h"
 #include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
 
@@ -36,7 +37,6 @@
 #include "qgsgdalutils.h"
 #endif
 
-#include <QTextCodec>
 #include <QRegularExpression>
 
 #include <chrono>
@@ -93,7 +93,7 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
     {
       if ( ! mFields.isEmpty() )
       {
-        const QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
+        const QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QStringConverter::Encoding::Utf8 ) };
         const QgsAttributes constAttrs  = f.attributes();
         for ( const QVariant &attribute : constAttrs )
         {
@@ -900,7 +900,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
           }
         }
 
-        const QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+        const QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QStringConverter::Encoding::Utf8 ) };
         iterator->setFields( fields );
 
         // If SQL had parser errors get columns from the feature
