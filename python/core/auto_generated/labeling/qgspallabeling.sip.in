@@ -238,10 +238,9 @@ Returns the labeling property definitions.
 
     bool isExpression;
 
-    QgsExpression *getLabelExpression();
+    QgsExpression *getLabelExpression() const;
 %Docstring
-Returns the :py:class:`QgsExpression` for this label settings. May be
-``None`` if isExpression is ``False``.
+Returns the :py:class:`QgsExpression` for this label settings.
 %End
 
  QColor previewBkgrdColor;
