@@ -2273,6 +2273,58 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
   return true;
 }
 
+QgsGeometry QgsPalLayerSettings::evaluateLabelGeometry( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelLineSettings &lineSettings ) const
+{
+  QgsGeometry geom = feature.geometry();
+  if ( geom.isEmpty() )
+  {
+    return geom;
+  }
+
+  // simplify?
+  bool allowSimplify = true;
+  switch ( placement )
+  {
+    case Qgis::LabelPlacement::Curved:
+    case Qgis::LabelPlacement::PerimeterCurved:
+    {
+      switch ( lineSettings.curvedLabelMode() )
+      {
+        case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+          // don't simplify -- this would remove vertices, making characters out of sync with remaining vertices
+          allowSimplify = false;
+          break;
+        case Qgis::CurvedLabelMode::Default:
+        case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+        case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+          break;
+      }
+      break;
+    }
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+      break;
+  }
+
+  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
+  std::unique_ptr<QgsGeometry> scopedClonedGeom;
+  if ( allowSimplify && simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
+  {
+    unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    const Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = simplifyMethod.simplifyAlgorithm();
+    QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
+    geom = simplifier.simplify( geom );
+  }
+
+  return geom;
+}
+
 std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
@@ -2332,6 +2384,9 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   if ( labelIsHidden )
     return {};
 
+  QgsLabelPlacementSettings placementSettings = mPlacementSettings;
+  placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
   QString labelText;
   QgsTextDocument doc;
   bool allowMultipleLines = true;
@@ -2357,6 +2412,13 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   }
   if ( !evaluateLabelContent( feature, context, allowMultipleLines, labelText, doc, evaluatedFormat ) )
     return {};
+
+  // geometry
+  QgsLabelLineSettings lineSettings = mLineSettings;
+  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
+  QgsLabelPointSettings pointSettings = mPointSettings;
+  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
 
   QSizeF labelSize;
   QSizeF rotatedSize;
@@ -2406,6 +2468,17 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
       break;
   }
 
+  QgsGeometry geom = evaluateLabelGeometry( feature, context, lineSettings );
+  if ( geom.isEmpty() )
+    return {};
+
+  if ( !context.featureClipGeometry().isEmpty() )
+  {
+    const Qgis::GeometryType expectedType = geom.type();
+    geom = geom.intersection( context.featureClipGeometry() );
+    geom.convertGeometryCollectionToSubclass( expectedType );
+  }
+
   // data defined centroid whole or clipped?
   bool wholeCentroid = centroidWhole;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::CentroidWhole ) )
@@ -2430,67 +2503,6 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     }
   }
 
-  QgsLabelLineSettings lineSettings = mLineSettings;
-  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
-  QgsLabelPointSettings pointSettings = mPointSettings;
-  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
-  QgsGeometry geom = feature.geometry();
-  if ( geom.isNull() )
-  {
-    return {};
-  }
-
-  // simplify?
-  bool allowSimplify = true;
-  switch ( placement )
-  {
-    case Qgis::LabelPlacement::Curved:
-    case Qgis::LabelPlacement::PerimeterCurved:
-    {
-      switch ( lineSettings.curvedLabelMode() )
-      {
-        case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
-          // don't simplify -- this would remove vertices, making characters out of sync with remaining vertices
-          allowSimplify = false;
-          break;
-        case Qgis::CurvedLabelMode::Default:
-        case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
-        case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
-          break;
-      }
-      break;
-    }
-
-    case Qgis::LabelPlacement::AroundPoint:
-    case Qgis::LabelPlacement::OverPoint:
-    case Qgis::LabelPlacement::Line:
-    case Qgis::LabelPlacement::Horizontal:
-    case Qgis::LabelPlacement::Free:
-    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
-    case Qgis::LabelPlacement::OutsidePolygons:
-      break;
-  }
-
-
-  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
-  std::unique_ptr<QgsGeometry> scopedClonedGeom;
-  if ( allowSimplify && simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
-  {
-    unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
-    const Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = simplifyMethod.simplifyAlgorithm();
-    QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
-    geom = simplifier.simplify( geom );
-  }
-
-  if ( !context.featureClipGeometry().isEmpty() )
-  {
-    const Qgis::GeometryType expectedType = geom.type();
-    geom = geom.intersection( context.featureClipGeometry() );
-    geom.convertGeometryCollectionToSubclass( expectedType );
-  }
-
   // whether we're going to create a centroid for polygon
   bool centroidPoly = ( ( placement == Qgis::LabelPlacement::AroundPoint
                           || placement == Qgis::LabelPlacement::OverPoint )
@@ -2503,7 +2515,6 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   {
     doClip = true;
   }
-
 
   Qgis::LabelPolygonPlacementFlags polygonPlacement = mPolygonPlacementFlags;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::PolygonLabelOutside ) )
