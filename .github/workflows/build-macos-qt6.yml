@@ -29,6 +29,9 @@ jobs:
             osx-architecture: "arm64"
     name: build (macos)
     runs-on: ${{ matrix.os }}
+    env:
+      FC: gfortran
+      GCC_VERSION: 15
 
     steps:
       - name: 🐣 Checkout
