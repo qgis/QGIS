@@ -208,6 +208,13 @@ class CORE_EXPORT QgsTextDocument
     void splitLines( const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
 
     /**
+     * Splits the text document, such that each block in the document becomes a separate document of its own.
+     *
+     * \since QGIS 4.0
+     */
+    QVector< QgsTextDocument > splitBlocksToDocuments() const;
+
+    /**
      * Applies a \a capitalization style to the document's text.
      *
      * \since QGIS 3.16
