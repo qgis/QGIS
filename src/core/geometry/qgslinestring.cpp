@@ -185,17 +185,56 @@ std::unique_ptr< QgsLineString > QgsLineString::fromBezierCurve( const QgsPoint 
   if ( segments == 0 )
     return std::make_unique< QgsLineString >();
 
-  QgsPointSequence points;
-  points.reserve( segments + 1 );
+  QVector<double> x( segments + 1 );
+  QVector<double> y( segments + 1 );
+  QVector<double> z;
+  QVector<double> m;
+
+  const bool hasZ = start.is3D() && controlPoint1.is3D() && controlPoint2.is3D() && end.is3D();
+  if ( hasZ )
+  {
+    z.resize( segments + 1 );
+  }
+
+  const bool hasM = start.isMeasure() && controlPoint1.isMeasure() && controlPoint2.isMeasure() && end.isMeasure();
+  if ( hasM )
+  {
+    m.resize( segments + 1 );
+  }
+
+  double *xData = x.data();
+  double *yData = y.data();
+  double *zData = z.data(); // will be nullptr if !hasZ
+  double *mData = m.data(); // will be nullptr if !hasM
 
   const double step = 1.0 / segments;
+
   for ( int i = 0; i <= segments; ++i )
   {
     const double t = i * step;
-    points.append( QgsGeometryUtils::interpolatePointOnCubicBezier( start, controlPoint1, controlPoint2, end, t ) );
+
+    double ix, iy; // interpolated x, y
+    double iz = std::numeric_limits<double>::quiet_NaN();
+    double im = std::numeric_limits<double>::quiet_NaN();
+
+    QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+      start.x(), start.y(), start.z(), start.m(),
+      controlPoint1.x(), controlPoint1.y(), controlPoint1.z(), controlPoint1.m(),
+      controlPoint2.x(), controlPoint2.y(), controlPoint2.z(), controlPoint2.m(),
+      end.x(), end.y(), end.z(), end.m(),
+      t, hasZ, hasM,
+      ix, iy, iz, im
+    );
+
+    *xData++ = ix;
+    *yData++ = iy;
+    if ( hasZ )
+      *zData++ = iz;
+    if ( hasM )
+      *mData++ = im;
   }
 
-  return std::make_unique< QgsLineString >( points );
+  return std::make_unique< QgsLineString >( x, y, z, m );
 }
 
 std::unique_ptr< QgsLineString > QgsLineString::fromQPolygonF( const QPolygonF &polygon )
