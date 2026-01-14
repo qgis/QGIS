@@ -48,6 +48,7 @@ class TestQgs3DSymbolUtils : public QgsTest
     void testvectorSymbolAverageColor();
     void testVectorSymbolPreviewIcon();
     void testSetVectorSymbolBaseColor();
+    void testCopyVectorSymbolMaterial();
 };
 
 //runs before all tests
@@ -284,6 +285,46 @@ void TestQgs3DSymbolUtils::testSetVectorSymbolBaseColor()
   QCOMPARE( newGoochSettings->specular().red(), 102 );
   QCOMPARE( newGoochSettings->specular().green(), 102 );
   QCOMPARE( newGoochSettings->specular().blue(), 102 );
+}
+
+void TestQgs3DSymbolUtils::testCopyVectorSymbolMaterial()
+{
+  auto sphere3DSymbol = std::make_unique<QgsPoint3DSymbol>();
+  QgsPhongMaterialSettings phongSettings;
+  phongSettings.setAmbient( QColor( 20, 50, 20 ) );
+  phongSettings.setDiffuse( QColor( 80, 150, 80 ) );
+  phongSettings.setSpecular( QColor( 100, 150, 100 ) );
+  phongSettings.setShininess( 40.0 );
+  phongSettings.setOpacity( 0.4 );
+  sphere3DSymbol->setMaterialSettings( phongSettings.clone() );
+
+  auto sphere3DSymbol2 = std::make_unique<QgsPoint3DSymbol>();
+  QgsGoochMaterialSettings goochSettings;
+  goochSettings.setWarm( QColor( 255, 220, 80 ) );
+  goochSettings.setCool( QColor( 50, 80, 180 ) );
+  goochSettings.setDiffuse( QColor( 120, 120, 100 ) );
+  goochSettings.setSpecular( QColor( 255, 255, 180 ) );
+  goochSettings.setShininess( 80.0 );
+  goochSettings.setAlpha( 0.5 );
+  goochSettings.setBeta( 0.5 );
+  sphere3DSymbol2->setMaterialSettings( goochSettings.clone() );
+
+  QVERIFY( Qgs3DSymbolUtils::copyVectorSymbolMaterial( sphere3DSymbol.get(), sphere3DSymbol2.get() ) );
+  const QgsAbstractMaterialSettings *newSettings = sphere3DSymbol2->materialSettings();
+  QCOMPARE( newSettings->type(), "phong"_L1 );
+  const QgsPhongMaterialSettings *newPhongSettings = dynamic_cast<const QgsPhongMaterialSettings *>( newSettings );
+  QVERIFY( newPhongSettings );
+  QCOMPARE( newPhongSettings->ambient().red(), phongSettings.ambient().red() );
+  QCOMPARE( newPhongSettings->ambient().green(), phongSettings.ambient().green() );
+  QCOMPARE( newPhongSettings->ambient().blue(), phongSettings.ambient().blue() );
+  QCOMPARE( newPhongSettings->diffuse().red(), phongSettings.diffuse().red() );
+  QCOMPARE( newPhongSettings->diffuse().green(), phongSettings.diffuse().green() );
+  QCOMPARE( newPhongSettings->diffuse().blue(), phongSettings.diffuse().blue() );
+  QCOMPARE( newPhongSettings->specular().red(), phongSettings.specular().red() );
+  QCOMPARE( newPhongSettings->specular().green(), phongSettings.specular().green() );
+  QCOMPARE( newPhongSettings->specular().blue(), phongSettings.specular().blue() );
+  QCOMPARE( newPhongSettings->opacity(), phongSettings.opacity() );
+  QCOMPARE( newPhongSettings->shininess(), phongSettings.shininess() );
 }
 
 QGSTEST_MAIN( TestQgs3DSymbolUtils )

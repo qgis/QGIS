@@ -274,3 +274,45 @@ bool Qgs3DSymbolUtils::setVectorSymbolBaseColor( QgsAbstract3DSymbol *symbol, co
 
   return colorSet;
 }
+
+bool Qgs3DSymbolUtils::copyVectorSymbolMaterial( const QgsAbstract3DSymbol *fromSymbol, QgsAbstract3DSymbol *toSymbol )
+{
+  bool copied = false;
+
+  if ( toSymbol->type() == "line"_L1 )
+  {
+    const QgsLine3DSymbol *fromLineSymbol = dynamic_cast<const QgsLine3DSymbol *>( fromSymbol );
+    QgsLine3DSymbol *toLineSymbol = dynamic_cast<QgsLine3DSymbol *>( toSymbol );
+    if ( fromLineSymbol && toLineSymbol )
+    {
+      toLineSymbol->setMaterialSettings( fromLineSymbol->materialSettings()->clone() );
+      copied = true;
+    }
+  }
+  else if ( toSymbol->type() == "point"_L1 )
+  {
+    const QgsPoint3DSymbol *fromPointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( fromSymbol );
+    QgsPoint3DSymbol *toPointSymbol = dynamic_cast<QgsPoint3DSymbol *>( toSymbol );
+    if ( fromPointSymbol && toPointSymbol )
+    {
+      toPointSymbol->setMaterialSettings( fromPointSymbol->materialSettings()->clone() );
+      copied = true;
+    }
+  }
+  else if ( toSymbol->type() == "polygon"_L1 )
+  {
+    const QgsPolygon3DSymbol *fromPolygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( fromSymbol );
+    QgsPolygon3DSymbol *toPolygonSymbol = dynamic_cast<QgsPolygon3DSymbol *>( toSymbol );
+    if ( fromPolygonSymbol && toPolygonSymbol )
+    {
+      toPolygonSymbol->setMaterialSettings( fromPolygonSymbol->materialSettings()->clone() );
+      copied = true;
+    }
+  }
+  else
+  {
+    QgsDebugError( u"Qgs3DSymbolUtils::copyVectorSymbolMaterial does not support '%1' symbol"_s.arg( toSymbol->type() ) );
+  }
+
+  return copied;
+}

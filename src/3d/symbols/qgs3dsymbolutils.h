@@ -67,6 +67,16 @@ class _3D_EXPORT Qgs3DSymbolUtils
      * \returns TRUE if the material's base color was successfully set, FALSE otherwise.
      */
     static bool setVectorSymbolBaseColor( QgsAbstract3DSymbol *symbol, const QColor &baseColor );
+
+    /**
+     * Copies the material properties of a vector 3D symbol from one symbol to another.
+     *
+     *
+     * \param fromSymbol Source 3D symbol from which the material properties are copied.
+     * \param toSymbol   Destination 3D symbol to which the material properties are applied.
+     * \returns TRUE if the material properties were successfully copied, FALSE otherwise.
+     */
+    static bool copyVectorSymbolMaterial( const QgsAbstract3DSymbol *fromSymbol, QgsAbstract3DSymbol *toSymbol );
 };
 
 #endif // QGS3DSYMBOLUTILS_H
