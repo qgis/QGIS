@@ -303,9 +303,35 @@ struct TreeNode
 QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
 {
   QDomDocument doc;
-
   QDomElement compositionElem = doc.createElement( u"PDFComposition"_s );
 
+  // metadata
+  createMetadataXmlSection( compositionElem, doc, details );
+
+  // pages
+  QDomElement page = doc.createElement( u"Page"_s );
+  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
+  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
+  createPageDimensionXmlSection( page, doc, pageWidthPdfUnits, pageHeightPdfUnits );
+
+  // georeferencing
+  createGeoreferencingXmlSection( page, doc, details, pageWidthPdfUnits, pageHeightPdfUnits );
+
+  // layer tree and content
+  createLayerTreeAndContentXmlSections( compositionElem, page, doc,  components, details );
+
+  compositionElem.appendChild( page );
+  doc.appendChild( compositionElem );
+
+  QString composition;
+  QTextStream stream( &composition );
+  doc.save( stream, -1 );
+
+  return composition;
+}
+
+void QgsAbstractGeospatialPdfExporter::createMetadataXmlSection( QDomElement &compositionElem, QDomDocument &doc, const ExportDetails &details ) const
+{
   // metadata tags
   QDomElement metadata = doc.createElement( u"Metadata"_s );
   if ( !details.author.isEmpty() )
@@ -370,7 +396,100 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     metadata.appendChild( keywords );
   }
   compositionElem.appendChild( metadata );
+}
 
+void QgsAbstractGeospatialPdfExporter::createGeoreferencingXmlSection( QDomElement &pageElem, QDomDocument &doc, const ExportDetails &details, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const
+{
+  int i = 0;
+  for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
+  {
+    QDomElement georeferencing = doc.createElement( u"Georeferencing"_s );
+    georeferencing.setAttribute( u"id"_s, u"georeferenced_%1"_s.arg( i++ ) );
+    georeferencing.setAttribute( u"ISO32000ExtensionFormat"_s, details.useIso32000ExtensionFormatGeoreferencing ? u"true"_s : u"false"_s );
+
+    if ( section.crs.isValid() )
+    {
+      QDomElement srs = doc.createElement( u"SRS"_s );
+      // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
+      // srs.setAttribute( u"dataAxisToSRSAxisMapping"_s, u"2,1"_s );
+      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( u"user"_s, Qt::CaseInsensitive ) )
+      {
+        srs.appendChild( doc.createTextNode( section.crs.authid() ) );
+      }
+      else
+      {
+        srs.appendChild( doc.createTextNode( section.crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ) ) );
+      }
+      georeferencing.appendChild( srs );
+    }
+
+    if ( !section.pageBoundsPolygon.isEmpty() )
+    {
+      /*
+        Define a polygon / neatline in PDF units into which the
+        Measure tool will display coordinates.
+        If not specified, BoundingBox will be used instead.
+        If none of BoundingBox and BoundingPolygon are specified,
+        the whole PDF page will be assumed to be georeferenced.
+       */
+      QDomElement boundingPolygon = doc.createElement( u"BoundingPolygon"_s );
+
+      // transform to PDF coordinate space
+      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
+                     -pageHeightPdfUnits / details.pageSizeMm.height() );
+
+      QgsPolygon p = section.pageBoundsPolygon;
+      p.transform( t );
+      boundingPolygon.appendChild( doc.createTextNode( p.asWkt() ) );
+
+      georeferencing.appendChild( boundingPolygon );
+    }
+    else
+    {
+      /* Define the viewport where georeferenced coordinates are available.
+        If not specified, the extent of BoundingPolygon will be used instead.
+        If none of BoundingBox and BoundingPolygon are specified,
+        the whole PDF page will be assumed to be georeferenced.
+        */
+      QDomElement boundingBox = doc.createElement( u"BoundingBox"_s );
+      boundingBox.setAttribute( u"x1"_s, qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( u"y1"_s, qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( u"x2"_s, qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( u"y2"_s, qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
+      georeferencing.appendChild( boundingBox );
+    }
+
+    for ( const ControlPoint &point : section.controlPoints )
+    {
+      QDomElement cp1 = doc.createElement( u"ControlPoint"_s );
+      cp1.setAttribute( u"x"_s, qgsDoubleToString( point.pagePoint.x() / 25.4 * 72 ) );
+      cp1.setAttribute( u"y"_s, qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
+      cp1.setAttribute( u"GeoX"_s, qgsDoubleToString( point.geoPoint.x() ) );
+      cp1.setAttribute( u"GeoY"_s, qgsDoubleToString( point.geoPoint.y() ) );
+      georeferencing.appendChild( cp1 );
+    }
+
+    pageElem.appendChild( georeferencing );
+  }
+}
+
+void QgsAbstractGeospatialPdfExporter::createPageDimensionXmlSection( QDomElement &pageElem, QDomDocument &doc, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const
+{
+  QDomElement dpi = doc.createElement( u"DPI"_s );
+  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
+  dpi.appendChild( doc.createTextNode( qgsDoubleToString( 72 ) ) );
+  pageElem.appendChild( dpi );
+  // assumes DPI of 72, as noted above.
+  QDomElement width = doc.createElement( u"Width"_s );
+  width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
+  pageElem.appendChild( width );
+  QDomElement height = doc.createElement( u"Height"_s );
+  height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
+  pageElem.appendChild( height );
+}
+
+void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSections( QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+{
   QSet< QString > createdLayerIds;
   std::vector< std::unique_ptr< TreeNode > > rootGroups;
   std::vector< std::unique_ptr< TreeNode > > rootLayers;
@@ -407,6 +526,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       layerTreeGroupOrder.append( component.group );
     }
   }
+
   // now we are confident that we have a definitive list of all the groups for the export
   QMap< QString, TreeNode * > groupNameToTreeNode;
   QMap< QString, TreeNode * > layerIdToTreeNode;
@@ -514,95 +634,6 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     }
   }
 
-  // pages
-  QDomElement page = doc.createElement( u"Page"_s );
-  QDomElement dpi = doc.createElement( u"DPI"_s );
-  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
-  dpi.appendChild( doc.createTextNode( qgsDoubleToString( 72 ) ) );
-  page.appendChild( dpi );
-  // assumes DPI of 72, as noted above.
-  QDomElement width = doc.createElement( u"Width"_s );
-  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
-  width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
-  page.appendChild( width );
-  QDomElement height = doc.createElement( u"Height"_s );
-  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
-  height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
-  page.appendChild( height );
-
-  // georeferencing
-  int i = 0;
-  for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
-  {
-    QDomElement georeferencing = doc.createElement( u"Georeferencing"_s );
-    georeferencing.setAttribute( u"id"_s, u"georeferenced_%1"_s.arg( i++ ) );
-    georeferencing.setAttribute( u"ISO32000ExtensionFormat"_s, details.useIso32000ExtensionFormatGeoreferencing ? u"true"_s : u"false"_s );
-
-    if ( section.crs.isValid() )
-    {
-      QDomElement srs = doc.createElement( u"SRS"_s );
-      // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
-      // srs.setAttribute( u"dataAxisToSRSAxisMapping"_s, u"2,1"_s );
-      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( u"user"_s, Qt::CaseInsensitive ) )
-      {
-        srs.appendChild( doc.createTextNode( section.crs.authid() ) );
-      }
-      else
-      {
-        srs.appendChild( doc.createTextNode( section.crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ) ) );
-      }
-      georeferencing.appendChild( srs );
-    }
-
-    if ( !section.pageBoundsPolygon.isEmpty() )
-    {
-      /*
-        Define a polygon / neatline in PDF units into which the
-        Measure tool will display coordinates.
-        If not specified, BoundingBox will be used instead.
-        If none of BoundingBox and BoundingPolygon are specified,
-        the whole PDF page will be assumed to be georeferenced.
-       */
-      QDomElement boundingPolygon = doc.createElement( u"BoundingPolygon"_s );
-
-      // transform to PDF coordinate space
-      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
-                     -pageHeightPdfUnits / details.pageSizeMm.height() );
-
-      QgsPolygon p = section.pageBoundsPolygon;
-      p.transform( t );
-      boundingPolygon.appendChild( doc.createTextNode( p.asWkt() ) );
-
-      georeferencing.appendChild( boundingPolygon );
-    }
-    else
-    {
-      /* Define the viewport where georeferenced coordinates are available.
-        If not specified, the extent of BoundingPolygon will be used instead.
-        If none of BoundingBox and BoundingPolygon are specified,
-        the whole PDF page will be assumed to be georeferenced.
-        */
-      QDomElement boundingBox = doc.createElement( u"BoundingBox"_s );
-      boundingBox.setAttribute( u"x1"_s, qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"y1"_s, qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"x2"_s, qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"y2"_s, qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
-      georeferencing.appendChild( boundingBox );
-    }
-
-    for ( const ControlPoint &point : section.controlPoints )
-    {
-      QDomElement cp1 = doc.createElement( u"ControlPoint"_s );
-      cp1.setAttribute( u"x"_s, qgsDoubleToString( point.pagePoint.x() / 25.4 * 72 ) );
-      cp1.setAttribute( u"y"_s, qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
-      cp1.setAttribute( u"GeoX"_s, qgsDoubleToString( point.geoPoint.x() ) );
-      cp1.setAttribute( u"GeoY"_s, qgsDoubleToString( point.geoPoint.y() ) );
-      georeferencing.appendChild( cp1 );
-    }
-
-    page.appendChild( georeferencing );
-  }
-
   auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
   {
     QDomElement pdfDataset = doc.createElement( u"PDF"_s );
@@ -664,7 +695,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     }
   }
 
-  page.appendChild( content );
+  pageElem.appendChild( content );
 
   // layertree
   QDomElement layerTree = doc.createElement( u"LayerTree"_s );
@@ -719,15 +750,6 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   }
 
   compositionElem.appendChild( layerTree );
-  compositionElem.appendChild( page );
-
-  doc.appendChild( compositionElem );
-
-  QString composition;
-  QTextStream stream( &composition );
-  doc.save( stream, -1 );
-
-  return composition;
 }
 
 QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode mode )

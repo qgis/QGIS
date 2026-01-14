@@ -386,6 +386,10 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
     bool saveTemporaryLayers();
 
     QString createCompositionXml( const QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > &components, const ExportDetails &details );
+    void createMetadataXmlSection( QDomElement &compositionElem, QDomDocument &doc, const ExportDetails &details ) const;
+    void createPageDimensionXmlSection( QDomElement &pageElem, QDomDocument &doc, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const;
+    void createGeoreferencingXmlSection( QDomElement &pageElem, QDomDocument &doc, const ExportDetails &details, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const;
+    void createLayerTreeAndContentXmlSections( QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const;
 
     /**
      * Returns the GDAL string representation of the specified QPainter composition \a mode.
