@@ -954,19 +954,18 @@ class CORE_EXPORT QgsPalLayerSettings
     void readOldDataDefinedProperty( QgsVectorLayer *layer, QgsPalLayerSettings::Property p );
 
     /**
-     * Calculates the space required to render the provided \a document in map units.
+     * Calculates the font metrics and space required to render the provided \a document in map units.
      * Results will be written to \a size.
      *
      * If the text orientation is set to rotation-based, the space taken to render
      * vertically oriented text will be written to \a rotatedSize.
      */
-    void calculateLabelSize( const QFontMetricsF &fm, QgsRenderContext &context,
-                             const QgsTextFormat &format,
-                             bool allowMultiLines,
-                             QgsTextDocument &document,
-                             QgsTextDocumentMetrics &documentMetrics,
-                             QSizeF &size, QSizeF &rotatedSize,
-                             QRectF &outerBounds );
+    void calculateLabelMetrics( const QFontMetricsF &fm, QgsRenderContext &context,
+                                const QgsTextFormat &format,
+                                QgsTextDocument &document,
+                                QgsTextDocumentMetrics &documentMetrics,
+                                QSizeF &size, QSizeF &rotatedSize,
+                                QRectF &outerBounds );
 
 
     enum DataDefinedValueType
@@ -1025,14 +1024,14 @@ class CORE_EXPORT QgsPalLayerSettings
      * \param context render context
      * \param labelIsHidden will be set to TRUE if label should be hidden (eg due to too small font size)
      */
-    std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden );
+    QgsTextFormat evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden );
 
     /**
-     * Evaluates label text.
+     * Evaluates label text, and generates corresponding text \a document.
      *
      * Returns FALSE if an error occurred.
      */
-    bool evaluateLabelText( const QgsFeature &feature, QgsRenderContext &context, QString &labelText, const QgsTextFormat &format ) const;
+    bool evaluateLabelContent( const QgsFeature &feature, QgsRenderContext &context, bool allowMultipleLines, QString &labelText, QgsTextDocument &document, const QgsTextFormat &format ) const;
 
     /**
      * Registers a feature as an obstacle only (no label rendered)
