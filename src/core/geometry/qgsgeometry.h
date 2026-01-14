@@ -196,13 +196,13 @@ class CORE_EXPORT QgsGeometryParameters
  * When working with line geometries in PyQGIS, it is therefore recommended
  * to explicitly handle both single-part and multipart geometries.
  *
- * \code{.py}
- * geom = feature.geometry()
- * if geom.isMultipart():
- *     lines = geom.asMultiPolyline()
- * else:
- *     line = geom.asPolyline()
- * \endcode
+ \code{.py}
+ geom = feature.geometry()
+ if geom.isMultipart():
+     lines = geom.asMultiPolyline()
+ else:
+     line = geom.asPolyline()
+ \endcode
  */
 class CORE_EXPORT QgsGeometry
 {
