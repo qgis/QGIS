@@ -322,9 +322,9 @@ class CORE_EXPORT QgsPalLayerSettings
     bool isExpression = false;
 
     /**
-     * Returns the QgsExpression for this label settings. May be NULLPTR if isExpression is FALSE.
+     * Returns the QgsExpression for this label settings.
      */
-    QgsExpression *getLabelExpression();
+    QgsExpression *getLabelExpression() const;
 
     /**
      * \deprecated QGIS 3.10. Use QgsTextFormat::previewBackgroundColor() instead.
@@ -1027,6 +1027,13 @@ class CORE_EXPORT QgsPalLayerSettings
     std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden );
 
     /**
+     * Evaluates label text.
+     *
+     * Returns FALSE if an error occurred.
+     */
+    bool evaluateLabelText( const QgsFeature &feature, QgsRenderContext &context, QString &labelText ) const;
+
+    /**
      * Registers a feature as an obstacle only (no label rendered)
      */
     std::unique_ptr< QgsLabelFeature > registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
@@ -1036,7 +1043,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //! Property collection for data defined label settings
     QgsPropertyCollection mDataDefinedProperties;
 
-    std::unique_ptr<QgsExpression> expression;
+    mutable std::unique_ptr<QgsExpression> expression;
 
     std::unique_ptr< QFontDatabase > mFontDB;
 

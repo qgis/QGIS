@@ -612,7 +612,7 @@ const QgsPropertiesDefinition &QgsPalLayerSettings::propertyDefinitions()
   return *sPropertyDefinitions();
 }
 
-QgsExpression *QgsPalLayerSettings::getLabelExpression()
+QgsExpression *QgsPalLayerSettings::getLabelExpression() const
 {
   if ( !expression )
   {
@@ -2158,6 +2158,134 @@ std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings:
   return { evaluatedFormat, QFontMetricsF( labelFont ) };
 }
 
+bool QgsPalLayerSettings::evaluateLabelText( const QgsFeature &feature, QgsRenderContext &context, QString &labelText, const QgsTextFormat &format ) const
+{
+  // Check to see if we are using an expression string.
+  if ( isExpression )
+  {
+    QgsExpression *exp = getLabelExpression();
+    if ( exp->hasParserError() )
+    {
+      QgsDebugMsgLevel( u"Expression parser error:%1"_s.arg( exp->parserErrorString() ), 4 );
+      return false;
+    }
+
+    QVariant result = exp->evaluate( &context.expressionContext() ); // expression prepared in QgsPalLabeling::prepareLayer()
+    if ( exp->hasEvalError() )
+    {
+      QgsDebugMsgLevel( u"Expression parser eval error:%1"_s.arg( exp->evalErrorString() ), 4 );
+      return false;
+    }
+    labelText = QgsVariantUtils::isNull( result ) ? QString() : result.toString();
+  }
+  else
+  {
+    const QVariant &v = feature.attribute( fieldIndex );
+    labelText = QgsVariantUtils::isNull( v ) ? QString() : v.toString();
+  }
+
+  // TODO -- this is in the wrong place. We should be substituting the text only, ie after we have parsed
+  // any HTML tags to a text document.
+
+  // apply text replacements
+  if ( useSubstitutions )
+  {
+    labelText = substitutions.process( labelText );
+  }
+
+  // apply capitalization
+  Qgis::Capitalization capitalization = format.capitalization();
+  // maintain API - capitalization may have been set in textFont
+  if ( capitalization == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  {
+    capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
+  }
+
+  // data defined font capitalization?
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
+  {
+    const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
+    if ( !QgsVariantUtils::isNull( exprVal ) )
+    {
+      QString fcase = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
+
+      if ( !fcase.isEmpty() )
+      {
+        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::MixedCase;
+        }
+        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::AllUppercase;
+        }
+        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::AllLowercase;
+        }
+        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::ForceFirstLetterToCapital;
+        }
+        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::TitleCase;
+        }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::SmallCaps;
+        }
+        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          capitalization = Qgis::Capitalization::AllSmallCaps;
+        }
+#endif
+      }
+    }
+  }
+
+  // TODO -- this is in the wrong place. We should be capitalizing the text only, ie after we have parsed
+  // any HTML tags to a text document.
+  labelText = QgsStringUtils::capitalize( labelText, capitalization );
+
+  // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
+
+  // format number if label text is coercible to a number
+  bool evalFormatNumbers = formatNumbers;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::NumFormat ) )
+  {
+    evalFormatNumbers = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::NumFormat, context.expressionContext(), evalFormatNumbers );
+  }
+  if ( evalFormatNumbers )
+  {
+    // data defined decimal places?
+    int decimalPlaces = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::Property::NumDecimals, context.expressionContext(), decimals );
+    if ( decimalPlaces <= 0 ) // needs to be positive
+      decimalPlaces = decimals;
+
+    // data defined plus sign?
+    bool signPlus = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::NumPlusSign, context.expressionContext(), plusSign );
+
+    QVariant textV( labelText );
+    bool ok;
+    double d = textV.toDouble( &ok );
+    if ( ok )
+    {
+      QString numberFormat;
+      if ( d > 0 && signPlus )
+      {
+        numberFormat.append( '+' );
+      }
+      numberFormat.append( "%1" );
+      labelText = numberFormat.arg( QLocale().toString( d, 'f', decimalPlaces ) );
+    }
+  }
+
+  return true;
+}
+
 std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
@@ -2218,123 +2346,9 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     return {};
 
   QString labelText;
+  if ( !evaluateLabelText( feature, context, labelText, evaluatedFormat ) )
+    return {};
 
-  // Check to see if we are a expression string.
-  if ( isExpression )
-  {
-    QgsExpression *exp = getLabelExpression();
-    if ( exp->hasParserError() )
-    {
-      QgsDebugMsgLevel( u"Expression parser error:%1"_s.arg( exp->parserErrorString() ), 4 );
-      return {};
-    }
-
-    QVariant result = exp->evaluate( &context.expressionContext() ); // expression prepared in QgsPalLabeling::prepareLayer()
-    if ( exp->hasEvalError() )
-    {
-      QgsDebugMsgLevel( u"Expression parser eval error:%1"_s.arg( exp->evalErrorString() ), 4 );
-      return {};
-    }
-    labelText = QgsVariantUtils::isNull( result ) ? QString() : result.toString();
-  }
-  else
-  {
-    const QVariant &v = feature.attribute( fieldIndex );
-    labelText = QgsVariantUtils::isNull( v ) ? QString() : v.toString();
-  }
-
-  // apply text replacements
-  if ( useSubstitutions )
-  {
-    labelText = substitutions.process( labelText );
-  }
-
-  // apply capitalization
-  Qgis::Capitalization capitalization = evaluatedFormat.capitalization();
-  // maintain API - capitalization may have been set in textFont
-  if ( capitalization == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
-  {
-    capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
-  }
-
-  // data defined font capitalization?
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
-  {
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-    {
-      QString fcase = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
-
-      if ( !fcase.isEmpty() )
-      {
-        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::MixedCase;
-        }
-        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllUppercase;
-        }
-        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllLowercase;
-        }
-        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::ForceFirstLetterToCapital;
-        }
-        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::TitleCase;
-        }
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::SmallCaps;
-        }
-        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllSmallCaps;
-        }
-#endif
-      }
-    }
-  }
-  labelText = QgsStringUtils::capitalize( labelText, capitalization );
-
-  // format number if label text is coercible to a number
-  bool evalFormatNumbers = formatNumbers;
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::NumFormat ) )
-  {
-    evalFormatNumbers = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::NumFormat, context.expressionContext(), evalFormatNumbers );
-  }
-  if ( evalFormatNumbers )
-  {
-    // data defined decimal places?
-    int decimalPlaces = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::Property::NumDecimals, context.expressionContext(), decimals );
-    if ( decimalPlaces <= 0 ) // needs to be positive
-      decimalPlaces = decimals;
-
-    // data defined plus sign?
-    bool signPlus = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::NumPlusSign, context.expressionContext(), plusSign );
-
-    QVariant textV( labelText );
-    bool ok;
-    double d = textV.toDouble( &ok );
-    if ( ok )
-    {
-      QString numberFormat;
-      if ( d > 0 && signPlus )
-      {
-        numberFormat.append( '+' );
-      }
-      numberFormat.append( "%1" );
-      labelText = numberFormat.arg( QLocale().toString( d, 'f', decimalPlaces ) );
-    }
-  }
-
-  // NOTE: this should come AFTER any option that affects font metrics
   QSizeF labelSize;
   QSizeF rotatedSize;
 
