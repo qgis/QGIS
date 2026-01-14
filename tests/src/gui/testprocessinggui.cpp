@@ -39,6 +39,7 @@
 #include "qgsfilewidget.h"
 #include "qgsgeometrywidget.h"
 #include "qgsgui.h"
+#include "qgshighlightablelineedit.h"
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutitemlabel.h"
@@ -9277,9 +9278,11 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 0 );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 0 );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   QgsProcessingOutputLayerDefinition def;
   def.sink.setStaticValue( QgsProcessing::TEMPORARY_OUTPUT );
@@ -9308,6 +9311,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( def );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 0 );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   v = panel.value();
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( u"fileEncoding"_s ).toString(), u"utf8"_s );
@@ -9316,6 +9320,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( u"ogr:dbname='/me/a.gpkg' table=\"d\" (geom) sql=''"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 1 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   v = panel.value();
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( u"fileEncoding"_s ).toString(), u"utf8"_s );
@@ -9324,6 +9329,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( u"ogr:dbname='/me/a.gpkg' table=\"d\" (geom) sql=''"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 1 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   panel.setValue( u"postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table=\"stufff\".\"output\" (the_geom) sql="_s );
   v = panel.value();
@@ -9333,6 +9339,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 2 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( u"postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table=\"stufff\".\"output\" (the_geom) sql="_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 2 );
@@ -9345,12 +9352,15 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 3 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( u"/home/me/test.shp"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 3 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( u"/home/me/test2.shp"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 4 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   QgsSettings settings;
   settings.setValue( u"/Processing/Configuration/OUTPUTS_FOLDER"_s, TEST_DATA_DIR );
@@ -9359,6 +9369,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( u"fileEncoding"_s ).toString(), u"utf8"_s );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + u"/test.shp"_s ) );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
   QString layerName = u"new layer"_s;
@@ -9368,6 +9379,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   QgsProcessingOutputLayerDefinition paramDef = QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT );
   QString destName = u"new layer name"_s;
