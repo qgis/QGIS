@@ -1012,6 +1012,13 @@ class CORE_EXPORT QgsPalLayerSettings
     bool checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const;
 
     /**
+     * Checks whether the current label is visible.
+     *
+     * Includes evaluation of data-defined visibility and scale-based visibility.
+     */
+    bool isLabelVisible( QgsRenderContext &context ) const;
+
+    /**
      * Registers a feature as an obstacle only (no label rendered)
      */
     std::unique_ptr< QgsLabelFeature > registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
