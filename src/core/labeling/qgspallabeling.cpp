@@ -1977,65 +1977,19 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   registerFeatureWithDetails( f, context, QgsGeometry(), nullptr );
 }
 
-std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+bool QgsPalLayerSettings::isLabelVisible( QgsRenderContext &context ) const
 {
-  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
-  mCurFeat = &f;
-
-  // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
-  bool isObstacle = mObstacleSettings.isObstacle();
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::IsObstacle ) )
-    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
-
-  std::vector<std::unique_ptr<QgsLabelFeature> > res;
-  if ( !drawLabels )
-  {
-    if ( isObstacle )
-    {
-      std::unique_ptr< QgsLabelFeature > obstacle = registerObstacleFeature( f, context, obstacleGeometry );
-      if ( obstacle )
-        res.emplace_back( std::move( obstacle ) );
-      return res;
-    }
-    else
-    {
-      return res;
-    }
-  }
-
-  QgsFeature feature = f;
-  if ( geometryGeneratorEnabled )
-  {
-    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
-    if ( mGeometryGeneratorExpression.hasEvalError() )
-      QgsMessageLog::logMessage( mGeometryGeneratorExpression.evalErrorString(), QObject::tr( "Labeling" ) );
-
-    if ( obstacleGeometry.isNull() )
-    {
-      // if an explicit obstacle geometry hasn't been set, we must always use the original feature geometry
-      // as the obstacle -- because we want to use the geometry which was used to render the symbology
-      // for the feature as the obstacle for other layers' labels, NOT the generated geometry which is used
-      // only to place labels for this layer.
-      obstacleGeometry = f.geometry();
-    }
-
-    feature.setGeometry( geometry );
-  }
-
-  // store data defined-derived values for later adding to label feature for use during rendering
-  dataDefinedValues.clear();
-
-  // data defined show label? defaults to show label if not set
+// data defined show label? defaults to show label if not set
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Show ) )
   {
     context.expressionContext().setOriginalValueVariable( true );
     if ( !mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::Show, context.expressionContext(), true ) )
     {
-      return {};
+      return false;
     }
   }
 
-  // data defined scale visibility?
+// data defined scale visibility?
   bool useScaleVisibility = scaleVisibility;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ScaleVisibility ) )
     useScaleVisibility = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::ScaleVisibility, context.expressionContext(), scaleVisibility );
@@ -2059,7 +2013,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     // maxScale is inclusive ( < --> no label )
     if ( !qgsDoubleNear( maxScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( context.rendererScale(), maxScale ) )
     {
-      return {};
+      return false;
     }
 
     // data defined min scale?
@@ -2079,9 +2033,65 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     // minScale is exclusive ( >= --> no label )
     if ( !qgsDoubleNear( minScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( context.rendererScale(), minScale ) )
     {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+{
+  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
+  mCurFeat = &f;
+
+  // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
+  bool isObstacle = mObstacleSettings.isObstacle();
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::IsObstacle ) )
+    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
+
+  std::vector<std::unique_ptr<QgsLabelFeature> > res;
+
+  // possibly an obstacle-only feature
+  if ( !drawLabels )
+  {
+    if ( isObstacle )
+    {
+      std::unique_ptr< QgsLabelFeature > obstacle = registerObstacleFeature( f, context, obstacleGeometry );
+      if ( obstacle )
+        res.emplace_back( std::move( obstacle ) );
+      return res;
+    }
+    else
+    {
       return {};
     }
   }
+
+  if ( !isLabelVisible( context ) )
+    return {};
+
+  QgsFeature feature = f;
+  if ( geometryGeneratorEnabled )
+  {
+    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
+    if ( mGeometryGeneratorExpression.hasEvalError() )
+      QgsMessageLog::logMessage( mGeometryGeneratorExpression.evalErrorString(), QObject::tr( "Labeling" ) );
+
+    if ( obstacleGeometry.isNull() )
+    {
+      // if an explicit obstacle geometry hasn't been set, we must always use the original feature geometry
+      // as the obstacle -- because we want to use the geometry which was used to render the symbology
+      // for the feature as the obstacle for other layers' labels, NOT the generated geometry which is used
+      // only to place labels for this layer.
+      obstacleGeometry = f.geometry();
+    }
+
+    feature.setGeometry( geometry );
+  }
+
+  // store data defined-derived values for later adding to label feature for use during rendering
+  dataDefinedValues.clear();
 
   QgsTextFormat evaluatedFormat = mFormat;
 
