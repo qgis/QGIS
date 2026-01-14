@@ -21,6 +21,8 @@
 #include "qgsnullmaterialsettings.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterialsettings.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 #include "qgssimplelinematerialsettings.h"
 #include "qgstest.h"
 
@@ -44,6 +46,7 @@ class TestQgs3DSymbolUtils : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testvectorSymbolAverageColor();
+    void testVectorSymbolPreviewIcon();
 };
 
 //runs before all tests
@@ -150,6 +153,61 @@ void TestQgs3DSymbolUtils::testvectorSymbolAverageColor()
   QCOMPARE( averageColorN.green(), 0 );
   QCOMPARE( averageColorN.blue(), 0 );
   QCOMPARE( averageColorN.alpha(), 255 );
+}
+
+void TestQgs3DSymbolUtils::testVectorSymbolPreviewIcon()
+{
+  const QgsScreenProperties screenProps;
+  const int padding = 1;
+
+  // point symbol
+  auto sphere3DSymbol = std::make_unique<QgsPoint3DSymbol>();
+  QgsPhongMaterialSettings phongSettings;
+  phongSettings.setAmbient( QColor( 20, 50, 20 ) );
+  phongSettings.setDiffuse( QColor( 80, 150, 80 ) );
+  phongSettings.setSpecular( QColor( 100, 150, 100 ) );
+  phongSettings.setShininess( 40.0 );
+  phongSettings.setOpacity( 0.4 );
+  sphere3DSymbol->setMaterialSettings( phongSettings.clone() );
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 15.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+
+  QSize iconSize( 64, 64 );
+  const QIcon pointIcon = Qgs3DSymbolUtils::vectorSymbolPreviewIcon( sphere3DSymbol.get(), iconSize, screenProps, padding );
+  QGSVERIFYIMAGECHECK( "icon_point", "icon_point", pointIcon.pixmap( iconSize ).toImage(), QString(), 0, QSize( 0, 0 ), 0 );
+
+  // line symbol
+  auto lineSymbol = std::make_unique<QgsLine3DSymbol>();
+  lineSymbol->setRenderAsSimpleLines( true );
+  QgsSimpleLineMaterialSettings lineMatSettings;
+  lineMatSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( lineMatSettings.clone() );
+  lineSymbol->setWidth( 6.0f );
+
+  iconSize = QSize( 64, 24 );
+  const QIcon lineIcon = Qgs3DSymbolUtils::vectorSymbolPreviewIcon( lineSymbol.get(), iconSize, screenProps, padding );
+  QGSVERIFYIMAGECHECK( "icon_line", "icon_line", lineIcon.pixmap( iconSize ).toImage(), QString(), 0, QSize( 0, 0 ), 0 );
+
+  // polygon symbol
+  auto polygonSymbol = std::make_unique<QgsPolygon3DSymbol>();
+  QgsGoochMaterialSettings goochSettings;
+  goochSettings.setWarm( QColor( 255, 220, 80 ) );
+  goochSettings.setCool( QColor( 50, 80, 180 ) );
+  goochSettings.setDiffuse( QColor( 120, 120, 100 ) );
+  goochSettings.setSpecular( QColor( 255, 255, 180 ) );
+  goochSettings.setShininess( 80.0 );
+  goochSettings.setAlpha( 0.5 );
+  goochSettings.setBeta( 0.5 );
+  polygonSymbol->setMaterialSettings( goochSettings.clone() );
+  polygonSymbol->setEdgesEnabled( true );
+  polygonSymbol->setEdgeColor( Qt::blue );
+  polygonSymbol->setEdgeWidth( 1.0f );
+
+  iconSize = QSize( 64, 64 );
+  const QIcon polygonIcon = Qgs3DSymbolUtils::vectorSymbolPreviewIcon( polygonSymbol.get(), iconSize, screenProps, padding );
+  QGSVERIFYIMAGECHECK( "icon_polygon", "icon_polygon", polygonIcon.pixmap( iconSize ).toImage(), QString(), 0, QSize( 0, 0 ), 0 );
 }
 
 QGSTEST_MAIN( TestQgs3DSymbolUtils )
