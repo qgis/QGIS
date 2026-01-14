@@ -173,7 +173,7 @@ class CORE_EXPORT QgsGeometryParameters
  * methods for working with geodesic calculations and spatial operations on geometries,
  * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
  * are required.
-  *
+ *
  * \note Polyline vs MultiLineString behavior
  *
  * In the QGIS API and PyQGIS, there is an important distinction between
@@ -204,6 +204,7 @@ class CORE_EXPORT QgsGeometryParameters
  *     line = geom.asPolyline()
  * \endcode
  */
+
 class CORE_EXPORT QgsGeometry
 {
     Q_GADGET
