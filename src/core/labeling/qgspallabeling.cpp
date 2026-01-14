@@ -3034,9 +3034,6 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   // users with options they likely don't need to see...
   const double overrunSmoothDist = context.convertToMapUnits( 1, Qgis::RenderUnit::Millimeters );
 
-  QgsLabelPlacementSettings placementSettings = mPlacementSettings;
-  placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
   bool labelAll = labelPerPart && !hasDataDefinedPosition;
   if ( !hasDataDefinedPosition )
   {
