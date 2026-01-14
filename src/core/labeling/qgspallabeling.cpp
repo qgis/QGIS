@@ -2040,6 +2040,124 @@ bool QgsPalLayerSettings::isLabelVisible( QgsRenderContext &context ) const
   return true;
 }
 
+std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden )
+{
+  labelIsHidden = false;
+  QgsTextFormat evaluatedFormat = mFormat;
+
+  QFont labelFont = evaluatedFormat.font();
+// labelFont will be added to label feature for use during label painting
+
+// data defined font units?
+  Qgis::RenderUnit fontunits = evaluatedFormat.sizeUnit();
+  const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontSizeUnit, context.expressionContext() );
+  if ( !QgsVariantUtils::isNull( exprVal ) )
+  {
+    QString units = exprVal.toString();
+    if ( !units.isEmpty() )
+    {
+      bool ok;
+      Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
+      if ( ok )
+        fontunits = res;
+    }
+  }
+
+//data defined label size?
+  double fontSize = evaluatedFormat.size();
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Size ) )
+  {
+    context.expressionContext().setOriginalValueVariable( fontSize );
+    fontSize = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::Property::Size, context.expressionContext(), fontSize );
+  }
+  if ( fontSize <= 0.0 )
+  {
+    labelIsHidden = true;
+    return { evaluatedFormat, {} };
+  }
+
+  int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, evaluatedFormat.sizeMapUnitScale() );
+// don't try to show font sizes less than 1 pixel (Qt complains)
+  if ( fontPixelSize < 1 )
+  {
+    labelIsHidden = true;
+    return { evaluatedFormat, {} };
+  }
+  labelFont.setPixelSize( fontPixelSize );
+
+// NOTE: labelFont now always has pixelSize set, so pointSize or pointSizeF might return -1
+
+// defined 'minimum/maximum pixel font size'?
+  if ( fontunits == Qgis::RenderUnit::MapUnits )
+  {
+    if ( mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::FontLimitPixel, context.expressionContext(), fontLimitPixelSize ) )
+    {
+      int fontMinPixel = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::Property::FontMinPixel, context.expressionContext(), fontMinPixelSize );
+      int fontMaxPixel = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::Property::FontMaxPixel, context.expressionContext(), fontMaxPixelSize );
+
+      if ( fontMinPixel > labelFont.pixelSize() || labelFont.pixelSize() > fontMaxPixel )
+      {
+        labelIsHidden = true;
+        return { evaluatedFormat, {} };
+      }
+    }
+  }
+
+// NOTE: the following parsing functions calculate and store any data defined values for later use in QgsPalLabeling::drawLabeling
+// this is done to provide clarity, and because such parsing is not directly related to PAL feature registration calculations
+
+// calculate rest of font attributes and store any data defined values
+// this is done here for later use in making label backgrounds part of collision management (when implemented)
+  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
+
+  parseTextStyle( labelFont, fontunits, context );
+  if ( mDataDefinedProperties.hasActiveProperties() )
+  {
+    parseTextFormatting( context );
+    parseTextBuffer( context );
+    parseTextMask( context );
+    parseShapeBackground( context );
+    parseDropShadow( context );
+  }
+
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TabStopDistance ) )
+  {
+    QList<QgsTextFormat::Tab> tabPositions;
+    if ( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QVariantList )
+    {
+      const QVariantList parts = dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toList();
+      for ( const QVariant &part : parts )
+      {
+        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
+      }
+      evaluatedFormat.setTabPositions( tabPositions );
+    }
+    else if ( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QStringList )
+    {
+      const QStringList parts = dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toStringList();
+      for ( const QString &part : parts )
+      {
+        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
+      }
+      evaluatedFormat.setTabPositions( tabPositions );
+    }
+    else
+    {
+      evaluatedFormat.setTabPositions( tabPositions );
+      evaluatedFormat.setTabStopDistance( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toDouble() );
+    }
+  }
+
+  evaluatedFormat.setFont( labelFont );
+// undo scaling by symbology reference scale, as this would have been applied in the previous call to QgsTextRenderer::sizeToPixel and we risk
+// double-applying it if we don't re-adjust, since all the text format metric calculations assume an unscaled format font size is present
+  const double symbologyReferenceScaleFactor = context.symbologyReferenceScale() > 0 ? context.symbologyReferenceScale() / context.rendererScale() : 1;
+  evaluatedFormat.setSize( labelFont.pixelSize() / symbologyReferenceScaleFactor );
+  evaluatedFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
+
+  return { evaluatedFormat, QFontMetricsF( labelFont ) };
+}
+
 std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
@@ -2093,114 +2211,11 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   // store data defined-derived values for later adding to label feature for use during rendering
   dataDefinedValues.clear();
 
-  QgsTextFormat evaluatedFormat = mFormat;
-
-  QFont labelFont = evaluatedFormat.font();
-  // labelFont will be added to label feature for use during label painting
-
-  // data defined font units?
-  Qgis::RenderUnit fontunits = evaluatedFormat.sizeUnit();
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontSizeUnit, context.expressionContext() );
-  if ( !QgsVariantUtils::isNull( exprVal ) )
-  {
-    QString units = exprVal.toString();
-    if ( !units.isEmpty() )
-    {
-      bool ok;
-      Qgis::RenderUnit res = QgsUnitTypes::decodeRenderUnit( units, &ok );
-      if ( ok )
-        fontunits = res;
-    }
-  }
-
-  //data defined label size?
-  double fontSize = evaluatedFormat.size();
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Size ) )
-  {
-    context.expressionContext().setOriginalValueVariable( fontSize );
-    fontSize = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::Property::Size, context.expressionContext(), fontSize );
-  }
-  if ( fontSize <= 0.0 )
-  {
+  // evaluate text format and font properties
+  bool labelIsHidden = false;
+  auto [ evaluatedFormat, labelFontMetrics ] = evaluateTextFormat( context, labelIsHidden );
+  if ( labelIsHidden )
     return {};
-  }
-
-  int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, evaluatedFormat.sizeMapUnitScale() );
-  // don't try to show font sizes less than 1 pixel (Qt complains)
-  if ( fontPixelSize < 1 )
-  {
-    return {};
-  }
-  labelFont.setPixelSize( fontPixelSize );
-
-  // NOTE: labelFont now always has pixelSize set, so pointSize or pointSizeF might return -1
-
-  // defined 'minimum/maximum pixel font size'?
-  if ( fontunits == Qgis::RenderUnit::MapUnits )
-  {
-    if ( mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::FontLimitPixel, context.expressionContext(), fontLimitPixelSize ) )
-    {
-      int fontMinPixel = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::Property::FontMinPixel, context.expressionContext(), fontMinPixelSize );
-      int fontMaxPixel = mDataDefinedProperties.valueAsInt( QgsPalLayerSettings::Property::FontMaxPixel, context.expressionContext(), fontMaxPixelSize );
-
-      if ( fontMinPixel > labelFont.pixelSize() || labelFont.pixelSize() > fontMaxPixel )
-      {
-        return {};
-      }
-    }
-  }
-
-  // NOTE: the following parsing functions calculate and store any data defined values for later use in QgsPalLabeling::drawLabeling
-  // this is done to provide clarity, and because such parsing is not directly related to PAL feature registration calculations
-
-  // calculate rest of font attributes and store any data defined values
-  // this is done here for later use in making label backgrounds part of collision management (when implemented)
-  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
-
-  parseTextStyle( labelFont, fontunits, context );
-  if ( mDataDefinedProperties.hasActiveProperties() )
-  {
-    parseTextFormatting( context );
-    parseTextBuffer( context );
-    parseTextMask( context );
-    parseShapeBackground( context );
-    parseDropShadow( context );
-  }
-
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TabStopDistance ) )
-  {
-    QList<QgsTextFormat::Tab> tabPositions;
-    if ( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QVariantList )
-    {
-      const QVariantList parts = dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toList();
-      for ( const QVariant &part : parts )
-      {
-        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
-      }
-      evaluatedFormat.setTabPositions( tabPositions );
-    }
-    else if ( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).userType() == QMetaType::Type::QStringList )
-    {
-      const QStringList parts = dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toStringList();
-      for ( const QString &part : parts )
-      {
-        tabPositions.append( QgsTextFormat::Tab( part.toDouble() ) );
-      }
-      evaluatedFormat.setTabPositions( tabPositions );
-    }
-    else
-    {
-      evaluatedFormat.setTabPositions( tabPositions );
-      evaluatedFormat.setTabStopDistance( dataDefinedValues.value( QgsPalLayerSettings::Property::TabStopDistance ).toDouble() );
-    }
-  }
-
-  evaluatedFormat.setFont( labelFont );
-  // undo scaling by symbology reference scale, as this would have been applied in the previous call to QgsTextRenderer::sizeToPixel and we risk
-  // double-applying it if we don't re-adjust, since all the text format metric calculations assume an unscaled format font size is present
-  const double symbologyReferenceScaleFactor = context.symbologyReferenceScale() > 0 ? context.symbologyReferenceScale() / context.rendererScale() : 1;
-  evaluatedFormat.setSize( labelFont.pixelSize() / symbologyReferenceScaleFactor );
-  evaluatedFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
 
   QString labelText;
 
@@ -2320,7 +2335,6 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   }
 
   // NOTE: this should come AFTER any option that affects font metrics
-  const QFontMetricsF labelFontMetrics( labelFont );
   QSizeF labelSize;
   QSizeF rotatedSize;
 
@@ -2337,11 +2351,11 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
       if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
       {
         doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
+        calculateLabelSize( *labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
       }
       else
       {
-        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, nullptr, nullptr, labelSize, rotatedSize, outerBounds );
+        calculateLabelSize( *labelFontMetrics, labelText, context, evaluatedFormat, nullptr, nullptr, labelSize, rotatedSize, outerBounds );
       }
       break;
     }
@@ -2356,7 +2370,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     {
       // non-curved labels always require document and metrics
       doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
-      calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
+      calculateLabelSize( *labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
       break;
     }
   }
@@ -2902,14 +2916,14 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
               }
               else
               {
-                double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
+                double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
                 if ( valiString.compare( "Base"_L1, Qt::CaseInsensitive ) == 0 )
                 {
                   ydiff -= labelSize.height() * descentRatio;
                 }
                 else //'Cap' or 'Half'
                 {
-                  double capHeightRatio = ( labelFontMetrics.boundingRect( 'H' ).height() + 1 + labelFontMetrics.descent() ) / labelFontMetrics.height();
+                  double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
                   ydiff -= labelSize.height() * capHeightRatio;
                   if ( valiString.compare( "Half"_L1, Qt::CaseInsensitive ) == 0 )
                   {
@@ -3099,15 +3113,15 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
   //this makes labels align to the font's baseline or highest character
-  double topMargin = std::max( 0.25 * labelFontMetrics.ascent(), 0.0 );
-  double bottomMargin = 1.0 + labelFontMetrics.descent();
+  double topMargin = std::max( 0.25 * labelFontMetrics->ascent(), 0.0 );
+  double bottomMargin = 1.0 + labelFontMetrics->descent();
   QgsMargins vm( 0.0, topMargin, 0.0, bottomMargin );
   vm *= xform->mapUnitsPerPixel();
   labelFeature->setVisualMargin( vm );
 
   // store the label's calculated font for later use during painting
-  QgsDebugMsgLevel( u"PAL font stored definedFont: %1, Style: %2"_s.arg( labelFont.toString(), labelFont.styleName() ), 4 );
-  labelFeature->setDefinedFont( labelFont );
+  QgsDebugMsgLevel( u"PAL font stored definedFont: %1, Style: %2"_s.arg( evaluatedFormat.font().toString(), evaluatedFormat.font().styleName() ), 4 );
+  labelFeature->setDefinedFont( evaluatedFormat.font() );
 
   labelFeature->setMaximumCharacterAngleInside( std::clamp( maxcharanglein, 20.0, 60.0 ) * M_PI / 180 );
   labelFeature->setMaximumCharacterAngleOutside( std::clamp( maxcharangleout, -95.0, -20.0 ) * M_PI / 180 );
@@ -3125,7 +3139,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
 
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
-      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, labelFont, labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, evaluatedFormat.allowHtmlFormatting() ? &doc : nullptr, evaluatedFormat.allowHtmlFormatting() ? &documentMetrics : nullptr ) );
+      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, evaluatedFormat.font(), *labelFontMetrics, evaluatedFormat.font().letterSpacing(), evaluatedFormat.font().wordSpacing(), labelText, evaluatedFormat.allowHtmlFormatting() ? &doc : nullptr, evaluatedFormat.allowHtmlFormatting() ? &documentMetrics : nullptr ) );
       break;
   }
 

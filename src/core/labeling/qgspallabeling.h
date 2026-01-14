@@ -1019,6 +1019,14 @@ class CORE_EXPORT QgsPalLayerSettings
     bool isLabelVisible( QgsRenderContext &context ) const;
 
     /**
+     * Evaluates text format and other font-appearance related properties.
+     *
+     * \param context render context
+     * \param labelIsHidden will be set to TRUE if label should be hidden (eg due to too small font size)
+     */
+    std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden );
+
+    /**
      * Registers a feature as an obstacle only (no label rendered)
      */
     std::unique_ptr< QgsLabelFeature > registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
