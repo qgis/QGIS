@@ -96,6 +96,47 @@ class CORE_EXPORT QgsGeometryUtilsBase
                                          double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
 
     /**
+     * Evaluates a point on a cubic Bézier curve defined by four control points.
+     *
+     * This is a high-performance version of the equivalent QgsGeometryUtils method which
+     * avoids creating a temporary QgsPoint object.
+     *
+     * \param p0x start point x
+     * \param p0y start point y
+     * \param p0z start point z
+     * \param p0m start point m
+     * \param p1x first control point x
+     * \param p1y first control point y
+     * \param p1z first control point z
+     * \param p1m first control point m
+     * \param p2x second control point x
+     * \param p2y second control point y
+     * \param p2z second control point z
+     * \param p2m second control point m
+     * \param p3x end point x
+     * \param p3y end point y
+     * \param p3z end point z
+     * \param p3m end point m
+     * \param t parameter value between 0 and 1
+     * \param hasZ whether to calculate a Z value
+     * \param hasM whether to calculate an M value
+     * \param outX calculated x-coordinate
+     * \param outY calculated y-coordinate
+     * \param outZ calculated z-coordinate
+     * \param outM calculated m-coordinate
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static void interpolatePointOnCubicBezier(
+      double p0x, double p0y, double p0z, double p0m,
+      double p1x, double p1y, double p1z, double p1m,
+      double p2x, double p2y, double p2z, double p2m,
+      double p3x, double p3y, double p3z, double p3m,
+      double t, bool hasZ, bool hasM,
+      double &outX, double &outY, double &outZ, double &outM ) SIP_SKIP;
+
+    /**
      * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
      * offset from the segment by the specified \a offset amount.
      *
