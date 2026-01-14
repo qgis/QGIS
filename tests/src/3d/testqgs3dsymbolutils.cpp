@@ -47,6 +47,7 @@ class TestQgs3DSymbolUtils : public QgsTest
 
     void testvectorSymbolAverageColor();
     void testVectorSymbolPreviewIcon();
+    void testSetVectorSymbolBaseColor();
 };
 
 //runs before all tests
@@ -208,6 +209,81 @@ void TestQgs3DSymbolUtils::testVectorSymbolPreviewIcon()
   iconSize = QSize( 64, 64 );
   const QIcon polygonIcon = Qgs3DSymbolUtils::vectorSymbolPreviewIcon( polygonSymbol.get(), iconSize, screenProps, padding );
   QGSVERIFYIMAGECHECK( "icon_polygon", "icon_polygon", polygonIcon.pixmap( iconSize ).toImage(), QString(), 0, QSize( 0, 0 ), 0 );
+}
+
+void TestQgs3DSymbolUtils::testSetVectorSymbolBaseColor()
+{
+  const QColor baseColor( 181, 140, 99 );
+
+  // point symbol
+  auto sphere3DSymbol = std::make_unique<QgsPoint3DSymbol>();
+  QgsPhongMaterialSettings phongSettings;
+  phongSettings.setAmbient( QColor( 20, 50, 20 ) );
+  phongSettings.setDiffuse( QColor( 80, 150, 80 ) );
+  phongSettings.setSpecular( QColor( 100, 150, 100 ) );
+  phongSettings.setShininess( 40.0 );
+  phongSettings.setOpacity( 0.4 );
+  sphere3DSymbol->setMaterialSettings( phongSettings.clone() );
+
+  Qgs3DSymbolUtils::setVectorSymbolBaseColor( sphere3DSymbol.get(), baseColor );
+  QgsPhongMaterialSettings *newPhongSettings = dynamic_cast<QgsPhongMaterialSettings *>( sphere3DSymbol->materialSettings() );
+  QVERIFY( newPhongSettings );
+  QCOMPARE( phongSettings.shininess(), 40.0f );
+  QCOMPARE( phongSettings.opacity(), 0.4 );
+  QCOMPARE( newPhongSettings->ambient().red(), 36 );
+  QCOMPARE( newPhongSettings->ambient().green(), 28 );
+  QCOMPARE( newPhongSettings->ambient().blue(), 20 );
+  QCOMPARE( newPhongSettings->diffuse().red(), 174 );
+  QCOMPARE( newPhongSettings->diffuse().green(), 134 );
+  QCOMPARE( newPhongSettings->diffuse().blue(), 95 );
+  QCOMPARE( newPhongSettings->specular().red(), 10 );
+  QCOMPARE( newPhongSettings->specular().green(), 10 );
+  QCOMPARE( newPhongSettings->specular().blue(), 10 );
+
+  // line symbol
+  auto lineSymbol = std::make_unique<QgsLine3DSymbol>();
+  lineSymbol->setRenderAsSimpleLines( true );
+  QgsSimpleLineMaterialSettings lineMatSettings;
+  lineMatSettings.setAmbient( Qt::red );
+  lineSymbol->setMaterialSettings( lineMatSettings.clone() );
+
+  Qgs3DSymbolUtils::setVectorSymbolBaseColor( lineSymbol.get(), baseColor );
+  QgsSimpleLineMaterialSettings *newLineMatSettings = dynamic_cast<QgsSimpleLineMaterialSettings *>( lineSymbol->materialSettings() );
+  QVERIFY( newLineMatSettings );
+  QCOMPARE( newLineMatSettings->ambient().red(), baseColor.red() );
+  QCOMPARE( newLineMatSettings->ambient().green(), baseColor.green() );
+  QCOMPARE( newLineMatSettings->ambient().blue(), baseColor.blue() );
+
+  // polygon symbol
+  auto polygonSymbol = std::make_unique<QgsPolygon3DSymbol>();
+  QgsGoochMaterialSettings goochSettings;
+  goochSettings.setWarm( QColor( 255, 220, 80 ) );
+  goochSettings.setCool( QColor( 50, 80, 180 ) );
+  goochSettings.setDiffuse( QColor( 120, 120, 100 ) );
+  goochSettings.setSpecular( QColor( 255, 255, 180 ) );
+  goochSettings.setShininess( 80.0 );
+  goochSettings.setAlpha( 0.5 );
+  goochSettings.setBeta( 0.5 );
+  polygonSymbol->setMaterialSettings( goochSettings.clone() );
+
+  Qgs3DSymbolUtils::setVectorSymbolBaseColor( polygonSymbol.get(), baseColor );
+  QgsGoochMaterialSettings *newGoochSettings = dynamic_cast<QgsGoochMaterialSettings *>( polygonSymbol->materialSettings() );
+  QVERIFY( newGoochSettings );
+  QCOMPARE( goochSettings.shininess(), 80.0f );
+  QCOMPARE( goochSettings.alpha(), 0.5 );
+  QCOMPARE( goochSettings.beta(), 0.5 );
+  QCOMPARE( newGoochSettings->warm().red(), 218 );
+  QCOMPARE( newGoochSettings->warm().green(), 198 );
+  QCOMPARE( newGoochSettings->warm().blue(), 50 );
+  QCOMPARE( newGoochSettings->cool().red(), 91 );
+  QCOMPARE( newGoochSettings->cool().green(), 70 );
+  QCOMPARE( newGoochSettings->cool().blue(), 177 );
+  QCOMPARE( newGoochSettings->diffuse().red(), 154 );
+  QCOMPARE( newGoochSettings->diffuse().green(), 134 );
+  QCOMPARE( newGoochSettings->diffuse().blue(), 113 );
+  QCOMPARE( newGoochSettings->specular().red(), 102 );
+  QCOMPARE( newGoochSettings->specular().green(), 102 );
+  QCOMPARE( newGoochSettings->specular().blue(), 102 );
 }
 
 QGSTEST_MAIN( TestQgs3DSymbolUtils )
