@@ -244,3 +244,20 @@ bool Qgs3DSymbolUtils::setVectorSymbolBaseColor( QgsAbstract3DSymbol *symbol, co
 
   return colorSet;
 }
+
+bool Qgs3DSymbolUtils::copyVectorSymbolMaterial( const QgsAbstract3DSymbol *fromSymbol, QgsAbstract3DSymbol *toSymbol )
+{
+  bool copied = false;
+
+  if ( fromSymbol && toSymbol )
+  {
+    toSymbol->setMaterialSettings( fromSymbol->materialSettings()->clone() );
+    copied = true;
+  }
+  else
+  {
+    QgsDebugError( u"Qgs3DSymbolUtils::copyVectorSymbolMaterial: unable to retrieve material from symbols"_s );
+  }
+
+  return copied;
+}
