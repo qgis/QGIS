@@ -166,6 +166,37 @@ class CORE_EXPORT QgsGeometryParameters
  * can be accessed via the get() method or set using the set() method. This gives access to the underlying
  * raw geometry primitive, such as the point, line, polygon, curve or other geometry subclasses.
  *
+ *
+ * \section polyline_multilinestring Polyline vs MultiLineString
+ *
+ * In the QGIS API and PyQGIS, there is an important distinction between
+ * geometry construction methods and vector layer geometry types which
+ * can be confusing for users.
+ *
+ * A Polyline represents a single-part line geometry composed of one
+ * continuous sequence of vertices. Geometry construction methods such as
+ * fromPolyline() or fromPolylineXY() create single-part line geometries.
+ *
+ * A MultiLineString represents a multipart line geometry composed of
+ * multiple independent line parts. When creating a vector layer intended
+ * to store line features, QGIS requires the geometry type to be specified
+ * as MultiLineString.
+ *
+ * Even when a geometry consists of a single line part, QGIS may silently
+ * promote a single-part polyline to a multipart geometry when adding it to
+ * a layer. No error or warning is raised in this case.
+ *
+ * When working with line geometries in PyQGIS, it is therefore recommended
+ * to explicitly handle both single-part and multipart geometries.
+ *
+ * \code{.py}
+ * geom = feature.geometry()
+ * if geom.isMultipart():
+ *     lines = geom.asMultiPolyline()
+ * else:
+ *     line = geom.asPolyline()
+ * \endcode
+ *
  * \note QgsGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
  * of the methods or properties exposed from the QgsGeometry API (or QgsAbstractGeometry subclasses) utilize
  * geodesic calculations. Accordingly, properties like length() and area() or spatial operations like buffer()
