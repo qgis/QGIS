@@ -99,6 +99,12 @@ namespace pal
       QgsFeatureId featureId() const;
 
       /**
+       * Returns the unique sub part ID for the feature, for features which register
+       * multiple labels.
+       */
+      int subPartId() const;
+
+      /**
        * Returns the maximum number of point candidates to generate for this feature.
        */
       std::size_t maximumPointCandidates() const;
