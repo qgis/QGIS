@@ -17,8 +17,10 @@
 #define QGS3DSYMBOLUTILS_H
 
 #include "qgis_3d.h"
+#include "qgsscreenproperties.h"
 
 #include <QColor>
+#include <QIcon>
 
 #define SIP_NO_FILE
 
@@ -43,6 +45,19 @@ class _3D_EXPORT Qgs3DSymbolUtils
      * \returns A QColor representing the symbol's average appearance, or a default color if the symbol type is not supported.
      */
     static QColor vectorSymbolAverageColor( const QgsAbstract3DSymbol *symbol );
+
+    /**
+     * Returns an icon preview for a 3D vector symbol.
+     *
+     * \param symbol 3D symbol to generate the preview for.
+     * \param size Target pixmap size.
+     * \param screen Destination screen properties used to determine DPI and device pixel ratio.
+     * \param padding Space between icon edge and symbol.
+     * \returns An icon containing a preview of the symbol.
+     *
+     * \note For line and circle symbols, the size of the drawn icon depends on the symbol's parameters.
+     */
+    static QIcon vectorSymbolPreviewIcon( const QgsAbstract3DSymbol *symbol, const QSize &size, const QgsScreenProperties &screen, int padding );
 };
 
 #endif // QGS3DSYMBOLUTILS_H
