@@ -226,3 +226,29 @@ QIcon Qgs3DSymbolUtils::vectorSymbolPreviewIcon( const QgsAbstract3DSymbol *symb
   painter.end();
   return QIcon( pixmap );
 }
+
+bool Qgs3DSymbolUtils::setVectorSymbolBaseColor( QgsAbstract3DSymbol *symbol, const QColor &baseColor )
+{
+  if ( !symbol )
+  {
+    return false;
+  }
+
+  bool colorSet = false;
+  QgsMaterialSettingsInterface *materialInterface = dynamic_cast<QgsMaterialSettingsInterface *>( symbol );
+  if ( materialInterface )
+  {
+    QgsAbstractMaterialSettings *materialSettings = materialInterface->materialSettings();
+    if ( materialSettings )
+    {
+      materialSettings->setColorsFromBase( baseColor );
+      colorSet = true;
+    }
+  }
+  else
+  {
+    QgsDebugError( u"Qgs3DSymbolUtils::setVectorSymbolBaseColor: unable to retrieve material from symbol"_s );
+  }
+
+  return colorSet;
+}
