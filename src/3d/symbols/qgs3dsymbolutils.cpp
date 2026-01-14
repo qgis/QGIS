@@ -237,3 +237,40 @@ QIcon Qgs3DSymbolUtils::vectorSymbolPreviewIcon( const QgsAbstract3DSymbol *symb
   painter.end();
   return QIcon( pixmap );
 }
+
+bool Qgs3DSymbolUtils::setVectorSymbolBaseColor( QgsAbstract3DSymbol *symbol, const QColor &baseColor )
+{
+  bool colorSet = false;
+
+  QgsAbstractMaterialSettings *materialSettings = nullptr;
+  if ( symbol->type() == "line"_L1 )
+  {
+    const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
+    materialSettings = lineSymbol->materialSettings();
+  }
+  else if ( symbol->type() == "point"_L1 )
+  {
+    const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
+    materialSettings = pointSymbol->materialSettings();
+  }
+  else if ( symbol->type() == "polygon"_L1 )
+  {
+    const QgsPolygon3DSymbol *polygonSymbol = dynamic_cast<const QgsPolygon3DSymbol *>( symbol );
+    materialSettings = polygonSymbol->materialSettings();
+  }
+  else
+  {
+    QgsDebugError( u"Qgs3DSymbolUtils::setVectorSymbolBaseColor does not support '%1' symbol"_s.arg( symbol->type() ) );
+  }
+
+  if ( materialSettings )
+  {
+    materialSettings->setColorsFromBase( baseColor );
+  }
+  else
+  {
+    QgsDebugError( u"Qgs3DSymbolUtils::setVectorSymbolBaseColor: unable to retrieve material from symbol"_s );
+  }
+
+  return colorSet;
+}
