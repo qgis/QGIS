@@ -969,6 +969,210 @@ Returns the unit for for blank segments start and end distances
 .. versionadded:: 4.0
 %End
 
+    double trimDistanceStart() const;
+%Docstring
+Returns the trim distance for the start of the line, which dictates a
+length from the start of the line at which the actual rendering should
+start.
+
+Trim units can be retrieved by calling
+:py:func:`~QgsTemplatedLineSymbolLayerBase.trimDistanceStartUnit`.
+
+.. seealso:: :py:func:`setTrimDistanceStart`
+
+.. seealso:: :py:func:`trimDistanceEnd`
+
+.. seealso:: :py:func:`trimDistanceStartUnit`
+
+.. seealso:: :py:func:`trimDistanceStartMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    void setTrimDistanceStart( double distance );
+%Docstring
+Sets the trim ``distance`` for the start of the line, which dictates a
+length from the start of the line at which the actual rendering should
+start.
+
+Trim units can be set by calling
+:py:func:`~QgsTemplatedLineSymbolLayerBase.setTrimDistanceStartUnit`.
+
+.. seealso:: :py:func:`trimDistanceStart`
+
+.. seealso:: :py:func:`setTrimDistanceEnd`
+
+.. seealso:: :py:func:`setTrimDistanceStartUnit`
+
+.. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    void setTrimDistanceStartUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the trim distance for the start of the line.
+
+.. seealso:: :py:func:`trimDistanceStartUnit`
+
+.. seealso:: :py:func:`setTrimDistanceEndUnit`
+
+.. seealso:: :py:func:`setTrimDistanceStart`
+
+.. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::RenderUnit trimDistanceStartUnit() const;
+%Docstring
+Returns the unit for the trim distance for the start of the line.
+
+.. seealso:: :py:func:`setTrimDistanceStartUnit`
+
+.. seealso:: :py:func:`trimDistanceEndUnit`
+
+.. seealso:: :py:func:`trimDistanceStart`
+
+.. seealso:: :py:func:`trimDistanceStartMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    const QgsMapUnitScale &trimDistanceStartMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the trim distance for the start of the
+line.
+
+.. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
+
+.. seealso:: :py:func:`trimDistanceEndMapUnitScale`
+
+.. seealso:: :py:func:`trimDistanceStart`
+
+.. seealso:: :py:func:`trimDistanceStartUnit`
+
+.. versionadded:: 4.0
+%End
+
+    void setTrimDistanceStartMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the trim distance for the start of the
+line.
+
+.. seealso:: :py:func:`trimDistanceStartMapUnitScale`
+
+.. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
+
+.. seealso:: :py:func:`setTrimDistanceStart`
+
+.. seealso:: :py:func:`setTrimDistanceStartUnit`
+
+.. versionadded:: 4.0
+%End
+
+    double trimDistanceEnd() const;
+%Docstring
+Returns the trim distance for the end of the line, which dictates a
+length from the end of the line at which the actual rendering should
+end.
+
+Trim units can be retrieved by calling
+:py:func:`~QgsTemplatedLineSymbolLayerBase.trimDistanceEndUnit`.
+
+.. seealso:: :py:func:`setTrimDistanceEnd`
+
+.. seealso:: :py:func:`trimDistanceStart`
+
+.. seealso:: :py:func:`trimDistanceEndUnit`
+
+.. seealso:: :py:func:`trimDistanceEndMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    void setTrimDistanceEnd( double distance );
+%Docstring
+Sets the trim ``distance`` for the end of the line, which dictates a
+length from the end of the line at which the actual rendering should
+end.
+
+Trim units can be set by calling
+:py:func:`~QgsTemplatedLineSymbolLayerBase.setTrimDistanceEndUnit`.
+
+.. seealso:: :py:func:`trimDistanceEnd`
+
+.. seealso:: :py:func:`setTrimDistanceStart`
+
+.. seealso:: :py:func:`setTrimDistanceEndUnit`
+
+.. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    void setTrimDistanceEndUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the trim distance for the end of the line.
+
+.. seealso:: :py:func:`trimDistanceEndUnit`
+
+.. seealso:: :py:func:`setTrimDistanceStartUnit`
+
+.. seealso:: :py:func:`setTrimDistanceEnd`
+
+.. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::RenderUnit trimDistanceEndUnit() const;
+%Docstring
+Returns the unit for the trim distance for the end of the line.
+
+.. seealso:: :py:func:`setTrimDistanceEndUnit`
+
+.. seealso:: :py:func:`trimDistanceStartUnit`
+
+.. seealso:: :py:func:`trimDistanceEnd`
+
+.. seealso:: :py:func:`trimDistanceEndMapUnitScale`
+
+.. versionadded:: 4.0
+%End
+
+    const QgsMapUnitScale &trimDistanceEndMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the trim distance for the end of the
+line.
+
+.. seealso:: :py:func:`setTrimDistanceEndMapUnitScale`
+
+.. seealso:: :py:func:`trimDistanceStartMapUnitScale`
+
+.. seealso:: :py:func:`trimDistanceEnd`
+
+.. seealso:: :py:func:`trimDistanceEndUnit`
+
+.. versionadded:: 4.0
+%End
+
+    void setTrimDistanceEndMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the trim distance for the end of the
+line.
+
+.. seealso:: :py:func:`trimDistanceEndMapUnitScale`
+
+.. seealso:: :py:func:`setTrimDistanceStartMapUnitScale`
+
+.. seealso:: :py:func:`setTrimDistanceEnd`
+
+.. seealso:: :py:func:`setTrimDistanceEndUnit`
+
+.. versionadded:: 4.0
+%End
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) final;

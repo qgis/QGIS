@@ -821,6 +821,162 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     */
     Qgis::RenderUnit blankSegmentsUnit() const { return mBlankSegmentsUnit; }
 
+    /**
+     * Returns the trim distance for the start of the line, which dictates a length
+     * from the start of the line at which the actual rendering should start.
+     *
+     * Trim units can be retrieved by calling trimDistanceStartUnit().
+     *
+     * \see setTrimDistanceStart()
+     * \see trimDistanceEnd()
+     * \see trimDistanceStartUnit()
+     * \see trimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 4.0
+     */
+    double trimDistanceStart() const { return mTrimDistanceStart; }
+
+    /**
+     * Sets the trim \a distance for the start of the line, which dictates a length
+     * from the start of the line at which the actual rendering should start.
+     *
+     * Trim units can be set by calling setTrimDistanceStartUnit().
+     *
+     * \see trimDistanceStart()
+     * \see setTrimDistanceEnd()
+     * \see setTrimDistanceStartUnit()
+     * \see setTrimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 4.0
+     */
+    void setTrimDistanceStart( double distance ) { mTrimDistanceStart = distance; }
+
+    /**
+     * Sets the \a unit for the trim distance for the start of the line.
+     *
+     * \see trimDistanceStartUnit()
+     * \see setTrimDistanceEndUnit()
+     * \see setTrimDistanceStart()
+     * \see setTrimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 4.0
+    */
+    void setTrimDistanceStartUnit( Qgis::RenderUnit unit ) { mTrimDistanceStartUnit = unit; }
+
+    /**
+     * Returns the unit for the trim distance for the start of the line.
+     *
+     * \see setTrimDistanceStartUnit()
+     * \see trimDistanceEndUnit()
+     * \see trimDistanceStart()
+     * \see trimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 4.0
+    */
+    Qgis::RenderUnit trimDistanceStartUnit() const { return mTrimDistanceStartUnit; }
+
+    /**
+     * Returns the map unit scale for the trim distance for the start of the line.
+     *
+     * \see setTrimDistanceStartMapUnitScale()
+     * \see trimDistanceEndMapUnitScale()
+     * \see trimDistanceStart()
+     * \see trimDistanceStartUnit()
+     *
+     * \since QGIS 4.0
+    */
+    const QgsMapUnitScale &trimDistanceStartMapUnitScale() const { return mTrimDistanceStartMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the trim distance for the start of the line.
+     *
+     * \see trimDistanceStartMapUnitScale()
+     * \see setTrimDistanceEndMapUnitScale()
+     * \see setTrimDistanceStart()
+     * \see setTrimDistanceStartUnit()
+     *
+     * \since QGIS 4.0
+    */
+    void setTrimDistanceStartMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceStartMapUnitScale = scale; }
+
+    /**
+     * Returns the trim distance for the end of the line, which dictates a length
+     * from the end of the line at which the actual rendering should end.
+     *
+     * Trim units can be retrieved by calling trimDistanceEndUnit().
+     *
+     * \see setTrimDistanceEnd()
+     * \see trimDistanceStart()
+     * \see trimDistanceEndUnit()
+     * \see trimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 4.0
+     */
+    double trimDistanceEnd() const { return mTrimDistanceEnd; }
+
+    /**
+     * Sets the trim \a distance for the end of the line, which dictates a length
+     * from the end of the line at which the actual rendering should end.
+     *
+     * Trim units can be set by calling setTrimDistanceEndUnit().
+     *
+     * \see trimDistanceEnd()
+     * \see setTrimDistanceStart()
+     * \see setTrimDistanceEndUnit()
+     * \see setTrimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 4.0
+     */
+    void setTrimDistanceEnd( double distance ) { mTrimDistanceEnd = distance; }
+
+    /**
+     * Sets the \a unit for the trim distance for the end of the line.
+     *
+     * \see trimDistanceEndUnit()
+     * \see setTrimDistanceStartUnit()
+     * \see setTrimDistanceEnd()
+     * \see setTrimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 4.0
+    */
+    void setTrimDistanceEndUnit( Qgis::RenderUnit unit ) { mTrimDistanceEndUnit = unit; }
+
+    /**
+     * Returns the unit for the trim distance for the end of the line.
+     *
+     * \see setTrimDistanceEndUnit()
+     * \see trimDistanceStartUnit()
+     * \see trimDistanceEnd()
+     * \see trimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 4.0
+    */
+    Qgis::RenderUnit trimDistanceEndUnit() const { return mTrimDistanceEndUnit; }
+
+    /**
+     * Returns the map unit scale for the trim distance for the end of the line.
+     *
+     * \see setTrimDistanceEndMapUnitScale()
+     * \see trimDistanceStartMapUnitScale()
+     * \see trimDistanceEnd()
+     * \see trimDistanceEndUnit()
+     *
+     * \since QGIS 4.0
+    */
+    const QgsMapUnitScale &trimDistanceEndMapUnitScale() const { return mTrimDistanceEndMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the trim distance for the end of the line.
+     *
+     * \see trimDistanceEndMapUnitScale()
+     * \see setTrimDistanceStartMapUnitScale()
+     * \see setTrimDistanceEnd()
+     * \see setTrimDistanceEndUnit()
+     *
+     * \since QGIS 4.0
+    */
+    void setTrimDistanceEndMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceEndMapUnitScale = scale; }
+
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) final;
     Qgis::RenderUnit outputUnit() const final;
@@ -932,8 +1088,15 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     bool mCurrentFeatureIsSelected = false;
     double mFeatureSymbolOpacity = 1;
 
-    friend class TestQgsMarkerLineSymbol;
+    double mTrimDistanceStart = 0;
+    Qgis::RenderUnit mTrimDistanceStartUnit = Qgis::RenderUnit::Millimeters;
+    QgsMapUnitScale mTrimDistanceStartMapUnitScale;
 
+    double mTrimDistanceEnd = 0;
+    Qgis::RenderUnit mTrimDistanceEndUnit = Qgis::RenderUnit::Millimeters;
+    QgsMapUnitScale mTrimDistanceEndMapUnitScale;
+
+    friend class TestQgsMarkerLineSymbol;
 };
 
 /**
