@@ -1034,6 +1034,11 @@ class CORE_EXPORT QgsPalLayerSettings
     bool evaluateLabelContent( const QgsFeature &feature, QgsRenderContext &context, bool allowMultipleLines, QString &labelText, QgsTextDocument &document, const QgsTextFormat &format ) const;
 
     /**
+     * Evaluates label geometry.
+     */
+    QgsGeometry evaluateLabelGeometry( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelLineSettings &lineSettings ) const;
+
+    /**
      * Registers a feature as an obstacle only (no label rendered)
      */
     std::unique_ptr< QgsLabelFeature > registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
