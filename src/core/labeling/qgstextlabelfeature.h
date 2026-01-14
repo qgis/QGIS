@@ -37,7 +37,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
     //! Construct text label feature
-    QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
+    QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId = 0 );
 
     //! Clean up
     ~QgsTextLabelFeature() override;

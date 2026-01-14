@@ -167,6 +167,11 @@ QgsFeatureId FeaturePart::featureId() const
   return mLF->id();
 }
 
+int FeaturePart::subPartId() const
+{
+  return mLF->subPartId();
+}
+
 std::size_t FeaturePart::maximumPointCandidates() const
 {
   return mLF->layer()->maximumPointLabelCandidates();
@@ -224,7 +229,7 @@ bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
   if ( mLF->layer()->name() != part->layer()->name() )
     return false;
 
-  if ( mLF->id() == part->featureId() )
+  if ( mLF->id() == part->featureId() && mLF->subPartId() == part->subPartId() )
     return true;
 
   // any part of joined features are also treated as having the same label feature

@@ -70,12 +70,15 @@ class CORE_EXPORT QgsLabelFeature
      *
      * The \a size argument dictates the size of the label's content (e.g. text width and height).
      */
-    QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
+    QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId = 0 );
 
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
     QgsFeatureId id() const { return mId; }
+
+    //! Sub part identifier (for features which register multiple labels)
+    int subPartId() const { return mSubPartId; }
 
     //! Gets access to the associated geometry
     GEOSGeometry *geometry() const { return mGeometry.get(); }
@@ -729,6 +732,8 @@ class CORE_EXPORT QgsLabelFeature
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
+    //! Associated sub part ID, for features which register multiple different labels
+    int mSubPartId = 0;
     //! Geometry of the feature to be labelled
     geos::unique_ptr mGeometry;
     //! Optional geometry to use for label's permissible zone
