@@ -1031,7 +1031,7 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
 
   // pick an arbitrary point mid-way between near and far plane
   const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
-  const QVector3D worldPoint = ray.origin() + pointDistance * ray.direction().normalized();
+  const QVector3D worldPoint = ray.point( pointDistance );
   const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, mapSettings->origin() );
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
   return mapPoint;
