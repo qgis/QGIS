@@ -1830,7 +1830,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, bool allowMultiLines, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds )
 {
   if ( !mCurFeat )
   {
@@ -1927,49 +1927,35 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   double rw = 0.0;
   double rh = 0.0;
 
-  if ( document )
+  if ( allowMultiLines )
   {
-    document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
-
-    *documentMetrics = QgsTextDocumentMetrics::calculateMetrics( *document, format, context );
-    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
-    w = std::max( minimumSize.width(), size.width() + maximumExtraSpaceAllowance.width() );
-    h = std::max( minimumSize.height(), size.height() + maximumExtraSpaceAllowance.height() );
-
-    if ( orientation == Qgis::TextOrientation::RotationBased )
-    {
-      const QSizeF rotatedSize = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, Qgis::TextOrientation::Vertical );
-      rh = std::max( minimumSize.width(), rotatedSize.width() + maximumExtraSpaceAllowance.width() );
-      rw = std::max( minimumSize.height(), rotatedSize.height() + maximumExtraSpaceAllowance.height() );
-    }
+    document.splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
   }
-  else
-  {
-    // this branch is ONLY hit if we are using curved labels without HTML formatting, as otherwise we're always using the document!
-    // so here we have certain assumptions which apply to curved labels only:
-    // - orientation is ignored
-    // - labels are single lines only
-    // - line direction symbol are (currently!) not supported (see https://github.com/qgis/QGIS/issues/14968 )
 
-    h = fm.height();
-    w = fm.horizontalAdvance( text );
+  documentMetrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context );
+  const QSizeF documentSize = documentMetrics.documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
+  w = std::max( minimumSize.width(), documentSize.width() + maximumExtraSpaceAllowance.width() );
+  h = std::max( minimumSize.height(), documentSize.height() + maximumExtraSpaceAllowance.height() );
+
+  if ( orientation == Qgis::TextOrientation::RotationBased )
+  {
+    const QSizeF rotatedSize = documentMetrics.documentSize( Qgis::TextLayoutMode::Labeling, Qgis::TextOrientation::Vertical );
+    rh = std::max( minimumSize.width(), rotatedSize.width() + maximumExtraSpaceAllowance.width() );
+    rw = std::max( minimumSize.height(), rotatedSize.height() + maximumExtraSpaceAllowance.height() );
   }
 
   const double uPP = xform->mapUnitsPerPixel();
   size = QSizeF( w * uPP, h * uPP );
   rotatedSize = QSizeF( rw * uPP, rh * uPP );
 
-  if ( documentMetrics )
-  {
-    // TODO -- does this need to account for maximumExtraSpaceAllowance / minimumSize ? Right now the size
-    // of line direction symbols will be ignored
-    const QRectF outerBoundsPixels = documentMetrics->outerBounds( Qgis::TextLayoutMode::Labeling, orientation );
+  // TODO -- does this need to account for maximumExtraSpaceAllowance / minimumSize ? Right now the size
+  // of line direction symbols will be ignored
+  const QRectF outerBoundsPixels = documentMetrics.outerBounds( Qgis::TextLayoutMode::Labeling, orientation );
 
-    outerBounds = QRectF( outerBoundsPixels.left() * uPP,
-                          outerBoundsPixels.top() * uPP,
-                          outerBoundsPixels.width() * uPP,
-                          outerBoundsPixels.height() * uPP );
-  }
+  outerBounds = QRectF( outerBoundsPixels.left() * uPP,
+                        outerBoundsPixels.top() * uPP,
+                        outerBoundsPixels.width() * uPP,
+                        outerBoundsPixels.height() * uPP );
 }
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context )
@@ -2352,25 +2338,16 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   QSizeF labelSize;
   QSizeF rotatedSize;
 
-  QgsTextDocument doc;
   QgsTextDocumentMetrics documentMetrics;
   QRectF outerBounds;
 
+  QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
   switch ( placement )
   {
     case Qgis::LabelPlacement::PerimeterCurved:
     case Qgis::LabelPlacement::Curved:
     {
-      // avoid calculating document and metrics if we don't require them for curved labels
-      if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
-      {
-        doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-        calculateLabelSize( *labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
-      }
-      else
-      {
-        calculateLabelSize( *labelFontMetrics, labelText, context, evaluatedFormat, nullptr, nullptr, labelSize, rotatedSize, outerBounds );
-      }
+      calculateLabelSize( *labelFontMetrics, context, evaluatedFormat, false, doc, documentMetrics, labelSize, rotatedSize, outerBounds );
       break;
     }
 
@@ -2382,9 +2359,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
     case Qgis::LabelPlacement::OutsidePolygons:
     {
-      // non-curved labels always require document and metrics
-      doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
-      calculateLabelSize( *labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
+      calculateLabelSize( *labelFontMetrics, context, evaluatedFormat, true, doc, documentMetrics, labelSize, rotatedSize, outerBounds );
       break;
     }
   }
@@ -3153,7 +3128,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
 
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
-      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, evaluatedFormat.font(), *labelFontMetrics, evaluatedFormat.font().letterSpacing(), evaluatedFormat.font().wordSpacing(), labelText, evaluatedFormat.allowHtmlFormatting() ? &doc : nullptr, evaluatedFormat.allowHtmlFormatting() ? &documentMetrics : nullptr ) );
+      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, evaluatedFormat.font(), labelFontMetrics, evaluatedFormat.font().letterSpacing(), evaluatedFormat.font().wordSpacing(), doc, documentMetrics ) );
       break;
   }
 

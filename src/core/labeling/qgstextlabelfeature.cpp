@@ -49,7 +49,7 @@ bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
   return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount();
 }
 
-QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QString &text, QgsTextDocument *document, QgsTextDocumentMetrics * )
+QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QgsTextDocument &document, const QgsTextDocumentMetrics & )
 {
   const double tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
       ? format.tabStopDistance() * baseFont.pixelSize()
@@ -73,25 +73,17 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
   QStringList graphemes;
   QVector< QgsTextCharacterFormat > graphemeFormats;
 
-  if ( document )
+  for ( const QgsTextBlock &block : std::as_const( document ) )
   {
-    for ( const QgsTextBlock &block : std::as_const( *document ) )
+    for ( const QgsTextFragment &fragment : block )
     {
-      for ( const QgsTextFragment &fragment : block )
+      const QStringList fragmentGraphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
+      for ( const QString &grapheme : fragmentGraphemes )
       {
-        const QStringList fragmentGraphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
-        for ( const QString &grapheme : fragmentGraphemes )
-        {
-          graphemes.append( grapheme );
-          graphemeFormats.append( fragment.characterFormat() );
-        }
+        graphemes.append( grapheme );
+        graphemeFormats.append( fragment.characterFormat() );
       }
     }
-  }
-  else
-  {
-    //split string by valid grapheme boundaries - required for certain scripts (see #6883)
-    graphemes = QgsPalLabeling::splitToGraphemes( text );
   }
 
   QVector< double > characterWidths( graphemes.count() );

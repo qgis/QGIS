@@ -954,16 +954,17 @@ class CORE_EXPORT QgsPalLayerSettings
     void readOldDataDefinedProperty( QgsVectorLayer *layer, QgsPalLayerSettings::Property p );
 
     /**
-     * Calculates the space required to render the provided \a text in map units.
+     * Calculates the space required to render the provided \a document in map units.
      * Results will be written to \a size.
      *
      * If the text orientation is set to rotation-based, the space taken to render
      * vertically oriented text will be written to \a rotatedSize.
      */
-    void calculateLabelSize( const QFontMetricsF &fm, const QString &text, QgsRenderContext &context,
+    void calculateLabelSize( const QFontMetricsF &fm, QgsRenderContext &context,
                              const QgsTextFormat &format,
-                             QgsTextDocument *document,
-                             QgsTextDocumentMetrics *documentMetrics,
+                             bool allowMultiLines,
+                             QgsTextDocument &document,
+                             QgsTextDocumentMetrics &documentMetrics,
                              QSizeF &size, QSizeF &rotatedSize,
                              QRectF &outerBounds );
 
