@@ -35,7 +35,8 @@ showing an embedded form due to relations)
       MultiEditMode,
       SearchMode,
       AggregateSearchMode,
-      IdentifyMode
+      IdentifyMode,
+      PreviewMode
     };
 
     enum RelationMode /BaseType=IntEnum/

@@ -51,6 +51,7 @@ class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
 class QgsFieldConstraintIndicatorProvider;
 class QgsFieldDefaultValueIndicatorProvider;
+class QgsSourceFieldsProperties;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -67,7 +68,13 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( u"attributes-form"_s );
     static const QgsSettingsEntryBool *settingShowAliases;
 
-    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    /**
+     * The QgsAttributesFormProperties constructor.
+     * \param layer The vector layer being configured
+     * \param parent The parent QObject
+     * \param sourceFieldsProperties The source fields properties widget, an optional parameter used to generate preview forms (since QGIS 4.0)
+     */
+    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsSourceFieldsProperties *sourceFieldsProperties = nullptr );
 
     void init();
 
@@ -144,6 +151,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void updateFilteredItems( const QString &filterText );
 
+    void previewForm();
+
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
@@ -178,6 +187,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
     void setFormLayoutIndicatorProvidersEnabled( bool enabled );
 
+    void applyToLayer( QgsVectorLayer *layer );
+
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel = nullptr;
     QgsAttributesFormLayoutModel *mFormLayoutModel = nullptr;
     QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel = nullptr;
@@ -201,6 +212,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
     QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
+
+    QgsSourceFieldsProperties *mSourceFieldsProperties = nullptr;
 
     friend class TestQgsAttributesFormProperties;
 };
