@@ -485,6 +485,7 @@ QgsPoint QgsNurbsCurve::startPoint() const
 
 void QgsNurbsCurve::sumUpArea( double &sum ) const
 {
+  // TODO - investigate whether this can be calculated directly
   std::unique_ptr<QgsLineString> line( curveToLine() );
   if ( line )
     line->sumUpArea( sum );
