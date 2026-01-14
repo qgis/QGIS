@@ -1830,15 +1830,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, bool allowMultiLines, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds )
+void QgsPalLayerSettings::calculateLabelMetrics( const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds )
 {
   if ( !mCurFeat )
   {
     return;
   }
 
-  QString wrapchr = wrapChar;
-  int evalAutoWrapLength = autoWrapLength;
   Qgis::TextOrientation orientation = format.orientation();
 
   bool addDirSymb = mLineSettings.addDirectionSymbol();
@@ -1846,16 +1844,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, QgsRender
   QString rightDirSymb = mLineSettings.rightDirectionSymbol();
   QgsLabelLineSettings::DirectionSymbolPlacement placeDirSymb = mLineSettings.directionSymbolPlacement();
   double multilineH = mFormat.lineHeight();
-
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
-  {
-    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
-  }
-
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
-  {
-    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
-  }
 
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TextOrientation ) )
   {
@@ -1890,11 +1878,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, QgsRender
     }
   }
 
-  if ( wrapchr.isEmpty() )
-  {
-    wrapchr = u"\n"_s; // default to new line delimiter
-  }
-
   const double lineHeightPainterUnits = context.convertToPainterUnits( mFormat.lineHeight(), mFormat.lineHeightUnit() );
 
   //consider the space needed for the direction symbol
@@ -1926,11 +1909,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, QgsRender
   double h = 0.0;
   double rw = 0.0;
   double rh = 0.0;
-
-  if ( allowMultiLines )
-  {
-    document.splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
-  }
 
   documentMetrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context );
   const QSizeF documentSize = documentMetrics.documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
@@ -2026,15 +2004,15 @@ bool QgsPalLayerSettings::isLabelVisible( QgsRenderContext &context ) const
   return true;
 }
 
-std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden )
+QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden )
 {
   labelIsHidden = false;
   QgsTextFormat evaluatedFormat = mFormat;
 
   QFont labelFont = evaluatedFormat.font();
-// labelFont will be added to label feature for use during label painting
+  // labelFont will be added to label feature for use during label painting
 
-// data defined font units?
+  // data defined font units?
   Qgis::RenderUnit fontunits = evaluatedFormat.sizeUnit();
   const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontSizeUnit, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
@@ -2049,7 +2027,7 @@ std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings:
     }
   }
 
-//data defined label size?
+  //data defined label size?
   double fontSize = evaluatedFormat.size();
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Size ) )
   {
@@ -2059,21 +2037,21 @@ std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings:
   if ( fontSize <= 0.0 )
   {
     labelIsHidden = true;
-    return { evaluatedFormat, {} };
+    return evaluatedFormat;
   }
 
   int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, evaluatedFormat.sizeMapUnitScale() );
-// don't try to show font sizes less than 1 pixel (Qt complains)
+  // don't try to show font sizes less than 1 pixel (Qt complains)
   if ( fontPixelSize < 1 )
   {
     labelIsHidden = true;
-    return { evaluatedFormat, {} };
+    return evaluatedFormat;
   }
   labelFont.setPixelSize( fontPixelSize );
 
-// NOTE: labelFont now always has pixelSize set, so pointSize or pointSizeF might return -1
+  // NOTE: labelFont now always has pixelSize set, so pointSize or pointSizeF might return -1
 
-// defined 'minimum/maximum pixel font size'?
+  // defined 'minimum/maximum pixel font size'?
   if ( fontunits == Qgis::RenderUnit::MapUnits )
   {
     if ( mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::FontLimitPixel, context.expressionContext(), fontLimitPixelSize ) )
@@ -2084,13 +2062,13 @@ std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings:
       if ( fontMinPixel > labelFont.pixelSize() || labelFont.pixelSize() > fontMaxPixel )
       {
         labelIsHidden = true;
-        return { evaluatedFormat, {} };
+        return evaluatedFormat;
       }
     }
   }
 
-// NOTE: the following parsing functions calculate and store any data defined values for later use in QgsPalLabeling::drawLabeling
-// this is done to provide clarity, and because such parsing is not directly related to PAL feature registration calculations
+  // NOTE: the following parsing functions calculate and store any data defined values for later use in QgsPalLabeling::drawLabeling
+  // this is done to provide clarity, and because such parsing is not directly related to PAL feature registration calculations
 
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
@@ -2188,16 +2166,16 @@ std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings:
   }
 
   evaluatedFormat.setFont( labelFont );
-// undo scaling by symbology reference scale, as this would have been applied in the previous call to QgsTextRenderer::sizeToPixel and we risk
-// double-applying it if we don't re-adjust, since all the text format metric calculations assume an unscaled format font size is present
+  // undo scaling by symbology reference scale, as this would have been applied in the previous call to QgsTextRenderer::sizeToPixel and we risk
+  // double-applying it if we don't re-adjust, since all the text format metric calculations assume an unscaled format font size is present
   const double symbologyReferenceScaleFactor = context.symbologyReferenceScale() > 0 ? context.symbologyReferenceScale() / context.rendererScale() : 1;
   evaluatedFormat.setSize( labelFont.pixelSize() / symbologyReferenceScaleFactor );
   evaluatedFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
 
-  return { evaluatedFormat, QFontMetricsF( labelFont ) };
+  return evaluatedFormat;
 }
 
-bool QgsPalLayerSettings::evaluateLabelText( const QgsFeature &feature, QgsRenderContext &context, QString &labelText, const QgsTextFormat &format ) const
+bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRenderContext &context, bool allowMultipleLines, QString &labelText, QgsTextDocument &document, const QgsTextFormat &format ) const
 {
   // Check to see if we are using an expression string.
   if ( isExpression )
@@ -2269,6 +2247,29 @@ bool QgsPalLayerSettings::evaluateLabelText( const QgsFeature &feature, QgsRende
     }
   }
 
+  document = QgsTextDocument::fromTextAndFormat( {labelText }, format );
+
+  QString wrapchr = wrapChar;
+  int evalAutoWrapLength = autoWrapLength;
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+  {
+    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
+  }
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
+  {
+    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+  }
+
+  if ( wrapchr.isEmpty() )
+  {
+    wrapchr = u"\n"_s; // default to new line delimiter
+  }
+
+  if ( allowMultipleLines )
+  {
+    document.splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+  }
+
   return true;
 }
 
@@ -2327,27 +2328,19 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
 
   // evaluate text format and font properties
   bool labelIsHidden = false;
-  auto [ evaluatedFormat, labelFontMetrics ] = evaluateTextFormat( context, labelIsHidden );
+  QgsTextFormat evaluatedFormat = evaluateTextFormat( context, labelIsHidden );
   if ( labelIsHidden )
     return {};
 
   QString labelText;
-  if ( !evaluateLabelText( feature, context, labelText, evaluatedFormat ) )
-    return {};
-
-  QSizeF labelSize;
-  QSizeF rotatedSize;
-
-  QgsTextDocumentMetrics documentMetrics;
-  QRectF outerBounds;
-
-  QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
+  QgsTextDocument doc;
+  bool allowMultipleLines = true;
   switch ( placement )
   {
     case Qgis::LabelPlacement::PerimeterCurved:
     case Qgis::LabelPlacement::Curved:
     {
-      calculateLabelSize( *labelFontMetrics, context, evaluatedFormat, false, doc, documentMetrics, labelSize, rotatedSize, outerBounds );
+      allowMultipleLines = false;
       break;
     }
 
@@ -2359,10 +2352,19 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
     case Qgis::LabelPlacement::OutsidePolygons:
     {
-      calculateLabelSize( *labelFontMetrics, context, evaluatedFormat, true, doc, documentMetrics, labelSize, rotatedSize, outerBounds );
       break;
     }
   }
+  if ( !evaluateLabelContent( feature, context, allowMultipleLines, labelText, doc, evaluatedFormat ) )
+    return {};
+
+  QSizeF labelSize;
+  QSizeF rotatedSize;
+
+  QgsTextDocumentMetrics documentMetrics;
+  QRectF outerBounds;
+  QFontMetricsF labelFontMetrics( evaluatedFormat.font() );
+  calculateLabelMetrics( labelFontMetrics, context, evaluatedFormat, doc, documentMetrics, labelSize, rotatedSize, outerBounds );
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
   //
@@ -2905,14 +2907,14 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
               }
               else
               {
-                double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
+                double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
                 if ( valiString.compare( "Base"_L1, Qt::CaseInsensitive ) == 0 )
                 {
                   ydiff -= labelSize.height() * descentRatio;
                 }
                 else //'Cap' or 'Half'
                 {
-                  double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
+                  double capHeightRatio = ( labelFontMetrics.boundingRect( 'H' ).height() + 1 + labelFontMetrics.descent() ) / labelFontMetrics.height();
                   ydiff -= labelSize.height() * capHeightRatio;
                   if ( valiString.compare( "Half"_L1, Qt::CaseInsensitive ) == 0 )
                   {
@@ -3102,8 +3104,8 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
   //this makes labels align to the font's baseline or highest character
-  double topMargin = std::max( 0.25 * labelFontMetrics->ascent(), 0.0 );
-  double bottomMargin = 1.0 + labelFontMetrics->descent();
+  double topMargin = std::max( 0.25 * labelFontMetrics.ascent(), 0.0 );
+  double bottomMargin = 1.0 + labelFontMetrics.descent();
   QgsMargins vm( 0.0, topMargin, 0.0, bottomMargin );
   vm *= xform->mapUnitsPerPixel();
   labelFeature->setVisualMargin( vm );
