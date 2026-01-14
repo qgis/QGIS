@@ -1,20 +1,20 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="Metadata Title" saveDateTime="2026-01-08T14:48:51" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
+<qgis projectname="Metadata Title" saveDateTime="2026-01-14T10:08:25" saveUser="dave" saveUserFull="dave" version="3.99.0-Master">
   <homePath path=""/>
   <title>Metadata Title</title>
   <transaction mode="Disabled"/>
   <projectFlags set=""/>
   <projectCrs>
     <spatialrefsys nativeFormat="Wkt">
-      <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],MEMBER["World Geodetic System 1984 (G2296)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
-      <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
-      <srsid>3452</srsid>
-      <srid>4326</srid>
-      <authid>EPSG:4326</authid>
-      <description>WGS 84</description>
-      <projectionacronym>longlat</projectionacronym>
-      <ellipsoidacronym>EPSG:7030</ellipsoidacronym>
-      <geographicflag>true</geographicflag>
+      <wkt></wkt>
+      <proj4></proj4>
+      <srsid>0</srsid>
+      <srid>0</srid>
+      <authid></authid>
+      <description></description>
+      <projectionacronym></projectionacronym>
+      <ellipsoidacronym></ellipsoidacronym>
+      <geographicflag>false</geographicflag>
     </spatialrefsys>
   </projectCrs>
   <verticalCrs>
@@ -84,15 +84,14 @@
       <item>lines_a677672a_bf5d_410d_98c9_d326a5719a1b</item>
       <item>lines_5238db60_470c_41a5_b1d1_059e70f93b99</item>
       <item>points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d</item>
-      <item>geometrylesslayer_e9cf19c1_17a9_452c_b03c_3bd4340e0c3f</item>
     </custom-order>
   </layer-tree-group>
   <snapping-settings enabled="0" intersection-snapping="0" maxScale="0" minScale="0" mode="2" scaleDependencyMode="0" self-snapping="0" tolerance="0" type="1" unit="2">
     <individual-layer-settings>
-      <layer-setting enabled="0" id="lines_5238db60_470c_41a5_b1d1_059e70f93b99" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
-      <layer-setting enabled="0" id="points_240d6bd6_9203_470a_994a_aae13cd9fa04" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
-      <layer-setting enabled="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
       <layer-setting enabled="0" id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
+      <layer-setting enabled="0" id="points_240d6bd6_9203_470a_994a_aae13cd9fa04" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
+      <layer-setting enabled="0" id="lines_5238db60_470c_41a5_b1d1_059e70f93b99" maxScale="0" minScale="0" tolerance="12" type="1" units="1"/>
+      <layer-setting enabled="0" id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b" maxScale="0" minScale="0" tolerance="0" type="1" units="2"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations>
@@ -105,27 +104,14 @@
   </relations>
   <polymorphicRelations/>
   <mapcanvas annotationsVisible="1" name="theMapCanvas">
-    <units>degrees</units>
+    <units>unknown</units>
     <extent>
-      <xmin>-114.57848123887977465</xmin>
-      <ymin>17.43896554392901521</ymin>
-      <xmax>-77.24514790554583499</xmax>
-      <ymax>42.71432786276906768</ymax>
+      <xmin>-108.91179192936641584</xmin>
+      <ymin>35.73326394201423284</ymin>
+      <xmax>-90.24512526269944601</xmax>
+      <ymax>48.37094510143425907</ymax>
     </extent>
     <rotation>0</rotation>
-    <destinationsrs>
-      <spatialrefsys nativeFormat="Wkt">
-        <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],MEMBER["World Geodetic System 1984 (G2296)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
-        <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
-        <srsid>3452</srsid>
-        <srid>4326</srid>
-        <authid>EPSG:4326</authid>
-        <description>WGS 84</description>
-        <projectionacronym>longlat</projectionacronym>
-        <ellipsoidacronym>EPSG:7030</ellipsoidacronym>
-        <geographicflag>true</geographicflag>
-      </spatialrefsys>
-    </destinationsrs>
     <rendermaptile>0</rendermaptile>
     <expressionContextScope/>
   </mapcanvas>
@@ -1001,7 +987,7 @@
       <layerOpacity>1</layerOpacity>
       <LinearlyInterpolatedDiagramRenderer attributeLegend="1" classificationAttributeExpression="" diagramType="Histogram" lowerHeight="0" lowerValue="0" lowerWidth="0" upperHeight="5" upperValue="0" upperWidth="5">
         <DiagramCategory backgroundAlpha="255" backgroundColor="#ffffff" barWidth="5" diagramOrientation="Up" direction="1" enabled="0" height="15" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0" lineSizeType="MM" maxScaleDenominator="1e+08" minScaleDenominator="1" minimumSize="0" opacity="1" penAlpha="255" penColor="#000000" penWidth="0" rotationOffset="270" scaleBasedVisibility="0" scaleDependency="Area" showAxis="0" sizeScale="3x:0,0,0,0,0,0" sizeType="MM" spacing="0" spacingUnit="MM" spacingUnitScale="3x:0,0,0,0,0,0" stackedDiagramMode="Horizontal" stackedDiagramSpacing="0" stackedDiagramSpacingUnit="MM" stackedDiagramSpacingUnitScale="3x:0,0,0,0,0,0" width="15">
-          <fontProperties bold="0" description="Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+          <fontProperties bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           <attribute color="#000000" colorOpacity="1" field="" label=""/>
           <axisSymbol>
             <symbol alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" is_animated="0" name="" type="line">
@@ -1164,10 +1150,7 @@ def my_form_open(dialog, layer, feature):
         <field labelOnTop="0" name="Name"/>
         <field labelOnTop="0" name="Value"/>
       </labelOnTop>
-      <reuseLastValuePolicy>
-        <field name="Name" reuseLastValuePolicy="NotAllowed"/>
-        <field name="Value" reuseLastValuePolicy="NotAllowed"/>
-      </reuseLastValuePolicy>
+      <reuseLastValuePolicy/>
       <dataDefinedFieldProperties/>
       <widgets>
         <widget name="points_240_Importance_lines_a677_Value">
@@ -1603,7 +1586,7 @@ def my_form_open(dialog, layer, feature):
       <layerOpacity>1</layerOpacity>
       <LinearlyInterpolatedDiagramRenderer attributeLegend="1" classificationAttributeExpression="" diagramType="Histogram" lowerHeight="0" lowerValue="0" lowerWidth="0" upperHeight="5" upperValue="0" upperWidth="5">
         <DiagramCategory backgroundAlpha="255" backgroundColor="#ffffff" barWidth="5" diagramOrientation="Up" direction="1" enabled="0" height="15" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0" lineSizeType="MM" maxScaleDenominator="1e+08" minScaleDenominator="1" minimumSize="0" opacity="1" penAlpha="255" penColor="#000000" penWidth="0" rotationOffset="270" scaleBasedVisibility="0" scaleDependency="Area" showAxis="0" sizeScale="3x:0,0,0,0,0,0" sizeType="MM" spacing="0" spacingUnit="MM" spacingUnitScale="3x:0,0,0,0,0,0" stackedDiagramMode="Horizontal" stackedDiagramSpacing="0" stackedDiagramSpacingUnit="MM" stackedDiagramSpacingUnitScale="3x:0,0,0,0,0,0" width="15">
-          <fontProperties bold="0" description="Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+          <fontProperties bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           <attribute color="#000000" colorOpacity="1" field="" label=""/>
           <axisSymbol>
             <symbol alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" is_animated="0" name="" type="line">
@@ -1729,6 +1712,17 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+        <actionsetting action="ogr2ogr -f &quot;GPKG&quot; &quot;[% &quot;OUTPUT_PATH&quot; %]&quot; &quot;[% &quot;INPUT_FILE&quot; %]&quot;" capture="1" icon="" id="{57794bf8-bfb6-456e-b565-45e12429aa9b}" isEnabledOnlyWhenEditable="0" name="Run an application" notificationMessage="" shortTitle="Run application" type="0">
+          <actionScope id="Feature"/>
+          <actionScope id="Canvas"/>
+        </actionsetting>
+        <actionsetting action="from qgis.PyQt import QtWidgets&#xa;&#xa;QtWidgets.QMessageBox.information(None, &quot;Clicked coords&quot;, &quot;layer: [% @layer_id %]\ncoords: ([% @click_x %],[% @click_y %])&quot;)" capture="0" icon="" id="{3b81530c-1920-4c0b-800b-d1d1742acad4}" isEnabledOnlyWhenEditable="0" name="Clicked coordinates (Run feature actions tool)" notificationMessage="" shortTitle="Clicked Coordinate" type="1">
+          <actionScope id="Canvas"/>
+        </actionsetting>
+        <actionsetting action="[% &quot;PATH&quot; %]" capture="0" icon="" id="{0b9b8a91-2547-4611-9851-8279358fbe6c}" isEnabledOnlyWhenEditable="0" name="Open file" notificationMessage="" shortTitle="Open file" type="5">
+          <actionScope id="Feature"/>
+          <actionScope id="Canvas"/>
+        </actionsetting>
       </attributeactions>
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
         <columns>
@@ -1790,7 +1784,7 @@ def my_form_open(dialog, layer, feature):
           </config>
         </widget>
       </widgets>
-      <previewExpression>Value</previewExpression>
+      <previewExpression>"Value"</previewExpression>
       <mapTip enabled="1"></mapTip>
     </maplayer>
     <maplayer autoRefreshMode="Disabled" autoRefreshTime="0" geometry="Point" hasScaleBasedVisibilityFlag="0" labelsEnabled="0" layerType="Vector" legendPlaceholderImage="" maxScale="1" minScale="100000000" readOnly="0" refreshOnNotifyEnabled="0" refreshOnNotifyMessage="" simplifyAlgorithm="0" simplifyDrawingHints="0" simplifyDrawingTol="1" simplifyLocal="1" simplifyMaxScale="1" styleCategories="AllStyleCategories" symbologyReferenceScale="-1" type="vector" wkbType="Point">
@@ -2362,7 +2356,7 @@ def my_form_open(dialog, layer, feature):
       <layerOpacity>1</layerOpacity>
       <LinearlyInterpolatedDiagramRenderer attributeLegend="1" classificationAttributeExpression="" diagramType="Histogram" lowerHeight="0" lowerValue="0" lowerWidth="0" upperHeight="5" upperValue="0" upperWidth="5">
         <DiagramCategory backgroundAlpha="255" backgroundColor="#ffffff" barWidth="5" diagramOrientation="Up" direction="1" enabled="0" height="15" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0" lineSizeType="MM" maxScaleDenominator="1e+08" minScaleDenominator="1" minimumSize="0" opacity="1" penAlpha="255" penColor="#000000" penWidth="0" rotationOffset="270" scaleBasedVisibility="0" scaleDependency="Area" showAxis="0" sizeScale="3x:0,0,0,0,0,0" sizeType="MM" spacing="0" spacingUnit="MM" spacingUnitScale="3x:0,0,0,0,0,0" stackedDiagramMode="Horizontal" stackedDiagramSpacing="0" stackedDiagramSpacingUnit="MM" stackedDiagramSpacingUnitScale="3x:0,0,0,0,0,0" width="15">
-          <fontProperties bold="0" description="Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+          <fontProperties bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           <attribute color="#000000" colorOpacity="1" field="" label=""/>
           <axisSymbol>
             <symbol alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" is_animated="0" name="" type="line">
@@ -2583,45 +2577,45 @@ def my_form_open(dialog, layer, feature):
         </labelStyle>
         <attributeEditorContainer collapsed="0" collapsedExpression="" collapsedExpressionEnabled="0" columnCount="1" groupBox="0" horizontalStretch="0" name="Plane" showLabel="1" type="Tab" verticalStretch="0" visibilityExpression="" visibilityExpressionEnabled="0">
           <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-            <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+            <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           </labelStyle>
           <attributeEditorField horizontalStretch="0" index="0" name="Class" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField horizontalStretch="0" index="1" name="Heading" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField horizontalStretch="0" index="2" name="Importance" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
         <attributeEditorContainer collapsed="0" collapsedExpression="" collapsedExpressionEnabled="0" columnCount="1" groupBox="0" horizontalStretch="0" name="Employees" showLabel="1" type="Tab" verticalStretch="0" visibilityExpression="" visibilityExpressionEnabled="0">
           <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-            <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+            <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           </labelStyle>
           <attributeEditorField horizontalStretch="0" index="3" name="Pilots" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField horizontalStretch="0" index="5" name="Staff" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorContainer collapsed="0" collapsedExpression="" collapsedExpressionEnabled="0" columnCount="1" groupBox="1" horizontalStretch="0" name="Flightattends" showLabel="1" type="GroupBox" verticalStretch="0" visibilityExpression="" visibilityExpressionEnabled="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
             <attributeEditorField horizontalStretch="0" index="4" name="Cabin Crew" showLabel="1" verticalStretch="0">
               <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-                <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+                <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
@@ -2643,14 +2637,7 @@ def my_form_open(dialog, layer, feature):
         <field labelOnTop="0" name="Pilots"/>
         <field labelOnTop="0" name="Staff"/>
       </labelOnTop>
-      <reuseLastValuePolicy>
-        <field name="Cabin Crew" reuseLastValuePolicy="NotAllowed"/>
-        <field name="Class" reuseLastValuePolicy="NotAllowed"/>
-        <field name="Heading" reuseLastValuePolicy="NotAllowed"/>
-        <field name="Importance" reuseLastValuePolicy="NotAllowed"/>
-        <field name="Pilots" reuseLastValuePolicy="NotAllowed"/>
-        <field name="Staff" reuseLastValuePolicy="NotAllowed"/>
-      </reuseLastValuePolicy>
+      <reuseLastValuePolicy/>
       <dataDefinedFieldProperties/>
       <widgets/>
       <previewExpression>"Class"</previewExpression>
@@ -3086,7 +3073,7 @@ def my_form_open(dialog, layer, feature):
       <layerOpacity>1</layerOpacity>
       <LinearlyInterpolatedDiagramRenderer attributeLegend="1" classificationAttributeExpression="" diagramType="Histogram" lowerHeight="0" lowerValue="0" lowerWidth="0" upperHeight="5" upperValue="0" upperWidth="5">
         <DiagramCategory backgroundAlpha="255" backgroundColor="#ffffff" barWidth="5" diagramOrientation="Up" direction="1" enabled="0" height="15" labelPlacementMethod="XHeight" lineSizeScale="3x:0,0,0,0,0,0" lineSizeType="MM" maxScaleDenominator="1e+08" minScaleDenominator="1" minimumSize="0" opacity="1" penAlpha="255" penColor="#000000" penWidth="0" rotationOffset="270" scaleBasedVisibility="0" scaleDependency="Area" showAxis="0" sizeScale="3x:0,0,0,0,0,0" sizeType="MM" spacing="0" spacingUnit="MM" spacingUnitScale="3x:0,0,0,0,0,0" stackedDiagramMode="Horizontal" stackedDiagramSpacing="0" stackedDiagramSpacingUnit="MM" stackedDiagramSpacingUnitScale="3x:0,0,0,0,0,0" width="15">
-          <fontProperties bold="0" description="Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+          <fontProperties bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           <attribute color="#000000" colorOpacity="1" field="" label=""/>
           <axisSymbol>
             <symbol alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" is_animated="0" name="" type="line">
@@ -3285,6 +3272,10 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
+        <actionsetting action="[% &quot;PATH&quot; %]" capture="0" icon="" id="{da8571be-9228-4f4c-9f61-a279ed5f059f}" isEnabledOnlyWhenEditable="0" name="Open file" notificationMessage="" shortTitle="Open file" type="5">
+          <actionScope id="Feature"/>
+          <actionScope id="Canvas"/>
+        </actionsetting>
       </attributeactions>
       <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
         <columns>
@@ -3331,45 +3322,50 @@ def my_form_open(dialog, layer, feature):
         </labelStyle>
         <attributeEditorContainer collapsed="0" collapsedExpression="" collapsedExpressionEnabled="0" columnCount="1" groupBox="0" horizontalStretch="0" name="Plane" showLabel="1" type="Tab" verticalStretch="0" visibilityExpression="" visibilityExpressionEnabled="0">
           <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-            <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+            <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           </labelStyle>
           <attributeEditorField horizontalStretch="0" index="0" name="Class" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField horizontalStretch="0" index="1" name="Heading" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField horizontalStretch="0" index="2" name="Importance" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
         </attributeEditorContainer>
         <attributeEditorContainer collapsed="0" collapsedExpression="" collapsedExpressionEnabled="0" columnCount="1" groupBox="0" horizontalStretch="0" name="Employees" showLabel="1" type="Tab" verticalStretch="0" visibilityExpression="" visibilityExpressionEnabled="0">
           <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-            <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+            <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
           </labelStyle>
           <attributeEditorField horizontalStretch="0" index="3" name="Pilots" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorField horizontalStretch="0" index="5" name="Staff" showLabel="1" verticalStretch="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+            </labelStyle>
+          </attributeEditorField>
+          <attributeEditorField horizontalStretch="0" index="-1" name="" showLabel="1" verticalStretch="0">
+            <labelStyle labelColor="" overrideLabelColor="0" overrideLabelFont="0">
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
           </attributeEditorField>
           <attributeEditorContainer collapsed="0" collapsedExpression="" collapsedExpressionEnabled="0" columnCount="1" groupBox="1" horizontalStretch="0" name="Flightattends" showLabel="1" type="GroupBox" verticalStretch="0" visibilityExpression="" visibilityExpressionEnabled="0">
             <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-              <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+              <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
             </labelStyle>
             <attributeEditorField horizontalStretch="0" index="4" name="Cabin Crew" showLabel="1" verticalStretch="0">
               <labelStyle labelColor="0,0,0,255,rgb:0,0,0,1" overrideLabelColor="0" overrideLabelFont="0">
-                <labelFont bold="0" description="Ubuntu,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
+                <labelFont bold="0" description="Ubuntu Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1" italic="0" strikethrough="0" style="" underline="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
@@ -3410,11 +3406,9 @@ def my_form_open(dialog, layer, feature):
     <layer id="lines_a677672a_bf5d_410d_98c9_d326a5719a1b"/>
     <layer id="lines_5238db60_470c_41a5_b1d1_059e70f93b99"/>
     <layer id="points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d"/>
-    <layer id="geometrylesslayer_e9cf19c1_17a9_452c_b03c_3bd4340e0c3f"/>
   </layerorder>
   <labelEngineSettings/>
   <properties name="properties">
-    <properties name="DefaultStyles"/>
     <properties name="Digitizing">
       <properties name="AvoidIntersectionsMode" type="int">2</properties>
     </properties>
@@ -3423,12 +3417,9 @@ def my_form_open(dialog, layer, feature):
       <properties name="CanvasColorGreenPart" type="int">255</properties>
       <properties name="CanvasColorRedPart" type="int">255</properties>
       <properties name="SelectionColorAlphaPart" type="int">255</properties>
-      <properties name="SelectionColorBluePart" type="int">0</properties>
+      <properties name="SelectionColorBluePart" type="int">255</properties>
       <properties name="SelectionColorGreenPart" type="int">255</properties>
       <properties name="SelectionColorRedPart" type="int">255</properties>
-    </properties>
-    <properties name="Identify">
-      <properties name="disabledLayers" type="QStringList"/>
     </properties>
     <properties name="Legend">
       <properties name="filterByMap" type="bool">false</properties>
@@ -3445,13 +3436,9 @@ def my_form_open(dialog, layer, feature):
       <properties name="ScaleMethod" type="QString">HorizontalMiddle</properties>
     </properties>
     <properties name="PAL">
-      <properties name="CandidatesLine" type="int">50</properties>
       <properties name="CandidatesLinePerCM" type="double">5</properties>
-      <properties name="CandidatesPoint" type="int">16</properties>
-      <properties name="CandidatesPolygon" type="int">30</properties>
       <properties name="CandidatesPolygonPerCM" type="double">2.5</properties>
       <properties name="DrawLabelMetrics" type="bool">false</properties>
-      <properties name="DrawOutlineLabels" type="bool">true</properties>
       <properties name="DrawRectOnly" type="bool">false</properties>
       <properties name="DrawUnplaced" type="bool">false</properties>
       <properties name="PlacementEngineVersion" type="int">0</properties>
@@ -3468,24 +3455,8 @@ def my_form_open(dialog, layer, feature):
     <properties name="PositionPrecision">
       <properties name="Automatic" type="bool">true</properties>
       <properties name="DecimalPlaces" type="int">2</properties>
-      <properties name="DegreeFormat" type="QString">MU</properties>
-    </properties>
-    <properties name="QFieldSync">
-      <properties name="attachmentDirs" type="QStringList">
-        <value>DCIM</value>
-        <value>audio</value>
-        <value>video</value>
-        <value>files</value>
-      </properties>
-      <properties name="dataDirs" type="QStringList"/>
     </properties>
     <properties name="RenderMapTile" type="bool">false</properties>
-    <properties name="RequiredLayers">
-      <properties name="Layers" type="QStringList"/>
-    </properties>
-    <properties name="SpatialRefSys">
-      <properties name="ProjectionsEnabled" type="int">1</properties>
-    </properties>
     <properties name="WCSLayers" type="QStringList"/>
     <properties name="WCSUrl" type="QString"></properties>
     <properties name="WFSLayers" type="QStringList"/>
@@ -3514,7 +3485,6 @@ def my_form_open(dialog, layer, feature):
     <properties name="WMSMaxAtlasFeatures" type="int">1</properties>
     <properties name="WMSOnlineResource" type="QString"></properties>
     <properties name="WMSPrecision" type="QString">8</properties>
-    <properties name="WMSRequestDefinedDataSources" type="bool">false</properties>
     <properties name="WMSRootName" type="QString"></properties>
     <properties name="WMSSegmentizeFeatureInfoGeometry" type="bool">false</properties>
     <properties name="WMSServiceAbstract" type="QString"></properties>
@@ -3545,30 +3515,8 @@ def my_form_open(dialog, layer, feature):
       <properties name="Project" type="bool">false</properties>
     </properties>
     <properties name="WMTSUrl" type="QString"></properties>
-    <properties name="qfieldsync">
-      <properties name="areaOfInterest" type="QString"></properties>
-      <properties name="areaOfInterestCrs" type="QString"></properties>
-      <properties name="baseMapTheme" type="QString"></properties>
-      <properties name="baseMapTileSize" type="int">1024</properties>
-      <properties name="baseMapTilesMaxZoomLevel" type="int">14</properties>
-      <properties name="baseMapTilesMinZoomLevel" type="int">14</properties>
-      <properties name="baseMapType" type="QString">singleLayer</properties>
-      <properties name="createBaseMap" type="int">0</properties>
-      <properties name="digitizingLogsLayer" type="QString"></properties>
-      <properties name="forceAutoPush" type="int">0</properties>
-      <properties name="forceAutoPushIntervalMins" type="int">30</properties>
-      <properties name="forceStamping" type="int">0</properties>
-      <properties name="geofencingBehavior" type="int">1</properties>
-      <properties name="geofencingIsActive" type="int">0</properties>
-      <properties name="geofencingLayer" type="QString"></properties>
-      <properties name="geofencingShouldPreventDigitizing" type="int">0</properties>
-      <properties name="mapThemesActiveLayers" type="QString">{}</properties>
-      <properties name="maximumImageWidthHeight" type="int">0</properties>
-      <properties name="offlineCopyOnlyAoi" type="int">0</properties>
-      <properties name="stampingDetailsTemplate" type="QString"></properties>
-      <properties name="stampingFontStyle" type="QString"></properties>
-      <properties name="stampingHorizontalAlignment" type="int">0</properties>
-      <properties name="stampingImageDecoration" type="QString"></properties>
+    <properties name="properties">
+      <properties name="properties" type="QString"></properties>
     </properties>
   </properties>
   <dataDefinedServerProperties>
@@ -3611,17 +3559,17 @@ def my_form_open(dialog, layer, feature):
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmax="-77.24514790554583499" xmin="-114.57848123887977465" ymax="45.4302890874552503" ymin="14.72300431924283082">
+    <DefaultViewExtent xmax="-89.8414858913184986" xmin="-109.31543130074736325" ymax="48.37094510143425907" ymin="35.73326394201423284">
       <spatialrefsys nativeFormat="Wkt">
-        <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],MEMBER["World Geodetic System 1984 (G2296)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
-        <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
-        <srsid>3452</srsid>
-        <srid>4326</srid>
-        <authid>EPSG:4326</authid>
-        <description>WGS 84</description>
-        <projectionacronym>longlat</projectionacronym>
-        <ellipsoidacronym>EPSG:7030</ellipsoidacronym>
-        <geographicflag>true</geographicflag>
+        <wkt></wkt>
+        <proj4></proj4>
+        <srsid>0</srsid>
+        <srid>0</srid>
+        <authid></authid>
+        <description></description>
+        <projectionacronym></projectionacronym>
+        <ellipsoidacronym></ellipsoidacronym>
+        <geographicflag>false</geographicflag>
       </spatialrefsys>
     </DefaultViewExtent>
   </ProjectViewSettings>

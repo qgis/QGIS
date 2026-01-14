@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsapplication.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
@@ -141,6 +143,16 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>From 3.6 to 10</source>" ) );
   QVERIFY( tsFileContent.contains( "<source>From 10 to 20</source>" ) );
 
+  //ACTIONS
+  //descriptions (names)
+  QVERIFY( tsFileContent.contains( "<source>Run an application</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Clicked coordinates (Run feature actions tool)</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Open file</source>" ) );
+  //shorttitles
+  QVERIFY( tsFileContent.contains( "<source>Run application</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Clicked Coordinate</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Open file</source>" ) );
+
   //FIELDNAMES AND ALIASES
   //Lines:
   //Name (Alias: Runwayid)
@@ -187,7 +199,6 @@ void TestQgsTranslateProject::createTsFile()
   //ValueRelation description
   QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationdescription</name>" ) );
   QVERIFY( tsFileContent.contains( "<source>'The cabin Crew Member is now a '||\"RunwayId\"</source>" ) );
-
 
   //ValueMap with descriptions
   QVERIFY( tsFileContent.contains( ":fields:Name:valuemapdescriptions</name>" ) );
@@ -278,6 +289,34 @@ void TestQgsTranslateProject::translateProject()
   }
   QVERIFY( legendItemsOfLine.contains( u"Hauptstrasse"_s ) ); //Arterial
   QVERIFY( legendItemsOfLine.contains( u"Autobahn"_s ) );     //Highway
+
+  //ACTIONS
+  //lines:
+  QList<QString> actionDescriptionsOfLine;
+  QList<QString> actionShortTitlesOfLine;
+  for ( const QgsAction &action : lines_layer->actions()->actions() )
+  {
+    actionDescriptionsOfLine.append( action.name() );
+    actionShortTitlesOfLine.append( action.shortTitle() );
+  }
+
+  QVERIFY( actionDescriptionsOfLine.contains( u"Starte ein Programm"_s ) );                            //Run an application
+  QVERIFY( actionShortTitlesOfLine.contains( u"Starte Programm"_s ) );                                 //Run application
+  QVERIFY( actionDescriptionsOfLine.contains( u"Clicked coordinates (Run feature actions tool)"_s ) ); //Untranslated: Clicked coordinates (Run feature actions tool)
+  QVERIFY( actionShortTitlesOfLine.contains( u"Clicked Coordinate"_s ) );                              //Untranslated: Clicked Coordinate
+  QVERIFY( actionDescriptionsOfLine.contains( u"Dies öffnet eine Datei für Lines"_s ) );               //Open file
+  QVERIFY( actionShortTitlesOfLine.contains( u"Öffne Datei"_s ) );                                     //Open file
+
+  //points:
+  QList<QString> actionDescriptionsOfPoints;
+  QList<QString> actionShortTitlesOfPoints;
+  for ( const QgsAction &action : points_layer->actions()->actions() )
+  {
+    actionDescriptionsOfPoints.append( action.name() );
+    actionShortTitlesOfPoints.append( action.shortTitle() );
+  }
+  QVERIFY( actionDescriptionsOfPoints.contains( u"Dies öffnet eine Datei für Points"_s ) ); //Open file
+  QVERIFY( actionShortTitlesOfPoints.contains( u"Open file"_s ) );                          //Untranslated: Open file
 
   //FIELDNAMES AND ALIASES
   //Lines:

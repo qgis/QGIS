@@ -256,7 +256,7 @@ bool QgsActionManager::writeXml( QDomNode &layer_node ) const
   return true;
 }
 
-bool QgsActionManager::readXml( const QDomNode &layer_node )
+bool QgsActionManager::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   clearActions();
 
@@ -268,7 +268,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QgsAction action;
-      action.readXml( actionsettings.item( i ) );
+      action.readXml( actionsettings.item( i ), context );
       addAction( action );
     }
 

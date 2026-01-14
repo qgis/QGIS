@@ -19,6 +19,8 @@
 
 #include <algorithm>
 
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmanager.h"
 #include "qgsapplication.h"
@@ -702,6 +704,13 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
           //register formcontainers
           registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
+
+          //actions
+          for ( const QgsAction &action : vlayer->actions()->actions() )
+          {
+            translationContext->registerTranslation( u"project:layers:%1:actiondescriptions"_s.arg( vlayer->id() ), action.name() );
+            translationContext->registerTranslation( u"project:layers:%1:actionshorttitles"_s.arg( vlayer->id() ), action.shortTitle() );
+          }
 
           //legend
           if ( vlayer->renderer() )

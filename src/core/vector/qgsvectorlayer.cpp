@@ -2599,7 +2599,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   // process the attribute actions
   if ( categories.testFlag( Actions ) )
-    mActions->readXml( layerNode );
+    mActions->readXml( layerNode, context );
 
   if ( categories.testFlag( Fields ) )
   {
