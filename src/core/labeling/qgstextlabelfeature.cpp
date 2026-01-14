@@ -103,7 +103,36 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     double graphemeHorizontalAdvance = 0;
     double characterDescent = 0;
     double characterHeight = 0;
-    if ( const QgsTextCharacterFormat *graphemeFormat = !graphemeFormats.empty() ? &graphemeFormats[i] : nullptr )
+    if ( graphemes[i] == '\t' )
+    {
+      double nextTabStop = 0;
+      if ( !tabStopDistancesPainterUnits.empty() )
+      {
+        // if we don't find a tab stop before the current length of line, we just ignore the tab character entirely
+        nextTabStop = currentWidth;
+        for ( const double tabStop : std::as_const( tabStopDistancesPainterUnits ) )
+        {
+          if ( tabStop >= currentWidth )
+          {
+            nextTabStop = tabStop;
+            break;
+          }
+        }
+      }
+      else
+      {
+        nextTabStop = ( std::floor( currentWidth / tabStopDistancePainterUnits ) + 1 ) * tabStopDistancePainterUnits;
+      }
+
+      const double thisTabWidth = nextTabStop - currentWidth;
+
+      graphemeFirstCharHorizontalAdvance = thisTabWidth;
+      graphemeFirstCharHorizontalAdvanceWithLetterSpacing = thisTabWidth;
+      graphemeHorizontalAdvance = thisTabWidth;
+      characterDescent = fontMetrics.descent();
+      characterHeight = fontMetrics.height();
+    }
+    else if ( const QgsTextCharacterFormat *graphemeFormat = !graphemeFormats.empty() ? &graphemeFormats[i] : nullptr )
     {
       QFont graphemeFont = baseFont;
       graphemeFormat->updateFontForFormat( graphemeFont, context, 1 );
@@ -146,35 +175,6 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
       graphemeHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i] ) );
       characterDescent = graphemeFontMetrics.descent();
       characterHeight = graphemeFontMetrics.height();
-    }
-    else if ( graphemes[i] == '\t' )
-    {
-      double nextTabStop = 0;
-      if ( !tabStopDistancesPainterUnits.empty() )
-      {
-        // if we don't find a tab stop before the current length of line, we just ignore the tab character entirely
-        nextTabStop = currentWidth;
-        for ( const double tabStop : std::as_const( tabStopDistancesPainterUnits ) )
-        {
-          if ( tabStop >= currentWidth )
-          {
-            nextTabStop = tabStop;
-            break;
-          }
-        }
-      }
-      else
-      {
-        nextTabStop = ( std::floor( currentWidth / tabStopDistancePainterUnits ) + 1 ) * tabStopDistancePainterUnits;
-      }
-
-      const double thisTabWidth = nextTabStop - currentWidth;
-
-      graphemeFirstCharHorizontalAdvance = thisTabWidth;
-      graphemeFirstCharHorizontalAdvanceWithLetterSpacing = thisTabWidth;
-      graphemeHorizontalAdvance = thisTabWidth;
-      characterDescent = fontMetrics.descent();
-      characterHeight = fontMetrics.height();
     }
     else
     {
