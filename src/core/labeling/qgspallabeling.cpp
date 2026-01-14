@@ -2106,9 +2106,62 @@ std::tuple< QgsTextFormat, std::optional< QFontMetricsF > > QgsPalLayerSettings:
 // NOTE: the following parsing functions calculate and store any data defined values for later use in QgsPalLabeling::drawLabeling
 // this is done to provide clarity, and because such parsing is not directly related to PAL feature registration calculations
 
-// calculate rest of font attributes and store any data defined values
-// this is done here for later use in making label backgrounds part of collision management (when implemented)
-  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
+  // calculate rest of font attributes and store any data defined values
+  // this is done here for later use in making label backgrounds part of collision management (when implemented)
+
+  // maintain API - capitalization may have been set in textFont
+  if ( evaluatedFormat.capitalization() == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  {
+    evaluatedFormat.setCapitalization( static_cast< Qgis::Capitalization >( mFormat.font().capitalization() ) );
+  }
+  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling
+  // as above REQUIRED for maintaining API
+  evaluatedFormat.setCapitalization( evaluatedFormat.capitalization() );
+
+  // data defined font capitalization?
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
+  {
+    const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
+    if ( !QgsVariantUtils::isNull( exprVal ) )
+    {
+      QString fcase = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
+
+      if ( !fcase.isEmpty() )
+      {
+        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::MixedCase );
+        }
+        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllUppercase );
+        }
+        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllLowercase );
+        }
+        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::ForceFirstLetterToCapital );
+        }
+        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::TitleCase );
+        }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::SmallCaps );
+        }
+        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllSmallCaps );
+        }
+#endif
+      }
+    }
+  }
 
   parseTextStyle( labelFont, fontunits, context );
   if ( mDataDefinedProperties.hasActiveProperties() )
@@ -2193,62 +2246,9 @@ bool QgsPalLayerSettings::evaluateLabelText( const QgsFeature &feature, QgsRende
     labelText = substitutions.process( labelText );
   }
 
-  // apply capitalization
-  Qgis::Capitalization capitalization = format.capitalization();
-  // maintain API - capitalization may have been set in textFont
-  if ( capitalization == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
-  {
-    capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
-  }
-
-  // data defined font capitalization?
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
-  {
-    const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-    {
-      QString fcase = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
-
-      if ( !fcase.isEmpty() )
-      {
-        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::MixedCase;
-        }
-        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllUppercase;
-        }
-        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllLowercase;
-        }
-        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::ForceFirstLetterToCapital;
-        }
-        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::TitleCase;
-        }
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::SmallCaps;
-        }
-        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllSmallCaps;
-        }
-#endif
-      }
-    }
-  }
-
   // TODO -- this is in the wrong place. We should be capitalizing the text only, ie after we have parsed
   // any HTML tags to a text document.
-  labelText = QgsStringUtils::capitalize( labelText, capitalization );
+  labelText = QgsStringUtils::capitalize( labelText, format.capitalization() );
 
   // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
 

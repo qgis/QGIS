@@ -1031,7 +1031,7 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * Returns FALSE if an error occurred.
      */
-    bool evaluateLabelText( const QgsFeature &feature, QgsRenderContext &context, QString &labelText ) const;
+    bool evaluateLabelText( const QgsFeature &feature, QgsRenderContext &context, QString &labelText, const QgsTextFormat &format ) const;
 
     /**
      * Registers a feature as an obstacle only (no label rendered)
