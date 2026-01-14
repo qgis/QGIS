@@ -201,17 +201,10 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     value.setRemappingDefinition( mRemapDefinition );
 
   // this marks named temporary layer
-  if ( key == QgsProcessing::TEMPORARY_OUTPUT && !leText->text().isEmpty() && couldBeTemporaryLayerName( leText->text() ) )
+  if ( key == QgsProcessing::TEMPORARY_OUTPUT && couldBeTemporaryLayerName( leText->text() ) )
   {
-    QString memoryLayerName = memoryProviderLayerName( leText->text() );
-    if ( !memoryLayerName.isEmpty() )
-    {
-      value.destinationName = memoryLayerName;
-    }
-    else
-    {
-      value.destinationName = leText->text();
-    }
+    const QString memoryLayerName = memoryProviderLayerName( leText->text() );
+    value.destinationName = memoryLayerName.isEmpty() ? leText->text() : memoryLayerName;
   }
 
 
@@ -348,7 +341,7 @@ void QgsProcessingLayerOutputDestinationWidget::skipOutput()
   emit skipOutputChanged( true );
 }
 
-void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString name )
+void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString &name )
 {
   const bool prevSkip = outputIsSkipped();
 
