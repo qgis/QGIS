@@ -714,7 +714,8 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
-  QString sourcePath = dataSource.param( u"url"_s );
+  const QString url = dataSource.param( u"url"_s );
+  QString sourcePath = QUrl::fromPercentEncoding( url.toUtf8() );
 
   if ( sourcePath.isEmpty() )
   {
