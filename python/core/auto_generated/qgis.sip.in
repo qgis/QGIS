@@ -741,6 +741,14 @@ The development version
       OutsidePolygons,
     };
 
+    enum class CurvedLabelMode
+    {
+      Default,
+      PlaceCharactersAtVertices,
+      StretchCharacterSpacingToFitLine,
+      StretchWordSpacingToFitLine,
+    };
+
     enum class LabelPredefinedPointPosition
       {
       TopLeft,

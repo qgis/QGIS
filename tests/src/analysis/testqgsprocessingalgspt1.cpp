@@ -43,6 +43,7 @@
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingutils.h"
+#include "qgsproviderregistry.h"
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrastershader.h"
@@ -2607,8 +2608,8 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
   tmpFile2.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
-  QString filename = tmpFile2.fileName();
-  std::unique_ptr<QgsRasterDataProvider> dpOr( QgsRasterDataProvider::create( u"gdal"_s, filename, u"GTiff"_s, 1, static_cast<Qgis::DataType>( dataType ), 10, 10, tform, crs ) );
+  const QString filenameOr = tmpFile2.fileName();
+  std::unique_ptr<QgsRasterDataProvider> dpOr( QgsRasterDataProvider::create( u"gdal"_s, filenameOr, u"GTiff"_s, 1, static_cast<Qgis::DataType>( dataType ), 10, 10, tform, crs ) );
   QVERIFY( dpOr->isValid() );
 
   // make destination AND raster
@@ -2617,15 +2618,18 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
   tmpFile3.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
-  filename = tmpFile3.fileName();
-  std::unique_ptr<QgsRasterDataProvider> dpAnd( QgsRasterDataProvider::create( u"gdal"_s, filename, u"GTiff"_s, 1, static_cast<Qgis::DataType>( dataType ), 10, 10, tform, crs ) );
+  const QString filenameAnd = tmpFile3.fileName();
+  std::unique_ptr<QgsRasterDataProvider> dpAnd( QgsRasterDataProvider::create( u"gdal"_s, filenameAnd, u"GTiff"_s, 1, static_cast<Qgis::DataType>( dataType ), 10, 10, tform, crs ) );
   QVERIFY( dpAnd->isValid() );
 
   QgsFeedback feedback;
   qgssize noDataCount = 0;
   qgssize trueCount = 0;
   qgssize falseCount = 0;
-  QgsRasterAnalysisUtils::applyRasterLogicOperator( inputs, dpOr.get(), destNoDataValue, treatNodataAsFalse, nCols, nRows, extent, &feedback, orAlg.mExtractValFunc, noDataCount, trueCount, falseCount );
+  QgsRasterAnalysisUtils::applyRasterLogicOperator( inputs, std::move( dpOr ), destNoDataValue, treatNodataAsFalse, nCols, nRows, extent, &feedback, orAlg.mExtractValFunc, noDataCount, trueCount, falseCount );
+
+  dpOr.reset( dynamic_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( u"gdal"_s, filenameOr ) ) );
+  QVERIFY( dpOr );
 
   QCOMPARE( noDataCount, expectedOrNoDataCount );
   QCOMPARE( trueCount, expectedOrTrueCount );
@@ -2654,7 +2658,10 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
   noDataCount = 0;
   trueCount = 0;
   falseCount = 0;
-  QgsRasterAnalysisUtils::applyRasterLogicOperator( inputs, dpAnd.get(), destNoDataValue, treatNodataAsFalse, nCols, nRows, extent, &feedback, andAlg.mExtractValFunc, noDataCount, trueCount, falseCount );
+  QgsRasterAnalysisUtils::applyRasterLogicOperator( inputs, std::move( dpAnd ), destNoDataValue, treatNodataAsFalse, nCols, nRows, extent, &feedback, andAlg.mExtractValFunc, noDataCount, trueCount, falseCount );
+
+  dpAnd.reset( dynamic_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( u"gdal"_s, filenameAnd ) ) );
+  QVERIFY( dpAnd );
 
   QCOMPARE( noDataCount, expectedAndNoDataCount );
   QCOMPARE( trueCount, expectedAndTrueCount );

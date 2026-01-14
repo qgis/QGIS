@@ -713,10 +713,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menuStyleManager->setTitle( tr( "Styles (%1)" ).arg( mgr->styles().count() ) );
         }
 
+        const QString copyCurrentStyleString = mgr->styles().count() > 1 ? tr( "Copy Current Style" ) : tr( "Copy Style" );
+
         QgisApp *app = QgisApp::instance();
         if ( layer->type() == Qgis::LayerType::Vector || layer->type() == Qgis::LayerType::Raster )
         {
-          QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
+          QMenu *copyStyleMenu = menuStyleManager->addMenu( copyCurrentStyleString );
           copyStyleMenu->setToolTipsVisible( true );
           QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( layer->type(), copyStyleMenu );
           model->setShowAllCategories( true );
@@ -752,7 +754,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
         else
         {
-          menuStyleManager->addAction( tr( "Copy Style" ), app, [app] { app->copyStyle(); } );
+          menuStyleManager->addAction( copyCurrentStyleString, app, [app] { app->copyStyle(); } );
+        }
+        if ( mgr->styles().count() > 1 )
+        {
+          menuStyleManager->addAction( tr( "Copy All Styles" ), app, [app] { app->copyAllStyles(); } );
         }
 
         if ( layer && app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
@@ -814,6 +820,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             menuStyleManager->addAction( tr( "Paste Style" ), app, [app] { app->pasteStyle(); } );
           }
+        }
+        else if ( layer && app->clipboard()->hasFormat( QGSCLIPBOARD_STYLES_MIME ) )
+        {
+          menuStyleManager->addAction( tr( "Paste All Styles" ), app, [app] { app->pasteAllStyles(); } );
         }
 
         menuStyleManager->addSeparator()->setObjectName( "MenuStyleSeparator"_L1 );

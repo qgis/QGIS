@@ -294,7 +294,7 @@ bool PointSet::containsLabelCandidate( double x, double y, double width, double 
   return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
-QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight )
+QVector<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight )
 {
   int j;
 
@@ -309,9 +309,9 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
 
   const double labelArea = labelWidth * labelHeight;
 
-  QLinkedList<PointSet *> inputShapes;
+  QVector<PointSet *> inputShapes;
   inputShapes.push_back( inputShape );
-  QLinkedList<PointSet *> outputShapes;
+  QVector<PointSet *> outputShapes;
 
   while ( !inputShapes.isEmpty() )
   {

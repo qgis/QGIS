@@ -513,6 +513,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
   mPrioritizationComboBox->setCurrentIndex( mPrioritizationComboBox->findData( QVariant::fromValue( mSettings.placementSettings().prioritization() ) ) );
 
+  mComboCurvedLabelMode->setCurrentIndex( mComboCurvedLabelMode->findData( QVariant::fromValue( mSettings.lineSettings().curvedLabelMode() ) ) );
+
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mThinningSettings.minimumFeatureSize() );
   mLimitLabelChkBox->setChecked( mThinningSettings.limitNumberOfLabelsEnabled() );
@@ -705,6 +707,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.placementSettings().setPrioritization( mPrioritizationComboBox->currentData().value<Qgis::LabelPrioritization>() );
 
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
+  lyr.lineSettings().setCurvedLabelMode( mComboCurvedLabelMode->currentData().value< Qgis::CurvedLabelMode >() );
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();
   lyr.minimumScale = mMinScaleWidget->scale();

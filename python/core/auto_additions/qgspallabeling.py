@@ -312,6 +312,9 @@ QgsPalLayerSettings.LineAnchorType.__doc__ = "Line anchor type \n.. versionadded
 QgsPalLayerSettings.LineAnchorTextPoint = QgsPalLayerSettings.Property.LineAnchorTextPoint
 QgsPalLayerSettings.LineAnchorTextPoint.is_monkey_patched = True
 QgsPalLayerSettings.LineAnchorTextPoint.__doc__ = "Line anchor text point \n.. versionadded:: 3.26"
+QgsPalLayerSettings.CurvedLabelMode = QgsPalLayerSettings.Property.CurvedLabelMode
+QgsPalLayerSettings.CurvedLabelMode.is_monkey_patched = True
+QgsPalLayerSettings.CurvedLabelMode.__doc__ = "Mode which determine how curved labels are generated and placed \n.. versionadded:: 4.0"
 QgsPalLayerSettings.ScaleVisibility = QgsPalLayerSettings.Property.ScaleVisibility
 QgsPalLayerSettings.ScaleVisibility.is_monkey_patched = True
 QgsPalLayerSettings.ScaleVisibility.__doc__ = ""
@@ -489,6 +492,10 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
 * ``LineAnchorTextPoint``: Line anchor text point
 
   .. versionadded:: 3.26
+
+* ``CurvedLabelMode``: Mode which determine how curved labels are generated and placed
+
+  .. versionadded:: 4.0
 
 * ``ScaleVisibility``: 
 * ``MinScale``: Min scale (deprecated, for old project compatibility only)

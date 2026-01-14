@@ -1128,6 +1128,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param categories The style categories to copy
      */
     void copyStyle( QgsMapLayer *sourceLayer = nullptr, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    /**
+     * Copies all styles from a map layer.
+     * \param sourceLayer The layer where the style will be taken from (defaults to the active layer on the legend)
+     */
+    void copyAllStyles( QgsMapLayer *sourceLayer = nullptr );
+
     //! pastes style on the clipboard to the active layer
 
     /**
@@ -1135,6 +1142,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param categories The style categories to copy
      */
     void pasteStyle( QgsMapLayer *destinationLayer = nullptr, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    /**
+     * Pastes all copied styles from a map layer.
+     *
+     * \param destinationLayer The layer that the clipboard styles will be pasted to (defaults to the active layer on the legend)
+     */
+    void pasteAllStyles( QgsMapLayer *destinationLayer = nullptr );
+
     //! copies group or layer on the clipboard
     void copyLayer();
     //! pastes group or layer from the clipboard to layer tree
@@ -1856,6 +1871,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void moveFeature();
     //! activates the copy and move feature tool
     void moveFeatureCopy();
+    //! activates the feature array copy tool
+    void featureArray();
     //! activates the offset curve tool
     void offsetCurve();
     //! activates the chamfer fillet tool

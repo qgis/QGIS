@@ -31,6 +31,8 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+
 class TestQgsMapToolCircle : public QObject
 {
     Q_OBJECT
@@ -49,6 +51,9 @@ class TestQgsMapToolCircle : public QObject
     void testDrawCircleFromCenterPointNotEnoughPoints();
     void testDrawCircleFrom3TangentsNotEnoughPoints();
     void testDrawCircleFrom2TangentsNotEnoughPoints();
+    void testTransientGeometrySignalTwoPoints();
+    void testTransientGeometrySignalThreePoints();
+    void testTransientGeometrySignalCenterPoint();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -73,7 +78,7 @@ class TestQgsMapToolCircle : public QObject
     QMap<QString, std::function<QgsFeatureId( void )>> mDrawFunctionPtrMap = {};
     QMap<QString, QString> mExpectedWkts = {};
 
-    void initAttributs();
+    void initAttributes();
 
     QgsFeatureId drawCircleFrom2Points();
     QgsFeatureId drawCircleFrom2PointsWithDeletedVertex();
@@ -127,10 +132,10 @@ void TestQgsMapToolCircle::initTestCase()
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
   mCanvas->setMapTool( mMapTool );
 
-  initAttributs();
+  initAttributes();
 }
 
-void TestQgsMapToolCircle::initAttributs()
+void TestQgsMapToolCircle::initAttributes()
 {
   mDrawFunctionUserNames["2Points"] = "from 2 points";
   mDrawFunctionUserNames["2PointsWithDeletedVertex"] = "from 2 points with deleted vertex";
@@ -496,6 +501,88 @@ void TestQgsMapToolCircle::testDrawCircleFrom2TangentsNotEnoughPoints()
   QCOMPARE( layer->featureCount(), count );
   layer->rollBack();
 }
+
+void TestQgsMapToolCircle::testTransientGeometrySignalTwoPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QgsMapToolShapeCircle2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 0, 2 );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (0 2, 1 1, 0 0, -1 1, 0 2)"_s );
+
+  utils.mouseMove( 1, 3 );
+  QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 3, 2 1, 0 0, -1 2, 1 3)"_s );
+
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  utils.keyClick( Qt::Key_Escape );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testTransientGeometrySignalThreePoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QgsMapToolShapeCircle3PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 0 );
+  QCOMPARE( spy.size(), 0 ); // not enough points
+  utils.mouseClick( 2, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 2 );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 2, 2.3 0.8, 1 -0.5, -0.3 0.7, 1 2)"_s );
+
+  utils.mouseMove( 1, 3 );
+  QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 3, 2.7 1.3, 1 -0.3, -0.7 1.3, 1 3)"_s );
+
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  utils.keyClick( Qt::Key_Escape );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testTransientGeometrySignalCenterPoint()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QgsMapToolShapeCircleCenterPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 0, 2 );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (0 2, 2 0, 0 -2, -2 0, 0 2)"_s );
+
+  utils.mouseMove( 1, 3 );
+  QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 3, 3 -1, -1 -3, -3 1, 1 3)"_s );
+
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  utils.keyClick( Qt::Key_Escape );
+  layer->rollBack();
+}
+
 
 QGSTEST_MAIN( TestQgsMapToolCircle )
 #include "testqgsmaptoolcircle.moc"

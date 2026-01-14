@@ -42,6 +42,7 @@
 #include "qgsgeos.h"
 #include "qgshstoreutils.h"
 #include "qgslinestring.h"
+#include "qgsmagneticmodel.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsmessagelog.h"
 #include "qgsmultilinestring.h"
@@ -3142,6 +3143,251 @@ static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionCo
   }
   bool ok;
   return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsExifTools::getGeoTag( filepath, ok ) ) ) );
+}
+
+double qDateTimeToDecimalYear( const QDateTime &dateTime )
+{
+  if ( !dateTime.isValid() )
+  {
+    return 0.0;
+  }
+
+  const int year = dateTime.date().year();
+  const QDateTime startOfYear( QDate( year, 1, 1 ), QTime( 0, 0, 0 ) );
+  const QDateTime startOfNextYear( QDate( year + 1, 1, 1 ), QTime( 0, 0, 0 ) );
+  const qint64 secondsFromStartOfYear = startOfYear.secsTo( dateTime );
+  const qint64 totalSecondsInYear = startOfYear.secsTo( startOfNextYear );
+  return static_cast<double>( year ) + ( static_cast<double>( secondsFromStartOfYear ) / static_cast< double >( totalSecondsInYear ) );
+}
+
+static QVariant fcnMagneticDeclination( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QDateTime dt = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a valid date" ).arg( "magnetic_declination"_L1 ) );
+    return QVariant();
+  }
+  const double latitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double longitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double height = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const QString filePath = QgsExpressionUtils::getFilePathValue( values.at( 5 ), context, parent );
+
+  const QgsMagneticModel model( name, filePath );
+  try
+  {
+    double declination = 0;
+    if ( model.declination( qDateTimeToDecimalYear( dt ), latitude, longitude, height, declination ) )
+    {
+      return declination;
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic declination: %1" ).arg( model.error() ) );
+    }
+  }
+  catch ( QgsNotSupportedException &e )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic declination: %1" ).arg( e.what() ) );
+  }
+  return QVariant();
+}
+
+static QVariant fcnMagneticInclination( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QDateTime dt = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a valid date" ).arg( "magnetic_inclination"_L1 ) );
+    return QVariant();
+  }
+  const double latitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double longitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double height = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const QString filePath = QgsExpressionUtils::getFilePathValue( values.at( 5 ), context, parent );
+
+  const QgsMagneticModel model( name, filePath );
+  try
+  {
+    double inclination = 0;
+    if ( model.inclination( qDateTimeToDecimalYear( dt ), latitude, longitude, height, inclination ) )
+    {
+      return inclination;
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic inclination: %1" ).arg( model.error() ) );
+    }
+  }
+  catch ( QgsNotSupportedException &e )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic inclination: %1" ).arg( e.what() ) );
+  }
+  return QVariant();
+}
+
+static QVariant fcnMagneticDeclinationRateOfChange( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QDateTime dt = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a valid date" ).arg( "magnetic_declination_rate_of_change"_L1 ) );
+    return QVariant();
+  }
+  const double latitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double longitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double height = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const QString filePath = QgsExpressionUtils::getFilePathValue( values.at( 5 ), context, parent );
+
+  const QgsMagneticModel model( name, filePath );
+  try
+  {
+    double declination = 0;
+    double Bx = 0;
+    double By = 0;
+    double Bz = 0;
+    double Bxt = 0;
+    double Byt = 0;
+    double Bzt = 0;
+
+    if ( model.getComponentsWithTimeDerivatives( qDateTimeToDecimalYear( dt ), latitude, longitude, height, Bx, By, Bz, Bxt, Byt, Bzt ) )
+    {
+      double H = 0;
+      double F = 0;
+      double D = 0;
+      double I = 0;
+      double Ht = 0;
+      double Ft = 0;
+      double Dt = 0;
+      double It = 0;
+      if ( QgsMagneticModel::fieldComponentsWithTimeDerivatives( Bx, By, Bz, Bxt, Byt, Bzt, H, F, D, I, Ht, Ft, Dt, It ) )
+      {
+        return Dt;
+      }
+      else
+      {
+        parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic declination rate of change" ) );
+      }
+      return declination;
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic declination rate of change: %1" ).arg( model.error() ) );
+    }
+  }
+  catch ( QgsNotSupportedException &e )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic declination rate of change: %1" ).arg( e.what() ) );
+  }
+  return QVariant();
+}
+
+static QVariant fcnMagneticInclinationRateOfChange( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QDateTime dt = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `%1` requires a valid date" ).arg( "magnetic_inclination_rate_of_change"_L1 ) );
+    return QVariant();
+  }
+  const double latitude = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double longitude = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const double height = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  if ( parent->hasEvalError() )
+  {
+    return QVariant();
+  }
+  const QString filePath = QgsExpressionUtils::getFilePathValue( values.at( 5 ), context, parent );
+
+  const QgsMagneticModel model( name, filePath );
+  try
+  {
+    double declination = 0;
+    double Bx = 0;
+    double By = 0;
+    double Bz = 0;
+    double Bxt = 0;
+    double Byt = 0;
+    double Bzt = 0;
+
+    if ( model.getComponentsWithTimeDerivatives( qDateTimeToDecimalYear( dt ), latitude, longitude, height, Bx, By, Bz, Bxt, Byt, Bzt ) )
+    {
+      double H = 0;
+      double F = 0;
+      double D = 0;
+      double I = 0;
+      double Ht = 0;
+      double Ft = 0;
+      double Dt = 0;
+      double It = 0;
+      if ( QgsMagneticModel::fieldComponentsWithTimeDerivatives( Bx, By, Bz, Bxt, Byt, Bzt, H, F, D, I, Ht, Ft, Dt, It ) )
+      {
+        return It;
+      }
+      else
+      {
+        parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic inclination rate of change" ) );
+      }
+      return declination;
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic inclination rate of change: %1" ).arg( model.error() ) );
+    }
+  }
+  catch ( QgsNotSupportedException &e )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot evaluate magnetic inclination rate of change: %1" ).arg( e.what() ) );
+  }
+  return QVariant();
 }
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype) \
@@ -8985,6 +9231,36 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( u"from_base64"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ),
                                             fcnFromBase64, u"Conversions"_s )
 
+        // magnetic models
+        << new QgsStaticExpressionFunction( u"magnetic_declination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"model_name"_s )
+                                            << QgsExpressionFunction::Parameter( u"date"_s )
+                                            << QgsExpressionFunction::Parameter( u"latitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"longitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"height"_s )
+                                            << QgsExpressionFunction::Parameter( u"model_path"_s, true ),
+                                            fcnMagneticDeclination, u"MagneticModels"_s )
+        << new QgsStaticExpressionFunction( u"magnetic_inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"model_name"_s )
+                                            << QgsExpressionFunction::Parameter( u"date"_s )
+                                            << QgsExpressionFunction::Parameter( u"latitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"longitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"height"_s )
+                                            << QgsExpressionFunction::Parameter( u"model_path"_s, true ),
+                                            fcnMagneticInclination, u"MagneticModels"_s )
+        << new QgsStaticExpressionFunction( u"magnetic_declination_rate_of_change"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"model_name"_s )
+                                            << QgsExpressionFunction::Parameter( u"date"_s )
+                                            << QgsExpressionFunction::Parameter( u"latitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"longitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"height"_s )
+                                            << QgsExpressionFunction::Parameter( u"model_path"_s, true ),
+                                            fcnMagneticDeclinationRateOfChange, u"MagneticModels"_s )
+        << new QgsStaticExpressionFunction( u"magnetic_inclination_rate_of_change"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"model_name"_s )
+                                            << QgsExpressionFunction::Parameter( u"date"_s )
+                                            << QgsExpressionFunction::Parameter( u"latitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"longitude"_s )
+                                            << QgsExpressionFunction::Parameter( u"height"_s )
+                                            << QgsExpressionFunction::Parameter( u"model_path"_s, true ),
+                                            fcnMagneticInclinationRateOfChange, u"MagneticModels"_s )
+
         // deprecated stuff - hidden from users
         << new QgsStaticExpressionFunction( u"$scale"_s, QgsExpressionFunction::ParameterList(), fcnMapScale, u"deprecated"_s );
 
@@ -9886,6 +10162,18 @@ bool QgsExpression::unregisterFunction( const QString &name )
 
 void QgsExpression::cleanRegisteredFunctions()
 {
+  const QList<QgsExpressionFunction *> &ownedFunctions = *sOwnedFunctions();
+  for ( QgsExpressionFunction *func : std::as_const( ownedFunctions ) )
+  {
+    sBuiltinFunctions()->removeAll( func->name() );
+    for ( const QString &alias : func->aliases() )
+    {
+      sBuiltinFunctions()->removeAll( alias );
+    }
+
+    sFunctions()->removeAll( func );
+  }
+
   qDeleteAll( *sOwnedFunctions() );
   sOwnedFunctions()->clear();
 }
@@ -10229,4 +10517,3 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }
-

@@ -23,15 +23,12 @@ Contains utility methods for working with :py:class:`QgsVectorLayers`.
   public:
 
     class QgsDuplicateFeatureContext
-{
+    {
 %Docstring(signature="appended")
 Contains mainly the QMap with :py:class:`QgsVectorLayer` and
 :py:class:`QgsFeatureIds` which list all the duplicated features.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorlayerutils.h"
-%End
       public:
 
         QgsDuplicateFeatureContext();
@@ -50,7 +47,7 @@ Returns the duplicated features in the given layer
     };
 
     class QgsFeatureData
-{
+    {
 %Docstring(signature="appended")
 Encapsulate geometry and attributes for new features, to be passed to
 createFeatures.
@@ -60,9 +57,6 @@ createFeatures.
 .. versionadded:: 3.6
 %End
 
-%TypeHeaderCode
-#include "qgsvectorlayerutils.h"
-%End
       public:
 
         QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
@@ -82,6 +76,13 @@ Returns attributes
 %End
 
     };
+
+    enum class FieldIsEditableFlag /BaseType=IntFlag/
+    {
+      IgnoreLayerEditability,
+    };
+    typedef QFlags<QgsVectorLayerUtils::FieldIsEditableFlag> FieldIsEditableFlags;
+
 
     typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
 
@@ -331,12 +332,18 @@ compatibility logic.
 .. versionadded:: 3.4
 %End
 
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() );
 %Docstring
-Tests whether a field is editable for a particular ``feature``.
+Tests whether a field is editable for a particular feature.
 
-:return: ``True`` if the field at index ``fieldIndex`` from ``layer`` is
-         editable, ``False`` if the field is read only.
+:param layer: The vector layer
+:param fieldIndex: The field index
+:param feature: The feature
+:param flags: Additional flags modifying the editability check behavior
+              (since QGIS 4.0)
+
+:return: ``True`` if the field is editable, ``False`` if the field is
+         read only.
 
 .. versionadded:: 3.10
 %End

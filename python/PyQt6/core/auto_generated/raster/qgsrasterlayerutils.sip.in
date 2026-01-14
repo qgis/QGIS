@@ -44,6 +44,21 @@ band.
            elevation range was found
 %End
 
+    static void computeMinMax( QgsRasterDataProvider *provider,
+                               int band,
+                               const QgsRasterMinMaxOrigin &mmo,
+                               Qgis::RasterRangeLimit limits,
+                               const QgsRectangle &extent,
+                               int sampleSize,
+                               double &min /Out/,
+                               double &max /Out/ );
+%Docstring
+Compute the ``min`` ``max`` values for ``provider`` along ``band``
+according to MinMaxOrigin parameters ``mmo`` and ``extent``.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************
