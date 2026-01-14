@@ -58,6 +58,15 @@ class _3D_EXPORT Qgs3DSymbolUtils
      * \note For line and circle symbols, the size of the drawn icon depends on the symbol's parameters.
      */
     static QIcon vectorSymbolPreviewIcon( const QgsAbstract3DSymbol *symbol, const QSize &size, const QgsScreenProperties &screen, int padding );
+
+    /**
+     * Sets the base color of the material settings associated with a 3D vector symbol.
+     *
+     * \param symbol 3D symbol whose material settings will be modified.
+     * \param baseColor Base color to apply to the symbol's material settings.
+     * \returns TRUE if the material's base color was successfully set, FALSE otherwise.
+     */
+    static bool setVectorSymbolBaseColor( QgsAbstract3DSymbol *symbol, const QColor &baseColor );
 };
 
 #endif // QGS3DSYMBOLUTILS_H
