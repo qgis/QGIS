@@ -156,7 +156,15 @@ class CORE_EXPORT QgsLogger
     /**
      * Reads the environment variable QGIS_LOG_FILE. Returns an empty string if the variable is not set,
      * otherwise returns a file name for writing log messages to.
+     * Returns the log file path used by QgsLogger.
+     *
+     * Calling this method initializes the logging system by reading the
+     * environment variables QGIS_LOG_FILE, QGIS_DEBUG, and QGIS_DEBUG_FILE.
+     *
+     * This method must be called before any call to logMessageToFile(),
+     * otherwise messages will not be written to the log file.
     */
+
     static QString logFile();
 
   private:
