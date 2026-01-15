@@ -212,7 +212,10 @@ class CORE_EXPORT QgsPalLayerSettings
       PredefinedPositionOrder = 91,
       LinePlacementOptions = 99, //!< Line placement flags
       OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
-      LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
+
+      // TODO QGIS 5.0 - rename this
+      LabelAllParts = 103, //!< Multipart geometry behavior
+
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced \since QGIS 3.14
       LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored \since QGIS 3.16
       LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation \since QGIS 3.20

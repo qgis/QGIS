@@ -255,9 +255,9 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::Show ), QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::AlwaysShow ), QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::CalloutDraw ), QgsPropertyDefinition( "CalloutDraw", QObject::tr( "Draw callout" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts ), QgsPropertyDefinition( "LabelAllParts", QObject::tr( "Label all parts" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts ), QgsPropertyDefinition( "LabelAllParts", QgsPropertyDefinition::DataTypeString,  QObject::tr( "Multipart geometry behavior" ), QObject::tr( "string " ) + "[<b>LargestPartOnly</b>|<b>LabelEveryPart</b>|<b>SplitLabelTextLinesOverParts</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::AllowDegradedPlacement ), QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handing" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handling" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::MaximumDistance ), QgsPropertyDefinition( "MaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
 
     { static_cast< int >( QgsPalLayerSettings::Property::LabelMarginDistance ), QgsPropertyDefinition( "LabelMarginDistance", QObject::tr( "Minimum distance to other labels" ), QgsPropertyDefinition::DoublePositive, origin ) },
@@ -2494,21 +2494,6 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
       obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) );
     }
   }
-
-  // TODO
-#if 0
-  Qgis::MultiPartLabelingBehavior multiPartBehavior =
-    const bool labelPerPart = placementSettings.multiPartBehavior() == Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel;
-  bool labelAll = labelPerPart && !hasDataDefinedPosition;
-  if ( !hasDataDefinedPosition )
-  {
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::LabelAllParts ) )
-    {
-      context.expressionContext().setOriginalValueVariable( labelPerPart );
-      labelAll = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::LabelAllParts, context.expressionContext(), labelPerPart );
-    }
-  }
-#endif
 
   switch ( placementSettings.multiPartBehavior() )
   {

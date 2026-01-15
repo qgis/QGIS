@@ -141,7 +141,10 @@ Contains settings for how a map layer will be labeled.
       PredefinedPositionOrder,
       LinePlacementOptions,
       OverrunDistance,
+
+      // TODO QGIS 5.0 - rename this
       LabelAllParts,
+
       PolygonLabelOutside,
       LineAnchorPercent,
       LineAnchorClipping,
