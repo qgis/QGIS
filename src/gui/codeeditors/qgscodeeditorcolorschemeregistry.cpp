@@ -16,6 +16,8 @@
 
 #include <QObject>
 
+using namespace Qt::StringLiterals;
+
 QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
 {
   QgsCodeEditorColorScheme defaultScheme( u"default"_s, QObject::tr( "Default" ) );
