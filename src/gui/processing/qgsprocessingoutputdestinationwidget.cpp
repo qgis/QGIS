@@ -55,7 +55,11 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   );
 
   leText->setClearButtonEnabled( false );
-  leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
+
+  if ( !( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() || mParameter->type() == QgsProcessingParameterFileDestination::typeName() ) )
+  {
+    leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
+  }
 
   connect( leText, &QLineEdit::textChanged, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
 
