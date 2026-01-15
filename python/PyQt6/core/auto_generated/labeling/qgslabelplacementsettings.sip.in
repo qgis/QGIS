@@ -96,6 +96,24 @@ Sets the multipart labeling ``behavior``.
 .. versionadded:: 4.0
 %End
 
+    Qgis::LabelWhitespaceCollisionHandling whitespaceCollisionHandling() const;
+%Docstring
+Returns the whitespace collision handling.
+
+.. seealso:: :py:func:`setWhitespaceCollisionHandling`
+
+.. versionadded:: 4.0
+%End
+
+    void setWhitespaceCollisionHandling( Qgis::LabelWhitespaceCollisionHandling handling );
+%Docstring
+Sets the whitespace collision ``handling``.
+
+.. seealso:: :py:func:`whitespaceCollisionHandling`
+
+.. versionadded:: 4.0
+%End
+
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
 Updates the placement settings to respect any data defined properties

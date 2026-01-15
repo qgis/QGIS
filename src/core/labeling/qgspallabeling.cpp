@@ -258,6 +258,9 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts ), QgsPropertyDefinition( "LabelAllParts", QgsPropertyDefinition::DataTypeString,  QObject::tr( "Multipart geometry behavior" ), QObject::tr( "string " ) + "[<b>LargestPartOnly</b>|<b>LabelEveryPart</b>|<b>SplitLabelTextLinesOverParts</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::AllowDegradedPlacement ), QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handling" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
+
+    { static_cast< int >( QgsPalLayerSettings::Property::WhitespaceCollisionHandling ), QgsPropertyDefinition( "WhitespaceCollisionHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Whitespace collision handling" ), QObject::tr( "string " ) + u"[<b>TreatWhitespaceAsCollision</b>|<b>IgnoreWhitespaceCollisions</b>]"_s, origin ) },
+
     { static_cast< int >( QgsPalLayerSettings::Property::MaximumDistance ), QgsPropertyDefinition( "MaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
 
     { static_cast< int >( QgsPalLayerSettings::Property::LabelMarginDistance ), QgsPropertyDefinition( "LabelMarginDistance", QObject::tr( "Minimum distance to other labels" ), QgsPropertyDefinition::DoublePositive, origin ) },
@@ -1201,6 +1204,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     }
   }
 
+  mPlacementSettings.setWhitespaceCollisionHandling( qgsEnumKeyToValue( placementElem.attribute( u"whitespaceCollisions"_s ), Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision ) );
+
   mLineSettings.setMergeLines( renderingElem.attribute( u"mergeLines"_s ).toInt() );
   mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( u"minFeatureSize"_s ).toDouble() );
   mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( u"limitNumLabels"_s, u"0"_s ).toInt() );
@@ -1379,6 +1384,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( u"fontMaxPixelSize"_s, fontMaxPixelSize );
   renderingElem.setAttribute( u"upsidedownLabels"_s, static_cast< unsigned int >( upsidedownLabels ) );
   placementElem.setAttribute( u"multipartBehavior"_s, qgsEnumValueToKey( mPlacementSettings.multiPartBehavior() ) );
+  if ( mPlacementSettings.whitespaceCollisionHandling() != Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision )
+    placementElem.setAttribute( u"whitespaceCollisions"_s, qgsEnumValueToKey( mPlacementSettings.whitespaceCollisionHandling() ) );
   renderingElem.setAttribute( u"mergeLines"_s, mLineSettings.mergeLines() );
   renderingElem.setAttribute( u"minFeatureSize"_s, mThinningSettings.minimumFeatureSize() );
   renderingElem.setAttribute( u"limitNumLabels"_s, mThinningSettings.limitNumberOfLabelsEnabled() );
@@ -3133,6 +3140,7 @@ std::unique_ptr< QgsTextLabelFeature> QgsPalLayerSettings::generateLabelFeature(
   labelFeature->setMultiPartBehavior( placementSettings.multiPartBehavior() );
   labelFeature->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
   labelFeature->setMinimumSize( minimumSize );
+  labelFeature->setWhitespaceCollisionHandling( placementSettings.whitespaceCollisionHandling() );
   if ( geom.type() == Qgis::GeometryType::Point && !obstacleGeometry.isNull() )
   {
     //register symbol size

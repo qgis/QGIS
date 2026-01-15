@@ -75,6 +75,14 @@ class TestQgsLabelPlacementSettings(QgisTestCase):
         )
         self.assertFalse(pal_settings.labelPerPart)
 
+        pal_settings.placementSettings().setWhitespaceCollisionHandling(
+            Qgis.LabelWhitespaceCollisionHandling.IgnoreWhitespaceCollisions
+        )
+        self.assertEqual(
+            pal_settings.placementSettings().whitespaceCollisionHandling(),
+            Qgis.LabelWhitespaceCollisionHandling.IgnoreWhitespaceCollisions,
+        )
+
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelPlacementSettings()
         settings.setAllowDegradedPlacement(True)
@@ -96,11 +104,16 @@ class TestQgsLabelPlacementSettings(QgisTestCase):
             QgsPalLayerSettings.Property.LabelAllParts,
             QgsProperty.fromExpression("@multi_part"),
         )
+        props.setProperty(
+            QgsPalLayerSettings.Property.WhitespaceCollisionHandling,
+            QgsProperty.fromExpression("@whitespace"),
+        )
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable("allow_degraded", "1")
         scope.setVariable("overlap_handling", "alwaysallow")
         scope.setVariable("multi_part", "largestPartOnly")
+        scope.setVariable("whitespace", "ignoreWhitespaceCollisions")
         context.appendScope(scope)
         settings.updateDataDefinedProperties(props, context)
         self.assertTrue(settings.allowDegradedPlacement())
@@ -110,6 +123,10 @@ class TestQgsLabelPlacementSettings(QgisTestCase):
         self.assertEqual(
             settings.multiPartBehavior(),
             Qgis.MultiPartLabelingBehavior.LabelLargestPartOnly,
+        )
+        self.assertEqual(
+            settings.whitespaceCollisionHandling(),
+            Qgis.LabelWhitespaceCollisionHandling.IgnoreWhitespaceCollisions,
         )
 
         scope.setVariable("allow_degraded", "0")

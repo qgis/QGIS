@@ -733,6 +733,24 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setAllowDegradedPlacement( bool allow ) { mAllowDegradedPlacement = allow; }
 
+    /**
+     * Returns the whitespace collision handling.
+     *
+     * \see setWhitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::LabelWhitespaceCollisionHandling whitespaceCollisionHandling() const { return mWhitespaceCollisionHandling; }
+
+    /**
+     * Sets the whitespace collision \a handling.
+     *
+     * \see whitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    void setWhitespaceCollisionHandling( Qgis::LabelWhitespaceCollisionHandling handling ) { mWhitespaceCollisionHandling = handling; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -829,6 +847,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 
     double mMinimumSize = 0.0;
+
+    Qgis::LabelWhitespaceCollisionHandling mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
 
 };
 
