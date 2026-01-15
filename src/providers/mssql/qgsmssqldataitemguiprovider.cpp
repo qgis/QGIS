@@ -26,6 +26,7 @@
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlsourceselect.h"
+#include "qgsnewnamedialog.h"
 #include "qgsproject.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
@@ -117,6 +118,10 @@ void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   else if ( QgsMssqlLayerItem *layerItem = qobject_cast<QgsMssqlLayerItem *>( item ) )
   {
     QMenu *maintainMenu = new QMenu( tr( "Table Operations" ), menu );
+
+    QAction *actionRenameLayer = new QAction( tr( "Rename Table…" ), menu );
+    connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
+    maintainMenu->addAction( actionRenameLayer );
 
     // truncate
     QAction *actionTruncateLayer = new QAction( tr( "Truncate Table" ), menu );
@@ -244,6 +249,32 @@ void QgsMssqlDataItemGuiProvider::createSchema( QgsMssqlConnectionItem *connItem
     connItem->parent()->refreshConnections();
 }
 
+void QgsMssqlDataItemGuiProvider::renameLayer( QgsMssqlLayerItem *layerItem, QgsDataItemGuiContext context )
+{
+  const QgsMssqlLayerProperty &layerInfo = layerItem->layerInfo();
+
+  QgsNewNameDialog dlg( tr( "Table %2.%3" ).arg( layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
+  dlg.setWindowTitle( tr( "Rename Table" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == layerInfo.tableName )
+    return;
+
+  QString errCause;
+  ( void ) QgsMssqlConnection::renameTable( layerItem->uri(), dlg.name(), &errCause );
+  if ( !errCause.isEmpty() )
+  {
+    notify( tr( "Cannot rename table" ), errCause, context, Qgis::MessageLevel::Critical );
+  }
+  else if ( context.messageBar() )
+  {
+    context.messageBar()->pushMessage( tr( "Renamed table to %1" ).arg( dlg.name() ), Qgis::MessageLevel::Success );
+    // for MSSQL we have to refresh at the CONNECTION level, not schema, as schemas + tables are BOTH populated both
+    // the connection item
+    if ( layerItem->parent() && layerItem->parent()->parent() )
+    {
+      layerItem->parent()->parent()->refresh();
+    }
+  }
+}
 
 void QgsMssqlDataItemGuiProvider::truncateTable( QgsMssqlLayerItem *layerItem )
 {

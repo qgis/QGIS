@@ -190,6 +190,37 @@ bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessag
   return true;
 }
 
+bool QgsMssqlConnection::renameTable( const QString &uri, const QString &newName, QString *errorMessage )
+{
+  const QgsDataSourceUri dsUri( uri );
+
+  // connect to database
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
+  const QString schema = dsUri.schema();
+  const QString table = dsUri.table();
+
+  if ( !db->isValid() )
+  {
+    if ( errorMessage )
+      *errorMessage = db->errorText();
+    return false;
+  }
+
+  QSqlQuery q = QSqlQuery( db->db() );
+  q.setForwardOnly( true );
+
+  const QString sql = u"EXECUTE sp_rename '%1.%2', %3"_s
+                        .arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ), QgsMssqlUtils::quotedValue( newName ) );
+  if ( !q.exec( sql ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsMssqlConnection::createSchema( const QString &uri, const QString &schemaName, QString *errorMessage )
 {
   const QgsDataSourceUri dsUri( uri );

@@ -190,6 +190,11 @@ class QgsMssqlConnection
     static bool truncateTable( const QString &uri, QString *errorMessage );
 
     /**
+     * Renames the table referenced by \a uri to \a newName.
+     */
+    static bool renameTable( const QString &uri, const QString &newName, QString *errorMessage );
+
+    /**
      * Creates a new schema under connection specified by \a uri.
      */
     static bool createSchema( const QString &uri, const QString &schemaName, QString *errorMessage );
