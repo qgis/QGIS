@@ -141,6 +141,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     */
     QString variantToString( const QVariant &value ) const;
 
+    void setupPlaceholderText();
+
     QString mimeDataToPath( const QMimeData *data );
 
     const QgsProcessingDestinationParameter *mParameter = nullptr;

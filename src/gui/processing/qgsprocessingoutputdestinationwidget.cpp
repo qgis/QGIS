@@ -347,10 +347,8 @@ void QgsProcessingLayerOutputDestinationWidget::skipOutput()
   emit skipOutputChanged( true );
 }
 
-void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString &name )
+void QgsProcessingLayerOutputDestinationWidget::setupPlaceholderText()
 {
-  const bool prevSkip = outputIsSkipped();
-
   if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() && mParameter->supportsNonFileBasedOutput() )
   {
     leText->setPlaceholderText( tr( "[Create temporary layer]" ) );
@@ -363,6 +361,19 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString &
   {
     leText->setPlaceholderText( tr( "[Save to temporary file]" ) );
   }
+}
+
+void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString &name )
+{
+  const bool prevSkip = outputIsSkipped();
+
+  // special case, destination has not changed (empty string to empty string) but we need to show the temporary icon
+  if ( prevSkip && name.isEmpty() )
+  {
+    leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
+  }
+
+  setupPlaceholderText();
 
   if ( name.isEmpty() )
     leText->clear();
@@ -656,7 +667,14 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
 
 void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text )
 {
-  mUseTemporary = text.isEmpty();
+  // since the text changed we can't use outputIsSkipped() so we check against the previous value
+  const bool prevSkip = !mUseTemporary && mPreviousValueString.isEmpty();
+  if ( prevSkip )
+  {
+    setupPlaceholderText();
+    emit skipOutputChanged( false );
+  }
+
   mUseRemapping = false;
 
   if ( couldBeTemporaryLayerName( text ) || text == "memory:"_L1 )
@@ -667,6 +685,7 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   else
   {
     leText->removeAction( mActionTemporaryOutputIcon );
+    mUseTemporary = false;
   }
 
   // emit destinationChanged only if the value actually changed
