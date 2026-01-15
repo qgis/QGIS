@@ -55,6 +55,8 @@
 #include "qgsmaprenderertask.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
@@ -68,6 +70,7 @@
 #include "qgsserverfeatureid.h"
 #include "qgsserverprojectutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgstriangularmesh.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -1701,7 +1704,7 @@ namespace QgsWms
               break;
             }
           }
-          else
+          else if ( layer->type() == Qgis::LayerType::Raster )
           {
             QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
             if ( !rasterLayer )
@@ -1722,10 +1725,20 @@ namespace QgsWms
               layerElement = result.createElement( u"gml:featureMember"_s /*wfs:FeatureMember*/ );
               getFeatureInfoElement.appendChild( layerElement );
             }
-
             ( void ) featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
           }
-          break;
+          else if ( layer->type() == Qgis::LayerType::Mesh )
+          {
+            QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+            QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
+
+            const QgsTriangularMesh *mesh = meshLayer->triangularMesh();
+            if ( !mesh )
+            {
+              meshLayer->updateTriangularMesh( renderContext.coordinateTransform() );
+            }
+            ( void ) featureInfoFromMeshLayer( meshLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
+          }
         }
       }
       if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
@@ -2166,6 +2179,141 @@ namespace QgsWms
     const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( attributeIndex );
     attributeElement.setAttribute( u"value"_s, QgsExpression::replaceExpressionText( replaceValueMapAndRelation( layer, attributeIndex, featureAttributes[attributeIndex] ), &renderContext.expressionContext() ) );
     featureElem.appendChild( attributeElement );
+  }
+
+  bool QgsRenderer::featureInfoFromMeshLayer( QgsMeshLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const
+  {
+    Q_UNUSED( version )
+    Q_UNUSED( mapSettings )
+
+    if ( !infoPoint || !layer || !layer->dataProvider() )
+    {
+      return false;
+    }
+
+    const bool isTemporal = layer->temporalProperties()->isActive();
+    QgsDateTimeRange range, layerRange;
+    const QString dateFormat = u"yyyy-MM-ddTHH:mm:ss"_s;
+
+    QList<QgsMeshDatasetIndex> datasetIndexList;
+    const int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
+    const int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
+
+    const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
+
+    if ( isTemporal )
+    {
+      range = renderContext.temporalRange();
+      layerRange = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent();
+
+      if ( activeScalarGroup >= 0 )
+      {
+        QgsMeshDatasetIndex indice;
+        indice = layer->activeScalarDatasetAtTime( range );
+        datasetIndexList.append( indice );
+      }
+
+      if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
+        datasetIndexList.append( layer->activeVectorDatasetAtTime( range ) );
+
+      for ( int groupIndex : allGroup )
+      {
+        if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
+          datasetIndexList.append( layer->datasetIndexAtTime( range, groupIndex ) );
+      }
+    }
+    else
+    {
+      if ( activeScalarGroup >= 0 )
+        datasetIndexList.append( layer->staticScalarDatasetIndex() );
+      if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
+        datasetIndexList.append( layer->staticVectorDatasetIndex() );
+
+      for ( int groupIndex : allGroup )
+      {
+        if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
+        {
+          if ( !layer->datasetGroupMetadata( groupIndex ).isTemporal() )
+            datasetIndexList.append( groupIndex );
+        }
+      }
+    }
+
+    const double searchRadius = Qgis::DEFAULT_SEARCH_RADIUS_MM * renderContext.scaleFactor() * renderContext.mapToPixel().mapUnitsPerPixel();
+
+    double scalarDoubleValue = 0.0;
+
+    for ( const QgsMeshDatasetIndex &index : datasetIndexList )
+    {
+      if ( !index.isValid() )
+        continue;
+
+      const QgsMeshDatasetGroupMetadata &groupMeta = layer->datasetGroupMetadata( index );
+      QMap<QString, QString> derivedAttributes;
+
+      QMap<QString, QString> attribute;
+
+      if ( groupMeta.isScalar() )
+      {
+        const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, *infoPoint, searchRadius );
+        scalarDoubleValue = scalarValue.scalar();
+        attribute.insert( u"Scalar Value"_s, std::isnan( scalarDoubleValue ) ? u"no data"_s : QLocale().toString( scalarDoubleValue ) );
+      }
+
+      if ( groupMeta.isVector() )
+      {
+        const QgsMeshDatasetValue vectorValue = layer->datasetValue( index, *infoPoint, searchRadius );
+        const double vectorX = vectorValue.x();
+        const double vectorY = vectorValue.y();
+        if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
+        {
+          attribute.insert( u"Vector Value"_s, u"no data"_s );
+        }
+        else
+        {
+          attribute.insert( u"Vector Magnitude"_s, QLocale().toString( vectorValue.scalar() ) );
+          derivedAttributes.insert( u"Vector x-component"_s, QLocale().toString( vectorY ) );
+          derivedAttributes.insert( u"Vector y-component"_s, QLocale().toString( vectorX ) );
+        }
+      }
+
+      const QgsMeshDatasetMetadata &meta = layer->datasetMetadata( index );
+
+      if ( groupMeta.isTemporal() )
+        derivedAttributes.insert( u"Time Step"_s, layer->formatTime( meta.time() ) );
+      derivedAttributes.insert( u"Source"_s, groupMeta.uri() );
+
+      const QString resultName = groupMeta.name();
+
+      QDomElement attributeElement = infoDocument.createElement( u"Attribute"_s );
+      attributeElement.setAttribute( u"name"_s, resultName );
+
+      QString value;
+      if ( !QgsVariantUtils::isNull( scalarDoubleValue ) )
+      {
+        value = QString::number( scalarDoubleValue );
+      }
+
+      attributeElement.setAttribute( u"value"_s, value );
+      layerElement.appendChild( attributeElement );
+
+      if ( isTemporal )
+      {
+        QDomElement attributeElementTime = infoDocument.createElement( u"Attribute"_s );
+        attributeElementTime.setAttribute( u"name"_s, u"Time"_s );
+        if ( range.isInstant() )
+        {
+          value = range.begin().toString( dateFormat );
+        }
+        else
+        {
+          value = range.begin().toString( dateFormat ) + '/' + range.end().toString( dateFormat );
+        }
+        attributeElementTime.setAttribute( u"value"_s, value );
+        layerElement.appendChild( attributeElementTime );
+      }
+    }
+    return true;
   }
 
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const

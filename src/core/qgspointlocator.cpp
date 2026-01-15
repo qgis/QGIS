@@ -33,7 +33,6 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgswkbptr.h"
 
-#include <QLinkedListIterator>
 #include <QtConcurrent>
 
 #include "moc_qgspointlocator.cpp"
@@ -66,7 +65,10 @@ static const double POINT_LOC_EPSILON = 1e-12;
 class QgsPointLocator_Stream : public IDataStream
 {
   public:
-    explicit QgsPointLocator_Stream( const QLinkedList<RTree::Data *> &dataList )
+    /**
+     * \brief Construct a QgsPointLocator_Stream
+     */
+    explicit QgsPointLocator_Stream( const QVector<RTree::Data *> &dataList )
       : mDataList( dataList )
       , mIt( mDataList )
     { }
@@ -78,8 +80,8 @@ class QgsPointLocator_Stream : public IDataStream
     void rewind() override { Q_ASSERT( false && "not available" ); }
 
   private:
-    QLinkedList<RTree::Data *> mDataList;
-    QLinkedListIterator<RTree::Data *> mIt;
+    QVector<RTree::Data *> mDataList;
+    QVectorIterator<RTree::Data *> mIt;
 };
 
 
@@ -1046,7 +1048,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   destroyIndex();
 
-  QLinkedList<RTree::Data *> dataList;
+  QVector<RTree::Data *> dataList;
   QgsFeature f;
 
   QgsFeatureRequest request;

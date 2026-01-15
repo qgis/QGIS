@@ -77,6 +77,13 @@ Returns attributes
 
     };
 
+    enum class FieldIsEditableFlag /BaseType=IntFlag/
+    {
+      IgnoreLayerEditability,
+    };
+    typedef QFlags<QgsVectorLayerUtils::FieldIsEditableFlag> FieldIsEditableFlags;
+
+
     typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
 
     static QgsFeatureIterator getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly );
@@ -325,12 +332,18 @@ compatibility logic.
 .. versionadded:: 3.4
 %End
 
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() );
 %Docstring
-Tests whether a field is editable for a particular ``feature``.
+Tests whether a field is editable for a particular feature.
 
-:return: ``True`` if the field at index ``fieldIndex`` from ``layer`` is
-         editable, ``False`` if the field is read only.
+:param layer: The vector layer
+:param fieldIndex: The field index
+:param feature: The feature
+:param flags: Additional flags modifying the editability check behavior
+              (since QGIS 4.0)
+
+:return: ``True`` if the field is editable, ``False`` if the field is
+         read only.
 
 .. versionadded:: 3.10
 %End

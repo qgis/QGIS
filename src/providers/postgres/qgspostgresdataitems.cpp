@@ -182,6 +182,14 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
   , mConnectionName( connectionName )
 {
   mIconName = u"mIconDbSchema.svg"_s;
+
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+  if ( conn )
+  {
+    mProjectVersioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
+  }
+  conn->unref();
 }
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()

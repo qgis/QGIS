@@ -29,27 +29,25 @@
 
 #include "util.h"
 
-#include <cfloat>
-
 #include "qgsgeos.h"
 #include "qgslogger.h"
 
-QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_geom )
+std::optional<QVector<const GEOSGeometry *>> pal::Util::unmulti( const GEOSGeometry *the_geom )
 {
-  QLinkedList<const GEOSGeometry *> *queue = new QLinkedList<const GEOSGeometry *>;
-  QLinkedList<const GEOSGeometry *> *final_queue = new QLinkedList<const GEOSGeometry *>;
+  QVector<const GEOSGeometry *> queue;
+  QVector<const GEOSGeometry *> final_queue;
 
   const GEOSGeometry *geom = nullptr;
 
-  queue->append( the_geom );
+  queue.append( the_geom );
   int nGeom;
   int i;
 
   GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
-  while ( !queue->isEmpty() )
+  while ( !queue.isEmpty() )
   {
-    geom = queue->takeFirst();
+    geom = queue.takeFirst();
     const int type = GEOSGeomTypeId_r( geosctxt, geom );
     switch ( type )
     {
@@ -60,22 +58,19 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
         nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
         for ( i = 0; i < nGeom; i++ )
         {
-          queue->append( GEOSGetGeometryN_r( geosctxt, geom, i ) );
+          queue.append( GEOSGetGeometryN_r( geosctxt, geom, i ) );
         }
         break;
       case GEOS_POINT:
       case GEOS_LINESTRING:
       case GEOS_POLYGON:
-        final_queue->append( geom );
+        final_queue.append( geom );
         break;
       default:
         QgsDebugError( u"unexpected geometry type:%1"_s.arg( type ) );
-        delete final_queue;
-        delete queue;
-        return nullptr;
+        return {};
     }
   }
-  delete queue;
 
   return final_queue;
 }

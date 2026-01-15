@@ -284,8 +284,8 @@ inline std::unique_ptr<Chain> Problem::chain( int seed )
 
   const int max_degree = pal->mEjChainDeg;
 
-  QLinkedList<ElemTrans *> currentChain;
-  QLinkedList<int> conflicts;
+  QVector<ElemTrans *> currentChain;
+  QVector<int> conflicts;
 
   std::vector< int > tmpsol( mSol.activeLabelIds );
 
@@ -331,8 +331,7 @@ inline std::unique_ptr<Chain> Problem::chain( int seed )
                 const int feat = lp2->getProblemFeatureId();
 
                 // is there any cycles ?
-                QLinkedList< ElemTrans * >::iterator cur;
-                for ( cur = currentChain.begin(); cur != currentChain.end(); ++cur )
+                for ( auto cur = currentChain.begin(); cur != currentChain.end(); ++cur )
                 {
                   if ( ( *cur )->feat == feat )
                   {
@@ -369,7 +368,7 @@ inline std::unique_ptr<Chain> Problem::chain( int seed )
                 retainedChain->degree = currentChain.size() + 1;
                 retainedChain->feat.resize( retainedChain->degree );
                 retainedChain->label.resize( retainedChain->degree );
-                QLinkedList<ElemTrans *>::iterator current = currentChain.begin();
+                QVector<ElemTrans *>::iterator current = currentChain.begin();
                 ElemTrans *move = nullptr;
                 int j = 0;
                 while ( current != currentChain.end() )
@@ -408,7 +407,7 @@ inline std::unique_ptr<Chain> Problem::chain( int seed )
               newChain->degree = currentChain.size() + 1 + conflicts.size();
               newChain->feat.resize( newChain->degree );
               newChain->label.resize( newChain->degree );
-              QLinkedList<ElemTrans *>::iterator current = currentChain.begin();
+              QVector<ElemTrans *>::iterator current = currentChain.begin();
               ElemTrans *move = nullptr;
               int j = 0;
 
@@ -466,7 +465,7 @@ inline std::unique_ptr<Chain> Problem::chain( int seed )
               retainedChain->degree = currentChain.size() + 1;
               retainedChain->feat.resize( retainedChain->degree );
               retainedChain->label.resize( retainedChain->degree );
-              QLinkedList<ElemTrans *>::iterator current = currentChain.begin();
+              QVector<ElemTrans *>::iterator current = currentChain.begin();
               ElemTrans *move = nullptr;
               int j = 0;
               while ( current != currentChain.end() )

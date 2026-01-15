@@ -109,9 +109,11 @@ class GUI_EXPORT QgsStatusBar : public QWidget
      */
     void setParentStatusBar( QStatusBar *statusBar );
 
-
   protected:
     void changeEvent( QEvent *event ) override;
+
+  private slots:
+    void applyWidgetStyle();
 
   private:
     QHBoxLayout *mLayout = nullptr;

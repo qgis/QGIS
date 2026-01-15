@@ -1049,6 +1049,13 @@ Return ``True`` if the dataset path is not already added.
 .. versionadded:: 3.42
 %End
 
+    QStringList extraDatasetUris() const;
+%Docstring
+Returns the list of extra dataset URIs associated with this layer
+
+.. versionadded:: 4.0
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

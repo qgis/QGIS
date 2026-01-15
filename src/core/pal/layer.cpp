@@ -102,8 +102,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   std::unique_ptr<FeaturePart> biggestPart;
 
   // break the (possibly multi-part) geometry into simple geometries
-  std::unique_ptr<QLinkedList<const GEOSGeometry *>> simpleGeometries( Util::unmulti( lf->geometry() ) );
-  if ( !simpleGeometries ) // unmulti() failed?
+  const std::optional<QVector<const GEOSGeometry *>> simpleGeometries = Util::unmulti( lf->geometry() );
+  if ( !simpleGeometries.has_value() ) // unmulti() failed?
   {
     throw InternalException::UnknownGeometry();
   }
@@ -112,10 +112,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   const bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
-  while ( !simpleGeometries->isEmpty() )
+  for ( const GEOSGeometry *geom : simpleGeometries.value() )
   {
-    const GEOSGeometry *geom = simpleGeometries->takeFirst();
-
     // ignore invalid geometries (e.g. polygons with self-intersecting rings)
     if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
     {

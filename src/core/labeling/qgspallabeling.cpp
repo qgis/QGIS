@@ -214,6 +214,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ), QgsPropertyDefinition( "LineAnchorClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor clipping mode" ), QObject::tr( "string " ) + u"[<b>visible</b>|<b>entire</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ), QgsPropertyDefinition( "LineAnchorType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor type" ), QObject::tr( "string " ) + u"[<b>hint</b>|<b>strict</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ), QgsPropertyDefinition( "LineAnchorTextPoint", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor text point" ), QObject::tr( "string " ) + u"[<b>follow</b>|<b>start</b>|<b>center</b>|<b>end</b>]"_s, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::CurvedLabelMode ), QgsPropertyDefinition( "CurvedLabelMode", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved label mode" ), QObject::tr( "string " ) + u"[<b>Default</b>|<b>CharactersAtVertices</b>|<b>StretchCharacterSpacingToFit</b>|<b>StretchWordSpacingToFit</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::Priority ), QgsPropertyDefinition( "Priority", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Label priority" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::IsObstacle ), QgsPropertyDefinition( "IsObstacle", QObject::tr( "Feature is a label obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ), QgsPropertyDefinition( "ObstacleFactor", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Obstacle factor" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
@@ -1120,8 +1121,9 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mLineSettings.setLineAnchorPercent( placementElem.attribute( u"lineAnchorPercent"_s, u"0.5"_s ).toDouble() );
   mLineSettings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( placementElem.attribute( u"lineAnchorType"_s, u"0"_s ).toInt() ) );
   mLineSettings.setAnchorClipping( static_cast< QgsLabelLineSettings::AnchorClipping >( placementElem.attribute( u"lineAnchorClipping"_s, u"0"_s ).toInt() ) );
-  // when reading the anchor text point we default to center mode, to keep same result as for proejcts created in < 3.26
+  // when reading the anchor text point we default to center mode, to keep same result as for projects created in < 3.26
   mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( u"lineAnchorTextPoint"_s ), QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
+  mLineSettings.setCurvedLabelMode( qgsEnumKeyToValue( placementElem.attribute( u"curvedLabelMode"_s ), Qgis::CurvedLabelMode::Default ) );
 
   mPointSettings.setMaximumDistance( placementElem.attribute( u"maximumDistance"_s, u"0"_s ).toDouble() );
   mPointSettings.setMaximumDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"maximumDistanceUnit"_s ) ) );
@@ -1333,6 +1335,10 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( u"lineAnchorType"_s, static_cast< int >( mLineSettings.anchorType() ) );
   placementElem.setAttribute( u"lineAnchorClipping"_s, static_cast< int >( mLineSettings.anchorClipping() ) );
   placementElem.setAttribute( u"lineAnchorTextPoint"_s, qgsEnumValueToKey( mLineSettings.anchorTextPoint() ) );
+  if ( mLineSettings.curvedLabelMode() != Qgis::CurvedLabelMode::Default )
+  {
+    placementElem.setAttribute( u"curvedLabelMode"_s, qgsEnumValueToKey( mLineSettings.curvedLabelMode() ) );
+  }
 
   placementElem.setAttribute( u"maximumDistance"_s, mPointSettings.maximumDistance() );
   placementElem.setAttribute( u"maximumDistanceUnit"_s, QgsUnitTypes::encodeUnit( mPointSettings.maximumDistanceUnit() ) );
@@ -2405,6 +2411,12 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
+  QgsLabelLineSettings lineSettings = mLineSettings;
+  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
+  QgsLabelPointSettings pointSettings = mPointSettings;
+  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
   QgsGeometry geom = feature.geometry();
   if ( geom.isNull() )
   {
@@ -2412,9 +2424,40 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // simplify?
+  bool allowSimplify = true;
+  switch ( placement )
+  {
+    case Qgis::LabelPlacement::Curved:
+    case Qgis::LabelPlacement::PerimeterCurved:
+    {
+      switch ( lineSettings.curvedLabelMode() )
+      {
+        case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+          // don't simplify -- this would remove vertices, making characters out of sync with remaining vertices
+          allowSimplify = false;
+          break;
+        case Qgis::CurvedLabelMode::Default:
+        case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+        case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+          break;
+      }
+      break;
+    }
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+      break;
+  }
+
+
   const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
   std::unique_ptr<QgsGeometry> scopedClonedGeom;
-  if ( simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
+  if ( allowSimplify && simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
   {
     unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     const Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = simplifyMethod.simplifyAlgorithm();
@@ -2485,12 +2528,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
-  QgsLabelLineSettings lineSettings = mLineSettings;
-  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
-  QgsLabelPointSettings pointSettings = mPointSettings;
-  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
   if ( geom.type() == Qgis::GeometryType::Line || placement == Qgis::LabelPlacement::Line || placement == Qgis::LabelPlacement::PerimeterCurved )
   {
     switch ( lineSettings.anchorClipping() )
@@ -2501,6 +2538,22 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       case QgsLabelLineSettings::AnchorClipping::UseEntireLine:
         doClip = false;
         break;
+    }
+
+    if ( placement == Qgis::LabelPlacement::Curved || placement == Qgis::LabelPlacement::PerimeterCurved )
+    {
+      switch ( lineSettings.curvedLabelMode() )
+      {
+        case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+          // don't clip geometries when in this mode, or vertices will get out-of-sync with their corresponding
+          // characters!
+          doClip = false;
+          break;
+        case Qgis::CurvedLabelMode::Default:
+        case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+        case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+          break;
+      }
     }
   }
 
@@ -2996,6 +3049,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setLineAnchorPercent( lineSettings.lineAnchorPercent() );
   labelFeature->setLineAnchorType( lineSettings.anchorType() );
   labelFeature->setLineAnchorTextPoint( lineSettings.anchorTextPoint() );
+  labelFeature->setCurvedLabelMode( lineSettings.curvedLabelMode() );
   labelFeature->setLabelAllParts( labelAll );
   labelFeature->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
   labelFeature->setMinimumSize( minimumSize );

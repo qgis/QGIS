@@ -1270,7 +1270,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
 
-  functionProfile( &QgisApp::readSettings, this, u"Read settings"_s );
   functionProfile( &QgisApp::createToolBars, this, u"Toolbars"_s );
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
@@ -1714,6 +1713,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     delete mActionShowPythonDialog;
     mActionShowPythonDialog = nullptr;
   }
+
+  functionProfile( &QgisApp::readSettings, this, u"Read theme settings"_s );
 
   // Update recent project list (as possible custom project storages are now registered by plugins)
   mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
@@ -2875,7 +2876,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
 void QgisApp::readSettings()
 {
   QgsSettings settings;
-  QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
+  const QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
   setTheme( themeName );
 
   // Read legacy settings
@@ -3980,7 +3981,7 @@ void QgisApp::createStatusBar()
   statusBarFont.setPointSize( fontSize );
   statusBar()->setFont( statusBarFont );
 
-  mStatusBar = new QgsStatusBar();
+  mStatusBar = new QgsStatusBar( this );
   mStatusBar->setParentStatusBar( QMainWindow::statusBar() );
   mStatusBar->setFont( statusBarFont );
 
@@ -4185,8 +4186,8 @@ void QgisApp::setTheme( const QString &themeName )
 
   QString theme = themeName;
 
-  mStyleSheetBuilder->updateStyleSheet();
   QgsApplication::setUITheme( theme );
+  mStyleSheetBuilder->updateStyleSheet();
 
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNew.svg"_s ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileOpen.svg"_s ) );
@@ -10481,9 +10482,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
 
 void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories categories )
 {
-  QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer();
-
-  if ( selectionLayer )
+  if ( QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer() )
   {
     QString errorMsg;
     QDomDocument doc( u"qgis"_s );
@@ -10503,10 +10502,52 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories 
   }
 }
 
+void QgisApp::copyAllStyles( QgsMapLayer *sourceLayer )
+{
+  if ( QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer() )
+  {
+    QString errorMsg;
+    QDomDocument tempDoc( u"qgis"_s );
+    QgsReadWriteContext context;
+
+    // QgsMapLayerStyleManager does not store current style, so export that first
+    selectionLayer->exportNamedStyle( tempDoc, errorMsg, context );
+    if ( !errorMsg.isEmpty() )
+    {
+      visibleMessageBar()->pushMessage( tr( "Cannot copy styles" ), errorMsg, Qgis::MessageLevel::Critical );
+      return;
+    }
+
+    QDomImplementation DomImplementation;
+    const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgisLayerStyles"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
+    QDomDocument doc( documentType );
+
+    QDomElement rootNode = doc.createElement( u"qgisLayerStyles"_s );
+
+    QDomElement styleElem = doc.createElement( u"defaultStyle"_s );
+    QDomNode currentStyleNode = doc.importNode( tempDoc.documentElement(), true );
+    styleElem.appendChild( currentStyleNode );
+    rootNode.appendChild( styleElem );
+
+    // export other styles
+    QgsMapLayerStyleManager *mgr = selectionLayer->styleManager();
+    QDomElement stylesElem = doc.createElement( u"styles"_s );
+    mgr->writeXml( stylesElem );
+
+    rootNode.appendChild( stylesElem );
+    doc.appendChild( rootNode );
+
+    // Copies data in text form as well, so the XML can be pasted into a text editor
+    clipboard()->setData( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ), doc.toByteArray(), doc.toString() );
+
+    // Enables the paste menu element
+    mActionPasteStyle->setEnabled( true );
+  }
+}
+
 void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCategories categories )
 {
-  QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
-  if ( selectionLayer )
+  if ( QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer() )
   {
     if ( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) )
     {
@@ -10530,6 +10571,51 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
       if ( !selectionLayer->importNamedStyle( doc, errorMsg, categories ) )
       {
         visibleMessageBar()->pushMessage( tr( "Cannot paste style" ), errorMsg, Qgis::MessageLevel::Critical );
+        return;
+      }
+
+      mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
+      selectionLayer->triggerRepaint();
+      QgsProject::instance()->setDirty( true );
+    }
+  }
+}
+
+void QgisApp::pasteAllStyles( QgsMapLayer *destinationLayer )
+{
+  if ( QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer() )
+  {
+    if ( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ) ) )
+    {
+      QDomImplementation DomImplementation;
+      const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgisLayerStyles"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
+      QDomDocument doc( documentType );
+
+      QString errorMsg;
+      int errorLine, errorColumn;
+      if ( !doc.setContent( clipboard()->data( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ) ), false, &errorMsg, &errorLine, &errorColumn ) )
+      {
+        visibleMessageBar()->pushMessage( tr( "Cannot parse styles" ), errorMsg, Qgis::MessageLevel::Critical );
+        return;
+      }
+
+      const QDomElement rootElement { doc.firstChildElement( u"qgisLayerStyles"_s ).firstChildElement( u"defaultStyle"_s ).firstChildElement( u"qgis"_s ) };
+      const Qgis::LayerType styleOriginType { qgsEnumKeyToValue( rootElement.attribute( u"layerType"_s ), Qgis::LayerType::Vector ) };
+      if ( selectionLayer->type() != styleOriginType )
+      {
+        visibleMessageBar()->pushMessage( tr( "Cannot paste styles to layer '%1' because the type doesn't match (%2 → %3)" ).arg( selectionLayer->name(), QgsMapLayerUtils::layerTypeToString( styleOriginType ), QgsMapLayerUtils::layerTypeToString( selectionLayer->type() ) ), errorMsg, Qgis::MessageLevel::Warning );
+        return;
+      }
+
+      QgsMapLayerStyleManager *mgr = selectionLayer->styleManager();
+      mgr->readXml( doc.firstChildElement( u"qgisLayerStyles"_s ).firstChildElement( u"styles"_s ) );
+
+      QDomDocument currentStyleDoc( u"qgis"_s );
+      QDomNode importedNode = currentStyleDoc.importNode( rootElement, true );
+      currentStyleDoc.appendChild( importedNode );
+      if ( !selectionLayer->importNamedStyle( currentStyleDoc, errorMsg ) )
+      {
+        visibleMessageBar()->pushMessage( tr( "Cannot paste styles" ), errorMsg, Qgis::MessageLevel::Critical );
         return;
       }
 
