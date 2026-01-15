@@ -296,7 +296,7 @@ QgsPalLayerSettings.OverrunDistance.is_monkey_patched = True
 QgsPalLayerSettings.OverrunDistance.__doc__ = "Distance which labels can extend past either end of linear features"
 QgsPalLayerSettings.LabelAllParts = QgsPalLayerSettings.Property.LabelAllParts
 QgsPalLayerSettings.LabelAllParts.is_monkey_patched = True
-QgsPalLayerSettings.LabelAllParts.__doc__ = "Whether all parts of multi-part features should be labeled"
+QgsPalLayerSettings.LabelAllParts.__doc__ = "Multipart geometry behavior"
 QgsPalLayerSettings.PolygonLabelOutside = QgsPalLayerSettings.Property.PolygonLabelOutside
 QgsPalLayerSettings.PolygonLabelOutside.is_monkey_patched = True
 QgsPalLayerSettings.PolygonLabelOutside.__doc__ = "Whether labels outside a polygon feature are permitted, or should be forced \n.. versionadded:: 3.14"
@@ -472,7 +472,7 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
 * ``PredefinedPositionOrder``: 
 * ``LinePlacementOptions``: Line placement flags
 * ``OverrunDistance``: Distance which labels can extend past either end of linear features
-* ``LabelAllParts``: Whether all parts of multi-part features should be labeled
+* ``LabelAllParts``: Multipart geometry behavior
 * ``PolygonLabelOutside``: Whether labels outside a polygon feature are permitted, or should be forced
 
   .. versionadded:: 3.14
