@@ -28,7 +28,6 @@
 .kdev4/
 .project
 .pydevproject
-.qtcreator
 .venv
 .vscode
 .qtcreator
