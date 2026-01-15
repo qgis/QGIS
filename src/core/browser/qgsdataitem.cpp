@@ -308,7 +308,7 @@ void QgsDataItem::refresh()
     setState( Qgis::BrowserItemState::Populating );
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >> ( this );
+      mFutureWatcher = std::make_unique<QFutureWatcher<QVector<QgsDataItem *> >>( this );
     }
     connect( mFutureWatcher.get(), &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
     mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
