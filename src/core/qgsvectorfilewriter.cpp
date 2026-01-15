@@ -158,7 +158,7 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
   if ( !gdalDriver )
     return false;
 
-  char **driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+  CSLConstList driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
   if ( !driverMetadata )
     return false;
 
@@ -4170,7 +4170,7 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
     GDALDriverH drv = GDALGetDriver( i );
     if ( drv )
     {
-      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      CSLConstList driverMetadata = GDALGetMetadata( drv, nullptr );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
       {
         QString drvName = GDALGetDriverShortName( drv );

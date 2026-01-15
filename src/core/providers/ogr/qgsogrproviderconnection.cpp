@@ -411,7 +411,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   mGeometryColumnCapabilities |= GeometryColumnCapability::SinglePolygon;
 #endif
 
-  char **driverMetadata = GDALGetMetadata( hDriver, nullptr );
+  CSLConstList driverMetadata = GDALGetMetadata( hDriver, nullptr );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_Z_GEOMETRIES, false ) )

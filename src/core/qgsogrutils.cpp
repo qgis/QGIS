@@ -1111,7 +1111,7 @@ QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encodi
   return fields;
 }
 
-QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
+QStringList QgsOgrUtils::cStringListToQStringList( const char *const *stringList )
 {
   if ( !stringList )
     return {};
