@@ -599,3 +599,4 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }
+
