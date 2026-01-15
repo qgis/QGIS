@@ -29,7 +29,7 @@ QString QgsPdalClassifyGroundAlgorithm::name() const
 
 QString QgsPdalClassifyGroundAlgorithm::displayName() const
 {
-  return QObject::tr( "Classify Ground Points" );
+  return QObject::tr( "Classify ground points" );
 }
 
 QString QgsPdalClassifyGroundAlgorithm::group() const
