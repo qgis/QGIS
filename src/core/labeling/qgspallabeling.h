@@ -239,6 +239,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
       AllowDegradedPlacement = 117, //!< Allow degraded label placements \since QGIS 3.26
       OverlapHandling = 118, //!< Overlap handling technique \since QGIS 3.26
+      WhitespaceCollisionHandling = 125, //!< Whitespace collision handling \since QGIS 4.0
 
       LabelMarginDistance = 121, //!< Minimum distance from labels for this feature to other labels \since QGIS 3.44
       RemoveDuplicateLabels = 122, //!< Whether this feature can cause removal of duplicate labels \since QGIS 3.44

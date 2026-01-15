@@ -106,6 +106,24 @@ class CORE_EXPORT QgsLabelPlacementSettings
     void setMultiPartBehavior( Qgis::MultiPartLabelingBehavior behavior ) { mMultiPartBehavior = behavior; }
 
     /**
+     * Returns the whitespace collision handling.
+     *
+     * \see setWhitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::LabelWhitespaceCollisionHandling whitespaceCollisionHandling() const { return mWhitespaceCollisionHandling; }
+
+    /**
+     * Sets the whitespace collision \a handling.
+     *
+     * \see whitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    void setWhitespaceCollisionHandling( Qgis::LabelWhitespaceCollisionHandling handling ) { mWhitespaceCollisionHandling = handling; }
+
+    /**
      * Updates the placement settings to respect any data defined properties
      * set within the specified \a properties collection.
      */
@@ -119,6 +137,7 @@ class CORE_EXPORT QgsLabelPlacementSettings
     bool mAllowDegradedPlacement = false;
 
     Qgis::MultiPartLabelingBehavior mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
+    Qgis::LabelWhitespaceCollisionHandling mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
 
 };
 

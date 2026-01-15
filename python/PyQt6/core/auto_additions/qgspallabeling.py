@@ -357,6 +357,9 @@ QgsPalLayerSettings.AllowDegradedPlacement.__doc__ = "Allow degraded label place
 QgsPalLayerSettings.OverlapHandling = QgsPalLayerSettings.Property.OverlapHandling
 QgsPalLayerSettings.OverlapHandling.is_monkey_patched = True
 QgsPalLayerSettings.OverlapHandling.__doc__ = "Overlap handling technique \n.. versionadded:: 3.26"
+QgsPalLayerSettings.WhitespaceCollisionHandling = QgsPalLayerSettings.Property.WhitespaceCollisionHandling
+QgsPalLayerSettings.WhitespaceCollisionHandling.is_monkey_patched = True
+QgsPalLayerSettings.WhitespaceCollisionHandling.__doc__ = "Whitespace collision handling \n.. versionadded:: 4.0"
 QgsPalLayerSettings.LabelMarginDistance = QgsPalLayerSettings.Property.LabelMarginDistance
 QgsPalLayerSettings.LabelMarginDistance.is_monkey_patched = True
 QgsPalLayerSettings.LabelMarginDistance.__doc__ = "Minimum distance from labels for this feature to other labels \n.. versionadded:: 3.44"
@@ -516,6 +519,10 @@ QgsPalLayerSettings.Property.__doc__ = """Data definable properties.
 * ``OverlapHandling``: Overlap handling technique
 
   .. versionadded:: 3.26
+
+* ``WhitespaceCollisionHandling``: Whitespace collision handling
+
+  .. versionadded:: 4.0
 
 * ``LabelMarginDistance``: Minimum distance from labels for this feature to other labels
 

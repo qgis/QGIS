@@ -515,6 +515,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mComboCurvedLabelMode->setCurrentIndex( mComboCurvedLabelMode->findData( QVariant::fromValue( mSettings.lineSettings().curvedLabelMode() ) ) );
 
+  mCheckWhitespaceIsNotACollision->setChecked( mSettings.placementSettings().whitespaceCollisionHandling() == Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions );
+
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mThinningSettings.minimumFeatureSize() );
   mLimitLabelChkBox->setChecked( mThinningSettings.limitNumberOfLabelsEnabled() );
@@ -705,6 +707,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.placementSettings().setOverlapHandling( static_cast<Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
   lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
   lyr.placementSettings().setPrioritization( mPrioritizationComboBox->currentData().value<Qgis::LabelPrioritization>() );
+  lyr.placementSettings().setWhitespaceCollisionHandling( mCheckWhitespaceIsNotACollision->isChecked() ? Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions : Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision );
 
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
   lyr.lineSettings().setCurvedLabelMode( mComboCurvedLabelMode->currentData().value< Qgis::CurvedLabelMode >() );

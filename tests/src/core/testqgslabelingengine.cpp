@@ -170,6 +170,8 @@ class TestQgsLabelingEngine : public QgsTest
     void testMultiPointLinesOnPartsMorePartsThanLines();
     void testMultiPointLinesOnPartsLessPartsThanLines();
 
+    void testCurvedIgnoreWhitespaceCollisions();
+
   private:
     QgsVectorLayer *vl = nullptr;
 
@@ -7909,6 +7911,61 @@ void TestQgsLabelingEngine::testMultiPointLinesOnPartsLessPartsThanLines()
 
   QImage img = job.renderedImage();
   QGSVERIFYIMAGECHECK( "multipoint_on_parts_less_parts", "multipoint_on_parts_less_parts", img, QString(), 20, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsLabelingEngine::testCurvedIgnoreWhitespaceCollisions()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  QFont font = format.font();
+  font.setWordSpacing( 60 );
+  format.setFont( font );
+  settings.setFormat( format );
+
+  settings.fieldName = u"text"_s;
+  settings.isExpression = false;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.placementSettings().setWhitespaceCollisionHandling( Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions );
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=text:string"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << u"first string"_s );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190099.66235672758193687 4999988.57451337017118931, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  QgsFeature f2;
+  f2.setAttributes( QgsAttributes() << u"2nd string"_s );
+  f2.setGeometry( QgsGeometry::fromWkt( u"LineString (190113.12299852291471325 5000074.53032597713172436, 190092.93203582993010059 4999993.57418032269924879, 190099.85465161039610393 4999921.65589415933936834)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f2 ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 20 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_ignore_whitespace_collisions", "curved_ignore_whitespace_collisions", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

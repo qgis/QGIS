@@ -78,4 +78,17 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
       }
     }
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::Property::WhitespaceCollisionHandling ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::WhitespaceCollisionHandling, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( "TreatWhitespaceAsCollision"_L1, Qt::CaseInsensitive ) == 0 )
+        mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
+      else if ( value.compare( "IgnoreWhitespaceCollisions"_L1, Qt::CaseInsensitive ) == 0 )
+        mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions;
+    }
+  }
 }

@@ -2207,6 +2207,19 @@ Qgis.LabelOverlapHandling.__doc__ = """Label overlap handling.
 # --
 Qgis.LabelOverlapHandling.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LabelWhitespaceCollisionHandling.TreatWhitespaceAsCollision.__doc__ = "Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions"
+Qgis.LabelWhitespaceCollisionHandling.IgnoreWhitespaceCollisions.__doc__ = "Ignore overlapping whitespace text in labels and whitespace overlapping obstacles"
+Qgis.LabelWhitespaceCollisionHandling.__doc__ = """Label whitespace collision handling.
+
+.. versionadded:: 4.0
+
+* ``TreatWhitespaceAsCollision``: Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions
+* ``IgnoreWhitespaceCollisions``: Ignore overlapping whitespace text in labels and whitespace overlapping obstacles
+
+"""
+# --
+Qgis.LabelWhitespaceCollisionHandling.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LabelPrioritization.PreferCloser.__doc__ = "Prefer closer labels, falling back to alternate positions before larger distances"
 Qgis.LabelPrioritization.PreferPositionOrdering.__doc__ = "Prefer labels follow position ordering, falling back to more distance labels before alternate positions"
 Qgis.LabelPrioritization.__doc__ = """Label prioritization.
