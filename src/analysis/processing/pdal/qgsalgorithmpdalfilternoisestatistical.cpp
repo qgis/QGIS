@@ -29,7 +29,7 @@ QString QgsPdalFilterNoiseStatisticalAlgorithm::name() const
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::displayName() const
 {
-  return QObject::tr( "Filter Noise (by statistical algorithm)" );
+  return QObject::tr( "Filter noise" );
 }
 
 QString QgsPdalFilterNoiseStatisticalAlgorithm::group() const

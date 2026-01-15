@@ -29,7 +29,7 @@ QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::name() const
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::displayName() const
 {
-  return QObject::tr( "Height Above Ground (by Nearest Neighbor)" );
+  return QObject::tr( "Height above ground" );
 }
 
 QString QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::group() const

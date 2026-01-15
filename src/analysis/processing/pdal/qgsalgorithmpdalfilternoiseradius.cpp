@@ -29,7 +29,7 @@ QString QgsPdalFilterNoiseRadiusAlgorithm::name() const
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::displayName() const
 {
-  return QObject::tr( "Filter Noise (by radius algorithm)" );
+  return QObject::tr( "Filter noise (using radius)" );
 }
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::group() const

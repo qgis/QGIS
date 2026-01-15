@@ -28,12 +28,12 @@
 
 QString QgsPdalTransformAlgorithm::name() const
 {
-  return QStringLiteral( "transformcoordinates" );
+  return QStringLiteral( "transformpointcloud" );
 }
 
 QString QgsPdalTransformAlgorithm::displayName() const
 {
-  return QObject::tr( "Transform coordinates of point cloud" );
+  return QObject::tr( "Transform point cloud" );
 }
 
 QString QgsPdalTransformAlgorithm::group() const
