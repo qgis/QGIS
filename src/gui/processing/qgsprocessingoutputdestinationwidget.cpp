@@ -338,7 +338,9 @@ void QgsProcessingLayerOutputDestinationWidget::skipOutput()
 {
   QgsSignalBlocker< QgsHighlightableLineEdit > blocker( leText );
   leText->setPlaceholderText( tr( "[Skip output]" ) );
+  leText->removeAction( mActionTemporaryOutputIcon );
   leText->clear();
+  mPreviousValueString.clear();
   mUseTemporary = false;
   mUseRemapping = false;
 
