@@ -232,22 +232,22 @@ void TestQgsTranslateProject::translateProject()
 
   //LAYER NAMES
   //lines -> Linien
-  QCOMPARE( lines_layer->name(), u"Linien"_s );
+  QCOMPARE( lines_layer->name(), u"Linien"_s ); //#spellok
   //points -> Punkte
-  QCOMPARE( points_layer->name(), u"Punkte"_s );
+  QCOMPARE( points_layer->name(), u"Punkte"_s ); //#spellok
   // purple_lines
-  QCOMPARE( purple_lines_layer->name(), u"Lila Linien"_s );
+  QCOMPARE( purple_lines_layer->name(), u"Lila Linien"_s ); //#spellok
   //purple_points -> Punkte
-  QCOMPARE( purple_points_layer->name(), u"Lila Punkte"_s );
+  QCOMPARE( purple_points_layer->name(), u"Lila Punkte"_s ); //#spellok
 
   //LAYER GROUPS AND SUBGROUPS
   //Points:
   //Planes and Roads -> Flugzeuge und Strassen
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Flugzeuge und Strassen"_s ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Flugzeuge und Strassen"_s ) ); //#spellok
   //Little bit of nothing -> Bisschen nichts
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Bisschen nichts"_s ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Bisschen nichts"_s ) ); //#spellok
   //Purple Marks -> Lila Markierungen
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Lila Markierungen"_s ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Lila Markierungen"_s ) ); //#spellok
 
   //LEGEND ITEMS
   //lines:
@@ -256,18 +256,18 @@ void TestQgsTranslateProject::translateProject()
   {
     legendItemsOfLines.append( item.label() );
   }
-  QVERIFY( legendItemsOfLines.contains( u"Hauptstrasse"_s ) ); //Arterial
-  QVERIFY( legendItemsOfLines.contains( u"Autobahn"_s ) );     //Highway
+  QVERIFY( legendItemsOfLines.contains( u"Hauptstrasse"_s ) ); //Arterial //#spellok
+  QVERIFY( legendItemsOfLines.contains( u"Autobahn"_s ) );     //Highway //#spellok
   //purple lines:
   QList<QString> legendItemsOfPurpleLine;
   for ( const QgsLegendSymbolItem &item : purple_lines_layer->renderer()->legendSymbolItems() )
   {
     legendItemsOfPurpleLine.append( item.label() );
   }
-  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Hauptstrasse"_s ) );   //Arterial purple
-  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Autobahn"_s ) );       //Highway purple
-  QVERIFY( legendItemsOfPurpleLine.contains( u"Tiefe Lila Autobahn"_s ) ); //Low Highway purple
-  QVERIFY( legendItemsOfPurpleLine.contains( u"Hohe Lila Autobahn"_s ) );  //High Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Hauptstrasse"_s ) );   //Arterial purple //#spellok
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Autobahn"_s ) );       //Highway purple //#spellok
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Tiefe Lila Autobahn"_s ) ); //Low Highway purple //#spellok
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Hohe Lila Autobahn"_s ) );  //High Highway purple //#spellok
 
   //purple points:
   QList<QString> legendItemsOfPurplePoints;
@@ -275,11 +275,11 @@ void TestQgsTranslateProject::translateProject()
   {
     legendItemsOfPurplePoints.append( item.label() );
   }
-  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 1"_s ) );    //From 1 to 1
-  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 3"_s ) );    //From 1 to 3
-  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3 bis 3.6"_s ) );  //From 3 to 3.6
-  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3.6 bis 10"_s ) ); //From 3.6 to 10
-  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 10 bis 20"_s ) );  //From 10 to 20
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 1"_s ) );    //From 1 to 1 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 3"_s ) );    //From 1 to 3 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3 bis 3.6"_s ) );  //From 3 to 3.6 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3.6 bis 10"_s ) ); //From 3.6 to 10 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 10 bis 20"_s ) );  //From 10 to 20 //#spellok
 
   //lines:
   QList<QString> legendItemsOfLine;
@@ -287,8 +287,8 @@ void TestQgsTranslateProject::translateProject()
   {
     legendItemsOfLine.append( item.label() );
   }
-  QVERIFY( legendItemsOfLine.contains( u"Hauptstrasse"_s ) ); //Arterial
-  QVERIFY( legendItemsOfLine.contains( u"Autobahn"_s ) );     //Highway
+  QVERIFY( legendItemsOfLine.contains( u"Hauptstrasse"_s ) ); //Arterial //#spellok
+  QVERIFY( legendItemsOfLine.contains( u"Autobahn"_s ) );     //Highway //#spellok
 
   //ACTIONS
   //lines:
@@ -300,12 +300,12 @@ void TestQgsTranslateProject::translateProject()
     actionShortTitlesOfLine.append( action.shortTitle() );
   }
 
-  QVERIFY( actionDescriptionsOfLine.contains( u"Starte ein Programm"_s ) );                            //Run an application
-  QVERIFY( actionShortTitlesOfLine.contains( u"Starte Programm"_s ) );                                 //Run application
-  QVERIFY( actionDescriptionsOfLine.contains( u"Clicked coordinates (Run feature actions tool)"_s ) ); //Untranslated: Clicked coordinates (Run feature actions tool)
-  QVERIFY( actionShortTitlesOfLine.contains( u"Clicked Coordinate"_s ) );                              //Untranslated: Clicked Coordinate
-  QVERIFY( actionDescriptionsOfLine.contains( u"Dies öffnet eine Datei für Lines"_s ) );               //Open file
-  QVERIFY( actionShortTitlesOfLine.contains( u"Öffne Datei"_s ) );                                     //Open file
+  QVERIFY( actionDescriptionsOfLine.contains( u"Starte ein Programm"_s ) );                            //Run an application //#spellok
+  QVERIFY( actionShortTitlesOfLine.contains( u"Starte Programm"_s ) );                                 //Run application //#spellok
+  QVERIFY( actionDescriptionsOfLine.contains( u"Clicked coordinates (Run feature actions tool)"_s ) ); //Untranslated: Clicked coordinates (Run feature actions tool) //#spellok
+  QVERIFY( actionShortTitlesOfLine.contains( u"Clicked Coordinate"_s ) );                              //Untranslated: Clicked Coordinate //#spellok
+  QVERIFY( actionDescriptionsOfLine.contains( u"Dies öffnet eine Datei für Lines"_s ) );               //Open file //#spellok
+  QVERIFY( actionShortTitlesOfLine.contains( u"Öffne Datei"_s ) );                                     //Open file //#spellok
 
   //points:
   QList<QString> actionDescriptionsOfPoints;
@@ -315,35 +315,35 @@ void TestQgsTranslateProject::translateProject()
     actionDescriptionsOfPoints.append( action.name() );
     actionShortTitlesOfPoints.append( action.shortTitle() );
   }
-  QVERIFY( actionDescriptionsOfPoints.contains( u"Dies öffnet eine Datei für Points"_s ) ); //Open file
-  QVERIFY( actionShortTitlesOfPoints.contains( u"Open file"_s ) );                          //Untranslated: Open file
+  QVERIFY( actionDescriptionsOfPoints.contains( u"Dies öffnet eine Datei für Points"_s ) ); //Open file //#spellok
+  QVERIFY( actionShortTitlesOfPoints.contains( u"Open file"_s ) );                          //Untranslated: Open file //#spellok
 
   //FIELDNAMES AND ALIASES
   //Lines:
   const QgsFields lines_fields = lines_layer->fields();
   //Name (Alias: Runwayid) -> Pistenid
-  QCOMPARE( lines_fields.field( u"Name"_s ).alias(), u"Pistenid"_s );
+  QCOMPARE( lines_fields.field( u"Name"_s ).alias(), u"Pistenid"_s ); //#spellok
   //Value (Alias: Name) -> Pistenname
-  QCOMPARE( lines_fields.field( u"Value"_s ).alias(), u"Pistenname"_s );
+  QCOMPARE( lines_fields.field( u"Value"_s ).alias(), u"Pistenname"_s ); //#spellok
   //Name (Constraint Description: Road needs a type)
-  QCOMPARE( lines_fields.field( u"Name"_s ).constraints().constraintDescription(), u"Piste braucht eine Art"_s );
+  QCOMPARE( lines_fields.field( u"Name"_s ).constraints().constraintDescription(), u"Piste braucht eine Art"_s ); //#spellok
   //Value (Constraint Description: Value should not be 1337)
-  QCOMPARE( lines_fields.field( u"Value"_s ).constraints().constraintDescription(), u"Wert sollte nicht 1337 sein"_s );
+  QCOMPARE( lines_fields.field( u"Value"_s ).constraints().constraintDescription(), u"Wert sollte nicht 1337 sein"_s ); //#spellok
 
   //Points:
   const QgsFields points_fields = points_layer->fields();
   //Class (Alias: Level) -> Klasse
-  QCOMPARE( points_fields.field( u"Class"_s ).alias(), u"Klasse"_s );
+  QCOMPARE( points_fields.field( u"Class"_s ).alias(), u"Klasse"_s ); //#spellok
   //Heading -> Titel  //#spellok
   QCOMPARE( points_fields.field( u"Heading"_s ).alias(), u"Titel"_s ); //#spellok
   //Importance -> Wichtigkeit
-  QCOMPARE( points_fields.field( u"Importance"_s ).alias(), u"Wichtigkeit"_s );
+  QCOMPARE( points_fields.field( u"Importance"_s ).alias(), u"Wichtigkeit"_s ); //#spellok
   //Pilots -> Piloten
-  QCOMPARE( points_fields.field( u"Pilots"_s ).alias(), u"Piloten"_s );
+  QCOMPARE( points_fields.field( u"Pilots"_s ).alias(), u"Piloten"_s ); //#spellok
   //Cabin Crew -> Kabinenpersonal
-  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).alias(), u"Kabinenpersonal"_s );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).alias(), u"Kabinenpersonal"_s ); //#spellok
   //Staff -> Mitarbeiter
-  QCOMPARE( points_fields.field( u"Staff"_s ).alias(), u"Mitarbeiter"_s );
+  QCOMPARE( points_fields.field( u"Staff"_s ).alias(), u"Mitarbeiter"_s ); //#spellok
 
   //FORMCONTAINERS
   const QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
@@ -355,30 +355,30 @@ void TestQgsTranslateProject::translateProject()
   }
 
   //Plane -> Flugzeug
-  QCOMPARE( containers.at( 0 )->name(), u"Flugzeug"_s );
+  QCOMPARE( containers.at( 0 )->name(), u"Flugzeug"_s ); //#spellok
   //Employees -> Angestellte
-  QCOMPARE( containers.at( 1 )->name(), u"Angestellte"_s );
+  QCOMPARE( containers.at( 1 )->name(), u"Angestellte"_s ); //#spellok
   //Flightattends -> Flugbegleitung
   for ( QgsAttributeEditorElement *element : containers.at( 1 )->children() )
   {
     if ( element->type() == Qgis::AttributeEditorType::Container )
-      QCOMPARE( element->name(), u"Flugbegleitung"_s );
+      QCOMPARE( element->name(), u"Flugbegleitung"_s ); //#spellok
   }
 
   //RELATIONS
   //Runway -> Piste
-  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value"_s ).name(), u"Piste"_s );
+  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value"_s ).name(), u"Piste"_s ); //#spellok
   //Sheepwalk -> Schafweide
-  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value_1"_s ).name(), u"Schafweide"_s );
+  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value_1"_s ).name(), u"Schafweide"_s ); //#spellok
 
   //WIDGETS
   //ValueRelation value is not anymore Name but Runwayid
-  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Pistenid"_s );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Pistenid"_s ); //#spellok
   //ValueRelation description is not anymore 'The cabin Crew Member is now a '||"RunwayId" but 'Das Mitglied des Kabinenpersonals ist jetzt eine '||"Pistenid"
-  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Description"_s ).toString(), u"'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\""_s );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Description"_s ).toString(), u"'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\""_s ); //#spellok
 
   //ValueMap with descriptions
-  const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };
+  const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" }; //#spellok
   const QList<QVariant> valueList = lines_fields.field( u"Name"_s ).editorWidgetSetup().config().value( u"map"_s ).toList();
   QList<QString> stringValueList;
   for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
@@ -387,15 +387,15 @@ void TestQgsTranslateProject::translateProject()
   }
 
   //METADATA
-  QCOMPARE( QgsProject::instance()->metadata().title(), u"Metadatentitel"_s );
-  QCOMPARE( QgsProject::instance()->metadata().type(), u"Metadatentyp"_s );
-  QCOMPARE( QgsProject::instance()->metadata().abstract(), u"Metadaten-Zusammenfassung"_s );
-  QCOMPARE( QgsProject::instance()->metadata().author(), u"Webmasterin"_s );
+  QCOMPARE( QgsProject::instance()->metadata().title(), u"Metadatentitel"_s );               //#spellok
+  QCOMPARE( QgsProject::instance()->metadata().type(), u"Metadatentyp"_s );                  //#spellok
+  QCOMPARE( QgsProject::instance()->metadata().abstract(), u"Metadaten-Zusammenfassung"_s ); //#spellok
+  QCOMPARE( QgsProject::instance()->metadata().author(), u"Webmasterin"_s );                 //#spellok
 
-  QCOMPARE( lines_layer->metadata().title(), u"Metadatentitel"_s );
-  QCOMPARE( lines_layer->metadata().type(), u"Metadatentyp"_s );
-  QCOMPARE( lines_layer->metadata().abstract(), u"Metadaten-Zusammenfassung"_s );
-  QCOMPARE( lines_layer->metadata().rights(), QStringList() << u"Metadatenrechte"_s );
+  QCOMPARE( lines_layer->metadata().title(), u"Metadatentitel"_s );                    //#spellok
+  QCOMPARE( lines_layer->metadata().type(), u"Metadatentyp"_s );                       //#spellok
+  QCOMPARE( lines_layer->metadata().abstract(), u"Metadaten-Zusammenfassung"_s );      //#spellok
+  QCOMPARE( lines_layer->metadata().rights(), QStringList() << u"Metadatenrechte"_s ); //#spellok
 
   QCOMPARE( stringValueList, expectedStringValueList );
 
