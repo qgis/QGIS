@@ -57,7 +57,7 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void thinByDecimate();
     void thinByRadius();
     void tile();
-    void heightAboveGroundDelaunay();
+    void heightAboveGroundTriangulation();
     void heightAboveGroundNearestNeighbour();
     void classifyGround();
     void filterNoiseStatistical();
@@ -909,9 +909,9 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
-void TestQgsProcessingPdalAlgs::heightAboveGroundDelaunay()
+void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:heightabovegroundbydelaunay" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:heightabovegroundtriangulation" ) ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -919,7 +919,7 @@ void TestQgsProcessingPdalAlgs::heightAboveGroundDelaunay()
 
   QgsProcessingFeedback feedback;
 
-  const QString outputPointCloud = QDir::tempPath() + "/heightabovegrounddelaunay.laz";
+  const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundtriangulation.laz";
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
@@ -1041,7 +1041,7 @@ void TestQgsProcessingPdalAlgs::filterNoiseRadius()
 
 void TestQgsProcessingPdalAlgs::transformCoordinates()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:transformcoordinates" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:transformpointcloud" ) ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
