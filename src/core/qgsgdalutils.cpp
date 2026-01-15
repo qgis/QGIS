@@ -496,7 +496,7 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
   if ( myGdalDriver )
   {
     // first report details and help page
-    char **GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
     message += QLatin1String( "Format Details:\n" );
     message += QStringLiteral( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
     message += QStringLiteral( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
