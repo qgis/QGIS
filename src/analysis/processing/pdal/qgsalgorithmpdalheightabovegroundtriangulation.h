@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMPDALHEIGHTABOVEGROUNDDELAUNAY_H
-#define QGSALGORITHMPDALHEIGHTABOVEGROUNDDELAUNAY_H
+#ifndef QGSALGORITHMPDALHEIGHTABOVEGROUNDTRIANGULATION_H
+#define QGSALGORITHMPDALHEIGHTABOVEGROUNDTRIANGULATION_H
 
 #define SIP_NO_FILE
 
@@ -26,12 +26,12 @@
 ///@cond PRIVATE
 
 /**
- * Native point cloud height above ground using Delaunay algorithm.
+ * Native point cloud height above ground using triangulation algorithm.
  */
-class QgsPdalHeightAboveGroundDelaunayAlgorithm : public QgsPdalAlgorithmBase
+class QgsPdalHeightAboveGroundTriangulationAlgorithm : public QgsPdalAlgorithmBase
 {
   public:
-    QgsPdalHeightAboveGroundDelaunayAlgorithm() = default;
+    QgsPdalHeightAboveGroundTriangulationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -40,7 +40,7 @@ class QgsPdalHeightAboveGroundDelaunayAlgorithm : public QgsPdalAlgorithmBase
     QStringList tags() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    QgsPdalHeightAboveGroundDelaunayAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsPdalHeightAboveGroundTriangulationAlgorithm *createInstance() const override SIP_FACTORY;
 
     QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
@@ -49,4 +49,4 @@ class QgsPdalHeightAboveGroundDelaunayAlgorithm : public QgsPdalAlgorithmBase
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMPDALHEIGHTABOVEGROUND_H
+#endif // QGSALGORITHMPDALHEIGHTABOVEGROUNDTRIANGULATION_H

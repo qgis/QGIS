@@ -15,41 +15,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmpdalheightabovegrounddelaunay.h"
+#include "qgsalgorithmpdalheightabovegroundtriangulation.h"
 
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
-QString QgsPdalHeightAboveGroundDelaunayAlgorithm::name() const
+QString QgsPdalHeightAboveGroundTriangulationAlgorithm::name() const
 {
-  return QStringLiteral( "heightabovegroundbydelaunay" );
+  return QStringLiteral( "heightabovegroundtriangulation" );
 }
 
-QString QgsPdalHeightAboveGroundDelaunayAlgorithm::displayName() const
+QString QgsPdalHeightAboveGroundTriangulationAlgorithm::displayName() const
 {
-  return QObject::tr( "Height Above Ground (by Delaunay)" );
+  return QObject::tr( "Height above ground (using triangulation)" );
 }
 
-QString QgsPdalHeightAboveGroundDelaunayAlgorithm::group() const
+QString QgsPdalHeightAboveGroundTriangulationAlgorithm::group() const
 {
   return QObject::tr( "Point cloud data management" );
 }
 
-QString QgsPdalHeightAboveGroundDelaunayAlgorithm::groupId() const
+QString QgsPdalHeightAboveGroundTriangulationAlgorithm::groupId() const
 {
   return QStringLiteral( "pointclouddatamanagement" );
 }
 
-QStringList QgsPdalHeightAboveGroundDelaunayAlgorithm::tags() const
+QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::tags() const
 {
-  return QObject::tr( "pdal,lidar,height above ground,delaunay,elevation" ).split( ',' );
+  return QObject::tr( "pdal,lidar,height above ground,delaunay,triangulation,elevation" ).split( ',' );
 }
 
-QString QgsPdalHeightAboveGroundDelaunayAlgorithm::shortHelpString() const
+QString QgsPdalHeightAboveGroundTriangulationAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the height of points above the ground surface in a point cloud using a Delaunay algorithm." )
+  return QObject::tr( "This algorithm calculates the height of points above the ground surface in a point cloud using a Delaunay triangulation algorithm." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The algorithm uses ground-classified points (classification value 2) to create a triangulated irregular network (TIN) from specified number of neighbors, then computes the height above this surface for all points." )
          + QStringLiteral( "\n\n" )
@@ -61,12 +61,12 @@ QString QgsPdalHeightAboveGroundDelaunayAlgorithm::shortDescription() const
   return QObject::tr( "Calculates the height of points above the ground surface using a Delaunay algorithm." );
 }
 
-QgsPdalHeightAboveGroundDelaunayAlgorithm *QgsPdalHeightAboveGroundDelaunayAlgorithm::createInstance() const
+QgsPdalHeightAboveGroundTriangulationAlgorithm *QgsPdalHeightAboveGroundTriangulationAlgorithm::createInstance() const
 {
-  return new QgsPdalHeightAboveGroundDelaunayAlgorithm();
+  return new QgsPdalHeightAboveGroundTriangulationAlgorithm();
 }
 
-void QgsPdalHeightAboveGroundDelaunayAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsPdalHeightAboveGroundTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REPLACE_Z" ), QObject::tr( "Replace Z values with height above ground" ), true ) );
@@ -75,7 +75,7 @@ void QgsPdalHeightAboveGroundDelaunayAlgorithm::initAlgorithm( const QVariantMap
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Height above ground (delaunay algorithm)" ) ) );
 }
 
-QStringList QgsPdalHeightAboveGroundDelaunayAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 

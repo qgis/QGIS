@@ -340,7 +340,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/pdal/qgsalgorithmpdalthinbyradius.cpp
   processing/pdal/qgsalgorithmpdaltile.cpp
   processing/pdal/qgsalgorithmpdalheightabovegroundnearestneighbour.cpp
-  processing/pdal/qgsalgorithmpdalheightabovegrounddelaunay.cpp
+  processing/pdal/qgsalgorithmpdalheightabovegroundtriangulation.cpp
   processing/pdal/qgsalgorithmpdalfilternoisestatistical.cpp
   processing/pdal/qgsalgorithmpdalfilternoiseradius.cpp
   processing/pdal/qgsalgorithmpdalclassifyground.cpp
