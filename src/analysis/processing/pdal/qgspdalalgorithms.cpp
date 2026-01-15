@@ -31,8 +31,8 @@
 #include "qgsalgorithmpdalfilter.h"
 #include "qgsalgorithmpdalfilternoiseradius.h"
 #include "qgsalgorithmpdalfilternoisestatistical.h"
-#include "qgsalgorithmpdalheightabovegrounddelaunay.h"
 #include "qgsalgorithmpdalheightabovegroundnearestneighbour.h"
+#include "qgsalgorithmpdalheightabovegroundtriangulation.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalmerge.h"
 #include "qgsalgorithmpdalreproject.h"
@@ -118,7 +118,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalThinByRadiusAlgorithm() );
   addAlgorithm( new QgsPdalTileAlgorithm() );
   addAlgorithm( new QgsPdalHeightAboveGroundNearestNeighbourAlgorithm() );
-  addAlgorithm( new QgsPdalHeightAboveGroundDelaunayAlgorithm() );
+  addAlgorithm( new QgsPdalHeightAboveGroundTriangulationAlgorithm() );
   addAlgorithm( new QgsPdalFilterNoiseStatisticalAlgorithm() );
   addAlgorithm( new QgsPdalFilterNoiseRadiusAlgorithm() );
   addAlgorithm( new QgsPdalClassifyGroundAlgorithm() );
