@@ -1145,6 +1145,33 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         )
         self.assertTrue(labeling.labelSettings().isExpression)
 
+        # allow overlap
+        style = {
+            "layout": {
+                "text-field": "name_en",
+                "text-size": 11,
+                "icon-size": 1,
+                "text-allow-overlap": True,
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1,
+            },
+            "source-layer": "poi_label",
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        ps = labeling.labelSettings().placementSettings()
+        self.assertEqual(ps.overlapHandling(), Qgis.LabelOverlapHandling.AllowOverlapAtNoCost)
+        self.assertEqual(ps.allowDegradedPlacement(), True)
+
     def testHaloMaxSize(self):
         # text-halo-width is max 1/4 of font-size
         # https://docs.mapbox.com/style-spec/reference/layers/#paint-symbol-text-halo-width

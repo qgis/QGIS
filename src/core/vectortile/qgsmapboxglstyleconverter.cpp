@@ -1241,6 +1241,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QString fontName;
   QString fontStyleName;
 
+  bool allowOverlap = jsonLayout.contains( u"text-allow-overlap"_s ) && jsonLayout.value( u"text-allow-overlap"_s ).toBool();
+
   if ( jsonLayout.contains( u"text-font"_s ) )
   {
     auto splitFontFamily = []( const QString & fontName, QString & family, QString & style ) -> bool
@@ -1616,6 +1618,13 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   QgsPalLayerSettings labelSettings;
+  if ( allowOverlap )
+  {
+    QgsLabelPlacementSettings placementSettings = labelSettings.placementSettings();
+    placementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
+    placementSettings.setAllowDegradedPlacement( true );
+    labelSettings.setPlacementSettings( placementSettings );
+  }
 
   if ( textMaxWidth > 0 )
   {
