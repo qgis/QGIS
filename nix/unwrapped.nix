@@ -191,6 +191,9 @@ mkDerivation
       pyQt5PackageDir = "${py.pkgs.pyqt5}/${py.pkgs.python.sitePackages}";
       qsciPackageDir = "${py.pkgs.qscintilla-qt5}/${py.pkgs.python.sitePackages}";
     })
+    (replaceVars ./spatialite-path.patch {
+      spatialiteLib = "${libspatialite}/lib/mod_spatialite.so";
+    })
   ];
 
   # Add path to Qt platform plugins

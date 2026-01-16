@@ -2635,7 +2635,14 @@ bool QgisApp::event( QEvent *event )
   {
     // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
     QFileOpenEvent *foe = static_cast<QFileOpenEvent *>( event );
-    openFile( foe->file() );
+    if ( !mInitializationHasCompleted )
+    {
+      mDeferredFileOpenPaths << foe->file();
+    }
+    else
+    {
+      openFile( foe->file() );
+    }
     done = true;
   }
   else if ( event->type() == QEvent::Gesture )
@@ -16827,6 +16834,15 @@ void QgisApp::authMessageLog( const QString &message, const QString &authtag, Qg
 
 void QgisApp::completeInitialization()
 {
+  mInitializationHasCompleted = true;
+
+  const QStringList deferredFileOpenPaths = mDeferredFileOpenPaths;
+  mDeferredFileOpenPaths.clear();
+  for ( const QString &path : deferredFileOpenPaths )
+  {
+    openFile( path );
+  }
+
   emit initializationCompleted();
 }
 

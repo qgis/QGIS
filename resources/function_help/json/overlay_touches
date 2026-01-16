@@ -34,7 +34,7 @@
     "expression": "overlay_touches('regions', name)",
     "returns": "an array of names, for the regions touched by the current feature"
   }, {
-    "expression": "string_to_array(overlay_touches('regions', name))",
+    "expression": "array_to_string(overlay_touches('regions', name))",
     "returns": "a string as a comma separated list of names, for the regions touched by the current feature"
   }, {
     "expression": "array_sort(overlay_touches(layer:='regions', expression:=\"name\", filter:= population > 10000))",

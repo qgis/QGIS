@@ -1,6 +1,110 @@
+Jürgen E. Fischer <jef@norbit.de>	2026-01-16
+
+    translation update for 3.44.7 from transifex
+
+Ivan Mincik <ivan.mincik@gmail.com>	2026-01-09
+
+    nix: fix loading of spatialite extension in DB Manager
+
+    SQLite's load_extension() cannot find mod_spatialite.so in the Nix store
+    using standard library search paths. This commit adds a patch that
+    injects the full Nix store path to libspatialite as the first entry in
+    the extension search list, ensuring the db_manager plugin and other
+    spatialite-dependent features work correctly.
+
+    Closes #64268
+
+Merge: fd5b511651c 9108bd7568d
+Alexander Bruy <alexander.bruy@gmail.com>	2026-01-06
+
+    Merge pull request #64459 from qgis/backport-64384-to-release-3_44
+
+    [Backport release-3_44] Enhance error message with server response content
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2025-12-28
+
+    Update src/providers/wfs/qgsbasenetworkrequest.cpp
+
+    Co-authored-by: Alexander Bruy <alexander.bruy@gmail.com>
+
+Denis Rouzaud <denis.rouzaud@gmail.com>	2025-12-26
+
+    Enhance error message with server response content
+
+    Add server response to error message for WFS exceptions.
+
+Merge: 2b4b2ca3766 ca8fae7f64e
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-30
+
+    Merge pull request #64407 from qgis/backport-64403-to-release-3_44
+
+    [Backport release-3_44] Mac: defer FileOpen events until initialization completes
+
+Dan Dawson <support@ddhosting.net>	2025-12-28
+
+    Mac: defer FileOpen events until initialization completes
+
+Merge: 51da1558d0f d2cee29e6ba
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-29
+
+    Merge pull request #64399 from qgis/backport-64396-to-release-3_44
+
+    [Backport release-3_44] Use ubuntu repo version of doxygen
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-12-28
+
+    Use ubuntu repo version of doxygen
+
+    Avoids CI errors when downloads from doxygen.nl fail
+
+Merge: f6ba3e7bc0b 95489589b34
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-25
+
+    Merge pull request #64378 from qgis/backport-64370-to-release-3_44
+
+    [Backport release-3_44] Change expression from string_to_array to array_to_string in overlay_touches example
+
+Salvatore Fiandaca <pigrecoinfinito@gmail.com>	2025-12-22
+
+    Change expression from string_to_array to array_to_string
+
+Merge: 65a536773e3 a692774f657
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-20
+
+    Merge pull request #64350 from qgis/backport-64270-to-release-3_44
+
+    [Backport release-3_44] [themes] Improve readability for locator filter titles and group names for dark themes
+
+Merge: fb066c58058 e28eac61743
+Alexander Bruy <alexander.bruy@gmail.com>	2025-12-19
+
+    Merge pull request #64353 from qgis/backport-64342-to-release-3_44
+
+    [Backport release-3_44] Postgresql provider -  Fix order in which integers are suggested
+
+Jürgen E. Fischer <jef@norbit.de>	2025-12-19
+
+    Release of 3.44.6
+
 Jürgen E. Fischer <jef@norbit.de>	2025-12-19
 
     translation update for 3.44.6 from transifex
+
+Jan Caha <jan.caha@outlook.com>	2025-12-17
+
+    prefer double over real
+
+Jan Caha <jan.caha@outlook.com>	2025-12-17
+
+    change the orderign integer to go from 64 bit down to 16 bit
+
+Jan Caha <jan.caha@outlook.com>	2025-12-16
+
+    prefer integer - 32 bit for QMetaType::Type::Int to avoid issues with conversion
+
+Malik Blesius <78353871+mblesius@users.noreply.github.com>	2025-12-11
+
+    [themes] Improve readability for locator filter titles and group names
 
 Merge: e11ba69e95e 119734fe0d5
 Loïc Bartoletti <loic.bartoletti@oslandia.com>	2025-12-17
