@@ -93,8 +93,6 @@ intersected 3d entities.
 Returns ``True`` if the cross section mode is enabled or the 3d scene
 has other clipping planes applied
 
-.. seealso:: :py:func:`enableCrossSection`
-
 .. versionadded:: 4.0
 %End
 
@@ -120,8 +118,6 @@ Returns the current cross section definition for the 3D map canvas.
     void crossSectionEnabledChanged( bool enabled );
 %Docstring
 Emitted when the cross section mode is enabled or disabled
-
-.. seealso:: :py:func:`enableCrossSection`
 
 .. versionadded:: 4.0
 %End
