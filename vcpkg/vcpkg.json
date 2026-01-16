@@ -142,7 +142,8 @@
           "features": [
             "fiona",
             "arrow"
-          ]
+          ],
+          "platform": "!windows"
         },
         "py-isort",
         "py-jinja2",
