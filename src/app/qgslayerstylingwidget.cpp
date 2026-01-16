@@ -12,8 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgslayerstylingwidget.h"
 
+#include "annotations/qgsannotationitempropertieswidget.h"
 #include "qgisapp.h"
 #include "qgsannotationlayer.h"
 #include "qgsapplication.h"
@@ -837,7 +839,7 @@ void QgsLayerStylingWidget::setCurrentPage( QgsLayerStylingWidget::Page page )
   }
 }
 
-void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId )
+void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId, bool multipleItems )
 {
   mContext.setAnnotationId( itemId );
   if ( layer )
@@ -846,9 +848,14 @@ void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const 
     mStackedWidget->setCurrentIndex( mLayerPage );
   }
 
-  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast<QgsMapLayerConfigWidget *>( mWidgetStack->mainPanel() ) )
+  if ( QgsAnnotationItemPropertiesWidget *configWidget = qobject_cast<QgsAnnotationItemPropertiesWidget *>( mWidgetStack->mainPanel() ) )
   {
     configWidget->setMapLayerConfigWidgetContext( mContext );
+
+    if ( itemId.isEmpty() )
+    {
+      configWidget->setLabelMessage( multipleItems ? tr( "Multiple items selected." ) : tr( "No item selected." ) );
+    }
   }
 }
 
