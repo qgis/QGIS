@@ -161,7 +161,7 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
 
   provider->setNoDataValue( 1, mNoDataValue );
 
-  QgsReclassifyUtils::reclassify( classes, mInterface.get(), mBand, mExtent, mNbCellsXProvider, mNbCellsYProvider, provider.get(), mNoDataValue, mUseNoDataForMissingValues, feedback );
+  QgsReclassifyUtils::reclassify( classes, mInterface.get(), mBand, mExtent, mNbCellsXProvider, mNbCellsYProvider, std::move( provider ), mNoDataValue, mUseNoDataForMissingValues, feedback );
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, outputFile );

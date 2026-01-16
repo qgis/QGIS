@@ -21,6 +21,7 @@
 
 #include "qgis_gui.h"
 #include "qgsmaptooledit.h"
+#include "qgsreferencedgeometry.h"
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
@@ -198,6 +199,23 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \since QGIS 3.4
      */
     void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
+
+  signals:
+
+    //NOTE -- we use QgsReferencedGeometry here, as we'd like to defer the transformation of geometry to a particular
+    //desired destination CRS (eg layer CRS or map canvas CRS) as the caller's responsibility. That's because we don't want
+    //to waste cycles doing that transformation with every mouse move, when potentially NOTHING is even connected to this signal!
+    //By using QgsReferencedGeometry we allows the emitters to just use the geometries they've already calculated for the rubber
+    //bands, regardless of what CRS they are in
+    /**
+     * Emitted whenever the \a geometry associated with the tool is changed, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * Connections to this signal should take care to check the CRS of \a geometry, as it may be either in the
+     * canvas CRS or an associated layer's CRS.
+     *
+     * \since QGIS 4.0
+     */
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
 
   private slots:
 

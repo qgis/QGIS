@@ -85,6 +85,7 @@ class TestQgsPolygon : public QObject
     void toFromWkb25D();
     void toFromWKT();
     void exportImport();
+    void area3D();
 };
 
 void TestQgsPolygon::constructor()
@@ -104,6 +105,7 @@ void TestQgsPolygon::constructor()
   QCOMPARE( pl.dimension(), 2 );
   QVERIFY( !pl.hasCurvedSegments() );
   QCOMPARE( pl.area(), 0.0 );
+  QCOMPARE( pl.area3D(), 0.0 );
   QCOMPARE( pl.perimeter(), 0.0 );
   QVERIFY( !pl.exteriorRing() );
   QVERIFY( !pl.interiorRing( 0 ) );
@@ -390,6 +392,7 @@ void TestQgsPolygon::setExteriorRing()
   QCOMPARE( pl.dimension(), 2 );
   QVERIFY( !pl.hasCurvedSegments() );
   QCOMPARE( pl.area(), 100.0 );
+  QCOMPARE( pl.area3D(), 100.0 );
   QCOMPARE( pl.perimeter(), 40.0 );
   QVERIFY( pl.exteriorRing() );
   QVERIFY( !pl.interiorRing( 0 ) );
@@ -2585,6 +2588,23 @@ void TestQgsPolygon::exportImport()
 
   QString expectedKmlPrec3( u"<Polygon><outerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>1.111,1.111,0 1.111,11.111,0 11.111,11.111,0 11.111,1.111,0 1.111,1.111,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs><LinearRing><altitudeMode>clampToGround</altitudeMode><coordinates>0.667,0.667,0 0.667,1.333,0 1.333,1.333,0 1.333,0.667,0 0.667,0.667,0</coordinates></LinearRing></innerBoundaryIs></Polygon>"_s );
   QCOMPARE( exportPolygonFloat.asKml( 3 ), expectedKmlPrec3 );
+}
+
+void TestQgsPolygon::area3D()
+{
+  QgsPolygon polygon;
+
+  auto ext = std::make_unique<QgsLineString>();
+  ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, -5.2, 5.2 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 11.3, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 10.4, -10.4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, -10.2 ) << QgsPoint( Qgis::WkbType::PointZ, 0, -5.2, 5.2 ) );
+  polygon.setExteriorRing( ext->clone() );
+  QGSCOMPARENEAR( polygon.area3D(), 167.7, 0.1 );
+
+  auto ring = std::make_unique<QgsLineString>();
+  ring->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 1, -4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 4, -6 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 5, -4 ) << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 ) );
+  polygon.addInteriorRing( ring->clone() );
+
+  QCOMPARE( polygon.numInteriorRings(), 1 );
+  QGSCOMPARENEAR( polygon.area3D(), 155.7, 0.1 );
 }
 
 QGSTEST_MAIN( TestQgsPolygon )

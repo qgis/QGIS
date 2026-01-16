@@ -402,6 +402,8 @@ QgsFlatTerrainSettings.readXml: src/3d/terrain/qgsflatterrainsettings.h#L47
 QgsFlatTerrainSettings.type: src/3d/terrain/qgsflatterrainsettings.h#L46
 QgsFlatTerrainSettings.writeXml: src/3d/terrain/qgsflatterrainsettings.h#L48
 QgsFlatTerrainSettings: src/3d/terrain/qgsflatterrainsettings.h#L37
+QgsFontTextureAtlas.QgsFontTextureAtlas: src/3d/qgsfonttextureatlasgenerator.h#L152
+QgsFontTextureAtlas.QgsFontTextureAtlas: src/3d/qgsfonttextureatlasgenerator.h#L163
 QgsFontTextureAtlas.__len__: src/3d/qgsfonttextureatlasgenerator.h#L141
 QgsFontTextureAtlas.atlasSize: src/3d/qgsfonttextureatlasgenerator.h#L61
 QgsFontTextureAtlas.count: src/3d/qgsfonttextureatlasgenerator.h#L138

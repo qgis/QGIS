@@ -31,6 +31,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgslinesegment.h"
+#include "qgsvector3d.h"
 #include "qgswkbptr.h"
 
 #include <QDomDocument>
@@ -2291,6 +2292,90 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
+}
+
+void QgsLineString::sumUpArea3D( double &sum ) const
+{
+  if ( mHasCachedSummedUpArea3D )
+  {
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  // No Z component. Fallback to the 2D version
+  if ( mZ.isEmpty() )
+  {
+    double area2D = 0;
+    sumUpArea( area2D );
+    mSummedUpArea3D = area2D;
+    mHasCachedSummedUpArea3D = true;
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  mSummedUpArea3D = 0;
+
+  // Look for a reference unit normal
+  QgsPoint ptA;
+  QgsPoint ptB;
+  QgsPoint ptC;
+  if ( !QgsGeometryUtils::checkWeaklyFor3DPlane( this, ptA, ptB, ptC ) )
+  {
+    mHasCachedSummedUpArea3D = true;
+    return;
+  }
+
+  QgsVector3D vAB = QgsVector3D( ptB.x() - ptA.x(), ptB.y() - ptA.y(), ptB.z() - ptA.z() );
+  QgsVector3D vAC = QgsVector3D( ptC.x() - ptA.x(), ptC.y() - ptA.y(), ptC.z() - ptA.z() );
+  QgsVector3D planeNormal = QgsVector3D::crossProduct( vAB, vAC );
+
+  // Ensure a Consistent orientation: prioritize Z+, then Y+, then X+
+  if ( !qgsDoubleNear( planeNormal.z(), 0.0 ) )
+  {
+    if ( planeNormal.z() < 0 )
+    {
+      planeNormal = -planeNormal;
+    }
+  }
+  else if ( !qgsDoubleNear( planeNormal.y(), 0.0 ) )
+  {
+    if ( planeNormal.y() < 0 )
+      planeNormal = -planeNormal;
+  }
+  else
+  {
+    if ( planeNormal.x() < 0 )
+      planeNormal = - planeNormal;
+  }
+  planeNormal.normalize();
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const double *z = mZ.constData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = *z++;
+
+  double normalX = 0.0;
+  double normalY = 0.0;
+  double normalZ = 0.0;
+
+  for ( unsigned int i = 1; i < mX.size(); ++i )
+  {
+    normalX += prevY * ( *z - prevZ ) - prevZ * ( *y - prevY );
+    normalY += prevZ * ( *x - prevX ) - prevX * ( *z - prevZ );
+    normalZ += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
+
+    prevX = *x++;
+    prevY = *y++;
+    prevZ = *z++;
+  }
+
+  mSummedUpArea3D = 0.5 * ( normalX * planeNormal.x() + normalY * planeNormal.y() + normalZ * planeNormal.z() );
+
+  mHasCachedSummedUpArea3D = true;
+  sum += mSummedUpArea3D;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )

@@ -612,6 +612,7 @@ if(WITH_CORE)
   endif()
   find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
   if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+    set(QT_NO_PRIVATE_MODULE_WARNING ON)
     find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
   endif()
 
@@ -680,6 +681,7 @@ if(WITH_CORE)
 
   # Master password hash and authentication encryption
   if(WITH_AUTH)
+    set(HAVE_AUTH TRUE)
     find_package(QCA REQUIRED)
   endif()
   # Check for runtime dependency of qca-ossl plugin

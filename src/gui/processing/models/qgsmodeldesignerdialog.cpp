@@ -317,6 +317,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mActionShowComments->setChecked( settings.value( u"/Processing/Modeler/ShowComments"_s, true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
 
+  mActionShowFeatureCount->setChecked( settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool() );
+  connect( mActionShowFeatureCount, &QAction::toggled, this, &QgsModelDesignerDialog::toggleFeatureCount );
+
   mPanTool = new QgsModelViewToolPan( mView );
   mPanTool->setAction( mActionPan );
 
@@ -488,9 +491,14 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
-  mScene->setLastRunResult( mLastResult );
+  mScene->setLastRunResult( mLastResult, mLayerStore );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
+
+  QgsSettings settings;
+  const bool showFeatureCount = settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool();
+  if ( !showFeatureCount )
+    mScene->setFlag( QgsModelGraphicsScene::FlagHideFeatureCount );
 
   mView->setModelScene( mScene );
 
@@ -591,7 +599,7 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
 {
   mLastResult.mergeWith( result );
   if ( mScene )
-    mScene->setLastRunResult( mLastResult );
+    mScene->setLastRunResult( mLastResult, mLayerStore );
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -791,6 +799,13 @@ void QgsModelDesignerDialog::exportAsPython()
 void QgsModelDesignerDialog::toggleComments( bool show )
 {
   QgsSettings().setValue( u"/Processing/Modeler/ShowComments"_s, show );
+
+  repaintModel( true );
+}
+
+void QgsModelDesignerDialog::toggleFeatureCount( bool show )
+{
+  QgsSettings().setValue( u"/Processing/Modeler/ShowFeatureCount"_s, show );
 
   repaintModel( true );
 }
@@ -1098,14 +1113,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 
   connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
     QgsProcessingContext *context = dialog->processingContext();
-
-    setLastRunResult( context->modelResult() );
-
-    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
-
     // take child output layers
     mLayerStore.temporaryLayerStore()->removeAllMapLayers();
     mLayerStore.takeResultsFrom( *context );
+
+    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+    setLastRunResult( context->modelResult() );
   } );
 
   dialog->exec();

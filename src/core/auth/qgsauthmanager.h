@@ -42,10 +42,12 @@
 #include <qt6keychain/keychain.h>
 
 #ifndef SIP_RUN
+#ifdef HAVE_AUTH
 namespace QCA
 {
   class Initializer;
 }
+#endif
 #endif
 class QgsAuthMethod;
 class QgsAuthMethodEdit;
@@ -1023,8 +1025,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit = false;
 
     mutable std::unique_ptr<QgsAuthConfigurationStorageRegistry> mAuthConfigurationStorageRegistry;
-
+#ifdef HAVE_AUTH
     std::unique_ptr<QCA::Initializer> mQcaInitializer;
+#endif
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod *> mAuthMethods;

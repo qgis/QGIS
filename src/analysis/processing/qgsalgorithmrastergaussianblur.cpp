@@ -172,10 +172,13 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
   horizBuffer.reserve( maxBufferSize );
   horizNoData.reserve( maxBufferSize );
 
+  const bool hasReportsDuringClose = destProvider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   std::unique_ptr<QgsRasterBlock> inputBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, inputBlock, iterLeft, iterTop, &blockExtent, &tileCols, &tileRows, &tileLeft, &tileTop ) )
   {
-    feedback->setProgress( 100 * iter.progress( mBand, 0 ) );
+    feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, 0 ) );
 
     if ( feedback->isCanceled() )
       break;
@@ -199,7 +202,7 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
 
     for ( int r = 0; r < iterRows; ++r )
     {
-      feedback->setProgress( 100 * iter.progress( mBand, r / static_cast< double >( iterRows ) * 0.5 ) );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, r / static_cast< double >( iterRows ) * 0.5 ) );
 
       if ( feedback->isCanceled() )
         break;
@@ -254,7 +257,7 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
     // unlike the first pass, here we ONLY need to calculate the blur for pixels which aren't block padding
     for ( int r = 0; r < tileRows; ++r )
     {
-      feedback->setProgress( 100 * iter.progress( mBand, 0.5 + r / static_cast< double >( tileRows ) * 0.5 ) );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand, 0.5 + r / static_cast< double >( tileRows ) * 0.5 ) );
 
       if ( feedback->isCanceled() )
         break;
@@ -304,6 +307,17 @@ QVariantMap QgsRasterGaussianBlurAlgorithm::processAlgorithm( const QVariantMap 
     }
   }
   destProvider->setEditable( false );
+
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !destProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap outputs;
   outputs.insert( u"OUTPUT"_s, outputFile );

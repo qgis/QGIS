@@ -26,6 +26,7 @@
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooleditmeshframe.h"
 #include "qgsmaptoolfeatureaction.h"
+#include "qgsmaptoolfeaturearray.h"
 #include "qgsmaptoolfillring.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
@@ -76,6 +77,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
   mTools.insert( Tool::MoveFeature, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::Move ) );
   mTools.insert( Tool::MoveFeatureCopy, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::CopyMove ) );
+  mTools.insert( Tool::FeatureArrayCopy, new QgsMapToolFeatureArray( canvas ) );
   mTools.insert( Tool::RotateFeature, new QgsMapToolRotateFeature( canvas ) );
   mTools.insert( Tool::ScaleFeature, new QgsMapToolScaleFeature( canvas ) );
   mTools.insert( Tool::OffsetCurve, new QgsMapToolOffsetCurve( canvas ) );

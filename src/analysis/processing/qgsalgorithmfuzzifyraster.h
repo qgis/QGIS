@@ -72,6 +72,7 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
 
     Qgis::DataType mDataType = Qgis::DataType::Float32;
     const double mNoDataValue = -9999;
+    double mMaxProgressDuringBlockWriting = 100;
 };
 
 

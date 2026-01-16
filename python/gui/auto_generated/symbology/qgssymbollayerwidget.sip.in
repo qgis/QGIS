@@ -13,7 +13,7 @@
 template<T>
 class QgsMapToolEditBlankSegments;
 
-class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
+class QgsSymbolLayerWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Abstract base class for widgets used to configure

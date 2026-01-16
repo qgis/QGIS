@@ -252,11 +252,13 @@ class CORE_EXPORT QgsRasterIterator
       qgssize currentRow;
       qgssize nCols;
       qgssize nRows;
+      qgssize iteratedPixels = 0;
+      qgssize previousIteratedPixels = 0;
+      qgssize currentBlockSize = 0;
     };
 
     QgsRasterInterface *mInput = nullptr;
     QMap<int, RasterPartInfo> mRasterPartInfos;
-    QMap<int, RasterPartInfo> mRasterPrevBlockInfos;
     QgsRectangle mExtent;
     QgsRasterBlockFeedback *mFeedback = nullptr;
 

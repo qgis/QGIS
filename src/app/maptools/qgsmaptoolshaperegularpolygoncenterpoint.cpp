@@ -100,6 +100,11 @@ void QgsMapToolShapeRegularPolygonCenterPoint::cadCanvasMoveEvent( QgsMapMouseEv
   {
     const QgsRegularPolygon::ConstructionOption option = QgsRegularPolygon::CircumscribedCircle;
     mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value(), option );
-    mTempRubberBand->setGeometry( mRegularPolygon.toPolygon() );
+    const QgsGeometry newGeometry( mRegularPolygon.toPolygon() );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }

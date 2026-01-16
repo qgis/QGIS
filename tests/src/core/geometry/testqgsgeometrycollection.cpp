@@ -16,6 +16,7 @@
 
 #include "qgscircularstring.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
@@ -41,6 +42,7 @@ class TestQgsGeometryCollection : public QObject
     void testCopyConstructor();
     void testAssignment();
     void cast();
+    void testArea3D();
 };
 
 void TestQgsGeometryCollection::geometryCollection()
@@ -59,6 +61,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( c1.dimension(), 0 );
   QVERIFY( !c1.hasCurvedSegments() );
   QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.area3D(), 0.0 );
   QCOMPARE( c1.perimeter(), 0.0 );
   QCOMPARE( c1.numGeometries(), 0 );
   QVERIFY( !c1.geometryN( 0 ) );
@@ -99,6 +102,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( c1.dimension(), 1 );
   QVERIFY( !c1.hasCurvedSegments() );
   QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.area3D(), 0.0 );
   QCOMPARE( c1.perimeter(), 0.0 );
   QVERIFY( c1.geometryN( 0 ) );
   QVERIFY( !c1.geometryN( 100 ) );
@@ -1592,6 +1596,30 @@ void TestQgsGeometryCollection::cast()
 
   QgsGeometryCollection mc1;
   QVERIFY( QgsGeometryCollection::cast( &mc1 ) );
+}
+
+void TestQgsGeometryCollection::testArea3D()
+{
+  QgsGeometryCollection collection;
+  QgsLineString line;
+  line.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 0 ) << QgsPoint( 0, 10, 0 ) << QgsPoint( 10, 10, 0 ) << QgsPoint( 10, 0, 0 ) << QgsPoint( 0, 0, 0 ) );
+  collection.addGeometry( line.clone() );
+  // area3D of a line is 0
+  QCOMPARE( line.area3D(), 0.0 );
+  QCOMPARE( collection.area3D(), 0.0 );
+
+  QgsLineString line2;
+  line2.setPoints( QgsPointSequence() << QgsPoint( 3, 3, 3 ) << QgsPoint( 13, 3, 8 ) << QgsPoint( 13, 13, 13 ) << QgsPoint( 3, 13, 8 ) << QgsPoint( 3, 3, 3 ) );
+  QgsPolygon polygon( line2.clone() );
+  collection.addGeometry( polygon.clone() );
+  QGSCOMPARENEAR( polygon.area3D(), 122.474487, 1e-6 );
+  QGSCOMPARENEAR( collection.area3D(), 122.474487, 1e-6 );
+
+  QgsPolyhedralSurface polyhedral;
+  polyhedral.fromWkt( u"PolyhedralSurface Z (((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1)))"_s );
+  collection.addGeometry( polyhedral.clone() );
+  QCOMPARE( polyhedral.area3D(), 100.0 );
+  QGSCOMPARENEAR( collection.area3D(), 222.474487, 1e-6 );
 }
 
 

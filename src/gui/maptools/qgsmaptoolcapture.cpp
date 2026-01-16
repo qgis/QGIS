@@ -124,7 +124,9 @@ void QgsMapToolCapture::activate()
   QgsMapToolAdvancedDigitizing::activate();
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+  {
+    setCurrentShapeMapToolIsActivated( true );
+  }
 }
 
 void QgsMapToolCapture::deactivate()
@@ -137,7 +139,9 @@ void QgsMapToolCapture::deactivate()
   mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->deactivate();
+  {
+    setCurrentShapeMapToolIsActivated( false );
+  }
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -260,6 +264,37 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   mTempRubberBand->addPoint( QgsPoint( points[points.size() - 1] ) );
 
   tracer->reportError( QgsTracer::ErrNone, false ); // clear messagebar if there was any error
+
+  QgsCoordinateReferenceSystem targetCrs = mCanvas->mapSettings().destinationCrs();
+  if ( QgsMapLayer *l = layer() )
+  {
+    // if we have a layer, then the geometry will be in the layer's CRS, not the canvas'
+    targetCrs = l->crs();
+  }
+
+  std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+  try
+  {
+    std::unique_ptr< QgsCurve > tracedCurve( mTempRubberBand->curve() );
+    tracedCurve->transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
+    tempCurve->addCurve( tracedCurve.release() );
+    if ( mCaptureMode == CapturePolygon )
+    {
+      tempCurve->close();
+      auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+      curvePolygon->setExteriorRing( tempCurve.release() );
+      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+    }
+    else
+    {
+      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+    }
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( e.what() );
+  }
+
   return true;
 }
 
@@ -392,6 +427,23 @@ void QgsMapToolCapture::resetRubberBand()
   mRubberBand->addGeometry( QgsGeometry( lineString ), layer() );
 }
 
+void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
+{
+  // suppress false positive clang tidy warning
+  // NOLINTBEGIN(bugprone-branch-clone)
+  if ( activated )
+  {
+    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+  }
+  else
+  {
+    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    mCurrentShapeMapTool->deactivate();
+  }
+  // NOLINTEND(bugprone-branch-clone)
+}
+
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {
   return mRubberBand.release();
@@ -422,7 +474,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
   {
-    mCurrentShapeMapTool->deactivate();
+    setCurrentShapeMapToolIsActivated( false );
     clean();
   }
 
@@ -451,7 +503,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
   if ( technique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
     clean();
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    setCurrentShapeMapToolIsActivated( true );
   }
 }
 
@@ -462,7 +514,9 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
     if ( shapeMapToolMetadata && mCurrentShapeMapTool->id() == shapeMapToolMetadata->id() )
       return;
     if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
-      mCurrentShapeMapTool->deactivate();
+    {
+      setCurrentShapeMapToolIsActivated( false );
+    }
     mCurrentShapeMapTool->deleteLater();
   }
 
@@ -472,7 +526,9 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
   {
     clean();
     if ( mCurrentShapeMapTool )
-      mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    {
+      setCurrentShapeMapToolIsActivated( true );
+    }
   }
 }
 
@@ -511,6 +567,13 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     const QgsPoint mapPoint = QgsPoint( point );
 
+    QgsCoordinateReferenceSystem targetCrs = mCanvas->mapSettings().destinationCrs();
+    if ( QgsMapLayer *l = layer() )
+    {
+      // if we have a layer, then the geometry will be in the layer's CRS, not the canvas'
+      targetCrs = l->crs();
+    }
+
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
       bool hasTrace = false;
@@ -527,11 +590,24 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         mAllowAddingStreamingPoints = true;
         addVertex( mapPoint );
         mAllowAddingStreamingPoints = false;
+
+        std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+        if ( mCaptureMode == CapturePolygon )
+        {
+          auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+          tempCurve->close();
+          curvePolygon->setExteriorRing( tempCurve.release() );
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+        }
+        else
+        {
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+        }
       }
       else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
       {
         // Store the intermediate point for circular string to retrieve after tracing mouse move if
-        // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
+        // the digitizing type is circular and the temp rubber band is effectively circular and if this point is existing
         // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
         if ( mLineDigitizingType == Qgis::WkbType::CircularString && mTempRubberBand->stringType() == Qgis::WkbType::CircularString && mTempRubberBand->curveIsComplete() )
           mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
@@ -568,6 +644,32 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           // fix existing rubber band after tracing - the last point may have been moved if using offset
           if ( mRubberBand->numberOfVertices() )
             mRubberBand->movePoint( mapPt );
+
+          std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+
+          // add mouse hover point to current captured geometry
+          try
+          {
+            QgsPoint hoverPointTargetCrs = mapPoint;
+            hoverPointTargetCrs.transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
+            tempCurve->addCurve( new QgsLineString( tempCurve->endPoint(), hoverPointTargetCrs ) );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugError( e.what() );
+          }
+
+          if ( mCaptureMode == CapturePolygon )
+          {
+            auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+            tempCurve->close();
+            curvePolygon->setExteriorRing( tempCurve.release() );
+            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+          }
+          else
+          {
+            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+          }
         }
         else if ( mTempRubberBand )
           mTempRubberBand->movePoint( mapPoint );

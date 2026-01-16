@@ -36,7 +36,7 @@ Constructor for Class
     };
 
     class MultiValueClass
-{
+    {
 %Docstring(signature="appended")
 Properties of a multi value class: a class that contains multiple
 values.
@@ -44,9 +44,6 @@ values.
 .. versionadded:: 3.30
 %End
 
-%TypeHeaderCode
-#include "qgspalettedrasterrenderer.h"
-%End
       public:
 
         MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );

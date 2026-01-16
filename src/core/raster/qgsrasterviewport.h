@@ -33,12 +33,6 @@
 
 struct CORE_EXPORT QgsRasterViewPort
 {
-#ifdef SIP_RUN
-  % TypeHeaderCode
-#include <qgsrasterviewport.h>
-  % End
-#endif
-
   /**
    * \brief Coordinate (in output device coordinate system) of top left corner
    * of the part of the raster that is to be rendered.

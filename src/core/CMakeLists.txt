@@ -480,6 +480,7 @@ set(QGIS_CORE_SRCS
   qgsfeaturesource.cpp
   qgsfeaturestore.cpp
   qgsfeaturefiltermodel.cpp
+  qgsfeedback.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
   qgsfieldformatter.cpp
@@ -644,6 +645,10 @@ set(QGIS_CORE_SRCS
   qgstestutils.cpp
   qgsziputils.cpp
   qgswmsutils.cpp
+
+  auth/qgsauthmanager.cpp
+  auth/qgsauthorizationsettings.cpp
+
 
   browser/qgsbrowsermodel.cpp
   browser/qgsbrowserproxymodel.cpp
@@ -1404,6 +1409,9 @@ set(QGIS_CORE_HDRS
   annotations/qgsrenderedannotationitemdetails.h
   annotations/qgssvgannotation.h
   annotations/qgstextannotation.h
+
+  auth/qgsauthmanager.h
+  auth/qgsauthorizationsettings.h
 
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
@@ -2184,11 +2192,9 @@ if(WITH_AUTH)
     auth/qgsauthcrypto.cpp
     auth/qgsauthconfigurationstorage.cpp
     auth/qgsauthconfigurationstorageregistry.cpp
-    auth/qgsauthmanager.cpp
     auth/qgsauthmethod.cpp
     auth/qgsauthmethodmetadata.cpp
     auth/qgsauthmethodregistry.cpp
-    auth/qgsauthorizationsettings.cpp
 
     auth/qgsauthconfigurationstoragesqlite.cpp
     auth/qgsauthconfigurationstoragedb.cpp
@@ -2200,11 +2206,9 @@ if(WITH_AUTH)
     auth/qgsauthcrypto.h
     auth/qgsauthconfigurationstorage.h
     auth/qgsauthconfigurationstorageregistry.h
-    auth/qgsauthmanager.h
     auth/qgsauthmethod.h
     auth/qgsauthmethodmetadata.h
     auth/qgsauthmethodregistry.h
-    auth/qgsauthorizationsettings.h
 
     auth/qgsauthconfigurationstoragesqlite.h
     auth/qgsauthconfigurationstoragedb.h
