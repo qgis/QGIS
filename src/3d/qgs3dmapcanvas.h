@@ -122,7 +122,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     /**
      * Returns TRUE if the cross section mode is enabled or the 3d scene has other clipping planes applied
      *
-     * \see enableCrossSection()
      * \since QGIS 4.0
      */
     bool crossSectionEnabled() const;
@@ -235,7 +234,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 #endif
     /**
      *  Emitted when the cross section mode is enabled or disabled
-     *  \see enableCrossSection()
      *  \since QGIS 4.0
      */
     void crossSectionEnabledChanged( bool enabled );
