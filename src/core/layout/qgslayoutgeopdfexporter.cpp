@@ -195,3 +195,7 @@ QgsAbstractGeospatialPdfExporter::VectorComponentDetail QgsLayoutGeospatialPdfEx
   return detail;
 }
 
+QgsLayerTree *QgsLayoutGeospatialPdfExporter::qgisLayerTree() const
+{
+  return mLayout->project()->layerTreeRoot();
+}

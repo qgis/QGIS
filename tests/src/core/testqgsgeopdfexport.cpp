@@ -37,6 +37,7 @@ class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
       detail.displayAttribute = u"attr %1"_s.arg( layerId );
       return detail;
     }
+    virtual QgsLayerTree *qgisLayerTree() const override { return nullptr; };
 };
 
 class TestQgsGeospatialPdfExport : public QgsTest

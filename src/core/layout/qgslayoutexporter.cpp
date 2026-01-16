@@ -598,7 +598,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::SynchronousLegendGraphics, true );
 
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
-  mLayout->renderContext().setExportThemes( settings.exportThemes );
+
+  if ( settings.writeGeoPdf && !settings.useQGISLayerTreeProperties )
+  {
+    mLayout->renderContext().setExportThemes( settings.exportThemes );
+  }
 
   ExportResult result = Success;
   if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
@@ -666,7 +670,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
       QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, Qgis::LayoutUnit::Millimeters );
       details.pageSizeMm = pageSizeMM.toQSizeF();
-      details.mutuallyExclusiveGroups = mutuallyExclusiveGroups;
 
       if ( settings.exportMetadata )
       {
@@ -678,12 +681,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         details.subject = mLayout->project()->metadata().abstract();
         details.title = mLayout->project()->metadata().title();
         details.keywords = mLayout->project()->metadata().keywords();
-      }
-
-      const QList< QgsMapLayer * > layers = mLayout->project()->mapLayers().values();
-      for ( const QgsMapLayer *layer : layers )
-      {
-        details.layerIdToPdfLayerTreeNameMap.insert( layer->id(), layer->name() );
       }
 
       if ( settings.appendGeoreference )
@@ -726,12 +723,23 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         }
       }
 
-      details.customLayerTreeGroups = geospatialPdfExporter->customLayerTreeGroups();
-      details.initialLayerVisibility = geospatialPdfExporter->initialLayerVisibility();
-      details.layerOrder = geospatialPdfExporter->layerOrder();
-      details.layerTreeGroupOrder = geospatialPdfExporter->layerTreeGroupOrder();
+      if ( !settings.useQGISLayerTreeProperties )
+      {
+        details.customLayerTreeGroups = geospatialPdfExporter->customLayerTreeGroups();
+        details.initialLayerVisibility = geospatialPdfExporter->initialLayerVisibility();
+        details.layerOrder = geospatialPdfExporter->layerOrder();
+        details.layerTreeGroupOrder = geospatialPdfExporter->layerTreeGroupOrder();
+        details.mutuallyExclusiveGroups = mutuallyExclusiveGroups;
+
+        const QList< QgsMapLayer * > layers = mLayout->project()->mapLayers().values();
+        for ( const QgsMapLayer *layer : layers )
+        {
+          details.layerIdToPdfLayerTreeNameMap.insert( layer->id(), layer->name() );
+        }
+      }
       details.includeFeatures = settings.includeGeoPdfFeatures;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
+      details.useQGISLayerTreeProperties = settings.useQGISLayerTreeProperties;
 
       if ( !geospatialPdfExporter->finalize( pdfComponents, filePath, details ) )
       {

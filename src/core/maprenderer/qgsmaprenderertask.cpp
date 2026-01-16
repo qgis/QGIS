@@ -74,6 +74,8 @@ class QgsMapRendererTaskGeospatialPdfExporter : public QgsAbstractGeospatialPdfE
       return mLayerDetails.value( layerId );
     }
 
+    QgsLayerTree *qgisLayerTree() const override { return nullptr; }
+
     QMap< QString, VectorComponentDetail > mLayerDetails;
 };
 
