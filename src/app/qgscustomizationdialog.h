@@ -180,7 +180,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
         Mode mMode = Mode::ActionSelector;
         QgisApp *mQgisApp = nullptr;
         std::unique_ptr<QgsCustomization> mCustomization; // current customization, copy of the application one
-        QList<QgsCustomization::Item *> mRootItems;
+        QList<QgsCustomization::QgsItem *> mRootItems;
     };
 
     QString mLastDirSettingsName;

@@ -44,60 +44,60 @@
 
 #define CUSTOMIZATION_CURRENT_VERSION "1"
 
-QgsCustomization::Item::Item( QgsCustomization::Item *parent )
+QgsCustomization::QgsItem::QgsItem( QgsCustomization::QgsItem *parent )
   : mParent( parent )
 {
 }
 
-QgsCustomization::Item::Item( const QString &name, const QString &title, Item *parent )
+QgsCustomization::QgsItem::QgsItem( const QString &name, const QString &title, QgsItem *parent )
   : mName( name )
   , mTitle( title )
   , mParent( parent )
 {}
 
-QgsCustomization::Item::~Item() = default;
+QgsCustomization::QgsItem::~QgsItem() = default;
 
-const QString &QgsCustomization::Item::name() const
+const QString &QgsCustomization::QgsItem::name() const
 {
   return mName;
 }
 
-const QString &QgsCustomization::Item::title() const
+const QString &QgsCustomization::QgsItem::title() const
 {
   return mTitle;
 }
 
-void QgsCustomization::Item::setTitle( const QString &title )
+void QgsCustomization::QgsItem::setTitle( const QString &title )
 {
   mTitle = title;
 }
 
-QgsCustomization::Item *QgsCustomization::Item::parent() const
+QgsCustomization::QgsItem *QgsCustomization::QgsItem::parent() const
 {
   return mParent;
 }
 
-bool QgsCustomization::Item::isVisible() const
+bool QgsCustomization::QgsItem::isVisible() const
 {
   return mVisible;
 }
 
-void QgsCustomization::Item::setVisible( bool isVisible )
+void QgsCustomization::QgsItem::setVisible( bool isVisible )
 {
   mVisible = isVisible;
 }
 
-void QgsCustomization::Item::setIcon( const QIcon &icon )
+void QgsCustomization::QgsItem::setIcon( const QIcon &icon )
 {
   mIcon = icon;
 }
 
-QIcon QgsCustomization::Item::icon() const
+QIcon QgsCustomization::QgsItem::icon() const
 {
   return mIcon;
 }
 
-void QgsCustomization::Item::addItem( std::unique_ptr<Item> item )
+void QgsCustomization::QgsItem::addChild( std::unique_ptr<QgsItem> item )
 {
   if ( mChildItems.contains( item->name() ) )
   {
@@ -110,7 +110,7 @@ void QgsCustomization::Item::addItem( std::unique_ptr<Item> item )
   mChildItems[name] = mChildItemList.back().get();
 }
 
-QgsCustomization::Item *QgsCustomization::Item::getChild( int index ) const
+QgsCustomization::QgsItem *QgsCustomization::QgsItem::getChild( int index ) const
 {
   if ( index < 0 || index >= static_cast<int>( mChildItemList.size() ) )
     return nullptr;
@@ -118,46 +118,46 @@ QgsCustomization::Item *QgsCustomization::Item::getChild( int index ) const
   return mChildItemList.at( index ).get();
 }
 
-QgsCustomization::Item *QgsCustomization::Item::getChild( const QString &name ) const
+QgsCustomization::QgsItem *QgsCustomization::QgsItem::getChild( const QString &name ) const
 {
   return mChildItems.value( name, nullptr );
 }
 
-const std::vector<std::unique_ptr<QgsCustomization::Item>> &QgsCustomization::Item::childItemList() const
+const std::vector<std::unique_ptr<QgsCustomization::QgsItem>> &QgsCustomization::QgsItem::childItemList() const
 {
   return mChildItemList;
 }
 
-QgsCustomization::Item *QgsCustomization::Item::lastChild() const
+QgsCustomization::QgsItem *QgsCustomization::QgsItem::lastChild() const
 {
-  return mChildItemList.back().get();
+  return mChildItemList.empty() ? nullptr : mChildItemList.back().get();
 }
 
 
-long QgsCustomization::Item::indexOf( Item *item ) const
+int QgsCustomization::QgsItem::indexOf( QgsItem *item ) const
 {
-  const auto it = std::find_if( mChildItemList.cbegin(), mChildItemList.cend(), [item]( const std::unique_ptr<Item> &currentItem ) {
+  const auto it = std::find_if( mChildItemList.cbegin(), mChildItemList.cend(), [item]( const std::unique_ptr<QgsItem> &currentItem ) {
     return currentItem.get() == item;
   } );
 
   if ( it != mChildItemList.cend() )
-    return std::distance( mChildItemList.cbegin(), it );
+    return static_cast<int>( std::distance( mChildItemList.cbegin(), it ) );
   else
     return -1;
 }
 
-unsigned long QgsCustomization::Item::childrenCount() const
+unsigned int QgsCustomization::QgsItem::childrenCount() const
 {
   return mChildItemList.size();
 }
 
-void QgsCustomization::Item::writeXml( QDomDocument &doc, QDomElement &parent ) const
+void QgsCustomization::QgsItem::writeXml( QDomDocument &doc, QDomElement &parent ) const
 {
   QDomElement itemElem = doc.createElement( xmlTag() );
   itemElem.setAttribute( u"name"_s, mName );
-  itemElem.setAttribute( u"visible"_s, mVisible );
+  itemElem.setAttribute( u"visible"_s, ( mVisible ? "true" : "false" ) );
 
-  for ( const std::unique_ptr<Item> &childItem : mChildItemList )
+  for ( const std::unique_ptr<QgsItem> &childItem : mChildItemList )
   {
     childItem->writeXml( doc, itemElem );
   }
@@ -165,9 +165,9 @@ void QgsCustomization::Item::writeXml( QDomDocument &doc, QDomElement &parent ) 
   parent.appendChild( itemElem );
 }
 
-QString QgsCustomization::Item::readXml( const QDomElement &elem )
+QString QgsCustomization::QgsItem::readXml( const QDomElement &elem )
 {
-  mVisible = elem.attribute( u"visible"_s ) == "1"_L1;
+  mVisible = elem.attribute( u"visible"_s ) == "true"_L1;
   mName = elem.attribute( u"name"_s );
   if ( mName.isEmpty() )
   {
@@ -176,7 +176,7 @@ QString QgsCustomization::Item::readXml( const QDomElement &elem )
 
   for ( QDomElement childElem = elem.firstChildElement(); !childElem.isNull(); childElem = childElem.nextSiblingElement() )
   {
-    std::unique_ptr<Item> childItem = createChildItem( childElem );
+    std::unique_ptr<QgsItem> childItem = createChildItem( childElem );
     if ( !childItem )
     {
       return QObject::tr( "Invalid XML file : failed to create an item '%1(%2)' as a child of item '%3(%4)'" )
@@ -186,82 +186,82 @@ QString QgsCustomization::Item::readXml( const QDomElement &elem )
         .arg( mName );
     }
     childItem->readXml( childElem );
-    addItem( std::move( childItem ) );
+    addChild( std::move( childItem ) );
   }
 
   return QString();
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Item::createChildItem( const QDomElement & )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsItem::createChildItem( const QDomElement & )
 {
   return nullptr;
 }
 
-void QgsCustomization::Item::copyItemAttributes( const QgsCustomization::Item *other )
+void QgsCustomization::QgsItem::copyItemAttributes( const QgsCustomization::QgsItem *other )
 {
   mName = other->mName;
   mTitle = other->mTitle;
   mVisible = other->mVisible;
   mIcon = other->mIcon;
-  for ( const std::unique_ptr<QgsCustomization::Item> &otherChildItem : other->mChildItemList )
+  for ( const std::unique_ptr<QgsCustomization::QgsItem> &otherChildItem : other->mChildItemList )
   {
-    addItem( otherChildItem->clone( this ) );
+    addChild( otherChildItem->clone( this ) );
   }
 }
 
 ////////////////
 
-QgsCustomization::Action::Action( QgsCustomization::Item *parent )
-  : QgsCustomization::Item( parent )
+QgsCustomization::QgsActionItem::QgsActionItem( QgsCustomization::QgsItem *parent )
+  : QgsCustomization::QgsItem( parent )
 {
 }
 
 
-QgsCustomization::Action::Action( const QString &name, const QString &title, Item *parent )
-  : Item( name, title, parent )
+QgsCustomization::QgsActionItem::QgsActionItem( const QString &name, const QString &title, QgsItem *parent )
+  : QgsItem( name, title, parent )
 {}
 
-QString QgsCustomization::Action::xmlTag() const
+QString QgsCustomization::QgsActionItem::xmlTag() const
 {
   return u"Action"_s;
 };
 
-void QgsCustomization::Action::setQAction( QAction *qaction, qsizetype qActionIndex )
+void QgsCustomization::QgsActionItem::setQAction( QAction *qaction, qsizetype qActionIndex )
 {
   mQAction = qaction;
   mQActionIndex = qActionIndex;
 }
 
-QAction *QgsCustomization::Action::qAction() const
+QAction *QgsCustomization::QgsActionItem::qAction() const
 {
   return mQAction;
 }
 
-qsizetype QgsCustomization::Action::qActionIndex() const
+qsizetype QgsCustomization::QgsActionItem::qActionIndex() const
 {
   return mQActionIndex;
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::clone( QgsCustomization::Item *parent ) const
+std::unique_ptr<QgsCustomization::QgsActionItem> QgsCustomization::QgsActionItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
 {
-  auto clone = std::make_unique<QgsCustomization::Action>( parent );
+  auto clone = std::make_unique<QgsCustomization::QgsActionItem>( parent );
   clone->copyItemAttributes( this );
   return clone;
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsActionItem::createChildItem( const QDomElement &childElem )
 {
   // Action with a menu can have child action
   if ( childElem.tagName() == "Action"_L1 )
-    return std::make_unique<Action>( this );
+    return std::make_unique<QgsActionItem>( this );
   else
     return nullptr;
 }
 
-void QgsCustomization::Action::copyItemAttributes( const Item *other )
+void QgsCustomization::QgsActionItem::copyItemAttributes( const QgsItem *other )
 {
-  Item::copyItemAttributes( other );
-  if ( const Action *action = dynamic_cast<const Action *>( other ) )
+  QgsItem::copyItemAttributes( other );
+  if ( const QgsActionItem *action = dynamic_cast<const QgsActionItem *>( other ) )
   {
     mQAction = action->mQAction;
     mQActionIndex = action->mQActionIndex;
@@ -270,80 +270,80 @@ void QgsCustomization::Action::copyItemAttributes( const Item *other )
 
 ////////////////
 
-QgsCustomization::Menu::Menu( Item *parent )
-  : Action( parent )
+QgsCustomization::QgsMenuItem::QgsMenuItem( QgsItem *parent )
+  : QgsActionItem( parent )
 {}
-QgsCustomization::Menu::Menu( const QString &name, const QString &title, Item *parent )
-  : Action( name, title, parent )
+QgsCustomization::QgsMenuItem::QgsMenuItem( const QString &name, const QString &title, QgsItem *parent )
+  : QgsActionItem( name, title, parent )
 {}
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menu::clone( QgsCustomization::Item *parent ) const
+std::unique_ptr<QgsCustomization::QgsMenuItem> QgsCustomization::QgsMenuItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
 {
-  auto clone = std::make_unique<QgsCustomization::Menu>( parent );
+  auto clone = std::make_unique<QgsCustomization::QgsMenuItem>( parent );
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::Menu::xmlTag() const
+QString QgsCustomization::QgsMenuItem::xmlTag() const
 {
   return u"Menu"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menu::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsMenuItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "Action"_L1 )
-    return std::make_unique<QgsCustomization::Action>( this );
+    return std::make_unique<QgsCustomization::QgsActionItem>( this );
   else if ( childElem.tagName() == "Menu"_L1 )
-    return std::make_unique<QgsCustomization::Menu>( this );
+    return std::make_unique<QgsCustomization::QgsMenuItem>( this );
   else
     return nullptr;
 }
 
 ////////////////
 
-QgsCustomization::ToolBar::ToolBar( Item *parent )
-  : Item( parent )
+QgsCustomization::QgsToolBarItem::QgsToolBarItem( QgsItem *parent )
+  : QgsItem( parent )
 {}
 
-QgsCustomization::ToolBar::ToolBar( const QString &name, const QString &title, Item *parent )
-  : Item( name, title, parent ) {}
+QgsCustomization::QgsToolBarItem::QgsToolBarItem( const QString &name, const QString &title, QgsItem *parent )
+  : QgsItem( name, title, parent ) {}
 
-void QgsCustomization::ToolBar::setWasVisible( const bool &wasVisible )
+void QgsCustomization::QgsToolBarItem::setWasVisible( const bool &wasVisible )
 {
   mWasVisible = wasVisible;
 }
 
-bool QgsCustomization::ToolBar::wasVisible() const
+bool QgsCustomization::QgsToolBarItem::wasVisible() const
 {
   return mWasVisible;
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBar::clone( QgsCustomization::Item *parent ) const
+std::unique_ptr<QgsCustomization::QgsToolBarItem> QgsCustomization::QgsToolBarItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
 {
-  auto clone = std::make_unique<QgsCustomization::ToolBar>( parent );
+  auto clone = std::make_unique<QgsCustomization::QgsToolBarItem>( parent );
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::ToolBar::xmlTag() const
+QString QgsCustomization::QgsToolBarItem::xmlTag() const
 {
   return u"ToolBar"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBar::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsToolBarItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "Action"_L1 )
-    return std::make_unique<Action>( this );
+    return std::make_unique<QgsActionItem>( this );
   if ( childElem.tagName() == "Menu"_L1 )
-    return std::make_unique<Menu>( this );
+    return std::make_unique<QgsMenuItem>( this );
   else
     return nullptr;
 }
 
-void QgsCustomization::ToolBar::copyItemAttributes( const Item *other )
+void QgsCustomization::QgsToolBarItem::copyItemAttributes( const QgsItem *other )
 {
-  Item::copyItemAttributes( other );
-  if ( const ToolBar *tb = dynamic_cast<const ToolBar *>( other ) )
+  QgsItem::copyItemAttributes( other );
+  if ( const QgsToolBarItem *tb = dynamic_cast<const QgsToolBarItem *>( other ) )
   {
     mWasVisible = tb->mWasVisible;
   }
@@ -351,101 +351,101 @@ void QgsCustomization::ToolBar::copyItemAttributes( const Item *other )
 
 ////////////////
 
-QgsCustomization::ToolBars::ToolBars()
-  : Item()
+QgsCustomization::QgsToolBarsItem::QgsToolBarsItem()
+  : QgsItem()
 {
   mName = "ToolBars";
   setTitle( QObject::tr( "ToolBars" ) );
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::clone( QgsCustomization::Item * ) const
+std::unique_ptr<QgsCustomization::QgsToolBarsItem> QgsCustomization::QgsToolBarsItem::cloneSameType( QgsCustomization::QgsItem * ) const
 {
-  auto clone = std::make_unique<QgsCustomization::ToolBars>();
+  auto clone = std::make_unique<QgsCustomization::QgsToolBarsItem>();
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::ToolBars::xmlTag() const
+QString QgsCustomization::QgsToolBarsItem::xmlTag() const
 {
   return u"ToolBars"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsToolBarsItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "ToolBar"_L1 )
-    return std::make_unique<ToolBar>( this );
+    return std::make_unique<QgsToolBarItem>( this );
   else
     return nullptr;
 }
 
 ////////////////
 
-QgsCustomization::Menus::Menus()
-  : Item()
+QgsCustomization::QgsMenusItem::QgsMenusItem()
+  : QgsItem()
 {
   mName = "Menus";
   setTitle( QObject::tr( "Menus" ) );
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::clone( QgsCustomization::Item * ) const
+std::unique_ptr<QgsCustomization::QgsMenusItem> QgsCustomization::QgsMenusItem::cloneSameType( QgsCustomization::QgsItem * ) const
 {
-  auto clone = std::make_unique<QgsCustomization::Menus>();
+  auto clone = std::make_unique<QgsCustomization::QgsMenusItem>();
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::Menus::xmlTag() const
+QString QgsCustomization::QgsMenusItem::xmlTag() const
 {
   return u"Menus"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsMenusItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "Menu"_L1 )
-    return std::make_unique<Menu>( this );
+    return std::make_unique<QgsMenuItem>( this );
   else
     return nullptr;
 }
 
 ////////////////
 
-QgsCustomization::Dock::Dock( Item *parent )
-  : Item( parent )
+QgsCustomization::QgsDockItem::QgsDockItem( QgsItem *parent )
+  : QgsItem( parent )
 {
 }
 
-QgsCustomization::Dock::Dock( const QString &name, const QString &title, Item *parent )
-  : Item( name, title, parent )
+QgsCustomization::QgsDockItem::QgsDockItem( const QString &name, const QString &title, QgsItem *parent )
+  : QgsItem( name, title, parent )
 {
 }
 
-QString QgsCustomization::Dock::xmlTag() const
+QString QgsCustomization::QgsDockItem::xmlTag() const
 {
   return u"Dock"_s;
 };
 
-void QgsCustomization::Dock::copyItemAttributes( const Item *other )
+void QgsCustomization::QgsDockItem::copyItemAttributes( const QgsItem *other )
 {
-  Item::copyItemAttributes( other );
-  if ( const Dock *dock = dynamic_cast<const Dock *>( other ) )
+  QgsItem::copyItemAttributes( other );
+  if ( const QgsDockItem *dock = dynamic_cast<const QgsDockItem *>( other ) )
   {
     mWasVisible = dock->mWasVisible;
   }
 }
 
-void QgsCustomization::Dock::setWasVisible( const bool &wasVisible )
+void QgsCustomization::QgsDockItem::setWasVisible( const bool &wasVisible )
 {
   mWasVisible = wasVisible;
 }
 
-bool QgsCustomization::Dock::wasVisible() const
+bool QgsCustomization::QgsDockItem::wasVisible() const
 {
   return mWasVisible;
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Dock::clone( QgsCustomization::Item *parent ) const
+std::unique_ptr<QgsCustomization::QgsDockItem> QgsCustomization::QgsDockItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
 {
-  auto clone = std::make_unique<QgsCustomization::Dock>( parent );
+  auto clone = std::make_unique<QgsCustomization::QgsDockItem>( parent );
   clone->copyItemAttributes( this );
   clone->mWasVisible = mWasVisible;
   return clone;
@@ -453,133 +453,133 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Dock::clone( QgsCustom
 
 ////////////////
 
-QgsCustomization::Docks::Docks()
-  : Item()
+QgsCustomization::QgsDocksItem::QgsDocksItem()
+  : QgsItem()
 {
   mName = "Docks";
   setTitle( QObject::tr( "Docks" ) );
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Docks::clone( QgsCustomization::Item * ) const
+std::unique_ptr<QgsCustomization::QgsDocksItem> QgsCustomization::QgsDocksItem::cloneSameType( QgsCustomization::QgsItem * ) const
 {
-  auto clone = std::make_unique<QgsCustomization::Docks>();
+  auto clone = std::make_unique<QgsCustomization::QgsDocksItem>();
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::Docks::xmlTag() const
+QString QgsCustomization::QgsDocksItem::xmlTag() const
 {
   return u"Docks"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::Docks::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsDocksItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "Dock"_L1 )
-    return std::make_unique<Dock>( this );
+    return std::make_unique<QgsDockItem>( this );
   else
     return nullptr;
 }
 
 ////////////////
 
-QgsCustomization::BrowserItem::BrowserItem( Item *parent )
-  : Item( parent )
+QgsCustomization::QgsBrowserElementItem::QgsBrowserElementItem( QgsItem *parent )
+  : QgsItem( parent )
 {
 }
 
-QgsCustomization::BrowserItem::BrowserItem( const QString &name, const QString &title, Item *parent )
-  : Item( name, title, parent )
+QgsCustomization::QgsBrowserElementItem::QgsBrowserElementItem( const QString &name, const QString &title, QgsItem *parent )
+  : QgsItem( name, title, parent )
 {
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItem::clone( QgsCustomization::Item *parent ) const
+std::unique_ptr<QgsCustomization::QgsBrowserElementItem> QgsCustomization::QgsBrowserElementItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
 {
-  auto clone = std::make_unique<QgsCustomization::BrowserItem>( parent );
+  auto clone = std::make_unique<QgsCustomization::QgsBrowserElementItem>( parent );
   clone->copyItemAttributes( this );
   return clone;
 }
 
 
-QString QgsCustomization::BrowserItem::xmlTag() const
+QString QgsCustomization::QgsBrowserElementItem::xmlTag() const
 {
   return u"BrowserItem"_s;
 };
 
 ////////////////
 
-QgsCustomization::BrowserItems::BrowserItems()
-  : Item()
+QgsCustomization::QgsBrowserElementsItem::QgsBrowserElementsItem()
+  : QgsItem()
 {
   mName = "BrowserItems";
   setTitle( QObject::tr( "Browser" ) );
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItems::clone( QgsCustomization::Item * ) const
+std::unique_ptr<QgsCustomization::QgsBrowserElementsItem> QgsCustomization::QgsBrowserElementsItem::cloneSameType( QgsCustomization::QgsItem * ) const
 {
-  auto clone = std::make_unique<QgsCustomization::BrowserItems>();
+  auto clone = std::make_unique<QgsCustomization::QgsBrowserElementsItem>();
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::BrowserItems::xmlTag() const
+QString QgsCustomization::QgsBrowserElementsItem::xmlTag() const
 {
   return u"BrowserItems"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::BrowserItems::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsBrowserElementsItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "BrowserItem"_L1 )
-    return std::make_unique<BrowserItem>( this );
+    return std::make_unique<QgsBrowserElementItem>( this );
   else
     return nullptr;
 }
 
 ////////////////
 
-QgsCustomization::StatusBarWidget::StatusBarWidget( Item *parent )
-  : Item( parent )
+QgsCustomization::QgsStatusBarWidgetItem::QgsStatusBarWidgetItem( QgsItem *parent )
+  : QgsItem( parent )
 {}
 
-QgsCustomization::StatusBarWidget::StatusBarWidget( const QString &name, Item *parent )
-  : Item( name, QString(), parent ) {}
+QgsCustomization::QgsStatusBarWidgetItem::QgsStatusBarWidgetItem( const QString &name, QgsItem *parent )
+  : QgsItem( name, QString(), parent ) {}
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidget::clone( QgsCustomization::Item *parent ) const
+std::unique_ptr<QgsCustomization::QgsStatusBarWidgetItem> QgsCustomization::QgsStatusBarWidgetItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
 {
-  auto clone = std::make_unique<QgsCustomization::StatusBarWidget>( parent );
+  auto clone = std::make_unique<QgsCustomization::QgsStatusBarWidgetItem>( parent );
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::StatusBarWidget::xmlTag() const
+QString QgsCustomization::QgsStatusBarWidgetItem::xmlTag() const
 {
   return u"StatusBarWidget"_s;
 };
 
 ////////////////
 
-QgsCustomization::StatusBarWidgets::StatusBarWidgets()
-  : Item()
+QgsCustomization::QgsStatusBarWidgetsItem::QgsStatusBarWidgetsItem()
+  : QgsItem()
 {
   mName = "StatusBarWidgets";
   setTitle( QObject::tr( "Status Bar" ) );
 }
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidgets::clone( QgsCustomization::Item * ) const
+std::unique_ptr<QgsCustomization::QgsStatusBarWidgetsItem> QgsCustomization::QgsStatusBarWidgetsItem::cloneSameType( QgsCustomization::QgsItem * ) const
 {
-  auto clone = std::make_unique<QgsCustomization::StatusBarWidgets>();
+  auto clone = std::make_unique<QgsCustomization::QgsStatusBarWidgetsItem>();
   clone->copyItemAttributes( this );
   return clone;
 }
 
-QString QgsCustomization::StatusBarWidgets::xmlTag() const
+QString QgsCustomization::QgsStatusBarWidgetsItem::xmlTag() const
 {
   return u"StatusBarWidgets"_s;
 };
 
-std::unique_ptr<QgsCustomization::Item> QgsCustomization::StatusBarWidgets::createChildItem( const QDomElement &childElem )
+std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsStatusBarWidgetsItem::createChildItem( const QDomElement &childElem )
 {
   if ( childElem.tagName() == "StatusBarWidget"_L1 )
-    return std::make_unique<StatusBarWidget>( this );
+    return std::make_unique<QgsStatusBarWidgetItem>( this );
   else
     return nullptr;
 }
@@ -590,6 +590,7 @@ QgsCustomization::QgsCustomization( const QString &customizationFile )
   : mCustomizationFile( customizationFile )
 {
   const QFileInfo fileInfo( customizationFile );
+  // TODO QGIS 5: remove QGIS 3 .ini customization file import logic
   if ( !fileInfo.exists() && fileInfo.absoluteDir().exists( "QGISCUSTOMIZATION3.ini" ) )
   {
     loadOldIniFile( fileInfo.absoluteDir().filePath( "QGISCUSTOMIZATION3.ini" ) );
@@ -617,16 +618,8 @@ QgsCustomization::~QgsCustomization() = default;
  * Copy constructor
  */
 QgsCustomization::QgsCustomization( const QgsCustomization &other )
-  : mBrowserItems( dynamic_cast<BrowserItems *>( other.mBrowserItems->clone().release() ) )
-  , mDocks( dynamic_cast<Docks *>( other.mDocks->clone().release() ) )
-  , mMenus( dynamic_cast<Menus *>( other.mMenus->clone().release() ) )
-  , mStatusBarWidgets( dynamic_cast<StatusBarWidgets *>( other.mStatusBarWidgets->clone().release() ) )
-  , mToolBars( dynamic_cast<ToolBars *>( other.mToolBars->clone().release() ) )
-  , mEnabled( other.mEnabled )
-  , mSplashPath( other.mSplashPath )
-  , mQgisApp( other.mQgisApp )
-  , mCustomizationFile( other.mCustomizationFile )
 {
+  *this = other;
 }
 
 /**
@@ -637,11 +630,11 @@ QgsCustomization &QgsCustomization::operator=( const QgsCustomization &other )
   if ( this == &other )
     return *this;
 
-  mBrowserItems.reset( dynamic_cast<BrowserItems *>( other.mBrowserItems->clone().release() ) );
-  mDocks.reset( dynamic_cast<Docks *>( other.mDocks->clone().release() ) );
-  mMenus.reset( dynamic_cast<Menus *>( other.mMenus->clone().release() ) );
-  mStatusBarWidgets.reset( dynamic_cast<StatusBarWidgets *>( other.mStatusBarWidgets->clone().release() ) );
-  mToolBars.reset( dynamic_cast<ToolBars *>( other.mToolBars->clone().release() ) );
+  mBrowserItems = other.mBrowserItems->cloneSameType();
+  mDocks = other.mDocks->cloneSameType();
+  mMenus = other.mMenus->cloneSameType();
+  mStatusBarWidgets = other.mStatusBarWidgets->cloneSameType();
+  mToolBars = other.mToolBars->cloneSameType();
   mEnabled = other.mEnabled;
   mSplashPath = other.mSplashPath;
   mQgisApp = other.mQgisApp;
@@ -674,57 +667,57 @@ QString QgsCustomization::splashPath() const
   return isEnabled() ? mSplashPath : QgsApplication::splashPath();
 }
 
-const std::unique_ptr<QgsCustomization::BrowserItems> &QgsCustomization::browserItems() const
+QgsCustomization::QgsBrowserElementsItem *QgsCustomization::browserElementsItem() const
 {
-  return mBrowserItems;
+  return mBrowserItems.get();
 }
 
-const std::unique_ptr<QgsCustomization::Docks> &QgsCustomization::docks() const
+QgsCustomization::QgsDocksItem *QgsCustomization::docksItem() const
 {
-  return mDocks;
+  return mDocks.get();
 }
 
-const std::unique_ptr<QgsCustomization::Menus> &QgsCustomization::menus() const
+QgsCustomization::QgsMenusItem *QgsCustomization::menusItem() const
 {
-  return mMenus;
+  return mMenus.get();
 }
 
-const std::unique_ptr<QgsCustomization::StatusBarWidgets> &QgsCustomization::statusBarWidgets() const
+QgsCustomization::QgsStatusBarWidgetsItem *QgsCustomization::statusBarWidgetsItem() const
 {
-  return mStatusBarWidgets;
+  return mStatusBarWidgets.get();
 }
 
-const std::unique_ptr<QgsCustomization::ToolBars> &QgsCustomization::toolBars() const
+QgsCustomization::QgsToolBarsItem *QgsCustomization::toolBarsItem() const
 {
-  return mToolBars;
+  return mToolBars.get();
 }
 
-void QgsCustomization::addActions( Item *item, QWidget *widget ) const
+void QgsCustomization::addActions( QgsItem *item, QWidget *widget ) const
 {
   if ( !item || !widget )
     return;
 
-  for ( QgsCustomization::QWidgetIterator::Info it : QgsCustomization::QWidgetIterator( widget ) )
+  for ( QgsQActionsIterator::Info it : QgsQActionsIterator( widget ) )
   {
     if ( it.name.isEmpty() )
       continue;
 
     // submenu
-    Action *childItem = item->getChild<Action>( it.name );
+    QgsActionItem *childItem = item->getChild<QgsActionItem>( it.name );
     if ( !childItem )
     {
       if ( it.isMenu )
       {
-        auto menuItem = std::make_unique<Menu>( it.name, it.title, item );
-        item->addItem( std::move( menuItem ) );
+        auto menuItem = std::make_unique<QgsMenuItem>( it.name, it.title, item );
+        item->addChild( std::move( menuItem ) );
       }
       else
       {
-        auto action = std::make_unique<Action>( it.name, it.title, item );
-        item->addItem( std::move( action ) );
+        auto action = std::make_unique<QgsActionItem>( it.name, it.title, item );
+        item->addChild( std::move( action ) );
       }
 
-      childItem = item->lastChild<Action>();
+      childItem = item->lastChild<QgsActionItem>();
     }
 
     childItem->setIcon( it.icon );
@@ -738,7 +731,7 @@ void QgsCustomization::loadApplicationToolBars()
 {
   if ( !mToolBars )
   {
-    mToolBars = std::make_unique<ToolBars>();
+    mToolBars = std::make_unique<QgsToolBarsItem>();
   }
 
   const auto toolbars = mQgisApp->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
@@ -748,12 +741,12 @@ void QgsCustomization::loadApplicationToolBars()
     if ( name.isEmpty() )
       continue;
 
-    ToolBar *t = mToolBars->getChild<ToolBar>( name );
+    QgsToolBarItem *t = mToolBars->getChild<QgsToolBarItem>( name );
     if ( !t )
     {
-      auto toolBar = std::make_unique<ToolBar>( tb->objectName(), tb->windowTitle(), mToolBars.get() );
-      mToolBars->addItem( std::move( toolBar ) );
-      t = mToolBars->lastChild<ToolBar>();
+      auto toolBar = std::make_unique<QgsToolBarItem>( tb->objectName(), tb->windowTitle(), mToolBars.get() );
+      mToolBars->addChild( std::move( toolBar ) );
+      t = mToolBars->lastChild<QgsToolBarItem>();
     }
 
     addActions( t, tb );
@@ -768,7 +761,7 @@ void QgsCustomization::loadApplicationMenus()
 
   if ( !mMenus )
   {
-    mMenus = std::make_unique<Menus>();
+    mMenus = std::make_unique<QgsMenusItem>();
   }
 
   QMenuBar *menuBar = mQgisApp->menuBar();
@@ -782,7 +775,7 @@ void QgsCustomization::loadApplicationDocks()
 
   if ( !mDocks )
   {
-    mDocks = std::make_unique<Docks>();
+    mDocks = std::make_unique<QgsDocksItem>();
   }
 
   const auto dockWidgets = mQgisApp->findChildren<QDockWidget *>( QString(), Qt::FindDirectChildrenOnly );
@@ -792,12 +785,12 @@ void QgsCustomization::loadApplicationDocks()
     if ( name.isEmpty() )
       continue;
 
-    Dock *d = mDocks->getChild<Dock>( name );
+    QgsDockItem *d = mDocks->getChild<QgsDockItem>( name );
     if ( !d )
     {
-      auto dock = std::make_unique<Dock>( name, dw->windowTitle(), mDocks.get() );
-      mDocks->addItem( std::move( dock ) );
-      d = mDocks->lastChild<Dock>();
+      auto dock = std::make_unique<QgsDockItem>( name, dw->windowTitle(), mDocks.get() );
+      mDocks->addChild( std::move( dock ) );
+      d = mDocks->lastChild<QgsDockItem>();
     }
 
     d->setWasVisible( dw->isVisible() );
@@ -808,19 +801,21 @@ void QgsCustomization::loadApplicationBrowserItems()
 {
   if ( !mBrowserItems )
   {
-    mBrowserItems = std::make_unique<BrowserItems>();
+    mBrowserItems = std::make_unique<QgsBrowserElementsItem>();
     const QList<QPair<QString, QString>> staticItems = {
       { u"special:Home"_s, QObject::tr( "Home Folder" ) },
       { u"special:ProjectHome"_s, QObject::tr( "Project Home Folder" ) },
       { u"special:Favorites"_s, QObject::tr( "Favorites Folder" ) },
       { u"special:Drives"_s, QObject::tr( "Drive Folders (e.g. C:\\)" ) },
+#ifdef Q_OS_MAC
       { u"special:Volumes"_s, QObject::tr( "Volume Folder (MacOS only)" ) }
+#endif
     };
 
-    for ( QPair<QString, QString> staticItem : staticItems )
+    for ( const QPair<QString, QString> &staticItem : staticItems )
     {
-      auto browserItem = std::make_unique<BrowserItem>( staticItem.first, staticItem.second, mBrowserItems.get() );
-      mBrowserItems->addItem( std::move( browserItem ) );
+      auto browserItem = std::make_unique<QgsBrowserElementItem>( staticItem.first, staticItem.second, mBrowserItems.get() );
+      mBrowserItems->addChild( std::move( browserItem ) );
     }
   }
 
@@ -831,10 +826,10 @@ void QgsCustomization::loadApplicationBrowserItems()
     const QString name = pr->name();
     if ( !name.isEmpty() && capabilities != Qgis::DataItemProviderCapabilities( Qgis::DataItemProviderCapability::NoCapabilities ) )
     {
-      if ( !mBrowserItems->getChild<BrowserItem>( name ) )
+      if ( !mBrowserItems->getChild<QgsBrowserElementItem>( name ) )
       {
-        auto browserItem = std::make_unique<BrowserItem>( name, QObject::tr( "Data Item Provider: %1" ).arg( name ), mBrowserItems.get() );
-        mBrowserItems->addItem( std::move( browserItem ) );
+        auto browserItem = std::make_unique<QgsBrowserElementItem>( name, QObject::tr( "Data Item Provider: %1" ).arg( name ), mBrowserItems.get() );
+        mBrowserItems->addChild( std::move( browserItem ) );
       }
     }
   }
@@ -847,7 +842,7 @@ void QgsCustomization::loadApplicationStatusBarWidgets()
 
   if ( !mStatusBarWidgets )
   {
-    mStatusBarWidgets = std::make_unique<StatusBarWidgets>();
+    mStatusBarWidgets = std::make_unique<QgsStatusBarWidgetsItem>();
   }
 
   QgsStatusBar *sb = mQgisApp->statusBarIface();
@@ -858,11 +853,11 @@ void QgsCustomization::loadApplicationStatusBarWidgets()
     if ( name.isEmpty() )
       continue;
 
-    StatusBarWidget *s = mStatusBarWidgets->getChild<StatusBarWidget>( name );
+    QgsStatusBarWidgetItem *s = mStatusBarWidgets->getChild<QgsStatusBarWidgetItem>( name );
     if ( !s )
     {
-      auto statusBarWidget = std::make_unique<StatusBarWidget>( name, mStatusBarWidgets.get() );
-      mStatusBarWidgets->addItem( std::move( statusBarWidget ) );
+      auto statusBarWidget = std::make_unique<QgsStatusBarWidgetItem>( name, mStatusBarWidgets.get() );
+      mStatusBarWidgets->addChild( std::move( statusBarWidget ) );
     }
   }
 }
@@ -885,9 +880,9 @@ void QgsCustomization::applyToBrowserItems() const
     return;
 
   QStringList disabledDataItems;
-  for ( const std::unique_ptr<Item> &item : mBrowserItems->childItemList() )
+  for ( const std::unique_ptr<QgsItem> &item : mBrowserItems->childItemList() )
   {
-    BrowserItem *browserItem = dynamic_cast<BrowserItem *>( item.get() );
+    QgsBrowserElementItem *browserItem = dynamic_cast<QgsBrowserElementItem *>( item.get() );
     if ( browserItem && !browserItem->isVisible() )
       disabledDataItems << browserItem->name();
   }
@@ -908,7 +903,7 @@ void QgsCustomization::applyToDocks() const
   for ( QDockWidget *dw : dockWidgets )
   {
     const QString name = dw->objectName();
-    if ( Dock *d = mDocks->getChild<Dock>( name ) )
+    if ( QgsDockItem *d = mDocks->getChild<QgsDockItem>( name ) )
     {
       dw->setVisible( d->wasVisible() && d->isVisible() );
       dw->toggleViewAction()->setVisible( d->isVisible() );
@@ -916,13 +911,13 @@ void QgsCustomization::applyToDocks() const
   }
 }
 
-QgsCustomization::QWidgetIterator::QWidgetIterator( QWidget *widget )
+QgsCustomization::QgsQActionsIterator::QgsQActionsIterator( QWidget *widget )
   : mWidget( widget ) {};
 
-QgsCustomization::QWidgetIterator::Iterator::Iterator( QWidget *ptr, qsizetype idx )
+QgsCustomization::QgsQActionsIterator::Iterator::Iterator( QWidget *ptr, qsizetype idx )
   : idx( idx ), mActions( ptr->actions() ) {}
 
-QgsCustomization::QWidgetIterator::Info QgsCustomization::QWidgetIterator::Iterator::operator*() const
+QgsCustomization::QgsQActionsIterator::Info QgsCustomization::QgsQActionsIterator::Iterator::operator*() const
 {
   if ( idx < 0 || idx >= mActions.count() )
     throw std::out_of_range {
@@ -958,7 +953,7 @@ QgsCustomization::QWidgetIterator::Info QgsCustomization::QWidgetIterator::Itera
   return infos;
 }
 
-QgsCustomization::QWidgetIterator::Iterator &QgsCustomization::QWidgetIterator::Iterator::operator++()
+QgsCustomization::QgsQActionsIterator::Iterator &QgsCustomization::QgsQActionsIterator::Iterator::operator++()
 {
   idx++;
   while ( idx < mActions.count() && mActions.at( idx )->isSeparator() )
@@ -966,32 +961,32 @@ QgsCustomization::QWidgetIterator::Iterator &QgsCustomization::QWidgetIterator::
   return *this;
 }
 
-bool QgsCustomization::QWidgetIterator::Iterator::operator==( const Iterator &b ) const
+bool QgsCustomization::QgsQActionsIterator::Iterator::operator==( const Iterator &b ) const
 {
   return idx == b.idx && ( idx < 0 || idx >= mActions.count() || mActions.at( idx ) == b.mActions.at( idx ) );
 }
 
-QgsCustomization::QWidgetIterator::Iterator QgsCustomization::QWidgetIterator::begin()
+QgsCustomization::QgsQActionsIterator::Iterator QgsCustomization::QgsQActionsIterator::begin()
 {
   return Iterator( mWidget, 0 );
 }
 
-QgsCustomization::QWidgetIterator::Iterator QgsCustomization::QWidgetIterator::end()
+QgsCustomization::QgsQActionsIterator::Iterator QgsCustomization::QgsQActionsIterator::end()
 {
   return Iterator( mWidget, mWidget->actions().count() );
 }
 
-void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWidget *widget )
+void QgsCustomization::updateActionVisibility( QgsCustomization::QgsItem *item, QWidget *widget )
 {
   if ( !item || !widget )
     return;
 
-  QSet<QgsCustomization::Item *> treatedChildItems;
-  for ( QgsCustomization::QWidgetIterator::Info it : QgsCustomization::QWidgetIterator( widget ) )
+  QSet<QgsCustomization::QgsItem *> processedChildItems;
+  for ( QgsQActionsIterator::Info it : QgsQActionsIterator( widget ) )
   {
-    if ( QgsCustomization::Item *childItem = item->getChild( it.name ) )
+    if ( QgsCustomization::QgsItem *childItem = item->getChild( it.name ) )
     {
-      treatedChildItems << childItem;
+      processedChildItems << childItem;
 
       if ( !childItem->isVisible() )
       {
@@ -1002,15 +997,15 @@ void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWi
     }
   }
 
-  // all have been treated, no need to continue
-  if ( static_cast<size_t>( treatedChildItems.count() ) == item->childItemList().size() )
+  // all have been processed, no need to continue
+  if ( static_cast<size_t>( processedChildItems.count() ) == item->childItemList().size() )
     return;
 
   // Some action have been previously removed and could be visible again. If so, we need to add them again
   int nbRemoved = 0;
-  for ( const std::unique_ptr<Item> &childItem : item->childItemList() )
+  for ( const std::unique_ptr<QgsItem> &childItem : item->childItemList() )
   {
-    Action *action = dynamic_cast<Action *>( childItem.get() );
+    QgsActionItem *action = dynamic_cast<QgsActionItem *>( childItem.get() );
     if ( !action )
     {
       QgsDebugError( u"Invalid child type, Action expected"_s );
@@ -1020,7 +1015,7 @@ void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWi
     if ( !action->isVisible() )
       nbRemoved++;
 
-    if ( action->qAction() && childItem->isVisible() && !treatedChildItems.contains( childItem.get() ) )
+    if ( action->qAction() && childItem->isVisible() && !processedChildItems.contains( childItem.get() ) )
     {
       int index = static_cast<int>( action->qActionIndex() ) - nbRemoved;
       if ( index >= 0 && index < widget->actions().count() )
@@ -1053,7 +1048,7 @@ void QgsCustomization::applyToStatusBarWidgets() const
     if ( name.isEmpty() )
       continue;
 
-    if ( StatusBarWidget *s = mStatusBarWidgets->getChild<StatusBarWidget>( name ) )
+    if ( QgsStatusBarWidgetItem *s = mStatusBarWidgets->getChild<QgsStatusBarWidgetItem>( name ) )
     {
       statusBarWidget->setVisible( s->isVisible() );
     }
@@ -1069,7 +1064,7 @@ void QgsCustomization::applyToToolBars() const
   for ( QToolBar *tb : toolBars )
   {
     const QString name = tb->objectName();
-    if ( ToolBar *t = mToolBars->getChild<ToolBar>( name ) )
+    if ( QgsToolBarItem *t = mToolBars->getChild<QgsToolBarItem>( name ) )
     {
       tb->setVisible( t->wasVisible() && t->isVisible() );
       tb->toggleViewAction()->setVisible( t->isVisible() );
@@ -1079,7 +1074,7 @@ void QgsCustomization::applyToToolBars() const
 }
 
 
-QString QgsCustomization::writeXML( const QString &fileName ) const
+QString QgsCustomization::writeFile( const QString &fileName ) const
 {
   QDomDocument doc( u"Customization"_s );
   QDomElement root = doc.createElement( u"Customization"_s );
@@ -1104,9 +1099,6 @@ QString QgsCustomization::writeXML( const QString &fileName ) const
   }
 
   QTextStream ts( &f );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  ts.setCodec( "UTF-8" );
-#endif
   doc.save( ts, 2 );
   f.close();
 
@@ -1115,15 +1107,10 @@ QString QgsCustomization::writeXML( const QString &fileName ) const
 
 QString QgsCustomization::write() const
 {
-  return writeXML( mCustomizationFile );
+  return writeFile( mCustomizationFile );
 }
 
-QString QgsCustomization::writeFile( const QString &filePath ) const
-{
-  return writeXML( filePath );
-}
-
-QString QgsCustomization::readXml( const QString &fileName )
+QString QgsCustomization::readFile( const QString &fileName )
 {
   QDomDocument doc( u"customization"_s );
   QFile f( fileName );
@@ -1144,25 +1131,25 @@ QString QgsCustomization::readXml( const QString &fileName )
     return QObject::tr( "Invalid XML file : root tag must be 'Customization'" );
   }
 
-  mEnabled = docEl.attribute( u"enabled"_s ) == "1"_L1;
+  mEnabled = docEl.attribute( u"enabled"_s ) == "true"_L1;
   if ( docEl.hasAttribute( u"splashPath"_s ) )
     mSplashPath = docEl.attribute( u"splashPath"_s );
 
   const QString version = docEl.attribute( u"version"_s );
-  if ( version != QLatin1String( CUSTOMIZATION_CURRENT_VERSION ) && version != "1"_L1 )
+  if ( version != QLatin1String( CUSTOMIZATION_CURRENT_VERSION ) )
   {
     return QObject::tr( "Invalid XML file : incorrect version" );
   }
 
-  mBrowserItems = std::make_unique<BrowserItems>();
+  mBrowserItems = std::make_unique<QgsBrowserElementsItem>();
   mBrowserItems->readXml( docEl.firstChildElement( u"BrowserItems"_s ) );
-  mDocks = std::make_unique<Docks>();
+  mDocks = std::make_unique<QgsDocksItem>();
   mDocks->readXml( docEl.firstChildElement( u"Docks"_s ) );
-  mMenus = std::make_unique<Menus>();
+  mMenus = std::make_unique<QgsMenusItem>();
   mMenus->readXml( docEl.firstChildElement( u"Menus"_s ) );
-  mStatusBarWidgets = std::make_unique<StatusBarWidgets>();
+  mStatusBarWidgets = std::make_unique<QgsStatusBarWidgetsItem>();
   mStatusBarWidgets->readXml( docEl.firstChildElement( u"StatusBarWidgets"_s ) );
-  mToolBars = std::make_unique<ToolBars>();
+  mToolBars = std::make_unique<QgsToolBarsItem>();
   mToolBars->readXml( docEl.firstChildElement( u"ToolBars"_s ) );
 
   return QString();
@@ -1170,12 +1157,7 @@ QString QgsCustomization::readXml( const QString &fileName )
 
 void QgsCustomization::read()
 {
-  ( void ) readXml( mCustomizationFile );
-}
-
-QString QgsCustomization::readFile( const QString &filePath )
-{
-  return readXml( filePath );
+  ( void ) readFile( mCustomizationFile );
 }
 
 void QgsCustomization::loadOldIniFile( const QString &filePath )
@@ -1186,34 +1168,34 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   QSettings settings( filePath, QSettings::IniFormat );
   mSplashPath = settings.value( u"/Customization/splashpath"_s, QgsApplication::splashPath() ).toString();
 
-  mBrowserItems = std::make_unique<BrowserItems>();
-  mDocks = std::make_unique<Docks>();
-  mMenus = std::make_unique<Menus>();
-  mStatusBarWidgets = std::make_unique<StatusBarWidgets>();
-  mToolBars = std::make_unique<ToolBars>();
+  mBrowserItems = std::make_unique<QgsBrowserElementsItem>();
+  mDocks = std::make_unique<QgsDocksItem>();
+  mMenus = std::make_unique<QgsMenusItem>();
+  mStatusBarWidgets = std::make_unique<QgsStatusBarWidgetsItem>();
+  mToolBars = std::make_unique<QgsToolBarsItem>();
 
   // menus
   settings.beginGroup( u"Customization/Menus"_s );
 
   for ( const QString &key : settings.allKeys() )
   {
-    Item *rootItem = menus().get();
+    QgsItem *rootItem = menusItem();
     const QStringList keyElems = key.split( "/" );
     for ( int i = 0; i < keyElems.count(); i++ )
     {
       const QString &keyElem = keyElems.at( i );
-      if ( Item *tbItem = rootItem->getChild( keyElem ) )
+      if ( QgsItem *tbItem = rootItem->getChild( keyElem ) )
       {
         rootItem = tbItem;
       }
       else if ( i < keyElems.count() - 1 ) // Menu
       {
-        rootItem->addItem( std::make_unique<Menu>( keyElem, QString(), rootItem ) );
+        rootItem->addChild( std::make_unique<QgsMenuItem>( keyElem, QString(), rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
       else // Action
       {
-        rootItem->addItem( std::make_unique<Action>( keyElem, QString(), rootItem ) );
+        rootItem->addChild( std::make_unique<QgsActionItem>( keyElem, QString(), rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
     }
@@ -1228,23 +1210,23 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
 
   for ( const QString &key : settings.allKeys() )
   {
-    Item *rootItem = toolBars().get();
+    QgsItem *rootItem = toolBarsItem();
     const QStringList keyElems = key.split( "/" );
     for ( int i = 0; i < keyElems.count(); i++ )
     {
       const QString &keyElem = keyElems.at( i );
-      if ( Item *tbItem = rootItem->getChild( keyElem ) )
+      if ( QgsItem *tbItem = rootItem->getChild( keyElem ) )
       {
         rootItem = tbItem;
       }
       else if ( i == 0 ) // ToolBar
       {
-        rootItem->addItem( std::make_unique<ToolBar>( keyElem, QString(), rootItem ) );
+        rootItem->addChild( std::make_unique<QgsToolBarItem>( keyElem, QString(), rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
       else // Action
       {
-        rootItem->addItem( std::make_unique<Action>( keyElem, QString(), rootItem ) );
+        rootItem->addChild( std::make_unique<QgsActionItem>( keyElem, QString(), rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
     }
@@ -1258,18 +1240,18 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   settings.beginGroup( u"Customization/Docks"_s );
   for ( const QString &key : settings.allKeys() )
   {
-    Item *rootItem = docks().get();
+    QgsItem *rootItem = docksItem();
     const QStringList keyElems = key.split( "/" );
     for ( int i = 0; i < keyElems.count(); i++ )
     {
       const QString &keyElem = keyElems.at( i );
-      if ( Item *tbItem = rootItem->getChild( keyElem ) )
+      if ( QgsItem *tbItem = rootItem->getChild( keyElem ) )
       {
         rootItem = tbItem;
       }
       else // Dock
       {
-        rootItem->addItem( std::make_unique<Dock>( keyElem, QString(), rootItem ) );
+        rootItem->addChild( std::make_unique<QgsDockItem>( keyElem, QString(), rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
     }
@@ -1279,23 +1261,23 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
 
   settings.endGroup();
 
-  statusBarWidgets()->setVisible( settings.value( "Customization/StatusBar", true ).toBool() );
+  statusBarWidgetsItem()->setVisible( settings.value( "Customization/StatusBar", true ).toBool() );
   settings.beginGroup( u"Customization/StatusBar"_s );
 
   for ( const QString &key : settings.allKeys() )
   {
-    Item *rootItem = statusBarWidgets().get();
+    QgsItem *rootItem = statusBarWidgetsItem();
     const QStringList keyElems = key.split( "/" );
     for ( int i = 0; i < keyElems.count(); i++ )
     {
       const QString &keyElem = keyElems.at( i );
-      if ( Item *tbItem = rootItem->getChild( keyElem ) )
+      if ( QgsItem *tbItem = rootItem->getChild( keyElem ) )
       {
         rootItem = tbItem;
       }
       else // StatusBarWidget
       {
-        rootItem->addItem( std::make_unique<StatusBarWidget>( keyElem, rootItem ) );
+        rootItem->addChild( std::make_unique<QgsStatusBarWidgetItem>( keyElem, rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
     }
@@ -1309,18 +1291,18 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
 
   for ( const QString &key : settings.allKeys() )
   {
-    Item *rootItem = browserItems().get();
+    QgsItem *rootItem = browserElementsItem();
     const QStringList keyElems = key.split( "/" );
     for ( int i = 0; i < keyElems.count(); i++ )
     {
       const QString &keyElem = keyElems.at( i );
-      if ( Item *tbItem = rootItem->getChild( keyElem ) )
+      if ( QgsItem *tbItem = rootItem->getChild( keyElem ) )
       {
         rootItem = tbItem;
       }
       else // BrowserItem
       {
-        rootItem->addItem( std::make_unique<BrowserItem>( keyElem, QString(), rootItem ) );
+        rootItem->addChild( std::make_unique<QgsBrowserElementItem>( keyElem, QString(), rootItem ) );
         rootItem = rootItem->childItemList().back().get();
       }
     }

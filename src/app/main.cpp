@@ -579,7 +579,7 @@ int main( int argc, char *argv[] )
 #endif
 
   bool myRestoreDefaultWindowState = false;
-  bool hasCustomization = true;
+  bool enableCustomization = true;
 
   QString dxfOutputFile;
   Qgis::FeatureSymbologyExport dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
@@ -680,7 +680,7 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == "--nocustomization"_L1 || arg == "-C"_L1 )
         {
-          hasCustomization = false;
+          enableCustomization = false;
         }
         else if ( i + 1 < argc && ( arg == "--profile"_L1 ) )
         {
@@ -1460,7 +1460,7 @@ int main( int argc, char *argv[] )
   }
 
   auto customization = std::make_unique<QgsCustomization>( customizationfile );
-  if ( !hasCustomization )
+  if ( !enableCustomization )
   {
     customization->setEnabled( false );
   }

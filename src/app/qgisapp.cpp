@@ -5703,9 +5703,9 @@ void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization 
   mCustomization->setQgisApp( this );
 }
 
-const std::unique_ptr<QgsCustomization> &QgisApp::customization() const
+QgsCustomization *QgisApp::customization() const
 {
-  return mCustomization;
+  return mCustomization.get();
 }
 
 QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const

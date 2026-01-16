@@ -989,9 +989,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setCustomization( std::unique_ptr<QgsCustomization> customization );
 
     /**
-     * Returns customization
+     * Returns customization. Ownership is not transferred.
      */
-    const std::unique_ptr<QgsCustomization> &customization() const;
+    QgsCustomization *customization() const;
 
   public slots:
     //! save current vector layer
@@ -1364,12 +1364,24 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void refreshActionFeatureAction();
 
+    /**
+     * Returns menu allowing to show/hide application dock widgets
+     */
     QMenu *panelMenu() { return mPanelMenu; }
 
+    /**
+     * Returns menu allowing to show/hide application tool bars
+     */
     QMenu *toolBarMenu() { return mToolbarMenu; }
 
+    /**
+     * Returns browser widget
+     */
     QgsBrowserDockWidget *browserWidget() { return mBrowserWidget; }
 
+    /**
+     * Returns second instance of the same browser widget
+     */
     QgsBrowserDockWidget *browserWidget2() { return mBrowserWidget2; }
 
 

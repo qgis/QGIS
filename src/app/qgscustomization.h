@@ -29,21 +29,25 @@ class QgisApp;
 class QAction;
 
 /**
- * Customization is now read from an XML file so we can later keep track of
+ * Customization is read from an XML file so we can later keep track of
  * action order in menus and tool bars. This XML file is read on a tree
  * model where every node is an Item. Item is then inherited by any
  * customizable widget item.
-
- * read() methods reads the XML file into the model. load() update the
- * model with the different graphical element and apply() apply the model
- * to the QGIS main window and the 2 browser widgets.
+ *
+ * Main methods:
+ *
+ * - read() reads the XML file into the model
+ * - load() updates the model with the different graphical elements
+ * - apply() applies the model to the QGIS main window and the 2 browser widgets.
+ *
+ * \since QGIS 4.0
  */
 class APP_EXPORT QgsCustomization
 {
   public:
     /**
    * Constructor
-   * \param customizationFile file path of the customization. this one used
+   * \param customizationFile file path of the customization. This one is used
    * when calling read() and write()
    */
     QgsCustomization( const QString &customizationFile );
@@ -89,28 +93,32 @@ class APP_EXPORT QgsCustomization
     QString splashPath() const;
 
     /**
-     * \brief Represents an item tha can be customized in the application
+     * \brief Represents an item that can be customized in the application
+     * This is the base model class for all application customizable items. setVisible() allows to
+     * change whether or not the item should be displayed or not.
+     * It's also used to serialize these customization in an XML file.
      */
-    class Item
+    class QgsItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        Item( Item *parent = nullptr );
+        QgsItem( QgsItem *parent = nullptr );
 
         /**
          * Constructor
          * \param name name identifier
+         * \param title title
          * \param parent parent Item
          */
-        Item( const QString &name, const QString &title, Item *parent = nullptr );
+        QgsItem( const QString &name, const QString &title, QgsItem *parent = nullptr );
 
         /**
          * Destructor
          */
-        virtual ~Item();
+        virtual ~QgsItem();
 
         /**
          * Returns name
@@ -130,7 +138,7 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns Item's parent
          */
-        Item *parent() const;
+        QgsItem *parent() const;
 
         /**
          * Returns TRUE if the item is visible
@@ -145,12 +153,12 @@ class APP_EXPORT QgsCustomization
         /**
          * Adds child item \a item
          */
-        void addItem( std::unique_ptr<Item> item );
+        void addChild( std::unique_ptr<QgsItem> item );
 
         /**
-         * Return child item at \a index position
+         * Return child item at \a index position, nullptr if index is outside the children list bounds
          */
-        Item *getChild( int index ) const;
+        QgsItem *getChild( int index ) const;
 
         /**
          * Returns child item with has the name \a name, nullptr if not found
@@ -161,33 +169,33 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns child item with has the name \a name, nullptr if not found
          */
-        Item *getChild( const QString &name ) const;
+        QgsItem *getChild( const QString &name ) const;
 
         /**
-         * Return last child item
+         * Return last child item, nullptr if the list is empty
          */
         template<class T>
         T *lastChild() const { return dynamic_cast<T *>( lastChild() ); }
 
         /**
-         * Return last child item
+         * Return last child item, nullptr if the list is empty
          */
-        Item *lastChild() const;
+        QgsItem *lastChild() const;
 
         /**
          * Returns list of child items
          */
-        const std::vector<std::unique_ptr<Item>> &childItemList() const;
+        const std::vector<std::unique_ptr<QgsItem>> &childItemList() const;
 
         /**
          * Returns \a item position in child item list, -1 if it doesn't exist
          */
-        long indexOf( Item *item ) const;
+        int indexOf( QgsItem *item ) const;
 
         /**
          * Returns children count
          */
-        unsigned long childrenCount() const;
+        unsigned int childrenCount() const;
 
         /**
          * Sets \a icon
@@ -197,7 +205,7 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns icon
          */
-        virtual QIcon icon() const;
+        QIcon icon() const;
 
         /**
          * Writes XML element to document \a doc as a child of the \a parent element
@@ -213,7 +221,7 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        virtual std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const = 0;
+        virtual std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const = 0;
 
       protected:
         /**
@@ -224,35 +232,35 @@ class APP_EXPORT QgsCustomization
         /**
          * Creates child item from \a childElem element
          */
-        virtual std::unique_ptr<Item> createChildItem( const QDomElement &childElem );
+        virtual std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem );
 
         /**
          * Copy \a other item attributes to this item
          */
-        virtual void copyItemAttributes( const QgsCustomization::Item *other );
+        virtual void copyItemAttributes( const QgsCustomization::QgsItem *other );
 
         QString mName;
 
       private:
         QString mTitle;
         bool mVisible = true;
-        Item *mParent = nullptr;
+        QgsItem *mParent = nullptr;
         QIcon mIcon;
-        QMap<QString, Item *> mChildItems; // for name quick access
-        std::vector<std::unique_ptr<Item>> mChildItemList;
+        QMap<QString, QgsItem *> mChildItems; // for name quick access
+        std::vector<std::unique_ptr<QgsItem>> mChildItemList;
     };
 
     /**
      * \brief Represents an action
      */
-    class Action : public Item
+    class QgsActionItem : public QgsItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        Action( Item *parent );
+        QgsActionItem( QgsItem *parent );
 
         /**
          * Constructor
@@ -260,7 +268,7 @@ class APP_EXPORT QgsCustomization
          * \param title title
          * \param parent parent Item
          */
-        Action( const QString &name, const QString &title, Item *parent );
+        QgsActionItem( const QString &name, const QString &title, QgsItem *parent );
 
         /**
          * Associated QAction \a qaction and its index \a actionIndex in the widget holding the action
@@ -278,12 +286,17 @@ class APP_EXPORT QgsCustomization
          */
         qsizetype qActionIndex() const;
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsActionItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
-        void copyItemAttributes( const Item *other ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
+        void copyItemAttributes( const QgsItem *other ) override;
 
       private:
         QAction *mQAction = nullptr;
@@ -295,40 +308,45 @@ class APP_EXPORT QgsCustomization
      * Inherits from Action because QMenu are stored within a QAction and we want to keep
      * track of the menu associated action
      */
-    class Menu : public Action
+    class QgsMenuItem : public QgsActionItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        Menu( Item *parent );
+        QgsMenuItem( QgsItem *parent );
         /**
          * Constructor
          * \param name name identifier
          * \param title title
          * \param parent parent Item
          */
-        Menu( const QString &name, const QString &title, Item *parent );
+        QgsMenuItem( const QString &name, const QString &title, QgsItem *parent );
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsMenuItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
     };
 
     /**
      * Represents a toolbar
      */
-    class ToolBar : public Item
+    class QgsToolBarItem : public QgsItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        ToolBar( Item *parent );
+        QgsToolBarItem( QgsItem *parent );
 
         /**
          * Constructor
@@ -336,7 +354,7 @@ class APP_EXPORT QgsCustomization
          * \param title title
          * \param parent parent Item
          */
-        ToolBar( const QString &name, const QString &title, Item *parent );
+        QgsToolBarItem( const QString &name, const QString &title, QgsItem *parent );
 
         /**
          * Sets original dock widget visible state
@@ -350,12 +368,17 @@ class APP_EXPORT QgsCustomization
          */
         bool wasVisible() const;
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsToolBarItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
-        void copyItemAttributes( const Item *other ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
+        void copyItemAttributes( const QgsItem *other ) override;
 
       private:
         // used to backup the original visibility state when we change visibility state
@@ -365,50 +388,60 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all ToolBar item
      */
-    class ToolBars : public Item
+    class QgsToolBarsItem : public QgsItem
     {
       public:
         /**
          * Constructor
          */
-        ToolBars();
+        QgsToolBarsItem();
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsToolBarsItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
     };
 
     /**
      * Root item for all Menus item
      */
-    class Menus : public Item
+    class QgsMenusItem : public QgsItem
     {
       public:
         /**
          * Constructor
          */
-        Menus();
+        QgsMenusItem();
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsMenusItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
     };
 
     /**
      * Represent a Dock
      */
-    class Dock : public Item
+    class QgsDockItem : public QgsItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        Dock( Item *parent );
+        QgsDockItem( QgsItem *parent );
 
         /**
          * Constructor
@@ -416,7 +449,7 @@ class APP_EXPORT QgsCustomization
          * \param title title
          * \param parent parent Item
          */
-        Dock( const QString &name, const QString &title, Item *parent );
+        QgsDockItem( const QString &name, const QString &title, QgsItem *parent );
 
         /**
          * Sets original dock widget visible state
@@ -430,11 +463,16 @@ class APP_EXPORT QgsCustomization
          */
         bool wasVisible() const;
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsDockItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        void copyItemAttributes( const Item *other ) override;
+        void copyItemAttributes( const QgsItem *other ) override;
 
       private:
         // used to backup the original visibility state when we change visibility state
@@ -444,32 +482,37 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all dock items
      */
-    class Docks : public Item
+    class QgsDocksItem : public QgsItem
     {
       public:
         /**
          * Constructor
          */
-        Docks();
+        QgsDocksItem();
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsDocksItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
     };
 
     /**
      * Represent a QgsBrowserDockWidget item
      */
-    class BrowserItem : public Item
+    class QgsBrowserElementItem : public QgsItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        BrowserItem( Item *parent );
+        QgsBrowserElementItem( QgsItem *parent );
 
         /**
          * Constructor
@@ -477,9 +520,14 @@ class APP_EXPORT QgsCustomization
          * \param title title
          * \param parent parent Item
          */
-        BrowserItem( const QString &name, const QString &title, Item *parent );
+        QgsBrowserElementItem( const QString &name, const QString &title, QgsItem *parent );
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsBrowserElementItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -488,41 +536,51 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all browser items
      */
-    class BrowserItems : public Item
+    class QgsBrowserElementsItem : public QgsItem
     {
       public:
         /**
          * Constructor
          */
-        BrowserItems();
+        QgsBrowserElementsItem();
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsBrowserElementsItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
     };
 
     /**
      * Represent a QgsStatusBar widget
      */
-    class StatusBarWidget : public Item
+    class QgsStatusBarWidgetItem : public QgsItem
     {
       public:
         /**
          * Constructor
          * \param parent parent Item
          */
-        StatusBarWidget( Item *parent );
+        QgsStatusBarWidgetItem( QgsItem *parent );
 
         /**
          * Constructor
          * \param name name identifier
          * \param parent parent Item
          */
-        StatusBarWidget( const QString &name, Item *parent );
+        QgsStatusBarWidgetItem( const QString &name, QgsItem *parent );
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item *parent = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsStatusBarWidgetItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -531,45 +589,50 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all StatusBarWidget
      */
-    class StatusBarWidgets : public Item
+    class QgsStatusBarWidgetsItem : public QgsItem
     {
       public:
         /**
          * Constructor
          */
-        StatusBarWidgets();
+        QgsStatusBarWidgetsItem();
 
-        std::unique_ptr<QgsCustomization::Item> clone( QgsCustomization::Item * = nullptr ) const override;
+        /**
+         * Returns this item clone with \a parent as parent item
+         */
+        std::unique_ptr<QgsCustomization::QgsStatusBarWidgetsItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
 
       protected:
         QString xmlTag() const override;
-        std::unique_ptr<Item> createChildItem( const QDomElement &childElem ) override;
+        std::unique_ptr<QgsItem> createChildItem( const QDomElement &childElem ) override;
     };
 
     /**
      * Returns browser items to customize QgsBrowserDockWidget content
      */
-    const std::unique_ptr<QgsCustomization::BrowserItems> &browserItems() const;
+    QgsCustomization::QgsBrowserElementsItem *browserElementsItem() const;
 
     /**
      * Returns dock items to customize visible QgsDockWidget
      */
-    const std::unique_ptr<QgsCustomization::Docks> &docks() const;
+    QgsCustomization::QgsDocksItem *docksItem() const;
 
     /**
      * Returns menus items to customize QMenu content
      */
-    const std::unique_ptr<QgsCustomization::Menus> &menus() const;
+    QgsCustomization::QgsMenusItem *menusItem() const;
 
     /**
      * Returns status bar items to customize QgsStatusBar displayed widgets
      */
-    const std::unique_ptr<QgsCustomization::StatusBarWidgets> &statusBarWidgets() const;
+    QgsCustomization::QgsStatusBarWidgetsItem *statusBarWidgetsItem() const;
 
     /**
      * Returns toolbar items to customize QToolBar content
      */
-    const std::unique_ptr<QgsCustomization::ToolBars> &toolBars() const;
+    QgsCustomization::QgsToolBarsItem *toolBarsItem() const;
 
     /**
      * Apply customization to the application
@@ -583,6 +646,7 @@ class APP_EXPORT QgsCustomization
 
     /**
      * Reads customization file \a filePath to update customization content
+     * Returns error string or an empty string if no error occurred
      */
     QString readFile( const QString &filePath );
 
@@ -602,7 +666,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Add action items as children of \a item for each \a widget actions
      */
-    void addActions( Item *item, QWidget *widget ) const;
+    void addActions( QgsItem *item, QWidget *widget ) const;
 
     /**
      * Update customization model with current application customization elements (actins, menus, dockWidgets...)
@@ -660,27 +724,16 @@ class APP_EXPORT QgsCustomization
     void applyToToolBars() const;
 
     /**
-     * Writes customization model to XML file \a fileName
-     * Returns error string or an empty string if no error occurred
-     */
-    QString writeXML( const QString &fileName ) const;
-
-    /**
-     * Reads customization model from XML file \a fileName
-     */
-    QString readXml( const QString &fileName );
-
-    /**
      * Helper class to iterate over widget actions
      */
-    class QWidgetIterator
+    class QgsQActionsIterator
     {
       public:
         /**
          * Constructor
          * \param widget this class will iterate over the widget actions
          */
-        QWidgetIterator( QWidget *widget );
+        QgsQActionsIterator( QWidget *widget );
 
         /**
          * Iterator information
@@ -726,13 +779,13 @@ class APP_EXPORT QgsCustomization
     /**
      * Update \a widget visibility based on \a item
      */
-    static void updateActionVisibility( QgsCustomization::Item *item, QWidget *widget );
+    static void updateActionVisibility( QgsCustomization::QgsItem *item, QWidget *widget );
 
-    std::unique_ptr<BrowserItems> mBrowserItems;
-    std::unique_ptr<Docks> mDocks;
-    std::unique_ptr<Menus> mMenus;
-    std::unique_ptr<StatusBarWidgets> mStatusBarWidgets;
-    std::unique_ptr<ToolBars> mToolBars;
+    std::unique_ptr<QgsBrowserElementsItem> mBrowserItems;
+    std::unique_ptr<QgsDocksItem> mDocks;
+    std::unique_ptr<QgsMenusItem> mMenus;
+    std::unique_ptr<QgsStatusBarWidgetsItem> mStatusBarWidgets;
+    std::unique_ptr<QgsToolBarsItem> mToolBars;
     bool mEnabled = false;
     QString mSplashPath;
 

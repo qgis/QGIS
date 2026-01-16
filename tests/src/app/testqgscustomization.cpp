@@ -49,15 +49,15 @@ class TestQgsCustomization : public QgsTest
 
   private:
     template<class T>
-    T *getItem( const std::unique_ptr<QgsCustomization> &customization, const QString &path ) const
+    T *getItem( QgsCustomization *customization, const QString &path ) const
     {
       return dynamic_cast<T *>( getItem( customization, path ) );
     }
-    QgsCustomization::Item *getItem( const std::unique_ptr<QgsCustomization> &customization, const QString &path ) const;
+    QgsCustomization::QgsItem *getItem( QgsCustomization *customization, const QString &path ) const;
 
     template<class T>
     T *getItem( const QString &path ) const { return dynamic_cast<T *>( getItem( path ) ); }
-    QgsCustomization::Item *getItem( const QString &path ) const
+    QgsCustomization::QgsItem *getItem( const QString &path ) const
     {
       return getItem( mQgisApp->customization(), path );
     }
@@ -77,21 +77,21 @@ class TestQgsCustomization : public QgsTest
     std::unique_ptr<QTemporaryFile> mCustomizationFile;
 };
 
-QgsCustomization::Item *TestQgsCustomization::getItem( const std::unique_ptr<QgsCustomization> &customization, const QString &path ) const
+QgsCustomization::QgsItem *TestQgsCustomization::getItem( QgsCustomization *customization, const QString &path ) const
 {
   QStringList pathElems = path.split( "/" );
   if ( pathElems.isEmpty() )
     return nullptr;
 
-  const QHash<QString, QgsCustomization::Item *> rootItems = {
-    { "Menus", customization->menus().get() },
-    { "ToolBars", customization->toolBars().get() },
-    { "Docks", customization->docks().get() },
-    { "BrowserItems", customization->browserItems().get() },
-    { "StatusBarWidgets", customization->statusBarWidgets().get() }
+  const QHash<QString, QgsCustomization::QgsItem *> rootItems = {
+    { "Menus", customization->menusItem() },
+    { "ToolBars", customization->toolBarsItem() },
+    { "Docks", customization->docksItem() },
+    { "BrowserItems", customization->browserElementsItem() },
+    { "StatusBarWidgets", customization->statusBarWidgetsItem() }
   };
 
-  QgsCustomization::Item *currentItem = nullptr;
+  QgsCustomization::QgsItem *currentItem = nullptr;
   for ( const QString &pathElem : pathElems )
   {
     if ( currentItem )
@@ -129,7 +129,7 @@ QWidget *TestQgsCustomization::findQWidget( const QString &path )
          || dynamic_cast<QMenu *>( currentWidget )
          || dynamic_cast<QMenuBar *>( currentWidget ) )
     {
-      for ( QgsCustomization::QWidgetIterator::Info it : QgsCustomization::QWidgetIterator( currentWidget ) )
+      for ( QgsCustomization::QgsQActionsIterator::Info it : QgsCustomization::QgsQActionsIterator( currentWidget ) )
       {
         if ( it.name == pathElem )
         {
@@ -248,23 +248,23 @@ void TestQgsCustomization::testLoadApply()
 
   // Make some modifications to the current customization
   auto setAllVisible = [this]( bool visible ) {
-    QVERIFY( getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" ) );
-    getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
-    getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::ToolBar>( "ToolBars/mFileToolBar" ) );
-    getItem<QgsCustomization::ToolBar>( "ToolBars/mFileToolBar" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
-    getItem<QgsCustomization::Action>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" ) );
-    getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::Dock>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
-    getItem<QgsCustomization::Dock>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::StatusBarWidget>( "StatusBarWidgets/LocatorWidget" ) );
-    getItem<QgsCustomization::StatusBarWidget>( "StatusBarWidgets/LocatorWidget" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsMenuItem>( "Menus/mHelpMenu" ) );
+    getItem<QgsCustomization::QgsMenuItem>( "Menus/mHelpMenu" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" ) );
+    getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mFileToolBar" ) );
+    getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mFileToolBar" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+    getItem<QgsCustomization::QgsActionItem>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" ) );
+    getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsDockItem>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+    getItem<QgsCustomization::QgsDockItem>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/LocatorWidget" ) );
+    getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/LocatorWidget" )->setVisible( visible );
 
-    QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
-    getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+    getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
   };
 
   setAllVisible( false );
@@ -275,43 +275,43 @@ void TestQgsCustomization::testLoadApply()
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
 
   // test item visiblity
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" ) );
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" ) );
-  QVERIFY( !getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mProjectMenu" ) );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mProjectMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionUndo" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionUndo" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionRedo" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionRedo" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionRedo" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mFileToolBar" ) );
-  QVERIFY( !getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mFileToolBar" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mAttributesToolBar" ) );
-  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mAttributesToolBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mFileToolBar" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mAttributesToolBar" ) );
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mAttributesToolBar" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddVirtualLayer" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddVirtualLayer" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddVirtualLayer" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddVirtualLayer" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/special:Home" ) );
-  QVERIFY( !getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/special:Home" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" ) );
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" ) );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Dock>( customization, "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
-  QVERIFY( !getItem<QgsCustomization::Dock>( customization, "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mProgressBar" ) );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mProgressBar" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" ) );
-  QVERIFY( !getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
 
   // test initial situation
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
@@ -396,10 +396,10 @@ void TestQgsCustomization::testActionPosition()
   QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" ) );
   QVERIFY( findQAction( "ToolBars/mDigitizeToolBar/mActionRedo" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
-  getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( false );
-  QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" ) );
-  getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" )->setVisible( false );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" ) );
+  getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" )->setVisible( false );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRotatePointSymbols" ) );
+  getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRotatePointSymbols" )->setVisible( false );
 
   // apply modification
   mQgisApp->customization()->apply();
@@ -414,10 +414,10 @@ void TestQgsCustomization::testActionPosition()
   QCOMPARE( qactionPosition( "Menus/mEditMenu/mActionUndo" ), undoPosition );
 
   // go back to initial situation
-  QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
-  getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( true );
-  QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" ) );
-  getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRotatePointSymbols" )->setVisible( true );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" ) );
+  getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" )->setVisible( true );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRotatePointSymbols" ) );
+  getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRotatePointSymbols" )->setVisible( true );
 
   mQgisApp->customization()->apply();
 
@@ -435,8 +435,8 @@ void TestQgsCustomization::testActionPosition()
 
   // remove mActionRedo and check mActionRotatePointSymbols position is just same as before minus one
   // (because mActionRedo is missing)
-  QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
-  getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( false );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" ) );
+  getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" )->setVisible( false );
 
   mQgisApp->customization()->apply();
 
@@ -448,15 +448,15 @@ void TestQgsCustomization::testActionPosition()
 
 void TestQgsCustomization::testEnabled()
 {
-  QVERIFY( getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" ) );
-  getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" )->setVisible( false );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( "Menus/mHelpMenu" ) );
+  getItem<QgsCustomization::QgsMenuItem>( "Menus/mHelpMenu" )->setVisible( false );
 
   mQgisApp->customization()->write();
 
   // re-read written customization
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" ) );
-  QVERIFY( !getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" )->isVisible() );
   QVERIFY( !customization->isEnabled() );
 
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
@@ -475,8 +475,8 @@ void TestQgsCustomization::testEnabled()
 
   // re-read written customization
   customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" ) );
-  QVERIFY( !getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" )->isVisible() );
   QVERIFY( customization->isEnabled() );
 }
 
@@ -523,43 +523,43 @@ void TestQgsCustomization::testBackwardCompatibility()
   QVERIFY( customization->isEnabled() );
   QCOMPARE( customization->splashPath(), "/tmp/splashPath.png" );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAnnotationsToolBar/mActionAnnotationdeligne" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAnnotationsToolBar/mActionAnnotationdeligne" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAnnotationsToolBar/mActionAnnotationdepolygone" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "ToolBars/mAnnotationsToolBar/mActionAnnotationdepolygone" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAnnotationsToolBar/mActionAnnotationdeligne" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAnnotationsToolBar/mActionAnnotationdeligne" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAnnotationsToolBar/mActionAnnotationdepolygone" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAnnotationsToolBar/mActionAnnotationdepolygone" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAttributesToolBar/ActionMeasure" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "ToolBars/mAttributesToolBar/ActionMeasure" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasure" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasure" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasureAngle" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasureAngle" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAttributesToolBar/ActionMeasure" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAttributesToolBar/ActionMeasure" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasure" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasure" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasureAngle" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mAttributesToolBar/ActionMeasure/mActionMeasureAngle" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionCopyFeatures" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionCopyFeatures" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionCutFeatures" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mViewMenu/mMenuMeasure" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "Menus/mViewMenu/mMenuMeasure" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mViewMenu/mMenuMeasure/mActionMeasure" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mViewMenu/mMenuMeasure/mActionMeasure" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mViewMenu/mMenuMeasure/mActionMeasureAngle" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "Menus/mViewMenu/mMenuMeasure/mActionMeasureAngle" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionCopyFeatures" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionCopyFeatures" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionCutFeatures" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mViewMenu/mMenuMeasure" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mViewMenu/mMenuMeasure" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mViewMenu/mMenuMeasure/mActionMeasure" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mViewMenu/mMenuMeasure/mActionMeasure" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mViewMenu/mMenuMeasure/mActionMeasureAngle" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mViewMenu/mMenuMeasure/mActionMeasureAngle" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Dock>( customization, "Docks/AdvancedDigitizingTools" ) );
-  QVERIFY( getItem<QgsCustomization::Dock>( customization, "Docks/AdvancedDigitizingTools" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Dock>( customization, "Docks/BookmarksDockWidget" ) );
-  QVERIFY( !getItem<QgsCustomization::Dock>( customization, "Docks/BookmarksDockWidget" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/AdvancedDigitizingTools" ) );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/AdvancedDigitizingTools" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/BookmarksDockWidget" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/BookmarksDockWidget" )->isVisible() );
 
-  QVERIFY( !customization->statusBarWidgets()->isVisible() );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" ) );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mCoordsEdit" ) );
-  QVERIFY( !getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mCoordsEdit" )->isVisible() );
+  QVERIFY( !customization->statusBarWidgetsItem()->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mCoordsEdit" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mCoordsEdit" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" ) );
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/MSSQL" ) );
-  QVERIFY( !getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/MSSQL" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" ) );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/MSSQL" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/MSSQL" )->isVisible() );
 }
 
 void TestQgsCustomization::testClone()
@@ -568,23 +568,23 @@ void TestQgsCustomization::testClone()
 
   // Make some modifications to the current customization
   auto setAllVisible = [this]( bool visible ) {
-    QVERIFY( getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" ) );
-    getItem<QgsCustomization::Menu>( "Menus/mHelpMenu" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" ) );
-    getItem<QgsCustomization::Action>( "Menus/mEditMenu/mActionRedo" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::ToolBar>( "ToolBars/mFileToolBar" ) );
-    getItem<QgsCustomization::ToolBar>( "ToolBars/mFileToolBar" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
-    getItem<QgsCustomization::Action>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" ) );
-    getItem<QgsCustomization::BrowserItem>( "BrowserItems/special:Home" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::Dock>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
-    getItem<QgsCustomization::Dock>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->setVisible( visible );
-    QVERIFY( getItem<QgsCustomization::StatusBarWidget>( "StatusBarWidgets/LocatorWidget" ) );
-    getItem<QgsCustomization::StatusBarWidget>( "StatusBarWidgets/LocatorWidget" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsMenuItem>( "Menus/mHelpMenu" ) );
+    getItem<QgsCustomization::QgsMenuItem>( "Menus/mHelpMenu" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" ) );
+    getItem<QgsCustomization::QgsActionItem>( "Menus/mEditMenu/mActionRedo" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mFileToolBar" ) );
+    getItem<QgsCustomization::QgsToolBarItem>( "ToolBars/mFileToolBar" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+    getItem<QgsCustomization::QgsActionItem>( "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" ) );
+    getItem<QgsCustomization::QgsBrowserElementItem>( "BrowserItems/special:Home" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsDockItem>( "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+    getItem<QgsCustomization::QgsDockItem>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/LocatorWidget" ) );
+    getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/LocatorWidget" )->setVisible( visible );
 
-    QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
-    getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
+    QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+    getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
   };
 
   setAllVisible( false );
@@ -593,43 +593,43 @@ void TestQgsCustomization::testClone()
   auto customization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
 
   // test item visiblity
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" ) );
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mProjectMenu" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" ) );
-  QVERIFY( !getItem<QgsCustomization::Menu>( customization, "Menus/mHelpMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mProjectMenu" ) );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mProjectMenu" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsMenuItem>( customization.get(), "Menus/mHelpMenu" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionUndo" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionUndo" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionRedo" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "Menus/mEditMenu/mActionRedo" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionUndo" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionUndo" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionRedo" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mEditMenu/mActionRedo" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mFileToolBar" ) );
-  QVERIFY( !getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mFileToolBar" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mAttributesToolBar" ) );
-  QVERIFY( getItem<QgsCustomization::ToolBar>( customization, "ToolBars/mAttributesToolBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mFileToolBar" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mFileToolBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mAttributesToolBar" ) );
+  QVERIFY( getItem<QgsCustomization::QgsToolBarItem>( customization.get(), "ToolBars/mAttributesToolBar" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddVirtualLayer" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddVirtualLayer" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( customization, "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddVirtualLayer" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddVirtualLayer" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "ToolBars/mLayerToolBar/mActionAddRasterLayer" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/special:Home" ) );
-  QVERIFY( !getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/special:Home" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" ) );
-  QVERIFY( getItem<QgsCustomization::BrowserItem>( customization, "BrowserItems/GPKG" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/special:Home" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" ) );
+  QVERIFY( getItem<QgsCustomization::QgsBrowserElementItem>( customization.get(), "BrowserItems/GPKG" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Dock>( customization, "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
-  QVERIFY( !getItem<QgsCustomization::Dock>( customization, "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mProgressBar" ) );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/mProgressBar" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" ) );
-  QVERIFY( !getItem<QgsCustomization::StatusBarWidget>( customization, "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
 
-  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
-  QVERIFY( !getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
-  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
-  QVERIFY( getItem<QgsCustomization::Action>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
 
   // test initial situation
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
