@@ -311,6 +311,14 @@ Returns the origin of the scene in map coordinates
 .. versionadded:: 3.44
 %End
 
+    void setCrossSectionSideView( const QgsCrossSection &crossSection );
+%Docstring
+Sets the cross section side view definition for the 3D map canvas. The
+camera will be positioned to look at the cross section from the side.
+
+.. versionadded:: 4.0
+%End
+
     void rotateCameraToHome();
 %Docstring
 .. versionadded:: 3.44

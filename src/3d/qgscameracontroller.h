@@ -48,6 +48,7 @@ class QgsCameraPose;
 class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
+class QgsCrossSection;
 
 /**
  * \ingroup qgis_3d
@@ -290,6 +291,13 @@ class _3D_EXPORT QgsCameraController : public QObject
      * \since QGIS 3.44
      */
     const QgsVector3D origin() const { return mOrigin; }
+
+    /**
+     * Sets the cross section side view definition for the 3D map canvas.
+     * The camera will be positioned to look at the cross section from the side.
+     * \since QGIS 4.0
+     */
+    void setCrossSectionSideView( const QgsCrossSection &crossSection );
 
     // Convenience methods to set camera view to standard positions
     //! Rotate to diagonal view. \since QGIS 3.44

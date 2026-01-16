@@ -120,24 +120,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
 
     /**
-     * Enables cross section mode for the 3D map canvas.
-     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment and
-     * two parallel segments at cross section half width to each side.
-     *
-     * \param setSideView When TRUE, the camera will be moved to look at the scene from the right side of the cross section line.
-     * \see disableCrossSection()
-     * \since QGIS 4.0
-     */
-    void enableCrossSection( bool setSideView = true );
-
-    /**
-     * \brief disableCrossSection Disables the cross section mode and removes the scene's clipping planes
-     * \see enableCrossSection()
-     * \since QGIS 4.0
-     */
-    void disableCrossSection();
-
-    /**
      * Returns TRUE if the cross section mode is enabled or the 3d scene has other clipping planes applied
      *
      * \see enableCrossSection()
@@ -147,9 +129,13 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     /**
      * Sets the cross section definition for the 3D map canvas.
+     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment and
+     * two parallel segments at cross section half width to each side.
+     * Passing an invalid cross section will disable the clipping.
+     * \param crossSection The cross section definition
      * \since QGIS 4.0
      */
-    void setCrossSection( const QgsCrossSection &crossSection ) SIP_SKIP;
+    void setCrossSection( const QgsCrossSection &crossSection );
 
     /**
      * Returns the current cross section definition for the 3D map canvas.
