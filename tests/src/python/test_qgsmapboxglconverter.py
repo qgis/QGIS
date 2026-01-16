@@ -1169,7 +1169,9 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertFalse(has_renderer)
         self.assertTrue(has_labeling)
         ps = labeling.labelSettings().placementSettings()
-        self.assertEqual(ps.overlapHandling(), Qgis.LabelOverlapHandling.AllowOverlapAtNoCost)
+        self.assertEqual(
+            ps.overlapHandling(), Qgis.LabelOverlapHandling.AllowOverlapAtNoCost
+        )
         self.assertEqual(ps.allowDegradedPlacement(), True)
 
     def testHaloMaxSize(self):
