@@ -105,7 +105,7 @@ bool QgsOgrProviderMetadata::createDatabase( const QString &uri, QString &errorM
     return false;
   }
 
-  char **metadata = GDALGetMetadata( poDriver, nullptr );
+  CSLConstList metadata = GDALGetMetadata( poDriver, nullptr );
 
   if ( !CSLFetchBoolean( metadata, GDAL_DCAP_VECTOR, false )
        || !CSLFetchBoolean( metadata, GDAL_DCAP_CREATE, false ) )

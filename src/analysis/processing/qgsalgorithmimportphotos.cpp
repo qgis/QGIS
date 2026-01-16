@@ -389,7 +389,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       continue;
     }
 
-    char **GDALmetadata = GDALGetMetadata( hDS.get(), nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( hDS.get(), nullptr );
     if ( !GDALmetadata )
     {
       GDALmetadata = GDALGetMetadata( hDS.get(), "EXIF" );
