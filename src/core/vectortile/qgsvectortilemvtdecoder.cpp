@@ -26,6 +26,7 @@
 #include "qgsvectortileloader.h"
 #include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
+#include "qgsziputils.h"
 
 #include <QNetworkRequest>
 #include <QPointer>
@@ -40,28 +41,43 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
 {
   mLayerNameToIndex.clear();
 
-  QMap<QString, QByteArray>::const_iterator it = rawTileData.data.constBegin();
-  for ( ; it != rawTileData.data.constEnd(); ++it )
+  for ( auto it = rawTileData.data.constBegin(); it != rawTileData.data.constEnd(); ++it )
   {
-    QString sourceId = it.key();
+    const QString sourceId = it.key();
+    const QByteArray &raw = it.value();
+
+    QByteArray pbf;
+    const bool isGzip = raw.size() >= 2
+                        && static_cast<uchar>( raw[0] ) == 0x1f
+                        && static_cast<uchar>( raw[1] ) == 0x8b;
+
+    if ( isGzip )
+    {
+      if ( !QgsZipUtils::decodeGzip( raw, pbf ) )
+      {
+        QgsDebugMsgLevel( u"Failed to gunzip tile data"_s, 2 );
+        return false;
+      }
+    }
+    else
+    {
+      pbf = raw;
+    }
 
     vector_tile::Tile tile;
-    if ( !tile.ParseFromArray( it.value().constData(), it.value().count() ) )
+    if ( !tile.ParseFromArray( pbf.constData(), pbf.count() ) )
       return false;
 
-    for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
+    for ( int layerNum = 0; layerNum < tile.layers_size(); ++layerNum )
     {
       const ::vector_tile::Tile_Layer &layer = tile.layers( layerNum );
-      const QString layerName = layer.name().c_str();
-      mLayerNameToIndex[sourceId][layerName] = layerNum;
+      mLayerNameToIndex[sourceId][ QString::fromStdString( layer.name() ) ] = layerNum;
     }
 
     tiles[sourceId] = std::move( tile );
-
   }
 
   mTileID = rawTileData.tileGeometryId;
-
   return true;
 }
 
