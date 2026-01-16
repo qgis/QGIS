@@ -94,6 +94,8 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
   private:
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
 
+    QgsLayerTree *qgisLayerTree() const override;
+
     QgsLayout *mLayout = nullptr;
     QHash< QgsLayoutItemMap *, QgsGeospatialPdfRenderedFeatureHandler * > mMapHandlers;
 
