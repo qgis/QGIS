@@ -2318,6 +2318,12 @@ The development version
       MValue,
     };
 
+    enum class CadMeasurementDisplayType
+    {
+      Hidden,
+      Cartesian,
+      Ellipsoidal,
+    };
 
     enum class ProjectFlag
     {

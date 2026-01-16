@@ -19,7 +19,11 @@
 #include "qgsgeometryoptions.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssnaptogridcanvasitem.h"
+#include "qgsstatusbar.h"
+#include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
 #include "moc_qgsmaptooladvanceddigitizing.cpp"
@@ -118,6 +122,7 @@ void QgsMapToolAdvancedDigitizing::activate()
 {
   QgsMapToolEdit::activate();
   connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
+  connect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::onTransientGeometryChanged );
   mCadDockWidget->enable();
   mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
   QgsVectorLayer *layer = currentVectorLayer();
@@ -133,6 +138,7 @@ void QgsMapToolAdvancedDigitizing::deactivate()
 {
   QgsMapToolEdit::deactivate();
   disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChangedV2, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
+  disconnect( this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::onTransientGeometryChanged );
   mCadDockWidget->disable();
   delete mSnapToGridCanvasItem;
   mSnapToGridCanvasItem = nullptr;
@@ -149,6 +155,101 @@ QgsMapLayer *QgsMapToolAdvancedDigitizing::layer() const
 bool QgsMapToolAdvancedDigitizing::useSnappingIndicator() const
 {
   return static_cast<bool>( mSnapIndicator.get() );
+}
+
+void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString )
+{
+  areaString = QString();
+  totalLengthString = QString();
+
+  // transform to map crs
+  QgsGeometry g = geometry;
+  const QgsCoordinateTransform ct( geometry.crs(), destinationCrs, QgsProject::instance()->transformContext() );
+  try
+  {
+    g.transform( ct );
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( u"Error transforming transient geometry: %1"_s.arg( e.what() ) );
+    return;
+  }
+
+  std::unique_ptr< QgsDistanceArea > distanceArea;
+  auto createDistanceArea = [destinationCrs, &distanceArea] {
+    // reuse existing if we've already created one
+    if ( distanceArea )
+      return;
+
+    distanceArea = std::make_unique< QgsDistanceArea >();
+    distanceArea->setSourceCrs( destinationCrs, QgsProject::instance()->transformContext() );
+    distanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
+  };
+
+  if ( g.type() == Qgis::GeometryType::Polygon && areaType != Qgis::CadMeasurementDisplayType::Hidden )
+  {
+    switch ( areaType )
+    {
+      case Qgis::CadMeasurementDisplayType::Hidden:
+        break;
+
+      case Qgis::CadMeasurementDisplayType::Cartesian:
+      {
+        if ( destinationCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
+        {
+          areaString = tr( "%1 %2" ).arg(
+            QString::number( g.area(), 'f', destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
+            QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( destinationCrs.mapUnits() ) )
+          );
+        }
+        else
+        {
+          areaString = QString::number( g.area(), 'f', 4 );
+        }
+        break;
+      }
+
+      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      {
+        createDistanceArea();
+        const double area = distanceArea->measureArea( g );
+        areaString = distanceArea->formatArea( area, destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->areaUnits() );
+        break;
+      }
+    }
+  }
+
+  if ( totalLengthType != Qgis::CadMeasurementDisplayType::Hidden )
+  {
+    switch ( totalLengthType )
+    {
+      case Qgis::CadMeasurementDisplayType::Hidden:
+        break;
+
+      case Qgis::CadMeasurementDisplayType::Cartesian:
+      {
+        if ( destinationCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
+        {
+          totalLengthString = tr( "%1 %2" ).arg(
+            QString::number( g.length(), 'f', destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
+            QgsUnitTypes::toAbbreviatedString( destinationCrs.mapUnits() )
+          );
+        }
+        else
+        {
+          totalLengthString = QString::number( g.length(), 'f', 4 );
+        }
+        break;
+      }
+      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      {
+        createDistanceArea();
+        const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
+        totalLengthString = distanceArea->formatDistance( length, destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->distanceUnits() );
+        break;
+      }
+    }
+  }
 }
 
 void QgsMapToolAdvancedDigitizing::setUseSnappingIndicator( bool enabled )
@@ -192,6 +293,38 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
       mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
     }
   }
+}
+
+void QgsMapToolAdvancedDigitizing::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
+{
+  if ( mCadDockWidget )
+    mCadDockWidget->updateTransientGeometryProperties( geometry );
+
+  QgsStatusBar *statusBar = mCanvas ? mCanvas->statusBar() : nullptr;
+  if ( !statusBar )
+    return;
+
+  const Qgis::CadMeasurementDisplayType areaDisplayType = QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay->value();
+  const Qgis::CadMeasurementDisplayType totalLengthDisplayType = QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay->value();
+  if ( areaDisplayType == Qgis::CadMeasurementDisplayType::Hidden && totalLengthDisplayType == Qgis::CadMeasurementDisplayType::Hidden )
+    return;
+
+  QString areaString;
+  QString totalLengthString;
+  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mCanvas->mapSettings().destinationCrs(), areaDisplayType, totalLengthDisplayType, areaString, totalLengthString );
+
+  QStringList messageParts;
+  if ( !areaString.isEmpty() )
+    messageParts.append( tr( "Total area: %1" ).arg( areaString ) );
+  if ( !totalLengthString.isEmpty() )
+  {
+    if ( geometry.type() == Qgis::GeometryType::Polygon )
+      messageParts.append( tr( "Perimeter: %1" ).arg( totalLengthString ) );
+    else
+      messageParts.append( tr( "Total length: %1" ).arg( totalLengthString ) );
+  }
+
+  statusBar->showMessage( messageParts.join( ' ' ) );
 }
 
 bool QgsMapToolAdvancedDigitizing::snapToLayerGridEnabled() const

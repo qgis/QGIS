@@ -2318,6 +2318,12 @@ The development version
       MValue,
     };
 
+    enum class CadMeasurementDisplayType /BaseType=IntEnum/
+    {
+      Hidden,
+      Cartesian,
+      Ellipsoidal,
+    };
 
     enum class ProjectFlag /BaseType=IntFlag/
     {
