@@ -56,7 +56,7 @@ QString QgsPdalHeightAboveGroundTriangulationAlgorithm::shortHelpString() const
          + QObject::tr( "The output adds a HeightAboveGround dimension to the point cloud. If 'Replace Z values' is enabled, the Z coordinate will be replaced with the height above ground value." );
 }
 
-QString QgsPdalHeightAboveGroundDelaunayAlgorithm::shortDescription() const
+QString QgsPdalHeightAboveGroundTriangulationAlgorithm::shortDescription() const
 {
   return QObject::tr( "Calculates the height of points above the ground surface using a Delaunay algorithm." );
 }
