@@ -232,7 +232,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QString mChangeAttributePointFilter;
 
     Qgs3DMapClippingToleranceWidgetSettingsAction *mClippingToleranceAction = nullptr;
-    double mClippingTolerance = 0.0;
 
     QMenu *mToolbarMenu = nullptr;
 };

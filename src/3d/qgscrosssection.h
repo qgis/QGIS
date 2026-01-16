@@ -32,57 +32,40 @@ class QgsCoordinateTransform;
 class _3D_EXPORT QgsCrossSection
 {
   public:
-    //! construct a default method
+    //! Constructs an invalid cross section
     QgsCrossSection() = default;
 
-    /**
-     * Constructs a cross section defined by two points and a half-width
-     * \since QGIS 4.0
-     */
+    //! Constructs a cross section defined by two points and a half-width
     QgsCrossSection( const QgsPoint &p1, const QgsPoint &p2, double halfWidth );
 
-    /**
-     * Returns the start point of the cross section
-     * \since QGIS 4.0
-     */
+    /*Returns cross section validity.
+    * A valid cross section has distinct start and end points and a positive half-width.
+    */
+    bool isValid() const;
+
+    //! Returns the start point of the cross section
     QgsPoint startPoint() const { return mStartPoint; }
 
-    /**
-     * Returns the end point of the cross section
-     * \since QGIS 4.0
-     */
+    //! Returns the end point of the cross section
     QgsPoint endPoint() const { return mEndPoint; }
 
-    /**
-     * Returns the half-width of the cross section
-     * \since QGIS 4.0
-     */
+    //! Returns the half-width of the cross section
     double halfWidth() const { return mHalfWidth; }
 
-    /**
-     * Sets the half-width of the cross section
-     * \since QGIS 4.0
-     */
+    //! Sets the half-width of the cross section
     void setHalfWidth( const double halfWidth ) { mHalfWidth = halfWidth; }
 
     /**
      * Returns the cross section extent as a geometry (Polygon or LineString).
      * If a coordinate transform is provided, the geometry is transformed.
      * The transform should be from the cross section CRS (3D map CRS) to the destination CRS (2D map canvas CRS).
-     * \since QGIS 4.0
      */
     QgsGeometry asGeometry( const QgsCoordinateTransform *ct = nullptr ) const;
 
-    /**
-     * Nudges the cross section to the left by the specified distance
-     * \since QGIS 4.0
-     */
+    //! Nudges the cross section to the left by the specified distance
     void nudgeLeft( double distance );
 
-    /**
-     * Nudges the cross section to the right by the specified distance
-     * \since QGIS 4.0
-     */
+    //! Nudges the cross section to the right by the specified distance
     void nudgeRight( double distance );
 
   private:

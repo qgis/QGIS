@@ -81,3 +81,8 @@ void QgsCrossSection::nudge( double distance )
   mStartPoint += offset;
   mEndPoint += offset;
 }
+
+bool QgsCrossSection::isValid() const
+{
+  return ( mStartPoint != mEndPoint ) && ( mHalfWidth > 0.0 );
+}

@@ -25,42 +25,38 @@ Defined by a line (p1, p2) and a half-width (extent from the line).
   public:
     QgsCrossSection();
 %Docstring
-construct a default method
+Constructs an invalid cross section
 %End
 
     QgsCrossSection( const QgsPoint &p1, const QgsPoint &p2, double halfWidth );
 %Docstring
 Constructs a cross section defined by two points and a half-width
+%End
 
-.. versionadded:: 4.0
+    bool isValid() const;
+%Docstring
+Returns cross section validity. A valid cross section has distinct start
+and end points and a positive half-width.
 %End
 
     QgsPoint startPoint() const;
 %Docstring
 Returns the start point of the cross section
-
-.. versionadded:: 4.0
 %End
 
     QgsPoint endPoint() const;
 %Docstring
 Returns the end point of the cross section
-
-.. versionadded:: 4.0
 %End
 
     double halfWidth() const;
 %Docstring
 Returns the half-width of the cross section
-
-.. versionadded:: 4.0
 %End
 
     void setHalfWidth( const double halfWidth );
 %Docstring
 Sets the half-width of the cross section
-
-.. versionadded:: 4.0
 %End
 
     QgsGeometry asGeometry( const QgsCoordinateTransform *ct = 0 ) const;
@@ -69,22 +65,16 @@ Returns the cross section extent as a geometry (Polygon or LineString).
 If a coordinate transform is provided, the geometry is transformed. The
 transform should be from the cross section CRS (3D map CRS) to the
 destination CRS (2D map canvas CRS).
-
-.. versionadded:: 4.0
 %End
 
     void nudgeLeft( double distance );
 %Docstring
 Nudges the cross section to the left by the specified distance
-
-.. versionadded:: 4.0
 %End
 
     void nudgeRight( double distance );
 %Docstring
 Nudges the cross section to the right by the specified distance
-
-.. versionadded:: 4.0
 %End
 
 };

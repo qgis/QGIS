@@ -192,10 +192,19 @@ QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastC
   return res;
 }
 
-void Qgs3DMapCanvas::enableCrossSection( bool setSideView )
+void Qgs3DMapCanvas::setCrossSection( const QgsCrossSection &crossSection )
 {
-  if ( !mScene || mCrossSection.halfWidth() <= 0.0 )
+  mCrossSection = crossSection;
+
+  if ( !mScene )
     return;
+
+  if ( !mCrossSection.isValid() )
+  {
+    mScene->disableClipping();
+    emit crossSectionEnabledChanged( false );
+    return;
+  }
 
   const QgsPoint startPoint = mCrossSection.startPoint();
   const QgsPoint endPoint = mCrossSection.endPoint();
@@ -210,43 +219,10 @@ void Qgs3DMapCanvas::enableCrossSection( bool setSideView )
     mMapSettings->origin()
   );
 
-  if ( setSideView )
-  {
-    // calculate the middle of the front side defined by clipping planes
-    QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
-    linePerpVec = -linePerpVec.normalized().perpVector();
-    const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
-    const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
-    const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
-
-    const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
-      frontStartPoint,
-      frontEndPoint,
-      mScene->elevationRange( true ),
-      mScene->cameraController()->camera()->fieldOfView(),
-      mMapSettings->origin()
-    );
-
-    mScene->cameraController()->setCameraPose( camPose );
-  }
-
   mScene->enableClipping( clippingPlanes );
   emit crossSectionEnabledChanged( true );
 }
 
-void Qgs3DMapCanvas::setCrossSection( const QgsCrossSection &crossSection )
-{
-  mCrossSection = crossSection;
-}
-
-void Qgs3DMapCanvas::disableCrossSection()
-{
-  if ( !mScene )
-    return;
-
-  mScene->disableClipping();
-  emit crossSectionEnabledChanged( false );
-}
 
 bool Qgs3DMapCanvas::crossSectionEnabled() const
 {

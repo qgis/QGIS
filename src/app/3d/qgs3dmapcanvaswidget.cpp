@@ -267,9 +267,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   };
   createShortcuts( u"m3DSetSceneExtent"_s, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
-  mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCut.svg"_s ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
+  mCrossSectionMenu = new QMenu( this );
+  mActionCrossSection = new QAction( QgsApplication::getThemeIcon( u"mActionEditCut.svg"_s ), tr( "Cross Section" ), this );
+  mActionCrossSection->setMenu( mCrossSectionMenu );
+  toolBar->addAction( mActionCrossSection );
+
+  QToolButton *crossSectionButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionCrossSection ) );
+  crossSectionButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
+
+  mActionSetClippingPlanes = mCrossSectionMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCut.svg"_s ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
   mActionSetClippingPlanes->setCheckable( true );
-  mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
+  mActionDisableClippingPlanes = mCrossSectionMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
   mActionDisableClippingPlanes->setDisabled( true );
 
   mClippingToleranceAction = new Qgs3DMapClippingToleranceWidgetSettingsAction( mCrossSectionMenu );
@@ -1279,13 +1287,12 @@ void Qgs3DMapCanvasWidget::onCrossSectionToolFinished()
     mCanvas->setCrossSection( cs );
     mCrossSectionRubberBand->setToGeometry( cs.asGeometry( &ct ) );
     mCrossSectionRubberBand->show();
-    mCanvas->enableCrossSection( true );
+    mCanvas->cameraController()->setCrossSectionSideView( cs );
   }
 }
 
 void Qgs3DMapCanvasWidget::disableCrossSection()
 {
-  mCanvas->disableCrossSection();
   mMapToolClippingPlanes->clear();
   mCrossSectionRubberBand->reset( Qgis::GeometryType::Polygon );
   mCanvas->setCrossSection( QgsCrossSection() );
@@ -1307,11 +1314,7 @@ void Qgs3DMapCanvasWidget::nudgeRight()
 void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
 {
   QgsCrossSection crossSection = mCanvas->crossSection();
-  double distance;
-  if ( !mMapToolClippingPlanes->isToleranceLocked() && mClippingTolerance > 0 )
-    distance = mClippingTolerance * 2;
-  else
-    distance = mClippingToleranceAction->toleranceSpinBox()->value() * 2;
+  double distance = crossSection.halfWidth() * 2;
 
   const QgsPoint previousStartPoint = crossSection.startPoint();
 
@@ -1326,7 +1329,6 @@ void Qgs3DMapCanvasWidget::nudgeCurve( Qgis::BufferSide side )
   QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), mMainCanvas->mapSettings().destinationCrs(), mMainCanvas->mapSettings().transformContext() );
 
   mCrossSectionRubberBand->setToGeometry( crossSection.asGeometry( &ct ) );
-  mCanvas->enableCrossSection( false );
 
   mCanvas->scene()->cameraController()->moveCenterPoint( QVector3D( static_cast<float>( cameraOffset.x() ), static_cast<float>( cameraOffset.y() ), 0 ) );
 }
@@ -1340,7 +1342,6 @@ void Qgs3DMapCanvasWidget::updateClippingRubberBand()
 
   QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), mMainCanvas->mapSettings().destinationCrs(), mMainCanvas->mapSettings().transformContext() );
   mCrossSectionRubberBand->setToGeometry( crossSection.asGeometry( &ct ) );
-  mCanvas->enableCrossSection( false );
 
   mCanvas->setCrossSection( crossSection );
 }

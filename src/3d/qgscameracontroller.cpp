@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgscrosssection.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
 #include "qgsray3d.h"
@@ -1482,4 +1483,34 @@ void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
   pos.set( pos.x(), pos.y(), elevation + mScene->terrainEntity()->terrainElevationOffset() );
 
   setLookingAtPoint( pos, ( mCamera->position() - pos.toVector3D() ).length(), pitch, yaw );
+}
+
+void QgsCameraController::setCrossSectionSideView( const QgsCrossSection &crossSection )
+{
+  if ( !crossSection.isValid() )
+    return;
+
+  const QgsPoint startPoint = crossSection.startPoint();
+  const QgsPoint endPoint = crossSection.endPoint();
+  const double width = crossSection.halfWidth();
+
+  const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
+  const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
+
+  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+  linePerpVec = -linePerpVec.normalized().perpVector();
+
+  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+  const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
+  const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
+
+  const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+    frontStartPoint,
+    frontEndPoint,
+    mScene->elevationRange( true ),
+    mCamera->fieldOfView(),
+    mOrigin
+  );
+
+  setCameraPose( camPose );
 }
