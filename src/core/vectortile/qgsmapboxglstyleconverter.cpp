@@ -3528,6 +3528,17 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     }
     return caseString;
   }
+  else if ( op == "*"_L1 )
+  {
+    QStringList multiplierString;
+    std::transform( std::next( expression.begin() ), expression.end(),
+                    std::back_inserter( multiplierString ),
+                    [&context, colorExpected]( const QVariant & val )
+    {
+      return parseValue( val, context, colorExpected );
+    } );
+    return multiplierString.join( " * "_L1 );
+  }
   else
   {
     context.pushWarning( QObject::tr( "%1: Skipping unsupported expression \"%2\"" ).arg( context.layerId(), op ) );

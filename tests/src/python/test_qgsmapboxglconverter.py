@@ -890,6 +890,15 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             """CASE  WHEN @vector_tile_zoom >= 16 THEN (CASE WHEN ("flstnrnen" IS NOT NULL) THEN concat("flstnrzae", '/', "flstnrnen") ELSE "flstnrzae" END) ELSE ('') END""",
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["*", -57.2957795, ["get", "drehwinkel"]],
+                conversion_context,
+                False,
+            ),
+            '-57.2957795 * "drehwinkel"',
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
