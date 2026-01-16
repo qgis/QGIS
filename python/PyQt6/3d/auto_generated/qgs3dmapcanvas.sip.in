@@ -116,6 +116,7 @@ Returns the current cross section definition for the 3D map canvas.
 
 .. versionadded:: 4.0
 %End
+
     void crossSectionEnabledChanged( bool enabled );
 %Docstring
 Emitted when the cross section mode is enabled or disabled

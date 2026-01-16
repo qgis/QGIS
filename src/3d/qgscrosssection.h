@@ -38,9 +38,10 @@ class _3D_EXPORT QgsCrossSection
     //! Constructs a cross section defined by two points and a half-width
     QgsCrossSection( const QgsPoint &p1, const QgsPoint &p2, double halfWidth );
 
-    /*Returns cross section validity.
-    * A valid cross section has distinct start and end points and a positive half-width.
-    */
+    /**
+     * Returns cross section validity.
+     * A valid cross section has distinct start and end points and a positive half-width.
+     */
     bool isValid() const;
 
     //! Returns the start point of the cross section
