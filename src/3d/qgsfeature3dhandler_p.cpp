@@ -34,4 +34,16 @@ void QgsFeature3DHandler::updateZRangeFromPositions( const QVector<QVector3D> &p
   }
 }
 
+bool QgsFeature3DHandler::clipGeometryIfTooLarge( QgsGeometry &geom ) const
+{
+  // let's clip gigantic geometries to the chunk's extents
+  const QgsRectangle bbox = geom.boundingBox();
+  if ( bbox.width() > MAX_GEOM_BBOX_SIZE || bbox.height() > MAX_GEOM_BBOX_SIZE )
+  {
+    geom = geom.clipped( mChunkExtent.toRectangle() );
+    return true;
+  }
+  return false;
+}
+
 /// @endcond

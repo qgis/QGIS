@@ -122,11 +122,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
   LineData &lineData = mSelectedIds.contains( feature.id() ) ? mLineDataSelected : mLineDataNormal;
 
   QgsGeometry geom = feature.geometry();
-
-  // let's clip gigantic geometries to the chunk's extents
-  constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
-  if ( geom.boundingBox().width() > MAX_GEOM_BBOX_SIZE || geom.boundingBox().height() > MAX_GEOM_BBOX_SIZE )
-    geom = geom.clipped( mChunkExtent.toRectangle() );
+  clipGeometryIfTooLarge( geom );
 
   if ( geom.isEmpty() )
     return;
@@ -315,11 +311,7 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &feature, con
   const int oldVerticesCount = lineVertexData.vertices.size();
 
   QgsGeometry geom = feature.geometry();
-
-  // let's clip gigantic geometries to the chunk's extents
-  constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
-  if ( geom.boundingBox().width() > MAX_GEOM_BBOX_SIZE || geom.boundingBox().height() > MAX_GEOM_BBOX_SIZE )
-    geom = geom.clipped( mChunkExtent.toRectangle() );
+  ( void ) clipGeometryIfTooLarge( geom );
 
   if ( geom.isEmpty() )
     return;
