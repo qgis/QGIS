@@ -28,7 +28,7 @@
 
 QString QgsPdalTransformAlgorithm::name() const
 {
-  return QStringLiteral( "transformpointcloud" );
+  return u"transformpointcloud"_s;
 }
 
 QString QgsPdalTransformAlgorithm::displayName() const
@@ -43,7 +43,7 @@ QString QgsPdalTransformAlgorithm::group() const
 
 QString QgsPdalTransformAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalTransformAlgorithm::tags() const
@@ -54,11 +54,11 @@ QStringList QgsPdalTransformAlgorithm::tags() const
 QString QgsPdalTransformAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm transforms point cloud coordinates using translation, rotation, and scaling operations using a 4x4 transformation matrix." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The algorithm applies transformations in the following order: scaling, rotation (using Euler angles), then translation." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "Rotation angles are specified in degrees around the X, Y, and Z axes." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "All parameters are combined into a 4×4 transformation matrix that is passed to PDAL Wrench." );
 }
 
@@ -74,43 +74,43 @@ QgsPdalTransformAlgorithm *QgsPdalTransformAlgorithm::createInstance() const
 
 void QgsPdalTransformAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRANSLATE_X" ), QObject::tr( "X Translation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRANSLATE_Y" ), QObject::tr( "Y Translation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRANSLATE_Z" ), QObject::tr( "Z Translation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SCALE_X" ), QObject::tr( "X Scale" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SCALE_Y" ), QObject::tr( "Y Scale" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SCALE_Z" ), QObject::tr( "Z Scale" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ROTATE_X" ), QObject::tr( "X Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ROTATE_Y" ), QObject::tr( "Y Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ROTATE_Z" ), QObject::tr( "Z Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"TRANSLATE_X"_s, QObject::tr( "X Translation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"TRANSLATE_Y"_s, QObject::tr( "Y Translation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"TRANSLATE_Z"_s, QObject::tr( "Z Translation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"SCALE_X"_s, QObject::tr( "X Scale" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"SCALE_Y"_s, QObject::tr( "Y Scale" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"SCALE_Z"_s, QObject::tr( "Z Scale" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"ROTATE_X"_s, QObject::tr( "X Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"ROTATE_Y"_s, QObject::tr( "Y Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"ROTATE_Z"_s, QObject::tr( "Z Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Transformed" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Transformed" ) ) );
 }
 
 QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  const double translateX = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_X" ), context );
-  const double translateY = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_Y" ), context );
-  const double translateZ = parameterAsDouble( parameters, QStringLiteral( "TRANSLATE_Z" ), context );
-  const double scaleX = parameterAsDouble( parameters, QStringLiteral( "SCALE_X" ), context );
-  const double scaleY = parameterAsDouble( parameters, QStringLiteral( "SCALE_Y" ), context );
-  const double scaleZ = parameterAsDouble( parameters, QStringLiteral( "SCALE_Z" ), context );
-  const float rotateX = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_X" ), context ) );
-  const float rotateY = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_Y" ), context ) );
-  const float rotateZ = static_cast<float>( parameterAsDouble( parameters, QStringLiteral( "ROTATE_Z" ), context ) );
+  const double translateX = parameterAsDouble( parameters, u"TRANSLATE_X"_s, context );
+  const double translateY = parameterAsDouble( parameters, u"TRANSLATE_Y"_s, context );
+  const double translateZ = parameterAsDouble( parameters, u"TRANSLATE_Z"_s, context );
+  const double scaleX = parameterAsDouble( parameters, u"SCALE_X"_s, context );
+  const double scaleY = parameterAsDouble( parameters, u"SCALE_Y"_s, context );
+  const double scaleZ = parameterAsDouble( parameters, u"SCALE_Z"_s, context );
+  const float rotateX = static_cast<float>( parameterAsDouble( parameters, u"ROTATE_X"_s, context ) );
+  const float rotateY = static_cast<float>( parameterAsDouble( parameters, u"ROTATE_Y"_s, context ) );
+  const float rotateZ = static_cast<float>( parameterAsDouble( parameters, u"ROTATE_Z"_s, context ) );
 
   const QMatrix3x3 rotation3x3 = QQuaternion::fromEulerAngles( rotateX, rotateY, rotateZ ).toRotationMatrix();
 
@@ -122,7 +122,7 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
 
   QgsMatrix4x4 transformMatrix = translateMatrix * rotateMatrix * scaleMatrix;
 
-  const QString transformString = QStringLiteral( "%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16" )
+  const QString transformString = u"%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16"_s
                                     .arg( transformMatrix.data()[0] )
                                     .arg( transformMatrix.data()[4] )
                                     .arg( transformMatrix.data()[8] )
@@ -140,7 +140,7 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
                                     .arg( transformMatrix.data()[11] )
                                     .arg( transformMatrix.data()[15] );
 
-  QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--transform-matrix=%1" ).arg( transformString ) };
+  QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--transform-matrix=%1"_s.arg( transformString ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

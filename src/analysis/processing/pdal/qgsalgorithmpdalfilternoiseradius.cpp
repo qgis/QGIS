@@ -24,7 +24,7 @@
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::name() const
 {
-  return QStringLiteral( "filternoiseradius" );
+  return u"filternoiseradius"_s;
 }
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalFilterNoiseRadiusAlgorithm::group() const
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalFilterNoiseRadiusAlgorithm::tags() const
@@ -50,7 +50,7 @@ QStringList QgsPdalFilterNoiseRadiusAlgorithm::tags() const
 QString QgsPdalFilterNoiseRadiusAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm filters noise in a point cloud using radius algorithm." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "Points are marked as noise if they have fewer than the minimum number of neighbors within the specified radius." );
 }
 
@@ -66,38 +66,38 @@ QgsPdalFilterNoiseRadiusAlgorithm *QgsPdalFilterNoiseRadiusAlgorithm::createInst
 
 void QgsPdalFilterNoiseRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REMOVE_NOISE_POINTS" ), QObject::tr( "Remove noise points" ), false ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"REMOVE_NOISE_POINTS"_s, QObject::tr( "Remove noise points" ), false ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_K" ), QObject::tr( "Minimum number of neighbors in radius" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RADIUS" ), QObject::tr( "Radius" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"MIN_K"_s, QObject::tr( "Minimum number of neighbors in radius" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
+  addParameter( new QgsProcessingParameterNumber( u"RADIUS"_s, QObject::tr( "Radius" ), Qgis::ProcessingNumberParameterType::Double, 1.0 ) );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Filtered (radius algorithm)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered (radius algorithm)" ) ) );
 }
 
 QStringList QgsPdalFilterNoiseRadiusAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  const double minK = parameterAsDouble( parameters, QStringLiteral( "MIN_K" ), context );
-  const double radius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
+  const double minK = parameterAsDouble( parameters, u"MIN_K"_s, context );
+  const double radius = parameterAsDouble( parameters, u"RADIUS"_s, context );
 
   QString removeNoisePoints = "false";
-  if ( parameterAsBoolean( parameters, QStringLiteral( "REMOVE_NOISE_POINTS" ), context ) )
+  if ( parameterAsBoolean( parameters, u"REMOVE_NOISE_POINTS"_s, context ) )
   {
     removeNoisePoints = "true";
   }
 
-  QStringList args = { QStringLiteral( "filter_noise" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--algorithm=radius" ), QStringLiteral( "--remove-noise-points=%1" ).arg( removeNoisePoints ), QStringLiteral( "--radius-min-k=%1" ).arg( minK ), QStringLiteral( "--radius-radius=%1" ).arg( radius ) };
+  QStringList args = { u"filter_noise"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=radius"_s, u"--remove-noise-points=%1"_s.arg( removeNoisePoints ), u"--radius-min-k=%1"_s.arg( minK ), u"--radius-radius=%1"_s.arg( radius ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

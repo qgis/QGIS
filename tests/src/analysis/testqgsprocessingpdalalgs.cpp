@@ -911,7 +911,7 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
 
 void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:heightabovegroundtriangulation" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundtriangulation"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -922,17 +922,17 @@ void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
   const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundtriangulation.laz";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "height_above_ground" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--algorithm=delaunay" ) << QStringLiteral( "--replace-z=true" ) << QStringLiteral( "--delaunay-count=10" ) );
+  QCOMPARE( args, QStringList() << u"height_above_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=delaunay"_s << u"--replace-z=true"_s << u"--delaunay-count=10"_s );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
 void TestQgsProcessingPdalAlgs::heightAboveGroundNearestNeighbour()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:heightabovegroundbynearestneighbor" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundbynearestneighbor"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -943,18 +943,18 @@ void TestQgsProcessingPdalAlgs::heightAboveGroundNearestNeighbour()
   const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundnn.laz";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
-  parameters.insert( QStringLiteral( "REPLACE_Z" ), false );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REPLACE_Z"_s, false );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "height_above_ground" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--algorithm=nn" ) << QStringLiteral( "--replace-z=false" ) << QStringLiteral( "--nn-count=1" ) << QStringLiteral( "--nn-max-distance=0" ) );
+  QCOMPARE( args, QStringList() << u"height_above_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=nn"_s << u"--replace-z=false"_s << u"--nn-count=1"_s << u"--nn-max-distance=0"_s );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
 void TestQgsProcessingPdalAlgs::classifyGround()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:classifyground" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:classifyground"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -971,22 +971,22 @@ void TestQgsProcessingPdalAlgs::classifyGround()
   double windowSize = 20;
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
-  parameters.insert( QStringLiteral( "CELL_SIZE" ), cellSize );
-  parameters.insert( QStringLiteral( "SCALAR" ), scalar );
-  parameters.insert( QStringLiteral( "SLOPE" ), slope );
-  parameters.insert( QStringLiteral( "THRESHOLD" ), threshold );
-  parameters.insert( QStringLiteral( "WINDOW_SIZE" ), windowSize );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"CELL_SIZE"_s, cellSize );
+  parameters.insert( u"SCALAR"_s, scalar );
+  parameters.insert( u"SLOPE"_s, slope );
+  parameters.insert( u"THRESHOLD"_s, threshold );
+  parameters.insert( u"WINDOW_SIZE"_s, windowSize );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "classify_ground" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--cell-size=%1" ).arg( cellSize ) << QStringLiteral( "--scalar=%1" ).arg( scalar ) << QStringLiteral( "--slope=%1" ).arg( slope ) << QStringLiteral( "--threshold=%1" ).arg( threshold ) << QStringLiteral( "--window-size=%1" ).arg( windowSize ) );
+  QCOMPARE( args, QStringList() << u"classify_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--cell-size=%1"_s.arg( cellSize ) << u"--scalar=%1"_s.arg( scalar ) << u"--slope=%1"_s.arg( slope ) << u"--threshold=%1"_s.arg( threshold ) << u"--window-size=%1"_s.arg( windowSize ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
 void TestQgsProcessingPdalAlgs::filterNoiseStatistical()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:filternoisestatistical" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filternoisestatistical"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1000,21 +1000,21 @@ void TestQgsProcessingPdalAlgs::filterNoiseStatistical()
   double multiplier = 3.0;
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
-  parameters.insert( QStringLiteral( "REMOVE_NOISE_POINTS" ), true );
-  parameters.insert( QStringLiteral( "MEAN_K" ), meanK );
-  parameters.insert( QStringLiteral( "MULTIPLIER" ), multiplier );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REMOVE_NOISE_POINTS"_s, true );
+  parameters.insert( u"MEAN_K"_s, meanK );
+  parameters.insert( u"MULTIPLIER"_s, multiplier );
 
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "filter_noise" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--algorithm=statistical" ) << QStringLiteral( "--remove-noise-points=true" ) << QStringLiteral( "--statistical-mean-k=%1" ).arg( meanK ) << QStringLiteral( "--statistical-multiplier=%1" ).arg( multiplier ) );
+  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=statistical"_s << u"--remove-noise-points=true"_s << u"--statistical-mean-k=%1"_s.arg( meanK ) << u"--statistical-multiplier=%1"_s.arg( multiplier ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
 void TestQgsProcessingPdalAlgs::filterNoiseRadius()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:filternoiseradius" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filternoiseradius"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1028,20 +1028,20 @@ void TestQgsProcessingPdalAlgs::filterNoiseRadius()
   double radius = 1.5;
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
-  parameters.insert( QStringLiteral( "REMOVE_NOISE_POINTS" ), false );
-  parameters.insert( QStringLiteral( "MIN_K" ), minK );
-  parameters.insert( QStringLiteral( "RADIUS" ), radius );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REMOVE_NOISE_POINTS"_s, false );
+  parameters.insert( u"MIN_K"_s, minK );
+  parameters.insert( u"RADIUS"_s, radius );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "filter_noise" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--algorithm=radius" ) << QStringLiteral( "--remove-noise-points=false" ) << QStringLiteral( "--radius-min-k=%1" ).arg( minK ) << QStringLiteral( "--radius-radius=%1" ).arg( radius ) );
+  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=radius"_s << u"--remove-noise-points=false"_s << u"--radius-min-k=%1"_s.arg( minK ) << u"--radius-radius=%1"_s.arg( radius ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
 void TestQgsProcessingPdalAlgs::transformCoordinates()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:transformpointcloud" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:transformpointcloud"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1056,16 +1056,16 @@ void TestQgsProcessingPdalAlgs::transformCoordinates()
   double translateZ = 30.0;
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
-  parameters.insert( QStringLiteral( "TRANSLATE_X" ), translateX );
-  parameters.insert( QStringLiteral( "TRANSLATE_Y" ), translateY );
-  parameters.insert( QStringLiteral( "TRANSLATE_Z" ), translateZ );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"TRANSLATE_X"_s, translateX );
+  parameters.insert( u"TRANSLATE_Y"_s, translateY );
+  parameters.insert( u"TRANSLATE_Z"_s, translateZ );
 
-  QString transformMatrix = QStringLiteral( "1 0 0 %1 0 1 0 %2 0 0 1 %3 0 0 0 1" ).arg( translateX ).arg( translateY ).arg( translateZ );
+  QString transformMatrix = u"1 0 0 %1 0 1 0 %2 0 0 1 %3 0 0 0 1"_s.arg( translateX ).arg( translateY ).arg( translateZ );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--transform-matrix=%1" ).arg( transformMatrix ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-matrix=%1"_s.arg( transformMatrix ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 
   double scaleX = 2.0;
@@ -1073,16 +1073,16 @@ void TestQgsProcessingPdalAlgs::transformCoordinates()
   double scaleZ = 4.0;
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
-  parameters.insert( QStringLiteral( "SCALE_X" ), scaleX );
-  parameters.insert( QStringLiteral( "SCALE_Y" ), scaleY );
-  parameters.insert( QStringLiteral( "SCALE_Z" ), scaleZ );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"SCALE_X"_s, scaleX );
+  parameters.insert( u"SCALE_Y"_s, scaleY );
+  parameters.insert( u"SCALE_Z"_s, scaleZ );
 
-  transformMatrix = QStringLiteral( "%1 0 0 0 0 %2 0 0 0 0 %3 0 0 0 0 1" ).arg( scaleX ).arg( scaleY ).arg( scaleZ );
+  transformMatrix = u"%1 0 0 0 0 %2 0 0 0 0 %3 0 0 0 0 1"_s.arg( scaleX ).arg( scaleY ).arg( scaleZ );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--transform-matrix=%1" ).arg( transformMatrix ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-matrix=%1"_s.arg( transformMatrix ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 

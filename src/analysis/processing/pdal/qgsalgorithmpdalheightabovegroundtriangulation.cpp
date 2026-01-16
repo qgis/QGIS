@@ -24,7 +24,7 @@
 
 QString QgsPdalHeightAboveGroundTriangulationAlgorithm::name() const
 {
-  return QStringLiteral( "heightabovegroundtriangulation" );
+  return u"heightabovegroundtriangulation"_s;
 }
 
 QString QgsPdalHeightAboveGroundTriangulationAlgorithm::displayName() const
@@ -39,7 +39,7 @@ QString QgsPdalHeightAboveGroundTriangulationAlgorithm::group() const
 
 QString QgsPdalHeightAboveGroundTriangulationAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::tags() const
@@ -50,9 +50,9 @@ QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::tags() const
 QString QgsPdalHeightAboveGroundTriangulationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates the height of points above the ground surface in a point cloud using a Delaunay triangulation algorithm." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The algorithm uses ground-classified points (classification value 2) to create a triangulated irregular network (TIN) from specified number of neighbors, then computes the height above this surface for all points." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "The output adds a HeightAboveGround dimension to the point cloud. If 'Replace Z values' is enabled, the Z coordinate will be replaced with the height above ground value." );
 }
 
@@ -68,35 +68,35 @@ QgsPdalHeightAboveGroundTriangulationAlgorithm *QgsPdalHeightAboveGroundTriangul
 
 void QgsPdalHeightAboveGroundTriangulationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "REPLACE_Z" ), QObject::tr( "Replace Z values with height above ground" ), true ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "COUNT" ), QObject::tr( "Number of ground neighbors for terrain construction" ), Qgis::ProcessingNumberParameterType::Integer, 10 ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"REPLACE_Z"_s, QObject::tr( "Replace Z values with height above ground" ), true ) );
+  addParameter( new QgsProcessingParameterNumber( u"COUNT"_s, QObject::tr( "Number of ground neighbors for terrain construction" ), Qgis::ProcessingNumberParameterType::Integer, 10 ) );
 
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Height above ground (delaunay algorithm)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground (delaunay algorithm)" ) ) );
 }
 
 QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
+  setOutputValue( u"OUTPUT"_s, outputFile );
 
-  const int count = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
+  const int count = parameterAsInt( parameters, u"COUNT"_s, context );
 
   QString replaceZ = "false";
-  if ( parameterAsBoolean( parameters, QStringLiteral( "REPLACE_Z" ), context ) )
+  if ( parameterAsBoolean( parameters, u"REPLACE_Z"_s, context ) )
   {
     replaceZ = "true";
   }
 
-  QStringList args = { QStringLiteral( "height_above_ground" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--algorithm=delaunay" ), QStringLiteral( "--replace-z=%1" ).arg( replaceZ ), QStringLiteral( "--delaunay-count=%1" ).arg( count ) };
+  QStringList args = { u"height_above_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=delaunay"_s, u"--replace-z=%1"_s.arg( replaceZ ), u"--delaunay-count=%1"_s.arg( count ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
