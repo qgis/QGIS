@@ -21,6 +21,8 @@
 
 #include "moc_qgsbillboardgeometry.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   : QGeometry( parent )
   , mVertexBuffer( new Qt3DCore::QBuffer( this ) )
