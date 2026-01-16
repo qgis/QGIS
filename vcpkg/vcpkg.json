@@ -140,7 +140,6 @@
             "arrow"
           ]
         },
-        "py-scipy",
         "py-isort",
         "py-jinja2",
         {
