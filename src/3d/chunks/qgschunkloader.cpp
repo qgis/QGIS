@@ -44,12 +44,18 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
 {
   QVector<QgsChunkNode *> children;
 
+  // If there is a max level set, we should respect that
   if ( mMaxLevel != -1 && node->level() >= mMaxLevel )
+    return children;
+
+  const QgsBox3D box3D = node->box3D();
+
+  // Nodes without extent cannot have children
+  if ( box3D.isNull() )
     return children;
 
   const QgsChunkNodeId nodeId = node->tileId();
   const float childError = node->error() / 2;
-  const QgsBox3D box3D = node->box3D();
   QgsVector3D center = box3D.center();
 
   // if box is very wide (or very thin) we will only split it in one direction so the children
