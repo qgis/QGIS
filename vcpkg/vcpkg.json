@@ -34,7 +34,6 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
-
     "expat",
     {
       "name": "gdal",
@@ -118,7 +117,12 @@
           "name": "arrow",
           "features": [
             "python"
-          ]
+          ],
+          "platform": "!windows"
+        },
+        {
+          "name": "arrow",
+          "platform": "windows"
         },
         {
           "name": "gdal",
