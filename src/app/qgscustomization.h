@@ -289,9 +289,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsActionItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsActionItem> cloneActionItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneActionItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -327,9 +327,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsMenuItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsMenuItem> cloneMenuItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneMenuItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -371,9 +371,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsToolBarItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsToolBarItem> cloneToolBarItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneToolBarItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -399,9 +399,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsToolBarsItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsToolBarsItem> cloneToolBarsItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneToolBarsItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -422,9 +422,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsMenusItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsMenusItem> cloneMenusItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneMenusItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -466,9 +466,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsDockItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsDockItem> cloneDockItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneDockItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -493,9 +493,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsDocksItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsDocksItem> cloneDocksItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneDocksItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -525,9 +525,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsBrowserElementItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsBrowserElementItem> cloneBrowserElementItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneBrowserElementItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -547,9 +547,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsBrowserElementsItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsBrowserElementsItem> cloneBrowserElementsItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneBrowserElementsItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -578,9 +578,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsStatusBarWidgetItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsStatusBarWidgetItem> cloneStatusBarWidgetItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneStatusBarWidgetItem( parent ); };
 
       protected:
         QString xmlTag() const override;
@@ -600,9 +600,9 @@ class APP_EXPORT QgsCustomization
         /**
          * Returns this item clone with \a parent as parent item
          */
-        std::unique_ptr<QgsCustomization::QgsStatusBarWidgetsItem> cloneSameType( QgsCustomization::QgsItem *parent = nullptr ) const;
+        std::unique_ptr<QgsCustomization::QgsStatusBarWidgetsItem> cloneStatusBarWidgetsItem( QgsCustomization::QgsItem *parent = nullptr ) const;
 
-        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneSameType( parent ); };
+        std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override { return cloneStatusBarWidgetsItem( parent ); };
 
       protected:
         QString xmlTag() const override;

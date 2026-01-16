@@ -242,7 +242,7 @@ qsizetype QgsCustomization::QgsActionItem::qActionIndex() const
   return mQActionIndex;
 }
 
-std::unique_ptr<QgsCustomization::QgsActionItem> QgsCustomization::QgsActionItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
+std::unique_ptr<QgsCustomization::QgsActionItem> QgsCustomization::QgsActionItem::cloneActionItem( QgsCustomization::QgsItem *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsActionItem>( parent );
   clone->copyItemAttributes( this );
@@ -277,7 +277,7 @@ QgsCustomization::QgsMenuItem::QgsMenuItem( const QString &name, const QString &
   : QgsActionItem( name, title, parent )
 {}
 
-std::unique_ptr<QgsCustomization::QgsMenuItem> QgsCustomization::QgsMenuItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
+std::unique_ptr<QgsCustomization::QgsMenuItem> QgsCustomization::QgsMenuItem::cloneMenuItem( QgsCustomization::QgsItem *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsMenuItem>( parent );
   clone->copyItemAttributes( this );
@@ -318,7 +318,7 @@ bool QgsCustomization::QgsToolBarItem::wasVisible() const
   return mWasVisible;
 }
 
-std::unique_ptr<QgsCustomization::QgsToolBarItem> QgsCustomization::QgsToolBarItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
+std::unique_ptr<QgsCustomization::QgsToolBarItem> QgsCustomization::QgsToolBarItem::cloneToolBarItem( QgsCustomization::QgsItem *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsToolBarItem>( parent );
   clone->copyItemAttributes( this );
@@ -358,7 +358,7 @@ QgsCustomization::QgsToolBarsItem::QgsToolBarsItem()
   setTitle( QObject::tr( "ToolBars" ) );
 }
 
-std::unique_ptr<QgsCustomization::QgsToolBarsItem> QgsCustomization::QgsToolBarsItem::cloneSameType( QgsCustomization::QgsItem * ) const
+std::unique_ptr<QgsCustomization::QgsToolBarsItem> QgsCustomization::QgsToolBarsItem::cloneToolBarsItem( QgsCustomization::QgsItem * ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsToolBarsItem>();
   clone->copyItemAttributes( this );
@@ -387,7 +387,7 @@ QgsCustomization::QgsMenusItem::QgsMenusItem()
   setTitle( QObject::tr( "Menus" ) );
 }
 
-std::unique_ptr<QgsCustomization::QgsMenusItem> QgsCustomization::QgsMenusItem::cloneSameType( QgsCustomization::QgsItem * ) const
+std::unique_ptr<QgsCustomization::QgsMenusItem> QgsCustomization::QgsMenusItem::cloneMenusItem( QgsCustomization::QgsItem * ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsMenusItem>();
   clone->copyItemAttributes( this );
@@ -443,7 +443,7 @@ bool QgsCustomization::QgsDockItem::wasVisible() const
   return mWasVisible;
 }
 
-std::unique_ptr<QgsCustomization::QgsDockItem> QgsCustomization::QgsDockItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
+std::unique_ptr<QgsCustomization::QgsDockItem> QgsCustomization::QgsDockItem::cloneDockItem( QgsCustomization::QgsItem *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsDockItem>( parent );
   clone->copyItemAttributes( this );
@@ -460,7 +460,7 @@ QgsCustomization::QgsDocksItem::QgsDocksItem()
   setTitle( QObject::tr( "Docks" ) );
 }
 
-std::unique_ptr<QgsCustomization::QgsDocksItem> QgsCustomization::QgsDocksItem::cloneSameType( QgsCustomization::QgsItem * ) const
+std::unique_ptr<QgsCustomization::QgsDocksItem> QgsCustomization::QgsDocksItem::cloneDocksItem( QgsCustomization::QgsItem * ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsDocksItem>();
   clone->copyItemAttributes( this );
@@ -492,7 +492,7 @@ QgsCustomization::QgsBrowserElementItem::QgsBrowserElementItem( const QString &n
 {
 }
 
-std::unique_ptr<QgsCustomization::QgsBrowserElementItem> QgsCustomization::QgsBrowserElementItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
+std::unique_ptr<QgsCustomization::QgsBrowserElementItem> QgsCustomization::QgsBrowserElementItem::cloneBrowserElementItem( QgsCustomization::QgsItem *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsBrowserElementItem>( parent );
   clone->copyItemAttributes( this );
@@ -514,7 +514,7 @@ QgsCustomization::QgsBrowserElementsItem::QgsBrowserElementsItem()
   setTitle( QObject::tr( "Browser" ) );
 }
 
-std::unique_ptr<QgsCustomization::QgsBrowserElementsItem> QgsCustomization::QgsBrowserElementsItem::cloneSameType( QgsCustomization::QgsItem * ) const
+std::unique_ptr<QgsCustomization::QgsBrowserElementsItem> QgsCustomization::QgsBrowserElementsItem::cloneBrowserElementsItem( QgsCustomization::QgsItem * ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsBrowserElementsItem>();
   clone->copyItemAttributes( this );
@@ -543,7 +543,7 @@ QgsCustomization::QgsStatusBarWidgetItem::QgsStatusBarWidgetItem( QgsItem *paren
 QgsCustomization::QgsStatusBarWidgetItem::QgsStatusBarWidgetItem( const QString &name, QgsItem *parent )
   : QgsItem( name, QString(), parent ) {}
 
-std::unique_ptr<QgsCustomization::QgsStatusBarWidgetItem> QgsCustomization::QgsStatusBarWidgetItem::cloneSameType( QgsCustomization::QgsItem *parent ) const
+std::unique_ptr<QgsCustomization::QgsStatusBarWidgetItem> QgsCustomization::QgsStatusBarWidgetItem::cloneStatusBarWidgetItem( QgsCustomization::QgsItem *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsStatusBarWidgetItem>( parent );
   clone->copyItemAttributes( this );
@@ -564,7 +564,7 @@ QgsCustomization::QgsStatusBarWidgetsItem::QgsStatusBarWidgetsItem()
   setTitle( QObject::tr( "Status Bar" ) );
 }
 
-std::unique_ptr<QgsCustomization::QgsStatusBarWidgetsItem> QgsCustomization::QgsStatusBarWidgetsItem::cloneSameType( QgsCustomization::QgsItem * ) const
+std::unique_ptr<QgsCustomization::QgsStatusBarWidgetsItem> QgsCustomization::QgsStatusBarWidgetsItem::cloneStatusBarWidgetsItem( QgsCustomization::QgsItem * ) const
 {
   auto clone = std::make_unique<QgsCustomization::QgsStatusBarWidgetsItem>();
   clone->copyItemAttributes( this );
@@ -630,11 +630,11 @@ QgsCustomization &QgsCustomization::operator=( const QgsCustomization &other )
   if ( this == &other )
     return *this;
 
-  mBrowserItems = other.mBrowserItems->cloneSameType();
-  mDocks = other.mDocks->cloneSameType();
-  mMenus = other.mMenus->cloneSameType();
-  mStatusBarWidgets = other.mStatusBarWidgets->cloneSameType();
-  mToolBars = other.mToolBars->cloneSameType();
+  mBrowserItems = other.mBrowserItems->cloneBrowserElementsItem();
+  mDocks = other.mDocks->cloneDocksItem();
+  mMenus = other.mMenus->cloneMenusItem();
+  mStatusBarWidgets = other.mStatusBarWidgets->cloneStatusBarWidgetsItem();
+  mToolBars = other.mToolBars->cloneToolBarsItem();
   mEnabled = other.mEnabled;
   mSplashPath = other.mSplashPath;
   mQgisApp = other.mQgisApp;
