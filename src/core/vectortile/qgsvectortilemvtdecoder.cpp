@@ -65,7 +65,7 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
     }
 
     vector_tile::Tile tile;
-    if ( !tile.ParseFromArray( pbf.constData(), pbf.count() ) )
+    if ( !tile.ParseFromArray( pbf.constData(), static_cast<int>( pbf.size() ) ) )
       return false;
 
     for ( int layerNum = 0; layerNum < tile.layers_size(); ++layerNum )
