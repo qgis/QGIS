@@ -146,7 +146,8 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
     if ( mWasClippedToExtent )
     {
       // if the polygon was clipped to the chunk extent, then we need to remove any part of the exterior ring that
-      // overlaps the chunk extent line, otherwise the chunk extents will appear as edges.
+      // overlaps the chunk extent line, otherwise the chunk extents will appear as edges. Any interior rings
+      // that were intersected by the extent will now be part of the exterior ring of the clipped geometry.
       const QVector< QgsPointXY > extentPoints {
         { mChunkExtent.xMinimum(), mChunkExtent.yMinimum() },
         { mChunkExtent.xMaximum(), mChunkExtent.yMinimum() },
@@ -157,7 +158,10 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
       auto extentLinestring = std::make_unique<QgsLineString>( extentPoints );
 
       const QgsGeometry exteriorRingGeometry( exteriorRing->clone() );
+      // it should be safe to perform the diff without any tolerance, the extent line string is a simple rectangle (chunk perimeter)
       cleanedExteriorRingGeometry = exteriorRingGeometry.difference( QgsGeometry( extentLinestring.release() ) );
+      // make sure the diff didn't produce some degenerate geometry
+      ( void ) cleanedExteriorRingGeometry.convertGeometryCollectionToSubclass( Qgis::GeometryType::Line );
       exteriorRing = cleanedExteriorRingGeometry.constGet()->simplifiedTypeRef();
     }
 
@@ -165,6 +169,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
     {
       outEdges.addLineString( *line, offset );
     }
+    // if geometry was clipped to the chunk extents, we might now have a multilinestring
     else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
     {
       for ( int i = 0; i < mline->numGeometries(); ++i )
@@ -174,6 +179,8 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
       }
     }
 
+    // if geometry was clipped to the chunk extents and the chunk extents intersected an interior ring, then
+    // that ring is now part of the exterior ring. Hence we don't need to treat interior rings any differently
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), offset );
 
@@ -186,6 +193,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
         outEdges.addLineString( *line, extrusionHeight + offset );
         outEdges.addVerticalLines( *line, extrusionHeight, offset );
       }
+      // if geometry was clipped to the chunk extents, we might now have a multilinestring
       else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
       {
         for ( int i = 0; i < mline->numGeometries(); ++i )
@@ -196,6 +204,8 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
         }
       }
 
+      // if geometry was clipped to the chunk extents and the chunk extents intersected an interior ring, then
+      // that ring is now part of the exterior ring. Hence we don't need to treat interior rings any differently
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
         const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
