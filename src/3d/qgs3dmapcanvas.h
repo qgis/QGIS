@@ -142,15 +142,13 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * \since QGIS 4.0
      */
     QgsCrossSection crossSection() const { return mCrossSection; }
-    SIP_SKIP
 
 #ifndef SIP_RUN
 
     /**
      * Sets the specified root entity of the scene.
      */
-    void
-      setRootEntity( Qt3DCore::QEntity *root );
+    void setRootEntity( Qt3DCore::QEntity *root );
 
     /**
      * Activates the specified activeFrameGraph.
