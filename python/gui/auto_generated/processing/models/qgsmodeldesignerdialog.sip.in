@@ -104,6 +104,11 @@ Raise, unminimize and activate this window.
 
     virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 /TransferBack/;
 
+    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
+%Docstring
+Creates a new widget context appropriate for the dialog.
+%End
+
     QToolBar *toolbar();
     QAction *actionOpen();
     QAction *actionSaveInProject();
