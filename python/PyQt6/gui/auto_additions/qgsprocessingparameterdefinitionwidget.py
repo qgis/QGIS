@@ -15,3 +15,7 @@ try:
     QgsProcessingParameterDefinitionWidget.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
+try:
+    QgsProcessingParameterDefinitionPanelWidget.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
