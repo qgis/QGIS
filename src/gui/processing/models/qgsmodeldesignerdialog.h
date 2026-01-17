@@ -31,6 +31,7 @@ class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
 class QgsProcessingAlgorithmDialogBase;
+class QgsProcessingParameterWidgetContext;
 
 ///@cond NOT_STABLE
 
@@ -132,6 +133,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     virtual bool saveModel( bool saveAs = false ) = 0;
     // cppcheck-suppress pureVirtualCall
     virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
+
+    /**
+     * Creates a new widget context appropriate for the dialog.
+     */
+    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0; // cppcheck-suppress pureVirtualCall
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
