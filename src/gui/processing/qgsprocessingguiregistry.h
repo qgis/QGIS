@@ -30,6 +30,9 @@ class QgsProcessingAlgorithmConfigurationWidget;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
 class QgsProcessingModelerParameterWidget;
 class QgsProcessingParameterWidgetContext;
+class QgsProcessingModelConfigWidgetFactory;
+class QgsProcessingModelConfigWidget;
+class QgsProcessingModelComponent;
 
 /**
  * A registry for widgets for use with the Processing framework.
@@ -103,6 +106,29 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     void removeParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory );
 
     /**
+     * Register a new factory class for creating panel widgets that can be shown in the Processing model designer dialog.
+     *
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterModelConfigWidgetFactory()
+     *
+     * \warning Not stable API
+     *
+     * \since QGIS 4.0
+     */
+    void registerModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory );
+
+    /**
+     * Unregister a previously registered factory for creating panel widgets that can be shown in the Processing model designer dialog.
+     *
+     * \warning Not stable API
+     *
+     * \see registerModelConfigWidgetFactory()
+     * \since QGIS 4.0
+     */
+    void unregisterModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory );
+
+    /**
      * Creates a new parameter widget wrapper for the given \a parameter. The \a type argument
      * dictates the type of dialog the wrapper should be created for. The caller takes ownership
      * of the returned wrapper.
@@ -158,9 +184,22 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      */
     QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
 
+    /**
+     * Creates a new widget for configuring a Processing model \a component.
+     *
+     * May return NULLPTR if configuring a the component is not supported.
+     *
+     * \warning Not stable API
+     *
+     * \since QGIS 4.0
+     */
+    QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const SIP_FACTORY;
+
   private:
     QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
     QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> mParameterWidgetFactories;
+
+    QList<QPointer<QgsProcessingModelConfigWidgetFactory>> mModelConfigWidgetFactories;
 };
 
 #endif // QGSPROCESSINGGUIREGISTRY_H

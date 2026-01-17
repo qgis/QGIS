@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsmodeldesignerconfigwidget.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
@@ -154,6 +155,16 @@ void QgsProcessingGuiRegistry::removeParameterWidgetFactory( QgsProcessingParame
   delete factory;
 }
 
+void QgsProcessingGuiRegistry::registerModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory )
+{
+  mModelConfigWidgetFactories << factory;
+}
+
+void QgsProcessingGuiRegistry::unregisterModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory )
+{
+  mModelConfigWidgetFactories.removeAll( factory );
+}
+
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   if ( !parameter )
@@ -192,4 +203,21 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGuiRegistry::create
     return nullptr;
 
   return it.value()->createParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+QgsProcessingModelConfigWidget *QgsProcessingGuiRegistry::createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
+{
+  for ( auto it = mModelConfigWidgetFactories.constBegin(); it != mModelConfigWidgetFactories.constEnd(); ++it )
+  {
+    // factory may have been deleted without deregistering, don't crash!
+    if ( !it->data() )
+      continue;
+
+    if ( it->data()->supportsComponent( component ) )
+    {
+      if ( QgsProcessingModelConfigWidget *widget = it->data()->createWidget( component, context, widgetContext ) )
+        return widget;
+    }
+  }
+  return nullptr;
 }
