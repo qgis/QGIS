@@ -93,6 +93,39 @@ will be deleted.
 .. versionadded:: 3.4
 %End
 
+    void registerModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory );
+%Docstring
+Register a new factory class for creating panel widgets that can be
+shown in the Processing model designer dialog.
+
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:func:`unregisterModelConfigWidgetFactory`
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 4.0
+%End
+
+    void unregisterModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory );
+%Docstring
+Unregister a previously registered factory for creating panel widgets
+that can be shown in the Processing model designer dialog.
+
+.. warning::
+
+   Not stable API
+
+.. seealso:: :py:func:`registerModelConfigWidgetFactory`
+
+.. versionadded:: 4.0
+%End
+
     QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) /Factory/;
 %Docstring
 Creates a new parameter widget wrapper for the given ``parameter``. The
@@ -154,6 +187,19 @@ If ``None`` is returned for a particular parameter ``type``, it
 indicates that the parameter type cannot be configured via GUI.
 
 .. versionadded:: 3.10
+%End
+
+    QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const /Factory/;
+%Docstring
+Creates a new widget for configuring a Processing model ``component``.
+
+May return ``None`` if configuring a the component is not supported.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 4.0
 %End
 
 };
