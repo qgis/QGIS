@@ -26,12 +26,12 @@ QgsOgrProxyTextCodec::QgsOgrProxyTextCodec( const QByteArray &name )
 
 }
 
-QString QgsOgrProxyTextCodec::convertToUnicode( const char *chars, int, ConverterState * ) const
+QString QgsOgrProxyTextCodec::decode( const QByteArrayView &a ) const
 {
-  if ( !chars )
+  if ( a.isEmpty() )
     return QString();
 
-  char *res = CPLRecode( chars, mName.constData(), CPL_ENC_UTF8 );
+  char *res = CPLRecode( a.data(), mName.constData(), CPL_ENC_UTF8 );
   if ( !res )
   {
     QgsDebugError( "convertToUnicode failed" );
@@ -43,13 +43,12 @@ QString QgsOgrProxyTextCodec::convertToUnicode( const char *chars, int, Converte
   return result;
 }
 
-QByteArray QgsOgrProxyTextCodec::convertFromUnicode( const QChar *unicode, int length, ConverterState * ) const
+QByteArray QgsOgrProxyTextCodec::encode( const QStringView &s ) const
 {
-  if ( !unicode )
+  if ( s.isEmpty() )
     return QByteArray();
 
-  const QString src = QString( unicode, length );
-  char *res = CPLRecode( src.toUtf8().constData(), CPL_ENC_UTF8, mName.constData() );
+  char *res = CPLRecode( s.toUtf8().constData(), CPL_ENC_UTF8, mName.constData() );
   if ( !res )
   {
     QgsDebugError( "convertFromUnicode failed" );
@@ -64,20 +63,9 @@ QByteArray QgsOgrProxyTextCodec::convertFromUnicode( const QChar *unicode, int l
 // MY 5 YEAR OLD DAUGHTER WROTE THIS LINE, REMOVE AT YOUR OWN RISK!!!
 // i don't want this to be here
 
-QByteArray QgsOgrProxyTextCodec::name() const
+QString QgsOgrProxyTextCodec::name() const
 {
-  return mName;
-}
-
-QList<QByteArray> QgsOgrProxyTextCodec::aliases() const
-{
-  return QList<QByteArray>();
-}
-
-int QgsOgrProxyTextCodec::mibEnum() const
-{
-  // doesn't seem required in this case
-  return 0;
+  return QString::fromUtf8( mName );
 }
 
 QStringList QgsOgrProxyTextCodec::supportedCodecs()

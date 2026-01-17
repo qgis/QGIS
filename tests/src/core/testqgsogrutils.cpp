@@ -540,11 +540,9 @@ void TestQgsOgrUtils::textCodec()
   QVERIFY( QgsOgrProxyTextCodec::supportedCodecs().contains( u"CP852"_s ) );
   QVERIFY( !QgsOgrProxyTextCodec::supportedCodecs().contains( u"xxx"_s ) );
 
-  // The QTextCodec should always be constructed on the heap. Qt takes ownership and will delete it when the application terminates.
-  QgsOgrProxyTextCodec *codec = new QgsOgrProxyTextCodec( "CP852" );
-  QCOMPARE( codec->toUnicode( codec->fromUnicode( "abcŐ" ) ), u"abcŐ"_s );
-  QCOMPARE( codec->toUnicode( codec->fromUnicode( "" ) ), QString() );
-  // cppcheck-suppress memleak
+  QgsTextCodec codec( std::make_unique<QgsOgrProxyTextCodec>( "CP852" ) );
+  QCOMPARE( codec.decode( codec.encode( u"abcŐ"_s ) ), u"abcŐ"_s );
+  QCOMPARE( codec.decode( codec.encode( u""_s ) ), QString() );
 }
 
 void TestQgsOgrUtils::parseStyleString_data()

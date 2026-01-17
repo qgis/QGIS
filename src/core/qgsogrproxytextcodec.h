@@ -19,17 +19,16 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-
-#include <QTextCodec>
+#include "qgstextcodec.h"
 
 /**
  * \ingroup core
  * \class QgsOgrProxyTextCodec
- * \brief A QTextCodec implementation which relies on OGR to do the text conversion.
+ * \brief A QgsTextCodec implementation which relies on OGR to do the text conversion.
  * \note not available in Python bindings
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
+class CORE_EXPORT QgsOgrProxyTextCodec : public QgsBaseTextCodecInterface
 {
   public:
 
@@ -39,11 +38,9 @@ class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
     QgsOgrProxyTextCodec( const QByteArray &name );
     ~QgsOgrProxyTextCodec() override = default;
 
-    QString convertToUnicode( const char *in, int length, ConverterState *state ) const override;
-    QByteArray convertFromUnicode( const QChar *in, int length, ConverterState *state ) const override;
-    QByteArray name() const override;
-    QList<QByteArray> aliases() const override;
-    int mibEnum() const override;
+    QString decode( const QByteArrayView &a ) const override;
+    QByteArray encode( const QStringView &s ) const override;
+    QString name() const override;
 
     /**
      * Returns a list of supported text codecs.

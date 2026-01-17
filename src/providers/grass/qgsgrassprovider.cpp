@@ -44,7 +44,6 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QString>
-#include <QTextCodec>
 
 #include "moc_qgsgrassprovider.cpp"
 
@@ -985,7 +984,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
     dbColumn *column = db_get_table_column( databaseTable, i );
     db_convert_column_value_to_string( column, &dbstr );
 
-    QString v = textEncoding()->toUnicode( db_get_string( &dbstr ) );
+    const QString v = textEncoding()->decode( db_get_string( &dbstr ) );
     QgsDebugMsgLevel( QString( "Value: %1" ).arg( v ), 2 );
     att->insert( i, QVariant( v ) );
   }

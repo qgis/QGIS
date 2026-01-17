@@ -9,9 +9,7 @@
 
 
 
-
 typedef QHash<int, QString> QgsAttrPalIndexNameHash;
-
 
 
 class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink, QgsFeatureSource
@@ -719,7 +717,7 @@ the constructor.
 %End
 
 
-    QTextCodec *textEncoding() const;
+    std::optional<QgsTextCodec> textEncoding() const;
 %Docstring
 Gets this providers encoding
 %End

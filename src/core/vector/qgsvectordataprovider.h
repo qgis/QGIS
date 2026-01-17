@@ -15,8 +15,6 @@
 #ifndef QGSVECTORDATAPROVIDER_H
 #define QGSVECTORDATAPROVIDER_H
 
-class QTextCodec;
-
 #include "qgis_core.h"
 
 #include <QHash>
@@ -35,6 +33,7 @@ class QTextCodec;
 #include "qgsfeaturesource.h"
 #include "qgsfeaturerequest.h"
 #include "qgsvectordataprovidertemporalcapabilities.h"
+#include "qgstextcodec.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -45,7 +44,6 @@ class QgsTransaction;
 class QgsFeedback;
 class QgsFeatureRenderer;
 class QgsAbstractVectorLayerLabeling;
-
 
 /**
  * \ingroup core
@@ -664,7 +662,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Gets this providers encoding
      *
      */
-    QTextCodec *textEncoding() const;
+    std::optional<QgsTextCodec> textEncoding() const;
 #endif
 
     /**
@@ -680,7 +678,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
 
     //! Encoding
-    QTextCodec *mEncoding = nullptr;
+    std::optional<QgsTextCodec> mEncoding;
 
     //! List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;

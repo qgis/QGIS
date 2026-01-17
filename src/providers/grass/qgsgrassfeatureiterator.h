@@ -58,7 +58,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
     Qgis::WkbType mQgisType; // WKBPoint, WKBLineString, ...
 
     QgsFields mFields;
-    QTextCodec *mEncoding = nullptr;
+    QgsTextCodec mEncoding;
 
     bool mEditing; // Standard QGIS editing mode
 

@@ -67,7 +67,6 @@ email                : sherman at mrcc.com
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QTextCodec>
 
 #define TEXT_PROVIDER_KEY u"ogr"_s
 #define TEXT_PROVIDER_DESCRIPTION u"OGR data provider"_s
@@ -1023,7 +1022,7 @@ void QgsOgrProvider::loadFields()
 #ifdef ANDROID
     QString name = OGR_Fld_GetNameRef( fldDef );
 #else
-    QString name = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
+    QString name = textEncoding()->decode( OGR_Fld_GetNameRef( fldDef ) );
 #endif
 
     if ( mAttributeFields.indexFromName( name ) != -1 )
@@ -1043,7 +1042,7 @@ void QgsOgrProvider::loadFields()
     if ( prec > 0 )
       width -= 1;
 
-    QString typeName = OGR_GetFieldTypeName( ogrType );
+    QByteArray typeName = OGR_GetFieldTypeName( ogrType );
     if ( ogrSubType != OFSTNone )
       typeName = OGR_GetFieldSubTypeName( ogrSubType );
 
@@ -1053,12 +1052,12 @@ void QgsOgrProvider::loadFields()
 #ifdef ANDROID
                           typeName,
 #else
-                          textEncoding()->toUnicode( typeName.toStdString().c_str() ),
+                          textEncoding()->decode( typeName ),
 #endif
                           width, prec, QString(), varSubType
                         );
 
-    const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
+    const QString alias = textEncoding()->decode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
     if ( !alias.isEmpty() )
     {
       newField.setAlias( alias );
@@ -1066,7 +1065,7 @@ void QgsOgrProvider::loadFields()
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
     {
-      const QString comment = textEncoding()->toUnicode( OGR_Fld_GetComment( fldDef ) );
+      const QString comment = textEncoding()->decode( OGR_Fld_GetComment( fldDef ) );
       if ( !comment.isEmpty() )
       {
         newField.setComment( comment );
@@ -1095,7 +1094,7 @@ void QgsOgrProvider::loadFields()
     }
 
     // check if field has default value
-    QString defaultValue = textEncoding()->toUnicode( OGR_Fld_GetDefault( fldDef ) );
+    QString defaultValue = textEncoding()->decode( OGR_Fld_GetDefault( fldDef ) );
     if ( defaultValue == "FILEGEODATABASE_SHAPE_LENGTH"_L1 ||
          defaultValue == "FILEGEODATABASE_SHAPE_AREA"_L1 )
     {
@@ -1268,7 +1267,7 @@ void QgsOgrProvider::loadMetadata()
           if ( f )
           {
             bool ok = false;
-            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, nullptr, &ok );
+            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QMetaType::Type::QString ), 0, std::nullopt, &ok );
             if ( ok )
             {
               QDomDocument doc;
@@ -1922,7 +1921,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     // continue;
     //
     OGRFieldDefnH fldDef = featureDefinition.GetFieldDefn( ogrAttributeId );
-    const QString ogrFieldName = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
+    const QString ogrFieldName = textEncoding()->decode( OGR_Fld_GetNameRef( fldDef ) );
     const OGRFieldType type = OGR_Fld_GetType( fldDef );
     const OGRFieldSubType subType = OGR_Fld_GetSubType( fldDef );
 
@@ -2053,11 +2052,8 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
           {
             stringValue = attrVal.toString();
           }
-          QgsDebugMsgLevel( u"Writing string attribute %1 with %2, encoding %3"_s
-                            .arg( qgisAttributeId )
-                            .arg( attrVal.toString(),
-                                  textEncoding()->name().data() ), 3 );
-          OGR_F_SetFieldString( feature.get(), ogrAttributeId, textEncoding()->fromUnicode( stringValue ).constData() );
+          QgsDebugMsgLevel( u"Writing string attribute %1 with %2, encoding %3"_s.arg( qgisAttributeId ).arg( attrVal.toString(), textEncoding()->name() ), 3 );
+          OGR_F_SetFieldString( feature.get(), ogrAttributeId, textEncoding()->encode( stringValue ).constData() );
           break;
         }
         case OFTBinary:
@@ -2082,7 +2078,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
               int pos = 0;
               for ( const QString &string : list )
               {
-                lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
+                lst[pos] = CPLStrdup( textEncoding()->encode( string ).data() );
                 pos++;
               }
             }
@@ -2254,7 +2250,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       incrementalFeatureId = static_cast< QgsFeatureId >( OGR_L_GetFeatureCount( layer, false ) ) + 1;
 
       if ( !mSubsetString.isEmpty() )
-        OGR_L_SetAttributeFilter( layer, textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) ).constData() );
+        OGR_L_SetAttributeFilter( layer, textEncoding()->encode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) ).constData() );
     }
   }
 
@@ -2379,7 +2375,7 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
       return false;
   }
 
-  gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( field.name() ).constData(), type ) );
+  gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->encode( field.name() ).constData(), type ) );
   int width = field.length();
 // Increase width by 1 for OFTReal to make room for the decimal point
   if ( type == OFTReal && field.precision() )
@@ -2400,11 +2396,11 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-  OGR_Fld_SetAlternativeName( fielddefn.get(), textEncoding()->fromUnicode( field.alias() ).constData() );
+  OGR_Fld_SetAlternativeName( fielddefn.get(), textEncoding()->encode( field.alias() ).constData() );
 #endif
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  OGR_Fld_SetComment( fielddefn.get(), textEncoding()->fromUnicode( field.comment() ).constData() );
+  OGR_Fld_SetComment( fielddefn.get(), textEncoding()->encode( field.comment() ).constData() );
 #endif
 
   if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
@@ -2595,7 +2591,7 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
     }
 
     //type does not matter, it will not be used
-    gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( textEncoding()->fromUnicode( renameIt.value() ), OFTReal ) );
+    gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( textEncoding()->encode( renameIt.value() ), OFTReal ) );
     if ( mOgrLayer->AlterFieldDefn( ogrFieldIndex, fld.get(), ALTER_NAME_FLAG ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error renaming field %1: %2" ).arg( fieldIndex ).arg( CPLGetLastErrorMsg() ) );
@@ -2681,7 +2677,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
     OGRLayerH subsetLayerH;
     {
       QMutexLocker locker( mutex );
-      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), cleanSql );
+      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding().value(), cleanSql );
     }
     if ( !subsetLayerH )
     {
@@ -3136,7 +3132,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
             {
               stringValue = jsonStringValue( it2.value() );
             }
-            OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( stringValue ).constData() );
+            OGR_F_SetFieldString( of.get(), f, textEncoding()->encode( stringValue ).constData() );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
             changedFieldIndexes  << f;
 #endif
@@ -3167,7 +3163,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                 int pos = 0;
                 for ( const QString &string : list )
                 {
-                  lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
+                  lst[pos] = CPLStrdup( textEncoding()->encode( string ).data() );
                   pos++;
                 }
               }
@@ -3483,9 +3479,9 @@ bool QgsOgrProvider::createSpatialIndexImpl()
   {
     QRecursiveMutex *mutex = nullptr;
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
-    QByteArray sql = QByteArray( "SELECT CreateSpatialIndex(" + quotedIdentifier( layerName ) + ","
-                                 + quotedIdentifier( OGR_L_GetGeometryColumn( layer ) ) + ") " ); // quote the layer name so spaces are handled
-    mOgrOrigLayer->ExecuteSQLNoReturn( sql );
+    const QString sql = u"SELECT CreateSpatialIndex("_s + quotedIdentifier( layerName ) + u","_s
+                        + quotedIdentifier( textEncoding()->decode( OGR_L_GetGeometryColumn( layer ) ) ) + u") "_s; // quote the layer name so spaces are handled
+    mOgrOrigLayer->ExecuteSQLNoReturn( textEncoding()->encode( sql ) );
     return true;
   }
   return false;
@@ -3525,7 +3521,7 @@ bool QgsOgrProvider::createAttributeIndex( int field )
   if ( !doInitialActionsForEdition() )
     return false;
 
-  QByteArray quotedLayerName = quotedIdentifier( mOgrOrigLayer->name() );
+  const QByteArray quotedLayerName = quotedIdentifier( mOgrOrigLayer->name() );
   if ( mGDALDriverName == "GPKG"_L1 ||
        mGDALDriverName == "SQLite"_L1 )
   {
@@ -3535,16 +3531,16 @@ bool QgsOgrProvider::createAttributeIndex( int field )
       return false;
     }
 
-    QString indexName = createIndexName( mOgrOrigLayer->name(), fields().at( field ).name() );
-    QByteArray createSql = "CREATE INDEX IF NOT EXISTS " + textEncoding()->fromUnicode( indexName ) + " ON " + quotedLayerName + " (" + textEncoding()->fromUnicode( fields().at( field ).name() ) + ")";
+    const QString indexName = createIndexName( mOgrOrigLayer->name(), fields().at( field ).name() );
+    const QByteArray createSql = textEncoding()->encode( u"CREATE INDEX IF NOT EXISTS %1 ON %2 (%3)"_s.arg( indexName, quotedLayerName, fields().at( field ).name() ) );
     mOgrOrigLayer->ExecuteSQLNoReturn( createSql );
     return true;
   }
   else
   {
-    QByteArray dropSql = "DROP INDEX ON " + quotedLayerName;
+    const QByteArray dropSql = textEncoding()->encode( u"DROP INDEX ON %1"_s.arg( quotedLayerName ) );
     mOgrOrigLayer->ExecuteSQLNoReturn( dropSql );
-    QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + textEncoding()->fromUnicode( fields().at( field ).name() );
+    const QByteArray createSql = textEncoding()->encode( u"CREATE INDEX ON %1 USING %2"_s.arg( quotedLayerName, fields().at( field ).name() ) );
     mOgrOrigLayer->ExecuteSQLNoReturn( createSql );
 
     QFileInfo fi( mFilePath );     // to get the base name
@@ -3912,7 +3908,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, u"QgsOgrProvider"_s );
 
-  QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
+  QString sql = u"SELECT DISTINCT "_s + quotedIdentifier( fld.name() );
 
   // GPKG/SQLite fid
   // For GPKG and SQLITE drivers PK fields are not exposed as real fields, (and OGR_F_GetFID only
@@ -3921,25 +3917,25 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   if ( ( mGDALDriverName == "GPKG"_L1 || mGDALDriverName == "SQLite"_L1 )
        && mFirstFieldIsFid && index == 0 )
   {
-    sql += ", " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " AS fid2";
+    sql += u", "_s + quotedIdentifier( textEncoding()->encode( fld.name() ) ) + u" AS fid2"_s;
   }
 
-  sql += " FROM " + quotedIdentifier( mOgrLayer->name() );
+  sql += u" FROM "_s + quotedIdentifier( mOgrLayer->name() );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
+    sql += u" WHERE "_s + QgsOgrProviderUtils::cleanSubsetString( mSubsetString );
   }
 
-  sql += " ORDER BY " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " ASC";
+  sql += u" ORDER BY "_s + quotedIdentifier( textEncoding()->encode( fld.name() ) ) + u" ASC"_s;
 
   if ( limit > 0 )
   {
-    sql += " LIMIT " + QString::number( limit ).toLocal8Bit();
+    sql += u" LIMIT "_s + QString::number( limit ).toLocal8Bit();
   }
 
-  QgsDebugMsgLevel( u"SQL: %1"_s.arg( textEncoding()->toUnicode( sql ) ), 2 );
-  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+  QgsDebugMsgLevel( u"SQL: %1"_s.arg( sql ), 2 );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( textEncoding()->encode( sql ) );
   if ( !l )
   {
     QgsDebugError( u"Failed to execute SQL"_s );
@@ -3994,30 +3990,30 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
     }
   }
 
-  QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
-  sql += " FROM " + quotedIdentifier( mOgrLayer->name() );
+  QString sql = u"SELECT DISTINCT "_s + quotedIdentifier( fld.name() );
+  sql += u" FROM "_s + quotedIdentifier( textEncoding()->decode( mOgrLayer->name() ) );
 
-  sql += " WHERE " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
+  sql += u" WHERE "_s + quotedIdentifier( fld.name() );
   if ( supportsILIKE )
-    sql += " ILIKE '%";
+    sql += " ILIKE '%"_L1;
   else
-    sql += " LIKE '%";
-  sql += textEncoding()->fromUnicode( substring ) + "%'";
+    sql += " LIKE '%"_L1;
+  sql += substring + u"%'"_s;
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " AND (" + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) ) + ')';
+    sql += u" AND ("_s + QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) + u")"_s;
   }
 
-  sql += " ORDER BY " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " ASC";
+  sql += u" ORDER BY "_s + quotedIdentifier( fld.name() ) + u" ASC"_s;
 
   if ( limit > 0 )
   {
-    sql += " LIMIT " + QString::number( limit ).toLocal8Bit();
+    sql += u" LIMIT "_s + QString::number( limit );
   }
 
-  QgsDebugMsgLevel( u"SQL: %1"_s.arg( textEncoding()->toUnicode( sql ) ), 2 );
-  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+  QgsDebugMsgLevel( u"SQL: %1"_s.arg( sql ), 2 );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( textEncoding()->encode( sql ) );
   if ( !l )
   {
     QgsDebugError( u"Failed to execute SQL"_s );
@@ -4028,7 +4024,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   while ( f.reset( l->GetNextFeature() ), f )
   {
     if ( OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) )
-      results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) );
+      results << textEncoding()->decode( OGR_F_GetFieldAsString( f.get(), 0 ) );
 
     if ( ( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
       break;
@@ -4264,18 +4260,18 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   }
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
-  QByteArray sql = "SELECT MIN(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
-  sql += ") FROM " + quotedIdentifier( mOgrLayer->name() );
+  QString sql = u"SELECT MIN("_s + quotedIdentifier( fld.name() );
+  sql += u") FROM "_s + quotedIdentifier( mOgrLayer->name() );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
+    sql += u" WHERE "_s + QgsOgrProviderUtils::cleanSubsetString( mSubsetString );
   }
 
-  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( textEncoding()->encode( sql ) );
   if ( !l )
   {
-    QgsDebugError( u"Failed to execute SQL: %1"_s.arg( textEncoding()->toUnicode( sql ) ) );
+    QgsDebugError( u"Failed to execute SQL: %1"_s.arg( sql ) );
     return QgsVectorDataProvider::minimumValue( index );
   }
 
@@ -4324,18 +4320,18 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   }
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
-  QByteArray sql = "SELECT MAX(" + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
-  sql += ") FROM " + quotedIdentifier( mOgrLayer->name() );
+  QString sql = u"SELECT MAX("_s + quotedIdentifier( fld.name() );
+  sql += u") FROM "_s + quotedIdentifier( mOgrLayer->name() );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
+    sql += u" WHERE "_s + QgsOgrProviderUtils::cleanSubsetString( mSubsetString );
   }
 
-  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( textEncoding()->encode( sql ) );
   if ( !l )
   {
-    QgsDebugError( u"Failed to execute SQL: %1"_s.arg( textEncoding()->toUnicode( sql ) ) );
+    QgsDebugError( u"Failed to execute SQL: %1"_s.arg( sql ) );
     return QgsVectorDataProvider::maximumValue( index );
   }
 
@@ -4367,6 +4363,10 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
 QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
 {
   return QgsOgrProviderUtils::quotedIdentifier( field, mGDALDriverName );
+}
+QString QgsOgrProvider::quotedIdentifier( const QString &field ) const
+{
+  return textEncoding()->decode( quotedIdentifier( textEncoding()->encode( field ) ) );
 }
 
 bool QgsOgrProvider::syncToDisc()

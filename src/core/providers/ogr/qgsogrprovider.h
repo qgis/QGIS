@@ -158,6 +158,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     int layerIndex() const { return mLayerIndex; }
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
+    QString quotedIdentifier( const QString &field ) const;
 
   protected:
     //! Loads fields from input file to member attributeFields

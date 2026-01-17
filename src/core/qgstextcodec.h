@@ -21,7 +21,32 @@
 
 #define SIP_NO_FILE
 
-class QTextCodec;
+/**
+ * \ingroup core
+ * \brief An interface to bring custom encoding/decoding behavior to QgsTextCodec
+ *
+ * \note not available in Python bindings
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsBaseTextCodecInterface
+{
+  public:
+    virtual ~QgsBaseTextCodecInterface();
+
+    /**
+     * \brief Returns the name of this codec.
+     */
+    virtual QString name() const = 0;
+    /**
+     * \brief Decode raw data to a string.
+     */
+    virtual QString decode( const QByteArrayView &a ) const = 0;
+    /**
+     * \brief Encode a string into raw data.
+     */
+    virtual QByteArray encode( const QStringView &s ) const = 0;
+};
+
 
 /**
  * \ingroup core
@@ -32,6 +57,9 @@ class QTextCodec;
  *
  * This class should primarily be used when storing and/or passing around a somehow determined encoding is necessary.
  * For simple encoding/decoding where the encoding is known you should prefer using QStringEncoder/QStringDecoder directly.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsTextCodec
 {
@@ -39,14 +67,15 @@ class CORE_EXPORT QgsTextCodec
 
   public:
     /**
-     * \brief Construct a QgsTextCodec from a legacy QTextCodec instance
-     * \deprecated QGIS 4.0. Only included during transition away from QTextCodec usage, do not use for new code.
-     */
-    [[deprecated]] QgsTextCodec( QTextCodec *codec );
-    /**
      * \brief Construct a QgsTextCodec from the list of always available encodings
      */
     QgsTextCodec( const QStringConverter::Encoding encoding = QStringConverter::Encoding::Utf8 );
+    /**
+     * \brief Construct a QgsTextCodec from a codec interface.
+     *
+     * Allows overriding the behavior of this class using a custom class, while retaining the same interface.
+     */
+    QgsTextCodec( std::unique_ptr<QgsBaseTextCodecInterface> &&interface );
 
     /**
      * \brief Construct a QgsTextCodec from a free-form string.
@@ -84,5 +113,5 @@ class CORE_EXPORT QgsTextCodec
     static QStringList availableCodecs();
 
   private:
-    std::variant<QString, QStringConverter::Encoding> mEncoding;
+    std::variant<QString, QStringConverter::Encoding, std::shared_ptr<QgsBaseTextCodecInterface>> mEncoding;
 };

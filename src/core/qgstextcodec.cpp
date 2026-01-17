@@ -723,8 +723,8 @@ QgsTextCodec::QgsTextCodec( const QStringConverter::Encoding encoding )
 {
 }
 
-QgsTextCodec::QgsTextCodec( QTextCodec *codec )
-  : mEncoding( codec->name() )
+QgsTextCodec::QgsTextCodec( std::unique_ptr<QgsBaseTextCodecInterface> &&interface )
+  : mEncoding( std::move( interface ) )
 {
 }
 
@@ -785,6 +785,10 @@ QString QgsTextCodec::name() const
     {
       return arg;
     }
+    else if constexpr( std::is_same_v<T, std::shared_ptr<QgsBaseTextCodecInterface>> )
+    {
+      return arg->name();
+    }
     else
     {
       return QString( QStringConverter::nameForEncoding( arg ) );
@@ -795,7 +799,7 @@ QString QgsTextCodec::name() const
 
 QString QgsTextCodec::decode( const QByteArrayView &a ) const
 {
-  QStringDecoder decoder = std::visit( []( auto &&arg )
+  return std::visit( [&a]( auto &&encoding ) -> QString
   {
     using T = std::decay_t<decltype( encoding )>;
     if constexpr( std::is_same_v<T, std::shared_ptr<QgsBaseTextCodecInterface>> )
@@ -809,17 +813,11 @@ QString QgsTextCodec::decode( const QByteArrayView &a ) const
     }
   },
   mEncoding );
-  const QString result = decoder.decode( a );
-  if ( decoder.hasError() )
-  {
-    return QString();
-  }
-  return result;
 }
 
 QByteArray QgsTextCodec::encode( const QStringView &s ) const
 {
-  QStringEncoder decoder = std::visit( []( auto &&arg )
+  return std::visit( [&s]( auto &&encoding ) -> QByteArray
   {
     using T = std::decay_t<decltype( encoding )>;
     if constexpr( std::is_same_v<T, std::shared_ptr<QgsBaseTextCodecInterface>> )
@@ -833,10 +831,8 @@ QByteArray QgsTextCodec::encode( const QStringView &s ) const
     }
   },
   mEncoding );
-  const QByteArray result = decoder.encode( s );
-  if ( decoder.hasError() )
-  {
-    return QByteArray();
-  }
-  return result;
+}
+
+QgsBaseTextCodecInterface::~QgsBaseTextCodecInterface()
+{
 }
