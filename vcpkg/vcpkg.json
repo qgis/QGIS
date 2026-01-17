@@ -130,8 +130,14 @@
             "python"
           ]
         },
-        "py-adbc-postgresql",
-        "py-adbc-sqlite",
+        {
+          "name": "py-adbc-postgresql",
+          "platform": "!windows"
+        },
+        {
+          "name": "py-adbc-sqlite",
+          "platform": "!windows"
+        },
         "py-attrs",
         "py-autopep8",
         "py-beautifulsoup4",
