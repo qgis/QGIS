@@ -1,0 +1,76 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerconfigwidget.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingModelConfigWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A panel widget that can be shown in the Processing model designer dialog
+for configuring part of the model.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsmodeldesignerconfigwidget.h"
+%End
+  public:
+    QgsProcessingModelConfigWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingModelConfigWidget()
+%End
+};
+
+class QgsProcessingModelConfigWidgetFactory : QObject
+{
+%Docstring(signature="appended")
+Factory class for creating panel widgets that can be shown in the
+Processing model designer dialog.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsmodeldesignerconfigwidget.h"
+%End
+  public:
+    QgsProcessingModelConfigWidgetFactory();
+
+    virtual bool supportsComponent( QgsProcessingModelComponent *component ) const = 0;
+%Docstring
+Check if a model ``component`` is supported for this widget.
+%End
+
+    virtual QgsProcessingModelConfigWidget *createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const = 0 /Factory/;
+%Docstring
+Factory function to create the widget on demand as needed by the dock.
+
+:param component: model component to create widget for
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerconfigwidget.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
