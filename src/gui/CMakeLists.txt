@@ -452,6 +452,7 @@ set(QGIS_GUI_SRCS
 
   processing/models/qgsmodelarrowitem.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
+  processing/models/qgsmodeldesignerconfigdockwidget.cpp
   processing/models/qgsmodeldesignerconfigwidget.cpp
   processing/models/qgsmodeldesignerdialog.cpp
   processing/models/qgsmodeldesignerinputstreewidget.cpp
@@ -1468,6 +1469,7 @@ set(QGIS_GUI_HDRS
 
   processing/models/qgsmodelarrowitem.h
   processing/models/qgsmodelcomponentgraphicitem.h
+  processing/models/qgsmodeldesignerconfigdockwidget.h
   processing/models/qgsmodeldesignerconfigwidget.h
   processing/models/qgsmodeldesignerdialog.h
   processing/models/qgsmodeldesignerinputstreewidget.h
