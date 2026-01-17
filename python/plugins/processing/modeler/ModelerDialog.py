@@ -257,7 +257,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         scene.createItems(self.model(), context)
         scene.updateBounds()
 
-    def create_widget_context(self):
+    def createWidgetContext(self):
         """
         Returns a new widget context for use in the model editor
         """
@@ -299,7 +299,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         else:
             # yay, use new API!
             context = createContext()
-            widget_context = self.create_widget_context()
+            widget_context = self.createWidgetContext()
             dlg = QgsProcessingParameterDefinitionDialog(
                 type=paramType,
                 context=context,
