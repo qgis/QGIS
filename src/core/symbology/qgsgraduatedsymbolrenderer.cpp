@@ -1158,9 +1158,8 @@ void QgsGraduatedSymbolRenderer::updateRangeLabels()
   // Others:       lower < x ≤ upper
   for ( int i = 0; i < mRanges.count(); ++i )
   {
-    // Respect user-custom labels unless auto-update is enabled
-    const bool shouldUpdate = mAutoUpdateRangeLabels || mRanges[i].label().isEmpty();
-    if ( !shouldUpdate )
+    // Preserve user-edited labels
+    if ( !mRanges[i].label().isEmpty() )
       continue;
 
     QgsClassificationMethod::ClassPosition pos = QgsClassificationMethod::Inner;
