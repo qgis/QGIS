@@ -22,6 +22,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsmodeldesignerconfigwidget.h"
+#include "qgspanelwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingwidgetwrapper.h"
 
@@ -164,6 +166,85 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
     friend class QgsProcessingParameterDefinitionDialog;
 };
 
+
+/**
+ * A panel widget which allows users to specify the properties of a Processing parameter.
+ *
+ * \ingroup gui
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsProcessingParameterDefinitionPanelWidget : public QgsProcessingModelConfigWidget
+{
+    Q_OBJECT
+  public:
+    /**
+   * Constructor for QgsProcessingParameterDefinitionPanelWidget, for a parameter of the
+   * specified \a type.
+   *
+   * The \a context argument must specify a Processing context, which will be used
+   * by the widget to evaluate existing \a definition properties such as default values. Similarly,
+   * the \a widgetContext argument specifies the wider GUI context in which the widget
+   * will be used.
+   *
+   * The optional \a definition argument may be used to provide a parameter definition to use
+   * to initially populate the widget's state.
+   *
+   * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
+   * associated with the parameter.
+   */
+    QgsProcessingParameterDefinitionPanelWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+   * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
+   *
+   * - The \a name parameter specifies the name for the newly created parameter.
+   */
+    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+
+    /**
+   * Sets the comments for the parameter.
+   * \see comments()
+   */
+    void setComments( const QString &comments );
+
+    /**
+   * Returns the comments for the parameter.
+   * \see setComments()
+   */
+    QString comments() const;
+
+    /**
+   * Sets the color for the comments for the parameter.
+   * \see commentColor()
+   */
+    void setCommentColor( const QColor &color );
+
+    /**
+   * Returns the color for the comments for the parameter.
+   * \see setCommentColor()
+   */
+    QColor commentColor() const;
+
+    /**
+   * Switches the widget to the comments tab.
+   */
+    void switchToCommentTab();
+
+    /**
+   * Registers a Processing context \a generator class that will be used to retrieve
+   * a Processing context for the widget when required.
+   */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+  private:
+    QTabWidget *mTabWidget = nullptr;
+    QTextEdit *mCommentEdit = nullptr;
+    QgsColorButton *mCommentColorButton = nullptr;
+    QgsProcessingParameterDefinitionWidget *mWidget = nullptr;
+
+    friend class QgsProcessingParameterDefinitionDialog;
+};
+
 /**
  * A dialog which allows users to specify the properties of a Processing parameter.
  *
@@ -244,10 +325,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
     void accept() override;
 
   private:
-    QTabWidget *mTabWidget = nullptr;
-    QTextEdit *mCommentEdit = nullptr;
-    QgsColorButton *mCommentColorButton = nullptr;
-    QgsProcessingParameterDefinitionWidget *mWidget = nullptr;
+    QgsProcessingParameterDefinitionPanelWidget *mWidget = nullptr;
 };
 
 
