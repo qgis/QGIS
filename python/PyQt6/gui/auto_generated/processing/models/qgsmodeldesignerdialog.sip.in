@@ -109,6 +109,12 @@ Raise, unminimize and activate this window.
 Creates a new widget context appropriate for the dialog.
 %End
 
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the dialog when required.
+%End
+
     QToolBar *toolbar();
     QAction *actionOpen();
     QAction *actionSaveInProject();

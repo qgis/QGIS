@@ -123,6 +123,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 return self.processing_context
 
         self.context_generator = ContextGenerator(self.processing_context)
+        self.registerProcessingContextGenerator(self.context_generator)
 
     def createExecutionDialog(self):
         dlg = AlgorithmDialog(self.model().create(), parent=self)

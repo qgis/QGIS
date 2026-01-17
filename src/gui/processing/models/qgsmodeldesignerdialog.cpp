@@ -533,6 +533,11 @@ void QgsModelDesignerDialog::activate()
   activateWindow();
 }
 
+void QgsModelDesignerDialog::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mProcessingContextGenerator = generator;
+}
+
 void QgsModelDesignerDialog::updateVariablesGui()
 {
   mBlockUndoCommands++;
