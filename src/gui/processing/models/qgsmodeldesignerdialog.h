@@ -32,6 +32,7 @@ class QgsModelViewToolSelect;
 class QgsScreenHelper;
 class QgsProcessingAlgorithmDialogBase;
 class QgsProcessingParameterWidgetContext;
+class QgsProcessingContextGenerator;
 
 ///@cond NOT_STABLE
 
@@ -139,6 +140,12 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0; // cppcheck-suppress pureVirtualCall
 
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the dialog when required.
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
     QAction *actionSaveInProject() { return mActionSaveInProject; }
@@ -236,6 +243,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *mActionPaste = nullptr;
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
+
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 
     QString mTitle;
 
