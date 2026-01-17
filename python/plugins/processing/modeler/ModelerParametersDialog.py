@@ -20,6 +20,7 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import webbrowser
+from typing import Optional, Dict
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
@@ -46,6 +47,8 @@ from qgis.core import (
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelChildParameterSource,
     QgsProcessingOutputDefinition,
+    QgsProcessingAlgorithm,
+    QgsProcessingModelAlgorithm,
 )
 
 from qgis.gui import (
@@ -72,7 +75,13 @@ from processing.gui.wrappers import WidgetWrapper
 
 class ModelerParametersDialog(QDialog):
 
-    def __init__(self, alg, model, algName=None, configuration=None):
+    def __init__(
+        self,
+        alg: QgsProcessingAlgorithm,
+        model: QgsProcessingModelAlgorithm,
+        algName: Optional[str] = None,
+        configuration: Optional[dict[str, object]] = None,
+    ):
         super().__init__()
         self.setObjectName("ModelerParametersDialog")
         self.setModal(True)
