@@ -253,7 +253,7 @@ void QgsMssqlDataItemGuiProvider::renameLayer( QgsMssqlLayerItem *layerItem, Qgs
 {
   const QgsMssqlLayerProperty &layerInfo = layerItem->layerInfo();
 
-  QgsNewNameDialog dlg( tr( "Table %2.%3" ).arg( layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
+  QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
   dlg.setWindowTitle( tr( "Rename Table" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == layerInfo.tableName )
     return;
