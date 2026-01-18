@@ -106,6 +106,55 @@ class CORE_EXPORT QgsEllipse
      */
     static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
+    /**
+     * Constructs an ellipse from 4 points.
+     *
+     * The ellipse will have axes aligned to the X and Y axes.
+     * The 4 points must lie on the ellipse and define a unique axis-aligned ellipse.
+     *
+     * Z dimension is supported and is retrieved from the first 3D point amongst the input points.
+     * M value is retrieved from the first point with M amongst the input points.
+     *
+     * If the 4 points do not define a valid ellipse (e.g., collinear points, points forming
+     * a hyperbola, or insufficient points), an empty ellipse is returned.
+     *
+     * \param pt1 First point on the ellipse.
+     * \param pt2 Second point on the ellipse.
+     * \param pt3 Third point on the ellipse.
+     * \param pt4 Fourth point on the ellipse.
+     * \return The constructed ellipse, or an empty ellipse if the points do not define a valid ellipse.
+     *
+     * \note This method produces only axis-aligned ellipses (azimuth is always 90 degrees).
+     *
+     * \since QGIS 4.0
+     */
+    static QgsEllipse from4Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 ) SIP_HOLDGIL;
+
+    /**
+     * Constructs an ellipse from a center point and 3 points on the ellipse.
+     *
+     * Unlike from4Points(), this method can produce ellipses with any orientation.
+     *
+     * Z dimension is supported and is retrieved from the first 3D point amongst the input points.
+     * M value is retrieved from the first point with M amongst the input points.
+     *
+     * If \a pt2 and \a pt3 are identical (within tolerance), the method will construct
+     * an axis-aligned ellipse using only 2 points.
+     *
+     * If the points do not define a valid ellipse (e.g., a point coincides with the center,
+     * points are collinear through the center, or the resulting shape is not an ellipse),
+     * an empty ellipse is returned.
+     *
+     * \param center The center point of the ellipse.
+     * \param pt1 First point on the ellipse.
+     * \param pt2 Second point on the ellipse.
+     * \param pt3 Third point on the ellipse.
+     * \return The constructed ellipse, or an empty ellipse if the points do not define a valid ellipse.
+     *
+     * \since QGIS 4.0
+     */
+    static QgsEllipse fromCenter3Points( const QgsPoint &center, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 ) SIP_HOLDGIL;
+
     virtual bool operator ==( const QgsEllipse &elp ) const;
     virtual bool operator !=( const QgsEllipse &elp ) const;
 
