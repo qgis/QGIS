@@ -31,6 +31,7 @@
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsnurbscurve.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -110,6 +111,7 @@ bool QgsMapToolCapture::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   BUILTIN_UNREACHABLE
@@ -492,6 +494,9 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
       break;
     case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = Qgis::WkbType::LineString;
+      break;
+    case Qgis::CaptureTechnique::NurbsCurve:
+      mLineDigitizingType = Qgis::WkbType::NurbsCurve;
       break;
   }
 
@@ -991,6 +996,15 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
       return;
     }
 
+    // Handle NURBS ControlPoints mode: remove last control point
+    if ( mTempRubberBand->stringType() == Qgis::WkbType::NurbsCurve && mTempRubberBand->pointsCount() > 1 )
+    {
+      mTempRubberBand->removeLastPoint();
+      mTempRubberBand->movePoint( lastPoint );
+      mCadDockWidget->removePreviousPoint();
+      return;
+    }
+
     QgsVertexId vertexToRemove;
     vertexToRemove.part = 0;
     vertexToRemove.ring = 0;
@@ -1092,6 +1106,62 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
+  else if ( e->key() == Qt::Key_W && !e->isAutoRepeat() )
+  {
+    // Enable NURBS weight editing mode when W is pressed
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && mTempRubberBand && mTempRubberBand->pointsCount() >= 2 )
+    {
+      mWeightEditMode = true;
+      // Edit the last control point by default (the one being digitized)
+      mWeightEditControlPointIndex = mTempRubberBand->pointsCount() - 2; // -2 because last point is the cursor position
+      emit messageEmitted( tr( "NURBS weight editing: Use mouse wheel to adjust weight (Ctrl=fine, Shift=coarse). Current weight: %1" ).arg( mTempRubberBand->weight( mWeightEditControlPointIndex ), 0, 'f', 2 ), Qgis::MessageLevel::Info );
+      e->ignore();
+    }
+  }
+}
+
+void QgsMapToolCapture::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_W && !e->isAutoRepeat() )
+  {
+    if ( mWeightEditMode )
+    {
+      mWeightEditMode = false;
+      mWeightEditControlPointIndex = -1;
+      emit messageEmitted( QString() ); // Clear the message
+      e->accept();
+      return;
+    }
+  }
+
+  QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
+}
+
+void QgsMapToolCapture::wheelEvent( QWheelEvent *e )
+{
+  if ( mWeightEditMode && mWeightEditControlPointIndex >= 0 && mTempRubberBand )
+  {
+    double adjustment = e->angleDelta().y() > 0 ? 0.1 : -0.1;
+    if ( e->modifiers() & Qt::ControlModifier )
+      adjustment *= 0.1; // fine adjustment
+    else if ( e->modifiers() & Qt::ShiftModifier )
+      adjustment *= 10.0; // coarse adjustment
+
+    // Get current weight and apply adjustment
+    const double currentWeight = mTempRubberBand->weight( mWeightEditControlPointIndex );
+    const double newWeight = std::max( 0.01, currentWeight + adjustment );
+
+    // Apply the new weight
+    if ( mTempRubberBand->setWeight( mWeightEditControlPointIndex, newWeight ) )
+    {
+      emit messageEmitted( tr( "NURBS weight: %1" ).arg( newWeight, 0, 'f', 2 ), Qgis::MessageLevel::Info );
+    }
+
+    e->accept();
+    return;
+  }
+
+  QgsMapToolAdvancedDigitizing::wheelEvent( e );
 }
 
 void QgsMapToolCapture::startCapturing()
@@ -1426,6 +1496,8 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
     bool digitizingFinished = false;
+    QgsPointSequence nurbsControlPoints;
+    QVector<double> nurbsWeights;
 
     if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
     {
@@ -1466,25 +1538,76 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( e->button() == Qt::RightButton )
       {
         // End of string
-        deleteTempRubberBand();
 
-        //lines: bail out if there are not at least two vertices
-        if ( mode() == CaptureLine && size() < 2 )
+        // Extract NURBS control points and weights from the rubberband before deleting it
+        if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && mTempRubberBand )
         {
-          stopCapturing();
-          return;
+          const int rbPointCount = mTempRubberBand->pointsCount();
+          if ( rbPointCount > 1 )
+          {
+            // Exclude the last point (cursor position)
+            for ( int i = 0; i < rbPointCount - 1; ++i )
+            {
+              nurbsControlPoints.append( mTempRubberBand->pointFromEnd( rbPointCount - 1 - i ) );
+            }
+            // Also extract weights (in correct order)
+            const QVector<double> &rbWeights = mTempRubberBand->weights();
+            for ( int i = 0; i < rbPointCount - 1; ++i )
+            {
+              if ( i < rbWeights.size() )
+                nurbsWeights.append( rbWeights[i] );
+              else
+                nurbsWeights.append( 1.0 );
+            }
+          }
         }
 
-        //polygons: bail out if there are not at least two vertices
-        if ( mode() == CapturePolygon && size() < 3 )
+        deleteTempRubberBand();
+
+        if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve )
         {
-          stopCapturing();
-          return;
+          // Minimum 4 control points required for degree 3 NURBS
+          if ( mode() == CaptureLine && nurbsControlPoints.count() < 4 )
+          {
+            stopCapturing();
+            return;
+          }
+          if ( mode() == CapturePolygon && nurbsControlPoints.count() < 4 )
+          {
+            stopCapturing();
+            return;
+          }
+        }
+        else
+        {
+          //lines: bail out if there are not at least two vertices
+          if ( mode() == CaptureLine && size() < 2 )
+          {
+            stopCapturing();
+            return;
+          }
+
+          //polygons: bail out if there are not at least two vertices
+          if ( mode() == CapturePolygon && size() < 3 )
+          {
+            stopCapturing();
+            return;
+          }
         }
 
         if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
         {
-          closePolygon();
+          // Close NURBS curve by adding first control point at the end
+          if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && !nurbsControlPoints.isEmpty() )
+          {
+            nurbsControlPoints.append( nurbsControlPoints.first() );
+            if ( !nurbsWeights.isEmpty() )
+              nurbsWeights.append( nurbsWeights.first() );
+          }
+          else
+          {
+            closePolygon();
+          }
         }
 
         digitizingFinished = true;
@@ -1494,7 +1617,59 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( digitizingFinished )
     {
       QgsGeometry g;
-      std::unique_ptr<QgsCurve> curveToAdd( captureCurve()->clone() );
+      std::unique_ptr<QgsCurve> curveToAdd;
+
+      // Create a single NurbsCurve from all control points
+      if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve )
+      {
+        // Get degree from settings
+        int degree = QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->value();
+        const int n = nurbsControlPoints.size();
+
+        // Adapt degree if not enough control points
+        if ( n < degree + 1 )
+        {
+          degree = std::max( 1, n - 1 );
+          if ( n < 2 )
+          {
+            curveToAdd = std::make_unique<QgsLineString>( nurbsControlPoints );
+          }
+        }
+
+        if ( !curveToAdd )
+        {
+          // Generate uniform clamped knot vector (size = n + degree + 1)
+          const int knotCount = n + degree + 1;
+          QVector<double> knots( knotCount );
+
+          // First (degree + 1) knots are 0
+          for ( int i = 0; i <= degree; ++i )
+            knots[i] = 0.0;
+
+          // Last (degree + 1) knots are 1
+          for ( int i = knotCount - degree - 1; i < knotCount; ++i )
+            knots[i] = 1.0;
+
+          // Middle knots are uniformly spaced
+          const int numMiddleKnots = n - degree - 1;
+          for ( int i = 0; i < numMiddleKnots; ++i )
+          {
+            knots[degree + 1 + i] = static_cast<double>( i + 1 ) / ( numMiddleKnots + 1 );
+          }
+
+          // Ensure we have the right number of weights
+          QVector<double> weights = nurbsWeights;
+          while ( weights.size() < n )
+            weights.append( 1.0 );
+          weights.resize( n );
+
+          curveToAdd = std::make_unique<QgsNurbsCurve>( nurbsControlPoints, degree, knots, weights );
+        }
+      }
+      else
+      {
+        curveToAdd.reset( captureCurve()->clone() );
+      }
 
       if ( mode() == CaptureLine )
       {
@@ -1504,25 +1679,30 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        //does compoundcurve contain circular strings?
-        //does provider support circular strings?
-        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        // For NURBS curves, keep the already-created curve
+        // For other curves, check provider support for curved segments
+        if ( mCurrentCaptureTechnique != Qgis::CaptureTechnique::NurbsCurve )
         {
-          const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-          const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;
-
-          if ( hasCurvedSegments && providerSupportsCurvedSegments )
+          //does compoundcurve contain circular strings?
+          //does provider support circular strings?
+          if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
           {
-            curveToAdd.reset( captureCurve()->clone() );
+            const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+            const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;
+
+            if ( hasCurvedSegments && providerSupportsCurvedSegments )
+            {
+              curveToAdd.reset( captureCurve()->clone() );
+            }
+            else
+            {
+              curveToAdd.reset( captureCurve()->curveToLine() );
+            }
           }
           else
           {
-            curveToAdd.reset( captureCurve()->curveToLine() );
+            curveToAdd.reset( captureCurve()->clone() );
           }
-        }
-        else
-        {
-          curveToAdd.reset( captureCurve()->clone() );
         }
         std::unique_ptr<QgsCurvePolygon> poly { new QgsCurvePolygon() };
         poly->setExteriorRing( curveToAdd.release() );
