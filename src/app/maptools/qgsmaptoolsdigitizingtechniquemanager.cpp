@@ -46,6 +46,7 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QO
   mTechniqueActions.insert( Qgis::CaptureTechnique::CircularString, QgisApp::instance()->mActionDigitizeWithCurve );
   mTechniqueActions.insert( Qgis::CaptureTechnique::Streaming, QgisApp::instance()->mActionStreamDigitize );
   mTechniqueActions.insert( Qgis::CaptureTechnique::Shape, QgisApp::instance()->mActionDigitizeShape );
+  mTechniqueActions.insert( Qgis::CaptureTechnique::NurbsCurve, QgisApp::instance()->mActionDigitizeWithNurbs );
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -266,6 +267,9 @@ void QgsMapToolsDigitizingTechniqueManager::updateDigitizeModeButton( const Qgis
       break;
     case Qgis::CaptureTechnique::Shape:
       mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
+      break;
+    case Qgis::CaptureTechnique::NurbsCurve:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithNurbs );
       break;
   }
 }
