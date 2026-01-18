@@ -31,6 +31,7 @@ class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
 class QgsProcessingAlgorithmDialogBase;
+class QgsModelDesignerConfigDockWidget;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
 
@@ -216,6 +217,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void run( const QSet<QString> &childAlgorithmSubset = QSet<QString>() );
     void showChildAlgorithmOutputs( const QString &childId );
     void showChildAlgorithmLog( const QString &childId );
+    void onItemFocused( QgsModelComponentGraphicItem *item );
 
   private:
     enum UndoCommand
@@ -253,6 +255,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *mActionPaste = nullptr;
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
+
+    QgsDockWidget *mConfigWidgetDock = nullptr;
+    QgsModelDesignerConfigDockWidget *mConfigWidget = nullptr;
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 
