@@ -159,8 +159,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
       Centroid = 1 << 3, //!< Snapped to a centroid
       MiddleOfSegment = 1 << 4, //!< Snapped to the middle of a segment
       LineEndpoint = 1 << 5, //!< Start or end points of lines only \since QGIS 3.20
-      ControlPoint = 1 << 6, //!< Snapped to a control point (for NURBS curves) \since QGIS 4.0
-      All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types. Note LineEndpoint and ControlPoint are not included as they have specific use cases.
+      All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types. Note LineEndpoint is not included as endpoints made redundant by the presence of the Vertex flag.
     };
 
     Q_DECLARE_FLAGS( Types, Type )
@@ -223,13 +222,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
          * \since QGIS 3.20
          */
         bool hasLineEndpoint() const { return mType == LineEndpoint; }
-
-        /**
-         * Returns TRUE if the Match is a control point (for NURBS curves).
-         *
-         * \since QGIS 4.0
-         */
-        bool hasControlPoint() const { return mType == ControlPoint; }
 
         /**
          * for vertex / edge match
@@ -401,14 +393,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Match nearestLineEndpoints( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
-     * Find nearest control point (for NURBS curves) to the specified point - up to distance specified by tolerance
-     * Optional filter may discard unwanted matches.
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \since QGIS 4.0
-     */
-    Match nearestControlPoint( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
-
-    /**
      * Find nearest edge to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
@@ -550,7 +534,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
     friend class QgsPointLocator_VisitorCentroidsInRect;
     friend class QgsPointLocator_VisitorMiddlesInRect;
     friend class QgsPointLocator_VisitorNearestLineEndpoint;
-    friend class QgsPointLocator_VisitorNearestControlPoint;
 };
 
 

@@ -496,7 +496,6 @@ The development version
       Centroid,
       MiddleOfSegment,
       LineEndpoint,
-      ControlPoint,
     };
     typedef QFlags<Qgis::SnappingType> SnappingTypes;
 
@@ -1794,7 +1793,6 @@ The development version
       {
       Segment,
       Curve,
-      ControlPoint,
     };
 
     enum class MarkerShape

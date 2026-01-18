@@ -25,7 +25,6 @@
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
-#include "qgsnurbscurve.h"
 #include "qgspointlocatorinittask.h"
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
@@ -359,110 +358,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
-
-/**
- * \ingroup core
- * \class QgsPointLocator_VisitorNearestControlPoint
- * \brief Helper class used when traversing the index looking for control points (NURBS curve)- builds a list of matches.
- * \note not available in Python bindings
- * \since QGIS 4.0
-*/
-class QgsPointLocator_VisitorNearestControlPoint : public IVisitor
-{
-  public:
-    /**
-     * \ingroup core
-     * \brief Helper class used when traversing the index looking for control points - builds a list of matches.
-    */
-    QgsPointLocator_VisitorNearestControlPoint( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
-      : mLocator( pl )
-      , mBest( m )
-      , mSrcPoint( srcPoint )
-      , mFilter( filter )
-    {}
-
-    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
-    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
-
-    void visitData( const IData &d ) override
-    {
-      const QgsFeatureId id = d.getIdentifier();
-      const QgsGeometry *geom = mLocator->mGeoms.value( id );
-      if ( !geom )
-        return; // should not happen, but be safe
-
-      QgsPointXY bestPoint;
-      int bestVertexNumber = -1;
-      auto replaceIfBetter = [this, &bestPoint, &bestVertexNumber]( const QgsPoint & candidate, int vertexNumber )
-      {
-        if ( bestPoint.isEmpty() || candidate.distanceSquared( mSrcPoint.x(), mSrcPoint.y() ) < bestPoint.sqrDist( mSrcPoint ) )
-        {
-          bestPoint = QgsPointXY( candidate );
-          bestVertexNumber = vertexNumber;
-        }
-      };
-
-      // Helper to extract control points from a curve (handles NURBS)
-      std::function<void( const QgsCurve *, int & )> extractControlPoints = [&]( const QgsCurve * curve, int &controlPointNum )
-      {
-        if ( !curve )
-          return;
-
-        if ( const QgsNurbsCurve *nurbsCurve = qgsgeometry_cast<const QgsNurbsCurve *>( curve ) )
-        {
-          const QVector<QgsPoint> controlPoints = nurbsCurve->controlPoints();
-          for ( int i = 0; i < controlPoints.size(); ++i )
-          {
-            replaceIfBetter( controlPoints[i], controlPointNum + i );
-          }
-          controlPointNum += controlPoints.size();
-        }
-      };
-
-      switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
-      {
-        case Qgis::GeometryType::Point:
-        case Qgis::GeometryType::Polygon:
-        case Qgis::GeometryType::Unknown:
-        case Qgis::GeometryType::Null:
-          return;
-
-        case Qgis::GeometryType::Line:
-        {
-          int controlPointNum = 0;
-          for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
-          {
-            if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( *partIt ) )
-            {
-              extractControlPoints( curve, controlPointNum );
-            }
-          }
-          break;
-        }
-      }
-
-      if ( bestPoint.isEmpty() )
-        return;
-
-      const QgsPointLocator::Match m( QgsPointLocator::ControlPoint, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( bestPoint ) ), bestPoint, bestVertexNumber );
-      // in range queries the filter may reject some matches
-      if ( mFilter && !mFilter->acceptMatch( m ) )
-        return;
-
-      if ( !mBest.isValid() || m.distance() < mBest.distance() )
-        mBest = m;
-    }
-
-  private:
-    QgsPointLocator *mLocator = nullptr;
-    QgsPointLocator::Match &mBest;
-    QgsPointXY mSrcPoint;
-    QgsPointLocator::MatchFilter *mFilter = nullptr;
-};
-
-
 ////////////////////////////////////////////////////////////////////////////
-
 
 /**
  * \ingroup core
@@ -1488,21 +1384,6 @@ QgsPointLocator::Match QgsPointLocator::nearestLineEndpoints( const QgsPointXY &
 
   Match m;
   QgsPointLocator_VisitorNearestLineEndpoint visitor( this, m, point, filter );
-
-  const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
-  if ( m.isValid() && m.distance() > tolerance )
-    return Match(); // make sure that only match strictly within the tolerance is returned
-  return m;
-}
-
-QgsPointLocator::Match QgsPointLocator::nearestControlPoint( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
-{
-  if ( !prepare( relaxed ) )
-    return Match();
-
-  Match m;
-  QgsPointLocator_VisitorNearestControlPoint visitor( this, m, point, filter );
 
   const QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );

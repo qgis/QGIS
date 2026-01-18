@@ -95,7 +95,6 @@ visible feature
       Centroid,
       MiddleOfSegment,
       LineEndpoint,
-      ControlPoint,
       All
     };
 
@@ -164,13 +163,6 @@ Returns ``True`` if the Match is the middle of a segment
 Returns ``True`` if the Match is a line endpoint (start or end vertex).
 
 .. versionadded:: 3.20
-%End
-
-        bool hasControlPoint() const;
-%Docstring
-Returns ``True`` if the Match is a control point (for NURBS curves).
-
-.. versionadded:: 4.0
 %End
 
         double distance() const;
@@ -266,16 +258,6 @@ unwanted matches. This method is either blocking or non blocking
 according to ``relaxed`` parameter passed
 
 .. versionadded:: 3.20
-%End
-
-    Match nearestControlPoint( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
-%Docstring
-Find nearest control point (for NURBS curves) to the specified point -
-up to distance specified by tolerance Optional filter may discard
-unwanted matches. This method is either blocking or non blocking
-according to ``relaxed`` parameter passed
-
-.. versionadded:: 4.0
 %End
 
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );

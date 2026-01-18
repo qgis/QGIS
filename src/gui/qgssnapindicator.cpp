@@ -62,10 +62,10 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     {
       iconType = QgsVertexMarker::ICON_INVERTED_TRIANGLE; // line endpoint snap
     }
-    else if ( match.hasVertex() || match.hasControlPoint() )
+    else if ( match.hasVertex() )
     {
       if ( match.layer() )
-        iconType = QgsVertexMarker::ICON_BOX; // vertex or control point snap
+        iconType = QgsVertexMarker::ICON_BOX; // vertex snap
       else
         iconType = QgsVertexMarker::ICON_X; // intersection snap
     }
