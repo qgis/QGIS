@@ -337,15 +337,20 @@ bool QgsMapToolSelectAnnotation::shortcutEvent( QKeyEvent *event )
   }
 
   QKeySequence keySequence( event->key() | event->modifiers() );
-
   if ( keySequence == QKeySequence::Copy || keySequence == QKeySequence::Cut )
   {
     mCopiedItems.clear();
     mCopiedItemsTopLeft = toMapCoordinates( QPoint( mMouseHandles->sceneBoundingRect().topLeft().x(), mMouseHandles->sceneBoundingRect().topLeft().y() ) );
     for ( std::unique_ptr<QgsAnnotationItemRubberBand> &selectedItem : mSelectedItems )
     {
-      mCopiedItems << qMakePair( selectedItem->layerId(), selectedItem->itemId() );
+      if ( QgsAnnotationItem *annotationItem = selectedItem->item() )
+      {
+        std::unique_ptr<QgsAnnotationItem> copiedItem;
+        copiedItem.reset( annotationItem->clone() );
+        mCopiedItems.push_back( std::move( copiedItem ) );
+      }
     }
+
     if ( keySequence == QKeySequence::Cut )
     {
       while ( !mSelectedItems.empty() )
@@ -371,21 +376,17 @@ bool QgsMapToolSelectAnnotation::shortcutEvent( QKeyEvent *event )
       mSelectedItems.clear();
     }
 
-    for ( const QPair<QString, QString> &copiedItem : mCopiedItems )
+    for ( std::unique_ptr<QgsAnnotationItem> &copiedItem : mCopiedItems )
     {
-      if ( QgsAnnotationItem *annotationItem = annotationItemFromId( copiedItem.first, copiedItem.second ) )
+      QgsAnnotationLayer *annotationLayer = dynamic_cast<QgsAnnotationLayer *>( layer() );
+      if ( !annotationLayer )
       {
-        QgsAnnotationLayer *annotationLayer = dynamic_cast<QgsAnnotationLayer *>( layer() );
-        if ( !annotationLayer )
-        {
-          annotationLayer = QgsProject::instance()->mainAnnotationLayer();
-        }
-        QString pastedItemId = annotationLayer->addItem( annotationItem->clone() );
-
-        mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( annotationLayer->id(), pastedItemId, mCanvas ) );
-        attemptMoveBy( mSelectedItems.back().get(), deltaX, deltaY );
-        mSelectedItems.back().get()->setNeedsUpdatedBoundingBox( true );
+        annotationLayer = QgsProject::instance()->mainAnnotationLayer();
       }
+      QString pastedItemId = annotationLayer->addItem( copiedItem->clone() );
+      mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( annotationLayer->id(), pastedItemId, mCanvas ) );
+      attemptMoveBy( mSelectedItems.back().get(), deltaX, deltaY );
+      mSelectedItems.back().get()->setNeedsUpdatedBoundingBox( true );
     }
     emit selectedItemsChanged();
 

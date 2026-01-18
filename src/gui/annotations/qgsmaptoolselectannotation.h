@@ -188,7 +188,7 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
     void updateSelectedItem();
 
     std::vector<std::unique_ptr<QgsAnnotationItemRubberBand>> mSelectedItems;
-    QList<QPair<QString, QString>> mCopiedItems;
+    std::vector<std::unique_ptr<QgsAnnotationItem>> mCopiedItems;
     QgsPointXY mCopiedItemsTopLeft;
 
     QObjectUniquePtr<QgsMapToolSelectAnnotationMouseHandles> mMouseHandles;
