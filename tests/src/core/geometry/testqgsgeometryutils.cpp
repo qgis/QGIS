@@ -2069,7 +2069,7 @@ void TestQgsGeometryUtils::testCheckWeaklyFor3DPlane()
 
 void TestQgsGeometryUtils::testPointByDeflectionAngle()
 {
-  const double tolerance = 1e-4;
+  const double tolerance = 1e-8;
 
   // Test 1: No deflection, continue north
   {

@@ -32,6 +32,8 @@ class TestQgsGeometryUtilsBase : public QObject
     void testCreateFilletBase_data();
     void testCreateFilletBase();
     void testPointsAreCollinear();
+    void testPointByDeflectionAngle_data();
+    void testPointByDeflectionAngle();
 };
 
 void TestQgsGeometryUtilsBase::testFuzzyEqual()
@@ -424,6 +426,135 @@ void TestQgsGeometryUtilsBase::testPointsAreCollinear()
   QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 2, 0, 0, 0, 0, 0, 1, 0.00001 ) );
   QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.00001 ) );
   QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 1, 0, 0, 0, 0, 0, 0, 1, 1, 0.00001 ) );
+}
+
+void TestQgsGeometryUtilsBase::testPointByDeflectionAngle_data()
+{
+  QTest::addColumn<double>( "x1" );
+  QTest::addColumn<double>( "y1" );
+  QTest::addColumn<double>( "x2" );
+  QTest::addColumn<double>( "y2" );
+  QTest::addColumn<double>( "deflectionAngle" );
+  QTest::addColumn<double>( "distance" );
+  QTest::addColumn<double>( "expectedX" );
+  QTest::addColumn<double>( "expectedY" );
+
+  // Test 1: No deflection (continue in same direction)
+  // Base point at origin, direction point at (0,10) (north), distance 5
+  // Should produce point at (0,5)
+  QTest::newRow( "no_deflection_north" )
+    << 0.0 << 0.0  // base point
+    << 0.0 << 10.0 // direction point (north)
+    << 0.0         // no deflection
+    << 5.0         // distance
+    << 0.0 << 5.0; // expected result (continue north)
+
+  // Test 2: 90 degree deflection to the right (clockwise)
+  // From (0,0) with direction to (0,10), deflect 90 degrees right = east
+  QTest::newRow( "deflection_90_right" )
+    << 0.0 << 0.0  // base point
+    << 0.0 << 10.0 // direction point (north)
+    << M_PI_2      // 90 degrees right (clockwise)
+    << 5.0         // distance
+    << 5.0 << 0.0; // expected result (east)
+
+  // Test 3: 90 degree deflection to the left (counter-clockwise)
+  // From (0,0) with direction to (0,10), deflect 90 degrees left = west
+  QTest::newRow( "deflection_90_left" )
+    << 0.0 << 0.0   // base point
+    << 0.0 << 10.0  // direction point (north)
+    << -M_PI_2      // 90 degrees left (counter-clockwise)
+    << 5.0          // distance
+    << -5.0 << 0.0; // expected result (west)
+
+  // Test 4: 180 degree deflection (reverse direction)
+  // From (0,0) with direction to (0,10), deflect 180 degrees = south
+  QTest::newRow( "deflection_180" )
+    << 0.0 << 0.0   // base point
+    << 0.0 << 10.0  // direction point (north)
+    << M_PI         // 180 degrees
+    << 5.0          // distance
+    << 0.0 << -5.0; // expected result (south)
+
+  // Test 5: 45 degree deflection to the right
+  // From (0,0) with direction to (0,10), deflect 45 degrees right = northeast
+  QTest::newRow( "deflection_45_right" )
+    << 0.0 << 0.0       // base point
+    << 0.0 << 10.0      // direction point (north)
+    << M_PI_4           // 45 degrees right
+    << std::sqrt( 2.0 ) // distance sqrt(2) for easier calculation
+    << 1.0 << 1.0;      // expected result (northeast at 45 degrees)
+
+  // Test 6: Direction from east (0,0) to (10,0)
+  // Deflect 90 degrees right (clockwise) = south
+  QTest::newRow( "direction_east_deflect_right" )
+    << 0.0 << 0.0   // base point
+    << 10.0 << 0.0  // direction point (east)
+    << M_PI_2       // 90 degrees right
+    << 5.0          // distance
+    << 0.0 << -5.0; // expected result (south)
+
+  // Test 7: Non-origin base point
+  // From (10,10) with direction to (10,20), no deflection
+  QTest::newRow( "non_origin_base" )
+    << 10.0 << 10.0  // base point
+    << 10.0 << 20.0  // direction point (north)
+    << 0.0           // no deflection
+    << 5.0           // distance
+    << 10.0 << 15.0; // expected result
+
+  // Test 8: Small deflection angle
+  // Tiny angle should produce result close to original direction
+  QTest::newRow( "small_deflection" )
+    << 0.0 << 0.0                 // base point
+    << 0.0 << 10.0                // direction point (north)
+    << 0.001                      // very small deflection
+    << 100.0                      // large distance to show effect
+    << 100.0 * std::sin( 0.001 )  // nearly north but slightly east
+    << 100.0 * std::cos( 0.001 ); // x = d*sin(angle), y = d*cos(angle)
+
+  // Test 9: Full circle deflection (360 degrees = no change)
+  QTest::newRow( "full_circle_deflection" )
+    << 0.0 << 0.0  // base point
+    << 0.0 << 10.0 // direction point (north)
+    << 2.0 * M_PI  // 360 degrees
+    << 5.0         // distance
+    << 0.0 << 5.0; // expected result (same as no deflection)
+
+  // Test 10: Diagonal initial direction
+  // From (0,0) with direction to (10,10) (northeast), no deflection
+  QTest::newRow( "diagonal_direction" )
+    << 0.0 << 0.0       // base point
+    << 10.0 << 10.0     // direction point (northeast)
+    << 0.0              // no deflection
+    << std::sqrt( 2.0 ) // distance sqrt(2)
+    << 1.0 << 1.0;      // expected result (continues northeast)
+}
+
+void TestQgsGeometryUtilsBase::testPointByDeflectionAngle()
+{
+  QFETCH( double, x1 );
+  QFETCH( double, y1 );
+  QFETCH( double, x2 );
+  QFETCH( double, y2 );
+  QFETCH( double, deflectionAngle );
+  QFETCH( double, distance );
+  QFETCH( double, expectedX );
+  QFETCH( double, expectedY );
+
+  double resultX, resultY;
+  QgsGeometryUtilsBase::pointByDeflectionAngle( x1, y1, x2, y2, deflectionAngle, distance, resultX, resultY );
+
+  const double tolerance = 1e-8;
+
+  QVERIFY2( std::isfinite( resultX ), "Result X should be finite" );
+  QVERIFY2( std::isfinite( resultY ), "Result Y should be finite" );
+  QVERIFY2( qgsDoubleNear( resultX, expectedX, tolerance ), QString( "X coordinate: got %1, expected %2" ).arg( resultX ).arg( expectedX ).toLatin1() );
+  QVERIFY2( qgsDoubleNear( resultY, expectedY, tolerance ), QString( "Y coordinate: got %1, expected %2" ).arg( resultY ).arg( expectedY ).toLatin1() );
+
+  // Verify the distance from base point to result is correct
+  const double actualDistance = QgsGeometryUtilsBase::distance2D( x1, y1, resultX, resultY );
+  QVERIFY2( qgsDoubleNear( actualDistance, distance, tolerance ), QString( "Distance: got %1, expected %2" ).arg( actualDistance ).arg( distance ).toLatin1() );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtilsBase )
