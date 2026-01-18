@@ -770,6 +770,26 @@ double QgsGeometryUtilsBase::azimuth( double x1, double y1, double x2, double y2
   return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
+void QgsGeometryUtilsBase::pointByDeflectionAngle( double x1, double y1, double x2, double y2,
+    double deflectionAngle, double distance,
+    double &resultX, double &resultY )
+{
+  // Calculate the initial bearing from base point to direction point
+  // lineAngle returns angle in radians, clockwise from north
+  const double initialBearing = lineAngle( x1, y1, x2, y2 );
+
+  // Add deflection angle to get the new bearing
+  // Positive deflection = clockwise (right turn)
+  const double newBearing = normalizedAngle( initialBearing + deflectionAngle );
+
+  // Convert bearing (radians from north) to azimuth (degrees from north) for project()
+  const double azimuthDegrees = newBearing * 180.0 / M_PI;
+
+  // Project the point using the 2D version (inclination = 90 degrees)
+  double resultZ;
+  project( x1, y1, std::numeric_limits<double>::quiet_NaN(), distance, azimuthDegrees, 90.0, resultX, resultY, resultZ );
+}
+
 bool QgsGeometryUtilsBase::angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
     double &pointX, double &pointY, double &angle )
 {

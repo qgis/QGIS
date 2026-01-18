@@ -37,6 +37,7 @@ try:
     QgsGeometryUtilsBase.segmentIntersection = staticmethod(QgsGeometryUtilsBase.segmentIntersection)
     QgsGeometryUtilsBase.project = staticmethod(QgsGeometryUtilsBase.project)
     QgsGeometryUtilsBase.azimuth = staticmethod(QgsGeometryUtilsBase.azimuth)
+    QgsGeometryUtilsBase.pointByDeflectionAngle = staticmethod(QgsGeometryUtilsBase.pointByDeflectionAngle)
     QgsGeometryUtilsBase.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

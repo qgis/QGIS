@@ -97,6 +97,7 @@ class TestQgsGeometryUtils : public QObject
     void transferFirstZOrMValueToPoint_qgsgeometry();
     void testPointsAreCollinear();
     void testCheckWeaklyFor3DPlane();
+    void testPointByDeflectionAngle();
 };
 
 
@@ -2064,6 +2065,80 @@ void TestQgsGeometryUtils::testCheckWeaklyFor3DPlane()
   Line3DNoPlane.fromWkt( u"LINESTRING Z (0 0 0, 1 1 1, 2 2 2)"_s );
   QVERIFY( !Line3DNoPlane.isEmpty() );
   QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &Line3DNoPlane, pt1, pt2, pt3 ) );
+}
+
+void TestQgsGeometryUtils::testPointByDeflectionAngle()
+{
+  const double tolerance = 1e-4;
+
+  // Test 1: No deflection, continue north
+  {
+    const QgsPoint base( 0, 0 );
+    const QgsPoint direction( 0, 10 );
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, 0.0, 5.0 );
+    QVERIFY( qgsDoubleNear( result.x(), 0.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 5.0, tolerance ) );
+  }
+
+  // Test 2: 90 degree right deflection (pi/2 radians)
+  {
+    const QgsPoint base( 0, 0 );
+    const QgsPoint direction( 0, 10 );
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, M_PI_2, 5.0 );
+    QVERIFY( qgsDoubleNear( result.x(), 5.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 0.0, tolerance ) );
+  }
+
+  // Test 3: 90 degree left deflection (-pi/2 radians)
+  {
+    const QgsPoint base( 0, 0 );
+    const QgsPoint direction( 0, 10 );
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, -M_PI_2, 5.0 );
+    QVERIFY( qgsDoubleNear( result.x(), -5.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 0.0, tolerance ) );
+  }
+
+  // Test 4: Preserve Z value from basePoint
+  {
+    const QgsPoint base( Qgis::WkbType::PointZ, 0, 0, 100 );
+    const QgsPoint direction( 0, 10 );
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, 0.0, 5.0 );
+    QVERIFY( result.is3D() );
+    QVERIFY( qgsDoubleNear( result.z(), 100.0, tolerance ) );
+  }
+
+  // Test 5: Preserve M value from basePoint
+  {
+    const QgsPoint base( Qgis::WkbType::PointM, 0, 0, 0, 50 );
+    const QgsPoint direction( 0, 10 );
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, 0.0, 5.0 );
+    QVERIFY( result.isMeasure() );
+    QVERIFY( qgsDoubleNear( result.m(), 50.0, tolerance ) );
+  }
+
+  // Test 6: Preserve Z and M values
+  {
+    const QgsPoint base( Qgis::WkbType::PointZM, 10, 10, 100, 50 );
+    const QgsPoint direction( 10, 20 );
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, 0.0, 5.0 );
+    QVERIFY( result.is3D() );
+    QVERIFY( result.isMeasure() );
+    QVERIFY( qgsDoubleNear( result.z(), 100.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.m(), 50.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.x(), 10.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 15.0, tolerance ) );
+  }
+
+  // Test 7: Diagonal direction with 45 degree deflection
+  {
+    const QgsPoint base( 0, 0 );
+    const QgsPoint direction( 10, 10 ); // NE direction (45 deg from north)
+    const QgsPoint result = QgsGeometryUtils::pointByDeflectionAngle( base, direction, M_PI_4, std::sqrt( 2.0 ) );
+    // 45 deg (NE) + 45 deg right = 90 deg = East
+    // East direction with distance sqrt(2) gives (sqrt(2), 0)
+    QVERIFY( qgsDoubleNear( result.x(), std::sqrt( 2.0 ), tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 0.0, tolerance ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

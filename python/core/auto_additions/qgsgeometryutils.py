@@ -13,6 +13,7 @@ try:
     QgsGeometryUtils.circleCircleInnerTangents = staticmethod(QgsGeometryUtils.circleCircleInnerTangents)
     QgsGeometryUtils.projectPointOnSegment = staticmethod(QgsGeometryUtils.projectPointOnSegment)
     QgsGeometryUtils.leftOfLine = staticmethod(QgsGeometryUtils.leftOfLine)
+    QgsGeometryUtils.pointByDeflectionAngle = staticmethod(QgsGeometryUtils.pointByDeflectionAngle)
     QgsGeometryUtils.interpolatePointOnArc = staticmethod(QgsGeometryUtils.interpolatePointOnArc)
     QgsGeometryUtils.segmentMidPoint = staticmethod(QgsGeometryUtils.segmentMidPoint)
     QgsGeometryUtils.segmentMidPointFromCenter = staticmethod(QgsGeometryUtils.segmentMidPointFromCenter)

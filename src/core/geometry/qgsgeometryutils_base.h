@@ -525,6 +525,39 @@ class CORE_EXPORT QgsGeometryUtilsBase
      */
     static double azimuth( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL;
 
+    /**
+     * Calculates a point by applying a deflection angle from an initial direction.
+     *
+     * Given a base point (\a x1, \a y1) and a direction point (\a x2, \a y2) that defines
+     * the initial bearing, this method calculates a new point at the specified \a distance
+     * from the base point, deflected by \a deflectionAngle from the initial direction.
+     *
+     * The deflection angle is measured from the initial bearing:
+     *
+     * - Positive values deflect clockwise (to the right)
+     * - Negative values deflect counter-clockwise (to the left)
+     *
+     * This is commonly used in surveying for traverse calculations where angles are
+     * measured as deflections from the previous course direction.
+     *
+     * \param x1 x-coordinate of the base point (instrument position)
+     * \param y1 y-coordinate of the base point (instrument position)
+     * \param x2 x-coordinate of the direction point (backsight)
+     * \param y2 y-coordinate of the direction point (backsight)
+     * \param deflectionAngle deflection angle in radians (positive = clockwise/right)
+     * \param distance distance to the new point
+     * \param resultX x-coordinate of the calculated point
+     * \param resultY y-coordinate of the calculated point
+     *
+     * \see project()
+     * \see lineAngle()
+     *
+     * \since QGIS 4.0
+     */
+    static void pointByDeflectionAngle( double x1, double y1, double x2, double y2,
+                                        double deflectionAngle, double distance,
+                                        double &resultX SIP_OUT, double &resultY SIP_OUT ) SIP_HOLDGIL;
+
 #ifndef SIP_RUN
 
     /**
