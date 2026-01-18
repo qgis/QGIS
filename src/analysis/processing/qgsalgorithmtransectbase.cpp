@@ -203,44 +203,45 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
 
 QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle, const QgsTransectAlgorithmBase::Direction direction )
 {
-  QgsPoint pLeft;  // left point of the line
-  QgsPoint pRight; // right point of the line
+  // Transect is built from right to left relative to the reference line direction.
+  QgsPoint pStart; // start point of the transect
+  QgsPoint pEnd;   // end point of the transect
 
-  QgsPolyline line;
+  QgsPolyline transect;
 
   switch ( orientation )
   {
     case QgsTransectAlgorithmBase::Right:
-      pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
-      pRight = point;
+      pStart = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
+      pEnd = point;
       break;
 
     case QgsTransectAlgorithmBase::Left:
-      pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
-      pLeft = point;
+      pEnd = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
+      pStart = point;
       break;
 
     case QgsTransectAlgorithmBase::Both:
-      pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
-      pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
+      pStart = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
+      pEnd = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
       break;
   }
 
-  // Direction determines the line orientation:
-  // - LeftToRight: line goes from pLeft to pRight (default)
-  // - RightToLeft: line goes from pRight to pLeft (hydraulic convention - perpendicular from stream bank looking downstream)
+  // Direction determines the transect orientation relative to the reference line direction:
+  // - RightToLeft: transect goes from pStart to pEnd (default)
+  // - LeftToRight: transect goes from pEnd to pStart (hydraulic convention - from left bank to right bank  looking downstream)
   if ( direction == QgsTransectAlgorithmBase::RightToLeft )
   {
-    line.append( pRight );
-    line.append( pLeft );
+    transect.append( pStart );
+    transect.append( pEnd );
   }
   else
   {
-    line.append( pLeft );
-    line.append( pRight );
+    transect.append( pEnd );
+    transect.append( pStart );
   }
 
-  return QgsGeometry::fromPolyline( line );
+  return QgsGeometry::fromPolyline( transect );
 }
 
 ///@endcond
