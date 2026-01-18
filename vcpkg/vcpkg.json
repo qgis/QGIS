@@ -8,9 +8,10 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "1c3ef0209e78dceceeca3c4d18f93540a19c37bc",
+        "baseline": "c8ff38b5c7e84ed2380f14cffb137bf76f9d6418",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
+          "arrow",
           "python3",
           "py-*",
           "gdal",
@@ -113,16 +114,43 @@
       "description": "Determines whether Python bindings should be built",
       "dependencies": [
         {
+          "name": "arrow",
+          "features": [
+            "python"
+          ],
+          "platform": "!windows"
+        },
+        {
+          "name": "arrow",
+          "platform": "windows"
+        },
+        {
           "name": "gdal",
           "features": [
             "python"
           ]
+        },
+        {
+          "name": "py-adbc-postgresql",
+          "platform": "!windows"
+        },
+        {
+          "name": "py-adbc-sqlite",
+          "platform": "!windows"
         },
         "py-attrs",
         "py-autopep8",
         "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
+        {
+          "name": "py-geopandas",
+          "features": [
+            "fiona",
+            "arrow"
+          ],
+          "platform": "!windows"
+        },
         "py-isort",
         "py-jinja2",
         {

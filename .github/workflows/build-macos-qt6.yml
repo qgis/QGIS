@@ -29,6 +29,9 @@ jobs:
             osx-architecture: "arm64"
     name: build (macos)
     runs-on: ${{ matrix.os }}
+    env:
+      FC: gfortran
+      GCC_VERSION: 15
 
     steps:
       - name: 🐣 Checkout
@@ -55,6 +58,28 @@ jobs:
           echo $(brew --prefix bison)/bin >> $GITHUB_PATH
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
+
+      - name: Symlink gfortran (macOS)
+        if: matrix.os == 'macos-14'
+        run: |
+          # make sure gfortran is available
+          # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+          # https://github.com/actions/runner-images/issues/3371
+          # ln version - new path 'MacOS14'
+          sudo ln -fs /opt/homebrew/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
+          sudo mkdir -p /usr/local/gfortran
+          sudo ln -sf /opt/homebrew/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
+
+      - name: Symlink gfortran (macOS-intel)
+        if: matrix.os == 'macos-14-intel'
+        run: |
+          # make sure gfortran is available
+          # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+          # https://github.com/actions/runner-images/issues/3371
+          # ln version - new path 'MacOS14'
+          sudo ln -fs /usr/local/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
+          sudo mkdir -p /usr/local/gfortran
+          sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
 
       - uses: actions/setup-python@v6
         with:
