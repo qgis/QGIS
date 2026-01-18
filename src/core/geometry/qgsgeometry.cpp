@@ -1813,6 +1813,57 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     newGeom = QgsGeometry( d->geometry.get()->segmentize() );
   }
 
+  // Handle NurbsCurve: if target is curved but NOT NurbsCurve, and source contains NurbsCurve,
+  // we need to segmentize the NURBS parts first
+  if ( QgsWkbTypes::isCurvedType( type ) && QgsWkbTypes::flatType( type ) != Qgis::WkbType::NurbsCurve )
+  {
+    // Check if geometry contains NurbsCurve that needs conversion
+    bool hasNurbs = false;
+    const Qgis::WkbType flatGeomType = QgsWkbTypes::flatType( newGeom.wkbType() );
+    if ( flatGeomType == Qgis::WkbType::NurbsCurve )
+    {
+      hasNurbs = true;
+    }
+    else if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( newGeom.constGet() ) )
+    {
+      for ( int i = 0; i < collection->numGeometries(); ++i )
+      {
+        if ( QgsWkbTypes::flatType( collection->geometryN( i )->wkbType() ) == Qgis::WkbType::NurbsCurve )
+        {
+          hasNurbs = true;
+          break;
+        }
+      }
+    }
+    else if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( newGeom.constGet() ) )
+    {
+      if ( cp->exteriorRing() && QgsWkbTypes::flatType( cp->exteriorRing()->wkbType() ) == Qgis::WkbType::NurbsCurve )
+        hasNurbs = true;
+      for ( int i = 0; !hasNurbs && i < cp->numInteriorRings(); ++i )
+      {
+        if ( QgsWkbTypes::flatType( cp->interiorRing( i )->wkbType() ) == Qgis::WkbType::NurbsCurve )
+          hasNurbs = true;
+      }
+    }
+    else if ( const QgsCompoundCurve *cc = qgsgeometry_cast< const QgsCompoundCurve * >( newGeom.constGet() ) )
+    {
+      for ( int i = 0; i < cc->nCurves(); ++i )
+      {
+        if ( QgsWkbTypes::flatType( cc->curveAt( i )->wkbType() ) == Qgis::WkbType::NurbsCurve )
+        {
+          hasNurbs = true;
+          break;
+        }
+      }
+    }
+
+    if ( hasNurbs )
+    {
+      // Segmentize to remove NURBS, then we'll convert back to curve type below
+      newGeom = QgsGeometry( newGeom.constGet()->segmentize() );
+    }
+  }
+
   // polygon -> line
   if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Line &&
        newGeom.type() == Qgis::GeometryType::Polygon )
