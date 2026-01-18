@@ -20,7 +20,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsmaptoolcapture.h"
+#include "qgsmaptoolshapeellipse4points.h"
 #include "qgsmaptoolshapeellipsecenter2points.h"
+#include "qgsmaptoolshapeellipsecenter3points.h"
 #include "qgsmaptoolshapeellipsecenterpoint.h"
 #include "qgsmaptoolshapeellipseextent.h"
 #include "qgsmaptoolshapeellipsefoci.h"
@@ -47,8 +49,10 @@ class TestQgsMapToolEllipse : public QObject
 
     void testEllipseFromCenterAndPointNotEnoughPoints();
     void testEllipseFromCenterAnd2PointsNotEnoughPoints();
+    void testEllipseFromCenterAnd3PointsNotEnoughPoints();
     void testEllipseFromExtentNotEnoughPoints();
     void testEllipseFromFociNotEnoughPoints();
+    void testEllipseFrom4PointsNotEnoughPoints();
 
     void testTransientGeometrySignalCenterPoint();
     void testTransientGeometrySignalCenter2Points();
@@ -69,10 +73,14 @@ class TestQgsMapToolEllipse : public QObject
       "CenterAndPointWithDeletedVertex",
       "CenterAnd2Points",
       "CenterAnd2PointsWithDeletedVertex",
+      "CenterAnd3Points",
+      "CenterAnd3PointsWithDeletedVertex",
       "FromExtent",
       "FromExtentWithDeletedVertex",
       "FromFoci",
       "FromFociWithDeletedVertex",
+      "From4Points",
+      "From4PointsWithDeletedVertex",
     };
     QMap<QString, QString> mDrawFunctionUserNames = {};
     QMap<QString, std::function<QgsFeatureId( void )>> mDrawFunctionPtrMap = {};
@@ -86,10 +94,14 @@ class TestQgsMapToolEllipse : public QObject
     QgsFeatureId drawEllipseFromCenterAndPointWithDeletedVertex();
     QgsFeatureId drawEllipseFromCenterAnd2Points();
     QgsFeatureId drawEllipseFromCenterAnd2PointsWithDeletedVertex();
+    QgsFeatureId drawEllipseFromCenterAnd3Points();
+    QgsFeatureId drawEllipseFromCenterAnd3PointsWithDeletedVertex();
     QgsFeatureId drawEllipseFromExtent();
     QgsFeatureId drawEllipseFromExtentWithDeletedVertex();
     QgsFeatureId drawEllipseFromFoci();
     QgsFeatureId drawEllipseFromFociWithDeletedVertex();
+    QgsFeatureId drawEllipseFrom4Points();
+    QgsFeatureId drawEllipseFrom4PointsWithDeletedVertex();
 
     const double Z = 444.0;
     const double M = 222.0;
@@ -145,19 +157,27 @@ void TestQgsMapToolEllipse::initAttributs()
   mDrawFunctionUserNames["CenterAndPointWithDeletedVertex"] = "from center and a point with deleted vertex";
   mDrawFunctionUserNames["CenterAnd2Points"] = "from center and 2 points";
   mDrawFunctionUserNames["CenterAnd2PointsWithDeletedVertex"] = "from center and 2 points with deleted vertex";
+  mDrawFunctionUserNames["CenterAnd3Points"] = "from center and 3 points";
+  mDrawFunctionUserNames["CenterAnd3PointsWithDeletedVertex"] = "from center and 3 points with deleted vertex";
   mDrawFunctionUserNames["FromExtent"] = "from extent point";
   mDrawFunctionUserNames["FromExtentWithDeletedVertex"] = "from extent with deleted vertex";
   mDrawFunctionUserNames["FromFoci"] = "from foci point";
   mDrawFunctionUserNames["FromFociWithDeletedVertex"] = "from foci with deleted vertex";
+  mDrawFunctionUserNames["From4Points"] = "from 4 points";
+  mDrawFunctionUserNames["From4PointsWithDeletedVertex"] = "from 4 points with deleted vertex";
 
   mDrawFunctionPtrMap["CenterAndPoint"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromCenterAndPoint, this );
   mDrawFunctionPtrMap["CenterAndPointWithDeletedVertex"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromCenterAndPointWithDeletedVertex, this );
   mDrawFunctionPtrMap["CenterAnd2Points"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromCenterAnd2Points, this );
   mDrawFunctionPtrMap["CenterAnd2PointsWithDeletedVertex"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromCenterAnd2PointsWithDeletedVertex, this );
+  mDrawFunctionPtrMap["CenterAnd3Points"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromCenterAnd3Points, this );
+  mDrawFunctionPtrMap["CenterAnd3PointsWithDeletedVertex"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromCenterAnd3PointsWithDeletedVertex, this );
   mDrawFunctionPtrMap["FromExtent"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromExtent, this );
   mDrawFunctionPtrMap["FromExtentWithDeletedVertex"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromExtentWithDeletedVertex, this );
   mDrawFunctionPtrMap["FromFoci"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromFoci, this );
   mDrawFunctionPtrMap["FromFociWithDeletedVertex"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFromFociWithDeletedVertex, this );
+  mDrawFunctionPtrMap["From4Points"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFrom4Points, this );
+  mDrawFunctionPtrMap["From4PointsWithDeletedVertex"] = std::bind( &TestQgsMapToolEllipse::drawEllipseFrom4PointsWithDeletedVertex, this );
 
   mExpectedWkts[QStringLiteral( "XY"
                                 "CenterAndPoint" )]
@@ -187,6 +207,20 @@ void TestQgsMapToolEllipse::initAttributs()
                                 "FromFociWithDeletedVertex" )]
     = mExpectedWkts[QStringLiteral( "XY"
                                     "FromFoci" )];
+  mExpectedWkts[QStringLiteral( "XY"
+                                "CenterAnd3Points" )]
+    = QgsEllipse::fromCenter3Points( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 0 ), QgsPoint( 0, -1 ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY"
+                                "CenterAnd3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XY"
+                                    "CenterAnd3Points" )];
+  mExpectedWkts[QStringLiteral( "XY"
+                                "From4Points" )]
+    = QgsEllipse::from4Points( QgsPoint( 2, 0 ), QgsPoint( -2, 0 ), QgsPoint( 0, 1 ), QgsPoint( 0, -1 ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY"
+                                "From4PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XY"
+                                    "From4Points" )];
 
   mExpectedWkts[QStringLiteral( "XYZ"
                                 "CenterAndPoint" )]
@@ -216,6 +250,20 @@ void TestQgsMapToolEllipse::initAttributs()
                                 "FromFociWithDeletedVertex" )]
     = mExpectedWkts[QStringLiteral( "XYZ"
                                     "FromFoci" )];
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "CenterAnd3Points" )]
+    = QgsEllipse::fromCenter3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 1, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "CenterAnd3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZ"
+                                    "CenterAnd3Points" )];
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "From4Points" )]
+    = QgsEllipse::from4Points( QgsPoint( 2, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( -2, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZ ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "From4PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZ"
+                                    "From4Points" )];
 
   mExpectedWkts[QStringLiteral( "XYM"
                                 "CenterAndPoint" )]
@@ -245,6 +293,20 @@ void TestQgsMapToolEllipse::initAttributs()
                                 "FromFociWithDeletedVertex" )]
     = mExpectedWkts[QStringLiteral( "XYM"
                                     "FromFoci" )];
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "CenterAnd3Points" )]
+    = QgsEllipse::fromCenter3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointM ), QgsPoint( 1, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "CenterAnd3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYM"
+                                    "CenterAnd3Points" )];
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "From4Points" )]
+    = QgsEllipse::from4Points( QgsPoint( 2, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( -2, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "From4PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYM"
+                                    "From4Points" )];
 
   mExpectedWkts[QStringLiteral( "XYZM"
                                 "CenterAndPoint" )]
@@ -274,6 +336,20 @@ void TestQgsMapToolEllipse::initAttributs()
                                 "FromFociWithDeletedVertex" )]
     = mExpectedWkts[QStringLiteral( "XYZM"
                                     "FromFoci" )];
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "CenterAnd3Points" )]
+    = QgsEllipse::fromCenter3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 1, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "CenterAnd3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZM"
+                                    "CenterAnd3Points" )];
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "From4Points" )]
+    = QgsEllipse::from4Points( QgsPoint( 2, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( -2, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 1, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, -1, Z, M, Qgis::WkbType::PointZM ) ).toLineString( segments() )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "From4PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZM"
+                                    "From4Points" )];
 }
 
 void TestQgsMapToolEllipse::cleanupTestCase()
@@ -405,6 +481,66 @@ QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromFociWithDeletedVertex()
   return utils.newFeatureId();
 }
 
+QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd3Points()
+{
+  resetMapTool( new QgsMapToolShapeEllipseCenter3PointsMetadata() );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::LeftButton ); // center
+  utils.mouseClick( 0, 1, Qt::LeftButton ); // pt1
+  utils.mouseClick( 1, 0, Qt::LeftButton ); // pt2
+  utils.mouseMove( 0, -1 );                 // pt3
+  utils.mouseClick( 0, -1, Qt::RightButton );
+
+  return utils.newFeatureId();
+}
+
+QgsFeatureId TestQgsMapToolEllipse::drawEllipseFromCenterAnd3PointsWithDeletedVertex()
+{
+  resetMapTool( new QgsMapToolShapeEllipseCenter3PointsMetadata() );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 0, Qt::LeftButton ); // center
+  utils.mouseClick( 0, 1, Qt::LeftButton ); // pt1
+  utils.mouseClick( 1, 0, Qt::LeftButton ); // pt2
+  utils.mouseMove( 0, -1 );                 // pt3
+  utils.mouseClick( 0, -1, Qt::RightButton );
+
+  return utils.newFeatureId();
+}
+
+QgsFeatureId TestQgsMapToolEllipse::drawEllipseFrom4Points()
+{
+  resetMapTool( new QgsMapToolShapeEllipse4PointsMetadata() );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 2, 0, Qt::LeftButton );  // pt1
+  utils.mouseClick( -2, 0, Qt::LeftButton ); // pt2
+  utils.mouseClick( 0, 1, Qt::LeftButton );  // pt3
+  utils.mouseMove( 0, -1 );                  // pt4
+  utils.mouseClick( 0, -1, Qt::RightButton );
+
+  return utils.newFeatureId();
+}
+
+QgsFeatureId TestQgsMapToolEllipse::drawEllipseFrom4PointsWithDeletedVertex()
+{
+  resetMapTool( new QgsMapToolShapeEllipse4PointsMetadata() );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 2, 0, Qt::LeftButton );  // pt1
+  utils.mouseClick( -2, 0, Qt::LeftButton ); // pt2
+  utils.mouseClick( 0, 1, Qt::LeftButton );  // pt3
+  utils.mouseMove( 0, -1 );                  // pt4
+  utils.mouseClick( 0, -1, Qt::RightButton );
+
+  return utils.newFeatureId();
+}
+
 
 void TestQgsMapToolEllipse::testEllipse_data()
 {
@@ -514,6 +650,45 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsNotEnoughPoints()
   layer->rollBack();
 }
 
+void TestQgsMapToolEllipse::testEllipseFromCenterAnd3PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeEllipseCenter3PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
 void TestQgsMapToolEllipse::testEllipseFromExtentNotEnoughPoints()
 {
   QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
@@ -563,6 +738,44 @@ void TestQgsMapToolEllipse::testEllipseFromFociNotEnoughPoints()
   utils.mouseMove( 1, 1 );
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolEllipse::testEllipseFrom4PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeEllipse4PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::RightButton );
   QCOMPARE( layer->featureCount(), count );
 
   layer->rollBack();
