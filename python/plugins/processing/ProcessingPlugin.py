@@ -53,6 +53,8 @@ from qgis.PyQt.QtCore import (
     pyqtSlot,
     QMetaObject,
 )
+
+from qgis.PyQt import sip
 from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.utils import iface
@@ -73,6 +75,7 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui import TestTools
 from processing.modeler.ModelerDialog import ModelerDialog
+from processing.modeler.ModelConfigWidgets import ModelConfigWidgetFactory
 from processing.tools.system import tempHelpFolder
 from processing.tools import dataobjects
 from processing.gui.menus import (
@@ -198,6 +201,7 @@ class ProcessingPlugin(QObject):
         super().__init__()
         self.iface = iface
         self.options_factory = None
+        self.model_config_widget_factory = None
         self.drop_handler = None
         self.item_provider = None
         self.locator_filter = None
@@ -228,6 +232,10 @@ class ProcessingPlugin(QObject):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr("Processing"))
         iface.registerOptionsWidgetFactory(self.options_factory)
+        self.model_config_widget_factory = ModelConfigWidgetFactory()
+        QgsGui.processingGuiRegistry().registerModelConfigWidgetFactory(
+            self.model_config_widget_factory
+        )
         self.drop_handler = ProcessingDropHandler()
         iface.registerCustomDropHandler(self.drop_handler)
         self.item_provider = ProcessingDataItemProvider()
@@ -561,6 +569,15 @@ class ProcessingPlugin(QObject):
         self.iface.unregisterMainWindowAction(self.resultsAction)
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
+
+        if self.model_config_widget_factory and not sip.isdeleted(
+            self.model_config_widget_factory
+        ):
+            QgsGui.processingGuiRegistry().unregisterModelConfigWidgetFactory(
+                self.model_config_widget_factory
+            )
+            self.model_config_widget_factory = None
+
         self.iface.deregisterLocatorFilter(self.locator_filter)
         self.iface.deregisterLocatorFilter(self.edit_features_locator_filter)
         self.iface.unregisterCustomDropHandler(self.drop_handler)
