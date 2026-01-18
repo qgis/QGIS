@@ -2675,6 +2675,22 @@ bool QgisApp::event( QEvent *event )
   {
     done = gestureEvent( static_cast<QGestureEvent *>( event ) );
   }
+  else if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( mMapCanvas->mapTool() )
+    {
+      QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+      if ( mMapCanvas->mapTool()->shortcutEvent( keyEvent ) )
+      {
+        event->accept();
+        done = true;
+      }
+    }
+    if ( !done )
+    {
+      done = QMainWindow::event( event );
+    }
+  }
   else
   {
     // pass other events to base class
@@ -3242,7 +3258,7 @@ void QgisApp::createActions()
 
     QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, widget );
     selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
-    connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
+    connect( selectAllShortcut, &QShortcut::activated, this, [this] { selectAll(); } );
   }
 
 #ifndef HAVE_POSTGRESQL
