@@ -264,11 +264,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
     Type type() const override;
 
     /**
-     * Returns the deleted node ID.
-     */
-    QgsVertexId nodeId() const { return mNodeId; }
-
-    /**
      * Returns the x-axis translation, in layer units.
      *
      * \since translationY()
@@ -300,7 +295,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
 
   private:
 
-    QgsVertexId mNodeId;
     double mTranslateX = 0;
     double mTranslateY = 0;
     double mTranslatePixelsX = 0;
