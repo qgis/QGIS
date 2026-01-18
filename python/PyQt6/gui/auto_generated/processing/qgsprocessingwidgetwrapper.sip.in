@@ -221,6 +221,29 @@ Sets the current active ``layer``.
 .. versionadded:: 3.14
 %End
 
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the widget when required.
+
+The ``generator`` must exist for the lifetime of the widget, ownership
+is not transferred.
+
+.. seealso:: :py:func:`processingContextGenerator`
+
+.. versionadded:: 4.0
+%End
+
+    QgsProcessingContextGenerator *processingContextGenerator();
+%Docstring
+Returns the Processing context generator class that will be used to
+retrieve a Processing context for the widget when required.
+
+.. seealso:: :py:func:`registerProcessingContextGenerator`
+
+.. versionadded:: 4.0
+%End
+
 };
 
 

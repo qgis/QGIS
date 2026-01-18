@@ -97,6 +97,16 @@ void QgsProcessingParameterWidgetContext::setActiveLayer( QgsMapLayer *activeLay
   mActiveLayer = activeLayer;
 }
 
+void QgsProcessingParameterWidgetContext::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mProcessingContextGenerator = generator;
+}
+
+QgsProcessingContextGenerator *QgsProcessingParameterWidgetContext::processingContextGenerator()
+{
+  return mProcessingContextGenerator;
+}
+
 QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
 {
   return mModel;

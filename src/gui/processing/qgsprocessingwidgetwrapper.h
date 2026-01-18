@@ -223,6 +223,27 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     void setActiveLayer( QgsMapLayer *layer );
 
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * The \a generator must exist for the lifetime of the widget, ownership is not transferred.
+     *
+     * \see processingContextGenerator()
+     *
+     * \since QGIS 4.0
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    /**
+     * Returns the Processing context generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \see registerProcessingContextGenerator()
+     * \since QGIS 4.0
+     */
+    QgsProcessingContextGenerator *processingContextGenerator();
+
   private:
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
@@ -237,6 +258,8 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsBrowserGuiModel *mBrowserModel = nullptr;
 
     QgsMapLayer *mActiveLayer = nullptr;
+
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 };
 
 #ifndef SIP_RUN
