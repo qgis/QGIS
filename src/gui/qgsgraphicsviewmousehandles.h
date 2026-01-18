@@ -109,6 +109,15 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      */
     void setRotationEnabled( bool enable );
 
+    /**
+     * Sets whether moving of items happens when dragging while holding the
+     * mouse's left button is held down or by mouse clicking once, dragging,
+     * then mouse clicking again.
+     *
+     * \since QGIS 4.0
+     */
+    void setClickClickEnabled( bool enable );
+
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -238,6 +247,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     QRectF mResizeRect;
 
+    bool mClickClickEnabled = false;
+
     bool mRotationEnabled = false;
     //! Center point around which rotation occurs
     QPointF mRotationCenter;
@@ -254,8 +265,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
     bool mDoubleClickInProgress = false;
 
+
     //! True if user is currently dragging items
     bool mIsDragging = false;
+    //! True if user is starting to drag items in click-click behavior
+    bool mIsDragStarting = false;
     //! True is user is currently resizing items
     bool mIsResizing = false;
     //! True is user is currently rotating items

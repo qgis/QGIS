@@ -66,6 +66,16 @@ void QgsGraphicsViewMouseHandles::setRotationEnabled( bool enable )
   update();
 }
 
+void QgsGraphicsViewMouseHandles::setClickClickEnabled( bool enable )
+{
+  if ( mClickClickEnabled == enable )
+  {
+    return;
+  }
+
+  mClickClickEnabled = enable;
+}
+
 void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
 {
   if ( !showHandles )
@@ -625,6 +635,11 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     return;
   }
 
+  if ( mIsDragging || mIsResizing || mIsRotating )
+  {
+    return;
+  }
+
   //save current cursor position
   mMouseMoveStartPos = event->lastScenePos();
   //save current item geometry
@@ -673,6 +688,11 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     case Qgis::MouseHandlesAction::SelectItem:
     case Qgis::MouseHandlesAction::NoAction:
       break;
+  }
+
+  if ( mIsDragging )
+  {
+    mIsDragStarting = true;
   }
 }
 
@@ -731,6 +751,12 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     return;
   }
 
+  if ( mIsDragStarting )
+  {
+    mIsDragStarting = false;
+    return;
+  }
+
   // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
   // otherwise, hover events will not be received
   if ( mView->scene()->mouseGrabberItem() == this )
@@ -742,8 +768,8 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
 
-  //it was only a click
-  if ( std::fabs( diffX ) < std::numeric_limits<double>::min() && std::fabs( diffY ) < std::numeric_limits<double>::min() )
+  const bool isClick = std::fabs( diffX ) < std::numeric_limits<double>::min() && std::fabs( diffY ) < std::numeric_limits<double>::min();
+  if ( isClick )
   {
     mIsDragging = false;
     mIsResizing = false;
@@ -861,6 +887,7 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
   mCurrentMouseMoveAction = Qgis::MouseHandlesAction::MoveItem;
   //redraw handles
   resetTransform();
+  update();
   updateHandles();
   //reset status bar message
   resetStatusBar();

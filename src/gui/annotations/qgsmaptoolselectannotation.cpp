@@ -129,21 +129,33 @@ void QgsMapToolSelectAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 
   if ( event->buttons() == Qt::NoButton )
   {
-    if ( mMouseHandles->sceneBoundingRect().contains( scenePos ) )
+    if ( mMouseHandles->isDragging() )
     {
-      QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverMove );
+      QGraphicsSceneMouseEvent forwardedEvent( QEvent::GraphicsSceneMouseMove );
       forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
       forwardedEvent.setScenePos( scenePos );
-      mMouseHandles->hoverMoveEvent( &forwardedEvent );
-      mHoveringMouseHandles = true;
+      forwardedEvent.setLastScenePos( mLastScenePos );
+      forwardedEvent.setButton( Qt::LeftButton );
+      mMouseHandles->mouseMoveEvent( &forwardedEvent );
     }
-    else if ( mHoveringMouseHandles )
+    else
     {
-      QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverLeave );
-      forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
-      forwardedEvent.setScenePos( scenePos );
-      mMouseHandles->hoverMoveEvent( &forwardedEvent );
-      mHoveringMouseHandles = false;
+      if ( mMouseHandles->sceneBoundingRect().contains( scenePos ) )
+      {
+        QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverMove );
+        forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
+        forwardedEvent.setScenePos( scenePos );
+        mMouseHandles->hoverMoveEvent( &forwardedEvent );
+        mHoveringMouseHandles = true;
+      }
+      else if ( mHoveringMouseHandles )
+      {
+        QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverLeave );
+        forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
+        forwardedEvent.setScenePos( scenePos );
+        mMouseHandles->hoverMoveEvent( &forwardedEvent );
+        mHoveringMouseHandles = false;
+      }
     }
   }
   else if ( event->buttons() == Qt::LeftButton )
