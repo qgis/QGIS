@@ -46,8 +46,8 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
    */
     enum Direction
     {
-      LeftToRight,
-      RightToLeft
+      StartToEnd,
+      EndToStart
     };
 
     QString group() const final;
@@ -101,7 +101,7 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
     double mLength = 5.0;
     bool mDynamicAngle = false;
     bool mDynamicLength = false;
-    Direction mDirection = LeftToRight;
+    Direction mDirection = StartToEnd;
     QgsProperty mAngleProperty;
     QgsProperty mLengthProperty;
 };
