@@ -69,6 +69,9 @@ class CORE_EXPORT QgsLabelFeature
      * a vector layer feature this will generally be the feature's geometry.
      *
      * The \a size argument dictates the size of the label's content (e.g. text width and height).
+     *
+     * The optional \a subPartId argument can be used to identify unique labels for features which
+     * register multiple labels with the same \a id.
      */
     QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId = 0 );
 
