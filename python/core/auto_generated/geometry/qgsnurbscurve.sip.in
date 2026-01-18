@@ -345,6 +345,25 @@ must be positive (> 0).
     }
 %End
 
+    static QVector<double> generateUniformKnots( int numControlPoints, int degree );
+%Docstring
+Generates a uniform clamped knot vector for a NURBS curve.
+
+The generated knot vector has size = numControlPoints + degree + 1,
+with:
+
+- First (degree+1) knots equal to 0
+- Last (degree+1) knots equal to 1
+- Interior knots uniformly spaced
+
+:param numControlPoints: number of control points
+:param degree: degree of the NURBS curve (must be >= 1)
+
+:return: the generated knot vector
+
+.. versionadded:: 4.0
+%End
+
 
 
   protected:

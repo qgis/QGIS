@@ -47,6 +47,10 @@ const QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *QgsSettingsRegistryCore::sett
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( u"stream-tolerance"_s, QgsSettingsTree::sTreeDigitizing, 2 );
 
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingNurbsDegree = new QgsSettingsEntryInteger( u"nurbs-degree"_s, QgsSettingsTree::sTreeDigitizing, 3 );
+
+const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *QgsSettingsRegistryCore::settingsDigitizingNurbsMode = new QgsSettingsEntryEnumFlag<Qgis::NurbsMode>( u"nurbs-mode"_s, QgsSettingsTree::sTreeDigitizing, Qgis::NurbsMode::ControlPoints );
+
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( u"line-width"_s, QgsSettingsTree::sTreeDigitizing, 1 );
 
 const QgsSettingsEntryColor *QgsSettingsRegistryCore::settingsDigitizingLineColor = new QgsSettingsEntryColor( u"line-color"_s, QgsSettingsTree::sTreeDigitizing, QColor( 255, 0, 0, 200 ) );

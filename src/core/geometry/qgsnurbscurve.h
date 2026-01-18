@@ -321,6 +321,22 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
 #endif
 
     /**
+     * Generates a uniform clamped knot vector for a NURBS curve.
+     *
+     * The generated knot vector has size = numControlPoints + degree + 1, with:
+     *
+     * - First (degree+1) knots equal to 0
+     * - Last (degree+1) knots equal to 1
+     * - Interior knots uniformly spaced
+     *
+     * \param numControlPoints number of control points
+     * \param degree degree of the NURBS curve (must be >= 1)
+     * \returns the generated knot vector
+     * \since QGIS 4.0
+     */
+    static QVector<double> generateUniformKnots( int numControlPoints, int degree );
+
+    /**
      * Cast the \a geom to a QgsNurbsCurve.
      * Should be used by qgsgeometry_cast<QgsNurbsCurve *>( geometry ).
      * \note Not available in Python.
