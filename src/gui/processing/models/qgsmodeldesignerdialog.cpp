@@ -26,6 +26,8 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodeldesignerconfigdockwidget.h"
+#include "qgsmodeldesignerconfigwidget.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelundocommand.h"
 #include "qgsmodelviewtoolpan.h"
@@ -38,6 +40,7 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingwidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
@@ -117,6 +120,15 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     repaintModel();
   } );
 
+  mConfigWidgetDock = new QgsDockWidget( this );
+  mConfigWidgetDock->setWindowTitle( tr( "Configuration" ) );
+  mConfigWidgetDock->setObjectName( u"ModelConfigDock"_s );
+
+  mConfigWidget = new QgsModelDesignerConfigDockWidget();
+  mConfigWidgetDock->setWidget( mConfigWidget );
+  mConfigWidgetDock->setFeatures( QDockWidget::NoDockWidgetFeatures );
+  addDockWidget( Qt::RightDockWidgetArea, mConfigWidgetDock );
+
   mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
@@ -170,6 +182,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     QgsSettings().setValue( u"/Processing/Modeler/enableSnapToGrid"_s, enabled );
   } );
   mView->snapper()->setSnapToGrid( mActionSnappingEnabled->isChecked() );
+
+  connect( mView, &QgsModelGraphicsView::itemFocused, this, &QgsModelDesignerDialog::onItemFocused );
 
   connect( mActionSelectAll, &QAction::triggered, this, [this] {
     mScene->selectAll();
@@ -1231,6 +1245,23 @@ void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
   m.setCheckBoxVisible( false );
   m.setMessageAsHtml( result.htmlLog() );
   m.exec();
+}
+
+void QgsModelDesignerDialog::onItemFocused( QgsModelComponentGraphicItem *item )
+{
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.registerProcessingContextGenerator( mProcessingContextGenerator );
+  widgetContext.setModelDesignerDialog( this );
+  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
+
+  if ( !item || !item->component() )
+  {
+    mConfigWidget->showComponentConfig( nullptr, *context, widgetContext );
+  }
+  else
+  {
+    mConfigWidget->showComponentConfig( item->component(), *context, widgetContext );
+  }
 }
 
 void QgsModelDesignerDialog::validate()
