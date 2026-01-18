@@ -588,37 +588,24 @@ void QgsMapToolSelectAnnotation::attemptMoveBy( QgsAnnotationItemRubberBand *ann
 
 void QgsMapToolSelectAnnotation::attemptRotateBy( QgsAnnotationItemRubberBand *annotationItemRubberBand, double deltaDegree )
 {
-  if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
+  if ( QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer() )
   {
-    QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
     const QgsRectangle boundingBox = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, annotationItemRubberBand->boundingBox() );
-    const QgsPointXY centroid = boundingBox.center();
-
     QgsAnnotationItemEditContext context;
     context.setCurrentItemBounds( boundingBox );
     context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
 
-    const double deltaRadian = -deltaDegree * M_PI / 180;
-    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
-    for ( const QgsAnnotationItemNode &node : itemNodes )
+    QgsAnnotationItemEditOperationRotateItem operation( annotationItemRubberBand->itemId(), deltaDegree );
+    switch ( annotationLayer->applyEditV2( &operation, context ) )
     {
-      const double translatedX = node.point().x() - centroid.x();
-      const double translatedY = node.point().y() - centroid.y();
-      const double rotatedX = translatedX * std::cos( deltaRadian ) - translatedY * std::sin( deltaRadian );
-      const double rotatedY = translatedX * std::sin( deltaRadian ) + translatedY * std::cos( deltaRadian );
-      QgsPointXY modifiedPoint( rotatedX + centroid.x(), rotatedY + centroid.y() );
-      QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
-      switch ( annotationLayer->applyEditV2( &operation, context ) )
-      {
-        case Qgis::AnnotationItemEditOperationResult::Success:
-          QgsProject::instance()->setDirty( true );
-          annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
-          break;
+      case Qgis::AnnotationItemEditOperationResult::Success:
+        QgsProject::instance()->setDirty( true );
+        annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
+        break;
 
-        case Qgis::AnnotationItemEditOperationResult::Invalid:
-        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-          break;
-      }
+      case Qgis::AnnotationItemEditOperationResult::Invalid:
+      case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+        break;
     }
   }
 }

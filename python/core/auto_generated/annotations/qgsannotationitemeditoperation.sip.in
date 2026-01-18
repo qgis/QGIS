@@ -75,6 +75,7 @@ Abstract base class for annotation item edit operations.
       DeleteNode,
       AddNode,
       TranslateItem,
+      RotateItem,
     };
 
     QgsAbstractAnnotationItemEditOperation( const QString &itemId );
@@ -305,6 +306,37 @@ Returns the y-axis translation, in pixels.
 %End
 
 };
+
+
+class QgsAnnotationItemEditOperationRotateItem : QgsAbstractAnnotationItemEditOperation
+{
+%Docstring(signature="appended")
+Annotation item edit operation consisting of rotating an item.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemeditoperation.h"
+%End
+  public:
+
+    QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle );
+%Docstring
+Constructor for QgsAnnotationItemEditOperationRotateItem, where the node
+with the specified ``id`` and rotation ``angle`` (in degrees)
+%End
+
+    virtual Type type() const;
+
+
+    double angle() const;
+%Docstring
+Returns the rotation angle value (in degrees).
+%End
+
+};
+
 
 class QgsAnnotationItemEditOperationTransientResults
 {
