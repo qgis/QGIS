@@ -734,7 +734,6 @@ Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture
 Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
 Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
 Qgis.CaptureTechnique.Shape.__doc__ = "Digitize shapes."
-Qgis.CaptureTechnique.NurbsCurve.__doc__ = "Digitizes NURBS curves with control points. \n.. versionadded:: 4.0"
 Qgis.CaptureTechnique.__doc__ = """Capture technique.
 
 .. versionadded:: 3.26
@@ -743,27 +742,10 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 * ``CircularString``: Capture in circular strings
 * ``Streaming``: Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
 * ``Shape``: Digitize shapes.
-* ``NurbsCurve``: Digitizes NURBS curves with control points.
-
-  .. versionadded:: 4.0
-
 
 """
 # --
 Qgis.CaptureTechnique.baseClass = Qgis
-# monkey patching scoped based enum
-Qgis.NurbsMode.ControlPoints.__doc__ = "Direct control points mode - the curve is attracted to control points but does not pass through them"
-Qgis.NurbsMode.PolyBezier.__doc__ = "Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points"
-Qgis.NurbsMode.__doc__ = """NURBS digitizing mode.
-
-.. versionadded:: 4.0
-
-* ``ControlPoints``: Direct control points mode - the curve is attracted to control points but does not pass through them
-* ``PolyBezier``: Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points
-
-"""
-# --
-Qgis.NurbsMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = """Vector layer type flags.
@@ -5678,6 +5660,10 @@ QgsVertexId.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.VertexType.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.CurveVertex.is_monkey_patched = True
 QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+QgsVertexId.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.VertexType.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.ControlPointVertex.is_monkey_patched = True
+QgsVertexId.ControlPointVertex.__doc__ = "A NURBS control point (does not lie on the curve) \n.. versionadded:: 4.0"
 Qgis.VertexType.__doc__ = """Types of vertex.
 
 .. versionadded:: 3.22
@@ -5689,6 +5675,13 @@ Qgis.VertexType.__doc__ = """Types of vertex.
 * ``Curve``: An intermediate point on a segment defining the curvature of the segment
 
   Available as ``QgsVertexId.CurveVertex`` in older QGIS releases.
+
+* ``ControlPoint``: A NURBS control point (does not lie on the curve)
+
+  .. versionadded:: 4.0
+
+
+  Available as ``QgsVertexId.ControlPointVertex`` in older QGIS releases.
 
 
 """

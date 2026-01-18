@@ -284,13 +284,6 @@ The development version
       CircularString,
       Streaming,
       Shape,
-      NurbsCurve,
-    };
-
-    enum class NurbsMode /BaseType=IntEnum/
-    {
-      ControlPoints,
-      PolyBezier,
     };
 
     enum class VectorLayerTypeFlag /BaseType=IntFlag/
@@ -1793,6 +1786,7 @@ The development version
       {
       Segment,
       Curve,
+      ControlPoint,
     };
 
     enum class MarkerShape /BaseType=IntEnum/

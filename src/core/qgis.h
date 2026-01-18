@@ -406,21 +406,8 @@ class CORE_EXPORT Qgis
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
       Shape, //!< Digitize shapes.
-      NurbsCurve, //!< Digitizes NURBS curves with control points. \since QGIS 4.0
     };
     Q_ENUM( CaptureTechnique )
-
-    /**
-     * NURBS digitizing mode.
-     *
-     * \since QGIS 4.0
-     */
-    enum class NurbsMode : int
-    {
-      ControlPoints, //!< Direct control points mode - the curve is attracted to control points but does not pass through them
-      PolyBezier, //!< Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points
-    };
-    Q_ENUM( NurbsMode )
 
     /**
      * Vector layer type flags.
@@ -3100,6 +3087,7 @@ class CORE_EXPORT Qgis
       {
       Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
       Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+      ControlPoint SIP_MONKEYPATCH_COMPAT_NAME( ControlPointVertex ) = 3, //!< A NURBS control point (does not lie on the curve) \since QGIS 4.0
     };
     Q_ENUM( VertexType )
 
