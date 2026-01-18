@@ -184,6 +184,7 @@
         "py-qscintilla",
         "py-rasterio",
         "py-requests",
+        "py-scipy",
         "py-shapely",
         "py-six",
         "py-urllib3",
