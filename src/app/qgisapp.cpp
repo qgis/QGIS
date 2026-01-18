@@ -498,7 +498,9 @@
 #include "qgsmaptoolshapecircle3tangents.h"
 #include "qgsmaptoolshapecircle2tangentspoint.h"
 #include "qgsmaptoolshapecirclecenterpoint.h"
+#include "qgsmaptoolshapeellipse4points.h"
 #include "qgsmaptoolshapeellipsecenter2points.h"
+#include "qgsmaptoolshapeellipsecenter3points.h"
 #include "qgsmaptoolshapeellipsecenterpoint.h"
 #include "qgsmaptoolshapeellipseextent.h"
 #include "qgsmaptoolshapeellipsefoci.h"
@@ -1262,7 +1264,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle3TangentsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle2TangentsPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircleCenterPointMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipse4PointsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenter2PointsMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenter3PointsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseCenterPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseExtentMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeEllipseFociMetadata() );

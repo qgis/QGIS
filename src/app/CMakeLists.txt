@@ -244,7 +244,9 @@ set(QGIS_APP_SRCS
   maptools/qgsmaptoolshapecircle3tangents.cpp
   maptools/qgsmaptoolshapecirclecenterpoint.cpp
   maptools/qgsmaptoolshapecircularstringradius.cpp
+  maptools/qgsmaptoolshapeellipse4points.cpp
   maptools/qgsmaptoolshapeellipsecenter2points.cpp
+  maptools/qgsmaptoolshapeellipsecenter3points.cpp
   maptools/qgsmaptoolshapeellipsecenterpoint.cpp
   maptools/qgsmaptoolshapeellipseextent.cpp
   maptools/qgsmaptoolshapeellipsefoci.cpp

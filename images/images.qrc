@@ -794,8 +794,10 @@
         <file>themes/default/mActionCircle2Points.svg</file>
         <file>themes/default/mActionCircle3Points.svg</file>
         <file>themes/default/mActionCircleCenterPoint.svg</file>
+        <file>themes/default/mActionEllipse4Points.svg</file>
         <file>themes/default/mActionEllipseFoci.svg</file>
         <file>themes/default/mActionEllipseCenter2Points.svg</file>
+        <file>themes/default/mActionEllipseCenter3Points.svg</file>
         <file>themes/default/mActionEllipseCenterPoint.svg</file>
         <file>themes/default/mActionEllipseExtent.svg</file>
         <file>themes/default/mActionRectangleExtent.svg</file>
