@@ -48,6 +48,7 @@ QgsMapToolSelectAnnotationMouseHandles::QgsMapToolSelectAnnotationMouseHandles( 
   mCanvas->scene()->addItem( this );
 
   setRotationEnabled( true );
+  setClickClickEnabled( true );
 }
 
 void QgsMapToolSelectAnnotationMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
