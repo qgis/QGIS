@@ -50,8 +50,6 @@ bool QgsMapToolAddRing::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Shape:
       return true;
-    case Qgis::CaptureTechnique::NurbsCurve:
-      return false;
   }
   return false;
 }

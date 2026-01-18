@@ -2053,7 +2053,6 @@ QgsPoint QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, cons
     {
       case QgsPointLocator::Vertex:
       case QgsPointLocator::LineEndpoint:
-      case QgsPointLocator::ControlPoint:
       case QgsPointLocator::All:
       {
         //  use point coordinates of the layer

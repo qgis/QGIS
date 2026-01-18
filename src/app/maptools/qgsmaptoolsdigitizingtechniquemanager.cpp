@@ -267,8 +267,6 @@ void QgsMapToolsDigitizingTechniqueManager::updateDigitizeModeButton( const Qgis
     case Qgis::CaptureTechnique::Shape:
       mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
       break;
-    case Qgis::CaptureTechnique::NurbsCurve:
-      break;
   }
 }
 

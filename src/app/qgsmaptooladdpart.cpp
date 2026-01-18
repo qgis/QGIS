@@ -53,8 +53,6 @@ bool QgsMapToolAddPart::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Shape:
       return mode() != QgsMapToolCapture::CapturePoint;
-    case Qgis::CaptureTechnique::NurbsCurve:
-      return false;
   }
   return false;
 }

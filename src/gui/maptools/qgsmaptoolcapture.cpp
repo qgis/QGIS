@@ -110,7 +110,6 @@ bool QgsMapToolCapture::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
-    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   BUILTIN_UNREACHABLE
@@ -492,7 +491,6 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
       mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->value();
       break;
     case Qgis::CaptureTechnique::Shape:
-    case Qgis::CaptureTechnique::NurbsCurve:
       mLineDigitizingType = Qgis::WkbType::LineString;
       break;
   }

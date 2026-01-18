@@ -42,7 +42,6 @@ bool QgsMapToolSplitParts::supportsTechnique( Qgis::CaptureTechnique technique )
 
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Shape:
-    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   return false;
