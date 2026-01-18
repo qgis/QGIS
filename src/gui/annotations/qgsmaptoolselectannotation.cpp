@@ -335,8 +335,9 @@ bool QgsMapToolSelectAnnotation::shortcutEvent( QKeyEvent *event )
   {
     return true;
   }
-
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
   QKeySequence keySequence( event->key() | event->modifiers() );
+  // NOLINTEND(bugprone-narrowing-conversions)
   if ( keySequence == QKeySequence::Copy || keySequence == QKeySequence::Cut )
   {
     mCopiedItems.clear();
