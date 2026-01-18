@@ -157,7 +157,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
   public:
 
     /**
-     * Settings entry - Whether to force rasterized clipping masks, regardless of output format.
+     * Settings entry - Layout legend synchronization mode.
      *
      * \since QGIS 4.0
      */

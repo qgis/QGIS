@@ -1015,8 +1015,6 @@ namespace QgsWms
           for ( const auto &layer : layerList )
             layerSet << layer->id();
 
-          //setLayerIdsToLegendModel( model, layerSet, map->scale() );
-
           // get model and layer tree root of the legend
           QgsLayerTree *root = model->rootGroup();
 
