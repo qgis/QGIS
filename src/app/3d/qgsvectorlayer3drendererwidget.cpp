@@ -63,17 +63,19 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   // If layer is null, the widget cannot be updated.
   Q_ASSERT( layer );
 
-  QgsAbstract3DRenderer *r = layer->renderer3D();
+  mLayer = layer;
+
+  QgsAbstract3DRenderer *r = mLayer->renderer3D();
   if ( r && r->type() == "vector"_L1 )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
-    widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );
+    widgetSymbol->setSymbol( vectorRenderer->symbol(), mLayer );
   }
   else
   {
-    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
-    sym->setDefaultPropertiesFromLayer( layer );
-    widgetSymbol->setSymbol( sym.get(), layer );
+    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
+    sym->setDefaultPropertiesFromLayer( mLayer );
+    widgetSymbol->setSymbol( sym.get(), mLayer );
   }
 }
 
