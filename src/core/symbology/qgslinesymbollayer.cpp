@@ -753,9 +753,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
+    const QString lineStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
+    pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( lineStyleString ) );
   }
 
   //join style
