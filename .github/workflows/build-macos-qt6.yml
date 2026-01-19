@@ -19,11 +19,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14-intel
+          - os: macos-15-intel
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
-          - os: macos-14
+          - os: macos-15
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
             osx-architecture: "arm64"
@@ -60,23 +60,21 @@ jobs:
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
 
       - name: Symlink gfortran (macOS)
-        if: matrix.os == 'macos-14'
+        if: matrix.os == 'macos-15'
         run: |
           # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
           # https://github.com/actions/runner-images/issues/3371
-          # ln version - new path 'MacOS14'
           sudo ln -fs /opt/homebrew/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
           sudo mkdir -p /usr/local/gfortran
           sudo ln -sf /opt/homebrew/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
 
       - name: Symlink gfortran (macOS-intel)
-        if: matrix.os == 'macos-14-intel'
+        if: matrix.os == 'macos-15-intel'
         run: |
           # make sure gfortran is available
-          # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+          # https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md
           # https://github.com/actions/runner-images/issues/3371
-          # ln version - new path 'MacOS14'
           sudo ln -fs /usr/local/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
           sudo mkdir -p /usr/local/gfortran
           sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
