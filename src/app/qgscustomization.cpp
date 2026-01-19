@@ -1079,7 +1079,7 @@ QString QgsCustomization::writeFile( const QString &fileName ) const
   QDomDocument doc( u"Customization"_s );
   QDomElement root = doc.createElement( u"Customization"_s );
   root.setAttribute( u"version"_s, QStringLiteral( CUSTOMIZATION_CURRENT_VERSION ) );
-  root.setAttribute( u"enabled"_s, mEnabled );
+  root.setAttribute( u"enabled"_s, ( mEnabled ? "true" : "false" ) );
 
   if ( !mSplashPath.isEmpty() )
     root.setAttribute( u"splashPath"_s, mSplashPath );
