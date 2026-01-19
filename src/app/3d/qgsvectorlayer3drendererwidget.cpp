@@ -37,6 +37,9 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   : QWidget( parent )
   , mLayer( layer )
 {
+  // If layer is null, the widget cannot be created.
+  Q_ASSERT( mLayer );
+
   QVBoxLayout *scrollLayout = new QVBoxLayout();
   scrollLayout->setContentsMargins( 0, 0, 0, 0 );
 
@@ -57,6 +60,9 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
 
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
+  // If layer is null, the widget cannot be updated.
+  Q_ASSERT( layer );
+
   QgsAbstract3DRenderer *r = layer->renderer3D();
   if ( r && r->type() == "vector"_L1 )
   {
