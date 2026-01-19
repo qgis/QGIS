@@ -350,6 +350,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/pdal/qgsalgorithmpdalfilternoiseradius.cpp
   processing/pdal/qgsalgorithmpdalclassifyground.cpp
   processing/pdal/qgsalgorithmpdaltransform.cpp
+  processing/pdal/qgsalgorithmpdalcompare.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
