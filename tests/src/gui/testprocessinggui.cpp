@@ -11690,7 +11690,7 @@ void TestProcessingGui::testModelGraphicsView()
   }
   QVERIFY( outputItem );
   QCOMPARE( dynamic_cast<QgsProcessingModelOutput *>( outputItem->component() )->childOutputName(), u"my_output"_s );
-
+  QCOMPARE( scene.outputItem( u"buffer"_s, u"my_output"_s ), outputItem );
 
   layerCommentItem = nullptr;
   QgsModelCommentGraphicItem *algCommentItem = nullptr;
