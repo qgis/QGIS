@@ -99,7 +99,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             if edit_comment:
                 dlg.switchToCommentTab()
             if dlg.exec():
-                new_param = dlg.param
+                new_param = dlg.create_parameter()
                 comment = dlg.comments()
                 comment_color = dlg.commentColor()
                 self.apply_new_param(
@@ -258,34 +258,49 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             dlg.switchToCommentTab()
 
         if dlg.exec():
-            model_outputs = child_alg.modelOutputs()
-
-            model_output = QgsProcessingModelOutput(
-                model_outputs[self.component().name()]
-            )
-            del model_outputs[self.component().name()]
-
-            model_output.setName(dlg.param.description())
-            model_output.setDescription(dlg.param.description())
-            model_output.setDefaultValue(dlg.param.defaultValue())
-            model_output.setMandatory(
-                not (
-                    dlg.param.flags()
+            new_param = dlg.create_parameter()
+            self.apply_new_output(
+                name=new_param.description(),
+                description=new_param.description(),
+                default=new_param.defaultValue(),
+                mandatory=not (
+                    new_param.flags()
                     & QgsProcessingParameterDefinition.Flag.FlagOptional
-                )
-            )
-            model_output.comment().setDescription(dlg.comments())
-            model_output.comment().setColor(dlg.commentColor())
-            model_outputs[model_output.name()] = model_output
-            child_alg.setModelOutputs(model_outputs)
-
-            self.aboutToChange.emit(
-                self.tr("Edit {}").format(model_output.description())
+                ),
+                comments=dlg.comments(),
+                comment_color=dlg.commentColor(),
+                child_alg=child_alg,
             )
 
-            self.model().updateDestinationParameters()
-            self.requestModelRepaint.emit()
-            self.changed.emit()
+    def apply_new_output(
+        self,
+        name: str,
+        description: str,
+        default,
+        mandatory: bool,
+        comments: str,
+        comment_color,
+        child_alg,
+    ):
+        model_outputs = child_alg.modelOutputs()
+
+        model_output = QgsProcessingModelOutput(model_outputs[self.component().name()])
+        del model_outputs[self.component().name()]
+
+        model_output.setName(name)
+        model_output.setDescription(description)
+        model_output.setDefaultValue(default)
+        model_output.setMandatory(mandatory)
+        model_output.comment().setDescription(comments)
+        model_output.comment().setColor(comment_color)
+        model_outputs[model_output.name()] = model_output
+        child_alg.setModelOutputs(model_outputs)
+
+        self.aboutToChange.emit(self.tr("Edit {}").format(model_output.description()))
+
+        self.model().updateDestinationParameters()
+        self.requestModelRepaint.emit()
+        self.changed.emit()
 
     def editComponent(self):
         self.edit()
