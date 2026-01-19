@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodeldesignerconfigwidget.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgroupboxdefinitionwidget.h"
@@ -235,3 +236,38 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiRegistry::createModelConfigWidge
   }
   return nullptr;
 }
+
+/// @cond PRIVATE
+bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsProcessingModelComponent *component ) const
+{
+  if ( dynamic_cast< QgsProcessingModelGroupBox * >( component ) )
+    return true;
+
+  return false;
+}
+
+QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory::createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
+{
+  ( void ) context;
+
+  if ( QgsProcessingModelGroupBox *groupBox = dynamic_cast< QgsProcessingModelGroupBox * >( component ) )
+  {
+    QgsModelDesignerDialog *dialog = widgetContext.modelDesignerDialog();
+    const QString boxUuid = groupBox->uuid();
+
+    auto widget = new QgsModelGroupBoxDefinitionPanelWidget( *groupBox );
+    connect( widget, &QgsModelGroupBoxDefinitionPanelWidget::widgetChanged, this, [dialog, boxUuid, widget] {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      QgsModelGroupBoxGraphicItem *graphicItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( modelScene->groupBoxItem( boxUuid ) );
+      if ( !graphicItem )
+        return; // should not happen
+
+      graphicItem->applyEdit( widget->groupBox() );
+    } );
+
+    return widget;
+  }
+
+  return nullptr;
+}
+/// @endcond PRIVATE
