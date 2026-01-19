@@ -18,9 +18,11 @@
 #include "qgsattributeeditorelement.h"
 #include "qgslayertree.h"
 #include "qgslayertreegroup.h"
+#include "qgslegendsymbolitem.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+#include "qgsrenderer.h"
 #include "qgssettings.h"
 #include "qgstest.h"
 #include "qgstranslationcontext.h"
@@ -110,20 +112,45 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>lines</source>" ) );
   //points
   QVERIFY( tsFileContent.contains( "<source>points</source>" ) );
+  //purple lines
+  QVERIFY( tsFileContent.contains( "<source>purple lines</source>" ) );
+  //purple points
+  QVERIFY( tsFileContent.contains( "<source>purple points</source>" ) );
 
   //LAYER GROUPS AND SUBGROUPS
-  //Points:
   //Planes and Roads
   QVERIFY( tsFileContent.contains( "<source>Planes and Roads</source>" ) );
+  //Purple Marks
+  QVERIFY( tsFileContent.contains( "<source>Purple Marks</source>" ) );
   //Little bit of nothing
   QVERIFY( tsFileContent.contains( "<source>Little bit of nothing</source>" ) );
 
-  //FIELDS AND ALIASES
+  //LEGEND ITEMS
+  //lines:
+  QVERIFY( tsFileContent.contains( "<source>Arterial</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway</source>" ) );
+  //purple lines:
+  QVERIFY( tsFileContent.contains( "<source>Arterial purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Low Highway purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>High Highway purple</source>" ) );
+  //purple points:
+  QVERIFY( tsFileContent.contains( "<source>From 1 to 1</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 1 to 3</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 3 to 3.6</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 3.6 to 10</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 10 to 20</source>" ) );
+
+  //FIELDNAMES AND ALIASES
   //Lines:
   //Name (Alias: Runwayid)
   QVERIFY( tsFileContent.contains( "<source>Runwayid</source>" ) );
   //Value (Alias: Name)
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //Name (Constraint Description: Road needs a type)
+  QVERIFY( tsFileContent.contains( "<source>Road needs a type</source>" ) );
+  //Value (Constraint Description: Value should not be 1337)
+  QVERIFY( tsFileContent.contains( "<source>Value should not be 1337</source>" ) );
 
   //Points:
   //Class (Alias: Level)
@@ -157,6 +184,10 @@ void TestQgsTranslateProject::createTsFile()
   //ValueRelation value
   QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationvalue</name>" ) );
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //ValueRelation description
+  QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationdescription</name>" ) );
+  QVERIFY( tsFileContent.contains( "<source>'The cabin Crew Member is now a '||\"RunwayId\"</source>" ) );
+
 
   //ValueMap with descriptions
   QVERIFY( tsFileContent.contains( ":fields:Name:valuemapdescriptions</name>" ) );
@@ -185,12 +216,18 @@ void TestQgsTranslateProject::translateProject()
   //with the qm file containing translation from en to de, the project should be in german and renamed with postfix .de
   QgsVectorLayer *points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" );
   QgsVectorLayer *lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" );
+  QgsVectorLayer *purple_points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" );
+  QgsVectorLayer *purple_lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_5238db60_470c_41a5_b1d1_059e70f93b99" );
 
   //LAYER NAMES
   //lines -> Linien
   QCOMPARE( lines_layer->name(), u"Linien"_s );
   //points -> Punkte
   QCOMPARE( points_layer->name(), u"Punkte"_s );
+  // purple_lines
+  QCOMPARE( purple_lines_layer->name(), u"Lila Linien"_s );
+  //purple_points -> Punkte
+  QCOMPARE( purple_points_layer->name(), u"Lila Punkte"_s );
 
   //LAYER GROUPS AND SUBGROUPS
   //Points:
@@ -198,14 +235,61 @@ void TestQgsTranslateProject::translateProject()
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Flugzeuge und Strassen"_s ) );
   //Little bit of nothing -> Bisschen nichts
   QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Bisschen nichts"_s ) );
+  //Purple Marks -> Lila Markierungen
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Lila Markierungen"_s ) );
 
-  //FIELDS AND ALIASES
+  //LEGEND ITEMS
+  //lines:
+  QList<QString> legendItemsOfLines;
+  for ( const QgsLegendSymbolItem &item : lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfLines.append( item.label() );
+  }
+  QVERIFY( legendItemsOfLines.contains( u"Hauptstrasse"_s ) ); //Arterial
+  QVERIFY( legendItemsOfLines.contains( u"Autobahn"_s ) );     //Highway
+  //purple lines:
+  QList<QString> legendItemsOfPurpleLine;
+  for ( const QgsLegendSymbolItem &item : purple_lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfPurpleLine.append( item.label() );
+  }
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Hauptstrasse"_s ) );   //Arterial purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Autobahn"_s ) );       //Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Tiefe Lila Autobahn"_s ) ); //Low Highway purple
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Hohe Lila Autobahn"_s ) );  //High Highway purple
+
+  //purple points:
+  QList<QString> legendItemsOfPurplePoints;
+  for ( const QgsLegendSymbolItem &item : purple_points_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfPurplePoints.append( item.label() );
+  }
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 1"_s ) );    //From 1 to 1
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 3"_s ) );    //From 1 to 3
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3 bis 3.6"_s ) );  //From 3 to 3.6
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3.6 bis 10"_s ) ); //From 3.6 to 10
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 10 bis 20"_s ) );  //From 10 to 20
+
+  //lines:
+  QList<QString> legendItemsOfLine;
+  for ( const QgsLegendSymbolItem &item : lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfLine.append( item.label() );
+  }
+  QVERIFY( legendItemsOfLine.contains( u"Hauptstrasse"_s ) ); //Arterial
+  QVERIFY( legendItemsOfLine.contains( u"Autobahn"_s ) );     //Highway
+
+  //FIELDNAMES AND ALIASES
   //Lines:
   const QgsFields lines_fields = lines_layer->fields();
   //Name (Alias: Runwayid) -> Pistenid
   QCOMPARE( lines_fields.field( u"Name"_s ).alias(), u"Pistenid"_s );
   //Value (Alias: Name) -> Pistenname
   QCOMPARE( lines_fields.field( u"Value"_s ).alias(), u"Pistenname"_s );
+  //Name (Constraint Description: Road needs a type)
+  QCOMPARE( lines_fields.field( u"Name"_s ).constraints().constraintDescription(), u"Piste braucht eine Art"_s );
+  //Value (Constraint Description: Value should not be 1337)
+  QCOMPARE( lines_fields.field( u"Value"_s ).constraints().constraintDescription(), u"Wert sollte nicht 1337 sein"_s );
 
   //Points:
   const QgsFields points_fields = points_layer->fields();
@@ -250,7 +334,9 @@ void TestQgsTranslateProject::translateProject()
 
   //WIDGETS
   //ValueRelation value is not anymore Name but Runwayid
-  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Runwayid"_s );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Pistenid"_s );
+  //ValueRelation description is not anymore 'The cabin Crew Member is now a '||"RunwayId" but 'Das Mitglied des Kabinenpersonals ist jetzt eine '||"Pistenid"
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Description"_s ).toString(), u"'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\""_s );
 
   //ValueMap with descriptions
   const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };

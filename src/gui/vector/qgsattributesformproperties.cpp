@@ -1141,6 +1141,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
   if ( doc.setContent( mimeData->data( u"application/x-qgsattributetabledesignerelementclipboard"_s ) ) )
   {
+    QgsReadWriteContext context;
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() != "FormWidgetClipboard"_L1 )
       return;
@@ -1165,11 +1166,11 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
         {
           const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
           QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-          QgsReadWriteContext context;
           // translate widget configuration strings
           if ( widgetType == "ValueRelation"_L1 )
           {
             optionsMap[u"Value"_s] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( mLayer->id(), fieldName ), optionsMap[u"Value"_s].toString() );
+            optionsMap[u"Description"_s] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( mLayer->id(), fieldName ), optionsMap[u"Description"_s].toString() );
           }
           if ( widgetType == "ValueMap"_L1 )
           {
@@ -1278,7 +1279,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
       if ( !constraintExpressionElement.isNull() )
       {
         QString expression = constraintExpressionElement.attribute( u"exp"_s, QString() );
-        QString description = constraintExpressionElement.attribute( u"desc"_s, QString() );
+        QString description = context.projectTranslator()->translate( u"project:layers:%1:constraintdescriptions"_s.arg( mLayer->id() ), constraintExpressionElement.attribute( u"desc"_s, QString() ) );
         fieldConstraints.setConstraintExpression( expression, description );
       }
     }
