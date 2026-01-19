@@ -64,6 +64,7 @@ from qgis.gui import (
     QgsPanelWidgetStack,
     QgsColorButton,
     QgsModelChildDependenciesWidget,
+    QgsProcessingModelConfigWidget,
 )
 from qgis.utils import iface
 
@@ -236,6 +237,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.dialog = dialog
         self.widget_labels = {}
         self.previous_output_definitions = {}
+        self.block_changes_signal = 0
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -275,6 +277,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.descriptionBox.setText(self._alg.displayName())
         hLayout.addWidget(descriptionLabel)
         hLayout.addWidget(self.descriptionBox)
+        self.descriptionBox.textChanged.connect(self.emit_changed_signal)
+
         self.verticalLayout.addLayout(hLayout)
         line = QFrame()
         line.setFrameShape(QFrame.Shape.HLine)
@@ -328,6 +332,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             wrapper.registerProcessingContextGenerator(self.context_generator)
             if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
                 widget = wrapper
+                wrapper.changed.connect(self.emit_changed_signal)
             else:
                 widget = wrapper.widget
             if widget is not None:
@@ -400,6 +405,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.mainLayout.addWidget(w)
         self.setLayout(self.mainLayout)
 
+    def emit_changed_signal(self):
+        if not self.block_changes_signal:
+            self.widgetChanged.emit()
+
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
@@ -417,6 +426,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.widget_labels[param.name()].setVisible(self.showAdvanced)
 
     def setPreviousValues(self):
+        self.block_changes_signal += 1
         if self.childId is not None:
             alg = self.model.childAlgorithm(self.childId)
 
@@ -494,6 +504,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     wrapper.setWidgetValue(value)
 
             self.dependencies_panel.setValue(alg.dependencies())
+        self.block_changes_signal -= 1
 
     def createAlgorithm(self):
         alg = QgsProcessingModelChildAlgorithm(self._alg.id())
@@ -593,7 +604,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         return alg
 
 
-class ModelerParametersWidget(QWidget):
+class ModelerParametersWidget(QgsProcessingModelConfigWidget):
 
     def __init__(
         self, alg, model, algName=None, configuration=None, dialog=None, context=None
