@@ -914,7 +914,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            '(10 + 10) * (1 + 2)',
+            "(10 + 10) * (1 + 2)",
         )
 
     def testConvertLabels(self):

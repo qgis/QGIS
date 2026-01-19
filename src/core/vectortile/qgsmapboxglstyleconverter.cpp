@@ -3308,17 +3308,17 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else if ( ( op == "*"_L1 || op == "+"_L1 ) && expression.size() >= 3 )
   {
-    QStringList multiplierString;
+    QStringList operands;
     std::transform( std::next( expression.begin() ), expression.end(),
-                    std::back_inserter( multiplierString ),
+                    std::back_inserter( operands ),
                     [&context, colorExpected]( const QVariant & val )
-                    {
-                      QString v = parseValue( val, context, colorExpected );
-                      if ( v.contains( ' ' ) )
-                        v = u"(%1)"_s.arg( v );
-                      return v;
-                    } );
-    return multiplierString.join( QStringLiteral(" %1 ").arg( op ) );
+    {
+      QString v = parseValue( val, context, colorExpected );
+      if ( v.contains( ' ' ) )
+        v = u"(%1)"_s.arg( v );
+      return v;
+    } );
+    return operands.join( u" %1 "_s.arg( op ) );
   }
   else if ( op == "to-number"_L1 )
   {
