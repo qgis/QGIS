@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsmaptoolshapecircle2points.h"
+#include "qgsmaptoolshapecircle2pointsradius.h"
 #include "qgsmaptoolshapecircle2tangentspoint.h"
 #include "qgsmaptoolshapecircle3points.h"
 #include "qgsmaptoolshapecircle3tangents.h"
@@ -54,6 +55,10 @@ class TestQgsMapToolCircle : public QObject
     void testDrawCircleFromCenterPointNotEnoughPoints();
     void testDrawCircleFrom3TangentsNotEnoughPoints();
     void testDrawCircleFrom2TangentsNotEnoughPoints();
+    void testDrawCircleFrom2PointsRadius();
+    void testDrawCircleFrom2PointsRadiusTwoCenters();
+    void testDrawCircleFrom2PointsRadiusTooSmall();
+    void testDrawCircleFrom2PointsRadiusWithUndo();
     void testTransientGeometrySignalTwoPoints();
     void testTransientGeometrySignalThreePoints();
     void testTransientGeometrySignalCenterPoint();
@@ -502,6 +507,113 @@ void TestQgsMapToolCircle::testDrawCircleFrom2TangentsNotEnoughPoints()
   utils.mouseClick( 0, 2, Qt::RightButton );
 
   QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2PointsRadius()
+{
+  // Test the 3-step workflow: set point 1, set point 2, select center
+  // With default radius of 1.0 and distance 2.0, this is the diameter case (1 solution)
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2PointsRadiusMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 0 );
+  utils.mouseClick( 2, 0, Qt::LeftButton );
+
+  QCOMPARE( layer->featureCount(), count + 1 );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2PointsRadiusTwoCenters()
+{
+  // Test the full 3-step workflow when there are 2 possible centers
+  // Default radius is 1.0, with distance 1.0 we get 2 centers (radius > distance/2)
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2PointsRadiusMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 0, Qt::LeftButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  // Third click to select center
+  utils.mouseClick( 0.5, 1, Qt::LeftButton );
+
+  QCOMPARE( layer->featureCount(), count + 1 );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2PointsRadiusTooSmall()
+{
+  // With the default radius of 1, test that points too far apart don't create a circle
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2PointsRadiusMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+
+  // Try to click second point at distance 10 (requires radius >= 5, but default is 1)
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  // Clean up by canceling
+  utils.mouseClick( 0, 0, Qt::RightButton );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2PointsRadiusWithUndo()
+{
+  // Test undo functionality: click first point, click second point, undo, click different second point
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2PointsRadiusMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+
+  // Click first point
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+
+  // Click second point (distance = 1, with default radius 1, we get 2 centers)
+  utils.mouseClick( 1, 0, Qt::LeftButton );
+  QCOMPARE( layer->featureCount(), count ); // Still no feature, waiting for center selection
+
+  // Undo to go back to just first point
+  utils.keyClick( Qt::Key_Backspace );
+
+  // Click a different second point (distance = 2, same as default radius, diameter case)
+  utils.mouseMove( 2, 0 );
+  utils.mouseClick( 2, 0, Qt::LeftButton );
+
+  // Should complete immediately since it's the diameter case (only 1 center)
+  QCOMPARE( layer->featureCount(), count + 1 );
+
   layer->rollBack();
 }
 
