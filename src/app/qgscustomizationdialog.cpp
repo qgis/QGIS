@@ -184,6 +184,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::init()
 {
   mCustomization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
   mRootItems.clear();
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( mMode )
   {
     case Mode::ActionSelector:
@@ -200,6 +201,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::init()
                  << mCustomization->toolBarsItem();
       break;
   }
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 void QgsCustomizationDialog::QgsCustomizationModel::reset()
