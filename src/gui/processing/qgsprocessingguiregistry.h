@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsmodeldesignerconfigwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
 
 #include <QList>
@@ -33,6 +34,7 @@ class QgsProcessingParameterWidgetContext;
 class QgsProcessingModelConfigWidgetFactory;
 class QgsProcessingModelConfigWidget;
 class QgsProcessingModelComponent;
+class QgsProcessingGuiInternalModelConfigWidgetFactory;
 
 /**
  * A registry for widgets for use with the Processing framework.
@@ -196,10 +198,26 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
+#endif
     QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
     QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> mParameterWidgetFactories;
 
     QList<QPointer<QgsProcessingModelConfigWidgetFactory>> mModelConfigWidgetFactories;
+    std::unique_ptr< QgsProcessingGuiInternalModelConfigWidgetFactory > mModelConfigWidgetFactory;
 };
 
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class GUI_EXPORT QgsProcessingGuiInternalModelConfigWidgetFactory : public QgsProcessingModelConfigWidgetFactory
+{
+    Q_OBJECT
+  public:
+    bool supportsComponent( QgsProcessingModelComponent *component ) const final;
+    QgsProcessingModelConfigWidget *createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const final;
+};
+///@endcond
+#endif
 #endif // QGSPROCESSINGGUIREGISTRY_H
