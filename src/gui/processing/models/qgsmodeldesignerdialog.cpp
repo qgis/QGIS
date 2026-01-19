@@ -522,6 +522,11 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
     oldScene->deleteLater();
 }
 
+QgsModelGraphicsScene *QgsModelDesignerDialog::modelScene()
+{
+  return mScene;
+}
+
 void QgsModelDesignerDialog::activate()
 {
   show();

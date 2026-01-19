@@ -107,6 +107,16 @@ QgsProcessingContextGenerator *QgsProcessingParameterWidgetContext::processingCo
   return mProcessingContextGenerator;
 }
 
+QgsModelDesignerDialog *QgsProcessingParameterWidgetContext::modelDesignerDialog() const
+{
+  return mModelDialog;
+}
+
+void QgsProcessingParameterWidgetContext::setModelDesignerDialog( QgsModelDesignerDialog *dialog )
+{
+  mModelDialog = dialog;
+}
+
 QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
 {
   return mModel;
