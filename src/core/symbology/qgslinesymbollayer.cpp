@@ -777,9 +777,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
+    const QString joinStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
+    pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinStyleString ) );
   }
 
   //cap style
