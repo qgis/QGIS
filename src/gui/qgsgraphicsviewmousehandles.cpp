@@ -635,7 +635,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     return;
   }
 
-  if ( mIsDragging || mIsResizing || mIsRotating )
+  if ( mClickClickEnabled && ( mIsDragging || mIsResizing || mIsRotating ) )
   {
     return;
   }
@@ -690,7 +690,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
       break;
   }
 
-  if ( mIsDragging )
+  if ( mClickClickEnabled && mIsDragging )
   {
     mIsDragStarting = true;
   }
