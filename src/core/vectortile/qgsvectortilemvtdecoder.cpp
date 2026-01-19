@@ -57,7 +57,7 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
     {
       if ( !QgsZipUtils::decodeGzip( raw, pbf ) )
       {
-        QgsDebugMsgLevel( u"Failed to gunzip tile data"_s, 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Failed to gunzip tile data" ), 2 );
         return false;
       }
     }
