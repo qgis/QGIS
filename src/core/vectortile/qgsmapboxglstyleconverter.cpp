@@ -3292,11 +3292,26 @@ Qt::PenJoinStyle QgsMapBoxGlStyleConverter::parseJoinStyle( const QString &style
 QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected )
 {
   QString op = expression.value( 0 ).toString();
-  if ( op == "%"_L1 && expression.size() >= 3 )
+  if ( ( op == "%"_L1 || op == "/"_L1 || op == "-"_L1 || op == "^"_L1 ) && expression.size() >= 3 )
   {
+    if ( expression.size() != 3 )
+    {
+      context.pushWarning( QObject::tr( "%1: Operator %2 requires exactly two operands, skipping extra operands" ).arg( context.layerId() ).arg( op ) );
+    }
     return u"%1 %2 %3"_s.arg( parseValue( expression.value( 1 ), context ),
                               op,
                               parseValue( expression.value( 2 ), context ) );
+  }
+  else if ( ( op == "*"_L1 || op == "+"_L1 ) && expression.size() >= 3 )
+  {
+    QStringList multiplierString;
+    std::transform( std::next( expression.begin() ), expression.end(),
+                    std::back_inserter( multiplierString ),
+                    [&context, colorExpected]( const QVariant & val )
+                    {
+                      return parseValue( val, context, colorExpected );
+                    } );
+    return multiplierString.join( QStringLiteral(" %1 ").arg( op ) );
   }
   else if ( op == "to-number"_L1 )
   {
@@ -3536,17 +3551,6 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
     }
     return caseString;
-  }
-  else if ( op == "*"_L1 )
-  {
-    QStringList multiplierString;
-    std::transform( std::next( expression.begin() ), expression.end(),
-                    std::back_inserter( multiplierString ),
-                    [&context, colorExpected]( const QVariant & val )
-    {
-      return parseValue( val, context, colorExpected );
-    } );
-    return multiplierString.join( " * "_L1 );
   }
   else
   {

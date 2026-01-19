@@ -899,6 +899,15 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             '-57.2957795 * "drehwinkel"',
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["+", 10, ["get", "offset_a"], ["get", "offset_b"]],
+                conversion_context,
+                False,
+            ),
+            '10 + "offset_a" + "offset_b"',
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
