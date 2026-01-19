@@ -41,6 +41,15 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
       Both
     };
 
+    /**
+   * Direction of the transect line
+   */
+    enum Direction
+    {
+      RightToLeft,
+      LeftToRight
+    };
+
     QString group() const final;
     QString groupId() const final;
     QStringList tags() const override;
@@ -84,7 +93,7 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
     /**
    * Returns the transect geometry at the specified point.
    */
-    static QgsGeometry calcTransect( const QgsPoint &point, double angleAtVertex, double length, Side orientation, double angle );
+    static QgsGeometry calcTransect( const QgsPoint &point, double angleAtVertex, double length, Side orientation, double angle, Direction direction );
 
     // Shared member variables accessible to subclasses
     Side mOrientation = Both;
@@ -92,6 +101,7 @@ class QgsTransectAlgorithmBase : public QgsProcessingAlgorithm
     double mLength = 5.0;
     bool mDynamicAngle = false;
     bool mDynamicLength = false;
+    Direction mDirection = RightToLeft;
     QgsProperty mAngleProperty;
     QgsProperty mLengthProperty;
 };
