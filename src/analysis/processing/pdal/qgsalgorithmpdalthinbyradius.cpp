@@ -66,7 +66,10 @@ void QgsPdalThinByRadiusAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( u"SAMPLING_RADIUS"_s, QObject::tr( "Sampling radius (in map units)" ), Qgis::ProcessingNumberParameterType::Double, 1.0, false, 1e-9 ) );
+
   createCommonParameters();
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Thinned (by radius)" ) ) );
 }
 
@@ -87,6 +90,7 @@ QStringList QgsPdalThinByRadiusAlgorithm::createArgumentLists( const QVariantMap
 
   QStringList args = { u"thin"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--mode=sample"_s, u"--step-sample=%1"_s.arg( step ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

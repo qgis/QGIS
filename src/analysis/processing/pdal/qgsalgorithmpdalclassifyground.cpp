@@ -88,6 +88,8 @@ void QgsPdalClassifyGroundAlgorithm::initAlgorithm( const QVariantMap & )
   windowSizeParam->setHelp( QObject::tr( "Maximum filter window size. Higher values better identify large buildings or objects, smaller values protect smaller features." ) );
   addParameter( windowSizeParam );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Classified Ground" ) ) );
 }
 
@@ -112,6 +114,7 @@ QStringList QgsPdalClassifyGroundAlgorithm::createArgumentLists( const QVariantM
 
   QStringList args = { u"classify_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--cell-size=%1"_s.arg( cellSize ), u"--scalar=%1"_s.arg( scalar ), u"--slope=%1"_s.arg( slope ), u"--threshold=%1"_s.arg( threshold ), u"--window-size=%1"_s.arg( windowSize ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

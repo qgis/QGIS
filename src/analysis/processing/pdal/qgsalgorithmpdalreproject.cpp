@@ -71,6 +71,8 @@ void QgsPdalReprojectAlgorithm::initAlgorithm( const QVariantMap & )
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Reprojected" ) ) );
 }
 
@@ -90,6 +92,8 @@ QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &p
   QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--transform-crs=%1"_s.arg( crs.authid() ) };
+
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
 
   const QString coordOp = parameterAsString( parameters, u"OPERATION"_s, context );
   if ( !coordOp.isEmpty() )
