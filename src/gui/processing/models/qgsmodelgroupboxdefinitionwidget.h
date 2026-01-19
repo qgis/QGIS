@@ -20,6 +20,7 @@
 #define QGSPROCESSINGGROUPBBOXDEFINITIONWIDGET_H
 
 #include "qgis_gui.h"
+#include "qgsmodeldesignerconfigwidget.h"
 #include "qgsprocessingmodelgroupbox.h"
 
 #include <QDialog>
@@ -34,9 +35,36 @@ class QTextEdit;
 class QgsColorButton;
 class QgsProcessingModelGroupBox;
 
-
 /**
  * A widget which allows users to specify the properties of a model group box.
+ *
+ * \ingroup gui
+ * \note Not available in Python bindings.
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelGroupBoxDefinitionPanelWidget : public QgsProcessingModelConfigWidget
+{
+    Q_OBJECT
+  public:
+    /**
+   * Constructor for QgsModelGroupBoxDefinitionPanelWidget, for the specified group \a box.
+   */
+    QgsModelGroupBoxDefinitionPanelWidget( const QgsProcessingModelGroupBox &box, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+   * Returns a new instance of the group box, using the current settings defined in the dialog.
+   */
+    QgsProcessingModelGroupBox groupBox() const;
+
+  private:
+    QTextEdit *mCommentEdit = nullptr;
+    QgsColorButton *mCommentColorButton = nullptr;
+    QgsProcessingModelGroupBox mBox;
+};
+
+
+/**
+ * A dialog which allows users to specify the properties of a model group box.
  *
  * \ingroup gui
  * \note Not available in Python bindings.
@@ -57,9 +85,7 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionDialog : public QDialog
     QgsProcessingModelGroupBox groupBox() const;
 
   private:
-    QTextEdit *mCommentEdit = nullptr;
-    QgsColorButton *mCommentColorButton = nullptr;
-    QgsProcessingModelGroupBox mBox;
+    QgsModelGroupBoxDefinitionPanelWidget *mWidget = nullptr;
 };
 
 
