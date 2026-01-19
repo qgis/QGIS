@@ -102,6 +102,10 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 new_param = dlg.param
                 comment = dlg.comments()
                 comment_color = dlg.commentColor()
+                self.apply_new_param(
+                    new_param, old_description, old_name, comment, comment_color
+                )
+
         else:
             # yay, use new API!
             context = createContext()
@@ -128,33 +132,40 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 safeName = QgsProcessingModelAlgorithm.safeName(new_param.description())
                 new_param.setName(safeName.lower())
 
-        if new_param is not None:
-            self.aboutToChange.emit(self.tr("Edit {}").format(new_param.description()))
-            self.model().removeModelParameter(self.component().parameterName())
+                self.apply_new_param(
+                    new_param, old_description, old_name, comment, comment_color
+                )
 
-            if new_param.description() != old_description:
-                # only update name if user has changed the description -- we don't force this, as it may cause
-                # unwanted name updates which could potentially break the model's API
-                name = new_param.name()
+    def apply_new_param(
+        self, new_param, old_description, old_name, comment, comment_color
+    ):
+        self.aboutToChange.emit(self.tr("Edit {}").format(new_param.description()))
+        self.model().removeModelParameter(self.component().parameterName())
 
-                base_name = name
-                i = 2
-                while self.model().parameterDefinition(name):
-                    name = base_name + str(i)
-                    i += 1
+        if new_param.description() != old_description:
+            # only update name if user has changed the description -- we don't force this, as it may cause
+            # unwanted name updates which could potentially break the model's API
+            name = new_param.name()
 
-                new_param.setName(name)
+            base_name = name
+            i = 2
+            while self.model().parameterDefinition(name):
+                name = base_name + str(i)
+                i += 1
 
-                self.model().changeParameterName(old_name, new_param.name())
+            new_param.setName(name)
 
-            self.component().setParameterName(new_param.name())
-            self.component().setDescription(new_param.name())
-            self.component().comment().setDescription(comment)
-            self.component().comment().setColor(comment_color)
-            self.model().addModelParameter(new_param, self.component())
-            self.setLabel(new_param.description())
-            self.requestModelRepaint.emit()
-            self.changed.emit()
+            self.model().changeParameterName(old_name, new_param.name())
+
+        self.component().setParameterName(new_param.name())
+        self.component().setDescription(new_param.name())
+        self.component().comment().setDescription(comment)
+        self.component().comment().setColor(comment_color)
+        self.model().addModelParameter(new_param, self.component())
+        self.setLabel(new_param.description())
+        self.requestModelRepaint.emit()
+        self.changed.emit()
+        return new_param.name()
 
     def editComponent(self):
         self.edit()
