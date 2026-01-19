@@ -184,7 +184,10 @@
         "py-qscintilla",
         "py-rasterio",
         "py-requests",
-        "py-scipy",
+        {
+          "name": "py-scipy",
+          "platform": "!windows"
+        },
         "py-shapely",
         "py-six",
         "py-urllib3",
