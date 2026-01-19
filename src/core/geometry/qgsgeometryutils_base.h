@@ -26,6 +26,10 @@ email                : loic dot bartoletti at oslandia dot com
  * \ingroup core
  * \class QgsGeometryUtilsBase
  * \brief Convenience functions for geometry utils.
+ *
+ * \note This class contains the low-level mathematical implementations using primitive types (like double),
+ * avoiding the use of QGIS geometry classes (like QgsPoint).
+ *
  * \since QGIS 3.34
  */
 class CORE_EXPORT QgsGeometryUtilsBase
