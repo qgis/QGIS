@@ -34,6 +34,7 @@ try:
     QgsGeometryUtilsBase.angleBisector = staticmethod(QgsGeometryUtilsBase.angleBisector)
     QgsGeometryUtilsBase.bisector = staticmethod(QgsGeometryUtilsBase.bisector)
     QgsGeometryUtilsBase.lineIntersection = staticmethod(QgsGeometryUtilsBase.lineIntersection)
+    QgsGeometryUtilsBase.lineByTwoAngles = staticmethod(QgsGeometryUtilsBase.lineByTwoAngles)
     QgsGeometryUtilsBase.segmentIntersection = staticmethod(QgsGeometryUtilsBase.segmentIntersection)
     QgsGeometryUtilsBase.project = staticmethod(QgsGeometryUtilsBase.project)
     QgsGeometryUtilsBase.azimuth = staticmethod(QgsGeometryUtilsBase.azimuth)
