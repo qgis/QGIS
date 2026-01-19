@@ -217,6 +217,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         bool isScaleOK( double scale ) const;
 
         QgsSymbol *symbol() { return mSymbol.get(); }
+
+        /**
+         * Returns the symbol associated with the rule.
+         *
+         * \since QGIS 4.2
+         */
+        const QgsSymbol *symbol() const SIP_SKIP { return mSymbol.get(); }
+
         QString label() const { return mLabel; }
         bool dependsOnScale() const { return mMaximumScale != 0 || mMinimumScale != 0; }
 
@@ -573,6 +581,16 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     /////
 
     QgsRuleBasedRenderer::Rule *rootRule() { return mRootRule; }
+
+
+    /**
+     * Returns the root rule of the rule-based renderer.
+     *
+     * The root rule is the top-level container for all renderer rules.
+     *
+     * \since QGIS 4.2
+     */
+    const QgsRuleBasedRenderer::Rule *rootRule() const SIP_SKIP { return mRootRule; }
 
     //////
 
