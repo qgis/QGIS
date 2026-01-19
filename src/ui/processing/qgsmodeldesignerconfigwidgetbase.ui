@@ -68,34 +68,6 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QToolButton" name="mUndoButton">
-           <property name="toolTip">
-            <string>Undo</string>
-           </property>
-           <property name="text">
-            <string>…</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="mRedoButton">
-           <property name="toolTip">
-            <string>Redo</string>
-           </property>
-           <property name="text">
-            <string>…</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Orientation::Horizontal</enum>
@@ -107,22 +79,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="mLiveApplyCheck">
-           <property name="toolTip">
-            <string>If checked, the map canvas will automatically update whenever an option has been changed without the requirement to click Apply</string>
-           </property>
-           <property name="text">
-            <string>Live update</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-           <property name="autoRepeat">
-            <bool>false</bool>
-           </property>
-          </widget>
          </item>
          <item>
           <widget class="QDialogButtonBox" name="mButtonBox">
@@ -156,13 +112,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>mUndoButton</tabstop>
-  <tabstop>mRedoButton</tabstop>
-  <tabstop>mLiveApplyCheck</tabstop>
- </tabstops>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
