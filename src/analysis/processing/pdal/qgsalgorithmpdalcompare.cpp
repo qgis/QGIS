@@ -54,7 +54,11 @@ QString QgsPdalCompareAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm compares two point clouds using M3C2 algorithm and outputs a point cloud." )
          + u"\n\n"_s
-         + QObject::tr( "Resulting point clouds will have several new dimensions: m3c2_distance, m3c2_uncertainty, m3c2_significant, m3c2_std_dev1, m3c2_std_dev2, m3c2_count1 and m3c2_count2." );
+         + QObject::tr( "Resulting point clouds will have several new dimensions: m3c2_distance, m3c2_uncertainty, m3c2_significant, m3c2_std_dev1, m3c2_std_dev2, m3c2_count1 and m3c2_count2." )
+         + u"\n\n"_s
+         + QObject::tr( "Algorithm calculates the distance between two point clouds by considering the local orientation of the surface. It estimates surface normals at a user-defined scale and measures the average distance between clouds within a cylindrical projection along those normals." )
+         + u"\n\n"_s
+         + QObject::tr( "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error." );
 }
 
 QString QgsPdalCompareAlgorithm::shortDescription() const
