@@ -99,8 +99,18 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     /**
      * Sets the related \a scene.
+     *
+     * \see modelScene()
      */
     void setModelScene( QgsModelGraphicsScene *scene SIP_TRANSFER );
+
+    /**
+     * Returns the related model scene.
+     *
+     * \see setModelScene()
+     * \since QGIS 4.0
+     */
+    QgsModelGraphicsScene *modelScene();
 
     /**
      * Save action.

@@ -74,6 +74,17 @@ Loads a model into the designer from the specified file ``path``.
     void setModelScene( QgsModelGraphicsScene *scene /Transfer/ );
 %Docstring
 Sets the related ``scene``.
+
+.. seealso:: :py:func:`modelScene`
+%End
+
+    QgsModelGraphicsScene *modelScene();
+%Docstring
+Returns the related model scene.
+
+.. seealso:: :py:func:`setModelScene`
+
+.. versionadded:: 4.0
 %End
 
     enum class SaveAction
