@@ -702,8 +702,24 @@ void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromL
   QMap< QString, TreeNode * > groupNameToTreeNode;
   QMap< QString, TreeNode * > layerIdToTreeNode;
 
+  // Add tree structure from QGIS layer tree to the intermediate TreeNode struct
   std::unique_ptr< TreeNode > rootPdfNode = createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, layerTree );
-  rootPdfNode->isRootNode = true;
+  rootPdfNode->isRootNode = true; // To skip the layer tree root from the PDF layer tree
+
+  // Add missing groups from other components
+  for ( const ComponentLayerDetail &component : components )
+  {
+    if ( !component.group.isEmpty() && !groupNameToTreeNode.contains( component.group ) )
+    {
+      auto pdfTreeGroup = std::make_unique< TreeNode >();
+      const QString id = QUuid::createUuid().toString();
+      pdfTreeGroup->id = id;
+      pdfTreeGroup->name = component.group;
+      pdfTreeGroup->initiallyVisible = true;
+      groupNameToTreeNode[ pdfTreeGroup->name ] = pdfTreeGroup.get();
+      rootPdfNode->addChild( std::move( pdfTreeGroup ) );
+    }
+  }
 
   auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
   {
