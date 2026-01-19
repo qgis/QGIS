@@ -239,6 +239,7 @@ set(QGIS_APP_SRCS
   maptools/qgsmaptoolshaperegularpolygonabstract.cpp
 
   maptools/qgsmaptoolshapecircle2points.cpp
+  maptools/qgsmaptoolshapecircle2pointsradius.cpp
   maptools/qgsmaptoolshapecircle2tangentspoint.cpp
   maptools/qgsmaptoolshapecircle3points.cpp
   maptools/qgsmaptoolshapecircle3tangents.cpp
