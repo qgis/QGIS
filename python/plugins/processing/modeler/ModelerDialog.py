@@ -295,7 +295,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
             dlg = ModelerParameterDefinitionDialog(self.model(), paramType)
             if dlg.exec():
-                new_param = dlg.param
+                new_param = dlg.create_parameter()
                 comment = dlg.comments()
         else:
             # yay, use new API!
