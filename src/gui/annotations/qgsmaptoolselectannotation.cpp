@@ -93,7 +93,6 @@ QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, Qg
   : QgsAnnotationMapTool( canvas, cadDockWidget )
 {
   connect( QgsMapToolSelectAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolSelectAnnotation::onCanvasRefreshed );
-  connect( this, &QgsMapToolSelectAnnotation::selectedItemsChanged, this, &QgsMapToolSelectAnnotation::updateSelectedItem );
 
   setAdvancedDigitizingAllowed( false );
 }
@@ -309,6 +308,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
       }
     }
     emit selectedItemsChanged();
+    updateSelectedItem();
     event->ignore();
     return;
   }
@@ -324,6 +324,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
       mSelectedItems.pop_back();
     }
     emit selectedItemsChanged();
+    updateSelectedItem();
     event->ignore();
   }
   else if ( event->key() == Qt::Key_Left
@@ -465,6 +466,7 @@ void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &m
     }
   }
   emit selectedItemsChanged();
+  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection )
@@ -519,6 +521,7 @@ void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &map
     mSelectedItems.back()->updateBoundingBox( closestItem->boundingBox() );
   }
   emit selectedItemsChanged();
+  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::updateSelectedItem()
@@ -545,6 +548,7 @@ void QgsMapToolSelectAnnotation::clearSelectedItems()
   if ( hadSelection )
   {
     emit selectedItemsChanged();
+    updateSelectedItem();
   }
 }
 
