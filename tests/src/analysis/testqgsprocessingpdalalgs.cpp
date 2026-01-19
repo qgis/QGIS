@@ -63,7 +63,12 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void filterNoiseStatistical();
     void filterNoiseRadius();
     void transformCoordinates();
+//only add test case if PDAL version is 2.10 or higher - can be removed when PDAL 2.10 is minimum requirement
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 10 )
     void compare();
+#endif
+#endif
 
     void useIndexCopcFile();
 
@@ -1086,6 +1091,9 @@ void TestQgsProcessingPdalAlgs::transformCoordinates()
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 
+//only add test case if PDAL version is 2.10 or higher - can be removed when PDAL 2.10 is minimum requirement
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 10 )
 void TestQgsProcessingPdalAlgs::compare()
 {
   const QString inputPointCloudFileName = mDataDir + "/point_clouds/copc/autzen-bmx-2010.copc.laz";
@@ -1134,6 +1142,8 @@ void TestQgsProcessingPdalAlgs::compare()
   QVERIFY( ok );
   QVERIFY( QFileInfo::exists( outputPointCloud ) );
 }
+#endif
+#endif
 
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
 #include "testqgsprocessingpdalalgs.moc"
