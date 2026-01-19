@@ -122,9 +122,17 @@ Returns the graphic item corresponding to the specified child algorithm
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
 %Docstring
 Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
-the specified child algorithm
+the specified parameter name
 
 .. versionadded:: 3.44
+%End
+
+    QgsModelComponentGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
+%Docstring
+Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
+the specified child algorithm output
+
+.. versionadded:: 4.0
 %End
 
     void selectAll();
