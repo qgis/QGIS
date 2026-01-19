@@ -1166,28 +1166,6 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
         {
           const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
           QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-          // translate widget configuration strings
-          if ( widgetType == "ValueRelation"_L1 )
-          {
-            optionsMap[u"Value"_s] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( mLayer->id(), fieldName ), optionsMap[u"Value"_s].toString() );
-            optionsMap[u"Description"_s] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( mLayer->id(), fieldName ), optionsMap[u"Description"_s].toString() );
-          }
-          if ( widgetType == "ValueMap"_L1 )
-          {
-            if ( optionsMap[u"map"_s].canConvert<QList<QVariant>>() )
-            {
-              QList<QVariant> translatedValueList;
-              const QList<QVariant> valueList = optionsMap[u"map"_s].toList();
-              for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
-              {
-                QMap<QString, QVariant> translatedValueMap;
-                QString translatedKey = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuemapdescriptions"_s.arg( mLayer->id(), fieldName ), valueList[i].toMap().constBegin().key() );
-                translatedValueMap.insert( translatedKey, valueList[i].toMap().constBegin().value() );
-                translatedValueList.append( translatedValueMap );
-              }
-              optionsMap.insert( u"map"_s, translatedValueList );
-            }
-          }
           config.mEditorWidgetType = widgetType;
           config.mEditorWidgetConfig = optionsMap;
         }
@@ -1279,7 +1257,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
       if ( !constraintExpressionElement.isNull() )
       {
         QString expression = constraintExpressionElement.attribute( u"exp"_s, QString() );
-        QString description = context.projectTranslator()->translate( u"project:layers:%1:constraintdescriptions"_s.arg( mLayer->id() ), constraintExpressionElement.attribute( u"desc"_s, QString() ) );
+        QString description = constraintExpressionElement.attribute( u"desc"_s, QString() );
         fieldConstraints.setConstraintExpression( expression, description );
       }
     }
