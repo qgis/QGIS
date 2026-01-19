@@ -199,32 +199,35 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             dlg.switchToCommentTab()
         if dlg.exec():
             alg = dlg.createAlgorithm()
-            alg.setChildId(self.component().childId())
-            alg.copyNonDefinitionPropertiesFromModel(self.model())
-            if alg.toVariant() == self.component().toVariant():
-                # nothing changed, treat as cancel was pressed
-                return
+            self.apply_new_alg(alg)
 
-            self.aboutToChange.emit(self.tr("Edit {}").format(alg.description()))
-            self.model().setChildAlgorithm(alg)
-            self.requestModelRepaint.emit()
-            self.changed.emit()
+    def apply_new_alg(self, alg):
+        alg.setChildId(self.component().childId())
+        alg.copyNonDefinitionPropertiesFromModel(self.model())
+        if alg.toVariant() == self.component().toVariant():
+            # nothing changed, treat as cancel was pressed
+            return
 
-            res, errors = self.model().validateChildAlgorithm(alg.childId())
-            if not res:
-                self.scene().showWarning(
-                    QCoreApplication.translate(
-                        "ModelerGraphicItem", "Algorithm “{}” is invalid"
-                    ).format(alg.description()),
-                    self.tr("Algorithm is Invalid"),
-                    QCoreApplication.translate(
-                        "ModelerGraphicItem",
-                        "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
-                    ).format(alg.description(), "</li><li>".join(errors)),
-                    level=Qgis.MessageLevel.Warning,
-                )
-            else:
-                self.scene().messageBar().clearWidgets()
+        self.aboutToChange.emit(self.tr("Edit {}").format(alg.description()))
+        self.model().setChildAlgorithm(alg)
+        self.requestModelRepaint.emit()
+        self.changed.emit()
+
+        res, errors = self.model().validateChildAlgorithm(alg.childId())
+        if not res:
+            self.scene().showWarning(
+                QCoreApplication.translate(
+                    "ModelerGraphicItem", "Algorithm “{}” is invalid"
+                ).format(alg.description()),
+                self.tr("Algorithm is Invalid"),
+                QCoreApplication.translate(
+                    "ModelerGraphicItem",
+                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
+                ).format(alg.description(), "</li><li>".join(errors)),
+                level=Qgis.MessageLevel.Warning,
+            )
+        else:
+            self.scene().messageBar().clearWidgets()
 
     def editComponent(self):
         self.edit()
