@@ -91,6 +91,16 @@ retrieve a Processing context for the widget when required.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the definition of the parameter is changed in the
+widget.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 
@@ -139,6 +149,16 @@ Registers a Processing context ``generator`` class that will be used to
 retrieve a Processing context for the widget when required.
 
 .. versionadded:: 3.18
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the definition of the parameter is changed in the
+widget.
+
+.. versionadded:: 4.0
 %End
 
 };
