@@ -202,7 +202,10 @@ May return ``None`` if configuring a the component is not supported.
 .. versionadded:: 4.0
 %End
 
+  private:
+    QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

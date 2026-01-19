@@ -20,6 +20,8 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsmodeldesignerconfigwidget.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgroupboxdefinitionwidget.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
@@ -27,6 +29,7 @@
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsprocessingtininputlayerswidget.h"
@@ -96,6 +99,10 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingPointCloudAttributeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorTileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterOptionsWidgetWrapper() );
+
+
+  mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
+  registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
@@ -106,6 +113,9 @@ QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
   const QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> paramFactories = mParameterWidgetFactories;
   for ( auto it = paramFactories.constBegin(); it != paramFactories.constEnd(); ++it )
     removeParameterWidgetFactory( it.value() );
+
+  unregisterModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
+  mModelConfigWidgetFactory.reset();
 }
 
 void QgsProcessingGuiRegistry::addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory )
