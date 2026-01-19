@@ -149,8 +149,9 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
             widget.widgetChanged.connect(on_widget_changed)
             return widget
         elif isinstance(component, QgsProcessingModelChildAlgorithm):
-            algorithm = component.algorithm()
+            algorithm = component.algorithm().create()
             context = widgetContext.processingContextGenerator().processingContext()
+            child_id = component.childId()
 
             # this is unfortunately VERY ugly. The old Python processing GUI api
             # had the ModelerParametersDialog class so enmeshed in the parameter
@@ -160,14 +161,14 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
             fake_dialog = ModelerParametersDialog(
                 algorithm,
                 model,
-                algName=component.childId(),
+                algName=child_id,
                 configuration=component.configuration(),
             )
 
             widget = ModelerParametersWidget(
                 algorithm,
                 model,
-                algName=component.childId(),
+                algName=child_id,
                 configuration=component.configuration(),
                 dialog=fake_dialog,
                 context=context,
@@ -177,6 +178,17 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
 
             # make sure fake dialog exists for lifetime of widget
             widget.__fake_dialog = fake_dialog
+
+            def on_widget_changed():
+                model_scene = model_dialog.modelScene()
+                graphic_item = model_scene.childAlgorithmItem(child_id)
+                if not graphic_item:
+                    # should not happen!
+                    return
+
+                graphic_item.apply_new_alg(widget.createAlgorithm())
+
+            widget.widgetChanged.connect(on_widget_changed)
             return widget
 
         return None
