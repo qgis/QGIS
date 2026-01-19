@@ -110,6 +110,8 @@ QgsProcessingBooleanParameterDefinitionWidget::QgsProcessingBooleanParameterDefi
   else
     mDefaultCheckBox->setChecked( false );
   vlayout->addWidget( mDefaultCheckBox );
+  connect( mDefaultCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -378,10 +380,14 @@ QgsProcessingStringParameterDefinitionWidget::QgsProcessingStringParameterDefini
     mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsString( stringParam, stringParam->defaultValueForGui(), context ) );
   vlayout->addWidget( mDefaultLineEdit );
 
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   mMultiLineCheckBox = new QCheckBox( tr( "Multiline input" ) );
   if ( const QgsProcessingParameterString *stringParam = dynamic_cast<const QgsProcessingParameterString *>( definition ) )
     mMultiLineCheckBox->setChecked( stringParam->multiLine() );
   vlayout->addWidget( mMultiLineCheckBox );
+
+  connect( mMultiLineCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -627,6 +633,11 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
 
     mDefaultLineEdit->setText( numberParam->defaultValueForGui().toString() );
   }
+
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMinLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMaxLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -940,6 +951,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
   }
 
   vlayout->addWidget( mParentLayerComboBox );
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( new QLabel( tr( "Minimum value" ) ) );
   mMinLineEdit = new QLineEdit();
@@ -959,6 +971,9 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
     mMaxLineEdit->setText( QLocale().toString( distParam->maximum() ) );
     mDefaultLineEdit->setText( distParam->defaultValueForGui().toString() );
   }
+  connect( mMinLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMaxLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -1227,6 +1242,8 @@ QgsProcessingAreaParameterDefinitionWidget::QgsProcessingAreaParameterDefinition
     mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
   }
 
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( mParentLayerComboBox );
 
   vlayout->addWidget( new QLabel( tr( "Minimum value" ) ) );
@@ -1247,6 +1264,10 @@ QgsProcessingAreaParameterDefinitionWidget::QgsProcessingAreaParameterDefinition
     mMaxLineEdit->setText( QLocale().toString( areaParam->maximum() ) );
     mDefaultLineEdit->setText( areaParam->defaultValueForGui().toString() );
   }
+
+  connect( mMinLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMaxLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -1537,6 +1558,11 @@ QgsProcessingVolumeParameterDefinitionWidget::QgsProcessingVolumeParameterDefini
     mDefaultLineEdit->setText( volumeParam->defaultValueForGui().toString() );
   }
 
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMinLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMaxLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -1773,6 +1799,8 @@ QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDe
   mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::TemporalUnit::Centuries ), static_cast<int>( Qgis::TemporalUnit::Centuries ) );
   vlayout->addWidget( mUnitsCombo );
 
+  connect( mUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   if ( const QgsProcessingParameterDuration *durationParam = dynamic_cast<const QgsProcessingParameterDuration *>( definition ) )
   {
     mMinLineEdit->setText( QLocale().toString( durationParam->minimum() ) );
@@ -1780,6 +1808,9 @@ QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDe
     mDefaultLineEdit->setText( durationParam->defaultValueForGui().toString() );
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( durationParam->defaultUnit() ) ) );
   }
+  connect( mMinLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMaxLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -1931,6 +1962,7 @@ QgsProcessingScaleParameterDefinitionWidget::QgsProcessingScaleParameterDefiniti
   }
 
   vlayout->addWidget( mDefaultLineEdit );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -2051,6 +2083,10 @@ QgsProcessingRangeParameterDefinitionWidget::QgsProcessingRangeParameterDefiniti
     mMinLineEdit->setText( QLocale().toString( range.at( 0 ) ) );
     mMaxLineEdit->setText( QLocale().toString( range.at( 1 ) ) );
   }
+
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMinLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mMaxLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -2288,6 +2324,9 @@ QgsProcessingMatrixParameterDefinitionWidget::QgsProcessingMatrixParameterDefini
     mMatrixWidget->setFixedRows( matrixParam->hasFixedNumberRows() );
   }
   vlayout->addWidget( mMatrixWidget );
+
+  connect( mMatrixWidget, &QgsProcessingMatrixModelerWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -2383,6 +2422,8 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
     mTypeComboBox->setCurrentIndex( 0 );
   vlayout->addWidget( mTypeComboBox );
 
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( new QLabel( tr( "File filter" ) ) );
 
   mFilterComboBox = new QComboBox();
@@ -2398,6 +2439,8 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
     mFilterComboBox->setCurrentIndex( 0 );
   vlayout->addWidget( mFilterComboBox );
 
+  connect( mFilterComboBox, &QComboBox::currentTextChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mDefaultFileWidget = new QgsFileWidget();
@@ -2410,6 +2453,7 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
   else
     mDefaultFileWidget->setStorageMode( QgsFileWidget::GetFile );
   vlayout->addWidget( mDefaultFileWidget );
+  connect( mDefaultFileWidget, &QgsFileWidget::fileChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     Qgis::ProcessingFileParameterBehavior behavior = static_cast<Qgis::ProcessingFileParameterBehavior>( mTypeComboBox->currentData().toInt() );
@@ -2542,6 +2586,10 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   stackedWidget->addWidget( mDefaultRasterCalculatorLineEdit );
   vlayout->addWidget( stackedWidget );
 
+  connect( mDefaultQgisLineEdit, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultPointCloudLineEdit, &QgsProcessingPointCloudExpressionLineEdit::expressionChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultRasterCalculatorLineEdit, &QgsProcessingRasterCalculatorExpressionLineEdit::expressionChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
   {
     const QString expr = QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValueForGui(), context );
@@ -2641,6 +2689,9 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
     mExpressionTypeComboBox->setCurrentIndex( 0 );
 
   vlayout->addWidget( mExpressionTypeComboBox );
+
+  connect( mExpressionTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -3261,6 +3312,9 @@ QgsProcessingEnumParameterDefinitionWidget::QgsProcessingEnumParameterDefinition
     mEnumWidget->setDefaultOptions( enumParam->defaultValueForGui() );
   }
   vlayout->addWidget( mEnumWidget );
+
+  connect( mEnumWidget, &QgsProcessingEnumModelerWidget::changed, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -3579,6 +3633,9 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
   }
 
   vlayout->addWidget( mParentLayoutComboBox );
+
+  connect( mParentLayoutComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 QgsProcessingParameterDefinition *QgsProcessingLayoutItemParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
@@ -3998,6 +4055,9 @@ QgsProcessingPointParameterDefinitionWidget::QgsProcessingPointParameterDefiniti
   }
 
   vlayout->addWidget( mDefaultLineEdit );
+
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -4161,6 +4221,9 @@ QgsProcessingGeometryParameterDefinitionWidget::QgsProcessingGeometryParameterDe
   }
 
   vlayout->addWidget( mGeometryWidget );
+
+  connect( mGeometryWidget, &QgsGeometryWidget::geometryValueChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -4277,6 +4340,9 @@ QgsProcessingColorParameterDefinitionWidget::QgsProcessingColorParameterDefiniti
     mDefaultColorButton->setToNull();
     mAllowOpacity->setChecked( true );
   }
+
+  connect( mDefaultColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mAllowOpacity, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( mDefaultColorButton );
   vlayout->addWidget( mAllowOpacity );
@@ -4395,6 +4461,8 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
     mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsString( coordParam, coordParam->defaultValueForGui(), context ) );
   vlayout->addWidget( mDefaultLineEdit );
 
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   mSourceParamComboBox = new QComboBox();
   mDestParamComboBox = new QComboBox();
   QString initialSource;
@@ -4452,6 +4520,9 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
   vlayout->addWidget( new QLabel( tr( "Destination CRS parameter" ) ) );
   vlayout->addWidget( mDestParamComboBox );
 
+  connect( mSourceParamComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDestParamComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   mStaticSourceWidget = new QgsProjectionSelectionWidget();
   mStaticSourceWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mStaticSourceWidget->setCrs( sourceCrs );
@@ -4463,6 +4534,9 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
   vlayout->addWidget( mStaticSourceWidget );
   vlayout->addWidget( new QLabel( tr( "Static destination CRS" ) ) );
   vlayout->addWidget( mStaticDestWidget );
+
+  connect( mStaticSourceWidget, &QgsProjectionSelectionWidget::crsChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mStaticDestWidget, &QgsProjectionSelectionWidget::crsChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -4862,6 +4936,7 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   }
 
   vlayout->addWidget( mParentLayerComboBox );
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( new QLabel( tr( "Allowed data type" ) ) );
   mDataTypeComboBox = new QComboBox();
@@ -4875,12 +4950,16 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
     mDataTypeComboBox->setCurrentIndex( mDataTypeComboBox->findData( static_cast<int>( fieldParam->dataType() ) ) );
 
   vlayout->addWidget( mDataTypeComboBox );
+  connect( mDataTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   mAllowMultipleCheckBox = new QCheckBox( tr( "Accept multiple fields" ) );
   if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
     mAllowMultipleCheckBox->setChecked( fieldParam->allowMultiple() );
 
   vlayout->addWidget( mAllowMultipleCheckBox );
+  connect( mDataTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
+  connect( mAllowMultipleCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   mDefaultToAllCheckBox = new QCheckBox( tr( "Select all fields by default" ) );
   mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
@@ -4888,6 +4967,7 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
     mDefaultToAllCheckBox->setChecked( fieldParam->defaultToAllFields() );
 
   vlayout->addWidget( mDefaultToAllCheckBox );
+  connect( mDefaultToAllCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   connect( mAllowMultipleCheckBox, &QCheckBox::stateChanged, this, [this] {
     mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
@@ -4903,6 +4983,8 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
     mDefaultLineEdit->setText( fields.join( ';' ) );
   }
   vlayout->addWidget( mDefaultLineEdit );
+
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -5306,6 +5388,8 @@ QgsProcessingMapThemeParameterDefinitionWidget::QgsProcessingMapThemeParameterDe
 
   vlayout->addWidget( mDefaultComboBox );
 
+  connect( mDefaultComboBox, &QComboBox::currentTextChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -5435,6 +5519,8 @@ QgsProcessingDateTimeParameterDefinitionWidget::QgsProcessingDateTimeParameterDe
   else
     mTypeComboBox->setCurrentIndex( 0 );
   vlayout->addWidget( mTypeComboBox );
+
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -5608,6 +5694,9 @@ QgsProcessingProviderConnectionParameterDefinitionWidget::QgsProcessingProviderC
     mProviderComboBox->setCurrentIndex( mProviderComboBox->findData( connectionParam->providerId() ) );
     mDefaultEdit->setText( connectionParam->defaultValueForGui().toString() );
   }
+
+  connect( mProviderComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mDefaultEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingProviderConnectionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
@@ -5764,6 +5853,8 @@ QgsProcessingDatabaseSchemaParameterDefinitionWidget::QgsProcessingDatabaseSchem
   vlayout->addWidget( new QLabel( tr( "Provider connection parameter" ) ) );
   vlayout->addWidget( mConnectionParamComboBox );
 
+  connect( mConnectionParamComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mDefaultEdit = new QLineEdit();
@@ -5774,6 +5865,7 @@ QgsProcessingDatabaseSchemaParameterDefinitionWidget::QgsProcessingDatabaseSchem
   {
     mDefaultEdit->setText( schemaParam->defaultValueForGui().toString() );
   }
+  connect( mDefaultEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingDatabaseSchemaParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
@@ -6003,6 +6095,9 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
   vlayout->addWidget( new QLabel( tr( "Database schema parameter" ) ) );
   vlayout->addWidget( mSchemaParamComboBox );
 
+  connect( mConnectionParamComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+  connect( mSchemaParamComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mDefaultEdit = new QLineEdit();
@@ -6013,6 +6108,7 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
   {
     mDefaultEdit->setText( tableParam->defaultValueForGui().toString() );
   }
+  connect( mDefaultEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 }
 
 QgsProcessingParameterDefinition *QgsProcessingDatabaseTableParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
@@ -6231,6 +6327,8 @@ QgsProcessingExtentParameterDefinitionWidget::QgsProcessingExtentParameterDefini
     }
   }
 
+  connect( mDefaultWidget, &QgsExtentWidget::extentChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( mDefaultWidget );
   setLayout( vlayout );
 }
@@ -6391,6 +6489,8 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   }
 
   vlayout->addWidget( mLayerTypeComboBox );
+
+  connect( mLayerTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -6564,6 +6664,8 @@ QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParam
 
   vlayout->addWidget( mGeometryTypeComboBox );
 
+  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -6636,6 +6738,7 @@ QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceP
   }
 
   vlayout->addWidget( mGeometryTypeComboBox );
+  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }
@@ -6835,6 +6938,7 @@ QgsProcessingBandParameterDefinitionWidget::QgsProcessingBandParameterDefinition
     mDefaultLineEdit->setText( defVal.join( ';' ) );
   }
   vlayout->addWidget( mDefaultLineEdit );
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
   mParentLayerComboBox = new QComboBox();
@@ -6866,12 +6970,14 @@ QgsProcessingBandParameterDefinitionWidget::QgsProcessingBandParameterDefinition
     mParentLayerComboBox->addItem( initialParent, initialParent );
     mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
   }
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( mParentLayerComboBox );
 
   mAllowMultipleCheckBox = new QCheckBox( tr( "Allow multiple" ) );
   if ( const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( definition ) )
     mAllowMultipleCheckBox->setChecked( bandParam->allowMultiple() );
+  connect( mAllowMultipleCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( mAllowMultipleCheckBox );
   setLayout( vlayout );
@@ -7393,6 +7499,8 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
     mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( static_cast<int>( layersParam->layerType() ) ) );
 
   vlayout->addWidget( mLayerTypeComboBox );
+  connect( mLayerTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -7801,16 +7909,21 @@ QgsProcessingPointCloudAttributeParameterDefinitionWidget::QgsProcessingPointClo
 
   vlayout->addWidget( mParentLayerComboBox );
 
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   mAllowMultipleCheckBox = new QCheckBox( tr( "Accept multiple attributes" ) );
   if ( const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( definition ) )
     mAllowMultipleCheckBox->setChecked( attrParam->allowMultiple() );
 
   vlayout->addWidget( mAllowMultipleCheckBox );
+  connect( mAllowMultipleCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   mDefaultToAllCheckBox = new QCheckBox( tr( "Select all attributes by default" ) );
   mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
   if ( const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( definition ) )
     mDefaultToAllCheckBox->setChecked( attrParam->defaultToAllAttributes() );
+
+  connect( mDefaultToAllCheckBox, &QCheckBox::toggled, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( mDefaultToAllCheckBox );
 
@@ -7828,6 +7941,8 @@ QgsProcessingPointCloudAttributeParameterDefinitionWidget::QgsProcessingPointClo
     mDefaultLineEdit->setText( attributes.join( ';' ) );
   }
   vlayout->addWidget( mDefaultLineEdit );
+
+  connect( mDefaultLineEdit, &QLineEdit::textEdited, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }

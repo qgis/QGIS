@@ -107,6 +107,15 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
 
     QgsExpressionContext createExpressionContext() const override;
 
+  signals:
+
+    /**
+     * Emitted whenever the definition of the parameter is changed in the widget.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
+
   private:
     QgsProcessingContextGenerator *mContextGenerator = nullptr;
     QgsProcessingParameterWidgetContext mWidgetContext;
@@ -155,6 +164,15 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
      * \since QGIS 3.18
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+  signals:
+
+    /**
+     * Emitted whenever the definition of the parameter is changed in the widget.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
 
   private:
     QString mType;
