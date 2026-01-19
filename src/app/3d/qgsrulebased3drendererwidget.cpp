@@ -83,7 +83,7 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
     mRootRule = new QgsRuleBased3DRenderer::Rule( nullptr );
   }
 
-  mModel = new QgsRuleBased3DRendererModel( mRootRule );
+  mModel.reset( new QgsRuleBased3DRendererModel( mRootRule ) );
   viewRules->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );

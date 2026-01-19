@@ -22,6 +22,7 @@
 
 #include "qgspanelwidget.h"
 #include "qgsrulebased3drenderer.h"
+#include "qobjectuniqueptr.h"
 
 #include <QWidget>
 
@@ -111,7 +112,7 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
     QgsVectorLayer *mLayer = nullptr;
 
     QgsRuleBased3DRenderer::Rule *mRootRule = nullptr;
-    QgsRuleBased3DRendererModel *mModel = nullptr;
+    QObjectUniquePtr<QgsRuleBased3DRendererModel> mModel = nullptr;
 
     QAction *mCopyAction = nullptr;
     QAction *mPasteAction = nullptr;
