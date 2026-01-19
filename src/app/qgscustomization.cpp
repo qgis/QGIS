@@ -915,16 +915,16 @@ QgsCustomization::QgsQActionsIterator::QgsQActionsIterator( QWidget *widget )
   : mWidget( widget ) {};
 
 QgsCustomization::QgsQActionsIterator::Iterator::Iterator( QWidget *ptr, qsizetype idx )
-  : idx( idx ), mActions( ptr->actions() ) {}
+  : mIdx( idx ), mActions( ptr->actions() ) {}
 
 QgsCustomization::QgsQActionsIterator::Info QgsCustomization::QgsQActionsIterator::Iterator::operator*() const
 {
-  if ( idx < 0 || idx >= mActions.count() )
+  if ( mIdx < 0 || mIdx >= mActions.count() )
     throw std::out_of_range {
       "Action iterator out of range"
     };
 
-  QAction *act = mActions.at( idx );
+  QAction *act = mActions.at( mIdx );
   Info infos;
 
   // submenu
@@ -949,21 +949,22 @@ QgsCustomization::QgsQActionsIterator::Info QgsCustomization::QgsQActionsIterato
   }
 
   infos.action = act;
-  infos.index = idx;
+  infos.index = mIdx;
   return infos;
 }
 
 QgsCustomization::QgsQActionsIterator::Iterator &QgsCustomization::QgsQActionsIterator::Iterator::operator++()
 {
-  idx++;
-  while ( idx < mActions.count() && mActions.at( idx )->isSeparator() )
-    idx++;
+  mIdx++;
+  while ( mIdx < mActions.count() && mActions.at( mIdx )->isSeparator() )
+    mIdx++;
   return *this;
 }
 
 bool QgsCustomization::QgsQActionsIterator::Iterator::operator==( const Iterator &b ) const
 {
-  return idx == b.idx && ( idx < 0 || idx >= mActions.count() || mActions.at( idx ) == b.mActions.at( idx ) );
+  Q_ASSERT( mIdx < 0 || mIdx >= mActions.count() || mActions.at( mIdx ) == b.mActions.at( mIdx ) );
+  return mIdx == b.mIdx;
 }
 
 QgsCustomization::QgsQActionsIterator::Iterator QgsCustomization::QgsQActionsIterator::begin()

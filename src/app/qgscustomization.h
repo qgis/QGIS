@@ -758,7 +758,7 @@ class APP_EXPORT QgsCustomization
             bool operator==( const Iterator &b ) const;
 
           private:
-            qsizetype idx;
+            qsizetype mIdx;
             QList<QAction *> mActions;
         };
 
