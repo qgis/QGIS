@@ -135,6 +135,10 @@ jobs:
 
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: always()
+
       - name: 📑 Upload vcpkg build logs
         uses: actions/upload-artifact@v6
         if: failure()
