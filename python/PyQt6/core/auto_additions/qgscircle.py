@@ -4,6 +4,7 @@ try:
     QgsCircle.from3Points = staticmethod(QgsCircle.from3Points)
     QgsCircle.fromCenterDiameter = staticmethod(QgsCircle.fromCenterDiameter)
     QgsCircle.fromCenterPoint = staticmethod(QgsCircle.fromCenterPoint)
+    QgsCircle.from2PointsRadius = staticmethod(QgsCircle.from2PointsRadius)
     QgsCircle.from3Tangents = staticmethod(QgsCircle.from3Tangents)
     QgsCircle.from3TangentsMulti = staticmethod(QgsCircle.from3TangentsMulti)
     QgsCircle.fromExtent = staticmethod(QgsCircle.fromExtent)

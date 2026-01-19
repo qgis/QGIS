@@ -187,6 +187,82 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
   return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }
 
+QVector<QgsCircle> QgsCircle::from2PointsRadius( const QgsPoint &pt1, const QgsPoint &pt2, double radius, const QgsPoint &pos )
+{
+  QVector<QgsCircle> circles;
+
+  if ( radius <= 0 )
+  {
+    return circles;
+  }
+
+  // Calculate midpoint and half-distance
+  const QgsPoint midPoint = QgsGeometryUtils::midpoint( pt1, pt2 );
+  const double halfDist = pt1.distance( pt2 ) / 2.0;
+
+  // Check if radius is too small
+  if ( radius < halfDist - 1e-8 )
+  {
+    return circles;
+  }
+
+  // Calculate center(s)
+  QgsPoint center1;
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, center1 );
+
+  // Case: diameter (radius equals half-distance)
+  if ( qgsDoubleNear( radius, halfDist, 1e-8 ) )
+  {
+    center1.setX( midPoint.x() );
+    center1.setY( midPoint.y() );
+    circles.append( QgsCircle( center1, radius ) );
+    return circles;
+  }
+
+  // Case: two solutions
+  // Calculate perpendicular distance from midpoint to centers
+  const double h = std::sqrt( radius * radius - halfDist * halfDist );
+
+  // Angle perpendicular to the line pt1-pt2
+  const double angle = std::atan2( pt2.y() - pt1.y(), pt2.x() - pt1.x() ) + M_PI_2;
+
+  // Calculate both centers
+  const double dx = std::cos( angle ) * h;
+  const double dy = std::sin( angle ) * h;
+
+  QgsPoint center2;
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, center2 );
+
+  center1.setX( midPoint.x() + dx );
+  center1.setY( midPoint.y() + dy );
+
+  center2.setX( midPoint.x() - dx );
+  center2.setY( midPoint.y() - dy );
+
+  // If position is specified, return only the nearest circle
+  if ( !pos.isEmpty() )
+  {
+    const double dist1 = pos.distanceSquared( center1 );
+    const double dist2 = pos.distanceSquared( center2 );
+
+    if ( dist1 <= dist2 )
+    {
+      circles.append( QgsCircle( center1, radius ) );
+    }
+    else
+    {
+      circles.append( QgsCircle( center2, radius ) );
+    }
+  }
+  else
+  {
+    circles.append( QgsCircle( center1, radius ) );
+    circles.append( QgsCircle( center2, radius ) );
+  }
+
+  return circles;
+}
+
 static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const QgsPoint &pt2_par1, const QgsPoint &pt1_par2, const QgsPoint &pt2_par2, const QgsPoint &pt1_line1, const QgsPoint &pt2_line1, const QgsPoint &pos, double epsilon )
 {
   const double radius = QgsGeometryUtils::perpendicularSegment( pt1_par2, pt1_par1, pt2_par1 ).length() / 2.0;
