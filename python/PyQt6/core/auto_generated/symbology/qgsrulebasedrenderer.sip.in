@@ -160,6 +160,8 @@ indicates the scale denominator, e.g. 1000.0 for a 1:1000 map. If set to
 %End
 
         QgsSymbol *symbol();
+
+
         QString label() const;
         bool dependsOnScale() const;
 
@@ -578,6 +580,8 @@ Creates a new rule based renderer from an SLD XML element.
 
 
     QgsRuleBasedRenderer::Rule *rootRule();
+
+
 
 
     static void refineRuleCategories( QgsRuleBasedRenderer::Rule *initialRule, QgsCategorizedSymbolRenderer *r );
