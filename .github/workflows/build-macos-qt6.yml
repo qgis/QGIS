@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14
+          - os: macos-14-intel
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
             osx-architecture: "x86_64"
@@ -134,10 +134,6 @@ jobs:
                 fdupes -q -r -1 build/vcpkg_installed/${{ matrix.triplet }}/lib | grep -E '\.(so|dylib)' | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
 
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: always()
 
       - name: 📑 Upload vcpkg build logs
         uses: actions/upload-artifact@v6
