@@ -323,8 +323,8 @@ Annotation item edit operation consisting of rotating an item.
 
     QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle );
 %Docstring
-Constructor for QgsAnnotationItemEditOperationRotateItem, where the node
-with the specified ``id`` and rotation ``angle`` (in degrees)
+Constructor for QgsAnnotationItemEditOperationRotateItem, where the item
+with the specified ``itemId`` and rotation ``angle`` (in degrees)
 %End
 
     virtual Type type() const;

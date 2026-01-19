@@ -319,7 +319,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractA
   public:
 
     /**
-     * Constructor for QgsAnnotationItemEditOperationRotateItem, where the node with the specified \a id and rotation
+     * Constructor for QgsAnnotationItemEditOperationRotateItem, where the item with the specified \a itemId and rotation
      * \a angle (in degrees)
      */
     QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle );

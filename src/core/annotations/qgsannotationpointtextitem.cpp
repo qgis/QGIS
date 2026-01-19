@@ -276,7 +276,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     {
       QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
-      mAngle += rotateOperation->angle();
+      mAngle = std::fmod( mAngle + rotateOperation->angle(), 360.0 );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 

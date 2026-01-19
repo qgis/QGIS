@@ -111,7 +111,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
       QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
       if ( mSymbol )
       {
-        mSymbol->setAngle( mSymbol->angle() + rotateOperation->angle() );
+        mSymbol->setAngle( std::fmod( mSymbol->angle() + rotateOperation->angle(), 360.0 ) );
         return Qgis::AnnotationItemEditOperationResult::Success;
       }
       break;
