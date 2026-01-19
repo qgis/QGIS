@@ -3298,9 +3298,13 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     {
       context.pushWarning( QObject::tr( "%1: Operator %2 requires exactly two operands, skipping extra operands" ).arg( context.layerId() ).arg( op ) );
     }
-    return u"%1 %2 %3"_s.arg( parseValue( expression.value( 1 ), context ),
-                              op,
-                              parseValue( expression.value( 2 ), context ) );
+    QString v1 = parseValue( expression.value( 1 ), context, colorExpected );
+    if ( v1.contains( ' ' ) )
+      v1 = u"(%1)"_s.arg( v1 );
+    QString v2 = parseValue( expression.value( 2 ), context, colorExpected );
+    if ( v2.contains( ' ' ) )
+      v2 = u"(%1)"_s.arg( v2 );
+    return u"%1 %2 %3"_s.arg( v1, op, v2 );
   }
   else if ( ( op == "*"_L1 || op == "+"_L1 ) && expression.size() >= 3 )
   {
@@ -3309,7 +3313,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
                     std::back_inserter( multiplierString ),
                     [&context, colorExpected]( const QVariant & val )
                     {
-                      return parseValue( val, context, colorExpected );
+                      QString v = parseValue( val, context, colorExpected );
+                      if ( v.contains( ' ' ) )
+                        v = u"(%1)"_s.arg( v );
+                      return v;
                     } );
     return multiplierString.join( QStringLiteral(" %1 ").arg( op ) );
   }

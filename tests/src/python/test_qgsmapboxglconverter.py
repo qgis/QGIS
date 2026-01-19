@@ -908,6 +908,15 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             '10 + "offset_a" + "offset_b"',
         )
 
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["*", ["+", 10, 10], ["+", 1, 2]],
+                conversion_context,
+                False,
+            ),
+            '(10 + 10) * (1 + 2)',
+        )
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
