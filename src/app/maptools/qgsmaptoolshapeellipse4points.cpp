@@ -117,10 +117,15 @@ void QgsMapToolShapeEllipse4Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qgs
       case 3:
       {
         // Show actual ellipse from 4 points
-        mEllipse = QgsEllipse::from4Points( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), point );
-        const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
-        if ( !newGeometry.isEmpty() )
+        const QgsEllipse ellipse = QgsEllipse::from4Points( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), point );
+        if ( !ellipse.isEmpty() )
         {
+          mEllipse = ellipse;
+        }
+        // Show the ellipse (either new valid one, or last valid one)
+        if ( !mEllipse.isEmpty() )
+        {
+          const QgsGeometry newGeometry( mEllipse.toPolygon( segments() ) );
           mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
           setTransientGeometry( newGeometry );
         }
