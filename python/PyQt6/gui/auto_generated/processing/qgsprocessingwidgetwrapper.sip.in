@@ -244,6 +244,32 @@ retrieve a Processing context for the widget when required.
 .. versionadded:: 4.0
 %End
 
+    QgsModelDesignerDialog *modelDesignerDialog() const;
+%Docstring
+Returns the associated model designer dialog, if applicable.
+
+.. warning::
+
+   This method is not considered stable API
+
+.. seealso:: :py:func:`setModelDesignerDialog`
+
+.. versionadded:: 4.0
+%End
+
+    void setModelDesignerDialog( QgsModelDesignerDialog *dialog );
+%Docstring
+Sets the associated model designer ``dialog``, if applicable.
+
+.. warning::
+
+   This method is not considered stable API
+
+.. seealso:: :py:func:`modelDesignerDialog`
+
+.. versionadded:: 4.0
+%End
+
 };
 
 
