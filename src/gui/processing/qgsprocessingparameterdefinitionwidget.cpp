@@ -84,9 +84,13 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
   {
     mDescriptionLineEdit->setText( definition->description() );
   }
+  connect( mDescriptionLineEdit, &QLineEdit::textEdited, this, &QgsProcessingParameterDefinitionWidget::changed );
 
   if ( mDefinitionWidget )
+  {
+    connect( mDefinitionWidget, &QgsProcessingAbstractParameterDefinitionWidget::changed, this, &QgsProcessingParameterDefinitionWidget::changed );
     vlayout->addWidget( mDefinitionWidget );
+  }
 
   vlayout->addSpacing( 20 );
   mRequiredCheckBox = new QCheckBox( tr( "Mandatory" ) );
@@ -94,6 +98,8 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
     mRequiredCheckBox->setChecked( !( definition->flags() & Qgis::ProcessingParameterFlag::Optional ) );
   else
     mRequiredCheckBox->setChecked( true );
+  connect( mRequiredCheckBox, &QCheckBox::toggled, this, &QgsProcessingParameterDefinitionWidget::changed );
+
   vlayout->addWidget( mRequiredCheckBox );
 
   mAdvancedCheckBox = new QCheckBox( tr( "Advanced" ) );
@@ -101,6 +107,7 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
     mAdvancedCheckBox->setChecked( definition->flags() & Qgis::ProcessingParameterFlag::Advanced );
   else
     mAdvancedCheckBox->setChecked( false );
+  connect( mAdvancedCheckBox, &QCheckBox::toggled, this, &QgsProcessingParameterDefinitionWidget::changed );
   vlayout->addWidget( mAdvancedCheckBox );
 
   vlayout->addStretch();
