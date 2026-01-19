@@ -67,6 +67,14 @@ void QgsPdalAlgorithmBase::createCommonParameters()
   addParameter( extentParam.release() );
 }
 
+void QgsPdalAlgorithmBase::createVpcOutputFormatParameter()
+{
+  const QStringList outputFormats { u"COPC"_s, u"LAZ"_s, u"LAS"_s };
+  auto paramVpcOutputFormat = std::make_unique<QgsProcessingParameterEnum>( u"VPC_OUTPUT_FORMAT"_s, QObject::tr( "VPC Output Format" ), outputFormats, false, u"COPC"_s );
+  paramVpcOutputFormat->setFlags( paramVpcOutputFormat->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( paramVpcOutputFormat.release() );
+}
+
 void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoordinateReferenceSystem crs, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   const QString filterExpression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context ).trimmed();
@@ -327,6 +335,15 @@ QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
   const QDir directory = fi.absoluteDir();
   const QString outputFile = u"%1/%2.copc.laz"_s.arg( directory.absolutePath() ).arg( fi.completeBaseName() );
   return outputFile;
+}
+
+void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( outputFilename.endsWith( u".vpc"_s, Qt::CaseInsensitive ) )
+  {
+    QString vpcOutputFormat = parameterAsEnumString( parameters, u"VPC_OUTPUT_FORMAT"_s, context );
+    arguments << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() );
+  }
 }
 
 ///@endcond

@@ -47,6 +47,13 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     void createCommonParameters();
 
     /**
+     * Creates VPC output format advanced parameter.
+     *
+     * \since QGIS 4.0
+     */
+    void createVpcOutputFormatParameter();
+
+    /**
      * Evaluates common advanced parameters and adds them to the pdal_wrench
      * command line.
      */
@@ -56,6 +63,12 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      * Adds "--threads"parameter to the pdal_wrench command line.
      */
     void applyThreadsParameter( QStringList &arguments, QgsProcessingContext &context );
+
+    /**
+     * Adds "--vpc-output-format" parameter to the pdal_wrench command line if the \a outputFilename is a VPC file.
+     * \since QGIS 4.0
+     */
+    void applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * "Fixes" output file name by changing suffix to .vpc if input file
