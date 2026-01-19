@@ -22,6 +22,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsmodeldesignerdialog.h"
 #include "qgsprocessinggui.h"
 #include "qgsvectorlayer.h"
 
@@ -42,6 +43,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingAbstractParameterDefinitionWidget;
 class QgsMessageBar;
 class QgsBrowserGuiModel;
+class QgsModelGraphicsScene;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -244,6 +246,26 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     QgsProcessingContextGenerator *processingContextGenerator();
 
+    /**
+     * Returns the associated model designer dialog, if applicable.
+     *
+     * \warning This method is not considered stable API
+     *
+     * \see setModelDesignerDialog()
+     * \since QGIS 4.0
+     */
+    QgsModelDesignerDialog *modelDesignerDialog() const;
+
+    /**
+     * Sets the associated model designer \a dialog, if applicable.
+     *
+     * \warning This method is not considered stable API
+     *
+     * \see modelDesignerDialog()
+     * \since QGIS 4.0
+     */
+    void setModelDesignerDialog( QgsModelDesignerDialog *dialog );
+
   private:
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
@@ -260,6 +282,8 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsMapLayer *mActiveLayer = nullptr;
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+
+    QgsModelDesignerDialog *mModelDialog = nullptr;
 };
 
 #ifndef SIP_RUN
