@@ -152,6 +152,7 @@
 #include "qgsalgorithmgpsbabeltools.h"
 #endif
 #include "qgsalgorithmgrid.h"
+#include "qgsalgorithmorientedfoliogrid.h"
 #include "qgsalgorithmhillshade.h"
 #include "qgsalgorithmhubdistance.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -495,6 +496,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsUploadGpsDataAlgorithm() );
 #endif
   addAlgorithm( new QgsGridAlgorithm() );
+  addAlgorithm( new QgsOrientedFolioGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsHubDistanceAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );

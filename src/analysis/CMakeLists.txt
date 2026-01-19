@@ -165,6 +165,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgltftovector.cpp
   processing/qgsalgorithmgpsbabeltools.cpp
   processing/qgsalgorithmgrid.cpp
+  processing/qgsalgorithmorientedfoliogrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmhubdistance.cpp
   processing/qgsalgorithmimportphotos.cpp
