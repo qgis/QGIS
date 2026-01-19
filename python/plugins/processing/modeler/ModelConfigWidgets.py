@@ -19,6 +19,8 @@ from qgis.core import (
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelParameter,
     QgsProcessingContext,
+    QgsProcessingModelOutput,
+    QgsProcessingParameterDefinition,
 )
 from qgis.gui import (
     QgsProcessingModelConfigWidgetFactory,
@@ -27,13 +29,16 @@ from qgis.gui import (
 )
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
+    ModelerParameterDefinitionWidget,
 )
 
 
 class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
 
     def supportsComponent(self, component):
-        return isinstance(component, QgsProcessingModelParameter)
+        return isinstance(
+            component, (QgsProcessingModelParameter, QgsProcessingModelOutput)
+        )
 
     def createWidget(
         self,
@@ -44,6 +49,8 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
         model = widgetContext.model()
         if not model:
             return None
+
+        model_dialog = widgetContext.modelDesignerDialog()
 
         if isinstance(component, QgsProcessingModelParameter):
             component_name = component.parameterName()
@@ -56,7 +63,6 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
             comment_color = component.comment().color()
             old_name = existing_param.name()
             old_description = existing_param.description()
-            model_dialog = widgetContext.modelDesignerDialog()
 
             widget = QgsProcessingParameterDefinitionPanelWidget(
                 type=existing_param.type(),
@@ -87,6 +93,48 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
                 comment_color = widget.commentColor()
                 existing_param_name = graphic_item.apply_new_param(
                     new_param, old_description, old_name, comment, comment_color
+                )
+
+            widget.widgetChanged.connect(on_widget_changed)
+            return widget
+        elif isinstance(component, QgsProcessingModelOutput):
+            child_id = component.childId()
+            child_output_name = component.childOutputName()
+
+            child_alg = model.childAlgorithm(child_id)
+            comment = component.comment().description()
+            comment_color = component.comment().color()
+
+            existing_param = model.modelParameterFromChildIdAndOutputName(
+                component.childId(), component.name()
+            )
+
+            widget = ModelerParameterDefinitionWidget(
+                model,
+                param=existing_param,
+            )
+            widget.setComments(comment)
+            widget.setCommentColor(comment_color)
+
+            def on_widget_changed():
+                model_scene = model_dialog.modelScene()
+                graphic_item = model_scene.outputItem(child_id, child_output_name)
+                if not graphic_item:
+                    # should not happen!
+                    return
+
+                new_param = widget.create_parameter()
+                graphic_item.apply_new_output(
+                    name=new_param.description(),
+                    description=new_param.description(),
+                    default=new_param.defaultValue(),
+                    mandatory=not (
+                        new_param.flags()
+                        & QgsProcessingParameterDefinition.Flag.FlagOptional
+                    ),
+                    comments=widget.comments(),
+                    comment_color=widget.commentColor(),
+                    child_alg=child_alg,
                 )
 
             widget.widgetChanged.connect(on_widget_changed)
