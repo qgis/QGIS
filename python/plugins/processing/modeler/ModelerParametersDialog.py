@@ -620,6 +620,7 @@ class ModelerParametersWidget(QgsProcessingModelConfigWidget):
         self.widget = ModelerParametersPanelWidget(
             alg, model, algName, configuration, dialog, context
         )
+        self.widget.widgetChanged.connect(self.widgetChanged)
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
