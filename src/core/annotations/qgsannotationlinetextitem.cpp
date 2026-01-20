@@ -161,7 +161,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEditV2( 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     {
       QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
-      QgsPoint center = mCurve->centroid();
+      QgsPointXY center = mCurve->boundingBox().center();
       QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
       transform.rotate( -rotateOperation->angle() );
       transform.translate( -center.x(), -center.y() );
@@ -201,7 +201,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::trans
     {
       QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
-      QgsPoint center = modifiedCurve->centroid();
+      QgsPointXY center = modifiedCurve->boundingBox().center();
       QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
       transform.rotate( -rotateOperation->angle() );
       transform.translate( -center.x(), -center.y() );
