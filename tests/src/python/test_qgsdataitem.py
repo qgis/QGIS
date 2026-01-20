@@ -76,6 +76,15 @@ class TestQgsDataItem(QgisTestCase):
         greatgrandchild = grandchild2.children()[0]
         self.assertEqual([c.name() for c in child2.children()], ["grandchild3"])
 
+        # test ancestor methods
+        self.assertEqual(root_item.creatorAncestorDepth(), 0)
+        self.assertEqual(child1.creatorAncestorDepth(), 1)
+        self.assertEqual(child2.creatorAncestorDepth(), 1)
+        self.assertEqual(child3.creatorAncestorDepth(), 1)
+        self.assertEqual(grandchild1.creatorAncestorDepth(), 2)
+        self.assertEqual(grandchild2.creatorAncestorDepth(), 2)
+        self.assertEqual(greatgrandchild.creatorAncestorDepth(), 3)
+
         self.assertEqual(root_item.ancestorAtDepth(-1), None)
         self.assertEqual(root_item.ancestorAtDepth(0), root_item)
         self.assertEqual(root_item.ancestorAtDepth(1), None)

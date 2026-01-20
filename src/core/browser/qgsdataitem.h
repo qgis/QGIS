@@ -147,6 +147,25 @@ class CORE_EXPORT QgsDataItem : public QObject
     SIP_END
 #endif
 
+    /**
+     * Returns the hierarchical depth of the item's original creator/source.
+     *
+     * This value represents the depth of the item that this object was created
+     * from. For example, a return value of 1 indicates that the item was created by its
+     * direct parent. A return value of 2 would indicate it was created by its
+     * grandparent, etc.
+     *
+     * A value of 0 indicates an unknown source, or an item which has not yet
+     * been added to the hierarchy.
+     *
+     * This value indicates the ancestor which must be refreshed in order to
+     * regenerate an item representing the same object as this item refers to.
+     *
+     * \see ancestorAtDepth()
+     * \since QGIS 4.0
+     */
+    int creatorAncestorDepth() const;
+
     Qgis::BrowserItemState state() const;
 
     /**
@@ -604,6 +623,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete = false;
     std::unique_ptr<QFutureWatcher<QVector<QgsDataItem *> >> mFutureWatcher;
+
+    int mCreatorAncestorDepth = 0;
+
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
 };
