@@ -134,6 +134,11 @@ void QgsPhongMaterialSettings::setColorsFromBase( const QColor &baseColor, float
   mShininess = MIN_SHININESS + metallic * ( MAX_SHININESS - MIN_SHININESS );
 }
 
+void QgsPhongMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setColorsFromBase( baseColor, 0.0f );
+}
+
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );

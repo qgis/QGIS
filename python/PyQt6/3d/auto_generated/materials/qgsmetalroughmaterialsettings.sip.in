@@ -106,6 +106,21 @@ returns :py:func:`~QgsMetalRoughMaterialSettings.baseColor`.
 .. versionadded:: 4.0
 %End
 
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes a base color into the material's color components.
+
+Since this material contains only a single color, this function is
+equivalent to calling setBaseColor(baseColor).
+
+:param baseColor: The color to decompose
+
+.. seealso:: :py:func:`setBaseColor`
+
+.. versionadded:: 4.0
+%End
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

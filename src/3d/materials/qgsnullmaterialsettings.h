@@ -57,6 +57,8 @@ class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
 
     QColor averageColor() const override;
 
+    void setColorsFromBase( const QColor &baseColor ) override;
+
 #ifndef SIP_RUN
     QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;

@@ -262,6 +262,16 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * \since QGIS 4.0
      */
     virtual QColor averageColor() const = 0;
+
+    /**
+     * Decomposes a base color into the material's color components.
+     *
+     * \param baseColor The color to decompose
+     *
+     * \since QGIS 4.0
+     */
+    virtual void setColorsFromBase( const QColor &baseColor ) = 0;
+
 #endif
 
   private:
