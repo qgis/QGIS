@@ -126,3 +126,8 @@ QColor QgsMetalRoughMaterialSettings::averageColor() const
 {
   return baseColor();
 }
+
+void QgsMetalRoughMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setBaseColor( baseColor );
+}

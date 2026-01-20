@@ -173,3 +173,9 @@ QColor QgsSimpleLineMaterialSettings::averageColor() const
 {
   return ambient();
 }
+
+
+void QgsSimpleLineMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setAmbient( baseColor );
+}

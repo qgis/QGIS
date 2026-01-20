@@ -2,7 +2,7 @@
 try:
     QgsMetalRoughMaterialSettings.supportsTechnique = staticmethod(QgsMetalRoughMaterialSettings.supportsTechnique)
     QgsMetalRoughMaterialSettings.create = staticmethod(QgsMetalRoughMaterialSettings.create)
-    QgsMetalRoughMaterialSettings.__overridden_methods__ = ['type', 'clone', 'equals', 'toExportParameters', 'averageColor', 'readXml', 'writeXml']
+    QgsMetalRoughMaterialSettings.__overridden_methods__ = ['type', 'clone', 'equals', 'toExportParameters', 'averageColor', 'setColorsFromBase', 'readXml', 'writeXml']
     QgsMetalRoughMaterialSettings.__group__ = ['materials']
 except (NameError, AttributeError):
     pass

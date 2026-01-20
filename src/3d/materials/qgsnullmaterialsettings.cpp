@@ -87,3 +87,8 @@ QColor QgsNullMaterialSettings::averageColor() const
 {
   return QColor();
 }
+
+void QgsNullMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  Q_UNUSED( baseColor )
+}

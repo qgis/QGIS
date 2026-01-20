@@ -80,6 +80,20 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
      */
     QColor averageColor() const override;
 
+    /**
+     * Decomposes a base color into the material's color components.
+     *
+     * Since this material contains only a single color, this function
+     * is equivalent to calling setAmbient(baseColor).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setAmbient()
+     *
+     * \since QGIS 4.0
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     QMap<QString, QString> toExportParameters() const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
