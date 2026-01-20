@@ -38,4 +38,57 @@ void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCo
     else if ( cleanedString.compare( "alwaysallow"_L1, Qt::CaseInsensitive ) == 0 )
       mOverlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
   }
+
+  // this property is messy - to avoid breaking old projects we need to also allow it to be treated as a boolean
+  if ( properties.isActive( QgsPalLayerSettings::Property::LabelAllParts ) )
+  {
+    const QString stringValue = properties.valueAsString( QgsPalLayerSettings::Property::LabelAllParts, context );
+    bool handledAsString = false;
+    if ( !stringValue.isEmpty() )
+    {
+      const QString cleanedString = stringValue.trimmed();
+      if ( cleanedString.compare( "LargestPartOnly"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        handledAsString = true;
+        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
+      }
+      else if ( cleanedString.compare( "LabelEveryPart"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        handledAsString = true;
+        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel;
+      }
+      else if ( cleanedString.compare( "SplitLabelTextLinesOverParts"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        handledAsString = true;
+        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts;
+      }
+    }
+
+    // fallback to old boolean compatibility
+    if ( !handledAsString )
+    {
+      context.setOriginalValueVariable( mMultiPartBehavior == Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel );
+      if ( properties.valueAsBool( QgsPalLayerSettings::Property::LabelAllParts, context, mMultiPartBehavior == Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel ) )
+      {
+        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel;
+      }
+      else
+      {
+        mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
+      }
+    }
+  }
+
+  if ( properties.isActive( QgsPalLayerSettings::Property::WhitespaceCollisionHandling ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::WhitespaceCollisionHandling, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( "TreatWhitespaceAsCollision"_L1, Qt::CaseInsensitive ) == 0 )
+        mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
+      else if ( value.compare( "IgnoreWhitespaceCollisions"_L1, Qt::CaseInsensitive ) == 0 )
+        mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions;
+    }
+  }
 }

@@ -84,7 +84,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   QMutexLocker locker( &mMutex );
 
-  if ( mHashtable.contains( lf->id() ) )
+  if ( mHashtable.contains( qMakePair( lf->id(), lf->subPartId() ) ) )
   {
     //A feature with this id already exists. Don't throw an exception as sometimes,
     //the same feature is added twice (dateline split with otf-reprojection)
@@ -166,25 +166,35 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       continue;
     }
 
-    if ( !lf->labelAllParts() && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
+    switch ( lf->multiPartBehavior() )
     {
-      if ( type == GEOS_LINESTRING )
-        geom_size = fpart->length();
-      else if ( type == GEOS_POLYGON )
-        geom_size = fpart->area();
+      case Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly:
+        if ( type == GEOS_POLYGON || type == GEOS_LINESTRING )
+        {
+          if ( type == GEOS_LINESTRING )
+            geom_size = fpart->length();
+          else if ( type == GEOS_POLYGON )
+            geom_size = fpart->area();
 
-      if ( geom_size > biggest_size )
+          if ( geom_size > biggest_size )
+          {
+            biggest_size = geom_size;
+            biggestPart = std::move( fpart );
+          }
+          // don't add the feature part now, do it later
+          break;
+        }
+        // fallthrough to default for point geometries
+        [[fallthrough]];
+
+      case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
+      case Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts:
       {
-        biggest_size = geom_size;
-        biggestPart = std::move( fpart );
+        // feature part is ready!
+        addFeaturePart( std::move( fpart ), lf->labelText() );
+        addedFeature = true;
+        break;
       }
-      // don't add the feature part now, do it later
-    }
-    else
-    {
-      // feature part is ready!
-      addFeaturePart( std::move( fpart ), lf->labelText() );
-      addedFeature = true;
     }
   }
 
@@ -242,7 +252,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   locker.unlock();
 
   // if using only biggest parts...
-  if ( ( !lf->labelAllParts() || lf->hasFixedPosition() ) && biggestPart )
+  if ( ( lf->multiPartBehavior() == Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly || lf->hasFixedPosition() ) && biggestPart )
   {
     addFeaturePart( std::move( biggestPart ), lf->labelText() );
     addedFeature = true;
@@ -251,7 +261,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   // add feature to layer if we have added something
   if ( addedFeature )
   {
-    mHashtable.insert( lf->id(), lf );
+    mHashtable.insert( qMakePair( lf->id(), lf->subPartId() ), lf );
   }
 
   return addedFeature; // true if we've added something

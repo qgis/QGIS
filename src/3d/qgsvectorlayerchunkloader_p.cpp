@@ -24,6 +24,7 @@
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgslogger.h"
@@ -55,11 +56,6 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
 void QgsVectorLayerChunkLoader::start()
 {
   QgsChunkNode *node = chunk();
-  if ( node->level() < mFactory->mLeafLevel )
-  {
-    QTimer::singleShot( 0, this, &QgsVectorLayerChunkLoader::finished );
-    return;
-  }
 
   QgsVectorLayer *layer = mFactory->mLayer;
   mLayerName = mFactory->mLayer->name();
@@ -72,25 +68,21 @@ void QgsVectorLayerChunkLoader::start()
   }
   mHandler.reset( handler );
 
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
-  // picked so that the coordinates are relatively small to avoid numerical precision issues
-  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
-
   QgsExpressionContext exprContext;
   exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   exprContext.setFields( layer->fields() );
   mRenderContext.setExpressionContext( exprContext );
 
   QSet<QString> attributeNames;
-  if ( !mHandler->prepare( mRenderContext, attributeNames, chunkOrigin ) )
+  if ( !mHandler->prepare( mRenderContext, attributeNames, node->box3D() ) )
   {
     QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
     return;
   }
 
   // build the feature request
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
   QgsFeatureRequest req;
   req.setCoordinateTransform(
     QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() )
@@ -102,6 +94,12 @@ void QgsVectorLayerChunkLoader::start()
   // this will be run in a background thread
   //
   mFutureWatcher = new QFutureWatcher<void>( this );
+
+  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, [this] {
+    if ( !mCanceled )
+      mFactory->mNodesAreLeafs[mNode->tileId().text()] = mNodeIsLeaf;
+  } );
+
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
@@ -109,12 +107,29 @@ void QgsVectorLayerChunkLoader::start()
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
+    int featureCount = 0;
+    bool featureLimitReached = false;
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
+        return;
+
+      if ( ++featureCount > mFactory->mMaxFeatures )
+      {
+        featureLimitReached = true;
         break;
+      }
+
       mRenderContext.expressionContext().setFeature( f );
       mHandler->processFeature( f, mRenderContext );
+    }
+
+    if ( !featureLimitReached )
+    {
+      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
+
+      if ( featureCount == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+        mNodeIsLeaf = true;
     }
   } );
 
@@ -138,13 +153,6 @@ void QgsVectorLayerChunkLoader::cancel()
 
 Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  if ( mNode->level() < mFactory->mLeafLevel )
-  {
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent ); // dummy entity
-    entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
-    return entity;
-  }
-
   if ( mHandler->featureCount() == 0 )
   {
     // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
@@ -175,25 +183,27 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 ///////////////
 
 
-QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax )
+QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures )
   : mRenderContext( context )
   , mLayer( vl )
   , mSymbol( symbol->clone() )
-  , mLeafLevel( leafLevel )
+  , mMaxFeatures( maxFeatures )
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
     // TODO: add support for handling of vector layers
     // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
     QgsDebugError( u"Vector layers in globe scenes are not supported yet!"_s );
-    setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, leafLevel );
+    setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
     return;
   }
 
   QgsBox3D rootBox3D( context.extent(), zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
-  setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
+
+  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
+  setupQuadtree( rootBox3D, rootError );
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -201,14 +211,25 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
   return new QgsVectorLayerChunkLoader( this, node );
 }
 
+bool QgsVectorLayerChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+{
+  return mNodesAreLeafs.contains( node->tileId().text() );
+}
+
+QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+{
+  if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
+    return {};
+
+  return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+}
+
 
 ///////////////
 
 
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol )
-  : QgsChunkedEntity( map,
-                      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
+  : QgsChunkedEntity( map, 3, new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )

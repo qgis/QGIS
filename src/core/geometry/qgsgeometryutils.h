@@ -236,6 +236,28 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) SIP_HOLDGIL;
 
     /**
+     * Evaluates a point on a cubic Bézier curve defined by four control points.
+     *
+     * \param p0 start point (the curve passes through this point)
+     * \param p1 first control point
+     * \param p2 second control point
+     * \param p3 end point (the curve passes through this point)
+     * \param t parameter value between 0 and 1
+     *
+     * \returns the point on the Bézier curve at parameter \a t
+     *
+     * Any Z or M values present in the input points will also be interpolated.
+     *
+     * The cubic Bézier formula is:
+     * \code{.unparsed}
+     * B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+     * \endcode
+     *
+     * \since QGIS 4.0
+     */
+    static QgsPoint interpolatePointOnCubicBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t ) SIP_HOLDGIL;
+
+    /**
      * Calculates midpoint on circle passing through \a p1 and \a p2, closest to
      * the given coordinate \a mousePos. Z dimension is supported and is retrieved from the
      * first 3D point amongst \a p1 and \a p2.

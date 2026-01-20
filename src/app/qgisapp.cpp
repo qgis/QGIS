@@ -93,6 +93,9 @@
 #include "qgsfixattributedialog.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsgeometrycollection.h"
+#include "qgspolyhedralsurface.h"
+#include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
@@ -1895,6 +1898,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
 #ifdef HAVE_3D
   registerShortcuts( u"Ctrl+Shift+E"_s, u"m3DSetSceneExtent"_s, tr( "Set 3D Scene Extent on 2D Map View" ) );
+  registerShortcuts( u"Ctrl+Shift+]"_s, u"m3DCrossSectionNudgeLeft"_s, tr( "Nudge 3D Cross section to the left" ) );
+  registerShortcuts( u"Ctrl+Shift+["_s, u"m3DCrossSectionNudgeRight"_s, tr( "Nudge 3D Cross section to the right" ) );
   connect( QgsProject::instance()->viewsManager(), &QgsMapViewsManager::views3DListChanged, this, &QgisApp::views3DMenuAboutToShow );
 
   Qgs3DMapScene::sOpenScenesFunction = [this]() -> QMap<QString, Qgs3DMapScene *> {
@@ -8877,6 +8882,24 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   if ( !featureList.at( 0 ).hasGeometry() )
     return QgsGeometry();
 
+  const Qgis::WkbType layerFlatType = QgsWkbTypes::flatType( vl->wkbType() );
+
+  // Special handling for TIN: collect patches instead of geometric union
+  if ( layerFlatType == Qgis::WkbType::TIN )
+  {
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+
+    QVector<QgsGeometry> geometries;
+    geometries.reserve( featureList.size() );
+    for ( const QgsFeature &feature : std::as_const( featureList ) )
+    {
+      geometries.append( feature.geometry() );
+    }
+
+    return QgsGeometry::collectTinPatches( geometries );
+  }
+
+  // Standard handling for other geometry types: use GEOS combine
   QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
   QProgressDialog progress( tr( "Merging features…" ), tr( "Abort" ), 0, featureList.size(), this );
@@ -8909,6 +8932,16 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   if ( QgsWkbTypes::isMultiType( vl->wkbType() ) && !unionGeom.isMultipart() )
   {
     unionGeom.convertToMultiType();
+  }
+
+  // Convert result to PolyhedralSurface if layer type requires it
+  if ( layerFlatType == Qgis::WkbType::PolyhedralSurface )
+  {
+    QVector<QgsGeometry> converted = unionGeom.coerceToType( vl->wkbType() );
+    if ( !converted.isEmpty() )
+    {
+      unionGeom = converted.at( 0 );
+    }
   }
 
   QApplication::restoreOverrideCursor();

@@ -507,13 +507,15 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mLineSettings = mSettings.lineSettings();
 
-  chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
+  mComboMultipartBehavior->setCurrentIndex( mComboMultipartBehavior->findData( QVariant::fromValue( mSettings.placementSettings().multiPartBehavior() ) ) );
 
   mComboOverlapHandling->setCurrentIndex( mComboOverlapHandling->findData( static_cast<int>( mSettings.placementSettings().overlapHandling() ) ) );
   mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
   mPrioritizationComboBox->setCurrentIndex( mPrioritizationComboBox->findData( QVariant::fromValue( mSettings.placementSettings().prioritization() ) ) );
 
   mComboCurvedLabelMode->setCurrentIndex( mComboCurvedLabelMode->findData( QVariant::fromValue( mSettings.lineSettings().curvedLabelMode() ) ) );
+
+  mCheckWhitespaceIsNotACollision->setChecked( mSettings.placementSettings().whitespaceCollisionHandling() == Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions );
 
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mThinningSettings.minimumFeatureSize() );
@@ -701,10 +703,11 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   mThinningSettings.setAllowDuplicateRemoval( mChkNoDuplicates->isChecked() );
 
-  lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
+  lyr.placementSettings().setMultiPartBehavior( mComboMultipartBehavior->currentData().value< Qgis::MultiPartLabelingBehavior >() );
   lyr.placementSettings().setOverlapHandling( static_cast<Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
   lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
   lyr.placementSettings().setPrioritization( mPrioritizationComboBox->currentData().value<Qgis::LabelPrioritization>() );
+  lyr.placementSettings().setWhitespaceCollisionHandling( mCheckWhitespaceIsNotACollision->isChecked() ? Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions : Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision );
 
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
   lyr.lineSettings().setCurvedLabelMode( mComboCurvedLabelMode->currentData().value< Qgis::CurvedLabelMode >() );

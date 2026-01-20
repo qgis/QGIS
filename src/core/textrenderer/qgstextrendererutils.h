@@ -109,6 +109,8 @@ class CORE_EXPORT QgsTextRendererUtils
         double angle = 0;
         //! Index of corresponding grapheme
         int graphemeIndex = 0;
+        //! TRUE if grapheme is considered whitespace (eg a tab or space character)
+        bool isWhitespace = false;
     };
 
     /**
