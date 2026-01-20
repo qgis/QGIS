@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsselectivemaskingsource.h"
 
-class QgsSelectiveMaskSource;
 class QDomElement;
 class QDomDocument;
 class QgsReadWriteContext;

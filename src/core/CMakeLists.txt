@@ -776,6 +776,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectdisplaysettings.cpp
   project/qgsprojectgpssettings.cpp
   project/qgsprojectproperty.cpp
+  project/qgsselectivemaskingsourcesetmanager.cpp
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
@@ -1879,6 +1880,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectfiletransform.h
   project/qgsprojectgpssettings.h
   project/qgsprojectproperty.h
+  project/qgsselectivemaskingsourcesetmanager.h
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
