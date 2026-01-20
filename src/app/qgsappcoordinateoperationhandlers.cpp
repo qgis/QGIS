@@ -193,7 +193,7 @@ void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoor
     // dlg has deleted on close
     QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "No Transformations Available" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->setMessage( longMessage, Qgis::StringFormat::Html );
     dlg->showMessage();
   } );
 
@@ -274,7 +274,7 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
     // dlg has deleted on close
     QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "Ballpark Transform Occurred" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->setMessage( longMessage, Qgis::StringFormat::Html );
     dlg->showMessage();
   } );
 
@@ -297,7 +297,7 @@ void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateRef
     // dlg has deleted on close
     QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "Unsupported Transformation" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->setMessage( longMessage, Qgis::StringFormat::Html );
     dlg->showMessage();
   } );
 
