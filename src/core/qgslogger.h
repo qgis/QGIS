@@ -166,8 +166,6 @@ class CORE_EXPORT QgsLogger
     */
     static QString logFile();
 
-    static QString logFile();
-
   private:
     static void init();
 
