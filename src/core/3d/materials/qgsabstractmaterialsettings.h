@@ -151,6 +151,13 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     */
     const QgsPropertiesDefinition &propertyDefinitions() const;
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * \since QGIS 4.2
+     */
+    virtual QColor averageColor() const = 0;
+
   private:
     QgsPropertyCollection mDataDefinedProperties;
     static QgsPropertiesDefinition sPropertyDefinitions;

@@ -139,6 +139,13 @@ defined overrides.
 .. versionadded:: 4.2
 %End
 
+    virtual QColor averageColor() const = 0;
+%Docstring
+Returns an approximate color representing the blended material color.
+
+.. versionadded:: 4.2
+%End
+
 };
 
 

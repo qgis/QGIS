@@ -115,7 +115,8 @@ Sets alpha value
 Sets beta value
 %End
 
-    QColor averageColor() const;
+    virtual QColor averageColor() const;
+
 %Docstring
 Returns an approximate color representing the blended material color.
 

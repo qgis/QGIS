@@ -2,7 +2,7 @@
 try:
     QgsNullMaterialSettings.supportsTechnique = staticmethod(QgsNullMaterialSettings.supportsTechnique)
     QgsNullMaterialSettings.create = staticmethod(QgsNullMaterialSettings.create)
-    QgsNullMaterialSettings.__overridden_methods__ = ['type', 'clone', 'equals']
+    QgsNullMaterialSettings.__overridden_methods__ = ['type', 'clone', 'equals', 'averageColor']
     QgsNullMaterialSettings.__group__ = ['3d', 'materials']
 except (NameError, AttributeError):
     pass

@@ -253,7 +253,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      * emission texture.
      * Other texture maps are not taken into account.
      */
-    QColor averageColor() const;
+    QColor averageColor() const override;
 
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const
     {

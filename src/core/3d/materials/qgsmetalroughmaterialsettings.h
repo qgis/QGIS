@@ -82,6 +82,18 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
     double opacity() const { return mOpacity; }
 
     /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * Since this material contains only a single color, this function
+     * simply returns baseColor().
+     *
+     * \see baseColor()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const override;
+
+    /**
      * Sets the base material \a color.
      *
      * \see baseColor()

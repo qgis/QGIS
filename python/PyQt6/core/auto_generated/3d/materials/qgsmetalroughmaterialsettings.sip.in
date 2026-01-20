@@ -78,6 +78,19 @@ Returns the opacity of the surface
 .. versionadded:: 4.2
 %End
 
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+Since this material contains only a single color, this function simply
+returns :py:func:`~QgsMetalRoughMaterialSettings.baseColor`.
+
+.. seealso:: :py:func:`baseColor`
+
+.. versionadded:: 4.2
+%End
+
     void setBaseColor( const QColor &color );
 %Docstring
 Sets the base material ``color``.

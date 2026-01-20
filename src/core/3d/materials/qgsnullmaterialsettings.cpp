@@ -62,3 +62,8 @@ bool QgsNullMaterialSettings::equals( const QgsAbstractMaterialSettings *other )
 
   return true;
 }
+
+QColor QgsNullMaterialSettings::averageColor() const
+{
+  return QColor();
+}

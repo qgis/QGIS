@@ -260,7 +260,8 @@ Sets the ``opacity`` of the surface.
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
 
-    QColor averageColor() const;
+    virtual QColor averageColor() const;
+
 %Docstring
 Returns an approximate color representing the blended material color.
 
