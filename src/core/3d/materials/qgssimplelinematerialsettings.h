@@ -68,6 +68,18 @@ class CORE_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSett
      */
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * Since this material contains only a single color, this function
+     * simply returns ambient().
+     *
+     * \see ambient()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 

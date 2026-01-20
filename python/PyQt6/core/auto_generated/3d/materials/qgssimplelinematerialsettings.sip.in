@@ -64,6 +64,19 @@ Sets the ``ambient`` color component.
 .. seealso:: :py:func:`ambient`
 %End
 
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+Since this material contains only a single color, this function simply
+returns :py:func:`~QgsSimpleLineMaterialSettings.ambient`.
+
+.. seealso:: :py:func:`ambient`
+
+.. versionadded:: 4.2
+%End
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

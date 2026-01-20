@@ -49,6 +49,9 @@ Returns a new instance of QgsNullMaterialSettings.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+
+    virtual QColor averageColor() const;
+
 };
 
 

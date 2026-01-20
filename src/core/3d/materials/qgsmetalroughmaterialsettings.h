@@ -94,6 +94,18 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      */
     void setRoughness( double roughness ) { mRoughness = roughness; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * Since this material contains only a single color, this function
+     * simply returns baseColor().
+     *
+     * \see baseColor()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 

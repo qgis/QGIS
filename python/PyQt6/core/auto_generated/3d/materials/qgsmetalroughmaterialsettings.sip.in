@@ -90,6 +90,19 @@ Sets the material's ``roughness``, as a value between 0 and 1.
 .. seealso:: :py:func:`roughness`
 %End
 
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+Since this material contains only a single color, this function simply
+returns :py:func:`~QgsMetalRoughMaterialSettings.baseColor`.
+
+.. seealso:: :py:func:`baseColor`
+
+.. versionadded:: 4.2
+%End
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

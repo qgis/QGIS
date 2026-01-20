@@ -81,3 +81,8 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
+
+QColor QgsMetalRoughMaterialSettings::averageColor() const
+{
+  return baseColor();
+}
