@@ -66,14 +66,14 @@ void QgsGraphicsViewMouseHandles::setRotationEnabled( bool enable )
   update();
 }
 
-void QgsGraphicsViewMouseHandles::setClickClickEnabled( bool enable )
+void QgsGraphicsViewMouseHandles::setCadMouseDigitizingModeEnabled( bool enable )
 {
-  if ( mClickClickEnabled == enable )
+  if ( mCadMouseDigitizingMode == enable )
   {
     return;
   }
 
-  mClickClickEnabled = enable;
+  mCadMouseDigitizingMode = enable;
 }
 
 void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
@@ -635,7 +635,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     return;
   }
 
-  if ( mClickClickEnabled && ( mIsDragging || mIsResizing || mIsRotating ) )
+  if ( mCadMouseDigitizingMode && ( mIsDragging || mIsResizing || mIsRotating ) )
   {
     return;
   }
@@ -690,7 +690,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
       break;
   }
 
-  if ( mClickClickEnabled && mIsDragging )
+  if ( mCadMouseDigitizingMode && mIsDragging )
   {
     mIsDragStarting = true;
   }
