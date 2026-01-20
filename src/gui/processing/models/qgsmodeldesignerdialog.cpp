@@ -1245,7 +1245,7 @@ void QgsModelDesignerDialog::validate()
       }
       longMessage += "</ul>"_L1;
 
-      dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+      dialog->setMessage( longMessage, Qgis::StringFormat::Html );
       dialog->showMessage();
     } );
     messageWidget->layout()->addWidget( detailsButton );

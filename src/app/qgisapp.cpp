@@ -1952,7 +1952,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [detailsButton, licenseDetails] {
         QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
         dialog->setTitle( tr( "Font License" ) );
-        dialog->setMessage( licenseDetails, QgsMessageOutput::MessageText );
+        dialog->setMessage( licenseDetails, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -1975,7 +1975,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [error] {
         QgsMessageViewer *dialog = new QgsMessageViewer( nullptr, QgsGuiUtils::ModalDialogFlags, true );
         dialog->setTitle( tr( "Font Install Failed" ) );
-        dialog->setMessage( error, QgsMessageOutput::MessageText );
+        dialog->setMessage( error, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -2483,7 +2483,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
       if ( QgsMessageViewer *dialog = dynamic_cast<QgsMessageViewer *>( QgsMessageOutput::createMessageOutput() ) )
       {
         dialog->setTitle( title );
-        dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+        dialog->setMessage( longMessage, Qgis::StringFormat::Html );
         dialog->showMessage();
       }
     } );

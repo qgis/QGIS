@@ -35,7 +35,7 @@ class GUI_EXPORT QgsMessageViewer : public QDialog, public QgsMessageOutput, pri
   public:
     QgsMessageViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
 
-    void setMessage( const QString &message, Qgis::MessageType msgType ) override;
+    void setMessage( const QString &message, Qgis::StringFormat format ) override;
 
     void appendMessage( const QString &message ) override;
 

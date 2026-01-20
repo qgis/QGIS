@@ -35,7 +35,7 @@ signal :py:func:`~destroyed` to notify the deletion
 
     virtual ~QgsMessageOutput();
 
-    virtual void setMessage( const QString &message, Qgis::MessageType msgType ) = 0;
+    virtual void setMessage( const QString &message, Qgis::StringFormat format ) = 0;
 %Docstring
 Sets message, it won't be displayed until
 %End
@@ -55,7 +55,7 @@ Sets title for the messages
 display the message to the user and deletes itself
 %End
 
-    static void showMessage( const QString &title, const QString &message, Qgis::MessageType msgType );
+    static void showMessage( const QString &title, const QString &message, Qgis::StringFormat format );
 %Docstring
 Display the blocking message to the user.
 %End
@@ -88,7 +88,7 @@ be the right choice for apps without GUI.
 
     QgsMessageOutputConsole();
 
-    virtual void setMessage( const QString &message, Qgis::MessageType msgType );
+    virtual void setMessage( const QString &message, Qgis::StringFormat format );
 
 
     virtual void appendMessage( const QString &message );

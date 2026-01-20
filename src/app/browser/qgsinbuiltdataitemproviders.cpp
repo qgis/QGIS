@@ -2340,7 +2340,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
             {
               QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
               output->setTitle( tr( "Import to database" ) );
-              output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+              output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
               output->showMessage();
             }
           } );
@@ -2358,7 +2358,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
   if ( hasSubTasks )

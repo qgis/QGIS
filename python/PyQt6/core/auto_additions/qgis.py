@@ -75,18 +75,32 @@ Qgis.Critical = Qgis.MessageLevel.Critical
 Qgis.Success = Qgis.MessageLevel.Success
 Qgis.NoLevel = Qgis.MessageLevel.NoLevel
 Qgis.MessageLevel.baseClass = Qgis
+QgsMessageOutput.MessageType = Qgis.StringFormat
 # monkey patching scoped based enum
-Qgis.MessageType.MessageText.__doc__ = "Text message"
-Qgis.MessageType.MessageHtml.__doc__ = "HTML message"
-Qgis.MessageType.__doc__ = """Type of message
-This will be used both for message log and message bar in application.
+QgsMessageOutput.MessageText = Qgis.StringFormat.PlainText
+QgsMessageOutput.MessageType.MessageText = Qgis.StringFormat.PlainText
+QgsMessageOutput.MessageText.is_monkey_patched = True
+QgsMessageOutput.MessageText.__doc__ = "Text message"
+QgsMessageOutput.MessageHtml = Qgis.StringFormat.Html
+QgsMessageOutput.MessageType.MessageHtml = Qgis.StringFormat.Html
+QgsMessageOutput.MessageHtml.is_monkey_patched = True
+QgsMessageOutput.MessageHtml.__doc__ = "HTML message"
+Qgis.StringFormat.__doc__ = """Format of log message
 
-* ``MessageText``: Text message
-* ``MessageHtml``: HTML message
+.. versionadded:: 4.0.
+
+* ``PlainText``: Text message
+
+  Available as ``QgsMessageOutput.MessageText`` in older QGIS releases.
+
+* ``Html``: HTML message
+
+  Available as ``QgsMessageOutput.MessageHtml`` in older QGIS releases.
+
 
 """
 # --
-Qgis.MessageType.baseClass = Qgis
+Qgis.StringFormat.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NetworkRequestFlag.DisableMessageLogging.__doc__ = "If present, indicates that no message logging should be performed when network errors are encountered"
 Qgis.NetworkRequestFlag.__doc__ = """Flags controlling behavior of network requests.
