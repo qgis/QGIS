@@ -84,6 +84,7 @@ segment) and the result is undefined.
 %End
 
 
+
     static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x /Out/, double *y /Out/ );
 %Docstring
 Calculates a point a certain ``proportion`` of the way along the segment

@@ -37,6 +37,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
+#include "qgsnurbsutils.h"
 #include "qgspoint.h"
 #include "qgspointxy.h"
 #include "qgspolygon.h"

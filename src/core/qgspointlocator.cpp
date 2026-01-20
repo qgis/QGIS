@@ -358,9 +358,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
-
 ////////////////////////////////////////////////////////////////////////////
-
 
 /**
  * \ingroup core
