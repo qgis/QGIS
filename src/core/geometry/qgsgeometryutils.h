@@ -226,6 +226,37 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance ) SIP_HOLDGIL;
 
     /**
+     * Calculates a point by applying a deflection angle from an initial direction.
+     *
+     * Given a \a basePoint and a \a directionPoint that defines the initial bearing,
+     * this method calculates a new point at the specified \a distance from the base point,
+     * deflected by \a deflectionAngle from the initial direction.
+     *
+     * The deflection angle is measured from the initial bearing:
+     *
+     * - Positive values deflect clockwise (to the right)
+     * - Negative values deflect counter-clockwise (to the left)
+     *
+     * This is commonly used in surveying for traverse calculations where angles are
+     * measured as deflections from the previous course direction.
+     *
+     * Any Z or M values from the \a basePoint will be preserved in the returned point.
+     *
+     * \param basePoint the base point (instrument position)
+     * \param directionPoint the direction point (backsight), defines the initial bearing
+     * \param deflectionAngle deflection angle in radians (positive = clockwise/right)
+     * \param distance distance to the new point
+     * \returns the calculated point
+     *
+     * \see pointOnLineWithDistance()
+     * \see QgsGeometryUtilsBase::pointByDeflectionAngle()
+     *
+     * \since QGIS 4.0
+     */
+    static QgsPoint pointByDeflectionAngle( const QgsPoint &basePoint, const QgsPoint &directionPoint,
+                                            double deflectionAngle, double distance ) SIP_HOLDGIL;
+
+    /**
      * Interpolates a point on an arc defined by three points, \a pt1, \a pt2 and \a pt3. The arc will be
      * interpolated by the specified \a distance from \a pt1.
      *

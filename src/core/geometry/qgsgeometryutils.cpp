@@ -512,6 +512,30 @@ QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, 
   return QgsPoint( x, y );
 }
 
+QgsPoint QgsGeometryUtils::pointByDeflectionAngle( const QgsPoint &basePoint, const QgsPoint &directionPoint,
+    double deflectionAngle, double distance )
+{
+  double resultX, resultY;
+  QgsGeometryUtilsBase::pointByDeflectionAngle( basePoint.x(), basePoint.y(),
+      directionPoint.x(), directionPoint.y(),
+      deflectionAngle, distance,
+      resultX, resultY );
+
+  // Create result point preserving Z and M from basePoint
+  QgsPoint result( resultX, resultY );
+  if ( basePoint.is3D() )
+  {
+    result.convertTo( QgsWkbTypes::addZ( result.wkbType() ) );
+    result.setZ( basePoint.z() );
+  }
+  if ( basePoint.isMeasure() )
+  {
+    result.convertTo( QgsWkbTypes::addM( result.wkbType() ) );
+    result.setM( basePoint.m() );
+  }
+  return result;
+}
+
 
 QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance )
 {

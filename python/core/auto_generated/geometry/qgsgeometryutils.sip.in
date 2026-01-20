@@ -204,6 +204,44 @@ segment) and the result is undefined.
 Returns a point a specified ``distance`` toward a second point.
 %End
 
+    static QgsPoint pointByDeflectionAngle( const QgsPoint &basePoint, const QgsPoint &directionPoint,
+                                            double deflectionAngle, double distance ) /HoldGIL/;
+%Docstring
+Calculates a point by applying a deflection angle from an initial
+direction.
+
+Given a ``basePoint`` and a ``directionPoint`` that defines the initial
+bearing, this method calculates a new point at the specified
+``distance`` from the base point, deflected by ``deflectionAngle`` from
+the initial direction.
+
+The deflection angle is measured from the initial bearing:
+
+- Positive values deflect clockwise (to the right)
+- Negative values deflect counter-clockwise (to the left)
+
+This is commonly used in surveying for traverse calculations where
+angles are measured as deflections from the previous course direction.
+
+Any Z or M values from the ``basePoint`` will be preserved in the
+returned point.
+
+:param basePoint: the base point (instrument position)
+:param directionPoint: the direction point (backsight), defines the
+                       initial bearing
+:param deflectionAngle: deflection angle in radians (positive =
+                        clockwise/right)
+:param distance: distance to the new point
+
+:return: the calculated point
+
+.. seealso:: :py:func:`pointOnLineWithDistance`
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.pointByDeflectionAngle`
+
+.. versionadded:: 4.0
+%End
+
     static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) /HoldGIL/;
 %Docstring
 Interpolates a point on an arc defined by three points, ``pt1``, ``pt2``
