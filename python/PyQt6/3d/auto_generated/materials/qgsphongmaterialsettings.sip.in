@@ -182,7 +182,8 @@ strength factor of the specular color).
 .. versionadded:: 3.36
 %End
 
-    QColor averageColor() const;
+    virtual QColor averageColor() const;
+
 %Docstring
 Returns an approximate color representing the blended material color.
 

@@ -120,3 +120,8 @@ QMap<QString, QString> QgsMetalRoughMaterialSettings::toExportParameters() const
 
 void QgsMetalRoughMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {}
+
+QColor QgsMetalRoughMaterialSettings::averageColor() const
+{
+  return baseColor();
+}
