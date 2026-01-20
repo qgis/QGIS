@@ -110,13 +110,13 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     void setRotationEnabled( bool enable );
 
     /**
-     * Sets whether moving of items happens when dragging while holding the
-     * mouse's left button is held down or by mouse clicking once, dragging,
-     * then mouse clicking again.
+     * Sets to TRUE for item dragging behavior to require a mouse click,
+     * mouse movement, then a second mouse click to confirm the dragging
+     * operation.
      *
      * \since QGIS 4.0
      */
-    void setClickClickEnabled( bool enable );
+    void setCadMouseDigitizingModeEnabled( bool enable );
 
   public slots:
 
@@ -247,7 +247,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     QRectF mResizeRect;
 
-    bool mClickClickEnabled = false;
+    bool mCadMouseDigitizingMode = false;
 
     bool mRotationEnabled = false;
     //! Center point around which rotation occurs
