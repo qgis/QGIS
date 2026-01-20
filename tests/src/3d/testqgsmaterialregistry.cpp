@@ -42,6 +42,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     QMap<QString, QString> toExportParameters() const override { return QMap<QString, QString>(); }
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext & ) const override { return QByteArray(); }
     bool equals( const QgsAbstractMaterialSettings * ) const override { return true; }
+    QColor averageColor() const override { return QColor(); }
 };
 
 class TestQgsMaterialRegistry : public QgsTest
