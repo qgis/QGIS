@@ -47,7 +47,7 @@ copy and pass between threads without issue.
 
     enum class RequestFlag
     {
-        EmptyResponseIsValid,
+      EmptyResponseIsValid,
     };
     typedef QFlags<QgsBlockingNetworkRequest::RequestFlag> RequestFlags;
 

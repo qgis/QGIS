@@ -68,7 +68,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      */
     enum class RequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-        EmptyResponseIsValid = 1 << 0, //!< Do not generate an error if getting an empty response (e.g. HTTP 204)
+      EmptyResponseIsValid = 1 << 0, //!< Do not generate an error if getting an empty response (e.g. HTTP 204)
     };
     Q_ENUM( RequestFlag )
     Q_DECLARE_FLAGS( RequestFlags, RequestFlag )
