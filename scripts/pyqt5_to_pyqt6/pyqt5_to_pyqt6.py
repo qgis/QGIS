@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    3to4.py
+    qt5to6.py
     ---------------------
     Date                 : 2023 December
     Copyright            : (C) 2023 by Julien Cabieces
@@ -32,6 +32,8 @@ astpretty --no-show-offsets myfile.py
 
 - display file tokens
 tokenize-rt myfile.py
+
+- added logging by Karin Kuipers
 """
 
 __author__ = "Julien Cabieces"
@@ -120,7 +122,7 @@ target_modules = [
 if qgis_core is not None:
     target_modules.extend([qgis_core, qgis_gui, qgis_analysis, qgis_3d])
 
-# qmetatype which have been renamed
+# qmetatype which have been renamed (Qy5:Qt6)
 qmetatype_mapping = {
     "Invalid": "UnknownType",
     "BitArray": "QBitArray",
@@ -190,7 +192,7 @@ import_warnings = {
     "QRegExp": "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"
 }
 
-# { (class, enum_value) : enum_name }
+# initialize qt_enums and ambiguous_enums dictionaries
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
 
@@ -210,12 +212,18 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     -------
     int
         Return 0 if no file is modified.
+        Returns which file and what has been modified.
     """
+    print(f"\n{'='*60}")
+    print(f"Processing file: {filename}")
+    print(f"{'='*60}")
+    
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
 
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX
+    fix_pyqt5_direct_import = []  # from PyQt5 import QtCore
     fix_qt_enums = {}  # Unscoping of enums
     member_renames = {}
     token_renames = {}
@@ -542,11 +550,18 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 and node.module.startswith("PyQt5.")
             ):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
+            elif (
+                isinstance(node, ast.ImportFrom)
+                and node.module
+                and node.module == "PyQt5"
+            ):
+                fix_pyqt5_direct_import.append(Offset(node.lineno, node.col_offset))
 
     for module, classes in extra_imports.items():
         if module not in imported_modules:
             class_import = ", ".join(classes)
             import_statement = f"from {module} import {class_import}"
+            print(f"  ⚠ Missing import: {import_statement}")
             logging.warning(
                 f"{filename}: Missing import, manually add {import_statement}"
             )
@@ -594,10 +609,49 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
         return 0
 
+    # Print summary of what will be changed
+    changes_count = 0
+    if fix_qt_enums:
+        print(f"\n  📝 Qt Enum fixes to apply: {len(fix_qt_enums)}")
+        changes_count += len(fix_qt_enums)
+    if member_renames:
+        print(f"  📝 Member renames to apply: {len(member_renames)}")
+        changes_count += len(member_renames)
+    if function_def_renames:
+        print(f"  📝 Function renames to apply: {len(function_def_renames)}")
+        changes_count += len(function_def_renames)
+    if fix_pyqt_import:
+        print(f"  📝 PyQt import fixes to apply: {len(fix_pyqt_import)}")
+        changes_count += len(fix_pyqt_import)
+    if fix_pyqt5_direct_import:
+        print(f"  📝 Direct PyQt5 import fixes to apply: {len(fix_pyqt5_direct_import)}")
+        changes_count += len(fix_pyqt5_direct_import)
+    if fix_qvariant_type:
+        print(f"  📝 QVariant type fixes to apply: {len(fix_qvariant_type)}")
+        changes_count += len(fix_qvariant_type)
+    if rename_qt_enums:
+        print(f"  📝 Deprecated enum renames to apply: {len(rename_qt_enums)}")
+        changes_count += len(rename_qt_enums)
+    if token_renames:
+        print(f"  📝 Token renames to apply: {len(token_renames)}")
+        changes_count += len(token_renames)
+    if custom_updates:
+        print(f"  📝 Custom updates to apply: {len(custom_updates)}")
+        changes_count += len(custom_updates)
+    if extra_imports:
+        imports_to_add_count = sum(len(classes) for classes in extra_imports.values())
+        print(f"  📝 Imports to add: {imports_to_add_count}")
+        changes_count += imports_to_add_count
+    if removed_imports:
+        imports_to_remove_count = sum(len(classes) for classes in removed_imports.values())
+        print(f"  📝 Imports to remove: {imports_to_remove_count}")
+        changes_count += imports_to_remove_count
+
     if not any(
         [
             fix_qvariant_type,
             fix_pyqt_import,
+            fix_pyqt5_direct_import,
             fix_qt_enums,
             rename_qt_enums,
             member_renames,
@@ -608,8 +662,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             token_renames,
         ]
     ):
+        print("  ✅ No changes needed for this file")
         return has_unfixed_errors
 
+    print(f"\n  🔧 Applying {changes_count} change(s)...")
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
         if token.offset in import_offsets:
@@ -636,6 +692,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                     import_ = tokens[token_index].src
                     if import_ in removed_imports.get(module, set()):
+                        print(f"    • Line {token.offset.line}: Removing import from {module}: {import_}")
                         tokens[token_index] = tokens[token_index]._replace(src="")
                         prev_token_index = token_index - 1
                         while True:
@@ -690,6 +747,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 imports_to_add = extra_imports.get(module, set()) - current_imports
                 if imports_to_add:
                     additional_import_string = ", ".join(sorted(imports_to_add))
+                    print(f"    • Line {token.offset.line}: Adding imports to {module}: {additional_import_string}")
                     if tokens[token_index - 1].src == ")":
                         token_index -= 1
                         while tokens[token_index].src.strip() in ("", ",", ")"):
@@ -706,33 +764,71 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         if token.offset in fix_qvariant_type:
             assert tokens[i].src == "QVariant"
             assert tokens[i + 1].src == "."
-            tokens[i] = tokens[i]._replace(src="QMetaType.Type")
             attr = tokens[i + 2].src
+            print(f"    • Line {token.offset.line}: QVariant.{attr} → QMetaType.Type.{qmetatype_mapping.get(attr, attr)}")
+            tokens[i] = tokens[i]._replace(src="QMetaType.Type")
             if attr in qmetatype_mapping:
                 tokens[i + 2] = tokens[i + 2]._replace(src=qmetatype_mapping[attr])
 
         if token.offset in custom_updates:
-            method, _ = custom_updates[token.offset]
+            method, description = custom_updates[token.offset]
+            print(f"    • Line {token.offset.line}: {description}")
             method(i, tokens)
 
         if token.offset in fix_pyqt_import:
             assert tokens[i + 2].src == "PyQt5"
+            print(f"    • Line {token.offset.line}: PyQt5 → qgis.PyQt")
             tokens[i + 2] = tokens[i + 2]._replace(src="qgis.PyQt")
 
+        if token.offset in fix_pyqt5_direct_import:
+            assert tokens[i + 2].src == "PyQt5"
+            print(f"    • Line {token.offset.line}: from PyQt5 → from qgis.PyQt")
+            tokens[i + 2] = tokens[i + 2]._replace(src="qgis.PyQt")
+
+        # Handle comments with PyQt5 or Qt version references
+        if token.name == "COMMENT":
+            new_comment = token.src
+            changed = False
+            # Replace PyQt5 with qgis.PyQt in comments
+            if "PyQt5" in new_comment:
+                new_comment = new_comment.replace("PyQt5", "qgis.PyQt")
+                changed = True
+            # Replace PyQt6 with qgis.PyQt in comments for consistency
+            if "PyQt6" in new_comment:
+                new_comment = new_comment.replace("PyQt6", "qgis.PyQt")
+                changed = True
+            # Remove Qt version like (Qt v5.15.13) from comments
+            qt_version_pattern = r'\s*\(Qt v\d+\.\d+\.\d+\)'
+            if re.search(qt_version_pattern, new_comment):
+                new_comment = re.sub(qt_version_pattern, '', new_comment)
+                changed = True
+            if changed:
+                print(f"    • Line {token.offset.line}: Updated comment")
+                tokens[i] = tokens[i]._replace(src=new_comment)
+
         if token.offset in function_def_renames and tokens[i].src == "def":
+            old_name = tokens[i + 2].src
+            new_name = function_def_renames[token.offset]
+            print(f"    • Line {token.offset.line}: def {old_name} → def {new_name}")
             tokens[i + 2] = tokens[i + 2]._replace(
-                src=function_def_renames[token.offset]
+                src=new_name
             )
 
         if token.offset in token_renames:
-            tokens[i] = tokens[i]._replace(src=token_renames[token.offset])
+            old_token = tokens[i].src
+            new_token = token_renames[token.offset]
+            print(f"    • Line {token.offset.line}: {old_token} → {new_token}")
+            tokens[i] = tokens[i]._replace(src=new_token)
 
         if token.offset in member_renames:
             counter = i
             while tokens[counter].src != ".":
                 counter += 1
+            old_member = tokens[counter + 1].src
+            new_member = member_renames[token.offset]
+            print(f"    • Line {token.offset.line}: .{old_member} → .{new_member}")
             tokens[counter + 1] = tokens[counter + 1]._replace(
-                src=member_renames[token.offset]
+                src=new_member
             )
 
         if token.offset in fix_qt_enums:
@@ -741,6 +837,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             # make sure we CAN import enum!
             try:
                 eval(f"{_class}.{enum_name}.{value}")
+                print(f"    • Line {token.offset.line}: {_class}.{value} → {_class}.{enum_name}.{value}")
                 tokens[i + 2] = tokens[i + 2]._replace(
                     src=f"{enum_name}.{tokens[i + 2].src}"
                 )
@@ -758,6 +855,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                             if attr is actual.__class__:
                                 # print(f'Found alias {_class}.{attr_name}')
                                 recovered = True
+                                print(f"    • Line {token.offset.line}: {_class}.{value} → {_class}.{attr_name}.{value} (recovered)")
                                 tokens[i + 2] = tokens[i + 2]._replace(
                                     src=f"{attr_name}.{tokens[i + 2].src}"
                                 )
@@ -772,8 +870,11 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
         if token.offset in rename_qt_enums:
             assert tokens[i + 1].src == "."
-            enum_name = deprecated_renamed_enums[(tokens[i].src, tokens[i + 2].src)]
+            old_class = tokens[i].src
+            old_value = tokens[i + 2].src
+            enum_name = deprecated_renamed_enums[(old_class, old_value)]
             assert enum_name
+            print(f"    • Line {token.offset.line}: {old_class}.{old_value} → {old_class}.{enum_name[0]}.{enum_name[1]}")
             tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name[0]}.{enum_name[1]}")
 
     new_contents = tokens_to_src(tokens)
@@ -782,6 +883,11 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     with open(filename, "w") as f:
         f.write(new_contents)
 
+    if new_contents != contents:
+        print(f"  ✅ File successfully updated!")
+    else:
+        print(f"  ℹ️  No actual changes made to file")
+    
     return has_unfixed_errors or new_contents != contents
 
 
@@ -891,11 +997,113 @@ def main(argv: Sequence[str] | None = None) -> int:
     if dry_run:
         logging.info("=== dry_run mode | Start Logs ===")
 
-    for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        if "auto_additions" in filename:
-            continue
-
-        ret |= fix_file(filename, not args.qgis3_incompatible_changes, dry_run)
+    files_to_process = [f for f in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True) if "auto_additions" not in f]
+    total_files = len(files_to_process)
+    files_changed = 0
+    
+    print(f"\n{'='*60}")
+    print(f"Qt5 to Qt6 Migration Script")
+    print(f"{'='*60}")
+    print(f"Found {total_files} Python file(s) to process")
+    print(f"Directory: {args.directory}")
+    print(f"Dry run mode: {dry_run}")
+    print(f"QGIS3 incompatible changes: {args.qgis3_incompatible_changes}")
+    
+    for idx, filename in enumerate(files_to_process, 1):
+        print(f"\n[{idx}/{total_files}] ", end="")
+        file_changed = fix_file(filename, not args.qgis3_incompatible_changes, dry_run)
+        ret |= file_changed
+        if file_changed:
+            files_changed += 1
+    
+    # Update metadata.txt files
+    print(f"\n{'='*60}")
+    print("Checking for metadata.txt files...")
+    print(f"{'='*60}")
+    
+    metadata_files = glob.glob(os.path.join(args.directory, "**/metadata.txt"), recursive=True)
+    metadata_updated = 0
+    
+    for metadata_file in metadata_files:
+        print(f"\nFound metadata.txt: {metadata_file}")
+        
+        try:
+            with open(metadata_file, 'r', encoding='UTF-8') as f:
+                content = f.read()
+            
+            changes_made = False
+            new_content = content
+            
+            # Check if supportsQt6 already exists
+            if 'supportsQt6' in new_content:
+                # Check if it's already set to True
+                if re.search(r'supportsQt6\s*=\s*True', new_content, re.IGNORECASE):
+                    print("  ✅ supportsQt6=True already present")
+                else:
+                    # Update existing supportsQt6 to True
+                    new_content = re.sub(
+                        r'(supportsQt6\s*=\s*)\S+',
+                        r'\1True',
+                        new_content,
+                        flags=re.IGNORECASE
+                    )
+                    print("  ✅ Updated supportsQt6=True")
+                    changes_made = True
+            else:
+                # Add supportsQt6=True at the bottom with a comment
+                if not new_content.endswith('\n'):
+                    new_content += '\n'
+                new_content += '\n# Added by Qt5 to Qt6 migration script\nsupportsQt6=True\n'
+                
+                print("  ✅ Added supportsQt6=True")
+                changes_made = True
+            
+            # Check if qgisMaximumVersion exists and update it
+            if 'qgisMaximumVersion' in new_content:
+                # Check if it's already set to 4.99
+                if re.search(r'qgisMaximumVersion\s*=\s*4\.99', new_content):
+                    print("  ✅ qgisMaximumVersion=4.99 already present")
+                else:
+                    # Update existing qgisMaximumVersion to 4.99
+                    new_content = re.sub(
+                        r'(qgisMaximumVersion\s*=\s*)[^\s\n]+',
+                        r'\g<1>4.99',
+                        new_content,
+                        flags=re.IGNORECASE
+                    )
+                    print("  ✅ Updated qgisMaximumVersion=4.99")
+                    changes_made = True
+            else:
+                # Add qgisMaximumVersion=4.99 if it doesn't exist
+                if not new_content.endswith('\n'):
+                    new_content += '\n'
+                new_content += 'qgisMaximumVersion=4.99\n'
+                print("  ✅ Added qgisMaximumVersion=4.99")
+                changes_made = True
+            
+            if changes_made:
+                if not dry_run:
+                    with open(metadata_file, 'w', encoding='UTF-8') as f:
+                        f.write(new_content)
+                metadata_updated += 1
+        
+        except Exception as e:
+            print(f"  ❌ Error processing {metadata_file}: {e}")
+            ret = 1
+    
+    if not metadata_files:
+        print("  ℹ️  No metadata.txt files found")
+    
+    print(f"\n{'='*60}")
+    print(f"Migration Summary")
+    print(f"{'='*60}")
+    print(f"Total Python files processed: {total_files}")
+    print(f"Python files changed: {files_changed}")
+    print(f"Python files unchanged: {total_files - files_changed}")
+    print(f"Metadata files found: {len(metadata_files)}")
+    print(f"Metadata files updated: {metadata_updated}")
+    print(f"{'='*60}")
+    
     return ret
 
 
