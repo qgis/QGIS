@@ -219,6 +219,7 @@ class CORE_EXPORT QgsSymbolLayer
       SkipMultiples, //!< Skip multiples of \since QGIS 3.40
       ShowMarker, //!< Show markers \since QGIS 3.40
       BlankSegments, //!< String list of distance to define blank segments along line for templated line symbol layers. \since QGIS 4.0
+      ExtraItems, //!< String list of tuple (x, y and rotation angle) to define extra items to be rendered for templated line symbol layers. \since QGIS 4.2
     };
     // *INDENT-ON*
 

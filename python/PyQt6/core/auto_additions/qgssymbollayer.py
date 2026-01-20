@@ -289,6 +289,9 @@ QgsSymbolLayer.ShowMarker.__doc__ = "Show markers \n.. versionadded:: 3.40"
 QgsSymbolLayer.BlankSegments = QgsSymbolLayer.Property.BlankSegments
 QgsSymbolLayer.BlankSegments.is_monkey_patched = True
 QgsSymbolLayer.BlankSegments.__doc__ = "String list of distance to define blank segments along line for templated line symbol layers. \n.. versionadded:: 4.0"
+QgsSymbolLayer.ExtraItems = QgsSymbolLayer.Property.ExtraItems
+QgsSymbolLayer.ExtraItems.is_monkey_patched = True
+QgsSymbolLayer.ExtraItems.__doc__ = "String list of tuple (x, y and rotation angle) to define extra items to be rendered for templated line symbol layers. \n.. versionadded:: 4.2"
 QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
 * ``Size``: Symbol size
@@ -612,6 +615,10 @@ QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 * ``BlankSegments``: String list of distance to define blank segments along line for templated line symbol layers.
 
   .. versionadded:: 4.0
+
+* ``ExtraItems``: String list of tuple (x, y and rotation angle) to define extra items to be rendered for templated line symbol layers.
+
+  .. versionadded:: 4.2
 
 
 """

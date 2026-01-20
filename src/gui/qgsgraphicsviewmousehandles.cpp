@@ -76,6 +76,17 @@ void QgsGraphicsViewMouseHandles::setCadMouseDigitizingModeEnabled( bool enable 
   mCadMouseDigitizingMode = enable;
 }
 
+void QgsGraphicsViewMouseHandles::setResizeEnabled( bool enable )
+{
+  if ( mResizeEnabled == enable )
+  {
+    return;
+  }
+
+  mResizeEnabled = enable;
+  update();
+}
+
 void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
 {
   if ( !showHandles )
@@ -109,6 +120,11 @@ void QgsGraphicsViewMouseHandles::rotateItem( QGraphicsItem *, double, double, d
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
 {
+}
+
+void QgsGraphicsViewMouseHandles::setItemRect( QGraphicsItem *, QRectF )
+{
+  QgsDebugError( u"Resize is not implemented for this class"_s );
 }
 
 QRectF QgsGraphicsViewMouseHandles::previewSetItemRect( QGraphicsItem *, QRectF )
@@ -153,24 +169,27 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
   painter->setBrush( Qt::NoBrush );
   painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
 
-  //draw resize handles, using filled white boxes
-  painter->setBrush( QColor( 255, 255, 255, 255 ) );
-  //top left
-  painter->drawRect( QRectF( 0, 0, rectHandlerSize, rectHandlerSize ) );
-  //mid top
-  painter->drawRect( QRectF( ( rect().width() - rectHandlerSize ) / 2, 0, rectHandlerSize, rectHandlerSize ) );
-  //top right
-  painter->drawRect( QRectF( rect().width() - rectHandlerSize, 0, rectHandlerSize, rectHandlerSize ) );
-  //mid left
-  painter->drawRect( QRectF( 0, ( rect().height() - rectHandlerSize ) / 2, rectHandlerSize, rectHandlerSize ) );
-  //mid right
-  painter->drawRect( QRectF( rect().width() - rectHandlerSize, ( rect().height() - rectHandlerSize ) / 2, rectHandlerSize, rectHandlerSize ) );
-  //bottom left
-  painter->drawRect( QRectF( 0, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
-  //mid bottom
-  painter->drawRect( QRectF( ( rect().width() - rectHandlerSize ) / 2, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
-  //bottom right
-  painter->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
+  if ( isResizeEnabled() )
+  {
+    //draw resize handles, using filled white boxes
+    painter->setBrush( QColor( 255, 255, 255, 255 ) );
+    //top left
+    painter->drawRect( QRectF( 0, 0, rectHandlerSize, rectHandlerSize ) );
+    //mid top
+    painter->drawRect( QRectF( ( rect().width() - rectHandlerSize ) / 2, 0, rectHandlerSize, rectHandlerSize ) );
+    //top right
+    painter->drawRect( QRectF( rect().width() - rectHandlerSize, 0, rectHandlerSize, rectHandlerSize ) );
+    //mid left
+    painter->drawRect( QRectF( 0, ( rect().height() - rectHandlerSize ) / 2, rectHandlerSize, rectHandlerSize ) );
+    //mid right
+    painter->drawRect( QRectF( rect().width() - rectHandlerSize, ( rect().height() - rectHandlerSize ) / 2, rectHandlerSize, rectHandlerSize ) );
+    //bottom left
+    painter->drawRect( QRectF( 0, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
+    //mid bottom
+    painter->drawRect( QRectF( ( rect().width() - rectHandlerSize ) / 2, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
+    //bottom right
+    painter->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
+  }
 
   if ( isRotationEnabled() )
   {
@@ -463,7 +482,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   double borderTolerance = rectHandlerBorderTolerance();
   double innerTolerance = mRotationHandleSize * borderTolerance / mHandleSize;
 
-  if ( itemCoordPos.x() >= 0 && itemCoordPos.x() < borderTolerance )
+  if ( isResizeEnabled() && itemCoordPos.x() >= 0 && itemCoordPos.x() < borderTolerance )
   {
     nearLeftBorder = true;
   }
@@ -471,7 +490,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearLeftInner = true;
   }
-  if ( itemCoordPos.y() >= 0 && itemCoordPos.y() < borderTolerance )
+  if ( isResizeEnabled() && itemCoordPos.y() >= 0 && itemCoordPos.y() < borderTolerance )
   {
     nearUpperBorder = true;
   }
@@ -479,7 +498,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearUpperInner = true;
   }
-  if ( itemCoordPos.x() <= rect().width() && itemCoordPos.x() > ( rect().width() - borderTolerance ) )
+  if ( isResizeEnabled() && itemCoordPos.x() <= rect().width() && itemCoordPos.x() > ( rect().width() - borderTolerance ) )
   {
     nearRightBorder = true;
   }
@@ -487,7 +506,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearRightInner = true;
   }
-  if ( itemCoordPos.y() <= rect().height() && itemCoordPos.y() > ( rect().height() - borderTolerance ) )
+  if ( isResizeEnabled() && itemCoordPos.y() <= rect().height() && itemCoordPos.y() > ( rect().height() - borderTolerance ) )
   {
     nearLowerBorder = true;
   }

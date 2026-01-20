@@ -455,6 +455,8 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 
 class QgsTemplatedLineSymbolLayerBase;
 class QgsMapToolEditBlankSegmentsBase;
+class QgsMapToolAddExtraItem;
+class QgsMapToolModifyExtraItems;
 
 /**
  * \ingroup gui
@@ -483,6 +485,8 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
      * \param parent parent widget
      */
     QgsTemplatedLineSymbolLayerWidget( TemplatedSymbolType symbolType, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsTemplatedLineSymbolLayerWidget() override;
 
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
@@ -517,17 +521,24 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     void averageAngleUnitChanged();
     void blankSegmentsUnitChanged();
     void setAverageAngle( double val );
-    void toggleMapToolEditBlankSegments( bool toggled );
+    void toggleMapToolEditBlankSegments();
+    void toggleMapToolAddExtraItem();
+    void toggleMapToolModifyExtraItem();
 
     void updateBlankSegmentsWidget();
+    void updateExtraItemsWidget();
 
   private:
     // Returns blank segments field index, -1 if no dd property field has been set
     int blankSegmentsFieldIndex() const;
+    // Returns extra items field index, -1 if no dd property field has been set
+    int extraItemsFieldIndex() const;
 
     QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
     TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
     QObjectUniquePtr<QgsMapToolEditBlankSegmentsBase> mMapToolEditBlankSegments;
+    QObjectUniquePtr<QgsMapToolAddExtraItem> mMapToolAddExtraItem;
+    QObjectUniquePtr<QgsMapToolModifyExtraItems> mMapToolModifyExtraItem;
 };
 
 /**

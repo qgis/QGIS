@@ -118,6 +118,25 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      */
     void setCadMouseDigitizingModeEnabled( bool enable );
 
+    /**
+     * Returns TRUE if resize functionality is enabled.
+     *
+     * Resize is enabled by default.
+     *
+     * \since QGIS 4.2
+     */
+    bool isResizeEnabled() const { return mResizeEnabled; }
+
+    /**
+     * Sets whether resize functionality is enabled.
+     *
+     * Resize is enabled by default. Subclasses must implement the
+     * setItemRect() method in order to support resize.
+     *
+     * \since QGIS 4.2
+     */
+    void setResizeEnabled( bool enable );
+
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -149,7 +168,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
     virtual void rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY );
     virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
-    virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
+    virtual void setItemRect( QGraphicsItem *item, QRectF rect );
 
     /**
      * Called when a resize or move action is in progress and the effects can be previewed for the specified \a item. The
@@ -250,6 +269,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     bool mCadMouseDigitizingMode = false;
 
     bool mRotationEnabled = false;
+    bool mResizeEnabled = true;
     //! Center point around which rotation occurs
     QPointF mRotationCenter;
     //! The starting rotation angle from center point

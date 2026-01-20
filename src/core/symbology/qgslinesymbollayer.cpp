@@ -26,6 +26,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsdxfexport.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsextraitemutils.h"
 #include "qgsfeedback.h"
 #include "qgsfillsymbol.h"
 #include "qgsgeometrysimplifier.h"
@@ -1436,6 +1437,33 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
         break;
     }
   }
+
+  QList<std::tuple<double, double, double>> extraItems;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ExtraItems ) )
+  {
+    const QString strExtraItems = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::ExtraItems, context.renderContext().expressionContext() );
+    QString error;
+    extraItems = QgsExtraItemUtils::parseExtraItems( strExtraItems, error );
+
+    if ( !error.isEmpty() )
+    {
+      QgsDebugError( u"Badly formatted extra items '%1', skip it: %2"_s.arg( strExtraItems ).arg( error ) );
+    }
+    else
+    {
+      const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
+      for ( const std::tuple<double, double, double> &extraItem : extraItems )
+      {
+        QPointF mapPoint( std::get<0>( extraItem ), std::get<1>( extraItem ) );
+        mtp.transformInPlace( mapPoint.rx(), mapPoint.ry() );
+
+        setSymbolLineAngle( std::get<2>( extraItem ) );
+
+        renderSymbol( mapPoint, context.feature(), context.renderContext(), -1, shouldRenderUsingSelectionColor( context ) );
+      }
+    }
+  }
+
 }
 
 Qgis::RenderUnit QgsTemplatedLineSymbolLayerBase::outputUnit() const
