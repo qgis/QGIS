@@ -15,24 +15,25 @@
 
 #include "qgsrulebased3drenderer.h"
 
+#include <memory>
+
+#include "qgs3dmapsettings.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgsfeature3dhandler_p.h"
+#include "qgsrulebasedchunkloader_p.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
-#include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
-#include "qgsfeature3dhandler_p.h"
-#include "qgsrulebasedchunkloader_p.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
-
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( QStringLiteral( "rulebased" ) )
+  : Qgs3DRendererAbstractMetadata( u"rulebased"_s )
 {
 }
 
 QgsAbstract3DRenderer *QgsRuleBased3DRendererMetadata::createRenderer( QDomElement &elem, const QgsReadWriteContext &context )
 {
-  QDomElement rulesElem = elem.firstChildElement( QStringLiteral( "rules" ) );
+  QDomElement rulesElem = elem.firstChildElement( u"rules"_s );
 
   QgsRuleBased3DRenderer::Rule *root = QgsRuleBased3DRenderer::Rule::create( rulesElem, context );
   if ( !root )
@@ -86,14 +87,14 @@ QgsRuleBased3DRenderer::RuleList QgsRuleBased3DRenderer::Rule::descendants() con
 
 void QgsRuleBased3DRenderer::Rule::initFilter()
 {
-  if ( mElseRule || mFilterExp.compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
+  if ( mElseRule || mFilterExp.compare( "ELSE"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
     mFilter.reset( nullptr );
   }
   else if ( !mFilterExp.isEmpty() )
   {
-    mFilter.reset( new QgsExpression( mFilterExp ) );
+    mFilter = std::make_unique<QgsExpression>( mFilterExp );
   }
   else
   {
@@ -177,26 +178,26 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::clone() const
 QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context )
 {
   QgsAbstract3DSymbol *symbol = nullptr;
-  QDomElement elemSymbol = ruleElem.firstChildElement( QStringLiteral( "symbol" ) );
+  QDomElement elemSymbol = ruleElem.firstChildElement( u"symbol"_s );
   if ( !elemSymbol.isNull() )
   {
-    QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
+    QString symbolType = elemSymbol.attribute( u"type"_s );
     symbol = QgsApplication::symbol3DRegistry()->createSymbol( symbolType );
     if ( symbol )
       symbol->readXml( elemSymbol, context );
   }
 
-  QString filterExp = ruleElem.attribute( QStringLiteral( "filter" ) );
-  QString description = ruleElem.attribute( QStringLiteral( "description" ) );
-  QString ruleKey = ruleElem.attribute( QStringLiteral( "key" ) );
+  QString filterExp = ruleElem.attribute( u"filter"_s );
+  QString description = ruleElem.attribute( u"description"_s );
+  QString ruleKey = ruleElem.attribute( u"key"_s );
   Rule *rule = new Rule( symbol, filterExp, description );
 
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;
 
-  rule->setActive( ruleElem.attribute( QStringLiteral( "active" ), QStringLiteral( "1" ) ).toInt() );
+  rule->setActive( ruleElem.attribute( u"active"_s, u"1"_s ).toInt() );
 
-  QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
+  QDomElement childRuleElem = ruleElem.firstChildElement( u"rule"_s );
   while ( !childRuleElem.isNull() )
   {
     Rule *childRule = create( childRuleElem, context );
@@ -206,9 +207,9 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomEl
     }
     else
     {
-      //QgsDebugError( QStringLiteral( "failed to init a child rule!" ) );
+      //QgsDebugError( u"failed to init a child rule!"_s );
     }
-    childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
+    childRuleElem = childRuleElem.nextSiblingElement( u"rule"_s );
   }
 
   return rule;
@@ -216,23 +217,23 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::create( const QDomEl
 
 QDomElement QgsRuleBased3DRenderer::Rule::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement ruleElem = doc.createElement( QStringLiteral( "rule" ) );
+  QDomElement ruleElem = doc.createElement( u"rule"_s );
 
   if ( mSymbol )
   {
-    QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
-    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
+    QDomElement elemSymbol = doc.createElement( u"symbol"_s );
+    elemSymbol.setAttribute( u"type"_s, mSymbol->type() );
     mSymbol->writeXml( elemSymbol, context );
     ruleElem.appendChild( elemSymbol );
   }
 
   if ( !mFilterExp.isEmpty() )
-    ruleElem.setAttribute( QStringLiteral( "filter" ), mFilterExp );
+    ruleElem.setAttribute( u"filter"_s, mFilterExp );
   if ( !mDescription.isEmpty() )
-    ruleElem.setAttribute( QStringLiteral( "description" ), mDescription );
+    ruleElem.setAttribute( u"description"_s, mDescription );
   if ( !mIsActive )
-    ruleElem.setAttribute( QStringLiteral( "active" ), 0 );
-  ruleElem.setAttribute( QStringLiteral( "key" ), mRuleKey );
+    ruleElem.setAttribute( u"active"_s, 0 );
+  ruleElem.setAttribute( u"key"_s, mRuleKey );
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
@@ -262,12 +263,12 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
 }
 
 
-void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( mSymbol )
   {
     QgsFeature3DHandler *handler = handlers[this];
-    if ( !handler->prepare( context, attributeNames, chunkOrigin ) )
+    if ( !handler->prepare( context, attributeNames, chunkExtent ) )
     {
       handlers.remove( this );
       delete handler;
@@ -283,7 +284,7 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   // call recursively
   for ( Rule *rule : std::as_const( mChildren ) )
   {
-    rule->prepare( context, attributeNames, chunkOrigin, handlers );
+    rule->prepare( context, attributeNames, chunkExtent, handlers );
   }
 }
 
@@ -403,7 +404,7 @@ void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
   writeXmlBaseProperties( elem, context );
 
   QDomElement rulesElem = mRootRule->save( doc, context );
-  rulesElem.setTagName( QStringLiteral( "rules" ) ); // instead of just "rule"
+  rulesElem.setTagName( u"rules"_s ); // instead of just "rule"
   elem.appendChild( rulesElem );
 }
 

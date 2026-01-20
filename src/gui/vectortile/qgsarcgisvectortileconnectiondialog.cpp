@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsarcgisvectortileconnectiondialog.h"
-#include "moc_qgsarcgisvectortileconnectiondialog.cpp"
-#include "qgsvectortileconnection.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsvectortileconnection.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsarcgisvectortileconnectiondialog.cpp"
 
 ///@cond PRIVATE
 
@@ -37,7 +39,7 @@ QgsArcgisVectorTileConnectionDialog::QgsArcgisVectorTileConnectionDialog( QWidge
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-vector-tiles-services"_s );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsArcgisVectorTileConnectionDialog::updateOkButtonState );
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsArcgisVectorTileConnectionDialog::updateOkButtonState );

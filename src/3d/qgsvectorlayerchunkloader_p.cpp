@@ -14,30 +14,33 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerchunkloader_p.h"
-#include "moc_qgsvectorlayerchunkloader_p.cpp"
+
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dsymbol.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsabstractvectorlayer3drenderer.h"
+#include "qgsapplication.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
+#include "qgslogger.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgsabstract3dsymbol.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsexpressioncontextutils.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsvectorlayerchunkloader_p.cpp"
 
 ///@cond PRIVATE
 
@@ -53,11 +56,6 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
 void QgsVectorLayerChunkLoader::start()
 {
   QgsChunkNode *node = chunk();
-  if ( node->level() < mFactory->mLeafLevel )
-  {
-    QTimer::singleShot( 0, this, &QgsVectorLayerChunkLoader::finished );
-    return;
-  }
 
   QgsVectorLayer *layer = mFactory->mLayer;
   mLayerName = mFactory->mLayer->name();
@@ -65,16 +63,10 @@ void QgsVectorLayerChunkLoader::start()
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
   if ( !handler )
   {
-    QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
+    QgsDebugError( u"Unknown 3D symbol type for vector layer: "_s + mFactory->mSymbol->type() );
     return;
   }
   mHandler.reset( handler );
-
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
-  // picked so that the coordinates are relatively small to avoid numerical precision issues
-  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
 
   QgsExpressionContext exprContext;
   exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -82,13 +74,15 @@ void QgsVectorLayerChunkLoader::start()
   mRenderContext.setExpressionContext( exprContext );
 
   QSet<QString> attributeNames;
-  if ( !mHandler->prepare( mRenderContext, attributeNames, chunkOrigin ) )
+  if ( !mHandler->prepare( mRenderContext, attributeNames, node->box3D() ) )
   {
-    QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+    QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
     return;
   }
 
   // build the feature request
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
   QgsFeatureRequest req;
   req.setCoordinateTransform(
     QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() )
@@ -100,19 +94,42 @@ void QgsVectorLayerChunkLoader::start()
   // this will be run in a background thread
   //
   mFutureWatcher = new QFutureWatcher<void>( this );
+
+  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, [this] {
+    if ( !mCanceled )
+      mFactory->mNodesAreLeafs[mNode->tileId().text()] = mNodeIsLeaf;
+  } );
+
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
-    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"VL chunk load"_s );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
+    int featureCount = 0;
+    bool featureLimitReached = false;
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
+        return;
+
+      if ( ++featureCount > mFactory->mMaxFeatures )
+      {
+        featureLimitReached = true;
         break;
+      }
+
       mRenderContext.expressionContext().setFeature( f );
       mHandler->processFeature( f, mRenderContext );
+    }
+
+    if ( !featureLimitReached )
+    {
+      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
+
+      if ( featureCount == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+        mNodeIsLeaf = true;
     }
   } );
 
@@ -136,13 +153,6 @@ void QgsVectorLayerChunkLoader::cancel()
 
 Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  if ( mNode->level() < mFactory->mLeafLevel )
-  {
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent ); // dummy entity
-    entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
-    return entity;
-  }
-
   if ( mHandler->featureCount() == 0 )
   {
     // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
@@ -173,25 +183,27 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 ///////////////
 
 
-QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax )
+QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures )
   : mRenderContext( context )
   , mLayer( vl )
   , mSymbol( symbol->clone() )
-  , mLeafLevel( leafLevel )
+  , mMaxFeatures( maxFeatures )
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
     // TODO: add support for handling of vector layers
     // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
-    QgsDebugError( QStringLiteral( "Vector layers in globe scenes are not supported yet!" ) );
-    setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, leafLevel );
+    QgsDebugError( u"Vector layers in globe scenes are not supported yet!"_s );
+    setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
     return;
   }
 
   QgsBox3D rootBox3D( context.extent(), zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
-  setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
+
+  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
+  setupQuadtree( rootBox3D, rootError );
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -199,14 +211,25 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
   return new QgsVectorLayerChunkLoader( this, node );
 }
 
+bool QgsVectorLayerChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+{
+  return mNodesAreLeafs.contains( node->tileId().text() );
+}
+
+QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+{
+  if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
+    return {};
+
+  return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+}
+
 
 ///////////////
 
 
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol )
-  : QgsChunkedEntity( map,
-                      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
+  : QgsChunkedEntity( map, 3, new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
@@ -259,7 +282,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+      QgsDebugMsgLevel( u"QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1"_s.arg( symbolType ), 2 );
     }
   }
 
@@ -268,7 +291,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
 
 void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
+  QgsDebugMsgLevel( u"QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged"_s, 2 );
   float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
   if ( !applyTerrainOffset() )
   {
@@ -285,7 +308,7 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3
 QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin )
 {
   Q_UNUSED( context )
-  QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
+  QgsDebugMsgLevel( u"Ray cast on vector layer"_s, 2 );
 #ifdef QGISDEBUG
   int nodeUsed = 0;
   int nodesAll = 0;
@@ -353,10 +376,10 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
     QgsRayCastHit hit;
     hit.setDistance( minDist );
     hit.setMapCoordinates( Qgs3DUtils::worldToMapCoordinates( intersectionPoint, origin ) );
-    hit.setProperties( { { QStringLiteral( "fid" ), nearestFid } } );
+    hit.setProperties( { { u"fid"_s, nearestFid } } );
     result.append( hit );
   }
-  QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
+  QgsDebugMsgLevel( u"Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4"_s.arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
   return result;
 }
 

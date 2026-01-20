@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsvirtualpointcloudentity_p.h"
-#include "moc_qgsvirtualpointcloudentity_p.cpp"
-#include "qgsvirtualpointcloudprovider.h"
-#include "qgspointcloudlayerchunkloader_p.h"
-#include "qgschunkboundsentity_p.h"
+
 #include "qgs3dutils.h"
+#include "qgschunkboundsentity_p.h"
+#include "qgspointcloudlayerchunkloader_p.h"
+#include "qgsvirtualpointcloudprovider.h"
+
+#include "moc_qgsvirtualpointcloudentity_p.cpp"
 
 ///@cond PRIVATE
 
@@ -83,6 +85,15 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   updateBboxEntity();
   connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
+}
+
+QgsVirtualPointCloudEntity::~QgsVirtualPointCloudEntity()
+{
+  qDeleteAll( mChunkedEntitiesMap );
+  mChunkedEntitiesMap.clear();
+
+  delete mOverviewEntity;
+  mOverviewEntity = nullptr;
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const

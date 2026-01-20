@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMapViewsManager : QObject
 {
 %Docstring(signature="appended")

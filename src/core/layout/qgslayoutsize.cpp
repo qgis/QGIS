@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutsize.h"
+
 #include "qgis.h"
 #include "qgsunittypes.h"
+
 #include <QStringList>
 
 QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgis::LayoutUnit units )
@@ -55,7 +57,7 @@ QSizeF QgsLayoutSize::toQSizeF() const
 
 QString QgsLayoutSize::encodeSize() const
 {
-  return QStringLiteral( "%1,%2,%3" ).arg( mWidth ).arg( mHeight ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+  return u"%1,%2,%3"_s.arg( mWidth ).arg( mHeight ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
 }
 
 QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )

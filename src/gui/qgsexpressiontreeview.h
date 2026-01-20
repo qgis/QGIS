@@ -16,16 +16,15 @@
 #ifndef QGSEXPRESSIONTREEVIEW_H
 #define QGSEXPRESSIONTREEVIEW_H
 
-#include <QTreeView>
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
-#include <QPointer>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 
+#include <QPointer>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QTreeView>
 
 class QgsVectorLayer;
 
@@ -225,16 +224,16 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     /**
      * Returns a pointer to the dialog's function item model.
      * This method is exposed for testing purposes only - it should not be used to modify the model
-     * \note will be removed in QGIS 4
+     * \note will be removed in QGIS 5
      * \deprecated QGIS 3.14
      */
-    Q_DECL_DEPRECATED QStandardItemModel *model() SIP_SKIP; // TODO remove QGIS 4
+    Q_DECL_DEPRECATED QStandardItemModel *model() SIP_SKIP; // TODO remove QGIS 5
 
     /**
      * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
+    void loadRecent( const QString &collection = u"generic"_s );
 
     /**
      * Adds the current expression to the given \a collection.

@@ -17,13 +17,13 @@
 #ifndef QGSABSTRACTPROFILESURFACEGENERATOR_H
 #define QGSABSTRACTPROFILESURFACEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
-#include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
-
-#include <memory>
+#include "qgslinesymbol.h"
 
 class QgsProfileRequest;
 
@@ -61,6 +61,7 @@ class CORE_EXPORT QgsAbstractProfileSurfaceResults : public QgsAbstractProfileRe
     QVector< QgsGeometry > asGeometries() const override;
     QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
+    using QgsAbstractProfileResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
     void renderResults( QgsProfileRenderContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;

@@ -9,10 +9,11 @@
 
 
 
-
-
 struct QgsMetadataSearchContext
 {
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
+%End
   QgsCoordinateTransformContext transformContext;
 };
 

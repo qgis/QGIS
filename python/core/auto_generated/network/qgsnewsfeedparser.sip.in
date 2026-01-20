@@ -9,7 +9,6 @@
 
 
 
-
 class QgsNewsFeedParser : QObject
 {
 %Docstring(signature="appended")
@@ -28,16 +27,13 @@ See https://github.com/elpaso/qgis-feed.
 
 
     class Entry
-{
+    {
 %Docstring(signature="appended")
 Represents a single entry from a news feed.
 
 .. versionadded:: 3.10
 %End
 
-%TypeHeaderCode
-#include "qgsnewsfeedparser.h"
-%End
       public:
 
         int key;

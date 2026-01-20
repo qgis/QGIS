@@ -15,18 +15,20 @@
  ***************************************************************************/
 
 #include "qgshollowscalebarrenderer.h"
+
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
-#include "qgsfillsymbollayer.h"
 #include "qgstextrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+
 #include <QList>
 #include <QPainter>
 
 QString QgsHollowScaleBarRenderer::id() const
 {
-  return QStringLiteral( "hollow" );
+  return u"hollow"_s;
 }
 
 QString QgsHollowScaleBarRenderer::visibleName() const

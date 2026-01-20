@@ -14,16 +14,22 @@
  ***************************************************************************/
 
 #include "qgsexiftools.h"
-#include "moc_qgsexiftools.cpp"
+
+#include "qgslogger.h"
 #include "qgspoint.h"
 
+#include "moc_qgsexiftools.cpp"
+
+#ifdef HAVE_EXIV2
 #include <exiv2/exiv2.hpp>
+#endif
 
 #include <QDate>
 #include <QRegularExpression>
 #include <QFileInfo>
 #include <QTime>
 
+#ifdef HAVE_EXIV2
 double readRational( const Exiv2::Value &value, long n = 0 )
 {
   const Exiv2::Rational rational = value.toRational( n );
@@ -51,14 +57,14 @@ double readCoordinate( const Exiv2::Value &value )
     div *= 60;
   }
   return res;
-};
+}
 
 QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
 {
   QVariant val;
-  if ( key == QLatin1String( "Xmp.xmp.MetadataDate" ) ||
-       key == QLatin1String( "Xmp.xmp.CreateDate" ) ||
-       key == QLatin1String( "Xmp.xmp.ModifyDate" ) )
+  if ( key == "Xmp.xmp.MetadataDate"_L1 ||
+       key == "Xmp.xmp.CreateDate"_L1 ||
+       key == "Xmp.xmp.ModifyDate"_L1 )
   {
     val = QVariant::fromValue( QDateTime::fromString( QString::fromStdString( it->toString() ), Qt::ISODate ) );
   }
@@ -106,18 +112,18 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
       case Exiv2::date:
       {
         const Exiv2::DateValue::Date date = static_cast< const Exiv2::DateValue *>( &it->value() )->getDate();
-        val = QVariant::fromValue( QDate::fromString( QStringLiteral( "%1-%2-%3" ).arg( date.year )
+        val = QVariant::fromValue( QDate::fromString( u"%1-%2-%3"_s.arg( date.year )
                                    .arg( QString::number( date.month ).rightJustified( 2, '0' ) )
-                                   .arg( QString::number( date.day ).rightJustified( 2, '0' ) ), QLatin1String( "yyyy-MM-dd" ) ) );
+                                   .arg( QString::number( date.day ).rightJustified( 2, '0' ) ), "yyyy-MM-dd"_L1 ) );
         break;
       }
 
       case Exiv2::time:
       {
         const Exiv2::TimeValue::Time time = static_cast< const Exiv2::TimeValue *>( &it->value() )->getTime();
-        val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" ).arg( QString::number( time.hour ).rightJustified( 2, '0' ) )
+        val = QVariant::fromValue( QTime::fromString( u"%1:%2:%3"_s.arg( QString::number( time.hour ).rightJustified( 2, '0' ) )
                                    .arg( QString::number( time.minute ).rightJustified( 2, '0' ) )
-                                   .arg( QString::number( time.second ).rightJustified( 2, '0' ) ), QLatin1String( "hh:mm:ss" ) ) );
+                                   .arg( QString::number( time.second ).rightJustified( 2, '0' ) ), "hh:mm:ss"_L1 ) );
         break;
       }
 
@@ -154,38 +160,38 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
 {
   QVariant val;
 
-  if ( key == QLatin1String( "Exif.GPSInfo.GPSLatitude" ) ||
-       key == QLatin1String( "Exif.GPSInfo.GPSLongitude" ) ||
-       key == QLatin1String( "Exif.GPSInfo.GPSDestLatitude" ) ||
-       key == QLatin1String( "Exif.GPSInfo.GPSDestLongitude" ) )
+  if ( key == "Exif.GPSInfo.GPSLatitude"_L1 ||
+       key == "Exif.GPSInfo.GPSLongitude"_L1 ||
+       key == "Exif.GPSInfo.GPSDestLatitude"_L1 ||
+       key == "Exif.GPSInfo.GPSDestLongitude"_L1 )
   {
     val = readCoordinate( it->value() );
   }
-  else if ( key == QLatin1String( "Exif.GPSInfo.GPSTimeStamp" ) )
+  else if ( key == "Exif.GPSInfo.GPSTimeStamp"_L1 )
   {
-    const QStringList parts = QString::fromStdString( it->toString() ).split( QRegularExpression( QStringLiteral( "\\s+" ) ) );
+    const QStringList parts = QString::fromStdString( it->toString() ).split( QRegularExpression( u"\\s+"_s ) );
     if ( parts.size() == 3 )
     {
       const int hour = std::max( 0, std::min( 23, static_cast< int >( readRational( it->value(), 0 ) ) ) );
       const int minute = std::max( 0, std::min( 59, static_cast< int >( readRational( it->value(), 1 ) ) ) );
       const int second = std::max( 0, std::min( 59, static_cast< int >( readRational( it->value(), 2 ) ) ) );
 
-      val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" )
+      val = QVariant::fromValue( QTime::fromString( u"%1:%2:%3"_s
                                  .arg( QString::number( hour ).rightJustified( 2, '0' ) )
                                  .arg( QString::number( minute ).rightJustified( 2, '0' ) )
-                                 .arg( QString::number( second ).rightJustified( 2, '0' ) ), QLatin1String( "hh:mm:ss" ) ) );
+                                 .arg( QString::number( second ).rightJustified( 2, '0' ) ), "hh:mm:ss"_L1 ) );
     }
   }
-  else if ( key == QLatin1String( "Exif.GPSInfo.GPSDateStamp" ) )
+  else if ( key == "Exif.GPSInfo.GPSDateStamp"_L1 )
   {
-    val = QVariant::fromValue( QDate::fromString( QString::fromStdString( it->toString() ), QLatin1String( "yyyy:MM:dd" ) ) );
+    val = QVariant::fromValue( QDate::fromString( QString::fromStdString( it->toString() ), "yyyy:MM:dd"_L1 ) );
   }
-  else if ( key == QLatin1String( "Exif.Image.DateTime" ) ||
-            key == QLatin1String( "Exif.Image.DateTime" ) ||
-            key == QLatin1String( "Exif.Photo.DateTimeDigitized" ) ||
-            key == QLatin1String( "Exif.Photo.DateTimeOriginal" ) )
+  else if ( key == "Exif.Image.DateTime"_L1 ||
+            key == "Exif.Image.DateTime"_L1 ||
+            key == "Exif.Photo.DateTimeDigitized"_L1 ||
+            key == "Exif.Photo.DateTimeOriginal"_L1 )
   {
-    val = QVariant::fromValue( QDateTime::fromString( QString::fromStdString( it->toString() ), QLatin1String( "yyyy:MM:dd hh:mm:ss" ) ) );
+    val = QVariant::fromValue( QDateTime::fromString( QString::fromStdString( it->toString() ), "yyyy:MM:dd hh:mm:ss"_L1 ) );
   }
   else
   {
@@ -231,18 +237,18 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       case Exiv2::date:
       {
         const Exiv2::DateValue::Date date = static_cast< const Exiv2::DateValue *>( &it->value() )->getDate();
-        val = QVariant::fromValue( QDate::fromString( QStringLiteral( "%1-%2-%3" ).arg( date.year )
+        val = QVariant::fromValue( QDate::fromString( u"%1-%2-%3"_s.arg( date.year )
                                    .arg( QString::number( date.month ).rightJustified( 2, '0' ) )
-                                   .arg( QString::number( date.day ).rightJustified( 2, '0' ) ), QLatin1String( "yyyy-MM-dd" ) ) );
+                                   .arg( QString::number( date.day ).rightJustified( 2, '0' ) ), "yyyy-MM-dd"_L1 ) );
         break;
       }
 
       case Exiv2::time:
       {
         const Exiv2::TimeValue::Time time = static_cast< const Exiv2::TimeValue *>( &it->value() )->getTime();
-        val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" ).arg( QString::number( time.hour ).rightJustified( 2, '0' ) )
+        val = QVariant::fromValue( QTime::fromString( u"%1:%2:%3"_s.arg( QString::number( time.hour ).rightJustified( 2, '0' ) )
                                    .arg( QString::number( time.minute ).rightJustified( 2, '0' ) )
-                                   .arg( QString::number( time.second ).rightJustified( 2, '0' ) ), QLatin1String( "hh:mm:ss" ) ) );
+                                   .arg( QString::number( time.second ).rightJustified( 2, '0' ) ), "hh:mm:ss"_L1 ) );
         break;
       }
 
@@ -282,11 +288,13 @@ QString doubleToExifCoordinateString( const double val )
   const int minutes = static_cast< int >( std::floor( m ) );
   const double s = 60 * ( m - minutes );
   const int seconds = static_cast< int >( std::floor( s * 1000 ) );
-  return QStringLiteral( "%1/1 %2/1 %3/1000" ).arg( degrees ).arg( minutes ).arg( seconds );
+  return u"%1/1 %2/1 %3/1000"_s.arg( degrees ).arg( minutes ).arg( seconds );
 }
+#endif // HAVE_EXIV2
 
 QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
 {
+#ifdef HAVE_EXIV2
   if ( !QFileInfo::exists( imagePath ) )
     return QVariant();
 
@@ -298,7 +306,7 @@ QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
 
     image->readMetadata();
 
-    if ( key.startsWith( QLatin1String( "Xmp." ) ) )
+    if ( key.startsWith( "Xmp."_L1 ) )
     {
       Exiv2::XmpData &xmpData = image->xmpData();
       if ( xmpData.empty() )
@@ -323,10 +331,17 @@ QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
   {
     return QVariant();
   }
+#else
+  Q_UNUSED( imagePath )
+  Q_UNUSED( key )
+  QgsDebugError( u"QGIS is built without exiv2 support"_s );
+  return QVariant();
+#endif
 }
 
 QVariantMap QgsExifTools::readTags( const QString &imagePath )
 {
+#ifdef HAVE_EXIV2
   if ( !QFileInfo::exists( imagePath ) )
     return QVariantMap();
 
@@ -366,17 +381,29 @@ QVariantMap QgsExifTools::readTags( const QString &imagePath )
   {
     return QVariantMap();
   }
+#else
+  Q_UNUSED( imagePath )
+  QgsDebugError( u"QGIS is built without exiv2 support"_s );
+  return QVariantMap();
+#endif
 }
 
 bool QgsExifTools::hasGeoTag( const QString &imagePath )
 {
+#ifdef HAVE_EXIV2
   bool ok = false;
   QgsExifTools::getGeoTag( imagePath, ok );
   return ok;
+#else
+  Q_UNUSED( imagePath )
+  QgsDebugError( u"QGIS is built without exiv2 support"_s );
+  return false;
+#endif
 }
 
 QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
 {
+#ifdef HAVE_EXIV2
   ok = false;
   if ( !QFileInfo::exists( imagePath ) )
     return QgsPoint();
@@ -406,11 +433,11 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
 
     const QString latRef = QString::fromStdString( itLatRef->value().toString() );
     const QString lonRef = QString::fromStdString( itLonRef->value().toString() );
-    if ( latRef.compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0 )
+    if ( latRef.compare( 'S'_L1, Qt::CaseInsensitive ) == 0 )
     {
       lat *= -1;
     }
-    if ( lonRef.compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0 )
+    if ( lonRef.compare( 'W'_L1, Qt::CaseInsensitive ) == 0 )
     {
       lon *= -1;
     }
@@ -425,7 +452,7 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
       if ( itElevRefVal != exifData.end() )
       {
         const QString elevRef = QString::fromStdString( itElevRefVal->value().toString() );
-        if ( elevRef.compare( QLatin1String( "1" ), Qt::CaseInsensitive ) == 0 )
+        if ( elevRef.compare( '1'_L1, Qt::CaseInsensitive ) == 0 )
         {
           elev *= -1;
         }
@@ -441,10 +468,17 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
   {
     return QgsPoint();
   }
+#else
+  Q_UNUSED( imagePath )
+  ok = false;
+  QgsDebugError( u"QGIS is built without exiv2 support"_s );
+  return QgsPoint();
+#endif
 }
 
 bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details )
 {
+#ifdef HAVE_EXIV2
   try
   {
     std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
@@ -460,7 +494,7 @@ bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &loca
     exifData["Exif.GPSInfo.GPSLongitude"] = doubleToExifCoordinateString( location.x() ).toStdString();
     if ( !std::isnan( details.elevation ) )
     {
-      const QString elevationString = QStringLiteral( "%1/1000" ).arg( static_cast< int>( std::floor( std::abs( details.elevation ) * 1000 ) ) );
+      const QString elevationString = u"%1/1000"_s.arg( static_cast< int>( std::floor( std::abs( details.elevation ) * 1000 ) ) );
       exifData["Exif.GPSInfo.GPSAltitude"] = elevationString.toStdString();
       exifData["Exif.GPSInfo.GPSAltitudeRef"] = details.elevation < 0.0 ? "1" : "0";
     }
@@ -474,10 +508,18 @@ bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &loca
     return false;
   }
   return true;
+#else
+  Q_UNUSED( imagePath )
+  Q_UNUSED( location )
+  Q_UNUSED( details )
+  QgsDebugError( u"QGIS is built without exiv2 support"_s );
+  return false;
+#endif
 }
 
 bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const QVariant &value )
 {
+#ifdef HAVE_EXIV2
   try
   {
     std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
@@ -486,18 +528,18 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
 
     QVariant actualValue;
     bool actualValueIsUShort = false;
-    if ( tag == QLatin1String( "Exif.GPSInfo.GPSLatitude" ) ||
-         tag == QLatin1String( "Exif.GPSInfo.GPSLongitude" ) ||
-         tag == QLatin1String( "Exif.GPSInfo.GPSDestLatitude" ) ||
-         tag == QLatin1String( "Exif.GPSInfo.GPSDestLongitude" ) )
+    if ( tag == "Exif.GPSInfo.GPSLatitude"_L1 ||
+         tag == "Exif.GPSInfo.GPSLongitude"_L1 ||
+         tag == "Exif.GPSInfo.GPSDestLatitude"_L1 ||
+         tag == "Exif.GPSInfo.GPSDestLongitude"_L1 )
     {
       actualValue = doubleToExifCoordinateString( value.toDouble() );
     }
-    else if ( tag == QLatin1String( "Exif.GPSInfo.GPSAltitude" ) )
+    else if ( tag == "Exif.GPSInfo.GPSAltitude"_L1 )
     {
-      actualValue = QStringLiteral( "%1/1000" ).arg( static_cast< int>( std::floor( std::abs( value.toDouble() ) * 1000 ) ) );
+      actualValue = u"%1/1000"_s.arg( static_cast< int>( std::floor( std::abs( value.toDouble() ) * 1000 ) ) );
     }
-    else if ( tag == QLatin1String( "Exif.Image.Orientation" ) )
+    else if ( tag == "Exif.Image.Orientation"_L1 )
     {
       actualValueIsUShort = true;
       actualValue = value;
@@ -505,12 +547,12 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
     else if ( value.userType() == QMetaType::Type::QDateTime )
     {
       const QDateTime dateTime = value.toDateTime();
-      if ( tag == QLatin1String( "Exif.Image.DateTime" ) ||
-           tag == QLatin1String( "Exif.Image.DateTime" ) ||
-           tag == QLatin1String( "Exif.Photo.DateTimeDigitized" ) ||
-           tag == QLatin1String( "Exif.Photo.DateTimeOriginal" ) )
+      if ( tag == "Exif.Image.DateTime"_L1 ||
+           tag == "Exif.Image.DateTime"_L1 ||
+           tag == "Exif.Photo.DateTimeDigitized"_L1 ||
+           tag == "Exif.Photo.DateTimeOriginal"_L1 )
       {
-        actualValue = dateTime.toString( QStringLiteral( "yyyy:MM:dd hh:mm:ss" ) );
+        actualValue = dateTime.toString( u"yyyy:MM:dd hh:mm:ss"_s );
       }
       else
       {
@@ -520,25 +562,25 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
     else if ( value.userType() == QMetaType::Type::QDate )
     {
       const QDate date = value.toDate();
-      if ( tag == QLatin1String( "Exif.GPSInfo.GPSDateStamp" ) )
+      if ( tag == "Exif.GPSInfo.GPSDateStamp"_L1 )
       {
-        actualValue = date.toString( QStringLiteral( "yyyy:MM:dd" ) );
+        actualValue = date.toString( u"yyyy:MM:dd"_s );
       }
       else
       {
-        actualValue = date.toString( QStringLiteral( "yyyy-MM-dd" ) );
+        actualValue = date.toString( u"yyyy-MM-dd"_s );
       }
     }
     else if ( value.userType() == QMetaType::Type::QTime )
     {
       const QTime time = value.toTime();
-      if ( tag == QLatin1String( "Exif.GPSInfo.GPSTimeStamp" ) )
+      if ( tag == "Exif.GPSInfo.GPSTimeStamp"_L1 )
       {
-        actualValue = QStringLiteral( "%1/1 %2/1 %3/1" ).arg( time.hour() ).arg( time.minute() ).arg( time.second() );
+        actualValue = u"%1/1 %2/1 %3/1"_s.arg( time.hour() ).arg( time.minute() ).arg( time.second() );
       }
       else
       {
-        actualValue = time.toString( QStringLiteral( "HH:mm:ss" ) );
+        actualValue = time.toString( u"HH:mm:ss"_s );
       }
     }
     else
@@ -546,7 +588,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
       actualValue = value;
     }
 
-    const bool isXmp = tag.startsWith( QLatin1String( "Xmp." ) );
+    const bool isXmp = tag.startsWith( "Xmp."_L1 );
     image->readMetadata();
     if ( actualValueIsUShort )
     {
@@ -622,4 +664,11 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
     return false;
   }
   return true;
+#else
+  Q_UNUSED( imagePath )
+  Q_UNUSED( tag )
+  Q_UNUSED( value )
+  QgsDebugError( u"QGIS is built without exiv2 support"_s );
+  return false;
+#endif
 }

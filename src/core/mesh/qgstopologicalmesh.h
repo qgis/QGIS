@@ -16,9 +16,9 @@
 #ifndef QGSTOPOLOGICALMESH_H
 #define QGSTOPOLOGICALMESH_H
 
-#include <QSet>
-
 #include "qgsmeshdataprovider.h"
+
+#include <QSet>
 
 #if defined(_MSC_VER)
 template CORE_EXPORT QVector<int> SIP_SKIP;

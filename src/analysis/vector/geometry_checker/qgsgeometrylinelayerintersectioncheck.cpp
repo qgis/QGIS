@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrylinelayerintersectioncheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometrylinelayerintersectioncheck.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 QgsGeometryCheck::Result QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

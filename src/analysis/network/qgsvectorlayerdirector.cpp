@@ -19,20 +19,22 @@
  */
 
 #include "qgsvectorlayerdirector.h"
-#include "moc_qgsvectorlayerdirector.cpp"
-#include "qgsgraphbuilderinterface.h"
 
+#include <spatialindex/SpatialIndex.h>
+
+#include "qgsdistancearea.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturesource.h"
-#include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsdistancearea.h"
-#include "qgswkbtypes.h"
+#include "qgsgraphbuilderinterface.h"
 #include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgswkbtypes.h"
+
 #include <QString>
 #include <QtAlgorithms>
 
-#include <spatialindex/SpatialIndex.h>
+#include "moc_qgsvectorlayerdirector.cpp"
 
 using namespace SpatialIndex;
 
@@ -66,7 +68,7 @@ QgsVectorLayerDirector::QgsVectorLayerDirector( QgsFeatureSource *source, int di
 
 QString QgsVectorLayerDirector::name() const
 {
-  return QStringLiteral( "Vector line" );
+  return u"Vector line"_s;
 }
 
 QgsAttributeList QgsVectorLayerDirector::requiredAttributes() const
@@ -383,7 +385,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
               catch ( QgsCsException & )
               {
                 // TODO report errors to user
-                QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+                QgsDebugError( u"An error occurred while calculating length"_s );
               }
 
               QVector<QVariant> prop;

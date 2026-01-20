@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspaintenginehack.h"
 #include "qgsconfig.h"
+#include "qgspaintenginehack.h"
 
 // Hack to workaround Qt #5114 by disabling PatternTransform
 void QgsPaintEngineHack::fixFlags()
 {
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   // not required, fixed upstream
 #else
   gccaps = PaintEngineFeatures();
@@ -50,7 +50,7 @@ void QgsPaintEngineHack::fixFlags()
 
 void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine )
 {
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   // not required, fixed upstream
   ( void )engine;
 #else

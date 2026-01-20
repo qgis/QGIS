@@ -18,14 +18,14 @@
 #ifndef QGSEPTPOINTCLOUDINDEX_H
 #define QGSEPTPOINTCLOUDINDEX_H
 
-#include <QString>
+#include "qgspointcloudindex.h"
+
+#include <QFile>
 #include <QHash>
+#include <QList>
+#include <QString>
 #include <QStringList>
 #include <QVector>
-#include <QList>
-#include <QFile>
-
-#include "qgspointcloudindex.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
   public:
 
     explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
+    ~QgsEptPointCloudIndex() override;
 
     void load( const QString &urlString, const QString &authcfg = QString() ) override;
 

@@ -18,8 +18,8 @@
 #ifndef QGSRUGGEDNESSFILTER_H
 #define QGSRUGGEDNESSFILTER_H
 
-#include "qgsninecellfilter.h"
 #include "qgis_analysis.h"
+#include "qgsninecellfilter.h"
 
 /**
  * \ingroup analysis
@@ -39,9 +39,9 @@ class ANALYSIS_EXPORT QgsRuggednessFilter : public QgsNineCellFilter
   private:
     QgsRuggednessFilter();
 
-    virtual const QString openClProgramBaseName() const override
+    const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "ruggedness" );
+      return u"ruggedness"_s;
     }
 #endif
 };

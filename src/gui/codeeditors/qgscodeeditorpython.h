@@ -16,9 +16,10 @@
 #ifndef QGSCODEEDITORPYTHON_H
 #define QGSCODEEDITORPYTHON_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
+
 #include <Qsci/qscilexerpython.h>
 
 class QgsSettingsEntryInteger;
@@ -54,7 +55,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
+    static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( u"python"_s );
     static const QgsSettingsEntryString *settingCodeFormatter;
     static const QgsSettingsEntryInteger *settingMaxLineLength;
     static const QgsSettingsEntryBool *settingSortImports;
@@ -144,7 +145,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
   protected:
     void initializeLexer() override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
     QString reformatCodeString( const QString &string ) override;
     void populateContextMenu( QMenu *menu ) override;
 

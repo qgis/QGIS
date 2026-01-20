@@ -18,14 +18,16 @@
 #ifndef QGSRASTERBLOCK_H
 #define QGSRASTERBLOCK_H
 
+#include <limits>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <limits>
-#include <QImage>
-#include "qgis.h"
 #include "qgserror.h"
 #include "qgslogger.h"
 #include "qgsrasterrange.h"
+
+#include <QImage>
 
 class QgsRectangle;
 
@@ -339,7 +341,7 @@ class CORE_EXPORT QgsRasterBlock
         return false;
       if ( index >= static_cast< qgssize >( mWidth )*mHeight )
       {
-        QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+        QgsDebugError( u"Index %1 out of range (%2 x %3)"_s.arg( index ).arg( mWidth ).arg( mHeight ) );
         return true; // we consider no data if outside
       }
       if ( mHasNoDataValue )
@@ -386,12 +388,12 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( !mData )
       {
-        QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+        QgsDebugError( u"Data block not allocated"_s );
         return false;
       }
       if ( index >= static_cast< qgssize >( mWidth ) *mHeight )
       {
-        QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+        QgsDebugError( u"Index %1 out of range (%2 x %3)"_s.arg( index ).arg( mWidth ).arg( mHeight ) );
         return false;
       }
       writeValue( mData, mDataType, index, value );
@@ -420,13 +422,13 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( !mImage )
       {
-        QgsDebugError( QStringLiteral( "Image not allocated" ) );
+        QgsDebugError( u"Image not allocated"_s );
         return false;
       }
 
       if ( index >= static_cast< qgssize >( mImage->width() ) * mImage->height() )
       {
-        QgsDebugError( QStringLiteral( "index %1 out of range" ).arg( index ) );
+        QgsDebugError( u"index %1 out of range"_s.arg( index ) );
         return false;
       }
 
@@ -571,17 +573,17 @@ class CORE_EXPORT QgsRasterBlock
     % MethodCode
     if ( !QgsRasterBlock::typeIsNumeric( sipCpp->dataType() ) )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Cannot fill a block with %1 data type"_s.arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsRasterBlock::typeIsComplex( sipCpp->dataType() ) )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 complex data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Cannot fill a block with %1 complex data type"_s.arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( sipCpp->isEmpty() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill an empty block" ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Cannot fill an empty block"_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -920,7 +922,7 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
+      QgsDebugError( u"Data type %1 is not supported"_s.arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
       break;
   }
 
@@ -964,7 +966,7 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
+      QgsDebugError( u"Data type %1 is not supported"_s.arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
       break;
   }
 }
@@ -973,7 +975,7 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
 {
   if ( !mData )
   {
-    QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+    QgsDebugError( u"Data block not allocated"_s );
     return std::numeric_limits<double>::quiet_NaN();
   }
   return readValue( mData, mDataType, index );
@@ -983,13 +985,13 @@ inline double QgsRasterBlock::valueAndNoData( qgssize index, bool &isNoData ) co
 {
   if ( !mData )
   {
-    QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+    QgsDebugError( u"Data block not allocated"_s );
     isNoData = true;
     return std::numeric_limits<double>::quiet_NaN();
   }
   if ( index >= static_cast< qgssize >( mWidth )*mHeight )
   {
-    QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+    QgsDebugError( u"Index %1 out of range (%2 x %3)"_s.arg( index ).arg( mWidth ).arg( mHeight ) );
     isNoData = true; // we consider no data if outside
     return std::numeric_limits<double>::quiet_NaN();
   }

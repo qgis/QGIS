@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayermodel.h"
-#include "moc_qgsprovidersublayermodel.cpp"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsiconutils.h"
+
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
+#include "qgsprovidersublayerdetails.h"
+
 #include <QLocale>
+
+#include "moc_qgsprovidersublayermodel.cpp"
 
 //
 // QgsProviderSublayerModelNode
@@ -172,7 +175,7 @@ QVariant QgsProviderSublayerModelGroup::data( int role, int column ) const
     case Qt::DecorationRole:
     {
       if ( column == 0 )
-        return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+        return QgsApplication::getThemeIcon( u"/mIconDbSchema.svg"_s );
       else
         return QVariant();
     }
@@ -213,11 +216,11 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
                 count = QLocale().toString( mSublayer.featureCount() );
 
               if ( !mSublayer.description().isEmpty() )
-                return QStringLiteral( "%1 - %2 (%3)" ).arg( mSublayer.description(),
-                       QgsWkbTypes::displayString( mSublayer.wkbType() ),
-                       count );
+                return u"%1 - %2 (%3)"_s.arg( mSublayer.description(),
+                                              QgsWkbTypes::displayString( mSublayer.wkbType() ),
+                                              count );
               else
-                return QStringLiteral( "%2 (%3)" ).arg(
+                return u"%2 (%3)"_s.arg(
                          QgsWkbTypes::displayString( mSublayer.wkbType() ),
                          count );
             }

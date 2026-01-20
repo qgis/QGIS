@@ -20,8 +20,9 @@
 #include "qgis_sip.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstaskmanager.h"
-#include <QObject>
+
 #include <QMap>
+#include <QObject>
 #include <QReadWriteLock>
 #include <QSet>
 
@@ -248,7 +249,7 @@ class CORE_EXPORT QgsFontManager : public QObject
     bool tryToDownloadFontFamily( const QString &family, QString &matchedFamily SIP_OUT );
 
     /**
-     * Enables font downloads the the current QGIS session.
+     * Enables font downloads the current QGIS session.
      *
      * \warning Ensure that the QgsApplication is fully initialized before calling this method.
      */

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsMaskPaintDevice: QPaintDevice
 {
 %Docstring(signature="appended")

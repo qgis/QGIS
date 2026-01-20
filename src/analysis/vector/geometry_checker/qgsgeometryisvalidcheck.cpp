@@ -14,10 +14,10 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsgeometryisvalidcheck.h"
-#include "qgssettingsregistrycore.h"
+
 #include "qgsgeometryvalidator.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgssettingsregistrycore.h"
 
 QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsSingleGeometryCheck( context, configuration )
@@ -79,7 +79,7 @@ QString QgsGeometryIsValidCheck::factoryDescription()
 
 QString QgsGeometryIsValidCheck::factoryId()
 {
-  return QStringLiteral( "QgsIsValidCheck" );
+  return u"QgsIsValidCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryIsValidCheck::factoryFlags()

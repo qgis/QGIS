@@ -16,9 +16,9 @@
 #ifndef QGSORACLEEXPRESSIONCOMPILER_H
 #define QGSORACLEEXPRESSIONCOMPILER_H
 
-#include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgsoraclefeatureiterator.h"
+#include "qgssqlexpressioncompiler.h"
 
 class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
 {

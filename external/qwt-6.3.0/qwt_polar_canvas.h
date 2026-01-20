@@ -50,7 +50,7 @@ class QWT_EXPORT QwtPolarCanvas : public QFrame
     Q_DECLARE_FLAGS( PaintAttributes, PaintAttribute )
 
     explicit QwtPolarCanvas( QwtPolarPlot* );
-    virtual ~QwtPolarCanvas();
+    ~QwtPolarCanvas() override;
 
     QwtPolarPlot* plot();
     const QwtPolarPlot* plot() const;

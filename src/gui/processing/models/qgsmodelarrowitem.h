@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+
 #include <QGraphicsPathItem>
 #include <QObject>
 
@@ -80,6 +81,15 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * Sets the pen \a style to use for rendering the arrow line.
      */
     void setPenStyle( Qt::PenStyle style );
+
+  signals:
+
+    /**
+     * Emitted when the path is updated.
+     *
+     * \since QGIS 4.0
+     */
+    void painterPathUpdated();
 
   public slots:
 

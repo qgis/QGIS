@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgslayertreeview.h"
-#include "moc_qgslayertreeview.cpp"
 
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgslayertreemodel.h"
@@ -25,14 +25,14 @@
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
 
-#include "qgsgui.h"
-
 #include <QApplication>
-#include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QMenu>
 #include <QMimeData>
 #include <QScrollBar>
+
+#include "moc_qgslayertreeview.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -44,7 +44,11 @@
 
 QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
   : QTreeView( parent )
+  , mBlockDoubleClickTimer( new QTimer( this ) )
 {
+  mBlockDoubleClickTimer->setSingleShot( true );
+  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
+
   setHeaderHidden( true );
 
   setDragEnabled( true );
@@ -69,10 +73,26 @@ QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
 
 QgsLayerTreeViewBase::~QgsLayerTreeViewBase()
 {
+  delete mBlockDoubleClickTimer;
+}
+
+void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  if ( mBlockDoubleClickTimer->isActive() )
+    event->accept();
+  else
+    QTreeView::mouseDoubleClickEvent( event );
 }
 
 void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
 {
+  if ( mLayerTreeModel )
+  {
+    disconnect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::modelReset, this, &QgsLayerTreeViewBase::onModelReset );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeViewBase::onDataChanged );
+  }
+
   mLayerTreeModel = model;
 
   mLayerTreeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
@@ -80,6 +100,7 @@ void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
   connect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
 
   connect( mLayerTreeModel, &QAbstractItemModel::modelReset, this, &QgsLayerTreeViewBase::onModelReset );
+  connect( mLayerTreeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeViewBase::onDataChanged );
 
   updateExpandedStateFromNode( mLayerTreeModel->rootGroup() );
 }
@@ -136,18 +157,18 @@ void QgsLayerTreeViewBase::updateExpandedStateToNode( const QModelIndex &index )
   else if ( QgsLayerTreeModelLegendNode *node = index2legendNode( index ) )
   {
     const QString ruleKey = node->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
-    QStringList lst = node->layerNode()->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
+    QStringList lst = node->layerNode()->customProperty( u"expandedLegendNodes"_s ).toStringList();
     const bool expanded = isExpanded( index );
     const bool isInList = lst.contains( ruleKey );
     if ( expanded && !isInList )
     {
       lst.append( ruleKey );
-      node->layerNode()->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
+      node->layerNode()->setCustomProperty( u"expandedLegendNodes"_s, lst );
     }
     else if ( !expanded && isInList )
     {
       lst.removeAll( ruleKey );
-      node->layerNode()->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
+      node->layerNode()->setCustomProperty( u"expandedLegendNodes"_s, lst );
     }
   }
 }
@@ -165,6 +186,11 @@ void QgsLayerTreeViewBase::onModelReset()
     return;
   updateExpandedStateFromNode( mLayerTreeModel->rootGroup() );
   //checkModel();
+}
+
+void QgsLayerTreeViewBase::onDataChanged( const QModelIndex &, const QModelIndex &, const QVector<int> & )
+{
+  mBlockDoubleClickTimer->start();
 }
 
 QgsLayerTreeNode *QgsLayerTreeViewBase::index2node( const QModelIndex &index ) const
@@ -397,7 +423,7 @@ static void expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, Q
         lst << parentKey;
     }
   }
-  nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
+  nodeLayer->setCustomProperty( u"expandedLegendNodes"_s, lst );
 }
 
 static void expandAllNodes( QgsLayerTreeGroup *parent, bool expanded, QgsLayerTreeModel *model )
@@ -446,12 +472,7 @@ QgsLayerTreeViewDefaultActions *QgsLayerTreeViewBase::defaultActions()
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QgsLayerTreeViewBase( parent )
-  , mBlockDoubleClickTimer( new QTimer( this ) )
-
 {
-  mBlockDoubleClickTimer->setSingleShot( true );
-  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
-
   // we need a custom item delegate in order to draw indicators
   setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
   setStyle( new QgsLayerTreeViewProxyStyle( this ) );
@@ -464,7 +485,6 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 QgsLayerTreeView::~QgsLayerTreeView()
 {
   delete mMenuProvider;
-  delete mBlockDoubleClickTimer;
 }
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
@@ -559,11 +579,11 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( parentNode );
     if ( QgsMapLayer *layer = nodeLayer->layer() )
     {
-      const int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
+      const int widgetsCount = layer->customProperty( u"embeddedWidgets/count"_s, 0 ).toInt();
       QList<QgsLayerTreeModelLegendNode *> legendNodes = layerModel->layerLegendNodes( nodeLayer, true );
       for ( int i = 0; i < widgetsCount; ++i )
       {
-        const QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+        const QString providerId = layer->customProperty( u"embeddedWidgets/%1/id"_s.arg( i ) ).toString();
         if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           const QModelIndex index = legendNode2index( legendNodes[i] );
@@ -594,7 +614,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
   if ( QgsLayerTree::isLayer( parentNode ) )
   {
     // if ShowLegendAsTree flag is enabled in model, we may need to expand some legend nodes
-    const QStringList expandedNodeKeys = parentNode->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
+    const QStringList expandedNodeKeys = parentNode->customProperty( u"expandedLegendNodes"_s ).toStringList();
     if ( expandedNodeKeys.isEmpty() )
       return;
 
@@ -663,10 +683,10 @@ void QgsLayerTreeView::onCurrentChanged()
 void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
-  if ( key != QLatin1String( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) || !layerModel )
+  if ( key != "expandedLegendNodes"_L1 || !QgsLayerTree::isLayer( node ) || !layerModel )
     return;
 
-  const QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
+  const QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( u"expandedLegendNodes"_s ).toStringList() );
 
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerModel->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
@@ -705,7 +725,7 @@ QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNod
 ///@cond PRIVATE
 QStringList QgsLayerTreeView::viewOnlyCustomProperties()
 {
-  return QStringList() << QStringLiteral( "expandedLegendNodes" );
+  return QStringList() << u"expandedLegendNodes"_s;
 }
 ///@endcond
 
@@ -765,14 +785,6 @@ bool QgsLayerTreeView::hideValidLayers() const
   return mHideValidLayers;
 }
 
-void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
-{
-  if ( mBlockDoubleClickTimer->isActive() )
-    event->accept();
-  else
-    QTreeView::mouseDoubleClickEvent( event );
-}
-
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
@@ -825,10 +837,10 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
     // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     {
       event->accept();
       return;
@@ -839,10 +851,10 @@ void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
     // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     {
       event->accept();
       return;
@@ -853,10 +865,10 @@ void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 
 void QgsLayerTreeView::dropEvent( QDropEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
     // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
     {
       event->accept();
 
@@ -909,7 +921,6 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
   if ( roles.contains( Qt::SizeHintRole ) )
     viewport()->update();
 
-  mBlockDoubleClickTimer->start();
   //checkModel();
 }
 

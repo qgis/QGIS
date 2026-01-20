@@ -64,6 +64,8 @@
 #include <qpdfwriter.h>
 #endif
 
+#ifndef INLINE_QWT_DISTANCE
+#define INLINE_QWT_DISTANCE
 static inline double qwtDistance(
     const QPointF& p1, const QPointF& p2 )
 {
@@ -71,6 +73,7 @@ static inline double qwtDistance(
     double dy = p2.y() - p1.y();
     return qSqrt( dx * dx + dy * dy );
 }
+#endif
 
 class QwtPolarRenderer::PrivateData
 {

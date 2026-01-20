@@ -16,79 +16,78 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
+#include "qgsvectorlayerproperties.h"
+
 #include <limits>
+#include <memory>
 
 #include "qgsactionmanager.h"
-#include "qgsjoindialog.h"
-#include "qgsvectorlayerselectionproperties.h"
-#include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
+#include "qgsattributesformproperties.h"
+#include "qgsattributetableconfig.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdiagramwidget.h"
-#include "qgssourcefieldsproperties.h"
-#include "qgsattributesformproperties.h"
-#include "qgslabelingwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgsmetadatawidget.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerproperties.h"
-#include "moc_qgsvectorlayerproperties.cpp"
-#include "qgsvectordataprovider.h"
-#include "qgssubsetstringeditorinterface.h"
-#include "qgsdatasourceuri.h"
-#include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
-#include "qgssettings.h"
-#include "qgsrendererpropertiesdialog.h"
-#include "qgsstyle.h"
-#include "qgsauxiliarystorage.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgsjoindialog.h"
+#include "qgslabelinggui.h"
+#include "qgslabelingwidget.h"
+#include "qgslayertreemodel.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayersavestyledialog.h"
 #include "qgsmaplayerserverproperties.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsnewauxiliaryfielddialog.h"
-#include "qgslabelinggui.h"
-#include "qgsmessagebar.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmaskingwidget.h"
-#include "qgsvectorlayertemporalpropertieswidget.h"
-#include "qgsprovidersourcewidget.h"
-#include "qgsproviderregistry.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgslayertreemodel.h"
 #include "qgsmaptip.h"
-#include "qgsgui.h"
+#include "qgsmaskingwidget.h"
+#include "qgsmessagebar.h"
+#include "qgsmetadatawidget.h"
 #include "qgsnative.h"
-#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgsnewauxiliaryfielddialog.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersourcewidget.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsfileutils.h"
-#include "qgswebview.h"
+#include "qgsrenderer.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgssettings.h"
+#include "qgssourcefieldsproperties.h"
+#include "qgsstyle.h"
+#include "qgssubsetstringeditorinterface.h"
+#include "qgssubsetstringeditorproviderregistry.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerselectionproperties.h"
+#include "qgsvectorlayertemporalpropertieswidget.h"
 #include "qgswebframe.h"
-#include "qgsexpressionfinder.h"
-#if WITH_QTWEBKIT
-#include <QWebElement>
-#endif
+#include "qgswebview.h"
+#include "qgswmsdimensiondialog.h"
 
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
 #include <QDesktopServices>
-#include <QMessageBox>
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontDialog>
-#include <QComboBox>
-#include <QCheckBox>
 #include <QHeaderView>
-#include <QColorDialog>
 #include <QMenu>
-#include <QUrl>
+#include <QMessageBox>
 #include <QRegularExpressionValidator>
+#include <QUrl>
 
+#include "moc_qgsvectorlayerproperties.cpp"
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsMapCanvas *canvas,
@@ -97,7 +96,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget *parent,
   Qt::WindowFlags fl
 )
-  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, canvas, u"VectorLayerProperties"_s, parent, fl )
   , mMessageBar( messageBar )
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
@@ -166,13 +165,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
   initMapTipPreview();
 
+  mFeaturesSortOrderExpressionWidget->setLayer( lyr );
+  mFeaturesSortOrderExpressionWidget->registerExpressionContextGenerator( this );
+  connect( mFeaturesSortOrderDirectionButton, &QAbstractButton::clicked, this, [this]() {
+    mFeaturesSortOrderDirectionButton->setArrowType( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::DownArrow : Qt::UpArrow );
+  } );
+
   connect( mMapTipInsertFieldButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertField );
   connect( mMapTipInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertOrEditExpression );
 
   if ( !mLayer )
     return;
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
 
   QVBoxLayout *layout = nullptr;
@@ -223,7 +227,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
 
-  mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
+  mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame, mSourceFieldsPropertiesDialog );
   mAttributesFormPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
   mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -321,7 +325,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       }
       cboProviderEncoding->setCurrentIndex( encindex );
     }
-    else if ( mLayer->providerType() == QLatin1String( "ogr" ) )
+    else if ( mLayer->providerType() == "ogr"_L1 )
     {
       // if OGR_L_TestCapability(OLCStringsAsUTF8) returns true, OGR provider encoding can be set to only UTF-8
       // so make encoding box grayed out
@@ -360,7 +364,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  myStyle.append( u"body { margin: 10px; }\n "_s );
   teMetadataViewer->clear();
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
   teMetadataViewer->setOpenLinks( false );
@@ -369,9 +373,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QStringLiteral( "/Windows/VectorLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/VectorLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/VectorLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( u"Windows/VectorLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
   QList<QgsMapLayer *> dependencySources;
@@ -419,25 +423,25 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   updateAuxiliaryStoragePage();
 
-  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#information-properties" ) );
-  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#source-properties" ) );
-  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#symbology-properties" ) );
-  mOptsPage_Labels->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#labels-properties" ) );
-  mOptsPage_Masks->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#masks-properties" ) );
-  mOptsPage_Diagrams->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#diagrams-properties" ) );
-  mOptsPage_SourceFields->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#fields-properties" ) );
-  mOptsPage_AttributesForm->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#attributes-form-properties" ) );
-  mOptsPage_Joins->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
-  mOptsPage_AuxiliaryStorage->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#auxiliary-storage-properties" ) );
-  mOptsPage_Actions->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
-  mOptsPage_Display->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#display-properties" ) );
-  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#rendering-properties" ) );
-  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#temporal-properties" ) );
-  mOptsPage_Variables->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#variables-properties" ) );
-  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#metadata-properties" ) );
-  mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) );
-  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#legend-properties" ) );
-  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#qgis-server-properties" ) );
+  mOptsPage_Information->setProperty( "helpPage", u"working_with_vector/vector_properties.html#information-properties"_s );
+  mOptsPage_Source->setProperty( "helpPage", u"working_with_vector/vector_properties.html#source-properties"_s );
+  mOptsPage_Style->setProperty( "helpPage", u"working_with_vector/vector_properties.html#symbology-properties"_s );
+  mOptsPage_Labels->setProperty( "helpPage", u"working_with_vector/vector_properties.html#labels-properties"_s );
+  mOptsPage_Masks->setProperty( "helpPage", u"working_with_vector/vector_properties.html#masks-properties"_s );
+  mOptsPage_Diagrams->setProperty( "helpPage", u"working_with_vector/vector_properties.html#diagrams-properties"_s );
+  mOptsPage_SourceFields->setProperty( "helpPage", u"working_with_vector/vector_properties.html#fields-properties"_s );
+  mOptsPage_AttributesForm->setProperty( "helpPage", u"working_with_vector/vector_properties.html#attributes-form-properties"_s );
+  mOptsPage_Joins->setProperty( "helpPage", u"working_with_vector/vector_properties.html#joins-properties"_s );
+  mOptsPage_AuxiliaryStorage->setProperty( "helpPage", u"working_with_vector/vector_properties.html#auxiliary-storage-properties"_s );
+  mOptsPage_Actions->setProperty( "helpPage", u"working_with_vector/vector_properties.html#actions-properties"_s );
+  mOptsPage_Display->setProperty( "helpPage", u"working_with_vector/vector_properties.html#display-properties"_s );
+  mOptsPage_Rendering->setProperty( "helpPage", u"working_with_vector/vector_properties.html#rendering-properties"_s );
+  mOptsPage_Temporal->setProperty( "helpPage", u"working_with_vector/vector_properties.html#temporal-properties"_s );
+  mOptsPage_Variables->setProperty( "helpPage", u"working_with_vector/vector_properties.html#variables-properties"_s );
+  mOptsPage_Metadata->setProperty( "helpPage", u"working_with_vector/vector_properties.html#metadata-properties"_s );
+  mOptsPage_DataDependencies->setProperty( "helpPage", u"working_with_vector/vector_properties.html#dependencies-properties"_s );
+  mOptsPage_Legend->setProperty( "helpPage", u"working_with_vector/vector_properties.html#legend-properties"_s );
+  mOptsPage_Server->setProperty( "helpPage", u"working_with_vector/vector_properties.html#qgis-server-properties"_s );
 
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
@@ -461,9 +465,9 @@ void QgsVectorLayerProperties::insertField()
   // insert it into the action at the cursor position
   if ( mMapTipFieldComboBox->currentField().isEmpty() )
     return;
-  QString expression = QStringLiteral( "[%\"" );
+  QString expression = u"[%\""_s;
   expression += mMapTipFieldComboBox->currentField();
-  expression += QLatin1String( "\"%]" );
+  expression += "\"%]"_L1;
 
   mMapTipWidget->insertText( expression );
 }
@@ -476,7 +480,7 @@ void QgsVectorLayerProperties::insertOrEditExpression()
   QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mMapTipWidget );
 
   QgsExpressionContext context = createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, u"generic"_s, context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted && !exprDlg.expressionText().trimmed().isEmpty() )
@@ -539,6 +543,9 @@ void QgsVectorLayerProperties::syncToLayer()
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
 
+  mFeaturesSortOrderExpressionWidget->setField( mLayer->attributeTableConfig().sortExpression() );
+  mFeaturesSortOrderDirectionButton->setArrowType( mLayer->attributeTableConfig().sortOrder() == Qt::AscendingOrder ? Qt::UpArrow : Qt::DownArrow );
+
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
@@ -598,7 +605,7 @@ void QgsVectorLayerProperties::syncToLayer()
       break;
   }
 
-  QString remark = QStringLiteral( " (%1)" ).arg( tr( "Not supported" ) );
+  QString remark = u" (%1)"_s.arg( tr( "Not supported" ) );
   const QgsVectorDataProvider *provider = mLayer->dataProvider();
   if ( !( provider && ( provider->capabilities() & Qgis::VectorProviderCapability::SimplifyGeometries ) ) )
   {
@@ -633,7 +640,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( QVariant::fromValue( simplifyMethod.simplifyAlgorithm() ) ) );
 
   QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
-  myScalesList.append( QStringLiteral( "1:1" ) );
+  myScalesList.append( u"1:1"_s );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( simplifyMethod.maximumScale() );
 
@@ -713,6 +720,11 @@ void QgsVectorLayerProperties::apply()
   mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
+
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setSortExpression( mFeaturesSortOrderExpressionWidget->asExpression() );
+  config.setSortOrder( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::AscendingOrder : Qt::DescendingOrder );
+  mLayer->setAttributeTableConfig( config );
 
   mLayer->actions()->clearActions();
   const auto constActions = mActionDialog->actions();
@@ -1001,14 +1013,14 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             QString message;
             const QString filePath { dlg.outputFilePath() };
             const QFileInfo fi { filePath };
-            QString safePath { QString( filePath ).replace( fi.baseName(), QStringLiteral( "%1_%2" ).arg( fi.baseName(), QgsFileUtils::stringToSafeFilename( styleName ) ) ) };
+            QString safePath { QString( filePath ).replace( fi.baseName(), u"%1_%2"_s.arg( fi.baseName(), QgsFileUtils::stringToSafeFilename( styleName ) ) ) };
             if ( styleIndex > 0 && stylesSelected.count() > 1 )
             {
               int i = 1;
               while ( QFile::exists( safePath ) )
               {
                 const QFileInfo fi { safePath };
-                safePath = QString( safePath ).replace( '.' + fi.completeSuffix(), QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
+                safePath = QString( safePath ).replace( '.' + fi.completeSuffix(), u"_%1.%2"_s.arg( QString::number( i ), fi.completeSuffix() ) );
                 i++;
               }
             }
@@ -1046,13 +1058,13 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             else
             {
-              name += QStringLiteral( "_%1" ).arg( styleName );
+              name += u"_%1"_s.arg( styleName );
               QStringList ids, names, descriptions;
               mLayer->listStylesInDatabase( ids, names, descriptions, msgError );
               int i = 1;
               while ( names.contains( name ) )
               {
-                name = QStringLiteral( "%1 %2" ).arg( name, QString::number( i ) );
+                name = u"%1 %2"_s.arg( name, QString::number( i ) );
                 i++;
               }
             }
@@ -1334,7 +1346,7 @@ QgsExpressionContext QgsVectorLayerProperties::createExpressionContext() const
 void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
 {
   QDialog *dlg = new QDialog();
-  QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+  QString key = u"/UI/paneldialog/%1"_s.arg( panel->panelTitle() );
   QgsSettings settings;
   dlg->restoreGeometry( settings.value( key ).toByteArray() );
   dlg->setWindowTitle( panel->panelTitle() );
@@ -1633,7 +1645,7 @@ void QgsVectorLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html"_s );
   }
 }
 
@@ -1844,7 +1856,7 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   else
   {
     const QString title = QObject::tr( "Delete Auxiliary Field" );
-    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
+    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( "\n  "_L1 );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
     mMessageBar->pushMessage( title, msg, Qgis::MessageLevel::Warning );
   }
@@ -1870,12 +1882,7 @@ void QgsVectorLayerProperties::initMapTipPreview()
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
   // Create the WebView
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
-
-#if WITH_QTWEBKIT
-  mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
-  mMapTipPreview->setContextMenuPolicy( Qt::NoContextMenu );                     //No context menu is allowed if you don't need it
-  connect( mMapTipPreview, &QWebView::loadFinished, this, &QgsVectorLayerProperties::resizeMapTip );
-#endif
+  mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   mMapTipPreview->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
@@ -1901,19 +1908,5 @@ void QgsVectorLayerProperties::resizeMapTip()
 {
   // Ensure the map tip is not bigger than the container
   mMapTipPreview->setMaximumSize( mMapTipPreviewContainer->width(), mMapTipPreviewContainer->height() );
-#if WITH_QTWEBKIT
-  // Get the content size
-  const QWebElement container = mMapTipPreview->page()->mainFrame()->findFirstElement(
-    QStringLiteral( "#QgsWebViewContainer" )
-  );
-  const int width = container.geometry().width();
-  const int height = container.geometry().height();
-  mMapTipPreview->resize( width, height );
-
-  // Move the map tip to the center of the container
-  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2, ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
-
-#else
   mMapTipPreview->adjustSize();
-#endif
 }

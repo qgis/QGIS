@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationequalinterval.h"
+
 #include "qgsapplication.h"
 
-const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
+#include <QObject>
+
+const QString QgsClassificationEqualInterval::METHOD_ID = u"EqualInterval"_s;
 
 QgsClassificationEqualInterval::QgsClassificationEqualInterval()
   : QgsClassificationMethod( SymmetricModeAvailable, 0 /*codeComplexity*/ )

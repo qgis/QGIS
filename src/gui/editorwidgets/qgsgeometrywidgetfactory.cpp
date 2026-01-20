@@ -15,8 +15,8 @@
 
 #include "qgsgeometrywidgetfactory.h"
 
-#include "qgsgeometrywidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
+#include "qgsgeometrywidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
 QgsGeometryWidgetFactory::QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
@@ -40,5 +40,5 @@ unsigned int QgsGeometryWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
   const QgsField field = vl->fields().field( fieldIdx );
   const QMetaType::Type type = field.type();
   // Geometry fields only
-  return ( type == QMetaType::Type::User && field.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 ) ? 20 : 0;
+  return ( type == QMetaType::Type::User && field.typeName().compare( "geometry"_L1, Qt::CaseInsensitive ) == 0 ) ? 20 : 0;
 }

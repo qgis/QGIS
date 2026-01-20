@@ -20,8 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrasterrange.h"
 #include "qgsrasterinterface.h"
+#include "qgsrasterrange.h"
 
 #include <QList>
 

@@ -12,17 +12,18 @@ Email                : zilolv at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <limits>
 #include <cmath>
-#include <qdebug.h>
 #include <iostream>
+#include <limits>
 
+#include "qgsapplication.h"
+#include "qgsgeometryfactory.h"
 #include "qgsmeshcontours.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
-#include "qgsapplication.h"
-#include "qgsgeometryfactory.h"
+#include "qgstest.h"
+
+#include <qdebug.h>
 
 class TestQgsMeshContours : public QgsTest
 {
@@ -30,7 +31,7 @@ class TestQgsMeshContours : public QgsTest
 
   public:
     TestQgsMeshContours()
-      : QgsTest( QStringLiteral( "Mesh Contours Tests" ) )
+      : QgsTest( u"Mesh Contours Tests"_s )
     {}
 
   private slots:
@@ -66,7 +67,7 @@ void TestQgsMeshContours::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
   const QString uri( testDataDir + "quad_and_triangle.2dm" );
   mpMeshLayer = std::make_unique<QgsMeshLayer>( uri, "Triangle and Quad MDAL", "mdal" );
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_vertex_scalar.dat" );

@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-
 #include "qgsraster.h"
+
+#include <limits>
 
 bool QgsRaster::isRepresentableValue( double value, Qgis::DataType dataType )
 {

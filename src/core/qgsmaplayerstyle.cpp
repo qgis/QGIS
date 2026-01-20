@@ -14,16 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstyle.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsreadwritecontext.h"
-#include "qgsmaplayer.h"
-
 
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
 #include <QTextStream>
-
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )
@@ -69,10 +67,10 @@ void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
     return;
   }
 
-  QDomDocument doc( QStringLiteral( "qgis" ) );
+  QDomDocument doc( u"qgis"_s );
   if ( !doc.setContent( mXmlData ) )
   {
-    QgsDebugError( QStringLiteral( "Failed to parse XML of previously stored XML data - this should not happen!" ) );
+    QgsDebugError( u"Failed to parse XML of previously stored XML data - this should not happen!"_s );
     return;
   }
 

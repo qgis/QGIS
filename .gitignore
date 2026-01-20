@@ -30,6 +30,7 @@
 .pydevproject
 .venv
 .vscode
+.qtcreator
 .vs
 .devcontainer
 .worktrees

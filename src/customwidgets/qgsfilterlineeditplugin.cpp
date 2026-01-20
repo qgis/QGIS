@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsfilterlineeditplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgsfilterlineedit.h"
-#include "qgsfilterlineeditplugin.h"
-#include "moc_qgsfilterlineeditplugin.cpp"
 
+#include "moc_qgsfilterlineeditplugin.cpp"
 
 QgsFilterLineEditPlugin::QgsFilterLineEditPlugin( QObject *parent )
   : QObject( parent )

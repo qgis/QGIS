@@ -8,6 +8,7 @@
 
 
 
+
 class QgsFontDownloadDetails
 {
 %Docstring(signature="appended")
@@ -204,7 +205,7 @@ font is installed and available for use.
 
     void enableFontDownloadsForSession();
 %Docstring
-Enables font downloads the the current QGIS session.
+Enables font downloads the current QGIS session.
 
 .. warning::
 

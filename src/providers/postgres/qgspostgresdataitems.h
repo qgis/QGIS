@@ -15,19 +15,18 @@
 #ifndef QGSPOSTGRESDATAITEMS_H
 #define QGSPOSTGRESDATAITEMS_H
 
-#include <QMainWindow>
-
 #include "qgsconnectionsitem.h"
+#include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsdatabaseschemaitem.h"
 #include "qgslayeritem.h"
-
-#include "qgspostgresconn.h"
 #include "qgsmimedatautils.h"
-#include "qgswkbtypes.h"
+#include "qgspostgresconn.h"
 #include "qgspostgresprojectstorage.h"
 #include "qgsprojectitem.h"
+#include "qgswkbtypes.h"
+
+#include <QMainWindow>
 
 class QgsPGRootItem;
 class QgsPGConnectionItem;
@@ -77,10 +76,25 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 
     QString connectionName() const { return mConnectionName; }
 
+    /**
+     * Set if versioning of QGIS projects is enabled for this schema.
+     *
+     * \since QGIS 4.0
+     */
+    void setProjectVersioningEnabled( const bool enabled ) { mProjectVersioningEnabled = enabled; }
+
+    /**
+     * Returns if versioning of QGIS projects is enabled for this schema.
+     *
+     * \since QGIS 4.0
+     */
+    bool projectVersioningEnabled() const { return mProjectVersioningEnabled; }
+
   private:
     QgsPGLayerItem *createLayer( QgsPostgresLayerProperty layerProperty );
 
     QString mConnectionName;
+    bool mProjectVersioningEnabled = false;
 
     // QgsDataItem interface
   public:
@@ -143,8 +157,12 @@ class QgsPGProjectItem : public QgsProjectItem
     */
     QString connectionName() const { return mConnectionName; }
 
+    using QgsProjectItem::refresh;
+    void refresh() override;
 
   private:
+    void refreshTooltip();
+
     QgsPostgresProjectUri mProjectUri;
     QString mConnectionName;
 };

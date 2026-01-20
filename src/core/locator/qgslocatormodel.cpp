@@ -15,15 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslocatormodel.h"
+
+#include "qgsapplication.h"
+#include "qgslocator.h"
+#include "qgslogger.h"
+
 #include <QFont>
 #include <QPalette>
 
-#include "qgslocatormodel.h"
 #include "moc_qgslocatormodel.cpp"
-#include "qgslocator.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-
 
 //
 // QgsLocatorModel
@@ -92,7 +93,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 
             case EntryType::Group:
             {
-              v = QStringLiteral( "  " ).append( entry.groupTitle );
+              v = u"  "_s.append( entry.groupTitle );
               break;
             }
 
@@ -151,7 +152,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
             const QIcon &icon = entry.result.icon;
             if ( !icon.isNull() )
               return icon;
-            return QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
+            return QgsApplication::getThemeIcon( u"/search.svg"_s );
           }
           else
             return QVariant();

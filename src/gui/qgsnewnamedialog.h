@@ -20,8 +20,9 @@
 class QLabel;
 class QLineEdit;
 
-#include "qgsdialog.h"
 #include "qgis_gui.h"
+#include "qgsdialog.h"
+
 #include <QRegularExpression>
 
 /**
@@ -144,7 +145,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     static bool exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   signals:
 
-    // TODO QGIS 4.0 - rename to nameChanged
+    // TODO QGIS 5.0 - rename to nameChanged
 
     /**
      * Emitted when the name is changed in the dialog.
@@ -153,7 +154,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     void newNameChanged();
 
   public slots:
-    // TODO QGIS 4.0 - rename to onNameChanged
+    // TODO QGIS 5.0 - rename to onNameChanged
     void nameChanged();
 
   protected:
@@ -171,7 +172,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     bool mAllowEmptyName = false;
     QString mConflictingNameWarning;
 
-    QString highlightText( const QString &text );
+    static QString highlightText( const QString &text );
     static QStringList fullNames( const QString &name, const QStringList &extensions );
     // get list of existing names
     static QStringList matching( const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs = Qt::CaseSensitive );

@@ -14,25 +14,28 @@
  ***************************************************************************/
 
 #include "qgsextentwidget.h"
-#include "moc_qgsextentwidget.cpp"
+
+#include <memory>
 
 #include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerproxymodel.h"
-#include "qgsmaplayermodel.h"
-#include "qgsexception.h"
-#include "qgsproject.h"
-#include "qgsdoublevalidator.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemmap.h"
-#include "qgsprintlayout.h"
 #include "qgsbookmarkmodel.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdoublevalidator.h"
+#include "qgsexception.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayermodel.h"
+#include "qgsmaplayerproxymodel.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
 #include "qgsreferencedgeometry.h"
 
-#include <QMenu>
 #include <QAction>
+#include <QMenu>
 #include <QRegularExpression>
+
+#include "moc_qgsextentwidget.cpp"
 
 QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   : QWidget( parent )
@@ -43,7 +46,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromLineEdit );
   connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromLineEdit );
 
-  mCondensedRe = QRegularExpression( QStringLiteral( "\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*(?:\\[(.*?)\\])?" ) );
+  mCondensedRe = QRegularExpression( u"\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*(?:\\[(.*?)\\])?"_s );
   mCondensedLineEdit->setValidator( new QRegularExpressionValidator( mCondensedRe, this ) );
   mCondensedLineEdit->setShowClearButton( false );
   connect( mCondensedLineEdit, &QgsFilterLineEdit::cleared, this, &QgsExtentWidget::clear );
@@ -65,7 +68,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
 
   mMenu = new QMenu( this );
   mUseCanvasExtentAction = new QAction( tr( "Use Current Map Canvas Extent" ), this );
-  mUseCanvasExtentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mUseCanvasExtentAction->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
   mUseCanvasExtentAction->setVisible( false );
   connect( mUseCanvasExtentAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromCurrent );
 
@@ -287,8 +290,8 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   mYMinLineEdit->setText( QLocale().toString( extent.yMinimum(), 'f', decimals ) );
   mYMaxLineEdit->setText( QLocale().toString( extent.yMaximum(), 'f', decimals ) );
 
-  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( QString::number( extent.xMinimum(), 'f', decimals ), QString::number( extent.xMaximum(), 'f', decimals ), QString::number( extent.yMinimum(), 'f', decimals ), QString::number( extent.yMaximum(), 'f', decimals ) );
-  condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+  QString condensed = u"%1,%2,%3,%4"_s.arg( QString::number( extent.xMinimum(), 'f', decimals ), QString::number( extent.xMaximum(), 'f', decimals ), QString::number( extent.yMinimum(), 'f', decimals ), QString::number( extent.yMaximum(), 'f', decimals ) );
+  condensed += u" [%1]"_s.arg( mOutputCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
   mCondensedLineEdit->setText( condensed );
 
   mExtentState = state;
@@ -534,7 +537,7 @@ void QgsExtentWidget::setOutputExtentFromDrawOnCanvas()
     mMapToolPrevious = mCanvas->mapTool();
     if ( !mMapToolExtent )
     {
-      mMapToolExtent.reset( new QgsMapToolExtent( mCanvas ) );
+      mMapToolExtent = std::make_unique<QgsMapToolExtent>( mCanvas );
       connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentWidget::extentDrawn );
       connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsExtentWidget::mapToolDeactivated );
     }
@@ -590,7 +593,7 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
     mDrawOnCanvasAction->setVisible( drawOnCanvasOption && !mBlockDrawOnCanvas );
 
     mCondensedToolButton->setToolTip( tr( "Set to current map canvas extent" ) );
-    mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+    mCondensedToolButton->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
     connect( mCondensedToolButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
     mCondensedToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   }

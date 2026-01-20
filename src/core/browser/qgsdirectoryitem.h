@@ -17,9 +17,10 @@
 #ifndef QGSDIRECTORYITEM_H
 #define QGSDIRECTORYITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
+
 #include <QDateTime>
 #include <QTreeWidget>
 
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
 
 
-    // TODO QGIS 4.0 -- rename "name" to "title" or "text" or something more descriptive, and "path" to something
+    // TODO QGIS 5.0 -- rename "name" to "title" or "text" or something more descriptive, and "path" to something
     // else to clarify the role of dirPath vs path
 
     /**
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
+    QString str = u"<QgsDirectoryItem: %1 - %2>"_s.arg( sipCpp->dirPath(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -227,7 +228,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 // ---------
 
-// TODO: move to qgis_gui for QGIS 4
+// TODO: move to qgis_gui for QGIS 5
 
 /**
  * \ingroup core

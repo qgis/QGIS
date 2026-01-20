@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProcessingProvider : QObject
 {
 %Docstring(signature="appended")
@@ -137,7 +138,7 @@ providers in a "beta" or "untrustworthy" state.
 Returns ``True`` if the provider is active and able to run algorithms.
 %End
 
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
 Returns a list of the raster format file extensions supported by this
 provider.
@@ -147,7 +148,20 @@ provider.
 .. seealso:: :py:func:`supportedOutputPointCloudLayerExtensions`
 
 .. seealso:: :py:func:`supportedOutputVectorTileLayerExtensions`
+
+.. note::
+
+   Since QGIS 4.0, this method is no longer virtual and use internally
+   :py:func:`~QgsProcessingProvider.supportedOutputRasterLayerFormatAndExtensions` instead.
 %End
+
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
+%Docstring
+Returns a list of (format, file extension) supported by this provider.
+
+.. versionadded:: 4.0
+%End
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
@@ -264,17 +278,32 @@ Otherwise the first reported supported vector format will be used.
 .. seealso:: :py:func:`defaultVectorTileFileExtension`
 %End
 
-    virtual QString defaultRasterFileExtension() const;
+    virtual QString defaultRasterFileFormat() const;
+%Docstring
+Returns the default file format to use for raster outputs created by the
+provider.
+
+The default implementation returns the user's default Processing raster
+output format setting, if it's supported by the provider (see
+:py:func:`~QgsProcessingProvider.supportedOutputRasterLayerFormatAndExtensions`).
+Otherwise the first reported supported raster format will be used.
+
+.. seealso:: :py:func:`supportedOutputRasterLayerFormatAndExtensions`
+
+.. seealso:: :py:func:`defaultRasterFileExtension`
+
+.. versionadded:: 4.0
+%End
+
+    QString defaultRasterFileExtension() const;
 %Docstring
 Returns the default file extension to use for raster outputs created by
 the provider.
 
-The default implementation returns the user's default Processing raster
-output format setting, if it's supported by the provider (see
-:py:func:`~QgsProcessingProvider.supportedOutputRasterLayerExtensions`).
-Otherwise the first reported supported raster format will be used.
+Starting with QGIS 4.0, this method is no longer virtual, and relies on
+:py:func:`~QgsProcessingProvider.defaultRasterFileFormat`
 
-.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
+.. seealso:: :py:func:`defaultRasterFileFormat`
 
 .. seealso:: :py:func:`defaultVectorFileExtension`
 

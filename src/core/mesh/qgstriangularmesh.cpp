@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QList>
 #include "qgstriangularmesh.h"
+
+#include "meshoptimizer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
-#include "qgsrectangle.h"
 #include "qgslogger.h"
-#include "qgsmeshspatialindex.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshspatialindex.h"
 #include "qgsmeshutils.h"
-#include "meshoptimizer.h"
+#include "qgsrectangle.h"
+
+#include <QList>
 
 static void triangulateFaces( const QgsMeshFace &face,
                               int nativeIndex,
@@ -78,7 +80,7 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      QgsDebugError( u"Caught CRS exception %1"_s.arg( cse.what() ) );
       transformedVertex = QgsMeshVertex();
     }
   }
@@ -248,7 +250,7 @@ QgsRectangle QgsTriangularMesh::nativeExtent()
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      QgsDebugError( u"Caught CRS exception %1"_s.arg( cse.what() ) );
     }
   }
   else
@@ -351,7 +353,7 @@ QgsPointXY QgsTriangularMesh::transformFromLayerToTrianglesCoordinates( const Qg
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      QgsDebugError( u"Caught CRS exception %1"_s.arg( cse.what() ) );
       mapPoint = point;
     }
   }
@@ -509,7 +511,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
 
     if ( size == 0 || int( size ) >= indexes.size() )
     {
-      QgsDebugError( QStringLiteral( "Mesh simplification failed after %1 path" ).arg( path + 1 ) );
+      QgsDebugError( u"Mesh simplification failed after %1 path"_s.arg( path + 1 ) );
       delete simplifiedMesh;
       break;
     }
@@ -531,7 +533,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     simplifiedMesh->finalizeTriangles();
     simplifiedMeshes.push_back( simplifiedMesh );
 
-    QgsDebugMsgLevel( QStringLiteral( "Simplified mesh created with %1 triangles" ).arg( newMesh.faceCount() ), 2 );
+    QgsDebugMsgLevel( u"Simplified mesh created with %1 triangles"_s.arg( newMesh.faceCount() ), 2 );
 
     simplifiedMesh->mTrianglesToNativeFaces = QVector<int>( simplifiedMesh->triangles().count(), 0 );
     for ( int i = 0; i < simplifiedMesh->mTrianglesToNativeFaces.count(); ++i )

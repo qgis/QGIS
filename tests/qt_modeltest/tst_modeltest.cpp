@@ -45,18 +45,18 @@
 ****************************************************************************/
 
 
-#include <QtTest/QTest>
-#include <QObject>
-#include <QStringListModel>
-#include <QSortFilterProxyModel>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QStandardItemModel>
-#include <QRegularExpression>
+#include <dynamictreemodel.h>
 
 #include "modeltest.h"
-#include "dynamictreemodel.h"
 
+#include <QObject>
+#include <QRegularExpression>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QStringListModel>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QtTest/QTest>
 
 class tst_ModelTest : public QObject
 {
@@ -237,7 +237,7 @@ class ObservingObject : public QObject
 
     void storePersistent()
     {
-      foreach ( const QModelIndex &idx, m_persistentProxyIndexes )
+      for ( const QModelIndex &idx : m_persistentProxyIndexes )
         Q_ASSERT( idx.isValid() ); // This is called from layoutAboutToBeChanged. Persistent indexes should be valid
 
       Q_ASSERT( m_proxy->persistent().isEmpty() );

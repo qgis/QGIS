@@ -35,14 +35,13 @@
 
 #include <cfloat>
 #include <cmath>
-#include <QLinkedList>
 #include <geos_c.h>
 #include <memory>
 #include <vector>
 
 #include "qgis_core.h"
-#include "qgsrectangle.h"
 #include "qgsgeos.h"
+#include "qgsrectangle.h"
 
 namespace pal
 {
@@ -125,7 +124,7 @@ namespace pal
        *
        * \warning this code is completely unreadable and cannot be understood by mortals
        */
-      static QLinkedList<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
+      static QVector<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
 
       /**
        * Extends linestrings by the specified amount at the start and end of the line,

@@ -41,6 +41,7 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
 
     QImage contentImage() const { return mImage; }
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     void addPreviewImage( const QImage &image, const QPolygonF &visiblePolygon );

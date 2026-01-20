@@ -18,12 +18,12 @@
 #ifndef QGSLAYOUTTABLECOLUMN_H
 #define QGSLAYOUTTABLECOLUMN_H
 
-#include <QDomDocument>
-#include <QDomElement>
-#include <QColor>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QColor>
+#include <QDomDocument>
+#include <QDomElement>
 
 /**
  * \ingroup core
@@ -206,9 +206,9 @@ class CORE_EXPORT QgsLayoutTableColumn
     % MethodCode
     QString str;
     if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
-      str = QStringLiteral( "<QgsLayoutTableColumn: %1 (\"%2\")>" ).arg( sipCpp->attribute(), sipCpp->heading() );
+      str = u"<QgsLayoutTableColumn: %1 (\"%2\")>"_s.arg( sipCpp->attribute(), sipCpp->heading() );
     else
-      str = QStringLiteral( "<QgsLayoutTableColumn: %1>" ).arg( sipCpp->attribute() );
+      str = u"<QgsLayoutTableColumn: %1>"_s.arg( sipCpp->attribute() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

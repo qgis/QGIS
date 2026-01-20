@@ -1,7 +1,18 @@
 # The following has been generated automatically from src/core/vector/qgsvectorlayerutils.h
+# monkey patching scoped based enum
+QgsVectorLayerUtils.FieldIsEditableFlag.IgnoreLayerEditability.__doc__ = "Ignores the vector layer's editable state"
+QgsVectorLayerUtils.FieldIsEditableFlag.__doc__ = """Flags used with the :py:func:`~QgsVectorLayerUtils.fieldIsEditable` function
+
+.. versionadded:: 4.0
+
+* ``IgnoreLayerEditability``: Ignores the vector layer's editable state
+
+"""
+# --
 try:
     QgsVectorLayerUtils.getValuesIterator = staticmethod(QgsVectorLayerUtils.getValuesIterator)
     QgsVectorLayerUtils.getValues = staticmethod(QgsVectorLayerUtils.getValues)
+    QgsVectorLayerUtils.uniqueValues = staticmethod(QgsVectorLayerUtils.uniqueValues)
     QgsVectorLayerUtils.getDoubleValues = staticmethod(QgsVectorLayerUtils.getDoubleValues)
     QgsVectorLayerUtils.valueExists = staticmethod(QgsVectorLayerUtils.valueExists)
     QgsVectorLayerUtils.createUniqueValue = staticmethod(QgsVectorLayerUtils.createUniqueValue)

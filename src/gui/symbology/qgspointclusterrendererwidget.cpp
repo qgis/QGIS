@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgspointclusterrendererwidget.h"
-#include "moc_qgspointclusterrendererwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsmarkersymbol.h"
 #include "qgspointclusterrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsmarkersymbol.h"
+
+#include "moc_qgspointclusterrendererwidget.cpp"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -76,7 +78,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
-    if ( *it != QLatin1String( "pointDisplacement" ) && *it != QLatin1String( "pointCluster" ) && *it != QLatin1String( "heatmapRenderer" ) )
+    if ( *it != "pointDisplacement"_L1 && *it != "pointCluster"_L1 && *it != "heatmapRenderer"_L1 )
     {
       QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );

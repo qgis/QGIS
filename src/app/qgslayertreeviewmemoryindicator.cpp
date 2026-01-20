@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewmemoryindicator.h"
-#include "moc_qgslayertreeviewmemoryindicator.cpp"
-#include "qgslayertreeview.h"
+
+#include "qgisapp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
+
+#include "moc_qgslayertreeviewmemoryindicator.cpp"
 
 QgsLayerTreeViewMemoryIndicatorProvider::QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -52,12 +54,12 @@ bool QgsLayerTreeViewMemoryIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 QString QgsLayerTreeViewMemoryIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorMemory.svg" );
+  return u"/mIndicatorMemory.svg"_s;
 }
 
 QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  if ( layer->providerType() == QLatin1String( "memory" ) )
+  if ( layer->providerType() == "memory"_L1 )
     return tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" );
 
   return tr( "<b>Temporary layer only!</b><br>Contents will be discarded after closing QGIS." );

@@ -19,14 +19,14 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
 #include "ui_qgslayoutnewpagedialog.h"
 
-#include "qgslayoutsize.h"
-#include "qgslayoutpoint.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutpoint.h"
+#include "qgslayoutsize.h"
 
 /**
  * \ingroup gui

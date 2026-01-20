@@ -18,10 +18,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmaplayerrenderer.h"
-#include "qgsvectortilerenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgsvectortilematrixset.h"
+#include "qgsvectortilerenderer.h"
 
 class QgsVectorTileLayer;
 class QgsVectorTileRawData;
@@ -48,8 +48,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context );
     ~QgsVectorTileLayerRenderer() override;
 
-    virtual bool render() override;
-    virtual QgsFeedback *feedback() const override { return mFeedback.get(); }
+    bool render() override;
+    QgsFeedback *feedback() const override { return mFeedback.get(); }
     bool forceRasterRender() const override;
 
   private:

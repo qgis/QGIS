@@ -13,35 +13,38 @@ email                : jpalmer at linz dot govt dot nz
 *                                                                         *
 ***************************************************************************/
 
-#include <limits>
-
 #include "qgsmaptoolselectutils.h"
-#include "moc_qgsmaptoolselectutils.cpp"
-#include "qgsfeatureiterator.h"
+
+#include <limits>
+#include <memory>
+
+#include "qgis.h"
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvasutils.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsrubberband.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
-#include "qgis.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmessagelog.h"
-#include "qgsmapcanvasutils.h"
 #include "qgsselectioncontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsvectortilelayer.h"
 
-#include <QMouseEvent>
-#include <QApplication>
 #include <QAction>
+#include <QApplication>
+#include <QMouseEvent>
 #include <QtConcurrent>
+
+#include "moc_qgsmaptoolselectutils.cpp"
 
 QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas )
 {
@@ -201,7 +204,7 @@ bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &se
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
-    QgsDebugError( QStringLiteral( "Caught CRS exception " ) );
+    QgsDebugError( u"Caught CRS exception "_s );
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
@@ -370,7 +373,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
-  QgsDebugMsgLevel( "doContains: " + QString( doContains ? QStringLiteral( "T" ) : QStringLiteral( "F" ) ), 3 );
+  QgsDebugMsgLevel( "doContains: " + QString( doContains ? u"T"_s : u"F"_s ), 3 );
 
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid() )
@@ -399,7 +402,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   }
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( canvas, vlayer );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
     return newSelectedFeatures;
 
   QgsFeatureRequest request;
@@ -537,12 +540,12 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateMenu( QMenu *me
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 {
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mCanvas, mVectorLayer );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
     return;
 
   mJobData = std::make_shared<DataForSearchingJob>();
   mJobData->isCanceled = false;
-  mJobData->source.reset( new QgsVectorLayerFeatureSource( mVectorLayer ) );
+  mJobData->source = std::make_unique<QgsVectorLayerFeatureSource>( mVectorLayer );
   mJobData->selectGeometry = mSelectGeometry;
   mJobData->context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   mJobData->filterString = canvasFilter;

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutserializableobject.h"
-#include "qgsreadwritecontext.h"
+
 #include "qgslayout.h"
 #include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 
 ///@cond PRIVATE
 class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoCommand
@@ -53,7 +54,7 @@ class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoComman
     void saveState( QDomDocument &stateDoc ) const override
     {
       stateDoc.clear();
-      QDomElement documentElement = stateDoc.createElement( QStringLiteral( "UndoState" ) );
+      QDomElement documentElement = stateDoc.createElement( u"UndoState"_s );
       mObject->writeXml( documentElement, stateDoc, QgsReadWriteContext() );
       stateDoc.appendChild( documentElement );
     }

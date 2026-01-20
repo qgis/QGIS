@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryduplicatecheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
+#include "qgsgeometry.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
-#include "qgsgeometryduplicatecheck.h"
 #include "qgsspatialindex.h"
-#include "qgsgeometry.h"
-#include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 
 QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
@@ -36,7 +37,7 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
     }
     str.back() += ids.join( ',' );
   }
-  return str.join( QLatin1String( "; " ) );
+  return str.join( "; "_L1 );
 }
 
 
@@ -170,7 +171,7 @@ QStringList QgsGeometryDuplicateCheck::resolutionMethods() const
 
 QString QgsGeometryDuplicateCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryDuplicateCheck" );
+  return u"QgsGeometryDuplicateCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometryDuplicateCheck::factoryCheckType()

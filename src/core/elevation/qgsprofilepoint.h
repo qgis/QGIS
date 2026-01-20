@@ -17,9 +17,9 @@
 #ifndef QGSPROFILEPOINT_H
 #define QGSPROFILEPOINT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 /**
  * \brief Encapsulates a point on a distance-elevation profile.
@@ -130,8 +130,8 @@ class CORE_EXPORT QgsProfilePoint
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = sipCpp->isEmpty()
-                        ? QStringLiteral( "<QgsProfilePoint: EMPTY>" )
-                        : QStringLiteral( "<QgsProfilePoint: %1, %2>" ).arg( sipCpp->distance() ).arg( sipCpp->elevation() );
+                        ? u"<QgsProfilePoint: EMPTY>"_s
+                        : u"<QgsProfilePoint: %1, %2>"_s.arg( sipCpp->distance() ).arg( sipCpp->elevation() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 

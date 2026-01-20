@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhtml.h"
-#include "moc_qgscodeeditorhtml.cpp"
-#include "qgspythonrunner.h"
-#include "qgsprocessingutils.h"
 
-#include <QWidget>
-#include <QString>
+#include "qgsprocessingutils.h"
+#include "qgspythonrunner.h"
+
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexerhtml.h>
 
+#include "moc_qgscodeeditorhtml.cpp"
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
@@ -118,15 +119,15 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
 
   if ( !QgsPythonRunner::run( definePrettify ) )
   {
-    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( definePrettify ) );
+    QgsDebugError( u"Error running script: %1"_s.arg( definePrettify ) );
     return string;
   }
 
-  const QString script = QStringLiteral( "__qgis_prettify(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
+  const QString script = u"__qgis_prettify(%1)"_s.arg( QgsProcessingUtils::stringToPythonLiteral( newText ) );
   QString result;
   if ( QgsPythonRunner::eval( script, result ) )
   {
-    if ( result == QLatin1String( "_ImportError" ) )
+    if ( result == "_ImportError"_L1 )
     {
       showMessage( tr( "Reformat Code" ), tr( "HTML reformatting requires bs4 or lxml python modules to be installed" ), Qgis::MessageLevel::Warning );
     }
@@ -137,7 +138,7 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    QgsDebugError( u"Error running script: %1"_s.arg( script ) );
     return newText;
   }
 
@@ -206,7 +207,7 @@ void QgsCodeEditorHTML::toggleComment()
 
     // Remove trailing comment tag ( --> )
     c2 = endLineTrimmed.size();
-    if ( endLineTrimmed.endsWith( QStringLiteral( " " ) + commentEnd ) )
+    if ( endLineTrimmed.endsWith( u" "_s + commentEnd ) )
     {
       c1 = c2 - commentEnd.size() - 1;
     }
@@ -220,7 +221,7 @@ void QgsCodeEditorHTML::toggleComment()
 
     // Remove leading comment tag ( <!-- )
     c1 = indentation( startLine );
-    if ( startLineTrimmed.startsWith( commentStart + QStringLiteral( " " ) ) )
+    if ( startLineTrimmed.startsWith( commentStart + u" "_s ) )
     {
       c2 = c1 + commentStart.size() + 1;
     }
@@ -235,8 +236,8 @@ void QgsCodeEditorHTML::toggleComment()
   // Selection is not commented: comment it
   else
   {
-    insertAt( QStringLiteral( " " ) + commentEnd, endLine, endLineTrimmed.size() );
-    insertAt( commentStart + QStringLiteral( " " ), startLine, indentation( startLine ) );
+    insertAt( u" "_s + commentEnd, endLine, endLineTrimmed.size() );
+    insertAt( commentStart + u" "_s, startLine, indentation( startLine ) );
   }
 
   endUndoAction();

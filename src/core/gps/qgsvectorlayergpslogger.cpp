@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsvectorlayergpslogger.h"
-#include "moc_qgsvectorlayergpslogger.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
+
 #include "qgsgpsconnection.h"
 #include "qgslinestring.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
+#include "moc_qgsvectorlayergpslogger.cpp"
 
 QgsVectorLayerGpsLogger::QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QgsGpsLogger( connection, parent )
@@ -105,7 +107,7 @@ void QgsVectorLayerGpsLogger::endCurrentTrack()
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming GPS track" ) );
+      QgsDebugError( u"Error transforming GPS track"_s );
     }
 
     if ( geometry.constGet()->is3D() && !QgsWkbTypes::hasZ( mTracksLayer->wkbType() ) )
@@ -213,7 +215,7 @@ void QgsVectorLayerGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming GPS point" ) );
+      QgsDebugError( u"Error transforming GPS point"_s );
     }
 
     QgsAttributeMap attributes;

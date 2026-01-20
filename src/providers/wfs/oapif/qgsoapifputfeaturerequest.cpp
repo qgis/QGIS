@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsjsonutils.h"
 #include "qgsoapifputfeaturerequest.h"
 #include "moc_qgsoapifputfeaturerequest.cpp"
-#include "qgsoapifprovider.h"
+#include "qgsoapifshareddata.h"
 
 QgsOapifPutFeatureRequest::QgsOapifPutFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
@@ -61,7 +62,7 @@ bool QgsOapifPutFeatureRequest::putFeature( const QgsOapifSharedData *sharedData
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
-  QUrl url( sharedData->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
+  QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
   return sendPUT( url, "application/geo+json", jsonFeature.toUtf8(), extraHeaders );
 }
 

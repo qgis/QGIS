@@ -16,11 +16,11 @@
 #ifndef QGSPOSTGRESRASTERSHAREDDATA_H
 #define QGSPOSTGRESRASTERSHAREDDATA_H
 
-#include <QMutex>
-
-#include "qgsrectangle.h"
 #include "qgsgenericspatialindex.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
+
+#include <QMutex>
 
 class QgsPostgresConn;
 

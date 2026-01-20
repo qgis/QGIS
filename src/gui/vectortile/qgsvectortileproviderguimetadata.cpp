@@ -13,21 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvectortileproviderguimetadata.h"
+
 #include "qgsapplication.h"
 #include "qgssourceselectprovider.h"
-#include "qgsvectortilesourceselect.h"
-#include "qgsvectortileproviderguimetadata.h"
 #include "qgsvectortiledataitemguiprovider.h"
+#include "qgsvectortilesourceselect.h"
 
 ///@cond PRIVATE
 
 class QgsVectorTileSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "vectortile" ); }
+    QString providerKey() const override { return u"vectortile"_s; }
     QString text() const override { return QObject::tr( "Vector Tile" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 50; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVectorTileLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddVectorTileLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsVectorTileSourceSelect( parent, fl, widgetMode );
@@ -35,7 +36,7 @@ class QgsVectorTileSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsVectorTileProviderGuiMetadata::QgsVectorTileProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "vectortile" ) )
+  : QgsProviderGuiMetadata( u"vectortile"_s )
 {
 }
 

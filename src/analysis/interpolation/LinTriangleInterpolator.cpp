@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "LinTriangleInterpolator.h"
+
 #include "qgslogger.h"
 
 bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
@@ -38,7 +39,7 @@ bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -64,7 +65,7 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D *vec )
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -94,7 +95,7 @@ bool LinTriangleInterpolator::calcNormVec( double x, double y, QgsPoint &vec )
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -123,7 +124,7 @@ bool LinTriangleInterpolator::calcPoint( double x, double y, QgsPoint &point )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }

@@ -15,20 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewarcgisrestconnection.h"
-#include "moc_qgsnewarcgisrestconnection.cpp"
-#include "qgsauthsettingswidget.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsowsconnection.h"
+
 #include "fromencodedcomponenthelper.h"
+#include "qgsauthsettingswidget.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
-#include <QUrl>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsnewarcgisrestconnection.cpp"
 
 QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *parent, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -42,7 +44,7 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
 
   setWindowTitle( tr( "Create a New arcgisfeatureserver Connection" ) );
 
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]+"_s ), txtName ) );
 
   if ( !connectionName.isEmpty() )
   {
@@ -180,5 +182,5 @@ void QgsNewArcGisRestConnectionDialog::accept()
 
 void QgsNewArcGisRestConnectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/index.html"_s );
 }

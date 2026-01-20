@@ -16,21 +16,21 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include <QList>
-#include <QQueue>
+#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 
 #include <memory>
 
-#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsdockwidget.h"
 #include "qgsmessagebaritem.h"
-#include "qgspointxy.h"
 #include "qgspointlocator.h"
+#include "qgspointxy.h"
 #include "qgssnapindicator.h"
 
+#include <QList>
+#include <QQueue>
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsAdvancedDigitizingFloater;
@@ -112,10 +112,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
           , mLockerButton( lockerButton )
           , mRelativeButton( relativeButton )
           , mRepeatingLockButton( repeatingLockButton )
-          , mLockMode( NoLock )
-          , mRepeatingLock( false )
-          , mRelative( false )
-          , mValue( 0.0 )
         {}
 
         /**
@@ -238,10 +234,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         QToolButton *mLockerButton = nullptr;
         QToolButton *mRelativeButton = nullptr;
         QToolButton *mRepeatingLockButton = nullptr;
-        LockMode mLockMode;
-        bool mRepeatingLock;
-        bool mRelative;
-        double mValue;
+        LockMode mLockMode = NoLock;
+        bool mRepeatingLock = false;
+        bool mRelative = false;
+        double mValue = 0.0;
         int mPrecision = 6;
         Qgis::CadConstraintType mCadConstraintType = Qgis::CadConstraintType::Generic;
         QgsMapCanvas *mMapCanvas = nullptr;
@@ -254,7 +250,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \param userInputWidget The user input widget on which tools can add widget overlays on top of the map canvas (since QGIS 3.40)
      */
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr, QgsUserInputWidget *userInputWidget = nullptr );
-    ~QgsAdvancedDigitizingDockWidget();
+    ~QgsAdvancedDigitizingDockWidget() override;
 
     /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
@@ -667,7 +663,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
-     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead.
+     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 5.0. Use pointChangedV2() instead.
      */
     Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 

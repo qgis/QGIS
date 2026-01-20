@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseventtracing.h"
 #include "qgspointcloudlayerundocommand.h"
-#include "qgspointcloudeditingindex.h"
+
 #include "qgscopcpointcloudindex.h"
+#include "qgseventtracing.h"
+#include "qgspointcloudeditingindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayereditutils.h"
 
 #include <QtConcurrentMap>
-
 
 QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer *layer )
   : mLayer( layer )
@@ -32,7 +32,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   , mAttribute( attribute )
   , mNewValue( value )
 {
-  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "QgsPointCloudLayerUndoCommand constructor" ) );
+  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand constructor"_s );
 
   QgsPointCloudIndex index = mLayer->index();
   QgsPointCloudEditingIndex *editIndex = static_cast<QgsPointCloudEditingIndex *>( index.get() );
@@ -100,7 +100,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::redo()
 
 void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo )
 {
-  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "QgsPointCloudLayerUndoCommand::undoRedoPrivate" ) );
+  QgsEventTracing::ScopedEvent _trace( u"PointCloud"_s, u"QgsPointCloudLayerUndoCommand::undoRedoPrivate"_s );
   QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( mLayer->index().get() );
   QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
   QgsPointCloudAttribute attribute = mAttribute;

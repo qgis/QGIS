@@ -12,6 +12,7 @@
 
 
 
+
 class QgsAuthManager : QObject
 {
 %Docstring(signature="appended")

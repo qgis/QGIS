@@ -2466,6 +2466,99 @@ tests:
         name: expected/transect_multi_both_2_30.gml
         type: vector
 
+  - algorithm: native:transectfixeddistance
+    name: Test (native:transectfixeddistance)
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      INTERVAL: 0.20
+      LENGTH: 1.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_fixed_single_both.gml
+        type: vector
+
+  # Tests for DIRECTION parameter
+  # DIRECTION: 0 = Left to Right (default), 1 = Right to Left (hydraulic convention)
+  - algorithm: native:transect
+    name: Transect single left 90.0 0.5m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 0.5
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 0
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_left_05_swapped.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect single right 90.0 1m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 1.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 1
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_right_1_swapped.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi left 90.0 0.5m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 0.5
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 0
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_left_05_swapped.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi right 90.0 1m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 1.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 1
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_right_1_swapped.gml
+        type: vector
+
+  - algorithm: native:transectfixeddistance
+    name: Test (native:transectfixeddistance) right to left direction
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      INTERVAL: 0.20
+      LENGTH: 1.0
+      SIDE: 2
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_fixed_single_both_swapped.gml
+        type: vector
+
   - algorithm: qgis:distancematrix
     name: Linear (N*k x 3) distance matrix
     params:

@@ -16,19 +16,17 @@
 #ifndef QGSATTRIBUTEFORM_H
 #define QGSATTRIBUTEFORM_H
 
-#include "qgsfeature.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetwrapper.h"
 #include "qgsattributeeditorelement.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsfeature.h"
 
-#include <QWidget>
-#include <QLabel>
 #include <QDialogButtonBox>
+#include <QLabel>
 #include <QMultiMap>
-
-#include "qgis_gui.h"
-
+#include <QWidget>
 
 class QgsAttributeFormInterface;
 class QgsAttributeFormEditorWidget;
@@ -73,7 +71,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAttributeForm() override;
 
-    const QgsFeature &feature() { return mFeature; }
+    /**
+     * Returns feature of attribute form.
+     */
+    const QgsFeature &feature() const { return mFeature; }
 
     /**
      * Returns the feature that is currently displayed in the form with all
@@ -91,7 +92,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void displayWarning( const QString &message );
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Hides the button box (OK/Cancel) and enables auto-commit
@@ -99,7 +100,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void hideButtonBox();
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Shows the button box (OK/Cancel) and disables auto-commit
@@ -107,7 +108,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void showButtonBox();
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Disconnects the button box (OK/Cancel) from the accept/resetValues slots
@@ -230,10 +231,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Notifies about changes to remembrance of attributes' last value
-     * 
+     *
      * \param attribute The name of the attribute.
      * \param remember Whether the last value should be remembered or not.
-     * 
+     *
      * \since QGIS 4.0
      */
     void rememberLastWidgetValueChanged( const QString &attribute, bool remember );
@@ -466,7 +467,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsFeature mFeature;
     QgsFeature mCurrentFormFeature;
     QgsMessageBar *mMessageBar = nullptr;
-    bool mOwnsMessageBar;
+    bool mOwnsMessageBar = true;
     QgsMessageBarItem *mMultiEditUnsavedMessageBarItem = nullptr;
     QgsMessageBarItem *mMultiEditMessageBarItem = nullptr;
     QList<QgsWidgetWrapper *> mWidgets;
@@ -537,19 +538,19 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QString mPyFormVarName;
 
     //! Sets to TRUE while saving to prevent recursive saves
-    bool mIsSaving;
+    bool mIsSaving = false;
 
     //! Flag to prevent refreshFeature() to change mFeature
-    bool mPreventFeatureRefresh;
+    bool mPreventFeatureRefresh = false;
 
-    bool mIsSettingMultiEditFeatures;
+    bool mIsSettingMultiEditFeatures = false;
 
     QgsFeatureIds mMultiEditFeatureIds;
-    bool mUnsavedMultiEditChanges;
+    bool mUnsavedMultiEditChanges = false;
 
     QString mEditCommandMessage;
 
-    QgsAttributeEditorContext::Mode mMode;
+    QgsAttributeEditorContext::Mode mMode = QgsAttributeEditorContext::SingleEditMode;
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
 

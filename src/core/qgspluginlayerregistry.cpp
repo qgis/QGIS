@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgspluginlayerregistry.h"
+
 #include "qgslogger.h"
 #include "qgspluginlayer.h"
 #include "qgsproject.h"
@@ -56,7 +57,7 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ), 2 );
+    QgsDebugMsgLevel( u"QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty"_s, 2 );
     const QStringList keys = mPluginLayerTypes.keys();
     for ( const QString &key : keys )
     {

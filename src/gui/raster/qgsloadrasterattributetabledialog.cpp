@@ -14,12 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsloadrasterattributetabledialog.h"
-#include "moc_qgsloadrasterattributetabledialog.cpp"
-#include "qgsrasterattributetable.h"
-#include "qgsmessagebar.h"
+
 #include "qgsgui.h"
+#include "qgsmessagebar.h"
+#include "qgsrasterattributetable.h"
+
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsloadrasterattributetabledialog.cpp"
 
 QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )
@@ -36,7 +39,7 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   mRasterBand->setLayer( mRasterLayer );
 
-  mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+  mDbfPathWidget->setFilter( u"VAT DBF Files (*.vat.dbf)"_s );
 
   updateButtons();
 

@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenedataitems.h"
-#include "moc_qgstiledscenedataitems.cpp"
-#include "qgsprovidermetadata.h"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsdataprovider.h"
+#include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgstiledsceneconnection.h"
+
+#include "moc_qgstiledscenedataitems.cpp"
 
 ///@cond PRIVATE
 
 QgsTiledSceneRootItem::QgsTiledSceneRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "tiled-scene" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"tiled-scene"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconTiledScene.svg" );
+  mIconName = u"mIconTiledScene.svg"_s;
   populate();
 }
 
@@ -58,7 +60,7 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
   }
   else
   {
-    mIconName = QStringLiteral( "mIconTiledSceneLayer.svg" );
+    mIconName = u"mIconTiledSceneLayer.svg"_s;
   }
 }
 
@@ -67,12 +69,12 @@ QgsTiledSceneLayerItem::QgsTiledSceneLayerItem( QgsDataItem *parent, QString nam
 
 QString QgsTiledSceneDataItemProvider::name()
 {
-  return QStringLiteral( "Scenes" );
+  return u"Scenes"_s;
 }
 
 QString QgsTiledSceneDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "tiled-scene" );
+  return u"tiled-scene"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsTiledSceneDataItemProvider::capabilities() const
@@ -83,7 +85,7 @@ Qgis::DataItemProviderCapabilities QgsTiledSceneDataItemProvider::capabilities()
 QgsDataItem *QgsTiledSceneDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsTiledSceneRootItem( parentItem, QObject::tr( "Scenes" ), QStringLiteral( "tiled-scene:" ) );
+    return new QgsTiledSceneRootItem( parentItem, QObject::tr( "Scenes" ), u"tiled-scene:"_s );
 
   return nullptr;
 }

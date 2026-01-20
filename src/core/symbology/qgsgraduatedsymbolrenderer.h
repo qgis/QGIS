@@ -15,12 +15,12 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERER_H
 #define QGSGRADUATEDSYMBOLRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include "qgsclassificationmethod.h"
 #include "qgsrenderer.h"
 #include "qgsrendererrange.h"
-#include "qgsclassificationmethod.h"
 
 class QgsVectorLayer;
 class QgsColorRamp;
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
       Pretty,
       Custom
     };
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
     // might be fixed in newer Doxygen (does not on 1.8.13, might be ok on 1.8.16)
 
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! Returns list of legend symbol items from individual ranges
     QgsLegendSymbolList baseLegendSymbolItems() const;
 
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     Q_NOWARN_DEPRECATED_PUSH
     static QString methodIdFromMode( QgsGraduatedSymbolRenderer::Mode mode );
     static QgsGraduatedSymbolRenderer::Mode modeFromMethodId( const QString &methodId );

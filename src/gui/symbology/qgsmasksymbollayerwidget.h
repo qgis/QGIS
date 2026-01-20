@@ -16,9 +16,10 @@
 #define QGSMASKSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsmasksymbollayerwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
-#include "qgis_gui.h"
 
 class QgsMaskMarkerSymbolLayer;
 class QgsSymbolLayerSelectionWidget;

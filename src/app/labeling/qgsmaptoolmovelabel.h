@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOLMOVELABEL_H
 #define QGSMAPTOOLMOVELABEL_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 
 //! A map tool for dragging label positions
 class APP_EXPORT QgsMapToolMoveLabel : public QgsMapToolLabel
@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolMoveLabel : public QgsMapToolLabel
 
   public:
     QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
-    ~QgsMapToolMoveLabel();
+    ~QgsMapToolMoveLabel() override;
 
     void deleteRubberBands() override;
 

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutDesignerInterface : QObject
 {
 %Docstring(signature="appended")
@@ -405,7 +406,7 @@ Activates a standard layout designer ``tool``.
 %End
 
     class ExportResults
-{
+    {
 %Docstring(signature="appended")
 Encapsulates the results of an export operation performed in the
 designer.
@@ -413,9 +414,6 @@ designer.
 .. versionadded:: 3.20
 %End
 
-%TypeHeaderCode
-#include "qgslayoutdesignerinterface.h"
-%End
       public:
         QgsLayoutExporter::ExportResult result;
 

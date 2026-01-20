@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsblockingnetworkrequest.h"
-#include "moc_qgsblockingnetworkrequest.cpp"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsauthmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsvariantutils.h"
-#include <QUrl>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QMutex>
-#include <QWaitCondition>
-#include <QNetworkCacheMetaData>
+
 #include <QAuthenticator>
 #include <QBuffer>
+#include <QMutex>
+#include <QNetworkCacheMetaData>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QWaitCondition>
+
+#include "moc_qgsblockingnetworkrequest.cpp"
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags flags )
   : mFlags( flags )
@@ -158,7 +161,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis:
     return NetworkError;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( request.url().toString() ), 2 );
+  QgsDebugMsgLevel( u"Calling: %1"_s.arg( request.url().toString() ), 2 );
 
   request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, forceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
@@ -322,7 +325,7 @@ void QgsBlockingNetworkRequest::abort()
 
 void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ), 2 );
+  QgsDebugMsgLevel( u"%1 of %2 bytes downloaded."_s.arg( bytesReceived ).arg( bytesTotal < 0 ? u"unknown number of"_s : QString::number( bytesTotal ) ), 2 );
 
   if ( bytesReceived != 0 )
     mGotNonEmptyResponse = true;
@@ -353,11 +356,11 @@ void QgsBlockingNetworkRequest::replyFinished()
 
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
+      QgsDebugMsgLevel( u"reply OK"_s, 2 );
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !QgsVariantUtils::isNull( redirect ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 2 );
+        QgsDebugMsgLevel( u"Request redirected."_s, 2 );
 
         const QUrl &toUrl = redirect.toUrl();
         mReply->request();
@@ -401,7 +404,7 @@ void QgsBlockingNetworkRequest::replyFinished()
           mReply->deleteLater();
           mReply = nullptr;
 
-          QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 2 );
+          QgsDebugMsgLevel( u"redirected: %1 forceRefresh=%2"_s.arg( redirect.toString() ).arg( mForceRefresh ), 2 );
 
           sendRequestToNetworkAccessManager( request );
 
@@ -451,7 +454,7 @@ void QgsBlockingNetworkRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsgLevel( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ), 2 );
+          QgsDebugMsgLevel( u"expirationDate:%1"_s.arg( cmd.expirationDate().toString() ), 2 );
           if ( cmd.expirationDate().isNull() )
           {
             cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( mExpirationSec ) );
@@ -461,12 +464,12 @@ void QgsBlockingNetworkRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "No cache!" ), 2 );
+          QgsDebugMsgLevel( u"No cache!"_s, 2 );
         }
 
 #ifdef QGISDEBUG
         const bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 2 );
+        QgsDebugMsgLevel( u"Reply was cached: %1"_s.arg( fromCache ), 2 );
 #endif
 
         mReplyContent = QgsNetworkReplyContent( mReply );

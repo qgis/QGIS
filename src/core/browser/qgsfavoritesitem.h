@@ -17,10 +17,9 @@
 #ifndef QGSFAVORITESITEM_H
 #define QGSFAVORITESITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdirectoryitem.h"
 
@@ -42,7 +41,7 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
+    QString str = u"<QgsFavoritesItem: \"%1\">"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -103,7 +102,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
      */
     QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    // TODO QGIS 4.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
+    // TODO QGIS 5.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
     // remove the override!
 
     /**

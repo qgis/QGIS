@@ -17,13 +17,13 @@
 #ifndef QGSSETTINGS_H
 #define QGSSETTINGS_H
 
-#include <QSettings>
-#include <QMetaEnum>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
 #include "qgssettingstreenode.h"
+
+#include <QMetaEnum>
+#include <QSettings>
 
 class QgsSettingsProxy;
 
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v;
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v = defaultValue;
@@ -414,7 +414,7 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 #endif

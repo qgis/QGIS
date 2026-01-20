@@ -12,6 +12,7 @@
 
 
 
+
 class QgsQueryResultWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -50,7 +51,7 @@ Creates a QgsQueryResultWidget with the given ``connection``, ownership
 is transferred to the widget.
 %End
 
-    virtual ~QgsQueryResultWidget();
+    ~QgsQueryResultWidget();
 
     void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
 %Docstring
@@ -93,13 +94,13 @@ Hides the result table and shows the error ``title`` and ``message`` in
 the message bar or in the SQL error panel is ``isSqlError`` is set.
 %End
 
- void tokensReady( const QStringList &tokens ) /Deprecated="Since 3.44. , has no effect"/;
+ void tokensReady( const QStringList &tokens ) /Deprecated="Since 3.44. Has no effect."/;
 %Docstring
 Triggered when the threaded API fetcher has new ``tokens`` to add.
 
 .. deprecated:: 3.44
 
-   , has no effect
+   Has no effect.
 %End
 
     void copyResults();

@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgsgui.h"
+
 #include <QProxyStyle>
 
 /**

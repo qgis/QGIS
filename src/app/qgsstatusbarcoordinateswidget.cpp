@@ -13,31 +13,32 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QFont>
+#include "qgsstatusbarcoordinateswidget.h"
+
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgscoordinateutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+
 #include <QFileInfo>
+#include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QRandomGenerator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QSpacerItem>
 #include <QTimer>
 #include <QToolButton>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QRandomGenerator>
 
-#include "qgsstatusbarcoordinateswidget.h"
 #include "moc_qgsstatusbarcoordinateswidget.cpp"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgscoordinateutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgscoordinatereferencesystemutils.h"
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )
-  , mMousePrecisionDecimalPlaces( 0 )
 {
   // calculate the size of two chars
   mTwoCharSize = fontMetrics().boundingRect( 'O' ).width();
@@ -45,7 +46,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
-  mLabel->setObjectName( QStringLiteral( "mCoordsLabel" ) );
+  mLabel->setObjectName( u"mCoordsLabel"_s );
   mLabel->setMinimumWidth( 10 );
   //mCoordsLabel->setMaximumHeight( 20 );
   mLabel->setMargin( 3 );
@@ -65,7 +66,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( this );
-  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
+  mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( u"tracking.svg"_s ) );
   mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
   mToggleExtentsViewButton->setCheckable( true );
   mToggleExtentsViewButton->setAutoRaise( true );
@@ -122,23 +123,23 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     return;
   }
-  else if ( mLineEdit->text() == QLatin1String( "world" ) )
+  else if ( mLineEdit->text() == "world"_L1 )
   {
     world();
   }
-  if ( mLineEdit->text() == QLatin1String( "contributors" ) )
+  if ( mLineEdit->text() == "contributors"_L1 )
   {
     contributors();
   }
-  else if ( mLineEdit->text() == QLatin1String( "hackfests" ) )
+  else if ( mLineEdit->text() == "hackfests"_L1 )
   {
     hackfests();
   }
-  else if ( mLineEdit->text() == QLatin1String( "user groups" ) )
+  else if ( mLineEdit->text() == "user groups"_L1 )
   {
     userGroups();
   }
-  else if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
+  else if ( mLineEdit->text() == "dizzy"_L1 )
   {
     // sometimes you may feel a bit dizzy...
     if ( mDizzyTimer->isActive() )
@@ -153,13 +154,13 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     }
     return;
   }
-  else if ( mLineEdit->text() == QLatin1String( "retro" ) )
+  else if ( mLineEdit->text() == "retro"_L1 )
   {
     mMapCanvas->setProperty( "retro", !mMapCanvas->property( "retro" ).toBool() );
     refreshMapCanvas();
     return;
   }
-  else if ( mLineEdit->text() == QLatin1String( "bored" ) )
+  else if ( mLineEdit->text() == "bored"_L1 )
   {
     // it's friday afternoon and too late to start another piece of work...
     emit weAreBored();
@@ -170,9 +171,9 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   double first = 0;
   double second = 0;
   QString coordText = mLineEdit->text();
-  const thread_local QRegularExpression sMultipleWhitespaceRx( QStringLiteral( " {2,}" ) );
-  coordText.replace( sMultipleWhitespaceRx, QStringLiteral( " " ) );
-  coordText.remove( QStringLiteral( "°" ) );
+  const thread_local QRegularExpression sMultipleWhitespaceRx( u" {2,}"_s );
+  coordText.replace( sMultipleWhitespaceRx, u" "_s );
+  coordText.remove( u"°"_s );
 
   QStringList parts = coordText.split( ',' );
   if ( parts.size() == 2 )
@@ -268,10 +269,10 @@ void QgsStatusBarCoordinatesWidget::contributors()
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
+  const QString fileName = QgsApplication::pkgDataPath() + u"/resources/data/contributors.json"_s;
   const QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Contributors" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Contributors" ), u"ogr"_s, options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
@@ -284,11 +285,11 @@ void QgsStatusBarCoordinatesWidget::world()
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  const QString fileName = QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s;
   const QFileInfo fileInfo = QFileInfo( fileName );
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.forceReadOnly = true;
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "World Map" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "World Map" ), u"ogr"_s, options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
 }
@@ -299,10 +300,10 @@ void QgsStatusBarCoordinatesWidget::hackfests()
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
+  const QString fileName = QgsApplication::pkgDataPath() + u"/resources/data/qgis-hackfests.json"_s;
   const QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Hackfests" ), u"ogr"_s, options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
 }
@@ -313,30 +314,30 @@ void QgsStatusBarCoordinatesWidget::userGroups()
   {
     return;
   }
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  const QString fileName = QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s;
   const QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "User Groups" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "User Groups" ), u"ogr"_s, options );
 
-  const QString fileNameData = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups_data.json" );
+  const QString fileNameData = QgsApplication::pkgDataPath() + u"/resources/data/user_groups_data.json"_s;
   const QFileInfo fileInfoData = QFileInfo( fileNameData );
-  QgsVectorLayer *layerData = new QgsVectorLayer( fileInfoData.absoluteFilePath(), tr( "user_groups_data" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layerData = new QgsVectorLayer( fileInfoData.absoluteFilePath(), tr( "user_groups_data" ), u"ogr"_s, options );
 
   // Register layers with the layers registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer << layerData );
 
   // Create join
   QgsVectorLayerJoinInfo joinInfo;
-  joinInfo.setTargetFieldName( QStringLiteral( "iso_a2" ) );
+  joinInfo.setTargetFieldName( u"iso_a2"_s );
   joinInfo.setJoinLayer( layerData );
-  joinInfo.setJoinFieldName( QStringLiteral( "country" ) );
+  joinInfo.setJoinFieldName( u"country"_s );
   joinInfo.setUsingMemoryCache( true );
-  joinInfo.setPrefix( QStringLiteral( "ug_" ) );
+  joinInfo.setPrefix( u"ug_"_s );
   joinInfo.setJoinFieldNamesSubset( nullptr ); // Use all join fields
   layer->addJoin( joinInfo );
 
   // Load QML for polygon symbology and maptips
-  const QString fileNameStyle = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups.qml" );
+  const QString fileNameStyle = QgsApplication::pkgDataPath() + u"/resources/data/user_groups.qml"_s;
   bool styleFlag = false;
   layer->loadNamedStyle( fileNameStyle, styleFlag, true );
 }
@@ -346,7 +347,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
   if ( flag )
   {
     //extents view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ) );
+    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( u"extents.svg"_s ) );
     mLineEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
     mLineEdit->setReadOnly( true );
     showExtent();
@@ -354,7 +355,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
   else
   {
     //mouse cursor pos view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
+    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( u"tracking.svg"_s ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
     mLabel->setText( tr( "Coordinate" ) );

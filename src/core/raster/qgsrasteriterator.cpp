@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasteriterator.h"
-#include "qgsrasterinterface.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels )
   : mInput( input )
@@ -154,7 +155,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRo
 
 bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( block )
     block->reset();
   //get partinfo
@@ -194,6 +195,10 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
     tileRows = ( tileRows / mSnapToPixelFactor ) * mSnapToPixelFactor;
   }
 
+  pInfo.previousIteratedPixels = pInfo.iteratedPixels;
+  pInfo.currentBlockSize = static_cast< std::size_t>( tileColumns ) * static_cast< std::size_t >( tileRows );
+  pInfo.iteratedPixels += pInfo.currentBlockSize;
+
   const qgssize tileRight = tileTopLeftColumn + tileColumns;
   const qgssize tileBottom = tileTopLeftRow + tileRows;
 
@@ -214,7 +219,7 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
       return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
+  QgsDebugMsgLevel( u"nCols = %1 nRows = %2"_s.arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle
   const QgsRectangle viewPortExtent = mExtent;
@@ -253,15 +258,32 @@ void QgsRasterIterator::stopRasterRead( int bandNumber )
   removePartInfo( bandNumber );
 }
 
-double QgsRasterIterator::progress( int bandNumber ) const
+double QgsRasterIterator::progress( int bandNumber, double currentBlockProgress ) const
 {
-  const auto partIt = mRasterPartInfos.find( bandNumber );
-  if ( partIt == mRasterPartInfos.constEnd() )
+  if ( currentBlockProgress < 0 )
   {
-    return 0;
+    const auto partIt = mRasterPartInfos.find( bandNumber );
+    if ( partIt == mRasterPartInfos.constEnd() )
+    {
+      return 0;
+    }
+    const std::size_t totalSize = static_cast< std::size_t >( partIt->nCols ) * static_cast< std::size_t >( partIt->nRows );
+    return static_cast< double >( partIt->iteratedPixels ) / static_cast< double >( totalSize );
   }
+  else
+  {
+    const auto partIt = mRasterPartInfos.find( bandNumber );
+    if ( partIt == mRasterPartInfos.constEnd() )
+    {
+      return 0;
+    }
 
-  return ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) ) * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) ) / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
+    const std::size_t totalSize = static_cast< std::size_t >( partIt->nCols ) * static_cast< std::size_t >( partIt->nRows );
+    const double startOfBlockProgress = static_cast< double >( partIt->previousIteratedPixels ) / static_cast< double >( totalSize );
+    const double currentBlockProgressFraction = currentBlockProgress * static_cast< double >( partIt->currentBlockSize ) / static_cast< double >( totalSize );
+
+    return startOfBlockProgress + currentBlockProgressFraction;
+  }
 }
 
 void QgsRasterIterator::removePartInfo( int bandNumber )

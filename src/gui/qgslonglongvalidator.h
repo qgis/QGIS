@@ -21,9 +21,11 @@
 #define QGSLONGLONGVALIDATOR_H
 
 #include <limits>
-#include <QValidator>
-#include <QLocale>
+
 #include "qgis_gui.h"
+
+#include <QLocale>
+#include <QValidator>
 
 /**
  * \ingroup gui
@@ -58,7 +60,7 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       if ( t < 0 && input.startsWith( '+' ) )
         return Invalid;
 
-      if ( input == QLatin1String( "-" ) || input == QLatin1String( "+" ) )
+      if ( input == "-"_L1 || input == "+"_L1 )
         return Intermediate;
 
 

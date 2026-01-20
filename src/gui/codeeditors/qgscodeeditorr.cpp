@@ -13,15 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorr.h"
-#include "moc_qgscodeeditorr.cpp"
 
-#include <QWidget>
-#include <QString>
+#include "qgsapplication.h"
+
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexerjson.h>
 
+#include "moc_qgscodeeditorr.cpp"
 
 QgsCodeEditorR::QgsCodeEditorR( QWidget *parent, Mode mode )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding, mode )

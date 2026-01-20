@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsterraintextureimage_p.h"
-#include "moc_qgsterraintextureimage_p.cpp"
+
+#include "qgsterraintexturegenerator_p.h"
 
 #include <Qt3DRender/QTextureImageDataGenerator>
 
-#include "qgsterraintexturegenerator_p.h"
+#include "moc_qgsterraintextureimage_p.cpp"
 
 ///@cond PRIVATE
 
@@ -48,11 +49,7 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
 
     qintptr id() const override
     {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TerrainTextureImageDataGenerator>::id );
-#else
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TerrainTextureImageDataGenerator>::id );
-#endif
     }
 
     bool operator==( const QTextureImageDataGenerator &other ) const override

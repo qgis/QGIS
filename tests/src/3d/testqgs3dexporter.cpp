@@ -13,11 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
@@ -30,8 +25,10 @@
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrasterlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
 
 class TestQgs3DExporter : public QgsTest
 {
@@ -39,7 +36,7 @@ class TestQgs3DExporter : public QgsTest
 
   public:
     TestQgs3DExporter()
-      : QgsTest( QStringLiteral( "3D Exporter Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Exporter Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -50,7 +47,7 @@ class TestQgs3DExporter : public QgsTest
     void test3DSceneExporterFlatTerrain();
 
   private:
-    void do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
+    void do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
 
     QgsVectorLayer *mLayerBuildings = nullptr;
 };
@@ -86,13 +83,12 @@ void TestQgs3DExporter::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
+void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
 {
   // 3d renderer must be replaced to have the tiling updated
   QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
   QgsVectorLayer3DRenderer *newRenderer3d = new QgsVectorLayer3DRenderer( renderer3d->symbol()->clone() );
   QgsVectorLayer3DTilingSettings tilingSettings;
-  tilingSettings.setZoomLevelsCount( zoomLevelsCount );
   tilingSettings.setShowBoundingBoxes( true );
   newRenderer3d->setTilingSettings( tilingSettings );
   layerPoly->setRenderer3D( newRenderer3d );
@@ -111,12 +107,12 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
   if ( terrainEntity )
     exporter.parseTerrain( terrainEntity, "DEM_Tile" );
 
-  QString objFileName = QString( "%1-%2" ).arg( testName ).arg( zoomLevelsCount );
+  const QString objFileName = testName;
   const bool saved = exporter.save( objFileName, QDir::tempPath(), 3 );
   QVERIFY( saved );
 
   size_t sum = 0;
-  for ( auto o : qAsConst( exporter.mObjects ) )
+  for ( Qgs3DExportObject *o : std::as_const( exporter.mObjects ) )
   {
     if ( !terrainEntity ) // not compatible with terrain entity
       QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
@@ -128,16 +124,16 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
   QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
 
   QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath(), objFileName ) );
-  file.open( QIODevice::ReadOnly | QIODevice::Text );
+  QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
   QTextStream fileStream( &file );
 
   // check the generated obj file
-  QGSCOMPARELONGSTR( testName.toStdString().c_str(), QString( "%1.obj" ).arg( objFileName ), fileStream.readAll().toUtf8() );
+  QGSCOMPARELONGSTR( testName.toStdString().c_str(), u"%1.obj"_s.arg( testName ), fileStream.readAll().toUtf8() );
 }
 
 void TestQgs3DExporter::test3DSceneExporter()
 {
-  QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( "/3d/polygons.gpkg.gz" ), "polygons", "ogr" );
+  QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( u"/3d/polygons.gpkg.gz"_s ), u"polygons"_s, u"ogr"_s );
   QVERIFY( layerPoly->isValid() );
 
   const QgsRectangle fullExtent = layerPoly->extent();
@@ -177,16 +173,7 @@ void TestQgs3DExporter::test3DSceneExporter()
   const int nbFaces = 165;
   const int nbFeat = 3;
 
-  // =========== check with 1 big tile ==> 1 exported object
-  do3DSceneExport( "scene_export", 1, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 4 tiles ==> 1 exported objects
-  do3DSceneExport( "scene_export", 2, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 9 tiles ==> 3 exported objects
-  do3DSceneExport( "scene_export", 3, 3, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 16 tiles ==> 3 exported objects
-  do3DSceneExport( "scene_export", 4, 3, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 25 tiles ==> 3 exported objects
-  do3DSceneExport( "scene_export", 5, 3, nbFeat, nbFaces, scene, layerPoly, &engine );
+  do3DSceneExport( u"scene_export"_s, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -194,7 +181,7 @@ void TestQgs3DExporter::test3DSceneExporter()
 
 void TestQgs3DExporter::test3DSceneExporterBig()
 {
-  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( u"/3d/dtm.tif"_s ), u"dtm"_s, u"gdal"_s );
   QVERIFY( layerDtm->isValid() );
 
   const QgsRectangle fullExtent = layerDtm->extent();
@@ -235,16 +222,7 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   const int nbFaces = 19869;
   const int nbFeat = 401;
 
-  // =========== check with 1 big tile ==> 1 exported object
-  do3DSceneExport( "big_scene_export", 1, 1, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 4 tiles ==> 4 exported objects
-  do3DSceneExport( "big_scene_export", 2, 4, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 9 tiles ==> 14 exported objects
-  do3DSceneExport( "big_scene_export", 3, 14, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 16 tiles ==> 32 exported objects
-  do3DSceneExport( "big_scene_export", 4, 32, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 25 tiles ==> 70 exported objects
-  do3DSceneExport( "big_scene_export", 5, 70, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
+  do3DSceneExport( u"big_scene_export"_s, 1, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -252,7 +230,7 @@ void TestQgs3DExporter::test3DSceneExporterBig()
 
 void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
 {
-  QgsRasterLayer *layerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  QgsRasterLayer *layerRgb = new QgsRasterLayer( testDataPath( u"/3d/rgb.tif"_s ), u"rgb"_s, u"gdal"_s );
   QVERIFY( layerRgb->isValid() );
 
   const QgsRectangle fullExtent = layerRgb->extent();
@@ -290,9 +268,9 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
 
-  do3DSceneExport( "flat_terrain_scene_export", 5, 70, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
+  do3DSceneExport( u"flat_terrain_scene_export"_s, 2, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
 
   delete scene;
   mapSettings.setLayers( {} );

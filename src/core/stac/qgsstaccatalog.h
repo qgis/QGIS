@@ -20,8 +20,8 @@
 #include "qgis_core.h"
 #include "qgsstacobject.h"
 
-#include <QStringList>
 #include <QSet>
+#include <QStringList>
 
 /**
  * \ingroup core

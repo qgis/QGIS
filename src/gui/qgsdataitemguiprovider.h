@@ -16,14 +16,15 @@
 #ifndef QGSDATAITEMGUIPROVIDER_H
 #define QGSDATAITEMGUIPROVIDER_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QList>
-#include <QWidget>
+#include <QMenu>
 #include <QMimeData>
 #include <QString>
-#include <QMenu>
+#include <QWidget>
 
 class QgsDataItem;
 class QgsMessageBar;

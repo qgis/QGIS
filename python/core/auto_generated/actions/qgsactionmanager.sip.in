@@ -101,9 +101,12 @@ Returns the layer
 Writes the actions out in XML format
 %End
 
-    bool readXml( const QDomNode &layer_node );
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads the actions in in XML format
+
+:param layer_node: the layer's xml node
+:param context: The readwrite context (Since QGIS 4.0)
 %End
 
     QgsAction action( QUuid id ) const;

@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgscolorbrewercolorrampdialog.h"
-#include "moc_qgscolorbrewercolorrampdialog.cpp"
 
 #include "qgscolorramp.h"
-#include "qgssymbollayerutils.h"
 #include "qgshelp.h"
+#include "qgssymbollayerutils.h"
 
 #include <QAbstractButton>
 #include <QDialogButtonBox>
+
+#include "moc_qgscolorbrewercolorrampdialog.cpp"
 
 #if 0 // unused
 static void updateColorButton( QAbstractButton *button, QColor color )
@@ -146,5 +147,5 @@ QDialogButtonBox *QgsColorBrewerColorRampDialog::buttonBox() const
 
 void QgsColorBrewerColorRampDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
+  QgsHelp::openHelp( u"style_library/style_manager.html#setting-a-color-ramp"_s );
 }

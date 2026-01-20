@@ -8,6 +8,7 @@
 
 
 
+
 class QgsRasterFileWriter
 {
 %Docstring(signature="appended")
@@ -198,7 +199,7 @@ Returns the pyramid building option.
 .. seealso:: :py:func:`setBuildPyramidsFlag`
 %End
 
-    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f );
+    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption flag );
 %Docstring
 Sets the pyramid building option.
 

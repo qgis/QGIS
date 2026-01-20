@@ -17,15 +17,18 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcher.h"
-#include "moc_qgsnetworkcontentfetcher.cpp"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsmessagelog.h"
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsvariantutils.h"
+
 #include <QNetworkReply>
 #include <QTextCodec>
+
+#include "moc_qgsnetworkcontentfetcher.cpp"
 
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
@@ -40,7 +43,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
 {
   QNetworkRequest req( url );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsNetworkContentFetcher" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsNetworkContentFetcher"_s );
 
   fetchContent( req, authcfg );
 }

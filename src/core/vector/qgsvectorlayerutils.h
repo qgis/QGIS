@@ -17,9 +17,9 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
+#include "qgsfeaturesink.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -109,6 +109,16 @@ class CORE_EXPORT QgsVectorLayerUtils
         QgsAttributeMap mAttributes;
     };
 
+    /**
+     * Flags used with the fieldIsEditable() function
+     * \since QGIS 4.0
+     */
+    enum class FieldIsEditableFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      IgnoreLayerEditability = 1 << 0, //!< Ignores the vector layer's editable state
+    };
+    Q_DECLARE_FLAGS( FieldIsEditableFlags, FieldIsEditableFlag )
+
     // SIP does not like "using", use legacy typedef
     //! Alias for list of QgsFeatureData
     typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
@@ -134,6 +144,21 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \see getDoubleValues
      */
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Fetches all unique values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string evaluating to a double value
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
+     * \param limit Maximum number of unique values to return. Use -1 for no limit.
+     * \param feedback optional feedback object to allow cancellation
+     * \returns list of unique fetched values
+     * \see getValues
+     * \since QGIS 4.0
+     */
+    static QList< QVariant > uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok SIP_OUT, bool selectedOnly = false, int limit = -1, QgsFeedback *feedback = nullptr );
 
     /**
      * Fetches all double values from a specified field name or expression. Null values or
@@ -309,14 +334,18 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
-     * Tests whether a field is editable for a particular \a feature.
+     * Tests whether a field is editable for a particular feature.
      *
-     * \returns TRUE if the field at index \a fieldIndex from \a layer
-     * is editable, FALSE if the field is read only.
+     * \param layer The vector layer
+     * \param fieldIndex The field index
+     * \param feature The feature
+     * \param flags Additional flags modifying the editability check behavior (since QGIS 4.0)
+     *
+     * \returns TRUE if the field is editable, FALSE if the field is read only.
      *
      * \since QGIS 3.10
      */
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() );
 
     /**
      * Returns TRUE if the field at index \a fieldIndex from \a layer
@@ -490,7 +519,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     const int fieldIndex = a0->lookupField( *a1 );
     if ( fieldIndex == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"Field %1 does not exist."_s.arg( *a1 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -517,7 +546,7 @@ class CORE_EXPORT QgsVectorLayerUtils
 
         default:
         {
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Field type (%1) cannot be converted to a data array."_s.arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
           sipIsErr = 1;
         }
       }

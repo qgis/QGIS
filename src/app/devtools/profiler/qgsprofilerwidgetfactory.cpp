@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsprofilerwidgetfactory.h"
-#include "qgsprofilerpanelwidget.h"
+
 #include "qgsapplication.h"
+#include "qgsprofilerpanelwidget.h"
 
 QgsProfilerWidgetFactory::QgsProfilerWidgetFactory( QgsRuntimeProfiler *profiler )
-  : QgsDevToolWidgetFactory( QObject::tr( "Profiler" ), QgsApplication::getThemeIcon( QStringLiteral( "mIconStopwatch.svg" ) ) )
+  : QgsDevToolWidgetFactory( QObject::tr( "Profiler" ), QgsApplication::getThemeIcon( u"mIconStopwatch.svg"_s ) )
   , mProfiler( profiler )
 {
 }

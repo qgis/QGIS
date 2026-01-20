@@ -65,7 +65,7 @@ class QWT_EXPORT QwtPlotMultiBarChart
     explicit QwtPlotMultiBarChart( const QString& title = QString() );
     explicit QwtPlotMultiBarChart( const QwtText& title );
 
-    virtual ~QwtPlotMultiBarChart();
+    ~QwtPlotMultiBarChart() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

@@ -14,34 +14,36 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerchunkloader_p.h"
-#include "moc_qgsannotationlayerchunkloader_p.cpp"
+
 #include "qgs3dutils.h"
-#include "qgsannotationitem.h"
-#include "qgstessellatedpolygongeometry.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-#include "qgslogger.h"
-#include "qgsannotationlayer.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgsannotationitem.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlinetextitem.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationpointtextitem.h"
-#include "qgsannotationlinetextitem.h"
 #include "qgsannotationrectangletextitem.h"
 #include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfonttextureatlasgenerator.h"
 #include "qgsgeos.h"
 #include "qgsgeotransform.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgstextureatlasgenerator.h"
-#include "qgsfonttextureatlasgenerator.h"
-#include "qgstextdocument.h"
-#include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
+#include "qgslinevertexdata_p.h"
+#include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgstessellatedpolygongeometry.h"
+#include "qgstextdocument.h"
+#include "qgstextureatlasgenerator.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsannotationlayerchunkloader_p.cpp"
 
 ///@cond PRIVATE
 
@@ -99,7 +101,7 @@ void QgsAnnotationLayerChunkLoader::start()
   }
   catch ( QgsCsException &e )
   {
-    QgsDebugError( QStringLiteral( "Error transforming annotation layer extent to 3d map extent: %1" ).arg( e.what() ) );
+    QgsDebugError( u"Error transforming annotation layer extent to 3d map extent: %1"_s.arg( e.what() ) );
     return;
   }
 
@@ -131,7 +133,7 @@ void QgsAnnotationLayerChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QFuture<void> future = QtConcurrent::run( [this, rect, layerToMapTransform, zOffset, altitudeClamping, showCallouts, textFormat] {
-    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "Annotation layer chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( u"3D"_s, u"Annotation layer chunk load"_s );
 
     std::vector< Billboard > billboards;
     billboards.reserve( mItemsToRender.size() );
@@ -324,7 +326,7 @@ void QgsAnnotationLayerChunkLoader::start()
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Error encountered building texture atlas" ) );
+        QgsDebugError( u"Error encountered building texture atlas"_s );
         mBillboardAtlas = QImage();
       }
     }
@@ -363,7 +365,7 @@ void QgsAnnotationLayerChunkLoader::start()
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Error encountered building font texture atlas" ) );
+        QgsDebugError( u"Error encountered building font texture atlas"_s );
         mTextBillboardAtlas = QImage();
       }
     }
@@ -522,7 +524,7 @@ QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory( cons
   {
     // TODO: add support for handling of annotation layers
     // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
-    QgsDebugError( QStringLiteral( "Annotation layers in globe scenes are not supported yet!" ) );
+    QgsDebugError( u"Annotation layers in globe scenes are not supported yet!"_s );
     setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, leafLevel );
     return;
   }
@@ -575,7 +577,7 @@ bool QgsAnnotationLayerChunkedEntity::applyTerrainOffset() const
 
 void QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
+  QgsDebugMsgLevel( u"QgsAnnotationLayerChunkedEntity::onTerrainElevationOffsetChanged"_s, 2 );
   float newOffset = static_cast<float>( qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset() );
   if ( !applyTerrainOffset() )
   {

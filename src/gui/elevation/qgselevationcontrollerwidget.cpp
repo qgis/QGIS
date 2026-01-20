@@ -16,22 +16,24 @@
  ***************************************************************************/
 
 #include "qgselevationcontrollerwidget.h"
-#include "moc_qgselevationcontrollerwidget.cpp"
-#include "qgsrangeslider.h"
-#include "qgsrange.h"
-#include "qgsproject.h"
-#include "qgsprojectelevationproperties.h"
+
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
+#include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsrange.h"
+#include "qgsrangeslider.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QToolButton>
 #include <QEvent>
-#include <QMouseEvent>
-#include <QMenu>
-#include <QPainterPath>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainterPath>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgselevationcontrollerwidget.cpp"
 
 QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   : QWidget( parent )
@@ -41,7 +43,7 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
 
   mConfigureButton = new QToolButton();
   mConfigureButton->setPopupMode( QToolButton::InstantPopup );
-  mConfigureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+  mConfigureButton->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
   QHBoxLayout *hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
   hl->addWidget( mConfigureButton );

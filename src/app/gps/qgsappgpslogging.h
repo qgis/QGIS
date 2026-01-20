@@ -16,12 +16,11 @@
 #ifndef QGSAPPGPSLOGGING_H
 #define QGSAPPGPSLOGGING_H
 
-#include <QObject>
-#include <QTextStream>
-
 #include "qgis.h"
 #include "qgis_app.h"
 
+#include <QObject>
+#include <QTextStream>
 
 class QFile;
 

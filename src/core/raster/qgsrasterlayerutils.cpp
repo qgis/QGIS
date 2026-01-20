@@ -16,11 +16,15 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerutils.h"
+
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsrectangle.h"
+#include "qgsthreadingutils.h"
 
 int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   QgsRasterLayer *layer,
@@ -139,9 +143,9 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
 
       for ( int band : temporalBands )
       {
-        bandScope->setVariable( QStringLiteral( "band" ), band );
-        bandScope->setVariable( QStringLiteral( "band_name" ), layer->dataProvider()->displayBandName( band ) );
-        bandScope->setVariable( QStringLiteral( "band_description" ), layer->dataProvider()->bandDescription( band ) );
+        bandScope->setVariable( u"band"_s, band );
+        bandScope->setVariable( u"band_name"_s, layer->dataProvider()->displayBandName( band ) );
+        bandScope->setVariable( u"band_description"_s, layer->dataProvider()->bandDescription( band ) );
 
         bool ok = false;
         const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
@@ -168,4 +172,110 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
     }
   }
   BUILTIN_UNREACHABLE;
+}
+
+void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
+    int band,
+    const QgsRasterMinMaxOrigin &mmo,
+    Qgis::RasterRangeLimit limits,
+    const QgsRectangle &extent,
+    int sampleSize,
+    double &min SIP_OUT,
+    double &max SIP_OUT )
+{
+  min = std::numeric_limits<double>::quiet_NaN();
+  max = std::numeric_limits<double>::quiet_NaN();
+
+  if ( !provider )
+    return;
+
+  QGIS_CHECK_OTHER_QOBJECT_THREAD_ACCESS( provider );
+
+  if ( limits == Qgis::RasterRangeLimit::MinimumMaximum )
+  {
+    QgsRasterBandStats myRasterBandStats = provider->bandStatistics( band, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, extent, sampleSize );
+    // Check if statistics were actually gathered, None means a failure
+    if ( myRasterBandStats.statsGathered == static_cast< int >( Qgis::RasterBandStatistic::NoStatistic ) )
+    {
+      // Best guess we can do
+      switch ( provider->dataType( band ) )
+      {
+        case Qgis::DataType::Byte:
+        {
+          myRasterBandStats.minimumValue = 0;
+          myRasterBandStats.maximumValue = 255;
+          break;
+        }
+        case Qgis::DataType::Int8:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int8_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int8_t>::max();
+          break;
+        }
+        case Qgis::DataType::UInt16:
+        {
+          myRasterBandStats.minimumValue = 0;
+          myRasterBandStats.maximumValue = std::numeric_limits<uint16_t>::max();
+          break;
+        }
+        case Qgis::DataType::UInt32:
+        {
+          myRasterBandStats.minimumValue = 0;
+          myRasterBandStats.maximumValue = std::numeric_limits<uint32_t>::max();
+          break;
+        }
+        case Qgis::DataType::Int16:
+        case Qgis::DataType::CInt16:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int16_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int16_t>::max();
+          break;
+        }
+        case Qgis::DataType::Int32:
+        case Qgis::DataType::CInt32:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<int32_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<int32_t>::max();
+          break;
+        }
+        case Qgis::DataType::Float32:
+        case Qgis::DataType::CFloat32:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<float_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<float_t>::max();
+          break;
+        }
+        case Qgis::DataType::Float64:
+        case Qgis::DataType::CFloat64:
+        {
+          myRasterBandStats.minimumValue = std::numeric_limits<double_t>::lowest();
+          myRasterBandStats.maximumValue = std::numeric_limits<double_t>::max();
+          break;
+        }
+        case Qgis::DataType::ARGB32:
+        case Qgis::DataType::ARGB32_Premultiplied:
+        case Qgis::DataType::UnknownDataType:
+        {
+          // Nothing to guess
+          break;
+        }
+      }
+    }
+    min = myRasterBandStats.minimumValue;
+    max = myRasterBandStats.maximumValue;
+  }
+  else if ( limits == Qgis::RasterRangeLimit::StdDev )
+  {
+    const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( band, Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, extent, sampleSize );
+    min = myRasterBandStats.mean - ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
+    max = myRasterBandStats.mean + ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
+  }
+  else if ( limits == Qgis::RasterRangeLimit::CumulativeCut )
+  {
+    const double myLower = mmo.cumulativeCutLower();
+    const double myUpper = mmo.cumulativeCutUpper();
+    QgsDebugMsgLevel( u"myLower = %1 myUpper = %2"_s.arg( myLower ).arg( myUpper ), 4 );
+    provider->cumulativeCut( band, myLower, myUpper, min, max, extent, sampleSize );
+  }
+  QgsDebugMsgLevel( u"band = %1 min = %2 max = %3"_s.arg( band ).arg( min ).arg( max ), 4 );
 }

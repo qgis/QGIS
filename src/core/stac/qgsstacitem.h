@@ -18,12 +18,12 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include "qgsrange.h"
-#include "qgsstacobject.h"
-#include "qgsstacasset.h"
-#include "qgsgeometry.h"
 #include "qgsbox3d.h"
+#include "qgsgeometry.h"
 #include "qgsmimedatautils.h"
+#include "qgsrange.h"
+#include "qgsstacasset.h"
+#include "qgsstacobject.h"
 
 /**
  * \ingroup core

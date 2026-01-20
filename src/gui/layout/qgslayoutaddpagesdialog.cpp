@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayoutaddpagesdialog.h"
-#include "moc_qgslayoutaddpagesdialog.cpp"
-#include "qgspagesizeregistry.h"
-#include "qgssettings.h"
+
+#include "qgshelp.h"
 #include "qgslayout.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpagecollection.h"
-#include "qgshelp.h"
 #include "qgslayoutrendercontext.h"
+#include "qgspagesizeregistry.h"
+#include "qgssettings.h"
+
+#include "moc_qgslayoutaddpagesdialog.cpp"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -38,7 +40,7 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
     mPageSizeComboBox->addItem( size.displayName, size.name );
   }
   mPageSizeComboBox->addItem( tr( "Custom" ) );
-  mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( QStringLiteral( "A4" ) ) );
+  mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( u"A4"_s ) );
   pageSizeChanged( mPageSizeComboBox->currentIndex() );
   orientationChanged( 1 );
 
@@ -166,5 +168,5 @@ void QgsLayoutAddPagesDialog::setToCustomSize()
 
 void QgsLayoutAddPagesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#working-with-the-page-properties" ) );
+  QgsHelp::openHelp( u"print_composer/overview_composer.html#working-with-the-page-properties"_s );
 }

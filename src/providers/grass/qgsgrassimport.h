@@ -16,16 +16,15 @@
 #ifndef QGSGRASSIMPORT_H
 #define QGSGRASSIMPORT_H
 
-#include <QFutureWatcher>
-#include <QObject>
-
+#include "qgsanimatedicon.h"
 #include "qgsdataitem.h"
+#include "qgsgrass.h"
 #include "qgslogger.h"
 #include "qgsrasterpipe.h"
 #include "qgsvectordataprovider.h"
-#include "qgsanimatedicon.h"
 
-#include "qgsgrass.h"
+#include <QFutureWatcher>
+#include <QObject>
 
 class GRASS_LIB_EXPORT QgsGrassImportIcon : public QgsAnimatedIcon
 {
@@ -46,7 +45,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
     QgsGrassImportProgress( QProcess *process, QObject *parent = nullptr );
 
     void setProcess( QProcess *process );
-    QString progressHtml() { return mProgressHtml; }
+    QString progressHtml() const { return mProgressHtml; }
 
     void append( const QString &html );
     void setRange( int min, int max );
@@ -64,9 +63,9 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
     QString mProgressHtml;
     // temporary part of progress, e.g. number of features written.
     QString mProgressTmpHtml;
-    int mProgressMin;
-    int mProgressMax;
-    int mProgressValue;
+    int mProgressMin = 0;
+    int mProgressMax = 0;
+    int mProgressValue = 0;
 };
 
 class GRASS_LIB_EXPORT QgsGrassImport : public QObject
@@ -81,7 +80,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // source description for error message purposes (maybe uri or something similar)
     virtual QString srcDescription() const = 0;
     // get error if import failed
-    QString error();
+    QString error() const;
     virtual QStringList names() const;
     bool isCanceled() const;
     QgsGrassImportProgress *progress() { return mProgress; }
@@ -105,7 +104,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     void addProgressRow( QString html );
     QgsGrassObject mGrassObject;
     QString mError;
-    bool mCanceled;
+    bool mCanceled = false;
     QProcess *mProcess = nullptr;
     QgsGrassImportProgress *mProgress = nullptr;
     QFutureWatcher<bool> *mFutureWatcher = nullptr;

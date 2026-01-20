@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgseptproviderguimetadata.h"
+
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
 QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "ept" ) )
+  : QgsProviderGuiMetadata( u"ept"_s )
 {
 }
 

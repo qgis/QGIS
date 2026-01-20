@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindexkdbush.h"
+#include "qgsspatialindexkdbush_p.h"
+#include "qgstest.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsspatialindexkdbush_p.h"
+
+#include <QObject>
+#include <QString>
 
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
@@ -81,7 +81,7 @@ class TestQgsSpatialIndexKdBush : public QObject
 
     void testQuery()
     {
-      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), u"memory"_s );
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
       const QgsSpatialIndexKDBush index( *vl->dataProvider() );
@@ -113,9 +113,55 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( testContains( fids5, 4, QgsPointXY( 1, -1 ) ) );
     }
 
+    void testManualInsertion()
+    {
+      QgsSpatialIndexKDBush index;
+
+      for ( const QgsFeature &f : _pointFeatures() )
+      {
+        QVERIFY( index.addFeature( f.id(), f.geometry().asPoint() ) );
+      }
+
+      QVERIFY( index.size() == 4 );
+
+      // before finalization should not crash when querying:
+      QCOMPARE( index.intersects( QgsRectangle( 0, 0, 10, 10 ) ).count(), 0 );
+      QCOMPARE( index.within( QgsPointXY( 0, 0 ), 2 ).count(), 0 );
+
+      index.finalize();
+
+      // can't add features after finalization
+      QVERIFY( !index.addFeature( 99, QgsPointXY( 1, 2 ) ) );
+
+      const QList<QgsSpatialIndexKDBushData> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( fids.count() == 1 );
+      QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
+
+      const QList<QgsSpatialIndexKDBushData> fids2 = index.intersects( QgsRectangle( -10, -10, 0, 10 ) );
+      QCOMPARE( fids2.count(), 2 );
+      QVERIFY( testContains( fids2, 2, QgsPointXY( -1, 1 ) ) );
+      QVERIFY( testContains( fids2, 3, QgsPointXY( -1, -1 ) ) );
+
+      const QList<QgsSpatialIndexKDBushData> fids3 = index.within( QgsPointXY( 0, 0 ), 2 );
+      QCOMPARE( fids3.count(), 4 );
+      QVERIFY( testContains( fids3, 1, QgsPointXY( 1, 1 ) ) );
+      QVERIFY( testContains( fids3, 2, QgsPointXY( -1, 1 ) ) );
+      QVERIFY( testContains( fids3, 3, QgsPointXY( -1, -1 ) ) );
+      QVERIFY( testContains( fids3, 4, QgsPointXY( 1, -1 ) ) );
+
+      const QList<QgsSpatialIndexKDBushData> fids4 = index.within( QgsPointXY( 0, 0 ), 1 );
+      QCOMPARE( fids4.count(), 0 );
+
+      const QList<QgsSpatialIndexKDBushData> fids5 = index.within( QgsPointXY( -1, -1 ), 2.1 );
+      QCOMPARE( fids5.count(), 3 );
+      QVERIFY( testContains( fids5, 2, QgsPointXY( -1, 1 ) ) );
+      QVERIFY( testContains( fids5, 3, QgsPointXY( -1, -1 ) ) );
+      QVERIFY( testContains( fids5, 4, QgsPointXY( 1, -1 ) ) );
+    }
+
     void testCopy()
     {
-      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), QStringLiteral( "memory" ) );
+      auto vl = std::make_unique<QgsVectorLayer>( "Point", QString(), u"memory"_s );
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
 
@@ -145,7 +191,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( indexCopy->d->ref == 1 );
 
       // assignment operator
-      auto vl2 = std::make_unique<QgsVectorLayer>( "Point", QString(), QStringLiteral( "memory" ) );
+      auto vl2 = std::make_unique<QgsVectorLayer>( "Point", QString(), u"memory"_s );
       QgsSpatialIndexKDBush index3( *vl2->dataProvider() );
       QVERIFY( index3.size() == 0 );
       fids = index3.intersects( QgsRectangle( 0, 0, 10, 10 ) );

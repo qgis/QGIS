@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCurve: QgsAbstractGeometry /Abstract/
 {
 %Docstring(signature="appended")
@@ -128,6 +129,14 @@ Returns the number of points in the curve.
 %Docstring
 Sums up the area of the curve by iterating over the vertices (shoelace
 formula).
+%End
+
+    virtual void sumUpArea3D( double &sum /Out/ ) const = 0;
+%Docstring
+Sums up the 3d area of the curve by iterating over the vertices
+(shoelace formula).
+
+.. versionadded:: 4.0
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const;
@@ -330,6 +339,27 @@ given index.
    is undefined.
 
 .. versionadded:: 3.20
+%End
+
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const = 0;
+%Docstring
+Returns the distance along the curve between two vertices.
+
+This method calculates the accumulated distance along the curve from one
+vertex to another. For circular strings, this includes following the arc
+path precisely.
+
+.. note::
+
+   For 3D geometries, the distance calculation includes the Z coordinate component.
+
+:param fromVertex: the starting vertex ID
+:param toVertex: the ending vertex ID
+
+:return: distance along the curve between the vertices, or -1 if either
+         vertex is invalid
+
+.. versionadded:: 4.00
 %End
 
 

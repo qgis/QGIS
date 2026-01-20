@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgstiledsceneprovidermetadata.h"
-#include "moc_qgstiledsceneprovidermetadata.cpp"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsapplication.h"
+#include "qgstiledsceneconnection.h"
 #include "qgstiledscenedataitems.h"
 
 #include <QIcon>
 
+#include "moc_qgstiledsceneprovidermetadata.cpp"
+
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "tiledscene" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "Tiled scene provider" )
+#define PROVIDER_KEY u"tiledscene"_s
+#define PROVIDER_DESCRIPTION u"Tiled scene provider"_s
 
 QgsTiledSceneProviderMetadata::QgsTiledSceneProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
@@ -33,7 +35,7 @@ QgsTiledSceneProviderMetadata::QgsTiledSceneProviderMetadata()
 
 QIcon QgsTiledSceneProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconTiledSceneLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconTiledSceneLayer.svg"_s );
 }
 
 QList<QgsDataItemProvider *> QgsTiledSceneProviderMetadata::dataItemProviders() const

@@ -17,4 +17,5 @@
  ****************************************************************************/
 
 #include "qgisinterface.h"
+
 #include "moc_qgisinterface.cpp"

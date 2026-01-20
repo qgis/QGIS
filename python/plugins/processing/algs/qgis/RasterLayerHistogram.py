@@ -78,6 +78,12 @@ class RasterLayerHistogram(QgisAlgorithm):
     def shortDescription(self):
         return self.tr("Generates a histogram with the values of a raster layer.")
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm generates a histogram with the values of a raster layer.\n"
+            "The raster layer must have a single band."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

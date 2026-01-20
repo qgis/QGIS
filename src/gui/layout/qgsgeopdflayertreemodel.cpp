@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QComboBox>
-#include <QDoubleSpinBox>
-
 #include "qgsgeopdflayertreemodel.h"
-#include "moc_qgsgeopdflayertreemodel.cpp"
+
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
+
+#include <QComboBox>
+#include <QDoubleSpinBox>
+
+#include "moc_qgsgeopdflayertreemodel.cpp"
 
 QgsGeospatialPdfLayerTreeModel::QgsGeospatialPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QgsMapLayerModel( layers, parent )
@@ -112,7 +114,7 @@ QVariant QgsGeospatialPdfLayerTreeModel::data( const QModelIndex &idx, int role 
         {
           if ( QgsMapLayer *ml = mapLayer( idx ) )
           {
-            return ml->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
+            return ml->customProperty( u"geopdf/groupName"_s ).toString();
           }
           break;
         }
@@ -127,7 +129,7 @@ QVariant QgsGeospatialPdfLayerTreeModel::data( const QModelIndex &idx, int role 
       {
         if ( QgsMapLayer *ml = mapLayer( idx ) )
         {
-          const QVariant v = ml->customProperty( QStringLiteral( "geopdf/initiallyVisible" ) );
+          const QVariant v = ml->customProperty( u"geopdf/initiallyVisible"_s );
           if ( v.isValid() )
           {
             return v.toBool() ? Qt::Checked : Qt::Unchecked;
@@ -149,7 +151,7 @@ QVariant QgsGeospatialPdfLayerTreeModel::data( const QModelIndex &idx, int role 
       {
         if ( QgsVectorLayer *vl = vectorLayer( idx ) )
         {
-          const QVariant v = vl->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
+          const QVariant v = vl->customProperty( u"geopdf/includeFeatures"_s );
           if ( v.isValid() )
           {
             return v.toBool() ? Qt::Checked : Qt::Unchecked;
@@ -178,7 +180,7 @@ bool QgsGeospatialPdfLayerTreeModel::setData( const QModelIndex &index, const QV
       {
         if ( QgsVectorLayer *vl = vectorLayer( index ) )
         {
-          vl->setCustomProperty( QStringLiteral( "geopdf/includeFeatures" ), value.toInt() == Qt::Checked );
+          vl->setCustomProperty( u"geopdf/includeFeatures"_s, value.toInt() == Qt::Checked );
           emit dataChanged( index, index );
           return true;
         }
@@ -192,7 +194,7 @@ bool QgsGeospatialPdfLayerTreeModel::setData( const QModelIndex &index, const QV
       {
         if ( QgsMapLayer *ml = mapLayer( index ) )
         {
-          ml->setCustomProperty( QStringLiteral( "geopdf/groupName" ), value.toString() );
+          ml->setCustomProperty( u"geopdf/groupName"_s, value.toString() );
           emit dataChanged( index, index );
           return true;
         }
@@ -206,7 +208,7 @@ bool QgsGeospatialPdfLayerTreeModel::setData( const QModelIndex &index, const QV
       {
         if ( QgsMapLayer *ml = mapLayer( index ) )
         {
-          ml->setCustomProperty( QStringLiteral( "geopdf/initiallyVisible" ), value.toInt() == Qt::Checked );
+          ml->setCustomProperty( u"geopdf/initiallyVisible"_s, value.toInt() == Qt::Checked );
           emit dataChanged( index, index );
           return true;
         }

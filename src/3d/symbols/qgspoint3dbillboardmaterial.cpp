@@ -12,24 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QBlendEquationArguments>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QNoDepthMask>
-#include <QUrl>
-
 #include "qgspoint3dbillboardmaterial.h"
-#include "moc_qgspoint3dbillboardmaterial.cpp"
-#include "qgsimagetexture.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmarkersymbol.h"
+
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgsimagetexture.h"
+#include "qgsmarkersymbol.h"
+#include "qgssymbollayerutils.h"
+
+#include <QUrl>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
+
+#include "moc_qgspoint3dbillboardmaterial.cpp"
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
@@ -53,8 +55,8 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   // Shader program
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
 
-  const QUrl urlVert( QStringLiteral( "qrc:/shaders/billboards.vert" ) );
-  const QUrl urlGeom( QStringLiteral( "qrc:/shaders/billboards.geom" ) );
+  const QUrl urlVert( u"qrc:/shaders/billboards.vert"_s );
+  const QUrl urlGeom( u"qrc:/shaders/billboards.geom"_s );
 
   switch ( mode )
   {
@@ -87,7 +89,7 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
       break;
     }
   }
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.frag" ) ) ) );
+  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/billboards.frag"_s ) ) );
 
   // Render Pass
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
@@ -97,7 +99,7 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
+  filterKey->setName( u"renderingStyle"_s );
   filterKey->setValue( "forward" );
 
   // Technique

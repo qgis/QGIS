@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsregularpolygon.h"
-#include "qgsgeometryutils.h"
 
 #include <memory>
+
+#include "qgsgeometryutils.h"
 
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
@@ -261,9 +262,9 @@ QString QgsRegularPolygon::toString( int pointPrecision, int radiusPrecision, in
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "RegularPolygon (Center: %1, First Vertex: %2, Radius: %3, Azimuth: %4)" )
+    rep = u"RegularPolygon (Center: %1, First Vertex: %2, Radius: %3, Azimuth: %4)"_s
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
           .arg( mFirstVertex.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mRadius, radiusPrecision ), 0, 'f' )

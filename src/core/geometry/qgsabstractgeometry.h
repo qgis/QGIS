@@ -19,12 +19,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include <array>
 #include <functional>
 #include <type_traits>
-#include <QString>
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgswkbtypes.h"
+#include "qgis_core.h"
 #include "qgswkbptr.h"
+#include "qgswkbtypes.h"
+
+#include <QString>
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>
@@ -566,8 +567,21 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \see length()
      * \see perimeter()
+     * \see area()
      */
     virtual double area() const;
+
+    /**
+     * Returns the 3-dimensional surface area of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics.
+     *
+     * \see area()
+     *
+     * \since QGIS 4.0
+     */
+    virtual double area3D() const;
 
     /**
      * Returns the length of the segment of the geometry which begins at \a startVertex.

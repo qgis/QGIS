@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsunittypes.h"
-#include "qgslinestring.h"
 #include "qgsellipse.h"
-#include "qgsgeometryutils.h"
 
-#include <memory>
 #include <limits>
+#include <memory>
+
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsunittypes.h"
 
 void QgsEllipse::normalizeAxis()
 {
@@ -324,9 +325,9 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)" )
+    rep = u"Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)"_s
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mSemiMajorAxis, axisPrecision ), 0, 'f' )
           .arg( qgsDoubleToString( mSemiMinorAxis, axisPrecision ), 0, 'f' )

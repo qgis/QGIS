@@ -51,7 +51,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param description: argument specifies a description for the settings entry.
         """
 
-        # TODO QGIS 4: rename pluginName arg to parent and key to name
+        # TODO QGIS 5: rename pluginName arg to parent and key to name
 
         self.options = options
         self.__enum_class = defaultValue.__class__

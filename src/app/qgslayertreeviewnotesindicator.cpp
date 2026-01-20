@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewnotesindicator.h"
-#include "moc_qgslayertreeviewnotesindicator.cpp"
-#include "qgslayertreeview.h"
+
+#include "qgisapp.h"
+#include "qgslayernotesmanager.h"
+#include "qgslayernotesutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
-#include "qgslayernotesmanager.h"
-#include "qgslayernotesutils.h"
-#include "qgisapp.h"
+
+#include "moc_qgslayertreeviewnotesindicator.cpp"
 
 QgsLayerTreeViewNotesIndicatorProvider::QgsLayerTreeViewNotesIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -64,7 +66,7 @@ bool QgsLayerTreeViewNotesIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 QString QgsLayerTreeViewNotesIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorNotes.svg" );
+  return u"/mIndicatorNotes.svg"_s;
 }
 
 QString QgsLayerTreeViewNotesIndicatorProvider::tooltipText( QgsMapLayer *layer )

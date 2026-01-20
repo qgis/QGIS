@@ -12,14 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <windows.h>
-#include <io.h>
-
-#include <sstream>
-#include <iostream>
 #include <fstream>
+#include <io.h>
+#include <iostream>
 #include <list>
 #include <memory>
+#include <sstream>
+#include <windows.h>
 
 void showError( std::string message, std::string title )
 {

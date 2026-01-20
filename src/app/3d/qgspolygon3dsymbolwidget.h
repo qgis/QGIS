@@ -16,8 +16,9 @@
 #ifndef QGSPOLYGON3DSYMBOLWIDGET_H
 #define QGSPOLYGON3DSYMBOLWIDGET_H
 
-#include "qgs3dsymbolwidget.h"
 #include "ui_polygon3dsymbolwidget.h"
+
+#include "qgs3dsymbolwidget.h"
 
 class QgsPolygon3DSymbol;
 

@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgsgraphicsviewmousehandles.cpp"
+#include "qgsgraphicsviewmousehandles.h"
+
+#include <limits>
 
 #include "qgis.h"
-#include "qgsgraphicsviewmousehandles.h"
 #include "qgslayoututils.h"
 #include "qgsrendercontext.h"
 
-#include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgsgraphicsviewmousehandles.cpp"
 
 ///@cond PRIVATE
 
@@ -89,7 +91,7 @@ QRectF QgsGraphicsViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 
 void QgsGraphicsViewMouseHandles::rotateItem( QGraphicsItem *, double, double, double )
 {
-  QgsDebugError( QStringLiteral( "Rotation is not implemented for this class" ) );
+  QgsDebugError( u"Rotation is not implemented for this class"_s );
 }
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
@@ -560,7 +562,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForScenePos( QP
 
 bool QgsGraphicsViewMouseHandles::shouldBlockEvent( QInputEvent * ) const
 {
-  return mIsDragging || mIsResizing;
+  return mIsDragging || mIsResizing || mIsRotating;
 }
 
 void QgsGraphicsViewMouseHandles::startMove( QPointF sceneCoordPos )
@@ -728,7 +730,10 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
   // otherwise, hover events will not be received
-  ungrabMouse();
+  if ( mView->scene()->mouseGrabberItem() == this )
+  {
+    ungrabMouse();
+  }
 
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
@@ -919,6 +924,7 @@ void QgsGraphicsViewMouseHandles::updateHandles()
     //no items selected, hide handles
     hide();
   }
+
   //force redraw
   update();
 }

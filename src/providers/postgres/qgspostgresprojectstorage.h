@@ -16,13 +16,12 @@
 #define QGSPOSTGRESPROJECTSTORAGE_H
 
 #include "qgsconfig.h"
-#include "qgsprojectstorage.h"
 
 #include "qgsdatasourceuri.h"
-
+#include "qgsprojectstorage.h"
 
 //! Stores information parsed from postgres project URI
-typedef struct
+struct QgsPostgresProjectUri
 {
     bool valid;
 
@@ -30,15 +29,16 @@ typedef struct
 
     QString schemaName;
     QString projectName;
-
-} QgsPostgresProjectUri;
+    bool isVersion = false;
+    QString dateSaved;
+};
 
 
 //! Implements storage of QGIS projects inside a PostgreSQL table
 class QgsPostgresProjectStorage : public QgsProjectStorage
 {
   public:
-    QString type() override { return QStringLiteral( "postgresql" ); }
+    QString type() override { return u"postgresql"_s; }
 
     QStringList listProjects( const QString &uri ) override;
 

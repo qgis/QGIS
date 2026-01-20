@@ -15,21 +15,23 @@
  ***************************************************************************/
 
 #include "qgslayoutscalebarwidget.h"
-#include "moc_qgslayoutscalebarwidget.cpp"
+
+#include "qgsfillsymbol.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgsscalebarrendererregistry.h"
-#include "qgslayout.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgslayoutundostack.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgsnumericformatselectorwidget.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
+
+#include "moc_qgslayoutscalebarwidget.cpp"
 
 QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar )
   : QgsLayoutItemBaseWidget( nullptr, scaleBar )
@@ -196,10 +198,10 @@ void QgsLayoutScaleBarWidget::setMasterLayout( QgsMasterLayoutInterface *masterL
 QgsExpressionContext QgsLayoutScaleBarWidget::createExpressionContext() const
 {
   QgsExpressionContext context = mScalebar->createExpressionContext();
-  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( QStringLiteral( "scalebar_text" ) );
-  scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), 0, true, false ) );
+  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( u"scalebar_text"_s );
+  scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( u"scale_value"_s, 0, true, false ) );
   context.appendScope( scaleScope );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "scale_value" ) );
+  context.setHighlightedVariables( QStringList() << u"scale_value"_s );
   return context;
 }
 

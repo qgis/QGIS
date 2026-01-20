@@ -17,14 +17,16 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcherregistry.h"
-#include "moc_qgsnetworkcontentfetcherregistry.cpp"
 
 #include "qgsapplication.h"
-#include <QUrl>
-#include <QFileInfo>
+
 #include <QDir>
-#include <QMimeType>
+#include <QFileInfo>
 #include <QMimeDatabase>
+#include <QMimeType>
+#include <QUrl>
+
+#include "moc_qgsnetworkcontentfetcherregistry.cpp"
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
@@ -191,7 +193,12 @@ void QgsFetchedContent::taskCompleted()
 
       mFile = std::make_unique<QTemporaryFile>( extension.isEmpty() ? QString( "XXXXXX" ) :
               QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
-      mFile->open();
+      if ( !mFile->open() )
+      {
+        QgsDebugError( u"Can't open temporary file %1"_s.arg( mFile->fileName() ) );
+        mStatus = QgsFetchedContent::Failed;
+        return;
+      }
       mFile->write( reply->readAll() );
       // Qt docs notes that on some system if fileName is not called before close, file might get deleted
       mFilePath = mFile->fileName();

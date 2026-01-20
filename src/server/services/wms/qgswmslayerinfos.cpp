@@ -18,16 +18,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsserverprojectutils.h"
-#include "qgscoordinatetransform.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgswmslayerinfos.h"
-#include "qgsmessagelog.h"
-#include "qgsserverinterface.h"
-#include "qgsmaplayerstylemanager.h"
 
 #include <algorithm>
+
+#include "qgscoordinatetransform.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgsserverinterface.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 
 QgsRectangle QgsWmsLayerInfos::transformExtent(
   const QgsRectangle &extent,
@@ -96,7 +97,7 @@ bool setBoundingRect(
         }
         catch ( QgsCsException &cse )
         {
-          QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
           return false;
         }
       }
@@ -109,7 +110,7 @@ bool setBoundingRect(
     }
     catch ( const QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -126,7 +127,7 @@ bool setBoundingRect(
   }
   catch ( QgsCsException &cse )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
     return false;
   }
 

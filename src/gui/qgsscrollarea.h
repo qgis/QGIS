@@ -16,10 +16,12 @@
 #ifndef QGSSCROLLAREA_H
 #define QGSSCROLLAREA_H
 
-#include <QScrollArea>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QElapsedTimer>
+#include <QScrollArea>
+
 class ScrollAreaFilter;
 
 /**

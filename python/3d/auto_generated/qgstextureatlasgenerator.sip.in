@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsTextureAtlas
 {
 %Docstring(signature="appended")
@@ -43,6 +45,7 @@ Returns ``True`` if the atlas is valid.
 Returns the total size required for the atlas, i.e. the total size for
 the packed images and rectangles.
 %End
+
 
     QRect rect( int index ) const;
 %Docstring

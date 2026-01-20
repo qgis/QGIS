@@ -18,13 +18,13 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QWidget>
-
 #include "ui_qgsrasterlabelingwidgetbase.h"
-#include "qgsrasterlabeling.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsrasterlabeling.h"
+
+#include <QWidget>
 
 class QgsLabelingGui;
 class QgsMapCanvas;

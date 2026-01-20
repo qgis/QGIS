@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QRegularExpressionValidator>
-#include <QRegularExpression>
-
 #include "qgspgnewconnection.h"
-#include "moc_qgspgnewconnection.cpp"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
-#include "qgspostgresproviderconnection.h"
+
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
-#include "qgspostgresconn.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+
+#include "moc_qgspgnewconnection.cpp"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -61,7 +63,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   cbxSSLmode->addItem( tr( "verify-full" ), QgsDataSourceUri::SslVerifyFull );
   cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( QgsDataSourceUri::SslPrefer ) );
 
-  mAuthSettings->setDataprovider( QStringLiteral( "postgres" ) );
+  mAuthSettings->setDataprovider( u"postgres"_s );
   mAuthSettings->showStoreCheckboxes( true );
 
   if ( !connName.isEmpty() )
@@ -76,7 +78,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     QString port = settings.value( key + "/port" ).toString();
     if ( port.length() == 0 )
     {
-      port = QStringLiteral( "5432" );
+      port = u"5432"_s;
     }
     txtPort->setText( port );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -95,13 +97,13 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
-    if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/saveUsername" ).toString() == "true"_L1 )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettings->setStoreUsernameChecked( true );
     }
 
-    if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+    if ( settings.value( key + "/savePassword" ).toString() == "true"_L1 )
     {
       mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
       mAuthSettings->setStorePasswordChecked( true );
@@ -113,7 +115,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
       mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
-      if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
+      if ( settings.value( key + "/save" ).toString() == "true"_L1 )
         mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
 
       mAuthSettings->setStorePasswordChecked( true );
@@ -122,18 +124,18 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     QString authcfg = settings.value( key + "/authcfg" ).toString();
     mAuthSettings->setConfigId( authcfg );
 
-    txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
+    txtSchema->setText( settings.value( key + u"/schema"_s ).toString() );
 
     txtName->setText( connName );
   }
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]*" ), txtName ) );
 }
 
-//! Autoconnected SLOTS
+//! Autoconnected slots
 void QgsPgNewConnection::accept()
 {
   QgsSettings settings;
-  QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
+  QString baseKey = u"/PostgreSQL/connections/"_s;
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
   testConnection();
@@ -189,7 +191,7 @@ void QgsPgNewConnection::accept()
     configuration.insert( "schema", txtSchema->text().trimmed() );
   }
 
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s );
   std::unique_ptr<QgsPostgresProviderConnection> providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
   providerConnection->setUri( QgsPostgresConn::connUri( txtName->text() ).uri( false ) );
   providerConnection->setConfiguration( configuration );
@@ -211,7 +213,7 @@ void QgsPgNewConnection::cb_geometryColumnsOnly_clicked()
     cb_publicSchemaOnly->setEnabled( true );
 }
 
-//! End  Autoconnected SLOTS
+//! End  Autoconnected slots
 
 void QgsPgNewConnection::testConnection()
 {
@@ -229,7 +231,7 @@ void QgsPgNewConnection::testConnection()
 
   if ( !txtSessionRole->text().isEmpty() )
   {
-    uri.setParam( QStringLiteral( "session_role" ), txtSessionRole->text() );
+    uri.setParam( u"session_role"_s, txtSessionRole->text() );
   }
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, true );
@@ -267,7 +269,7 @@ void QgsPgNewConnection::testConnection()
 
 void QgsPgNewConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#creating-a-stored-connection"_s );
 }
 
 void QgsPgNewConnection::updateOkButtonState()

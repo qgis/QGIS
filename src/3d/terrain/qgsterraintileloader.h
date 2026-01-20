@@ -30,9 +30,9 @@
 #define SIP_NO_FILE
 
 #include "qgschunkloader.h"
+#include "qgsrectangle.h"
 
 #include <QImage>
-#include "qgsrectangle.h"
 
 class QgsPhongMaterialSettings;
 class QgsTerrainEntity;

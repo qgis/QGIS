@@ -16,13 +16,13 @@
 #ifndef QGSTERRAINDOWNLOADER_H
 #define QGSTERRAINDOWNLOADER_H
 
-#include "qgis_3d.h"
-
 #include <memory>
+
+#include "qgis_3d.h"
+#include "qgscoordinatetransformcontext.h"
+
 #include <QByteArray>
 #include <QImage>
-
-#include "qgscoordinatetransformcontext.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;

@@ -16,18 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsquickelevationprofilecanvas.h"
+
 #include "qgsabstractprofilegenerator.h"
 #include "qgsabstractprofilesource.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerutils.h"
 #include "qgsplot.h"
 #include "qgsprofilerenderer.h"
 #include "qgsprofilerequest.h"
 #include "qgsprojectelevationproperties.h"
-#include "qgsquickelevationprofilecanvas.h"
-#include "moc_qgsquickelevationprofilecanvas.cpp"
 #include "qgsterrainprovider.h"
 
 #include <QQuickWindow>
@@ -36,6 +36,7 @@
 #include <QScreen>
 #include <QTimer>
 
+#include "moc_qgsquickelevationprofilecanvas.cpp"
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DXyPlot
@@ -539,15 +540,9 @@ QList<QgsMapLayer *> QgsQuickElevationProfileCanvas::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-void QgsQuickElevationProfileCanvas::geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry )
-{
-  QQuickItem::geometryChanged( newGeometry, oldGeometry );
-#else
 void QgsQuickElevationProfileCanvas::geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry )
 {
   QQuickItem::geometryChange( newGeometry, oldGeometry );
-#endif
   mPlotItem->updateRect();
   mDirty = true;
   refresh();

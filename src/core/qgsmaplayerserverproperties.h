@@ -18,11 +18,12 @@
 #ifndef QGSMAPLAYERSERVERPROPERTIES_H
 #define QGSMAPLAYERSERVERPROPERTIES_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QMap>
-#include <QString>
 #include <QMetaType>
+#include <QString>
 #include <QVariant>
 
 class QgsMapLayer;

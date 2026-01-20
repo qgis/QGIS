@@ -38,12 +38,6 @@ target_include_directories(qgis_process PRIVATE
   ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
 )
 
-if (WITH_3D)
-  include_directories(SYSTEM
-    ${QT5_3DEXTRA_INCLUDE_DIR}
-  )
-endif()
-
 target_link_libraries(qgis_process
   qgis_core
   qgis_analysis

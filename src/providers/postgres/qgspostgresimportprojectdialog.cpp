@@ -13,21 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QDir>
-#include <QDirIterator>
-#include <QMenu>
-#include <QFileDialog>
-#include <QHeaderView>
-
 #include "qgspostgresimportprojectdialog.h"
-#include "qgsproject.h"
-#include "qgsguiutils.h"
+
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresutils.h"
+#include "qgsproject.h"
+
+#include <QDir>
+#include <QDirIterator>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QMenu>
+#include <QVBoxLayout>
+
 #include "moc_qgspostgresimportprojectdialog.cpp"
 
 QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent )
@@ -43,7 +45,7 @@ QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString co
   setLayout( mainLayout );
 
   QStringList fileFilter;
-  fileFilter << QStringLiteral( "*.qgs" ) << QStringLiteral( "*.qgz" ) << QStringLiteral( "*.QGS" ) << QStringLiteral( "*.QGZ" );
+  fileFilter << u"*.qgs"_s << u"*.qgz"_s << u"*.QGS"_s << u"*.QGZ"_s;
 
   mButtonAdd = new QToolButton( this );
   mButtonAdd->setIcon( QIcon( QgsApplication::iconPath( "mActionAdd.svg" ) ) );
@@ -77,7 +79,7 @@ QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString co
       return;
 
     QSettings settings;
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), searchPath );
+    settings.setValue( u"UI/lastFileNameWidgetDir"_s, searchPath );
 
     QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
     QDirIterator it( searchPath, fileFilter, QDir::Files );
@@ -96,7 +98,7 @@ QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString co
       return;
 
     QSettings settings;
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), searchPath );
+    settings.setValue( u"UI/lastFileNameWidgetDir"_s, searchPath );
 
     QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
     QDirIterator it( searchPath, fileFilter, QDir::Files, QDirIterator::Subdirectories );
@@ -152,7 +154,7 @@ QSet<QString> QgsPostgresImportProjectDialog::projectNamesInSchema()
 
   if ( QgsPostgresUtils::projectsTableExists( mDbConnection, mSchemaToImportTo ) )
   {
-    QString existingProjectsSql = QStringLiteral( "SELECT name FROM %1.qgis_projects;" ).arg( QgsPostgresConn::quotedIdentifier( mSchemaToImportTo ) );
+    QString existingProjectsSql = u"SELECT name FROM %1.qgis_projects;"_s.arg( QgsPostgresConn::quotedIdentifier( mSchemaToImportTo ) );
     QgsPostgresResult res( mDbConnection->PQexec( existingProjectsSql ) );
 
     for ( int i = 0; i < res.PQntuples(); i++ )
@@ -256,7 +258,7 @@ QString QgsPostgresImportProjectDialog::lastUsedDir()
   {
     defPath = QDir::homePath();
   }
-  prevPath = settings.value( QStringLiteral( "UI/lastFileNameWidgetDir" ), defPath ).toString();
+  prevPath = settings.value( u"UI/lastFileNameWidgetDir"_s, defPath ).toString();
 
   return prevPath;
 }

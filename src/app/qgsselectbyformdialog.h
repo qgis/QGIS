@@ -16,9 +16,10 @@
 #ifndef QGSSELECTBYFORMDIALOG_H
 #define QGSSELECTBYFORMDIALOG_H
 
-#include <QDialog>
-#include "qgsattributeeditorcontext.h"
 #include "qgis_app.h"
+#include "qgsattributeeditorcontext.h"
+
+#include <QDialog>
 
 class QgsAttributeForm;
 class QgsMessageBar;

@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexplode.h"
-#include "qgscurve.h"
-#include "qgslinestring.h"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
 QString QgsExplodeAlgorithm::name() const
 {
-  return QStringLiteral( "explodelines" );
+  return u"explodelines"_s;
 }
 
 QString QgsExplodeAlgorithm::displayName() const
@@ -46,7 +47,7 @@ QString QgsExplodeAlgorithm::group() const
 
 QString QgsExplodeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsExplodeAlgorithm::shortHelpString() const

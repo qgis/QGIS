@@ -17,8 +17,11 @@
 #define QGSOAPIFUTILS_H
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
+#include <QList>
+#include <QNetworkReply>
 #include <QString>
 #include <QStringList>
 
@@ -44,5 +47,10 @@ class QgsOAPIFJson
     //! Find among links the one that matches rel, by using an optional list of preferable types.
     static QString findLink( const std::vector<Link> &links, const QString &rel, const QStringList &preferableTypes = QStringList() );
 };
+
+// Return the href for the next link from the response headers and the MIME type of the format
+QString QgsOAPIFGetNextLinkFromResponseHeader( const QList<QNetworkReply::RawHeaderPair> &responseHeaders, const QString &formatType );
+
+extern const QString OAPIF_PROVIDER_DEFAULT_CRS;
 
 #endif // QGSOAPIFUTILS_H

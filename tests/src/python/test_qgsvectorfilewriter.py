@@ -922,8 +922,8 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertIn("ODS", [f.driverName for f in formats])
         self.assertIn("PGDUMP", [f.driverName for f in formats])
 
-        interlis_format = [f for f in formats if f.driverName == "Interlis 2"][0]
-        self.assertEqual(interlis_format.globs, ["*.xtf", "*.xml", "*.ili"])
+        pgdump_format = [f for f in formats if f.driverName == "PGDUMP"][0]
+        self.assertEqual(pgdump_format.globs, ["*.sql"])
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(
@@ -1017,8 +1017,6 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertEqual(formats[0], "gpkg")
         self.assertEqual(formats[1], "shp")
         self.assertIn("ods", formats)
-        self.assertIn("xtf", formats)
-        self.assertIn("ili", formats)
 
         for i in range(2, len(formats) - 1):
             self.assertLess(formats[i].lower(), formats[i + 1].lower())

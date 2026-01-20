@@ -13,15 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryselfintersectioncheck.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsgeometryengine.h"
-#include "qgsmultipolygon.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeometryutils.h"
+
 #include "qgsfeaturepool.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
 
 bool QgsGeometrySelfIntersectionCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
@@ -343,7 +344,7 @@ QgsGeometryCheck::Flags QgsGeometrySelfIntersectionCheck::factoryFlags()
 
 QString QgsGeometrySelfIntersectionCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometrySelfIntersectionCheck" );
+  return u"QgsGeometrySelfIntersectionCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometrySelfIntersectionCheck::factoryCheckType()

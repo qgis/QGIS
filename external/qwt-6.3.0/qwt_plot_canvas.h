@@ -102,7 +102,7 @@ class QWT_EXPORT QwtPlotCanvas : public QFrame, public QwtPlotAbstractCanvas
     Q_DECLARE_FLAGS( PaintAttributes, PaintAttribute )
 
     explicit QwtPlotCanvas( QwtPlot* = NULL );
-    virtual ~QwtPlotCanvas();
+    ~QwtPlotCanvas() override;
 
     void setPaintAttribute( PaintAttribute, bool on = true );
     bool testPaintAttribute( PaintAttribute ) const;

@@ -16,8 +16,8 @@
 #ifndef QGSGPSBEARINGITEM_H
 #define QGSGPSBEARINGITEM_H
 
-#include "qgspointmarkeritem.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgspointmarkeritem.h"
 #include "qgspointxy.h"
 
 class QPainter;

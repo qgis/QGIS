@@ -18,12 +18,12 @@
 #ifndef QGSRASTERRENDERERWIDGET_H
 #define QGSRASTERRENDERERWIDGET_H
 
-#include "qgsrectangle.h"
-#include "qgscontrastenhancement.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgscontrastenhancement.h"
+#include "qgsrectangle.h"
 
 #include <QWidget>
-#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -41,7 +41,7 @@ class GUI_EXPORT QgsRasterRendererWidget : public QWidget
     Q_OBJECT
 
   public:
-    //TODO QGIS 4.0 - remove extent parameter, replace with map canvas parameter
+    //TODO QGIS 5.0 - remove extent parameter, replace with map canvas parameter
 
     /**
      * Constructor for QgsRasterRendererWidget.

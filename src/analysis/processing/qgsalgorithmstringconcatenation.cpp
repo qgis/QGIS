@@ -21,7 +21,7 @@
 
 QString QgsStringConcatenationAlgorithm::name() const
 {
-  return QStringLiteral( "stringconcatenation" );
+  return u"stringconcatenation"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsStringConcatenationAlgorithm::flags() const
@@ -46,7 +46,7 @@ QString QgsStringConcatenationAlgorithm::group() const
 
 QString QgsStringConcatenationAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsStringConcatenationAlgorithm::shortHelpString() const
@@ -66,18 +66,18 @@ QgsStringConcatenationAlgorithm *QgsStringConcatenationAlgorithm::createInstance
 
 void QgsStringConcatenationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "INPUT_1" ), QObject::tr( "Input 1" ), QVariant(), false, false ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "INPUT_2" ), QObject::tr( "Input 2" ), QVariant(), false, false ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "CONCATENATION" ), QObject::tr( "Concatenation" ) ) );
+  addParameter( new QgsProcessingParameterString( u"INPUT_1"_s, QObject::tr( "Input 1" ), QVariant(), false, false ) );
+  addParameter( new QgsProcessingParameterString( u"INPUT_2"_s, QObject::tr( "Input 2" ), QVariant(), false, false ) );
+  addOutput( new QgsProcessingOutputString( u"CONCATENATION"_s, QObject::tr( "Concatenation" ) ) );
 }
 
 QVariantMap QgsStringConcatenationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  const QString input_1 = parameterAsString( parameters, QStringLiteral( "INPUT_1" ), context );
-  const QString input_2 = parameterAsString( parameters, QStringLiteral( "INPUT_2" ), context );
+  const QString input_1 = parameterAsString( parameters, u"INPUT_1"_s, context );
+  const QString input_2 = parameterAsString( parameters, u"INPUT_2"_s, context );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "CONCATENATION" ), QString( input_1 + input_2 ) );
+  outputs.insert( u"CONCATENATION"_s, QString( input_1 + input_2 ) );
   return outputs;
 }
 

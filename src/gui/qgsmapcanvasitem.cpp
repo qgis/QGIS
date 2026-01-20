@@ -15,19 +15,20 @@
 
 
 #include "qgsmapcanvasitem.h"
+
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
-#include <QGraphicsScene>
-#include <QRect>
-#include <QPen>
+
 #include <QBrush>
+#include <QGraphicsScene>
 #include <QPainter>
-#include "qgslogger.h"
+#include <QPen>
+#include <QRect>
 
 QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas *mapCanvas )
   : mMapCanvas( mapCanvas )
-  , mRectRotation( 0.0 )
   , mItemSize( 0, 0 )
 {
   Q_ASSERT( mapCanvas && mapCanvas->scene() );

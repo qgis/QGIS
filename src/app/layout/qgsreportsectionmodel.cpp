@@ -14,9 +14,12 @@
  ***************************************************************************/
 
 #include "qgsreportsectionmodel.h"
-#include "moc_qgsreportsectionmodel.cpp"
-#include "functional"
+
+#include <functional>
+
 #include "qgsguiutils.h"
+
+#include "moc_qgsreportsectionmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -73,7 +76,7 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
             QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
             QPainter painter( &pixmap );
-            painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+            painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( u"/mActionToggleEditing.svg"_s ) );
             painter.end();
 
             return QIcon( pixmap );

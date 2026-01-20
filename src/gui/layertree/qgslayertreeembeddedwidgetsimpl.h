@@ -16,10 +16,10 @@
 #ifndef QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H
 #define QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H
 
-#include <QPointer>
-#include <QWidget>
 #include "qgslayertreeembeddedwidgetregistry.h"
 
+#include <QPointer>
+#include <QWidget>
 
 class QSlider;
 class QTimer;

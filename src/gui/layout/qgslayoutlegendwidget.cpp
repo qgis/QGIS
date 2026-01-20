@@ -16,40 +16,40 @@
  ***************************************************************************/
 
 #include "qgslayoutlegendwidget.h"
-#include "moc_qgslayoutlegendwidget.cpp"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutlegendlayersdialog.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemmap.h"
-#include "qgsguiutils.h"
-#include "qgslayoutdesignerinterface.h"
 
 #include "qgsapplication.h"
+#include "qgscolorramplegendnode.h"
+#include "qgscolorramplegendnodewidget.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutlegendlayersdialog.h"
+#include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutundostack.h"
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgslayoutatlas.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutmeasurementconverter.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgscolorramplegendnodewidget.h"
-#include "qgssymbol.h"
-#include "qgslayoutundostack.h"
-#include "qgsexpressionfinder.h"
-#include "qgscolorramplegendnode.h"
 #include "qgspainting.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
+#include <QActionGroup>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QInputDialog>
-#include <QActionGroup>
+
+#include "moc_qgslayoutlegendwidget.cpp"
 
 ///@cond PRIVATE
 
@@ -96,6 +96,11 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   Q_ASSERT( mLegend );
 
   setupUi( this );
+
+  mSyncModeCombo->addItem( tr( "Synchronize to All Project Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::AllProjectLayers ) );
+  mSyncModeCombo->addItem( tr( "Synchronize to Visible Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::VisibleLayers ) );
+  mSyncModeCombo->addItem( tr( "Manual" ), QVariant::fromValue( Qgis::LegendSyncMode::Manual ) );
+
   connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mWrapCharLineEdit_textChanged );
   connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mTitleLineEdit_textChanged );
   connect( mTitleAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::titleAlignmentChanged );
@@ -126,7 +131,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mBoxSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::maxWidthChanged );
-  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [this]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
+  connect( mSyncModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] { syncModeChanged( true ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
   connect( mRasterStrokeWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
@@ -142,10 +147,19 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
   connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled );
-  connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
+
+  QMenu *resetMenu = new QMenu( mResetLayersButton );
+  QAction *resetToProjectLayersAction = new QAction( tr( "Reset to All Project Layers" ), resetMenu );
+  resetMenu->addAction( resetToProjectLayersAction );
+  connect( resetToProjectLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::AllProjectLayers ); } );
+  QAction *resetToVisibleLayersAction = new QAction( tr( "Reset to Visible Layers" ), resetMenu );
+  resetMenu->addAction( resetToVisibleLayersAction );
+  connect( resetToVisibleLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::VisibleLayers ); } );
+  mResetLayersButton->setMenu( resetMenu );
+  mResetLayersButton->setPopupMode( QToolButton::InstantPopup );
 
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, mButtonLinkedMaps, &QWidget::setEnabled );
   mButtonLinkedMaps->setEnabled( false );
@@ -171,8 +185,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mArrangementCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignRight );
   connect( mArrangementCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::arrangementChanged );
-  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
-  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( u"/mIconArrangeSymbolsLeft.svg"_s ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( u"/mIconArrangeSymbolsRight.svg"_s ) );
 
   mSpaceBelowGroupHeadingSpinBox->setClearValue( 0 );
   mGroupSideSpinBox->setClearValue( 0 );
@@ -208,7 +222,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mRasterStrokeColorButton->setAllowOpacity( true );
-  mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
+  mRasterStrokeColorButton->setContext( u"composer "_s );
 
   mMapComboBox->setCurrentLayout( legend->layout() );
   mMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
@@ -327,7 +341,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
   mRasterStrokeColorButton->setColor( mLegend->rasterStrokeColor() );
 
-  mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
+  mSyncModeCombo->setCurrentIndex( mSyncModeCombo->findData( QVariant::fromValue( mLegend->syncMode() ) ) );
 
   mCheckboxResizeContents->setChecked( mLegend->resizeToContents() );
   mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
@@ -342,7 +356,7 @@ void QgsLayoutLegendWidget::setGuiElements()
 
   blockAllSignals( false );
 
-  mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked, false );
+  syncModeChanged( false );
   updateDataDefinedButton( mLegendTitleDDBtn );
   updateDataDefinedButton( mColumnsDDBtn );
 }
@@ -866,28 +880,42 @@ void QgsLayoutLegendWidget::collapseLegendTree()
   mItemTreeView->collapseAll();
 }
 
-void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered )
+void QgsLayoutLegendWidget::syncModeChanged( bool userTriggered )
 {
+  const Qgis::LegendSyncMode mode = mSyncModeCombo->currentData().value< Qgis::LegendSyncMode >();
   if ( userTriggered )
   {
-    mLegend->beginCommand( tr( "Change Auto Update" ) );
+    mLegend->beginCommand( tr( "Change Sync Mode" ) );
 
-    mLegend->setAutoUpdateModel( state == Qt::Checked );
+    mLegend->setSyncMode( mode );
     mLegend->update();
     mLegend->endCommand();
   }
 
-  mLegendProxyModel->setIsDefaultLegend( state == Qt::Checked );
+  mLegendProxyModel->setSyncMode( mode );
 
   // do not allow editing of model if auto update is on - we would modify project's layer tree
+  bool allowEdits = false;
+  switch ( mode )
+  {
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
+      allowEdits = false;
+      break;
+
+    case Qgis::LegendSyncMode::Manual:
+      allowEdits = true;
+      break;
+  }
+
   QList<QWidget *> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
+          << mEditPushButton << mCountToolButton << mResetLayersButton << mAddGroupToolButton
           << mExpressionFilterButton << mCollapseAllToolButton << mExpandAllToolButton;
   for ( QWidget *w : std::as_const( widgets ) )
-    w->setEnabled( state != Qt::Checked );
+    w->setEnabled( allowEdits );
 
-  if ( state == Qt::Unchecked )
+  if ( allowEdits )
   {
     // update widgets state based on current selection
     selectedChanged( QModelIndex(), QModelIndex() );
@@ -1122,7 +1150,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
   const auto constCustomProperties = nodeLayer->customProperties();
   for ( const QString &key : constCustomProperties )
   {
-    if ( key.startsWith( QLatin1String( "legend/" ) ) )
+    if ( key.startsWith( "legend/"_L1 ) )
       nodeLayer->removeCustomProperty( key );
   }
 
@@ -1154,7 +1182,7 @@ void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
     if ( !QgsLayerTree::isLayer( currentNode ) )
       continue;
 
-    currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+    currentNode->setCustomProperty( u"showFeatureCount"_s, checked ? 1 : 0 );
   }
   mLegend->updateFilterByMap();
   mLegend->adjustBoxSize();
@@ -1166,6 +1194,17 @@ void QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled( bool checked )
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
   mLegend->adjustBoxSize();
+  mLegend->update();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendWidget::resetLayers( Qgis::LegendSyncMode mode )
+{
+  if ( !mLegend )
+    return;
+
+  mLegend->beginCommand( tr( "Update Legend" ) );
+  mLegend->resetManualLayers( mode );
   mLegend->update();
   mLegend->endCommand();
 }
@@ -1219,7 +1258,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QString currentExpression;
   if ( layerNode->labelExpression().isEmpty() )
-    currentExpression = QStringLiteral( "@symbol_label" );
+    currentExpression = u"@symbol_label"_s;
   else
     currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
@@ -1234,7 +1273,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
       if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
       {
         legendContext.appendScope( symbolNode->createSymbolScope() );
-        highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
+        highlighted << u"symbol_label"_s << u"symbol_id"_s << u"symbol_count"_s;
       }
     }
   }
@@ -1247,7 +1286,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   limitedLayerScope->setFields( QgsFields() );
   legendContext.appendScope( limitedLayerScope );
 
-  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
+  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, u"generic"_s, legendContext );
   if ( expressiondialog.exec() )
   {
     layerNode->setLabelExpression( expressiondialog.expressionText() );
@@ -1258,11 +1297,6 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   mLegend->refresh();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
-}
-
-void QgsLayoutLegendWidget::mUpdateAllPushButton_clicked()
-{
-  updateLegend();
 }
 
 void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
@@ -1285,20 +1319,6 @@ void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
     mLegend->setLegendFilterOutAtlas( toggled );
     // force update of legend when in preview mode
     mLegend->refresh();
-  }
-}
-
-void QgsLayoutLegendWidget::updateLegend()
-{
-  if ( mLegend )
-  {
-    mLegend->beginCommand( tr( "Update Legend" ) );
-
-    // this will reset the model completely, losing any changes
-    mLegend->setAutoUpdateModel( true );
-    mLegend->setAutoUpdateModel( false );
-    mLegend->update();
-    mLegend->endCommand();
   }
 }
 
@@ -1349,7 +1369,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mTitleLineEdit->blockSignals( b );
   mTitleAlignCombo->blockSignals( b );
   mItemTreeView->blockSignals( b );
-  mCheckBoxAutoUpdate->blockSignals( b );
+  mSyncModeCombo->blockSignals( b );
   mMapComboBox->blockSignals( b );
   mFilterByMapCheckBox->blockSignals( b );
   mColumnCountSpinBox->blockSignals( b );
@@ -1395,7 +1415,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
 
   mLayerExpressionButton->setEnabled( false );
 
-  if ( mLegend && mLegend->autoUpdateModel() )
+  if ( mLegend && mLegend->syncMode() != Qgis::LegendSyncMode::Manual )
   {
     QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
     if ( !QgsLayerTree::isLayer( currentNode ) )
@@ -1428,7 +1448,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
   if ( !vl )
     return;
 
-  mCountToolButton->setChecked( currentNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
+  mCountToolButton->setChecked( currentNode->customProperty( u"showFeatureCount"_s, 0 ).toInt() );
   mCountToolButton->setEnabled( true );
   mLayerExpressionButton->setEnabled( true );
 
@@ -1482,7 +1502,7 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
     return;
   }
 
-  if ( mLegend->autoUpdateModel() )
+  if ( mLegend->syncMode() != Qgis::LegendSyncMode::Manual )
     return;
 
   QgsLayerTreeNode *currentNode = mItemTreeView->index2node( idx );
@@ -1514,7 +1534,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   if ( !mView->currentNode() )
     return nullptr;
 
-  if ( mWidget->legend()->autoUpdateModel() )
+  if ( mWidget->legend()->syncMode() != Qgis::LegendSyncMode::Manual )
     return nullptr; // no editing allowed
 
   QMenu *menu = new QMenu();
@@ -1574,17 +1594,17 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   else if ( mLayer )
   {
     currentLabel = mLayer->name();
-    QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
+    QVariant v = mLayer->customProperty( u"legend/title-label"_s );
     if ( !QgsVariantUtils::isNull( v ) )
       currentLabel = v.toString();
-    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( u"legend/column-break"_s ).toInt() );
 
     mColumnSplitBehaviorComboBox->setCurrentIndex( mColumnSplitBehaviorComboBox->findData( mLayer->legendSplitBehavior() ) );
   }
   else
   {
     currentLabel = QgsLayerTree::toGroup( mNode )->name();
-    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( u"legend/column-break"_s ).toInt() );
   }
 
   mWidthSpinBox->setClearValue( 0, tr( "Default" ) );
@@ -1764,7 +1784,7 @@ void QgsLayoutLegendNodeWidget::labelChanged()
   }
   else if ( mLayer )
   {
-    mLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), label );
+    mLayer->setCustomProperty( u"legend/title-label"_s, label );
 
     // force update of label of the legend node with embedded icon (a bit clumsy i know)
     if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
@@ -1820,9 +1840,9 @@ void QgsLayoutLegendNodeWidget::insertExpression()
     context.appendScope( QgsExpressionContextUtils::layerScope( mLayer->layer() ) );
   }
 
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "legend_title" ) << QStringLiteral( "legend_column_count" ) << QStringLiteral( "legend_split_layers" ) << QStringLiteral( "legend_wrap_string" ) << QStringLiteral( "legend_filter_by_map" ) << QStringLiteral( "legend_filter_out_atlas" ) );
+  context.setHighlightedVariables( QStringList() << u"legend_title"_s << u"legend_column_count"_s << u"legend_split_layers"_s << u"legend_wrap_string"_s << u"legend_filter_by_map"_s << u"legend_filter_out_atlas"_s );
 
-  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -1931,11 +1951,11 @@ void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
   }
   else if ( mLayer )
   {
-    mLayer->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+    mLayer->setCustomProperty( u"legend/column-break"_s, QString( checked ? '1' : '0' ) );
   }
   else if ( mNode )
   {
-    mNode->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+    mNode->setCustomProperty( u"legend/column-break"_s, QString( checked ? '1' : '0' ) );
   }
 
   mLegend->adjustBoxSize();
@@ -2161,15 +2181,15 @@ bool QgsLayoutLegendMapFilteringModel::filterAcceptsRow( int source_row, const Q
 QgsLegendLayerTreeProxyModel::QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent )
   : QgsLayerTreeProxyModel( legend->model(), parent )
 {
-  setIsDefaultLegend( legend->autoUpdateModel() );
+  setSyncMode( legend->syncMode() );
 }
 
-void QgsLegendLayerTreeProxyModel::setIsDefaultLegend( bool isDefault )
+void QgsLegendLayerTreeProxyModel::setSyncMode( Qgis::LegendSyncMode mode )
 {
-  mIsDefaultLegend = isDefault;
+  mSyncMode = mode;
 
-  // only show private layers when not in default mode
-  setShowPrivateLayers( !mIsDefaultLegend );
+  // only show private layers when in manual mode
+  setShowPrivateLayers( mSyncMode == Qgis::LegendSyncMode::Manual );
 
   invalidateFilter();
 }
@@ -2183,9 +2203,17 @@ bool QgsLegendLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
   {
     if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
     {
-      if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+      if ( QgsMapLayerLegend *layerLegend = layer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
       {
-        return false;
+        switch ( mSyncMode )
+        {
+          case Qgis::LegendSyncMode::AllProjectLayers:
+          case Qgis::LegendSyncMode::VisibleLayers:
+            return false;
+
+          case Qgis::LegendSyncMode::Manual:
+            break;
+        }
       }
     }
   }

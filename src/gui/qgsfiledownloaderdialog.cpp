@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsfiledownloaderdialog.h"
-#include "moc_qgsfiledownloaderdialog.cpp"
+
 #include "qgsfiledownloader.h"
 #include "qgsfileutils.h"
+
 #include <QMessageBox>
+
+#include "moc_qgsfiledownloaderdialog.cpp"
 
 QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg )
   : mOutputFileName( outputFileName ), mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
@@ -41,7 +44,7 @@ QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString
 
 void QgsFileDownloaderDialog::onError( const QStringList &errors )
 {
-  QMessageBox::warning( nullptr, tr( "Download File" ), errors.join( QLatin1String( "<br>" ) ) );
+  QMessageBox::warning( nullptr, tr( "Download File" ), errors.join( "<br>"_L1 ) );
 }
 
 void QgsFileDownloaderDialog::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )

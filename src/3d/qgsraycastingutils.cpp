@@ -15,27 +15,14 @@
 
 #include "qgsraycastingutils.h"
 
-#include "qgsray3d.h"
 #include "qgsaabb.h"
 #include "qgslogger.h"
+#include "qgsray3d.h"
 
-#include <Qt3DRender/QGeometryRenderer>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
+#include <Qt3DRender/QGeometryRenderer>
 
 ///@cond PRIVATE
 
@@ -137,17 +124,17 @@ namespace QgsRayCastingUtils
       return false;
     }
 
-    Qt3DQGeometry *geometry = geometryRenderer->geometry();
+    Qt3DCore::QGeometry *geometry = geometryRenderer->geometry();
 
-    Qt3DQAttribute *positionAttr = nullptr;
-    Qt3DQAttribute *indexAttr = nullptr;
-    for ( Qt3DQAttribute *attr : geometry->attributes() )
+    Qt3DCore::QAttribute *positionAttr = nullptr;
+    Qt3DCore::QAttribute *indexAttr = nullptr;
+    for ( Qt3DCore::QAttribute *attr : geometry->attributes() )
     {
-      if ( attr->name() == Qt3DQAttribute::defaultPositionAttributeName() )
+      if ( attr->name() == Qt3DCore::QAttribute::defaultPositionAttributeName() )
       {
         positionAttr = attr;
       }
-      else if ( attr->attributeType() == Qt3DQAttribute::IndexAttribute )
+      else if ( attr->attributeType() == Qt3DCore::QAttribute::IndexAttribute )
       {
         indexAttr = attr;
       }
@@ -159,7 +146,7 @@ namespace QgsRayCastingUtils
       return false;
     }
 
-    if ( positionAttr->vertexBaseType() != Qt3DQAttribute::Float || positionAttr->vertexSize() != 3 )
+    if ( positionAttr->vertexBaseType() != Qt3DCore::QAttribute::Float || positionAttr->vertexSize() != 3 )
     {
       QgsDebugError( QString( "Unsupported position attribute: base type %1, vertex size %2" ).arg( positionAttr->vertexBaseType() ).arg( positionAttr->vertexSize() ) );
       return false;
@@ -182,15 +169,15 @@ namespace QgsRayCastingUtils
       }
 
       const QByteArray indexBuf = indexAttr->buffer()->data();
-      if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedByte )
+      if ( indexAttr->vertexBaseType() == Qt3DCore::QAttribute::UnsignedByte )
       {
         indexPtrUChar = reinterpret_cast<const uchar *>( indexBuf.constData() + indexAttr->byteOffset() );
       }
-      else if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedShort )
+      else if ( indexAttr->vertexBaseType() == Qt3DCore::QAttribute::UnsignedShort )
       {
         indexPtrUShort = reinterpret_cast<const ushort *>( indexBuf.constData() + indexAttr->byteOffset() );
       }
-      else if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedInt )
+      else if ( indexAttr->vertexBaseType() == Qt3DCore::QAttribute::UnsignedInt )
       {
         indexPtrUInt = reinterpret_cast<const uint *>( indexBuf.constData() + indexAttr->byteOffset() );
       }

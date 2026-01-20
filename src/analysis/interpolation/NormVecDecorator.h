@@ -17,12 +17,12 @@
 #ifndef NORMVECDECORATOR_H
 #define NORMVECDECORATOR_H
 
-#include "TriDecorator.h"
-#include "qgis_sip.h"
-#include "TriangleInterpolator.h"
 #include "MathUtils.h"
-#include "qgslogger.h"
+#include "TriDecorator.h"
+#include "TriangleInterpolator.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgslogger.h"
 
 #define SIP_NO_FILE
 
@@ -124,7 +124,7 @@ inline Vector3D *NormVecDecorator::getNormal( int n ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return nullptr;
   }
 }

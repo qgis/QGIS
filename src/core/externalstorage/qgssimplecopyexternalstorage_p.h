@@ -16,9 +16,9 @@
 #ifndef QGSSIMPLECOPYEXTERNALSTORAGE_H
 #define QGSSIMPLECOPYEXTERNALSTORAGE_H
 
-#include "qgsexternalstorage.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsexternalstorage.h"
 
 #include <QPointer>
 

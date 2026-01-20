@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsideoptions.h"
-#include "moc_qgsideoptions.cpp"
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
-#include "qgis.h"
 
 #include <QDesktopServices>
 #include <QUrl>
+
+#include "moc_qgsideoptions.cpp"
 
 //
 // QgsIdeOptionsWidget
@@ -43,7 +45,7 @@ QgsIdeOptionsWidget::~QgsIdeOptionsWidget() = default;
 
 QString QgsIdeOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#code-editor-options" );
+  return u"introduction/qgis_configuration.html#code-editor-options"_s;
 }
 
 void QgsIdeOptionsWidget::apply()
@@ -55,7 +57,7 @@ void QgsIdeOptionsWidget::apply()
 void QgsIdeOptionsWidget::generateGitHubToken()
 {
   QDesktopServices::openUrl( QUrl(
-    QStringLiteral( "https://github.com/settings/tokens/new?description=%1&scopes=gist" ).arg( tr( "QGIS Code Editor" ) )
+    u"https://github.com/settings/tokens/new?description=%1&scopes=gist"_s.arg( tr( "QGIS Code Editor" ) )
   ) );
 }
 
@@ -64,13 +66,13 @@ void QgsIdeOptionsWidget::generateGitHubToken()
 //
 
 QgsIdeOptionsFactory::QgsIdeOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "IDE" ), QIcon(), QStringLiteral( "ide" ) )
+  : QgsOptionsWidgetFactory( tr( "IDE" ), QIcon(), u"ide"_s )
 {
 }
 
 QIcon QgsIdeOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconCodeEditor.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconCodeEditor.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsIdeOptionsFactory::createWidget( QWidget *parent ) const

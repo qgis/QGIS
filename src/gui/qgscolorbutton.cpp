@@ -14,32 +14,34 @@
  ***************************************************************************/
 
 #include "qgscolorbutton.h"
-#include "moc_qgscolorbutton.cpp"
-#include "qgscolordialog.h"
-#include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorswatchgrid.h"
-#include "qgscolorschemeregistry.h"
-#include "qgscolorwidgets.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsguiutils.h"
-#include "qgsgui.h"
-#include "qgscolortooltip_p.h"
 
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
+#include "qgsapplication.h"
+#include "qgscolordialog.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscolorswatchgrid.h"
+#include "qgscolortooltip_p.h"
+#include "qgscolorwidgets.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+
+#include <QBuffer>
 #include <QClipboard>
 #include <QDrag>
+#include <QGridLayout>
+#include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QScreen>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
-#include <QScreen>
-#include <QLabel>
-#include <QGridLayout>
-#include <QPushButton>
-#include <QBuffer>
+
+#include "moc_qgscolorbutton.cpp"
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
@@ -88,7 +90,7 @@ const QPixmap &QgsColorButton::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -117,7 +119,7 @@ void QgsColorButton::showColorDialog()
   const QgsSettings settings;
 
   // first check if we need to use the limited native dialogs
-  const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  const bool useNative = settings.value( u"qgis/native_color_dialogs"_s, false ).toBool();
   if ( useNative )
   {
     // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
@@ -175,7 +177,7 @@ bool QgsColorButton::event( QEvent *e )
     if ( !isProjectColor )
       c = mColor;
 
-    QString info = ( isProjectColor ? QStringLiteral( "<p>%1: %2</p>" ).arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
+    QString info = ( isProjectColor ? u"<p>%1: %2</p>"_s.arg( tr( "Linked color" ), mLinkedColorName ) : QString() );
 
     info += QgsColorTooltip::htmlDescription( c, this );
 

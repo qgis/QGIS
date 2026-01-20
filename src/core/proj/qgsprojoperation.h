@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QString>
 
 /**
@@ -58,11 +59,11 @@ class CORE_EXPORT QgsProjOperation
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsProjOperation: invalid>" );
+      str = u"<QgsProjOperation: invalid>"_s;
     }
     else
     {
-      str = QStringLiteral( "<QgsProjOperation: %1>" ).arg( sipCpp->id() );
+      str = u"<QgsProjOperation: %1>"_s.arg( sipCpp->id() );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

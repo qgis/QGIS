@@ -20,10 +20,11 @@
 #ifndef QGSACCESSCONTROLPLUGIN_H
 #define QGSACCESSCONTROLPLUGIN_H
 
-#include <QMultiMap>
-#include <QString>
 #include "qgis_server.h"
 #include "qgis_sip.h"
+
+#include <QMultiMap>
+#include <QString>
 
 SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 

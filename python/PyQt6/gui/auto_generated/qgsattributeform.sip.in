@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsAttributeForm : QWidget
 {
 %Docstring(signature="appended")
@@ -42,7 +40,10 @@ The attribute form widget for vector layer features.
     explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
-    const QgsFeature &feature();
+    const QgsFeature &feature() const;
+%Docstring
+Returns feature of attribute form.
+%End
 
     QgsFeature currentFormFeature() const;
 %Docstring

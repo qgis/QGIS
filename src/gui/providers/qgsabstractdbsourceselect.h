@@ -17,11 +17,11 @@
 #define QGSABSTRACTDBSOURCESELECT_H
 
 
-#include "qgis_gui.h"
 #include "ui_qgsdbsourceselectbase.h"
+
+#include "qgis_gui.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgssettingsentryimpl.h"
-
 
 class QSortFilterProxyModel;
 class QgsAbstractDbTableModel;
@@ -32,7 +32,7 @@ class QItemDelegate;
  * \brief Base class for database source widget selectors.
  * \since QGIS 3.24
  */
-class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, public Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
   public:

@@ -17,35 +17,30 @@
 
 #include "qgs3d.h"
 
-#include "qgsapplication.h"
 #include "qgs3drendererregistry.h"
-
-#include "qgsabstract3drenderer.h"
-#include "qgs3drendererregistry.h"
-#include "qgsrulebased3drenderer.h"
-#include "qgsvectorlayer3drenderer.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgstiledscenelayer3drenderer.h"
-#include "qgsannotationlayer3drenderer.h"
 #include "qgs3dsymbolregistry.h"
-#include "qgspoint3dsymbol.h"
-#include "qgsline3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-#include "qgsmaterialregistry.h"
-
-#include "qgspolygon3dsymbol_p.h"
-#include "qgspoint3dsymbol_p.h"
-#include "qgsline3dsymbol_p.h"
-#include "qgsgoochmaterialsettings.h"
-#include "qgsmetalroughmaterialsettings.h"
-#include "qgssimplelinematerialsettings.h"
-#include "qgsphongtexturedmaterialsettings.h"
-#include "qgsnullmaterialsettings.h"
-
 #include "qgs3dterrainregistry.h"
-
+#include "qgsabstract3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
+#include "qgsapplication.h"
+#include "qgsgoochmaterialsettings.h"
+#include "qgsline3dsymbol.h"
+#include "qgsline3dsymbol_p.h"
+#include "qgsmaterialregistry.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgsmetalroughmaterialsettings.h"
+#include "qgsnullmaterialsettings.h"
+#include "qgsphongtexturedmaterialsettings.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspoint3dsymbol_p.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspolygon3dsymbol.h"
+#include "qgspolygon3dsymbol_p.h"
+#include "qgsrulebased3drenderer.h"
+#include "qgssimplelinematerialsettings.h"
 #include "qgsstyle.h"
+#include "qgstiledscenelayer3drenderer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 Qgs3D *Qgs3D::instance()
 {
@@ -71,16 +66,16 @@ void Qgs3D::initialize()
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsTiledSceneLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsAnnotationLayer3DRendererMetadata );
 
-  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "point" ), QObject::tr( "Point" ), &QgsPoint3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPoint3DSymbol ) );
-  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "line" ), QObject::tr( "Line" ), &QgsLine3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForLine3DSymbol ) );
-  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ), &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( u"point"_s, QObject::tr( "Point" ), &QgsPoint3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPoint3DSymbol ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( u"line"_s, QObject::tr( "Line" ), &QgsLine3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForLine3DSymbol ) );
+  QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( u"polygon"_s, QObject::tr( "Polygon" ), &QgsPolygon3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPolygon3DSymbol ) );
 
-  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "null" ), QObject::tr( "Embedded Textures" ), QgsNullMaterialSettings::create, QgsNullMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongTexturedMaterial.svg" ) ) ) );
-  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phong" ), QObject::tr( "Realistic (Phong)" ), QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongMaterial.svg" ) ) ) );
-  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "phongtextured" ), QObject::tr( "Realistic Textured (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconPhongTexturedMaterial.svg" ) ) ) );
-  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "simpleline" ), QObject::tr( "Single Color (Unlit)" ), QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconSimpleLineMaterial.svg" ) ) ) );
-  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ), QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconGoochMaterial.svg" ) ) ) );
-  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "metalrough" ), QObject::tr( "Metal Roughness" ), QgsMetalRoughMaterialSettings::create, QgsMetalRoughMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconGoochMaterial.svg" ) ) ) );
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"null"_s, QObject::tr( "Embedded Textures" ), QgsNullMaterialSettings::create, QgsNullMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) ) );
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"phong"_s, QObject::tr( "Realistic (Phong)" ), QgsPhongMaterialSettings::create, QgsPhongMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongMaterial.svg"_s ) ) );
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"phongtextured"_s, QObject::tr( "Realistic Textured (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) ) );
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"simpleline"_s, QObject::tr( "Single Color (Unlit)" ), QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconSimpleLineMaterial.svg"_s ) ) );
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"gooch"_s, QObject::tr( "CAD (Gooch)" ), QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) ) );
+  Qgs3D::materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( u"metalrough"_s, QObject::tr( "Metal Roughness" ), QgsMetalRoughMaterialSettings::create, QgsMetalRoughMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconGoochMaterial.svg"_s ) ) );
 
   // because we are usually populating the 3d registry AFTER QgsApplication initialization, we need to defer creation
   // of 3d symbols in the default style until now

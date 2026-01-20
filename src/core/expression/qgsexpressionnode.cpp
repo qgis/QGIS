@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsexpressionnode.h"
-#include "qgsexpression.h"
 
+#include "qgsexpression.h"
 
 QVariant QgsExpressionNode::eval( QgsExpression *parent, const QgsExpressionContext *context )
 {

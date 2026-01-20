@@ -19,8 +19,9 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QCheckBox;
 
@@ -48,6 +49,13 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget : public QWidget, private Ui::Qg
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
     void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
+
+    /**
+     * Tune settings of the widget for the given format (in particular for COG)
+     *
+     * \since QGIS 4.0
+     */
+    void tuneForFormat( const QString &driverName );
 
   public slots:
 

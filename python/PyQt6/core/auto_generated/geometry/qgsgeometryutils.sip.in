@@ -1372,6 +1372,59 @@ Applies fillet to a vertex in a curve geometry.
 %End
 
 
+    static bool pointsAreCollinear( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon );
+%Docstring
+Checks if three points are collinear within a given tolerance.
+
+This function determines whether the points `pt1`, `pt2`, and `pt3` lie
+on the same straight line, considering a numerical tolerance `epsilon`.
+The function works only with 2D and 3D points. The measure component (if
+present) is ignored.
+
+:param pt1: The first point.
+:param pt2: The second point.
+:param pt3: The third point.
+:param epsilon: The tolerance used to account for floating-point
+                inaccuracies.
+
+:return: true if the points are collinear, false otherwise.
+
+.. versionadded:: 4.0
+%End
+
+
+    static bool checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1 /Out/, QgsPoint &pt2 /Out/, QgsPoint &pt3 /Out/, double epsilon = DBL_EPSILON );
+%Docstring
+Checks if a 3D geometry has a plane defined by at least 3 non-collinear
+points. If successful, the points are returned in ptA, ptB, and ptC.
+
+:param geom: The input 3D geometry.
+:param epsilon: The tolerance used to account for floating-point
+                inaccuracies.
+
+:return: - true if a plane is found, false otherwise.
+         - pt1: The first point found, if a plane exists.
+         - pt2: The second point found, if a plane exists.
+         - pt3: The third point found, if a plane exists.
+
+.. note::
+
+   This function does not handle geometry collections.
+
+.. note::
+
+   This function stops as soon as three suitable non-collinear points are
+   found; it does not perform an exhaustive verification of all geometry
+   vertices.
+
+.. note::
+
+   For polygon geometries, only the exterior ring is inspected when
+   searching for candidate points.
+
+.. versionadded:: 4.0
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

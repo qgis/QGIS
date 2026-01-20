@@ -18,9 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsgrouplayer.h"
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
-#include "qgsgrouplayer.h"
 
 class QgsMapLayer;
 class QgsLayerTreeLayer;
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsLayerTreeGroup: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     bool mWmsHasTimeDimension = false;
 
     //! Sets parent to NULLPTR and disconnects all external and forwarded signals
-    virtual void makeOrphan() override SIP_SKIP;
+    void makeOrphan() override SIP_SKIP;
 
   private:
 

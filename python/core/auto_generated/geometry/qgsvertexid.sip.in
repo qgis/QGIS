@@ -11,6 +11,9 @@
 
 struct QgsVertexId
 {
+%TypeHeaderCode
+#include "qgsvertexid.h"
+%End
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) /HoldGIL/;
 %Docstring

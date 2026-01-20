@@ -13,32 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Qt3DCore/QAspectEngine>
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DCore/QCoreAspect>
-#endif
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DInput/QInputSettings>
-#include <Qt3DLogic/QLogicAspect>
-#include <Qt3DLogic/QFrameAction>
+#include "qgs3dmapcanvas.h"
 
 #include "qgs3daxis.h"
-#include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
-#include "qgswindow3dengine.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
-#include "qgstemporalcontroller.h"
+#include "qgs3dutils.h"
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
-#include "qgsrubberband3d.h"
-#include "qgs3dutils.h"
 #include "qgsraycastcontext.h"
+#include "qgsrubberband3d.h"
+#include "qgstemporalcontroller.h"
+#include "qgswindow3dengine.h"
+
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/QCoreAspect>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/QInputSettings>
+#include <Qt3DLogic/QFrameAction>
+#include <Qt3DLogic/QLogicAspect>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderSettings>
 
 #include "moc_qgs3dmapcanvas.cpp"
-
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -49,15 +47,11 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   , m_defaultCamera( new Qt3DRender::QCamera )
   , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
-  , m_userRoot( nullptr )
-  , m_initialized( false )
 {
   setSurfaceType( QSurface::OpenGLSurface );
 
   // register aspects
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
-#endif
   m_aspectEngine->registerAspect( m_renderAspect );
   m_aspectEngine->registerAspect( m_inputAspect );
   m_aspectEngine->registerAspect( m_logicAspect );
@@ -435,7 +429,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
     QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
 
     const QgsSettings settings;
-    const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     band->setColor( color );
     band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
     if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )

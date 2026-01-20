@@ -27,23 +27,25 @@
  *
  */
 
-#include "qgsgeometry.h"
 #include "pal.h"
-#include "layer.h"
+
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
-#include "labelposition.h"
-#include "problem.h"
-#include "pointset.h"
 #include "internalexception.h"
-#include "util.h"
+#include "labelposition.h"
+#include "layer.h"
 #include "palrtree.h"
+#include "pointset.h"
+#include "problem.h"
+#include "qgsgeometry.h"
 #include "qgslabelingengine.h"
-#include "qgsrendercontext.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettingsentryimpl.h"
+#include "util.h"
+
 #if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<10 )
 #include "qgsmessagelog.h"
 #endif
@@ -53,9 +55,9 @@
 
 using namespace pal;
 
-const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPoints = new QgsSettingsEntryInteger( QStringLiteral( "label-candidates-limit-points" ), sTreePal, 0 );
-const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitLines = new QgsSettingsEntryInteger( QStringLiteral( "label-candidates-limit-lines" ), sTreePal, 0 );
-const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPolygons = new QgsSettingsEntryInteger( QStringLiteral( "label-candidates-limit-polygons" ), sTreePal, 0 );
+const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPoints = new QgsSettingsEntryInteger( u"label-candidates-limit-points"_s, sTreePal, 0 );
+const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitLines = new QgsSettingsEntryInteger( u"label-candidates-limit-lines"_s, sTreePal, 0 );
+const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPolygons = new QgsSettingsEntryInteger( u"label-candidates-limit-polygons"_s, sTreePal, 0 );
 
 
 Pal::Pal()
@@ -115,7 +117,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
   std::unique_ptr< QgsScopedRuntimeProfile > extractionProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    extractionProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Placing labels" ), QStringLiteral( "rendering" ) );
+    extractionProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Placing labels" ), u"rendering"_s );
   }
 
   // expand out the incoming buffer by 1000x -- that's the visible map extent, yet we may be getting features which exceed this extent
@@ -161,7 +163,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
   std::unique_ptr< QgsScopedRuntimeProfile > candidateProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    candidateProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Generating label candidates" ), QStringLiteral( "rendering" ) );
+    candidateProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Generating label candidates" ), u"rendering"_s );
   }
 
   for ( auto it = mLayers.rbegin(); it != mLayers.rend(); ++it )
@@ -187,7 +189,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     std::unique_ptr< QgsScopedRuntimeProfile > layerProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      layerProfile = std::make_unique< QgsScopedRuntimeProfile >( it->first->providerId(), QStringLiteral( "rendering" ) );
+      layerProfile = std::make_unique< QgsScopedRuntimeProfile >( it->first->providerId(), u"rendering"_s );
     }
 
     // check for connected features with the same label text and join them
@@ -366,7 +368,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     std::unique_ptr< QgsScopedRuntimeProfile > costingProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      costingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Assigning label costs" ), QStringLiteral( "rendering" ) );
+      costingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Assigning label costs" ), u"rendering"_s );
     }
 
     // allow rules to alter candidate costs
@@ -430,7 +432,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     std::unique_ptr< QgsScopedRuntimeProfile > conflictProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      conflictProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Calculating conflicts" ), QStringLiteral( "rendering" ) );
+      conflictProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Calculating conflicts" ), u"rendering"_s );
     }
 
     int currentLabelPositionIndex = 0;
@@ -583,7 +585,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
     std::unique_ptr< QgsScopedRuntimeProfile > finalizingProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      finalizingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing labels" ), QStringLiteral( "rendering" ) );
+      finalizingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing labels" ), u"rendering"_s );
     }
 
     index = -1;
@@ -663,7 +665,7 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &conte
   std::unique_ptr< QgsScopedRuntimeProfile > calculatingProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    calculatingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Calculating optimal labeling" ), QStringLiteral( "rendering" ) );
+    calculatingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Calculating optimal labeling" ), u"rendering"_s );
   }
 
   if ( feedback )
@@ -673,7 +675,7 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &conte
     std::unique_ptr< QgsScopedRuntimeProfile > reductionProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      reductionProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Reducing labeling" ), QStringLiteral( "rendering" ) );
+      reductionProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Reducing labeling" ), u"rendering"_s );
     }
 
     prob->reduce();
@@ -689,7 +691,7 @@ QList<LabelPosition *> Pal::solveProblem( Problem *prob, QgsRenderContext &conte
     std::unique_ptr< QgsScopedRuntimeProfile > solvingProfile;
     if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
     {
-      solvingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Solving labeling" ), QStringLiteral( "rendering" ) );
+      solvingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Solving labeling" ), u"rendering"_s );
     }
     try
     {
@@ -787,12 +789,12 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
         res = true;
       }
 #else
-      QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
+      QgsMessageLog::logMessage( u"label margin distance requires GEOS 3.10+"_s );
 #endif
     }
     catch ( QgsGeosException &e )
     {
-      QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
+      QgsDebugError( u"GEOS exception: %1"_s.arg( e.what() ) );
     }
   }
 

@@ -18,8 +18,8 @@
 #ifndef QGSGDALPROVIDERBASE_H
 #define QGSGDALPROVIDERBASE_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterdataprovider.h"
 
 #include <QList>
 

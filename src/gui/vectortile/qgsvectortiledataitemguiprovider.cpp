@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsvectortiledataitemguiprovider.h"
-#include "moc_qgsvectortiledataitemguiprovider.cpp"
 
 #include "qgsapplication.h"
-#include "qgsvectortiledataitems.h"
-#include "qgsvectortileconnectiondialog.h"
 #include "qgsarcgisvectortileconnectiondialog.h"
-#include "qgsvectortileconnection.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsvectortileconnection.h"
+#include "qgsvectortileconnectiondialog.h"
+#include "qgsvectortiledataitems.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgsvectortiledataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 

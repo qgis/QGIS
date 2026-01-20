@@ -17,9 +17,8 @@
 #define QGSLINE3DSYMBOL_H
 
 #include "qgis_3d.h"
-
-#include "qgsabstract3dsymbol.h"
 #include "qgs3dtypes.h"
+#include "qgsabstract3dsymbol.h"
 
 class QgsAbstractMaterialSettings;
 

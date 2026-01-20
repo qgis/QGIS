@@ -21,10 +21,10 @@ QgsStacCollectionList::QgsStacCollectionList( const QVector< QgsStacCollection *
 {
   for ( const QgsStacLink &link : links )
   {
-    if ( link.relation() == QLatin1String( "self" ) ||
-         link.relation() == QLatin1String( "root" ) ||
-         link.relation() == QLatin1String( "next" ) ||
-         link.relation() == QLatin1String( "prev" ) )
+    if ( link.relation() == "self"_L1 ||
+         link.relation() == "root"_L1 ||
+         link.relation() == "next"_L1 ||
+         link.relation() == "prev"_L1 )
       mUrls.insert( link.relation(), link.href() );
   }
 }
@@ -59,20 +59,20 @@ int QgsStacCollectionList::numberMatched() const
 
 QUrl QgsStacCollectionList::url() const
 {
-  return QUrl( mUrls.value( QStringLiteral( "self" ), QString() ) );
+  return QUrl( mUrls.value( u"self"_s, QString() ) );
 }
 
 QUrl QgsStacCollectionList::rootUrl() const
 {
-  return QUrl( mUrls.value( QStringLiteral( "root" ), QString() ) );
+  return QUrl( mUrls.value( u"root"_s, QString() ) );
 }
 
 QUrl QgsStacCollectionList::nextUrl() const
 {
-  return QUrl( mUrls.value( QStringLiteral( "next" ), QString() ) );
+  return QUrl( mUrls.value( u"next"_s, QString() ) );
 }
 
 QUrl QgsStacCollectionList::prevUrl() const
 {
-  return QUrl( mUrls.value( QStringLiteral( "prev" ), QString() ) );
+  return QUrl( mUrls.value( u"prev"_s, QString() ) );
 }

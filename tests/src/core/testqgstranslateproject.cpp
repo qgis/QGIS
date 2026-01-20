@@ -13,23 +13,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
-#include <QObject>
-#include <QDir>
-
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsapplication.h"
-#include "qgstranslationcontext.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include <qgsmaplayer.h>
-#include <qgsvectorlayer.h>
-#include <qgslayertree.h>
-#include <qgslayertreegroup.h>
-#include "qgsrelationmanager.h"
-#include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgslegendsymbolitem.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgstranslationcontext.h"
+#include "qgsvectorlayer.h"
 
+#include <QDir>
+#include <QObject>
 
 class TestQgsTranslateProject : public QObject
 {
@@ -103,7 +105,7 @@ void TestQgsTranslateProject::createTsFile()
   QFile tsFile( tsFileName );
   QVERIFY( tsFile.exists() );
 
-  tsFile.open( QIODevice::ReadWrite );
+  QVERIFY( tsFile.open( QIODevice::ReadWrite ) );
 
   const QString tsFileContent( tsFile.readAll() );
 
@@ -112,20 +114,55 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>lines</source>" ) );
   //points
   QVERIFY( tsFileContent.contains( "<source>points</source>" ) );
+  //purple lines
+  QVERIFY( tsFileContent.contains( "<source>purple lines</source>" ) );
+  //purple points
+  QVERIFY( tsFileContent.contains( "<source>purple points</source>" ) );
 
   //LAYER GROUPS AND SUBGROUPS
-  //Points:
   //Planes and Roads
   QVERIFY( tsFileContent.contains( "<source>Planes and Roads</source>" ) );
+  //Purple Marks
+  QVERIFY( tsFileContent.contains( "<source>Purple Marks</source>" ) );
   //Little bit of nothing
   QVERIFY( tsFileContent.contains( "<source>Little bit of nothing</source>" ) );
 
-  //FIELDS AND ALIASES
+  //LEGEND ITEMS
+  //lines:
+  QVERIFY( tsFileContent.contains( "<source>Arterial</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway</source>" ) );
+  //purple lines:
+  QVERIFY( tsFileContent.contains( "<source>Arterial purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Highway purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Low Highway purple</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>High Highway purple</source>" ) );
+  //purple points:
+  QVERIFY( tsFileContent.contains( "<source>From 1 to 1</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 1 to 3</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 3 to 3.6</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 3.6 to 10</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>From 10 to 20</source>" ) );
+
+  //ACTIONS
+  //descriptions (names)
+  QVERIFY( tsFileContent.contains( "<source>Run an application</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Clicked coordinates (Run feature actions tool)</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Open file</source>" ) );
+  //shorttitles
+  QVERIFY( tsFileContent.contains( "<source>Run application</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Clicked Coordinate</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Open file</source>" ) );
+
+  //FIELDNAMES AND ALIASES
   //Lines:
   //Name (Alias: Runwayid)
   QVERIFY( tsFileContent.contains( "<source>Runwayid</source>" ) );
   //Value (Alias: Name)
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //Name (Constraint Description: Road needs a type)
+  QVERIFY( tsFileContent.contains( "<source>Road needs a type</source>" ) );
+  //Value (Constraint Description: Value should not be 1337)
+  QVERIFY( tsFileContent.contains( "<source>Value should not be 1337</source>" ) );
 
   //Points:
   //Class (Alias: Level)
@@ -159,6 +196,9 @@ void TestQgsTranslateProject::createTsFile()
   //ValueRelation value
   QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationvalue</name>" ) );
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //ValueRelation description
+  QVERIFY( tsFileContent.contains( ":fields:Cabin Crew:valuerelationdescription</name>" ) );
+  QVERIFY( tsFileContent.contains( "<source>'The cabin Crew Member is now a '||\"RunwayId\"</source>" ) );
 
   //ValueMap with descriptions
   QVERIFY( tsFileContent.contains( ":fields:Name:valuemapdescriptions</name>" ) );
@@ -187,42 +227,123 @@ void TestQgsTranslateProject::translateProject()
   //with the qm file containing translation from en to de, the project should be in german and renamed with postfix .de
   QgsVectorLayer *points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" );
   QgsVectorLayer *lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" );
+  QgsVectorLayer *purple_points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_1c05d011_813c_4234_9b80_7aa5fa9c6d8d" );
+  QgsVectorLayer *purple_lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_5238db60_470c_41a5_b1d1_059e70f93b99" );
 
   //LAYER NAMES
   //lines -> Linien
-  QCOMPARE( lines_layer->name(), QStringLiteral( "Linien" ) );
+  QCOMPARE( lines_layer->name(), u"Linien"_s ); //#spellok
   //points -> Punkte
-  QCOMPARE( points_layer->name(), QStringLiteral( "Punkte" ) );
+  QCOMPARE( points_layer->name(), u"Punkte"_s ); //#spellok
+  // purple_lines
+  QCOMPARE( purple_lines_layer->name(), u"Lila Linien"_s ); //#spellok
+  //purple_points -> Punkte
+  QCOMPARE( purple_points_layer->name(), u"Lila Punkte"_s ); //#spellok
 
   //LAYER GROUPS AND SUBGROUPS
   //Points:
   //Planes and Roads -> Flugzeuge und Strassen
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Flugzeuge und Strassen" ) ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Flugzeuge und Strassen"_s ) ); //#spellok
   //Little bit of nothing -> Bisschen nichts
-  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( QStringLiteral( "Bisschen nichts" ) ) );
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Bisschen nichts"_s ) ); //#spellok
+  //Purple Marks -> Lila Markierungen
+  QVERIFY( QgsProject::instance()->layerTreeRoot()->findGroup( u"Lila Markierungen"_s ) ); //#spellok
 
-  //FIELDS AND ALIASES
+  //LEGEND ITEMS
+  //lines:
+  QList<QString> legendItemsOfLines;
+  for ( const QgsLegendSymbolItem &item : lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfLines.append( item.label() );
+  }
+  QVERIFY( legendItemsOfLines.contains( u"Hauptstrasse"_s ) ); //Arterial //#spellok
+  QVERIFY( legendItemsOfLines.contains( u"Autobahn"_s ) );     //Highway //#spellok
+  //purple lines:
+  QList<QString> legendItemsOfPurpleLine;
+  for ( const QgsLegendSymbolItem &item : purple_lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfPurpleLine.append( item.label() );
+  }
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Hauptstrasse"_s ) );   //Arterial purple //#spellok
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Lila Autobahn"_s ) );       //Highway purple //#spellok
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Tiefe Lila Autobahn"_s ) ); //Low Highway purple //#spellok
+  QVERIFY( legendItemsOfPurpleLine.contains( u"Hohe Lila Autobahn"_s ) );  //High Highway purple //#spellok
+
+  //purple points:
+  QList<QString> legendItemsOfPurplePoints;
+  for ( const QgsLegendSymbolItem &item : purple_points_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfPurplePoints.append( item.label() );
+  }
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 1"_s ) );    //From 1 to 1 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 1 bis 3"_s ) );    //From 1 to 3 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3 bis 3.6"_s ) );  //From 3 to 3.6 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 3.6 bis 10"_s ) ); //From 3.6 to 10 //#spellok
+  QVERIFY( legendItemsOfPurplePoints.contains( u"Von 10 bis 20"_s ) );  //From 10 to 20 //#spellok
+
+  //lines:
+  QList<QString> legendItemsOfLine;
+  for ( const QgsLegendSymbolItem &item : lines_layer->renderer()->legendSymbolItems() )
+  {
+    legendItemsOfLine.append( item.label() );
+  }
+  QVERIFY( legendItemsOfLine.contains( u"Hauptstrasse"_s ) ); //Arterial //#spellok
+  QVERIFY( legendItemsOfLine.contains( u"Autobahn"_s ) );     //Highway //#spellok
+
+  //ACTIONS
+  //lines:
+  QList<QString> actionDescriptionsOfLine;
+  QList<QString> actionShortTitlesOfLine;
+  for ( const QgsAction &action : lines_layer->actions()->actions() )
+  {
+    actionDescriptionsOfLine.append( action.name() );
+    actionShortTitlesOfLine.append( action.shortTitle() );
+  }
+
+  QVERIFY( actionDescriptionsOfLine.contains( u"Starte ein Programm"_s ) );                            //Run an application //#spellok
+  QVERIFY( actionShortTitlesOfLine.contains( u"Starte Programm"_s ) );                                 //Run application //#spellok
+  QVERIFY( actionDescriptionsOfLine.contains( u"Clicked coordinates (Run feature actions tool)"_s ) ); //Untranslated: Clicked coordinates (Run feature actions tool) //#spellok
+  QVERIFY( actionShortTitlesOfLine.contains( u"Clicked Coordinate"_s ) );                              //Untranslated: Clicked Coordinate //#spellok
+  QVERIFY( actionDescriptionsOfLine.contains( u"Dies öffnet eine Datei für Lines"_s ) );               //Open file //#spellok
+  QVERIFY( actionShortTitlesOfLine.contains( u"Öffne Datei"_s ) );                                     //Open file //#spellok
+
+  //points:
+  QList<QString> actionDescriptionsOfPoints;
+  QList<QString> actionShortTitlesOfPoints;
+  for ( const QgsAction &action : points_layer->actions()->actions() )
+  {
+    actionDescriptionsOfPoints.append( action.name() );
+    actionShortTitlesOfPoints.append( action.shortTitle() );
+  }
+  QVERIFY( actionDescriptionsOfPoints.contains( u"Dies öffnet eine Datei für Points"_s ) ); //Open file //#spellok
+  QVERIFY( actionShortTitlesOfPoints.contains( u"Open file"_s ) );                          //Untranslated: Open file //#spellok
+
+  //FIELDNAMES AND ALIASES
   //Lines:
   const QgsFields lines_fields = lines_layer->fields();
   //Name (Alias: Runwayid) -> Pistenid
-  QCOMPARE( lines_fields.field( QStringLiteral( "Name" ) ).alias(), QStringLiteral( "Pistenid" ) );
+  QCOMPARE( lines_fields.field( u"Name"_s ).alias(), u"Pistenid"_s ); //#spellok
   //Value (Alias: Name) -> Pistenname
-  QCOMPARE( lines_fields.field( QStringLiteral( "Value" ) ).alias(), QStringLiteral( "Pistenname" ) );
+  QCOMPARE( lines_fields.field( u"Value"_s ).alias(), u"Pistenname"_s ); //#spellok
+  //Name (Constraint Description: Road needs a type)
+  QCOMPARE( lines_fields.field( u"Name"_s ).constraints().constraintDescription(), u"Piste braucht eine Art"_s ); //#spellok
+  //Value (Constraint Description: Value should not be 1337)
+  QCOMPARE( lines_fields.field( u"Value"_s ).constraints().constraintDescription(), u"Wert sollte nicht 1337 sein"_s ); //#spellok
 
   //Points:
   const QgsFields points_fields = points_layer->fields();
   //Class (Alias: Level) -> Klasse
-  QCOMPARE( points_fields.field( QStringLiteral( "Class" ) ).alias(), QStringLiteral( "Klasse" ) );
+  QCOMPARE( points_fields.field( u"Class"_s ).alias(), u"Klasse"_s ); //#spellok
   //Heading -> Titel  //#spellok
-  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) ); //#spellok
+  QCOMPARE( points_fields.field( u"Heading"_s ).alias(), u"Titel"_s ); //#spellok
   //Importance -> Wichtigkeit
-  QCOMPARE( points_fields.field( QStringLiteral( "Importance" ) ).alias(), QStringLiteral( "Wichtigkeit" ) );
+  QCOMPARE( points_fields.field( u"Importance"_s ).alias(), u"Wichtigkeit"_s ); //#spellok
   //Pilots -> Piloten
-  QCOMPARE( points_fields.field( QStringLiteral( "Pilots" ) ).alias(), QStringLiteral( "Piloten" ) );
+  QCOMPARE( points_fields.field( u"Pilots"_s ).alias(), u"Piloten"_s ); //#spellok
   //Cabin Crew -> Kabinenpersonal
-  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).alias(), QStringLiteral( "Kabinenpersonal" ) );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).alias(), u"Kabinenpersonal"_s ); //#spellok
   //Staff -> Mitarbeiter
-  QCOMPARE( points_fields.field( QStringLiteral( "Staff" ) ).alias(), QStringLiteral( "Mitarbeiter" ) );
+  QCOMPARE( points_fields.field( u"Staff"_s ).alias(), u"Mitarbeiter"_s ); //#spellok
 
   //FORMCONTAINERS
   const QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
@@ -234,29 +355,31 @@ void TestQgsTranslateProject::translateProject()
   }
 
   //Plane -> Flugzeug
-  QCOMPARE( containers.at( 0 )->name(), QStringLiteral( "Flugzeug" ) );
+  QCOMPARE( containers.at( 0 )->name(), u"Flugzeug"_s ); //#spellok
   //Employees -> Angestellte
-  QCOMPARE( containers.at( 1 )->name(), QStringLiteral( "Angestellte" ) );
+  QCOMPARE( containers.at( 1 )->name(), u"Angestellte"_s ); //#spellok
   //Flightattends -> Flugbegleitung
   for ( QgsAttributeEditorElement *element : containers.at( 1 )->children() )
   {
     if ( element->type() == Qgis::AttributeEditorType::Container )
-      QCOMPARE( element->name(), QStringLiteral( "Flugbegleitung" ) );
+      QCOMPARE( element->name(), u"Flugbegleitung"_s ); //#spellok
   }
 
   //RELATIONS
   //Runway -> Piste
-  QCOMPARE( QgsProject::instance()->relationManager()->relation( QStringLiteral( "points_240_Importance_lines_a677_Value" ) ).name(), QStringLiteral( "Piste" ) );
+  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value"_s ).name(), u"Piste"_s ); //#spellok
   //Sheepwalk -> Schafweide
-  QCOMPARE( QgsProject::instance()->relationManager()->relation( QStringLiteral( "points_240_Importance_lines_a677_Value_1" ) ).name(), QStringLiteral( "Schafweide" ) );
+  QCOMPARE( QgsProject::instance()->relationManager()->relation( u"points_240_Importance_lines_a677_Value_1"_s ).name(), u"Schafweide"_s ); //#spellok
 
   //WIDGETS
   //ValueRelation value is not anymore Name but Runwayid
-  QCOMPARE( points_fields.field( QStringLiteral( "Cabin Crew" ) ).editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString(), QStringLiteral( "Runwayid" ) );
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Value"_s ).toString(), u"Pistenid"_s ); //#spellok
+  //ValueRelation description is not anymore 'The cabin Crew Member is now a '||"RunwayId" but 'Das Mitglied des Kabinenpersonals ist jetzt eine '||"Pistenid"
+  QCOMPARE( points_fields.field( u"Cabin Crew"_s ).editorWidgetSetup().config().value( u"Description"_s ).toString(), u"'Das Mitglied des Kabinenpersonals ist jetzt eine '||\"Pistenid\""_s ); //#spellok
 
   //ValueMap with descriptions
-  const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" };
-  const QList<QVariant> valueList = lines_fields.field( QStringLiteral( "Name" ) ).editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+  const QList<QString> expectedStringValueList = { "Hauptstrasse", "Autobahn", "nix" }; //#spellok
+  const QList<QVariant> valueList = lines_fields.field( u"Name"_s ).editorWidgetSetup().config().value( u"map"_s ).toList();
   QList<QString> stringValueList;
   for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
   {
@@ -264,15 +387,15 @@ void TestQgsTranslateProject::translateProject()
   }
 
   //METADATA
-  QCOMPARE( QgsProject::instance()->metadata().title(), QStringLiteral( "Metadatentitel" ) );
-  QCOMPARE( QgsProject::instance()->metadata().type(), QStringLiteral( "Metadatentyp" ) );
-  QCOMPARE( QgsProject::instance()->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
-  QCOMPARE( QgsProject::instance()->metadata().author(), QStringLiteral( "Webmasterin" ) );
+  QCOMPARE( QgsProject::instance()->metadata().title(), u"Metadatentitel"_s );               //#spellok
+  QCOMPARE( QgsProject::instance()->metadata().type(), u"Metadatentyp"_s );                  //#spellok
+  QCOMPARE( QgsProject::instance()->metadata().abstract(), u"Metadaten-Zusammenfassung"_s ); //#spellok
+  QCOMPARE( QgsProject::instance()->metadata().author(), u"Webmasterin"_s );                 //#spellok
 
-  QCOMPARE( lines_layer->metadata().title(), QStringLiteral( "Metadatentitel" ) );
-  QCOMPARE( lines_layer->metadata().type(), QStringLiteral( "Metadatentyp" ) );
-  QCOMPARE( lines_layer->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
-  QCOMPARE( lines_layer->metadata().rights(), QStringList() << QStringLiteral( "Metadatenrechte" ) );
+  QCOMPARE( lines_layer->metadata().title(), u"Metadatentitel"_s );                    //#spellok
+  QCOMPARE( lines_layer->metadata().type(), u"Metadatentyp"_s );                       //#spellok
+  QCOMPARE( lines_layer->metadata().abstract(), u"Metadaten-Zusammenfassung"_s );      //#spellok
+  QCOMPARE( lines_layer->metadata().rights(), QStringList() << u"Metadatenrechte"_s ); //#spellok
 
   QCOMPARE( stringValueList, expectedStringValueList );
 

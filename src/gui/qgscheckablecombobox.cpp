@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgscheckablecombobox.h"
-#include "moc_qgscheckablecombobox.cpp"
+
 #include "qgsapplication.h"
 
-#include <QEvent>
-#include <QMouseEvent>
-#include <QLineEdit>
-#include <QPoint>
 #include <QAbstractItemView>
+#include <QEvent>
+#include <QLineEdit>
+#include <QMouseEvent>
+#include <QPoint>
 
+#include "moc_qgscheckablecombobox.cpp"
 
 QgsCheckableItemModel::QgsCheckableItemModel( QObject *parent )
   : QStandardItemModel( 0, 1, parent )
@@ -78,7 +79,7 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
   , mModel( new QgsCheckableItemModel( this ) )
-  , mSeparator( QStringLiteral( ", " ) )
+  , mSeparator( u", "_s )
 {
   setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );

@@ -442,7 +442,7 @@ void addArgs(pdal::ProgramArgs& programArgs, BaseInfo::Options& options, pdal::A
     programArgs.add("input-file-list", "Read input files from a text file", options.inputFileList);
     programArgs.add("length,l", "Tile length", options.tileLength, 1000.);
     tempArg = &(programArgs.add("temp_dir", "Temp directory", options.tempDir));
-    programArgs.add("output-format", "Output format (las/laz)", options.outputFormat);
+    programArgs.add("vpc-output-format", "Output format (las/laz/copc)", options.outputFormat);
 
     // for debugging
     programArgs.add("preserve_temp_dir", "Do not remove the temp directory before and after processing (for debugging)",

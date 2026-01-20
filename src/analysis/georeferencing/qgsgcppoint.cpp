@@ -12,8 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgscoordinatereferencesystem.h"
 #include "qgsgcppoint.h"
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
@@ -45,7 +46,7 @@ QgsPointXY QgsGcpPoint::transformedDestinationPoint( const QgsCoordinateReferenc
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming destination point" ) );
+    QgsDebugError( u"Error transforming destination point"_s );
     return mDestinationPoint;
   }
 }

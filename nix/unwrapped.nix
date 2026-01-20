@@ -1,9 +1,9 @@
 { lib
 , stdenv
 
+, fetchFromGitHub
 , makeWrapper
 , replaceVars
-, runCommand
 , wrapGAppsHook3
 , wrapQtAppsHook
 
@@ -50,10 +50,19 @@
 }:
 
 let
-  versionSourceFiles = lib.fileset.toSource {
-    root = ../.;
-    fileset = ../CMakeLists.txt;
-  };
+  # Override libspatialindex to use version 2.0.0
+  # See https://github.com/libspatialindex/libspatialindex/issues/276
+  # An alternative would be to make this available/downgrade the version
+  # from the nixpkgs side.
+  libspatialindex_2_0 = libspatialindex.overrideAttrs (oldAttrs: rec {
+    version = "2.0.0";
+    src = fetchFromGitHub {
+      owner = "libspatialindex";
+      repo = "libspatialindex";
+      rev = version;
+      sha256 = "sha256-hZyAXz1ddRStjZeqDf4lYkV/g0JLqLy7+GrSUh75k20=";
+    };
+  });
 
   qgisSourceFiles =
     lib.fileset.difference
@@ -75,21 +84,19 @@ let
 
   # Version parsing taken from
   # https://github.com/qgis/QGIS/blob/1f0328cff6a8b4cf8a4f8d44a4304b9d9706aa72/rpm/buildrpms.sh#L118
+  cmakeListsFile = lib.readFile ../CMakeLists.txt;
+  extractVersion = pattern:
+    let
+      matches = lib.match ".*[sS][eE][tT]\\(${pattern}[[:space:]]+\"([0-9]+)\".*" cmakeListsFile;
+    in
+      if matches != null then lib.head matches else "0";
   qgisVersion =
-    lib.replaceStrings [ "\n" ] [ "" ]
-      (lib.readFile (
-        runCommand "qgis-version" { } ''
-          major=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MAJOR' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-          minor=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MINOR' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-          patch=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_PATCH' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-
-          version=$major.$minor.$patch
-          echo $version > $out
-        ''
-      ));
+    let
+      major = extractVersion "CPACK_PACKAGE_VERSION_MAJOR";
+      minor = extractVersion "CPACK_PACKAGE_VERSION_MINOR";
+      patch = extractVersion "CPACK_PACKAGE_VERSION_PATCH";
+    in
+      "${major}.${minor}.${patch}";
 
   py = python3.override {
     self = py;
@@ -128,7 +135,7 @@ in
 stdenv.mkDerivation
 {
   pname = "qgis-unwrapped";
-  version = qgisVersion;  # this is a "Import from derivation (IFD)" !
+  version = qgisVersion;
   src = lib.fileset.toSource {
     root = ../.;
     fileset = qgisSourceFiles;
@@ -153,7 +160,7 @@ stdenv.mkDerivation
     gsl
     hdf5
     libpq
-    libspatialindex
+    libspatialindex_2_0
     libspatialite
     libzip
     netcdf
@@ -185,6 +192,9 @@ stdenv.mkDerivation
       pyQt6PackageDir = "${py.pkgs.pyqt6}/${py.pkgs.python.sitePackages}";
       qsciPackageDir = "${py.pkgs.qscintilla-qt6}/${py.pkgs.python.sitePackages}";
     })
+    (replaceVars ./spatialite-path.patch {
+      spatialiteLib = "${libspatialite}/lib/mod_spatialite.so";
+    })
   ];
 
   # Add path to Qt platform plugins
@@ -192,9 +202,7 @@ stdenv.mkDerivation
   env.QT_QPA_PLATFORM_PLUGIN_PATH = "${qtbase}/${qtbase.qtPluginPrefix}/platforms";
 
   cmakeFlags = [
-    "-DBUILD_WITH_QT6=True"
     "-DWITH_QTWEBENGINE=True"
-    "-DWITH_QTWEBKIT=False"
 
     "-DWITH_3D=True"
     "-DWITH_PDAL=True"
