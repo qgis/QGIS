@@ -16,23 +16,24 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfileuploader.h"
-#include "moc_qgsalgorithmfileuploader.cpp"
-#include "qgsprocessingparameters.h"
+
 #include "qgis.h"
 #include "qgsfileuploader.h"
 #include "qgsfileutils.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsprocessingparameters.h"
 
-#include <QEventLoop>
 #include <QFileInfo>
 #include <QTimer>
 #include <QUrl>
+
+#include "moc_qgsalgorithmfileuploader.cpp"
 
 ///@cond PRIVATE
 
 QString QgsFileUploaderAlgorithm::name() const
 {
-  return QStringLiteral( "fileuploader" );
+  return u"fileuploader"_s;
 }
 
 QString QgsFileUploaderAlgorithm::displayName() const
@@ -57,7 +58,7 @@ QString QgsFileUploaderAlgorithm::group() const
 
 QString QgsFileUploaderAlgorithm::groupId() const
 {
-  return QStringLiteral( "filetools" );
+  return u"filetools"_s;
 }
 
 QString QgsFileUploaderAlgorithm::shortHelpString() const
@@ -73,10 +74,10 @@ QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
 
 void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "FILE" ), QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All file (%1)" ).arg( QLatin1String( "*.*" ) ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "To URL" ), QVariant(), false, false ) );
+  addParameter( new QgsProcessingParameterFile( u"FILE"_s, QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All file (%1)" ).arg( "*.*"_L1 ) ) );
+  addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "To URL" ), QVariant(), false, false ) );
 
-  auto formNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMNAME" ), tr( "Form name field" ), QString(), false, true );
+  auto formNameParam = std::make_unique<QgsProcessingParameterString>( u"FORMNAME"_s, tr( "Form name field" ), QString(), false, true );
   formNameParam->setHelp( QObject::tr( "The optional form name field parameter emulate a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point require a form name key" ) );
   formNameParam->setFlags( formNameParam->flags() | Qgis::ProcessingParameterFlag::Optional );
   addParameter( formNameParam.release() );
@@ -85,19 +86,17 @@ void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   mFeedback = feedback;
-  QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
+  QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL specified" ) );
 
-  const QString filePath = parameterAsFile( parameters, QStringLiteral( "FILE" ), context );
+  const QString filePath = parameterAsFile( parameters, u"FILE"_s, context );
   const bool exists = QFileInfo::exists( filePath );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "The file %1 doesn't exist." ).arg( filePath ) );
 
-  const QString formNameKey = parameterAsString( parameters, QStringLiteral( "FORMNAME" ), context );
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString formNameKey = parameterAsString( parameters, u"FORMNAME"_s, context );
 
-  QEventLoop loop;
   QTimer progressTimer;
   QUrl uploadUrl;
   QStringList errors;
