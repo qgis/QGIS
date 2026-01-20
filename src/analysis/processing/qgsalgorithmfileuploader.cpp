@@ -145,7 +145,7 @@ void QgsFileUploaderAlgorithm::receiveProgressFromUploader( qint64 bytesSent, qi
     if ( mTotal.isEmpty() )
       mTotal = QgsFileUtils::representFileSize( bytesTotal );
 
-    mFeedback->setProgress( ( bytesSent * 100 ) / bytesTotal );
+    mFeedback->setProgress( ( bytesSent / bytesTotal ) * 100.0 );
   }
 }
 
