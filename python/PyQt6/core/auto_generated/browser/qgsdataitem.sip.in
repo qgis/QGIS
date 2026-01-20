@@ -123,6 +123,26 @@ Create children. Children are not expected to have parent set.
     }
 %End
 
+    int creatorAncestorDepth() const;
+%Docstring
+Returns the hierarchical depth of the item's original creator/source.
+
+This value represents the depth of the item that this object was created
+from. For example, a return value of 1 indicates that the item was
+created by its direct parent. A return value of 2 would indicate it was
+created by its grandparent, etc.
+
+A value of 0 indicates an unknown source, or an item which has not yet
+been added to the hierarchy.
+
+This value indicates the ancestor which must be refreshed in order to
+regenerate an item representing the same object as this item refers to.
+
+.. seealso:: :py:func:`ancestorAtDepth`
+
+.. versionadded:: 4.0
+%End
+
     Qgis::BrowserItemState state() const;
 
     virtual void setState( Qgis::BrowserItemState state );
