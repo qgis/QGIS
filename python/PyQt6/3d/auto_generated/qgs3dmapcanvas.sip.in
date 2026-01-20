@@ -88,44 +88,29 @@ intersected 3d entities.
 .. versionadded:: 4.0
 %End
 
-    void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
-%Docstring
-Enables cross section mode for the 3D map canvas. The 3D scene will be
-clipped by four clipping planes, defined by a cross section line segment
-from ``startPoint`` to ``endPoint`` and two parallel segments at
-distance ``tolerance`` to each side.
-
-:param startPoint: The start point of the cross section line in 3D map
-                   coordinates.
-:param endPoint: The end point of the cross section line in 3D map
-                 coordinates.
-:param tolerance: The distance in meters between the cross section line
-                  and the left and right clipping planes.
-:param setSideView: When ``True``, the camera will be moved to look at
-                    the scene from the right side of the cross section
-                    line.
-
-.. seealso:: :py:func:`disableCrossSection`
-
-.. versionadded:: 4.0
-%End
-
-    void disableCrossSection();
-%Docstring
-disableCrossSection Disables the cross section mode and removes the
-scene's clipping planes
-
-.. seealso:: :py:func:`enableCrossSection`
-
-.. versionadded:: 4.0
-%End
-
     bool crossSectionEnabled() const;
 %Docstring
 Returns ``True`` if the cross section mode is enabled or the 3d scene
 has other clipping planes applied
 
-.. seealso:: :py:func:`enableCrossSection`
+.. versionadded:: 4.0
+%End
+
+    void setCrossSection( const QgsCrossSection &crossSection );
+%Docstring
+Sets the cross section definition for the 3D map canvas. The 3D scene
+will be clipped by four clipping planes, defined by a cross section line
+segment and two parallel segments at cross section half width to each
+side. Passing an invalid cross section will disable the clipping.
+
+:param crossSection: The cross section definition
+
+.. versionadded:: 4.0
+%End
+
+    QgsCrossSection crossSection() const;
+%Docstring
+Returns the current cross section definition for the 3D map canvas.
 
 .. versionadded:: 4.0
 %End
@@ -133,8 +118,6 @@ has other clipping planes applied
     void crossSectionEnabledChanged( bool enabled );
 %Docstring
 Emitted when the cross section mode is enabled or disabled
-
-.. seealso:: :py:func:`enableCrossSection`
 
 .. versionadded:: 4.0
 %End

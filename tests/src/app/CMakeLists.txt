@@ -17,6 +17,7 @@ set(TESTS
   testqgsadvanceddigitizing.cpp
   testqgsattributetable.cpp
   testqgsapplocatorfilters.cpp
+  testqgscustomization.cpp
   testqgsdecorationscalebar.cpp
   testqgsdwgimportdialog.cpp
   testqgsfieldcalculator.cpp
@@ -33,6 +34,7 @@ set(TESTS
   testqgsmaptoolselect.cpp
   testqgsmaptoolreshape.cpp
   testqgsmaptoolrotatefeature.cpp
+  testqgsmaptoolselectannotation.cpp
   testqgsmaptoolscalefeature.cpp
   testqgsmaptoolcircularstring.cpp
   testqgsmaptooleditmesh.cpp

@@ -96,6 +96,11 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   Q_ASSERT( mLegend );
 
   setupUi( this );
+
+  mSyncModeCombo->addItem( tr( "Synchronize to All Project Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::AllProjectLayers ) );
+  mSyncModeCombo->addItem( tr( "Synchronize to Visible Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::VisibleLayers ) );
+  mSyncModeCombo->addItem( tr( "Manual" ), QVariant::fromValue( Qgis::LegendSyncMode::Manual ) );
+
   connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mWrapCharLineEdit_textChanged );
   connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mTitleLineEdit_textChanged );
   connect( mTitleAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::titleAlignmentChanged );
@@ -126,7 +131,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mBoxSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::maxWidthChanged );
-  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [this]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
+  connect( mSyncModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] { syncModeChanged( true ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
   connect( mRasterStrokeWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
@@ -142,10 +147,19 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
   connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled );
-  connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
+
+  QMenu *resetMenu = new QMenu( mResetLayersButton );
+  QAction *resetToProjectLayersAction = new QAction( tr( "Reset to All Project Layers" ), resetMenu );
+  resetMenu->addAction( resetToProjectLayersAction );
+  connect( resetToProjectLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::AllProjectLayers ); } );
+  QAction *resetToVisibleLayersAction = new QAction( tr( "Reset to Visible Layers" ), resetMenu );
+  resetMenu->addAction( resetToVisibleLayersAction );
+  connect( resetToVisibleLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::VisibleLayers ); } );
+  mResetLayersButton->setMenu( resetMenu );
+  mResetLayersButton->setPopupMode( QToolButton::InstantPopup );
 
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, mButtonLinkedMaps, &QWidget::setEnabled );
   mButtonLinkedMaps->setEnabled( false );
@@ -327,7 +341,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
   mRasterStrokeColorButton->setColor( mLegend->rasterStrokeColor() );
 
-  mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
+  mSyncModeCombo->setCurrentIndex( mSyncModeCombo->findData( QVariant::fromValue( mLegend->syncMode() ) ) );
 
   mCheckboxResizeContents->setChecked( mLegend->resizeToContents() );
   mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
@@ -342,7 +356,7 @@ void QgsLayoutLegendWidget::setGuiElements()
 
   blockAllSignals( false );
 
-  mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked, false );
+  syncModeChanged( false );
   updateDataDefinedButton( mLegendTitleDDBtn );
   updateDataDefinedButton( mColumnsDDBtn );
 }
@@ -866,28 +880,42 @@ void QgsLayoutLegendWidget::collapseLegendTree()
   mItemTreeView->collapseAll();
 }
 
-void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered )
+void QgsLayoutLegendWidget::syncModeChanged( bool userTriggered )
 {
+  const Qgis::LegendSyncMode mode = mSyncModeCombo->currentData().value< Qgis::LegendSyncMode >();
   if ( userTriggered )
   {
-    mLegend->beginCommand( tr( "Change Auto Update" ) );
+    mLegend->beginCommand( tr( "Change Sync Mode" ) );
 
-    mLegend->setAutoUpdateModel( state == Qt::Checked );
+    mLegend->setSyncMode( mode );
     mLegend->update();
     mLegend->endCommand();
   }
 
-  mLegendProxyModel->setIsDefaultLegend( state == Qt::Checked );
+  mLegendProxyModel->setSyncMode( mode );
 
   // do not allow editing of model if auto update is on - we would modify project's layer tree
+  bool allowEdits = false;
+  switch ( mode )
+  {
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
+      allowEdits = false;
+      break;
+
+    case Qgis::LegendSyncMode::Manual:
+      allowEdits = true;
+      break;
+  }
+
   QList<QWidget *> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
+          << mEditPushButton << mCountToolButton << mResetLayersButton << mAddGroupToolButton
           << mExpressionFilterButton << mCollapseAllToolButton << mExpandAllToolButton;
   for ( QWidget *w : std::as_const( widgets ) )
-    w->setEnabled( state != Qt::Checked );
+    w->setEnabled( allowEdits );
 
-  if ( state == Qt::Unchecked )
+  if ( allowEdits )
   {
     // update widgets state based on current selection
     selectedChanged( QModelIndex(), QModelIndex() );
@@ -1170,6 +1198,17 @@ void QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled( bool checked )
   mLegend->endCommand();
 }
 
+void QgsLayoutLegendWidget::resetLayers( Qgis::LegendSyncMode mode )
+{
+  if ( !mLegend )
+    return;
+
+  mLegend->beginCommand( tr( "Update Legend" ) );
+  mLegend->resetManualLayers( mode );
+  mLegend->update();
+  mLegend->endCommand();
+}
+
 void QgsLayoutLegendWidget::mExpressionFilterButton_toggled( bool checked )
 {
   if ( !mLegend )
@@ -1260,11 +1299,6 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   mLegend->endCommand();
 }
 
-void QgsLayoutLegendWidget::mUpdateAllPushButton_clicked()
-{
-  updateLegend();
-}
-
 void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
 {
   if ( mLegend )
@@ -1285,20 +1319,6 @@ void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
     mLegend->setLegendFilterOutAtlas( toggled );
     // force update of legend when in preview mode
     mLegend->refresh();
-  }
-}
-
-void QgsLayoutLegendWidget::updateLegend()
-{
-  if ( mLegend )
-  {
-    mLegend->beginCommand( tr( "Update Legend" ) );
-
-    // this will reset the model completely, losing any changes
-    mLegend->setAutoUpdateModel( true );
-    mLegend->setAutoUpdateModel( false );
-    mLegend->update();
-    mLegend->endCommand();
   }
 }
 
@@ -1349,7 +1369,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mTitleLineEdit->blockSignals( b );
   mTitleAlignCombo->blockSignals( b );
   mItemTreeView->blockSignals( b );
-  mCheckBoxAutoUpdate->blockSignals( b );
+  mSyncModeCombo->blockSignals( b );
   mMapComboBox->blockSignals( b );
   mFilterByMapCheckBox->blockSignals( b );
   mColumnCountSpinBox->blockSignals( b );
@@ -1395,7 +1415,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
 
   mLayerExpressionButton->setEnabled( false );
 
-  if ( mLegend && mLegend->autoUpdateModel() )
+  if ( mLegend && mLegend->syncMode() != Qgis::LegendSyncMode::Manual )
   {
     QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
     if ( !QgsLayerTree::isLayer( currentNode ) )
@@ -1482,7 +1502,7 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
     return;
   }
 
-  if ( mLegend->autoUpdateModel() )
+  if ( mLegend->syncMode() != Qgis::LegendSyncMode::Manual )
     return;
 
   QgsLayerTreeNode *currentNode = mItemTreeView->index2node( idx );
@@ -1514,7 +1534,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   if ( !mView->currentNode() )
     return nullptr;
 
-  if ( mWidget->legend()->autoUpdateModel() )
+  if ( mWidget->legend()->syncMode() != Qgis::LegendSyncMode::Manual )
     return nullptr; // no editing allowed
 
   QMenu *menu = new QMenu();
@@ -2161,15 +2181,15 @@ bool QgsLayoutLegendMapFilteringModel::filterAcceptsRow( int source_row, const Q
 QgsLegendLayerTreeProxyModel::QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent )
   : QgsLayerTreeProxyModel( legend->model(), parent )
 {
-  setIsDefaultLegend( legend->autoUpdateModel() );
+  setSyncMode( legend->syncMode() );
 }
 
-void QgsLegendLayerTreeProxyModel::setIsDefaultLegend( bool isDefault )
+void QgsLegendLayerTreeProxyModel::setSyncMode( Qgis::LegendSyncMode mode )
 {
-  mIsDefaultLegend = isDefault;
+  mSyncMode = mode;
 
-  // only show private layers when not in default mode
-  setShowPrivateLayers( !mIsDefaultLegend );
+  // only show private layers when in manual mode
+  setShowPrivateLayers( mSyncMode == Qgis::LegendSyncMode::Manual );
 
   invalidateFilter();
 }
@@ -2183,9 +2203,17 @@ bool QgsLegendLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
   {
     if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
     {
-      if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+      if ( QgsMapLayerLegend *layerLegend = layer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
       {
-        return false;
+        switch ( mSyncMode )
+        {
+          case Qgis::LegendSyncMode::AllProjectLayers:
+          case Qgis::LegendSyncMode::VisibleLayers:
+            return false;
+
+          case Qgis::LegendSyncMode::Manual:
+            break;
+        }
       }
     }
   }

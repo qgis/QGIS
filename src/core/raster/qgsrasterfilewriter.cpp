@@ -1203,7 +1203,7 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
     GDALDriverH drv = GDALGetDriver( i );
     if ( drv )
     {
-      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      CSLConstList driverMetadata = GDALGetMetadata( drv, nullptr );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
       {
         QString drvName = GDALGetDriverShortName( drv );
@@ -1226,7 +1226,7 @@ QStringList QgsRasterFileWriter::extensionsForFormat( const QString &format )
   GDALDriverH drv = GDALGetDriverByName( format.toLocal8Bit().data() );
   if ( drv )
   {
-    char **driverMetadata = GDALGetMetadata( drv, nullptr );
+    CSLConstList driverMetadata = GDALGetMetadata( drv, nullptr );
     if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
     {
       return QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );

@@ -164,8 +164,10 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   int height;
   QString crs;
   QgsRectangle box; // box to use to calc extent
-  // Prefer native CRS
-  if ( !mCoverageSummary.nativeCrs.isEmpty() && !mCoverageSummary.nativeBoundingBox.isEmpty() && mCoverageSummary.supportedCrs.contains( mCoverageSummary.nativeCrs ) && mHasSize )
+  // Prefer native CRS, but only if spatial filter is not set. With spatial filter we should
+  // use actual requested extent to get data, otherwise getCache() will use wrong bbox and no
+  // data will be retrieved.
+  if ( !mCoverageSummary.nativeCrs.isEmpty() && !mCoverageSummary.nativeBoundingBox.isEmpty() && mCoverageSummary.supportedCrs.contains( mCoverageSummary.nativeCrs ) && mHasSize && mBBOX.isEmpty() )
   {
     box = mCoverageSummary.nativeBoundingBox;
     width = mWidth;

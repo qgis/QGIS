@@ -365,6 +365,17 @@ def _set_merge_lines(self, merge):
 QgsPalLayerSettings.mergeLines = property(_get_merge_lines)
 QgsPalLayerSettings.mergeLines = QgsPalLayerSettings.mergeLines.setter(_set_merge_lines)
 
+def _get_label_per_part(self):
+    return self.placementSettings().multiPartBehavior() == Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel
+
+
+def _set_label_per_part(self, label_per_part):
+    self.placementSettings().setMultiPartBehavior(Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel if label_per_part else Qgis.MultiPartLabelingBehavior.LabelLargestPartOnly)
+
+
+QgsPalLayerSettings.labelPerPart = property(_get_label_per_part)
+QgsPalLayerSettings.labelPerPart = QgsPalLayerSettings.labelPerPart.setter(_set_label_per_part)
+
 
 def _get_add_direction_symbol(self):
     return self.lineSettings().addDirectionSymbol()

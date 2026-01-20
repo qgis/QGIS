@@ -128,9 +128,10 @@ void QgsOWSSourceSelect::prepareExtent()
   if ( !canvas )
     return;
   QgsCoordinateReferenceSystem destinationCrs = canvas->mapSettings().destinationCrs();
-  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+  mSpatialExtentBox->setCurrentExtent( canvas->extent(), destinationCrs );
   mSpatialExtentBox->setOutputExtentFromCurrent();
   mSpatialExtentBox->setMapCanvas( canvas );
+  mSpatialExtentBox->setChecked( false );
 }
 
 void QgsOWSSourceSelect::refresh()

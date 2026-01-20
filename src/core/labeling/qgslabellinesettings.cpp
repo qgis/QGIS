@@ -88,4 +88,22 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
         mAnchorTextPoint = AnchorTextPoint::EndOfText;
     }
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::Property::CurvedLabelMode ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::CurvedLabelMode, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( "Default"_L1, Qt::CaseInsensitive ) == 0 )
+        mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
+      else if ( value.compare( "CharactersAtVertices"_L1, Qt::CaseInsensitive ) == 0 )
+        mCurvedLabelMode = Qgis::CurvedLabelMode::PlaceCharactersAtVertices;
+      else if ( value.compare( "StretchCharacterSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 )
+        mCurvedLabelMode = Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine;
+      else if ( value.compare( "StretchWordSpacingToFit"_L1, Qt::CaseInsensitive ) == 0 )
+        mCurvedLabelMode = Qgis::CurvedLabelMode::StretchWordSpacingToFitLine;
+    }
+  }
 }
+

@@ -29,9 +29,11 @@
 
 #include <Qt3DCore/QEntity>
 
+class QgsGeometry;
 class QgsFeature;
 
 #include "qgs3drendercontext.h"
+#include "qgsbox3d.h"
 
 #define SIP_NO_FILE
 
@@ -49,7 +51,7 @@ class QgsFeature3DHandler
      * Called before feature iteration starts to initialize, get required attributes.
      * \returns TRUE on success (on FALSE the handler failed to initialize and processFeature() / finalize() should not be called
      */
-    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) = 0;
+    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) = 0;
 
     /**
      * Called for every feature to extract information out of it into some
@@ -97,11 +99,30 @@ class QgsFeature3DHandler
     //! updates zMinimum, zMaximum from the vector of positions in 3D world coordinates
     void updateZRangeFromPositions( const QVector<QVector3D> &positions );
 
+    /**
+     * Clips \a geom to the chunk extents if it is larger than MAX_GEOM_BBOX_SIZE
+     * Return TRUE if \a geom was clipped, FALSE otherwise
+     */
+    bool clipGeometryIfTooLarge( QgsGeometry &geom ) const;
+
   protected:
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
     int mFeatureCount = 0;
     bool mHighlightingEnabled = false;
+
+    /**
+     * Origin (in map coordinates) for output geometries - it is kind of arbitrary, but it should be
+     * picked so that the coordinates are relatively small to avoid numerical precision issues (e.g. at the center of the chunk)
+     */
+    QgsVector3D mChunkOrigin;
+
+    //! bounding box of the chunk
+    QgsBox3D mChunkExtent;
+
+  private:
+    //! features whose bbox is larger than this should be clipped to the chunk's extents
+    static constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
 };
 
 

@@ -422,6 +422,7 @@ set(QGIS_CORE_SRCS
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
   qgsapplication.cpp
+  qgsapplicationthemeregistry.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
   qgsarrowiterator.cpp
@@ -942,6 +943,8 @@ set(QGIS_CORE_SRCS
   geometry/qgsmultipoint.cpp
   geometry/qgsmultipolygon.cpp
   geometry/qgsmultisurface.cpp
+  geometry/qgsnurbscurve.cpp
+  geometry/qgsnurbsutils.cpp
   geometry/qgsorientedbox3d.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
@@ -1132,6 +1135,7 @@ set(QGIS_CORE_HDRS
   qgsalignrasterdata.h
   qgsanimatedicon.h
   qgsapplication.h
+  qgsapplicationthemeregistry.h
   qgsarchive.h
   qgsarrowiterator.h
   qgsattributes.h
@@ -1543,6 +1547,8 @@ set(QGIS_CORE_HDRS
   geometry/qgsmultipoint.h
   geometry/qgsmultipolygon.h
   geometry/qgsmultisurface.h
+  geometry/qgsnurbscurve.h
+  geometry/qgsnurbsutils.h
   geometry/qgsorientedbox3d.h
   geometry/qgspoint.h
   geometry/qgspolygon.h

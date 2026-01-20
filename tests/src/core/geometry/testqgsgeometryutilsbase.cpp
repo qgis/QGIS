@@ -32,6 +32,7 @@ class TestQgsGeometryUtilsBase : public QObject
     void testCreateFilletBase_data();
     void testCreateFilletBase();
     void testPointsAreCollinear();
+    void testInterpolatePointOnCubicBezier();
 };
 
 void TestQgsGeometryUtilsBase::testFuzzyEqual()
@@ -424,6 +425,93 @@ void TestQgsGeometryUtilsBase::testPointsAreCollinear()
   QVERIFY( QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 2, 0, 0, 0, 0, 0, 1, 0.00001 ) );
   QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.00001 ) );
   QVERIFY( !QgsGeometryUtilsBase::points3DAreCollinear( 1, 0, 0, 0, 0, 0, 0, 1, 1, 0.00001 ) );
+}
+
+void TestQgsGeometryUtilsBase::testInterpolatePointOnCubicBezier()
+{
+  double outX, outY, outZ, outM;
+
+  //
+  // 2D
+  //
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+    0, 0, 0, 0,
+    1, 1, 0, 0,
+    2, -1, 0, 0,
+    3, 0, 0, 0,
+    0, false, false,
+    outX, outY, outZ, outM
+  );
+  QVERIFY( qgsDoubleNear( outX, 0.0 ) );
+  QVERIFY( qgsDoubleNear( outY, 0.0 ) );
+
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+    0, 0, 0, 0,
+    1, 1, 0, 0,
+    2, -1, 0, 0,
+    3, 0, 0, 0,
+    1, false, false,
+    outX, outY, outZ, outM
+  );
+  QVERIFY( qgsDoubleNear( outX, 3.0 ) );
+  QVERIFY( qgsDoubleNear( outY, 0.0 ) );
+
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+    0, 0, 0, 0,
+    1, 1, 0, 0,
+    2, -1, 0, 0,
+    3, 0, 0, 0,
+    0.5, false, false,
+    outX, outY, outZ, outM
+  );
+  QVERIFY( qgsDoubleNear( outX, 1.5 ) );
+  QVERIFY( qgsDoubleNear( outY, 0.0 ) );
+
+  //
+  // With Z
+  //
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+    0, 0, 10, 0,
+    1, 1, 12, 0,
+    2, -1, 14, 0,
+    3, 0, 16, 0,
+    0.5, true, false,
+    outX, outY, outZ, outM
+  );
+  QVERIFY( qgsDoubleNear( outX, 1.5 ) );
+  QVERIFY( qgsDoubleNear( outY, 0.0 ) );
+  QVERIFY( qgsDoubleNear( outZ, 13.0 ) );
+
+  //
+  // With M
+  //
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+    0, 0, 0, 20,
+    1, 1, 0, 22,
+    2, -1, 0, 24,
+    3, 0, 0, 26,
+    0.5, false, true,
+    outX, outY, outZ, outM
+  );
+  QVERIFY( qgsDoubleNear( outX, 1.5 ) );
+  QVERIFY( qgsDoubleNear( outY, 0.0 ) );
+  QVERIFY( qgsDoubleNear( outM, 23.0 ) );
+
+  //
+  // With Z and M
+  //
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+    0, 0, 10, 20,
+    1, 1, 12, 22,
+    2, -1, 14, 24,
+    3, 0, 16, 26,
+    0.5, true, true,
+    outX, outY, outZ, outM
+  );
+  QVERIFY( qgsDoubleNear( outX, 1.5 ) );
+  QVERIFY( qgsDoubleNear( outY, 0.0 ) );
+  QVERIFY( qgsDoubleNear( outZ, 13.0 ) );
+  QVERIFY( qgsDoubleNear( outM, 23.0 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtilsBase )

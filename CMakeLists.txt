@@ -709,18 +709,19 @@ set (WITH_ASTYLE FALSE CACHE BOOL "Deprecated. Should be OFF. If you plan to con
 # QML
 set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
 
+set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
+if (PUSH_TO_CDASH)
+  # Adds some testing specific build targets e.g. make Experimental
+  include(Dart)
+endif()
+
 #############################################################
 # testing
 # whether unit tests should be build
 set (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 if (ENABLE_TESTS)
-  set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
   set(QT_USE_QTTEST TRUE)
   enable_testing()
-  if (PUSH_TO_CDASH)
-    # Adds some testing specific build targets e.g. make Experimental
-    include(Dart)
-  endif()
   # Additional test configuration options e.g. max upload size of test report
   configure_file(
     "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"

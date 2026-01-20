@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_3d.h"
 #include "qgs3dhighlightfeaturehandler.h"
+#include "qgscrosssection.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
 
@@ -123,33 +124,27 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
 
     /**
-     * Enables cross section mode for the 3D map canvas.
-     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment from \a startPoint to \a endPoint and
-     * two parallel segments at distance \a tolerance to each side.
-     *
-     * \param startPoint The start point of the cross section line in 3D map coordinates.
-     * \param endPoint The end point of the cross section line in 3D map coordinates.
-     * \param tolerance The distance in meters between the cross section line and the left and right clipping planes.
-     * \param setSideView When TRUE, the camera will be moved to look at the scene from the right side of the cross section line.
-     * \see disableCrossSection()
-     * \since QGIS 4.0
-     */
-    void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
-
-    /**
-     * \brief disableCrossSection Disables the cross section mode and removes the scene's clipping planes
-     * \see enableCrossSection()
-     * \since QGIS 4.0
-     */
-    void disableCrossSection();
-
-    /**
      * Returns TRUE if the cross section mode is enabled or the 3d scene has other clipping planes applied
      *
-     * \see enableCrossSection()
      * \since QGIS 4.0
      */
     bool crossSectionEnabled() const;
+
+    /**
+     * Sets the cross section definition for the 3D map canvas.
+     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment and
+     * two parallel segments at cross section half width to each side.
+     * Passing an invalid cross section will disable the clipping.
+     * \param crossSection The cross section definition
+     * \since QGIS 4.0
+     */
+    void setCrossSection( const QgsCrossSection &crossSection );
+
+    /**
+     * Returns the current cross section definition for the 3D map canvas.
+     * \since QGIS 4.0
+     */
+    QgsCrossSection crossSection() const { return mCrossSection; }
 
 #ifndef SIP_RUN
 
@@ -232,7 +227,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 #endif
     /**
      *  Emitted when the cross section mode is enabled or disabled
-     *  \see enableCrossSection()
      *  \since QGIS 4.0
      */
     void crossSectionEnabledChanged( bool enabled );
@@ -310,6 +304,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     QgsTemporalController *mTemporalController = nullptr;
 
     std::unique_ptr<Qgs3DHighlightFeatureHandler> mHighlightsHandler = nullptr;
+
+    QgsCrossSection mCrossSection;
 };
 
 #endif //QGS3DMAPCANVAS_H

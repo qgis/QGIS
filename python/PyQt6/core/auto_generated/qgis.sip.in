@@ -192,6 +192,7 @@ The development version
       MultiSurface,
       PolyhedralSurface,
       TIN,
+      NurbsCurve,
       NoGeometry,
       PointZ,
       LineStringZ,
@@ -208,6 +209,7 @@ The development version
       MultiSurfaceZ,
       PolyhedralSurfaceZ,
       TINZ,
+      NurbsCurveZ,
       PointM,
       LineStringM,
       PolygonM,
@@ -223,6 +225,7 @@ The development version
       MultiSurfaceM,
       PolyhedralSurfaceM,
       TINM,
+      NurbsCurveM,
       PointZM,
       LineStringZM,
       PolygonZM,
@@ -238,6 +241,7 @@ The development version
       PolyhedralSurfaceZM,
       TINZM,
       TriangleZM,
+      NurbsCurveZM,
       Point25D,
       LineString25D,
       Polygon25D,
@@ -722,6 +726,12 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelWhitespaceCollisionHandling /BaseType=IntEnum/
+    {
+      TreatWhitespaceAsCollision,
+      IgnoreWhitespaceCollisions,
+    };
+
     enum class LabelPrioritization /BaseType=IntEnum/
     {
       PreferCloser,
@@ -741,6 +751,14 @@ The development version
       OutsidePolygons,
     };
 
+    enum class CurvedLabelMode /BaseType=IntEnum/
+    {
+      Default,
+      PlaceCharactersAtVertices,
+      StretchCharacterSpacingToFitLine,
+      StretchWordSpacingToFitLine,
+    };
+
     enum class LabelPredefinedPointPosition /BaseType=IntEnum/
       {
       TopLeft,
@@ -756,6 +774,13 @@ The development version
       BottomSlightlyRight,
       BottomRight,
       OverPoint,
+    };
+
+    enum class MultiPartLabelingBehavior /BaseType=IntEnum/
+    {
+      LabelLargestPartOnly,
+      LabelEveryPartWithEntireLabel,
+      SplitLabelTextLinesOverParts,
     };
 
     enum class LabelOffsetType /BaseType=IntEnum/
@@ -1774,6 +1799,7 @@ The development version
       {
       Segment,
       Curve,
+      ControlPoint,
     };
 
     enum class MarkerShape /BaseType=IntEnum/
@@ -2570,6 +2596,13 @@ The development version
       Subgroup,
       Symbol,
       SymbolLabel,
+    };
+
+    enum class LegendSyncMode /BaseType=IntEnum/
+    {
+      AllProjectLayers,
+      VisibleLayers,
+      Manual,
     };
 
     enum class LegendJsonRenderFlag /BaseType=IntFlag/

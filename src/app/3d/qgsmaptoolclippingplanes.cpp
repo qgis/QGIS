@@ -22,6 +22,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgscrosssection.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
@@ -88,20 +89,9 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
       const QgsPointXY endPointMap3d = mCt->transform( *mRubberBandPoints->getPoint( 0, 1 ) );
       const QgsPointXY widthPointMap3d = mCt->transform( point );
       mRectangleWidth = endPointMap3d.distance( widthPointMap3d );
-      QgsVector vec( endPointMap3d - startPointMap3d );
-      vec = vec.normalized().perpVector();
 
-      const QVector<QgsPointXY> points3DMap( {
-        startPointMap3d + vec * mRectangleWidth, //! top left corner
-        endPointMap3d + vec * mRectangleWidth,   //! top right corner
-        endPointMap3d - vec * mRectangleWidth,   //! bottom right corner
-        startPointMap3d - vec * mRectangleWidth  //! bottom left corner
-      } );
-
-      // build a polygon and transform it back to 2d map canvas coordinates
-      QgsGeometry geom( new QgsPolygon( new QgsLineString( points3DMap ) ) );
-      geom.transform( *mCt, Qgis::TransformDirection::Reverse );
-      mRubberBandPolygon->setToGeometry( geom );
+      QgsCrossSection crossSection( QgsPoint( startPointMap3d ), QgsPoint( endPointMap3d ), mRectangleWidth );
+      mRubberBandPolygon->setToGeometry( crossSection.asGeometry( mCt.get() ) );
     }
     catch ( const QgsCsException & )
     {
@@ -127,20 +117,45 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
-    if ( mRubberBandPoints->numberOfVertices() == 2 )
+    if ( mRubberBandPoints->numberOfVertices() == 1 && !mToleranceLocked )
     {
-      //check if cross-section is in canvas extents
-      QgsGeometry crossSectionPolygon = mRubberBandPolygon->asGeometry();
+      QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
+      QgsPointXY pt1 = point;
 
       try
       {
-        crossSectionPolygon.transform( *mCt );
+        const QgsPointXY startPointMap3d = mCt->transform( pt0 );
+        const QgsPointXY endPointMap3d = mCt->transform( pt1 );
+
+        QgsCrossSection crossSection( QgsPoint( startPointMap3d ), QgsPoint( endPointMap3d ), 0.0 );
+        m3DCanvasWidget->mapCanvas3D()->setCrossSection( crossSection );
+
+        emit finishedSuccessfully();
       }
       catch ( const QgsCsException & )
       {
-        crossSectionPolygon.set( nullptr );
-        QgsDebugError( u"Could not reproject cross-section extent to 3d map canvas crs."_s );
+        QgsDebugError( u"Could not reproject cross section coordinates to 3d map crs."_s );
       }
+    }
+    else if ( mRubberBandPoints->numberOfVertices() == 2 )
+    {
+      QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
+      QgsPointXY pt1 = *mRubberBandPoints->getPoint( 0, 1 );
+
+      QgsCrossSection crossSection;
+      try
+      {
+        pt0 = mCt->transform( pt0 );
+        pt1 = mCt->transform( pt1 );
+        crossSection = QgsCrossSection( QgsPoint( pt0 ), QgsPoint( pt1 ), mRectangleWidth );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( u"Could not reproject cross-section extent to 3d map canvas crs."_s );
+        return;
+      }
+
+      QgsGeometry crossSectionPolygon = crossSection.asGeometry();
 
       if ( !crossSectionPolygon.intersects( m3DCanvasWidget->mapCanvas3D()->scene()->sceneExtent() ) )
       {
@@ -152,30 +167,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
-        QgsPointXY pt1 = *mRubberBandPoints->getPoint( 0, 1 );
-        try
-        {
-          pt0 = mCt->transform( pt0 );
-          pt1 = mCt->transform( pt1 );
-        }
-        catch ( const QgsCsException & )
-        {
-          emit messageEmitted( tr( "Could not reproject the cross-section extent to 3D map coordinates." ), Qgis::MessageLevel::Warning );
-        }
-
-        m3DCanvasWidget->mapCanvas3D()->enableCrossSection(
-          pt0,
-          pt1,
-          mRectangleWidth,
-          true
-        );
-
-        const QgsSettings settings;
-        QColor highlightColor = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-        highlightColor.setAlphaF( 0.5 );
-        mRubberBandPolygon->setColor( highlightColor );
-
+        m3DCanvasWidget->mapCanvas3D()->setCrossSection( crossSection );
         emit finishedSuccessfully();
       }
     }
@@ -215,4 +207,9 @@ void QgsMapToolClippingPlanes::clearHighLightedArea() const
 QgsGeometry QgsMapToolClippingPlanes::clippedPolygon() const
 {
   return mRubberBandPolygon->asGeometry();
+}
+
+void QgsMapToolClippingPlanes::setToleranceLocked( const bool enable )
+{
+  mToleranceLocked = enable;
 }

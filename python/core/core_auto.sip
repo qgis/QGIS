@@ -5,6 +5,7 @@
 %Include auto_generated/qgsalignrasterdata.sip
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
+%Include auto_generated/qgsapplicationthemeregistry.sip
 %Include auto_generated/qgsarchive.sip
 %Include auto_generated/qgsarrowiterator.sip
 %Include auto_generated/qgsattributes.sip
@@ -361,6 +362,8 @@
 %Include auto_generated/geometry/qgsmultipoint.sip
 %Include auto_generated/geometry/qgsmultipolygon.sip
 %Include auto_generated/geometry/qgsmultisurface.sip
+%Include auto_generated/geometry/qgsnurbscurve.sip
+%Include auto_generated/geometry/qgsnurbsutils.sip
 %Include auto_generated/geometry/qgsorientedbox3d.sip
 %Include auto_generated/geometry/qgspoint.sip
 %Include auto_generated/geometry/qgspolygon.sip

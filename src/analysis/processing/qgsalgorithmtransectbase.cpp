@@ -67,6 +67,10 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterEnum( u"SIDE"_s, QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 ) );
 
+  auto direction = std::make_unique<QgsProcessingParameterEnum>( u"DIRECTION"_s, QObject::tr( "Direction" ), QStringList() << QObject::tr( "Right to Left" ) << QObject::tr( "Left to Right" ), false, 0, true );
+  direction->setGuiDefaultValueOverride( 1 );
+  addParameter( direction.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );
 }
 
@@ -85,6 +89,8 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
 
   if ( mOrientation == QgsTransectAlgorithmBase::Both )
     mLength /= 2.0;
+
+  mDirection = static_cast<QgsTransectAlgorithmBase::Direction>( parameterAsInt( parameters, u"DIRECTION"_s, context ) );
 
   // Let subclass prepare their specific parameters
   if ( !prepareAlgorithmTransectParameters( parameters, context, feedback ) )
@@ -180,7 +186,7 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
               << ( ( mOrientation == QgsTransectAlgorithmBase::Both ) ? evaluatedLength * 2 : evaluatedLength )
               << static_cast<int>( mOrientation );
         outFeat.setAttributes( attrs );
-        outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, mOrientation, evaluatedAngle ) );
+        outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, mOrientation, evaluatedAngle, mDirection ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         number++;
@@ -195,35 +201,48 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
   return outputs;
 }
 
-QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle )
+QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithmBase::Side orientation, const double angle, const QgsTransectAlgorithmBase::Direction direction )
 {
-  QgsPoint pLeft;  // left point of the line
-  QgsPoint pRight; // right point of the line
+  // Transect is built from right to left relative to the reference line direction.
+  QgsPoint pStart; // start point of the transect
+  QgsPoint pEnd;   // end point of the transect
 
-  QgsPolyline line;
+  QgsPolyline transect;
 
   switch ( orientation )
   {
     case QgsTransectAlgorithmBase::Right:
-      pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
-      pRight = point;
+      pStart = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
+      pEnd = point;
       break;
 
     case QgsTransectAlgorithmBase::Left:
-      pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
-      pLeft = point;
+      pEnd = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
+      pStart = point;
       break;
 
     case QgsTransectAlgorithmBase::Both:
-      pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
-      pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
+      pStart = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
+      pEnd = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
       break;
   }
 
-  line.append( pLeft );
-  line.append( pRight );
-
-  return QgsGeometry::fromPolyline( line );
+  // Direction determines the transect orientation.
+  // The 'start' and 'end' points are defined relative to the input line's direction.
+  // For 'Both' sides transects, pStart is the right point and pEnd is the left point.
+  // - RightToLeft: Builds the transect from its start point to its end point.
+  // - LeftToRight: Builds the transect from its end point to its start point (this is the hydraulic convention, from left bank to right bank looking downstream).
+  if ( direction == QgsTransectAlgorithmBase::LeftToRight )
+  {
+    transect.append( pEnd );
+    transect.append( pStart );
+  }
+  else // RightToLeft
+  {
+    transect.append( pStart );
+    transect.append( pEnd );
+  }
+  return QgsGeometry::fromPolyline( transect );
 }
 
 ///@endcond

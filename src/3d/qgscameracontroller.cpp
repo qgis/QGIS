@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgscrosssection.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
 #include "qgsray3d.h"
@@ -480,7 +481,7 @@ void QgsCameraController::updateCameraFromPose()
   }
 }
 
-void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
+void QgsCameraController::moveCenterPoint( const QVector3D &posDiff )
 {
   mCameraPose.setCenterPoint( mCameraPose.centerPoint() + posDiff );
   updateCameraFromPose();
@@ -1114,7 +1115,7 @@ void QgsCameraController::walkView( double tx, double ty, double tz )
     cameraPosDiff += static_cast<float>( tz ) * QVector3D( 0.0f, 0.0f, 1.0f );
   }
 
-  moveCameraPositionBy( cameraPosDiff );
+  moveCenterPoint( cameraPosDiff );
 }
 
 void QgsCameraController::applyFlyModeKeyMovements()
@@ -1197,14 +1198,14 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     const QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
     const QVector3D cameraPosDiff = -dx * cameraLeft - dy * cameraUp;
-    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 10.0 );
+    moveCenterPoint( static_cast<float>( mCameraMovementSpeed ) * cameraPosDiff / 10.0 );
   }
   else if ( hasRightButton )
   {
     // right button drag = camera dolly
     const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     const QVector3D cameraPosDiff = dy * cameraFront;
-    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 5.0 );
+    moveCenterPoint( static_cast<float>( mCameraMovementSpeed ) * cameraPosDiff / 5.0 );
   }
   else
   {
@@ -1482,4 +1483,34 @@ void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
   pos.set( pos.x(), pos.y(), elevation + mScene->terrainEntity()->terrainElevationOffset() );
 
   setLookingAtPoint( pos, ( mCamera->position() - pos.toVector3D() ).length(), pitch, yaw );
+}
+
+void QgsCameraController::setCrossSectionSideView( const QgsCrossSection &crossSection )
+{
+  if ( !crossSection.isValid() )
+    return;
+
+  const QgsPoint startPoint = crossSection.startPoint();
+  const QgsPoint endPoint = crossSection.endPoint();
+  const double width = crossSection.halfWidth();
+
+  const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
+  const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
+
+  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+  linePerpVec = -linePerpVec.normalized().perpVector();
+
+  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+  const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
+  const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
+
+  const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+    frontStartPoint,
+    frontEndPoint,
+    mScene->elevationRange( true ),
+    mCamera->fieldOfView(),
+    mOrigin
+  );
+
+  setCameraPose( camPose );
 }
