@@ -1883,7 +1883,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-          QgsNewNameDialog dlg( tr( "Table %2.%3" ).arg( schema, tableName ), tableName );
+          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName );
           dlg.setWindowTitle( tr( "Rename Table" ) );
           if ( dlg.exec() != QDialog::Accepted || dlg.name() == tableName )
             return;
