@@ -2,7 +2,7 @@
                          qgsregularpolygon.h
                          --------------
     begin                : May 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
+    copyright            : (C) 2017 by Loïc Bartoletti
     email                : lbartoletti at tuxfamily dot org
  ***************************************************************************/
 
