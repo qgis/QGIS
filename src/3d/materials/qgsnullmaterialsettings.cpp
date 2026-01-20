@@ -15,6 +15,7 @@
 
 #include "qgsnullmaterialsettings.h"
 
+#include "qgshighlightmaterial.h"
 #include "qgsmaterial.h"
 
 #include <QMap>
@@ -61,8 +62,11 @@ bool QgsNullMaterialSettings::equals( const QgsAbstractMaterialSettings *other )
   return true;
 }
 
-QgsMaterial *QgsNullMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const
+QgsMaterial *QgsNullMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
+  if ( context.isHighlighted() )
+    return new QgsHighlightMaterial( technique );
+
   return nullptr;
 }
 

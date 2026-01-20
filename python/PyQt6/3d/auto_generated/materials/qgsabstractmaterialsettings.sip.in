@@ -68,6 +68,24 @@ Sets the color for representing materials in a selected state.
 .. seealso:: :py:func:`selectionColor`
 %End
 
+    bool isHighlighted() const;
+%Docstring
+Returns ``True`` if the material should represent a highlighted state.
+
+.. seealso:: :py:func:`setIsHighlighted`
+
+.. versionadded:: 4.0
+%End
+
+    void setIsHighlighted( bool isHighlighted );
+%Docstring
+Sets whether the material should represent a highlighted state.
+
+.. seealso:: :py:func:`isHighlighted`
+
+.. versionadded:: 4.0
+%End
+
 };
 
 

@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscolorutils.h"
+#include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
@@ -114,6 +115,11 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
     {
+      if ( context.isHighlighted() )
+      {
+        return new QgsHighlightMaterial( technique );
+      }
+
       bool fitsInCache = false;
       const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
       ( void ) fitsInCache;

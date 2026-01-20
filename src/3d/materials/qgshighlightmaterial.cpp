@@ -30,15 +30,15 @@
 
 ///@cond PRIVATE
 
-QgsHighlightMaterial::QgsHighlightMaterial( QNode *parent )
+QgsHighlightMaterial::QgsHighlightMaterial( QgsMaterialSettingsRenderingTechnique technique, QNode *parent )
   : QgsMaterial( parent )
 {
-  init();
+  init( technique );
 }
 
 QgsHighlightMaterial::~QgsHighlightMaterial() = default;
 
-void QgsHighlightMaterial::init()
+void QgsHighlightMaterial::init( QgsMaterialSettingsRenderingTechnique renderingTechnique )
 {
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
@@ -55,7 +55,29 @@ void QgsHighlightMaterial::init()
   Qt3DRender::QRenderPass *pass = new Qt3DRender::QRenderPass;
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+  switch ( renderingTechnique )
+  {
+    case QgsMaterialSettingsRenderingTechnique::Triangles:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
+    case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
+    {
+      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/default.vert"_s ) ) );
+      break;
+    }
+    case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
+    {
+      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
+      break;
+    }
+    case QgsMaterialSettingsRenderingTechnique::Lines:
+    case QgsMaterialSettingsRenderingTechnique::Points:
+    {
+      // Lines and billboards are not supported yet
+      break;
+    }
+  }
+
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/singlecolor.frag"_s ) ) );
   pass->setShaderProgram( shaderProgram );
 

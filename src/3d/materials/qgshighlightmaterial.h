@@ -17,6 +17,7 @@
 #define QGSHIGHLIGHTMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgsabstractmaterialsettings.h"
 #include "qgsmaterial.h"
 
 #define SIP_NO_FILE
@@ -35,13 +36,13 @@ class _3D_EXPORT QgsHighlightMaterial : public QgsMaterial
 
   public:
     /**
-     * Constructor for QgsHighlightMaterial, with the specified \a parent node.
+     * Constructor for QgsHighlightMaterial, using the specified \a technique and \a parent node.
      */
-    explicit QgsHighlightMaterial( Qt3DCore::QNode *parent = nullptr );
+    explicit QgsHighlightMaterial( QgsMaterialSettingsRenderingTechnique technique, Qt3DCore::QNode *parent = nullptr );
     ~QgsHighlightMaterial() override;
 
   private:
-    void init();
+    void init( QgsMaterialSettingsRenderingTechnique technique );
 };
 
 ///@endcond PRIVATE

@@ -345,6 +345,7 @@ QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symb
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.selectionColor() );
+  materialContext.setIsHighlighted( mHighlightingEnabled );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
   QgsMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );

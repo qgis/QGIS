@@ -15,6 +15,7 @@
 
 #include "qgsmetalroughmaterialsettings.h"
 
+#include "qgshighlightmaterial.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgssymbollayerutils.h"
 
@@ -87,6 +88,11 @@ QgsMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRende
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
+      if ( context.isHighlighted() )
+      {
+        return new QgsHighlightMaterial( technique );
+      }
+
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setBaseColor( context.isSelected() ? context.selectionColor() : mBaseColor );
       material->setMetalness( mMetalness );
