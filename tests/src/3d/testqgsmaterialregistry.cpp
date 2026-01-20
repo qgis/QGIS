@@ -43,6 +43,7 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext & ) const override { return QByteArray(); }
     bool equals( const QgsAbstractMaterialSettings * ) const override { return true; }
     QColor averageColor() const override { return QColor(); }
+    void setColorsFromBase( const QColor &baseColor ) override { Q_UNUSED( baseColor ) }
 };
 
 class TestQgsMaterialRegistry : public QgsTest
