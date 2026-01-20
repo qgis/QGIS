@@ -106,6 +106,7 @@ set(QGIS_CORE_SRCS
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
   symbology/qgsembeddedsymbolrenderer.cpp
+  symbology/qgsextraitemutils.cpp
   symbology/qgsfeaturerenderergenerator.cpp
   symbology/qgsfillsymbol.cpp
   symbology/qgsfillsymbollayer.cpp
@@ -2063,6 +2064,7 @@ set(QGIS_CORE_HDRS
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
   symbology/qgsembeddedsymbolrenderer.h
+  symbology/qgsextraitemutils.h
   symbology/qgsfeaturerenderergenerator.h
   symbology/qgsfillsymbol.h
   symbology/qgsfillsymbollayer.h
