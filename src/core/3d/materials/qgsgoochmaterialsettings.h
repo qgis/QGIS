@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 4.2
      */
-    void setColorsFromBase( const QColor &baseColor );
+    void setColorsFromBase( const QColor &baseColor ) override;
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

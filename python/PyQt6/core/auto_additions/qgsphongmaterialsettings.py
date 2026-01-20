@@ -2,7 +2,7 @@
 try:
     QgsPhongMaterialSettings.supportsTechnique = staticmethod(QgsPhongMaterialSettings.supportsTechnique)
     QgsPhongMaterialSettings.create = staticmethod(QgsPhongMaterialSettings.create)
-    QgsPhongMaterialSettings.__overridden_methods__ = ['type', 'clone', 'equals', 'averageColor', 'readXml', 'writeXml']
+    QgsPhongMaterialSettings.__overridden_methods__ = ['type', 'clone', 'equals', 'averageColor', 'setColorsFromBase', 'readXml', 'writeXml']
     QgsPhongMaterialSettings.__group__ = ['3d', 'materials']
 except (NameError, AttributeError):
     pass

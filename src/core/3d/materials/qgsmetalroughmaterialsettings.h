@@ -106,6 +106,20 @@ class CORE_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSett
      */
     QColor averageColor() const override;
 
+    /**
+     * Decomposes a base color into the material's color components, and sets the material's color accordingly.
+     *
+     * Since this material contains only a single color, this function
+     * is equivalent to calling setBaseColor(baseColor).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setBaseColor()
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
