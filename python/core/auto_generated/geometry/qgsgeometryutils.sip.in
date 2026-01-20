@@ -1131,7 +1131,7 @@ and is retrieved from the first 3D point amongst ``p1`` and ``p2``.
          - intersection: Output parameter, the intersection point
 %End
 
-    static bool lineByTwoAngles( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection /Out/ ) /HoldGIL/;
+    static bool intersectionPointOfLinesByBearing( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the intersection point of two lines defined by point and
 bearing.
@@ -1152,7 +1152,7 @@ measured clockwise from north in radians.
 
 .. seealso:: :py:func:`lineIntersection`
 
-.. seealso:: :py:func:`QgsGeometryUtilsBase.lineByTwoAngles`
+.. seealso:: :py:func:`QgsGeometryUtilsBase.intersectionPointOfLinesByBearing`
 
 .. versionadded:: 4.0
 %End

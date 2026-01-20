@@ -574,7 +574,7 @@ bool QgsGeometryUtilsBase::lineIntersection( double p1x, double p1y, QgsVector v
   return true;
 }
 
-bool QgsGeometryUtilsBase::lineByTwoAngles( double x1, double y1, double bearing1, double x2, double y2, double bearing2, double &intersectionX, double &intersectionY )
+bool QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( double x1, double y1, double bearing1, double x2, double y2, double bearing2, double &intersectionX, double &intersectionY )
 {
   // Convert bearings (clockwise from north) to direction vectors
   // For bearing β: direction = (sin(β), cos(β))

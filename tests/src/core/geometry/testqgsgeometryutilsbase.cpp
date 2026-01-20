@@ -595,7 +595,7 @@ void TestQgsGeometryUtilsBase::testLineByTwoAngles()
   QFETCH( double, expectedY );
 
   double intersectionX, intersectionY;
-  const bool result = QgsGeometryUtilsBase::lineByTwoAngles( x1, y1, bearing1, x2, y2, bearing2, intersectionX, intersectionY );
+  const bool result = QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( x1, y1, bearing1, x2, y2, bearing2, intersectionX, intersectionY );
 
   QCOMPARE( result, expectedSuccess );
 

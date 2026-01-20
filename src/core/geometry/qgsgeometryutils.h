@@ -1266,14 +1266,14 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns TRUE if an intersection was found, FALSE if lines are parallel
      *
      * \see lineIntersection()
-     * \see QgsGeometryUtilsBase::lineByTwoAngles()
+     * \see QgsGeometryUtilsBase::intersectionPointOfLinesByBearing()
      *
      * \since QGIS 4.0
      */
-    static bool lineByTwoAngles( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL
+    static bool intersectionPointOfLinesByBearing( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL
     {
       double intersectionX = 0.0, intersectionY = 0.0;
-      const bool found = QgsGeometryUtilsBase::lineByTwoAngles( pt1.x(), pt1.y(), bearing1, pt2.x(), pt2.y(), bearing2, intersectionX, intersectionY );
+      const bool found = QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( pt1.x(), pt1.y(), bearing1, pt2.x(), pt2.y(), bearing2, intersectionX, intersectionY );
 
       intersection = QgsPoint( intersectionX, intersectionY );
 

@@ -538,9 +538,9 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static bool lineByTwoAngles( double x1, double y1, double bearing1,
-                                 double x2, double y2, double bearing2,
-                                 double &intersectionX SIP_OUT, double &intersectionY SIP_OUT ) SIP_HOLDGIL;
+    static bool intersectionPointOfLinesByBearing( double x1, double y1, double bearing1,
+        double x2, double y2, double bearing2,
+        double &intersectionX SIP_OUT, double &intersectionY SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * \brief Compute the intersection between two segments

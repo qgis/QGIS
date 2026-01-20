@@ -2115,7 +2115,7 @@ void TestQgsGeometryUtils::testLineByTwoAngles()
     const QgsPoint pt2( 10, 0 );
     QgsPoint result;
     // Point 1 bearing north, Point 2 bearing west -> intersection at origin
-    const bool ok = QgsGeometryUtils::lineByTwoAngles( pt1, 0.0, pt2, 3.0 * M_PI / 2.0, result );
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, 0.0, pt2, 3.0 * M_PI / 2.0, result );
     QVERIFY( ok );
     QVERIFY( qgsDoubleNear( result.x(), 0.0, tolerance ) );
     QVERIFY( qgsDoubleNear( result.y(), 0.0, tolerance ) );
@@ -2127,7 +2127,7 @@ void TestQgsGeometryUtils::testLineByTwoAngles()
     const QgsPoint pt2( 10, 0 );
     QgsPoint result;
     // Point 1 bearing NE (45 deg), Point 2 bearing NW (315 deg) -> meet at (5,5)
-    const bool ok = QgsGeometryUtils::lineByTwoAngles( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
     QVERIFY( ok );
     QVERIFY( qgsDoubleNear( result.x(), 5.0, tolerance ) );
     QVERIFY( qgsDoubleNear( result.y(), 5.0, tolerance ) );
@@ -2139,7 +2139,7 @@ void TestQgsGeometryUtils::testLineByTwoAngles()
     const QgsPoint pt2( 0, 5 );
     QgsPoint result;
     // Both bearing east -> parallel
-    const bool ok = QgsGeometryUtils::lineByTwoAngles( pt1, M_PI / 2.0, pt2, M_PI / 2.0, result );
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 2.0, pt2, M_PI / 2.0, result );
     QVERIFY( !ok );
   }
 
@@ -2148,7 +2148,7 @@ void TestQgsGeometryUtils::testLineByTwoAngles()
     const QgsPoint pt1( Qgis::WkbType::PointZ, 0, 0, 100 );
     const QgsPoint pt2( 10, 0 );
     QgsPoint result;
-    const bool ok = QgsGeometryUtils::lineByTwoAngles( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
     QVERIFY( ok );
     QVERIFY( result.is3D() );
     QVERIFY( qgsDoubleNear( result.z(), 100.0, tolerance ) );
@@ -2159,7 +2159,7 @@ void TestQgsGeometryUtils::testLineByTwoAngles()
     const QgsPoint pt1( Qgis::WkbType::PointM, 0, 0, 0, 50 );
     const QgsPoint pt2( 10, 0 );
     QgsPoint result;
-    const bool ok = QgsGeometryUtils::lineByTwoAngles( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
     QVERIFY( ok );
     QVERIFY( result.isMeasure() );
     QVERIFY( qgsDoubleNear( result.m(), 50.0, tolerance ) );

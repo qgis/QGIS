@@ -548,9 +548,9 @@ and is retrieved from the first 3D point amongst ``p1`` and ``p2``.
          - intersectionY: y-coordinate of the intersection point
 %End
 
-    static bool lineByTwoAngles( double x1, double y1, double bearing1,
-                                 double x2, double y2, double bearing2,
-                                 double &intersectionX /Out/, double &intersectionY /Out/ ) /HoldGIL/;
+    static bool intersectionPointOfLinesByBearing( double x1, double y1, double bearing1,
+        double x2, double y2, double bearing2,
+        double &intersectionX /Out/, double &intersectionY /Out/ ) /HoldGIL/;
 %Docstring
 Calculates the intersection point of two lines defined by point and
 bearing.
