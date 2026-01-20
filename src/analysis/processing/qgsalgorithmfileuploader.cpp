@@ -106,16 +106,13 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   QgsFileUploader *uploader = new QgsFileUploader( filePath, url, formNameKey );
 
   connect( mFeedback, &QgsFeedback::canceled, uploader, &QgsFileUploader::cancelUpload );
-  connect( uploader, &QgsFileUploader::uploadError, this, [&errors, &loop]( const QStringList &e ) { errors = e; loop.exit(); } );
+  connect( uploader, &QgsFileUploader::uploadError, this, [&errors]( const QStringList &e ) { errors = e; } );
   connect( uploader, &QgsFileUploader::uploadProgress, this, &QgsFileUploaderAlgorithm::receiveProgressFromUploader );
   connect( uploader, &QgsFileUploader::uploadCompleted, this, [&uploadUrl]( const QUrl url ) { uploadUrl = url; } );
-  connect( uploader, &QgsFileUploader::uploadExited, this, [&loop]() { loop.exit(); } );
   connect( &progressTimer, &QTimer::timeout, this, &QgsFileUploaderAlgorithm::sendProgressFeedback );
-  uploader->startUpload();
-
   progressTimer.start( 1000 );
 
-  loop.exec();
+  uploader->startUpload();
 
   progressTimer.stop();
   if ( errors.size() > 0 )

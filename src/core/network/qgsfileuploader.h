@@ -92,18 +92,7 @@ class CORE_EXPORT QgsFileUploader : public QObject
     void onFinished();
     //! Called on data ready to be processed
     void onUploadProgress( qint64 bytesSent, qint64 bytesTotal );
-    //! Called when a network request times out
-    void onRequestTimedOut( QNetworkReply *reply );
 
-#ifndef QT_NO_SSL
-
-    /**
-     * Called on SSL network Errors
-     * \param reply
-     * \param errors
-     */
-    void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
-#endif
 
   protected:
     ~QgsFileUploader() override;
@@ -118,7 +107,6 @@ class CORE_EXPORT QgsFileUploader : public QObject
     void error( const QString &errorMessage );
     QUrl mUrl;
     QString mFormName;
-    QNetworkReply *mReply = nullptr;
     QFile mFile;
     bool mUploadCanceled;
     QStringList mErrors;
