@@ -122,10 +122,10 @@ The development version
       NoLevel,
     };
 
-    enum class MessageType /BaseType=IntEnum/
-    {
-      MessageText,
-      MessageHtml,
+    enum class StringFormat /BaseType=IntEnum/
+      {
+      PlainText,
+      Html,
     };
 
     enum class NetworkRequestFlag /BaseType=IntFlag/
