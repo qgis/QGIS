@@ -350,6 +350,18 @@ class CORE_EXPORT QgsDataItem : public QObject
     QgsDataItem *parent() const { return mParent; }
 
     /**
+     * Returns the ancestor item at the specified \a depth.
+     *
+     * If \a depth is 1 then this method returns the parent() item. A \a depth
+     * of 2 would return its grandparent (e.g. the parent's parent item).
+     *
+     * Returns NULLPTR if no item exists at the specified depth.
+     *
+     * \since QGIS 4.0
+     */
+    QgsDataItem *ancestorAtDepth( int depth ) const;
+
+    /**
      * Set item parent and connect / disconnect parent to / from item signals.
      * It does not add itself to parents children (mChildren)
     */

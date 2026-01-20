@@ -335,6 +335,19 @@ Gets item parent. QgsDataItem maintains its own items hierarchy, it does
 not use QObject hierarchy.
 %End
 
+    QgsDataItem *ancestorAtDepth( int depth ) const;
+%Docstring
+Returns the ancestor item at the specified ``depth``.
+
+If ``depth`` is 1 then this method returns the
+:py:func:`~QgsDataItem.parent` item. A ``depth`` of 2 would return its
+grandparent (e.g. the parent's parent item).
+
+Returns ``None`` if no item exists at the specified depth.
+
+.. versionadded:: 4.0
+%End
+
     void setParent( QgsDataItem *parent );
 %Docstring
 Set item parent and connect / disconnect parent to / from item signals.

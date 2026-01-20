@@ -499,6 +499,20 @@ int QgsDataItem::findItem( QVector<QgsDataItem *> items, QgsDataItem *item )
   return -1;
 }
 
+QgsDataItem *QgsDataItem::ancestorAtDepth( int depth ) const
+{
+  if ( depth < 0 )
+    return nullptr;
+
+  QgsDataItem *result = const_cast< QgsDataItem * >( this );
+  while ( result && depth > 0 )
+  {
+    depth--;
+    result = result->parent();
+  }
+  return result;
+}
+
 bool QgsDataItem::equal( const QgsDataItem *other )
 {
   return ( metaObject()->className() == other->metaObject()->className() &&
