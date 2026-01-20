@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
+#include "qgsfileuploader.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QTemporaryFile>
-#include <QTemporaryDir>
-#include <QUrl>
-#include <QEventLoop>
-#include <QTimer>
 
-#include <qgsapplication.h>
-#include <qgsfileuploader.h>
+#include <QEventLoop>
+#include <QObject>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
+#include <QTimer>
+#include <QUrl>
 
 class TestQgsFileUploader : public QObject
 {
@@ -52,7 +52,7 @@ class TestQgsFileUploader : public QObject
     {
       mError = true;
       errorMessages.sort();
-      mErrorMessage = errorMessages.join( QLatin1Char( ';' ) );
+      mErrorMessage = errorMessages.join( ';'_L1 );
     }
     //! Called when data ready to be processed
     void uploadProgress( qint64 bytesSent, qint64 bytesTotal )
@@ -140,13 +140,13 @@ void TestQgsFileUploader::cleanup()
 void TestQgsFileUploader::testInvalidHttpMethod()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QStringLiteral( "http://example.com" ) ), mTempFile->fileName() );
+  makeCall( QUrl( u"http://example.com"_s ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mProgress );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage.left( 62 ), QStringLiteral( "Server returned: <HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</H" ) );
+  QCOMPARE( mErrorMessage.left( 62 ), u"Server returned: <HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</H"_s );
 }
 
 void TestQgsFileUploader::testBlankUrl()

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFileUploader : QObject
 {
 %Docstring(signature="appended")

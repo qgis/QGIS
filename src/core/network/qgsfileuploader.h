@@ -16,17 +16,13 @@
 #ifndef QGSFILEUPLOADER_H
 #define QGSFILEUPLOADER_H
 
-#include <QObject>
-#include <QFile>
-#include <QNetworkReply>
-#include <QUrl>
-
 #include "qgis.h"
 #include "qgis_core.h"
 
-#ifndef QT_NO_SSL
-#include <QSslError>
-#endif
+#include <QFile>
+#include <QNetworkReply>
+#include <QObject>
+#include <QUrl>
 
 /**
  * \ingroup core
