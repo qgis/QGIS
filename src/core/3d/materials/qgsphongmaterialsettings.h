@@ -179,7 +179,24 @@ class CORE_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 4.2
      */
-    void setColorsFromBase( const QColor &baseColor, float metallic = 0.0f );
+    void setColorsFromBase( const QColor &baseColor, float metallic );
+
+    /**
+     * Decomposes a base color into Phong material components.
+     *
+     * Sets ambient, diffuse, and specular colors from the input color.
+     * This is equivalent to calling setColorsFromBase with the metallic parameter equal to 0:
+     * setColorsFromBase(baseColor, 0).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setAmbient()
+     * \see setDiffuse()
+     * \see setSpecular()
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

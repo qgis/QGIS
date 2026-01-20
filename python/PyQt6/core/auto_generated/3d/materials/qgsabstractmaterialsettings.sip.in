@@ -146,6 +146,16 @@ Returns an approximate color representing the blended material color.
 .. versionadded:: 4.2
 %End
 
+    virtual void setColorsFromBase( const QColor &baseColor ) = 0;
+%Docstring
+Decomposes a base color into the material's color components, and sets
+the material's colors accordingly.
+
+:param baseColor: The color to decompose
+
+.. versionadded:: 4.2
+%End
+
 };
 
 

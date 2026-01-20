@@ -54,6 +54,8 @@ class CORE_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     QColor averageColor() const override;
+
+    void setColorsFromBase( const QColor &baseColor ) override;
 };
 
 

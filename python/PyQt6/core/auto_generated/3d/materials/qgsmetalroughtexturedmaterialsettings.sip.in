@@ -270,6 +270,20 @@ based on the average color of the base color texture and the emission
 texture. Other texture maps are not taken into account.
 %End
 
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes a base color into the material's color components, and sets
+the material's colors accordingly.
+
+This method has no effect for QgsMetalRoughTexturedMaterialSettings, as
+the material is fully defined by texture maps.
+
+:param baseColor: The color to decompose (ignored)
+
+.. versionadded:: 4.2
+%End
+
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const;
 
 };

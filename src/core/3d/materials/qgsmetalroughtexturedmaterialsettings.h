@@ -255,6 +255,18 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      */
     QColor averageColor() const override;
 
+    /**
+     * Decomposes a base color into the material's color components, and sets the material's colors accordingly.
+     *
+     * This method has no effect for QgsMetalRoughTexturedMaterialSettings, as the material
+     * is fully defined by texture maps.
+     *
+     * \param baseColor The color to decompose (ignored)
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const
     {
       return mBaseColorTexturePath == other.mBaseColorTexturePath

@@ -134,6 +134,12 @@ QColor QgsMetalRoughTexturedMaterialSettings::averageColor() const
   return *mAverageColor;
 }
 
+void QgsMetalRoughTexturedMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  Q_UNUSED( baseColor );
+  QgsDebugMsgLevel( u"setColorsFromBase() has no effect for textured PBR materials"_s, 2 );
+}
+
 void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mBaseColorTexturePath = elem.attribute( u"base_color_texture_path"_s, QString() );

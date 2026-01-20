@@ -161,7 +161,8 @@ also sets the alpha and beta parameters
 .. versionadded:: 4.2
 %End
 
-    void setColorsFromBase( const QColor &baseColor );
+    virtual void setColorsFromBase( const QColor &baseColor );
+
 %Docstring
 Decomposes an average color into Gooch material components, and sets the
 material colors accordingly.
