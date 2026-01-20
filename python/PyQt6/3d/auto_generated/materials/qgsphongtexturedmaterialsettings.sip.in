@@ -137,7 +137,8 @@ Sets opacity of the surface.
 .. versionadded:: 3.28
 %End
 
-    QColor averageColor() const;
+    virtual QColor averageColor() const;
+
 %Docstring
 Returns an approximate color representing the blended material color.
 

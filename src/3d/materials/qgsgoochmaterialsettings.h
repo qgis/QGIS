@@ -105,7 +105,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 4.0
      */
-    QColor averageColor() const;
+    QColor averageColor() const override;
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
