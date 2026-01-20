@@ -81,6 +81,7 @@
 #include "qgsrendererregistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsscalebarrendererregistry.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgssensorregistry.h"
 #include "qgssensorthingsutils.h"
 #include "qgssettings.h"
@@ -352,6 +353,7 @@ void registerMetaTypes()
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
   qRegisterMetaType< QTimeZone >( "QTimeZone" );
+  qRegisterMetaType< QgsSelectiveMaskingSourceSet >( "QgsSelectiveMaskingSourceSet" );
 };
 
 void QgsApplication::init( QString profileFolder )
