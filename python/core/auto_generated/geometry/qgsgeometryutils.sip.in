@@ -15,6 +15,11 @@ class QgsGeometryUtils
 {
 %Docstring(signature="appended")
 Contains various geometry utility functions.
+
+.. note::
+
+   This class is primarily intended to wrap the low-level mathematical implementations found in :py:class:`QgsGeometryUtilsBase`,
+   exposing them using QGIS geometry classes and providing Python bindings.
 %End
 
 %TypeHeaderCode
