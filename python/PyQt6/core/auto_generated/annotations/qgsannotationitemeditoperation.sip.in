@@ -332,7 +332,7 @@ with the specified ``itemId`` and rotation ``angle`` (in degrees)
 
     double angle() const;
 %Docstring
-Returns the rotation angle value (in degrees).
+Returns the rotation angle value (in degrees clockwise).
 %End
 
 };

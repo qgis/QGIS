@@ -327,7 +327,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractA
     Type type() const override;
 
     /**
-     * Returns the rotation angle value (in degrees).
+     * Returns the rotation angle value (in degrees clockwise).
      */
     double angle() const { return mAngle; }
 
