@@ -132,6 +132,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsrendererrange.cpp
   symbology/qgsrendererregistry.cpp
   symbology/qgsrulebasedrenderer.cpp
+  symbology/qgsselectivemaskingsource.cpp
   symbology/qgssinglesymbolrenderer.cpp
   symbology/qgsstyle.cpp
   symbology/qgsstylemodel.cpp
@@ -2055,6 +2056,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsrendererrange.h
   symbology/qgsrendererregistry.h
   symbology/qgsrulebasedrenderer.h
+  symbology/qgsselectivemaskingsource.h
   symbology/qgssinglesymbolrenderer.h
   symbology/qgsstyle.h
   symbology/qgsstyleentityvisitor.h

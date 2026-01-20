@@ -755,6 +755,7 @@
 %Include auto_generated/symbology/qgsrendererrange.sip
 %Include auto_generated/symbology/qgsrendererregistry.sip
 %Include auto_generated/symbology/qgsrulebasedrenderer.sip
+%Include auto_generated/symbology/qgsselectivemaskingsource.sip
 %Include auto_generated/symbology/qgssinglesymbolrenderer.sip
 %Include auto_generated/symbology/qgsstyle.sip
 %Include auto_generated/symbology/qgsstyleentityvisitor.sip
