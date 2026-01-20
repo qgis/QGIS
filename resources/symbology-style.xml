@@ -5707,13 +5707,13 @@
           <Option name="type" type="QString" value="collection"/>
         </Option>
       </data_defined_properties>
-      <layer class="MarkerLine" enabled="1" id="{aba62713-b196-47cb-ab5e-4fed49f61d6b}" locked="0" pass="0">
+      <layer class="MarkerLine" enabled="1" id="{831dae49-75b1-4c14-b55c-57b7add8424f}" locked="0" pass="0">
         <Option type="Map">
           <Option name="average_angle_length" type="QString" value="4"/>
           <Option name="average_angle_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
           <Option name="average_angle_unit" type="QString" value="MM"/>
           <Option name="blank_segments_unit" type="QString" value="MapUnit"/>
-          <Option name="interval" type="QString" value="6"/>
+          <Option name="interval" type="QString" value="4"/>
           <Option name="interval_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
           <Option name="interval_unit" type="QString" value="MM"/>
           <Option name="offset" type="QString" value="0"/>
@@ -5723,7 +5723,7 @@
           <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
           <Option name="offset_unit" type="QString" value="MM"/>
           <Option name="place_on_every_part" type="bool" value="false"/>
-          <Option name="placements" type="QString" value="Interval"/>
+          <Option name="placements" type="QString" value="Interval|LastVertex"/>
           <Option name="ring_filter" type="QString" value="0"/>
           <Option name="rotate" type="QString" value="1"/>
           <Option name="trim_distance_end" type="QString" value="4"/>
@@ -5738,9 +5738,9 @@
             <Option name="name" type="QString" value=""/>
             <Option name="properties" type="Map">
               <Option name="interval" type="Map">
-                <Option name="active" type="bool" value="true"/>
-                <Option name="expression" type="QString" value="with_variable(&#xa;    'mililength',&#xa;&#x9;-- length of the symbol in milimeters considering the trims&#xa;    (length(geometry(@feature)) * 1000/ @map_scale)-8, &#xa;    case &#xa;        when (@mililength % 4) > 2 -- bigger than the half&#xa;&#x9;&#x9;then &#xa;&#x9;&#x9;&#x9;4 + -- caps need to be enlarged&#xa;&#x9;&#x9;&#x9;(&#xa;&#x9;&#x9;&#x9;((@mililength % 4) - 3) -- minus 3 (size of a block) because we need the space for a last block&#xa;&#x9;&#x9;&#x9;/ &#xa;&#x9;&#x9;&#x9;(round(@mililength / 4) - 1)&#xa;&#x9;&#x9;&#x9;) -- minus 1 because with rounding up we have a cap to much&#xa;        else  -- smaller than the half&#xa;&#x9;&#x9;&#x9;4 - -- caps need to be diminished&#xa;&#x9;&#x9;&#x9;(&#xa;&#x9;&#x9;&#x9;(3 - (@mililength % 4)) -- divide from 3 (size of a block) because it's what we need to dismish to have space for the block&#xa;&#x9;&#x9;&#x9;/ &#xa;&#x9;&#x9;&#x9;(round(@mililength / 4)) -- no minus because we are rounding down&#xa;&#x9;&#x9;&#x9;)&#xa;    end&#xa;)"/>
-                <Option name="type" type="int" value="3"/>
+                <Option name="active" type="bool" value="false"/>
+                <Option name="type" type="int" value="1"/>
+                <Option name="val" type="QString" value=""/>
               </Option>
               <Option name="trimEnd" type="Map">
                 <Option name="active" type="bool" value="false"/>
@@ -5764,7 +5764,7 @@
               <Option name="type" type="QString" value="collection"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleMarker" enabled="1" id="{127e2e3c-e7e9-40b8-97b6-171956080769}" locked="0" pass="0">
+          <layer class="SimpleMarker" enabled="1" id="{031f8913-1f43-482e-9417-91dbef181097}" locked="0" pass="0">
             <Option type="Map">
               <Option name="angle" type="QString" value="0"/>
               <Option name="cap_style" type="QString" value="square"/>
@@ -5796,7 +5796,7 @@
           </layer>
         </symbol>
       </layer>
-      <layer class="MarkerLine" enabled="1" id="{edfbc5f3-e2bd-40d7-a140-85b71a7fc658}" locked="0" pass="0">
+      <layer class="MarkerLine" enabled="1" id="{9374afef-3e13-4a06-bd9d-4278060d9e3b}" locked="0" pass="0">
         <Option type="Map">
           <Option name="average_angle_length" type="QString" value="4"/>
           <Option name="average_angle_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -5837,7 +5837,7 @@
               <Option name="type" type="QString" value="collection"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleMarker" enabled="1" id="{0a6e7293-ca21-4b78-8e9f-9ebeaa59d3b6}" locked="0" pass="0">
+          <layer class="SimpleMarker" enabled="1" id="{b880697e-7f35-4f1f-b4a9-dce6dde79083}" locked="0" pass="0">
             <Option type="Map">
               <Option name="angle" type="QString" value="0"/>
               <Option name="cap_style" type="QString" value="square"/>
@@ -5869,7 +5869,7 @@
           </layer>
         </symbol>
       </layer>
-      <layer class="MarkerLine" enabled="1" id="{67274c51-f7ff-455d-a909-ef99096d6089}" locked="0" pass="0">
+      <layer class="MarkerLine" enabled="1" id="{21b57150-c74b-4bd1-94de-2288564125c3}" locked="0" pass="0">
         <Option type="Map">
           <Option name="average_angle_length" type="QString" value="4"/>
           <Option name="average_angle_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
@@ -5910,7 +5910,7 @@
               <Option name="type" type="QString" value="collection"/>
             </Option>
           </data_defined_properties>
-          <layer class="SimpleMarker" enabled="1" id="{6b52df22-f538-4b96-b091-56882f7976f7}" locked="0" pass="0">
+          <layer class="SimpleMarker" enabled="1" id="{e692a677-2711-4e46-a51a-ec92ea7056c7}" locked="0" pass="0">
             <Option type="Map">
               <Option name="angle" type="QString" value="180"/>
               <Option name="cap_style" type="QString" value="square"/>
