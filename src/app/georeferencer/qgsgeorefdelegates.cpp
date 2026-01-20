@@ -27,6 +27,8 @@
 
 #include "moc_qgsgeorefdelegates.cpp"
 
+using namespace Qt::StringLiterals;
+
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
   : QStyledItemDelegate( parent )
