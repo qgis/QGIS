@@ -124,7 +124,7 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
       else if ( std::holds_alternative<QIODevice *>( mPayloadDataVariant ) )
         mReply = QgsNetworkAccessManager::instance()->post( request, std::get<QIODevice *>( mPayloadDataVariant ) );
       else
-        // should not happen, but might if someone extends the variant type without updating this code  
+        // should not happen, but might if someone extends the variant type without updating this code
         QgsDebugError( QString( "Not implemented std::variant type" ) );
       break;
 

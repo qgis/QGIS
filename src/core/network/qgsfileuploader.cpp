@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 #include "qgsfileuploader.h"
-#include "moc_qgsfileuploader.cpp"
-#include "qgssetrequestinitiator_p.h"
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
-
+#include "qgslogger.h"
+#include "qgssetrequestinitiator_p.h"
 
 #include <QFileInfo>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QHttpMultiPart>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <qmimedatabase.h>
+
+#include "moc_qgsfileuploader.cpp"
 
 QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName, const QString &authcfg, bool delayStart )
   : mUrl( url )
@@ -49,7 +50,7 @@ QgsFileUploader::~QgsFileUploader()
 void QgsFileUploader::startUpload()
 {
   QNetworkRequest request( mUrl );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsFileUploader" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsFileUploader"_s );
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
@@ -57,18 +58,18 @@ void QgsFileUploader::startUpload()
 
 
 
-  std::unique_ptr<QHttpMultiPart> multiPart = std::make_unique<QHttpMultiPart>( QHttpMultiPart::FormDataType );
+  auto multiPart = std::make_unique<QHttpMultiPart>( QHttpMultiPart::FormDataType );
 
   QHttpPart filePart;
-  std::unique_ptr<QFile> file = std::make_unique<QFile>( mFile.fileName() );
+  auto file = std::make_unique<QFile>( mFile.fileName() );
   QFileInfo fi = QFileInfo( file->fileName() );
 
   QMimeDatabase db;
   QMimeType mimeType = db.mimeTypeForFile( file->fileName() );
 
   filePart.setHeader( QNetworkRequest::ContentTypeHeader, mimeType.name() );
-  filePart.setHeader( QNetworkRequest::ContentDispositionHeader, QStringLiteral( "form-data; %1filename=\"%2\"" ).arg(
-                        ( mFormName.isEmpty() ) ? QString( "" ) : QStringLiteral( "name=\"%1\"; " ).arg( mFormName ),
+  filePart.setHeader( QNetworkRequest::ContentDispositionHeader, u"form-data; %1filename=\"%2\""_s.arg(
+                        ( mFormName.isEmpty() ) ? QString( "" ) : u"name=\"%1\"; "_s.arg( mFormName ),
                         fi.fileName()
                       ) );
   if ( !file->open( QIODevice::ReadOnly ) )
@@ -84,13 +85,13 @@ void QgsFileUploader::startUpload()
 
 
   QgsBlockingNetworkRequest *networkRequest = new QgsBlockingNetworkRequest();
-  
+
   if ( !mAuthCfg.isEmpty() )
   {
     networkRequest->setAuthCfg( mAuthCfg );
   }
 
-  
+
   connect( networkRequest, &QgsBlockingNetworkRequest::uploadProgress, this, &QgsFileUploader::onUploadProgress );
   connect( this, &QgsFileUploader::uploadCanceled, networkRequest, &QgsBlockingNetworkRequest::abort );
 
@@ -109,7 +110,8 @@ void QgsFileUploader::startUpload()
   {
     error( tr( "Upload failed, Server returned: %1" ).arg( networkRequest->errorMessage() ) );
   }
-  else{ // All other errors
+  else  // All other errors
+  {
     error( tr( "Upload failed: %1" ).arg( networkRequest->errorMessage() ) );
   }
   onFinished();
