@@ -303,6 +303,11 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     setAsPopulated();
   }
 
+  for ( QgsDataItem *child : std::as_const( children ) )
+  {
+    setChildAncestorDepthRecursive( child, 1 );
+  }
+
   return children;
 }
 
@@ -314,6 +319,16 @@ void QgsMssqlConnectionItem::setAsPopulated()
     child->setState( Qgis::BrowserItemState::Populated );
   }
   setState( Qgis::BrowserItemState::Populated );
+}
+
+void QgsMssqlConnectionItem::setChildAncestorDepthRecursive( QgsDataItem *child, int depth )
+{
+  child->mCreatorAncestorDepth = depth;
+  const QVector< QgsDataItem * > children = child->children();
+  for ( QgsDataItem *nextChild : children )
+  {
+    setChildAncestorDepthRecursive( nextChild, depth + 1 );
+  }
 }
 
 void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
@@ -506,6 +521,7 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
 
   QgsMssqlLayerItem *layerItem = new QgsMssqlLayerItem( this, layerProperty.tableName, mPath + '/' + layerProperty.tableName, layerType, layerProperty );
   layerItem->setToolTip( tip );
+  layerItem->mCreatorAncestorDepth = 2;
   if ( refresh )
     addChildItem( layerItem, true );
   else
