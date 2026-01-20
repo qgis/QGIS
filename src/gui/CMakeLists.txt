@@ -367,6 +367,7 @@ set(QGIS_GUI_SRCS
 
   maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooleditblanksegments.cpp
+  maptools/qgsmaptoolextraitem.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -1388,6 +1389,7 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
   maptools/qgsmaptooleditblanksegments.h
+  maptools/qgsmaptoolextraitem.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
