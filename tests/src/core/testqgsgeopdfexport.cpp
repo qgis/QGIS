@@ -63,6 +63,7 @@ class TestQgsGeospatialPdfExport : public QgsTest
     void compositionMode();
     void testMutuallyExclusiveGroupsLayers();
     void testMutuallyExclusiveGroupsCustom();
+    void testCreatePdfTreeNodes();
 };
 
 void TestQgsGeospatialPdfExport::initTestCase()
@@ -981,6 +982,146 @@ void TestQgsGeospatialPdfExport::compositionMode()
   QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Difference ), u"Difference"_s );
   QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Exclusion ), u"Exclusion"_s );
   QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Plus ), u"Normal"_s );
+}
+
+void TestQgsGeospatialPdfExport::testCreatePdfTreeNodes()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+  QgsProject p;
+  QVERIFY( p.read( TEST_DATA_DIR + u"/geospatial_pdf_projects/test_nested_groups_no_graphics.qgz"_s ) );
+
+  QMap< QString, TreeNode * > groupNameToTreeNode;
+  QMap< QString, TreeNode * > layerIdToTreeNode;
+
+  QgsLayerTree *qgisLayerTree = p.layerTreeRoot();
+
+  std::unique_ptr< TreeNode > rootTreeNode = geospatialPdfExporter.createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, qgisLayerTree );
+  rootTreeNode->isRootNode = true;
+
+  // Check the rootTreeNode structure matches the one from the project's layer tree
+
+  // First check the root tree node
+  QVERIFY( rootTreeNode->isRootNode );
+  QVERIFY( !rootTreeNode->id.isEmpty() );
+  QVERIFY( rootTreeNode->name.isEmpty() );
+  QVERIFY( rootTreeNode->mapLayerId.isEmpty() );
+  QVERIFY( !rootTreeNode->parent );
+
+  // Then check children
+  QCOMPARE( rootTreeNode->children.size(), 3L );
+  TreeNode *firstChild = rootTreeNode->children.at( 0 ).get();
+  QVERIFY( firstChild->parent );
+  QCOMPARE( firstChild->parent->id, rootTreeNode->id );
+  QVERIFY( firstChild->children.empty() );
+  QCOMPARE( firstChild->name, qgisLayerTree->children().at( 0 )->name() ); // points
+
+  TreeNode *secondChild = rootTreeNode->children.at( 1 ).get();
+  QVERIFY( secondChild->parent );
+  QCOMPARE( secondChild->parent->id, rootTreeNode->id );
+  QCOMPARE( secondChild->children.size(), 3L );
+  QCOMPARE( secondChild->name, qgisLayerTree->children().at( 1 )->name() ); // group1
+
+  TreeNode *firstSubChild = secondChild->children.at( 0 ).get();
+  QVERIFY( firstSubChild->parent );
+  QCOMPARE( firstSubChild->parent->id, secondChild->id );
+  QVERIFY( firstSubChild->children.empty() );
+  QCOMPARE( firstSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 0 )->name() ); // multipoint
+
+  TreeNode *secondSubChild = secondChild->children.at( 1 ).get();
+  QVERIFY( secondSubChild->parent );
+  QCOMPARE( secondSubChild->parent->id, secondChild->id );
+  QCOMPARE( secondSubChild->children.size(), 1L );
+  QCOMPARE( secondSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 1 )->name() ); // sub-group1
+
+  TreeNode *firstSubSubChild = secondSubChild->children.at( 0 ).get();
+  QVERIFY( firstSubSubChild->parent );
+  QCOMPARE( firstSubSubChild->parent->id, secondSubChild->id );
+  QVERIFY( firstSubSubChild->children.empty() );
+  QCOMPARE( firstSubSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 1 )->children().at( 0 )->name() ); // lines
+
+  TreeNode *thirdSubChild = secondChild->children.at( 2 ).get();
+  QVERIFY( thirdSubChild->parent );
+  QCOMPARE( thirdSubChild->parent->id, secondChild->id );
+  QVERIFY( thirdSubChild->children.empty() );
+  QCOMPARE( thirdSubChild->name, qgisLayerTree->children().at( 1 )->children().at( 2 )->name() ); // polys
+
+
+  TreeNode *thirdChild = rootTreeNode->children.at( 2 ).get();
+  QVERIFY( thirdChild->parent );
+  QCOMPARE( thirdChild->parent->id, rootTreeNode->id );
+  QVERIFY( thirdChild->children.empty() );
+  QCOMPARE( thirdChild->name, qgisLayerTree->children().at( 2 )->name() ); // raster_layer
+
+  // Check expected behavior from TreeNode methods
+
+  // Check the PDF tree layer (note that parent root node is not included in the output)
+  QDomDocument doc;
+  QDomElement layerTreeElem = doc.createElement( u"LayerTree"_s );
+  rootTreeNode->toChildrenElements( doc, layerTreeElem );
+  QDomNodeList layerTreeList = layerTreeElem.childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+
+  QgsMapLayer *layer0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 0 ) )->layer();
+  QgsLayerTreeGroup *group1 = qobject_cast< QgsLayerTreeGroup * >( qgisLayerTree->children().at( 1 ) );
+  QgsMapLayer *layer2 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 2 ) )->layer();
+
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer0->id() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer0->name() );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"id"_s ), secondChild->id );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"name"_s ), group1->name() );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QDomNodeList group1LayerTreeList = layerTreeList.at( 1 ).toElement().childNodes();
+  QCOMPARE( group1LayerTreeList.count(), 3L );
+
+  QgsMapLayer *layer1_0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 1 )->children().at( 0 ) )->layer();
+  QgsLayerTreeGroup *group1_1 = qobject_cast< QgsLayerTreeGroup * >( qgisLayerTree->children().at( 1 )->children().at( 1 ) );
+  QgsMapLayer *layer1_2 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 1 )->children().at( 2 ) )->layer();
+
+  QCOMPARE( group1LayerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer1_0->id() );
+  QCOMPARE( group1LayerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer1_0->name() );
+  QCOMPARE( group1LayerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( group1LayerTreeList.at( 1 ).toElement().attribute( u"id"_s ), secondSubChild->id );
+  QCOMPARE( group1LayerTreeList.at( 1 ).toElement().attribute( u"name"_s ), group1_1->name() );
+  QCOMPARE( group1LayerTreeList.at( 1 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QgsMapLayer *layer1_1_0 = qobject_cast< QgsLayerTreeLayer * >( qgisLayerTree->children().at( 1 )->children().at( 1 )->children().at( 0 ) )->layer();
+
+  QDomNodeList group1_1LayerTreeList = group1LayerTreeList.at( 1 ).toElement().childNodes();
+  QCOMPARE( group1_1LayerTreeList.count(), 1L );
+
+  QCOMPARE( group1_1LayerTreeList.at( 0 ).toElement().attribute( u"id"_s ), layer1_1_0->id() );
+  QCOMPARE( group1_1LayerTreeList.at( 0 ).toElement().attribute( u"name"_s ), layer1_1_0->name() );
+  QCOMPARE( group1_1LayerTreeList.at( 0 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( group1LayerTreeList.at( 2 ).toElement().attribute( u"id"_s ), layer1_2->id() );
+  QCOMPARE( group1LayerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layer1_2->name() );
+  QCOMPARE( group1LayerTreeList.at( 2 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"id"_s ), layer2->id() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"name"_s ), layer2->name() );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( u"initiallyVisible"_s ), u"true"_s );
+
+  // Check that createNestedIfLayerOnElements does not include the parent root node
+  QDomElement contentElem = doc.createElement( u"Content"_s );
+  firstChild->createNestedIfLayerOnElements( doc, contentElem );
+  QCOMPARE( contentElem.elementsByTagName( u"IfLayerOn"_s ).count(), 1L );
+  QDomElement firstChildElem = contentElem.firstChild().toElement();
+  QCOMPARE( firstChildElem.attribute( u"layerId"_s ), firstChild->mapLayerId ); // layer has no (root) parent
+  QCOMPARE( firstChildElem.elementsByTagName( u"IfLayerOn"_s ).count(), 0L );
+
+  QDomElement contentElem2 = doc.createElement( u"Content"_s );
+  firstSubChild->createNestedIfLayerOnElements( doc, contentElem2 );
+  QCOMPARE( contentElem2.childNodes().count(), 1L );
+  QDomElement firstChildElem2 = contentElem2.childNodes().at( 0 ).toElement();
+  QCOMPARE( firstChildElem2.attribute( u"layerId"_s ), secondChild->id ); // parent layer tree group id (i.e., no 'root' parent)
+  QCOMPARE( firstChildElem2.childNodes().count(), 1L );
+  QDomElement firstSubChildElem = firstChildElem2.childNodes().at( 0 ).toElement();
+  QCOMPARE( firstSubChildElem.attribute( u"layerId"_s ), firstSubChild->mapLayerId );
+  QCOMPARE( firstSubChildElem.childNodes().count(), 0L );
 }
 
 

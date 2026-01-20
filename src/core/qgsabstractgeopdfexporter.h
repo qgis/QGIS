@@ -70,7 +70,7 @@ struct TreeNode
     return layerElement;
   }
 
-  void toChildrenElements( QDomElement &layerTreeElem, QDomDocument &doc )
+  void toChildrenElements( QDomDocument &doc, QDomElement &layerTreeElem )
   {
     for ( const auto &child : children )
     {

@@ -736,7 +736,7 @@ void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromL
     return pdfDataset;
   };
 
-  // content
+  // PDF Content
   QDomElement content = doc.createElement( u"Content"_s );
   for ( const ComponentLayerDetail &component : components )
   {
@@ -759,11 +759,34 @@ void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromL
     }
   }
 
+  // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
+  if ( details.includeFeatures )
+  {
+    for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
+    {
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      {
+        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
+
+        QDomElement vectorDataset = doc.createElement( u"Vector"_s );
+        vectorDataset.setAttribute( u"dataset"_s, component.sourceVectorPath );
+        vectorDataset.setAttribute( u"layer"_s, component.sourceVectorLayer );
+        vectorDataset.setAttribute( u"visible"_s, u"false"_s );
+        QDomElement logicalStructure = doc.createElement( u"LogicalStructure"_s );
+        logicalStructure.setAttribute( u"displayLayerName"_s, component.name );
+        if ( !component.displayAttribute.isEmpty() )
+          logicalStructure.setAttribute( u"fieldToDisplay"_s, component.displayAttribute );
+        vectorDataset.appendChild( logicalStructure );
+        ifLayerOnElement.appendChild( vectorDataset );
+      }
+    }
+  }
+
   pageElem.appendChild( content );
 
-  // layertree
+  // PDF Layer Tree
   QDomElement layerTreeElem = doc.createElement( u"LayerTree"_s );
-  rootPdfNode->toChildrenElements( layerTreeElem, doc );
+  rootPdfNode->toChildrenElements( doc, layerTreeElem );
   compositionElem.appendChild( layerTreeElem );
 }
 
