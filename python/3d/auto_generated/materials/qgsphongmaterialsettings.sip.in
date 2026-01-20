@@ -199,9 +199,9 @@ specular color components to produce a single representative color.
 .. versionadded:: 4.0
 %End
 
-    void setColorsFromBase( const QColor &baseColor, float metallic = 0.0f );
+    void setColorsFromBase( const QColor &baseColor, float metallic );
 %Docstring
-Decompose a base color into Phong material components.
+Decomposes a base color into Phong material components.
 
 Sets ambient, diffuse, and specular colors from the input color. This
 also sets the shininess parameter based on the metallic value.
@@ -217,6 +217,26 @@ also sets the shininess parameter based on the metallic value.
 .. seealso:: :py:func:`setSpecular`
 
 .. seealso:: :py:func:`setShininess`
+
+.. versionadded:: 4.0
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes a base color into Phong material components.
+
+Sets ambient, diffuse, and specular colors from the input color. This is
+equivalent to calling setColorsFromBase with the metallic parameter
+equal to 0: setColorsFromBase(baseColor, 0).
+
+:param baseColor: The color to decompose
+
+.. seealso:: :py:func:`setAmbient`
+
+.. seealso:: :py:func:`setDiffuse`
+
+.. seealso:: :py:func:`setSpecular`
 
 .. versionadded:: 4.0
 %End

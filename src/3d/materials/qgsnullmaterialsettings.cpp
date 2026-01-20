@@ -18,6 +18,7 @@
 #include "qgsmaterial.h"
 
 #include <QMap>
+#include <qtpreprocessorsupport.h>
 
 QString QgsNullMaterialSettings::type() const
 {
@@ -79,4 +80,9 @@ void QgsNullMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, cons
 QColor QgsNullMaterialSettings::averageColor() const
 {
   return QColor();
+}
+
+void QgsNullMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  Q_UNUSED( baseColor )
 }
