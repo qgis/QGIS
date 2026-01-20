@@ -1,0 +1,159 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsselectivemaskingsourceset.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsSelectiveMaskingSourceSet
+{
+%Docstring(signature="appended")
+Represents a named set of selective masking sources
+(:py:class:`QgsSelectiveMaskSource`).
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsselectivemaskingsourceset.h"
+%End
+  public:
+
+    QgsSelectiveMaskingSourceSet();
+%Docstring
+Constructor for an empty (invalid) QgsSelectiveMaskingSourceSet.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the source set is valid, or ``False`` if it is
+invalid (default constructed).
+%End
+
+    void setId( const QString &id );
+%Docstring
+Sets the unique identifier for the set.
+
+This id must be unique in the whole project. A default random one is
+automatically generated when a new QgsSelectiveMaskingSourceSet is
+constructed.
+
+.. seealso:: :py:func:`id`
+%End
+
+    QString id() const;
+%Docstring
+Returns a unique identifier for the set.
+
+This id must be unique in the whole project. It is automatically
+generated when a new QgsSelectiveMaskingSourceSet is constructed.
+
+.. seealso:: :py:func:`setId`
+%End
+
+    QString name() const;
+%Docstring
+Returns the set's unique name.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the set's unique ``name``.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QVector< QgsSelectiveMaskSource > sources() const;
+%Docstring
+Returns the list of selective mask sources configured in this set.
+
+.. seealso:: :py:func:`setSources`
+%End
+
+    void setSources( const QVector< QgsSelectiveMaskSource > &sources );
+%Docstring
+Sets the list of selective mask ``sources`` for this set.
+
+.. seealso:: :py:func:`sources`
+%End
+
+    void append( const QgsSelectiveMaskSource &source );
+%Docstring
+Appends a \source to the set.
+%End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes the set's state to a DOM element.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+Sets the set's state from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QgsSelectiveMaskSource &operator[]( int index ) /Factory/;
+%MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    if ( idx < 0 )
+      sipIsErr = 1;
+    else
+      sipRes = new QgsSelectiveMaskSource( sipCpp->operator[]( idx ) );
+%End
+
+    int size() const;
+%Docstring
+Returns the number of sources in the set.
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the set is empty.
+%End
+
+    int __len__() const;
+%MethodCode
+    sipRes = sipCpp->size();
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSelectiveMaskingSourceSet: invalid>" );
+    }
+    else if ( !sipCpp->name().isEmpty() )
+    {
+      const QString str = QStringLiteral( "<QgsSelectiveMaskingSourceSet: %1 (%2)>" ).arg(
+                            sipCpp->id(),
+                            sipCpp->name() );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    }
+    else
+    {
+      const QString str = QStringLiteral( "<QgsSelectiveMaskingSourceSet: %1>" ).arg(
+                            sipCpp->id() );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    }
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsselectivemaskingsourceset.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
